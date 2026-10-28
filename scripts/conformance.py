@@ -488,7 +488,9 @@ def ociproxy():
  run([oras,'push','--plain-http','--registry-config',origin_auth,concurrent_origin,'payload.txt:text/plain'],work)
  with ThreadPoolExecutor(max_workers=8) as pool:responses=list(pool.map(lambda _:req('/v2/oci-proxy/concurrent/manifests/v1'),range(8)))
  state=json.loads(req('/api/v1/repositories/oci-proxy/cache?path=concurrent/manifests/v1')[1])
- check('OCI concurrent graph misses coalesce under one database generation',all(x[0]==200 for x in responses) and state['generation']==1 and state['state']=='ready')
+ coalesced=all(x[0]==200 for x in responses) and state['generation']==1 and state['state']=='ready'
+ if not coalesced:raise AssertionError('OCI coalescing: codes='+str([x[0] for x in responses])+', generation='+str(state['generation'])+', state='+state['state'])
+ check('OCI concurrent graph misses coalesce under one database generation',coalesced)
  repository('oci-local','oci');local='127.0.0.1:38443/oci-local/proof'
  (work/'local.txt').write_text('owned hosted group version\n')
  run([oras,'push','--plain-http','--registry-config',auth,local+':local','local.txt:text/plain'],work)

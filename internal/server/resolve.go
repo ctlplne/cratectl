@@ -121,7 +121,21 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 		select {
 		case s.fillSlots <- struct{}{}:
 		default:
-			return result, store.ErrBusy
+			// Contenders may observe the miss before its owner commits the lease.
+			// Recheck boundedly so they can join that fill instead of consuming
+			// another slot or failing merely because its SQL transaction waited.
+			if waits >= 40 {
+				return result, store.ErrBusy
+			}
+			waits++
+			timer := time.NewTimer(50 * time.Millisecond)
+			select {
+			case <-ctx.Done():
+				timer.Stop()
+				return result, ctx.Err()
+			case <-timer.C:
+				continue
+			}
 		}
 		token, e := crypt.Token()
 		if e != nil {
