@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS cratectl.tags (
  digest text NOT NULL, version bigint NOT NULL DEFAULT 1,
  PRIMARY KEY(tenant,repository,image,tag), FOREIGN KEY(tenant,repository) REFERENCES cratectl.repositories(tenant,name)
 );
+ALTER TABLE cratectl.tags ADD COLUMN IF NOT EXISTS deleted boolean NOT NULL DEFAULT false;
 -- The initial development schema is upgraded in place; existing hosted rows
 -- keep their access and policy. Production migration qualification remains open.
 ALTER TABLE cratectl.repositories ADD COLUMN IF NOT EXISTS access text NOT NULL DEFAULT 'tenant';

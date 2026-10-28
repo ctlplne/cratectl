@@ -54,6 +54,7 @@ type Server struct {
 	PythonExpandedBytes     int64
 	PythonFileLimit         int
 	PythonMetadataBytes     int64
+	OCIGraphBytes           int64
 	fillSlots               chan struct{}
 	slots                   chan struct{}
 	adapters                map[string]Adapter
@@ -63,6 +64,7 @@ func New(db *store.Store, b *blob.Local, public string) *Server {
 	s := &Server{DB: db, Blobs: b, PublicURL: strings.TrimRight(public, "/"), slots: make(chan struct{}, 16), fillSlots: make(chan struct{}, 4), TenantProxyLimit: 32, NativeVersionLimit: 10000, NativeTagLimit: 128, NativeMetadataBytes: 8 << 20, UpstreamCredentials: map[string]UpstreamCredential{}, adapters: map[string]Adapter{}}
 	s.NPMPublishBytes, s.NPMExpandedBytes, s.NPMFileLimit, s.NPMPackageJSONBytes = 24<<20, 64<<20, 10000, 1<<20
 	s.PythonUploadBytes, s.PythonExpandedBytes, s.PythonFileLimit, s.PythonMetadataBytes = 64<<20, 256<<20, 10000, 1<<20
+	s.OCIGraphBytes = 4 << 30
 	for _, a := range []adapter{{"generic", s.raw}, {"maven", s.raw}, {"npm", s.npm}, {"pypi", s.pypi}, {"oci", s.oci}} {
 		s.adapters[a.Format()] = a
 	}
@@ -81,12 +83,14 @@ func fail(w http.ResponseWriter, status int, code, action string) {
 }
 func respondErr(w http.ResponseWriter, e error) {
 	switch {
+	case errors.Is(e, store.ErrOCICache):
+		fail(w, 502, "upstream_unavailable", "Inspect the OCI source cache state and repair or revalidate the failed source; group requests cannot bypass its failure.")
 	case errors.Is(e, store.ErrOCIUnvalidated):
 		fail(w, 409, "oci_manifest_unvalidated", "Re-publish the exact retained manifests through a writer, children before parents, to validate their structure and descriptors; existing digest decisions remain in force.")
 	case errors.Is(e, store.ErrPythonUnvalidated):
 		fail(w, 409, "python_metadata_unvalidated", "Re-upload the exact retained distribution through a writer to validate its archive identity; do not approve unverified metadata.")
 	case errors.Is(e, store.ErrMetadataLimit):
-		fail(w, 503, "metadata_budget_exceeded", "Ask the operator to inspect native index size and the metadata budget; no partial index was returned.")
+		fail(w, 503, "metadata_budget_exceeded", "Ask the operator to inspect native index or graph size and its metadata budget; no partial result was returned.")
 	case errors.Is(e, store.ErrBusy):
 		w.Header().Set("Retry-After", "1")
 		fail(w, 503, "retrieval_in_progress", "Retry after one second; inspect the proxy cache operation for the path.")
@@ -314,6 +318,12 @@ func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Iden
 		for _, source := range v.Settings.DownloadSources {
 			if _, e := s.credential(i.Tenant, source); e != nil {
 				fail(w, 400, "upstream_credential_authority", "Bind each download credential to its own tenant, approved URL and authentication scheme.")
+				return
+			}
+		}
+		if v.Settings.OCITokenEndpoint != nil {
+			if _, e := s.credential(i.Tenant, *v.Settings.OCITokenEndpoint); e != nil {
+				fail(w, 400, "upstream_credential_authority", "Bind the OCI token credential to its own approved realm and authentication scheme.")
 				return
 			}
 		}

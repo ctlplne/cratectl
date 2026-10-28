@@ -28,6 +28,7 @@ type Config struct {
 }
 type Endpoint struct {
 	base            *url.URL
+	exactPath       string
 	networks        []netip.Prefix
 	privateNetworks []netip.Prefix
 	client          *http.Client
@@ -51,6 +52,7 @@ func New(c Config, credential string, privateNetworks ...string) (*Endpoint, err
 	if u.Path == "" {
 		u.Path = "/"
 	}
+	exactPath := u.Path
 	if !strings.HasSuffix(u.Path, "/") {
 		u.Path += "/"
 	}
@@ -60,7 +62,7 @@ func New(c Config, credential string, privateNetworks ...string) (*Endpoint, err
 	if path.Clean(u.Path)+"/" != u.Path && u.Path != "/" {
 		return nil, ErrDestination
 	}
-	e := &Endpoint{base: u, credential: credential, authentication: c.Authentication, lookup: net.DefaultResolver.LookupNetIP}
+	e := &Endpoint{base: u, exactPath: exactPath, credential: credential, authentication: c.Authentication, lookup: net.DefaultResolver.LookupNetIP}
 	if len(c.Networks) == 0 || len(c.Networks) > 64 {
 		return nil, ErrDestination
 	}
@@ -212,7 +214,10 @@ func (e *Endpoint) GetIndex(ctx context.Context, name string, validators http.He
 	return e.get(ctx, &u, validators)
 }
 
-func (e *Endpoint) get(ctx context.Context, u *url.URL, validators http.Header) (*http.Response, error) {
+func (e *Endpoint) get(ctx context.Context, u *url.URL, validators http.Header, override ...string) (*http.Response, error) {
+	return e.getUsing(ctx, u, validators, e.client, override...)
+}
+func (e *Endpoint) getUsing(ctx context.Context, u *url.URL, validators http.Header, client *http.Client, override ...string) (*http.Response, error) {
 	r, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
 	if err != nil {
 		return nil, ErrPath
@@ -223,7 +228,12 @@ func (e *Endpoint) get(ctx context.Context, u *url.URL, validators http.Header) 
 			r.Header.Set(h, v)
 		}
 	}
-	if e.credential != "" {
+	if len(override) > 0 {
+		if len(override[0]) > 16384 || strings.ContainsAny(override[0], "\r\n\x00") {
+			return nil, ErrDestination
+		}
+		r.Header.Set("Authorization", "Bearer "+override[0])
+	} else if e.credential != "" {
 		if e.authentication == "basic" {
 			user, password, ok := strings.Cut(e.credential, ":")
 			if !ok {
@@ -235,5 +245,5 @@ func (e *Endpoint) get(ctx context.Context, u *url.URL, validators http.Header) 
 		}
 	}
 	r.Header.Set("Accept-Encoding", "identity")
-	return e.client.Do(r)
+	return client.Do(r)
 }

@@ -141,19 +141,24 @@ func (s *Server) oci(w http.ResponseWriter, r *http.Request, i store.Identity, r
 			fail(w, 405, "UNSUPPORTED", "Use the upload workflow.")
 			return
 		}
-		s.serveArtifact(w, r, i, repo.Name, image+"/blobs/"+ref)
+		resolved, e := s.resolveOCI(ctx, i, repo, image, "blobs", ref, forceRefresh(r))
+		if e != nil {
+			respondErr(w, e)
+			return
+		}
+		s.serveResolvedArtifact(w, r, i, resolved)
 	case "manifests":
 		if !ociDigest.MatchString(ref) && !ociTag.MatchString(ref) {
 			fail(w, 400, "TAG_INVALID", "Use a valid tag or SHA-256 digest.")
 			return
 		}
 		if r.Method == "GET" || r.Method == "HEAD" {
-			a, e := s.DB.OCIManifest(ctx, i, repo.Name, image, ref)
+			resolved, e := s.resolveOCI(ctx, i, repo, image, "manifests", ref, forceRefresh(r))
 			if e != nil {
 				respondErr(w, e)
 				return
 			}
-			s.serveResolvedArtifact(w, r, i, resolvedArtifact{artifact: a, source: repo, ociImage: image, ociRef: ref})
+			s.serveResolvedArtifact(w, r, i, resolved)
 			return
 		}
 		if r.Method != "PUT" {
@@ -213,7 +218,11 @@ func (s *Server) oci(w http.ResponseWriter, r *http.Request, i store.Identity, r
 			fail(w, 400, "DIGEST_INVALID", "Choose a SHA-256 subject and an optional artifact media type.")
 			return
 		}
-		referrers, e := s.DB.OCIReferrers(ctx, i, repo.Name, image, ref, kind, s.NativeVersionLimit, s.NativeMetadataBytes)
+		if e := s.refreshOCIDiscovery(ctx, i, repo, image, "referrers", ref, forceRefresh(r)); e != nil {
+			respondErr(w, e)
+			return
+		}
+		_, referrers, e := s.DB.OCIDiscovery(ctx, i, repo.Name, image, "referrers", ref, kind, s.NativeVersionLimit, s.NativeMetadataBytes)
 		if e != nil {
 			respondErr(w, e)
 			return
@@ -234,7 +243,11 @@ func (s *Server) oci(w http.ResponseWriter, r *http.Request, i store.Identity, r
 			fail(w, 405, "UNSUPPORTED", "List tags with GET.")
 			return
 		}
-		tags, e := s.DB.Tags(ctx, i, repo.Name, image)
+		if e := s.refreshOCIDiscovery(ctx, i, repo, image, "tags/list", "", forceRefresh(r)); e != nil {
+			respondErr(w, e)
+			return
+		}
+		tags, _, e := s.DB.OCIDiscovery(ctx, i, repo.Name, image, "tags/list", "", "", s.NativeTagLimit, s.NativeMetadataBytes)
 		if e != nil {
 			respondErr(w, e)
 			return

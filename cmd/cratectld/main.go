@@ -115,6 +115,7 @@ func run() error {
 		pythonExpanded := f.Int64("python-expanded-bytes", 256<<20, "maximum expanded Python archive bytes")
 		pythonFiles := f.Int("python-file-budget", 10000, "maximum Python archive entries")
 		pythonMetadata := f.Int64("python-metadata-bytes", 1<<20, "maximum embedded Python core metadata bytes")
+		ociGraphBytes := f.Int64("oci-graph-bytes", 4<<30, "maximum aggregate bytes staged by one OCI graph/catalog retrieval")
 
 		credentials := f.String("upstream-credentials", "", "private JSON map of named upstream tokens; values never enter repository configuration")
 		if e := f.Parse(os.Args[2:]); e != nil {
@@ -160,6 +161,10 @@ func run() error {
 			return errors.New("Python upload/archive budgets must be positive and core metadata must fit expanded bytes")
 		}
 		h.PythonUploadBytes, h.PythonExpandedBytes, h.PythonFileLimit, h.PythonMetadataBytes = *pythonUpload, *pythonExpanded, *pythonFiles, *pythonMetadata
+		if *ociGraphBytes <= 0 || *ociGraphBytes >= 1<<62 {
+			return errors.New("OCI graph byte budget must be positive and below 2^62")
+		}
+		h.OCIGraphBytes = *ociGraphBytes
 		if e := h.ConfigureConcurrency(*transfers, *fills, *tenantFills); e != nil {
 			return e
 		}

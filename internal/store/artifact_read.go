@@ -19,14 +19,15 @@ func isManifest(media string) bool {
 }
 
 type graphBudget struct {
-	remaining int
-	depth     int
-	stack     map[string]bool
-	checked   map[string]Artifact
+	remaining     int
+	depth         int
+	stack         map[string]bool
+	checked       map[string]Artifact
+	metadataBytes int64
 }
 
 func newGraphBudget() *graphBudget {
-	return &graphBudget{remaining: 4096, stack: map[string]bool{}, checked: map[string]Artifact{}}
+	return &graphBudget{remaining: 4096, metadataBytes: 32 << 20, stack: map[string]bool{}, checked: map[string]Artifact{}}
 }
 
 // readArtifact evaluates all members of an OCI graph from one PostgreSQL read
@@ -50,6 +51,10 @@ func readArtifact(ctx context.Context, tx pgx.Tx, repo, path string, review bool
 	}
 	if e != nil {
 		return a, e
+	}
+	b.metadataBytes -= int64(len(a.Metadata))
+	if b.metadataBytes < 0 {
+		return a, ErrMetadataLimit
 	}
 	if a.Decision == "denied" || (review && a.Decision != "allowed") {
 		return a, ErrDenied
@@ -139,7 +144,7 @@ func (s *Store) Tags(ctx context.Context, i Identity, repo, image string) ([]str
 			return e
 		}
 		review := r.RequireReview
-		rows, e := tx.Query(ctx, `SELECT tag,digest FROM cratectl.tags WHERE repository=$1 AND image=$2 ORDER BY tag LIMIT 1000`, repo, image)
+		rows, e := tx.Query(ctx, `SELECT tag,digest FROM cratectl.tags WHERE repository=$1 AND image=$2 AND NOT deleted ORDER BY tag LIMIT 1000`, repo, image)
 		if e != nil {
 			return e
 		}

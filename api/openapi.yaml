@@ -60,7 +60,7 @@ paths:
                 access: {type: string, enum: [tenant, restricted], default: tenant}
                 settings:
                   type: object
-                  description: Early proxy/group implementations exist for generic, Maven, npm and PyPI; configuration is immutable after creation. Full format qualification remains open.
+                  description: Early proxy/group implementations exist for generic, Maven, npm, PyPI and OCI; configuration is immutable after creation. Full format qualification remains open.
                   properties:
                     upstream:
                       type: object
@@ -79,6 +79,16 @@ paths:
                         require_checksum: {type: boolean, default: false}
                         allow_no_store: {type: boolean, default: false}
                         allow_legacy_npm_shasum: {type: boolean, default: false, description: Explicit compatibility fallback when strong SRI is absent; require_checksum disables this fallback.}
+                    oci_token_endpoint:
+                      type: object
+                      description: Explicit OCI proxy token realm with separate network and credential authority. The challenged realm must match its exact URL.
+                      required: [url, networks]
+                      properties:
+                        url: {type: string, format: uri, maxLength: 2048}
+                        networks: {type: array, minItems: 1, maxItems: 64, items: {type: string}}
+                        credential_ref: {type: string}
+                        authentication: {type: string, enum: [bearer, basic], default: bearer}
+                    oci_token_service: {type: string, maxLength: 255, description: Exact OCI token service audience. Pull scope is derived from the configured source repository path.}
                     download_sources:
                       type: array
                       maxItems: 16

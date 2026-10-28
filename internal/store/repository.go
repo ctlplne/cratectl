@@ -26,6 +26,8 @@ type RepositorySettings struct {
 	NamespaceOwners   map[string]string `json:"namespace_owners,omitempty"`
 	DownloadSources   []upstream.Config `json:"download_sources,omitempty"`
 	PythonIndexFormat string            `json:"python_index_format,omitempty"`
+	OCITokenEndpoint  *upstream.Config  `json:"oci_token_endpoint,omitempty"`
+	OCITokenService   string            `json:"oci_token_service,omitempty"`
 }
 type Repository struct {
 	Name          string             `json:"name"`
@@ -130,8 +132,23 @@ func ValidateRepository(r *Repository) error {
 	if r.Access != "tenant" && r.Access != "restricted" {
 		return errors.New("access must be tenant or restricted")
 	}
-	if r.Mode != "hosted" && r.Format != "generic" && r.Format != "maven" && r.Format != "npm" && r.Format != "pypi" {
+	if r.Mode != "hosted" && r.Format != "generic" && r.Format != "maven" && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" {
 		return errors.New("proxy/group native adapters not yet implemented for this format")
+	}
+	if r.Settings.OCITokenEndpoint != nil {
+		if ref := r.Settings.OCITokenEndpoint.CredentialRef; ref != "" && !Name.MatchString(ref) {
+			return errors.New("invalid OCI token credential reference")
+		}
+		if r.Format != "oci" || r.Mode != "proxy" || r.Settings.OCITokenService == "" || len(r.Settings.OCITokenService) > 255 || strings.ContainsAny(r.Settings.OCITokenService, "\r\n\x00") {
+			return errors.New("OCI token endpoint requires an OCI proxy and an exact bounded service audience")
+		}
+		endpoint, e := upstream.New(*r.Settings.OCITokenEndpoint, "")
+		if e != nil {
+			return e
+		}
+		endpoint.Close()
+	} else if r.Settings.OCITokenService != "" {
+		return errors.New("OCI token service requires its approved endpoint")
 	}
 	switch r.Mode {
 	case "hosted":

@@ -45,8 +45,8 @@ re-import, with children before parents, enriches their metadata. Preserve their
 canonical digest decisions and first-published media identity. This is a local
 development migration mechanism, not a production upgrade/recovery qualification.
 
-OCI proxy/group graph transactions, challenge-token authentication, approved CDN
-redirects, complete multi-architecture/platform and Docker/Podman/Helm workflows,
+ADR 0008 extends this contract to proxy/group graph transactions and approved-realm
+token transport. Approved CDN redirects, complete multi-architecture/platform and Docker/Podman/Helm workflows,
 additional digest/manifest types, lifecycle/deletion, signatures and full parser,
 fault and production campaigns remain required. Graph limits still need operator
 configuration and scale qualification. All broad OCI rows remain open.

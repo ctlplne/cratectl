@@ -38,18 +38,21 @@ func (s *Store) OCIManifest(ctx context.Context, i Identity, repo, image, ref st
 		if e != nil {
 			return e
 		}
-		if r.Format != "oci" || r.Mode != "hosted" {
+		if r.Format != "oci" || r.Mode == "group" {
 			return ErrConflict
 		}
 		digest := ref
 		if !strings.HasPrefix(ref, "sha256:") {
-			if e = tx.QueryRow(ctx, `SELECT digest FROM cratectl.tags WHERE repository=$1 AND image=$2 AND tag=$3`, repo, image, ref).Scan(&digest); errors.Is(e, pgx.ErrNoRows) {
+			if e = tx.QueryRow(ctx, `SELECT digest FROM cratectl.tags WHERE repository=$1 AND image=$2 AND tag=$3 AND NOT deleted`, repo, image, ref).Scan(&digest); errors.Is(e, pgx.ErrNoRows) {
 				return ErrNotFound
 			} else if e != nil {
 				return e
 			}
 		}
 		a, e = readArtifact(ctx, tx, repo, image+"/manifests/"+digest, r.RequireReview, newGraphBudget())
+		if errors.Is(e, ErrNotFound) && !strings.HasPrefix(ref, "sha256:") {
+			return ErrDenied
+		}
 		return e
 	})
 	return a, e
@@ -86,6 +89,11 @@ func PublishOCI(ctx context.Context, tx pgx.Tx, i Identity, repo, image, tag str
 	if r.Mode != "hosted" || r.Format != "oci" || !metadata.Validated || len(metadata.References) > 4096 || len(metadata.Descriptors) > 4096 {
 		return ErrConflict
 	}
+	return publishOCI(ctx, tx, i, repo, image, tag, a, metadata)
+}
+
+func publishOCI(ctx context.Context, tx pgx.Tx, i Identity, repo, image, tag string, a Artifact, metadata OCIManifestMetadata) error {
+	var e error
 	for _, p := range metadata.References {
 		d, ok := metadata.Descriptors[p]
 		if !ok || (!strings.HasPrefix(p, image+"/blobs/") && !strings.HasPrefix(p, image+"/manifests/")) || !strings.HasSuffix(p, "/"+d.Digest) {
@@ -120,7 +128,7 @@ func PublishOCI(ctx context.Context, tx pgx.Tx, i Identity, repo, image, tag str
 	if e != nil {
 		return e
 	}
-	if e = InsertArtifacts(ctx, tx, i, repo, []Artifact{a}); e != nil {
+	if e = insertOCIObject(ctx, tx, i, repo, a); e != nil {
 		return e
 	}
 	// Same-byte authorized re-import enriches pre-parser development records.
@@ -133,7 +141,7 @@ func PublishOCI(ctx context.Context, tx pgx.Tx, i Identity, repo, image, tag str
 		return e
 	}
 	if tag != "" {
-		_, e = tx.Exec(ctx, `INSERT INTO cratectl.tags(tenant,repository,image,tag,digest) VALUES($1,$2,$3,$4,$5) ON CONFLICT(tenant,repository,image,tag) DO UPDATE SET digest=excluded.digest,version=cratectl.tags.version+1`, i.Tenant, repo, image, tag, "sha256:"+a.Digest)
+		_, e = tx.Exec(ctx, `INSERT INTO cratectl.tags(tenant,repository,image,tag,digest) VALUES($1,$2,$3,$4,$5) ON CONFLICT(tenant,repository,image,tag) DO UPDATE SET digest=excluded.digest,deleted=false,version=cratectl.tags.version+1`, i.Tenant, repo, image, tag, "sha256:"+a.Digest)
 	}
 	return e
 }

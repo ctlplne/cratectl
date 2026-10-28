@@ -51,7 +51,43 @@ Development manifests without structural validation return
 writer, children before parents. Existing digest decisions remain in force.
 This does not qualify production upgrades or restore.
 
-Native proof covers ORAS hosted multi-layer artifacts, indexes, referrers,
-interrupted upload, restart and current policy. Proxy/group modes, challenge-token
-upstreams, full multi-platform and Docker/Podman/Helm cases, deletion, signatures,
-lifecycle and the complete security/fault campaign remain open.
+Create a proxy repository with its upstream native base, such as
+`https://registry.example/v2/`, explicit network CIDRs and an optional
+tenant-scoped credential reference. Clients use its ordinary
+`REGISTRY/REPOSITORY/IMAGE:TAG` endpoint. A miss stages and validates the complete
+manifest graph before publishing its references. Review-required proxies keep
+that graph quarantined until exact digest decisions permit consumption.
+
+For a challenge-token upstream, explicitly configure `oci_token_endpoint` with
+its exact realm URL, CIDRs and separate credential reference, plus
+`oci_token_service` with its exact audience. Origin and token credentials are
+independently bound in the server's private credential file. Anonymous realms
+can omit a credential. The challenged URL/audience must match, and the requested
+scope is limited to pull access for the configured source repository path.
+Private addresses still require the operator's private-network ceiling.
+
+Cached reads enforce current policy. Freshness, negative caching and explicit
+stale windows use the shared proxy cache settings. Inspect the cache API for the
+requested `IMAGE/manifests/TAG` or `oci-catalog/IMAGE/tags` path to explain a
+failure or expire a binding after repairing its origin. A complete tag refresh
+can add or remove mutable tags while retained digest pins keep their exact bytes.
+
+Groups take an ordered hosted/proxy `members` list. Reserve private image prefixes
+through namespace ownership. The first source owns a tag/digest collision,
+including blocked content; a denial never authorizes fallback. Readers need
+grants to all selected sources. Group review covers the whole graph. Publish to
+a hosted member, then pull or discover through the group endpoint.
+
+The default aggregate OCI retrieval budget is 4 GiB (`--oci-graph-bytes`), with
+shared native metadata/tag budgets and a 32 MiB graph-read metadata budget.
+Layer bytes remain opaque. There is no partial graph or truncated native index.
+Node/depth/read-metadata limits still need operator configuration and scale proof.
+
+Native ORAS proof covers hosted/proxy/group multi-layer workflows, tag refresh,
+retained pins, referrers, concurrent misses, interrupted hosted upload, restart
+and current policy. Approved token-realm authority has transport fixture tests.
+CDN/cross-authority redirects and signed URLs remain rejected, so upstreams that
+require those delivery paths are not yet compatible. Full multi-platform and
+Docker/Podman/Helm cases, token-service/registry combinations, referrer fallback/
+pagination, deletion, signatures, lifecycle and full security/fault qualification
+remain open.

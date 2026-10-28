@@ -61,7 +61,7 @@ remain labelled unassessed. No absent scanner result is labelled clean.
 | Maven | `/r/REPOSITORY/COORDINATE` | hosted files, mutable native metadata, computed checksums; complete Gradle/Ivy/SBT, grouping and snapshot campaigns remain open |
 | npm | `/npm/REPOSITORY/` | publish/install scoped packages and dependencies; 24 MiB publish document; independent dist-tag edits, search and provenance not implemented |
 | PyPI | `/pypi/REPOSITORY/` for twine; `/pypi/REPOSITORY/simple/` for pip | streamed multipart files, HTML simple index; yanking, modern JSON/index metadata and archive-content validation incomplete |
-| OCI | `/v2/REPOSITORY/IMAGE/...` | ORAS multi-layer push/pull, resumable upload offsets, validated indexes, governed referrers and tag/graph policy; proxy/group, delete/mount, full Docker/Podman/conformance and graph-policy campaigns incomplete; see [operator guide](docs/operator/oci.md) |
+| OCI | `/v2/REPOSITORY/IMAGE/...` | ORAS hosted/proxy/group multi-layer pulls, resumable hosted uploads, validated indexes, governed referrers and tag/graph policy; approved-realm token challenges have transport tests. CDN redirects, delete/mount, full Docker/Podman/conformance and graph-policy campaigns remain incomplete; see [operator guide](docs/operator/oci.md) |
 
 Generic/Maven proxy and group paths plus repository actor grants now have early
 local proof; see [operator configuration](docs/operator/proxy-and-group.md). Other

@@ -190,6 +190,15 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 	}
 }
 func (s *Server) proxyArtifact(ctx context.Context, i store.Identity, repo store.Repository, p string) (store.Artifact, error) {
+	if repo.Format == "oci" {
+		if strings.HasPrefix(p, "oci-catalog/") {
+			return s.DB.NativeCatalogArtifact(ctx, i, repo.Name, strings.TrimPrefix(p, "oci-catalog/"), "oci", store.OCICatalogMedia)
+		}
+		image, kind, ref := parseOCIPath(p)
+		if kind == "manifests" {
+			return s.DB.OCIManifest(ctx, i, repo.Name, image, ref)
+		}
+	}
 	if repo.Format == "pypi" && strings.HasPrefix(p, "pypi-catalog/") {
 		return s.DB.NativeCatalogArtifact(ctx, i, repo.Name, strings.TrimPrefix(p, "pypi-catalog/"), "pypi", store.PythonCatalogMedia)
 	}
@@ -243,6 +252,9 @@ func cachePolicy(h http.Header, repo store.Repository, lease store.Retrieval, st
 	return fresh, stale, nil
 }
 func (s *Server) fillProxy(parent context.Context, i store.Identity, repo store.Repository, lease store.Retrieval) error {
+	if repo.Format == "oci" {
+		return s.fillOCIProxy(parent, i, repo, lease)
+	}
 	if repo.Format == "pypi" {
 		return s.fillPythonProxy(parent, i, repo, lease)
 	}
@@ -385,7 +397,20 @@ func (s *Server) guardResolved(ctx context.Context, i store.Identity, a resolved
 	var current store.Artifact
 	var e error
 	if a.ociRef != "" {
-		current, e = s.DB.OCIManifest(ctx, i, a.source.Name, a.ociImage, a.ociRef)
+		endpoint := a.source.Name
+		if len(a.groups) > 0 {
+			endpoint = a.groups[0]
+		}
+		_, kind, _ := parseOCIPath(a.artifact.Path)
+		var source store.Repository
+		current, source, e = s.DB.OCISelection(ctx, i, endpoint, a.ociImage, kind, a.ociRef)
+		if e != nil {
+			return current, e
+		}
+		if source.Name != a.source.Name || current.Digest != a.artifact.Digest {
+			return current, store.ErrConflict
+		}
+		return current, nil
 	} else {
 		current, e = s.DB.Artifact(ctx, i, a.source.Name, a.artifact.Path)
 	}

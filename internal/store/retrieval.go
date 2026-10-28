@@ -3,10 +3,13 @@ package store
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"strings"
 	"time"
 
 	"ctlplne.dev/cratectl/internal/blob"
+	crypt "ctlplne.dev/cratectl/internal/crypto"
 	"github.com/jackc/pgx/v5"
 )
 
@@ -117,6 +120,7 @@ type RetrievalResult struct {
 	NPMCatalog                 *NPMCatalog
 	NPMSources                 []NPMSource
 	NativeCatalog              *NativeCatalogPublication
+	OCI                        *OCIPublication
 }
 
 func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retrieval, result RetrievalResult) error {
@@ -140,11 +144,25 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 		fresh := result.FreshSeconds
 		stale := result.StaleSeconds
 		if result.Status == 200 && result.Failure == "" {
+			if repo.Format == "oci" && result.OCI == nil {
+				return ErrConflict
+			}
 			if result.Object == nil {
 				return errors.New("durable object required")
 			}
 			if len(result.Metadata) == 0 {
 				result.Metadata = []byte(`{}`)
+			}
+			if result.OCI != nil {
+				if strings.HasPrefix(lease.Path, "oci-catalog/") {
+					var c OCICatalog
+					if result.MediaType != OCICatalogMedia || json.Unmarshal(result.Metadata, &c) != nil || c.Image != result.OCI.Image || crypt.Digest(result.Metadata) != result.Object.Digest {
+						return ErrConflict
+					}
+				}
+				if e = completeOCIPublication(ctx, tx, i, repo, lease, *result.OCI, result.Object.Digest, result.Object.Size); e != nil {
+					return e
+				}
 			}
 			publication := result.NativeCatalog
 			if result.NPMCatalog != nil {
@@ -192,6 +210,16 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 			state = "negative"
 			fresh = result.FreshSeconds
 			stale = 0
+			if repo.Format == "oci" {
+				if n := strings.LastIndex(lease.Path, "/manifests/"); n > 0 {
+					ref := lease.Path[n+len("/manifests/"):]
+					if !strings.HasPrefix(ref, "sha256:") {
+						if _, e = tx.Exec(ctx, `UPDATE cratectl.tags SET deleted=true,version=version+1 WHERE repository=$1 AND image=$2 AND tag=$3`, repo.Name, lease.Path[:n], ref); e != nil {
+							return e
+						}
+					}
+				}
+			}
 		} else {
 			state = "failed"
 			fresh = 2
@@ -208,6 +236,10 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 		if result.Object != nil {
 			data["digest"] = result.Object.Digest
 			data["size"] = result.Object.Size
+		}
+		if result.OCI != nil {
+			data["graph_members"] = len(result.OCI.Objects)
+			data["native_tags"] = len(result.OCI.Tags)
 		}
 		return appendEvent(ctx, tx, i, "proxy.retrieval."+state, data)
 	})

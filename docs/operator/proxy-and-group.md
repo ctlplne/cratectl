@@ -1,8 +1,9 @@
 # Governed proxy and group operations
 
-Current implementation covers generic file and Maven raw operations. npm, PyPI
-and OCI proxy/group creation is rejected until native metadata and graph journeys
-are implemented. This document does not qualify full format parity or production.
+Generic, Maven, npm, PyPI and OCI have early hosted/proxy/group implementations.
+Native metadata and graph rules differ by format; see the npm, Python and OCI
+operator guides for their tested operations and open limits. This document does
+not qualify full format parity or production.
 
 A **proxy** copies a requested package from one configured source. A **group**
 tries approved source repositories in an explicit order. Every download still

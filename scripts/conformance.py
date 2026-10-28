@@ -45,7 +45,7 @@ def repository(name,fmt,token='admin',review=False,**options):
 
 def start():
  global proc,logfile
- credentials=PRIVATE/'upstreams.json';credentials.write_text(json.dumps({tenants['admin']+'/fixture':{'value':tokens['origin'],'allowed_url':BASE+'/r/source/'},tenants['admin']+'/self':{'value':tokens['reader'],'allowed_url':BASE+'/r/java/'},tenants['admin']+'/bad-fixture':{'value':tokens['origin'],'allowed_url':BASE+'/r/bad-source/'},tenants['admin']+'/npm-fixture':{'value':tokens['origin'],'allowed_url':BASE+'/npm/up-npm/'},tenants['admin']+'/python-up':{'value':tokens['origin'],'allowed_url':BASE+'/pypi/up-python/'},tenants['admin']+'/npm-meta':{'value':tokens['npm-meta-origin'],'allowed_url':BASE+'/r/npm-meta/'},tenants['admin']+'/npm-files':{'value':tokens['npm-files-origin'],'allowed_url':BASE+'/r/npm-files/'}}));credentials.chmod(0o600)
+ credentials=PRIVATE/'upstreams.json';credentials.write_text(json.dumps({tenants['admin']+'/oci-up':{'value':tokens['origin'],'allowed_url':BASE+'/v2/up-oci/'},tenants['admin']+'/fixture':{'value':tokens['origin'],'allowed_url':BASE+'/r/source/'},tenants['admin']+'/self':{'value':tokens['reader'],'allowed_url':BASE+'/r/java/'},tenants['admin']+'/bad-fixture':{'value':tokens['origin'],'allowed_url':BASE+'/r/bad-source/'},tenants['admin']+'/npm-fixture':{'value':tokens['origin'],'allowed_url':BASE+'/npm/up-npm/'},tenants['admin']+'/python-up':{'value':tokens['origin'],'allowed_url':BASE+'/pypi/up-python/'},tenants['admin']+'/npm-meta':{'value':tokens['npm-meta-origin'],'allowed_url':BASE+'/r/npm-meta/'},tenants['admin']+'/npm-files':{'value':tokens['npm-files-origin'],'allowed_url':BASE+'/r/npm-files/'}}));credentials.chmod(0o600)
  logfile=(PRIVATE/'server.log').open('a')
  proc=subprocess.Popen([str(ROOT/'bin/cratectld'),'serve','--listen','127.0.0.1:38443','--public-url',BASE,'--dev-loopback-http','--objects',str(PRIVATE/'objects'),'--upstream-credentials',str(credentials),'--allow-private-upstreams','127.0.0.1/32'],env=env,stdout=logfile,stderr=subprocess.STDOUT)
  for _ in range(100):
@@ -454,6 +454,73 @@ def oci():
  check('OCI denied digest blocks tag resolution',req('/v2/containers/proof/manifests/v1')[0]==403)
  check('OCI denied digest disappears from tag index',json.loads(req('/v2/containers/proof/tags/list')[1])['tags']==[])
 
+
+def ociproxy():
+ repository('up-oci','oci','other');work=PRIVATE/'oci-proxy';work.mkdir();oras=ROOT/'.cache/bin/oras';origin_auth=work/'origin-auth.json';auth=work/'auth.json'
+ run([oras,'login','--plain-http','--registry-config',origin_auth,'--username','token','--password-stdin','127.0.0.1:38443'],input_text=tokens['other']+'\n')
+ run([oras,'login','--plain-http','--registry-config',auth,'--username','token','--password-stdin','127.0.0.1:38443'],input_text=tokens['admin']+'\n')
+ (work/'payload.txt').write_text('owned upstream layer one\n');(work/'dependency.txt').write_text('owned upstream layer two\n')
+ origin='127.0.0.1:38443/up-oci/proof'
+ run([oras,'push','--plain-http','--registry-config',origin_auth,origin+':v1','payload.txt:text/plain','dependency.txt:text/plain'],work)
+ (work/'sbom.json').write_text('{"name":"owned graph attachment"}\n')
+ attached=json.loads(run([oras,'attach','--plain-http','--registry-config',origin_auth,'--distribution-spec','v1.1-referrers-api','--artifact-type','application/vnd.cratectl.proof','--format','json',origin+':v1','sbom.json:application/json'],work))
+ root_code,root_bytes,root_headers=req('/v2/up-oci/proof/manifests/v1','other');root_digest=root_headers['Docker-Content-Digest'];root_manifest=json.loads(root_bytes)
+ settings={'upstream':{'url':BASE+'/v2/up-oci/','networks':['127.0.0.1/32'],'credential_ref':'oci-up'},'cache':{'fresh_seconds':60,'negative_seconds':30,'stale_seconds':120,'allow_no_store':True}}
+ repository('oci-proxy','oci',mode='proxy',settings=settings,access='restricted')
+ target='127.0.0.1:38443/oci-proxy/proof:v1';consumer=work/'consumer';consumer.mkdir()
+ run([oras,'pull','--plain-http','--registry-config',auth,target],consumer)
+ check('stock ORAS proxy pulls exact complete multi-layer graph',all((consumer/p).read_bytes()==(work/p).read_bytes() for p in ['payload.txt','dependency.txt']))
+ code,body,headers=req('/v2/oci-proxy/proof/manifests/v1')
+ check('OCI proxy preserves manifest digest and bytes',code==200 and body==root_bytes and headers.get('Docker-Content-Digest')==root_digest)
+ layer=root_manifest['layers'][0]['digest'];code,body,headers=req('/v2/oci-proxy/proof/blobs/'+layer,headers={'Range':'bytes=1-5'})
+ check('OCI cached graph blobs support exact ranges',code==206 and body==(work/'payload.txt').read_bytes()[1:6])
+ check('OCI proxy rejects publication',req('/v2/oci-proxy/proof/blobs/uploads/',method='POST',data=b'')[0]==405)
+ discovered=json.loads(run([oras,'discover','--plain-http','--registry-config',auth,'--distribution-spec','v1.1-referrers-api','--format','json','--depth','1',target],work))
+ check('stock ORAS discovers proxied governed referrers',any(x['digest']==attached['digest'] for x in discovered['referrers']))
+ check('OCI proxy tag catalog resolves exact bindings',json.loads(req('/v2/oci-proxy/proof/tags/list')[1])['tags']==['v1'])
+ stop();start();after=work/'after-restart';after.mkdir();run([oras,'pull','--plain-http','--registry-config',auth,target],after)
+ check('stock ORAS proxy digest pins survive restart',(after/'payload.txt').read_bytes()==(work/'payload.txt').read_bytes())
+ (work/'payload.txt').write_text('owned upstream release two\n')
+ run([oras,'push','--plain-http','--registry-config',origin_auth,origin+':v2','payload.txt:text/plain','dependency.txt:text/plain'],work)
+ check('OCI proxy refresh observes new native tag',json.loads(req('/v2/oci-proxy/proof/tags/list',headers={'Cache-Control':'no-cache'})[1])['tags']==['v1','v2'])
+ check('OCI retained digest pins preserve original manifest after refresh',req('/v2/oci-proxy/proof/manifests/'+root_digest)[1]==root_bytes)
+ concurrent_origin='127.0.0.1:38443/up-oci/concurrent:v1'
+ run([oras,'push','--plain-http','--registry-config',origin_auth,concurrent_origin,'payload.txt:text/plain'],work)
+ with ThreadPoolExecutor(max_workers=8) as pool:responses=list(pool.map(lambda _:req('/v2/oci-proxy/concurrent/manifests/v1'),range(8)))
+ state=json.loads(req('/api/v1/repositories/oci-proxy/cache?path=concurrent/manifests/v1')[1])
+ check('OCI concurrent graph misses coalesce under one database generation',all(x[0]==200 for x in responses) and state['generation']==1 and state['state']=='ready')
+ repository('oci-local','oci');local='127.0.0.1:38443/oci-local/proof'
+ (work/'local.txt').write_text('owned hosted group version\n')
+ run([oras,'push','--plain-http','--registry-config',auth,local+':local','local.txt:text/plain'],work)
+ run([oras,'push','--plain-http','--registry-config',auth,local+':v1','local.txt:text/plain'],work)
+ repository('oci-group','oci',mode='group',settings={'members':['oci-local','oci-proxy'],'namespace_owners':{'private/':'oci-local'}})
+ group='127.0.0.1:38443/oci-group/proof';group_consumer=work/'group';group_consumer.mkdir();run([oras,'pull','--plain-http','--registry-config',auth,group+':local'],group_consumer)
+ check('stock ORAS group pulls first hosted source',(group_consumer/'local.txt').read_bytes()==(work/'local.txt').read_bytes())
+ check('OCI group unions native tags with first-source precedence',json.loads(req('/v2/oci-group/proof/tags/list')[1])['tags']==['local','v1','v2'])
+ local_digest=req('/v2/oci-local/proof/manifests/v1')[2]['Docker-Content-Digest']
+ check('OCI group tag collision retains first source',req('/v2/oci-group/proof/manifests/v1')[2]['Docker-Content-Digest']==local_digest)
+ group_fallback=work/'group-fallback';group_fallback.mkdir();run([oras,'pull','--plain-http','--registry-config',auth,group+':v2'],group_fallback)
+ check('stock ORAS group pulls an authorized proxy fallback',(group_fallback/'payload.txt').read_bytes()==(work/'payload.txt').read_bytes())
+ req('/api/v1/repositories/oci-proxy/grants',method='PUT',data={'actor':'reader','read':True,'write':False},key=uuid.uuid4().hex)
+ check('OCI group reader requires underlying source grant',req('/v2/oci-group/proof/manifests/v1','reader')[0]==200)
+ req('/api/v1/repositories/oci-proxy/grants',method='PUT',data={'actor':'reader','read':False,'write':False},key=uuid.uuid4().hex)
+ check('OCI group rechecks revoked source grants for graph and discovery',req('/v2/oci-group/proof/manifests/v1','reader')[0]==403 and req('/v2/oci-group/proof/referrers/'+root_digest,'reader')[0]==403)
+ repository('oci-strict-group','oci',mode='group',review=True,settings={'members':['oci-local','oci-proxy']})
+ req('/api/v1/repositories/oci-local/decisions',method='PUT',data={'path':'proof/manifests/'+local_digest,'digest':local_digest.removeprefix('sha256:'),'decision':'allowed'},key=uuid.uuid4().hex)
+ check('OCI group review governs unassessed children of an allowed root',req('/v2/oci-strict-group/proof/manifests/v1')[0]==403)
+ req('/api/v1/repositories/oci-local/decisions',method='PUT',data={'path':'proof/manifests/'+local_digest,'digest':local_digest.removeprefix('sha256:'),'decision':'denied'},key=uuid.uuid4().hex)
+ check('OCI denied first-source tag cannot fall through',req('/v2/oci-group/proof/manifests/v1')[0]==403 and json.loads(req('/v2/oci-group/proof/tags/list')[1])['tags']==['v2'])
+ check('OCI namespace owner blocks upstream fallback',req('/v2/oci-group/private/not-found/manifests/v1')[0]==404)
+ repository('oci-reviewed','oci',mode='proxy',review=True,settings=settings)
+ check('OCI proxy intake durably quarantines the complete graph',req('/v2/oci-reviewed/proof/manifests/v1')[0]==403)
+ intake=json.loads(req('/api/v1/repositories/oci-reviewed/artifacts')[1])['items'];check('OCI quarantined intake retains canonical graph members',len(intake)>=4)
+ for item in intake:req('/api/v1/repositories/oci-reviewed/decisions',method='PUT',data={'path':item['path'],'digest':item['digest'],'decision':'allowed'},key=uuid.uuid4().hex)
+ check('OCI reviewed graph becomes consumable after explicit decisions',req('/v2/oci-reviewed/proof/manifests/v1')[0]==200)
+ req('/api/v1/repositories/oci-proxy/decisions',method='PUT',data={'path':'proof/blobs/'+layer,'digest':layer.removeprefix('sha256:'),'decision':'denied'},key=uuid.uuid4().hex)
+ check('OCI proxy fresh cache cannot bypass a child denial',req('/v2/oci-proxy/proof/manifests/v1')[0]==403 and req('/v2/oci-proxy/proof/blobs/'+layer)[0]==403)
+ check('OCI denied source graph blocks proxied referrer discovery',req('/v2/oci-proxy/proof/referrers/'+root_digest)[0]==403)
+ check('OCI cached tenant coordinates remain isolated',req('/v2/oci-proxy/proof/manifests/v1','other')[0]==404)
+
 def maven():
  repository('java','maven');work=PRIVATE/'maven';work.mkdir();(work/'cache').mkdir()
  settings=work/'settings.xml';settings.write_text('<settings><servers><server><id>cratectl</id><username>token</username><password>'+tokens['admin']+'</password></server></servers></settings>');settings.chmod(0o600)
@@ -575,7 +642,7 @@ try:
  for label,lifetime in [('expired','1ms'),('revocable','1h')]:
   token_file=PRIVATE/(label+'.token');run(['bin/cratectld','provision','--tenant',tenants['admin'],'--actor',label,'--role','reader','--expires-in',lifetime,'--token-file',token_file]);tokens[label]=token_file.read_text().strip()
  start();mode=sys.argv[1] if len(sys.argv)>1 else 'all'
- for name,fn in [('generic',generic),('npm',npm),('npmproxy',npmproxy),('pypi',pypi),('pypiproxy',pypiproxy),('oci',oci),('maven',maven),('proxy',proxy)]:
+ for name,fn in [('generic',generic),('npm',npm),('npmproxy',npmproxy),('pypi',pypi),('pypiproxy',pypiproxy),('oci',oci),('ociproxy',ociproxy),('maven',maven),('proxy',proxy)]:
   if mode in ('all',name):fn()
  result['status']='passed';print(f'PASS: {len(checks)} assertions; native mode {mode}')
 except Exception as error:
