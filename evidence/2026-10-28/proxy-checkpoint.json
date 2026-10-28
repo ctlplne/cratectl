@@ -1,0 +1,50 @@
+{
+  "candidate": "7f0ce80f9fc8b5f55200495331f9f1a61ba521cc",
+  "source_dirty": false,
+  "artifacts": {
+    "bin/cratectld": "812dfc7e5ac151d4e2227be7b5ce214cfd5927a25c23512591a5a3c69a5387a8",
+    "bin/cratectl": "d9972c20d05c69e93c294eccf1128a3332d42dcb3d3b944eb973e60d5529ac2e"
+  },
+  "topology": "macOS arm64 server, PostgreSQL 16.15 container, filesystem bytes, HTTP loopback only",
+  "host_profile": "proxy-host-profile.json",
+  "assertions": 127,
+  "native_evidence": "evidence/2026-10-28/conformance-732d2ed67e.json",
+  "tested_clients": {
+    "npm": "11.16.0",
+    "twine": "7.0.0",
+    "pip": "26.1.2",
+    "ORAS": "1.3.6",
+    "Maven": "3.10.0",
+    "JDK": "21.0.13+9"
+  },
+  "gates": {
+    "unit_vet_race": "passed",
+    "postgres_integration": "passed with race instrumentation, including stale-worker fencing and omitted-tenant RLS checks",
+    "path_fuzz": "upstream-path-fuzz.txt; 206888 executions; five-second campaign",
+    "go_vulnerability": "govulncheck.json; no findings",
+    "trivy_source": "trivy-proxy-source.json; no findings with Trivy 0.72.0",
+    "current_secrets": "gitleaks-proxy-current.json; no findings",
+    "history_secrets": "gitleaks-proxy-history.json; no findings under retained narrow exceptions"
+  },
+  "completed_scope": [
+    "generic and Maven raw proxy/group journeys",
+    "configured source, namespace ownership, restricted actor grants",
+    "tenant/destination/auth-scheme credential binding and private-network ceiling",
+    "coalesced fenced retrieval, conditional/negative caching and explicit stale policy",
+    "Maven source checksum verification and quarantine",
+    "existing hosted npm/PyPI/OCI/Maven/generic proof journeys replayed"
+  ],
+  "limits": [
+    "No complete format/mode parity result",
+    "Maven group metadata union and complete snapshot/group journeys remain open",
+    "npm/PyPI/OCI proxy/group modes remain rejected until implemented",
+    "Private HTTPS/customer PKI, multi-node/process-crash recovery and full network fault campaigns remain unverified",
+    "Fair background workers, S3, console, blank operator installation, migration, replication, governance and broad qualification remain open",
+    "No independent-machine install, standard/large performance or HA result"
+  ],
+  "readiness": {
+    "assisted_design_partner": "not qualified",
+    "ordinary_operator": "not qualified",
+    "enterprise": "not qualified"
+  }
+}

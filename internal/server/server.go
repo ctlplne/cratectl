@@ -1,0 +1,585 @@
+// SPDX-License-Identifier: BUSL-1.1
+package server
+
+import (
+	"bytes"
+	"context"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"io"
+	"net/http"
+	"net/url"
+	"path"
+	"strconv"
+	"strings"
+	"time"
+
+	"ctlplne.dev/cratectl/internal/blob"
+	crypt "ctlplne.dev/cratectl/internal/crypto"
+	"ctlplne.dev/cratectl/internal/store"
+	"ctlplne.dev/cratectl/internal/upstream"
+	"github.com/jackc/pgx/v5"
+)
+
+type Adapter interface {
+	Format() string
+	Serve(http.ResponseWriter, *http.Request, store.Identity, store.Repository, string)
+}
+type adapter struct {
+	name  string
+	serve func(http.ResponseWriter, *http.Request, store.Identity, store.Repository, string)
+}
+
+func (a adapter) Format() string { return a.name }
+func (a adapter) Serve(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, p string) {
+	a.serve(w, r, i, repo, p)
+}
+
+type Server struct {
+	DB                      *store.Store
+	Blobs                   *blob.Local
+	PublicURL               string
+	UpstreamCredentials     map[string]UpstreamCredential
+	PrivateUpstreamNetworks []string
+	TenantProxyLimit        int
+	NativeVersionLimit      int
+	NativeTagLimit          int
+	NativeMetadataBytes     int64
+	NPMPublishBytes         int64
+	NPMExpandedBytes        int64
+	NPMFileLimit            int
+	NPMPackageJSONBytes     int64
+	PythonUploadBytes       int64
+	PythonExpandedBytes     int64
+	PythonFileLimit         int
+	PythonMetadataBytes     int64
+	fillSlots               chan struct{}
+	slots                   chan struct{}
+	adapters                map[string]Adapter
+}
+
+func New(db *store.Store, b *blob.Local, public string) *Server {
+	s := &Server{DB: db, Blobs: b, PublicURL: strings.TrimRight(public, "/"), slots: make(chan struct{}, 16), fillSlots: make(chan struct{}, 4), TenantProxyLimit: 32, NativeVersionLimit: 10000, NativeTagLimit: 128, NativeMetadataBytes: 8 << 20, UpstreamCredentials: map[string]UpstreamCredential{}, adapters: map[string]Adapter{}}
+	s.NPMPublishBytes, s.NPMExpandedBytes, s.NPMFileLimit, s.NPMPackageJSONBytes = 24<<20, 64<<20, 10000, 1<<20
+	s.PythonUploadBytes, s.PythonExpandedBytes, s.PythonFileLimit, s.PythonMetadataBytes = 64<<20, 256<<20, 10000, 1<<20
+	for _, a := range []adapter{{"generic", s.raw}, {"maven", s.raw}, {"npm", s.npm}, {"pypi", s.pypi}, {"oci", s.oci}} {
+		s.adapters[a.Format()] = a
+	}
+	return s
+}
+func ValidPath(p string) bool {
+	return p != "" && len(p) <= 2048 && path.Clean(p) == p && !strings.HasPrefix(p, "/") && !strings.ContainsAny(p, "\\\x00\r\n") && p != "." && p != ".." && !strings.HasPrefix(p, "../")
+}
+func writeJSON(w http.ResponseWriter, status int, v any) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	json.NewEncoder(w).Encode(v)
+}
+func fail(w http.ResponseWriter, status int, code, action string) {
+	writeJSON(w, status, map[string]any{"error": map[string]string{"code": code, "action": action}})
+}
+func respondErr(w http.ResponseWriter, e error) {
+	switch {
+	case errors.Is(e, store.ErrOCIUnvalidated):
+		fail(w, 409, "oci_manifest_unvalidated", "Re-publish the exact retained manifests through a writer, children before parents, to validate their structure and descriptors; existing digest decisions remain in force.")
+	case errors.Is(e, store.ErrPythonUnvalidated):
+		fail(w, 409, "python_metadata_unvalidated", "Re-upload the exact retained distribution through a writer to validate its archive identity; do not approve unverified metadata.")
+	case errors.Is(e, store.ErrMetadataLimit):
+		fail(w, 503, "metadata_budget_exceeded", "Ask the operator to inspect native index size and the metadata budget; no partial index was returned.")
+	case errors.Is(e, store.ErrBusy):
+		w.Header().Set("Retry-After", "1")
+		fail(w, 503, "retrieval_in_progress", "Retry after one second; inspect the proxy cache operation for the path.")
+	case errors.Is(e, store.ErrLeaseLost):
+		fail(w, 409, "retrieval_superseded", "A newer retrieval or operator revalidation fenced this worker; retry the request.")
+	case errors.Is(e, upstream.ErrPath):
+		fail(w, 400, "ambiguous_upstream_path", "Use a canonical path without percent escapes, dot segments or URL controls.")
+	case errors.Is(e, errUpstreamIntegrity):
+		fail(w, 502, "upstream_integrity_failure", "Inspect the configured upstream checksum and quarantine the affected source.")
+	case errors.Is(e, errUpstream):
+		fail(w, 502, "upstream_unavailable", "Inspect the proxy cache status, configured source, credential reference and network allowlist.")
+	case errors.Is(e, store.ErrUnauthenticated):
+		w.Header().Set("WWW-Authenticate", `Basic realm="cratectl"`)
+		fail(w, 401, "unauthenticated", "Configure an unexpired, unrevoked tenant credential.")
+	case errors.Is(e, store.ErrNotFound):
+		fail(w, 404, "not_found", "Check the repository and package coordinate.")
+	case errors.Is(e, store.ErrDenied):
+		fail(w, 403, "policy_denied", "Check repository grants, the exact digest and current policy; group access also requires source access.")
+	case errors.Is(e, store.ErrConflict):
+		fail(w, 409, "conflict", "Use a new coordinate or idempotency key for different content.")
+	case errors.Is(e, blob.ErrLimit):
+		fail(w, 413, "object_limit", "Reduce object size or ask the operator to adjust the configured limit.")
+	case errors.Is(e, blob.ErrDigest), errors.Is(e, blob.ErrLength):
+		fail(w, 400, "upload_mismatch", "Retry with the declared length and digest of the exact uploaded bytes.")
+	case errors.Is(e, blob.ErrIntegrity):
+		fail(w, 503, "integrity_failure", "Restore the exact digest from a verified source and inspect storage health.")
+	default:
+		fail(w, 503, "dependency_failure", "Retry; ask the operator to inspect database and object storage health.")
+	}
+}
+func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("X-Content-Type-Options", "nosniff")
+	w.Header().Set("Cache-Control", "private, no-store")
+	w.Header().Set("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'")
+	if r.URL.Path == "/health/live" {
+		writeJSON(w, 200, map[string]string{"status": "live"})
+		return
+	}
+	if r.URL.Path == "/health/ready" {
+		ctx, cancel := context.WithTimeout(r.Context(), time.Second)
+		defer cancel()
+		if e := s.DB.Pool.Ping(ctx); e != nil {
+			respondErr(w, e)
+			return
+		}
+		writeJSON(w, 200, map[string]string{"status": "ready"})
+		return
+	}
+	if r.Method != "GET" && r.Method != "HEAD" && r.Method != "POST" && r.Method != "PUT" && r.Method != "PATCH" && r.Method != "DELETE" {
+		w.Header().Set("Allow", "GET, HEAD, POST, PUT, PATCH, DELETE")
+		fail(w, 405, "method_not_allowed", "Use a documented protocol method.")
+		return
+	}
+	select {
+	case s.slots <- struct{}{}:
+		defer func() { <-s.slots }()
+	default:
+		w.Header().Set("Retry-After", "1")
+		fail(w, 503, "transfer_saturated", "Retry after the admission queue has capacity.")
+		return
+	}
+	token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+	if _, p, ok := r.BasicAuth(); ok {
+		token = p
+	}
+	i, e := s.DB.Authenticate(r.Context(), token)
+	if e != nil {
+		w.Header().Set("WWW-Authenticate", `Basic realm="cratectl"`)
+		fail(w, 401, "unauthenticated", "Configure an unexpired tenant service token.")
+		return
+	}
+	if r.URL.Path == "/v2/" {
+		w.Header().Set("Docker-Distribution-Api-Version", "registry/2.0")
+		w.WriteHeader(200)
+		return
+	}
+	if strings.HasPrefix(r.URL.Path, "/api/v1/") {
+		s.management(w, r, i)
+		return
+	}
+	parts := strings.SplitN(strings.TrimPrefix(r.URL.Path, "/"), "/", 3)
+	if len(parts) < 2 || !store.Name.MatchString(parts[1]) {
+		fail(w, 404, "not_found", "Use the repository client configuration.")
+		return
+	}
+	repo, e := s.DB.Repository(r.Context(), i, parts[1])
+	if e != nil {
+		respondErr(w, e)
+		return
+	}
+	p := ""
+	if len(parts) == 3 {
+		p = parts[2]
+	}
+	prefix := map[string]string{"generic": "r", "maven": "r", "npm": "npm", "pypi": "pypi", "oci": "v2"}[repo.Format]
+	a := s.adapters[repo.Format]
+	if a == nil || parts[0] != prefix {
+		fail(w, 404, "format_mismatch", "Use the native endpoint for this repository format.")
+		return
+	}
+	if r.Method != "GET" && r.Method != "HEAD" && !i.CanWrite() {
+		fail(w, 403, "forbidden", "A repository writer or administrator token is required.")
+		return
+	}
+	if r.Method != "GET" && r.Method != "HEAD" {
+		if repo.Mode != "hosted" {
+			fail(w, 405, "read_only_repository", "Publish to a hosted source, then consume through the proxy/group endpoint.")
+			return
+		}
+		if e := s.DB.AuthorizeWrite(r.Context(), i, repo.Name); e != nil {
+			respondErr(w, e)
+			return
+		}
+	}
+
+	a.Serve(w, r, i, repo, p)
+}
+func readJSON(w http.ResponseWriter, r *http.Request, v any, limit int64) bool {
+	r.Body = http.MaxBytesReader(w, r.Body, limit)
+	d := json.NewDecoder(r.Body)
+	d.DisallowUnknownFields()
+	if e := d.Decode(v); e != nil {
+		fail(w, 400, "invalid_json", "Use a valid request within the documented size limit.")
+		return false
+	}
+	var rest any
+	if e := d.Decode(&rest); e != io.EOF {
+		fail(w, 400, "invalid_json", "Send one JSON object.")
+		return false
+	}
+	return true
+}
+func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Identity) {
+	p := strings.TrimPrefix(r.URL.Path, "/api/v1/")
+	if r.Method == "GET" {
+		switch {
+		case p == "repositories":
+			v, e := s.DB.Repositories(r.Context(), i)
+			if e != nil {
+				respondErr(w, e)
+				return
+			}
+			writeJSON(w, 200, map[string]any{"items": v, "limit": 1000})
+		case p == "audit":
+			if i.Role != "admin" {
+				fail(w, 403, "forbidden", "A tenant administrator token is required to inspect the full tenant audit journal.")
+				return
+			}
+			after, e := strconv.ParseInt(r.URL.Query().Get("after"), 10, 64)
+			if r.URL.Query().Get("after") == "" {
+				after = 0
+				e = nil
+			}
+			if e != nil || after < 0 {
+				fail(w, 400, "invalid_cursor", "Use a nonnegative sequence number.")
+				return
+			}
+			v, e := s.DB.Events(r.Context(), i, after)
+			if e != nil {
+				respondErr(w, e)
+				return
+			}
+			writeJSON(w, 200, map[string]any{"items": v, "limit": 1000})
+		case strings.HasPrefix(p, "repositories/") && strings.HasSuffix(p, "/artifacts"):
+			name := strings.TrimSuffix(strings.TrimPrefix(p, "repositories/"), "/artifacts")
+			if _, e := s.DB.Repository(r.Context(), i, name); e != nil {
+				respondErr(w, e)
+				return
+			}
+			v, e := s.DB.Artifacts(r.Context(), i, name, "", true)
+			if e != nil {
+				respondErr(w, e)
+				return
+			}
+			writeJSON(w, 200, map[string]any{"items": v, "limit": 1000})
+		case strings.HasPrefix(p, "repositories/") && strings.HasSuffix(p, "/cache"):
+			name := strings.TrimSuffix(strings.TrimPrefix(p, "repositories/"), "/cache")
+			path := r.URL.Query().Get("path")
+			if !upstream.SafePath(path) {
+				fail(w, 400, "invalid_path", "Choose one canonical package path in the path query.")
+				return
+			}
+			value, e := s.DB.Retrieval(r.Context(), i, name, path)
+			if e != nil {
+				respondErr(w, e)
+				return
+			}
+			writeJSON(w, 200, value)
+
+		default:
+			fail(w, 404, "not_found", "Use a documented management API.")
+		}
+		return
+	}
+	if i.Role != "admin" {
+		fail(w, 403, "forbidden", "A tenant administrator token is required.")
+		return
+	}
+	key := r.Header.Get("Idempotency-Key")
+	if len(key) < 8 || len(key) > 128 || strings.ContainsAny(key, "\r\n\x00") {
+		fail(w, 400, "idempotency_key_required", "Supply an 8–128 character Idempotency-Key; reuse it only for an identical request.")
+		return
+	}
+	data, e := io.ReadAll(http.MaxBytesReader(w, r.Body, 64<<10))
+	if e != nil {
+		fail(w, 413, "request_limit", "Send less than 64 KiB of management JSON.")
+		return
+	}
+	fp := crypt.Digest(append([]byte(r.Method+"\n"+r.URL.Path+"\n"), data...))
+	ctx := r.Context()
+	var fn func(pgx.Tx) (any, int, error)
+	kind := ""
+	if p == "repositories" && r.Method == "POST" {
+		var v store.Repository
+		if !decodeManagement(data, &v) || s.adapters[v.Format] == nil || store.ValidateRepository(&v) != nil {
+			fail(w, 400, "invalid_repository", "Use a valid name, access policy, supported format/mode and bounded source configuration.")
+			return
+		}
+		if v.Settings.Upstream != nil {
+			if _, e := s.credential(i.Tenant, *v.Settings.Upstream); e != nil {
+				fail(w, 400, "upstream_credential_authority", "Configure a tenant-scoped credential bound to this exact upstream authority, path prefix and authentication scheme.")
+				return
+			}
+		}
+		for _, source := range v.Settings.DownloadSources {
+			if _, e := s.credential(i.Tenant, source); e != nil {
+				fail(w, 400, "upstream_credential_authority", "Bind each download credential to its own tenant, approved URL and authentication scheme.")
+				return
+			}
+		}
+
+		kind = "repository.created"
+		fn = func(tx pgx.Tx) (any, int, error) { e := store.CreateRepository(ctx, tx, i, v); return v, 201, e }
+
+	} else {
+		bits := strings.Split(p, "/")
+		if len(bits) != 3 || bits[0] != "repositories" || !store.Name.MatchString(bits[1]) || r.Method != "PUT" {
+			fail(w, 404, "not_found", "Use a documented mutation endpoint.")
+			return
+		}
+		repo := bits[1]
+		switch bits[2] {
+		case "yanks":
+			var v struct {
+				Filename string `json:"filename"`
+				Yanked   *bool  `json:"yanked"`
+				Reason   string `json:"reason"`
+			}
+			if !decodeManagement(data, &v) || v.Yanked == nil || !ValidPath(v.Filename) || path.Base(v.Filename) != v.Filename || len(v.Reason) > 4096 {
+				fail(w, 400, "invalid_yank", "Choose one distribution basename, yanked boolean and bounded reason.")
+				return
+			}
+			kind = "python.yank.changed"
+			fn = func(tx pgx.Tx) (any, int, error) {
+				value, e := store.SetPythonYank(ctx, tx, i, repo, v.Filename, *v.Yanked, v.Reason)
+				return value, 200, e
+			}
+		case "cache":
+			var v struct {
+				Path string `json:"path"`
+			}
+			if !decodeManagement(data, &v) || !upstream.SafePath(v.Path) {
+				fail(w, 400, "invalid_path", "Choose one canonical proxy package path.")
+				return
+			}
+			kind = "proxy.cache.expired"
+			fn = func(tx pgx.Tx) (any, int, error) {
+				value, e := store.InvalidateRetrieval(ctx, tx, i, repo, v.Path)
+				return value, 200, e
+			}
+
+		case "grants":
+			var v struct {
+				Actor string `json:"actor"`
+				Read  bool   `json:"read"`
+				Write bool   `json:"write"`
+			}
+			if !decodeManagement(data, &v) || !store.Name.MatchString(v.Actor) || (v.Write && !v.Read) {
+				fail(w, 400, "invalid_grant", "Choose a valid actor; write authority also requires read authority.")
+				return
+			}
+			kind = "repository.grant.changed"
+			fn = func(tx pgx.Tx) (any, int, error) {
+				if _, e := tx.Exec(ctx, `INSERT INTO cratectl.repository_grants(tenant,repository,actor,can_read,can_write) VALUES($1,$2,$3,$4,$5) ON CONFLICT(tenant,repository,actor) DO UPDATE SET can_read=excluded.can_read,can_write=excluded.can_write`, i.Tenant, repo, v.Actor, v.Read, v.Write); e != nil {
+					return nil, 0, e
+				}
+				return map[string]any{"repository": repo, "actor": v.Actor, "read": v.Read, "write": v.Write}, 200, nil
+			}
+
+		case "policy":
+			var v struct {
+				RequireReview *bool `json:"require_review"`
+			}
+			if !decodeManagement(data, &v) || v.RequireReview == nil {
+				fail(w, 400, "invalid_policy", "Set require_review explicitly.")
+				return
+			}
+			kind = "policy.changed"
+			fn = func(tx pgx.Tx) (any, int, error) {
+				tag, e := tx.Exec(ctx, `UPDATE cratectl.repositories SET require_review=$1 WHERE name=$2`, *v.RequireReview, repo)
+				if e != nil {
+					return nil, 0, e
+				}
+				if tag.RowsAffected() != 1 {
+					return nil, 0, store.ErrNotFound
+				}
+				return map[string]any{"repository": repo, "require_review": *v.RequireReview}, 200, nil
+			}
+		case "decisions":
+			var v struct {
+				Path     string `json:"path"`
+				Digest   string `json:"digest"`
+				Decision string `json:"decision"`
+			}
+			if !decodeManagement(data, &v) || !ValidPath(v.Path) || len(v.Digest) != 64 || (v.Decision != "allowed" && v.Decision != "denied") {
+				fail(w, 400, "invalid_decision", "Choose an exact path, SHA-256 digest and allowed/denied manual decision.")
+				return
+			}
+			kind = "artifact.manual-decision"
+			fn = func(tx pgx.Tx) (any, int, error) {
+				value, e := store.Decide(ctx, tx, i, repo, v.Path, v.Digest, v.Decision)
+				return value, 200, e
+			}
+
+		default:
+			fail(w, 404, "not_found", "Use a documented mutation endpoint.")
+			return
+		}
+	}
+	result, e := s.DB.Mutate(ctx, i, key, fp, kind, fn)
+	if e != nil {
+		respondErr(w, e)
+		return
+	}
+	if result.Replay {
+		w.Header().Set("Idempotent-Replayed", "true")
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(result.Status)
+	w.Write(result.Body)
+}
+func (s *Server) serveArtifact(w http.ResponseWriter, r *http.Request, i store.Identity, repo, p string) {
+	repository, e := s.DB.Repository(r.Context(), i, repo)
+	if e != nil {
+		respondErr(w, e)
+		return
+	}
+	resolved, e := s.resolve(r.Context(), i, repository, p, forceRefresh(r))
+	if e != nil {
+		respondErr(w, e)
+		return
+	}
+	s.serveResolvedArtifact(w, r, i, resolved)
+}
+func (s *Server) serveResolvedArtifact(w http.ResponseWriter, r *http.Request, i store.Identity, resolved resolvedArtifact) {
+	a := resolved.artifact
+	p := a.Path
+	f, e := s.Blobs.OpenVerified(r.Context(), i.Tenant, a.Digest, a.Size)
+	if e != nil {
+		respondErr(w, e)
+		return
+	}
+	defer f.Close()
+	// Hashing a large object may take time. Re-check policy and a mutable
+	// reference immediately before committing response headers. Authorization
+	// admits this transfer; later policy changes affect new requests.
+	current, e := s.guardResolved(r.Context(), i, resolved)
+	if e != nil {
+		respondErr(w, e)
+		return
+	}
+	if current.Digest != a.Digest {
+		respondErr(w, store.ErrConflict)
+		return
+	}
+	if resolved.source.Format == "oci" {
+		_, operation, _ := parseOCIPath(a.Path)
+		if operation == "manifests" && !ociAcceptsMedia(r.Header.Get("Accept"), a.MediaType) {
+			fail(w, 406, "MANIFEST_UNSUPPORTED", "Accept the stored OCI/Docker manifest media type; digest-addressed bytes are served unchanged.")
+			return
+		}
+		w.Header().Set("Docker-Content-Digest", "sha256:"+a.Digest)
+	}
+	st, e := f.Stat()
+	if e != nil || st.Size() != a.Size {
+		fail(w, 503, "integrity_failure", "Restore the object from a verified source; do not approve missing bytes.")
+		return
+	}
+	if resolved.cache != "" {
+		w.Header().Set("X-Cratectl-Cache", resolved.cache)
+	}
+	w.Header().Set("X-Cratectl-Repository", resolved.source.Name)
+	w.Header().Set("ETag", `"sha256:`+a.Digest+`"`)
+	w.Header().Set("Content-Type", a.MediaType)
+	w.Header().Set("X-Checksum-Sha256", a.Digest)
+	http.ServeContent(w, r, path.Base(p), a.Created, f)
+}
+func (s *Server) raw(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, p string) {
+	if !ValidPath(p) {
+		fail(w, 400, "invalid_path", "Use a relative coordinate without dot segments or control characters.")
+		return
+	}
+	if repo.Format == "maven" {
+		for _, algorithm := range []string{"sha1", "sha256", "sha512", "md5"} {
+			if strings.HasSuffix(p, "."+algorithm) {
+				parent := strings.TrimSuffix(p, "."+algorithm)
+				var a store.Artifact
+				var resolved resolvedArtifact
+				var e error
+				if r.Method == "PUT" {
+					a, e = s.DB.ArtifactForPublication(r.Context(), i, repo.Name, parent)
+				} else {
+					resolved, e = s.resolve(r.Context(), i, repo, parent, forceRefresh(r))
+					a = resolved.artifact
+				}
+				if e != nil {
+					respondErr(w, e)
+					return
+				}
+				file, e := s.Blobs.OpenVerified(r.Context(), i.Tenant, a.Digest, a.Size)
+				if e != nil {
+					respondErr(w, e)
+					return
+				}
+				defer file.Close()
+				h := crypt.CompatibilityHash(algorithm)
+				if _, e = io.Copy(h, file); e != nil {
+					respondErr(w, e)
+					return
+				}
+				checksum := hex.EncodeToString(h.Sum(nil))
+				if r.Method == "GET" || r.Method == "HEAD" {
+					if _, e = s.guardResolved(r.Context(), i, resolved); e != nil {
+						respondErr(w, e)
+						return
+					}
+					if resolved.cache != "" {
+						w.Header().Set("X-Cratectl-Cache", resolved.cache)
+					}
+					w.Header().Set("Content-Type", "text/plain")
+					w.Header().Set("ETag", `"sha256:`+a.Digest+`-`+algorithm+`"`)
+					http.ServeContent(w, r, path.Base(p), a.Created, strings.NewReader(checksum))
+					return
+				}
+				if r.Method != "PUT" {
+					fail(w, 405, "method_not_allowed", "Publish checksum files with PUT.")
+					return
+				}
+				data, e := io.ReadAll(http.MaxBytesReader(w, r.Body, 1024))
+				if e != nil || strings.TrimSpace(string(data)) != checksum {
+					fail(w, 400, "checksum_mismatch", "The checksum must match the exact published parent bytes.")
+					return
+				}
+				w.WriteHeader(201)
+				return
+			}
+		}
+	}
+
+	if r.Method == "GET" || r.Method == "HEAD" {
+		s.serveArtifact(w, r, i, repo.Name, p)
+		return
+	}
+	if r.Method != "PUT" {
+		fail(w, 405, "method_not_allowed", "Publish with PUT.")
+		return
+	}
+	obj, e := s.Blobs.Put(r.Context(), i.Tenant, r.Body, r.Header.Get("X-Checksum-Sha256"), r.ContentLength)
+	if e != nil {
+		respondErr(w, e)
+		return
+	}
+	a := store.Artifact{Path: p, Digest: obj.Digest, Size: obj.Size, MediaType: "application/octet-stream"}
+	if repo.Format == "maven" && path.Base(p) == "maven-metadata.xml" {
+		e = s.DB.ReplaceMetadata(r.Context(), i, repo.Name, a)
+	} else {
+		e = s.DB.Publish(r.Context(), i, repo.Name, []store.Artifact{a})
+	}
+	if e != nil {
+		respondErr(w, e)
+		return
+	}
+	writeJSON(w, 201, obj)
+}
+func (s *Server) url(p string) string { return s.PublicURL + p }
+func segment(v string) string         { return url.PathEscape(v) }
+
+func decodeManagement(data []byte, value any) bool {
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	if decoder.Decode(value) != nil {
+		return false
+	}
+	var rest any
+	return decoder.Decode(&rest) == io.EOF
+}

@@ -1,0 +1,138 @@
+{
+  "run": "98d7894a95",
+  "candidate": "d420ac53eacfd90ace48e9249f87b419fb70465c",
+  "source_dirty": false,
+  "artifact_digests": {
+    "bin/cratectld": "ff7628cee9bfb09453de60fdf557b53104c64211265787d42cb8cb20e0d7634b",
+    "bin/cratectl": "6fca2546ff3f1517d612c079457048f9cfe75dacb5df7a951e130a31534b27cb"
+  },
+  "host": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "topology": "macOS arm64 server, PostgreSQL 16.15 container, filesystem bytes, HTTP loopback only",
+  "checks": [
+    "admin: create oci repository containers"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-98d7894a95-a",
+        "--actor",
+        "admin",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/admin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-98d7894a95-a",
+        "--actor",
+        "reader",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/reader.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-98d7894a95-b",
+        "--actor",
+        "other",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/other.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-98d7894a95-a",
+        "--actor",
+        "expired",
+        "--role",
+        "reader",
+        "--expires-in",
+        "1ms",
+        "--token-file",
+        "PRIVATE/expired.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-98d7894a95-a",
+        "--actor",
+        "revocable",
+        "--role",
+        "reader",
+        "--expires-in",
+        "1h",
+        "--token-file",
+        "PRIVATE/revocable.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "login",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci/auth.json",
+        "--username",
+        "token",
+        "--password-stdin",
+        "127.0.0.1:38443"
+      ],
+      "exit": 0,
+      "output": "Login Succeeded\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci/auth.json",
+        "127.0.0.1:38443/containers/proof:v1",
+        "hello.txt:text/plain",
+        "dependency.txt:text/plain"
+      ],
+      "exit": 1,
+      "output": "Preparing hello.txt\nPreparing dependency.txt\nUploading 3ac3598da883 dependency.txt\nUploading 88fe3f045edf hello.txt\nUploading 44136fa355b3 application/vnd.oci.empty.v1+json\nUploaded  3ac3598da883 dependency.txt\nUploaded  88fe3f045edf hello.txt\nUploaded  44136fa355b3 application/vnd.oci.empty.v1+json\nUploading deadcc04f32f application/vnd.oci.image.manifest.v1+json\nError response from registry: PUT \"http://127.0.0.1:38443/v2/containers/proof/manifests/v1\": response status code 403: Forbidden\n"
+    }
+  ],
+  "limitations": [
+    "Not full format conformance or parity.",
+    "No proxy/group/migration/HA/scale/scanner qualification.",
+    "Client fixture code executes only in the explicitly owned test consumer.",
+    "No claim of a separate-machine install."
+  ],
+  "status": "failed",
+  "failure": "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras exited 1: Preparing hello.txt\nPreparing dependency.txt\nUploading 3ac3598da883 dependency.txt\nUploading 88fe3f045edf hello.txt\nUploading 44136fa355b3 application/vnd.oci.empty.v1+json\nUploaded  3ac3598da883 dependency.txt\nUploaded  88fe3f045edf hello.txt\nUploaded  44136fa355b3 application/vnd.oci.empty.v1+json\nUploading deadcc04f32f application/vnd.oci.image.manifest.v1+json\nError response from registry: PUT \"http://127.0.0.1:38443/v2/containers/proof/manifests/v1\": response status code 403: Forbidden\n",
+  "input_digests": {}
+}

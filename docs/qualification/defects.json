@@ -1,0 +1,120 @@
+{
+  "defects": [
+    {
+      "id": "DEFECT.0001",
+      "summary": "Same-length corrupted filesystem object was served",
+      "first_failure": "evidence/2026-10-28/conformance-9b78190efb.json",
+      "state": "repaired and replayed",
+      "repair": "Verify the stored SHA-256 before serving bytes, with a fixed-size read buffer.",
+      "limits": "Adds a full disk read; transfer performance is not qualified.",
+      "replay": "evidence/2026-10-28/conformance-fc7ad95c82.json",
+      "candidate": "2526db96522defe83cc2fa06a0e260aab23cad7e"
+    },
+    {
+      "id": "DEFECT.0002",
+      "summary": "Scoped npm publication rejected a stock-client attachment name",
+      "first_failure": "evidence/2026-10-28/conformance-614a940664.json",
+      "state": "repaired and replayed",
+      "repair": "Use the full scoped package name in the native publish attachment identity, matching npm 11 libnpmpublish.",
+      "replay": "evidence/2026-10-28/conformance-fc7ad95c82.json",
+      "candidate": "2526db96522defe83cc2fa06a0e260aab23cad7e"
+    },
+    {
+      "id": "DEFECT.0003",
+      "summary": "PostgreSQL driver selected vulnerable transitive x/text release",
+      "first_failure": "evidence/2026-10-28/govulncheck-first.json",
+      "state": "repaired and rescanned",
+      "repair": "Upgraded golang.org/x/text to v0.43.0; two reachable findings removed.",
+      "replay": "evidence/2026-10-28/govulncheck.json",
+      "candidate": "2526db96522defe83cc2fa06a0e260aab23cad7e"
+    },
+    {
+      "id": "DEFECT.0004",
+      "summary": "OCI native manifest publication could not complete intake into a review-required repository",
+      "first_failure": "evidence/2026-10-28/conformance-98d7894a95.json",
+      "state": "repaired and replayed",
+      "repair": "Separate durable intake-reference checks from serving approval; retain graph references and enforce policy recursively on manifests, tags and inventory.",
+      "limits": "Graph depth and unique members are bounded at 32 and 4096; legacy manifests without graph metadata fail closed pending repair/re-import.",
+      "replay": "evidence/2026-10-28/conformance-fc7ad95c82.json",
+      "candidate": "2526db96522defe83cc2fa06a0e260aab23cad7e"
+    },
+    {
+      "id": "DEFECT.0005",
+      "summary": "Initial proxy credential references could cross tenant scope and lacked destination binding",
+      "first_failure": "evidence/2026-10-28/conformance-8bd87defb4.json",
+      "state": "repaired and replayed",
+      "repair": "Key private credentials by tenant/ref and bind each to an authentication scheme plus approved URL authority/base path; enforce an operator private-network ceiling independently from repository CIDRs.",
+      "limits": "Private bindings currently reload on server restart; live rotation remains open.",
+      "replay": "evidence/2026-10-28/conformance-732d2ed67e.json",
+      "candidate": "7f0ce80f9fc8b5f55200495331f9f1a61ba521cc"
+    },
+    {
+      "id": "DEFECT.0006",
+      "summary": "A denied proxy digest remained available through another path alias in the same repository",
+      "first_failure": "evidence/2026-10-28/conformance-2d02a17301.json",
+      "state": "repaired and replayed",
+      "repair": "Persist canonical tenant/repository/digest decisions and join them for reads, inventory, OCI graph policy and npm metadata. Existing and future aliases inherit the decision.",
+      "limits": "Manual decisions govern subsequent admitted read snapshots; complete versioned policy/intelligence and in-flight revocation remain open.",
+      "replay": "evidence/2026-10-28/conformance-122db557f4.json",
+      "additional_regression": "evidence/2026-10-28/npm-postgres-race.txt",
+      "candidate": "a848b9d7e3bc12b99d5269ed4e7669bf7e055e2c"
+    },
+    {
+      "id": "DEFECT.0007",
+      "summary": "npm metadata budget SQL called octet_length on JSONB and caused native-client 503 retries",
+      "first_failure": "evidence/2026-10-28/conformance-0f33c3a756.json",
+      "state": "repaired and replayed",
+      "repair": "Measure the JSONB text representation and verify budget handling through real PostgreSQL and stock npm tag/install journeys.",
+      "replay": "evidence/2026-10-28/conformance-122db557f4.json",
+      "candidate": "a848b9d7e3bc12b99d5269ed4e7669bf7e055e2c"
+    },
+    {
+      "id": "DEFECT.0008",
+      "summary": "A clean-worktree native record could name a new commit while testing binaries built from the preceding dirty revision",
+      "first_failure": "evidence/2026-10-28/build-identity-first.json",
+      "state": "repaired and replayed",
+      "repair": "Capture binary-embedded Git/build settings and require exact clean source identity in qualifying native runs; rebuild after the source commit.",
+      "limits": "Earlier native assertions remain observations, but their clean-build identity is not inferred from Git HEAD. Use the strict named replay.",
+      "replay": "evidence/2026-10-28/conformance-122db557f4.json",
+      "candidate": "a848b9d7e3bc12b99d5269ed4e7669bf7e055e2c"
+    },
+    {
+      "id": "DEFECT.0009",
+      "summary": "Unquoted commas in OpenAPI flow-map response descriptions created unintended response properties",
+      "first_failure": "evidence/2026-10-28/api-response-descriptions-first.json",
+      "first_failure_kind": "Reproduced from retained immutable source after the initial observation",
+      "state": "repaired and replayed",
+      "repair": "Quote response descriptions and parse all 28 responses, checking that the complete descriptions remain strings and no unintended keys appear.",
+      "replay": "evidence/2026-10-28/api-response-descriptions-check.json",
+      "candidate": "a848b9d7e3bc12b99d5269ed4e7669bf7e055e2c"
+    },
+    {
+      "id": "DEFECT.0010",
+      "summary": "Python publication accepted multipart identity that disagreed with the embedded wheel metadata",
+      "first_failure": "evidence/2026-10-28/conformance-de53340d13.json",
+      "state": "repaired and replayed",
+      "repair": "Validate bounded archive filename/Name/Version/Requires-Python against exact bytes; derive stored core metadata from the archive. Legacy unvalidated records fail closed and can be enriched by a same-byte writer replay.",
+      "replay": "evidence/2026-10-28/conformance-7fecdeccdf.json",
+      "candidate": "f2c363d4e9fafb54f551002076e269982f40a3c1"
+    },
+    {
+      "id": "DEFECT.0011",
+      "summary": "Python HTML index tokenizer consumption lost file anchor text, producing an empty proxy index",
+      "first_failure": "evidence/2026-10-28/conformance-a03fd708cd.json",
+      "state": "repaired and replayed",
+      "repair": "Read each consuming tokenizer text token once; retain equivalent HTML/JSON binding regression and replay stock pip against an HTML-only preference.",
+      "replay": "evidence/2026-10-28/conformance-7fecdeccdf.json",
+      "candidate": "f2c363d4e9fafb54f551002076e269982f40a3c1"
+    },
+    {
+      "id": "DEFECT.0012",
+      "summary": "OCI hosted intake accepted an image manifest without its required configuration descriptor",
+      "first_failure": "evidence/2026-10-28/conformance-dc4dbf6f18.json",
+      "state": "repaired and replayed",
+      "repair": "Validate exact manifest structure and descriptors, then check the durable graph and current policy in the publication transaction. Legacy unvalidated manifests fail closed until same-byte writer re-import.",
+      "limits": "SHA-256 and four OCI/Docker media types; complete standards/parser, upstream, lifecycle and production cases remain open.",
+      "replay": "evidence/2026-10-28/conformance-2cbe20c9cf.json",
+      "candidate": "68297a128123820642d058529476c7037a3be175"
+    }
+  ]
+}

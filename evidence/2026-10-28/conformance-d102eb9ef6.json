@@ -1,0 +1,322 @@
+{
+  "run": "d102eb9ef6",
+  "candidate": "09b0433d5b2d1fbbfad6279ae1dec8a0c041d6b4",
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "source_dirty": true,
+  "artifact_digests": {
+    "bin/cratectld": "6c7b8dded9d8ae3fb87fba353d283c9e3814ae97efb46f56854cc13bb7ed8bd2",
+    "bin/cratectl": "e9ee18b9382c31286de2bb409551216ebd4bb3dcc629af832894242a9c450794"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "09b0433d5b2d1fbbfad6279ae1dec8a0c041d6b4",
+        "vcs.time": "2026-10-28T18:57:05Z",
+        "vcs.modified": "true"
+      }
+    },
+    "bin/cratectl": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "09b0433d5b2d1fbbfad6279ae1dec8a0c041d6b4",
+        "vcs.time": "2026-10-28T18:57:05Z",
+        "vcs.modified": "true"
+      }
+    }
+  },
+  "host": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "database_profile": "native",
+  "topology": "macOS arm64 server, PostgreSQL 16.15 native, filesystem bytes, HTTP loopback only",
+  "checks": [
+    "other: create npm repository up-npm",
+    "admin: create npm repository npm-remote",
+    "stock npm installs scoped proxy package and dependency",
+    "npm proxy rewrites source URL to immutable local binding",
+    "npm proxy pinned download supports ranges",
+    "npm proxy blocks foreign tenant coordinates",
+    "npm proxy is read only",
+    "stock npm proxy lockfile survives restart",
+    "npm proxy metadata refresh observes new native version",
+    "old npm lockfile binding retains exact bytes after metadata refresh",
+    "admin: create npm repository npm-local",
+    "admin: create npm repository npm-combined",
+    "npm group unions versions with configured tag precedence",
+    "stock npm consumes hosted version and proxied dependency through group",
+    "npm namespace owner prevents public fallback",
+    "npm denied version collision cannot fall through to later source",
+    "npm group rechecks underlying grants for metadata and pinned downloads",
+    "npm proxy denial hides metadata and blocks locked bytes",
+    "admin: create npm repository npm-reviewed",
+    "npm review-required proxy hides unfetched package versions",
+    "npm conventional tarball route performs quarantined intake",
+    "npm reviewed bytes become visible after explicit approval"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-d102eb9ef6-a",
+        "--actor",
+        "admin",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/admin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-d102eb9ef6-a",
+        "--actor",
+        "reader",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/reader.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-d102eb9ef6-b",
+        "--actor",
+        "other",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/other.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-d102eb9ef6-b",
+        "--actor",
+        "origin",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/origin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-d102eb9ef6-a",
+        "--actor",
+        "expired",
+        "--role",
+        "reader",
+        "--expires-in",
+        "1ms",
+        "--token-file",
+        "PRIVATE/expired.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-d102eb9ef6-a",
+        "--actor",
+        "revocable",
+        "--role",
+        "reader",
+        "--expires-in",
+        "1h",
+        "--token-file",
+        "PRIVATE/revocable.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  cratectl-remote-dep@1.0.0\nnpm notice Tarball Contents\nnpm notice 20B index.js\nnpm notice 134B package.json\nnpm notice Tarball Details\nnpm notice name: cratectl-remote-dep\nnpm notice version: 1.0.0\nnpm notice filename: cratectl-remote-dep-1.0.0.tgz\nnpm notice package size: 244 B\nnpm notice unpacked size: 154 B\nnpm notice shasum: 9d67f98a5062436de4641768c4641e55de1ceced\nnpm notice integrity: sha512-sNoNS4BcDkosR[...]fX8lBHFWpL/nw==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/up-npm/ with tag latest and public access\n+ cratectl-remote-dep@1.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  @crproxy/app@1.0.0\nnpm notice Tarball Contents\nnpm notice 20B index.js\nnpm notice 177B package.json\nnpm notice Tarball Details\nnpm notice name: @crproxy/app\nnpm notice version: 1.0.0\nnpm notice filename: crproxy-app-1.0.0.tgz\nnpm notice package size: 264 B\nnpm notice unpacked size: 197 B\nnpm notice shasum: 92df6819e633823b01b3c59399536257f3012d43\nnpm notice integrity: sha512-x0/NpYfGys8Xv[...]feYHo+oF2URPA==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/up-npm/ with tag latest and public access\n+ @crproxy/app@1.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  @crproxy/app@2.0.0\nnpm notice Tarball Contents\nnpm notice 20B index.js\nnpm notice 177B package.json\nnpm notice Tarball Details\nnpm notice name: @crproxy/app\nnpm notice version: 2.0.0\nnpm notice filename: crproxy-app-2.0.0.tgz\nnpm notice package size: 267 B\nnpm notice unpacked size: 197 B\nnpm notice shasum: 314a7492b98d5a7af395a6fc5e08e66cdd149b08\nnpm notice integrity: sha512-yFqB95L19b+AA[...]w/1VLAPaCm3ng==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/up-npm/ with tag latest and public access\n+ @crproxy/app@2.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  @crprivate/owned@1.0.0\nnpm notice Tarball Contents\nnpm notice 20B index.js\nnpm notice 181B package.json\nnpm notice Tarball Details\nnpm notice name: @crprivate/owned\nnpm notice version: 1.0.0\nnpm notice filename: crprivate-owned-1.0.0.tgz\nnpm notice package size: 269 B\nnpm notice unpacked size: 201 B\nnpm notice shasum: 2ad02e7ef5b9ee2e1576765120fc804d407ee71d\nnpm notice integrity: sha512-pXF7NG9X4HTIy[...]edBqBCnBdT4gw==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/up-npm/ with tag latest and public access\n+ @crprivate/owned@1.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "install",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "@crproxy/app@2.0.0"
+      ],
+      "exit": 0,
+      "output": "\nadded 2 packages in 335ms\n"
+    },
+    {
+      "argv": [
+        "node",
+        "-e",
+        "if(require(\"@crproxy/app\")!==43 || require(\"cratectl-remote-dep\")!==41)process.exit(1)"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "npm",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "--cache",
+        "PRIVATE/npm-proxy/restart-cache"
+      ],
+      "exit": 0,
+      "output": "\nadded 2 packages in 188ms\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  @crproxy/app@3.0.0\nnpm notice Tarball Contents\nnpm notice 20B index.js\nnpm notice 177B package.json\nnpm notice Tarball Details\nnpm notice name: @crproxy/app\nnpm notice version: 3.0.0\nnpm notice filename: crproxy-app-3.0.0.tgz\nnpm notice package size: 266 B\nnpm notice unpacked size: 197 B\nnpm notice shasum: 587564a1656eaf3c77b8ff1acf55345e5c5a487d\nnpm notice integrity: sha512-VuVXpSpx7S+06[...]y6GeXkUKCXgig==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/up-npm/ with tag latest and public access\n+ @crproxy/app@3.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  @crproxy/app@1.0.0\nnpm notice Tarball Contents\nnpm notice 21B index.js\nnpm notice 177B package.json\nnpm notice Tarball Details\nnpm notice name: @crproxy/app\nnpm notice version: 1.0.0\nnpm notice filename: crproxy-app-1.0.0.tgz\nnpm notice package size: 265 B\nnpm notice unpacked size: 198 B\nnpm notice shasum: bfe1b251096ed1b16ea12609360f80f6e26edd50\nnpm notice integrity: sha512-wZZSvYc6eC88/[...]3F7VWxZJ94gkg==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/npm-local/ with tag latest and public access\n+ @crproxy/app@1.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  @crproxy/app@4.0.0\nnpm notice Tarball Contents\nnpm notice 21B index.js\nnpm notice 177B package.json\nnpm notice Tarball Details\nnpm notice name: @crproxy/app\nnpm notice version: 4.0.0\nnpm notice filename: crproxy-app-4.0.0.tgz\nnpm notice package size: 267 B\nnpm notice unpacked size: 198 B\nnpm notice shasum: 8993faafe82f93d7250617739c5698d10420195d\nnpm notice integrity: sha512-mCrJtifGkAC+M[...]4b6NH2MWN7ysw==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/npm-local/ with tag latest and public access\n+ @crproxy/app@4.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "install",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "@crproxy/app@latest"
+      ],
+      "exit": 0,
+      "output": "\nadded 2 packages in 223ms\n"
+    },
+    {
+      "argv": [
+        "node",
+        "-e",
+        "if(require(\"@crproxy/app\")!==101 || require(\"cratectl-remote-dep\")!==41)process.exit(1)"
+      ],
+      "exit": 0,
+      "output": ""
+    }
+  ],
+  "limitations": [
+    "Not full format conformance or parity.",
+    "Proxy/group proof covers generic, Maven and early npm journeys; no complete mode, migration, HA, scale or scanner qualification.",
+    "Client fixture code executes only in the explicitly owned test consumer.",
+    "No claim of a separate-machine install."
+  ],
+  "build_source_matches_candidate": false,
+  "status": "passed",
+  "input_digests": {}
+}

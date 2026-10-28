@@ -1,0 +1,25 @@
+{
+  "owned_containers": [
+    {
+      "name": "cratectl-dev-postgres",
+      "id": "f62ef806d083425d02cfaa1169e8f980d375b3a4db3ef8ad5fdaf7cd6b3febb8",
+      "image": "postgres@sha256:721873c34ceb9f8d8fc265984940dc982404c105f19ad51be9fdc5970a6080ea",
+      "port": "127.0.0.1:35432",
+      "volume": "cratectl-dev-postgres-data",
+      "limits": {
+        "memory_mib": 512,
+        "cpus": 2,
+        "pids": 128
+      },
+      "handoff_state": "stopped; retained volume"
+    }
+  ],
+  "transient_servers": "Conformance starts and terminates only its own PIDs on 127.0.0.1:38443.",
+  "temporary_clients": "Maven container credential test rejected; native macOS client used instead. Offline scanner containers removed automatically.",
+  "retained_local_state": [
+    ".private/ credentials, fixtures and object stores",
+    ".cache/ toolchains, clients, module cache and scanner data"
+  ],
+  "cleanup": "Stop only cratectl-dev-postgres at handoff; retain its volume and local evidence.",
+  "proxy_network_fixture": "The owned server proxies its own protocol listener with explicitly scoped fixture tokens, per-tenant storage and loopback network approval. No additional persistent listener was created."
+}

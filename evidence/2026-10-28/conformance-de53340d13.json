@@ -1,0 +1,248 @@
+{
+  "run": "de53340d13",
+  "candidate": "b249accec2d9967120022b7e1859a1bd311cb4e7",
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "source_dirty": true,
+  "artifact_digests": {
+    "bin/cratectld": "8a85032eda81640639d990ea7f47219398ed95b5d21c4cfb73c879b2bfa835d0",
+    "bin/cratectl": "fe096a4153b09f727d2c3cdbce2ac4eb173ca7497b4744e530203fcc9277303c"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "6b5da7702ffa9357aac61bec40110e355843430b",
+        "vcs.time": "2026-10-28T19:36:51Z",
+        "vcs.modified": "false"
+      }
+    },
+    "bin/cratectl": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "6b5da7702ffa9357aac61bec40110e355843430b",
+        "vcs.time": "2026-10-28T19:36:51Z",
+        "vcs.modified": "false"
+      }
+    }
+  },
+  "host": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "database_profile": "native",
+  "topology": "macOS arm64 server, PostgreSQL 16.15 native, filesystem bytes, HTTP loopback only",
+  "checks": [
+    "admin: create pypi repository py",
+    "stock pip installs package and dependency from twine upload",
+    "Python normalized name resolution"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-de53340d13-a",
+        "--actor",
+        "admin",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/admin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-de53340d13-a",
+        "--actor",
+        "reader",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/reader.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-de53340d13-b",
+        "--actor",
+        "other",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/other.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-de53340d13-b",
+        "--actor",
+        "origin",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/origin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-de53340d13-b",
+        "--actor",
+        "npm-meta-origin",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/npm-meta-origin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-de53340d13-b",
+        "--actor",
+        "npm-files-origin",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/npm-files-origin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-de53340d13-a",
+        "--actor",
+        "expired",
+        "--role",
+        "reader",
+        "--expires-in",
+        "1ms",
+        "--token-file",
+        "PRIVATE/expired.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-de53340d13-a",
+        "--actor",
+        "revocable",
+        "--role",
+        "reader",
+        "--expires-in",
+        "1h",
+        "--token-file",
+        "PRIVATE/revocable.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "twine",
+        "upload",
+        "--non-interactive",
+        "--repository-url",
+        "http://127.0.0.1:38443/pypi/py/",
+        "PRIVATE/wheels/cratectl_proof_dep-1.0.0-py3-none-any.whl",
+        "PRIVATE/wheels/cratectl_proof_app-1.0.0-py3-none-any.whl"
+      ],
+      "exit": 0,
+      "output": "Uploading distributions to http://127.0.0.1:38443/pypi/py/\nUploading cratectl_proof_dep-1.0.0-py3-none-any.whl\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.5/2.5 kB \u2022 00:00 \u2022 ?\n\nUploading cratectl_proof_app-1.0.0-py3-none-any.whl\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.7/2.7 kB \u2022 00:00 \u2022 ?\n\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-cache-dir",
+        "--index-url",
+        "http://127.0.0.1:38443/pypi/py/simple/",
+        "--target",
+        "PRIVATE/python-install",
+        "cratectl-proof-app==1.0.0"
+      ],
+      "exit": 0,
+      "output": "Looking in indexes: http://127.0.0.1:38443/pypi/py/simple/\nCollecting cratectl-proof-app==1.0.0\n  Downloading cratectl_proof_app-1.0.0-py3-none-any.whl (1.1 kB)\nCollecting cratectl-proof-dep==1.0.0 (from cratectl-proof-app==1.0.0)\n  Downloading cratectl_proof_dep-1.0.0-py3-none-any.whl (1.1 kB)\nInstalling collected packages: cratectl-proof-dep, cratectl-proof-app\n\nSuccessfully installed cratectl-proof-app-1.0.0 cratectl-proof-dep-1.0.0\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-c",
+        "import sys;sys.path.insert(0,'PRIVATE/python-install');from cratectl_proof_app import value;assert value==42"
+      ],
+      "exit": 0,
+      "output": ""
+    }
+  ],
+  "limitations": [
+    "Not full format conformance or parity.",
+    "Proxy/group proof covers generic, Maven and early npm journeys; no complete mode, migration, HA, scale or scanner qualification.",
+    "Client fixture code executes only in the explicitly owned test consumer.",
+    "No claim of a separate-machine install."
+  ],
+  "build_source_matches_candidate": false,
+  "status": "failed",
+  "failure": "Python publication metadata must match immutable archive identity",
+  "input_digests": {
+    "wheels/cratectl_proof_dep-1.0.0-py3-none-any.whl": "076795feff641b545ebd3a849de64d10c01205807ce6e136f1727ce107028361",
+    "wheels/cratectl_proof_app-1.0.0-py3-none-any.whl": "7b24926f5b80b4f234708b10fb43b60dc37033373c4c6b9235a040462fc97380",
+    "wheels/cratectl_binding_probe-1.0.0-py3-none-any.whl": "72cf26bf7a9d1a58b1e7ef398760b5458bc7798118016332f8f63835593fc2c8"
+  }
+}

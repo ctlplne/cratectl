@@ -1,0 +1,180 @@
+{
+  "run": "faa176c299",
+  "candidate": "d420ac53eacfd90ace48e9249f87b419fb70465c",
+  "source_dirty": true,
+  "artifact_digests": {
+    "bin/cratectld": "d0976a4d9abe170e8fa2e1b2dc27e309b3779d1fb7b15e75583ccaed63a1148a",
+    "bin/cratectl": "12f8e32212c8f65eaa9331521f26fc9ed94867edc9215b37c64824b91fbb5c0f"
+  },
+  "host": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "topology": "macOS arm64 server, PostgreSQL 16.15 container, filesystem bytes, HTTP loopback only",
+  "checks": [
+    "admin: create oci repository containers",
+    "OCI intake remains quarantined after native publication",
+    "manual OCI graph member approval",
+    "manual OCI graph member approval",
+    "manual OCI graph member approval",
+    "manual OCI graph member approval",
+    "stock ORAS pulls exact multi-layer artifact",
+    "stock ORAS pull survives restart",
+    "OCI upload lease is durable before bytes",
+    "OCI first chunk accepted",
+    "OCI upload offset survives restart",
+    "OCI stale offset rejected",
+    "OCI resumed upload completes",
+    "OCI resumed bytes are quarantined",
+    "OCI resumed bytes are exact",
+    "OCI upload cannot cross tenant",
+    "OCI denied layer blocks an otherwise approved manifest",
+    "OCI denied layer hides its tag from metadata",
+    "OCI denied digest blocks tag resolution",
+    "OCI denied digest disappears from tag index"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-faa176c299-a",
+        "--actor",
+        "admin",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/admin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-faa176c299-a",
+        "--actor",
+        "reader",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/reader.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-faa176c299-b",
+        "--actor",
+        "other",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/other.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-faa176c299-a",
+        "--actor",
+        "expired",
+        "--role",
+        "reader",
+        "--expires-in",
+        "1ms",
+        "--token-file",
+        "PRIVATE/expired.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-faa176c299-a",
+        "--actor",
+        "revocable",
+        "--role",
+        "reader",
+        "--expires-in",
+        "1h",
+        "--token-file",
+        "PRIVATE/revocable.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "login",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci/auth.json",
+        "--username",
+        "token",
+        "--password-stdin",
+        "127.0.0.1:38443"
+      ],
+      "exit": 0,
+      "output": "Login Succeeded\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci/auth.json",
+        "127.0.0.1:38443/containers/proof:v1",
+        "hello.txt:text/plain",
+        "dependency.txt:text/plain"
+      ],
+      "exit": 0,
+      "output": "Preparing hello.txt\nPreparing dependency.txt\nUploading 3ac3598da883 dependency.txt\nUploading 88fe3f045edf hello.txt\nUploading 44136fa355b3 application/vnd.oci.empty.v1+json\nUploaded  3ac3598da883 dependency.txt\nUploaded  88fe3f045edf hello.txt\nUploaded  44136fa355b3 application/vnd.oci.empty.v1+json\nUploading 38ad8f637d62 application/vnd.oci.image.manifest.v1+json\nUploaded  38ad8f637d62 application/vnd.oci.image.manifest.v1+json\nPushed [registry] 127.0.0.1:38443/containers/proof:v1\nArtifactType: application/vnd.unknown.artifact.v1\nDigest: sha256:38ad8f637d622a742110c182d7f0d52d41574d35225a5035403f311b2d805f66\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci/auth.json",
+        "127.0.0.1:38443/containers/proof:v1"
+      ],
+      "exit": 0,
+      "output": "Downloading 38ad8f637d62 application/vnd.oci.image.manifest.v1+json\nProcessing  38ad8f637d62 application/vnd.oci.image.manifest.v1+json\nDownloading 3ac3598da883 dependency.txt\nDownloading 88fe3f045edf hello.txt\nDownloaded  88fe3f045edf hello.txt\nDownloaded  3ac3598da883 dependency.txt\nDownloaded  38ad8f637d62 application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/containers/proof:v1\nDigest: sha256:38ad8f637d622a742110c182d7f0d52d41574d35225a5035403f311b2d805f66\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci/auth.json",
+        "127.0.0.1:38443/containers/proof:v1"
+      ],
+      "exit": 0,
+      "output": "Downloading 38ad8f637d62 application/vnd.oci.image.manifest.v1+json\nProcessing  38ad8f637d62 application/vnd.oci.image.manifest.v1+json\nDownloading 3ac3598da883 dependency.txt\nDownloading 88fe3f045edf hello.txt\nDownloaded  3ac3598da883 dependency.txt\nDownloaded  88fe3f045edf hello.txt\nDownloaded  38ad8f637d62 application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/containers/proof:v1\nDigest: sha256:38ad8f637d622a742110c182d7f0d52d41574d35225a5035403f311b2d805f66\n"
+    }
+  ],
+  "limitations": [
+    "Not full format conformance or parity.",
+    "No proxy/group/migration/HA/scale/scanner qualification.",
+    "Client fixture code executes only in the explicitly owned test consumer.",
+    "No claim of a separate-machine install."
+  ],
+  "status": "passed",
+  "input_digests": {}
+}

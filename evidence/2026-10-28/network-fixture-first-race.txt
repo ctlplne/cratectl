@@ -1,0 +1,13 @@
+Observed while running make race:
+TestOperatorNetworkCeilingAndRebinding: DNS rebinding escaped network ceiling
+
+Investigation: the fixture changed its resolver after calling CloseIdleConnections,
+but an already approved pooled TCP connection could still be reused. Reusing that
+connection cannot dial the newly supplied address. The assertion tested forced
+DNS resolution, rather than the intended rule that every new dial checks the IP.
+
+Repair: disable keep-alives in this fixture and fully consume its first response,
+then change the resolver. Production keeps connection reuse; no destination rule
+is disabled. Replay must prove the next dial refuses the unauthorized address and
+that the origin saw only the initial approved request. This was a fixture defect,
+not evidence of an unauthorized production connection.

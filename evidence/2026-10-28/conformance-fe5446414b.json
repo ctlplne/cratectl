@@ -1,0 +1,324 @@
+{
+  "run": "fe5446414b",
+  "candidate": "aaea98001c628729c3716fdd6fd2c096d3391b3a",
+  "source_dirty": true,
+  "artifact_digests": {
+    "bin/cratectld": "a42ae23f01d8c6f48fceb92f1d31ebaa4202cc434ee2653ba2c365db2ffc75fe",
+    "bin/cratectl": "ef99a2a5d7c41ab23028ffddf0f1e29bc1b84b4aa87f53d42fc5f741e0125a02"
+  },
+  "host": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "topology": "macOS arm64 server, PostgreSQL 16.15 container, filesystem bytes, HTTP loopback only",
+  "checks": [
+    "admin: create npm repository js",
+    "native npm tag update is independent from publication metadata",
+    "npm package version endpoint resolves exact release",
+    "npm package tag endpoint resolves current tag",
+    "native prerelease publish remains distinct from latest",
+    "removed npm tag does not return after restart",
+    "npm metadata supports weak conditional entity tags",
+    "npm tag mutation requires writer authority",
+    "npm archive identity mismatch rejected",
+    "npm archive traversal rejected",
+    "npm duplicate package manifest rejected",
+    "rejected npm archive creates no reference",
+    "archive-bound npm metadata accepted",
+    "npm dependency metadata comes from immutable archive bytes",
+    "stock npm installs archive-bound dependency graph",
+    "stock npm selects current latest release",
+    "stock npm selects prerelease through named tag",
+    "stock npm resolves scoped package and dependency",
+    "stock npm lockfile install survives server restart",
+    "npm policy denial hides package metadata",
+    "npm policy denial blocks tarball"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-fe5446414b-a",
+        "--actor",
+        "admin",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/admin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-fe5446414b-a",
+        "--actor",
+        "reader",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/reader.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-fe5446414b-b",
+        "--actor",
+        "other",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/other.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-fe5446414b-b",
+        "--actor",
+        "origin",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/origin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-fe5446414b-a",
+        "--actor",
+        "expired",
+        "--role",
+        "reader",
+        "--expires-in",
+        "1ms",
+        "--token-file",
+        "PRIVATE/expired.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-fe5446414b-a",
+        "--actor",
+        "revocable",
+        "--role",
+        "reader",
+        "--expires-in",
+        "1h",
+        "--token-file",
+        "PRIVATE/revocable.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  cratectl-proof-dep@1.0.0\nnpm notice Tarball Contents\nnpm notice 20B index.js\nnpm notice 133B package.json\nnpm notice Tarball Details\nnpm notice name: cratectl-proof-dep\nnpm notice version: 1.0.0\nnpm notice filename: cratectl-proof-dep-1.0.0.tgz\nnpm notice package size: 237 B\nnpm notice unpacked size: 153 B\nnpm notice shasum: 093461e1eb06c56d0b438b03cfbf35fc4c0e002a\nnpm notice integrity: sha512-7DbzZKqvTPRWR[...]mMUDALlkcmIxw==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/js/ with tag latest and public access\n+ cratectl-proof-dep@1.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  @cratectl/proof-app@1.0.0\nnpm notice Tarball Contents\nnpm notice 51B index.js\nnpm notice 183B package.json\nnpm notice Tarball Details\nnpm notice name: @cratectl/proof-app\nnpm notice version: 1.0.0\nnpm notice filename: cratectl-proof-app-1.0.0.tgz\nnpm notice package size: 279 B\nnpm notice unpacked size: 234 B\nnpm notice shasum: b585ffd9b0d7bc27f129456d08599c4783987d4f\nnpm notice integrity: sha512-xCH5mZIIcF5Ai[...]oKsmBEQwhwV0w==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/js/ with tag latest and public access\n+ @cratectl/proof-app@1.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public",
+        "--tag",
+        "latest"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  @cratectl/tagged@1.0.0\nnpm notice Tarball Contents\nnpm notice 51B index.js\nnpm notice 184B package.json\nnpm notice Tarball Details\nnpm notice name: @cratectl/tagged\nnpm notice version: 1.0.0\nnpm notice filename: cratectl-tagged-1.0.0.tgz\nnpm notice package size: 279 B\nnpm notice unpacked size: 235 B\nnpm notice shasum: 0e001d65eec63d24dfd7bb6d032ddd82059227e0\nnpm notice integrity: sha512-aQifQRit4HUEH[...]vI7c/Qyd8t4ow==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/js/ with tag latest and public access\n+ @cratectl/tagged@1.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public",
+        "--tag",
+        "latest"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  @cratectl/tagged@2.0.0\nnpm notice Tarball Contents\nnpm notice 51B index.js\nnpm notice 184B package.json\nnpm notice Tarball Details\nnpm notice name: @cratectl/tagged\nnpm notice version: 2.0.0\nnpm notice filename: cratectl-tagged-2.0.0.tgz\nnpm notice package size: 281 B\nnpm notice unpacked size: 235 B\nnpm notice shasum: 2d1c13de1ee0c36921e193afb4b97a1f27daf355\nnpm notice integrity: sha512-XR0ZoTDCVNX7I[...]+w7JT1R7tu79w==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/js/ with tag latest and public access\n+ @cratectl/tagged@2.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public",
+        "--tag",
+        "next"
+      ],
+      "exit": 0,
+      "output": "npm warn publish npm auto-corrected some errors in your package.json when publishing.  Please run \"npm pkg fix\" to address these errors.\nnpm warn publish errors corrected:\nnpm warn publish \"version\" was cleaned and set to \"2.1.0-beta.1\"\nnpm notice\nnpm notice \ud83d\udce6  @cratectl/tagged@2.1.0-beta.1\nnpm notice Tarball Contents\nnpm notice 51B index.js\nnpm notice 199B package.json\nnpm notice Tarball Details\nnpm notice name: @cratectl/tagged\nnpm notice version: 2.1.0-beta.1\nnpm notice filename: cratectl-tagged-2.1.0-beta.1.tgz\nnpm notice package size: 295 B\nnpm notice unpacked size: 250 B\nnpm notice shasum: 7e2ec51f091ad429e8f1e52b31547f9b532ae92e\nnpm notice integrity: sha512-vvZw1bkuTDEpG[...]4mZKWw+HWqEaA==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/js/ with tag next and public access\n+ @cratectl/tagged@2.1.0-beta.1\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "dist-tag",
+        "add",
+        "@cratectl/tagged@1.0.0",
+        "stable"
+      ],
+      "exit": 0,
+      "output": "+stable: @cratectl/tagged@1.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "dist-tag",
+        "rm",
+        "@cratectl/tagged",
+        "stable"
+      ],
+      "exit": 0,
+      "output": "-stable: @cratectl/tagged@1.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "install",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "cratectl-archive-proof"
+      ],
+      "exit": 0,
+      "output": "\nadded 2 packages in 208ms\n"
+    },
+    {
+      "argv": [
+        "node",
+        "-e",
+        "if(require(\"cratectl-archive-proof\")!==42)process.exit(1)"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "npm",
+        "install",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "@cratectl/tagged@latest"
+      ],
+      "exit": 0,
+      "output": "\nadded 1 package in 209ms\n"
+    },
+    {
+      "argv": [
+        "node",
+        "-e",
+        "if(require(\"@cratectl/tagged/package.json\").version!==\"2.0.0\")process.exit(1)"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "npm",
+        "install",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "@cratectl/tagged@next"
+      ],
+      "exit": 0,
+      "output": "\nchanged 1 package in 202ms\n"
+    },
+    {
+      "argv": [
+        "node",
+        "-e",
+        "if(!require(\"@cratectl/tagged/package.json\").version.startsWith(\"2.1.0-beta.1\"))process.exit(1)"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "npm",
+        "install",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "@cratectl/proof-app@1.0.0"
+      ],
+      "exit": 0,
+      "output": "\nadded 1 package in 187ms\n"
+    },
+    {
+      "argv": [
+        "node",
+        "-e",
+        "if(require(\"@cratectl/proof-app\")!==42)process.exit(1)"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "npm",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "--cache",
+        "PRIVATE/npm/fresh-cache"
+      ],
+      "exit": 0,
+      "output": "\nadded 4 packages in 219ms\n"
+    }
+  ],
+  "limitations": [
+    "Not full format conformance or parity.",
+    "Proxy/group proof currently covers generic and Maven only; no complete mode, migration, HA, scale or scanner qualification.",
+    "Client fixture code executes only in the explicitly owned test consumer.",
+    "No claim of a separate-machine install."
+  ],
+  "status": "passed",
+  "input_digests": {}
+}

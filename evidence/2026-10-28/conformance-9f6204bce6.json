@@ -1,0 +1,132 @@
+{
+  "run": "9f6204bce6",
+  "candidate": "2a3347bea2b4e878fcec73d3e75fa60c7296ac25",
+  "working_tree": "implementation changes under test",
+  "host": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "topology": "macOS arm64 server, PostgreSQL 16.15 container, filesystem bytes, HTTP loopback only",
+  "checks": [
+    "admin: create oci repository containers",
+    "stock ORAS pulls exact multi-layer artifact",
+    "stock ORAS pull survives restart",
+    "OCI upload lease is durable before bytes",
+    "OCI first chunk accepted",
+    "OCI upload offset survives restart",
+    "OCI stale offset rejected",
+    "OCI resumed upload completes",
+    "OCI resumed bytes are exact",
+    "OCI upload cannot cross tenant",
+    "OCI denied digest blocks tag resolution",
+    "OCI denied digest disappears from tag index"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-9f6204bce6-a",
+        "--actor",
+        "admin",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/admin.token"
+      ],
+      "exit": 0,
+      "output": "Created tenant-scoped credential; expires in 24 hours. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-9f6204bce6-a",
+        "--actor",
+        "reader",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/reader.token"
+      ],
+      "exit": 0,
+      "output": "Created tenant-scoped credential; expires in 24 hours. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-9f6204bce6-b",
+        "--actor",
+        "other",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/other.token"
+      ],
+      "exit": 0,
+      "output": "Created tenant-scoped credential; expires in 24 hours. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "login",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci/auth.json",
+        "--username",
+        "token",
+        "--password-stdin",
+        "127.0.0.1:38443"
+      ],
+      "exit": 0,
+      "output": "Login Succeeded\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci/auth.json",
+        "127.0.0.1:38443/containers/proof:v1",
+        "hello.txt:text/plain",
+        "dependency.txt:text/plain"
+      ],
+      "exit": 0,
+      "output": "Preparing hello.txt\nPreparing dependency.txt\nUploading 3ac3598da883 dependency.txt\nUploading 88fe3f045edf hello.txt\nUploading 44136fa355b3 application/vnd.oci.empty.v1+json\nUploaded  3ac3598da883 dependency.txt\nUploaded  88fe3f045edf hello.txt\nUploaded  44136fa355b3 application/vnd.oci.empty.v1+json\nUploading 2de5324f1dcf application/vnd.oci.image.manifest.v1+json\nUploaded  2de5324f1dcf application/vnd.oci.image.manifest.v1+json\nPushed [registry] 127.0.0.1:38443/containers/proof:v1\nArtifactType: application/vnd.unknown.artifact.v1\nDigest: sha256:2de5324f1dcf2256e1c8cdd60596edd2998bf159efa7772c358f0752b87760a3\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci/auth.json",
+        "127.0.0.1:38443/containers/proof:v1"
+      ],
+      "exit": 0,
+      "output": "Downloading 2de5324f1dcf application/vnd.oci.image.manifest.v1+json\nProcessing  2de5324f1dcf application/vnd.oci.image.manifest.v1+json\nDownloading 3ac3598da883 dependency.txt\nDownloading 88fe3f045edf hello.txt\nDownloaded  3ac3598da883 dependency.txt\nDownloaded  88fe3f045edf hello.txt\nDownloaded  2de5324f1dcf application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/containers/proof:v1\nDigest: sha256:2de5324f1dcf2256e1c8cdd60596edd2998bf159efa7772c358f0752b87760a3\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci/auth.json",
+        "127.0.0.1:38443/containers/proof:v1"
+      ],
+      "exit": 0,
+      "output": "Downloading 2de5324f1dcf application/vnd.oci.image.manifest.v1+json\nProcessing  2de5324f1dcf application/vnd.oci.image.manifest.v1+json\nDownloading 3ac3598da883 dependency.txt\nDownloading 88fe3f045edf hello.txt\nDownloaded  3ac3598da883 dependency.txt\nDownloaded  88fe3f045edf hello.txt\nDownloaded  2de5324f1dcf application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/containers/proof:v1\nDigest: sha256:2de5324f1dcf2256e1c8cdd60596edd2998bf159efa7772c358f0752b87760a3\n"
+    }
+  ],
+  "limitations": [
+    "Not full format conformance or parity.",
+    "No proxy/group/migration/HA/scale/scanner qualification.",
+    "Client fixture code executes only in the explicitly owned test consumer.",
+    "No claim of a separate-machine install."
+  ],
+  "status": "passed",
+  "input_digests": {}
+}

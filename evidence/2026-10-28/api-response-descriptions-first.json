@@ -1,0 +1,53 @@
+{
+  "source_candidate": "aaea98001c628729c3716fdd6fd2c096d3391b3a",
+  "observation": "Defect reproduced from retained immutable source; unquoted commas in flow-map response descriptions created unintended OpenAPI properties.",
+  "affected_responses": [
+    {
+      "path": "/api/v1/repositories",
+      "method": "get",
+      "status": "200",
+      "parsed_response": {
+        "description": "Tenant-scoped items",
+        "currently limited to 1000; cursor pagination unfinished.": null
+      }
+    },
+    {
+      "path": "/api/v1/repositories",
+      "method": "get",
+      "status": "401",
+      "parsed_response": {
+        "description": "Missing",
+        "revoked or expired service credential.": null
+      }
+    },
+    {
+      "path": "/api/v1/repositories/{repository}/artifacts",
+      "method": "get",
+      "status": "200",
+      "parsed_response": {
+        "description": "Current tenant artifacts; admin sees quarantine",
+        "others see servable items only; maximum 1000.": null
+      }
+    },
+    {
+      "path": "/api/v1/repositories/{repository}/decisions",
+      "method": "put",
+      "status": "200",
+      "parsed_response": {
+        "description": "Manual decision versioned for this repository digest",
+        "covering existing and future aliases. The path is a checked selector. Response includes scope": null,
+        "decision_version and affected_references; no scanner verdict implied.": null
+      }
+    },
+    {
+      "path": "/api/v1/repositories/{repository}/cache",
+      "method": "get",
+      "status": "200",
+      "parsed_response": {
+        "description": "State",
+        "generation": null,
+        "freshness/stale deadlines and last source result; credential and lease token values excluded.": null
+      }
+    }
+  ]
+}

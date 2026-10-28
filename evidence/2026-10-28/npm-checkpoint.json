@@ -1,0 +1,109 @@
+{
+  "candidate": "a848b9d7e3bc12b99d5269ed4e7669bf7e055e2c",
+  "source_dirty": false,
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "build_source_matches_candidate": true,
+  "artifacts": {
+    "bin/cratectld": "ad63d43684b0b7b465692e17c37decb5c6ca49702708a63bdd39631639fd0464",
+    "bin/cratectl": "07cdcaf67ef5b05c9dc01b2433e839aa529b379f7b630af0c760e61c6cbaa3b1"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "a848b9d7e3bc12b99d5269ed4e7669bf7e055e2c",
+        "vcs.time": "2026-10-28T18:50:05Z",
+        "vcs.modified": "false"
+      }
+    },
+    "bin/cratectl": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "a848b9d7e3bc12b99d5269ed4e7669bf7e055e2c",
+        "vcs.time": "2026-10-28T18:50:05Z",
+        "vcs.modified": "false"
+      }
+    }
+  },
+  "topology": "macOS arm64 server, PostgreSQL 16.15 container, filesystem bytes, HTTP loopback only",
+  "assertions": 146,
+  "native_evidence": "evidence/2026-10-28/conformance-122db557f4.json",
+  "tested_clients": {
+    "npm": "11.16.0",
+    "twine": "7.0.0",
+    "pip": "26.1.2",
+    "ORAS": "1.3.6",
+    "Maven": "3.10.0",
+    "JDK": "21.0.13+9"
+  },
+  "commands": {
+    "build": "make build (clean checkout)",
+    "native": "python3 scripts/conformance.py all --require-clean-build",
+    "unit_vet_race": "make build test lint race",
+    "postgres": "python3 scripts/dev.py .cache/go/bin/go test -count=2 -race -tags=integration ./internal/store"
+  },
+  "gates": {
+    "unit_vet_race": "npm-build-unit-vet-race.txt; passed",
+    "postgres_integration": "npm-postgres-race.txt; two repeated race-instrumented runs passed, including aliases, tag rollback/budgets, migration tombstones and concurrent metadata snapshots",
+    "npm_archive_fuzz": "npm-archive-fuzz.txt; 66654 executions; five-second target, two workers",
+    "npm_coordinate_fuzz": "npm-coordinate-fuzz.txt; 99445 executions; five-second target, two workers",
+    "go_vulnerability": "govulncheck.json; 201 records, zero findings",
+    "trivy_source": "trivy-npm-source.json; zero vulnerability/misconfiguration/secret findings; Trivy 0.72.0",
+    "current_secrets": "gitleaks-npm-current.json; zero findings; Gitleaks 8.30.1",
+    "history_secrets": "gitleaks-npm-history.json; zero findings through this source candidate; retained narrow exceptions",
+    "review_secrets": "gitleaks-npm-review.json; zero findings across nonprivate source, documentation and retained evidence before checkpoint commit"
+  },
+  "completed_scope": [
+    "Repository-digest manual decisions cover present and future aliases while preserving repository/tenant scope.",
+    "Hosted npm durable versioned tags, tombstones, exact-version/tag metadata, latest/prerelease native installs and conditional requests.",
+    "Atomic npm version/tag publication and explicit complete-index safety budgets.",
+    "Bounded gzip/tar inspection without extraction or execution; archive-derived package metadata and native integrity.",
+    "Existing generic/Maven raw proxy/group and npm/PyPI/OCI/Maven/generic hosted journeys replayed.",
+    "Qualification captures embedded build identity and enforces a clean named candidate when requested."
+  ],
+  "limits": [
+    "All 450 broad capability rows remain incomplete; no full format, mode or parity verdict.",
+    "npm/PyPI/OCI proxy/group and Maven metadata union/full snapshots remain open.",
+    "Unpublish, ownership, signatures, pnpm/Yarn and exhaustive archive parser campaigns remain open.",
+    "Manual decisions are not scan evidence or the complete versioned policy/intelligence model. In-flight reads retain their admitted snapshot.",
+    "Unit/race/fuzz/vulnerability/Trivy checks cover the runtime implementation before subsequent qualification-harness/API-only changes; final native and Gitleaks runs cover the named candidate.",
+    "Trivy used its retained database without updating; no image/artifact scan or full security campaign is qualified.",
+    "No independent-machine installation, process-crash/HA, standard/large performance or production package result.",
+    "Prior conformance-866b47419c.json passed native assertions but failed embedded clean-build identity qualification; use this strict replay."
+  ],
+  "readiness": {
+    "assisted_design_partner": "not qualified",
+    "ordinary_operator": "not qualified",
+    "enterprise": "not qualified"
+  },
+  "trivy_database": {
+    "Version": 2,
+    "NextUpdate": "2026-10-29T13:01:10.618103614Z",
+    "UpdatedAt": "2026-10-28T13:01:10.618103814Z",
+    "DownloadedAt": "2026-10-28T17:09:17.319606Z"
+  }
+}

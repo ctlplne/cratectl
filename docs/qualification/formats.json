@@ -1,0 +1,807 @@
+{
+  "formats": [
+    {
+      "id": "oci",
+      "clients": [
+        "docker",
+        "podman",
+        "oras",
+        "helm OCI",
+        "buildctl",
+        "buildx",
+        "WASM OCI"
+      ],
+      "client_versions": {
+        "ORAS": "1.3.6"
+      },
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": true
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Early stock ORAS hosted proof covers multi-layer intake/pull, bounded structural/descriptor validation, indexes, governed referrers, weak subjects, nested image names, current tag/graph policy, resume and restart. OCI proxy/group, challenge-token auth, full multi-platform/Docker/Podman/Helm, additional digest/manifest types, lifecycle, signatures, fault/parser and production campaigns remain open.",
+      "state": "implementing",
+      "candidate": "68297a128123820642d058529476c7037a3be175",
+      "evidence": [
+        "evidence/2026-10-28/conformance-2cbe20c9cf.json"
+      ]
+    },
+    {
+      "id": "maven",
+      "clients": [
+        "mvn",
+        "gradle",
+        "ivy",
+        "sbt"
+      ],
+      "client_versions": {
+        "Maven": "3.10.0",
+        "JDK": "21.0.13+9"
+      },
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": true
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Stock Maven hosted and raw proxy/group proof only. Metadata union, complete snapshots, Gradle/Ivy/SBT, full lifecycle and fault campaigns remain open.",
+      "state": "implementing",
+      "candidate": "a848b9d7e3bc12b99d5269ed4e7669bf7e055e2c",
+      "evidence": [
+        "evidence/2026-10-28/conformance-122db557f4.json"
+      ]
+    },
+    {
+      "id": "npm",
+      "clients": [
+        "npm",
+        "pnpm",
+        "yarn"
+      ],
+      "client_versions": {
+        "npm": "11.16.0",
+        "Node": "26.0.0"
+      },
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": true
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Early npm hosted/proxy/group stock-client proof: pinned SRI/source URLs, separate download credentials, current policy, namespace/precedence, integrity/graph failures, normalized executable metadata and restart. Full npm/pnpm/Yarn, deprecation, unpublish, signatures, lifecycle, private PKI and complete fault/scale qualification remain open.",
+      "state": "implementing",
+      "candidate": "6b5da7702ffa9357aac61bec40110e355843430b",
+      "evidence": [
+        "evidence/2026-10-28/conformance-ff864edb95.json"
+      ]
+    },
+    {
+      "id": "pypi",
+      "clients": [
+        "pip",
+        "uv",
+        "twine",
+        "poetry"
+      ],
+      "client_versions": {
+        "twine": "7.0.0",
+        "pip": "26.1.2",
+        "Python": "3.14.6"
+      },
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": true
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Early stock twine/pip hosted/proxy/group proof includes archive identity, HTML/JSON, metadata sidecars, constraints, yanks, source builds in owned consumers, current policy, namespace/filename precedence and restart. Root is hosted/cached inventory; full upstream enumeration, hashless/legacy sources, uv, all metadata/dynamic build/attestation, lifecycle, fault and production cases remain open.",
+      "state": "implementing",
+      "candidate": "f2c363d4e9fafb54f551002076e269982f40a3c1",
+      "evidence": [
+        "evidence/2026-10-28/conformance-7fecdeccdf.json"
+      ]
+    },
+    {
+      "id": "nuget",
+      "clients": [
+        "dotnet",
+        "nuget",
+        "chocolatey",
+        "powershell"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": true
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "go",
+      "clients": [
+        "go"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": true
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "cargo",
+      "clients": [
+        "cargo"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": true
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "apt",
+      "clients": [
+        "apt-get"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": false
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "rpm",
+      "clients": [
+        "dnf",
+        "yum"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": true
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "apk",
+      "clients": [
+        "apk"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": true
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "opkg",
+      "clients": [
+        "opkg"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "owner"
+      ],
+      "nexus_modes": null,
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "helm-http",
+      "clients": [
+        "helm"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": true
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "conan",
+      "clients": [
+        "conan 1",
+        "conan 2"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": true
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "composer",
+      "clients": [
+        "composer 2"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": true
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "rubygems",
+      "clients": [
+        "gem",
+        "bundler"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": true
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "conda",
+      "clients": [
+        "conda"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": true
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "cran",
+      "clients": [
+        "R"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": true
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "cocoapods",
+      "clients": [
+        "pod"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": false,
+        "proxy": true,
+        "group": false
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "swift",
+      "clients": [
+        "swift",
+        "Xcode"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": true
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "pub",
+      "clients": [
+        "dart",
+        "flutter"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": true
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "terraform",
+      "clients": [
+        "terraform",
+        "tofu"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": true
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "ansible",
+      "clients": [
+        "ansible-galaxy"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": true
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "chef",
+      "clients": [
+        "knife"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "owner"
+      ],
+      "nexus_modes": null,
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "puppet",
+      "clients": [
+        "puppet"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "owner"
+      ],
+      "nexus_modes": null,
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "vagrant",
+      "clients": [
+        "vagrant"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "owner"
+      ],
+      "nexus_modes": null,
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "p2",
+      "clients": [
+        "eclipse"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": false,
+        "proxy": true,
+        "group": false
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "bower",
+      "clients": [
+        "bower"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": false,
+        "proxy": false,
+        "group": false
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Bower unsupported with current Nexus databases; JFrog workflow still required.",
+      "state": "planned"
+    },
+    {
+      "id": "hex",
+      "clients": [
+        "mix"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "owner"
+      ],
+      "nexus_modes": null,
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "bazel",
+      "clients": [
+        "bazel"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "owner"
+      ],
+      "nexus_modes": null,
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "git-lfs",
+      "clients": [
+        "git-lfs"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": false,
+        "group": false
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "huggingface",
+      "clients": [
+        "huggingface_hub"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": false,
+        "proxy": true,
+        "group": false
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "generic",
+      "clients": [
+        "curl"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "nexus-formats",
+        "owner"
+      ],
+      "nexus_modes": {
+        "hosted": true,
+        "proxy": true,
+        "group": true
+      },
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Hosted and raw proxy/group exact-byte proof only. Full lifecycle, replication, export, interrupted-process recovery and complete fault qualification remain open.",
+      "state": "implementing",
+      "candidate": "a848b9d7e3bc12b99d5269ed4e7669bf7e055e2c",
+      "evidence": [
+        "evidence/2026-10-28/conformance-122db557f4.json"
+      ]
+    },
+    {
+      "id": "agent-plugins",
+      "clients": [
+        "documented agent clients"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "owner"
+      ],
+      "nexus_modes": null,
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "ai-editor-extensions",
+      "clients": [
+        "VS Code",
+        "Cursor",
+        "Kiro",
+        "Devin"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "owner"
+      ],
+      "nexus_modes": null,
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "jetbrains",
+      "clients": [
+        "JetBrains IDE"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "owner"
+      ],
+      "nexus_modes": null,
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "luarocks",
+      "clients": [
+        "luarocks"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "owner"
+      ],
+      "nexus_modes": null,
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "nix",
+      "clients": [
+        "nix"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "owner"
+      ],
+      "nexus_modes": null,
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "nvidia",
+      "clients": [
+        "documented NVIDIA clients"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "owner"
+      ],
+      "nexus_modes": null,
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "ml-repository",
+      "clients": [
+        "documented ML clients"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "owner"
+      ],
+      "nexus_modes": null,
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "vcs",
+      "clients": [
+        "git"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "owner"
+      ],
+      "nexus_modes": null,
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    },
+    {
+      "id": "skills",
+      "clients": [
+        "documented skill clients"
+      ],
+      "client_versions": {},
+      "source_ids": [
+        "jfrog-formats",
+        "owner"
+      ],
+      "nexus_modes": null,
+      "jfrog_modes": "per-format documentation review required",
+      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
+      "state": "planned"
+    }
+  ]
+}

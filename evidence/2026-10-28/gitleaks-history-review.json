@@ -1,0 +1,17 @@
+{
+  "raw_findings": 138,
+  "classification": "All findings are public 40-hex vulnerability fix commit URLs, not credentials.",
+  "by_file": {
+    "evidence/2026-10-28/govulncheck.json": 69,
+    "evidence/2026-10-28/govulncheck-first.json": 69
+  },
+  "validation": "Re-read each exact line from its original commit and require complete trusted-host URL-field grammar.",
+  "exception": ".gitleaks.toml",
+  "regressions": "gitleaks-rule-fixtures.json",
+  "secondary_report_false_positives": {
+    "count": 138,
+    "field": "Commit",
+    "classification": "The original redacted report repeats its actual historical source commit ID, which the same Sourcegraph rule re-detects.",
+    "exception": "Only the exact historical commit field in gitleaks-history.json is permitted. All credential-shaped fields remain scanned."
+  }
+}

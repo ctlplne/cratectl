@@ -1,0 +1,105 @@
+{
+  "run": "9b78190efb",
+  "candidate": "2a3347bea2b4e878fcec73d3e75fa60c7296ac25",
+  "working_tree": "implementation changes under test",
+  "host": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "topology": "macOS arm64 server, PostgreSQL 16.15 container, filesystem bytes, HTTP loopback only",
+  "checks": [
+    "admin: create generic repository raw",
+    "other: create generic repository raw",
+    "management replay returns original response",
+    "changed request under same key conflicts",
+    "management mutation requires idempotency key",
+    "reader cannot publish",
+    "invalid credential denied",
+    "publish durable raw bytes",
+    "same-byte native replay succeeds",
+    "different-byte redeploy conflicts",
+    "cross-tenant coordinates do not leak",
+    "other tenant can use same coordinate",
+    "tenant bytes stay distinct",
+    "range preserves selected bytes",
+    "conditional GET returns 304",
+    "wrong checksum is rejected",
+    "checksum failure publishes no reference",
+    "concurrent first writer is unique",
+    "require review takes effect on existing bytes",
+    "manual review binds exact digest",
+    "manual review allows exact bytes",
+    "reference, policy and bytes survive restart",
+    "audit sequence 1",
+    "audit chain 1",
+    "audit sequence 2",
+    "audit chain 2",
+    "audit sequence 3",
+    "audit chain 3",
+    "audit sequence 4",
+    "audit chain 4",
+    "audit sequence 5",
+    "audit chain 5",
+    "audit sequence 6",
+    "audit chain 6",
+    "audit sequence 7",
+    "audit chain 7",
+    "audit is tenant scoped"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-9b78190efb-a",
+        "--actor",
+        "admin",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/admin.token"
+      ],
+      "exit": 0,
+      "output": "Created tenant-scoped credential; expires in 24 hours. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-9b78190efb-a",
+        "--actor",
+        "reader",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/reader.token"
+      ],
+      "exit": 0,
+      "output": "Created tenant-scoped credential; expires in 24 hours. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-9b78190efb-b",
+        "--actor",
+        "other",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/other.token"
+      ],
+      "exit": 0,
+      "output": "Created tenant-scoped credential; expires in 24 hours. Credential is in the private file.\n"
+    }
+  ],
+  "limitations": [
+    "Not full format conformance or parity.",
+    "No proxy/group/migration/HA/scale/scanner qualification.",
+    "Client fixture code executes only in the explicitly owned test consumer.",
+    "No claim of a separate-machine install."
+  ],
+  "status": "failed",
+  "failure": "same-length storage corruption is never served",
+  "input_digests": {}
+}

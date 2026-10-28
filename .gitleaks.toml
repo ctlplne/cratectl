@@ -1,0 +1,26 @@
+title = "cratectl secret scanning"
+[extend]
+useDefault = true
+
+# Gitleaks 8.30.1 labels public 40-hex commit URLs in govulncheck's OSV
+# records as Sourcegraph tokens. Match only that rule, those two evidence
+# filenames, and a complete URL field without userinfo, query or fragment.
+# Every other field, file, URL shape and credential prefix stays scanned.
+[[rules]]
+id = "sourcegraph-access-token"
+[[rules.allowlists]]
+description = "Public Go/pgx fix commit references in retained native OSV evidence"
+condition = "AND"
+regexTarget = "line"
+paths = ['''(^|/)evidence/2026-10-28/govulncheck(-first)?\.json$''']
+regexes = ['''^\s*"url": "https://(go\.googlesource\.com/(go|net|text)/\+/|github\.com/jackc/(pgx|pgproto3)/commit/)[a-f0-9]{40}"[,]?\s*$''']
+
+# The redacted original scanner report repeats its actual source commit ID.
+# With the rule name in the report, Gitleaks re-detects that public identity.
+# Permit only this exact historical commit field, in this one retained report.
+[[rules.allowlists]]
+description = "Exact source commit identity in the retained redacted first scan"
+condition = "AND"
+regexTarget = "line"
+paths = ['''(^|/)evidence/2026-10-28/gitleaks-history\.json$''']
+regexes = ['''^\s*"Commit": "(71c63208e09eef2c7572)(139c365eb5717cf5a13d)"[,]?\s*$''']

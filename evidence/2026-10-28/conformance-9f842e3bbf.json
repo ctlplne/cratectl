@@ -1,0 +1,214 @@
+{
+  "run": "9f842e3bbf",
+  "candidate": "2a3347bea2b4e878fcec73d3e75fa60c7296ac25",
+  "working_tree": "implementation changes under test",
+  "host": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "topology": "macOS arm64 server, PostgreSQL 16.15 container, filesystem bytes, HTTP loopback only",
+  "checks": [
+    "admin: create generic repository raw",
+    "other: create generic repository raw",
+    "management replay returns original response",
+    "changed request under same key conflicts",
+    "management mutation requires idempotency key",
+    "reader cannot publish",
+    "invalid credential denied",
+    "publish durable raw bytes",
+    "same-byte native replay succeeds",
+    "different-byte redeploy conflicts",
+    "cross-tenant coordinates do not leak",
+    "other tenant can use same coordinate",
+    "tenant bytes stay distinct",
+    "range preserves selected bytes",
+    "conditional GET returns 304",
+    "wrong checksum is rejected",
+    "checksum failure publishes no reference",
+    "concurrent first writer is unique",
+    "require review takes effect on existing bytes",
+    "manual review binds exact digest",
+    "manual review allows exact bytes",
+    "reference, policy and bytes survive restart",
+    "audit sequence 1",
+    "audit chain 1",
+    "audit sequence 2",
+    "audit chain 2",
+    "audit sequence 3",
+    "audit chain 3",
+    "audit sequence 4",
+    "audit chain 4",
+    "audit sequence 5",
+    "audit chain 5",
+    "audit sequence 6",
+    "audit chain 6",
+    "audit sequence 7",
+    "audit chain 7",
+    "audit is tenant scoped",
+    "same-length storage corruption is never served",
+    "admin: create npm repository js",
+    "stock npm resolves scoped package and dependency",
+    "stock npm lockfile install survives server restart",
+    "npm policy denial hides package metadata",
+    "npm policy denial blocks tarball",
+    "admin: create pypi repository py",
+    "stock pip installs package and dependency from twine upload",
+    "Python normalized name resolution",
+    "Python quarantine hides index contents",
+    "Python quarantine blocks direct files"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-9f842e3bbf-a",
+        "--actor",
+        "admin",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/admin.token"
+      ],
+      "exit": 0,
+      "output": "Created tenant-scoped credential; expires in 24 hours. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-9f842e3bbf-a",
+        "--actor",
+        "reader",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/reader.token"
+      ],
+      "exit": 0,
+      "output": "Created tenant-scoped credential; expires in 24 hours. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-9f842e3bbf-b",
+        "--actor",
+        "other",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/other.token"
+      ],
+      "exit": 0,
+      "output": "Created tenant-scoped credential; expires in 24 hours. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  cratectl-proof-dep@1.0.0\nnpm notice Tarball Contents\nnpm notice 20B index.js\nnpm notice 133B package.json\nnpm notice Tarball Details\nnpm notice name: cratectl-proof-dep\nnpm notice version: 1.0.0\nnpm notice filename: cratectl-proof-dep-1.0.0.tgz\nnpm notice package size: 237 B\nnpm notice unpacked size: 153 B\nnpm notice shasum: 093461e1eb06c56d0b438b03cfbf35fc4c0e002a\nnpm notice integrity: sha512-7DbzZKqvTPRWR[...]mMUDALlkcmIxw==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/js/ with tag latest and public access\n+ cratectl-proof-dep@1.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  @cratectl/proof-app@1.0.0\nnpm notice Tarball Contents\nnpm notice 51B index.js\nnpm notice 183B package.json\nnpm notice Tarball Details\nnpm notice name: @cratectl/proof-app\nnpm notice version: 1.0.0\nnpm notice filename: cratectl-proof-app-1.0.0.tgz\nnpm notice package size: 279 B\nnpm notice unpacked size: 234 B\nnpm notice shasum: b585ffd9b0d7bc27f129456d08599c4783987d4f\nnpm notice integrity: sha512-xCH5mZIIcF5Ai[...]oKsmBEQwhwV0w==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/js/ with tag latest and public access\n+ @cratectl/proof-app@1.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "install",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "@cratectl/proof-app@1.0.0"
+      ],
+      "exit": 0,
+      "output": "\nadded 2 packages in 195ms\n"
+    },
+    {
+      "argv": [
+        "node",
+        "-e",
+        "if(require(\"@cratectl/proof-app\")!==42)process.exit(1)"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "npm",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "--cache",
+        "PRIVATE/npm/fresh-cache"
+      ],
+      "exit": 0,
+      "output": "\nadded 2 packages in 196ms\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "twine",
+        "upload",
+        "--non-interactive",
+        "--repository-url",
+        "http://127.0.0.1:38443/pypi/py/",
+        "PRIVATE/wheels/cratectl_proof_dep-1.0.0-py3-none-any.whl",
+        "PRIVATE/wheels/cratectl_proof_app-1.0.0-py3-none-any.whl"
+      ],
+      "exit": 0,
+      "output": "Uploading distributions to http://127.0.0.1:38443/pypi/py/\nUploading cratectl_proof_dep-1.0.0-py3-none-any.whl\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.5/2.5 kB \u2022 00:00 \u2022 ?\n\nUploading cratectl_proof_app-1.0.0-py3-none-any.whl\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.7/2.7 kB \u2022 00:00 \u2022 ?\n\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-cache-dir",
+        "--index-url",
+        "http://127.0.0.1:38443/pypi/py/simple/",
+        "--target",
+        "PRIVATE/python-install",
+        "cratectl-proof-app==1.0.0"
+      ],
+      "exit": 0,
+      "output": "Looking in indexes: http://127.0.0.1:38443/pypi/py/simple/\nCollecting cratectl-proof-app==1.0.0\n  Downloading cratectl_proof_app-1.0.0-py3-none-any.whl (1.1 kB)\nCollecting cratectl-proof-dep==1.0.0 (from cratectl-proof-app==1.0.0)\n  Downloading cratectl_proof_dep-1.0.0-py3-none-any.whl (1.1 kB)\nInstalling collected packages: cratectl-proof-dep, cratectl-proof-app\n\nSuccessfully installed cratectl-proof-app-1.0.0 cratectl-proof-dep-1.0.0\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-c",
+        "import sys;sys.path.insert(0,'PRIVATE/python-install');from cratectl_proof_app import value;assert value==42"
+      ],
+      "exit": 0,
+      "output": ""
+    }
+  ],
+  "limitations": [
+    "Not full format conformance or parity.",
+    "No proxy/group/migration/HA/scale/scanner qualification.",
+    "Client fixture code executes only in the explicitly owned test consumer.",
+    "No claim of a separate-machine install."
+  ],
+  "status": "passed",
+  "input_digests": {
+    "wheels/cratectl_proof_dep-1.0.0-py3-none-any.whl": "a259866b8d9076ef6be5387b8ffd134698c6a372e8dc30d3c1c2e9cacde64d91",
+    "wheels/cratectl_proof_app-1.0.0-py3-none-any.whl": "9e62c970ec1ef18c9be53bacc0d4fb9c17f20282bc783509cba8ada6e10e68d9"
+  }
+}

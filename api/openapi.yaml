@@ -1,0 +1,246 @@
+openapi: 3.1.0
+info:
+  title: cratectl initial management API
+  version: 0.0.1-dev
+  description: Early engineering contract. Protocol, CLI and production qualification remain incomplete.
+servers:
+  - url: https://localhost:38443
+security:
+  - serviceToken: []
+components:
+  securitySchemes:
+    serviceToken:
+      type: http
+      scheme: bearer
+  parameters:
+    IdempotencyKey:
+      in: header
+      name: Idempotency-Key
+      required: true
+      schema: {type: string, minLength: 8, maxLength: 128}
+    Repository:
+      in: path
+      name: repository
+      required: true
+      schema: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$'}
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, action]
+          properties:
+            code: {type: string}
+            action: {type: string}
+paths:
+  /api/v1/repositories:
+    get:
+      operationId: listRepositories
+      responses:
+        '200': {description: "Tenant-scoped items, currently limited to 1000; cursor pagination unfinished."}
+        '401': {description: "Missing, revoked or expired service credential."}
+    post:
+      operationId: createRepository
+      parameters:
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, format]
+              properties:
+                name: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$'}
+                format: {type: string, enum: [generic, maven, npm, pypi, oci]}
+                require_review: {type: boolean, default: false}
+                mode: {type: string, enum: [hosted, proxy, group], default: hosted}
+                access: {type: string, enum: [tenant, restricted], default: tenant}
+                settings:
+                  type: object
+                  description: Early proxy/group implementations exist for generic, Maven, npm and PyPI; configuration is immutable after creation. Full format qualification remains open.
+                  properties:
+                    upstream:
+                      type: object
+                      required: [url, networks]
+                      properties:
+                        url: {type: string, format: uri, maxLength: 2048}
+                        networks: {type: array, minItems: 1, maxItems: 64, items: {type: string}}
+                        credential_ref: {type: string, description: Operator-owned tenant-scoped reference; never a credential value.}
+                        authentication: {type: string, enum: [bearer, basic], default: bearer}
+                    cache:
+                      type: object
+                      properties:
+                        fresh_seconds: {type: integer, minimum: 0, maximum: 86400}
+                        negative_seconds: {type: integer, minimum: 0, maximum: 3600}
+                        stale_seconds: {type: integer, minimum: 0, maximum: 604800}
+                        require_checksum: {type: boolean, default: false}
+                        allow_no_store: {type: boolean, default: false}
+                        allow_legacy_npm_shasum: {type: boolean, default: false, description: Explicit compatibility fallback when strong SRI is absent; require_checksum disables this fallback.}
+                    download_sources:
+                      type: array
+                      maxItems: 16
+                      description: npm/PyPI proxy only. Explicit additional download authorities; credentials stay bound to each source URL and authentication scheme.
+                      items:
+                        type: object
+                        required: [url, networks]
+                        properties:
+                          url: {type: string, format: uri, maxLength: 2048}
+                          networks: {type: array, minItems: 1, maxItems: 64, items: {type: string}}
+                          credential_ref: {type: string}
+                          authentication: {type: string, enum: [bearer, basic], default: bearer}
+                    python_index_format: {type: string, enum: [auto, html, json], default: auto, description: PyPI proxy content negotiation preference.}
+                    members: {type: array, minItems: 1, maxItems: 32, uniqueItems: true, items: {type: string}}
+                    namespace_owners: {type: object, maxProperties: 128, additionalProperties: {type: string}}
+      responses:
+        '201': {description: "Hosted repository created; replay returns original response."}
+        '400': {description: "Invalid request or missing idempotency key."}
+        '403': {description: "Tenant admin required."}
+        '409': {description: "Duplicate name or changed request under an existing key."}
+  /api/v1/repositories/{repository}/artifacts:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+    get:
+      operationId: listArtifacts
+      responses:
+        '200': {description: "Current tenant artifacts; admin sees quarantine, others see servable items only; maximum 1000."}
+        '404': {description: "Repository absent from caller tenant."}
+  /api/v1/repositories/{repository}/policy:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+    put:
+      operationId: setRepositoryPolicy
+      parameters:
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [require_review]
+              properties:
+                require_review: {type: boolean}
+      responses:
+        '200': {description: "Current policy updated; cached bytes use current policy on subsequent requests."}
+        '403': {description: "Tenant admin required."}
+        '404': {description: "Repository not found."}
+        '409': {description: "Idempotency conflict."}
+  /api/v1/repositories/{repository}/decisions:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+    put:
+      operationId: setManualDecision
+      parameters:
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [path, digest, decision]
+              properties:
+                path: {type: string, maxLength: 2048}
+                digest: {type: string, pattern: '^[a-f0-9]{64}$'}
+                decision: {type: string, enum: [allowed, denied]}
+      responses:
+        '200': {description: "Manual decision versioned for this repository digest, covering existing and future aliases. The path is a checked selector. Response includes scope, decision_version and affected_references; no scanner verdict implied."}
+        '403': {description: "Tenant admin required."}
+        '404': {description: "Exact coordinate and digest not found."}
+        '409': {description: "Idempotency conflict."}
+  /api/v1/audit:
+    get:
+      operationId: listAuditEvents
+      parameters:
+        - in: query
+          name: after
+          schema: {type: integer, minimum: 0, default: 0}
+      responses:
+        '200': {description: "Up to 1000 tenant events in sequence order; use last sequence as next cursor."}
+        '400': {description: "Invalid sequence cursor."}
+
+  /api/v1/repositories/{repository}/yanks:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+    put:
+      operationId: setPythonFileYank
+      parameters:
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [filename, yanked]
+              additionalProperties: false
+              properties:
+                filename: {type: string, maxLength: 255}
+                yanked: {type: boolean}
+                reason: {type: string, maxLength: 4096}
+      responses:
+        '200': {description: "Versioned hosted Python file yank changed; idempotent replay retains the original revision. Yanked bytes remain readable under current policy."}
+        '400': {description: "Invalid basename, reason or idempotency key."}
+        '403': {description: "Tenant administrator required."}
+        '404': {description: "Distribution absent from caller repository."}
+        '409': {description: "Wrong format/mode or changed request under an existing key."}
+
+  /api/v1/repositories/{repository}/grants:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+    put:
+      operationId: setRepositoryGrant
+      parameters:
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [actor, read, write]
+              additionalProperties: false
+              properties:
+                actor: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$'}
+                read: {type: boolean}
+                write: {type: boolean, description: Also requires read plus a writer/admin token role.}
+      responses:
+        '200': {description: "Tenant actor grant changed; both booleans false revoke access."}
+        '403': {description: "Tenant administrator required."}
+        '409': {description: "Idempotency conflict."}
+  /api/v1/repositories/{repository}/cache:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+    get:
+      operationId: inspectProxyRetrieval
+      parameters:
+        - in: query
+          name: path
+          required: true
+          schema: {type: string, maxLength: 2048}
+      responses:
+        '200': {description: "State, generation, freshness/stale deadlines and last source result; credential and lease token values excluded."}
+        '403': {description: "Current repository grant denied."}
+        '404': {description: "Repository or retrieval absent from caller tenant."}
+    put:
+      operationId: expireProxyRetrieval
+      parameters:
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [path]
+              additionalProperties: false
+              properties:
+                path: {type: string, maxLength: 2048}
+      responses:
+        '200': {description: "Cached freshness expired and prior worker fenced; next authorized read performs retrieval."}
+        '403': {description: "Tenant administrator required."}
+        '404': {description: "No retrieval to expire."}
+        '409': {description: "Idempotency conflict."}

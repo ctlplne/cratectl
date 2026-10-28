@@ -1,0 +1,168 @@
+{
+  "run": "4d3a14f8c9",
+  "candidate": "fd1cb41d1a7583105a80e18967e91671571c1e07",
+  "source_dirty": true,
+  "artifact_digests": {
+    "bin/cratectld": "a95544c51e173ec1c769841feecaf4df6bb43834a73be8b915ade767533b7fea",
+    "bin/cratectl": "f9df654cb608c1abdd163c412a70d161ecc434703fb195ae148434bf06238154"
+  },
+  "host": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "topology": "macOS arm64 server, PostgreSQL 16.15 container, filesystem bytes, HTTP loopback only",
+  "checks": [
+    "other: create generic repository source",
+    "upstream reader grant",
+    "upstream credentials cannot cross tenant scope",
+    "upstream credential is bound to its approved authority and base path",
+    "admin: create generic repository remote",
+    "proxy never forwards caller credentials",
+    "fresh proxy hit is explicit",
+    "proxy is read only",
+    "conditional upstream revalidation preserves bytes",
+    "negative miss returns not found",
+    "negative cache does not create a second retrieval",
+    "concurrent proxy misses all receive exact bytes",
+    "concurrent proxy misses coalesce through PostgreSQL",
+    "admin: create generic repository local",
+    "admin: create generic repository combined",
+    "group serves authorized fallback source",
+    "namespace ownership prevents dependency-confusion fallback",
+    "revoked underlying grant blocks group fallback",
+    "restricted repository absent from unauthorized inventory",
+    "reader cannot inspect unrelated tenant audit events",
+    "cache status does not reveal credentials or lease tokens",
+    "admin: create generic repository reviewed",
+    "proxy intake is durable but quarantined before review",
+    "manual review allows exact proxy bytes",
+    "admin: create generic repository strict",
+    "upstream no-store requires explicit operator override",
+    "other: create generic repository bad-source",
+    "admin: create maven repository bad-cache",
+    "Maven upstream checksum mismatch is rejected",
+    "checksum mismatch publishes no artifact reference",
+    "explicit stale-on-503 preserves exact cached bytes",
+    "stale cache cannot bypass a current digest denial",
+    "an alias cannot bypass the same repository digest denial",
+    "proxy denial and cache state survive restart",
+    "upstream authentication rejection cannot use stale bytes"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-4d3a14f8c9-a",
+        "--actor",
+        "admin",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/admin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-4d3a14f8c9-a",
+        "--actor",
+        "reader",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/reader.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-4d3a14f8c9-b",
+        "--actor",
+        "other",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/other.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-4d3a14f8c9-b",
+        "--actor",
+        "origin",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/origin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-4d3a14f8c9-a",
+        "--actor",
+        "expired",
+        "--role",
+        "reader",
+        "--expires-in",
+        "1ms",
+        "--token-file",
+        "PRIVATE/expired.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-4d3a14f8c9-a",
+        "--actor",
+        "revocable",
+        "--role",
+        "reader",
+        "--expires-in",
+        "1h",
+        "--token-file",
+        "PRIVATE/revocable.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "revoke",
+        "--token-file",
+        "PRIVATE/origin.token"
+      ],
+      "exit": 0,
+      "output": "Credential revoked; subsequent authentication fails.\n"
+    }
+  ],
+  "limitations": [
+    "Not full format conformance or parity.",
+    "Proxy/group proof currently covers generic and Maven only; no complete mode, migration, HA, scale or scanner qualification.",
+    "Client fixture code executes only in the explicitly owned test consumer.",
+    "No claim of a separate-machine install."
+  ],
+  "status": "passed",
+  "input_digests": {}
+}

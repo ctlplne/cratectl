@@ -1,0 +1,476 @@
+{
+  "run": "51adaa29aa",
+  "candidate": "b249accec2d9967120022b7e1859a1bd311cb4e7",
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "source_dirty": true,
+  "artifact_digests": {
+    "bin/cratectld": "552f048a3ec10dff93673ee3925b88f3d3773c05cd1a73f5b2b26a13f3d005d7",
+    "bin/cratectl": "50fe02f720876903ebe46f159ab8855a08c1ac1103cc4cf96efc2076ace585e1"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "b249accec2d9967120022b7e1859a1bd311cb4e7",
+        "vcs.time": "2026-10-28T19:48:26Z",
+        "vcs.modified": "true"
+      }
+    },
+    "bin/cratectl": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "b249accec2d9967120022b7e1859a1bd311cb4e7",
+        "vcs.time": "2026-10-28T19:48:26Z",
+        "vcs.modified": "true"
+      }
+    }
+  },
+  "host": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "database_profile": "native",
+  "topology": "macOS arm64 server, PostgreSQL 16.15 native, filesystem bytes, HTTP loopback only",
+  "checks": [
+    "other: create pypi repository up-python",
+    "admin: create pypi repository python-proxy",
+    "stock pip proxy installs dependency and skips incompatible Python release",
+    "PyPI normalized JSON index exposes all governed platform files",
+    "PyPI proxy rewrites pinned filename-preserving URLs",
+    "PEP 658 metadata is exact archive-derived bytes",
+    "PyPI wheel range and conditional reads remain native",
+    "stock pip hash-locked download survives restart",
+    "upstream yanking survives catalog refresh",
+    "stock pip excludes yanked release during normal resolution",
+    "stock pip exact pin can consume a yanked release",
+    "admin: create pypi repository python-html",
+    "stock pip consumes governed upstream HTML index",
+    "admin: create pypi repository python-local",
+    "admin: create pypi repository python-group",
+    "stock pip group consumes hosted package and proxied dependency",
+    "PyPI group unions filenames with first-source collision ownership",
+    "Python namespace owner prevents dependency-confusion fallback",
+    "denied Python filename collision cannot fall through",
+    "Python group checks source grants for index and metadata sidecars",
+    "Python denial governs package, sidecar and metadata index",
+    "stock pip cannot resolve denied exact version",
+    "admin: create pypi repository python-reviewed",
+    "review-required Python proxy hides unfetched metadata",
+    "Python conventional download performs quarantined intake",
+    "approved Python digest becomes visible with governed sidecar",
+    "stock pip builds governed source distribution only in owned consumer"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-51adaa29aa-a",
+        "--actor",
+        "admin",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/admin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-51adaa29aa-a",
+        "--actor",
+        "reader",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/reader.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-51adaa29aa-b",
+        "--actor",
+        "other",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/other.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-51adaa29aa-b",
+        "--actor",
+        "origin",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/origin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-51adaa29aa-b",
+        "--actor",
+        "npm-meta-origin",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/npm-meta-origin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-51adaa29aa-b",
+        "--actor",
+        "npm-files-origin",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/npm-files-origin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-51adaa29aa-a",
+        "--actor",
+        "expired",
+        "--role",
+        "reader",
+        "--expires-in",
+        "1ms",
+        "--token-file",
+        "PRIVATE/expired.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-51adaa29aa-a",
+        "--actor",
+        "revocable",
+        "--role",
+        "reader",
+        "--expires-in",
+        "1h",
+        "--token-file",
+        "PRIVATE/revocable.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "twine",
+        "upload",
+        "--non-interactive",
+        "--repository-url",
+        "http://127.0.0.1:38443/pypi/up-python/",
+        "PRIVATE/wheels/cratectl_py_proxy_dep-1.0.0-py3-none-any.whl",
+        "PRIVATE/wheels/cratectl_py_proxy_app-1.0.0-py3-none-any.whl",
+        "PRIVATE/wheels/cratectl_py_proxy_app-2.0.0-py3-none-any.whl",
+        "PRIVATE/wheels/cratectl_py_proxy_app-3.0.0-py3-none-any.whl",
+        "PRIVATE/wheels/cratectl_owned_private-1.0.0-py3-none-any.whl"
+      ],
+      "exit": 0,
+      "output": "Uploading distributions to http://127.0.0.1:38443/pypi/up-python/\nUploading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.5/2.5 kB \u2022 00:00 \u2022 ?\n\nUploading cratectl_py_proxy_app-1.0.0-py3-none-any.whl\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.7/2.7 kB \u2022 00:00 \u2022 ?\n\nUploading cratectl_py_proxy_app-2.0.0-py3-none-any.whl\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.7/2.7 kB \u2022 00:00 \u2022 ?\n\nUploading cratectl_py_proxy_app-3.0.0-py3-none-any.whl\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.7/2.7 kB \u2022 00:00 \u2022 ?\n\nUploading cratectl_owned_private-1.0.0-py3-none-any.whl\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.6/2.6 kB \u2022 00:00 \u2022 ?\n\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--index-url",
+        "http://127.0.0.1:38443/pypi/python-proxy/simple/",
+        "--target",
+        "PRIVATE/python-proxy/installed",
+        "cratectl-py-proxy-app"
+      ],
+      "exit": 0,
+      "output": "Looking in indexes: http://127.0.0.1:38443/pypi/python-proxy/simple/\nCollecting cratectl-py-proxy-app\n  Downloading cratectl_py_proxy_app-2.0.0-py3-none-any.whl.metadata (179 bytes)\nCollecting cratectl-py-proxy-dep==1.0.0 (from cratectl-py-proxy-app)\n  Downloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl.metadata (135 bytes)\nDownloading cratectl_py_proxy_app-2.0.0-py3-none-any.whl (1.1 kB)\nDownloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl (1.1 kB)\nInstalling collected packages: cratectl-py-proxy-dep, cratectl-py-proxy-app\n\nSuccessfully installed cratectl-py-proxy-app-2.0.0 cratectl-py-proxy-dep-1.0.0\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-c",
+        "import sys;sys.path.insert(0,'PRIVATE/python-proxy/installed');import cratectl_py_proxy_app as app;import cratectl_py_proxy_dep as dep;assert app.value==43 and dep.value==41"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "pip",
+        "download",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--require-hashes",
+        "--index-url",
+        "http://127.0.0.1:38443/pypi/python-proxy/simple/",
+        "--dest",
+        "PRIVATE/python-proxy/after-restart",
+        "-r",
+        "PRIVATE/python-proxy/requirements.txt"
+      ],
+      "exit": 0,
+      "output": "Looking in indexes: http://127.0.0.1:38443/pypi/python-proxy/simple/\nCollecting cratectl-py-proxy-app==2.0.0 (from -r /Users/shankar/Desktop/ctlplne-cratectl/.private/conformance/51adaa29aa/python-proxy/requirements.txt (line 1))\n  Downloading cratectl_py_proxy_app-2.0.0-py3-none-any.whl (1.1 kB)\nCollecting cratectl-py-proxy-dep==1.0.0 (from -r /Users/shankar/Desktop/ctlplne-cratectl/.private/conformance/51adaa29aa/python-proxy/requirements.txt (line 2))\n  Downloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl (1.1 kB)\nSaved ./.private/conformance/51adaa29aa/python-proxy/after-restart/cratectl_py_proxy_app-2.0.0-py3-none-any.whl\nSaved ./.private/conformance/51adaa29aa/python-proxy/after-restart/cratectl_py_proxy_dep-1.0.0-py3-none-any.whl\nSuccessfully downloaded cratectl-py-proxy-app cratectl-py-proxy-dep\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--index-url",
+        "http://127.0.0.1:38443/pypi/python-proxy/simple/",
+        "--target",
+        "PRIVATE/python-proxy/after-yank",
+        "cratectl-py-proxy-app"
+      ],
+      "exit": 0,
+      "output": "Looking in indexes: http://127.0.0.1:38443/pypi/python-proxy/simple/\nCollecting cratectl-py-proxy-app\n  Downloading cratectl_py_proxy_app-1.0.0-py3-none-any.whl.metadata (179 bytes)\nCollecting cratectl-py-proxy-dep==1.0.0 (from cratectl-py-proxy-app)\n  Downloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl.metadata (135 bytes)\nDownloading cratectl_py_proxy_app-1.0.0-py3-none-any.whl (1.1 kB)\nDownloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl (1.1 kB)\nInstalling collected packages: cratectl-py-proxy-dep, cratectl-py-proxy-app\n\nSuccessfully installed cratectl-py-proxy-app-1.0.0 cratectl-py-proxy-dep-1.0.0\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-c",
+        "import sys;sys.path.insert(0,'PRIVATE/python-proxy/after-yank');import cratectl_py_proxy_app as app;import cratectl_py_proxy_dep as dep;assert app.value==42 and dep.value==41"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--index-url",
+        "http://127.0.0.1:38443/pypi/python-proxy/simple/",
+        "--target",
+        "PRIVATE/python-proxy/exact-yank",
+        "cratectl-py-proxy-app==2.0.0"
+      ],
+      "exit": 0,
+      "output": "Looking in indexes: http://127.0.0.1:38443/pypi/python-proxy/simple/\nCollecting cratectl-py-proxy-app==2.0.0\n  Downloading cratectl_py_proxy_app-2.0.0-py3-none-any.whl.metadata (179 bytes)\nCollecting cratectl-py-proxy-dep==1.0.0 (from cratectl-py-proxy-app==2.0.0)\n  Downloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl.metadata (135 bytes)\nWARNING: The candidate selected for download or install is a yanked version: 'cratectl-py-proxy-app' candidate (version 2.0.0 at http://127.0.0.1:38443/pypi/python-proxy/files/python-proxy/proxy/7778cdb234eac998ecdd836ddbbfd7d15f3b0aaa3acc0a8f1940a10269a4a73f/cratectl_py_proxy_app-2.0.0-py3-none-any.whl (from http://127.0.0.1:38443/pypi/python-proxy/simple/cratectl-py-proxy-app/) (requires-python:>=3.10))\nReason for being yanked: owned fixture yank\nDownloading cratectl_py_proxy_app-2.0.0-py3-none-any.whl (1.1 kB)\nDownloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl (1.1 kB)\nInstalling collected packages: cratectl-py-proxy-dep, cratectl-py-proxy-app\n\nSuccessfully installed cratectl-py-proxy-app-2.0.0 cratectl-py-proxy-dep-1.0.0\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-c",
+        "import sys;sys.path.insert(0,'PRIVATE/python-proxy/exact-yank');import cratectl_py_proxy_app as app;import cratectl_py_proxy_dep as dep;assert app.value==43 and dep.value==41"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--index-url",
+        "http://127.0.0.1:38443/pypi/python-html/simple/",
+        "--target",
+        "PRIVATE/python-proxy/html",
+        "cratectl-py-proxy-app"
+      ],
+      "exit": 0,
+      "output": "Looking in indexes: http://127.0.0.1:38443/pypi/python-html/simple/\nCollecting cratectl-py-proxy-app\n  Downloading cratectl_py_proxy_app-1.0.0-py3-none-any.whl.metadata (179 bytes)\nCollecting cratectl-py-proxy-dep==1.0.0 (from cratectl-py-proxy-app)\n  Downloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl.metadata (135 bytes)\nDownloading cratectl_py_proxy_app-1.0.0-py3-none-any.whl (1.1 kB)\nDownloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl (1.1 kB)\nInstalling collected packages: cratectl-py-proxy-dep, cratectl-py-proxy-app\n\nSuccessfully installed cratectl-py-proxy-app-1.0.0 cratectl-py-proxy-dep-1.0.0\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-c",
+        "import sys;sys.path.insert(0,'PRIVATE/python-proxy/html');import cratectl_py_proxy_app as app;import cratectl_py_proxy_dep as dep;assert app.value==42 and dep.value==41"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "twine",
+        "upload",
+        "--non-interactive",
+        "--repository-url",
+        "http://127.0.0.1:38443/pypi/python-local/",
+        "PRIVATE/wheels/cratectl_py_proxy_app-1.0.0-py3-none-any.whl",
+        "PRIVATE/wheels/cratectl_py_proxy_app-4.0.0-py3-none-any.whl"
+      ],
+      "exit": 0,
+      "output": "Uploading distributions to http://127.0.0.1:38443/pypi/python-local/\nUploading cratectl_py_proxy_app-1.0.0-py3-none-any.whl\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.7/2.7 kB \u2022 00:00 \u2022 ?\n\nUploading cratectl_py_proxy_app-4.0.0-py3-none-any.whl\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.7/2.7 kB \u2022 00:00 \u2022 ?\n\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--index-url",
+        "http://127.0.0.1:38443/pypi/python-group/simple/",
+        "--target",
+        "PRIVATE/python-proxy/group",
+        "cratectl-py-proxy-app"
+      ],
+      "exit": 0,
+      "output": "Looking in indexes: http://127.0.0.1:38443/pypi/python-group/simple/\nCollecting cratectl-py-proxy-app\n  Downloading cratectl_py_proxy_app-4.0.0-py3-none-any.whl.metadata (179 bytes)\nCollecting cratectl-py-proxy-dep==1.0.0 (from cratectl-py-proxy-app)\n  Downloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl.metadata (135 bytes)\nDownloading cratectl_py_proxy_app-4.0.0-py3-none-any.whl (1.1 kB)\nDownloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl (1.1 kB)\nInstalling collected packages: cratectl-py-proxy-dep, cratectl-py-proxy-app\n\nSuccessfully installed cratectl-py-proxy-app-4.0.0 cratectl-py-proxy-dep-1.0.0\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-c",
+        "import sys;sys.path.insert(0,'PRIVATE/python-proxy/group');import cratectl_py_proxy_app as app;import cratectl_py_proxy_dep as dep;assert app.value==45 and dep.value==41"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--index-url",
+        "http://127.0.0.1:38443/pypi/python-proxy/simple/",
+        "--target",
+        "PRIVATE/python-proxy/denied",
+        "cratectl-py-proxy-app==2.0.0"
+      ],
+      "exit": 1,
+      "output": "Looking in indexes: http://127.0.0.1:38443/pypi/python-proxy/simple/\nERROR: Ignored the following versions that require a different python version: 3.0.0 Requires-Python >=99\nERROR: Could not find a version that satisfies the requirement cratectl-py-proxy-app==2.0.0 (from versions: 1.0.0)\nERROR: No matching distribution found for cratectl-py-proxy-app==2.0.0\n",
+      "expected_failure": true
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "twine",
+        "upload",
+        "--non-interactive",
+        "--repository-url",
+        "http://127.0.0.1:38443/pypi/up-python/",
+        "PRIVATE/python-proxy/cratectl_py_source_app-1.0.0.tar.gz"
+      ],
+      "exit": 0,
+      "output": "Uploading distributions to http://127.0.0.1:38443/pypi/up-python/\nUploading cratectl_py_source_app-1.0.0.tar.gz\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.3/2.3 kB \u2022 00:00 \u2022 ?\n\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-cache-dir",
+        "--no-build-isolation",
+        "--index-url",
+        "http://127.0.0.1:38443/pypi/python-proxy/simple/",
+        "--target",
+        "PRIVATE/python-proxy/source-consumer",
+        "cratectl-py-source-app"
+      ],
+      "exit": 0,
+      "output": "Looking in indexes: http://127.0.0.1:38443/pypi/python-proxy/simple/\nCollecting cratectl-py-source-app\n  Downloading cratectl_py_source_app-1.0.0.tar.gz (891 bytes)\n  Preparing metadata (pyproject.toml): started\n  Preparing metadata (pyproject.toml): finished with status 'done'\nCollecting cratectl-py-proxy-dep==1.0.0 (from cratectl-py-source-app)\n  Downloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl.metadata (135 bytes)\nDownloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl (1.1 kB)\nBuilding wheels for collected packages: cratectl-py-source-app\n  Building wheel for cratectl-py-source-app (pyproject.toml): started\n  Building wheel for cratectl-py-source-app (pyproject.toml): finished with status 'done'\n  Created wheel for cratectl-py-source-app: filename=cratectl_py_source_app-1.0.0-py3-none-any.whl size=1104 sha256=cecc286997d5293c43ac4380c028aba09dfeddb945d64bb281571b5e58f4f4ea\n  Stored in directory: /private/var/folders/q3/3vdpt6rs5fx08rz67jl4n14h0000gn/T/pip-ephem-wheel-cache-rophkyom/wheels/04/38/7c/1402e12046eca4dc42eb0a94fc1c86978329cfe02746387989\nSuccessfully built cratectl-py-source-app\nInstalling collected packages: cratectl-py-proxy-dep, cratectl-py-source-app\n\nSuccessfully installed cratectl-py-proxy-dep-1.0.0 cratectl-py-source-app-1.0.0\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-c",
+        "import sys;sys.path.insert(0,'PRIVATE/python-proxy/source-consumer');from cratectl_py_source_app import value;assert value==46"
+      ],
+      "exit": 0,
+      "output": ""
+    }
+  ],
+  "limitations": [
+    "Not full format conformance or parity.",
+    "Proxy/group proof covers generic, Maven and early npm journeys; no complete mode, migration, HA, scale or scanner qualification.",
+    "Client fixture code executes only in the explicitly owned test consumer.",
+    "No claim of a separate-machine install."
+  ],
+  "build_source_matches_candidate": false,
+  "status": "passed",
+  "input_digests": {
+    "wheels/cratectl_py_proxy_app-2.0.0-py3-none-any.whl": "63cf6dfdfaa1453d592c4ad5a5cfdb8e90c99da8d563f140c579aa3eae45ced5",
+    "wheels/cratectl_owned_private-1.0.0-py3-none-any.whl": "325a6dfef3b21aff292ba17bba5ec65a79375bb0654231566b84f7850a5d080c",
+    "wheels/cratectl_py_proxy_app-3.0.0-py3-none-any.whl": "7cbc638dfd2e593cd6cdb45ca26836ecbf9d019dc71f995b4f8952fb4b93cfd0",
+    "wheels/cratectl_py_proxy_dep-1.0.0-py3-none-any.whl": "6a59cc8d315fd40ffcd00864ad7489e64400d470afae440091441d73c2c1dd6e",
+    "wheels/cratectl_py_proxy_app-4.0.0-py3-none-any.whl": "a3a62e02a4f6591ff0c99ffac04c017de83dd43634f9be914029339b977f499c",
+    "wheels/cratectl_py_proxy_app-1.0.0-py3-none-any.whl": "80b2a1d08d6703c4cb108b923fa7216293b8fc9386d9711d3c70e2a60020d85f",
+    "python-proxy/after-restart/cratectl_py_proxy_app-2.0.0-py3-none-any.whl": "63cf6dfdfaa1453d592c4ad5a5cfdb8e90c99da8d563f140c579aa3eae45ced5",
+    "python-proxy/after-restart/cratectl_py_proxy_dep-1.0.0-py3-none-any.whl": "6a59cc8d315fd40ffcd00864ad7489e64400d470afae440091441d73c2c1dd6e"
+  }
+}

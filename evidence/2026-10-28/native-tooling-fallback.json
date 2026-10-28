@@ -1,0 +1,24 @@
+{
+  "version": "postgres (PostgreSQL) 16.15",
+  "source": "https://ftp.postgresql.org/pub/source/v16.15/postgresql-16.15.tar.bz2",
+  "sha256": "c1575341fa7bd40f5274ea465b34390f4dc64cdd0770af327005caaeb9f6b7ed",
+  "prefix": "/Users/shankar/Desktop/ctlplne-cratectl/.cache/postgresql-16.15-install",
+  "configure": [
+    "--without-readline",
+    "--without-icu",
+    "--without-zlib"
+  ],
+  "purpose": "Owned loopback integration fallback; no production packaging or Docker qualification.",
+  "gitleaks": {
+    "version": "8.30.1",
+    "source": "https://github.com/gitleaks/gitleaks/releases/tag/v8.30.1",
+    "sha256": "b40ab0ae55c505963e365f271a8d3846efbc170aa17f2607f13df610a9aeb6a5"
+  },
+  "runtime_failure": {
+    "owned_container": "cratectl-dev-postgres",
+    "observed_state": "exited",
+    "error": "OCI task creation failed: missing /var/run/desktop-containerd/daemon/io.containerd.runtime.v2.task/moby/<container>/log.json; runc exit 2",
+    "attempts": "Owned retained-container start and disposable owned runtime probe both failed. Original container/volume retained; no shared Docker restart.",
+    "fallback": "Fresh independent native PostgreSQL cluster in .private/cratectl-native-postgres, loopback 35432."
+  }
+}

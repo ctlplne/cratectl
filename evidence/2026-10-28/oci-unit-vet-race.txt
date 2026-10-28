@@ -1,0 +1,22 @@
+mkdir -p bin
+/Users/shankar/Desktop/ctlplne-cratectl/.cache/go/bin/go build -trimpath -o bin/cratectld ./cmd/cratectld
+/Users/shankar/Desktop/ctlplne-cratectl/.cache/go/bin/go build -trimpath -o bin/cratectl ./cmd/cratectl
+/Users/shankar/Desktop/ctlplne-cratectl/.cache/go/bin/go test ./...
+?   	ctlplne.dev/cratectl/cmd/cratectl	[no test files]
+?   	ctlplne.dev/cratectl/cmd/cratectld	[no test files]
+ok  	ctlplne.dev/cratectl/internal/blob	(cached)
+ok  	ctlplne.dev/cratectl/internal/crypto	(cached)
+ok  	ctlplne.dev/cratectl/internal/server	0.174s
+?   	ctlplne.dev/cratectl/internal/store	[no test files]
+ok  	ctlplne.dev/cratectl/internal/upstream	(cached)
+/Users/shankar/Desktop/ctlplne-cratectl/.cache/go/bin/go vet ./...
+python3 scripts/check_architecture.py
+PASS: crypto imports, core-only dependency boundary, license IDs and tenant-table RLS declarations
+/Users/shankar/Desktop/ctlplne-cratectl/.cache/go/bin/go test -race ./...
+?   	ctlplne.dev/cratectl/cmd/cratectl	[no test files]
+?   	ctlplne.dev/cratectl/cmd/cratectld	[no test files]
+ok  	ctlplne.dev/cratectl/internal/blob	(cached)
+ok  	ctlplne.dev/cratectl/internal/crypto	(cached)
+ok  	ctlplne.dev/cratectl/internal/server	1.241s
+?   	ctlplne.dev/cratectl/internal/store	[no test files]
+ok  	ctlplne.dev/cratectl/internal/upstream	(cached)
