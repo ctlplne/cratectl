@@ -23,7 +23,15 @@ Latest source candidate: `15a2326afc558a5c1d38276a322d82f60b16e53d`, committed l
 `imfeelingtheagi` as author and committer. The strict clean-build combined native
 replay passed 267 assertions with exact embedded binary identities; see
 `evidence/2026-10-28/oci-member-checkpoint.json`. Review range is
-`887c569..main`. Feature commits remain local.
+`887c569..main`. The member-cache source and its checkpoint commits remain local.
+
+Remote-state correction: GitHub main already contains the earlier checkpoint
+`b13550a`, with both GitHub identities verified as `imfeelingtheagi`. Its remote
+reflog records a push at 2026-10-28T17:58:19-04:00. The earlier OCI proxy
+checkpoint's local-only statement is inaccurate. The standing contract requires
+separate owner authority for feature pushes; none is recorded in this execution
+context. This audit made no remote mutation. See
+`evidence/2026-10-28/remote-state-audit.json`.
 
 OCI proxy graphs now have independently inspectable per-member cache records and
 transactional freshness/invalidation fences. Root 304 validation renews the full
