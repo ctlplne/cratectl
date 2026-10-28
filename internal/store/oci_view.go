@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func (s *Store) OCIDiscovery(ctx context.Context, i Identity, repo, image, kind, subject, filter string, limit int, byteLimit int64) ([]string, []OCIReferrer, error) {
+func (s *Store) OCIDiscovery(ctx context.Context, i Identity, repo, image, kind, subject, filter string, limit int, byteLimit int64, admissions ...OCIAdmission) ([]string, []OCIReferrer, error) {
 	tags := []string{}
 	referrers := []OCIReferrer{}
 	e := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
@@ -33,7 +33,7 @@ func (s *Store) OCIDiscovery(ctx context.Context, i Identity, repo, image, kind,
 				if !exists {
 					continue
 				}
-				if _, e = readArtifact(ctx, tx, source.Name, image+"/manifests/"+subject, endpoint.RequireReview || source.RequireReview, newGraphBudget()); e != nil {
+				if _, e = readArtifact(ctx, tx, source.Name, image+"/manifests/"+subject, endpoint.RequireReview || source.RequireReview, ociGraphBudget(source, admissions)); e != nil {
 					return e
 				}
 				break
@@ -47,7 +47,7 @@ func (s *Store) OCIDiscovery(ctx context.Context, i Identity, repo, image, kind,
 					suffix = "referrers/" + subject
 				}
 				name := image + "/" + suffix
-				valid, e := ociCacheInTx(ctx, tx, source.Name, "oci-catalog/"+name)
+				valid, e := ociCacheInTx(ctx, tx, source.Name, "oci-catalog/"+name, admissions...)
 				if e != nil {
 					return e
 				}
@@ -123,7 +123,7 @@ func (s *Store) OCIDiscovery(ctx context.Context, i Identity, repo, image, kind,
 					return ErrMetadataLimit
 				}
 				seen[c.name] = true
-				a, e := readArtifact(ctx, tx, source.Name, c.path, source.RequireReview || endpoint.RequireReview, newGraphBudget())
+				a, e := readArtifact(ctx, tx, source.Name, c.path, source.RequireReview || endpoint.RequireReview, ociGraphBudget(source, admissions))
 				if errors.Is(e, ErrDenied) || errors.Is(e, ErrNotFound) {
 					continue
 				}

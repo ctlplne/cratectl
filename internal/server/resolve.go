@@ -21,12 +21,13 @@ var errUpstream = errors.New("configured upstream retrieval failed")
 var errUpstreamIntegrity = errors.New("configured upstream checksum verification failed")
 
 type resolvedArtifact struct {
-	artifact store.Artifact
-	source   store.Repository
-	groups   []string
-	cache    string
-	ociImage string
-	ociRef   string
+	artifact   store.Artifact
+	source     store.Repository
+	groups     []string
+	cache      string
+	ociImage   string
+	ociRef     string
+	admissions []store.OCIAdmission
 }
 
 func (s *Server) resolve(ctx context.Context, i store.Identity, repo store.Repository, p string, force bool) (resolvedArtifact, error) {
@@ -96,6 +97,9 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 				return result, store.ErrNotFound
 			case "failed":
 				if lease.StalePermitted() {
+					if repo.Format == "oci" {
+						result.admissions = []store.OCIAdmission{{Repository: repo.Name, Path: p, Generation: lease.Generation, Stale: true}}
+					}
 					result.cache = "stale"
 					result.artifact, e = s.proxyArtifact(ctx, i, repo, p)
 					return result, e
@@ -180,6 +184,9 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 		force = false
 		switch refreshed.State {
 		case "ready":
+			if repo.Format == "oci" {
+				result.admissions = []store.OCIAdmission{{Repository: repo.Name, Path: p, Generation: refreshed.Generation}}
+			}
 			result.cache = "filled"
 			if refreshed.LastStatus == 304 {
 				result.cache = "revalidated"
@@ -190,6 +197,9 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 			return result, store.ErrNotFound
 		case "failed":
 			if refreshed.StalePermitted() {
+				if repo.Format == "oci" {
+					result.admissions = []store.OCIAdmission{{Repository: repo.Name, Path: p, Generation: refreshed.Generation, Stale: true}}
+				}
 				result.cache = "stale"
 				result.artifact, e = s.proxyArtifact(ctx, i, repo, p)
 				return result, e
@@ -417,7 +427,7 @@ func (s *Server) guardResolved(ctx context.Context, i store.Identity, a resolved
 		}
 		_, kind, _ := parseOCIPath(a.artifact.Path)
 		var source store.Repository
-		current, source, e = s.DB.OCISelection(ctx, i, endpoint, a.ociImage, kind, a.ociRef)
+		current, source, e = s.DB.OCISelection(ctx, i, endpoint, a.ociImage, kind, a.ociRef, a.admissions...)
 		if e != nil {
 			return current, e
 		}

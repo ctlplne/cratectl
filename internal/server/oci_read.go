@@ -8,56 +8,58 @@ import (
 )
 
 func (s *Server) resolveOCI(ctx context.Context, i store.Identity, endpoint store.Repository, image, kind, ref string, force bool) (resolvedArtifact, error) {
-	sources, e := s.DB.NativeRepositories(ctx, i, endpoint.Name, image, "oci")
-	if e != nil {
-		return resolvedArtifact{}, e
-	}
-	for _, source := range sources {
-		result := resolvedArtifact{source: source}
-		if source.Mode == "proxy" {
-			if ociDigest.MatchString(ref) && !force {
-				a, _, err := s.DB.OCISelection(ctx, i, source.Name, image, kind, ref)
-				if err == nil {
-					result.artifact = a
-					result.cache = "hit"
-				} else if !errors.Is(err, store.ErrNotFound) && !errors.Is(err, store.ErrBusy) {
-					return result, err
-				}
-			}
-			if result.artifact.Digest == "" {
-				result, e = s.resolveProxy(ctx, i, source, image+"/"+kind+"/"+ref, force)
-			}
-		} else {
-			result.artifact, _, e = s.DB.OCISelection(ctx, i, source.Name, image, kind, ref)
-		}
-		if errors.Is(e, store.ErrNotFound) {
-			e = nil
-			continue
-		}
+	retrySource := ""
+	for attempt := 0; attempt < 2; attempt++ {
+		sources, e := s.DB.NativeRepositories(ctx, i, endpoint.Name, image, "oci")
 		if e != nil {
-			return result, e
+			return resolvedArtifact{}, e
 		}
-		a, selected, err := s.DB.OCISelection(ctx, i, endpoint.Name, image, kind, ref)
-		if err != nil {
-			return result, err
+		retry := false
+		for _, source := range sources {
+			result := resolvedArtifact{source: source}
+			if source.Mode == "proxy" {
+				result, e = s.resolveProxy(ctx, i, source, image+"/"+kind+"/"+ref, force || retrySource == source.Name)
+			} else {
+				result.artifact, _, e = s.DB.OCISelection(ctx, i, source.Name, image, kind, ref)
+			}
+			if errors.Is(e, store.ErrNotFound) {
+				e = nil
+				continue
+			}
+			if e != nil {
+				return result, e
+			}
+			a, selected, err := s.DB.OCISelection(ctx, i, endpoint.Name, image, kind, ref, result.admissions...)
+			if errors.Is(err, store.ErrOCICacheExpired) && attempt == 0 {
+				retrySource = source.Name
+				retry = true
+				break
+			}
+			if err != nil {
+				return result, err
+			}
+			if a.Digest != result.artifact.Digest || selected.Name != source.Name {
+				return result, store.ErrConflict
+			}
+			result.artifact = a
+			result.ociImage = image
+			result.ociRef = ref
+			if endpoint.Mode == "group" {
+				result.groups = []string{endpoint.Name}
+			}
+			return result, nil
 		}
-		if a.Digest != result.artifact.Digest || selected.Name != source.Name {
-			return result, store.ErrConflict
+		if !retry {
+			return resolvedArtifact{}, store.ErrNotFound
 		}
-		result.artifact = a
-		result.ociImage = image
-		result.ociRef = ref
-		if endpoint.Mode == "group" {
-			result.groups = []string{endpoint.Name}
-		}
-		return result, nil
 	}
-	return resolvedArtifact{}, store.ErrNotFound
+	return resolvedArtifact{}, store.ErrOCICacheExpired
 }
-func (s *Server) refreshOCIDiscovery(ctx context.Context, i store.Identity, repo store.Repository, image, kind, ref string, force bool) error {
+func (s *Server) refreshOCIDiscovery(ctx context.Context, i store.Identity, repo store.Repository, image, kind, ref string, force bool) ([]store.OCIAdmission, error) {
+	admissions := []store.OCIAdmission{}
 	sources, e := s.DB.NativeRepositories(ctx, i, repo.Name, image, "oci")
 	if e != nil {
-		return e
+		return admissions, e
 	}
 	for _, source := range sources {
 		if source.Mode != "proxy" {
@@ -67,9 +69,30 @@ func (s *Server) refreshOCIDiscovery(ctx context.Context, i store.Identity, repo
 		if kind == "referrers" {
 			suffix = "referrers/" + ref
 		}
-		if _, e = s.resolveProxy(ctx, i, source, "oci-catalog/"+image+"/"+suffix, force); e != nil && !errors.Is(e, store.ErrNotFound) {
-			return e
+		result, err := s.resolveProxy(ctx, i, source, "oci-catalog/"+image+"/"+suffix, force)
+		if err != nil && !errors.Is(err, store.ErrNotFound) {
+			return admissions, err
 		}
+		admissions = append(admissions, result.admissions...)
 	}
-	return nil
+	return admissions, nil
+}
+
+func (s *Server) ociDiscovery(ctx context.Context, i store.Identity, repo store.Repository, image, kind, ref, filter string, force bool) ([]string, []store.OCIReferrer, error) {
+	for attempt := 0; attempt < 2; attempt++ {
+		admissions, e := s.refreshOCIDiscovery(ctx, i, repo, image, kind, ref, force || attempt > 0)
+		if e != nil {
+			return nil, nil, e
+		}
+		limit := s.NativeVersionLimit
+		if kind == "tags/list" {
+			limit = s.NativeTagLimit
+		}
+		tags, refs, e := s.DB.OCIDiscovery(ctx, i, repo.Name, image, kind, ref, filter, limit, s.NativeMetadataBytes, admissions...)
+		if errors.Is(e, store.ErrOCICacheExpired) && attempt == 0 {
+			continue
+		}
+		return tags, refs, e
+	}
+	return nil, nil, store.ErrOCICacheExpired
 }

@@ -31,6 +31,28 @@ type OCIReferrer struct {
 	Annotations  map[string]string `json:"annotations,omitempty"`
 }
 
+// CachedOCIObject is internal intake data, never a serving authorization.
+// Conditional revalidation can inspect quarantine; publication and serving
+// independently recheck current decisions and complete graph policy.
+func (s *Store) CachedOCIObject(ctx context.Context, i Identity, repo, path string) (Artifact, error) {
+	var a Artifact
+	e := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
+		r, e := repositoryInTx(ctx, tx, i, repo, "read")
+		if e != nil {
+			return e
+		}
+		if r.Format != "oci" || r.Mode != "proxy" {
+			return ErrConflict
+		}
+		e = scanArtifact(tx.QueryRow(ctx, `SELECT `+artifactColumns+` FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND a.path=$2`, repo, path), &a)
+		if errors.Is(e, pgx.ErrNoRows) {
+			return ErrNotFound
+		}
+		return e
+	})
+	return a, e
+}
+
 func (s *Store) OCIManifest(ctx context.Context, i Identity, repo, image, ref string) (Artifact, error) {
 	var a Artifact
 	e := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
@@ -141,7 +163,11 @@ func publishOCI(ctx context.Context, tx pgx.Tx, i Identity, repo, image, tag str
 		return e
 	}
 	if tag != "" {
-		_, e = tx.Exec(ctx, `INSERT INTO cratectl.tags(tenant,repository,image,tag,digest) VALUES($1,$2,$3,$4,$5) ON CONFLICT(tenant,repository,image,tag) DO UPDATE SET digest=excluded.digest,deleted=false,version=cratectl.tags.version+1`, i.Tenant, repo, image, tag, "sha256:"+a.Digest)
+		sequence, err := nextEventSequence(ctx, tx, i)
+		if err != nil {
+			return err
+		}
+		_, e = tx.Exec(ctx, `INSERT INTO cratectl.tags(tenant,repository,image,tag,digest,change_sequence) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT(tenant,repository,image,tag) DO UPDATE SET digest=excluded.digest,deleted=false,version=cratectl.tags.version+1,changed_at=clock_timestamp(),change_sequence=excluded.change_sequence`, i.Tenant, repo, image, tag, "sha256:"+a.Digest, sequence)
 	}
 	return e
 }

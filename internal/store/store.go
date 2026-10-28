@@ -154,6 +154,15 @@ func (s *Store) Tx(ctx context.Context, i Identity, write bool, fn func(pgx.Tx) 
 	}
 	return tx.Commit(ctx)
 }
+
+// nextEventSequence is a mutation fence under Tx's tenant write lock. The
+// enclosing mutation must append its event in this same transaction.
+func nextEventSequence(ctx context.Context, tx pgx.Tx, i Identity) (int64, error) {
+	var sequence int64
+	e := tx.QueryRow(ctx, `SELECT COALESCE(max(sequence),0)+1 FROM cratectl.events WHERE tenant=$1`, i.Tenant).Scan(&sequence)
+	return sequence, e
+}
+
 func appendEvent(ctx context.Context, tx pgx.Tx, i Identity, kind string, data any) error {
 	var seq int64
 	var prev string

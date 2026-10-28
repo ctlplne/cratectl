@@ -19,11 +19,13 @@ func isManifest(media string) bool {
 }
 
 type graphBudget struct {
-	remaining     int
-	depth         int
-	stack         map[string]bool
-	checked       map[string]Artifact
-	metadataBytes int64
+	remaining       int
+	depth           int
+	stack           map[string]bool
+	checked         map[string]Artifact
+	metadataBytes   int64
+	cacheRepository string
+	admissions      []OCIAdmission
 }
 
 func newGraphBudget() *graphBudget {
@@ -58,6 +60,22 @@ func readArtifact(ctx context.Context, tx pgx.Tx, repo, path string, review bool
 	}
 	if a.Decision == "denied" || (review && a.Decision != "allowed") {
 		return a, ErrDenied
+	}
+	if b.cacheRepository != "" {
+		var exists bool
+		if e = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM cratectl.retrievals WHERE repository=$1 AND path=$2)`, repo, path).Scan(&exists); e != nil {
+			return a, e
+		}
+		if !exists {
+			return a, ErrOCICacheExpired
+		}
+		valid, e := ociCacheInTx(ctx, tx, repo, path, b.admissions...)
+		if e != nil {
+			return a, e
+		}
+		if !valid {
+			return a, ErrDenied
+		}
 	}
 	if isManifest(a.MediaType) {
 		var metadata struct {

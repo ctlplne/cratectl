@@ -25,6 +25,7 @@ type OCIPublication struct {
 	Objects          []Artifact
 	Tags             map[string]string
 	CompleteTags     bool
+	MemberCaches     map[string]OCIMemberCache
 }
 
 func insertOCIObject(ctx context.Context, tx pgx.Tx, i Identity, repo string, a Artifact) error {
@@ -45,7 +46,7 @@ func insertOCIObject(ctx context.Context, tx pgx.Tx, i Identity, repo string, a 
 	}
 	return nil
 }
-func completeOCIPublication(ctx context.Context, tx pgx.Tx, i Identity, repo Repository, lease Retrieval, p OCIPublication, objectDigest string, objectSize int64) error {
+func completeOCIPublication(ctx context.Context, tx pgx.Tx, i Identity, repo Repository, lease Retrieval, p OCIPublication, objectDigest string, objectSize int64, fresh, stale int, sequence int64) error {
 	if repo.Format != "oci" || len(p.Objects) > 4096 || p.Image == "" {
 		return ErrConflict
 	}
@@ -62,6 +63,15 @@ func completeOCIPublication(ctx context.Context, tx pgx.Tx, i Identity, repo Rep
 		}
 		seen[a.Path] = true
 		if e := insertOCIObject(ctx, tx, i, repo.Name, a); e != nil {
+			return e
+		}
+	}
+	for _, a := range p.Objects {
+		c, ok := p.MemberCaches[a.Path]
+		if !ok {
+			c = OCIMemberCache{FreshSeconds: fresh, StaleSeconds: stale}
+		}
+		if e := refreshOCIMember(ctx, tx, i, lease, a, c, sequence); e != nil {
 			return e
 		}
 	}
@@ -116,7 +126,14 @@ func completeOCIPublication(ctx context.Context, tx pgx.Tx, i Identity, repo Rep
 		for tag := range p.Tags {
 			names = append(names, tag)
 		}
-		if _, e := tx.Exec(ctx, `UPDATE cratectl.tags SET deleted=true,version=version+1 WHERE repository=$1 AND image=$2 AND NOT(tag=ANY($3::text[])) AND NOT deleted`, repo.Name, p.Image, names); e != nil {
+		var newer bool
+		if e := tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM cratectl.tags WHERE repository=$1 AND image=$2 AND NOT(tag=ANY($3::text[])) AND NOT deleted AND change_sequence>$4)`, repo.Name, p.Image, names, lease.ChangeSequence).Scan(&newer); e != nil {
+			return e
+		}
+		if newer {
+			return ErrOCIMemberChanged
+		}
+		if _, e := tx.Exec(ctx, `UPDATE cratectl.tags SET deleted=true,version=version+1,changed_at=clock_timestamp(),change_sequence=$4 WHERE repository=$1 AND image=$2 AND NOT(tag=ANY($3::text[])) AND NOT deleted`, repo.Name, p.Image, names, sequence); e != nil {
 			return e
 		}
 	}
@@ -124,13 +141,26 @@ func completeOCIPublication(ctx context.Context, tx pgx.Tx, i Identity, repo Rep
 		if !seen[p.Image+"/manifests/"+digest] {
 			return ErrConflict
 		}
-		if _, e := tx.Exec(ctx, `INSERT INTO cratectl.tags(tenant,repository,image,tag,digest) VALUES($1,$2,$3,$4,$5) ON CONFLICT(tenant,repository,image,tag) DO UPDATE SET digest=excluded.digest,deleted=false,version=cratectl.tags.version+1`, i.Tenant, repo.Name, p.Image, tag, digest); e != nil {
+		var previous string
+		var deleted bool
+		var changed int64
+		e := tx.QueryRow(ctx, `SELECT digest,deleted,change_sequence FROM cratectl.tags WHERE repository=$1 AND image=$2 AND tag=$3`, repo.Name, p.Image, tag).Scan(&previous, &deleted, &changed)
+		if e != nil && !errors.Is(e, pgx.ErrNoRows) {
+			return e
+		}
+		if e == nil && changed > lease.ChangeSequence {
+			if previous == digest && !deleted {
+				continue
+			}
+			return ErrOCIMemberChanged
+		}
+		if _, e := tx.Exec(ctx, `INSERT INTO cratectl.tags(tenant,repository,image,tag,digest,change_sequence) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT(tenant,repository,image,tag) DO UPDATE SET digest=excluded.digest,deleted=false,version=cratectl.tags.version+1,changed_at=clock_timestamp(),change_sequence=excluded.change_sequence`, i.Tenant, repo.Name, p.Image, tag, digest, sequence); e != nil {
 			return e
 		}
 	}
 	return nil
 }
-func ociCacheInTx(ctx context.Context, tx pgx.Tx, repo, path string) (bool, error) {
+func ociCacheInTx(ctx context.Context, tx pgx.Tx, repo, path string, admissions ...OCIAdmission) (bool, error) {
 	var r Retrieval
 	e := scanRetrieval(tx.QueryRow(ctx, `SELECT `+retrievalColumns+` FROM cratectl.retrievals WHERE repository=$1 AND path=$2`, repo, path), &r)
 	if errors.Is(e, pgx.ErrNoRows) {
@@ -143,17 +173,41 @@ func ociCacheInTx(ctx context.Context, tx pgx.Tx, repo, path string) (bool, erro
 		return false, ErrBusy
 	}
 	if r.State == "negative" {
+		if !r.Fresh() {
+			return false, ErrOCICacheExpired
+		}
 		return false, nil
 	}
-	if r.State == "failed" && !r.StalePermitted() {
+	if r.State == "failed" {
+		if r.StalePermitted() {
+			admitted, e := ociCacheAdmission(ctx, tx, repo, r, admissions)
+			if e != nil {
+				return false, e
+			}
+			if admitted {
+				return true, nil
+			}
+		}
+		if !r.Fresh() {
+			return false, ErrOCICacheExpired
+		}
 		return false, ErrOCICache
+	}
+	if r.State == "ready" && !r.Fresh() {
+		admitted, e := ociCacheAdmission(ctx, tx, repo, r, admissions)
+		if e != nil {
+			return false, e
+		}
+		if !admitted {
+			return false, ErrOCICacheExpired
+		}
 	}
 	return true, nil
 }
 
 // OCISelection checks source precedence, all selected grants and the complete
 // graph from one snapshot. A known but blocked first source owns the collision.
-func (s *Store) OCISelection(ctx context.Context, i Identity, repo, image, kind, ref string) (Artifact, Repository, error) {
+func (s *Store) OCISelection(ctx context.Context, i Identity, repo, image, kind, ref string, admissions ...OCIAdmission) (Artifact, Repository, error) {
 	var a Artifact
 	var selected Repository
 	e := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
@@ -164,7 +218,7 @@ func (s *Store) OCISelection(ctx context.Context, i Identity, repo, image, kind,
 		for _, source := range members {
 			digest := ref
 			if source.Mode == "proxy" {
-				valid, e := ociCacheInTx(ctx, tx, source.Name, image+"/"+kind+"/"+ref)
+				valid, e := ociCacheInTx(ctx, tx, source.Name, image+"/"+kind+"/"+ref, admissions...)
 				if e != nil {
 					return e
 				}
@@ -193,7 +247,7 @@ func (s *Store) OCISelection(ctx context.Context, i Identity, repo, image, kind,
 				continue
 			}
 			selected = source
-			a, e = readArtifact(ctx, tx, source.Name, p, endpoint.RequireReview || source.RequireReview, newGraphBudget())
+			a, e = readArtifact(ctx, tx, source.Name, p, endpoint.RequireReview || source.RequireReview, ociGraphBudget(source, admissions))
 			if errors.Is(e, ErrNotFound) {
 				return ErrDenied
 			}

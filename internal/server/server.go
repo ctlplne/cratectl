@@ -83,6 +83,11 @@ func fail(w http.ResponseWriter, status int, code, action string) {
 }
 func respondErr(w http.ResponseWriter, e error) {
 	switch {
+	case errors.Is(e, store.ErrOCIMemberChanged):
+		fail(w, 409, "graph_cache_superseded", "A graph member changed during intake. Retry against the current cache state; no partial graph was published.")
+	case errors.Is(e, store.ErrOCICacheExpired):
+		w.Header().Set("Retry-After", "1")
+		fail(w, 503, "graph_cache_expired", "The OCI graph requires current member validation. Retry the repository request.")
 	case errors.Is(e, store.ErrOCICache):
 		fail(w, 502, "upstream_unavailable", "Inspect the OCI source cache state and repair or revalidate the failed source; group requests cannot bypass its failure.")
 	case errors.Is(e, store.ErrOCIUnvalidated):

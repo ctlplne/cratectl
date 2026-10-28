@@ -71,9 +71,21 @@ stale windows use the shared proxy cache settings. Inspect the cache API for the
 requested `IMAGE/manifests/TAG` or `oci-catalog/IMAGE/tags` path to explain a
 failure or expire a binding after repairing its origin. A complete tag refresh
 can add or remove mutable tags while retained digest pins keep their exact bytes.
-Full per-object freshness and invalidation for implicitly staged graph members
-remains open. Explicit `Cache-Control: no-cache` requests force retrieval; the
-current native freshness proof covers the listed tag/catalog paths.
+Every implicitly staged canonical manifest and blob has its own cache record:
+inspect `IMAGE/manifests/sha256:DIGEST` or `IMAGE/blobs/sha256:DIGEST`. Expiring a
+member also forces its dependent graph to revalidate before serving. Explicit
+`Cache-Control: no-cache` forces retrieval. A successful zero-freshness response
+admits its current request; the next request revalidates again. A root 304 still
+renews its dependencies. Mutable manifests require strong ETags for exact-byte
+reuse; weak/time-only validators cause a full root fetch.
+
+A `graph_cache_superseded` conflict means newer member/tag state won while the
+request was fetching. Retry to resolve current state; no partial graph was
+published. `graph_cache_expired` means the bounded retry did not establish a
+complete current graph; inspect the source/member cache records and origin.
+An outage can serve stale bytes only inside every required member's own allowed
+window. Operator invalidation, missing members and policy denial block stale use.
+Complete source removal/lifecycle and the full fault campaign remain open.
 
 Groups take an ordered hosted/proxy `members` list. Reserve private image prefixes
 through namespace ownership. The first source owns a tag/digest collision,

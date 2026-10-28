@@ -218,11 +218,7 @@ func (s *Server) oci(w http.ResponseWriter, r *http.Request, i store.Identity, r
 			fail(w, 400, "DIGEST_INVALID", "Choose a SHA-256 subject and an optional artifact media type.")
 			return
 		}
-		if e := s.refreshOCIDiscovery(ctx, i, repo, image, "referrers", ref, forceRefresh(r)); e != nil {
-			respondErr(w, e)
-			return
-		}
-		_, referrers, e := s.DB.OCIDiscovery(ctx, i, repo.Name, image, "referrers", ref, kind, s.NativeVersionLimit, s.NativeMetadataBytes)
+		_, referrers, e := s.ociDiscovery(ctx, i, repo, image, "referrers", ref, kind, forceRefresh(r))
 		if e != nil {
 			respondErr(w, e)
 			return
@@ -243,11 +239,7 @@ func (s *Server) oci(w http.ResponseWriter, r *http.Request, i store.Identity, r
 			fail(w, 405, "UNSUPPORTED", "List tags with GET.")
 			return
 		}
-		if e := s.refreshOCIDiscovery(ctx, i, repo, image, "tags/list", "", forceRefresh(r)); e != nil {
-			respondErr(w, e)
-			return
-		}
-		tags, _, e := s.DB.OCIDiscovery(ctx, i, repo.Name, image, "tags/list", "", "", s.NativeTagLimit, s.NativeMetadataBytes)
+		tags, _, e := s.ociDiscovery(ctx, i, repo, image, "tags/list", "", "", forceRefresh(r))
 		if e != nil {
 			respondErr(w, e)
 			return

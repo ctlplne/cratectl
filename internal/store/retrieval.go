@@ -17,22 +17,26 @@ var ErrBusy = errors.New("retrieval already running")
 var ErrLeaseLost = errors.New("retrieval lease expired or was superseded")
 
 type Retrieval struct {
-	Repository  string    `json:"repository"`
-	Path        string    `json:"path"`
-	Generation  int64     `json:"generation"`
-	Token       string    `json:"-"`
-	LeaseUntil  time.Time `json:"lease_until"`
-	State       string    `json:"state"`
-	FreshUntil  time.Time `json:"fresh_until"`
-	StaleUntil  time.Time `json:"stale_until"`
-	ETag        string    `json:"-"`
-	Modified    string    `json:"-"`
-	LastStatus  int       `json:"last_status"`
-	LastError   string    `json:"last_error"`
-	Now         time.Time `json:"observed_at"`
-	SourceFresh int       `json:"-"`
-	SourceStale int       `json:"-"`
-	Acquired    bool      `json:"-"`
+	Repository           string    `json:"repository"`
+	Path                 string    `json:"path"`
+	Generation           int64     `json:"generation"`
+	Token                string    `json:"-"`
+	LeaseUntil           time.Time `json:"lease_until"`
+	State                string    `json:"state"`
+	FreshUntil           time.Time `json:"fresh_until"`
+	StaleUntil           time.Time `json:"stale_until"`
+	ETag                 string    `json:"-"`
+	Modified             string    `json:"-"`
+	LastStatus           int       `json:"last_status"`
+	LastError            string    `json:"last_error"`
+	Now                  time.Time `json:"observed_at"`
+	SourceFresh          int       `json:"-"`
+	SourceStale          int       `json:"-"`
+	Acquired             bool      `json:"-"`
+	ChangedAt            time.Time `json:"changed_at"`
+	ChangeSequence       int64     `json:"change_sequence"`
+	ValidationRoot       string    `json:"validation_root,omitempty"`
+	ValidationGeneration int64     `json:"validation_generation,omitempty"`
 }
 
 func (r Retrieval) Fresh() bool { return r.FreshUntil.After(r.Now) }
@@ -40,10 +44,10 @@ func (r Retrieval) StalePermitted() bool {
 	return r.StaleUntil.After(r.Now) && r.LastError == "transient_upstream_failure"
 }
 
-const retrievalColumns = `repository,path,generation,lease_token,lease_until,state,fresh_until,stale_until,etag,modified,last_status,last_error,source_fresh_seconds,source_stale_seconds,clock_timestamp()`
+const retrievalColumns = `repository,path,generation,lease_token,lease_until,state,fresh_until,stale_until,etag,modified,last_status,last_error,source_fresh_seconds,source_stale_seconds,clock_timestamp(),changed_at,validation_root,validation_generation,change_sequence`
 
 func scanRetrieval(row pgx.Row, r *Retrieval) error {
-	return row.Scan(&r.Repository, &r.Path, &r.Generation, &r.Token, &r.LeaseUntil, &r.State, &r.FreshUntil, &r.StaleUntil, &r.ETag, &r.Modified, &r.LastStatus, &r.LastError, &r.SourceFresh, &r.SourceStale, &r.Now)
+	return row.Scan(&r.Repository, &r.Path, &r.Generation, &r.Token, &r.LeaseUntil, &r.State, &r.FreshUntil, &r.StaleUntil, &r.ETag, &r.Modified, &r.LastStatus, &r.LastError, &r.SourceFresh, &r.SourceStale, &r.Now, &r.ChangedAt, &r.ValidationRoot, &r.ValidationGeneration, &r.ChangeSequence)
 }
 func (s *Store) Retrieval(ctx context.Context, i Identity, repo, path string) (Retrieval, error) {
 	var r Retrieval
@@ -98,9 +102,13 @@ func (s *Store) AcquireRetrieval(ctx context.Context, i Identity, repo, path, to
 		if n >= limit {
 			return ErrBusy
 		}
+		sequence, e := nextEventSequence(ctx, tx, i)
+		if e != nil {
+			return e
+		}
 		r.Generation++
 		r.Token = token
-		e = scanRetrieval(tx.QueryRow(ctx, `INSERT INTO cratectl.retrievals(tenant,repository,path,generation,lease_token,lease_until,state) VALUES($1,$2,$3,$4,$5,now()+interval '150 seconds','fetching') ON CONFLICT(tenant,repository,path) DO UPDATE SET generation=excluded.generation,lease_token=excluded.lease_token,lease_until=excluded.lease_until,state='fetching' RETURNING `+retrievalColumns, i.Tenant, repo, path, r.Generation, token), &r)
+		e = scanRetrieval(tx.QueryRow(ctx, `INSERT INTO cratectl.retrievals(tenant,repository,path,generation,lease_token,lease_until,state,change_sequence) VALUES($1,$2,$3,$4,$5,now()+interval '150 seconds','fetching',$6) ON CONFLICT(tenant,repository,path) DO UPDATE SET generation=excluded.generation,lease_token=excluded.lease_token,lease_until=excluded.lease_until,state='fetching',changed_at=clock_timestamp(),change_sequence=excluded.change_sequence RETURNING `+retrievalColumns, i.Tenant, repo, path, r.Generation, token, sequence), &r)
 		if e != nil {
 			return e
 		}
@@ -140,10 +148,14 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 		if !valid {
 			return ErrLeaseLost
 		}
+		sequence, e := nextEventSequence(ctx, tx, i)
+		if e != nil {
+			return e
+		}
 		state := "ready"
 		fresh := result.FreshSeconds
 		stale := result.StaleSeconds
-		if result.Status == 200 && result.Failure == "" {
+		if (result.Status == 200 || (result.Status == 304 && result.OCI != nil)) && result.Failure == "" {
 			if repo.Format == "oci" && result.OCI == nil {
 				return ErrConflict
 			}
@@ -160,7 +172,7 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 						return ErrConflict
 					}
 				}
-				if e = completeOCIPublication(ctx, tx, i, repo, lease, *result.OCI, result.Object.Digest, result.Object.Size); e != nil {
+				if e = completeOCIPublication(ctx, tx, i, repo, lease, *result.OCI, result.Object.Digest, result.Object.Size, result.FreshSeconds, result.StaleSeconds, sequence); e != nil {
 					return e
 				}
 			}
@@ -214,7 +226,14 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 				if n := strings.LastIndex(lease.Path, "/manifests/"); n > 0 {
 					ref := lease.Path[n+len("/manifests/"):]
 					if !strings.HasPrefix(ref, "sha256:") {
-						if _, e = tx.Exec(ctx, `UPDATE cratectl.tags SET deleted=true,version=version+1 WHERE repository=$1 AND image=$2 AND tag=$3`, repo.Name, lease.Path[:n], ref); e != nil {
+						var newer bool
+						if e = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM cratectl.tags WHERE repository=$1 AND image=$2 AND tag=$3 AND change_sequence>$4)`, repo.Name, lease.Path[:n], ref, lease.ChangeSequence).Scan(&newer); e != nil {
+							return e
+						}
+						if newer {
+							return ErrOCIMemberChanged
+						}
+						if _, e = tx.Exec(ctx, `UPDATE cratectl.tags SET deleted=true,version=version+1,changed_at=clock_timestamp(),change_sequence=$4 WHERE repository=$1 AND image=$2 AND tag=$3`, repo.Name, lease.Path[:n], ref, sequence); e != nil {
 							return e
 						}
 					}
@@ -228,7 +247,7 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 				return errors.New("failure classification required")
 			}
 		}
-		_, e = tx.Exec(ctx, `UPDATE cratectl.retrievals SET state=$1,lease_until='epoch',fresh_until=now()+make_interval(secs=>$2),stale_until=CASE WHEN $3::int<0 THEN stale_until ELSE now()+make_interval(secs=>($2+$3)) END,etag=CASE WHEN $1='negative' THEN '' WHEN $1='ready' AND $6=200 THEN $4 WHEN $1='ready' AND $4<>'' THEN $4 ELSE etag END,modified=CASE WHEN $1='negative' THEN '' WHEN $1='ready' AND $6=200 THEN $5 WHEN $1='ready' AND $5<>'' THEN $5 ELSE modified END,last_status=$6,last_error=$7,source_fresh_seconds=CASE WHEN $1='ready' THEN $2 ELSE source_fresh_seconds END,source_stale_seconds=CASE WHEN $1='ready' THEN $3 ELSE source_stale_seconds END WHERE repository=$8 AND path=$9`, state, fresh, stale, result.ETag, result.Modified, result.Status, result.Failure, lease.Repository, lease.Path)
+		_, e = tx.Exec(ctx, `UPDATE cratectl.retrievals SET state=$1,lease_until='epoch',fresh_until=now()+make_interval(secs=>$2),stale_until=CASE WHEN $3::int<0 THEN stale_until ELSE now()+make_interval(secs=>($2+$3)) END,etag=CASE WHEN $1='negative' THEN '' WHEN $1='ready' AND $6=200 THEN $4 WHEN $1='ready' AND $4<>'' THEN $4 ELSE etag END,modified=CASE WHEN $1='negative' THEN '' WHEN $1='ready' AND $6=200 THEN $5 WHEN $1='ready' AND $5<>'' THEN $5 ELSE modified END,last_status=$6,last_error=$7,source_fresh_seconds=CASE WHEN $1='ready' THEN $2 ELSE source_fresh_seconds END,source_stale_seconds=CASE WHEN $1='ready' THEN $3 ELSE source_stale_seconds END,changed_at=clock_timestamp(),change_sequence=$10,validation_root=CASE WHEN $1='ready' THEN path ELSE validation_root END,validation_generation=CASE WHEN $1='ready' THEN generation ELSE validation_generation END WHERE repository=$8 AND path=$9`, state, fresh, stale, result.ETag, result.Modified, result.Status, result.Failure, lease.Repository, lease.Path, sequence)
 		if e != nil {
 			return e
 		}
@@ -255,7 +274,11 @@ func InvalidateRetrieval(ctx context.Context, tx pgx.Tx, i Identity, repo, path 
 	if r.Mode != "proxy" {
 		return nil, ErrConflict
 	}
-	tag, e := tx.Exec(ctx, `UPDATE cratectl.retrievals SET generation=generation+1,lease_token='',lease_until='epoch',fresh_until='epoch',state=CASE WHEN state='fetching' THEN 'failed' ELSE state END,last_error='operator_revalidate' WHERE repository=$1 AND path=$2`, repo, path)
+	sequence, e := nextEventSequence(ctx, tx, i)
+	if e != nil {
+		return nil, e
+	}
+	tag, e := tx.Exec(ctx, `UPDATE cratectl.retrievals SET generation=generation+1,lease_token='',lease_until='epoch',fresh_until='epoch',state=CASE WHEN state='fetching' THEN 'failed' ELSE state END,last_error='operator_revalidate',changed_at=clock_timestamp(),validation_root='',validation_generation=0,change_sequence=$3 WHERE repository=$1 AND path=$2`, repo, path, sequence)
 	if e != nil {
 		return nil, e
 	}

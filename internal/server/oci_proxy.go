@@ -34,6 +34,28 @@ type ociGraphFill struct {
 	stack           map[string]bool
 	bytes, metadata int64
 	fresh, stale    int
+	memberCaches    map[string]store.OCIMemberCache
+	rootResponse    *http.Response
+	rootCache       *store.OCIMemberCache
+}
+
+func (g *ociGraphFill) remember(path string, response *http.Response) error {
+	if g.memberCaches == nil {
+		g.memberCaches = map[string]store.OCIMemberCache{}
+	}
+	fresh, stale, e := cachePolicy(response.Header, g.repo, store.Retrieval{}, 200)
+	if e != nil {
+		return e
+	}
+	c := store.OCIMemberCache{ETag: response.Header.Get("ETag"), Modified: response.Header.Get("Last-Modified"), FreshSeconds: fresh, StaleSeconds: stale}
+	if response == g.rootResponse && g.rootCache != nil {
+		c = *g.rootCache
+	}
+	if len(c.ETag) > 1024 || len(c.Modified) > 128 {
+		return store.ErrMetadataLimit
+	}
+	g.memberCaches[path] = c
+	return nil
 }
 
 func (g *ociGraphFill) response(response *http.Response) error {
@@ -98,6 +120,9 @@ func (g *ociGraphFill) blob(d store.OCIDescriptor, provided ...*http.Response) (
 		return store.Artifact{}, store.ErrMetadataLimit
 	}
 	a := store.Artifact{Path: p, Digest: object.Digest, Size: object.Size, MediaType: "application/octet-stream"}
+	if e = g.remember(p, response); e != nil {
+		return store.Artifact{}, e
+	}
 	g.objects[p] = a
 	return a, nil
 }
@@ -157,6 +182,11 @@ func (g *ociGraphFill) manifest(ref string, d *store.OCIDescriptor, response *ht
 	if g.metadata > g.server.NativeMetadataBytes {
 		return store.Artifact{}, store.ErrMetadataLimit
 	}
+	if m.Subject != nil {
+		if _, e = g.manifest(m.Subject.Digest, m.Subject, nil, depth+1); e != nil && !errors.Is(e, errOCIOriginMissing) {
+			return store.Artifact{}, e
+		}
+	}
 	for _, child := range m.Children {
 		if child.Kind == "manifests" {
 			_, e = g.manifest(child.Digest, &child.OCIDescriptor, nil, depth+1)
@@ -173,6 +203,9 @@ func (g *ociGraphFill) manifest(ref string, d *store.OCIDescriptor, response *ht
 	}
 	metadata, _ := json.Marshal(m.metadata(g.image))
 	a := store.Artifact{Path: g.image + "/manifests/" + digest, Digest: object.Digest, Size: object.Size, MediaType: m.MediaType, Metadata: metadata}
+	if e = g.remember(a.Path, response); e != nil {
+		return store.Artifact{}, e
+	}
 	g.objects[a.Path] = a
 	return a, nil
 }
@@ -213,6 +246,14 @@ func (s *Server) fillOCIProxy(parent context.Context, i store.Identity, repo sto
 		if lease.Modified != "" {
 			validators.Set("If-Modified-Since", lease.Modified)
 		}
+		// A mutable manifest pointer needs byte identity, rather than semantic
+		// equivalence or a one-second timestamp, before reusing its exact digest.
+		if kind == "manifests" {
+			if strings.HasPrefix(strings.TrimSpace(lease.ETag), "W/") {
+				validators.Del("If-None-Match")
+			}
+			validators.Del("If-Modified-Since")
+		}
 		validators.Set("Accept", ociManifestAccept)
 		if kind == "tags/list" {
 			validators.Set("Accept", "application/json")
@@ -240,10 +281,61 @@ func (s *Server) fillOCIProxy(parent context.Context, i store.Identity, repo sto
 					result.Failure = "upstream_header_limit"
 					break
 				}
+				var rootCache *store.OCIMemberCache
 				if result.Status == 304 {
-					break
+					if validators.Get("If-None-Match") == "" && validators.Get("If-Modified-Since") == "" {
+						e = errUpstreamIntegrity
+						break
+					}
+					if kind == "manifests" && result.ETag != "" && result.ETag != validators.Get("If-None-Match") {
+						e = errUpstreamIntegrity
+						break
+					}
+					if kind == "blobs" {
+						break
+					}
+					cached, err := s.DB.CachedOCIObject(ctx, i, repo.Name, lease.Path)
+					if err != nil {
+						e = err
+						break
+					}
+					header := response.Header.Clone()
+					header.Set("Content-Type", cached.MediaType)
+					var body io.ReadCloser
+					if catalog {
+						var c store.OCICatalog
+						if json.Unmarshal(cached.Metadata, &c) != nil {
+							e = store.ErrConflict
+							break
+						}
+						var data []byte
+						if kind == "tags/list" {
+							names := []string{}
+							for tag := range c.Tags {
+								names = append(names, tag)
+							}
+							sort.Strings(names)
+							data, _ = json.Marshal(map[string]any{"name": upstreamOCIImage(repo, image), "tags": names})
+							header.Set("Content-Type", "application/json")
+						} else {
+							data, _ = json.Marshal(map[string]any{"schemaVersion": 2, "mediaType": "application/vnd.oci.image.index.v1+json", "manifests": c.Referrers})
+							header.Set("Content-Type", "application/vnd.oci.image.index.v1+json")
+						}
+						body = io.NopCloser(bytes.NewReader(data))
+					} else {
+						body, err = s.Blobs.OpenVerified(ctx, i.Tenant, cached.Digest, cached.Size)
+						if err != nil {
+							e = err
+							break
+						}
+					}
+					response = &http.Response{StatusCode: 200, Header: header, Body: body, Request: response.Request, ContentLength: -1}
+					defer body.Close()
+					rootCache = &store.OCIMemberCache{ETag: lease.ETag, Modified: lease.Modified, FreshSeconds: result.FreshSeconds, StaleSeconds: result.StaleSeconds}
 				}
 				g := ociGraphFill{server: s, client: client, ctx: ctx, identity: i, repo: repo, image: image, objects: map[string]store.Artifact{}, stack: map[string]bool{}, fresh: result.FreshSeconds, stale: result.StaleSeconds}
+				g.rootResponse = response
+				g.rootCache = rootCache
 				publication := &store.OCIPublication{Image: image, Tags: map[string]string{}}
 				var root store.Artifact
 				if catalog {
@@ -287,6 +379,11 @@ func (s *Server) fillOCIProxy(parent context.Context, i store.Identity, repo sto
 					}
 					sort.Slice(publication.Objects, func(a, b int) bool { return publication.Objects[a].Path < publication.Objects[b].Path })
 					result.OCI = publication
+					publication.MemberCaches = g.memberCaches
+					if kind == "tags/list" && response.Header.Get("Link") != "" {
+						result.ETag = ""
+						result.Modified = ""
+					}
 				}
 			case 404:
 				negative := repo
@@ -390,6 +487,11 @@ func (g *ociGraphFill) catalog(kind, subject string, response *http.Response) (s
 	}
 	if e := g.response(response); e != nil {
 		return catalog, e
+	}
+	// Referrer pagination is not implemented yet. A partial index must never
+	// masquerade as a complete, durably cached discovery result.
+	if response.Header.Get("Link") != "" {
+		return catalog, store.ErrMetadataLimit
 	}
 	data, e := io.ReadAll(io.LimitReader(response.Body, ociManifestBytes+1))
 	g.metadata += int64(len(data))

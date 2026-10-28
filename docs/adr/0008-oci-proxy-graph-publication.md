@@ -22,8 +22,8 @@ lease fence. A known subject's current graph policy still governs attachments.
 One fill uses the shared global/tenant retrieval admission controls and a
 120-second execution limit under its 150-second fenced lease. Bound graph nodes,
 depth, metadata and aggregate staged bytes; do not unpack layers, execute package
-code or follow descriptor URLs. Root 304 responses reuse a previously complete
-graph. Explicit stale policy can retain a graph after classified temporary
+code or follow descriptor URLs. ADR 0009 refines root 304 handling: reuse verified root bytes, then renew
+its complete dependency graph and individual member cache records. Explicit stale policy can retain a graph after classified temporary
 upstream failures, while every subsequent read still checks current local policy.
 Authentication, integrity and authority failures cannot grant stale use.
 

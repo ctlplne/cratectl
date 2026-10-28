@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -144,5 +145,105 @@ func TestSameProxyMissWaitsForSharedFillAdmission(t *testing.T) {
 	}
 	if fetches.Load() != 1 {
 		t.Errorf("same-key origin fetches: %d", fetches.Load())
+	}
+}
+
+// A 304 validates the root representation only. Its complete dependency graph
+// must still be renewed, and mutable manifest reuse requires a strong validator.
+func TestOCIManifestRevalidationPreservesExactIdentityAndRefreshesChildren(t *testing.T) {
+	if os.Getenv("CRATECTL_DSN") == "" {
+		t.Fatal("CRATECTL_DSN required")
+	}
+	for _, mode := range []string{"strong", "weak", "date", "unsolicited", "changed-304"} {
+		t.Run(mode, func(t *testing.T) {
+			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+			defer cancel()
+			db, e := store.Open(ctx, os.Getenv("CRATECTL_DSN"))
+			if e != nil {
+				t.Fatal(e)
+			}
+			defer db.Pool.Close()
+			config := []byte("{}")
+			body := func(label string) []byte {
+				return []byte(fmt.Sprintf(`{"schemaVersion":2,"mediaType":"application/vnd.oci.image.manifest.v1+json","config":{"digest":"sha256:%s","size":2,"mediaType":"application/vnd.example.config"},"layers":[],"annotations":{"label":"%s"}}`, crypt.Digest(config), label))
+			}
+			var manifests, children, conditional atomic.Int32
+			origin := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Cache-Control", "max-age=60, stale-if-error=120")
+				if strings.Contains(r.URL.Path, "/blobs/") {
+					children.Add(1)
+					w.Write(config)
+					return
+				}
+				n := manifests.Add(1)
+				w.Header().Set("Content-Type", "application/vnd.oci.image.manifest.v1+json")
+				if mode == "strong" || mode == "changed-304" {
+					w.Header().Set("ETag", `"exact-root"`)
+				}
+				if mode == "weak" {
+					w.Header().Set("ETag", `W/"equivalent-root"`)
+				}
+				if mode == "date" {
+					w.Header().Set("Last-Modified", "Wed, 28 Oct 2026 12:00:00 GMT")
+				}
+				if r.Header.Get("If-None-Match") != "" || r.Header.Get("If-Modified-Since") != "" {
+					conditional.Add(1)
+					if mode == "changed-304" {
+						w.Header().Set("ETag", `"different-root"`)
+					}
+					w.WriteHeader(304)
+					return
+				}
+				if n > 1 && mode == "unsolicited" {
+					w.WriteHeader(304)
+					return
+				}
+				label := "before"
+				if n > 1 {
+					label = "after"
+				}
+				w.Write(body(label))
+			}))
+			defer origin.Close()
+			i := store.Identity{Tenant: "test-a", Actor: "operator", Role: "admin"}
+			repo := store.Repository{Name: fmt.Sprintf("oci-validators-%d", time.Now().UnixNano()), Format: "oci", Mode: "proxy", Settings: store.RepositorySettings{Upstream: &upstream.Config{URL: origin.URL + "/v2/", Networks: []string{"127.0.0.1/32"}}, Cache: store.CacheSettings{FreshSeconds: 60, StaleSeconds: 120}}}
+			if e = db.Tx(ctx, i, true, func(tx pgx.Tx) error { return store.CreateRepository(ctx, tx, i, repo) }); e != nil {
+				t.Fatal(e)
+			}
+			repo, e = db.Repository(ctx, i, repo.Name)
+			if e != nil {
+				t.Fatal(e)
+			}
+			objects, e := blob.New(t.TempDir(), 1<<20)
+			if e != nil {
+				t.Fatal(e)
+			}
+			server := New(db, objects, "")
+			server.PrivateUpstreamNetworks = []string{"127.0.0.1/32"}
+			first, e := server.resolveOCI(ctx, i, repo, "app", "manifests", "latest", false)
+			if e != nil {
+				t.Fatal(e)
+			}
+			second, e := server.resolveOCI(ctx, i, repo, "app", "manifests", "latest", true)
+			if mode == "unsolicited" || mode == "changed-304" {
+				if !errors.Is(e, errUpstreamIntegrity) {
+					t.Fatalf("invalid 304 admitted: %v", e)
+				}
+				return
+			}
+			if e != nil {
+				t.Fatal(e)
+			}
+			if children.Load() != 2 {
+				t.Fatalf("root revalidation skipped dependency renewal: %d", children.Load())
+			}
+			if mode == "strong" {
+				if conditional.Load() != 1 || second.artifact.Digest != first.artifact.Digest || second.cache != "revalidated" {
+					t.Fatalf("strong root identity lost: %d %s", conditional.Load(), second.cache)
+				}
+			} else if conditional.Load() != 0 || second.artifact.Digest == first.artifact.Digest {
+				t.Fatalf("weak/time validator reused exact digest: conditionals=%d digest=%s", conditional.Load(), second.artifact.Digest)
+			}
+		})
 	}
 }

@@ -1,0 +1,415 @@
+{
+  "run": "7f45673398",
+  "candidate": "b13550a5f744f4d9a6a8e11c36fd3bf7a3348cec",
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "source_dirty": true,
+  "artifact_digests": {
+    "bin/cratectld": "d98f945bcfef7397b1907520e2bb03e692ead402b0db21aa80a68abf2986d061",
+    "bin/cratectl": "8fb2f1b413c7e68a7a792b895d6f98e6ff111a0774871c0f8fd2fa863ee289a7"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "b13550a5f744f4d9a6a8e11c36fd3bf7a3348cec",
+        "vcs.time": "2026-10-28T21:49:20Z",
+        "vcs.modified": "true"
+      }
+    },
+    "bin/cratectl": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "b13550a5f744f4d9a6a8e11c36fd3bf7a3348cec",
+        "vcs.time": "2026-10-28T21:49:20Z",
+        "vcs.modified": "true"
+      }
+    }
+  },
+  "host": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "database_profile": "native",
+  "topology": "macOS arm64 server, PostgreSQL 16.15 native, filesystem bytes, HTTP loopback only",
+  "checks": [
+    "other: create oci repository up-oci",
+    "admin: create oci repository oci-proxy",
+    "stock ORAS proxy pulls exact complete multi-layer graph",
+    "OCI proxy preserves manifest digest and bytes",
+    "OCI cached graph blobs support exact ranges",
+    "OCI implicit graph members have independently inspectable cache bindings",
+    "OCI member invalidation is versioned",
+    "OCI invalidated member revalidates its exact bytes",
+    "OCI fresh tag revalidates an expired graph member",
+    "OCI proxy rejects publication",
+    "stock ORAS discovers proxied governed referrers",
+    "OCI proxy tag catalog resolves exact bindings",
+    "OCI fresh tag catalog renews an invalidated graph member",
+    "admin: create oci repository oci-zero",
+    "OCI zero-freshness positive validation admits its current request",
+    "OCI zero-freshness next request revalidates again",
+    "OCI zero-freshness discovery keeps current graph validation",
+    "OCI zero-freshness referrers retain current subject and attachment validation",
+    "stock ORAS proxy digest pins survive restart",
+    "OCI proxy refresh observes new native tag",
+    "OCI retained digest pins preserve original manifest after refresh",
+    "OCI concurrent graph misses coalesce under one database generation",
+    "admin: create oci repository oci-local",
+    "admin: create oci repository oci-group",
+    "stock ORAS group pulls first hosted source",
+    "OCI group unions native tags with first-source precedence",
+    "OCI group tag collision retains first source",
+    "stock ORAS group pulls an authorized proxy fallback",
+    "OCI group reader requires underlying source grant",
+    "OCI group rechecks revoked source grants for graph and discovery",
+    "admin: create oci repository oci-strict-group",
+    "OCI group review governs unassessed children of an allowed root"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-7f45673398-a",
+        "--actor",
+        "admin",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/admin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-7f45673398-a",
+        "--actor",
+        "reader",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/reader.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-7f45673398-b",
+        "--actor",
+        "other",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/other.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-7f45673398-b",
+        "--actor",
+        "origin",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/origin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-7f45673398-b",
+        "--actor",
+        "npm-meta-origin",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/npm-meta-origin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-7f45673398-b",
+        "--actor",
+        "npm-files-origin",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/npm-files-origin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-7f45673398-a",
+        "--actor",
+        "expired",
+        "--role",
+        "reader",
+        "--expires-in",
+        "1ms",
+        "--token-file",
+        "PRIVATE/expired.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-7f45673398-a",
+        "--actor",
+        "revocable",
+        "--role",
+        "reader",
+        "--expires-in",
+        "1h",
+        "--token-file",
+        "PRIVATE/revocable.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "login",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/origin-auth.json",
+        "--username",
+        "token",
+        "--password-stdin",
+        "127.0.0.1:38443"
+      ],
+      "exit": 0,
+      "output": "Login Succeeded\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "login",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/auth.json",
+        "--username",
+        "token",
+        "--password-stdin",
+        "127.0.0.1:38443"
+      ],
+      "exit": 0,
+      "output": "Login Succeeded\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/origin-auth.json",
+        "127.0.0.1:38443/up-oci/proof:v1",
+        "payload.txt:text/plain",
+        "dependency.txt:text/plain"
+      ],
+      "exit": 0,
+      "output": "Preparing payload.txt\nPreparing dependency.txt\nUploading b285baae7f00 dependency.txt\nUploading 1939c3f11d27 payload.txt\nUploading 44136fa355b3 application/vnd.oci.empty.v1+json\nUploaded  b285baae7f00 dependency.txt\nUploaded  1939c3f11d27 payload.txt\nUploaded  44136fa355b3 application/vnd.oci.empty.v1+json\nUploading 805d9312b90a application/vnd.oci.image.manifest.v1+json\nUploaded  805d9312b90a application/vnd.oci.image.manifest.v1+json\nPushed [registry] 127.0.0.1:38443/up-oci/proof:v1\nArtifactType: application/vnd.unknown.artifact.v1\nDigest: sha256:805d9312b90a255693526c7ca6755d02e9bb21a17c315e9d794258d5072c279a\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "attach",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/origin-auth.json",
+        "--distribution-spec",
+        "v1.1-referrers-api",
+        "--artifact-type",
+        "application/vnd.cratectl.proof",
+        "--format",
+        "json",
+        "127.0.0.1:38443/up-oci/proof:v1",
+        "sbom.json:application/json"
+      ],
+      "exit": 0,
+      "output": "{\n  \"reference\": \"127.0.0.1:38443/up-oci/proof@sha256:606432940e3e12381fc4e93bb7da8a33d8b1dc6b0e413f5a5531eb5a777fd178\",\n  \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n  \"digest\": \"sha256:606432940e3e12381fc4e93bb7da8a33d8b1dc6b0e413f5a5531eb5a777fd178\",\n  \"size\": 724,\n  \"annotations\": {\n    \"org.opencontainers.image.created\": \"2026-10-28T22:20:03Z\"\n  },\n  \"artifactType\": \"application/vnd.cratectl.proof\"\n}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/auth.json",
+        "127.0.0.1:38443/oci-proxy/proof:v1"
+      ],
+      "exit": 0,
+      "output": "Downloading 805d9312b90a application/vnd.oci.image.manifest.v1+json\nProcessing  805d9312b90a application/vnd.oci.image.manifest.v1+json\nDownloading b285baae7f00 dependency.txt\nDownloading 1939c3f11d27 payload.txt\nDownloaded  b285baae7f00 dependency.txt\nDownloaded  1939c3f11d27 payload.txt\nDownloaded  805d9312b90a application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/oci-proxy/proof:v1\nDigest: sha256:805d9312b90a255693526c7ca6755d02e9bb21a17c315e9d794258d5072c279a\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "discover",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/auth.json",
+        "--distribution-spec",
+        "v1.1-referrers-api",
+        "--format",
+        "json",
+        "--depth",
+        "1",
+        "127.0.0.1:38443/oci-proxy/proof:v1"
+      ],
+      "exit": 0,
+      "output": "{\n  \"reference\": \"127.0.0.1:38443/oci-proxy/proof@sha256:805d9312b90a255693526c7ca6755d02e9bb21a17c315e9d794258d5072c279a\",\n  \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n  \"digest\": \"sha256:805d9312b90a255693526c7ca6755d02e9bb21a17c315e9d794258d5072c279a\",\n  \"size\": 748,\n  \"referrers\": [\n    {\n      \"reference\": \"127.0.0.1:38443/oci-proxy/proof@sha256:606432940e3e12381fc4e93bb7da8a33d8b1dc6b0e413f5a5531eb5a777fd178\",\n      \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n      \"digest\": \"sha256:606432940e3e12381fc4e93bb7da8a33d8b1dc6b0e413f5a5531eb5a777fd178\",\n      \"size\": 724,\n      \"annotations\": {\n        \"org.opencontainers.image.created\": \"2026-10-28T22:20:03Z\"\n      },\n      \"artifactType\": \"application/vnd.cratectl.proof\",\n      \"referrers\": []\n    }\n  ]\n}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/auth.json",
+        "127.0.0.1:38443/oci-proxy/proof:v1"
+      ],
+      "exit": 0,
+      "output": "Downloading 805d9312b90a application/vnd.oci.image.manifest.v1+json\nProcessing  805d9312b90a application/vnd.oci.image.manifest.v1+json\nDownloading b285baae7f00 dependency.txt\nDownloading 1939c3f11d27 payload.txt\nDownloaded  b285baae7f00 dependency.txt\nDownloaded  1939c3f11d27 payload.txt\nDownloaded  805d9312b90a application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/oci-proxy/proof:v1\nDigest: sha256:805d9312b90a255693526c7ca6755d02e9bb21a17c315e9d794258d5072c279a\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/origin-auth.json",
+        "127.0.0.1:38443/up-oci/proof:v2",
+        "payload.txt:text/plain",
+        "dependency.txt:text/plain"
+      ],
+      "exit": 0,
+      "output": "Preparing payload.txt\nPreparing dependency.txt\nExists    44136fa355b3 application/vnd.oci.empty.v1+json\nExists    b285baae7f00 dependency.txt\nUploading 55cd97efc98b payload.txt\nUploaded  55cd97efc98b payload.txt\nUploading a2bf1044f2de application/vnd.oci.image.manifest.v1+json\nUploaded  a2bf1044f2de application/vnd.oci.image.manifest.v1+json\nPushed [registry] 127.0.0.1:38443/up-oci/proof:v2\nArtifactType: application/vnd.unknown.artifact.v1\nDigest: sha256:a2bf1044f2de04fade9a94febe7c1bb993960bcd8eef773c116dff8c15e431b1\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/origin-auth.json",
+        "127.0.0.1:38443/up-oci/concurrent:v1",
+        "payload.txt:text/plain"
+      ],
+      "exit": 0,
+      "output": "Preparing payload.txt\nUploading 55cd97efc98b payload.txt\nUploading 44136fa355b3 application/vnd.oci.empty.v1+json\nUploaded  55cd97efc98b payload.txt\nUploaded  44136fa355b3 application/vnd.oci.empty.v1+json\nUploading 427573979492 application/vnd.oci.image.manifest.v1+json\nUploaded  427573979492 application/vnd.oci.image.manifest.v1+json\nPushed [registry] 127.0.0.1:38443/up-oci/concurrent:v1\nArtifactType: application/vnd.unknown.artifact.v1\nDigest: sha256:427573979492fbc1c12f57b27a17a9402d1ed6bb0deb8b700952eaf9d2d0a618\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/auth.json",
+        "127.0.0.1:38443/oci-local/proof:local",
+        "local.txt:text/plain"
+      ],
+      "exit": 0,
+      "output": "Preparing local.txt\nUploading 97a9ddbe80a7 local.txt\nUploading 44136fa355b3 application/vnd.oci.empty.v1+json\nUploaded  97a9ddbe80a7 local.txt\nUploaded  44136fa355b3 application/vnd.oci.empty.v1+json\nUploading 0261c9a1b839 application/vnd.oci.image.manifest.v1+json\nUploaded  0261c9a1b839 application/vnd.oci.image.manifest.v1+json\nPushed [registry] 127.0.0.1:38443/oci-local/proof:local\nArtifactType: application/vnd.unknown.artifact.v1\nDigest: sha256:0261c9a1b83980e22232dc9dafb2ae9b005c9d87372ff619f6ea690c412048b6\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/auth.json",
+        "127.0.0.1:38443/oci-local/proof:v1",
+        "local.txt:text/plain"
+      ],
+      "exit": 0,
+      "output": "Preparing local.txt\nExists    97a9ddbe80a7 local.txt\nExists    44136fa355b3 application/vnd.oci.empty.v1+json\nUploading b1165825b26b application/vnd.oci.image.manifest.v1+json\nUploaded  b1165825b26b application/vnd.oci.image.manifest.v1+json\nPushed [registry] 127.0.0.1:38443/oci-local/proof:v1\nArtifactType: application/vnd.unknown.artifact.v1\nDigest: sha256:b1165825b26bf87440269b81d7cd8ab03deb018b06444473240cd0275c14e2b6\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/auth.json",
+        "127.0.0.1:38443/oci-group/proof:local"
+      ],
+      "exit": 0,
+      "output": "Downloading 0261c9a1b839 application/vnd.oci.image.manifest.v1+json\nProcessing  0261c9a1b839 application/vnd.oci.image.manifest.v1+json\nDownloading 97a9ddbe80a7 local.txt\nDownloaded  97a9ddbe80a7 local.txt\nDownloaded  0261c9a1b839 application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/oci-group/proof:local\nDigest: sha256:0261c9a1b83980e22232dc9dafb2ae9b005c9d87372ff619f6ea690c412048b6\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/auth.json",
+        "127.0.0.1:38443/oci-group/proof:v2"
+      ],
+      "exit": 0,
+      "output": "Downloading a2bf1044f2de application/vnd.oci.image.manifest.v1+json\nProcessing  a2bf1044f2de application/vnd.oci.image.manifest.v1+json\nDownloading b285baae7f00 dependency.txt\nDownloading 55cd97efc98b payload.txt\nDownloaded  b285baae7f00 dependency.txt\nDownloaded  55cd97efc98b payload.txt\nDownloaded  a2bf1044f2de application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/oci-group/proof:v2\nDigest: sha256:a2bf1044f2de04fade9a94febe7c1bb993960bcd8eef773c116dff8c15e431b1\n"
+    }
+  ],
+  "limitations": [
+    "Not full format conformance or parity.",
+    "Proxy/group proof covers generic, Maven and early npm journeys; no complete mode, migration, HA, scale or scanner qualification.",
+    "Client fixture code executes only in the explicitly owned test consumer.",
+    "No claim of a separate-machine install."
+  ],
+  "build_source_matches_candidate": false,
+  "status": "failed",
+  "failure": "OCI denied first-source tag cannot fall through",
+  "input_digests": {}
+}

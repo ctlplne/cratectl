@@ -56,6 +56,8 @@ CREATE TABLE IF NOT EXISTS cratectl.tags (
  PRIMARY KEY(tenant,repository,image,tag), FOREIGN KEY(tenant,repository) REFERENCES cratectl.repositories(tenant,name)
 );
 ALTER TABLE cratectl.tags ADD COLUMN IF NOT EXISTS deleted boolean NOT NULL DEFAULT false;
+ALTER TABLE cratectl.tags ADD COLUMN IF NOT EXISTS changed_at timestamptz NOT NULL DEFAULT clock_timestamp();
+ALTER TABLE cratectl.tags ADD COLUMN IF NOT EXISTS change_sequence bigint NOT NULL DEFAULT 0;
 -- The initial development schema is upgraded in place; existing hosted rows
 -- keep their access and policy. Production migration qualification remains open.
 ALTER TABLE cratectl.repositories ADD COLUMN IF NOT EXISTS access text NOT NULL DEFAULT 'tenant';
@@ -80,6 +82,10 @@ CREATE TABLE IF NOT EXISTS cratectl.retrievals (
 );
 ALTER TABLE cratectl.retrievals ADD COLUMN IF NOT EXISTS source_fresh_seconds integer NOT NULL DEFAULT 0;
 ALTER TABLE cratectl.retrievals ADD COLUMN IF NOT EXISTS source_stale_seconds integer NOT NULL DEFAULT 0;
+ALTER TABLE cratectl.retrievals ADD COLUMN IF NOT EXISTS changed_at timestamptz NOT NULL DEFAULT clock_timestamp();
+ALTER TABLE cratectl.retrievals ADD COLUMN IF NOT EXISTS change_sequence bigint NOT NULL DEFAULT 0;
+ALTER TABLE cratectl.retrievals ADD COLUMN IF NOT EXISTS validation_root text NOT NULL DEFAULT '';
+ALTER TABLE cratectl.retrievals ADD COLUMN IF NOT EXISTS validation_generation bigint NOT NULL DEFAULT 0;
 CREATE TABLE IF NOT EXISTS cratectl.content_decisions (
  tenant text NOT NULL, repository text NOT NULL, digest text NOT NULL CHECK(digest ~ '^[a-f0-9]{64}$'),
  decision text NOT NULL CHECK(decision IN ('allowed','denied','unassessed')),
