@@ -1,0 +1,15 @@
+mkdir -p bin
+/Users/shankar/Desktop/ctlplne-cratectl/.cache/go/bin/go build -trimpath -o bin/cratectld ./cmd/cratectld
+/Users/shankar/Desktop/ctlplne-cratectl/.cache/go/bin/go build -trimpath -o bin/cratectl ./cmd/cratectl
+/Users/shankar/Desktop/ctlplne-cratectl/.cache/go/bin/go test ./...
+?   	ctlplne.dev/cratectl/cmd/cratectl	[no test files]
+?   	ctlplne.dev/cratectl/cmd/cratectld	[no test files]
+ok  	ctlplne.dev/cratectl/internal/blob	(cached)
+ok  	ctlplne.dev/cratectl/internal/crypto	(cached)
+ok  	ctlplne.dev/cratectl/internal/server	0.325s
+ok  	ctlplne.dev/cratectl/internal/store	0.252s
+ok  	ctlplne.dev/cratectl/internal/upstream	0.270s
+/Users/shankar/Desktop/ctlplne-cratectl/.cache/go/bin/go vet ./...
+python3 scripts/check_architecture.py
+internal/server/oci_delivery_integration_test.go: registry HTTP process may not invoke package/build execution
+make: *** [lint] Error 1

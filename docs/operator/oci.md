@@ -101,8 +101,93 @@ Node/depth/read-metadata limits still need operator configuration and scale proo
 Native ORAS proof covers hosted/proxy/group multi-layer workflows, tag refresh,
 retained pins, referrers, concurrent misses, interrupted hosted upload, restart
 and current policy. Approved token-realm authority has transport fixture tests.
-CDN/cross-authority redirects and signed URLs remain rejected, so upstreams that
-require those delivery paths are not yet compatible. Full multi-platform and
-Docker/Podman/Helm cases, token-service/registry combinations, referrer fallback/
-pagination, deletion, signatures, lifecycle and full security/fault qualification
-remain open.
+Explicitly approved CDN delivery and opaque query credentials have owned
+transport and stock-client/PostgreSQL proof. One pinned Linux arm64 image also has real Docker Hub/token/CloudFront proof.
+Other providers and registry/token-service/client/platform combinations still
+need qualification.
+Full Docker/Podman/Helm, referrer fallback/pagination, deletion, signatures,
+lifecycle and security/fault/production campaigns remain open.
+
+
+To consume a registry that redirects blobs to another service, add that service's
+exact approved base under the OCI proxy's `download_sources`. For example, this
+source entry permits opaque query credentials only below the stated path:
+
+```json
+{
+  "url": "https://cdn.example/objects/",
+  "networks": ["203.0.113.0/24"],
+  "allow_signed_query": true
+}
+```
+
+Replace the documentation address/CIDR with the source's actual authority and
+approved networks. This is a source entry inside `settings.download_sources`,
+not a credential value or a complete repository document. For an authenticated
+CDN, add its own `credential_ref` and authentication scheme, with an independently
+bound entry in the private server credential file. Anonymous signed delivery
+usually omits a separate credential. Never paste a temporary signed URL into
+repository settings. The registry issues a new URL on later refresh.
+
+Each redirect uses the longest matching approved path and that source's own
+credentials. The registry's bearer and token-realm credentials stay at their
+respective sources. A CDN cannot request a registry token exchange. No Referer or
+Cookie is forwarded. Unapproved hosts/paths, HTTPS downgrade, invalid query
+syntax and network-ceiling violations fail before content publication. A rejected
+more specific source cannot fall through to a broader credential.
+
+`allow_signed_query` is false by default and is accepted only for OCI proxy
+origin/download configurations. Query order, escaping and repeated parameters
+remain exact; the upstream service validates its signature. Locations/query URLs
+are not retained in durable cache metadata. An operator can inspect the canonical
+member's cache state without exposing its temporary delivery credential.
+
+Defaults and operator controls are:
+
+| Control | Default | Meaning |
+| --- | --- | --- |
+| `--oci-delivery-redirects` | 5 | Hops per upstream request; 0 disables redirects; maximum 64 |
+| `--oci-delivery-url-bytes` | 16384 | Complete ephemeral URL, within the 32 KiB response-header ceiling |
+| `--oci-delivery-query-bytes` | 8192 | Query bytes, no greater than the URL budget |
+| `--oci-delivery-query-pairs` | 64 | Total parameter pairs, including repeated keys; maximum 4096 |
+
+If the cache reports `upstream_delivery_transport_failure`, inspect source DNS,
+connectivity and TLS trust as well as the configured authority and network
+ceilings. Signed URLs are deliberately absent from the error. This failure does
+not grant stale delivery. Expired query credentials or rejected CDN responses
+require repairing the source and revalidating the canonical repository path.
+
+`make integration` now also runs the separate native-client conformance package.
+It requires real PostgreSQL runtime/owner configuration and stock ORAS at
+`.cache/bin/oras`; missing inputs fail explicitly. The server itself never
+launches package clients or build tools. Owned upstream HTTP fixtures use temporary
+loopback listeners; the native downstream registry uses the reserved port 38443.
+
+
+For a real public provider qualification, use the separate explicit-source script.
+This observed Docker Hub image is a Linux arm64 BusyBox 1.37 manifest; the digest
+pins exact bytes even if the tag changes. The provider documents its token,
+registry and CloudFront domains in its [official allowlist](https://docs.docker.com/desktop/enterprise/allow-list/).
+
+```sh
+CRATECTL_DEV_DATABASE=native python3 scripts/dev.py python3 scripts/conformance_public_oci.py \
+  --registry https://registry-1.docker.io/v2/ \
+  --image library/busybox \
+  --digest sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c \
+  --token-realm https://auth.docker.io/token \
+  --service registry.docker.io \
+  --delivery-base https://production.cloudfront.docker.com/ \
+  --source-document https://docs.docker.com/desktop/enterprise/allow-list/ \
+  --require-clean-build
+```
+
+Build the clean committed source first and start the owned development database.
+The script uses fresh private tenant/client configuration and the owned loopback
+registry port. Public-source CIDRs permit public addresses; no private-network
+ceiling is enabled. It limits graph intake to 16 MiB and retains image bytes in
+private OCI layouts. It verifies native proxy/group copies, cache generations,
+process restart, member revalidation, current digest denial and the negative
+control for missing signed-query permission. Credentials and signed delivery URLs
+stay out of the report. Provider availability/rate limits can fail this explicit
+qualification; deterministic owned fixture tests remain separate. Other providers,
+architectures and clients still require their own evidence.

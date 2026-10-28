@@ -139,7 +139,7 @@ func ValidateRepository(r *Repository) error {
 		if ref := r.Settings.OCITokenEndpoint.CredentialRef; ref != "" && !Name.MatchString(ref) {
 			return errors.New("invalid OCI token credential reference")
 		}
-		if r.Format != "oci" || r.Mode != "proxy" || r.Settings.OCITokenService == "" || len(r.Settings.OCITokenService) > 255 || strings.ContainsAny(r.Settings.OCITokenService, "\r\n\x00") {
+		if r.Settings.OCITokenEndpoint.AllowSignedQuery || r.Format != "oci" || r.Mode != "proxy" || r.Settings.OCITokenService == "" || len(r.Settings.OCITokenService) > 255 || strings.ContainsAny(r.Settings.OCITokenService, "\r\n\x00") {
 			return errors.New("OCI token endpoint requires an OCI proxy and an exact bounded service audience")
 		}
 		endpoint, e := upstream.New(*r.Settings.OCITokenEndpoint, "")
@@ -162,16 +162,22 @@ func ValidateRepository(r *Repository) error {
 		if ref := r.Settings.Upstream.CredentialRef; ref != "" && !Name.MatchString(ref) {
 			return errors.New("invalid credential reference")
 		}
+		if r.Settings.Upstream.AllowSignedQuery && r.Format != "oci" {
+			return errors.New("signed query delivery requires an OCI proxy")
+		}
 		endpoint, e := upstream.New(*r.Settings.Upstream, "")
 		if e != nil {
 			return e
 		}
 		endpoint.Close()
-		if len(r.Settings.DownloadSources) > 16 || (len(r.Settings.DownloadSources) > 0 && r.Format != "npm" && r.Format != "pypi") {
-			return errors.New("download sources require npm/PyPI and at most 16 explicit authorities")
+		if len(r.Settings.DownloadSources) > 16 || (len(r.Settings.DownloadSources) > 0 && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci") {
+			return errors.New("download sources require npm, PyPI or OCI and at most 16 explicit authorities")
 		}
 		authorities := map[string]bool{strings.TrimRight(r.Settings.Upstream.URL, "/") + "/": true}
 		for _, source := range r.Settings.DownloadSources {
+			if source.AllowSignedQuery && r.Format != "oci" {
+				return errors.New("signed query delivery requires an OCI proxy")
+			}
 			key := strings.TrimRight(source.URL, "/") + "/"
 			if authorities[key] {
 				return errors.New("duplicate download authority/base path")

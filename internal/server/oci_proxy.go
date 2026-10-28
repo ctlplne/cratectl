@@ -408,6 +408,9 @@ func (s *Server) fillOCIProxy(parent context.Context, i store.Identity, repo sto
 		if errors.Is(e, errOCITransient) {
 			result.Failure = "transient_upstream_failure"
 		}
+		if errors.Is(e, upstream.ErrRegistryDelivery) {
+			result.Failure = "upstream_delivery_transport_failure"
+		}
 	}
 	if ctx.Err() != nil {
 		result.Failure = "retrieval_cancelled"

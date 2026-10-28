@@ -55,6 +55,8 @@ type Server struct {
 	PythonFileLimit         int
 	PythonMetadataBytes     int64
 	OCIGraphBytes           int64
+	OCIDeliveryRedirects    int
+	OCIDeliveryLimits       upstream.RegistryDeliveryLimits
 	fillSlots               chan struct{}
 	slots                   chan struct{}
 	adapters                map[string]Adapter
@@ -65,6 +67,8 @@ func New(db *store.Store, b *blob.Local, public string) *Server {
 	s.NPMPublishBytes, s.NPMExpandedBytes, s.NPMFileLimit, s.NPMPackageJSONBytes = 24<<20, 64<<20, 10000, 1<<20
 	s.PythonUploadBytes, s.PythonExpandedBytes, s.PythonFileLimit, s.PythonMetadataBytes = 64<<20, 256<<20, 10000, 1<<20
 	s.OCIGraphBytes = 4 << 30
+	s.OCIDeliveryRedirects = 5
+	s.OCIDeliveryLimits = upstream.DefaultRegistryDeliveryLimits()
 	for _, a := range []adapter{{"generic", s.raw}, {"maven", s.raw}, {"npm", s.npm}, {"pypi", s.pypi}, {"oci", s.oci}} {
 		s.adapters[a.Format()] = a
 	}

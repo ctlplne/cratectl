@@ -12,6 +12,14 @@ import (
 // Registry requests construct their own narrow query parameters. Neither client
 // Authorization nor arbitrary URLs/queries enter this transport.
 func (e *Endpoint) GetRegistry(ctx context.Context, p string, query url.Values, validators http.Header, bearer string) (*http.Response, error) {
+	return e.getRegistry(ctx, p, query, validators, bearer, false)
+}
+
+func (e *Endpoint) GetRegistryOnce(ctx context.Context, p string, query url.Values, validators http.Header, bearer string) (*http.Response, error) {
+	response, err := e.getRegistry(ctx, p, query, validators, bearer, true)
+	return response, sanitizeRegistryError(ctx, err)
+}
+func (e *Endpoint) getRegistry(ctx context.Context, p string, query url.Values, validators http.Header, bearer string, once bool) (*http.Response, error) {
 	if !SafePath(p) {
 		return nil, ErrPath
 	}
@@ -40,6 +48,12 @@ func (e *Endpoint) GetRegistry(ctx context.Context, p string, query url.Values, 
 	u := *e.base
 	u.Path += p
 	u.RawQuery = query.Encode()
+	if once {
+		if bearer != "" {
+			return e.getRegistryOnce(ctx, &u, validators, bearer)
+		}
+		return e.getRegistryOnce(ctx, &u, validators)
+	}
 	if bearer != "" {
 		return e.get(ctx, &u, validators, bearer)
 	}
@@ -59,5 +73,6 @@ func (e *Endpoint) GetRegistryToken(ctx context.Context, service, scope string) 
 	u.RawQuery = url.Values{"service": {service}, "scope": {scope}, "client_id": {"cratectl"}}.Encode()
 	client := *e.client
 	client.CheckRedirect = func(*http.Request, []*http.Request) error { return ErrRedirect }
-	return e.getUsing(ctx, &u, nil, &client)
+	response, err := e.getUsing(ctx, &u, nil, &client)
+	return response, sanitizeRegistryError(ctx, err)
 }

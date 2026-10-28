@@ -70,6 +70,7 @@ paths:
                         networks: {type: array, minItems: 1, maxItems: 64, items: {type: string}}
                         credential_ref: {type: string, description: Operator-owned tenant-scoped reference; never a credential value.}
                         authentication: {type: string, enum: [bearer, basic], default: bearer}
+                        allow_signed_query: {type: boolean, default: false, description: OCI proxy redirects only. Permit bounded opaque query strings at this authority; signatures are validated by the source.}
                     cache:
                       type: object
                       properties:
@@ -92,7 +93,7 @@ paths:
                     download_sources:
                       type: array
                       maxItems: 16
-                      description: npm/PyPI proxy only. Explicit additional download authorities; credentials stay bound to each source URL and authentication scheme.
+                      description: npm/PyPI/OCI proxy only. Explicit additional download authorities; each redirect uses its own approved source credentials. OCI signed queries require allow_signed_query and are never retained as cache bindings.
                       items:
                         type: object
                         required: [url, networks]
@@ -101,6 +102,7 @@ paths:
                           networks: {type: array, minItems: 1, maxItems: 64, items: {type: string}}
                           credential_ref: {type: string}
                           authentication: {type: string, enum: [bearer, basic], default: bearer}
+                          allow_signed_query: {type: boolean, default: false, description: OCI only. Permit bounded ephemeral signed query strings; ordinary durable npm/PyPI download URLs still reject queries.}
                     python_index_format: {type: string, enum: [auto, html, json], default: auto, description: PyPI proxy content negotiation preference.}
                     members: {type: array, minItems: 1, maxItems: 32, uniqueItems: true, items: {type: string}}
                     namespace_owners: {type: object, maxProperties: 128, additionalProperties: {type: string}}

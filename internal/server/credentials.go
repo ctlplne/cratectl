@@ -75,3 +75,11 @@ func (s *Server) ConfigureConcurrency(transfers, fills, tenantFills int) error {
 	s.TenantProxyLimit = tenantFills
 	return nil
 }
+
+func (s *Server) ConfigureOCIDelivery(redirects int, limits upstream.RegistryDeliveryLimits) error {
+	if redirects < 0 || redirects > 64 || limits.Validate() != nil {
+		return errors.New("OCI delivery requires 0–64 redirects, positive bounded URL/query budgets, query bytes within URL bytes, and URL bytes within the 32 KiB response-header ceiling")
+	}
+	s.OCIDeliveryRedirects, s.OCIDeliveryLimits = redirects, limits
+	return nil
+}

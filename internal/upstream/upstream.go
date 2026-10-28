@@ -21,21 +21,24 @@ var ErrRedirect = errors.New("upstream redirect escaped the configured authority
 var ErrPath = errors.New("ambiguous upstream package path")
 
 type Config struct {
-	Authentication string   `json:"authentication,omitempty"`
-	URL            string   `json:"url"`
-	Networks       []string `json:"networks"`
-	CredentialRef  string   `json:"credential_ref,omitempty"`
+	Authentication   string   `json:"authentication,omitempty"`
+	URL              string   `json:"url"`
+	Networks         []string `json:"networks"`
+	CredentialRef    string   `json:"credential_ref,omitempty"`
+	AllowSignedQuery bool     `json:"allow_signed_query,omitempty"`
 }
 type Endpoint struct {
-	base            *url.URL
-	exactPath       string
-	networks        []netip.Prefix
-	privateNetworks []netip.Prefix
-	client          *http.Client
-	transport       *http.Transport
-	credential      string
-	authentication  string
-	lookup          func(context.Context, string, string) ([]netip.Addr, error)
+	base             *url.URL
+	exactPath        string
+	networks         []netip.Prefix
+	privateNetworks  []netip.Prefix
+	client           *http.Client
+	transport        *http.Transport
+	credential       string
+	authentication   string
+	allowSignedQuery bool
+	deliveryLimits   RegistryDeliveryLimits
+	lookup           func(context.Context, string, string) ([]netip.Addr, error)
 }
 
 func New(c Config, credential string, privateNetworks ...string) (*Endpoint, error) {
@@ -62,7 +65,7 @@ func New(c Config, credential string, privateNetworks ...string) (*Endpoint, err
 	if path.Clean(u.Path)+"/" != u.Path && u.Path != "/" {
 		return nil, ErrDestination
 	}
-	e := &Endpoint{base: u, exactPath: exactPath, credential: credential, authentication: c.Authentication, lookup: net.DefaultResolver.LookupNetIP}
+	e := &Endpoint{base: u, exactPath: exactPath, credential: credential, authentication: c.Authentication, allowSignedQuery: c.AllowSignedQuery, deliveryLimits: DefaultRegistryDeliveryLimits(), lookup: net.DefaultResolver.LookupNetIP}
 	if len(c.Networks) == 0 || len(c.Networks) > 64 {
 		return nil, ErrDestination
 	}

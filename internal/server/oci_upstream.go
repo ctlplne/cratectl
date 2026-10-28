@@ -16,8 +16,10 @@ import (
 )
 
 type ociRegistryClient struct {
-	origin, realm          *upstream.Endpoint
-	service, scope, bearer string
+	origin, realm           *upstream.Endpoint
+	delivery                []*upstream.Endpoint
+	redirectLimit, urlLimit int
+	service, scope, bearer  string
 }
 
 func parseOCIChallenge(raw string) (map[string]string, error) {
@@ -118,7 +120,11 @@ func (s *Server) newOCIRegistryClient(i store.Identity, repo store.Repository, i
 	if e != nil {
 		return nil, e
 	}
-	client := &ociRegistryClient{origin: origin, scope: "repository:" + upstreamOCIImage(repo, image) + ":pull", service: repo.Settings.OCITokenService}
+	if e = origin.ConfigureRegistryDelivery(s.OCIDeliveryLimits); e != nil {
+		origin.Close()
+		return nil, e
+	}
+	client := &ociRegistryClient{redirectLimit: s.OCIDeliveryRedirects, urlLimit: s.OCIDeliveryLimits.URLBytes, origin: origin, scope: "repository:" + upstreamOCIImage(repo, image) + ":pull", service: repo.Settings.OCITokenService}
 	if config := repo.Settings.OCITokenEndpoint; config != nil {
 		credential, e = s.credential(i.Tenant, *config)
 		if e != nil {
@@ -131,6 +137,24 @@ func (s *Server) newOCIRegistryClient(i store.Identity, repo store.Repository, i
 			return nil, e
 		}
 	}
+	for _, config := range repo.Settings.DownloadSources {
+		credential, err := s.credential(i.Tenant, config)
+		if err != nil {
+			client.close()
+			return nil, upstream.ErrDestination
+		}
+		endpoint, err := upstream.New(config, credential, s.PrivateUpstreamNetworks...)
+		if err != nil {
+			client.close()
+			return nil, err
+		}
+		if err = endpoint.ConfigureRegistryDelivery(s.OCIDeliveryLimits); err != nil {
+			endpoint.Close()
+			client.close()
+			return nil, err
+		}
+		client.delivery = append(client.delivery, endpoint)
+	}
 	return client, nil
 }
 func (c *ociRegistryClient) close() {
@@ -138,10 +162,76 @@ func (c *ociRegistryClient) close() {
 	if c.realm != nil {
 		c.realm.Close()
 	}
+	for _, endpoint := range c.delivery {
+		endpoint.Close()
+	}
 	c.bearer = ""
 }
 func (c *ociRegistryClient) get(ctx context.Context, p string, q url.Values, h http.Header) (*http.Response, error) {
-	response, e := c.origin.GetRegistry(ctx, p, q, h, c.bearer)
+	response, e := c.originGet(ctx, func(bearer string) (*http.Response, error) { return c.origin.GetRegistryOnce(ctx, p, q, h, bearer) })
+	if e != nil {
+		return response, e
+	}
+	for redirects := 0; ociDeliveryRedirect(response.StatusCode); redirects++ {
+		next, err := ociDeliveryLocation(response, redirects, c.redirectLimit, c.urlLimit)
+		response.Body.Close()
+		if err != nil {
+			return nil, err
+		}
+		selected := c.origin
+		priority := selected.RegistryDeliveryScope(next)
+		for _, endpoint := range c.delivery {
+			if n := endpoint.RegistryDeliveryScope(next); n > priority {
+				selected, priority = endpoint, n
+			}
+		}
+		if priority == 0 {
+			return nil, upstream.ErrRedirect
+		}
+		if selected == c.origin {
+			response, e = c.originGet(ctx, func(bearer string) (*http.Response, error) {
+				if bearer != "" {
+					return selected.GetRegistryDelivery(ctx, next, h, bearer)
+				}
+				return selected.GetRegistryDelivery(ctx, next, h)
+			})
+		} else {
+			response, e = selected.GetRegistryDelivery(ctx, next, h)
+		}
+		if e != nil {
+			return response, e
+		}
+	}
+	return response, nil
+}
+
+func ociDeliveryRedirect(status int) bool {
+	return status == 301 || status == 302 || status == 303 || status == 307 || status == 308
+}
+func ociDeliveryLocation(response *http.Response, redirects, limit, urlBytes int) (string, error) {
+	if redirects >= limit || response.Request == nil || response.Request.URL == nil || len(response.Header.Values("Location")) != 1 {
+		return "", upstream.ErrRedirect
+	}
+	raw := response.Header.Get("Location")
+	if len(raw) == 0 || len(raw) > urlBytes || strings.IndexFunc(raw, unicode.IsControl) >= 0 {
+		return "", upstream.ErrRedirect
+	}
+	next, err := url.Parse(raw)
+	if err != nil || next.User != nil || next.Opaque != "" || next.Fragment != "" {
+		return "", upstream.ErrRedirect
+	}
+	if next.Path != "" && !upstream.SafePath(strings.Trim(next.Path, "/")) {
+		return "", upstream.ErrRedirect
+	}
+	next = response.Request.URL.ResolveReference(next)
+	if response.Request.URL.Scheme == "https" && next.Scheme != "https" {
+		return "", upstream.ErrRedirect
+	}
+	return next.String(), nil
+}
+
+func (c *ociRegistryClient) originGet(ctx context.Context, request func(string) (*http.Response, error)) (*http.Response, error) {
+	response, e := request(c.bearer)
 	if e != nil || response.StatusCode != 401 || c.realm == nil {
 		return response, e
 	}
@@ -188,5 +278,5 @@ func (c *ociRegistryClient) get(ctx context.Context, p string, q url.Values, h h
 	if c.bearer == "" || len(c.bearer) > 16384 || strings.IndexFunc(c.bearer, func(r rune) bool { return unicode.IsSpace(r) || unicode.IsControl(r) }) >= 0 {
 		return nil, upstream.ErrDestination
 	}
-	return c.origin.GetRegistry(ctx, p, q, h, c.bearer)
+	return request(c.bearer)
 }

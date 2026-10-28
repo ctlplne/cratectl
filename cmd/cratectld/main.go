@@ -21,6 +21,7 @@ import (
 	crypt "ctlplne.dev/cratectl/internal/crypto"
 	"ctlplne.dev/cratectl/internal/server"
 	"ctlplne.dev/cratectl/internal/store"
+	"ctlplne.dev/cratectl/internal/upstream"
 )
 
 func run() error {
@@ -116,6 +117,10 @@ func run() error {
 		pythonFiles := f.Int("python-file-budget", 10000, "maximum Python archive entries")
 		pythonMetadata := f.Int64("python-metadata-bytes", 1<<20, "maximum embedded Python core metadata bytes")
 		ociGraphBytes := f.Int64("oci-graph-bytes", 4<<30, "maximum aggregate bytes staged by one OCI graph/catalog retrieval")
+		ociRedirects := f.Int("oci-delivery-redirects", 5, "maximum approved delivery redirect hops per OCI request; zero disables redirects")
+		ociURLBytes := f.Int("oci-delivery-url-bytes", 16384, "maximum ephemeral OCI delivery URL bytes, within the response-header ceiling")
+		ociQueryBytes := f.Int("oci-delivery-query-bytes", 8192, "maximum opaque query bytes on explicitly approved OCI sources")
+		ociQueryPairs := f.Int("oci-delivery-query-pairs", 64, "maximum opaque OCI delivery query parameter pairs")
 
 		credentials := f.String("upstream-credentials", "", "private JSON map of named upstream tokens; values never enter repository configuration")
 		if e := f.Parse(os.Args[2:]); e != nil {
@@ -165,6 +170,9 @@ func run() error {
 			return errors.New("OCI graph byte budget must be positive and below 2^62")
 		}
 		h.OCIGraphBytes = *ociGraphBytes
+		if e := h.ConfigureOCIDelivery(*ociRedirects, upstream.RegistryDeliveryLimits{URLBytes: *ociURLBytes, QueryBytes: *ociQueryBytes, QueryPairs: *ociQueryPairs}); e != nil {
+			return e
+		}
 		if e := h.ConfigureConcurrency(*transfers, *fills, *tenantFills); e != nil {
 			return e
 		}

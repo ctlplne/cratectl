@@ -16,7 +16,7 @@ lint:
 	$(GO) vet ./...
 	python3 scripts/check_architecture.py
 integration: build
-	$(GO) test -count=1 -tags=integration ./internal/store ./internal/server
+	$(GO) test -count=1 -tags=integration ./internal/store ./internal/server ./internal/conformance
 conformance: build
 	python3 scripts/conformance.py all
 security:
