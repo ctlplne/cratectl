@@ -1,10 +1,23 @@
 # cratectl execution status
 
-Owner-directed repository reset: the implementation is retained, but Git history
-is being recreated under the verified `imfeelingtheagi` identity. Every earlier
-commit/checkpoint reference below is historical evidence from the archived old
-history. Fresh clean-build qualification against the new root is pending.
-See `evidence/2026-10-28/history-reset.json`.
+Owner-directed repository reset completed on 2026-10-28. Private GitHub repository
+`ctlplne/cratectl` was recreated (new ID 1437631481); the preserved implementation
+has a fresh root `887c569ac96c451bccd91ae872317c06a890117a`. GitHub verifies both
+author and committer as `imfeelingtheagi`. Repository identity hooks reject the
+previous wrong email and block incorrectly attributed history from push.
+
+Fresh clean-build native qualification passed 226 assertions against that exact
+root, with matching embedded binary identities. Unit/vet/race, two repeated real
+PostgreSQL/server race runs and current/history secret scans passed. The existing
+implementation matches the pre-reset SHA-256 inventory. Test services are stopped;
+private database data and the original-history recovery copy are retained.
+See `evidence/2026-10-28/history-reset.json` for the authoritative new baseline.
+
+Every earlier commit/checkpoint reference below is historical evidence from the
+archived original history. It does not identify the new history's current source.
+All 450 capabilities, 41 format families and negative readiness verdicts remain.
+The owner authorized pushing this recreation; later feature pushes still require
+the owner's authority under the standing project contract.
 
 **Goal active; full product goal incomplete.** No design-partner, ordinary-operator
 or enterprise readiness verdict is positive. Starting commit: `fa727a9`; local

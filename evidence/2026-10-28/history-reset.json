@@ -14,6 +14,63 @@
   },
   "implementation_preserved": true,
   "historical_evidence": "Existing checkpoint hashes refer to the archived old history. They are retained observations and do not establish clean-build provenance for the new history.",
-  "fresh_qualification": "pending against the new root commit",
-  "scope": "All 450 capabilities and 41 format families remain committed; every broad readiness verdict remains negative."
+  "fresh_qualification": {
+    "candidate": "887c569ac96c451bccd91ae872317c06a890117a",
+    "native_evidence": "evidence/2026-10-28/conformance-fd9a969bde.json",
+    "assertions": 226,
+    "source_dirty": false,
+    "build_source_matches_candidate": true,
+    "artifacts": {
+      "bin/cratectld": "a57c2acd1e60392b26efa506b55e3184cc71ac895982ca9fcf3a1e0c70e9f7cf",
+      "bin/cratectl": "182b8fcd940a43a506c2e91265aaaa95380b402e717e5a35d90a487d619bcc6f"
+    },
+    "build_identity": {
+      "bin/cratectld": {
+        "go_version": "go1.27.3",
+        "settings": {
+          "-buildmode": "exe",
+          "-compiler": "gc",
+          "-trimpath": "true",
+          "CGO_ENABLED": "1",
+          "GOARCH": "arm64",
+          "GOOS": "darwin",
+          "GOARM64": "v8.0",
+          "vcs": "git",
+          "vcs.revision": "887c569ac96c451bccd91ae872317c06a890117a",
+          "vcs.time": "2026-10-28T21:07:47Z",
+          "vcs.modified": "false"
+        }
+      },
+      "bin/cratectl": {
+        "go_version": "go1.27.3",
+        "settings": {
+          "-buildmode": "exe",
+          "-compiler": "gc",
+          "-trimpath": "true",
+          "CGO_ENABLED": "1",
+          "GOARCH": "arm64",
+          "GOOS": "darwin",
+          "GOARM64": "v8.0",
+          "vcs": "git",
+          "vcs.revision": "887c569ac96c451bccd91ae872317c06a890117a",
+          "vcs.time": "2026-10-28T21:07:47Z",
+          "vcs.modified": "false"
+        }
+      }
+    },
+    "unit_vet_race": "evidence/2026-10-28/history-reset-unit-vet-race.txt",
+    "postgres_race": "evidence/2026-10-28/history-reset-postgres-race.txt",
+    "secret_scans": [
+      "evidence/2026-10-28/gitleaks-reset-source.json",
+      "evidence/2026-10-28/gitleaks-reset-history.json"
+    ],
+    "scope": "Preserved implementation bytes and existing native scenarios, repeated against the new history. Full product/security/packaging qualification remains incomplete."
+  },
+  "scope": "All 450 capabilities and 41 format families remain committed; every broad readiness verdict remains negative.",
+  "github_verified_identity": {
+    "author": "imfeelingtheagi",
+    "committer": "imfeelingtheagi",
+    "root_parent_count": 0
+  },
+  "private_recovery_directory": "/Users/shankar/Desktop/ctlplne-cratectl/.private/history-reset-20261028T210207Z"
 }
