@@ -19,28 +19,33 @@ All 450 capabilities, 41 format families and negative readiness verdicts remain.
 The owner authorized pushing this recreation; later feature pushes still require
 the owner's authority under the standing project contract.
 
-Latest source candidate: `2a110884b7e725c2565927851de0036c1b101bff`, committed locally as
-`imfeelingtheagi` for both author and committer. Current review range is
-`887c569..main`. The strict clean-build combined native replay passed 257
-assertions with exact embedded binary identities; see
-`evidence/2026-10-28/oci-proxy-checkpoint.json`.
+Latest source candidate: `15a2326afc558a5c1d38276a322d82f60b16e53d`, committed locally with
+`imfeelingtheagi` as author and committer. The strict clean-build combined native
+replay passed 267 assertions with exact embedded binary identities; see
+`evidence/2026-10-28/oci-member-checkpoint.json`. Review range is
+`887c569..main`. Feature commits remain local.
 
-OCI proxy/group now has complete staged graph publication under the shared
-retrieval fence, current source/group policy, native tags/referrers, refresh and
-retained digest pins, namespace/first-source precedence, quarantine and current
-grants. Stock ORAS exercised proxy and hosted/proxy group pulls, restart and
-concurrency. Owned transport fixtures prove exact approved token realm/audience/
-pull scope, separate credentials and rejected token redirects.
+OCI proxy graphs now have independently inspectable per-member cache records and
+transactional freshness/invalidation fences. Root 304 validation renews the full
+dependency graph; mutable manifests require strong validators for exact-byte
+reuse. Internal request receipts admit successful zero-freshness responses and
+bounded stale use while preserving every member's own window and current policy.
+Tenant journal sequences prevent older parent/tag/catalog work from undoing
+newer invalidation or tag changes, including under backward wall timestamps.
 
-The negative-cache refresh defect and same-key admission race have retained first
-failures, controlled PostgreSQL regressions and repaired replay. Unit/vet/race and
-two repeated database/server race runs passed. Challenge fuzzing reached 84458
-executions. Final Go vulnerability (238 records), retained-database Trivy source
-and native Gitleaks checks report no findings in their recorded scope. All 450
-broad rows remain open. CDN/signed redirects, full client/platform/token-service,
-lifecycle, fault/security/production and later-stage campaigns remain required.
-These feature/fix commits were not pushed. Owned native PostgreSQL is stopped at
-handoff, with both database datasets and private reset recovery retained.
+Unit/vet/race and two repeated actual PostgreSQL/server race runs passed. Native
+ORAS replays include member, parent and catalog revalidation, zero-freshness
+pull/tags/referrers, concurrency and restart. Retained failures include the
+missing member cache, older-tag race and timestamp-sensitive native fixture;
+each has repaired replay. Scoped Govulncheck (238 records), Trivy source and
+Gitleaks source/history/review scans report no findings. Full security and
+production packaging remain incomplete.
+
+All 450 broad capabilities and 41 families remain open. Approved CDN/signed
+delivery, real token-service/client/platform combinations, referrer pagination,
+source removal/lifecycle, faults and every later stage remain required. Owned
+native PostgreSQL and conformance services are stopped; both private database
+datasets and original-history recovery are retained.
 
 **Goal active; full product goal incomplete.** No design-partner, ordinary-operator
 or enterprise readiness verdict is positive. Starting commit: `fa727a9`; local

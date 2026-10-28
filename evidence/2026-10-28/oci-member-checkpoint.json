@@ -1,0 +1,140 @@
+{
+  "candidate": "15a2326afc558a5c1d38276a322d82f60b16e53d",
+  "qualified_at": "2026-10-28T22:27:05Z",
+  "source_dirty": false,
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "build_source_matches_candidate": true,
+  "commit_identity": {
+    "author": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>",
+    "committer": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>"
+  },
+  "feature_changes_pushed": false,
+  "artifacts": {
+    "bin/cratectld": "dbfc1c519ac06997f9318d349db08689208efede0bea41e27ee5a3756627fd83",
+    "bin/cratectl": "383251d621a8eec3766ac1d942bc3ef198c9bb14a2f48ed136254b375b4d35d9"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "15a2326afc558a5c1d38276a322d82f60b16e53d",
+        "vcs.time": "2026-10-28T22:24:48Z",
+        "vcs.modified": "false"
+      }
+    },
+    "bin/cratectl": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "15a2326afc558a5c1d38276a322d82f60b16e53d",
+        "vcs.time": "2026-10-28T22:24:48Z",
+        "vcs.modified": "false"
+      }
+    }
+  },
+  "assertions": 267,
+  "native_evidence": "evidence/2026-10-28/conformance-6ba43fbbe9.json",
+  "database_profile": "native",
+  "topology": "macOS arm64 server, PostgreSQL 16.15 native, filesystem bytes, HTTP loopback only",
+  "tested_clients": {
+    "npm": "11.16.0",
+    "twine": "7.0.0",
+    "pip": "26.1.2",
+    "ORAS": "1.3.6",
+    "Maven": "3.10.0",
+    "JDK": "21.0.13+9"
+  },
+  "commands": {
+    "build": "make build (clean source commit)",
+    "native": "CRATECTL_DEV_DATABASE=native python3 scripts/dev.py python3 scripts/conformance.py all --require-clean-build",
+    "postgres": "CRATECTL_DEV_DATABASE=native GOTOOLCHAIN=local GOCACHE=$PWD/.cache/go-build GOMODCACHE=$PWD/.cache/go-mod python3 scripts/dev.py .cache/go/bin/go test -count=2 -race -tags=integration ./internal/store ./internal/server",
+    "unit_vet_race": "make build test lint race"
+  },
+  "gates": {
+    "unit_vet_race": "evidence/2026-10-28/oci-member-unit-vet-race.txt; passed",
+    "postgres_race": "evidence/2026-10-28/oci-member-postgres-race.txt; two repeated real PostgreSQL store/server runs passed",
+    "go_vulnerability": "evidence/2026-10-28/govulncheck-oci-member-summary.json; 238 records, zero findings; raw report hash and scanner/feed identity retained",
+    "trivy_source": "evidence/2026-10-28/trivy-oci-member-source.json; zero vulnerability/misconfiguration/secret findings in sanitized implementation snapshot",
+    "secret_source": "evidence/2026-10-28/gitleaks-oci-member-source.json; zero findings",
+    "secret_history": "evidence/2026-10-28/gitleaks-oci-member-history.json; zero findings",
+    "secret_review": "evidence/2026-10-28/gitleaks-oci-member-review.json; zero findings",
+    "full_security": "incomplete; make security remains intentionally failing",
+    "production_packaging": "incomplete; make packaging remains intentionally failing"
+  },
+  "trivy_database": {
+    "Version": 2,
+    "NextUpdate": "2026-10-29T13:01:10.618103614Z",
+    "UpdatedAt": "2026-10-28T13:01:10.618103814Z",
+    "DownloadedAt": "2026-10-28T17:09:17.319606Z"
+  },
+  "completed_scope": [
+    "Each canonical staged OCI manifest/blob receives its own inspectable retrieval record, per-response validators/windows and parent validation receipt in the publication transaction.",
+    "Every proxy graph read and discovery checks individual member cache state as well as current grants, source precedence and policy. Expired members force bounded root revalidation.",
+    "Root 304 responses reuse verified exact root bytes but renew dependencies. Mutable manifests use strong ETags; weak/time-only validators force a full fetch. Unsolicited or contradictory 304s fail closed.",
+    "Internal request receipts admit successful zero-freshness fills without creating later cache hits. Stale receipts require classified temporary failure and each required member window; invalidation, negatives and active fetching remain fences.",
+    "Journal sequence ordering prevents older parent/tag/catalog work from erasing newer invalidation or conflicting tag state. Controlled tests set wall timestamps backward and preserve the durable ordering fence.",
+    "Stock ORAS tests prove direct/parent/catalog member revalidation, zero-freshness pull/tags/referrers and the earlier proxy/group workflows. All prior native npm/Python/OCI/Maven/generic journeys replayed.",
+    "The shared-digest native denial fixture now uses stock oras tag instead of two timestamp-sensitive pushes."
+  ],
+  "retained_failures": [
+    {
+      "evidence": "evidence/2026-10-28/conformance-5c165c7d56.json",
+      "cause": "Implicit graph members had no independently inspectable cache records.",
+      "replay": "evidence/2026-10-28/conformance-6ba43fbbe9.json"
+    },
+    {
+      "evidence": "evidence/2026-10-28/oci-cache-fences-first.txt",
+      "cause": "An older tag fill could undo a newer catalog binding.",
+      "replay": "evidence/2026-10-28/oci-member-postgres-race.txt"
+    },
+    {
+      "evidence": "evidence/2026-10-28/conformance-7f45673398.json",
+      "cause": "Two fixture pushes could create different manifests across timestamp boundaries; replaced with oras tag.",
+      "replay": "evidence/2026-10-28/conformance-6ba43fbbe9.json"
+    },
+    {
+      "evidence": "evidence/2026-10-28/oci-member-schema-first.txt",
+      "cause": "First setup used the previous binary embedded schema. Rebuilt/migrated before repeated passing database tests."
+    },
+    {
+      "evidence": "evidence/2026-10-28/oci-member-validator-fixture-first.txt",
+      "cause": "New contradictory-304 fixture initially returned 200 instead of exercising the intended condition. Corrected fixture; repeated database replay passed."
+    }
+  ],
+  "limits": [
+    "All 450 broad capability rows and 41 format families remain open; no full format or readiness verdict becomes verified.",
+    "Approved CDN/cross-authority/signed delivery, real registry/token-service and every client/platform combination remain incomplete.",
+    "Referrer pagination fails closed; complete pagination/fallback, source removals, lifecycle/restore, process fault/recovery, migration, scale and production qualification remain required.",
+    "The proof uses owned macOS arm64, native PostgreSQL 16.15, filesystem storage and HTTP loopback; it is not independent-host, container/Linux, private PKI, HA, S3 or full security qualification.",
+    "Fixed graph node/depth/read-metadata budgets still need operator configuration and larger-graph qualification."
+  ],
+  "resources": {
+    "native_postgresql": "stopped; private dataset retained",
+    "original_container": "stopped; original named data volume retained",
+    "owned_conformance_services": "stopped",
+    "history_reset_recovery": "retained privately"
+  }
+}

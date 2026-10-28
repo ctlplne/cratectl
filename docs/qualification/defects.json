@@ -136,6 +136,36 @@
       "replay": "evidence/2026-10-28/conformance-38b3dc09da.json",
       "additional_regression": "evidence/2026-10-28/oci-proxy-postgres-race.txt",
       "candidate": "2a110884b7e725c2565927851de0036c1b101bff"
+    },
+    {
+      "id": "DEFECT.0015",
+      "summary": "Implicit OCI graph members had no inspectable cache binding or independent expiry/invalidation fence",
+      "first_failure": "evidence/2026-10-28/conformance-5c165c7d56.json",
+      "state": "repaired and replayed",
+      "repair": "Publish per-member cache records atomically; enforce every member at serving; renew dependencies after root 304; bind zero-freshness/stale use to current request receipts.",
+      "replay": "evidence/2026-10-28/conformance-6ba43fbbe9.json",
+      "additional_regression": "evidence/2026-10-28/oci-member-postgres-race.txt",
+      "candidate": "15a2326afc558a5c1d38276a322d82f60b16e53d"
+    },
+    {
+      "id": "DEFECT.0016",
+      "summary": "An older OCI tag fill could overwrite a newer catalog tag binding",
+      "first_failure": "evidence/2026-10-28/oci-cache-fences-first.txt",
+      "state": "repaired and replayed",
+      "repair": "Use tenant journal sequence fences for member and tag changes; reject older conflicting publication or tombstones even when wall timestamps move backward.",
+      "replay": "evidence/2026-10-28/conformance-6ba43fbbe9.json",
+      "additional_regression": "evidence/2026-10-28/oci-member-postgres-race.txt",
+      "candidate": "15a2326afc558a5c1d38276a322d82f60b16e53d"
+    },
+    {
+      "id": "DEFECT.0017",
+      "summary": "The native shared-digest denial fixture used two timestamp-sensitive ORAS pushes",
+      "first_failure": "evidence/2026-10-28/conformance-7f45673398.json",
+      "state": "repaired and replayed",
+      "repair": "Use stock oras tag to point both fixture tags at exactly the same manifest digest.",
+      "replay": "evidence/2026-10-28/conformance-6ba43fbbe9.json",
+      "additional_regression": "evidence/2026-10-28/conformance-9a2b73ca7f.json",
+      "candidate": "15a2326afc558a5c1d38276a322d82f60b16e53d"
     }
   ]
 }
