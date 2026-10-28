@@ -139,6 +139,9 @@ func ociCacheInTx(ctx context.Context, tx pgx.Tx, repo, path string) (bool, erro
 	if e != nil {
 		return false, e
 	}
+	if r.State == "fetching" {
+		return false, ErrBusy
+	}
 	if r.State == "negative" {
 		return false, nil
 	}

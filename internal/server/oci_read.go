@@ -20,7 +20,7 @@ func (s *Server) resolveOCI(ctx context.Context, i store.Identity, endpoint stor
 				if err == nil {
 					result.artifact = a
 					result.cache = "hit"
-				} else if !errors.Is(err, store.ErrNotFound) {
+				} else if !errors.Is(err, store.ErrNotFound) && !errors.Is(err, store.ErrBusy) {
 					return result, err
 				}
 			}

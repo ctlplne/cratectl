@@ -72,6 +72,24 @@ func TestOCIProxyGraphFenceAndAtomicPublication(t *testing.T) {
 	if e != nil || a.Digest != root.Digest || source.Name != repo {
 		t.Fatalf("current graph: %+v %+v %v", a, source, e)
 	}
+	canonicalPath := "app/manifests/sha256:" + root.Digest
+	negative, e := s.AcquireRetrieval(ctx, i, repo, canonicalPath, "owned-negative", true)
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e = s.CompleteRetrieval(ctx, i, negative, RetrievalResult{Status: 404, FreshSeconds: 60}); e != nil {
+		t.Fatal(e)
+	}
+	refresh, e := s.AcquireRetrieval(ctx, i, repo, canonicalPath, "owned-refresh", true)
+	if e != nil {
+		t.Fatal(e)
+	}
+	if _, _, e = s.OCISelection(ctx, i, repo, "app", "manifests", "sha256:"+root.Digest); !errors.Is(e, ErrBusy) {
+		t.Fatalf("in-progress refresh bypassed previous negative cache: %v", e)
+	}
+	if e = s.CompleteRetrieval(ctx, i, refresh, RetrievalResult{Status: 304, FreshSeconds: 60}); e != nil {
+		t.Fatal(e)
+	}
 	other := Identity{Tenant: "test-b", Actor: "operator", Role: "admin"}
 	if _, _, e = s.OCISelection(ctx, other, repo, "app", "manifests", "latest"); !errors.Is(e, ErrNotFound) {
 		t.Fatalf("cross-tenant graph: %v", e)
