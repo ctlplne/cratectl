@@ -19,41 +19,45 @@ All 450 capabilities, 41 format families and negative readiness verdicts remain.
 The owner authorized pushing this recreation; later feature pushes still require
 the owner's authority under the standing project contract.
 
-Latest source candidate: `15a2326afc558a5c1d38276a322d82f60b16e53d`, committed locally with
-`imfeelingtheagi` as author and committer. The strict clean-build combined native
-replay passed 267 assertions with exact embedded binary identities; see
-`evidence/2026-10-28/oci-member-checkpoint.json`. Review range is
-`887c569..main`. The member-cache source and its checkpoint commits remain local.
+Latest source candidate: `40a7e006e4f8197c4c4c686660b98c81c4d92013`, committed locally with
+`imfeelingtheagi` as both author and committer. Clean native qualification passed
+267 existing assertions plus a separate 33-assertion real-provider journey;
+both reports identify the same exact binaries and source. See
+`evidence/2026-10-28/oci-delivery-checkpoint.json`. Review range is
+`887c569..main`. This delivery source and its checkpoint remain local.
 
-Remote-state correction: GitHub main already contains the earlier checkpoint
-`b13550a`, with both GitHub identities verified as `imfeelingtheagi`. Its remote
-reflog records a push at 2026-10-28T17:58:19-04:00. The earlier OCI proxy
-checkpoint's local-only statement is inaccurate. The standing contract requires
-separate owner authority for feature pushes; none is recorded in this execution
-context. This audit made no remote mutation. See
+OCI proxy delivery now follows only explicit approved origin/CDN authorities,
+with separate credentials per hop, opaque signed-query opt-in, preserved query
+bytes and configurable URL/query/hop budgets. Registry/realm/downstream tokens,
+cookies and Referer cannot cross source authority. Common DNS/CIDR/private-network
+ceilings still apply; HTTPS downgrade and token-realm redirects are rejected.
+All graph, per-member cache and current-policy publication/serving fences remain.
+Malformed Location and transport errors cannot echo temporary query credentials.
+
+Stock ORAS proof covers owned origin/token/CDN fixtures and actual Docker Hub,
+its anonymous token realm and documented CloudFront delivery. The real-provider
+case pins one Linux arm64 BusyBox manifest and verifies missing-query-permission
+rejection, exact proxy/group OCI layouts, cached generation, native process
+restart, member refresh and current digest denial. Two repeated clean PostgreSQL/
+race/stock-client runs passed, including no partial graph after rejection and no
+query/credentials in durable repository/cache/journal/job data. Parser fuzzing
+reached 154589 executions. Unit/vet/race, scoped Govulncheck (238 records), retained-
+database Trivy source and Gitleaks source/history/review checks pass. This is not
+full security, packaging or format qualification.
+
+Remote-state correction remains authoritative: GitHub main is still `b13550a`,
+verified read-only with both GitHub identities `imfeelingtheagi`. The earlier OCI
+proxy checkpoint's local-only statement was inaccurate; its reflog records a
+prior push at 2026-10-28T17:58:19-04:00. The standing contract requires separate
+owner authority for feature pushes. No new push was made. See
 `evidence/2026-10-28/remote-state-audit.json`.
 
-OCI proxy graphs now have independently inspectable per-member cache records and
-transactional freshness/invalidation fences. Root 304 validation renews the full
-dependency graph; mutable manifests require strong validators for exact-byte
-reuse. Internal request receipts admit successful zero-freshness responses and
-bounded stale use while preserving every member's own window and current policy.
-Tenant journal sequences prevent older parent/tag/catalog work from undoing
-newer invalidation or tag changes, including under backward wall timestamps.
-
-Unit/vet/race and two repeated actual PostgreSQL/server race runs passed. Native
-ORAS replays include member, parent and catalog revalidation, zero-freshness
-pull/tags/referrers, concurrency and restart. Retained failures include the
-missing member cache, older-tag race and timestamp-sensitive native fixture;
-each has repaired replay. Scoped Govulncheck (238 records), Trivy source and
-Gitleaks source/history/review scans report no findings. Full security and
-production packaging remain incomplete.
-
-All 450 broad capabilities and 41 families remain open. Approved CDN/signed
-delivery, real token-service/client/platform combinations, referrer pagination,
-source removal/lifecycle, faults and every later stage remain required. Owned
-native PostgreSQL and conformance services are stopped; both private database
-datasets and original-history recovery are retained.
+All 450 broad capabilities and 41 families remain open. Other providers/private
+credentials/token-service/client/platform combinations, referrer and signed-
+catalog pagination, descriptor URLs, source removal/lifecycle, faults/recovery,
+production and every later stage remain required. Owned native PostgreSQL and
+conformance services are stopped; private datasets, opaque public test layouts,
+the original container/volume and original-history recovery are retained.
 
 **Goal active; full product goal incomplete.** No design-partner, ordinary-operator
 or enterprise readiness verdict is positive. Starting commit: `fa727a9`; local

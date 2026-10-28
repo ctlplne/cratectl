@@ -166,6 +166,17 @@
       "replay": "evidence/2026-10-28/conformance-6ba43fbbe9.json",
       "additional_regression": "evidence/2026-10-28/conformance-9a2b73ca7f.json",
       "candidate": "15a2326afc558a5c1d38276a322d82f60b16e53d"
+    },
+    {
+      "id": "DEFECT.0018",
+      "summary": "OCI retrieval rejected an explicitly approved separate CDN delivery authority",
+      "first_failure": "evidence/2026-10-28/oci-delivery-first.txt",
+      "state": "repaired and replayed",
+      "repair": "Allow explicit OCI delivery sources and signed-query opt-in; manually select each hop, isolate credentials, preserve opaque queries, apply network/budget checks and retain atomic graph/current-policy guards. Sanitize all OCI transport/Location errors.",
+      "replay": "evidence/2026-10-28/public-oci-65c2985a5d.json",
+      "additional_regression": "evidence/2026-10-28/oci-delivery-clean-postgres-race.txt",
+      "candidate": "40a7e006e4f8197c4c4c686660b98c81c4d92013",
+      "limits": "One real Docker Hub anonymous-token/CloudFront image proof plus owned fixtures; full provider/client/fault/lifecycle conformance remains open."
     }
   ]
 }

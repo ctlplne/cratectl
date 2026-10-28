@@ -1,0 +1,153 @@
+{
+  "candidate": "40a7e006e4f8197c4c4c686660b98c81c4d92013",
+  "qualified_at": "2026-10-28T23:10:11Z",
+  "source_dirty": false,
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "build_source_matches_candidate": true,
+  "commit_identity": {
+    "author": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>",
+    "committer": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>"
+  },
+  "this_checkpoint_changes_pushed": false,
+  "remote_main_verified": "b13550a5f744f4d9a6a8e11c36fd3bf7a3348cec",
+  "remote_github_identity": {
+    "author": "imfeelingtheagi",
+    "committer": "imfeelingtheagi"
+  },
+  "prior_remote_correction": "evidence/2026-10-28/remote-state-audit.json",
+  "artifacts": {
+    "bin/cratectld": "a7bf4a2be54c61ef55bfabcfa7432fcb0e68cca78f46bd94d38e3477afef2977",
+    "bin/cratectl": "ce86a474d66124d40b5e9725b78785d043411eea3d3500be921ec6cf5d7d3260"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "40a7e006e4f8197c4c4c686660b98c81c4d92013",
+        "vcs.time": "2026-10-28T23:06:46Z",
+        "vcs.modified": "false"
+      }
+    },
+    "bin/cratectl": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "40a7e006e4f8197c4c4c686660b98c81c4d92013",
+        "vcs.time": "2026-10-28T23:06:46Z",
+        "vcs.modified": "false"
+      }
+    }
+  },
+  "native_assertions": 267,
+  "native_evidence": "evidence/2026-10-28/conformance-56b5dacd54.json",
+  "public_provider_assertions": 33,
+  "public_provider_evidence": "evidence/2026-10-28/public-oci-65c2985a5d.json",
+  "public_provider": {
+    "registry": "https://registry-1.docker.io/v2/",
+    "image": "library/busybox",
+    "manifest_digest": "sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c",
+    "token_realm": "https://auth.docker.io/token",
+    "service": "registry.docker.io",
+    "delivery_bases": [
+      "https://production.cloudfront.docker.com/"
+    ],
+    "documentation": "https://docs.docker.com/desktop/enterprise/allow-list/"
+  },
+  "observed_image_platform": {
+    "os": "linux",
+    "architecture": "arm64"
+  },
+  "database_profile": "native",
+  "topology": "macOS arm64 server, PostgreSQL 16.15 native, filesystem bytes, HTTP loopback only",
+  "public_topology": "native process on HTTP loopback 38443, real PostgreSQL runtime/owner roles, filesystem CAS; HTTPS public registry/realm/CDN",
+  "tested_clients": {
+    "npm": "11.16.0",
+    "twine": "7.0.0",
+    "pip": "26.1.2",
+    "ORAS": "1.3.6",
+    "Maven": "3.10.0",
+    "JDK": "21.0.13+9"
+  },
+  "commands": {
+    "build": "make build (clean source commit)",
+    "unit_vet_race": "make build test lint race",
+    "postgres_native": "CRATECTL_DEV_DATABASE=native GOTOOLCHAIN=local GOCACHE=$PWD/.cache/go-build GOMODCACHE=$PWD/.cache/go-mod python3 scripts/dev.py .cache/go/bin/go test -v -count=2 -race -tags=integration ./internal/store ./internal/server ./internal/conformance",
+    "native_all": "CRATECTL_DEV_DATABASE=native python3 scripts/dev.py python3 scripts/conformance.py all --require-clean-build",
+    "public_provider": "CRATECTL_DEV_DATABASE=native python3 scripts/dev.py python3 scripts/conformance_public_oci.py --registry https://registry-1.docker.io/v2/ --image library/busybox --digest sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c --token-realm https://auth.docker.io/token --service registry.docker.io --delivery-base https://production.cloudfront.docker.com/ --source-document https://docs.docker.com/desktop/enterprise/allow-list/ --require-clean-build"
+  },
+  "gates": {
+    "unit_vet_race": "evidence/2026-10-28/oci-delivery-unit-vet-race.txt; passed",
+    "postgres_stock_client_race": "evidence/2026-10-28/oci-delivery-clean-postgres-race.txt; two repeated store/server/stock ORAS conformance runs passed on clean committed source",
+    "fuzz": "evidence/2026-10-28/oci-delivery-clean-fuzz.txt; 154589 executions in a ten-second, one-worker replay",
+    "go_vulnerability": "evidence/2026-10-28/govulncheck-oci-delivery-summary.json; 238 records, zero findings",
+    "trivy_source": "evidence/2026-10-28/trivy-oci-delivery-source.json; zero vulnerability/misconfiguration/secret findings in sanitized source scope",
+    "secret_source": "evidence/2026-10-28/gitleaks-oci-delivery-source.json; zero findings",
+    "secret_history": "evidence/2026-10-28/gitleaks-oci-delivery-history.json; zero findings",
+    "secret_review": "evidence/2026-10-28/gitleaks-oci-delivery-review.json; zero findings",
+    "full_security": "incomplete; make security remains intentionally failing",
+    "production_packaging": "incomplete; make packaging remains intentionally failing"
+  },
+  "trivy_database": {
+    "Version": 2,
+    "NextUpdate": "2026-10-29T13:01:10.618103614Z",
+    "UpdatedAt": "2026-10-28T13:01:10.618103814Z",
+    "DownloadedAt": "2026-10-28T17:09:17.319606Z"
+  },
+  "completed_scope": [
+    "OCI proxy management accepts explicit additional delivery authorities and opt-in opaque signed query use. Ordinary npm/PyPI durable URL validation remains unchanged.",
+    "Every redirect selects the longest approved source path before query validation. Each request uses only that source credential; registry bearers, realm credentials, downstream tokens, cookies and Referer cannot cross delivery authority.",
+    "All destination addresses remain subject to common CIDRs, operator private-network ceilings and approved-address dialing; HTTPS downgrade is rejected. Token realms still reject redirects, and CDN challenges cannot start a registry token exchange.",
+    "Operator flags configure hop, URL byte, query byte and query-pair budgets. Query order/escaping/repetition is preserved. Ephemeral Locations/query URLs are not durable bindings, and origin/realm/delivery errors are sanitized, including malformed Locations parsed by net/http before CheckRedirect.",
+    "Two repeated real PostgreSQL/race/stock ORAS runs prove exact proxy/group bytes, renewed query URLs after root 304/member invalidation, no partial publication after integrity/query rejection, current policy and absence of ephemeral credentials in artifact/cache/repository/journal/job data.",
+    "A clean real Docker Hub/anonymous-token/CloudFront journey proves one pinned Linux arm64 BusyBox image through actual HTTPS delivery, including a missing-query-permission negative control, exact OCI layouts, cached generation, native process restart, member revalidation and current source/group denial.",
+    "All previous hosted/proxy/group native npm/Python/OCI/Maven/generic journeys replayed against identical clean binary identities."
+  ],
+  "retained_first_failure": {
+    "evidence": "evidence/2026-10-28/oci-delivery-first.txt",
+    "cause": "An explicitly approved CDN redirect was rejected before destination-specific credentials could be used.",
+    "replay": "evidence/2026-10-28/public-oci-65c2985a5d.json"
+  },
+  "retained_architecture_gate": {
+    "evidence": "evidence/2026-10-28/oci-delivery-architecture-first.txt",
+    "cause": "A native-client test initially imported os/exec in the HTTP server package.",
+    "repair": "Move the stock-client driver to a separate conformance test package; keep the architecture rule unchanged.",
+    "replay": "evidence/2026-10-28/oci-delivery-unit-vet-race.txt"
+  },
+  "limits": [
+    "All 450 broad capability rows and 41 protocol families remain open; no full format or readiness verdict becomes verified.",
+    "Real-provider proof is one pinned Linux arm64 image and Docker Hub anonymous token/CloudFront combination. Other S3/GCS/Azure/CDNs, private registry credentials, token services and every client/platform still require evidence.",
+    "Referrer pagination/fallback, descriptor URL fallback, full source removal/lifecycle/restore, current signed-catalog pagination, custom PKI, all TLS/DNS/network/process faults, recovery, HA, migration and production scale remain required.",
+    "Owned upstream fixtures use HTTP loopback; public provider transport uses actual HTTPS. This is not a Docker/Podman engine, native Linux/Windows server or container/packaging qualification.",
+    "Graph/source/group node/count/read-metadata ceilings still require fuller operator configuration and scale qualification. No scanner assessment or package signature verification is inferred from URL delivery or structural validation."
+  ],
+  "resources": {
+    "native_postgresql": "stopped; retained private dataset",
+    "original_postgresql_container": "stopped; original named volume retained",
+    "owned_conformance_services": "stopped",
+    "private_test_data": "retained; public images remain opaque OCI layout/CAS bytes",
+    "history_reset_recovery": "retained privately"
+  }
+}
