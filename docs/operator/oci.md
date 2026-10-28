@@ -71,6 +71,9 @@ stale windows use the shared proxy cache settings. Inspect the cache API for the
 requested `IMAGE/manifests/TAG` or `oci-catalog/IMAGE/tags` path to explain a
 failure or expire a binding after repairing its origin. A complete tag refresh
 can add or remove mutable tags while retained digest pins keep their exact bytes.
+Full per-object freshness and invalidation for implicitly staged graph members
+remains open. Explicit `Cache-Control: no-cache` requests force retrieval; the
+current native freshness proof covers the listed tag/catalog paths.
 
 Groups take an ordered hosted/proxy `members` list. Reserve private image prefixes
 through namespace ownership. The first source owns a tag/digest collision,

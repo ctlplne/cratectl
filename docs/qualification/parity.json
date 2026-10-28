@@ -35,7 +35,7 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "internal/server/oci*.go, internal/store/oci.go, internal/store/artifact_read.go",
+      "implementation": "internal/server/oci*.go, internal/store/oci*.go, shared retrieval/authorization/blob and upstream transport",
       "surfaces": {
         "api": "/v2/REPOSITORY/IMAGE/...",
         "cli": null,
@@ -76,14 +76,15 @@
         "delete/restore"
       ],
       "state": "implementing",
-      "candidate": "68297a128123820642d058529476c7037a3be175",
+      "candidate": "2a110884b7e725c2565927851de0036c1b101bff",
       "evidence": [
         "evidence/2026-10-28/conformance-fc7ad95c82.json",
         "evidence/2026-10-28/conformance-122db557f4.json",
-        "evidence/2026-10-28/conformance-2cbe20c9cf.json"
+        "evidence/2026-10-28/conformance-2cbe20c9cf.json",
+        "evidence/2026-10-28/conformance-38b3dc09da.json"
       ],
-      "limits": "Early stock ORAS hosted proof covers multi-layer intake/pull, bounded structural/descriptor validation, indexes, governed referrers, weak subjects, nested image names, current tag/graph policy, resume and restart. OCI proxy/group, challenge-token auth, full multi-platform/Docker/Podman/Helm, additional digest/manifest types, lifecycle, signatures, fault/parser and production campaigns remain open.",
-      "next_action": "Implement OCI proxy/group graph workflows, token challenges and remaining native/fault/lifecycle/production journeys; no full format verdict."
+      "limits": "Early stock ORAS hosted/proxy/group proof covers complete fenced graph intake, tags/referrers, refresh/pins, namespace/source precedence, grants, quarantine, child policy, concurrency and restart. Token realm/scope/credential authority has owned transport tests. CDN/signed redirects, full Docker/Podman/Helm/multi-platform, token-service combinations, lifecycle, fault/parser and production campaigns remain open.",
+      "next_action": "Complete approved CDN/signed delivery, token-service/native client, lifecycle, fault and production journeys; no full format verdict."
     },
     {
       "id": "FMT.OCI.PROXY",
@@ -118,9 +119,9 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "internal/server/oci*.go, internal/store/oci*.go, shared retrieval/authorization/blob and upstream transport",
       "surfaces": {
-        "api": null,
+        "api": "/v2/REPOSITORY/IMAGE/...",
         "cli": null,
         "ui": null
       },
@@ -140,7 +141,9 @@
         "buildx",
         "WASM OCI"
       ],
-      "client_versions": {},
+      "client_versions": {
+        "ORAS": "1.3.6"
+      },
       "test_data": "Two nontrivial versions plus a dependency package; same coordinates in two tenants.",
       "permission_cases": [
         "reader denial on publish",
@@ -156,11 +159,13 @@
         "upstream outage",
         "delete/restore"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "No implementation or native-client proof yet.",
-      "next_action": "Implement oci proxy and execute the complete stock-client journey."
+      "state": "implementing",
+      "candidate": "2a110884b7e725c2565927851de0036c1b101bff",
+      "evidence": [
+        "evidence/2026-10-28/conformance-38b3dc09da.json"
+      ],
+      "limits": "Early stock ORAS hosted/proxy/group proof covers complete fenced graph intake, tags/referrers, refresh/pins, namespace/source precedence, grants, quarantine, child policy, concurrency and restart. Token realm/scope/credential authority has owned transport tests. CDN/signed redirects, full Docker/Podman/Helm/multi-platform, token-service combinations, lifecycle, fault/parser and production campaigns remain open.",
+      "next_action": "Complete approved CDN/signed delivery, token-service/native client, lifecycle, fault and production journeys; no full format verdict."
     },
     {
       "id": "FMT.OCI.GROUP",
@@ -195,9 +200,9 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "internal/server/oci*.go, internal/store/oci*.go, shared retrieval/authorization/blob and upstream transport",
       "surfaces": {
-        "api": null,
+        "api": "/v2/REPOSITORY/IMAGE/...",
         "cli": null,
         "ui": null
       },
@@ -217,7 +222,9 @@
         "buildx",
         "WASM OCI"
       ],
-      "client_versions": {},
+      "client_versions": {
+        "ORAS": "1.3.6"
+      },
       "test_data": "Two nontrivial versions plus a dependency package; same coordinates in two tenants.",
       "permission_cases": [
         "reader denial on publish",
@@ -233,11 +240,13 @@
         "upstream outage",
         "delete/restore"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "No implementation or native-client proof yet.",
-      "next_action": "Implement oci group and execute the complete stock-client journey."
+      "state": "implementing",
+      "candidate": "2a110884b7e725c2565927851de0036c1b101bff",
+      "evidence": [
+        "evidence/2026-10-28/conformance-38b3dc09da.json"
+      ],
+      "limits": "Early stock ORAS hosted/proxy/group proof covers complete fenced graph intake, tags/referrers, refresh/pins, namespace/source precedence, grants, quarantine, child policy, concurrency and restart. Token realm/scope/credential authority has owned transport tests. CDN/signed redirects, full Docker/Podman/Helm/multi-platform, token-service combinations, lifecycle, fault/parser and production campaigns remain open.",
+      "next_action": "Complete approved CDN/signed delivery, token-service/native client, lifecycle, fault and production journeys; no full format verdict."
     },
     {
       "id": "FMT.OCI.REPLICATION",
@@ -426,7 +435,7 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "internal/server/oci*.go, internal/store/oci.go, internal/store/artifact_read.go",
+      "implementation": "internal/server/oci*.go, internal/store/oci*.go, shared retrieval/authorization/blob and upstream transport",
       "surfaces": {
         "api": "/v2/REPOSITORY/IMAGE/...",
         "cli": null,
@@ -467,14 +476,15 @@
         "delete/restore"
       ],
       "state": "implementing",
-      "candidate": "68297a128123820642d058529476c7037a3be175",
+      "candidate": "2a110884b7e725c2565927851de0036c1b101bff",
       "evidence": [
         "evidence/2026-10-28/conformance-fc7ad95c82.json",
         "evidence/2026-10-28/conformance-122db557f4.json",
-        "evidence/2026-10-28/conformance-2cbe20c9cf.json"
+        "evidence/2026-10-28/conformance-2cbe20c9cf.json",
+        "evidence/2026-10-28/conformance-38b3dc09da.json"
       ],
-      "limits": "Early stock ORAS hosted proof covers multi-layer intake/pull, bounded structural/descriptor validation, indexes, governed referrers, weak subjects, nested image names, current tag/graph policy, resume and restart. OCI proxy/group, challenge-token auth, full multi-platform/Docker/Podman/Helm, additional digest/manifest types, lifecycle, signatures, fault/parser and production campaigns remain open.",
-      "next_action": "Implement OCI proxy/group graph workflows, token challenges and remaining native/fault/lifecycle/production journeys; no full format verdict."
+      "limits": "Early stock ORAS hosted/proxy/group proof covers complete fenced graph intake, tags/referrers, refresh/pins, namespace/source precedence, grants, quarantine, child policy, concurrency and restart. Token realm/scope/credential authority has owned transport tests. CDN/signed redirects, full Docker/Podman/Helm/multi-platform, token-service combinations, lifecycle, fault/parser and production campaigns remain open.",
+      "next_action": "Complete approved CDN/signed delivery, token-service/native client, lifecycle, fault and production journeys; no full format verdict."
     },
     {
       "id": "FMT.OCI.LIFECYCLE",
@@ -27467,5 +27477,6 @@
     "record": "evidence/2026-10-28/history-reset.json",
     "current_source_candidate": "887c569ac96c451bccd91ae872317c06a890117a",
     "historical_candidate_fields": "Earlier candidate fields below refer to the archived original history. Preserve their exact evidence scope; the new source baseline and repeated native proof are recorded separately."
-  }
+  },
+  "current_source_candidate": "2a110884b7e725c2565927851de0036c1b101bff"
 }

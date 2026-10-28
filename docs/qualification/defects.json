@@ -115,6 +115,27 @@
       "limits": "SHA-256 and four OCI/Docker media types; complete standards/parser, upstream, lifecycle and production cases remain open.",
       "replay": "evidence/2026-10-28/conformance-2cbe20c9cf.json",
       "candidate": "68297a128123820642d058529476c7037a3be175"
+    },
+    {
+      "id": "DEFECT.0013",
+      "summary": "An OCI digest previously cached as missing could be selected while its refresh was still fetching",
+      "first_failure": "evidence/2026-10-28/oci-proxy-refresh-first.txt",
+      "state": "repaired and replayed",
+      "repair": "Active fetching returns busy to the snapshot selector; cached readers join bounded retrieval waiting and recheck the final fenced outcome.",
+      "replay": "evidence/2026-10-28/conformance-38b3dc09da.json",
+      "additional_regression": "evidence/2026-10-28/oci-proxy-postgres-race.txt",
+      "candidate": "2a110884b7e725c2565927851de0036c1b101bff"
+    },
+    {
+      "id": "DEFECT.0014",
+      "summary": "Same-key proxy contenders could be rejected before their owner committed the retrieval lease",
+      "first_failure": "evidence/2026-10-28/conformance-42add4e4d2.json",
+      "controlled_reproduction": "evidence/2026-10-28/proxy-admission-first.txt",
+      "state": "repaired and replayed",
+      "repair": "When local fill admission is full, recheck within the existing bounded wait so same-key contenders can coalesce; capacity limits and cancellation remain enforced.",
+      "replay": "evidence/2026-10-28/conformance-38b3dc09da.json",
+      "additional_regression": "evidence/2026-10-28/oci-proxy-postgres-race.txt",
+      "candidate": "2a110884b7e725c2565927851de0036c1b101bff"
     }
   ]
 }

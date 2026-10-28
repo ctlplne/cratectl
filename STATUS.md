@@ -19,6 +19,29 @@ All 450 capabilities, 41 format families and negative readiness verdicts remain.
 The owner authorized pushing this recreation; later feature pushes still require
 the owner's authority under the standing project contract.
 
+Latest source candidate: `2a110884b7e725c2565927851de0036c1b101bff`, committed locally as
+`imfeelingtheagi` for both author and committer. Current review range is
+`887c569..main`. The strict clean-build combined native replay passed 257
+assertions with exact embedded binary identities; see
+`evidence/2026-10-28/oci-proxy-checkpoint.json`.
+
+OCI proxy/group now has complete staged graph publication under the shared
+retrieval fence, current source/group policy, native tags/referrers, refresh and
+retained digest pins, namespace/first-source precedence, quarantine and current
+grants. Stock ORAS exercised proxy and hosted/proxy group pulls, restart and
+concurrency. Owned transport fixtures prove exact approved token realm/audience/
+pull scope, separate credentials and rejected token redirects.
+
+The negative-cache refresh defect and same-key admission race have retained first
+failures, controlled PostgreSQL regressions and repaired replay. Unit/vet/race and
+two repeated database/server race runs passed. Challenge fuzzing reached 84458
+executions. Final Go vulnerability (238 records), retained-database Trivy source
+and native Gitleaks checks report no findings in their recorded scope. All 450
+broad rows remain open. CDN/signed redirects, full client/platform/token-service,
+lifecycle, fault/security/production and later-stage campaigns remain required.
+These feature/fix commits were not pushed. Owned native PostgreSQL is stopped at
+handoff, with both database datasets and private reset recovery retained.
+
 **Goal active; full product goal incomplete.** No design-partner, ordinary-operator
 or enterprise readiness verdict is positive. Starting commit: `fa727a9`; local
 review range is `fa727a9..main`. Origin is the owner-created private `https://github.com/ctlplne/cratectl.git`.

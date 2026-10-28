@@ -1,0 +1,131 @@
+{
+  "candidate": "2a110884b7e725c2565927851de0036c1b101bff",
+  "source_dirty": false,
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "build_source_matches_candidate": true,
+  "commit_identity": {
+    "author": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>",
+    "committer": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>"
+  },
+  "artifacts": {
+    "bin/cratectld": "2185ed87d5753c344444cf839c9c645439da4639fcbf00691634fcf7be8a53e3",
+    "bin/cratectl": "6c1dd7e0ef3017bf87a7da454eb02d8b18b0c34750908aeb518c0f3333d4c199"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "2a110884b7e725c2565927851de0036c1b101bff",
+        "vcs.time": "2026-10-28T21:43:19Z",
+        "vcs.modified": "false"
+      }
+    },
+    "bin/cratectl": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "2a110884b7e725c2565927851de0036c1b101bff",
+        "vcs.time": "2026-10-28T21:43:19Z",
+        "vcs.modified": "false"
+      }
+    }
+  },
+  "assertions": 257,
+  "native_evidence": "evidence/2026-10-28/conformance-38b3dc09da.json",
+  "database_profile": "native",
+  "topology": "macOS arm64 server, PostgreSQL 16.15 native, filesystem bytes, HTTP loopback only",
+  "tested_clients": {
+    "npm": "11.16.0",
+    "twine": "7.0.0",
+    "pip": "26.1.2",
+    "ORAS": "1.3.6",
+    "Maven": "3.10.0",
+    "JDK": "21.0.13+9"
+  },
+  "commands": {
+    "build": "make build (clean source commit)",
+    "native": "CRATECTL_DEV_DATABASE=native python3 scripts/conformance.py all --require-clean-build",
+    "postgres": "CRATECTL_DEV_DATABASE=native python3 scripts/dev.py .cache/go/bin/go test -count=2 -race -tags=integration ./internal/store ./internal/server",
+    "unit_vet_race": "make build test lint race"
+  },
+  "gates": {
+    "unit_vet_race": "oci-proxy-unit-vet-race.txt; passed",
+    "postgres_integration": "oci-proxy-postgres-race.txt; two repeated race-instrumented runs passed; complete/fenced graph publication, partial rollback, current grants/policy, active refresh and controlled admission contention",
+    "challenge_fuzz": "oci-challenge-fuzz.txt; 84458 executions, ten-second target, one worker",
+    "go_vulnerability": "govulncheck.json; 238 records, zero findings for final source",
+    "trivy_source": "trivy-oci-proxy-source.json; zero vulnerability/misconfiguration/secret findings with retained database",
+    "current_secrets": "gitleaks-oci-proxy-current.json; zero findings in implementation snapshot",
+    "history_secrets": "gitleaks-oci-proxy-history.json; zero findings under existing narrow public-URL exceptions",
+    "full_security": "incomplete; make security remains intentionally failing until the full campaign",
+    "production_packaging": "incomplete; make packaging remains intentionally failing until qualification",
+    "review_secrets": "gitleaks-oci-proxy-review.json; final proposed source/docs/evidence scan has zero findings; retained credential values absent"
+  },
+  "completed_scope": [
+    "Proxy manifest pulls validate and durably stage strong dependency graphs before one fenced transaction publishes canonical objects, the alias, tags and journal/outbox intent.",
+    "Stock ORAS proxy/group proof covers exact layers/manifests, referrers, native tags/refresh, retained digest pins, restart, concurrent misses, namespace ownership, first-source collisions, source grants, quarantine and child-policy denial.",
+    "Groups recheck source precedence, grants and all graph members in one snapshot and after stored-byte verification. Group review applies to unassessed children of an allowed root.",
+    "Owned transport fixtures test exact token realm/audience/pull scope, separate credential authority, rejected escalation/duplicate challenges and refused token-realm redirects. Tokens are ephemeral within one image fill.",
+    "Real PostgreSQL tests reject superseded or incomplete graph publication atomically. A retained negative cache cannot be bypassed while its refresh is active. Same-key admission contention coalesces within bounded waits.",
+    "Existing hosted OCI, generic/Maven raw proxy/group, npm hosted/proxy/group and PyPI hosted/proxy/group journeys replayed."
+  ],
+  "retained_failures": [
+    {
+      "evidence": "evidence/2026-10-28/oci-proxy-refresh-first.txt",
+      "cause": "Cached digest selection ignored active fetching state after a previous negative entry. Repaired by blocking until the fenced outcome."
+    },
+    {
+      "evidence": "evidence/2026-10-28/conformance-42add4e4d2.json",
+      "cause": "Concurrent same-key misses could lose local fill admission before the owner committed its lease."
+    },
+    {
+      "evidence": "evidence/2026-10-28/proxy-admission-first.txt",
+      "cause": "Controlled PostgreSQL lock reproduced six premature same-key admission failures. Repaired with bounded lease rechecks."
+    }
+  ],
+  "limits": [
+    "All 450 broad capability rows and 41 format families retain their required scope; no full format/mode/parity verdict.",
+    "Cross-authority/signed CDN redirects and descriptor URL retrieval remain rejected. Origins needing those delivery paths are not yet compatible.",
+    "Token authority has owned transport proof, not every real token-service/registry combination.",
+    "Full multi-platform/Docker/Podman/Helm, digest/manifest variants, referrer fallback/pagination, private PKI, lifecycle/deletion, recovery and fault campaigns remain open.",
+    "Short fuzz and source scans do not establish a complete parser/security campaign, scanner verdict, image/artifact scan or production qualification.",
+    "Graph node/depth/read-metadata budgets still need operator configuration and scale qualification; no HA or fair-worker claim.",
+    "Native PostgreSQL is a separate dataset while Docker task creation remains unavailable; no original-volume recovery or Linux/container qualification.",
+    "Maven metadata union, remaining npm/PyPI workflows, S3, console, governance, migration, replication, distribution and full Stages 2\u20135 remain required.",
+    "These feature/fix commits are local only. Owner identity remains imfeelingtheagi; no new push/publication is authorized.",
+    "Full per-object freshness/invalidation for implicitly staged immutable graph members remains open; tag/catalog and explicit forced-retrieval paths have the recorded proof."
+  ],
+  "trivy_database": {
+    "Version": 2,
+    "NextUpdate": "2026-10-29T13:01:10.618103614Z",
+    "UpdatedAt": "2026-10-28T13:01:10.618103814Z",
+    "DownloadedAt": "2026-10-28T17:09:17.319606Z"
+  },
+  "readiness": {
+    "assisted_design_partner": "not qualified",
+    "ordinary_operator": "not qualified",
+    "enterprise": "not qualified"
+  }
+}
