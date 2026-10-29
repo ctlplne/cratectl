@@ -4,7 +4,7 @@
       "id": "J.OCI.HOSTED",
       "capability": "FMT.OCI.HOSTED",
       "state": "implementing",
-      "candidate": "f8fed1f48e67ff142c4d253effb28437f5cb75ab",
+      "candidate": "bea2472271bd15993bcae9b8ea12a102b2608abe",
       "evidence": [
         "evidence/2026-10-28/conformance-fc7ad95c82.json",
         "evidence/2026-10-28/conformance-122db557f4.json",
@@ -24,7 +24,11 @@
         "evidence/2026-10-28/leases-51a334f550.json",
         "evidence/2026-10-28/leases-3f7e506ef0.json",
         "evidence/2026-10-28/conformance-b21bf4dd2f.json",
-        "evidence/2026-10-28/recovery-clean-postgres-race.txt"
+        "evidence/2026-10-28/recovery-clean-postgres-race.txt",
+        "evidence/2026-10-29/lifecycle-checkpoint.json",
+        "evidence/2026-10-29/lifecycle-b932eef0f1.json",
+        "evidence/2026-10-29/lifecycle-8fad1990d5.json",
+        "evidence/2026-10-29/lifecycle-clean-postgres-race.txt"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -32,13 +36,14 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Verified subset: bounded immutable OCI parts and legacy-prefix recovery; current credential/grant/lease fences; actual registry crashes; fixed-cutoff, page-resumable lease metadata recovery with cancellation and exact offsets. CAS inventory/orphan GC, full historical integrity sweep, holds/retention, S3, production upgrades/restore and broad client/fault/multi-host/scale qualification remain required. Full capability is not verified."
+      "limits": "Named clean ORAS/PostgreSQL lifecycle, source state/fencing, verified restore, holds and browser previews are qualified. Full native clients/provider/discovery, source configuration/locator/grant races, supported repair, retention/GC, lifecycle faults/scale and broad format qualification remain required.",
+      "next_action": "Complete remaining source configuration/revision and proxy discovery/locator cases, supported repair and full client/lifecycle/retention/GC/fault/scale journeys."
     },
     {
       "id": "J.OCI.PROXY",
       "capability": "FMT.OCI.PROXY",
       "state": "implementing",
-      "candidate": "a5fa76bea4476ff795c148d1fedab53fb4fbed8a",
+      "candidate": "bea2472271bd15993bcae9b8ea12a102b2608abe",
       "evidence": [
         "evidence/2026-10-28/conformance-38b3dc09da.json",
         "evidence/2026-10-28/conformance-6ba43fbbe9.json",
@@ -51,7 +56,11 @@
         "evidence/2026-10-28/oci-discovery-clean-postgres-race.txt",
         "evidence/2026-10-28/conformance-536f022f68.json",
         "evidence/2026-10-28/public-oci-fbd1f0d8c7.json",
-        "evidence/2026-10-28/oci-descriptor-clean-postgres-race.txt"
+        "evidence/2026-10-28/oci-descriptor-clean-postgres-race.txt",
+        "evidence/2026-10-29/lifecycle-checkpoint.json",
+        "evidence/2026-10-29/lifecycle-b932eef0f1.json",
+        "evidence/2026-10-29/lifecycle-8fad1990d5.json",
+        "evidence/2026-10-29/lifecycle-clean-postgres-race.txt"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -59,13 +68,14 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Stock ORAS/real PostgreSQL proof includes complete paged discovery, governed descriptor URL fallback, exact nested/duplicate graphs, real native server process restarts and direct pin refresh, rotated alternate-only referrer advertisements, current policy and no locator/source credentials in normalized durable data. Original manifest bytes retain publisher fields. A pinned real Docker Hub/anonymous-token/CloudFront image replays exact layouts/restart/refresh/denial. Other providers/private credentials/PKI/clients/platforms, source lifecycle/delete/restore, mutable-source races/faults/scale and production campaigns remain required."
+      "limits": "Named clean ORAS/PostgreSQL lifecycle, source state/fencing, verified restore, holds and browser previews are qualified. Full native clients/provider/discovery, source configuration/locator/grant races, supported repair, retention/GC, lifecycle faults/scale and broad format qualification remain required.",
+      "next_action": "Complete remaining source configuration/revision and proxy discovery/locator cases, supported repair and full client/lifecycle/retention/GC/fault/scale journeys."
     },
     {
       "id": "J.OCI.GROUP",
       "capability": "FMT.OCI.GROUP",
       "state": "implementing",
-      "candidate": "a5fa76bea4476ff795c148d1fedab53fb4fbed8a",
+      "candidate": "bea2472271bd15993bcae9b8ea12a102b2608abe",
       "evidence": [
         "evidence/2026-10-28/conformance-38b3dc09da.json",
         "evidence/2026-10-28/conformance-6ba43fbbe9.json",
@@ -78,7 +88,11 @@
         "evidence/2026-10-28/oci-discovery-clean-postgres-race.txt",
         "evidence/2026-10-28/conformance-536f022f68.json",
         "evidence/2026-10-28/public-oci-fbd1f0d8c7.json",
-        "evidence/2026-10-28/oci-descriptor-clean-postgres-race.txt"
+        "evidence/2026-10-28/oci-descriptor-clean-postgres-race.txt",
+        "evidence/2026-10-29/lifecycle-checkpoint.json",
+        "evidence/2026-10-29/lifecycle-b932eef0f1.json",
+        "evidence/2026-10-29/lifecycle-8fad1990d5.json",
+        "evidence/2026-10-29/lifecycle-clean-postgres-race.txt"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -86,7 +100,8 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Stock ORAS/real PostgreSQL proof includes complete paged discovery, governed descriptor URL fallback, exact nested/duplicate graphs, real native server process restarts and direct pin refresh, rotated alternate-only referrer advertisements, current policy and no locator/source credentials in normalized durable data. Original manifest bytes retain publisher fields. A pinned real Docker Hub/anonymous-token/CloudFront image replays exact layouts/restart/refresh/denial. Other providers/private credentials/PKI/clients/platforms, source lifecycle/delete/restore, mutable-source races/faults/scale and production campaigns remain required."
+      "limits": "Named clean ORAS/PostgreSQL lifecycle, source state/fencing, verified restore, holds and browser previews are qualified. Full native clients/provider/discovery, source configuration/locator/grant races, supported repair, retention/GC, lifecycle faults/scale and broad format qualification remain required.",
+      "next_action": "Complete remaining source configuration/revision and proxy discovery/locator cases, supported repair and full client/lifecycle/retention/GC/fault/scale journeys."
     },
     {
       "id": "J.OCI.REPLICATION",
@@ -118,7 +133,7 @@
       "id": "J.OCI.AUTHORIZATION",
       "capability": "FMT.OCI.AUTHORIZATION",
       "state": "implementing",
-      "candidate": "a5fa76bea4476ff795c148d1fedab53fb4fbed8a",
+      "candidate": "bea2472271bd15993bcae9b8ea12a102b2608abe",
       "evidence": [
         "evidence/2026-10-28/conformance-fc7ad95c82.json",
         "evidence/2026-10-28/conformance-122db557f4.json",
@@ -134,7 +149,11 @@
         "evidence/2026-10-28/oci-discovery-clean-postgres-race.txt",
         "evidence/2026-10-28/conformance-536f022f68.json",
         "evidence/2026-10-28/public-oci-fbd1f0d8c7.json",
-        "evidence/2026-10-28/oci-descriptor-clean-postgres-race.txt"
+        "evidence/2026-10-28/oci-descriptor-clean-postgres-race.txt",
+        "evidence/2026-10-29/lifecycle-checkpoint.json",
+        "evidence/2026-10-29/lifecycle-b932eef0f1.json",
+        "evidence/2026-10-29/lifecycle-8fad1990d5.json",
+        "evidence/2026-10-29/lifecycle-clean-postgres-race.txt"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -142,20 +161,28 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Stock ORAS/real PostgreSQL proof includes complete paged discovery, governed descriptor URL fallback, exact nested/duplicate graphs, real native server process restarts and direct pin refresh, rotated alternate-only referrer advertisements, current policy and no locator/source credentials in normalized durable data. Original manifest bytes retain publisher fields. A pinned real Docker Hub/anonymous-token/CloudFront image replays exact layouts/restart/refresh/denial. Other providers/private credentials/PKI/clients/platforms, source lifecycle/delete/restore, mutable-source races/faults/scale and production campaigns remain required."
+      "limits": "Named clean ORAS/PostgreSQL lifecycle, source state/fencing, verified restore, holds and browser previews are qualified. Full native clients/provider/discovery, source configuration/locator/grant races, supported repair, retention/GC, lifecycle faults/scale and broad format qualification remain required.",
+      "next_action": "Complete remaining source configuration/revision and proxy discovery/locator cases, supported repair and full client/lifecycle/retention/GC/fault/scale journeys."
     },
     {
       "id": "J.OCI.LIFECYCLE",
       "capability": "FMT.OCI.LIFECYCLE",
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
+      "state": "implementing",
+      "candidate": "bea2472271bd15993bcae9b8ea12a102b2608abe",
+      "evidence": [
+        "evidence/2026-10-29/lifecycle-checkpoint.json",
+        "evidence/2026-10-29/lifecycle-b932eef0f1.json",
+        "evidence/2026-10-29/lifecycle-8fad1990d5.json",
+        "evidence/2026-10-29/lifecycle-clean-postgres-race.txt"
+      ],
       "required": [
         "publish/consume exact bytes where applicable",
         "permissions/tenant isolation",
         "policy denial",
         "failure/recovery"
-      ]
+      ],
+      "limits": "Named clean ORAS/PostgreSQL lifecycle, source state/fencing, verified restore, holds and browser previews are qualified. Full native clients/provider/discovery, source configuration/locator/grant races, supported repair, retention/GC, lifecycle faults/scale and broad format qualification remain required.",
+      "next_action": "Complete remaining source configuration/revision and proxy discovery/locator cases, supported repair and full client/lifecycle/retention/GC/fault/scale journeys."
     },
     {
       "id": "J.MAVEN.HOSTED",
@@ -6207,5 +6234,5 @@
     "current_source_candidate": "887c569ac96c451bccd91ae872317c06a890117a",
     "historical_candidate_fields": "Earlier candidate fields below refer to the archived original history. Preserve their exact evidence scope; the new source baseline and repeated native proof are recorded separately."
   },
-  "current_source_candidate": "10ea6499d874018178b43ee38a9070e81e5a0686"
+  "current_source_candidate": "bea2472271bd15993bcae9b8ea12a102b2608abe"
 }

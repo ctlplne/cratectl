@@ -60,11 +60,14 @@ administrator; optionally set `hold_until` to a future RFC3339 timestamp. Withou
 an expiry the hold persists until an administrator releases it. An active hold
 blocks deletion, restoration and native tag deletion. A preview reports blockers
 without applying the action. Reference and transfer counts are bounded by the
-configured native version budget; oversized operations fail without partial work.
+configured native version budget and an 8 MiB aggregate text budget; oversized
+operations fail without partial work.
 
 Restore hashes retained objects, checks their exact sizes, reparses manifests and
 revalidates the complete retained graph. Deleted children must be restored first.
-Missing/corrupt bytes or changed graph identities reject the operation. Restore
+Missing/corrupt bytes or changed graph identities reject the operation. Older
+unvalidated manifests require native intake repair before deletion; complete
+supported repair for invalid or denied layouts remains open. Restore
 preserves denial and quarantine; it never labels unassessed bytes security-clean.
 A stored idempotency response can confirm an earlier successful restore even if
 storage subsequently becomes unavailable, while current write grants still apply.

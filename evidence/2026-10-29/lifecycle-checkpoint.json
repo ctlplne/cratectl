@@ -1,0 +1,145 @@
+{
+  "checked_at": "2026-10-29T18:52:44.362736+00:00",
+  "candidate": "bea2472271bd15993bcae9b8ea12a102b2608abe",
+  "author_and_committer": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>",
+  "previous_qualified_source": "10ea6499d874018178b43ee38a9070e81e5a0686",
+  "runtime_records": [
+    {
+      "path": "evidence/2026-10-28/conformance-1cfc380989.json",
+      "checks": 43,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-28/conformance-308a77455f.json",
+      "checks": 46,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-28/conformance-e347bffc00.json",
+      "checks": 286,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/inventory-f56203446b.json",
+      "checks": 67,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/jobs-e87b1d9ed6.json",
+      "checks": 71,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/leases-00b1d36276.json",
+      "checks": 63,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/public-oci-524cb8836d.json",
+      "checks": 33,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/sweeps-8b357fd187.json",
+      "checks": 80,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-29/console-b9b3f6e5e8.json",
+      "checks": 43,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-29/console-c648daa099.json",
+      "checks": 43,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-29/installation-2bcd0411a2.json",
+      "checks": 30,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-29/installation-9a62be5921.json",
+      "checks": 30,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-29/lifecycle-8fad1990d5.json",
+      "checks": 44,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-29/lifecycle-b932eef0f1.json",
+      "checks": 44,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-29/schema-01a62d4119.json",
+      "checks": 14,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-29/schema-ad9ab4c14f.json",
+      "checks": 14,
+      "race": false
+    }
+  ],
+  "assertions": {
+    "production": 731,
+    "race": 220
+  },
+  "browser_tests_per_build": 5,
+  "automated_accessibility_states_per_console": 24,
+  "postgres_race_repetitions": 2,
+  "new_real_postgres_tests": 11,
+  "new_physical_restore_unit_cases": 6,
+  "lifecycle": {
+    "race": "evidence/2026-10-29/lifecycle-8fad1990d5.json",
+    "production": "evidence/2026-10-29/lifecycle-b932eef0f1.json"
+  },
+  "console": {
+    "production": "evidence/2026-10-29/console-c648daa099.json",
+    "race": "evidence/2026-10-29/console-b9b3f6e5e8.json"
+  },
+  "schema_version": 3,
+  "frozen_migration_checksums": [
+    "1e0f7b93d872f8ab83f85742000a6282f2722a0a338d8f2bc81755345ba66d16",
+    "9e023c96c8cf33549ce81f1eac22551b5cdb6267d146f65d430ec254dc8b10b5",
+    "44527dcd4be5177203e2b0eb93e5886a4dae437fbebf4cec14f7737ecb2f15d3"
+  ],
+  "tests": {
+    "unit_vet_race_console_reproduction": "evidence/2026-10-29/lifecycle-clean-unit-vet-race.txt",
+    "postgres_race": "evidence/2026-10-29/lifecycle-clean-postgres-race.txt",
+    "serial_replay": "evidence/2026-10-29/lifecycle-clean-replay.json",
+    "controlled_primary_plan": "evidence/2026-10-29/lifecycle-primary-migration-plan.txt",
+    "controlled_primary_upgrade": "evidence/2026-10-29/lifecycle-primary-controlled-upgrade.txt",
+    "forced_tag_group_first_failure": "evidence/2026-10-29/lifecycle-tag-group-first-failure.txt",
+    "nested_image_restore_first_failure": "evidence/2026-10-29/lifecycle-kind-first-failure.txt"
+  },
+  "artifact_manifest": "evidence/2026-10-29/lifecycle-artifacts.json",
+  "security": "evidence/2026-10-29/lifecycle-security.json",
+  "tool_versions": {
+    "Go": "1.27.3 darwin/arm64",
+    "PostgreSQL": "16.15",
+    "ORAS": "1.3.6",
+    "Chromium": "156.0.8078.4",
+    "Playwright": "1.64.1",
+    "axe-core": "4.14.0"
+  },
+  "test_services": "Owned registry/worker processes and native PostgreSQL stopped; private databases, credentials, CAS and qualified artifacts retained.",
+  "this_turn_executed_push": false,
+  "this_turn_remote_mutation": false,
+  "previous_goal_turn_classification": "progress: authenticated repository audit confirmed the earlier clean recreation and correct remote authorship, preventing an unnecessary repeat reset",
+  "limits": [
+    "Logical retirement preserves CAS bytes and reference/journal records. No physical erasure, reclaimed space, retention policy or GC is qualified. Administrator reason/expiry holds do not establish full legal-hold procedures.",
+    "Source suspension/removal/recovery and named transfer fences are qualified. Source URL/configuration revision, credential rotation, locator/grant races and full source-removal workflows remain required.",
+    "Hosted tag/discovery and named group collisions, proxy direct/known-tag tombstones, subject blocking and restore are covered. Broaden proxy/native discovery through local tombstones, every client/provider and lifecycle fault/scale campaign before full format qualification.",
+    "Restore verifies retained bytes and current graph identities; supported repair of missing/corrupt or older unvalidated/denied layouts remains required. Legacy unvalidated manifests must be repaired before deletion.",
+    "Exact macOS arm64 ORAS 1.3.6 and explicit loopback HTTP fixtures only. Docker/Podman/Helm/build tools, PKI/credential lifecycle, native OS and separate-host behavior remain open.",
+    "Schema 3 uses controlled maintenance with unchanged step-1/2 checksums; no rolling/zero-downtime compatibility, whole outgoing-transfer draining, production backup/restore or downgrade recovery is claimed.",
+    "Five Chromium workflows and 24 named automated A/AA states per build do not prove full WCAG, assistive technologies or other native browsers. Linux/Windows results are compile-only.",
+    "Unit/vet/race, repeated real PostgreSQL and current vulnerability/secret scans support the named source only; full parser/fault/security/independent-review/release campaigns remain required.",
+    "All 450 capabilities/journeys and 41 format families remain unfinished. Every broad readiness verdict remains negative."
+  ]
+}

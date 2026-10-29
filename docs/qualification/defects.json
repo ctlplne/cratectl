@@ -455,27 +455,33 @@
     {
       "id": "DEFECT.0041",
       "summary": "Lifecycle dialog leaves initial focus on Close while asynchronously loaded action fields become available",
-      "state": "repaired; clean browser replay pending",
+      "state": "repaired and clean-source replayed",
       "first_failure": "evidence/2026-10-29/console-cb32b08190.json",
       "repair": "Move initial focus into the action selector after state arrives, only if the user has not already moved focus. Retain native dialog return focus and keyboard access.",
-      "limits": "Dirty preflight failure; final committed source and browser replay must be identified separately."
+      "limits": "Dirty preflight failure; final committed source and browser replay must be identified separately.",
+      "candidate": "bea2472271bd15993bcae9b8ea12a102b2608abe",
+      "replay": "evidence/2026-10-29/lifecycle-checkpoint.json"
     },
     {
       "id": "DEFECT.0042",
       "summary": "Known OCI tag tombstone can be lost before forced refresh or expired-cache source selection",
-      "state": "repaired; negative overlay reproduced HTTP 200 from lower group source; clean replay pending",
+      "state": "repaired and clean-source replayed",
       "repair": "Check canonical lifecycle before cache/network selection for direct and known-tag references. Remote absence alone keeps its existing fallback semantics.",
       "limits": "The new negative regression removes only these preselection guards through an ignored Go overlay; it does not alter the working tree.",
       "first_failure": "evidence/2026-10-29/lifecycle-tag-group-first-failure.txt",
-      "reproduction": "With only the new preselection guards removed through the ignored overlay, forced tag refresh changed a known tombstone into a current upstream 404 and served the lower-source image with HTTP 200. The current guards return artifact_deleted before network or cache selection."
+      "reproduction": "With only the new preselection guards removed through the ignored overlay, forced tag refresh changed a known tombstone into a current upstream 404 and served the lower-source image with HTTP 200. The current guards return artifact_deleted before network or cache selection.",
+      "candidate": "bea2472271bd15993bcae9b8ea12a102b2608abe",
+      "replay": "evidence/2026-10-29/lifecycle-checkpoint.json"
     },
     {
       "id": "DEFECT.0043",
       "summary": "Restore treated operation words inside OCI image names as the canonical object kind",
-      "state": "repaired; negative overlay reproduced two physical-CAS failures; clean replay pending",
+      "state": "repaired and clean-source replayed",
       "first_failure": "evidence/2026-10-29/lifecycle-kind-first-failure.txt",
       "repair": "Identify a canonical manifest from its final /manifests/sha256:DIGEST suffix. Blob paths with manifests in their image name remain opaque bytes.",
-      "limits": "The ignored negative Go overlay changes only this kind test. Full native client and platform coverage remains open."
+      "limits": "The ignored negative Go overlay changes only this kind test. Full native client and platform coverage remains open.",
+      "candidate": "bea2472271bd15993bcae9b8ea12a102b2608abe",
+      "replay": "evidence/2026-10-29/lifecycle-checkpoint.json"
     }
   ]
 }

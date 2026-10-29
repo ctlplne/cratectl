@@ -1,16 +1,48 @@
 # cratectl execution status
 
-Retained OCI lifecycle implementation is now in local qualification. Schema 3
-adds forced-RLS tombstones and repository state while freezing both earlier
-receipts. Native deletion, explicit graph/byte-verified restore, administrator
-holds, source suspend/remove/recovery, in-flight writer fencing, API/CLI and
-console impact previews are implemented. Dirty preflights passed 43 stock ORAS
-assertions, five Chromium workflows/42 assertions and repeated real PostgreSQL
-race checks; these are development evidence, not a clean candidate verdict.
-The prior qualified source below remains authoritative until the new clean
-binaries and full regression campaigns finish. First failures and repairs for
-focus, forced-tag group fallback and nested-image restore remain retained.
-All 450 capabilities and 41 format families remain unfinished.
+Latest qualified source: `bea2472271bd15993bcae9b8ea12a102b2608abe`, with both
+author and committer `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
+The authoritative checkpoint is `evidence/2026-10-29/lifecycle-checkpoint.json`;
+see `docs/operator/oci-lifecycle.md` for operation and current limits.
+
+Retained OCI retirement now has canonical tombstones, native hosted digest/tag
+DELETE, strong-reference protection, administrator holds, explicit byte/graph-
+verified restore and repository suspension/removal/recovery. State, writer fences,
+journal, durable job intent and idempotency response commit together. A suspended
+or removed source fails closed; resumed writers cannot reuse fenced generations.
+Current grants/roles apply to replay. Restore preserves quarantine/manual denial
+and newer tag targets. No CAS bytes are erased or reported as reclaimed.
+
+Schema 3 adds forced-RLS lifecycle tables and preserves both earlier migration
+checksums. Real old-binary version-2 upgrade and legacy adoption/process-kill,
+unknown-version, drift, no-op and runtime admission regressions pass. The owned
+primary test database was upgraded during controlled maintenance. Older binaries
+reject the upgraded schema; rolling/zero-downtime and backup/downgrade recovery
+remain open.
+
+Clean production artifacts passed 731 assertions across ten native/installation/
+console/maintenance/provider campaigns. Separate race artifacts passed 220
+assertions across lifecycle, schema, console, install and OCI hosted/proxy cases.
+Full real-PostgreSQL store/server/native-driver race packages ran twice without
+skips or races. Five Chromium tests and 24 named automated A/AA states pass per
+build, including lifecycle impact previews, holds and explicit recovery. Unit,
+vet, race, architecture, console reproduction, Go symbol/dependency vulnerability
+and scoped source/history secret checks pass. Linux amd64/arm64 server and Windows
+amd64 CLI compile only. No remote mutation or push was executed by this turn.
+
+Retained first failures cover a fixture no-store override, a browser test locator,
+async dialog focus, forced-tag group fallback and nested-image restore. The group
+negative overlay reproduced HTTP 200 from a lower source after an upstream miss;
+current preselection guards return the local tombstone before network/cache work.
+Root kind now uses its canonical final path, and older unvalidated manifests must
+be repaired before deletion. The exact clean candidate covers these repairs.
+
+All 450 capabilities and 41 format families remain unfinished. Complete versioned
+source configuration/credential changes and cache/locator/grant races, full proxy
+native discovery through local tombstones, supported old/corrupt-byte repair,
+retention/GC, other clients/providers/platforms, security/fault/scale and production
+recovery. Test services are stopped; private data and clean artifacts are retained.
+Earlier source checkpoints below remain historical evidence within their scope.
 
 Owner-directed repository reset completed on 2026-10-28. Private GitHub repository
 `ctlplne/cratectl` was recreated (new ID 1437631481); the preserved implementation
@@ -32,7 +64,7 @@ remain.
 The owner authorized pushing this recreation; later feature pushes still require
 the owner's authority under the standing project contract.
 
-Latest qualified source: `10ea6499d874018178b43ee38a9070e81e5a0686`, with both
+Previous Maven-qualified source: `10ea6499d874018178b43ee38a9070e81e5a0686`, with both
 author and committer `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
 The authoritative checkpoint is `evidence/2026-10-29/maven-checkpoint.json`;
 see `docs/operator/maven.md` for the native behavior and remaining limits.
