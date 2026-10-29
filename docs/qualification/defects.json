@@ -319,9 +319,9 @@
       "repair": "Parse the issued CA before signing the leaf, preserving its generated Subject Key Identifier and emitting the leaf Authority Key Identifier. Keep client verification enabled.",
       "replay": "evidence/2026-10-29/init-clean-unit-vet-race.txt",
       "limits": "Native loopback evaluation profile. Full production PKI/credential lifecycle, platforms, security and packaging remain unqualified.",
-      "candidate": "9a45daad4889217b2623c64d1e3b5e350cddb996",
-      "native_replay": "evidence/2026-10-29/installation-c49266d94f.json",
-      "native_race_replay": "evidence/2026-10-29/installation-17fe431ba4.json"
+      "candidate": "3599faf6fae2ee6f70206d7147371941f64d2f28",
+      "native_replay": "evidence/2026-10-29/installation-5d218e61f9.json",
+      "native_race_replay": "evidence/2026-10-29/installation-cb7efcadcd.json"
     },
     {
       "id": "DEFECT.0031",
@@ -329,10 +329,13 @@
       "first_failure": "evidence/2026-10-29/init-catalog-first.txt",
       "first_failure_source": "9a45daad4889217b2623c64d1e3b5e350cddb996",
       "reproduction": "evidence/2026-10-29/init-catalog-regression.json",
-      "state": "repaired; preflight passed; clean qualification pending",
+      "state": "repaired and replayed",
       "repair": "Read at most 257 catalog entries and fail initialization for more than 256 instead of retaining and inspecting an unbounded list.",
-      "replay": "evidence/2026-10-29/init-catalog-replay.txt",
-      "limits": "Only initialization of a supposedly empty database; production runtime schema and broader SQL/fault/scale qualification remain separate."
+      "replay": "evidence/2026-10-29/init-clean-unit-vet-race.txt",
+      "limits": "Only initialization of a supposedly empty database; production runtime schema and broader SQL/fault/scale qualification remain separate.",
+      "candidate": "3599faf6fae2ee6f70206d7147371941f64d2f28",
+      "native_replay": "evidence/2026-10-29/installation-5d218e61f9.json",
+      "native_race_replay": "evidence/2026-10-29/installation-cb7efcadcd.json"
     }
   ]
 }

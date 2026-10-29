@@ -5,5 +5,7 @@
   "first_failure": "evidence/2026-10-29/init-catalog-first.txt",
   "preflight_replay": "evidence/2026-10-29/init-catalog-replay.txt",
   "reproduction": "Create 257 empty tables under the application schema in a new owned database. The previous preflight retained and queried the whole catalog; the new SQL result budget rejects oversized catalogs without claiming empty-database coverage.",
-  "scope": "Installer catalog inspection only; no running tenant/package/table cap is imposed."
+  "scope": "Installer catalog inspection only; no running tenant/package/table cap is imposed.",
+  "repaired_candidate": "3599faf6fae2ee6f70206d7147371941f64d2f28",
+  "clean_replay": "evidence/2026-10-29/init-clean-postgres-race.txt"
 }

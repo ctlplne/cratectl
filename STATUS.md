@@ -19,7 +19,7 @@ All 450 capabilities, 41 format families and negative readiness verdicts remain.
 The owner authorized pushing this recreation; later feature pushes still require
 the owner's authority under the standing project contract.
 
-Latest source candidate: `9a45daad4889217b2623c64d1e3b5e350cddb996`, committed as `imfeelingtheagi`
+Latest source candidate: `3599faf6fae2ee6f70206d7147371941f64d2f28`, committed as `imfeelingtheagi`
 for both author and committer. A clean native installation passed 30 assertions
 from an empty owned database. A separate clean race-built initializer, registry
 and worker passed the same 30 assertions with no race reports; production binary
@@ -33,7 +33,8 @@ atomically records the first tenant, separate administrator/worker credentials,
 audit and a replay receipt. It rejects unrelated nonempty databases before
 migration. Actual initializer kill/resume and a database commit before ready-file
 publication preserve the original credentials and trust. Concurrent replay and
-forced RLS tests pass. Server, worker and CLI can load private configuration;
+forced RLS tests pass. The documented owner role works without superuser,
+CREATEDB or CREATEROLE. Server, worker and CLI can load private configuration;
 runtime processes need no owner database environment.
 
 The native operator can create a first npm repository, export private npm client
@@ -44,7 +45,7 @@ stock TLS verifier exposed an omitted Authority Key Identifier in the prototype;
 the retained regression passes after the issuer parses its generated CA before
 signing the leaf. Failed prototype harness expectations are separately triaged.
 
-The script measured 2.313
+The script measured 2.779
 seconds to first publication/install on this owned fixture, including deliberate
 initialization faults. This is automated replay timing, not human onboarding or
 blank-machine/production performance evidence. PostgreSQL and clients are supplied
@@ -56,7 +57,7 @@ Clean unit/vet/race gates pass. Real PostgreSQL/store/server/installation/native
 driver race suites ran twice without skips. Go vulnerability checks (238 records),
 scoped source Trivy and current/history Gitleaks report no findings. Linux amd64
 and arm64 servers and Windows amd64 CLI compile; those native runtimes are not
-qualified. Full security and production packaging remain incomplete.
+qualified. Windows private-file checks still need ACL semantics. Full security and production packaging remain incomplete.
 
 Live GitHub audit found private remote main `1afdd521090af37fa03c793da94a13c1a324e640`.
 The shared checkout recorded another push during this work; this turn executed
