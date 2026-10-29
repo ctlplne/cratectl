@@ -119,6 +119,9 @@ func Run(ctx context.Context, db *store.Store, objects *blob.Local, o Options) e
 	return nil
 }
 func execute(parent context.Context, db *store.Store, objects *blob.Local, o Options, i store.WorkerIdentity, j store.Job) string {
+	if j.Kind == "storage.inventory" {
+		return executeInventory(parent, db, objects, o, i, j)
+	}
 	if j.Queue == "maintenance" {
 		ctx, cancel := context.WithTimeout(parent, min(o.Timeout, o.Lease))
 		defer cancel()
@@ -142,30 +145,8 @@ func execute(parent context.Context, db *store.Store, objects *blob.Local, o Opt
 	}
 	ctx, cancel := context.WithTimeout(parent, o.Timeout)
 	defer cancel()
-	heartCtx, stopHeart := context.WithCancel(parent)
-	ended := make(chan struct{})
-	heartError := make(chan error, 1)
-	go func() {
-		defer close(ended)
-		ticker := time.NewTicker(o.Lease / 3)
-		defer ticker.Stop()
-		for {
-			select {
-			case <-heartCtx.Done():
-				return
-			case <-ticker.C:
-				check, done := context.WithTimeout(heartCtx, min(o.Lease/3, 5*time.Second))
-				e := db.RenewJob(check, i, j, o.Lease)
-				done()
-				if e != nil && heartCtx.Err() == nil {
-					heartError <- e
-					cancel()
-					return
-				}
-			}
-		}
-	}()
-	defer func() { stopHeart(); <-ended }()
+	stopHeart, heartError := keepJobLease(ctx, db, i, j, o.Lease, cancel)
+	defer stopHeart()
 	var projection store.EventProjection
 	var status string
 	var e error
@@ -193,11 +174,7 @@ func execute(parent context.Context, db *store.Store, objects *blob.Local, o Opt
 	if parent.Err() != nil {
 		return "abandoned"
 	}
-	var heartbeat error
-	select {
-	case heartbeat = <-heartError:
-	default:
-	}
+	heartbeat := heartError()
 	if heartbeat != nil && !errors.Is(heartbeat, store.ErrJobCancelled) {
 		return "lease_or_credential_lost"
 	}

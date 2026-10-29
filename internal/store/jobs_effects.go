@@ -187,7 +187,7 @@ func (s *Store) FinishIntegrity(ctx context.Context, i WorkerIdentity, j Job, st
 }
 func (s *Store) FailJob(ctx context.Context, i WorkerIdentity, j Job, code string, permanent bool) (string, error) {
 	switch code {
-	case "invalid_event", "invalid_target", "event_budget", "worker_stopped", "handler_timeout", "handler_failure":
+	case "invalid_event", "invalid_target", "event_budget", "worker_stopped", "handler_timeout", "handler_failure", "inventory_budget", "storage_changed", "unsupported_storage":
 	default:
 		return "", ErrConflict
 	}

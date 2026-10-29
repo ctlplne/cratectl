@@ -1,0 +1,17 @@
+{
+  "baseline_candidate": "11cc57cd573037f7a150d90f03df22b18d54705e",
+  "method": "Run the new regressions in an isolated archive of the preceding committed source against owned filesystem/PostgreSQL fixtures. The working tree/history were not reset.",
+  "first_failure": "evidence/2026-10-28/inventory-baseline-regressions.txt",
+  "observed_failures": [
+    "A named-pipe open outlived the integrity context deadline.",
+    "Publication followed an unsupported tenant namespace symlink and wrote into the other owned fixture namespace.",
+    "A worker credential expired during its metadata callback but the old transaction still committed."
+  ],
+  "scope": "Unsupported local filesystem layout and worker transaction expiry. This does not establish a remotely creatable symlink exploit or full storage/platform/security qualification.",
+  "replay": "evidence/2026-10-28/inventory-preflight-postgres-race.txt",
+  "baseline_file_sha256": {
+    "internal/blob/local.go": "8f41a8e9b8bf2430771f4ae3b8c4afca7d081625073c98effc984943c69fa014",
+    "internal/blob/check.go": "3c3eba718c3ef17faf4c10203dfaa4ac549531e1c85bd09e07afbb58ad2b1134",
+    "internal/store/jobs.go": "eea2d868d56502486857ef46ee351a5bd3866b725b8c7d0320acb86e1c254166"
+  }
+}

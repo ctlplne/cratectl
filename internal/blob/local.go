@@ -30,7 +30,7 @@ type Local struct {
 }
 
 func New(root string, max int64) (*Local, error) {
-	if max <= 0 {
+	if max <= 0 || max >= 1<<62 {
 		return nil, errors.New("positive object limit required")
 	}
 	a, e := filepath.Abs(root)
@@ -52,23 +52,26 @@ func (s *Local) path(tenant, digest string) (string, error) {
 	return filepath.Join(s.root, tenant, "sha256", digest[:2], digest), nil
 }
 func (s *Local) Open(tenant, digest string) (*os.File, error) {
-	p, e := s.path(tenant, digest)
+	_, e := s.path(tenant, digest)
 	if e != nil {
 		return nil, e
 	}
-	return os.Open(p)
+	return s.openRegularFile(tenant, "sha256", digest[:2], digest)
 }
 
 // OpenVerified checks the durable bytes before making a response visible. The
 // fixed read buffer bounds memory; the initial implementation trades extra disk
 // reads for immediate corruption detection. Performance remains unqualified.
 func (s *Local) OpenVerified(ctx context.Context, tenant, digest string, size int64) (*os.File, error) {
+	if size < 0 || size >= 1<<62 {
+		return nil, ErrIntegrity
+	}
 	f, err := s.Open(tenant, digest)
 	if err != nil {
 		return nil, err
 	}
 	h := crypt.SHA256()
-	n, err := io.CopyBuffer(h, contextReader{ctx, f}, make([]byte, 64<<10))
+	n, err := io.CopyBuffer(h, io.LimitReader(contextReader{ctx, f}, size+1), make([]byte, 64<<10))
 	if err != nil || n != size || hex.EncodeToString(h.Sum(nil)) != digest {
 		f.Close()
 		return nil, ErrIntegrity
@@ -106,15 +109,35 @@ func (s *Local) Put(ctx context.Context, tenant string, r io.Reader, expected st
 	if !namespace.MatchString(tenant) {
 		return Object{}, errors.New("invalid tenant")
 	}
-	stage := filepath.Join(s.root, tenant, "staged")
-	if e := os.MkdirAll(stage, 0700); e != nil {
-		return Object{}, e
-	}
-	f, e := os.CreateTemp(stage, "upload-")
+	base, e := os.OpenRoot(s.root)
 	if e != nil {
 		return Object{}, e
 	}
-	defer os.Remove(f.Name())
+	defer base.Close()
+	ns, _, e := createCheckedDirectory(base, tenant)
+	if e != nil {
+		return Object{}, e
+	}
+	defer ns.Close()
+	rootID, e := storageRootIdentity(base, ns, tenant)
+	if e != nil {
+		return Object{}, e
+	}
+	stage, _, e := createCheckedDirectory(ns, "staged")
+	if e != nil {
+		return Object{}, e
+	}
+	defer stage.Close()
+	token, e := crypt.Token()
+	if e != nil {
+		return Object{}, e
+	}
+	name := "upload-" + token
+	f, e := stage.OpenFile(name, os.O_CREATE|os.O_EXCL|os.O_RDWR, 0600)
+	if e != nil {
+		return Object{}, e
+	}
+	defer stage.Remove(name)
 	defer f.Close()
 	h := crypt.SHA256()
 	n, e := io.CopyBuffer(io.MultiWriter(f, h), io.LimitReader(contextReader{ctx, r}, s.max+1), make([]byte, 64<<10))
@@ -134,46 +157,66 @@ func (s *Local) Put(ctx context.Context, tenant string, r io.Reader, expected st
 	if e = f.Sync(); e != nil {
 		return Object{}, e
 	}
-	if e = f.Close(); e != nil {
-		return Object{}, e
-	}
-	dest, e := s.path(tenant, digest)
+	stagedInfo, e := f.Stat()
 	if e != nil {
 		return Object{}, e
 	}
-	dir := filepath.Dir(dest)
-	if e = os.MkdirAll(dir, 0700); e != nil {
+	sha, _, e := createCheckedDirectory(ns, "sha256")
+	if e != nil {
 		return Object{}, e
 	}
-	// Ensure newly created namespace directory entries also survive a crash.
-	for p := dir; ; p = filepath.Dir(p) {
-		if e = syncDir(p); e != nil {
-			return Object{}, e
-		}
-		if p == s.root {
-			break
-		}
+	defer sha.Close()
+	prefix, _, e := createCheckedDirectory(sha, digest[:2])
+	if e != nil {
+		return Object{}, e
 	}
-	if e = os.Link(f.Name(), dest); e != nil {
+	defer prefix.Close()
+	if e = ns.Link("staged/"+name, "sha256/"+digest[:2]+"/"+digest); e != nil {
 		if !errors.Is(e, os.ErrExist) {
 			return Object{}, e
 		}
-		// A matching filename is not proof of matching bytes after storage damage.
-		existing, err := os.Open(dest)
-		if err != nil {
-			return Object{}, err
+		existing, e := s.Open(tenant, digest)
+		if e != nil {
+			return Object{}, e
 		}
 		defer existing.Close()
-		eh := crypt.SHA256()
-		size, err := io.Copy(eh, existing)
-		if err != nil || size != n || hex.EncodeToString(eh.Sum(nil)) != digest {
+		check := crypt.SHA256()
+		size, e := io.CopyBuffer(check, io.LimitReader(contextReader{ctx, existing}, n+1), make([]byte, 64<<10))
+		if e != nil || size != n || hex.EncodeToString(check.Sum(nil)) != digest {
 			return Object{}, fmt.Errorf("%w: existing object", ErrIntegrity)
 		}
+	} else {
+		// A descriptor comparison also detects replacement of the staging name.
+		linked, e := prefix.Lstat(digest)
+		if e != nil || !linked.Mode().IsRegular() || !os.SameFile(stagedInfo, linked) {
+			return Object{}, ErrStorageChanged
+		}
 	}
-	if e = syncDir(dir); e != nil {
+	for _, dir := range []*os.Root{prefix, sha, stage, ns, base} {
+		if e = syncRoot(dir); e != nil {
+			return Object{}, e
+		}
+	}
+	if e = f.Close(); e != nil {
 		return Object{}, e
 	}
-	return Object{digest, n}, nil
+	current, e := s.InventoryRoot(tenant)
+	if e != nil {
+		return Object{}, e
+	}
+	if current != rootID {
+		return Object{}, ErrStorageChanged
+	}
+	// Recheck the directory layout before references can become visible.
+	visible, e := s.Open(tenant, digest)
+	if e != nil {
+		return Object{}, e
+	}
+	visible.Close()
+	if e = ctx.Err(); e != nil {
+		return Object{}, e
+	}
+	return Object{Digest: digest, Size: n}, nil
 }
 
 // AppendUpload reconciles unacknowledged trailing bytes after a crashed chunk
@@ -225,7 +268,7 @@ func (s *Local) FinishUpload(ctx context.Context, tenant, id, digest string, siz
 	if !namespace.MatchString(tenant) || !regexp.MustCompile(`^[A-Za-z0-9_-]{43}$`).MatchString(id) {
 		return Object{}, errors.New("invalid upload identity")
 	}
-	f, e := os.Open(filepath.Join(s.root, tenant, "uploads", id))
+	f, e := s.openRegularFile(tenant, "uploads", id)
 	if e != nil {
 		return Object{}, e
 	}

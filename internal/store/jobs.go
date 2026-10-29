@@ -172,8 +172,21 @@ func (s *Store) workerTx(ctx context.Context, i WorkerIdentity, fn func(pgx.Tx) 
 	if _, e = tx.Exec(ctx, `SELECT pg_advisory_xact_lock(hashtextextended($1,0))`, i.Tenant); e != nil {
 		return e
 	}
+	if e = checkWorkerIdentity(ctx, tx, i); e != nil {
+		return e
+	}
+	if e = fn(tx); e != nil {
+		return e
+	}
+	if e = checkWorkerIdentity(ctx, tx, i); e != nil {
+		return e
+	}
+	return tx.Commit(ctx)
+}
+
+func checkWorkerIdentity(ctx context.Context, tx pgx.Tx, i WorkerIdentity) error {
 	var tenant, actor string
-	e = tx.QueryRow(ctx, `SELECT tenant,actor FROM cratectl.authenticate_worker($1)`, i.CredentialHash).Scan(&tenant, &actor)
+	e := tx.QueryRow(ctx, `SELECT tenant,actor FROM cratectl.authenticate_worker($1)`, i.CredentialHash).Scan(&tenant, &actor)
 	if errors.Is(e, pgx.ErrNoRows) {
 		return ErrUnauthenticated
 	}
@@ -183,10 +196,7 @@ func (s *Store) workerTx(ctx context.Context, i WorkerIdentity, fn func(pgx.Tx) 
 	if tenant != i.Tenant || actor != i.Actor {
 		return ErrUnauthenticated
 	}
-	if e = fn(tx); e != nil {
-		return e
-	}
-	return tx.Commit(ctx)
+	return nil
 }
 
 type Job struct {
@@ -221,7 +231,7 @@ func ParseJobID(id string) (int64, string, error) {
 	}
 	if task != "event" {
 		prefix, digest, found := strings.Cut(task, "-")
-		if !found || (prefix != "integrity" && prefix != "reconcile" && prefix != "sweep") || len(digest) != 64 {
+		if !found || (prefix != "integrity" && prefix != "reconcile" && prefix != "sweep" && prefix != "inventory") || len(digest) != 64 {
 			return 0, "", ErrConflict
 		}
 		if _, e = hex.DecodeString(digest); e != nil {
@@ -242,6 +252,9 @@ func scanJob(row pgx.Row, j *Job) error {
 		}
 		if j.Queue == "maintenance" {
 			j.Handler = "leases.reconcile"
+		}
+		if j.Queue == "integrity" && j.Kind == "storage.inventory" {
+			j.Handler = "storage.inventory"
 		}
 		if j.Queue == "integrity" && j.Kind == "storage.sweep" {
 			j.Handler = "storage.sweep"

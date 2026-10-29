@@ -7,7 +7,6 @@ import (
 	"hash"
 	"io"
 	"os"
-	"path/filepath"
 	"regexp"
 
 	crypt "ctlplne.dev/cratectl/internal/crypto"
@@ -35,7 +34,7 @@ func (s *Local) ImportUploadPrefix(ctx context.Context, tenant, id string, size 
 	if !namespace.MatchString(tenant) || !uploadID.MatchString(id) || size <= 0 || size > s.max {
 		return Object{}, ErrLength
 	}
-	f, e := os.Open(filepath.Join(s.root, tenant, "uploads", id))
+	f, e := s.openRegularFile(tenant, "uploads", id)
 	if e != nil {
 		return Object{}, e
 	}

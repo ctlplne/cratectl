@@ -137,20 +137,8 @@ func (s *Store) StartSweep(ctx context.Context, i Identity, key, fingerprint str
 		if e != nil {
 			return nil, 0, e
 		}
-		// Source references cannot change while this tenant mutation lock is held.
-		// The snapshot includes all states, aliases and retained upload part bindings.
-		tag, e := tx.Exec(ctx, sweepBindings+`INSERT INTO cratectl.sweep_items(tenant,sequence,task,ordinal,repository,digest,size,path,artifact_references,upload_parts,reference_conflict) SELECT $3,$4,$5,row_number() OVER(ORDER BY repository,digest,size),repository,digest,size,path,artifact_references,upload_parts,reference_conflict FROM limited`, r.Repository, budget+1, i.Tenant, sequence, task)
+		p, e := snapshotBindings(ctx, tx, i, sequence, task, r, budget)
 		if e != nil {
-			return nil, 0, e
-		}
-		if tag.RowsAffected() > int64(budget) {
-			return nil, 0, ErrSweepBudget
-		}
-		p := SweepProgress{SweepRequest: r, Targets: tag.RowsAffected(), Pass: 1}
-		if e = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&p.Cutoff); e != nil {
-			return nil, 0, e
-		}
-		if e = tx.QueryRow(ctx, `SELECT COALESCE(sum(artifact_references),0)::bigint,COALESCE(sum(upload_parts),0)::bigint FROM cratectl.sweep_items WHERE sequence=$1 AND task=$2`, sequence, task).Scan(&p.ArtifactReferences, &p.UploadParts); e != nil {
 			return nil, 0, e
 		}
 		raw, e := json.Marshal(p)
@@ -285,6 +273,9 @@ func (s *Store) Sweep(ctx context.Context, i Identity, id string) (map[string]an
 	return map[string]any{"job": j, "all_targets_assessed": complete, "integrity_clean": complete && p.Issues == 0, "security_approval": false, "scope": "Immutable snapshot of current artifact and retained upload-part repository/digest/size bindings. Unreferenced CAS and temporary files are outside this snapshot."}, nil
 }
 func (s *Store) SweepItems(ctx context.Context, i Identity, id string, after int64, limit int) ([]SweepItem, bool, error) {
+	return s.referenceSnapshotItems(ctx, i, id, after, limit, "storage.sweep")
+}
+func (s *Store) referenceSnapshotItems(ctx context.Context, i Identity, id string, after int64, limit int, kind string) ([]SweepItem, bool, error) {
 	out := []SweepItem{}
 	if i.Role != "admin" {
 		return out, false, ErrDenied
@@ -298,14 +289,24 @@ func (s *Store) SweepItems(ctx context.Context, i Identity, id string, after int
 	}
 	e = s.Tx(ctx, i, false, func(tx pgx.Tx) error {
 		var j Job
-		if e := scanJob(tx.QueryRow(ctx, `SELECT `+jobColumns+` FROM cratectl.jobs WHERE sequence=$1 AND task=$2 AND kind='storage.sweep'`, sequence, task), &j); e != nil {
+		if e := scanJob(tx.QueryRow(ctx, `SELECT `+jobColumns+` FROM cratectl.jobs WHERE sequence=$1 AND task=$2 AND kind=$3`, sequence, task, kind), &j); e != nil {
 			return e
 		}
-		p, e := sweepProgress(j.Target)
-		if e != nil {
-			return e
+		var pass int64
+		if kind == "storage.inventory" {
+			p, e := inventoryProgress(j.Target)
+			if e != nil {
+				return e
+			}
+			pass = p.Pass
+		} else {
+			p, e := sweepProgress(j.Target)
+			if e != nil {
+				return e
+			}
+			pass = p.Pass
 		}
-		rows, e := tx.Query(ctx, `SELECT t.ordinal,t.repository,t.digest,t.size,t.path,t.artifact_references,t.upload_parts,t.reference_conflict,COALESCE(o.status,'pending'),o.observed_at,COALESCE(o.generation,0) FROM cratectl.sweep_items t LEFT JOIN LATERAL(SELECT status,observed_at,generation FROM cratectl.integrity_observations WHERE sequence=t.sequence AND task=t.task AND ordinal=t.ordinal AND pass=$1 ORDER BY generation DESC LIMIT 1)o ON true WHERE t.sequence=$2 AND t.task=$3 AND t.ordinal>$4 ORDER BY t.ordinal LIMIT $5`, p.Pass, sequence, task, after, limit+1)
+		rows, e := tx.Query(ctx, `SELECT t.ordinal,t.repository,t.digest,t.size,t.path,t.artifact_references,t.upload_parts,t.reference_conflict,COALESCE(o.status,'pending'),o.observed_at,COALESCE(o.generation,0) FROM cratectl.sweep_items t LEFT JOIN LATERAL(SELECT status,observed_at,generation FROM cratectl.integrity_observations WHERE sequence=t.sequence AND task=t.task AND ordinal=t.ordinal AND pass=$1 ORDER BY generation DESC LIMIT 1)o ON true WHERE t.sequence=$2 AND t.task=$3 AND t.ordinal>$4 ORDER BY t.ordinal LIMIT $5`, pass, sequence, task, after, limit+1)
 		if e != nil {
 			return e
 		}
@@ -339,4 +340,24 @@ func resetCompletedSweep(j *Job) ([]byte, error) {
 	p.AfterOrdinal, p.Checked, p.Verified, p.Issues = 0, 0, 0, 0
 	p.Pass++
 	return json.Marshal(p)
+}
+
+func snapshotBindings(ctx context.Context, tx pgx.Tx, i Identity, sequence int64, task string, r SweepRequest, budget int) (SweepProgress, error) {
+	// Source references cannot change while this tenant mutation lock is held.
+	// The snapshot includes all states, aliases and retained upload part bindings.
+	tag, e := tx.Exec(ctx, sweepBindings+`INSERT INTO cratectl.sweep_items(tenant,sequence,task,ordinal,repository,digest,size,path,artifact_references,upload_parts,reference_conflict) SELECT $3,$4,$5,row_number() OVER(ORDER BY repository,digest,size),repository,digest,size,path,artifact_references,upload_parts,reference_conflict FROM limited`, r.Repository, budget+1, i.Tenant, sequence, task)
+	if e != nil {
+		return SweepProgress{}, e
+	}
+	if tag.RowsAffected() > int64(budget) {
+		return SweepProgress{}, ErrSweepBudget
+	}
+	p := SweepProgress{SweepRequest: r, Targets: tag.RowsAffected(), Pass: 1}
+	if e = tx.QueryRow(ctx, `SELECT clock_timestamp()`).Scan(&p.Cutoff); e != nil {
+		return SweepProgress{}, e
+	}
+	if e = tx.QueryRow(ctx, `SELECT COALESCE(sum(artifact_references),0)::bigint,COALESCE(sum(upload_parts),0)::bigint FROM cratectl.sweep_items WHERE sequence=$1 AND task=$2`, sequence, task).Scan(&p.ArtifactReferences, &p.UploadParts); e != nil {
+		return SweepProgress{}, e
+	}
+	return p, nil
 }

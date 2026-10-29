@@ -65,6 +65,7 @@ type Server struct {
 	UploadLimit, UploadPartLimit int
 	UploadMetadataBytes          int64
 	SweepTargetBudget            int
+	InventoryLimits              store.InventoryLimits
 	UploadLease, UploadTTL       time.Duration
 	fillSlots                    chan struct{}
 	slots                        chan struct{}
@@ -83,6 +84,7 @@ func New(db *store.Store, b *blob.Local, public string) *Server {
 	s.OCIDescriptorParents = 64
 	s.ProxyLease = 150 * time.Second
 	s.SweepTargetBudget = 100000
+	s.InventoryLimits = store.InventoryLimits{MaxEntries: 1000000, DirectoryEntries: 1000000}
 	s.UploadLimit, s.UploadPartLimit, s.UploadMetadataBytes, s.UploadLease, s.UploadTTL = 32, 4096, 1<<20, 30*time.Second, 30*time.Minute
 	s.OCIDeliveryLimits = upstream.DefaultRegistryDeliveryLimits()
 	for _, a := range []adapter{{"generic", s.raw}, {"maven", s.raw}, {"npm", s.npm}, {"pypi", s.pypi}, {"oci", s.oci}} {
@@ -103,6 +105,10 @@ func fail(w http.ResponseWriter, status int, code, action string) {
 }
 func respondErr(w http.ResponseWriter, e error) {
 	switch {
+	case errors.Is(e, blob.ErrStorageChanged):
+		fail(w, 503, "storage_changed", "Inspect the configured storage root and start a new inventory; observations from different storage identities cannot be combined.")
+	case errors.Is(e, blob.ErrUnsupported):
+		fail(w, 503, "unsupported_storage_entry", "Inspect storage for links, special files or an unsupported layout; no content was accepted or deleted.")
 	case errors.Is(e, store.ErrSweepBudget):
 		fail(w, 503, "sweep_target_budget", "No snapshot was accepted. Narrow the repository scope or ask the operator to adjust --integrity-sweep-target-budget after checking database capacity.")
 	case errors.Is(e, store.ErrUploadBusy):
@@ -260,6 +266,10 @@ func readJSON(w http.ResponseWriter, r *http.Request, v any, limit int64) bool {
 }
 func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Identity) {
 	p := strings.TrimPrefix(r.URL.Path, "/api/v1/")
+	if p == "maintenance/storage-inventories" || strings.HasPrefix(p, "maintenance/storage-inventories/") {
+		s.inventoryManagement(w, r, i, p)
+		return
+	}
 	if p == "maintenance/integrity-sweeps" || strings.HasPrefix(p, "maintenance/integrity-sweeps/") {
 		s.sweepManagement(w, r, i, p)
 		return

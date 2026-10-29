@@ -26,6 +26,13 @@ func (s *Local) CheckStored(ctx context.Context, tenant, digest string, size, ma
 		return "io_error", nil
 	}
 	defer f.Close()
+
+	return checkStoredFile(ctx, f, digest, size, maxBytes, bytesPerSecond)
+}
+func checkStoredFile(ctx context.Context, f *os.File, digest string, size, maxBytes, bytesPerSecond int64) (string, error) {
+	if size < 0 || maxBytes < 1 || size > maxBytes || size >= 1<<62 || bytesPerSecond < 0 {
+		return "limit", nil
+	}
 	var reader io.Reader = contextReader{ctx, io.LimitReader(f, size+1)}
 	if bytesPerSecond > 0 {
 		reader = &pacedReader{ctx: ctx, reader: reader, rate: bytesPerSecond, next: time.Now()}

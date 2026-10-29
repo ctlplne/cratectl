@@ -40,7 +40,7 @@ components:
       properties:
         sequence: {type: integer, format: int64}
         task: {type: string}
-        handler: {type: string, enum: [event.project, storage.integrity, storage.sweep, leases.reconcile]}
+        handler: {type: string, enum: [event.project, storage.integrity, storage.sweep, storage.inventory, leases.reconcile]}
         queue: {type: string, enum: [events, integrity, maintenance]}
         kind: {type: string, description: Source event kind, artifact.integrity, storage.sweep or leases.reconcile; handler identifies the actual effect.}
         state: {type: string, enum: [pending, running, retry, succeeded, failed, cancel_requested, cancelled, uncertain]}
@@ -69,7 +69,7 @@ components:
         retry_max_seconds: {type: integer, minimum: 1, maximum: 604800, default: 300, description: Must be at least retry_seconds.}
     JobId:
       type: string
-      pattern: '^[1-9][0-9]*:(event|integrity-[a-f0-9]{64}|reconcile-[a-f0-9]{64}|sweep-[a-f0-9]{64})$'
+      pattern: '^[1-9][0-9]*:(event|integrity-[a-f0-9]{64}|reconcile-[a-f0-9]{64}|sweep-[a-f0-9]{64}|inventory-[a-f0-9]{64})$'
       description: Tenant-local source sequence plus effect key; equal IDs may exist in different tenants.
 paths:
   /api/v1/repositories:
@@ -483,3 +483,81 @@ paths:
         '200': {description: Items ordered by ordinal, more, security_approval false. Status is pending or a concrete storage finding; reference_conflict remains separately visible.}
         '403': {description: Tenant administrator required.}
         '404': {description: No such sweep in the authenticated tenant.}
+
+  /api/v1/maintenance/storage-inventories:
+    get:
+      operationId: listStorageInventories
+      description: Administrator tenant-scoped inventory jobs. Refresh individual jobs for progress.
+      parameters:
+        - {in: query, name: after, schema: {$ref: '#/components/schemas/JobId'}}
+        - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 1000, default: 100}}
+        - {in: query, name: state, schema: {type: string}}
+      responses:
+        '200': {description: Job items and next cursor.}
+        '403': {description: Tenant administrator required.}
+    post:
+      operationId: requestStorageInventory
+      description: Admit a bounded live tenant filesystem walk plus an immutable artifact/upload-part reference snapshot. No physical deletion or security approval. Replays return the original response even if storage later changes. A new request performs a new walk.
+      parameters:
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                page_size: {type: integer, minimum: 1, maximum: 1000, default: 100, description: Must fit the operator directory budget.}
+      responses:
+        '202': {description: Durable job ID, root fingerprint, immutable reference snapshot and resource budgets; safe_to_delete/security_approval false.}
+        '400': {description: Invalid body, page budget or missing idempotency key.}
+        '403': {description: Tenant administrator required.}
+        '409': {description: Idempotency conflict.}
+        '503': {description: Unsupported/unavailable storage, oversized reference snapshot or exhausted integrity admission capacity; no partial admission.}
+  /api/v1/maintenance/storage-inventories/{job_id}:
+    get:
+      operationId: inspectStorageInventory
+      description: Live walk consistency and per-pass findings remain explicit. Enumeration, supported layout, CAS checks and reference checks have separate completion/health fields. Temporary/legacy bytes remain unverified. No deletion authorization or policy approval. Cancel/retry through jobs API; interrupted retry resumes, completed retry rechecks retained observations in another pass.
+      parameters:
+        - {in: path, name: job_id, required: true, schema: {$ref: '#/components/schemas/JobId'}}
+      responses:
+        '200': {description: Job/progress, coverage and integrity fields, unverified temporary/legacy count, safe_to_delete false and security_approval false.}
+        '403': {description: Tenant administrator required.}
+        '404': {description: No such inventory in this tenant.}
+  /api/v1/maintenance/storage-inventories/{job_id}/items:
+    get:
+      operationId: listStorageInventoryEntries
+      description: Immutable observed entries with exact name_b64, type, size/identity/time, current-pass hash and observed versus current reference counts. Current references can change; an unreferenced observation never permits deletion. Logical bytes are pathname sizes, not allocated disk usage.
+      parameters:
+        - {in: path, name: job_id, required: true, schema: {$ref: '#/components/schemas/JobId'}}
+        - {in: query, name: area, schema: {type: string, enum: [root, sha256, cas, staged, uploads]}}
+        - {in: query, name: after, schema: {type: integer, format: int64, minimum: 0, default: 0}}
+        - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 1000, default: 100}}
+      responses:
+        '200': {description: Entries ordered by ordinal, more and safe_to_delete/security_approval false.}
+        '403': {description: Tenant administrator required.}
+        '404': {description: No such inventory in this tenant.}
+  /api/v1/maintenance/storage-inventories/{job_id}/references:
+    get:
+      operationId: listInventoryReferenceSnapshot
+      parameters:
+        - {in: path, name: job_id, required: true, schema: {$ref: '#/components/schemas/JobId'}}
+        - {in: query, name: after, schema: {type: integer, format: int64, minimum: 0, default: 0, description: Last target ordinal.}}
+        - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 1000, default: 100}}
+      responses:
+        '200': {description: Original immutable reference targets, current-pass receipts and more. Full reference history is the jobs observations endpoint.}
+        '403': {description: Tenant administrator required.}
+        '404': {description: No such inventory in this tenant.}
+  /api/v1/maintenance/storage-inventories/{job_id}/observations:
+    get:
+      operationId: listInventoryCASObservations
+      description: Immutable per-pass CAS hash history; joins the original observed entry binding. No policy approval.
+      parameters:
+        - {in: path, name: job_id, required: true, schema: {$ref: '#/components/schemas/JobId'}}
+        - {in: query, name: after, schema: {type: integer, format: int64, minimum: 0, default: 0, description: Last observed generation.}}
+        - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 1000, default: 100}}
+      responses:
+        '200': {description: Receipts ordered by generation with ordinal/pass/digest/size/status/worker/engine/time and more.}
+        '403': {description: Tenant administrator required.}
+        '404': {description: No such inventory in this tenant.}

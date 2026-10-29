@@ -44,6 +44,7 @@ The worker implements three lanes:
 | `events` / `event.project` | Verify a source journal event and publish its activity index entry |
 | `integrity` / `storage.integrity` | Hash a publication repository/digest/size binding and retain an attempt observation |
 | `integrity` / `storage.sweep` | Inspect every target of an admitted referenced-storage snapshot, with durable coverage and per-pass receipts |
+| `integrity` / `storage.inventory` | Walk tenant filesystem entries, check observed CAS bytes and a reference snapshot, retaining per-pass findings |
 | `maintenance` / `leases.reconcile` | Recover bounded pages of expired retrieval/upload lease metadata, retaining bytes and offsets |
 
 An event job's `kind` names its source event; `handler` names the effect actually
@@ -156,3 +157,6 @@ The independent maintenance lane executes bounded expired retrieval/upload lease
 reconciliation. See [recovery.md](recovery.md) for preview, admission, progress,
 cancellation, retry and the byte-retention contract. CAS inventory and GC remain
 required; starting a worker does not automatically schedule a maintenance scan.
+
+Use [storage-inventory.md](storage-inventory.md) to account for unreferenced CAS,
+staged and legacy files. Results retain bytes and never authorize deletion.

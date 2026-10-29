@@ -17,6 +17,9 @@ func validJobState(s string) bool {
 	return false
 }
 func (s *Store) Jobs(ctx context.Context, i Identity, queue, state, after string, limit int) ([]Job, string, error) {
+	return s.jobsByKind(ctx, i, queue, state, after, limit, "")
+}
+func (s *Store) jobsByKind(ctx context.Context, i Identity, queue, state, after string, limit int, kind string) ([]Job, string, error) {
 	out := []Job{}
 	next := ""
 	var seq int64
@@ -35,7 +38,7 @@ func (s *Store) Jobs(ctx context.Context, i Identity, queue, state, after string
 		}
 	}
 	e := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
-		rows, e := tx.Query(ctx, `SELECT `+jobColumns+` FROM cratectl.jobs WHERE ($1='' OR queue=$1) AND ($2='' OR state=$2) AND (sequence,task)>($3,$4) ORDER BY sequence,task LIMIT $5`, queue, state, seq, task, limit+1)
+		rows, e := tx.Query(ctx, `SELECT `+jobColumns+` FROM cratectl.jobs WHERE ($1='' OR queue=$1) AND ($2='' OR state=$2) AND (sequence,task)>($3,$4) AND ($6='' OR kind=$6) ORDER BY sequence,task LIMIT $5`, queue, state, seq, task, limit+1, kind)
 		if e != nil {
 			return e
 		}
@@ -144,6 +147,15 @@ func (s *Store) ControlJob(ctx context.Context, i Identity, key, fingerprint, id
 			}
 			if e = queueRoom(ctx, tx, p, 1); e != nil {
 				return nil, 0, e
+			}
+			if j.Kind == "storage.inventory" && j.State == "succeeded" {
+				raw, e := resetCompletedInventory(&j)
+				if e != nil {
+					return nil, 0, e
+				}
+				if _, e = tx.Exec(ctx, `UPDATE cratectl.jobs SET payload=$1 WHERE sequence=$2 AND task=$3`, raw, seq, task); e != nil {
+					return nil, 0, e
+				}
 			}
 			if j.Kind == "storage.sweep" && j.State == "succeeded" {
 				raw, e := resetCompletedSweep(&j)
