@@ -26,17 +26,19 @@ import (
 
 func run() error {
 	if len(os.Args) < 2 {
-		return errors.New("usage: cratectld migrate|provision|revoke|serve")
+		return errors.New("usage: cratectld migrate|provision|revoke|serve|worker")
 	}
 	ctx := context.Background()
 	switch os.Args[1] {
+	case "worker":
+		return runWorker()
 	case "migrate":
 		return store.Migrate(ctx, os.Getenv("CRATECTL_OWNER_DSN"))
 	case "provision":
 		f := flag.NewFlagSet("provision", flag.ContinueOnError)
 		tenant := f.String("tenant", "", "tenant")
 		actor := f.String("actor", "", "actor")
-		role := f.String("role", "reader", "admin, writer, reader")
+		role := f.String("role", "reader", "admin, writer, reader, worker (worker credentials cannot use the public API)")
 		out := f.String("token-file", "", "new private credential file")
 		expiresIn := f.Duration("expires-in", 24*time.Hour, "credential lifetime")
 		if e := f.Parse(os.Args[2:]); e != nil {

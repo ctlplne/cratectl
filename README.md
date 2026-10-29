@@ -8,9 +8,12 @@ No parity, production readiness, scanning or high-availability claim is made.
 
 Implemented locally: PostgreSQL tenant isolation, immutable filesystem objects,
 transactional publication/events/outbox intent, tenant service tokens, manual
-digest decisions, repository policy, management CLI, and early hosted npm, PyPI,
-OCI and Maven operations. A manual decision is not a malware or vulnerability
-scan. Pending outbox records are durable intent; no worker completion is implied.
+digest decisions, repository policy, management CLI, durable worker lanes and
+early hosted/proxy/group npm, PyPI, OCI and Maven operations. The
+[worker](docs/operator/jobs.md) indexes source events and checks stored-byte
+integrity with fenced leases, retries and cancellation. Neither a hash match nor
+a manual decision is a malware or vulnerability scan. Pending intent is not
+completion.
 
 ## Build and run the local engineering profile
 
@@ -35,7 +38,7 @@ The explicit HTTP flag is restricted to a literal loopback listener. For a netwo
 listener, supply a certificate/key from your own CA using `--tls-cert`/`--tls-key`
 and an HTTPS `--public-url`; install the CA in the client's trust store. TLS
 bootstrap automation and production deployment packaging remain unfinished.
-Database owner credentials are used only by migrate/provision. The server rejects
+Database owner credentials are used only by migrate/provision/revoke. The server rejects
 a database role that owns tenant tables, is superuser, or bypasses RLS. Do not
 use this development database setup as a production credential-management system.
 
@@ -59,17 +62,17 @@ remain labelled unassessed. No absent scanner result is labelled clean.
 | --- | --- | --- |
 | Generic | `/r/REPOSITORY/PATH` | PUT and authorized GET/HEAD, range, ETag; no lifecycle/export yet |
 | Maven | `/r/REPOSITORY/COORDINATE` | hosted files, mutable native metadata, computed checksums; complete Gradle/Ivy/SBT, grouping and snapshot campaigns remain open |
-| npm | `/npm/REPOSITORY/` | publish/install scoped packages and dependencies; 24 MiB publish document; independent dist-tag edits, search and provenance not implemented |
-| PyPI | `/pypi/REPOSITORY/` for twine; `/pypi/REPOSITORY/simple/` for pip | streamed multipart files, HTML simple index; yanking, modern JSON/index metadata and archive-content validation incomplete |
+| npm | `/npm/REPOSITORY/` | publish/install scoped packages and dependencies, dist-tag edits and early proxy/group proof; 24 MiB publish document; full search, deprecation, signatures, provenance and lifecycle remain open |
+| PyPI | `/pypi/REPOSITORY/` for twine; `/pypi/REPOSITORY/simple/` for pip | streamed multipart files, HTML/JSON simple indexes, yanking, bounded archive identity checks and early proxy/group proof; full client/metadata/signature/lifecycle campaigns remain open |
 | OCI | `/v2/REPOSITORY/IMAGE/...` | ORAS hosted/proxy/group multi-layer pulls, resumable hosted uploads, validated indexes, governed referrers, tag/graph policy and per-member cache revalidation; approved token realms and independently configured signed CDN delivery have owned transport/ORAS proof. A pinned Docker Hub/CloudFront Linux arm64 journey has real-service proof; other providers, delete/mount, full Docker/Podman/conformance and graph-policy campaigns remain incomplete; see [operator guide](docs/operator/oci.md) |
 
-Generic/Maven proxy and group paths plus repository actor grants now have early
-local proof; see [operator configuration](docs/operator/proxy-and-group.md). Other
-formats still support hosted mode only. Full proxy/group semantics, content selectors,
-production S3, quotas, worker scheduling, scanners, identity federation, console,
+Generic/Maven/npm/PyPI/OCI proxy and group paths plus repository actor grants have
+early native proof; see [operator configuration](docs/operator/proxy-and-group.md).
+Full proxy/group semantics, content selectors, production S3, quotas, global
+worker scheduling, scanners, identity federation, console,
 replication, migration, governance and the remaining format families are open.
 Management list endpoints currently cap at 1,000 rows; full management cursor
-pagination is unfinished. Native OCI tags/referrers have bounded `n`/`last`
+pagination is unfinished. Jobs and activity support documented cursors. Native OCI tags/referrers have bounded `n`/`last`
 pages and complete upstream page walks; see the OCI operator guide.
 Filesystem reads rehash the entire object before sending it. This detects
 same-length corruption but adds disk I/O and has not met transfer targets.

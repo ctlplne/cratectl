@@ -479,7 +479,7 @@ func (s *Server) fillOCIProxy(parent context.Context, i store.Identity, repo sto
 	if err == nil && (errors.Is(e, store.ErrDenied) || errors.Is(e, store.ErrUnauthenticated)) {
 		return e
 	}
-	if err != nil && result.OCI != nil && !errors.Is(err, store.ErrLeaseLost) {
+	if err != nil && result.OCI != nil && !errors.Is(err, store.ErrLeaseLost) && !errors.Is(err, store.ErrQueueFull) {
 		failure := store.RetrievalResult{Status: result.Status, Failure: "upstream_graph_publication_rejected"}
 		if cleanup := s.DB.CompleteRetrieval(completion, i, lease, failure); cleanup != nil {
 			return cleanup

@@ -158,7 +158,7 @@ func completeOCIPublication(ctx context.Context, tx pgx.Tx, i Identity, repo Rep
 			return e
 		}
 	}
-	return nil
+	return enqueueIntegrity(ctx, tx, i, repo.Name, p.Objects)
 }
 func ociCacheInTx(ctx context.Context, tx pgx.Tx, repo, path string, admissions ...OCIAdmission) (bool, error) {
 	var r Retrieval

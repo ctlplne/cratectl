@@ -132,7 +132,7 @@ type RetrievalResult struct {
 }
 
 func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retrieval, result RetrievalResult) error {
-	return s.Tx(ctx, i, true, func(tx pgx.Tx) error {
+	e := s.Tx(ctx, i, true, func(tx pgx.Tx) error {
 		repo, e := repositoryInTx(ctx, tx, i, lease.Repository, "read")
 		if e != nil {
 			return e
@@ -210,6 +210,9 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 			if e != nil {
 				return e
 			}
+			if e = enqueueIntegrity(ctx, tx, i, repo.Name, []Artifact{{Path: lease.Path, Digest: result.Object.Digest, Size: result.Object.Size}}); e != nil {
+				return e
+			}
 		} else if result.Status == 304 && result.Failure == "" {
 			var exists bool
 			if e = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM cratectl.artifacts WHERE repository=$1 AND path=$2)`, lease.Repository, lease.Path).Scan(&exists); e != nil {
@@ -262,6 +265,14 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 		}
 		return appendEvent(ctx, tx, i, "proxy.retrieval."+state, data)
 	})
+	if errors.Is(e, ErrQueueFull) {
+		cleanup, done := context.WithTimeout(context.WithoutCancel(ctx), 3*time.Second)
+		defer done()
+		if release := s.abandonQueueBlockedRetrieval(cleanup, i, lease); release != nil && !errors.Is(release, ErrLeaseLost) {
+			return release
+		}
+	}
+	return e
 }
 func InvalidateRetrieval(ctx context.Context, tx pgx.Tx, i Identity, repo, path string) (any, error) {
 	if i.Role != "admin" {
@@ -286,4 +297,27 @@ func InvalidateRetrieval(ctx context.Context, tx pgx.Tx, i Identity, repo, path 
 		return nil, ErrNotFound
 	}
 	return map[string]string{"repository": repo, "path": path, "state": "expired", "next_action": "Next authorized request retrieves or revalidates the configured upstream."}, nil
+}
+
+// Capacity rejection rolls back every publication reference. Release only this
+// owner's still-live fence without requiring room in the already saturated
+// outbox; the audit and failed lease update remain one local transaction.
+func (s *Store) abandonQueueBlockedRetrieval(ctx context.Context, i Identity, lease Retrieval) error {
+	return s.Tx(ctx, i, true, func(tx pgx.Tx) error {
+		if _, e := repositoryInTx(ctx, tx, i, lease.Repository, "read"); e != nil {
+			return e
+		}
+		sequence, e := nextEventSequence(ctx, tx, i)
+		if e != nil {
+			return e
+		}
+		tag, e := tx.Exec(ctx, `UPDATE cratectl.retrievals SET state='failed',lease_token='',lease_until='epoch',fresh_until='epoch',last_error='queue_capacity',changed_at=clock_timestamp(),change_sequence=$1 WHERE repository=$2 AND path=$3 AND generation=$4 AND lease_token=$5 AND state='fetching' AND lease_until>clock_timestamp()`, sequence, lease.Repository, lease.Path, lease.Generation, lease.Token)
+		if e != nil {
+			return e
+		}
+		if tag.RowsAffected() != 1 {
+			return ErrLeaseLost
+		}
+		return appendEventIntent(ctx, tx, i, "proxy.retrieval.abandoned", map[string]any{"repository": lease.Repository, "path": lease.Path, "generation": lease.Generation, "reason": "queue_capacity"}, false)
+	})
 }

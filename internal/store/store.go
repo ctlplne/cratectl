@@ -17,6 +17,9 @@ import (
 
 //go:embed schema.sql
 var schema string
+
+//go:embed jobs.sql
+var jobSchema string
 var Name = regexp.MustCompile(`^[a-z][a-z0-9-]{0,62}$`)
 var ErrConflict = errors.New("conflict")
 var ErrDenied = errors.New("policy denied")
@@ -62,25 +65,28 @@ func Migrate(ctx context.Context, dsn string) error {
 	if _, e = tx.Exec(ctx, schema); e != nil {
 		return e
 	}
-	// Fixed role is owned by this isolated database, never a shared production role.
-	if _, e = tx.Exec(ctx, `DO $$ BEGIN IF NOT EXISTS(SELECT FROM pg_roles WHERE rolname='cratectl_app') THEN CREATE ROLE cratectl_app NOLOGIN NOSUPERUSER NOBYPASSRLS NOINHERIT; END IF; END $$; GRANT USAGE ON SCHEMA cratectl TO cratectl_app; GRANT EXECUTE ON FUNCTION cratectl.authenticate(text) TO cratectl_app;`); e != nil {
+	if _, e = tx.Exec(ctx, jobSchema); e != nil {
 		return e
 	}
-	for _, table := range []string{"tenants", "repositories", "artifacts", "events", "mutations", "jobs", "uploads", "tags", "repository_grants", "retrievals", "content_decisions", "npm_tags", "npm_sources", "native_sources", "python_yanks"} {
+	// Fixed role is owned by this isolated database, never a shared production role.
+	if _, e = tx.Exec(ctx, `DO $$ BEGIN IF NOT EXISTS(SELECT FROM pg_roles WHERE rolname='cratectl_app') THEN CREATE ROLE cratectl_app NOLOGIN NOSUPERUSER NOBYPASSRLS NOINHERIT; END IF; END $$; GRANT USAGE ON SCHEMA cratectl TO cratectl_app; GRANT EXECUTE ON FUNCTION cratectl.authenticate(text),cratectl.authenticate_worker(text) TO cratectl_app;`); e != nil {
+		return e
+	}
+	for _, table := range []string{"tenants", "repositories", "artifacts", "events", "mutations", "jobs", "uploads", "tags", "repository_grants", "retrievals", "content_decisions", "npm_tags", "npm_sources", "native_sources", "python_yanks", "queue_policies", "event_projections", "integrity_observations"} {
 		q := pgx.Identifier{"cratectl", table}.Sanitize()
 		if _, e = tx.Exec(ctx, `ALTER TABLE `+q+` ENABLE ROW LEVEL SECURITY; ALTER TABLE `+q+` FORCE ROW LEVEL SECURITY; DROP POLICY IF EXISTS tenant_scope ON `+q+`; CREATE POLICY tenant_scope ON `+q+` USING (tenant=current_setting('cratectl.tenant',true)) WITH CHECK (tenant=current_setting('cratectl.tenant',true)); GRANT SELECT,INSERT ON `+q+` TO cratectl_app`); e != nil {
 			return e
 		}
 	}
-	_, e = tx.Exec(ctx, `GRANT UPDATE ON cratectl.artifacts,cratectl.repositories,cratectl.jobs,cratectl.uploads,cratectl.tags,cratectl.repository_grants,cratectl.retrievals,cratectl.content_decisions,cratectl.npm_tags,cratectl.python_yanks TO cratectl_app;`)
+	_, e = tx.Exec(ctx, `GRANT UPDATE ON cratectl.artifacts,cratectl.repositories,cratectl.jobs,cratectl.uploads,cratectl.tags,cratectl.repository_grants,cratectl.retrievals,cratectl.content_decisions,cratectl.npm_tags,cratectl.python_yanks,cratectl.queue_policies TO cratectl_app;`)
 	if e != nil {
 		return e
 	}
 	return tx.Commit(ctx)
 }
 func Provision(ctx context.Context, dsn, tenant, actor, role, token string, expires time.Time) error {
-	if !Name.MatchString(tenant) || !Name.MatchString(actor) {
-		return errors.New("invalid tenant/actor name")
+	if !Name.MatchString(tenant) || !Name.MatchString(actor) || (role != "admin" && role != "writer" && role != "reader" && role != "worker") {
+		return errors.New("invalid tenant, actor or credential role")
 	}
 	c, e := pgx.Connect(ctx, dsn)
 	if e != nil {
@@ -103,7 +109,7 @@ func Provision(ctx context.Context, dsn, tenant, actor, role, token string, expi
 	if e != nil {
 		return e
 	}
-	if e = appendEvent(ctx, tx, Identity{Tenant: tenant, Actor: "bootstrap", Role: "admin"}, "identity.provisioned", map[string]any{"actor": actor, "role": role, "expires_at": expires.UTC()}); e != nil {
+	if e = appendEventIntent(ctx, tx, Identity{Tenant: tenant, Actor: "bootstrap", Role: "admin"}, "identity.provisioned", map[string]any{"actor": actor, "role": role, "expires_at": expires.UTC()}, false); e != nil {
 		return e
 	}
 	return tx.Commit(ctx)
@@ -164,6 +170,9 @@ func nextEventSequence(ctx context.Context, tx pgx.Tx, i Identity) (int64, error
 }
 
 func appendEvent(ctx context.Context, tx pgx.Tx, i Identity, kind string, data any) error {
+	return appendEventIntent(ctx, tx, i, kind, data, true)
+}
+func appendEventIntent(ctx context.Context, tx pgx.Tx, i Identity, kind string, data any, enqueue bool) error {
 	var seq int64
 	var prev string
 	e := tx.QueryRow(ctx, `SELECT sequence,hash FROM cratectl.events WHERE tenant=$1 ORDER BY sequence DESC LIMIT 1`, i.Tenant).Scan(&seq, &prev)
@@ -179,8 +188,10 @@ func appendEvent(ctx context.Context, tx pgx.Tx, i Identity, kind string, data a
 	if e != nil {
 		return e
 	}
-	_, e = tx.Exec(ctx, `INSERT INTO cratectl.jobs(tenant,sequence,kind) VALUES($1,$2,$3)`, i.Tenant, seq+1, kind)
-	return e
+	if !enqueue {
+		return nil
+	}
+	return enqueueEvent(ctx, tx, i, seq+1, kind)
 }
 
 type Result struct {
@@ -191,6 +202,9 @@ type Result struct {
 
 // Mutate commits the effect, response, event and outbox together.
 func (s *Store) Mutate(ctx context.Context, i Identity, key, fingerprint, kind string, fn func(pgx.Tx) (any, int, error)) (Result, error) {
+	return s.mutateIntent(ctx, i, key, fingerprint, kind, true, fn)
+}
+func (s *Store) mutateIntent(ctx context.Context, i Identity, key, fingerprint, kind string, enqueue bool, fn func(pgx.Tx) (any, int, error)) (Result, error) {
 	var res Result
 	e := s.Tx(ctx, i, true, func(tx pgx.Tx) error {
 		if key != "" {
@@ -216,7 +230,7 @@ func (s *Store) Mutate(ctx context.Context, i Identity, key, fingerprint, kind s
 		if e != nil {
 			return e
 		}
-		if e = appendEvent(ctx, tx, i, kind, data); e != nil {
+		if e = appendEventIntent(ctx, tx, i, kind, data, enqueue); e != nil {
 			return e
 		}
 		if key != "" {
@@ -318,7 +332,7 @@ func InsertArtifacts(ctx context.Context, tx pgx.Tx, i Identity, repo string, as
 			}
 		}
 	}
-	return nil
+	return enqueueIntegrity(ctx, tx, i, repo, as)
 }
 func (s *Store) Publish(ctx context.Context, i Identity, repo string, as []Artifact) error {
 	if !i.CanWrite() {
@@ -384,6 +398,9 @@ func (s *Store) ReplaceMetadata(ctx context.Context, i Identity, repo string, a 
 			return nil, 0, e
 		}
 		_, e = tx.Exec(ctx, `INSERT INTO cratectl.artifacts(tenant,repository,path,digest,size,media_type) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT(tenant,repository,path) DO UPDATE SET digest=excluded.digest,size=excluded.size,media_type=excluded.media_type,decision=CASE WHEN cratectl.artifacts.digest=excluded.digest THEN cratectl.artifacts.decision ELSE 'unassessed' END,created_at=CASE WHEN cratectl.artifacts.digest=excluded.digest THEN cratectl.artifacts.created_at ELSE now() END`, i.Tenant, repo, a.Path, a.Digest, a.Size, a.MediaType)
+		if e == nil {
+			e = enqueueIntegrity(ctx, tx, i, repo, []Artifact{a})
+		}
 		return map[string]any{"repository": repo, "path": a.Path, "previous_digest": old, "digest": a.Digest, "size": a.Size}, 201, e
 	})
 	return e
@@ -416,7 +433,7 @@ func Revoke(ctx context.Context, dsn, token string) error {
 	if _, e = tx.Exec(ctx, `UPDATE cratectl_private.tokens SET revoked=true WHERE hash=$1`, crypt.Digest([]byte(token))); e != nil {
 		return e
 	}
-	if e = appendEvent(ctx, tx, Identity{Tenant: tenant, Actor: "bootstrap", Role: "admin"}, "identity.revoked", map[string]string{"actor": actor}); e != nil {
+	if e = appendEventIntent(ctx, tx, Identity{Tenant: tenant, Actor: "bootstrap", Role: "admin"}, "identity.revoked", map[string]string{"actor": actor}, false); e != nil {
 		return e
 	}
 	return tx.Commit(ctx)

@@ -41,7 +41,7 @@ CREATE OR REPLACE FUNCTION cratectl.authenticate(token_hash text)
  RETURNS TABLE(tenant text, actor text, role text)
  LANGUAGE sql SECURITY DEFINER SET search_path=pg_catalog AS $$
  SELECT t.tenant,t.actor,t.role FROM cratectl_private.tokens t
- WHERE t.hash=token_hash AND NOT t.revoked AND t.expires_at>now()
+ WHERE t.hash=token_hash AND NOT t.revoked AND t.expires_at>clock_timestamp()
  $$;
 REVOKE ALL ON FUNCTION cratectl.authenticate(text) FROM PUBLIC;
 CREATE TABLE IF NOT EXISTS cratectl.uploads (

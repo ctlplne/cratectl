@@ -95,6 +95,9 @@ func fail(w http.ResponseWriter, status int, code, action string) {
 }
 func respondErr(w http.ResponseWriter, e error) {
 	switch {
+	case errors.Is(e, store.ErrQueueFull):
+		w.Header().Set("Retry-After", "5")
+		fail(w, 503, "durable_queue_full", "Inspect /api/v1/jobs/queues, start or repair the worker, or adjust the tenant queue capacity; this mutation was rolled back.")
 	case errors.Is(e, store.ErrOCIMemberChanged):
 		fail(w, 409, "graph_cache_superseded", "A graph member changed during intake. Retry against the current cache state; no partial graph was published.")
 	case errors.Is(e, store.ErrOCICacheExpired):
@@ -242,6 +245,10 @@ func readJSON(w http.ResponseWriter, r *http.Request, v any, limit int64) bool {
 }
 func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Identity) {
 	p := strings.TrimPrefix(r.URL.Path, "/api/v1/")
+	if p == "jobs" || strings.HasPrefix(p, "jobs/") || p == "activity" {
+		s.jobManagement(w, r, i, p)
+		return
+	}
 	if r.Method == "GET" {
 		switch {
 		case p == "repositories":

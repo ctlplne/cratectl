@@ -34,6 +34,43 @@ components:
           properties:
             code: {type: string}
             action: {type: string}
+    Job:
+      type: object
+      description: Tenant-scoped durable handler state; lease tokens are never returned.
+      properties:
+        sequence: {type: integer, format: int64}
+        task: {type: string}
+        handler: {type: string, enum: [event.project, storage.integrity]}
+        queue: {type: string, enum: [events, integrity]}
+        kind: {type: string, description: Source event kind or artifact.integrity; handler identifies the actual effect.}
+        state: {type: string, enum: [pending, running, retry, succeeded, failed, cancel_requested, cancelled, uncertain]}
+        attempts: {type: integer, minimum: 0, description: Total attempts retained across operator redrives.}
+        cycle_attempts: {type: integer, minimum: 0}
+        generation: {type: integer, format: int64}
+        worker: {type: string}
+        lease_until: {type: string, format: date-time}
+        available_at: {type: string, format: date-time}
+        last_error: {type: string, description: Classified code; no private transport error or credential value.}
+        updated_at: {type: string, format: date-time}
+        finished_at: {type: [string, 'null'], format: date-time}
+        target:
+          type: object
+          description: Canonical repository/path/digest/size binding for integrity work; empty for event projection.
+    QueuePolicy:
+      type: object
+      additionalProperties: false
+      required: [capacity, max_running, max_attempts, retry_seconds, retry_max_seconds]
+      properties:
+        queue: {type: string, enum: [events, integrity]}
+        capacity: {type: integer, minimum: 1, maximum: 2147483647, default: 100000}
+        max_running: {type: integer, minimum: 1, maximum: 100000, default: 2}
+        max_attempts: {type: integer, minimum: 1, maximum: 10000, default: 5}
+        retry_seconds: {type: integer, minimum: 1, maximum: 604800, default: 5}
+        retry_max_seconds: {type: integer, minimum: 1, maximum: 604800, default: 300, description: Must be at least retry_seconds.}
+    JobId:
+      type: string
+      pattern: '^[1-9][0-9]*:(event|integrity-[a-f0-9]{64})$'
+      description: Tenant-local source sequence plus effect key; equal IDs may exist in different tenants.
 paths:
   /api/v1/repositories:
     get:
@@ -256,3 +293,108 @@ paths:
         '403': {description: "Tenant administrator required."}
         '404': {description: "No retrieval to expire."}
         '409': {description: "Idempotency conflict."}
+
+  /api/v1/jobs:
+    get:
+      operationId: listJobs
+      description: Tenant administrator inventory; refresh or read individual jobs to observe state changes. Worker-purpose tokens cannot use this API.
+      parameters:
+        - {in: query, name: queue, schema: {type: string, enum: [events, integrity]}}
+        - {in: query, name: state, schema: {type: string, enum: [pending, running, retry, succeeded, failed, cancel_requested, cancelled, uncertain]}}
+        - {in: query, name: after, schema: {$ref: '#/components/schemas/JobId'}}
+        - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 1000, default: 100}}
+      responses:
+        '200':
+          description: Current inventory page; follow next until empty.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items: {type: array, items: {$ref: '#/components/schemas/Job'}}
+                  next: {type: string}
+        '401': {description: Missing, expired, revoked or worker-purpose credential.}
+        '403': {description: Tenant administrator required.}
+        '409': {description: Invalid filter or cursor.}
+  /api/v1/jobs/queues:
+    get:
+      operationId: listQueueStatus
+      description: Tenant administrator status. Capacity is operator configuration; outstanding and running are observed counters.
+      responses:
+        '200': {description: Two lane policies with current outstanding and live-running counts.}
+        '403': {description: Tenant administrator required.}
+  /api/v1/jobs/queues/{queue}:
+    put:
+      operationId: configureQueue
+      description: Audited local recovery control remains available while outbox capacity is full. Reduced capacity preserves existing work.
+      parameters:
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+        - {in: path, name: queue, required: true, schema: {type: string, enum: [events, integrity]}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/QueuePolicy'}
+      responses:
+        '200': {description: Persisted configuration; identical idempotency replay returns the original result.}
+        '400': {description: Invalid policy, body or mutation key.}
+        '403': {description: Tenant administrator required.}
+        '409': {description: Idempotency key reused with another request.}
+  /api/v1/jobs/{job_id}:
+    get:
+      operationId: inspectJob
+      parameters:
+        - {in: path, name: job_id, required: true, schema: {$ref: '#/components/schemas/JobId'}}
+      responses:
+        '200':
+          description: Current state of this tenant's effect.
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Job'}
+        '403': {description: Tenant administrator required.}
+        '404': {description: No such job in this tenant.}
+  /api/v1/jobs/{job_id}/{action}:
+    post:
+      operationId: controlJob
+      description: Idempotent retry or cancellation. Running cancellation is a request until acknowledged or recovered after lease expiry. Retry preserves total attempts and starts a new cycle. Success cannot be retrospectively cancelled.
+      parameters:
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+        - {in: path, name: job_id, required: true, schema: {$ref: '#/components/schemas/JobId'}}
+        - {in: path, name: action, required: true, schema: {type: string, enum: [retry, cancel]}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                acknowledge_unknown: {type: boolean, default: false, description: Required before redriving a future external uncertain outcome; these builtins do not create uncertain outcomes.}
+      responses:
+        '200': {description: Recorded control result; read job again for current progress.}
+        '400': {description: Invalid body or mutation key.}
+        '403': {description: Tenant administrator required.}
+        '404': {description: No such job in this tenant.}
+        '409': {description: State cannot accept this action or idempotency request conflicts.}
+        '503': {description: Retry admission exceeds this lane's capacity; cancellation remains possible.}
+  /api/v1/jobs/{job_id}/observations:
+    get:
+      operationId: listIntegrityObservations
+      description: Immutable per-attempt storage-integrity observations. security_approval is false; observations cannot approve quarantine or bypass serving policy.
+      parameters:
+        - {in: path, name: job_id, required: true, schema: {$ref: '#/components/schemas/JobId'}}
+        - {in: query, name: after, schema: {type: integer, format: int64, minimum: 0, description: Last observed generation.}}
+        - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 1000, default: 100}}
+      responses:
+        '200': {description: Items ordered by generation, more flag, assessment_kind storage_integrity and security_approval false.}
+        '403': {description: Tenant administrator required.}
+  /api/v1/activity:
+    get:
+      operationId: listProjectedActivity
+      description: Asynchronous source-event index; authoritative full audit remains /api/v1/audit. Advance by completion position rather than source sequence so late completions are preserved.
+      parameters:
+        - {in: query, name: after, schema: {type: integer, format: int64, minimum: 0, description: Last item's position, not its source sequence.}}
+        - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 1000, default: 100}}
+      responses:
+        '200': {description: Projection items with position, source sequence/hash, actor/kind and supplied coordinate fields; more flag.}
+        '403': {description: Tenant administrator required.}

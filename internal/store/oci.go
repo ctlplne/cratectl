@@ -111,7 +111,10 @@ func PublishOCI(ctx context.Context, tx pgx.Tx, i Identity, repo, image, tag str
 	if r.Mode != "hosted" || r.Format != "oci" || !metadata.Validated || len(metadata.References) > 4096 || len(metadata.Descriptors) > 4096 {
 		return ErrConflict
 	}
-	return publishOCI(ctx, tx, i, repo, image, tag, a, metadata)
+	if e = publishOCI(ctx, tx, i, repo, image, tag, a, metadata); e != nil {
+		return e
+	}
+	return enqueueIntegrity(ctx, tx, i, repo, []Artifact{a})
 }
 
 func publishOCI(ctx context.Context, tx pgx.Tx, i Identity, repo, image, tag string, a Artifact, metadata OCIManifestMetadata) error {

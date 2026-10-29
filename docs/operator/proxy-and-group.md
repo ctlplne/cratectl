@@ -154,4 +154,6 @@ Lease lifetime is currently 150 seconds and upstream work has a 120-second budge
 SQL locks are bounded at five seconds and statements at thirty seconds. These
 budgets, cache retention/reconciliation, interrupted multi-node retrieval and
 complete large-object campaigns still require production qualification. Pending
-outbox rows remain durable intent; a fair background worker is not yet implemented.
+outbox rows now have the [dedicated worker](jobs.md) for event projection and
+storage-integrity checks. Scanner, external-delivery and cleanup handlers remain
+unimplemented; their effects must not be inferred from those builtin jobs.
