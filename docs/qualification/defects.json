@@ -208,6 +208,39 @@
       "replay": "evidence/2026-10-28/oci-descriptor-clean-postgres-race.txt",
       "candidate": "a5fa76bea4476ff795c148d1fedab53fb4fbed8a",
       "limits": "Owned descriptor fixtures and actual native server/ORAS; broad provider/client/fault/lifecycle/production qualification remains incomplete."
+    },
+    {
+      "id": "DEFECT.0022",
+      "summary": "Asynchronous activity cursor could skip a slower earlier source event",
+      "first_failure": "evidence/2026-10-28/worker-activity-first.txt",
+      "state": "repaired and replayed",
+      "repair": "Assign a durable completion position under the tenant journal lock and page by that position, preserving the separate original source sequence.",
+      "replay": "evidence/2026-10-28/worker-clean-postgres-race.txt",
+      "native_replay": "evidence/2026-10-28/jobs-184a346769.json",
+      "candidate": "17182b6aa6bae022f5f18a4d3842fb90ee82479a",
+      "limits": "Named native/local topology; broader fault, load, multi-host and production campaigns remain open."
+    },
+    {
+      "id": "DEFECT.0023",
+      "summary": "Waiting worker claim could outlive credential expiry through transaction-start time",
+      "first_failure": "evidence/2026-10-28/worker-expiry-first.txt",
+      "state": "repaired and replayed",
+      "repair": "Use current database clock time for public/worker authentication after lock acquisition; revalidate every worker operation.",
+      "replay": "evidence/2026-10-28/worker-clean-postgres-race.txt",
+      "native_replay": "evidence/2026-10-28/jobs-184a346769.json",
+      "candidate": "17182b6aa6bae022f5f18a4d3842fb90ee82479a",
+      "limits": "Named native/local topology; broader fault, load, multi-host and production campaigns remain open."
+    },
+    {
+      "id": "DEFECT.0024",
+      "summary": "Queue rejection at proxy completion could strand a fetching lease",
+      "first_failure": "evidence/2026-10-28/worker-proxy-capacity-first.txt",
+      "state": "repaired and replayed",
+      "repair": "Roll back publication, then abandon only the still-current fence in an audited local transaction that requires no saturated outbox capacity; preserve the queue-full response and immediate retry.",
+      "replay": "evidence/2026-10-28/worker-clean-postgres-race.txt",
+      "native_replay": "evidence/2026-10-28/jobs-184a346769.json",
+      "candidate": "17182b6aa6bae022f5f18a4d3842fb90ee82479a",
+      "limits": "Named native/local topology; broader fault, load, multi-host and production campaigns remain open."
     }
   ]
 }

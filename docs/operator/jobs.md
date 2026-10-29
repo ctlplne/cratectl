@@ -56,6 +56,10 @@ to the authenticated tenant; equal IDs can exist in different tenants. A path is
 the original display coordinate. The check binds immutable bytes, so a retargeted
 coordinate cannot transfer an old observation to its new digest.
 
+Integrity tasks cover new publication/cache-fill intent and explicit redrives of
+those tasks. A complete historical object inventory and sweep remain required;
+starting this worker does not imply every pre-existing artifact was checked.
+
 Inspect queues and jobs using a tenant administrator credential:
 
 ```sh
