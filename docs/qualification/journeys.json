@@ -4967,11 +4967,14 @@
       "id": "J.STATE.OUTBOX",
       "capability": "STATE.OUTBOX",
       "state": "implementing",
-      "candidate": "51ece453d9cdf56f7a7504a9d833dc7ad4292f08",
+      "candidate": "2ad9bb3d6f8f6b88e65d4229a5e763088009dbd3",
       "evidence": [
         "evidence/2026-10-28/sweeps-c054496011.json",
         "evidence/2026-10-28/sweeps-03a42f2d88.json",
-        "evidence/2026-10-28/sweep-clean-postgres-race.txt"
+        "evidence/2026-10-28/sweep-clean-postgres-race.txt",
+        "evidence/2026-10-28/inventory-95f5ea6640.json",
+        "evidence/2026-10-28/inventory-cff4c6e32f.json",
+        "evidence/2026-10-28/inventory-clean-postgres-race.txt"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -4979,13 +4982,13 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Verified subset: atomic referenced artifact/retained-upload-part snapshots; bounded paced exact-byte checks, immutable per-pass findings and coverage, actual worker kill/reclaim, cancellation/resume/redrive, alias/size-conflict checks and current credential expiry rollback. No policy approval. Full CAS/staged/orphan inventory, scheduled sampling/repair, holds/retention/GC, S3, consistent backup/restore, production scale/mixed-host and full product qualification remain required."
+      "limits": "Verified subset: bounded live supported-layout CAS/staged/legacy inventory, unreferenced CAS hashes and immutable reference snapshots; metadata/CAS/reference receipts, current fences, actual worker kill/reclaim, cancellation/resume/redrive, budgets, root replacement and worker callback expiry rollback. No security or deletion approval. Live walk and unsupported nested layouts do not establish atomic/full volume accounting. Scheduling/sampling, repair, holds/retention/GC, S3, backup/restore, full platform/scale/mixed-host and product qualification remain required."
     },
     {
       "id": "J.STATE.LEASES",
       "capability": "STATE.LEASES",
       "state": "implementing",
-      "candidate": "51ece453d9cdf56f7a7504a9d833dc7ad4292f08",
+      "candidate": "2ad9bb3d6f8f6b88e65d4229a5e763088009dbd3",
       "evidence": [
         "evidence/2026-10-28/conformance-732d2ed67e.json",
         "evidence/2026-10-28/leases-51a334f550.json",
@@ -4994,7 +4997,10 @@
         "evidence/2026-10-28/recovery-clean-postgres-race.txt",
         "evidence/2026-10-28/sweeps-c054496011.json",
         "evidence/2026-10-28/sweeps-03a42f2d88.json",
-        "evidence/2026-10-28/sweep-clean-postgres-race.txt"
+        "evidence/2026-10-28/sweep-clean-postgres-race.txt",
+        "evidence/2026-10-28/inventory-95f5ea6640.json",
+        "evidence/2026-10-28/inventory-cff4c6e32f.json",
+        "evidence/2026-10-28/inventory-clean-postgres-race.txt"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -5002,13 +5008,13 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Verified subset: atomic referenced artifact/retained-upload-part snapshots; bounded paced exact-byte checks, immutable per-pass findings and coverage, actual worker kill/reclaim, cancellation/resume/redrive, alias/size-conflict checks and current credential expiry rollback. No policy approval. Full CAS/staged/orphan inventory, scheduled sampling/repair, holds/retention/GC, S3, consistent backup/restore, production scale/mixed-host and full product qualification remain required."
+      "limits": "Verified subset: bounded live supported-layout CAS/staged/legacy inventory, unreferenced CAS hashes and immutable reference snapshots; metadata/CAS/reference receipts, current fences, actual worker kill/reclaim, cancellation/resume/redrive, budgets, root replacement and worker callback expiry rollback. No security or deletion approval. Live walk and unsupported nested layouts do not establish atomic/full volume accounting. Scheduling/sampling, repair, holds/retention/GC, S3, backup/restore, full platform/scale/mixed-host and product qualification remain required."
     },
     {
       "id": "J.STATE.BOUNDED-QUEUES",
       "capability": "STATE.BOUNDED-QUEUES",
       "state": "implementing",
-      "candidate": "51ece453d9cdf56f7a7504a9d833dc7ad4292f08",
+      "candidate": "2ad9bb3d6f8f6b88e65d4229a5e763088009dbd3",
       "evidence": [
         "evidence/2026-10-28/jobs-184a346769.json",
         "evidence/2026-10-28/conformance-04e22aa966.json",
@@ -5019,7 +5025,10 @@
         "evidence/2026-10-28/recovery-clean-postgres-race.txt",
         "evidence/2026-10-28/sweeps-c054496011.json",
         "evidence/2026-10-28/sweeps-03a42f2d88.json",
-        "evidence/2026-10-28/sweep-clean-postgres-race.txt"
+        "evidence/2026-10-28/sweep-clean-postgres-race.txt",
+        "evidence/2026-10-28/inventory-95f5ea6640.json",
+        "evidence/2026-10-28/inventory-cff4c6e32f.json",
+        "evidence/2026-10-28/inventory-clean-postgres-race.txt"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -5027,13 +5036,13 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Verified subset: atomic referenced artifact/retained-upload-part snapshots; bounded paced exact-byte checks, immutable per-pass findings and coverage, actual worker kill/reclaim, cancellation/resume/redrive, alias/size-conflict checks and current credential expiry rollback. No policy approval. Full CAS/staged/orphan inventory, scheduled sampling/repair, holds/retention/GC, S3, consistent backup/restore, production scale/mixed-host and full product qualification remain required."
+      "limits": "Verified subset: bounded live supported-layout CAS/staged/legacy inventory, unreferenced CAS hashes and immutable reference snapshots; metadata/CAS/reference receipts, current fences, actual worker kill/reclaim, cancellation/resume/redrive, budgets, root replacement and worker callback expiry rollback. No security or deletion approval. Live walk and unsupported nested layouts do not establish atomic/full volume accounting. Scheduling/sampling, repair, holds/retention/GC, S3, backup/restore, full platform/scale/mixed-host and product qualification remain required."
     },
     {
       "id": "J.STATE.FAIRNESS",
       "capability": "STATE.FAIRNESS",
       "state": "implementing",
-      "candidate": "51ece453d9cdf56f7a7504a9d833dc7ad4292f08",
+      "candidate": "2ad9bb3d6f8f6b88e65d4229a5e763088009dbd3",
       "evidence": [
         "evidence/2026-10-28/leases-51a334f550.json",
         "evidence/2026-10-28/leases-3f7e506ef0.json",
@@ -5041,7 +5050,10 @@
         "evidence/2026-10-28/recovery-clean-postgres-race.txt",
         "evidence/2026-10-28/sweeps-c054496011.json",
         "evidence/2026-10-28/sweeps-03a42f2d88.json",
-        "evidence/2026-10-28/sweep-clean-postgres-race.txt"
+        "evidence/2026-10-28/sweep-clean-postgres-race.txt",
+        "evidence/2026-10-28/inventory-95f5ea6640.json",
+        "evidence/2026-10-28/inventory-cff4c6e32f.json",
+        "evidence/2026-10-28/inventory-clean-postgres-race.txt"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -5049,7 +5061,7 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Verified subset: atomic referenced artifact/retained-upload-part snapshots; bounded paced exact-byte checks, immutable per-pass findings and coverage, actual worker kill/reclaim, cancellation/resume/redrive, alias/size-conflict checks and current credential expiry rollback. No policy approval. Full CAS/staged/orphan inventory, scheduled sampling/repair, holds/retention/GC, S3, consistent backup/restore, production scale/mixed-host and full product qualification remain required."
+      "limits": "Verified subset: bounded live supported-layout CAS/staged/legacy inventory, unreferenced CAS hashes and immutable reference snapshots; metadata/CAS/reference receipts, current fences, actual worker kill/reclaim, cancellation/resume/redrive, budgets, root replacement and worker callback expiry rollback. No security or deletion approval. Live walk and unsupported nested layouts do not establish atomic/full volume accounting. Scheduling/sampling, repair, holds/retention/GC, S3, backup/restore, full platform/scale/mixed-host and product qualification remain required."
     },
     {
       "id": "J.STATE.PROJECTIONS",
@@ -5196,14 +5208,17 @@
       "id": "J.STORE.INTEGRITY",
       "capability": "STORE.INTEGRITY",
       "state": "implementing",
-      "candidate": "51ece453d9cdf56f7a7504a9d833dc7ad4292f08",
+      "candidate": "2ad9bb3d6f8f6b88e65d4229a5e763088009dbd3",
       "evidence": [
         "evidence/2026-10-28/jobs-184a346769.json",
         "evidence/2026-10-28/conformance-04e22aa966.json",
         "evidence/2026-10-28/worker-clean-postgres-race.txt",
         "evidence/2026-10-28/sweeps-c054496011.json",
         "evidence/2026-10-28/sweeps-03a42f2d88.json",
-        "evidence/2026-10-28/sweep-clean-postgres-race.txt"
+        "evidence/2026-10-28/sweep-clean-postgres-race.txt",
+        "evidence/2026-10-28/inventory-95f5ea6640.json",
+        "evidence/2026-10-28/inventory-cff4c6e32f.json",
+        "evidence/2026-10-28/inventory-clean-postgres-race.txt"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -5211,13 +5226,13 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Verified subset: atomic referenced artifact/retained-upload-part snapshots; bounded paced exact-byte checks, immutable per-pass findings and coverage, actual worker kill/reclaim, cancellation/resume/redrive, alias/size-conflict checks and current credential expiry rollback. No policy approval. Full CAS/staged/orphan inventory, scheduled sampling/repair, holds/retention/GC, S3, consistent backup/restore, production scale/mixed-host and full product qualification remain required."
+      "limits": "Verified subset: bounded live supported-layout CAS/staged/legacy inventory, unreferenced CAS hashes and immutable reference snapshots; metadata/CAS/reference receipts, current fences, actual worker kill/reclaim, cancellation/resume/redrive, budgets, root replacement and worker callback expiry rollback. No security or deletion approval. Live walk and unsupported nested layouts do not establish atomic/full volume accounting. Scheduling/sampling, repair, holds/retention/GC, S3, backup/restore, full platform/scale/mixed-host and product qualification remain required."
     },
     {
       "id": "J.STORE.RECONCILIATION",
       "capability": "STORE.RECONCILIATION",
       "state": "implementing",
-      "candidate": "51ece453d9cdf56f7a7504a9d833dc7ad4292f08",
+      "candidate": "2ad9bb3d6f8f6b88e65d4229a5e763088009dbd3",
       "evidence": [
         "evidence/2026-10-28/leases-51a334f550.json",
         "evidence/2026-10-28/leases-3f7e506ef0.json",
@@ -5225,7 +5240,10 @@
         "evidence/2026-10-28/recovery-clean-postgres-race.txt",
         "evidence/2026-10-28/sweeps-c054496011.json",
         "evidence/2026-10-28/sweeps-03a42f2d88.json",
-        "evidence/2026-10-28/sweep-clean-postgres-race.txt"
+        "evidence/2026-10-28/sweep-clean-postgres-race.txt",
+        "evidence/2026-10-28/inventory-95f5ea6640.json",
+        "evidence/2026-10-28/inventory-cff4c6e32f.json",
+        "evidence/2026-10-28/inventory-clean-postgres-race.txt"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -5233,7 +5251,7 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Verified subset: atomic referenced artifact/retained-upload-part snapshots; bounded paced exact-byte checks, immutable per-pass findings and coverage, actual worker kill/reclaim, cancellation/resume/redrive, alias/size-conflict checks and current credential expiry rollback. No policy approval. Full CAS/staged/orphan inventory, scheduled sampling/repair, holds/retention/GC, S3, consistent backup/restore, production scale/mixed-host and full product qualification remain required."
+      "limits": "Verified subset: bounded live supported-layout CAS/staged/legacy inventory, unreferenced CAS hashes and immutable reference snapshots; metadata/CAS/reference receipts, current fences, actual worker kill/reclaim, cancellation/resume/redrive, budgets, root replacement and worker callback expiry rollback. No security or deletion approval. Live walk and unsupported nested layouts do not establish atomic/full volume accounting. Scheduling/sampling, repair, holds/retention/GC, S3, backup/restore, full platform/scale/mixed-host and product qualification remain required."
     },
     {
       "id": "J.STORE.BACKUP",
@@ -5408,7 +5426,7 @@
       "id": "J.OPS.RECOVERY",
       "capability": "OPS.RECOVERY",
       "state": "implementing",
-      "candidate": "51ece453d9cdf56f7a7504a9d833dc7ad4292f08",
+      "candidate": "2ad9bb3d6f8f6b88e65d4229a5e763088009dbd3",
       "evidence": [
         "evidence/2026-10-28/leases-51a334f550.json",
         "evidence/2026-10-28/leases-3f7e506ef0.json",
@@ -5416,7 +5434,10 @@
         "evidence/2026-10-28/recovery-clean-postgres-race.txt",
         "evidence/2026-10-28/sweeps-c054496011.json",
         "evidence/2026-10-28/sweeps-03a42f2d88.json",
-        "evidence/2026-10-28/sweep-clean-postgres-race.txt"
+        "evidence/2026-10-28/sweep-clean-postgres-race.txt",
+        "evidence/2026-10-28/inventory-95f5ea6640.json",
+        "evidence/2026-10-28/inventory-cff4c6e32f.json",
+        "evidence/2026-10-28/inventory-clean-postgres-race.txt"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -5424,7 +5445,7 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Verified subset: atomic referenced artifact/retained-upload-part snapshots; bounded paced exact-byte checks, immutable per-pass findings and coverage, actual worker kill/reclaim, cancellation/resume/redrive, alias/size-conflict checks and current credential expiry rollback. No policy approval. Full CAS/staged/orphan inventory, scheduled sampling/repair, holds/retention/GC, S3, consistent backup/restore, production scale/mixed-host and full product qualification remain required."
+      "limits": "Verified subset: bounded live supported-layout CAS/staged/legacy inventory, unreferenced CAS hashes and immutable reference snapshots; metadata/CAS/reference receipts, current fences, actual worker kill/reclaim, cancellation/resume/redrive, budgets, root replacement and worker callback expiry rollback. No security or deletion approval. Live walk and unsupported nested layouts do not establish atomic/full volume accounting. Scheduling/sampling, repair, holds/retention/GC, S3, backup/restore, full platform/scale/mixed-host and product qualification remain required."
     },
     {
       "id": "J.OPS.OBSERVABILITY",
@@ -5638,11 +5659,14 @@
       "id": "J.UX.API",
       "capability": "UX.API",
       "state": "implementing",
-      "candidate": "51ece453d9cdf56f7a7504a9d833dc7ad4292f08",
+      "candidate": "2ad9bb3d6f8f6b88e65d4229a5e763088009dbd3",
       "evidence": [
         "evidence/2026-10-28/sweeps-c054496011.json",
         "evidence/2026-10-28/sweeps-03a42f2d88.json",
-        "evidence/2026-10-28/sweep-clean-postgres-race.txt"
+        "evidence/2026-10-28/sweep-clean-postgres-race.txt",
+        "evidence/2026-10-28/inventory-95f5ea6640.json",
+        "evidence/2026-10-28/inventory-cff4c6e32f.json",
+        "evidence/2026-10-28/inventory-clean-postgres-race.txt"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -5650,7 +5674,7 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Verified subset: atomic referenced artifact/retained-upload-part snapshots; bounded paced exact-byte checks, immutable per-pass findings and coverage, actual worker kill/reclaim, cancellation/resume/redrive, alias/size-conflict checks and current credential expiry rollback. No policy approval. Full CAS/staged/orphan inventory, scheduled sampling/repair, holds/retention/GC, S3, consistent backup/restore, production scale/mixed-host and full product qualification remain required."
+      "limits": "Verified subset: bounded live supported-layout CAS/staged/legacy inventory, unreferenced CAS hashes and immutable reference snapshots; metadata/CAS/reference receipts, current fences, actual worker kill/reclaim, cancellation/resume/redrive, budgets, root replacement and worker callback expiry rollback. No security or deletion approval. Live walk and unsupported nested layouts do not establish atomic/full volume accounting. Scheduling/sampling, repair, holds/retention/GC, S3, backup/restore, full platform/scale/mixed-host and product qualification remain required."
     },
     {
       "id": "J.UX.CLI",
@@ -6087,5 +6111,5 @@
     "current_source_candidate": "887c569ac96c451bccd91ae872317c06a890117a",
     "historical_candidate_fields": "Earlier candidate fields below refer to the archived original history. Preserve their exact evidence scope; the new source baseline and repeated native proof are recorded separately."
   },
-  "current_source_candidate": "51ece453d9cdf56f7a7504a9d833dc7ad4292f08"
+  "current_source_candidate": "2ad9bb3d6f8f6b88e65d4229a5e763088009dbd3"
 }

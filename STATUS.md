@@ -19,61 +19,62 @@ All 450 capabilities, 41 format families and negative readiness verdicts remain.
 The owner authorized pushing this recreation; later feature pushes still require
 the owner's authority under the standing project contract.
 
-Latest source candidate: `51ece453d9cdf56f7a7504a9d833dc7ad4292f08`, committed locally as
-`imfeelingtheagi` for both author and committer. Clean qualification passed
-80 new sweep assertions, 63 existing transfer-recovery assertions, 71 worker
-assertions, 274 stock-client assertions and 33 pinned real-provider assertions
-against the same production binaries. Separately identified clean race-built
-registry/worker processes passed all 80 sweep assertions with no race reports.
-Production bytes were restored. See `evidence/2026-10-28/sweep-checkpoint.json`.
-Live completion audit found source `51ece45` on private GitHub main after a push
-recorded from this shared checkout during qualification at 22:33:39-04:00. This
-turn issued no recorded push; the initiating actor is not established. The
-qualification documentation commit `ea4e8d3` remained local when checked. See
-`evidence/2026-10-28/remote-state-sweep-audit.json`; this corrects the earlier
-local-only/current-remote statements.
+Latest source candidate: `2ad9bb3d6f8f6b88e65d4229a5e763088009dbd3`, committed locally as
+`imfeelingtheagi` for both author and committer. Clean production builds passed
+67 inventory assertions, 80 referenced-sweep assertions, 63 transfer-recovery
+assertions, 71 worker assertions, 274 stock-client assertions and 33 pinned
+public-provider assertions. A separately identified clean race-built registry
+and worker passed all 67 inventory assertions with no race reports. Production
+binary bytes were restored and verified. See
+`evidence/2026-10-28/inventory-checkpoint.json`.
 
-Administrators can snapshot all current artifact and retained OCI upload-part
-repository/digest/size bindings, including denied/unassessed bytes. Admission
-records immutable targets, counts, audit, work intent and idempotency together;
-an operator target budget or SQL failure rejects the whole snapshot. Targets are
-paginated, aliases counted and contradictory tenant-CAS size declarations exposed.
+Administrators can admit a durable tenant filesystem inventory that captures a
+storage-root fingerprint and immutable current-reference snapshot. Ordered bounded
+pages account for the supported local CAS, staged and legacy upload layout,
+including unreferenced CAS. Exact-byte observations and cursor progress commit
+under current worker fences. Actual worker kills, cancellation/resume, completed
+redrive, current-reference changes, storage replacement and budget failures were
+replayed against the named clean candidate.
 
-The integrity lane checks one bounded paced target per claim outside SQL locks,
-then atomically records an observation and yields with its durable cursor.
-Native actual kills prove stale owners cannot advance coverage. Cancellation and
-resume preserve accepted results; completed redrive starts another pass over the
-same snapshot. Inspection completion, verified coverage and findings are distinct.
-Missing/corrupt bytes, contradictory references, limits and timeouts never become
-a healthy receipt or policy approval. Fresh fixture snapshots verify repaired
-current references while old contradictory snapshots retain their findings.
+Enumeration, supported-layout coverage, CAS integrity and reference-snapshot
+health have separate verdicts. Unknown nested layouts stay visible and prevent
+complete layout/CAS claims; links are not followed. Temporary and legacy files
+remain unverified. The walk is live, not an atomic volume snapshot; concurrent
+entries behind completed cursors need another run. No inventory observation
+authorizes security approval or deletion. Logical file bytes count pathnames,
+not physical allocated disk space.
 
-A bulk public write could outlive credential expiry inside its callback. The new
-regression fails against an isolated archive of preceding source `7933455` and
-passes with the current-clock identity recheck after write callbacks. Metadata,
-audit and intent roll back together. Retained evidence identifies both sources.
+Three retained regressions fail against isolated preceding source `11cc57c` and
+pass on this candidate: named-pipe inspection exceeded its deadline, publication
+followed an unsupported tenant-root symlink into another owned fixture namespace,
+and worker credentials expired during a callback before commit. Checked
+descriptor-rooted publication/readback rejects links and special files; worker
+callbacks reauthenticate before commit. The symlink fixture requires an unsupported
+local filesystem change; it does not establish a remotely creatable symlink.
 
-PostgreSQL/store/server/native-driver race suites pass twice, including snapshot
-budget rollback, tenant isolation, cross-repository CAS conflicts, fairness,
-current expiry and cancellation. Canonical job selector fuzzing ran 107583
-executions. Unit/vet/race, Go vulnerability checks (238 records), scoped Trivy and
-Gitleaks review/history pass. Full security and packaging remain incomplete.
+Unit/vet/race and real PostgreSQL/store/server/native-driver race suites pass;
+the latter were repeated twice without skips. Bounded fuzzing passed
+1917411 filename-cursor and 388889 job-selector
+executions. Go vulnerability checks (238 records), scoped source Trivy and
+Gitleaks current/history checks pass. Windows blob tests compile, but native
+Windows and non-Unix storage behavior remain unqualified. Full security and
+production packaging remain incomplete.
 
-Full CAS/staged/legacy/orphan inventory and historical orphan integrity coverage,
-scheduled sampling, repair, holds/retention/GC, S3 and consistent backup/restore
-remain required. Snapshot admission holds the tenant lock and has bounded target/
-SQL budgets; production-scale and mixed-host cost/fairness remain unqualified.
-Native blank operator install/console, remaining format and every later product
-stage remain committed. All 450 capabilities/journeys and 41 families stay open;
-every broad readiness verdict remains negative.
+The authenticated GitHub audit verifies the existing replacement private
+repository ID 1437631481 and all remote commit identities. Remote main at the
+audit is `51ece453d9cdf56f7a7504a9d833dc7ad4292f08`. This turn executed no push or remote mutation;
+the earlier shared-checkout push remains recorded with its actor unknown. See
+`evidence/2026-10-28/remote-state-inventory-audit.json`. Future feature pushes
+still require owner authority. No repeat history reset was necessary.
 
-The private repository and correct history remain intact. Last verified remote
-main is `51ece45`, with GitHub author and committer `imfeelingtheagi`. The latest
-remote audit supplements the earlier correction; no repeat reset or remote
-configuration change was made. Further feature pushes still require owner
-authority. Owned registry/worker/fixture
-and native PostgreSQL processes are stopped; private datasets, original container/
-volume and history recovery are retained.
+Scheduling/sampling, supported repair, holds/retention/safe GC, S3 and consistent
+backup/restore remain required. Ordered page computation rescans directories;
+large-directory cost, adversarial filesystem races, outage/restore and mixed-host
+fairness remain unqualified. Native blank installation/console, remaining formats
+and all later product stages remain committed. All 450 capabilities/journeys and
+41 format families remain unfinished; every broad readiness verdict is negative.
+Owned registry/worker/fixture and native PostgreSQL processes are stopped;
+private datasets, original container/volume and history recovery are retained.
 
 **Goal active; full product goal incomplete.** No design-partner, ordinary-operator
 or enterprise readiness verdict is positive. Original-history starting commit
