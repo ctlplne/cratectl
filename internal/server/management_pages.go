@@ -18,7 +18,7 @@ func (s *Server) managementPage(w http.ResponseWriter, r *http.Request, i store.
 		return
 	}
 	for key, vs := range query {
-		if len(vs) != 1 || (key != "cursor" && key != "limit" && key != "q" && key != "metadata") {
+		if len(vs) != 1 || (key != "cursor" && key != "limit" && key != "q" && (key != "metadata" || repo == "")) {
 			fail(w, 400, "invalid_pagination", "Use one limit, q, metadata and returned cursor value.")
 			return
 		}

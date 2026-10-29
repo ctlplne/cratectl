@@ -202,6 +202,16 @@ func TestManagementPagesTraverseGrantsAndHiddenGraphs(t *testing.T) {
 	if !slices.Equal(paths, reversePaths) {
 		t.Fatal("UTF-8 reverse artifact traversal differs from forward")
 	}
+	unicodePage := first("/api/v1/repositories/many-files/artifacts?q="+url.QueryEscape("É-PACKAGE"), reader)
+	if len(unicodePage.Items) != 1 || unicodePage.Items[0].Path != "é-package" {
+		t.Fatal("Unicode upper-case search depends on database locale")
+	}
+	for _, literal := range []string{"file-[0-9].*", "file-0000|zz-readable", "file-0000$"} {
+		if p = first("/api/v1/repositories/many-files/artifacts?q="+url.QueryEscape(literal), reader); len(p.Items) != 0 {
+			t.Fatal("search interpreted literal punctuation as regular expression syntax")
+		}
+	}
+
 	if e = db.Tx(ctx, admin, true, func(tx pgx.Tx) error {
 		_, e := tx.Exec(ctx, `INSERT INTO cratectl.artifacts(tenant,repository,path,digest,size,media_type,metadata,decision)SELECT $1,'many-files','budget-'||n::text,$2,1,'application/octet-stream',jsonb_build_object('payload',repeat('x',700)),'allowed' FROM generate_series(0,2)n`, tenant, digest)
 		return e
@@ -312,7 +322,7 @@ func TestManagementPagesTraverseGrantsAndHiddenGraphs(t *testing.T) {
 			t.Fatalf("differently scoped cursor accepted: %d", status)
 		}
 	}
-	for _, query := range []string{"limit=0", "limit=1001", "limit=1&limit=2", "q=%00", "q=" + strings.Repeat("x", 257), "cursor=p1.invalid", "cursor=" + strings.Repeat("a", 3001), "q=bad%XX", "unknown=true"} {
+	for _, query := range []string{"limit=0", "limit=1001", "limit=1&limit=2", "q=%00", "q=" + strings.Repeat("x", 257), "cursor=p1.invalid", "cursor=" + strings.Repeat("a", 3001), "q=bad%XX", "unknown=true", "metadata=omit"} {
 		if _, status := get("/api/v1/repositories?"+query, token); status != 400 {
 			t.Fatalf("invalid query accepted: %q (%d)", query, status)
 		}

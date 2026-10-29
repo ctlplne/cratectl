@@ -371,6 +371,16 @@
       "state": "repaired; final clean qualification pending",
       "repair": "Filter grants before keyset page bounds; use bounded forward/reverse and server search with current RLS/credential checks. Artifact continuation uses encrypted scoped positions through hidden OCI candidates, summaries and byte-shortened pages.",
       "limits": "Stored repository/reference management traversal only. Complete native indexes, every workflow/platform, HA/performance, accessibility and broad readiness remain separate required scope."
+    },
+    {
+      "id": "DEFECT.0035",
+      "summary": "Server search used database lower(), missing accented case matches on the native C-locale installation",
+      "first_failure": "evidence/2026-10-29/pagination-unicode-first.txt",
+      "reproduction": "evidence/2026-10-29/pagination-unicode-regression.json",
+      "first_failure_source": "921eed4d808fe6132e73cea5c734b69d392e367b runtime sources with only the regression test added.",
+      "state": "repaired; clean qualification pending",
+      "repair": "Build a bounded Unicode simple-fold literal matcher with quoted punctuation; bind it to PostgreSQL instead of depending on locale lower().",
+      "limits": "Unicode simple folding and literal substring search, not normalization, linguistic stemming, full-text indexing or broad search parity."
     }
   ]
 }

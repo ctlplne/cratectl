@@ -1,0 +1,13 @@
+{
+  "runtime_source_candidate": "921eed4d808fe6132e73cea5c734b69d392e367b",
+  "first_failure": "evidence/2026-10-29/pagination-unicode-first.txt",
+  "source_state": "Runtime implementation is unchanged from 921eed4; the regression test adds an HTTP query for \u00c9-PACKAGE against the stored \u00e9-package path.",
+  "runtime_source_sha256": {
+    "internal/store/management_pages.go": "e977dd56645508ae049d91369cb3818ba3bc7f242b781fb77d1e04108bee6737"
+  },
+  "database_observation": {
+    "lower_upper_accent_matches_lower_accent": false,
+    "explicit_case_class_matches": true
+  },
+  "repair": "Compile the bounded literal query into explicit Unicode simple-fold classes before passing it as a bound PostgreSQL regular expression. Escape punctuation so users cannot submit regex syntax."
+}

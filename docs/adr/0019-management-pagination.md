@@ -3,7 +3,7 @@
 Repository and artifact management lists must traverse all currently authorized
 records without a fixed total-result ceiling. Use keyset pages in bytewise C
 collation, bounded page size (1–1,000, default 1,000 for existing clients), bounded
-literal case-insensitive search, and server-provided next/previous cursors. The
+literal Unicode simple-fold case-insensitive search, and server-provided next/previous cursors. The
 console uses 100-row pages and submits search to the server. It never accumulates
 all repositories in a selector or silently searches one response as if complete.
 
@@ -37,3 +37,8 @@ Stable-source forward/reverse traversal, changes, empty OCI pages, cross-scope
 rejection, key persistence, race and real-browser navigation require evidence.
 Native protocol indexes retain their own format contracts and budgets; management
 pagination is not a claim that every native index/lifecycle campaign is complete.
+
+Search expands bounded Unicode simple-fold equivalences into explicit character
+classes and quotes all literal punctuation. PostgreSQL receives only this generated
+pattern as a bound parameter. This preserves case matching on C-locale databases
+without requiring ICU or treating user input as regular-expression syntax.
