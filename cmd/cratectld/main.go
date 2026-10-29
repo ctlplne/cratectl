@@ -26,10 +26,12 @@ import (
 
 func run() error {
 	if len(os.Args) < 2 {
-		return errors.New("usage: cratectld migrate|provision|revoke|serve|worker")
+		return errors.New("usage: cratectld init|migrate|provision|revoke|serve|worker")
 	}
 	ctx := context.Background()
 	switch os.Args[1] {
+	case "init":
+		return runInit()
 	case "worker":
 		return runWorker()
 	case "migrate":
@@ -95,6 +97,7 @@ func run() error {
 		return nil
 	case "serve":
 		f := flag.NewFlagSet("serve", flag.ContinueOnError)
+		config := f.String("config", "", "private runtime JSON from cratectld init")
 		listen := f.String("listen", "127.0.0.1:38443", "listener")
 		public := f.String("public-url", "https://localhost:38443", "client-visible authority")
 		root := f.String("objects", ".private/objects", "durable object directory")
@@ -141,6 +144,30 @@ func run() error {
 		if e := f.Parse(os.Args[2:]); e != nil {
 			return e
 		}
+		dsn := os.Getenv("CRATECTL_DSN")
+		if *config != "" {
+			c, e := runtimeConfiguration(*config)
+			if e != nil {
+				return e
+			}
+			set := flagSet(f)
+			dsn = c.DSN
+			if !set["listen"] {
+				*listen = c.Listen
+			}
+			if !set["public-url"] {
+				*public = c.PublicURL
+			}
+			if !set["objects"] {
+				*root = c.Objects
+			}
+			if !set["tls-cert"] {
+				*cert = c.TLSCert
+			}
+			if !set["tls-key"] {
+				*key = c.TLSKey
+			}
+		}
 		host, _, e := net.SplitHostPort(*listen)
 		if e != nil {
 			return e
@@ -157,7 +184,7 @@ func run() error {
 		} else if *cert == "" || *key == "" || u.Scheme != "https" {
 			return errors.New("TLS certificate/key and HTTPS public URL required")
 		}
-		db, e := store.Open(ctx, os.Getenv("CRATECTL_DSN"))
+		db, e := store.Open(ctx, dsn)
 		if e != nil {
 			return e
 		}

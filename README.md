@@ -15,6 +15,14 @@ integrity with fenced leases, retries and cancellation. Neither a hash match nor
 a manual decision is a malware or vulnerability scan. Pending intent is not
 completion.
 
+## Initialize a blank native installation
+
+The [native install guide](docs/operator/native-install.md) starts with an empty
+PostgreSQL database, creates private administrator/worker configuration and local
+TLS trust, then walks through first npm publication, exact-digest approval and
+installation. Database and clients are operator-supplied. Production packaging,
+the console and full platform/security qualification remain unfinished.
+
 ## Build and run the local engineering profile
 
 Use Go 1.27.3, Docker, Python 3.10+, Node/npm. This is a single Mac/Linux development
@@ -36,9 +44,9 @@ execution, and serving rechecks policy after integrity verification.
 
 The explicit HTTP flag is restricted to a literal loopback listener. For a network
 listener, supply a certificate/key from your own CA using `--tls-cert`/`--tls-key`
-and an HTTPS `--public-url`; install the CA in the client's trust store. TLS
-bootstrap automation and production deployment packaging remain unfinished.
-Database owner credentials are used only by migrate/provision/revoke. The server rejects
+and an HTTPS `--public-url`; install the CA in the client's trust store. The native initializer supplies local loopback trust; production PKI lifecycle
+and deployment packaging remain unfinished.
+Database owner credentials are used only by init/migrate/provision/revoke. The server rejects
 a database role that owns tenant tables, is superuser, or bypasses RLS. Do not
 use this development database setup as a production credential-management system.
 
@@ -93,8 +101,9 @@ make conformance
 
 Integration tests require the real database and fail when it is absent.
 Conformance needs native npm, twine/pip, ORAS and Maven/JDK in the paths recorded
-in `scripts/conformance.py`; client bootstrapping is currently manual, so this
-is not a blank operator install result. Each run creates private fixtures,
+in `scripts/conformance.py`; client installation is operator-supplied. The separate
+`scripts/conformance_installation.py` journey starts from an empty database and
+uses the initializer and verified TLS. Neither test installs a blank machine. Each run creates private fixtures,
 starts/stops its own server and retains a sanitized evidence JSON. Assertions
 cover only the listed journeys, not complete ecosystem conformance. `make security`
 and `make packaging` deliberately fail until the full required campaigns exist.

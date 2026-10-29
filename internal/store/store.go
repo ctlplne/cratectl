@@ -26,6 +26,9 @@ var sweepSchema string
 
 //go:embed inventory.sql
 var inventorySchema string
+
+//go:embed bootstrap.sql
+var bootstrapSchema string
 var Name = regexp.MustCompile(`^[a-z][a-z0-9-]{0,62}$`)
 var ErrConflict = errors.New("conflict")
 var ErrDenied = errors.New("policy denied")
@@ -80,11 +83,14 @@ func Migrate(ctx context.Context, dsn string) error {
 	if _, e = tx.Exec(ctx, inventorySchema); e != nil {
 		return e
 	}
+	if _, e = tx.Exec(ctx, bootstrapSchema); e != nil {
+		return e
+	}
 	// Fixed role is owned by this isolated database, never a shared production role.
 	if _, e = tx.Exec(ctx, `DO $$ BEGIN IF NOT EXISTS(SELECT FROM pg_roles WHERE rolname='cratectl_app') THEN CREATE ROLE cratectl_app NOLOGIN NOSUPERUSER NOBYPASSRLS NOINHERIT; END IF; END $$; GRANT USAGE ON SCHEMA cratectl TO cratectl_app; GRANT EXECUTE ON FUNCTION cratectl.authenticate(text),cratectl.authenticate_worker(text) TO cratectl_app;`); e != nil {
 		return e
 	}
-	for _, table := range []string{"tenants", "repositories", "artifacts", "events", "mutations", "jobs", "uploads", "tags", "repository_grants", "retrievals", "content_decisions", "npm_tags", "npm_sources", "native_sources", "python_yanks", "queue_policies", "event_projections", "integrity_observations", "upload_parts", "sweep_items", "inventory_entries", "inventory_observations"} {
+	for _, table := range []string{"tenants", "repositories", "artifacts", "events", "mutations", "jobs", "uploads", "tags", "repository_grants", "retrievals", "content_decisions", "npm_tags", "npm_sources", "native_sources", "python_yanks", "queue_policies", "event_projections", "integrity_observations", "upload_parts", "sweep_items", "inventory_entries", "inventory_observations", "bootstrap_receipts"} {
 		q := pgx.Identifier{"cratectl", table}.Sanitize()
 		if _, e = tx.Exec(ctx, `ALTER TABLE `+q+` ENABLE ROW LEVEL SECURITY; ALTER TABLE `+q+` FORCE ROW LEVEL SECURITY; DROP POLICY IF EXISTS tenant_scope ON `+q+`; CREATE POLICY tenant_scope ON `+q+` USING (tenant=current_setting('cratectl.tenant',true)) WITH CHECK (tenant=current_setting('cratectl.tenant',true)); GRANT SELECT,INSERT ON `+q+` TO cratectl_app`); e != nil {
 			return e

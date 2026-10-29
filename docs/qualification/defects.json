@@ -308,6 +308,17 @@
       "limits": "Owned native Unix fixtures; non-Unix, adversarial host/filesystem races, outage, mixed-host/scale and full security qualification remain open.",
       "candidate": "2ad9bb3d6f8f6b88e65d4229a5e763088009dbd3",
       "native_race_replay": "evidence/2026-10-28/inventory-cff4c6e32f.json"
+    },
+    {
+      "id": "DEFECT.0030",
+      "summary": "New initializer prototype issued a server certificate without Authority Key Identifier, rejected by strict stock TLS clients",
+      "state": "repaired; preflight passed; clean qualification pending",
+      "first_failure": "evidence/2026-10-29/init-tls-first.txt",
+      "reproduction": "evidence/2026-10-29/init-tls-regression.json",
+      "first_failure_source": "uncommitted initializer prototype; exact source hash retained in reproduction record",
+      "repair": "Parse the issued CA before signing the leaf, preserving its generated Subject Key Identifier and emitting the leaf Authority Key Identifier. Keep client verification enabled.",
+      "replay": "evidence/2026-10-29/installation-bde270cc90.json",
+      "limits": "Native loopback evaluation profile. Full production PKI/credential lifecycle, platforms, security and packaging remain unqualified."
     }
   ]
 }

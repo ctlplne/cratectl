@@ -20,6 +20,7 @@ import (
 
 func runWorker() error {
 	f := flag.NewFlagSet("worker", flag.ContinueOnError)
+	configuration := f.String("config", "", "private runtime JSON from cratectld init")
 	identities := f.String("identities", "", "private JSON object with a token_files array; one dedicated worker credential per tenant")
 	root := f.String("objects", ".private/objects", "same durable object directory as the registry")
 	name := f.String("name", "cratectl-worker", "worker process name")
@@ -35,6 +36,21 @@ func runWorker() error {
 	budget := f.Int64("identity-config-bytes", 1<<20, "maximum private identity configuration bytes")
 	if e := f.Parse(os.Args[2:]); e != nil {
 		return e
+	}
+	dsn := os.Getenv("CRATECTL_DSN")
+	if *configuration != "" {
+		c, e := runtimeConfiguration(*configuration)
+		if e != nil {
+			return e
+		}
+		set := flagSet(f)
+		dsn = c.DSN
+		if !set["objects"] {
+			*root = c.Objects
+		}
+		if !set["identities"] {
+			*identities = c.WorkerIdentities
+		}
 	}
 	if *budget < 1 || *budget > 1<<30 {
 		return errors.New("identity configuration budget must be positive and at most 1 GiB")
@@ -62,7 +78,7 @@ func runWorker() error {
 	}
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
-	db, e := store.Open(ctx, os.Getenv("CRATECTL_DSN"))
+	db, e := store.Open(ctx, dsn)
 	if e != nil {
 		return e
 	}
