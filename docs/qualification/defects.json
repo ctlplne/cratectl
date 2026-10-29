@@ -188,6 +188,26 @@
       "additional_regression": "evidence/2026-10-28/oci-discovery-clean-postgres-race.txt",
       "candidate": "e23ba0cdaf634a8eea1469c1e383f0fed88a3a45",
       "limits": "Owned source-page fixtures and stock ORAS; mutable catalog concurrency, every provider/client and production-scale/fault qualification remain open."
+    },
+    {
+      "id": "DEFECT.0020",
+      "summary": "OCI proxy discarded approved alternate descriptor locators",
+      "first_failure": "evidence/2026-10-28/oci-descriptor-first.txt",
+      "state": "repaired and replayed",
+      "repair": "Carry validated locators transiently, use approved isolated transport, bind exact bytes and recover direct locators from verified retained parents/current referrers catalogs after process restart.",
+      "replay": "evidence/2026-10-28/oci-descriptor-clean-postgres-race.txt",
+      "candidate": "a5fa76bea4476ff795c148d1fedab53fb4fbed8a",
+      "limits": "Owned descriptor fixtures and actual native server/ORAS; broad provider/client/fault/lifecycle/production qualification remains incomplete."
+    },
+    {
+      "id": "DEFECT.0021",
+      "summary": "Forced direct digest denial lost its explicit 403 response during retrieval failure cleanup",
+      "first_failure": "evidence/2026-10-28/oci-descriptor-native-first.txt",
+      "state": "repaired and replayed",
+      "repair": "Check current direct digest decisions before cache/source selection and preserve explicit denial/authentication errors after fenced failed-retrieval cleanup; no denied-byte serving was established by the initial failure.",
+      "replay": "evidence/2026-10-28/oci-descriptor-clean-postgres-race.txt",
+      "candidate": "a5fa76bea4476ff795c148d1fedab53fb4fbed8a",
+      "limits": "Owned descriptor fixtures and actual native server/ORAS; broad provider/client/fault/lifecycle/production qualification remains incomplete."
     }
   ]
 }

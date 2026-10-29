@@ -1,0 +1,149 @@
+{
+  "candidate": "a5fa76bea4476ff795c148d1fedab53fb4fbed8a",
+  "qualified_at": "2026-10-29T00:28:32.987944+00:00",
+  "source_dirty": false,
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "build_source_matches_candidate": true,
+  "commit_identity": {
+    "author": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>",
+    "committer": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>"
+  },
+  "this_checkpoint_changes_pushed": false,
+  "remote_main_last_verified": "b13550a5f744f4d9a6a8e11c36fd3bf7a3348cec",
+  "prior_remote_correction": "evidence/2026-10-28/remote-state-audit.json",
+  "artifacts": {
+    "bin/cratectld": "f6f5dc99e3a726163cf3dbb409d0d93f3a8425ab5dcab2817c64249fbc67f9cd",
+    "bin/cratectl": "2fb3e4a9e6f20bf571cf5d17ac488843c7bf8f19779738c8eefc597bdfaaddf4"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "a5fa76bea4476ff795c148d1fedab53fb4fbed8a",
+        "vcs.time": "2026-10-29T00:24:59Z",
+        "vcs.modified": "false"
+      }
+    },
+    "bin/cratectl": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "a5fa76bea4476ff795c148d1fedab53fb4fbed8a",
+        "vcs.time": "2026-10-29T00:24:59Z",
+        "vcs.modified": "false"
+      }
+    }
+  },
+  "native_assertions": 274,
+  "native_evidence": "evidence/2026-10-28/conformance-536f022f68.json",
+  "public_provider_assertions": 33,
+  "public_provider_evidence": "evidence/2026-10-28/public-oci-fbd1f0d8c7.json",
+  "public_provider": {
+    "registry": "https://registry-1.docker.io/v2/",
+    "image": "library/busybox",
+    "manifest_digest": "sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c",
+    "token_realm": "https://auth.docker.io/token",
+    "service": "registry.docker.io",
+    "delivery_bases": [
+      "https://production.cloudfront.docker.com/"
+    ],
+    "documentation": "https://docs.docker.com/desktop/enterprise/allow-list/"
+  },
+  "observed_image_platform": {
+    "os": "linux",
+    "architecture": "arm64"
+  },
+  "database_profile": "native",
+  "topology": "macOS arm64 server, PostgreSQL 16.15 native, filesystem bytes, HTTP loopback only",
+  "public_topology": "native process on HTTP loopback 38443, real PostgreSQL runtime/owner roles, filesystem CAS; HTTPS public registry/realm/CDN",
+  "tested_clients": {
+    "npm": "11.16.0",
+    "twine": "7.0.0",
+    "pip": "26.1.2",
+    "ORAS": "1.3.6",
+    "Maven": "3.10.0",
+    "JDK": "21.0.13+9"
+  },
+  "descriptor_native_process": {
+    "evidence": "evidence/2026-10-28/oci-descriptor-clean-postgres-race.txt",
+    "runs": 2,
+    "server_sha256": "f6f5dc99e3a726163cf3dbb409d0d93f3a8425ab5dcab2817c64249fbc67f9cd",
+    "description": "Actual production server binary process with stock ORAS, index/manifest/config/duplicate layers, alternate-only referrers, real process restarts, invalidated direct digest refresh, rotated source query, paged and legacy rediscovery, integrity rollback and explicit denial."
+  },
+  "gates": {
+    "unit_vet_race": "evidence/2026-10-28/oci-descriptor-unit-vet-race.txt; passed",
+    "postgres_stock_client": "evidence/2026-10-28/oci-descriptor-clean-postgres-race.txt; two repeated real database runs; store/server/test runner race-instrumented, new native external process uses the identified production binary",
+    "fuzz": "evidence/2026-10-28/oci-descriptor-clean-fuzz.txt; 55664 manifest/descriptor executions in ten-second one-worker replay",
+    "go_vulnerability": "evidence/2026-10-28/govulncheck-oci-descriptor-summary.json; 238 records, zero findings",
+    "trivy_source": "evidence/2026-10-28/trivy-oci-descriptor-source.json; zero vulnerability/misconfiguration/secret findings in sanitized source",
+    "secret_source": "evidence/2026-10-28/gitleaks-oci-descriptor-source.json; zero findings",
+    "secret_history": "evidence/2026-10-28/gitleaks-oci-descriptor-final-history.json; zero findings",
+    "secret_review": "evidence/2026-10-28/gitleaks-oci-descriptor-final-review.json; zero findings",
+    "full_security": "incomplete; make security intentionally fails",
+    "production_packaging": "incomplete; make packaging intentionally fails"
+  },
+  "trivy_database": {
+    "Version": 2,
+    "NextUpdate": "2026-10-29T13:01:10.618103614Z",
+    "UpdatedAt": "2026-10-28T13:01:10.618103814Z",
+    "DownloadedAt": "2026-10-28T17:09:17.319606Z"
+  },
+  "completed_scope": [
+    "Canonical 404 permits bounded descriptor URL fallback for index children, config/layers, weak subjects and source-referrer descriptors. Other canonical failures do not start fallback.",
+    "Every locator uses only the most-specific approved source credential and explicit signed-query permission. Common address/network/query/hop limits and HTTPS downgrade rejection remain; unapproved candidates make no HTTP request.",
+    "Verify descriptor digest/size and manifest media/structure before complete graph publication. Missing/temporary alternates can advance; authorization, transport, integrity and resource failures cannot become successful stale or partial publication.",
+    "Combine unique locators for duplicate child descriptors. Recover direct digest locators after restart from bounded canonical parents whose raw CAS bytes are verified/reparsed; normalized descriptor identities must match.",
+    "For alternate-only referents, derive the subject from verified cached bytes and rewalk the complete current source referrers index or 404-only legacy fallback. Newly issued signed advertisements work after process restart without durable URL bindings.",
+    "Current direct digest denial is checked before cache/source selection. Denials during intake retain explicit error classification after fenced failure cleanup. Current grants, tenant RLS, graph policy and member/publication fences remain.",
+    "Original immutable manifest bytes retain publisher-supplied descriptor fields exactly. Parsed URL fields are transient; normalized metadata/cache/journal/jobs do not copy locator queries or source credentials.",
+    "Actual native server/ORAS tests prove proxy/group exact layouts, duplicate locators, restart and direct member refresh, rotated referrer queries, corruption rollback, valid recovery, current denial and normalized durable secrecy.",
+    "Previous native clients and one pinned real Docker Hub/anonymous-token/CloudFront journey pass against matching exact clean binaries."
+  ],
+  "first_failures": [
+    {
+      "evidence": "evidence/2026-10-28/oci-descriptor-first.txt",
+      "cause": "Approved descriptor URLs were discarded, so canonical blob absence failed the graph."
+    },
+    {
+      "evidence": "evidence/2026-10-28/oci-descriptor-native-first.txt",
+      "cause": "Forced direct digest denial lost its explicit 403 response through failed retrieval classification; this failure did not prove denied bytes were served."
+    }
+  ],
+  "limits": [
+    "All 450 broad capabilities and 41 format families remain open; no broad readiness verdict is positive.",
+    "New actual native server process tests use the production binary, while Go store/server/test runners also run under the race detector. This is not native Linux/Windows or container packaging proof.",
+    "Owned alternate sources are HTTP loopback fixtures. The separate real HTTPS provider proof is one pinned Linux arm64 Docker Hub/anonymous-token/CloudFront image; other providers/private credentials/PKI/client/platform combinations remain required.",
+    "Publisher-supplied URLs remain in exact original manifest bytes. Expired immutable signed URLs need usable alternates/source repair or a newly published manifest; no package signature or scanner assessment is inferred.",
+    "Full source lifecycle/removal/delete/restore, source/locator/grant races, mutation/fault/scale campaigns, graph-budget configuration, migration/recovery/HA, fair workers, scanner/S3/console and every remaining product stage remain required."
+  ],
+  "resources": {
+    "native_postgresql": "stopped; private dataset retained",
+    "original_postgresql_container": "stopped; original named volume retained",
+    "owned_conformance_services": "stopped",
+    "private_test_data": "retained; public images remain opaque OCI layout/CAS bytes",
+    "history_reset_recovery": "retained privately"
+  }
+}

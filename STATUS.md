@@ -19,44 +19,46 @@ All 450 capabilities, 41 format families and negative readiness verdicts remain.
 The owner authorized pushing this recreation; later feature pushes still require
 the owner's authority under the standing project contract.
 
-Latest source candidate: `e23ba0cdaf634a8eea1469c1e383f0fed88a3a45`, committed locally with
-`imfeelingtheagi` as both author and committer. Clean native qualification passed
-274 assertions plus a separate 33-assertion real-provider journey. Both reports
-identify the same exact binaries and source. See
-`evidence/2026-10-28/oci-discovery-checkpoint.json`. Review range is
-`887c569..main`. This discovery source and checkpoint remain local.
+Latest source candidate: `a5fa76bea4476ff795c148d1fedab53fb4fbed8a`, committed locally with
+`imfeelingtheagi` as author and committer. Clean native qualification passed 274
+assertions plus 33 real-provider assertions against the same exact binaries.
+See `evidence/2026-10-28/oci-descriptor-checkpoint.json`. Review range remains
+`887c569..main`. This source and its checkpoint remain local.
 
-OCI discovery now walks complete bounded tag/referrer catalogs, including opaque
-origin cursors and explicitly approved signed delivery links. Every page retains
-source-specific credentials and network/query/hop budgets. Later-page failures,
-cycles, ambiguous links and resource limits cannot publish partial references.
-Catalog refresh is unconditional because a first-page validator cannot prove an
-entire collection unchanged. Native tags/referrers support bounded n/last pages,
-filter context, HEAD and page ETags; each request rechecks current policy.
-Referrers API 404 uses the legacy sha256-subject tag. Authorization errors never
-become fallback success; empty pages still enforce known subject denial.
+OCI proxy intake now resolves approved descriptor URLs after canonical 404 for
+index children, configs/layers, weak subjects and source-referrer descriptors.
+It preserves source-specific credentials, raw query bytes and network/query/hop
+ceilings, rejects HTTPS downgrade and verifies digest/size/media/graph integrity
+before atomic publication. Duplicate descriptors share unique locators. Missing
+or temporary alternates can advance; authorization/integrity/transport/resource
+failures never become partial publication or a successful stale integrity bypass.
 
-Two repeated clean real-PostgreSQL/race/stock ORAS runs prove complete source and
-native traversal, fallback negatives, policy and atomicity. Cursors/page secrets
-are absent from durable tenant data. Clean native npm/Python/OCI/Maven/generic
-journeys and the real pinned Docker Hub/anonymous-token/CloudFront image passed.
-Link-parser fuzzing ran 11520 executions in the clean replay (103408 earlier).
-Unit/vet/race, Govulncheck (238 records), scoped retained-database Trivy and
-Gitleaks source/history/review checks pass. Full security/packaging remain open.
+Invalidated direct pins work after a real native process restart: verify/reparse
+bounded retained parent bytes, or rewalk a referent's current paged/legacy source
+catalog. Newly issued query advertisements are used without durable URL bindings.
+Original immutable manifest bytes retain publisher fields exactly; normalized
+metadata/cache/journal/jobs do not copy locator queries or source credentials.
+Direct digest denial remains explicit 403 before cache or alternate-source use.
 
-Remote-state correction remains authoritative: GitHub main is still `b13550a`,
-verified read-only with author and committer `imfeelingtheagi`. The earlier OCI
-proxy checkpoint's local-only statement was inaccurate; the reflog records a
-prior push at 2026-10-28T17:58:19-04:00. Feature pushes require separate owner
-authority. No new push was made. See
-`evidence/2026-10-28/remote-state-audit.json`.
+Two repeated clean real-PostgreSQL/race suites pass, including actual native server
+processes and stock ORAS nested/duplicate graphs, process restarts, direct pins,
+rotated referrer queries, corruption rollback, repair and current denial. Both
+native process logs identify the exact qualified server binary. The separate
+native npm/Python/OCI/Maven/generic and pinned Docker Hub/token/CloudFront journeys
+also pass. Manifest/descriptor fuzzing ran 55664 executions. Unit/vet/race,
+Govulncheck (238 records), scoped Trivy and Gitleaks source/history/review are
+clean. Full security, packaging, every provider and platform remain incomplete.
 
-All 450 broad capabilities and 41 families remain open. Descriptor URL fallback,
-source lifecycle/delete/restore, mutable-catalog concurrency/fault/scale, other
-providers/private credentials/PKI/clients/platforms and every later product stage
-remain required. Owned native PostgreSQL and conformance services are stopped;
-private datasets, opaque layouts, original container/volume and history recovery
-are retained. Cursors reflect current policy per request, not a frozen snapshot.
+Remote-state correction is retained: last verified GitHub main is `b13550a`, with
+author and committer `imfeelingtheagi`. A prior checkpoint incorrectly described
+that earlier push as local-only. No new push was made; feature pushes still need
+owner authority. See `evidence/2026-10-28/remote-state-audit.json`.
+
+All 450 broad capabilities and 41 families remain open. Source lifecycle/removal/
+delete/restore, source/locator/grant races, faults/scale, other providers/private
+credentials/PKI/clients/platforms, recovery and all later product stages remain
+required. Owned native PostgreSQL and conformance processes are stopped; private
+datasets, opaque layouts, original container/volume and history recovery remain.
 
 **Goal active; full product goal incomplete.** No design-partner, ordinary-operator
 or enterprise readiness verdict is positive. Original-history starting commit
