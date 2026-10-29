@@ -20,86 +20,96 @@ remain.
 The owner authorized pushing this recreation; later feature pushes still require
 the owner's authority under the standing project contract.
 
-Maven native metadata union, snapshot/classifier resolution, parent POMs and
-concurrent publisher checksum receipts are implemented and pass working-tree
-preflight. Clean committed production/race qualification is pending. See
-`evidence/2026-10-29/maven-preflight-triage.json` and `docs/operator/maven.md`.
-
-Latest qualified source: `b4e6234f46a8f1f6410b27004a4481543808d89a`, with both
+Latest qualified source: `10ea6499d874018178b43ee38a9070e81e5a0686`, with both
 author and committer `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
-The authoritative checkpoint is
-`evidence/2026-10-29/schema-checkpoint.json`; the operator procedure is
-`docs/operator/schema-upgrades.md`.
+The authoritative checkpoint is `evidence/2026-10-29/maven-checkpoint.json`;
+see `docs/operator/maven.md` for the native behavior and remaining limits.
 
-Schema changes now have immutable checksummed receipts. A current-schema repeat
-checks safety without DDL or an exclusive gate, repairing the prior cumulative
-migration replay risk. An unversioned installation requires explicit
-`migrate --adopt-legacy` with every old registry and worker stopped. `migrate
---plan` reports known versions, checksums, pending steps and adoption requirements
-without exposing the owner connection string. Applied migration definitions have
-fixed regression hashes; future changes must append a step.
+Maven discovery now parses bounded G/A/V XML and merges eligible version lists,
+plugin prefixes and snapshot extension/classifier mappings. Current hosted POM
+references preserve versions across stale/concurrent client metadata replacement.
+Groups apply current grants, digest decisions, stronger review and version-level
+namespace ownership before returning any body, checksum, conditional, range or
+HEAD response. Known denied collisions do not fall through to another source or
+an older snapshot. Proxy catalogs must belong to the currently configured source.
+Changed read snapshots retry at most three times and fail explicitly under
+sustained contention; invalid XML and source-binding changes have actionable
+error responses. Native metadata is a derived view; original submitted bytes
+remain behind the journaled reference.
 
-New runtime, worker and owner identity transactions acquire shared session
-admission before opening their data snapshot. An exclusive migration gate drains
-admitted transactions and rejects new work while waiting or applying. Every
-transaction verifies known schema receipts, forced tenant RLS/policies, the fixed
-private-state function and effective runtime role safety. Unknown versions,
-changed/gapped receipts, weakened policies, inherited ownership, superuser or
-BYPASSRLS and private receipt privileges fail closed. Maintenance returns 503 and
-Retry-After; the console keeps its active credential and recovers through retry.
-Readiness fails during maintenance; liveness and the console shell remain usable.
+Metadata checksum uploads now have four actor/repository/path-scoped publication
+receipts in the existing forced-RLS mutation table. They commit with the metadata
+reference, journal and integrity-job intent. A delayed publisher sidecar can prove
+its accepted original bytes after another publisher replaces the pointer. Current
+download checksums always hash the exact current synthesized response. Unknown,
+cross-actor and cross-repository receipts fail; a receipt-storage fault rolls back
+the pointer and journal. No schema change was needed, and both frozen migration
+checksums remain unchanged.
 
-The clean committed source passed 670 production assertions across controlled
-legacy adoption, console, native TLS initialization, inventories, sweeps, leases,
-worker jobs, stock-client journeys and pinned public OCI. Separate race binaries
-passed 82 migration/console/installation assertions. Real PostgreSQL store/server
-and native-driver race suites ran twice without skips or race reports. Production
-artifact bytes were restored and verified. Unit/vet/race, architecture and asset
-checks pass. Go symbol vulnerability analysis, dependency scans including browser
-dev dependencies, and scoped source/history secret scans have no findings.
-Linux amd64/arm64 servers and Windows amd64 CLI compile only; native platform and
-Windows ACL qualification remain required.
+The first clean Maven candidate `ae69eb9f4f06ab8bd10ab8d3b7ee9641fdcdcdf8`
+passed its earlier campaign, but further review and a negative regression exposed
+proxy publication hints ordered by local POM download time. Actual HTTP reproduced
+upstream latest `1.1-SNAPSHOT` becoming proxy latest `2.0.0`. The corrected source
+uses producer hints/timestamps, supports an omitted version list and keeps source
+precedence on equal timestamps. Both production and race stock Maven LATEST
+journeys now install the producer snapshot after an older release was cached.
+First failures, fixture corrections and both source candidates remain retained.
 
-Nine new top-level store/server tests cover queue fairness and admitted drain,
-private receipts, frozen definitions, current no-op operation during a streamed
-OCI upload, concurrent migrators, future-version rejection, 12 schema/policy drift
-cases, six role drift cases, SQL failure, cancellation and backend termination.
-A retained clean legacy binary publishes actual npm bytes. A real SIGKILL pauses
-adoption after uncommitted DDL through an owned database barrier; disconnect rolls
-back schema and receipts. Retry preserves tenant/repository/artifact/audit/token
-rows and stock npm installs the original package through the new runtime. First
-failures and precise repairs remain in the preflight and defect ledger.
+The corrected clean source passed 682 production assertions across migration,
+console, native TLS initialization, inventory, sweeps, leases, worker jobs,
+combined stock clients and pinned public OCI. Separate race artifacts passed
+107 migration/console/installation/Maven assertions. Real PostgreSQL store/server
+and native-driver race packages ran twice without skips or race reports. Unit,
+vet, architecture and race checks pass. A short bounded parse/render fuzz campaign
+passed 5261 executions after corpus replay; it is not the complete fuzz campaign.
+Go symbol vulnerability analysis, dependency scans including browser development
+dependencies and scoped source/history secret scans report no findings.
 
-Four actual Chromium tests pass without skips on production and race binaries.
-Nineteen named automated A/AA states have zero findings per run, including a real
-maintenance interruption with stale data and credential-preserving retry. Existing
-management paging/search, permission removal, policy, cross-tenant response fencing
-and hostile-text handling remain covered. Complete WCAG, assistive technologies,
-other native browsers and full operator workflows remain required. The preceding
-pagination checkpoint is `evidence/2026-10-29/pagination-checkpoint.json`.
+Stock Maven 3.10.0 with JDK 21.0.13+9 proves releases with transitive dependencies,
+group-spanning version ranges, independent concurrent publishers, repeated unique
+snapshots, independent `sources` classifiers, parent-POM inheritance/property
+resolution across sources, restart and exact installed bytes. Five new real
+PostgreSQL integration tests and seven parser/algorithm tests cover current
+policy, actor/tenant/grant boundaries, malformed XML, metadata budgets, numeric
+build ordering, plugin-prefix authority, source changes and receipt atomicity.
+Concurrent publisher JVMs use independent local caches. A shared local metadata
+cache caused a retained fixture failure and is not qualified. An overlapped
+fixed-port native-driver run was also retained as invalid and replayed serially.
 
-The admission gate covers database transactions, not an entire upload/download.
-Actual changes can interrupt a staged transfer at its next fenced callback.
-Whole-transfer draining, compatible-version ranges and expand/contract changes,
-independent multi-node rolling upgrades, HA, downgrade, backup/restore and
-production-scale upgrade/recovery remain open. Controlled legacy adoption does
-not qualify zero-downtime operation with old binaries.
+Four real Chromium tests and 19 named automated A/AA states pass on production
+and race artifacts, retaining paging/search, policy, tenant fencing and schema
+maintenance credential/retry checks. Full WCAG, assistive technologies, other
+native browsers, PKI/credential lifecycle and remaining operator workflows stay
+open. Native Maven proof uses explicit loopback HTTP; Maven TLS/native platform
+qualification, Gradle/Ivy/SBT, every plugin workflow, metadata signatures,
+nonunique snapshot redeployment, recursive groups and complete lifecycle/fault/
+scale journeys remain required. Linux amd64/arm64 server and Windows amd64 CLI
+compile only; native runtimes and Windows ACL semantics remain unqualified.
+
+Previous migration and management-pagination checkpoints remain authoritative
+within their named scope: `evidence/2026-10-29/schema-checkpoint.json` and
+`evidence/2026-10-29/pagination-checkpoint.json`. Current-schema migration repeats
+do no DDL; old binaries require explicit controlled legacy adoption. Transaction
+admission does not drain entire transfers. Compatible-version/expand-contract
+design, multi-node rolling upgrades, HA, downgrade and backup/restore remain open.
 
 All 450 broad capabilities/journeys and 41 format families remain unfinished.
-Every broad readiness verdict remains negative. Continue the remaining console,
-identity, native-index/format/lifecycle work, OCI source lifecycle/races, Maven
-metadata union/snapshot/group, remaining npm/PyPI cases, sampling/repair,
-holds/retention/GC, S3, upgrade/recovery and every later product stage. Docker
-recovery is verified and the coordination hold is released; owned OCI/container
-and packaging qualification can resume without shared lifecycle changes.
+Every broad readiness verdict is negative. Continue OCI source lifecycle/removal/
+delete/restore and source/locator/grant races, remaining Maven/npm/PyPI and other
+format/client journeys, sampling/repair, retention/holds/GC, S3, scanners, identity,
+console, migration/exit, upgrade/recovery, packaging and every later product stage.
+Docker recovery is verified and its coordination hold released; owned container/
+OCI/packaging work can resume without shared lifecycle changes.
 
-Owned registry/worker/PostgreSQL listeners are stopped; private data/credentials,
-keys, earlier history recovery and original Docker resources are retained.
-No push or remote mutation was executed by this turn. Read-only GitHub audit
-`evidence/2026-10-29/remote-state-schema-audit.json` confirms the same private
-replacement/root and all 32 published commits attributed only to imfeelingtheagi.
-The new source remains local; feature pushes, releases and publication still
-require owner authority.
+Owned registry/worker/PostgreSQL listeners are stopped; private data, credentials,
+keys, native fixtures, earlier history recovery and original Docker resources are
+retained. Production binary bytes were restored and verified. No push or remote
+mutation was executed by this turn. The read-only audit
+`evidence/2026-10-29/remote-state-maven-audit.json` confirms the same private
+replacement/root and all 34 published commits attributed only to imfeelingtheagi.
+Shared-checkout remote tracking advanced to the prior documentation commit; this
+turn did not initiate that push and does not infer its actor. New Maven source
+remains local. Feature pushes, releases and publication require owner authority.
 
 **Goal active; full product goal incomplete.** Origin remains the private
 `https://github.com/ctlplne/cratectl.git`, rooted at

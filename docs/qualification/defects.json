@@ -433,9 +433,11 @@
       "first_failure": "evidence/2026-10-28/conformance-547cbd909f.json",
       "reproduction": "evidence/2026-10-29/maven-union-baseline.json",
       "first_failure_source": "b4e6234f46a8f1f6410b27004a4481543808d89a",
-      "state": "repaired in working tree; clean-source replay pending",
+      "state": "repaired and clean-source replayed",
       "repair": "Render bounded native G/A/V discovery across current sources and actual hosted POMs with current grants/digest decisions, namespace ownership, snapshot classifier maps, exact checksums and atomic publisher checksum receipts.",
-      "limits": "Native Maven only within named journeys; full Gradle/Ivy/SBT, metadata signatures, nonunique snapshots, recursive groups and lifecycle/scale/format qualification remain open."
+      "limits": "Native Maven only within named journeys; full Gradle/Ivy/SBT, metadata signatures, nonunique snapshots, recursive groups and lifecycle/scale/format qualification remain open.",
+      "candidate": "10ea6499d874018178b43ee38a9070e81e5a0686",
+      "replay": "evidence/2026-10-29/maven-checkpoint.json"
     },
     {
       "id": "DEFECT.0040",
@@ -443,10 +445,12 @@
       "first_failure": "evidence/2026-10-29/maven-proxy-age-first.txt",
       "reproduction": "evidence/2026-10-29/maven-proxy-age-discovery.json",
       "first_failure_source": "ae69eb9f4f06ab8bd10ab8d3b7ee9641fdcdcdf8",
-      "state": "repaired in working tree; clean final replay pending",
+      "state": "repaired and clean-source replayed",
       "repair": "Use producer metadata timestamps and hints for proxies, preserve source precedence on equal times and support explicit hints with an omitted version list. Add a stock Maven LATEST journey after caching an older release.",
       "limits": "The retained initial-candidate full campaign does not cover this regression. The corrected committed candidate must be qualified separately.",
-      "native_first_failure": "evidence/2026-10-28/conformance-ab8c5cade9.json"
+      "native_first_failure": "evidence/2026-10-28/conformance-ab8c5cade9.json",
+      "candidate": "10ea6499d874018178b43ee38a9070e81e5a0686",
+      "replay": "evidence/2026-10-29/maven-checkpoint.json"
     }
   ]
 }

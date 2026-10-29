@@ -1,0 +1,96 @@
+{
+  "run": "9c497d5ba3",
+  "candidate": "10ea6499d874018178b43ee38a9070e81e5a0686",
+  "source_dirty": false,
+  "artifact_digests": {
+    ".cache/pagination-production/cratectld": "cbdf03debda8c90b8197b5f9e96ab3efd2c2eb8790e137ef6e0159bf10f2250a",
+    "bin/cratectld": "f674d47eb5959ccd239dddb62b53552199d5fd97409e0cf1e5d313eb939dd843",
+    "bin/cratectl": "d9d566b8dcd397ada7beda09b89277da3d8ba6c73b7c9994b74cb8bd7e62be2b"
+  },
+  "build_identity": {
+    ".cache/pagination-production/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "51a74bd42866a6e33c77a670259ed0b4d9a959a8",
+      "vcs.time": "2026-10-29T15:35:39Z",
+      "vcs.modified": "false"
+    },
+    "bin/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-race": "true",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "10ea6499d874018178b43ee38a9070e81e5a0686",
+      "vcs.time": "2026-10-29T17:33:47Z",
+      "vcs.modified": "false"
+    },
+    "bin/cratectl": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-race": "true",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "10ea6499d874018178b43ee38a9070e81e5a0686",
+      "vcs.time": "2026-10-29T17:33:47Z",
+      "vcs.modified": "false"
+    }
+  },
+  "checks": [
+    "new CLI and runtime have clean matching candidate identities",
+    "legacy executable is the retained clean pagination source",
+    "legacy runtime publishes real npm bytes before adoption",
+    "owner plan identifies unversioned data and explicit adoption requirement",
+    "ordinary migration refuses legacy data without acknowledgement",
+    "actual killed migration process rolls back baseline DDL and receipts",
+    "adoption commits exactly two known receipts with safe RLS",
+    "tenant, repository, artifact, audit and token rows survive byte-for-byte as canonical JSON",
+    "new runtime authenticates original credential and returns original stored reference",
+    "adoption does not alter existing audit sequence or hashes",
+    "current migration repeats while new registry serves requests",
+    "stock npm installs preserved legacy bytes through new runtime",
+    "current schema and original credentials survive actual registry restart",
+    "retained installation files exclude owner DSN and password"
+  ],
+  "topology": "Native macOS legacy/current registry CLI processes, actual SIGKILL during uncommitted DDL, real PostgreSQL 16.15 restricted runtime, stock npm; explicit loopback HTTP fixture.",
+  "limits": [
+    "Legacy adoption is a controlled maintenance operation with registry and workers stopped. Pre-gate binaries do not cooperate with new transaction admission.",
+    "The fault is an owned database event trigger and advisory barrier; no production pause hook is compiled into the runtime.",
+    "This is not rolling/zero-downtime adoption, whole-transfer draining, expand/contract compatibility, HA, downgrade, backup/restore or independent-host qualification."
+  ],
+  "build_source_matches_candidate": true,
+  "database": "cratectl_schema_9c497d5ba3",
+  "plan": {
+    "binary_version": 2,
+    "database_state": "current",
+    "applied": [
+      {
+        "version": 1,
+        "checksum": "1e0f7b93d872f8ab83f85742000a6282f2722a0a338d8f2bc81755345ba66d16"
+      },
+      {
+        "version": 2,
+        "checksum": "9e023c96c8cf33549ce81f1eac22551b5cdb6267d146f65d430ec254dc8b10b5"
+      }
+    ],
+    "pending": [],
+    "requires_legacy_adoption": false,
+    "safety_valid": true
+  },
+  "elapsed_seconds": 9.203,
+  "status": "passed"
+}
