@@ -1,0 +1,38 @@
+{
+  "checked_at": "2026-10-29T16:33:11.862409+00:00",
+  "candidate": "b4e6234f46a8f1f6410b27004a4481543808d89a",
+  "govulncheck": {
+    "exit_code": 0,
+    "configuration": {
+      "protocol_version": "v1.0.0",
+      "scanner_name": "govulncheck",
+      "scanner_version": "v1.9.0",
+      "db": "https://vuln.go.dev",
+      "db_last_modified": "2026-10-27T21:16:18Z",
+      "go_version": "go1.27.3",
+      "scan_level": "symbol",
+      "scan_mode": "source"
+    },
+    "messages": {
+      "config": 1,
+      "SBOM": 1,
+      "progress": 2,
+      "osv": 234
+    },
+    "findings": 0,
+    "raw_ignored_log": ".cache/schema-govulncheck.json",
+    "raw_sha256": "b5071259cc417710779e6b0ffc4144f87fc7ec1dd313b73afe6bf6585951d579"
+  },
+  "trivy": "evidence/2026-10-29/schema-trivy-source-with-dev.json",
+  "include_dev_dependencies": true,
+  "trivy_database": {
+    "Version": 2,
+    "NextUpdate": "2026-10-30T13:09:46.269822928Z",
+    "UpdatedAt": "2026-10-29T13:09:46.269823229Z",
+    "DownloadedAt": "2026-10-29T14:17:29.505236Z"
+  },
+  "history_secret_scan": "evidence/2026-10-29/schema-gitleaks-history.json",
+  "source_secret_scan": "evidence/2026-10-29/schema-final-source-secrets.json",
+  "limits": "Scoped Go symbol reachability, dependency lockfiles including dev dependencies, and retained current/history secret scans. This is not full parser/authorization/image/artifact/security or independent review qualification.",
+  "private_credential_check": "All tracked/nonignored review inputs were checked for known private token/password/key values by .cache/prepare_schema_review.py before the final Gitleaks scan."
+}

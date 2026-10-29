@@ -1,0 +1,137 @@
+{
+  "checked_at": "2026-10-29T16:36:20.804754+00:00",
+  "candidate": "b4e6234f46a8f1f6410b27004a4481543808d89a",
+  "author_and_committer": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>",
+  "goal_complete": false,
+  "readiness": {
+    "assisted_design_partner": "not qualified",
+    "ordinary_operator": "not qualified",
+    "enterprise": "not qualified"
+  },
+  "source_dirty": false,
+  "build_source_matches_candidate": true,
+  "implementation": "Immutable checksummed schema receipts; explicit maintenance adoption of unversioned installations; current-schema read-only/no-DDL fast path; shared session admission before database snapshots and exclusive transaction migration gate; runtime/worker/owner version, policy and effective role safety checks; maintenance 503 without credential disposal; CLI plan and browser retry.",
+  "production_assertions": 670,
+  "race_schema_console_installation_assertions": 82,
+  "qualified_replays": [
+    {
+      "path": "evidence/2026-10-28/conformance-7adf547bd6.json",
+      "checks": 274,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/inventory-af624cdbb0.json",
+      "checks": 67,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/jobs-44317cf623.json",
+      "checks": 71,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/leases-432f991ea1.json",
+      "checks": 63,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/public-oci-df1cd36a80.json",
+      "checks": 33,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/sweeps-964d1de3e3.json",
+      "checks": 80,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-29/console-2d50529332.json",
+      "checks": 38,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-29/console-9995582281.json",
+      "checks": 38,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-29/installation-9b0fc17f57.json",
+      "checks": 30,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-29/installation-9e3946e49c.json",
+      "checks": 30,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-29/schema-106a599fc8.json",
+      "checks": 14,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-29/schema-991c90863b.json",
+      "checks": 14,
+      "race": false
+    }
+  ],
+  "browser_tests_per_console": 4,
+  "automated_accessibility_states_per_console": 19,
+  "console": {
+    "race": "evidence/2026-10-29/console-9995582281.json",
+    "production": "evidence/2026-10-29/console-2d50529332.json"
+  },
+  "postgres_race_repetitions": 2,
+  "new_schema_test_scope": "Nine top-level real PostgreSQL store/server tests, including 12 receipt/function/RLS drift cases, six runtime-role drift cases, cancellation, backend termination, concurrent migrators, queue fairness/drain, future-version rejection, missing ledger, frozen step definitions, private receipt denial and an actual streamed OCI upload across three no-op migrations.",
+  "process_interruption_scope": "Retained clean legacy source 51a74bd initializes and publishes real npm bytes. With its registry/worker stopped, an owned database event-trigger barrier pauses new CLI adoption after DDL. Actual SIGKILL, barrier release and backend disconnect leave no receipt or new function; retry preserves canonical tenant/repository/artifact/event/token rows and native npm installation. This is controlled adoption, not rolling upgrade.",
+  "tests": {
+    "unit_vet_race": "evidence/2026-10-29/schema-clean-unit-vet-race.txt",
+    "postgres_race": "evidence/2026-10-29/schema-clean-postgres-race.txt",
+    "retained_preflight": "evidence/2026-10-29/schema-preflight.json",
+    "replay": "evidence/2026-10-29/schema-clean-replay.txt"
+  },
+  "schema_receipts": [
+    {
+      "version": 1,
+      "checksum": "1e0f7b93d872f8ab83f85742000a6282f2722a0a338d8f2bc81755345ba66d16"
+    },
+    {
+      "version": 2,
+      "checksum": "9e023c96c8cf33549ce81f1eac22551b5cdb6267d146f65d430ec254dc8b10b5"
+    }
+  ],
+  "artifact_manifest": "evidence/2026-10-29/schema-artifacts.json",
+  "security": "evidence/2026-10-29/schema-security.json",
+  "remote_audit": "evidence/2026-10-29/remote-state-schema-audit.json",
+  "tool_versions": {
+    "Go": "1.27.3 darwin/arm64",
+    "PostgreSQL": "16.15",
+    "npm": "11.16.0",
+    "Node": "26.0.0",
+    "Chromium": "156.0.8078.4",
+    "Playwright": "1.64.1",
+    "axe-core": "4.14.0"
+  },
+  "limits": [
+    "Legacy adoption requires all old binaries stopped; they do not participate in admission.",
+    "The gate covers each database transaction, not an entire transfer. Actual schema changes can interrupt a staged transfer at its next fenced callback; whole-transfer draining is unqualified.",
+    "The synthetic future-version fixture validates admission, atomic DDL and rejection of unknown schema, not a shipped version-3 feature or expand/contract compatibility.",
+    "Production rolling/online upgrade, compatible-version ranges, multi-host/HA, downgrade, backup/restore and scale/performance remain open.",
+    "Linux amd64/arm64 server and Windows amd64 CLI compile only. Native platform runtimes and Windows ACL semantics remain unqualified.",
+    "Four Chromium tests and 19 named automated states do not establish complete WCAG, assistive-technology or native-browser coverage.",
+    "All 450 broad capabilities/journeys and 41 format families remain unfinished; full product/security/packaging qualification remains required."
+  ],
+  "this_turn_executed_push": false,
+  "this_turn_remote_mutation": false,
+  "owned_resource_cleanup": {
+    "checked_at": "2026-10-29T16:37:01.281531+00:00",
+    "loopback_listeners_absent": [
+      38443,
+      35432
+    ],
+    "native_postgresql_stopped": true,
+    "private_data_retained": true,
+    "production_binary_bytes_restored": true,
+    "shared_docker_lifecycle_actions": false
+  }
+}

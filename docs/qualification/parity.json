@@ -25221,17 +25221,26 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "internal/store/migrations.go, schema_gate.go and frozen SQL baseline; cmd/cratectld migrate; internal/server maintenance/readiness handling; scripts/conformance_schema.py; web/tests/schema.spec.mjs",
       "surfaces": {
-        "api": null,
-        "cli": null,
-        "ui": null
+        "cli": "cratectld migrate --plan / --adopt-legacy; ordinary migrate uses a read-only current fast path",
+        "api": "health/ready and schema_maintenance/schema_incompatible 503 responses before request effects",
+        "ui": "Existing console retains credential during real schema maintenance and retries after recovery"
       },
       "core": true,
       "dependencies": [],
       "acceptance_journey": "J.OPS.UPGRADE",
-      "clients": [],
-      "client_versions": {},
+      "clients": [
+        "cratectld",
+        "psql",
+        "npm",
+        "Chromium"
+      ],
+      "client_versions": {
+        "PostgreSQL": "16.15",
+        "npm": "11.16.0",
+        "Chromium": "156.0.8078.4"
+      },
       "test_data": "Defined by the corresponding GOAL.md acceptance requirement.",
       "permission_cases": [
         "least privilege",
@@ -25244,11 +25253,14 @@
         "partial failure",
         "recovery"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "state": "implementing",
+      "candidate": "b4e6234f46a8f1f6410b27004a4481543808d89a",
+      "evidence": [
+        "evidence/2026-10-29/schema-checkpoint.json",
+        "evidence/2026-10-29/schema-clean-postgres-race.txt"
+      ],
+      "limits": "Qualified bounded single-host controlled legacy adoption, transactional receipts/admission and named PostgreSQL/HTTP/Chromium failure cases only. Old binaries must stop. Whole-transfer draining, rolling compatibility/expand-contract, HA/multi-host, downgrade, backup/restore and production-scale upgrades remain required.",
+      "next_action": "Complete compatible-version upgrade design, full transfer draining, real multi-node rolling campaigns and validated backup/restore/downgrade recovery; retain every broader requirement."
     },
     {
       "id": "OPS.RECOVERY",
@@ -26004,7 +26016,7 @@
         "recovery"
       ],
       "state": "implementing",
-      "candidate": "60cf94768cd15df958c0bbb24e2e33e452e5f690",
+      "candidate": "b4e6234f46a8f1f6410b27004a4481543808d89a",
       "evidence": [
         "evidence/2026-10-29/installation-c49266d94f.json",
         "evidence/2026-10-29/installation-17fe431ba4.json",
@@ -26013,10 +26025,12 @@
         "evidence/2026-10-29/installation-cb7efcadcd.json",
         "evidence/2026-10-29/console-checkpoint.json",
         "evidence/2026-10-29/console-2e695cc1ff.json",
-        "evidence/2026-10-29/console-f5bd63f36c.json"
+        "evidence/2026-10-29/console-f5bd63f36c.json",
+        "evidence/2026-10-29/pagination-checkpoint.json",
+        "evidence/2026-10-29/schema-checkpoint.json"
       ],
-      "limits": "Verified basic console subset: empty tenant, repository creation and immutable response-loss replay, templates without active credentials, native npm review/approve/install/deny, jobs and completed storage inventory, sweep/lease previews and page-scoped audit export. Permission removal clears data, late prior-tenant responses are fenced, actual credential revocation and non-JSON 401 responses clear sessions, hostile paths render as text. Fourteen named automated accessibility states and keyboard focus/Escape/return actions pass in production and race replays. Full console, management pagination, all WCAG/AT/native-browser behavior and broader product remain required.",
-      "next_action": "Complete full management pagination and remaining operator workflows, native-browser/assistive-technology testing, production PKI/credential/identity lifecycle and packaging; retain every broader goal requirement."
+      "limits": "Basic console and native initialization, complete bounded live management paging/search, 19 named automated A/AA states and real schema-maintenance credential retention/retry pass on the named production/race source. Full console, WCAG/AT/native browsers, PKI/credential lifecycle, native indexes, production packaging and broader scope remain open.",
+      "next_action": "Complete remaining operator/identity/format/lifecycle workflows, native-browser/assistive-technology checks, production PKI/credential lifecycle and packaging."
     },
     {
       "id": "UX.CONSOLE",
@@ -27729,5 +27743,5 @@
     "current_source_candidate": "887c569ac96c451bccd91ae872317c06a890117a",
     "historical_candidate_fields": "Earlier candidate fields below refer to the archived original history. Preserve their exact evidence scope; the new source baseline and repeated native proof are recorded separately."
   },
-  "current_source_candidate": "51a74bd42866a6e33c77a670259ed0b4d9a959a8"
+  "current_source_candidate": "b4e6234f46a8f1f6410b27004a4481543808d89a"
 }

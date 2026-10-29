@@ -49,8 +49,9 @@ Server resource controls:
 Heartbeats fail closed if credentials expire/revoke, repository grants change,
 the database is unavailable or ownership changes. An unacknowledged chunk may
 leave immutable bytes for future inventory; retries use the committed offset.
-Legacy upload files are retained. Stop old registry processes before the current
-development schema upgrade; production rolling migration is unqualified.
+Legacy upload files are retained. Follow [schema upgrades](schema-upgrades.md)
+and stop old registry processes before explicit legacy adoption. Current repeats
+do no DDL; production rolling upgrades and whole-transfer draining remain open.
 
 This operation does not inventory every object, remove orphan bytes, collect
 garbage, enforce retention/holds or replace backup/restore. Those workflows remain

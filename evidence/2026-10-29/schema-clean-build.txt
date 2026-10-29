@@ -1,0 +1,12 @@
+python3 scripts/check_console_assets.py
+PASS: embedded console matches the recorded source and asset digests
+mkdir -p bin
+/Users/shankar/Desktop/ctlplne-cratectl/.cache/go/bin/go build -trimpath -o bin/cratectld ./cmd/cratectld
+/Users/shankar/Desktop/ctlplne-cratectl/.cache/go/bin/go build -trimpath -o bin/cratectl ./cmd/cratectl
+.cache/schema-production/cratectl clean source identity verified
+.cache/schema-production/cratectld clean source identity verified
+.cache/schema-race/cratectl clean source identity verified
+.cache/schema-race/cratectld clean source identity verified
+.cache/schema-platform/linux-amd64-cratectld clean source identity verified
+.cache/schema-platform/linux-arm64-cratectld clean source identity verified
+.cache/schema-platform/windows-amd64-cratectl.exe clean source identity verified

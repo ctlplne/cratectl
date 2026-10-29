@@ -20,78 +20,81 @@ remain.
 The owner authorized pushing this recreation; later feature pushes still require
 the owner's authority under the standing project contract.
 
-Versioned schema receipts and transaction admission are implemented and pass the
-working-tree unit/vet/race, real PostgreSQL and browser/CLI preflight. The source
-commit and clean production/race replay are the next checkpoint; no upgrade
-readiness claim is inferred from this preflight. See
-`evidence/2026-10-29/schema-preflight.json` and
+Latest qualified source: `b4e6234f46a8f1f6410b27004a4481543808d89a`, with both
+author and committer `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
+The authoritative checkpoint is
+`evidence/2026-10-29/schema-checkpoint.json`; the operator procedure is
 `docs/operator/schema-upgrades.md`.
 
-Latest source candidate: `51a74bd42866a6e33c77a670259ed0b4d9a959a8`, with both author and committer
-`imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
-Repository and stored-reference management now traverse all currently authorized
-records through bounded next/previous/first pages and global server search.
-See [operator guide](docs/operator/console.md) and [checkpoint](evidence/2026-10-29/pagination-checkpoint.json).
+Schema changes now have immutable checksummed receipts. A current-schema repeat
+checks safety without DDL or an exclusive gate, repairing the prior cumulative
+migration replay risk. An unversioned installation requires explicit
+`migrate --adopt-legacy` with every old registry and worker stopped. `migrate
+--plan` reports known versions, checksums, pending steps and adoption requirements
+without exposing the owner connection string. Applied migration definitions have
+fixed regression hashes; future changes must append a step.
 
-Repository grants filter SQL before page bounds. OCI manifests use the existing
-complete child-graph policy reader; an empty visible page retains progress via an
-encrypted scan position. Every request rechecks current credentials, grants and
-policy under forced RLS. Cursors bind tenant, credential, actor/role, endpoint and
-filters and convey no authorization. Actual native restart retains its separate
-private key and accepts the preceding cursor. Concurrent key publication, scope,
-tampering, rotation and private-file checks pass within their named scope.
+New runtime, worker and owner identity transactions acquire shared session
+admission before opening their data snapshot. An exclusive migration gate drains
+admitted transactions and rejects new work while waiting or applying. Every
+transaction verifies known schema receipts, forced tenant RLS/policies, the fixed
+private-state function and effective runtime role safety. Unknown versions,
+changed/gapped receipts, weakened policies, inherited ownership, superuser or
+BYPASSRLS and private receipt privileges fail closed. Maintenance returns 503 and
+Retry-After; the console keeps its active credential and recovers through retry.
+Readiness fails during maintenance; liveness and the console shell remain usable.
 
-Real PostgreSQL traverses 1108 repositories and 1108 references including UTF-8
-keys, plus 1105 hidden OCI roots before late permitted content. Forward/reverse,
-insertions, revocation, byte-shortened pages and oversized metadata recovery pass.
-The prior clean binary demonstrably omitted a late granted repository without a
-continuation. A first implementation also exposed database-locale Unicode case
-loss; explicit bounded simple-fold literal matching repairs it. Both defects have
-retained first failures and production/race replays. Short search/cursor fuzz
-campaigns pass; these are not the complete parser/security campaign.
+The clean committed source passed 670 production assertions across controlled
+legacy adoption, console, native TLS initialization, inventories, sweeps, leases,
+worker jobs, stock-client journeys and pinned public OCI. Separate race binaries
+passed 82 migration/console/installation assertions. Real PostgreSQL store/server
+and native-driver race suites ran twice without skips or race reports. Production
+artifact bytes were restored and verified. Unit/vet/race, architecture and asset
+checks pass. Go symbol vulnerability analysis, dependency scans including browser
+dev dependencies, and scoped source/history secret scans have no findings.
+Linux amd64/arm64 servers and Windows amd64 CLI compile only; native platform and
+Windows ACL qualification remain required.
 
-The browser traverses over 1000 repositories, finds late repositories/references,
-keeps a selected repository outside the chooser first page, handles empty OCI
-pages, and renders metadata as text. A creation card exposes a new repository even
-when preserved filters exclude its name. Three browser tests pass without skips
-on production and race binaries, with 19 existing workflow checks, 10 paging
-checks and 18 named automated accessibility states with zero findings per run.
-Complete WCAG, assistive technologies and other native browsers remain required.
+Nine new top-level store/server tests cover queue fairness and admitted drain,
+private receipts, frozen definitions, current no-op operation during a streamed
+OCI upload, concurrent migrators, future-version rejection, 12 schema/policy drift
+cases, six role drift cases, SQL failure, cancellation and backend termination.
+A retained clean legacy binary publishes actual npm bytes. A real SIGKILL pauses
+adoption after uncommitted DDL through an owned database barrier; disconnect rolls
+back schema and receipts. Retry preserves tenant/repository/artifact/audit/token
+rows and stock npm installs the original package through the new runtime. First
+failures and precise repairs remain in the preflight and defect ledger.
 
-The clean candidate passed 653 production assertions across the console,
-native TLS initialization, inventory, sweeps, leases, workers, combined stock
-clients and pinned public OCI. Separate race console/installation runs passed
-65 assertions. PostgreSQL/store/server/native-driver race suites ran twice
-without skips or race reports after the tagged migration test was isolated into
-its own owned database. The initial shared-DDL deadlock and exact fixture patch
-are retained; no upload or tombstone assertion was relaxed. Runtime code/binaries
-remain from the clean candidate. Production bytes were restored and checked.
-Unit/vet/race, embedded asset reproduction, scoped source/dependency/history
-security scans pass. Linux amd64/arm64 servers and Windows amd64 CLI compile only;
-Windows ACL semantics and native runtime qualification remain required.
+Four actual Chromium tests pass without skips on production and race binaries.
+Nineteen named automated A/AA states have zero findings per run, including a real
+maintenance interruption with stale data and credential-preserving retry. Existing
+management paging/search, permission removal, policy, cross-tenant response fencing
+and hostile-text handling remain covered. Complete WCAG, assistive technologies,
+other native browsers and full operator workflows remain required. The preceding
+pagination checkpoint is `evidence/2026-10-29/pagination-checkpoint.json`.
 
-Pages are live observations, not a multi-page snapshot; earlier concurrent
-insertions require a first-page restart. Summary traversal and current full
-reference inspection are separate and metadata byte budgets are configurable.
-Management pagination does not establish complete native indexes, every operator
-workflow, multi-node failover, key rotation lifecycle, production packaging,
-PKI/credential lifecycle, performance/scale or full security qualification. Current
-schema migration still needs a controlled maintenance window: concurrent DDL can
-abort live requests. Safe rolling/online upgrade and recovery remain required.
+The admission gate covers database transactions, not an entire upload/download.
+Actual changes can interrupt a staged transfer at its next fenced callback.
+Whole-transfer draining, compatible-version ranges and expand/contract changes,
+independent multi-node rolling upgrades, HA, downgrade, backup/restore and
+production-scale upgrade/recovery remain open. Controlled legacy adoption does
+not qualify zero-downtime operation with old binaries.
 
 All 450 broad capabilities/journeys and 41 format families remain unfinished.
-Every broad readiness verdict remains negative. Continue remaining console and
-native-index/search/format/identity/lifecycle work, OCI source lifecycle/races,
-Maven metadata union/snapshot/group, remaining npm/PyPI cases, sampling/repair,
-holds/retention/GC, S3, backup/restore and every later product stage. Docker recovery
-is verified and the coordination hold is released; owned OCI/container/packaging
-qualification can resume. No shared Docker lifecycle action was executed here.
-Owned native fixtures/PostgreSQL are stopped; private data/keys and original
-Docker resources are retained.
+Every broad readiness verdict remains negative. Continue the remaining console,
+identity, native-index/format/lifecycle work, OCI source lifecycle/races, Maven
+metadata union/snapshot/group, remaining npm/PyPI cases, sampling/repair,
+holds/retention/GC, S3, upgrade/recovery and every later product stage. Docker
+recovery is verified and the coordination hold is released; owned OCI/container
+and packaging qualification can resume without shared lifecycle changes.
 
-No push or remote mutation was executed by this turn. The read-only provenance
-audit is `evidence/2026-10-29/remote-state-pagination-audit.json`. Feature pushes,
-public visibility, releases and publication still require owner authority.
+Owned registry/worker/PostgreSQL listeners are stopped; private data/credentials,
+keys, earlier history recovery and original Docker resources are retained.
+No push or remote mutation was executed by this turn. Read-only GitHub audit
+`evidence/2026-10-29/remote-state-schema-audit.json` confirms the same private
+replacement/root and all 32 published commits attributed only to imfeelingtheagi.
+The new source remains local; feature pushes, releases and publication still
+require owner authority.
 
 **Goal active; full product goal incomplete.** Origin remains the private
 `https://github.com/ctlplne/cratectl.git`, rooted at
