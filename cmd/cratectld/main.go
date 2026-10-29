@@ -37,7 +37,30 @@ func run() error {
 	case "worker":
 		return runWorker()
 	case "migrate":
-		return store.Migrate(ctx, os.Getenv("CRATECTL_OWNER_DSN"))
+		f := flag.NewFlagSet("migrate", flag.ContinueOnError)
+		planOnly := f.Bool("plan", false, "inspect versions and safety without schema changes")
+		adopt := f.Bool("adopt-legacy", false, "adopt an unversioned database after stopping registry and workers")
+		if e := f.Parse(os.Args[2:]); e != nil {
+			return e
+		}
+		if f.NArg() != 0 || (*planOnly && *adopt) {
+			return errors.New("use migrate [--plan | --adopt-legacy]")
+		}
+		ctx, cancel := context.WithTimeout(ctx, 2*time.Minute)
+		defer cancel()
+		dsn := os.Getenv("CRATECTL_OWNER_DSN")
+		if *planOnly {
+			plan, e := store.MigrationPlan(ctx, dsn)
+			if e != nil {
+				return e
+			}
+			return json.NewEncoder(os.Stdout).Encode(plan)
+		}
+		if e := store.MigrateWithOptions(ctx, dsn, store.MigrationOptions{AdoptLegacy: *adopt}); e != nil {
+			return e
+		}
+		fmt.Println("Schema is current. Applied changes and receipts committed together.")
+		return nil
 	case "provision":
 		f := flag.NewFlagSet("provision", flag.ContinueOnError)
 		tenant := f.String("tenant", "", "tenant")

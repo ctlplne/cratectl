@@ -2,7 +2,7 @@
 
 Run a worker alongside the registry against the same runtime PostgreSQL database
 and durable object directory. No vendor account or owner database connection is
-needed by the worker. Stop workers before applying this development migration;
+needed by the worker. Follow [schema upgrades](schema-upgrades.md); stop old workers before legacy adoption;
 it preserves existing event jobs while extending their key for multiple effects.
 Production rolling migration and restore qualification remain open.
 

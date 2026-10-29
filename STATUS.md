@@ -20,6 +20,13 @@ remain.
 The owner authorized pushing this recreation; later feature pushes still require
 the owner's authority under the standing project contract.
 
+Versioned schema receipts and transaction admission are implemented and pass the
+working-tree unit/vet/race, real PostgreSQL and browser/CLI preflight. The source
+commit and clean production/race replay are the next checkpoint; no upgrade
+readiness claim is inferred from this preflight. See
+`evidence/2026-10-29/schema-preflight.json` and
+`docs/operator/schema-upgrades.md`.
+
 Latest source candidate: `51a74bd42866a6e33c77a670259ed0b4d9a959a8`, with both author and committer
 `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
 Repository and stored-reference management now traverse all currently authorized

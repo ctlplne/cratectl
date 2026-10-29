@@ -113,6 +113,11 @@ func fail(w http.ResponseWriter, status int, code, action string) {
 }
 func respondErr(w http.ResponseWriter, e error) {
 	switch {
+	case errors.Is(e, store.ErrSchemaMaintenance):
+		w.Header().Set("Retry-After", "1")
+		fail(w, 503, "schema_maintenance", "Schema maintenance is draining or changing database transactions. Keep the credential and retry after readiness recovers.")
+	case errors.Is(e, store.ErrSchemaIncompatible):
+		fail(w, 503, "schema_incompatible", "Use a compatible binary and inspect the owner migration plan and schema safety checks. No operation was accepted.")
 	case errors.Is(e, blob.ErrStorageChanged):
 		fail(w, 503, "storage_changed", "Inspect the configured storage root and start a new inventory; observations from different storage identities cannot be combined.")
 	case errors.Is(e, blob.ErrUnsupported):
@@ -185,7 +190,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/health/ready" {
 		ctx, cancel := context.WithTimeout(r.Context(), time.Second)
 		defer cancel()
-		if e := s.DB.Pool.Ping(ctx); e != nil {
+		if e := s.DB.Ready(ctx); e != nil {
 			respondErr(w, e)
 			return
 		}
@@ -211,6 +216,10 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	i, e := s.DB.Authenticate(r.Context(), token)
 	if e != nil {
+		if !errors.Is(e, pgx.ErrNoRows) && !errors.Is(e, store.ErrNotFound) && !errors.Is(e, store.ErrUnauthenticated) {
+			respondErr(w, e)
+			return
+		}
 		w.Header().Set("WWW-Authenticate", `Basic realm="cratectl"`)
 		fail(w, 401, "unauthenticated", "Configure an unexpired tenant service token.")
 		return

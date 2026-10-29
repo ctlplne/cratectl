@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
 	"time"
 
 	crypt "ctlplne.dev/cratectl/internal/crypto"
@@ -50,57 +51,32 @@ func Open(ctx context.Context, dsn string) (*Store, error) {
 		return nil, errors.New("invalid runtime database configuration")
 	}
 	var unsafe bool
-	e = p.QueryRow(ctx, `SELECT rolsuper OR rolbypassrls OR EXISTS(SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='cratectl' AND c.relowner=r.oid) FROM pg_roles r WHERE rolname=current_user`).Scan(&unsafe)
+	e = p.QueryRow(ctx, unsafeRuntimeSQL).Scan(&unsafe)
 	if e != nil || unsafe {
 		p.Close()
 		return nil, errors.New("runtime requires nonowner role without superuser or BYPASSRLS")
 	}
-	return &Store{p}, nil
+	store := &Store{p}
+	if e = store.Ready(ctx); e != nil {
+		p.Close()
+		return nil, e
+	}
+	return store, nil
 }
-func Migrate(ctx context.Context, dsn string) error {
-	c, e := pgx.Connect(ctx, dsn)
-	if e != nil {
-		return errors.New("database owner connection failed; check private configuration and database health")
-	}
-	defer c.Close(ctx)
-	tx, e := c.Begin(ctx)
-	if e != nil {
-		return e
-	}
-	defer tx.Rollback(ctx)
-	if _, e = tx.Exec(ctx, `SELECT pg_advisory_xact_lock(731445922)`); e != nil {
-		return e
-	}
-	if _, e = tx.Exec(ctx, schema); e != nil {
-		return e
-	}
-	if _, e = tx.Exec(ctx, jobSchema); e != nil {
-		return e
-	}
-	if _, e = tx.Exec(ctx, sweepSchema); e != nil {
-		return e
-	}
-	if _, e = tx.Exec(ctx, inventorySchema); e != nil {
-		return e
-	}
-	if _, e = tx.Exec(ctx, bootstrapSchema); e != nil {
-		return e
-	}
-	// Fixed role is owned by this isolated database, never a shared production role.
-	if _, e = tx.Exec(ctx, `DO $$ BEGIN IF NOT EXISTS(SELECT FROM pg_roles WHERE rolname='cratectl_app') THEN CREATE ROLE cratectl_app NOLOGIN NOSUPERUSER NOBYPASSRLS NOINHERIT; END IF; END $$; GRANT USAGE ON SCHEMA cratectl TO cratectl_app; GRANT EXECUTE ON FUNCTION cratectl.authenticate(text),cratectl.authenticate_worker(text) TO cratectl_app;`); e != nil {
-		return e
-	}
-	for _, table := range []string{"tenants", "repositories", "artifacts", "events", "mutations", "jobs", "uploads", "tags", "repository_grants", "retrievals", "content_decisions", "npm_tags", "npm_sources", "native_sources", "python_yanks", "queue_policies", "event_projections", "integrity_observations", "upload_parts", "sweep_items", "inventory_entries", "inventory_observations", "bootstrap_receipts"} {
+
+var schemaTablesV1 = []string{"tenants", "repositories", "artifacts", "events", "mutations", "jobs", "uploads", "tags", "repository_grants", "retrievals", "content_decisions", "npm_tags", "npm_sources", "native_sources", "python_yanks", "queue_policies", "event_projections", "integrity_observations", "upload_parts", "sweep_items", "inventory_entries", "inventory_observations", "bootstrap_receipts"}
+
+// legacySchemaSQL is migration 1. Freeze it and the five embedded SQL files;
+// subsequent schema changes belong in new checksummed steps.
+func legacySchemaSQL() string {
+	parts := []string{schema, jobSchema, sweepSchema, inventorySchema, bootstrapSchema,
+		`DO $$ BEGIN IF NOT EXISTS(SELECT FROM pg_roles WHERE rolname='cratectl_app') THEN CREATE ROLE cratectl_app NOLOGIN NOSUPERUSER NOBYPASSRLS NOINHERIT; END IF; END $$; GRANT USAGE ON SCHEMA cratectl TO cratectl_app; GRANT EXECUTE ON FUNCTION cratectl.authenticate(text),cratectl.authenticate_worker(text) TO cratectl_app;`}
+	for _, table := range schemaTablesV1 {
 		q := pgx.Identifier{"cratectl", table}.Sanitize()
-		if _, e = tx.Exec(ctx, `ALTER TABLE `+q+` ENABLE ROW LEVEL SECURITY; ALTER TABLE `+q+` FORCE ROW LEVEL SECURITY; DROP POLICY IF EXISTS tenant_scope ON `+q+`; CREATE POLICY tenant_scope ON `+q+` USING (tenant=current_setting('cratectl.tenant',true)) WITH CHECK (tenant=current_setting('cratectl.tenant',true)); GRANT SELECT,INSERT ON `+q+` TO cratectl_app`); e != nil {
-			return e
-		}
+		parts = append(parts, `ALTER TABLE `+q+` ENABLE ROW LEVEL SECURITY; ALTER TABLE `+q+` FORCE ROW LEVEL SECURITY; DROP POLICY IF EXISTS tenant_scope ON `+q+`; CREATE POLICY tenant_scope ON `+q+` USING (tenant=current_setting('cratectl.tenant',true)) WITH CHECK (tenant=current_setting('cratectl.tenant',true)); GRANT SELECT,INSERT ON `+q+` TO cratectl_app;`)
 	}
-	_, e = tx.Exec(ctx, `GRANT UPDATE ON cratectl.artifacts,cratectl.repositories,cratectl.jobs,cratectl.uploads,cratectl.tags,cratectl.repository_grants,cratectl.retrievals,cratectl.content_decisions,cratectl.npm_tags,cratectl.python_yanks,cratectl.queue_policies TO cratectl_app;`)
-	if e != nil {
-		return e
-	}
-	return tx.Commit(ctx)
+	parts = append(parts, `GRANT UPDATE ON cratectl.artifacts,cratectl.repositories,cratectl.jobs,cratectl.uploads,cratectl.tags,cratectl.repository_grants,cratectl.retrievals,cratectl.content_decisions,cratectl.npm_tags,cratectl.python_yanks,cratectl.queue_policies TO cratectl_app;`)
+	return strings.Join(parts, "\n")
 }
 func Provision(ctx context.Context, dsn, tenant, actor, role, token string, expires time.Time) error {
 	if !Name.MatchString(tenant) || !Name.MatchString(actor) || (role != "admin" && role != "writer" && role != "reader" && role != "worker") {
@@ -111,10 +87,11 @@ func Provision(ctx context.Context, dsn, tenant, actor, role, token string, expi
 		return errors.New("database owner connection failed; check private configuration and database health")
 	}
 	defer c.Close(ctx)
-	tx, e := c.Begin(ctx)
+	tx, release, e := ownerSchemaTx(ctx, c, true)
 	if e != nil {
 		return e
 	}
+	defer release()
 	defer tx.Rollback(ctx)
 	if _, e = tx.Exec(ctx, `SELECT pg_advisory_xact_lock(hashtextextended($1,0))`, tenant); e != nil {
 		return e
@@ -138,7 +115,16 @@ func (s *Store) Authenticate(ctx context.Context, token string) (Identity, error
 		return i, ErrNotFound
 	}
 	i.CredentialHash = crypt.Digest([]byte(token))
-	e := s.Pool.QueryRow(ctx, `SELECT tenant,actor,role FROM cratectl.authenticate($1)`, i.CredentialHash).Scan(&i.Tenant, &i.Actor, &i.Role)
+	tx, release, e := s.schemaTx(ctx, pgx.TxOptions{AccessMode: pgx.ReadOnly})
+	if e != nil {
+		return i, e
+	}
+	defer release()
+	defer tx.Rollback(ctx)
+	e = tx.QueryRow(ctx, `SELECT tenant,actor,role FROM cratectl.authenticate($1)`, i.CredentialHash).Scan(&i.Tenant, &i.Actor, &i.Role)
+	if e == nil {
+		e = tx.Commit(ctx)
+	}
 	return i, e
 }
 func (s *Store) Tx(ctx context.Context, i Identity, write bool, fn func(pgx.Tx) error) error {
@@ -146,10 +132,11 @@ func (s *Store) Tx(ctx context.Context, i Identity, write bool, fn func(pgx.Tx) 
 	if !write {
 		options = pgx.TxOptions{IsoLevel: pgx.RepeatableRead, AccessMode: pgx.ReadOnly}
 	}
-	tx, e := s.Pool.BeginTx(ctx, options)
+	tx, release, e := s.schemaTx(ctx, options)
 	if e != nil {
 		return e
 	}
+	defer release()
 	defer tx.Rollback(ctx)
 	if _, e = tx.Exec(ctx, `SELECT set_config('cratectl.tenant',$1,true),set_config('lock_timeout','5s',true),set_config('statement_timeout','30s',true)`, i.Tenant); e != nil {
 		return e
@@ -429,10 +416,11 @@ func Revoke(ctx context.Context, dsn, token string) error {
 		return errors.New("database owner connection failed")
 	}
 	defer c.Close(ctx)
-	tx, e := c.Begin(ctx)
+	tx, release, e := ownerSchemaTx(ctx, c, true)
 	if e != nil {
 		return e
 	}
+	defer release()
 	defer tx.Rollback(ctx)
 	var tenant, actor string
 	e = tx.QueryRow(ctx, `SELECT tenant,actor FROM cratectl_private.tokens WHERE hash=$1`, crypt.Digest([]byte(token))).Scan(&tenant, &actor)

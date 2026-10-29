@@ -1,0 +1,92 @@
+=== RUN   TestSchemaFreshCurrentAndPrivateReceipts
+    migrations_integration_test.go:34: runtime open runtime requires nonowner role without superuser or BYPASSRLS
+--- FAIL: TestSchemaFreshCurrentAndPrivateReceipts (0.69s)
+=== RUN   TestSchemaDrainQueueAndFutureVersion
+    migrations_integration_test.go:142: runtime requires nonowner role without superuser or BYPASSRLS
+--- FAIL: TestSchemaDrainQueueAndFutureVersion (0.63s)
+=== RUN   TestSchemaDriftFailsClosed
+=== RUN   TestSchemaDriftFailsClosed/checksum
+    migrations_integration_test.go:233: runtime requires nonowner role without superuser or BYPASSRLS
+=== RUN   TestSchemaDriftFailsClosed/gap
+    migrations_integration_test.go:233: runtime requires nonowner role without superuser or BYPASSRLS
+=== RUN   TestSchemaDriftFailsClosed/RLS_disabled
+    migrations_integration_test.go:233: runtime requires nonowner role without superuser or BYPASSRLS
+=== RUN   TestSchemaDriftFailsClosed/RLS_not_forced
+    migrations_integration_test.go:233: runtime requires nonowner role without superuser or BYPASSRLS
+=== RUN   TestSchemaDriftFailsClosed/extra_policy
+    migrations_integration_test.go:233: runtime requires nonowner role without superuser or BYPASSRLS
+=== RUN   TestSchemaDriftFailsClosed/function_body
+    migrations_integration_test.go:233: runtime requires nonowner role without superuser or BYPASSRLS
+=== RUN   TestSchemaDriftFailsClosed/missing_function
+    migrations_integration_test.go:233: runtime requires nonowner role without superuser or BYPASSRLS
+=== RUN   TestSchemaDriftFailsClosed/missing_ledger
+    migrations_integration_test.go:233: runtime requires nonowner role without superuser or BYPASSRLS
+=== RUN   TestSchemaDriftFailsClosed/unknown_version
+    migrations_integration_test.go:233: runtime requires nonowner role without superuser or BYPASSRLS
+=== RUN   TestSchemaDriftFailsClosed/weakened_read_policy
+    migrations_integration_test.go:233: runtime requires nonowner role without superuser or BYPASSRLS
+=== RUN   TestSchemaDriftFailsClosed/weakened_write_policy
+    migrations_integration_test.go:233: runtime requires nonowner role without superuser or BYPASSRLS
+=== RUN   TestSchemaDriftFailsClosed/public_function
+    migrations_integration_test.go:233: runtime requires nonowner role without superuser or BYPASSRLS
+--- FAIL: TestSchemaDriftFailsClosed (4.50s)
+    --- FAIL: TestSchemaDriftFailsClosed/checksum (0.36s)
+    --- FAIL: TestSchemaDriftFailsClosed/gap (0.32s)
+    --- FAIL: TestSchemaDriftFailsClosed/RLS_disabled (0.57s)
+    --- FAIL: TestSchemaDriftFailsClosed/RLS_not_forced (0.43s)
+    --- FAIL: TestSchemaDriftFailsClosed/extra_policy (0.27s)
+    --- FAIL: TestSchemaDriftFailsClosed/function_body (0.28s)
+    --- FAIL: TestSchemaDriftFailsClosed/missing_function (0.31s)
+    --- FAIL: TestSchemaDriftFailsClosed/missing_ledger (0.33s)
+    --- FAIL: TestSchemaDriftFailsClosed/unknown_version (0.38s)
+    --- FAIL: TestSchemaDriftFailsClosed/weakened_read_policy (0.45s)
+    --- FAIL: TestSchemaDriftFailsClosed/weakened_write_policy (0.35s)
+    --- FAIL: TestSchemaDriftFailsClosed/public_function (0.45s)
+=== RUN   TestSchemaInterruptedAndFailedDDLIsAtomic
+=== RUN   TestSchemaInterruptedAndFailedDDLIsAtomic/failure
+    migrations_integration_test.go:259: runtime requires nonowner role without superuser or BYPASSRLS
+=== RUN   TestSchemaInterruptedAndFailedDDLIsAtomic/cancel
+    migrations_integration_test.go:259: runtime requires nonowner role without superuser or BYPASSRLS
+=== RUN   TestSchemaInterruptedAndFailedDDLIsAtomic/terminate
+    migrations_integration_test.go:259: runtime requires nonowner role without superuser or BYPASSRLS
+--- FAIL: TestSchemaInterruptedAndFailedDDLIsAtomic (0.92s)
+    --- FAIL: TestSchemaInterruptedAndFailedDDLIsAtomic/failure (0.29s)
+    --- FAIL: TestSchemaInterruptedAndFailedDDLIsAtomic/cancel (0.27s)
+    --- FAIL: TestSchemaInterruptedAndFailedDDLIsAtomic/terminate (0.36s)
+=== RUN   TestSchemaConcurrentMigratorsAndCanceledSession
+    migrations_integration_test.go:326: runtime requires nonowner role without superuser or BYPASSRLS
+--- FAIL: TestSchemaConcurrentMigratorsAndCanceledSession (0.77s)
+=== RUN   TestSchemaRuntimeRoleDrift
+=== RUN   TestSchemaRuntimeRoleDrift/bypass
+    migrations_integration_test.go:367: runtime requires nonowner role without superuser or BYPASSRLS
+=== RUN   TestSchemaRuntimeRoleDrift/superuser
+    migrations_integration_test.go:367: runtime requires nonowner role without superuser or BYPASSRLS
+=== RUN   TestSchemaRuntimeRoleDrift/owner
+    migrations_integration_test.go:367: runtime requires nonowner role without superuser or BYPASSRLS
+=== RUN   TestSchemaRuntimeRoleDrift/inherited-owner
+    migrations_integration_test.go:367: runtime requires nonowner role without superuser or BYPASSRLS
+=== RUN   TestSchemaRuntimeRoleDrift/private-usage
+    migrations_integration_test.go:367: runtime requires nonowner role without superuser or BYPASSRLS
+=== RUN   TestSchemaRuntimeRoleDrift/private-table
+    migrations_integration_test.go:367: runtime requires nonowner role without superuser or BYPASSRLS
+--- FAIL: TestSchemaRuntimeRoleDrift (1.51s)
+    --- FAIL: TestSchemaRuntimeRoleDrift/bypass (0.26s)
+    --- FAIL: TestSchemaRuntimeRoleDrift/superuser (0.26s)
+    --- FAIL: TestSchemaRuntimeRoleDrift/owner (0.22s)
+    --- FAIL: TestSchemaRuntimeRoleDrift/inherited-owner (0.24s)
+    --- FAIL: TestSchemaRuntimeRoleDrift/private-usage (0.29s)
+    --- FAIL: TestSchemaRuntimeRoleDrift/private-table (0.25s)
+=== RUN   TestSchemaLegacyRequiresAcknowledgement
+    migrations_integration_test.go:448: runtime requires nonowner role without superuser or BYPASSRLS
+--- FAIL: TestSchemaLegacyRequiresAcknowledgement (0.31s)
+FAIL
+FAIL	ctlplne.dev/cratectl/internal/store	9.680s
+=== RUN   TestSchemaHTTPMaintenanceRetainsCredentialAndReadiness
+    schema_integration_test.go:49: runtime requires nonowner role without superuser or BYPASSRLS
+--- FAIL: TestSchemaHTTPMaintenanceRetainsCredentialAndReadiness (0.66s)
+=== RUN   TestSchemaCurrentNoopDoesNotInterruptSlowUpload
+    schema_integration_test.go:109: runtime requires nonowner role without superuser or BYPASSRLS
+--- FAIL: TestSchemaCurrentNoopDoesNotInterruptSlowUpload (0.67s)
+FAIL
+FAIL	ctlplne.dev/cratectl/internal/server	1.699s
+FAIL

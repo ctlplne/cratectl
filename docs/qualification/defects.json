@@ -401,6 +401,22 @@
       "limits": "Production concurrent-DDL/rolling upgrade safety remains required and unqualified. The current migrator can abort live requests and needs a controlled maintenance window.",
       "candidate": "51a74bd42866a6e33c77a670259ed0b4d9a959a8",
       "postgres_replay": "evidence/2026-10-29/pagination-clean-postgres-race.txt"
+    },
+    {
+      "id": "DEFECT.0037",
+      "summary": "A missing version receipt table was mistaken for an unversioned legacy database by owner migration inspection",
+      "first_failure": "evidence/2026-10-29/schema-ledger-first.txt",
+      "state": "repaired in working tree; clean-source replay pending",
+      "repair": "Reject a retained schema-state function without its receipt ledger as incompatible. Runtime, worker, readiness and owner migration all fail closed.",
+      "limits": "Owner-managed arbitrary schema recovery remains unqualified."
+    },
+    {
+      "id": "DEFECT.0038",
+      "summary": "The new runtime role safety query required forbidden schema usage while looking up the private receipt table by name",
+      "first_failure": "evidence/2026-10-29/schema-role-guard-first.txt",
+      "state": "repaired in working tree; clean-source replay pending",
+      "repair": "Inspect table privileges by public catalog OID while retaining private schema/table denial. Check runtime role drift including inherited ownership on each transaction.",
+      "limits": "Only the named PostgreSQL role drift cases are covered."
     }
   ]
 }

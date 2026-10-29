@@ -1,0 +1,27 @@
+{
+  "checked_at": "2026-10-29T16:29:10.406537+00:00",
+  "source_state": "Uncommitted implementation based on e77cc45872a0924e27ecf6d55198ab8f116eb7a9; preflight only, clean-source replay pending.",
+  "preflight_passed": "evidence/2026-10-29/schema-preflight.txt",
+  "failures": [
+    {
+      "evidence": "evidence/2026-10-29/schema-ledger-first.txt",
+      "finding": "Deleting the receipt table was classified as legacy adoption during owner migration, while runtime rejected it. A retained schema_state function without its ledger now fails closed as incompatible. Cancellation may leave transient maintenance until PostgreSQL closes its connection; recovery is checked within a bounded interval."
+    },
+    {
+      "evidence": "evidence/2026-10-29/schema-role-guard-first.txt",
+      "finding": "Runtime private-table privilege lookup by qualified name required schema usage and rejected valid nonowner logins. Use public catalog OIDs to inspect privileges without granting access."
+    },
+    {
+      "evidence": "evidence/2026-10-29/schema-fixture-role-syntax-first.txt",
+      "finding": "Owned fixture role grant syntax needed an explicit sanitized owner name. No shared runtime login privileges were modified."
+    },
+    {
+      "evidence": "evidence/2026-10-29/console-d10a3f4ae7.json",
+      "finding": "The maintenance browser test initially captured an earlier in-flight 200. Wait for the initial repository list before installing the database barrier; no production status assertion was weakened."
+    }
+  ],
+  "working_tree_process_replay": "evidence/2026-10-29/schema-1230d944fc.json",
+  "working_tree_browser_replay": "evidence/2026-10-29/console-bbe571688d.json",
+  "qualified_product_readiness": false,
+  "limits": "These are retained preflight observations. Clean committed production/race artifacts and complete regression receipts remain required."
+}

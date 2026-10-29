@@ -27,10 +27,11 @@ func CheckBootstrapDatabase(ctx context.Context, dsn string, in BootstrapInput) 
 		return errors.New("initialization owner connection failed")
 	}
 	defer c.Close(ctx)
-	tx, e := c.Begin(ctx)
+	tx, release, e := ownerSchemaTx(ctx, c, false)
 	if e != nil {
 		return e
 	}
+	defer release()
 	defer tx.Rollback(ctx)
 	if _, e = tx.Exec(ctx, `SET LOCAL row_security=off; SET LOCAL lock_timeout='5s'; SET LOCAL statement_timeout='30s'; SELECT pg_advisory_xact_lock(731445923)`); e != nil {
 		return e
@@ -70,6 +71,16 @@ func CheckBootstrapDatabase(ctx context.Context, dsn string, in BootstrapInput) 
 		return errors.New("database catalog exceeds the initialization inspection budget; select a dedicated empty database")
 	}
 	for _, name := range tables {
+		if name[0] == "cratectl_private" && name[1] == "schema_migrations" {
+			plan, e := inspectSchema(ctx, tx, currentMigrations())
+			if e != nil || len(plan.Pending) != 0 {
+				if e != nil {
+					return e
+				}
+				return ErrSchemaIncompatible
+			}
+			continue
+		}
 		if name[0] != "cratectl" && name[0] != "cratectl_private" {
 			return errors.New("database contains unrelated tables; select a dedicated empty database")
 		}
@@ -95,10 +106,11 @@ func Bootstrap(ctx context.Context, dsn string, in BootstrapInput) error {
 		return errors.New("initialization owner connection failed")
 	}
 	defer c.Close(ctx)
-	tx, e := c.Begin(ctx)
+	tx, release, e := ownerSchemaTx(ctx, c, true)
 	if e != nil {
 		return e
 	}
+	defer release()
 	defer tx.Rollback(ctx)
 	if _, e = tx.Exec(ctx, `SET LOCAL row_security=off; SET LOCAL lock_timeout='5s'; SET LOCAL statement_timeout='30s'; SELECT pg_advisory_xact_lock(731445923)`); e != nil {
 		return e

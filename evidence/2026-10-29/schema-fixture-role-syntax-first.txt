@@ -1,0 +1,66 @@
+=== RUN   TestSchemaFreshCurrentAndPrivateReceipts
+--- PASS: TestSchemaFreshCurrentAndPrivateReceipts (0.47s)
+=== RUN   TestSchemaDrainQueueAndFutureVersion
+--- PASS: TestSchemaDrainQueueAndFutureVersion (0.52s)
+=== RUN   TestSchemaDriftFailsClosed
+=== RUN   TestSchemaDriftFailsClosed/checksum
+=== RUN   TestSchemaDriftFailsClosed/gap
+=== RUN   TestSchemaDriftFailsClosed/unknown_version
+=== RUN   TestSchemaDriftFailsClosed/weakened_write_policy
+=== RUN   TestSchemaDriftFailsClosed/missing_ledger
+=== RUN   TestSchemaDriftFailsClosed/RLS_disabled
+=== RUN   TestSchemaDriftFailsClosed/RLS_not_forced
+=== RUN   TestSchemaDriftFailsClosed/extra_policy
+=== RUN   TestSchemaDriftFailsClosed/weakened_read_policy
+=== RUN   TestSchemaDriftFailsClosed/function_body
+=== RUN   TestSchemaDriftFailsClosed/public_function
+=== RUN   TestSchemaDriftFailsClosed/missing_function
+--- PASS: TestSchemaDriftFailsClosed (4.47s)
+    --- PASS: TestSchemaDriftFailsClosed/checksum (0.38s)
+    --- PASS: TestSchemaDriftFailsClosed/gap (0.31s)
+    --- PASS: TestSchemaDriftFailsClosed/unknown_version (0.31s)
+    --- PASS: TestSchemaDriftFailsClosed/weakened_write_policy (0.38s)
+    --- PASS: TestSchemaDriftFailsClosed/missing_ledger (0.36s)
+    --- PASS: TestSchemaDriftFailsClosed/RLS_disabled (0.36s)
+    --- PASS: TestSchemaDriftFailsClosed/RLS_not_forced (0.33s)
+    --- PASS: TestSchemaDriftFailsClosed/extra_policy (0.44s)
+    --- PASS: TestSchemaDriftFailsClosed/weakened_read_policy (0.41s)
+    --- PASS: TestSchemaDriftFailsClosed/function_body (0.34s)
+    --- PASS: TestSchemaDriftFailsClosed/public_function (0.33s)
+    --- PASS: TestSchemaDriftFailsClosed/missing_function (0.51s)
+=== RUN   TestSchemaInterruptedAndFailedDDLIsAtomic
+=== RUN   TestSchemaInterruptedAndFailedDDLIsAtomic/failure
+=== RUN   TestSchemaInterruptedAndFailedDDLIsAtomic/cancel
+=== RUN   TestSchemaInterruptedAndFailedDDLIsAtomic/terminate
+--- PASS: TestSchemaInterruptedAndFailedDDLIsAtomic (1.20s)
+    --- PASS: TestSchemaInterruptedAndFailedDDLIsAtomic/failure (0.42s)
+    --- PASS: TestSchemaInterruptedAndFailedDDLIsAtomic/cancel (0.42s)
+    --- PASS: TestSchemaInterruptedAndFailedDDLIsAtomic/terminate (0.36s)
+=== RUN   TestSchemaConcurrentMigratorsAndCanceledSession
+--- PASS: TestSchemaConcurrentMigratorsAndCanceledSession (0.33s)
+=== RUN   TestSchemaRuntimeRoleDrift
+=== RUN   TestSchemaRuntimeRoleDrift/bypass
+=== RUN   TestSchemaRuntimeRoleDrift/superuser
+=== RUN   TestSchemaRuntimeRoleDrift/owner
+=== RUN   TestSchemaRuntimeRoleDrift/inherited-owner
+    migrations_integration_test.go:417: ERROR: syntax error at or near "CURRENT_USER" (SQLSTATE 42601)
+=== RUN   TestSchemaRuntimeRoleDrift/private-usage
+=== RUN   TestSchemaRuntimeRoleDrift/private-table
+--- FAIL: TestSchemaRuntimeRoleDrift (2.64s)
+    --- PASS: TestSchemaRuntimeRoleDrift/bypass (0.47s)
+    --- PASS: TestSchemaRuntimeRoleDrift/superuser (0.39s)
+    --- PASS: TestSchemaRuntimeRoleDrift/owner (0.48s)
+    --- FAIL: TestSchemaRuntimeRoleDrift/inherited-owner (0.57s)
+    --- PASS: TestSchemaRuntimeRoleDrift/private-usage (0.38s)
+    --- PASS: TestSchemaRuntimeRoleDrift/private-table (0.36s)
+=== RUN   TestSchemaLegacyRequiresAcknowledgement
+--- PASS: TestSchemaLegacyRequiresAcknowledgement (0.29s)
+FAIL
+FAIL	ctlplne.dev/cratectl/internal/store	10.250s
+=== RUN   TestSchemaHTTPMaintenanceRetainsCredentialAndReadiness
+--- PASS: TestSchemaHTTPMaintenanceRetainsCredentialAndReadiness (0.47s)
+=== RUN   TestSchemaCurrentNoopDoesNotInterruptSlowUpload
+--- PASS: TestSchemaCurrentNoopDoesNotInterruptSlowUpload (0.53s)
+PASS
+ok  	ctlplne.dev/cratectl/internal/server	2.355s
+FAIL

@@ -1,0 +1,47 @@
+=== RUN   TestSchemaFreshCurrentAndPrivateReceipts
+--- PASS: TestSchemaFreshCurrentAndPrivateReceipts (0.23s)
+=== RUN   TestSchemaDrainQueueAndFutureVersion
+--- PASS: TestSchemaDrainQueueAndFutureVersion (0.24s)
+=== RUN   TestSchemaDriftFailsClosed
+=== RUN   TestSchemaDriftFailsClosed/checksum
+=== RUN   TestSchemaDriftFailsClosed/gap
+=== RUN   TestSchemaDriftFailsClosed/RLS_disabled
+=== RUN   TestSchemaDriftFailsClosed/extra_policy
+=== RUN   TestSchemaDriftFailsClosed/weakened_read_policy
+=== RUN   TestSchemaDriftFailsClosed/function_body
+=== RUN   TestSchemaDriftFailsClosed/missing_function
+=== RUN   TestSchemaDriftFailsClosed/missing_ledger
+    migrations_integration_test.go:250: migration unversioned database needs explicit maintenance adoption
+=== RUN   TestSchemaDriftFailsClosed/unknown_version
+=== RUN   TestSchemaDriftFailsClosed/RLS_not_forced
+=== RUN   TestSchemaDriftFailsClosed/weakened_write_policy
+=== RUN   TestSchemaDriftFailsClosed/public_function
+--- FAIL: TestSchemaDriftFailsClosed (2.80s)
+    --- PASS: TestSchemaDriftFailsClosed/checksum (0.21s)
+    --- PASS: TestSchemaDriftFailsClosed/gap (0.21s)
+    --- PASS: TestSchemaDriftFailsClosed/RLS_disabled (0.22s)
+    --- PASS: TestSchemaDriftFailsClosed/extra_policy (0.23s)
+    --- PASS: TestSchemaDriftFailsClosed/weakened_read_policy (0.22s)
+    --- PASS: TestSchemaDriftFailsClosed/function_body (0.22s)
+    --- PASS: TestSchemaDriftFailsClosed/missing_function (0.22s)
+    --- FAIL: TestSchemaDriftFailsClosed/missing_ledger (0.22s)
+    --- PASS: TestSchemaDriftFailsClosed/unknown_version (0.21s)
+    --- PASS: TestSchemaDriftFailsClosed/RLS_not_forced (0.24s)
+    --- PASS: TestSchemaDriftFailsClosed/weakened_write_policy (0.31s)
+    --- PASS: TestSchemaDriftFailsClosed/public_function (0.28s)
+=== RUN   TestSchemaInterruptedAndFailedDDLIsAtomic
+=== RUN   TestSchemaInterruptedAndFailedDDLIsAtomic/failure
+=== RUN   TestSchemaInterruptedAndFailedDDLIsAtomic/cancel
+    migrations_integration_test.go:296: credential or gate not recovered schema maintenance admission closed
+=== RUN   TestSchemaInterruptedAndFailedDDLIsAtomic/terminate
+--- FAIL: TestSchemaInterruptedAndFailedDDLIsAtomic (0.62s)
+    --- PASS: TestSchemaInterruptedAndFailedDDLIsAtomic/failure (0.22s)
+    --- FAIL: TestSchemaInterruptedAndFailedDDLIsAtomic/cancel (0.19s)
+    --- PASS: TestSchemaInterruptedAndFailedDDLIsAtomic/terminate (0.20s)
+=== RUN   TestSchemaConcurrentMigratorsAndCanceledSession
+--- PASS: TestSchemaConcurrentMigratorsAndCanceledSession (0.18s)
+=== RUN   TestSchemaLegacyRequiresAcknowledgement
+--- PASS: TestSchemaLegacyRequiresAcknowledgement (0.19s)
+FAIL
+FAIL	ctlplne.dev/cratectl/internal/store	4.543s
+FAIL

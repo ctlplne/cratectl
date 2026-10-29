@@ -149,9 +149,18 @@ func (s *Store) AuthenticateWorker(ctx context.Context, token string) (WorkerIde
 		return i, ErrUnauthenticated
 	}
 	i.CredentialHash = crypt.Digest([]byte(token))
-	e := s.Pool.QueryRow(ctx, `SELECT tenant,actor FROM cratectl.authenticate_worker($1)`, i.CredentialHash).Scan(&i.Tenant, &i.Actor)
+	tx, release, e := s.schemaTx(ctx, pgx.TxOptions{AccessMode: pgx.ReadOnly})
+	if e != nil {
+		return i, e
+	}
+	defer release()
+	defer tx.Rollback(ctx)
+	e = tx.QueryRow(ctx, `SELECT tenant,actor FROM cratectl.authenticate_worker($1)`, i.CredentialHash).Scan(&i.Tenant, &i.Actor)
 	if errors.Is(e, pgx.ErrNoRows) {
 		e = ErrUnauthenticated
+	}
+	if e == nil {
+		e = tx.Commit(ctx)
 	}
 	return i, e
 }
@@ -161,10 +170,11 @@ func (s *Store) workerTx(ctx context.Context, i WorkerIdentity, fn func(pgx.Tx) 
 	if i.CredentialHash == "" {
 		return ErrUnauthenticated
 	}
-	tx, e := s.Pool.BeginTx(ctx, pgx.TxOptions{})
+	tx, release, e := s.schemaTx(ctx, pgx.TxOptions{})
 	if e != nil {
 		return e
 	}
+	defer release()
 	defer tx.Rollback(ctx)
 	if _, e = tx.Exec(ctx, `SELECT set_config('cratectl.tenant',$1,true),set_config('lock_timeout','5s',true),set_config('statement_timeout','30s',true)`, i.Tenant); e != nil {
 		return e

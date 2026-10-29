@@ -1,0 +1,246 @@
+{
+  "run": "bbe571688d",
+  "candidate": "e77cc45872a0924e27ecf6d55198ab8f116eb7a9",
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "web",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "source_dirty": true,
+  "artifact_digests": {
+    "bin/cratectld": "d1e95a9ab86efa85d0f318f7257f9ff909b19389d02345f88a9b011eae4f9b25",
+    "bin/cratectl": "cb401e1a5143e4c2b73b84afd6534f081ba7d943daedece01fac50ef3121f431"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "e77cc45872a0924e27ecf6d55198ab8f116eb7a9",
+      "vcs.time": "2026-10-29T15:59:53Z",
+      "vcs.modified": "true"
+    },
+    "bin/cratectl": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "e77cc45872a0924e27ecf6d55198ab8f116eb7a9",
+      "vcs.time": "2026-10-29T15:59:53Z",
+      "vcs.modified": "true"
+    }
+  },
+  "checks": [
+    "packaged console shell is public and contains no tenant credential",
+    "real-browser workflow suite passed without skips",
+    "real database maintenance returns 503 and browser keeps the active credential",
+    "browser retry succeeds with its original credential after maintenance releases admission",
+    "maintenance recovery retains no credential in DOM or browser persistent storage",
+    "browser traverses 1107 repositories without accumulating them in a selector or losing late records",
+    "server-provided reverse and first-page navigation work",
+    "repository search reaches a match beyond the original thousand-row ceiling",
+    "repository creation stays actionable even when the current list search excludes the new name",
+    "deep-linked repository stays selected outside the chooser first page",
+    "package paging reverses and server search finds a reference beyond the first thousand",
+    "summary lists fetch current full metadata separately and render hostile metadata as text",
+    "global package search matches Unicode case independently of the database locale",
+    "reader sees a granted late repository after 1105 inaccessible names",
+    "reader traverses empty authorized pages to reach a late visible artifact without hidden paths entering the DOM",
+    "packaged login shell makes only same-origin requests",
+    "keyboard skip link reaches content and native dialog returns focus",
+    "lost response after actual commit retries the original request and does not duplicate a repository",
+    "native configuration templates omit the active credential",
+    "console binds manual approval to the observed exact path and digest",
+    "stock npm publishes, review policy denies, then exact approval permits a real install",
+    "current console denial blocks a fresh native-client install",
+    "durable jobs and recorded observations are accessible from the console",
+    "UI admits and inspects a real completed inventory without security/deletion approval",
+    "audit export contains this tenant and explicitly states its page scope",
+    "hostile package path is rendered as text and cannot inject DOM/script",
+    "reader grant changes clear stale package data and administrative jobs remain denied",
+    "stale response and service recovery states remain explicit",
+    "late prior-tenant responses cannot populate a newly connected tenant",
+    "actual credential revocation clears the workspace and requires reconnect",
+    "unauthorized responses clear the session even when an intermediary returns a non-JSON body",
+    "credentials are absent from browser storage, cookies, URLs and templates",
+    "no uncaught browser errors",
+    "all named accessibility states have zero automated WCAG A/AA findings",
+    "pagination key is a private durable file outside the artifact root",
+    "native management first page has a continuation beyond the page bound",
+    "actual registry restart preserves key and accepts the earlier opaque cursor"
+  ],
+  "topology": "Real Chromium, native registry/worker and nonowner forced-RLS PostgreSQL. An empty owned database and two newly provisioned tenants; explicit loopback-only HTTP development profile on port 38443.",
+  "limits": [
+    "This browser run exercises the explicit loopback HTTP test profile. Normal native TLS trust remains separately qualified; browser CA deployment and network/production PKI are not established by this run.",
+    "Only tested views and named interactions are qualified. Full console, all WCAG behavior/assistive technologies/native browsers, production packaging and complete product scope remain open.",
+    "Management repository/artifact pages use current grants/policy, scoped encrypted scan cursors, bounded live traversal and server search. This is not a multi-page snapshot or full native-format index qualification."
+  ],
+  "build_source_matches_candidate": false,
+  "schema_browser": {
+    "checks": [
+      "real database maintenance returns 503 and browser keeps the active credential",
+      "browser retry succeeds with its original credential after maintenance releases admission",
+      "maintenance recovery retains no credential in DOM or browser persistent storage"
+    ],
+    "accessibility": [
+      {
+        "state": "schema maintenance with stale repository data",
+        "violations": 0
+      }
+    ],
+    "browser": "156.0.8078.4",
+    "scope": "One real database admission interruption and credential-preserving retry in Chromium. Full rolling-upgrade and accessibility qualification remain open."
+  },
+  "pagination_browser": {
+    "checks": [
+      "browser traverses 1107 repositories without accumulating them in a selector or losing late records",
+      "server-provided reverse and first-page navigation work",
+      "repository search reaches a match beyond the original thousand-row ceiling",
+      "repository creation stays actionable even when the current list search excludes the new name",
+      "deep-linked repository stays selected outside the chooser first page",
+      "package paging reverses and server search finds a reference beyond the first thousand",
+      "summary lists fetch current full metadata separately and render hostile metadata as text",
+      "global package search matches Unicode case independently of the database locale",
+      "reader sees a granted late repository after 1105 inaccessible names",
+      "reader traverses empty authorized pages to reach a late visible artifact without hidden paths entering the DOM"
+    ],
+    "accessibility": [
+      {
+        "state": "server search beyond first thousand",
+        "violations": []
+      },
+      {
+        "state": "paged reference detail",
+        "violations": []
+      },
+      {
+        "state": "mobile package pagination",
+        "violations": []
+      },
+      {
+        "state": "empty page of hidden OCI roots",
+        "violations": []
+      }
+    ],
+    "browser": "156.0.8078.4",
+    "fixture_setup": "Bulk owned SQL metadata fixtures only; publication and content-byte policy remain covered by the separate stock npm journey.",
+    "scope": "Complete bounded live management traversal and named Chromium states. Not a full native format, scale/performance or WCAG result."
+  },
+  "browser_stats": {
+    "startTime": "2026-10-29T16:27:46.682Z",
+    "duration": 32640.943,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "browser": {
+    "checks": [
+      "packaged login shell makes only same-origin requests",
+      "keyboard skip link reaches content and native dialog returns focus",
+      "lost response after actual commit retries the original request and does not duplicate a repository",
+      "native configuration templates omit the active credential",
+      "console binds manual approval to the observed exact path and digest",
+      "stock npm publishes, review policy denies, then exact approval permits a real install",
+      "current console denial blocks a fresh native-client install",
+      "durable jobs and recorded observations are accessible from the console",
+      "UI admits and inspects a real completed inventory without security/deletion approval",
+      "audit export contains this tenant and explicitly states its page scope",
+      "hostile package path is rendered as text and cannot inject DOM/script",
+      "reader grant changes clear stale package data and administrative jobs remain denied",
+      "stale response and service recovery states remain explicit",
+      "late prior-tenant responses cannot populate a newly connected tenant",
+      "actual credential revocation clears the workspace and requires reconnect",
+      "unauthorized responses clear the session even when an intermediary returns a non-JSON body",
+      "credentials are absent from browser storage, cookies, URLs and templates",
+      "no uncaught browser errors",
+      "all named accessibility states have zero automated WCAG A/AA findings"
+    ],
+    "accessibility": [
+      {
+        "state": "empty connection",
+        "violations": []
+      },
+      {
+        "state": "blank tenant",
+        "violations": []
+      },
+      {
+        "state": "repository creation dialog",
+        "violations": []
+      },
+      {
+        "state": "exact-digest approval dialog",
+        "violations": []
+      },
+      {
+        "state": "populated package table",
+        "violations": []
+      },
+      {
+        "state": "jobs",
+        "violations": []
+      },
+      {
+        "state": "job detail",
+        "violations": []
+      },
+      {
+        "state": "empty storage",
+        "violations": []
+      },
+      {
+        "state": "completed inventory",
+        "violations": []
+      },
+      {
+        "state": "reference sweep preview",
+        "violations": []
+      },
+      {
+        "state": "lease preview",
+        "violations": []
+      },
+      {
+        "state": "audit",
+        "violations": []
+      },
+      {
+        "state": "reader permission removed",
+        "violations": []
+      },
+      {
+        "state": "mobile repository view",
+        "violations": []
+      }
+    ],
+    "uncaught_errors": [],
+    "browser": "156.0.8078.4",
+    "automated_accessibility_scope": "axe WCAG 2/2.1/2.2 A/AA tags on named states, supplemented by tested keyboard actions; not a full WCAG conformance result.",
+    "controlled_faults": [
+      "response dropped after actual repository commit",
+      "503 stale-data recovery",
+      "delayed response across tenant reconnect"
+    ],
+    "screenshots": [
+      "console-repositories.png",
+      "console-mobile.png"
+    ]
+  },
+  "database": "cratectl_console_bbe571688d",
+  "status": "passed"
+}

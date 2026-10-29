@@ -131,8 +131,9 @@ Config files are bounded and reject unknown fields. Production deployment,
 credential/PKI lifecycle, operating-system coverage, console accessibility,
 upgrade/recovery and the remaining product scope still need qualification.
 
-Schema migrations currently require a controlled maintenance window with registry
-and worker traffic stopped. Concurrent schema DDL has demonstrated a lock-order
-deadlock that aborts a live request. Dedicated test databases isolate migration
-replay from unrelated live-runtime tests; that isolation does not qualify rolling
-upgrades. Versioned online/rolling upgrade and recovery remain required work.
+Use the [schema upgrade guide](schema-upgrades.md) to inspect immutable migration
+receipts and adopt an older unversioned database in a controlled maintenance
+window. Current-schema repeats execute no DDL. New binaries coordinate database
+transactions through an advisory admission gate and return retryable maintenance
+responses. Old binaries require registry and worker shutdown before explicit
+adoption. Rolling upgrades, whole-transfer draining and recovery remain open.
