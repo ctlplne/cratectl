@@ -172,37 +172,69 @@ func (c *ociRegistryClient) get(ctx context.Context, p string, q url.Values, h h
 	if e != nil {
 		return response, e
 	}
-	for redirects := 0; ociDeliveryRedirect(response.StatusCode); redirects++ {
-		next, err := ociDeliveryLocation(response, redirects, c.redirectLimit, c.urlLimit)
-		response.Body.Close()
-		if err != nil {
-			return nil, err
+	return c.follow(ctx, response, h, p, false)
+}
+func (c *ociRegistryClient) getCatalog(ctx context.Context, p string, h http.Header) (*http.Response, error) {
+	response, e := c.originGet(ctx, func(bearer string) (*http.Response, error) { return c.origin.GetRegistryOnce(ctx, p, nil, h, bearer) })
+	if e != nil {
+		return response, e
+	}
+	return c.follow(ctx, response, h, p, true)
+}
+func (c *ociRegistryClient) destination(raw string) (*upstream.Endpoint, error) {
+	selected := c.origin
+	priority := selected.RegistryDeliveryScope(raw)
+	for _, endpoint := range c.delivery {
+		if n := endpoint.RegistryDeliveryScope(raw); n > priority {
+			selected, priority = endpoint, n
 		}
-		selected := c.origin
-		priority := selected.RegistryDeliveryScope(next)
-		for _, endpoint := range c.delivery {
-			if n := endpoint.RegistryDeliveryScope(next); n > priority {
-				selected, priority = endpoint, n
-			}
-		}
-		if priority == 0 {
-			return nil, upstream.ErrRedirect
-		}
-		if selected == c.origin {
-			response, e = c.originGet(ctx, func(bearer string) (*http.Response, error) {
+	}
+	if priority == 0 {
+		return nil, upstream.ErrDestination
+	}
+	return selected, nil
+}
+func (c *ociRegistryClient) fetchURL(ctx context.Context, raw string, h http.Header, p string, page bool) (*http.Response, error) {
+	selected, e := c.destination(raw)
+	if e != nil {
+		return nil, e
+	}
+	if selected == c.origin {
+		return c.originGet(ctx, func(bearer string) (*http.Response, error) {
+			if page && selected.RegistryPagePath(p, raw) {
 				if bearer != "" {
-					return selected.GetRegistryDelivery(ctx, next, h, bearer)
+					return selected.GetRegistryPage(ctx, p, raw, h, bearer)
 				}
-				return selected.GetRegistryDelivery(ctx, next, h)
-			})
-		} else {
-			response, e = selected.GetRegistryDelivery(ctx, next, h)
+				return selected.GetRegistryPage(ctx, p, raw, h)
+			}
+			if bearer != "" {
+				return selected.GetRegistryDelivery(ctx, raw, h, bearer)
+			}
+			return selected.GetRegistryDelivery(ctx, raw, h)
+		})
+	}
+	return selected.GetRegistryDelivery(ctx, raw, h)
+}
+func (c *ociRegistryClient) follow(ctx context.Context, response *http.Response, h http.Header, p string, page bool) (*http.Response, error) {
+	for redirects := 0; ociDeliveryRedirect(response.StatusCode); redirects++ {
+		next, e := ociDeliveryLocation(response, redirects, c.redirectLimit, c.urlLimit)
+		response.Body.Close()
+		if e != nil {
+			return nil, e
 		}
+		response, e = c.fetchURL(ctx, next, h, p, page)
 		if e != nil {
 			return response, e
 		}
 	}
 	return response, nil
+}
+func (c *ociRegistryClient) page(ctx context.Context, p, raw string, h http.Header) (*http.Response, error) {
+	response, e := c.fetchURL(ctx, raw, h, p, true)
+	if e != nil {
+		return response, e
+	}
+	return c.follow(ctx, response, h, p, true)
 }
 
 func ociDeliveryRedirect(status int) bool {

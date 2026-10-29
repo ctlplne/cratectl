@@ -277,3 +277,24 @@ func TestOCIProxyGraphFenceAndAtomicPublication(t *testing.T) {
 		t.Fatalf("cached graph hid child denial: %v", e)
 	}
 }
+
+func TestOCIGraphBudgetIsExplicitAndCheckedNodesRemainReusable(t *testing.T) {
+	s, ctx, i, repo, _, result := ociCacheFixture(t, 60)
+	member := result.OCI.Objects[1].Path
+	if e := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
+		budget := newGraphBudget()
+		budget.remaining = 1
+		if _, e := readArtifact(ctx, tx, repo, member, false, budget); e != nil {
+			return e
+		}
+		if _, e := readArtifact(ctx, tx, repo, member, false, budget); e != nil {
+			t.Fatalf("already checked node consumed another graph slot: %v", e)
+		}
+		if _, e := readArtifact(ctx, tx, repo, result.OCI.Objects[0].Path, false, budget); !errors.Is(e, ErrMetadataLimit) {
+			t.Fatalf("graph ceiling looked like policy denial and could be filtered into partial discovery: %v", e)
+		}
+		return nil
+	}); e != nil {
+		t.Fatal(e)
+	}
+}

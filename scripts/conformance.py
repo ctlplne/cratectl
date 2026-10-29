@@ -428,6 +428,15 @@ def oci():
  index_artifact=next(a for a in json.loads(req('/api/v1/repositories/containers/artifacts')[1])['items'] if a['media_type']=='application/vnd.oci.image.index.v1+json')
  req('/api/v1/repositories/containers/decisions',method='PUT',data={'path':index_artifact['path'],'digest':index_artifact['digest'],'decision':'allowed'},key=uuid.uuid4().hex)
  check('OCI approved index resolves exact child',json.loads(req('/v2/containers/proof/manifests/platforms')[1])['manifests'][0]['digest']==root_digest)
+ code,page,headers=req('/v2/containers/proof/tags/list?n=1')
+ check('OCI native tag page returns its next Link',code==200 and json.loads(page)['tags']==['platforms'] and bool(headers.get('Link')))
+ next_page=headers['Link'].split('<',1)[1].split('>',1)[0]
+ check('OCI native tag marker is exclusive',json.loads(req(next_page)[1])['tags']==['v1'])
+ check('OCI tag page supports conditional reads',req('/v2/containers/proof/tags/list?n=1',headers={'If-None-Match':headers['Etag']})[0]==304)
+ check('OCI tag page supports HEAD',req('/v2/containers/proof/tags/list?n=1',method='HEAD')[0]==200)
+ check('OCI zero tag page has no next Link',json.loads(req('/v2/containers/proof/tags/list?n=0')[1])['tags']==[] and 'Link'not in req('/v2/containers/proof/tags/list?n=0')[2])
+ check('OCI duplicate page parameters are rejected',req('/v2/containers/proof/tags/list?n=1&n=2')[0]==400)
+ check('OCI zero referrer page is empty',json.loads(req('/v2/containers/proof/referrers/'+root_digest+'?n=0')[1])['manifests']==[])
  stop();start()
  check('OCI referrers survive restart',any(item['digest']==attached_digest for item in json.loads(req('/v2/containers/proof/referrers/'+root_digest)[1])['manifests']))
  # Use the documented protocol to interrupt a chunked upload and resume it.

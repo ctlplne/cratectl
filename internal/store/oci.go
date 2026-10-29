@@ -233,3 +233,12 @@ func (s *Store) OCIReferrers(ctx context.Context, i Identity, repo, image, subje
 	})
 	return out, e
 }
+
+// CompareOCITags implements case-insensitive lexical order with an exact-case
+// tie break so last markers have a stable total ordering.
+func CompareOCITags(a, b string) int {
+	if order := strings.Compare(strings.ToLower(a), strings.ToLower(b)); order != 0 {
+		return order
+	}
+	return strings.Compare(a, b)
+}

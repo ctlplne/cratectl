@@ -1,0 +1,9 @@
+=== RUN   TestOCIStockDiscoveryPagesFallbackAndAtomicity
+    oci_discovery_integration_test.go:236: PASS: stock ORAS traverses governed downstream referrer/tag pages after complete opaque/signed upstream walks
+    oci_discovery_integration_test.go:280: PASS: filter context, zero pages and conditional downstream representations; refresh never treats a first-page ETag as a full catalog validator
+    oci_discovery_integration_test.go:293: PASS: later-page source failure cannot publish a partial referrer catalog or graph
+    oci_discovery_integration_test.go:302: PASS: stock ORAS discovers governed proxy referrers through the legacy sha256-subject tag after API 404
+    oci_discovery_integration_test.go:323: PASS: each native page rechecks current source/subject/referrer policy
+--- PASS: TestOCIStockDiscoveryPagesFallbackAndAtomicity (1.22s)
+PASS
+ok  	ctlplne.dev/cratectl/internal/conformance	2.378s

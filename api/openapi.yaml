@@ -70,7 +70,7 @@ paths:
                         networks: {type: array, minItems: 1, maxItems: 64, items: {type: string}}
                         credential_ref: {type: string, description: Operator-owned tenant-scoped reference; never a credential value.}
                         authentication: {type: string, enum: [bearer, basic], default: bearer}
-                        allow_signed_query: {type: boolean, default: false, description: OCI proxy redirects only. Permit bounded opaque query strings at this authority; signatures are validated by the source.}
+                        allow_signed_query: {type: boolean, default: false, description: OCI proxy delivery redirects and catalog links. Permit bounded opaque query strings at this authority; signatures are validated by the source. Exact origin catalog cursors use a resource-scoped permission.}
                     cache:
                       type: object
                       properties:

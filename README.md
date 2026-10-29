@@ -68,7 +68,9 @@ local proof; see [operator configuration](docs/operator/proxy-and-group.md). Oth
 formats still support hosted mode only. Full proxy/group semantics, content selectors,
 production S3, quotas, worker scheduling, scanners, identity federation, console,
 replication, migration, governance and the remaining format families are open.
-List endpoints currently cap at 1,000 rows; full cursor pagination is unfinished.
+Management list endpoints currently cap at 1,000 rows; full management cursor
+pagination is unfinished. Native OCI tags/referrers have bounded `n`/`last`
+pages and complete upstream page walks; see the OCI operator guide.
 Filesystem reads rehash the entire object before sending it. This detects
 same-length corruption but adds disk I/O and has not met transfer targets.
 OCI graph checks use a single database snapshot, bound traversal to depth 32 and

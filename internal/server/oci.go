@@ -3,7 +3,6 @@ package server
 
 import (
 	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -11,7 +10,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 
 	crypt "ctlplne.dev/cratectl/internal/crypto"
 	"ctlplne.dev/cratectl/internal/store"
@@ -218,33 +216,13 @@ func (s *Server) oci(w http.ResponseWriter, r *http.Request, i store.Identity, r
 			fail(w, 400, "DIGEST_INVALID", "Choose a SHA-256 subject and an optional artifact media type.")
 			return
 		}
-		_, referrers, e := s.ociDiscovery(ctx, i, repo, image, "referrers", ref, kind, forceRefresh(r))
-		if e != nil {
-			respondErr(w, e)
-			return
-		}
-		if kind != "" {
-			w.Header().Set("OCI-Filters-Applied", "artifactType")
-		}
-		data, _ := json.Marshal(map[string]any{"schemaVersion": 2, "mediaType": "application/vnd.oci.image.index.v1+json", "manifests": referrers})
-		if int64(len(data)) > s.NativeMetadataBytes {
-			respondErr(w, store.ErrMetadataLimit)
-			return
-		}
-		w.Header().Set("Content-Type", "application/vnd.oci.image.index.v1+json")
-		w.Header().Set("ETag", `"sha256:`+crypt.Digest(data)+`"`)
-		http.ServeContent(w, r, "referrers.json", time.Time{}, bytes.NewReader(data))
+		s.serveOCIDiscoveryPage(w, r, repo, image, "referrers", ref, kind, i)
 	case "tags/list":
-		if r.Method != "GET" {
-			fail(w, 405, "UNSUPPORTED", "List tags with GET.")
+		if r.Method != "GET" && r.Method != "HEAD" {
+			fail(w, 405, "UNSUPPORTED", "List tags with GET or HEAD.")
 			return
 		}
-		tags, _, e := s.ociDiscovery(ctx, i, repo, image, "tags/list", "", "", forceRefresh(r))
-		if e != nil {
-			respondErr(w, e)
-			return
-		}
-		writeJSON(w, 200, map[string]any{"name": repo.Name + "/" + image, "tags": tags})
+		s.serveOCIDiscoveryPage(w, r, repo, image, "tags/list", "", "", i)
 	default:
 		fail(w, 404, "UNSUPPORTED", "This OCI operation is not implemented; see the format ledger.")
 	}

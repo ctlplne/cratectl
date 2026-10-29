@@ -54,13 +54,16 @@ func (e *Endpoint) RegistryDeliveryScope(raw string) int {
 // are validated but never re-encoded: changing their order/escaping can break a
 // source's signature. Ordinary durable package URLs still use AllowsURL.
 func (e *Endpoint) RegistryDeliveryPriority(raw string) int {
+	return e.registryDeliveryPriority(raw, e.allowSignedQuery)
+}
+func (e *Endpoint) registryDeliveryPriority(raw string, allowQuery bool) int {
 	priority := e.RegistryDeliveryScope(raw)
 	if priority == 0 {
 		return 0
 	}
 	u, _ := url.Parse(raw)
 	if u.RawQuery != "" || u.ForceQuery {
-		if !e.allowSignedQuery || u.RawQuery == "" || len(u.RawQuery) > e.deliveryLimits.QueryBytes {
+		if !allowQuery || u.RawQuery == "" || len(u.RawQuery) > e.deliveryLimits.QueryBytes {
 			return 0
 		}
 		values, err := url.ParseQuery(u.RawQuery)
@@ -93,6 +96,25 @@ func (e *Endpoint) GetRegistryDelivery(ctx context.Context, raw string, validato
 		return nil, ErrDestination
 	}
 	u, _ := url.Parse(raw)
+	response, err := e.getRegistryOnce(ctx, u, validators, bearer...)
+	return response, sanitizeRegistryError(ctx, err)
+}
+
+// GetRegistryPage permits an opaque pagination query only at the exact native
+// catalog resource constructed by the caller. Other delivery URIs still require
+// the endpoint's explicit signed-query permission.
+func (e *Endpoint) RegistryPagePath(p, raw string) bool {
+	u, err := url.Parse(raw)
+	return SafePath(p) && err == nil && u.Scheme == e.base.Scheme && u.Host == e.base.Host && u.User == nil && u.Fragment == "" && u.Opaque == "" && u.Path == e.base.Path+p
+}
+func (e *Endpoint) GetRegistryPage(ctx context.Context, p, raw string, validators http.Header, bearer ...string) (*http.Response, error) {
+	if !e.RegistryPagePath(p, raw) || e.registryDeliveryPriority(raw, true) == 0 {
+		return nil, ErrDestination
+	}
+	u, _ := url.Parse(raw)
+	if u.Path != e.base.Path+p {
+		return nil, ErrDestination
+	}
 	response, err := e.getRegistryOnce(ctx, u, validators, bearer...)
 	return response, sanitizeRegistryError(ctx, err)
 }

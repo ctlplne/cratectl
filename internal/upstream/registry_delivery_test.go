@@ -68,3 +68,39 @@ func TestRegistryDeliveryExactConfiguredPath(t *testing.T) {
 		t.Fatal("adjacent path escaped delivery scope")
 	}
 }
+
+func TestRegistryPageQueryDoesNotBroadenDeliveryAuthority(t *testing.T) {
+	hits := 0
+	origin := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		hits++
+		if r.Header.Get("Authorization") != "Bearer owned-origin" {
+			t.Error("page lost its own origin credential")
+		}
+		w.WriteHeader(200)
+	}))
+	defer origin.Close()
+	endpoint, e := New(Config{URL: origin.URL + "/v2/", Networks: []string{"127.0.0.1/32"}}, "owned-origin", "127.0.0.1/32")
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer endpoint.Close()
+	path := "app/referrers/sha256:" + strings.Repeat("a", 64)
+	raw := origin.URL + "/v2/" + path + "?cursor=opaque%2Fpage"
+	response, e := endpoint.GetRegistryPage(context.Background(), path, raw, nil)
+	if e != nil {
+		t.Fatal(e)
+	}
+	response.Body.Close()
+	if _, e = endpoint.GetRegistryDelivery(context.Background(), raw, nil); e == nil {
+		t.Fatal("page query permission became generic signed-delivery permission")
+	}
+	if _, e = endpoint.GetRegistryPage(context.Background(), "other/referrers/sha256:"+strings.Repeat("b", 64), raw, nil); e == nil {
+		t.Fatal("page changed its native catalog scope")
+	}
+	if _, e = endpoint.GetRegistryPage(context.Background(), path, raw+strings.Repeat("q", 9000), nil); e == nil {
+		t.Fatal("page exceeded operator query budget")
+	}
+	if hits != 1 {
+		t.Fatalf("rejected page made an extra request: %d", hits)
+	}
+}

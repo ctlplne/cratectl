@@ -24,6 +24,7 @@ func (s *Store) OCIDiscovery(ctx context.Context, i Identity, repo, image, kind,
 		seen := map[string]bool{}
 		total := 0
 		var metadataBytes int64
+		var resultBytes int64
 		if kind == "referrers" {
 			for _, source := range members {
 				var exists bool
@@ -67,6 +68,7 @@ func (s *Store) OCIDiscovery(ctx context.Context, i Identity, repo, image, kind,
 				}
 				catalog = &c
 			}
+			budget := ociGraphBudget(source, admissions)
 			type candidate struct{ name, digest, path string }
 			candidates := []candidate{}
 			if kind == "tags/list" {
@@ -123,7 +125,7 @@ func (s *Store) OCIDiscovery(ctx context.Context, i Identity, repo, image, kind,
 					return ErrMetadataLimit
 				}
 				seen[c.name] = true
-				a, e := readArtifact(ctx, tx, source.Name, c.path, source.RequireReview || endpoint.RequireReview, ociGraphBudget(source, admissions))
+				a, e := readArtifact(ctx, tx, source.Name, c.path, source.RequireReview || endpoint.RequireReview, budget)
 				if errors.Is(e, ErrDenied) || errors.Is(e, ErrNotFound) {
 					continue
 				}
@@ -131,6 +133,10 @@ func (s *Store) OCIDiscovery(ctx context.Context, i Identity, repo, image, kind,
 					return e
 				}
 				if kind == "tags/list" {
+					resultBytes += int64(len(c.name) + 3)
+					if resultBytes > byteLimit {
+						return ErrMetadataLimit
+					}
 					tags = append(tags, c.name)
 					continue
 				}
@@ -139,13 +145,22 @@ func (s *Store) OCIDiscovery(ctx context.Context, i Identity, repo, image, kind,
 					return ErrConflict
 				}
 				if filter == "" || filter == metadata.ArtifactType {
-					referrers = append(referrers, OCIReferrer{OCIDescriptor{a.MediaType, "sha256:" + a.Digest, a.Size}, metadata.ArtifactType, metadata.Annotations})
+					ref := OCIReferrer{OCIDescriptor{a.MediaType, "sha256:" + a.Digest, a.Size}, metadata.ArtifactType, metadata.Annotations}
+					encoded, e := json.Marshal(ref)
+					if e != nil {
+						return e
+					}
+					resultBytes += int64(len(encoded) + 1)
+					if resultBytes > byteLimit {
+						return ErrMetadataLimit
+					}
+					referrers = append(referrers, ref)
 				}
 			}
 		}
 		return nil
 	})
-	sort.Strings(tags)
+	sort.Slice(tags, func(a, b int) bool { return CompareOCITags(tags[a], tags[b]) < 0 })
 	sort.Slice(referrers, func(a, b int) bool { return referrers[a].Digest < referrers[b].Digest })
 	return tags, referrers, e
 }

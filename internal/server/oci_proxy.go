@@ -7,10 +7,9 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"mime"
 	"net/http"
-	"net/url"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -37,6 +36,7 @@ type ociGraphFill struct {
 	memberCaches    map[string]store.OCIMemberCache
 	rootResponse    *http.Response
 	rootCache       *store.OCIMemberCache
+	catalogPath     string
 }
 
 func (g *ociGraphFill) remember(path string, response *http.Response) error {
@@ -254,6 +254,13 @@ func (s *Server) fillOCIProxy(parent context.Context, i store.Identity, repo sto
 			}
 			validators.Del("If-Modified-Since")
 		}
+		// A page validator is not a validator for the complete collection. Walk
+		// catalog metadata unconditionally so newly linked pages cannot be hidden by
+		// an unchanged first-page ETag or a 304 that omits Link.
+		if catalog {
+			validators.Del("If-None-Match")
+			validators.Del("If-Modified-Since")
+		}
 		validators.Set("Accept", ociManifestAccept)
 		if kind == "tags/list" {
 			validators.Set("Accept", "application/json")
@@ -264,7 +271,24 @@ func (s *Server) fillOCIProxy(parent context.Context, i store.Identity, repo sto
 		if ref != "" {
 			requestPath += "/" + ref
 		}
-		response, err := client.get(ctx, requestPath, nil, validators)
+		var response *http.Response
+		var err error
+		if catalog {
+			response, err = client.getCatalog(ctx, requestPath, validators)
+		} else {
+			response, err = client.get(ctx, requestPath, nil, validators)
+		}
+		fallbackPath := ""
+		if err == nil && catalog && kind == "referrers" && response.StatusCode == 404 {
+			response.Body.Close()
+			fallbackPath = image + "/manifests/" + strings.Replace(ref, ":", "-", 1)
+			response, err = client.getCatalog(ctx, fallbackPath, http.Header{"Accept": {ociIndexMediaType}})
+			if err == nil && response.StatusCode == 404 {
+				response.Body.Close()
+				empty, _ := json.Marshal(map[string]any{"schemaVersion": 2, "mediaType": ociIndexMediaType, "manifests": []any{}})
+				response = &http.Response{StatusCode: 200, Header: http.Header{"Content-Type": {ociIndexMediaType}, "Cache-Control": {"max-age=" + strconv.Itoa(repo.Settings.Cache.NegativeSeconds)}}, Body: io.NopCloser(bytes.NewReader(empty)), Request: response.Request, ContentLength: int64(len(empty))}
+			}
+		}
 		e = err
 		if e == nil {
 			defer response.Body.Close()
@@ -302,38 +326,17 @@ func (s *Server) fillOCIProxy(parent context.Context, i store.Identity, repo sto
 					header := response.Header.Clone()
 					header.Set("Content-Type", cached.MediaType)
 					var body io.ReadCloser
-					if catalog {
-						var c store.OCICatalog
-						if json.Unmarshal(cached.Metadata, &c) != nil {
-							e = store.ErrConflict
-							break
-						}
-						var data []byte
-						if kind == "tags/list" {
-							names := []string{}
-							for tag := range c.Tags {
-								names = append(names, tag)
-							}
-							sort.Strings(names)
-							data, _ = json.Marshal(map[string]any{"name": upstreamOCIImage(repo, image), "tags": names})
-							header.Set("Content-Type", "application/json")
-						} else {
-							data, _ = json.Marshal(map[string]any{"schemaVersion": 2, "mediaType": "application/vnd.oci.image.index.v1+json", "manifests": c.Referrers})
-							header.Set("Content-Type", "application/vnd.oci.image.index.v1+json")
-						}
-						body = io.NopCloser(bytes.NewReader(data))
-					} else {
-						body, err = s.Blobs.OpenVerified(ctx, i.Tenant, cached.Digest, cached.Size)
-						if err != nil {
-							e = err
-							break
-						}
+					body, err = s.Blobs.OpenVerified(ctx, i.Tenant, cached.Digest, cached.Size)
+					if err != nil {
+						e = err
+						break
 					}
 					response = &http.Response{StatusCode: 200, Header: header, Body: body, Request: response.Request, ContentLength: -1}
 					defer body.Close()
 					rootCache = &store.OCIMemberCache{ETag: lease.ETag, Modified: lease.Modified, FreshSeconds: result.FreshSeconds, StaleSeconds: result.StaleSeconds}
 				}
 				g := ociGraphFill{server: s, client: client, ctx: ctx, identity: i, repo: repo, image: image, objects: map[string]store.Artifact{}, stack: map[string]bool{}, fresh: result.FreshSeconds, stale: result.StaleSeconds}
+				g.catalogPath = fallbackPath
 				g.rootResponse = response
 				g.rootCache = rootCache
 				publication := &store.OCIPublication{Image: image, Tags: map[string]string{}}
@@ -343,6 +346,10 @@ func (s *Server) fillOCIProxy(parent context.Context, i store.Identity, repo sto
 					index, e = g.catalog(kind, ref, response)
 					if e == nil {
 						data, _ := json.Marshal(index)
+						if int64(len(data)) > s.NativeMetadataBytes {
+							e = store.ErrMetadataLimit
+							break
+						}
 						var object blob.Object
 						object, e = s.Blobs.Put(ctx, i.Tenant, bytes.NewReader(data), "", int64(len(data)))
 						result.Object = &object
@@ -380,7 +387,7 @@ func (s *Server) fillOCIProxy(parent context.Context, i store.Identity, repo sto
 					sort.Slice(publication.Objects, func(a, b int) bool { return publication.Objects[a].Path < publication.Objects[b].Path })
 					result.OCI = publication
 					publication.MemberCaches = g.memberCaches
-					if kind == "tags/list" && response.Header.Get("Link") != "" {
+					if catalog {
 						result.ETag = ""
 						result.Modified = ""
 					}
@@ -433,122 +440,4 @@ func (s *Server) fillOCIProxy(parent context.Context, i store.Identity, repo sto
 		}
 	}
 	return err
-}
-
-func (g *ociGraphFill) catalog(kind, subject string, response *http.Response) (store.OCICatalog, error) {
-	catalog := store.OCICatalog{Image: g.image}
-	if kind == "tags/list" {
-		catalog.Tags = map[string]string{}
-		seen := map[string]bool{}
-		for page := 0; page < 32; page++ {
-			if e := g.response(response); e != nil {
-				return catalog, e
-			}
-			data, e := io.ReadAll(io.LimitReader(response.Body, g.server.NativeMetadataBytes+1))
-			response.Body.Close()
-			g.metadata += int64(len(data))
-			g.bytes += int64(len(data))
-			if g.metadata > g.server.NativeMetadataBytes || g.bytes > g.server.OCIGraphBytes {
-				return catalog, store.ErrMetadataLimit
-			}
-			if e != nil || int64(len(data)) > g.server.NativeMetadataBytes || uniqueOCIJSON(data) != nil {
-				return catalog, store.ErrMetadataLimit
-			}
-			var index struct {
-				Name string   `json:"name"`
-				Tags []string `json:"tags"`
-			}
-			if json.Unmarshal(data, &index) != nil || index.Name != upstreamOCIImage(g.repo, g.image) {
-				return catalog, errUpstreamIntegrity
-			}
-			for _, tag := range index.Tags {
-				if !ociTag.MatchString(tag) || seen[tag] || len(seen) >= g.server.NativeTagLimit {
-					return catalog, store.ErrMetadataLimit
-				}
-				seen[tag] = true
-				a, e := g.manifest(tag, nil, nil, 0)
-				if e != nil {
-					return catalog, e
-				}
-				catalog.Tags[tag] = "sha256:" + a.Digest
-			}
-			link := response.Header.Get("Link")
-			if link == "" {
-				return catalog, nil
-			}
-			next, e := ociNextPage(response, link)
-			if e != nil {
-				return catalog, e
-			}
-			response, e = g.client.get(g.ctx, g.image+"/tags/list", next, nil)
-			if e != nil {
-				return catalog, e
-			}
-		}
-		response.Body.Close()
-		return catalog, store.ErrMetadataLimit
-	}
-	if e := g.response(response); e != nil {
-		return catalog, e
-	}
-	// Referrer pagination is not implemented yet. A partial index must never
-	// masquerade as a complete, durably cached discovery result.
-	if response.Header.Get("Link") != "" {
-		return catalog, store.ErrMetadataLimit
-	}
-	data, e := io.ReadAll(io.LimitReader(response.Body, ociManifestBytes+1))
-	g.metadata += int64(len(data))
-	g.bytes += int64(len(data))
-	if g.metadata > g.server.NativeMetadataBytes || g.bytes > g.server.OCIGraphBytes {
-		return catalog, store.ErrMetadataLimit
-	}
-	if e != nil || len(data) > ociManifestBytes {
-		return catalog, store.ErrMetadataLimit
-	}
-	m, e := parseOCIManifest(data, response.Header.Get("Content-Type"))
-	if e != nil || m.MediaType != "application/vnd.oci.image.index.v1+json" {
-		return catalog, errUpstreamIntegrity
-	}
-	catalog.Subject = subject
-	catalog.Referrers = []store.OCIReferrer{}
-	for _, d := range m.Children {
-		a, e := g.manifest(d.Digest, &d.OCIDescriptor, nil, 0)
-		if e != nil {
-			return catalog, e
-		}
-		var metadata store.OCIManifestMetadata
-		if json.Unmarshal(a.Metadata, &metadata) != nil || metadata.Subject == nil || metadata.Subject.Digest != subject {
-			return catalog, errUpstreamIntegrity
-		}
-		catalog.Referrers = append(catalog.Referrers, store.OCIReferrer{OCIDescriptor: store.OCIDescriptor{MediaType: a.MediaType, Digest: "sha256:" + a.Digest, Size: a.Size}, ArtifactType: metadata.ArtifactType, Annotations: metadata.Annotations})
-	}
-	if _, e = g.manifest(subject, nil, nil, 0); e != nil && !errors.Is(e, errOCIOriginMissing) {
-		return catalog, e
-	}
-	return catalog, nil
-}
-
-func ociNextPage(response *http.Response, link string) (url.Values, error) {
-	if len(link) > 4096 || strings.Contains(link, ",") {
-		return nil, upstream.ErrDestination
-	}
-	left, rest, ok := strings.Cut(link, ">")
-	_, parameters, parameterErr := mime.ParseMediaType("application/octet-stream" + rest)
-	if !ok || !strings.HasPrefix(left, "<") || parameterErr != nil || parameters["rel"] != "next" {
-		return nil, upstream.ErrDestination
-	}
-	next, e := url.Parse(strings.TrimPrefix(left, "<"))
-	if e != nil {
-		return nil, upstream.ErrDestination
-	}
-	next = response.Request.URL.ResolveReference(next)
-	current := response.Request.URL
-	if next.Scheme != current.Scheme || next.Host != current.Host || next.Path != current.Path || next.RawPath != "" || next.User != nil || next.Fragment != "" {
-		return nil, upstream.ErrDestination
-	}
-	values, e := url.ParseQuery(next.RawQuery)
-	if e != nil || values.Get("last") == "" {
-		return nil, upstream.ErrDestination
-	}
-	return values, nil
 }

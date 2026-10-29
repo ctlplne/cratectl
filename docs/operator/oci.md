@@ -31,8 +31,8 @@ invalid manifest from its original build outputs before retrying.
 
 Use `oras attach --artifact-type MEDIA_TYPE REFERENCE FILE` to attach an SBOM or
 other evidence, and `oras discover REFERENCE` to discover permitted attachments.
-The native referrers API supports artifact-type filtering, HEAD, conditional
-reads and preserved annotations. Attachment bytes remain unassessed until a
+The native referrers API supports artifact-type filtering, pagination, HEAD,
+conditional reads and preserved annotations. Attachment bytes remain unassessed until a
 policy decision says otherwise; storing a signature does not verify it.
 
 An attachment may arrive before its subject. Once the subject exists, its exact
@@ -105,8 +105,39 @@ Explicitly approved CDN delivery and opaque query credentials have owned
 transport and stock-client/PostgreSQL proof. One pinned Linux arm64 image also has real Docker Hub/token/CloudFront proof.
 Other providers and registry/token-service/client/platform combinations still
 need qualification.
-Full Docker/Podman/Helm, referrer fallback/pagination, deletion, signatures,
+Full Docker/Podman/Helm, descriptor URL fallback, deletion, signatures,
 lifecycle and security/fault/production campaigns remain open.
+
+For native tags and referrers, send `n=100` and follow the returned relative
+`Link` with `rel="next"`. The link retains the artifact-type filter and includes
+an exclusive `last` marker. Use one nonnegative `n` and one valid tag or digest
+marker; malformed or duplicate values return 400. `n=0` and exhausted pages return
+empty arrays without a next link. GET and HEAD support representation ETags.
+Each page rechecks current grants and policy, so concurrent mutations can change
+later pages. A cursor does not retain an old policy snapshot.
+
+Proxy discovery walks every source page before committing a complete catalog.
+Opaque origin cursors are permitted only at the exact requested catalog resource;
+another path or authority requires the approved delivery configuration described
+below. Raw query bytes are preserved. A later-page error cannot publish a partial
+graph or catalog. Catalog metadata is fetched unconditionally because a first-page
+ETag cannot validate every page. Manifest/blob validators remain supported.
+
+When the source referrers API returns 404, cratectl reads the legacy
+`sha256-HEX` referrers tag. A missing fallback index is an empty catalog; other
+errors and malformed indexes fail. Every discovered manifest must identify the
+requested subject and pass current graph policy. Legacy discovery does not
+verify signatures or scan payloads.
+
+| Flag | Default | Meaning |
+| --- | --- | --- |
+| `--oci-catalog-pages` | 32 | Maximum source pages per complete catalog walk; maximum 4096 |
+| `--oci-page-size` | 1000 | Default and maximum entries per native page; maximum 100000 |
+
+Entry, metadata and graph budgets also apply to the complete view. A limit error
+requires reducing the catalog or deliberately adjusting the relevant configured
+budget; pages never silently truncate it. See [ADR 0011](../adr/0011-oci-complete-discovery.md)
+for the publication and cursor contract and its primary protocol references.
 
 
 To consume a registry that redirects blobs to another service, add that service's

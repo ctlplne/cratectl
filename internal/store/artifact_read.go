@@ -36,11 +36,14 @@ func newGraphBudget() *graphBudget {
 // snapshot. A result only admits this request. Missing graph metadata fails
 // closed, including pre-graph development records that need re-import/repair.
 func readArtifact(ctx context.Context, tx pgx.Tx, repo, path string, review bool, b *graphBudget) (Artifact, error) {
-	if b.stack[path] || b.depth >= 32 || b.remaining <= 0 {
+	if b.stack[path] {
 		return Artifact{}, ErrDenied
 	}
 	if a, ok := b.checked[path]; ok {
 		return a, nil
+	}
+	if b.depth >= 32 || b.remaining <= 0 {
+		return Artifact{}, ErrMetadataLimit
 	}
 	b.remaining--
 	b.depth++
