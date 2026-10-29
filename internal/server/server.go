@@ -39,6 +39,8 @@ func (a adapter) Serve(w http.ResponseWriter, r *http.Request, i store.Identity,
 
 type Server struct {
 	DB                           *store.Store
+	PaginationKey                *crypt.CursorKey
+	ManagementMetadataBytes      int
 	Blobs                        *blob.Local
 	PublicURL                    string
 	UpstreamCredentials          map[string]UpstreamCredential
@@ -75,6 +77,7 @@ type Server struct {
 
 func New(db *store.Store, b *blob.Local, public string) *Server {
 	s := &Server{DB: db, Blobs: b, PublicURL: strings.TrimRight(public, "/"), slots: make(chan struct{}, 16), fillSlots: make(chan struct{}, 4), TenantProxyLimit: 32, NativeVersionLimit: 10000, NativeTagLimit: 128, NativeMetadataBytes: 8 << 20, UpstreamCredentials: map[string]UpstreamCredential{}, adapters: map[string]Adapter{}}
+	s.ManagementMetadataBytes = 8 << 20
 	s.NPMPublishBytes, s.NPMExpandedBytes, s.NPMFileLimit, s.NPMPackageJSONBytes = 24<<20, 64<<20, 10000, 1<<20
 	s.PythonUploadBytes, s.PythonExpandedBytes, s.PythonFileLimit, s.PythonMetadataBytes = 64<<20, 256<<20, 10000, 1<<20
 	s.OCIGraphBytes = 4 << 30
@@ -90,6 +93,10 @@ func New(db *store.Store, b *blob.Local, public string) *Server {
 	s.OCIDeliveryLimits = upstream.DefaultRegistryDeliveryLimits()
 	for _, a := range []adapter{{"generic", s.raw}, {"maven", s.raw}, {"npm", s.npm}, {"pypi", s.pypi}, {"oci", s.oci}} {
 		s.adapters[a.Format()] = a
+	}
+	secret, keyError := crypt.Token()
+	if keyError == nil {
+		s.PaginationKey, _ = crypt.ParseCursorKey(secret)
 	}
 	return s
 }
@@ -305,12 +312,7 @@ func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Iden
 	if r.Method == "GET" {
 		switch {
 		case p == "repositories":
-			v, e := s.DB.Repositories(r.Context(), i)
-			if e != nil {
-				respondErr(w, e)
-				return
-			}
-			writeJSON(w, 200, map[string]any{"items": v, "limit": 1000})
+			s.managementPage(w, r, i, "")
 		case p == "audit":
 			if i.Role != "admin" {
 				fail(w, 403, "forbidden", "A tenant administrator token is required to inspect the full tenant audit journal.")
@@ -331,18 +333,10 @@ func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Iden
 				return
 			}
 			writeJSON(w, 200, map[string]any{"items": v, "limit": 1000})
+		case strings.HasPrefix(p, "repositories/") && strings.HasSuffix(p, "/artifacts/reference"):
+			s.managementReference(w, r, i, p)
 		case strings.HasPrefix(p, "repositories/") && strings.HasSuffix(p, "/artifacts"):
-			name := strings.TrimSuffix(strings.TrimPrefix(p, "repositories/"), "/artifacts")
-			if _, e := s.DB.Repository(r.Context(), i, name); e != nil {
-				respondErr(w, e)
-				return
-			}
-			v, e := s.DB.Artifacts(r.Context(), i, name, "", true)
-			if e != nil {
-				respondErr(w, e)
-				return
-			}
-			writeJSON(w, 200, map[string]any{"items": v, "limit": 1000})
+			s.managementPage(w, r, i, strings.TrimSuffix(strings.TrimPrefix(p, "repositories/"), "/artifacts"))
 		case strings.HasPrefix(p, "repositories/") && strings.HasSuffix(p, "/cache"):
 			name := strings.TrimSuffix(strings.TrimPrefix(p, "repositories/"), "/cache")
 			path := r.URL.Query().Get("path")
@@ -354,6 +348,22 @@ func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Iden
 			if e != nil {
 				respondErr(w, e)
 				return
+			}
+			writeJSON(w, 200, value)
+
+		case strings.HasPrefix(p, "repositories/") && !strings.Contains(strings.TrimPrefix(p, "repositories/"), "/"):
+			name := strings.TrimPrefix(p, "repositories/")
+			if !store.Name.MatchString(name) || r.URL.RawQuery != "" {
+				fail(w, 400, "invalid_repository", "Choose one repository name without query parameters.")
+				return
+			}
+			value, e := s.DB.Repository(r.Context(), i, name)
+			if e != nil {
+				respondErr(w, e)
+				return
+			}
+			if i.Role != "admin" {
+				value.Settings = store.RepositorySettings{}
 			}
 			writeJSON(w, 200, value)
 

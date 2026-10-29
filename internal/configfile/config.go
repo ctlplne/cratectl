@@ -11,19 +11,23 @@ import (
 )
 
 type Runtime struct {
-	Version          int    `json:"version"`
-	DSN              string `json:"database_dsn"`
-	Listen           string `json:"listen"`
-	PublicURL        string `json:"public_url"`
-	Objects          string `json:"objects"`
-	TLSCert          string `json:"tls_cert"`
-	TLSKey           string `json:"tls_key"`
-	WorkerIdentities string `json:"worker_identities"`
+	PaginationKeyFile string `json:"pagination_key_file,omitempty"`
+	Version           int    `json:"version"`
+	DSN               string `json:"database_dsn"`
+	Listen            string `json:"listen"`
+	PublicURL         string `json:"public_url"`
+	Objects           string `json:"objects"`
+	TLSCert           string `json:"tls_cert"`
+	TLSKey            string `json:"tls_key"`
+	WorkerIdentities  string `json:"worker_identities"`
 }
 
 func (c Runtime) Validate() error {
 	if c.Version != 1 || c.DSN == "" || c.Listen == "" || c.PublicURL == "" {
 		return errors.New("invalid runtime configuration version or required fields")
+	}
+	if c.PaginationKeyFile != "" && !filepath.IsAbs(c.PaginationKeyFile) {
+		return errors.New("pagination key path must be absolute")
 	}
 	for _, p := range []string{c.Objects, c.TLSCert, c.TLSKey, c.WorkerIdentities} {
 		if !filepath.IsAbs(p) {

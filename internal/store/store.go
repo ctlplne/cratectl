@@ -298,14 +298,15 @@ func (s *Store) mutateIntent(ctx context.Context, i Identity, key, fingerprint, 
 }
 
 type Artifact struct {
-	Repository string          `json:"repository"`
-	Path       string          `json:"path"`
-	Digest     string          `json:"digest"`
-	Size       int64           `json:"size"`
-	MediaType  string          `json:"media_type"`
-	Metadata   json.RawMessage `json:"metadata"`
-	Decision   string          `json:"decision"`
-	Created    time.Time       `json:"created_at"`
+	MetadataOmitted bool            `json:"metadata_omitted,omitempty"`
+	Repository      string          `json:"repository"`
+	Path            string          `json:"path"`
+	Digest          string          `json:"digest"`
+	Size            int64           `json:"size"`
+	MediaType       string          `json:"media_type"`
+	Metadata        json.RawMessage `json:"metadata"`
+	Decision        string          `json:"decision"`
+	Created         time.Time       `json:"created_at"`
 }
 
 func scanArtifact(row pgx.Row, a *Artifact) error {
@@ -314,53 +315,11 @@ func scanArtifact(row pgx.Row, a *Artifact) error {
 
 // Artifacts returns metadata only for currently servable objects unless an admin
 // explicitly requests an inventory. This is shared by protocol metadata paths.
+// Artifacts returns the first bounded page for internal intake probes. Management
+// traversal uses ArtifactPage and its continuation window.
 func (s *Store) Artifacts(ctx context.Context, i Identity, repo, prefix string, inventory bool) ([]Artifact, error) {
-	out := []Artifact{}
-	e := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
-		if _, e := repositoryInTx(ctx, tx, i, repo, "read"); e != nil {
-			return e
-		}
-		rows, e := tx.Query(ctx, `SELECT `+artifactColumns+` FROM cratectl.artifacts a JOIN cratectl.repositories r ON (r.tenant,r.name)=(a.tenant,a.repository) `+decisionJoin+` WHERE a.repository=$1 AND starts_with(a.path,$2) AND ($3 OR (COALESCE(d.decision,a.decision)<>'denied' AND (NOT r.require_review OR COALESCE(d.decision,a.decision)='allowed'))) ORDER BY a.path LIMIT 1000`, repo, prefix, inventory && i.Role == "admin")
-		if e != nil {
-			return e
-		}
-		defer rows.Close()
-		for rows.Next() {
-			var a Artifact
-			if e = scanArtifact(rows, &a); e != nil {
-				return e
-			}
-			out = append(out, a)
-		}
-		err := rows.Err()
-		rows.Close()
-		if err != nil {
-			return err
-		}
-		if !inventory || i.Role != "admin" {
-			var review bool
-			if err = tx.QueryRow(ctx, `SELECT require_review FROM cratectl.repositories WHERE name=$1`, repo).Scan(&review); err != nil {
-				return err
-			}
-			filtered := out[:0]
-			for _, artifact := range out {
-				if isManifest(artifact.MediaType) {
-					_, err = readArtifact(ctx, tx, repo, artifact.Path, review, newGraphBudget())
-					if errors.Is(err, ErrDenied) || errors.Is(err, ErrNotFound) {
-						continue
-					}
-					if err != nil {
-						return err
-					}
-				}
-				filtered = append(filtered, artifact)
-			}
-			out = filtered
-		}
-
-		return rows.Err()
-	})
-	return out, e
+	items, _, e := s.ArtifactPage(ctx, i, repo, prefix, ListRequest{Limit: 1000}, inventory)
+	return items, e
 }
 func InsertArtifacts(ctx context.Context, tx pgx.Tx, i Identity, repo string, as []Artifact) error {
 	r, e := repositoryInTx(ctx, tx, i, repo, "write")

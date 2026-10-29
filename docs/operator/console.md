@@ -20,6 +20,9 @@ credential reference, never its value. More advanced source configuration remain
 available through the API. Restricted repositories require actor grants as well
 as an appropriate credential role.
 
+After creation, the confirmation card can open or configure the new repository
+even when the preserved search/page excludes its name.
+
 Review is enabled by default. Use **Client setup** to copy an endpoint or native
 configuration template, supply a scoped reader/writer credential privately, and
 publish with the package's ordinary client. The templates contain placeholders,
@@ -49,11 +52,37 @@ observation; a permission denial clears the affected resource data. Disconnect
 before changing tenants. In-flight requests abort, and late responses cannot
 populate the next tenant's workspace.
 
-Jobs, inventory, sweep observations and audit use their available server cursors.
-Repository and package-reference lists still have a legacy server bound (normally
-1,000 rows before visibility filtering). They may omit records even when fewer
-are visible. Local filtering and previous/next loaded rows search only that
-bounded response. Complete management pagination remains required.
+Repository and package searches run on the server across every currently visible
+record. Use **Search**, **Next page**, **Previous page** and **First page**; each
+response is bounded without imposing a total-result ceiling. The repository
+chooser also searches and pages without accumulating all records in the browser.
+A selected repository remains selected when browsing its chooser pages.
+
+Each page rechecks current credentials, grants and content decisions. OCI graphs
+can make a page empty even when more references exist; continue with **Next page**.
+Continuation cursors encrypt hidden scan positions. Lists request small summaries;
+**Inspect** fetches the current full reference and metadata separately. Operators can set
+`--management-metadata-bytes` (default 8 MiB, range 1 KiB–64 MiB) for management
+metadata pages and individual full records. Byte-shortened pages retain a
+continuation. An oversized full record fails explicitly; summary traversal still
+works, and the operator can raise the budget. An older
+observation does not authorize a later download or change.
+
+Pages are live observations rather than a multi-page snapshot. Concurrent additions
+before the current position require **First page** to include them. A policy or
+grant change can alter a later or previous page. Jobs, inventory, sweep observations
+and audit continue using their documented server cursors.
+
+The server persists a separate private `pagination.key` beside native runtime
+configuration. Existing configurations without its optional `pagination_key_file`
+field use the same adjacent path. Manual servers can pass `--pagination-key-file`;
+otherwise the key is created beside the object directory, outside its inventory.
+Protect its directory and share the same key across replicas. Startup atomically
+publishes complete private key bytes without replacing an existing key. Ordinary
+restart preserves cursors. Rotation invalidates earlier cursors; restart lists at
+the first page. Rotate before issuing 2^32 cursors under one key, the cipher's
+random-nonce use limit. Broader key rotation/deployment/HA qualification remains
+required.
 
 Keyboard users can use **Skip to content**, open dialogs, focus the first form
 field, close with Escape and return to the initiating control. Layouts support

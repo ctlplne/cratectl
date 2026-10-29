@@ -23,7 +23,32 @@ components:
       name: repository
       required: true
       schema: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$'}
+    ListLimit:
+      in: query
+      name: limit
+      schema: {type: integer, minimum: 1, maximum: 1000, default: 1000}
+      description: Maximum candidates per live page. Byte and graph-work budgets may shorten a page; follow returned cursors even when items is empty.
+    ListCursor:
+      in: query
+      name: cursor
+      schema: {type: string, maxLength: 3000}
+      description: Use the returned next or previous opaque cursor unchanged with the same credential, endpoint and filters. Restart at the first page after key rotation or an invalid cursor.
+    ListSearch:
+      in: query
+      name: q
+      schema: {type: string, maxLength: 256}
+      description: Literal case-insensitive substring search, at most 256 UTF-8 bytes without control characters. Repositories match name/format/mode; references match path/digest. Searches cover all authorized pages.
   schemas:
+    ManagementPage:
+      type: object
+      required: [items, limit, next, previous, scope]
+      properties:
+        items: {type: array, items: {type: object}}
+        limit: {type: integer}
+        next: {type: string}
+        previous: {type: string}
+        scope: {type: string}
+      description: Live repeatable-read page; no fixed total-result ceiling. Grants and ordinary decisions filter before SQL bounds; OCI graph checks may produce an empty visible page with continuation. Cursors encrypt hidden scan positions. Each request rechecks current credentials, grants and policy. Concurrent insertions before a cursor require a first-page restart.
     Error:
       type: object
       required: [error]
@@ -93,8 +118,17 @@ paths:
   /api/v1/repositories:
     get:
       operationId: listRepositories
+      parameters:
+        - {$ref: '#/components/parameters/ListLimit'}
+        - {$ref: '#/components/parameters/ListCursor'}
+        - {$ref: '#/components/parameters/ListSearch'}
       responses:
-        '200': {description: "Tenant-scoped items, currently limited to 1000; cursor pagination unfinished."}
+        '200':
+          description: Current authorized repositories; nonadministrators receive no source settings.
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ManagementPage'}
+        '400': {description: "Invalid, repeated or unknown query parameter, or tampered/differently scoped cursor."}
         '401': {description: "Missing, revoked or expired service credential."}
     post:
       operationId: createRepository
@@ -171,9 +205,47 @@ paths:
       - {$ref: '#/components/parameters/Repository'}
     get:
       operationId: listArtifacts
+      parameters:
+        - {$ref: '#/components/parameters/ListLimit'}
+        - {$ref: '#/components/parameters/ListCursor'}
+        - {$ref: '#/components/parameters/ListSearch'}
+        - in: query
+          name: metadata
+          schema: {type: string, enum: [omit]}
+          description: Optional bounded summary. Every returned reference sets metadata_omitted=true and metadata={}; fetch its current full reference separately.
       responses:
-        '200': {description: "Current tenant artifacts; admin sees quarantine, others see servable items only; maximum 1000."}
+        '200':
+          description: Current tenant references; administrator inventory includes quarantine, other roles see permitted references after complete OCI graph policy.
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ManagementPage'}
+        '400': {description: "Invalid, repeated or unknown query parameter, or tampered/differently scoped cursor."}
+        '403': {description: Current repository grant denied.}
         '404': {description: "Repository absent from caller tenant."}
+  /api/v1/repositories/{repository}:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+    get:
+      operationId: inspectRepository
+      responses:
+        '200': {description: Current authorized repository; source settings excluded for nonadministrators.}
+        '403': {description: Current repository grant denied.}
+        '404': {description: Repository absent from caller tenant.}
+  /api/v1/repositories/{repository}/artifacts/reference:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+    get:
+      operationId: inspectArtifactReference
+      parameters:
+        - in: query
+          name: path
+          required: true
+          schema: {type: string, maxLength: 2048}
+      responses:
+        '200': {description: Current full recorded reference and metadata. Administrators can inspect quarantine; other roles pass the current complete graph policy.}
+        '400': {description: Use exactly one canonical path query parameter.}
+        '403': {description: Current repository grant or content policy denied.}
+        '404': {description: Reference absent from caller tenant/repository.}
   /api/v1/repositories/{repository}/policy:
     parameters:
       - {$ref: '#/components/parameters/Repository'}

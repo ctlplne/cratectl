@@ -143,3 +143,7 @@ INSERT INTO cratectl.npm_tags(tenant,repository,package,tag,version)
  WHERE r.format='npm' AND a.metadata->>'name' IS NOT NULL
  ORDER BY a.tenant,a.repository,a.metadata->>'name',t.key,a.created_at DESC,a.path DESC
  ON CONFLICT DO NOTHING;
+
+-- Bytewise keyset ordering independent of the installation locale.
+CREATE INDEX IF NOT EXISTS repositories_management_page_idx ON cratectl.repositories(tenant,name COLLATE "C");
+CREATE INDEX IF NOT EXISTS artifacts_management_page_idx ON cratectl.artifacts(tenant,repository,path COLLATE "C");

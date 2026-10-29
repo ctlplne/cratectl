@@ -3,6 +3,7 @@ package main
 
 import (
 	"context"
+	"ctlplne.dev/cratectl/internal/configfile"
 	"encoding/json"
 	"errors"
 	"flag"
@@ -13,6 +14,7 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strings"
 	"syscall"
 	"time"
@@ -103,6 +105,7 @@ func run() error {
 		root := f.String("objects", ".private/objects", "durable object directory")
 		cert := f.String("tls-cert", "", "TLS certificate")
 		key := f.String("tls-key", "", "TLS key file")
+		paginationKey := f.String("pagination-key-file", "", "private shared cursor key; created atomically if missing")
 		dev := f.Bool("dev-loopback-http", false, "explicit development HTTP exception")
 		max := f.Int64("max-object-bytes", 1<<30, "per-object byte limit")
 		privateNetworks := f.String("allow-private-upstreams", "", "operator-authorized private upstream CIDRs, comma separated")
@@ -121,6 +124,7 @@ func run() error {
 
 		nativeTags := f.Int("native-tag-budget", 128, "maximum tags in a complete native package index")
 		nativeVersions := f.Int("native-version-budget", 10000, "maximum versions in a complete native index")
+		managementBytes := f.Int("management-metadata-bytes", 8<<20, "maximum metadata bytes per management page or reference, 1024–67108864")
 		nativeBytes := f.Int64("native-metadata-bytes", 8<<20, "maximum metadata bytes in a complete native index")
 		npmPublish := f.Int64("npm-publish-bytes", 24<<20, "maximum encoded npm publication document bytes")
 		npmExpanded := f.Int64("npm-expanded-bytes", 64<<20, "maximum expanded npm tarball bytes, including headers and padding")
@@ -152,6 +156,12 @@ func run() error {
 			}
 			set := flagSet(f)
 			dsn = c.DSN
+			if !set["pagination-key-file"] {
+				*paginationKey = c.PaginationKeyFile
+				if *paginationKey == "" {
+					*paginationKey = filepath.Join(filepath.Dir(*config), "pagination.key")
+				}
+			}
 			if !set["listen"] {
 				*listen = c.Listen
 			}
@@ -194,6 +204,21 @@ func run() error {
 			return e
 		}
 		h := server.New(db, b, *public)
+		if *managementBytes < 1024 || *managementBytes > 64<<20 {
+			return errors.New("management-metadata-bytes must be 1024–67108864")
+		}
+		h.ManagementMetadataBytes = *managementBytes
+		if *paginationKey == "" {
+			absolute, e := filepath.Abs(*root)
+			if e != nil {
+				return e
+			}
+			*paginationKey = filepath.Join(filepath.Dir(absolute), "."+filepath.Base(absolute)+"-pagination.key")
+		}
+		h.PaginationKey, e = configfile.PaginationKey(*paginationKey)
+		if e != nil {
+			return errors.New("cannot load or publish private pagination key; check pagination-key-file permissions and path")
+		}
 		if e := h.ConfigureInventory(*inventoryEntries, *inventoryDirectory); e != nil {
 			return errors.New("inventory budgets must be 1–2147483646")
 		}

@@ -15,7 +15,7 @@ def settings(name):
         if len(p)==2 and p[0]=='build'and '='in p[1]:k,v=p[1].split('=',1);out[k]=v
     return out
 scope=['cmd','internal','scripts','web','api','go.mod','go.sum','Makefile']
-result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope],text=True).strip()),'artifact_digests':{n:hashlib.sha256((ROOT/n).read_bytes()).hexdigest()for n in ['bin/cratectld','bin/cratectl']},'build_identity':{n:settings(n)for n in ['bin/cratectld','bin/cratectl']},'checks':checks,'topology':'Real Chromium, native registry/worker and nonowner forced-RLS PostgreSQL. An empty owned database and two newly provisioned tenants; explicit loopback-only HTTP development profile on port 38443.','limits':['This browser run exercises the explicit loopback HTTP test profile. Normal native TLS trust remains separately qualified; browser CA deployment and network/production PKI are not established by this run.','Only tested views and named interactions are qualified. Full console, all WCAG behavior/assistive technologies/native browsers, production packaging and complete product scope remain open.','Legacy repository/artifact list ceilings are explicitly partial; full management pagination remains required.']}
+result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope],text=True).strip()),'artifact_digests':{n:hashlib.sha256((ROOT/n).read_bytes()).hexdigest()for n in ['bin/cratectld','bin/cratectl']},'build_identity':{n:settings(n)for n in ['bin/cratectld','bin/cratectl']},'checks':checks,'topology':'Real Chromium, native registry/worker and nonowner forced-RLS PostgreSQL. An empty owned database and two newly provisioned tenants; explicit loopback-only HTTP development profile on port 38443.','limits':['This browser run exercises the explicit loopback HTTP test profile. Normal native TLS trust remains separately qualified; browser CA deployment and network/production PKI are not established by this run.','Only tested views and named interactions are qualified. Full console, all WCAG behavior/assistive technologies/native browsers, production packaging and complete product scope remain open.','Management repository/artifact pages use current grants/policy, scoped encrypted scan cursors, bounded live traversal and server search. This is not a multi-page snapshot or full native-format index qualification.']}
 result['build_source_matches_candidate']=all(s.get('vcs.modified')=='false'and s.get('vcs.revision')==result['candidate']for s in result['build_identity'].values())
 def check(label,value):
     if not value:raise AssertionError(label)
@@ -74,8 +74,23 @@ try:
         raise AssertionError('owned process exited during UI review')
     browser_env=dict(runtime_env,CRATECTL_CONSOLE_FIXTURE_JSON=str(fixture_path),PLAYWRIGHT_BROWSERS_PATH=str(ROOT/'.cache/playwright-browsers'),PLAYWRIGHT_JSON_OUTPUT_NAME=str(PRIVATE/'browser-results.json'))
     command([ROOT/'web/node_modules/.bin/playwright','test','--config',ROOT/'web/playwright.config.mjs'],browser_env)
-    report=json.loads((PRIVATE/'browser-results.json').read_text());check('real-browser workflow suite passed without skips',report['stats']['unexpected']==0 and report['stats']['skipped']==0 and report['stats']['expected']==2)
-    proof=json.loads((PRIVATE/'browser-proof.json').read_text());result['browser_stats']=report['stats'];result['browser']=proof;checks.extend(proof['checks']);result['database']=database;result['status']='passed'
+    report=json.loads((PRIVATE/'browser-results.json').read_text());check('real-browser workflow suite passed without skips',report['stats']['unexpected']==0 and report['stats']['skipped']==0 and report['stats']['expected']==3)
+    paging=json.loads((PRIVATE/'pagination-browser-proof.json').read_text());result['pagination_browser']=paging;checks.extend(paging['checks']);proof=json.loads((PRIVATE/'browser-proof.json').read_text());result['browser_stats']=report['stats'];result['browser']=proof;checks.extend(proof['checks']);result['database']=database
+    runtime_config=json.loads(Path(receipt['runtime_config']).read_text());key_file=Path(runtime_config['pagination_key_file']);key_bytes=key_file.read_bytes()
+    check('pagination key is a private durable file outside the artifact root',key_file.stat().st_mode&0o077==0 and key_file.parent==install)
+    def list_request(cursor=''):
+        request=urllib.request.Request(base+'/api/v1/repositories?limit=1'+('&cursor='+urllib.parse.quote(cursor)if cursor else''),headers={'Authorization':'Bearer '+(PRIVATE/'other.token').read_text().strip()})
+        with urllib.request.urlopen(request,timeout=10)as response:return json.loads(response.read())
+    first=list_request();check('native management first page has a continuation beyond the page bound',bool(first['next'])and len(first['items'])==1)
+    stop('registry');start('registry',[ROOT/'bin/cratectld','serve','--config',receipt['runtime_config'],'--dev-loopback-http','--public-url',base])
+    for _ in range(150):
+        try:
+            with urllib.request.urlopen(base+'/health/ready',timeout=1)as response:
+                if response.status==200:break
+        except Exception:time.sleep(.05)
+    else:raise AssertionError('restarted registry readiness timeout')
+    second=list_request(first['next']);check('actual registry restart preserves key and accepts the earlier opaque cursor',key_file.read_bytes()==key_bytes and len(second['items'])==1 and second['items'][0]['name']!=first['items'][0]['name'])
+    result['status']='passed'
 except KeyboardInterrupt:
     result['status']='manual-review-stopped'if args.serve else'failed'
 except BaseException as e:result['status']='failed';result['failure']=type(e).__name__+': '+str(e)

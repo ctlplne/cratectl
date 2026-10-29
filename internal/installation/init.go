@@ -128,7 +128,7 @@ func newPreparation(o Options) (preparation, error) {
 	if e != nil {
 		return preparation{}, e
 	}
-	c := configfile.Runtime{Version: 1, DSN: o.RuntimeDSN, Listen: o.Listen, PublicURL: o.PublicURL, Objects: filepath.Join(o.Directory, "objects"), TLSCert: filepath.Join(o.Directory, "server.crt"), TLSKey: filepath.Join(o.Directory, "server.key"), WorkerIdentities: filepath.Join(o.Directory, "workers.json")}
+	c := configfile.Runtime{PaginationKeyFile: filepath.Join(o.Directory, "pagination.key"), Version: 1, DSN: o.RuntimeDSN, Listen: o.Listen, PublicURL: o.PublicURL, Objects: filepath.Join(o.Directory, "objects"), TLSCert: filepath.Join(o.Directory, "server.crt"), TLSKey: filepath.Join(o.Directory, "server.key"), WorkerIdentities: filepath.Join(o.Directory, "workers.json")}
 	return preparation{Version: 1, Input: store.BootstrapInput{InstallationID: crypt.Digest([]byte(nonce)), Tenant: o.Tenant, Actor: o.Actor, AdminToken: a, WorkerToken: w, ExpiresAt: now.Add(o.Lifetime)}, Runtime: c, TLS: tls}, nil
 }
 func Initialize(ctx context.Context, o Options) (Receipt, error) {

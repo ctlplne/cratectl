@@ -23,9 +23,9 @@ Mutations preview their affected repository, digest or job. An uncertain respons
 retains the original request bytes/key for explicit retry. Inspection admission
 is pending work, not successful inspection or security approval. Read errors and
 denied states have recovery actions. Every list states its scope: jobs, storage
-and audit use available cursors; the legacy repository/artifact endpoints remain
-bounded before visibility filtering and explicitly partial, even below their result ceiling. Complete management
-pagination remains required rather than being implied by a filtered table.
+and audit use available cursors; repository/artifact management lists now use bounded server search and encrypted
+continuation cursors as specified in [the pagination decision](0019-management-pagination.md).
+Complete native indexes and every management workflow remain separate obligations.
 
 The visual grammar references the studio's warm paper surfaces, light navigation,
 system typography, restrained borders and clear status labels. Keyboard focus,

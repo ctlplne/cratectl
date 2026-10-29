@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: BUSL-1.1
 export type Identity={tenant:string;actor:string;role:'admin'|'writer'|'reader';public_url:string;formats:string[]};
 export type Repository={name:string;format:string;mode:string;access:string;require_review:boolean;settings:Record<string,unknown>};
-export type Artifact={path:string;digest:string;size:number;decision:string;media_type:string;created_at:string;metadata:unknown};
+export type Artifact={path:string;digest:string;size:number;decision:string;media_type:string;created_at:string;metadata:unknown;metadata_omitted?:boolean};
 export type Job={sequence:number;task:string;handler:string;kind:string;queue:string;state:string;attempts:number;generation:number;last_error:string;updated_at:string;target:Record<string,unknown>};
 export type Audit={sequence:number;payload:string;hash:string;previous_hash:string;created_at:string};
-export type Page<T>={items:T[];next?:string;more?:boolean;limit?:number};
+export type Page<T>={items:T[];next?:string;previous?:string;more?:boolean;limit?:number;scope?:string};
 export type RequestSpec={method:'POST'|'PUT';path:string;body:unknown};
 export type PendingRequest={method:'POST'|'PUT';path:string;body:string;key:string};
 export class ApiError extends Error {

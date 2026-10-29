@@ -8,6 +8,7 @@ export function useResource<T>(client:Client,path:string,revision:number=0){
   const [value,setValue]=useState<{path:string;data?:T;error?:ApiError;loading:boolean;at:number}>({path,loading:true,at:0});
   const [refresh,setRefresh]=useState(0);
   useEffect(()=>{
+    if(!path){setValue({path,loading:false,at:0});return}
     const controller=new AbortController();
     setValue(v=>({path,data:v.path===path?v.data:undefined,loading:true,at:v.path===path?v.at:0}));
     client.request<T>(path,{signal:controller.signal}).then(r=>{if(!controller.signal.aborted&&!client.closed)setValue({path,data:r.value,loading:false,at:Date.now()})}).catch(e=>{

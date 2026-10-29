@@ -362,6 +362,15 @@
       "candidate": "60cf94768cd15df958c0bbb24e2e33e452e5f690",
       "native_replay": "evidence/2026-10-29/console-2e695cc1ff.json",
       "native_race_replay": "evidence/2026-10-29/console-f5bd63f36c.json"
+    },
+    {
+      "id": "DEFECT.0034",
+      "summary": "Management repository listing omitted a granted late repository after the first 1000 inaccessible names and provided no continuation",
+      "first_failure": "evidence/2026-10-29/pagination-first-failure.json",
+      "first_failure_source": "Clean production binary from 60cf94768cd15df958c0bbb24e2e33e452e5f690, retained with build identity and SHA-256.",
+      "state": "repaired; final clean qualification pending",
+      "repair": "Filter grants before keyset page bounds; use bounded forward/reverse and server search with current RLS/credential checks. Artifact continuation uses encrypted scoped positions through hidden OCI candidates, summaries and byte-shortened pages.",
+      "limits": "Stored repository/reference management traversal only. Complete native indexes, every workflow/platform, HA/performance, accessibility and broad readiness remain separate required scope."
     }
   ]
 }

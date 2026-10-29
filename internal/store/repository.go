@@ -78,44 +78,6 @@ func (s *Store) Repository(ctx context.Context, i Identity, name string) (Reposi
 func (s *Store) AuthorizeWrite(ctx context.Context, i Identity, name string) error {
 	return s.Tx(ctx, i, false, func(tx pgx.Tx) error { _, e := repositoryInTx(ctx, tx, i, name, "write"); return e })
 }
-func (s *Store) Repositories(ctx context.Context, i Identity) ([]Repository, error) {
-	out := []Repository{}
-	e := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
-		rows, e := tx.Query(ctx, `SELECT name FROM cratectl.repositories ORDER BY name LIMIT 1000`)
-		if e != nil {
-			return e
-		}
-		names := []string{}
-		for rows.Next() {
-			var n string
-			if e = rows.Scan(&n); e != nil {
-				rows.Close()
-				return e
-			}
-			names = append(names, n)
-		}
-		e = rows.Err()
-		rows.Close()
-		if e != nil {
-			return e
-		}
-		for _, n := range names {
-			r, e := repositoryInTx(ctx, tx, i, n, "read")
-			if errors.Is(e, ErrDenied) {
-				continue
-			}
-			if e != nil {
-				return e
-			}
-			if i.Role != "admin" {
-				r.Settings = RepositorySettings{}
-			}
-			out = append(out, r)
-		}
-		return nil
-	})
-	return out, e
-}
 func ValidateRepository(r *Repository) error {
 	if r.Settings.PythonIndexFormat != "" && (r.Format != "pypi" || r.Mode != "proxy" || (r.Settings.PythonIndexFormat != "auto" && r.Settings.PythonIndexFormat != "html" && r.Settings.PythonIndexFormat != "json")) {
 		return errors.New("Python index format requires a PyPI proxy and auto, html or json")
