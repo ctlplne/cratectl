@@ -80,7 +80,7 @@ func (s *Store) MavenCatalogArtifact(ctx context.Context, i Identity, repo, p st
 		if r.Format != "maven" || path.Base(p) != "maven-metadata.xml" {
 			return ErrConflict
 		}
-		a, e = readArtifact(ctx, tx, repo, p, false, newGraphBudget())
+		a, e = readArtifact(ctx, tx, repo, p, false, repositoryReadBudget(r))
 		return e
 	})
 	return a, e
@@ -102,7 +102,7 @@ func (s *Store) MavenMetadataView(ctx context.Context, i Identity, repo, p strin
 		remaining, bytes := maxRecords, maxBytes
 		for _, r := range members {
 			member := MavenMember{Repository: r, Artifacts: []Artifact{}}
-			rows, e := tx.Query(ctx, `SELECT a.repository,a.path,a.digest,a.size,a.media_type,CASE WHEN a.path=$4 THEN a.metadata ELSE '{}'::jsonb END,COALESCE(d.decision,a.decision),a.created_at FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND starts_with(a.path,$2) ORDER BY a.path LIMIT $3`, r.Name, path.Dir(p)+"/", remaining+1, p)
+			rows, e := tx.Query(ctx, `SELECT a.repository,a.path,a.digest,a.size,a.media_type,CASE WHEN a.path=$4 THEN a.metadata ELSE '{}'::jsonb END,COALESCE(d.decision,a.decision),a.created_at,a.source_revision FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND starts_with(a.path,$2) AND ($5::boolean OR a.source_revision=$6) ORDER BY a.path LIMIT $3`, r.Name, path.Dir(p)+"/", remaining+1, p, r.Mode != "proxy", r.SourceRevision)
 			if e != nil {
 				return e
 			}
@@ -155,6 +155,9 @@ func (s *Store) MavenMetadataView(ctx context.Context, i Identity, repo, p strin
 				}
 				if e != nil {
 					return e
+				}
+				if retrieval.SourceRevision != r.SourceRevision {
+					return ErrSourceChanged
 				}
 				member.CacheGeneration = retrieval.Generation
 				member.CacheState = retrieval.State

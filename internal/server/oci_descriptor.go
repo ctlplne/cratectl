@@ -19,7 +19,7 @@ func (g *ociGraphFill) retainedDescriptor(kind string, expected *store.OCIDescri
 	if g.server.DB == nil {
 		return nil, nil
 	}
-	parents, e := g.server.DB.OCIReferenceParents(g.ctx, g.identity, g.repo.Name, g.image, kind, expected.Digest, g.server.OCIDescriptorParents, g.server.NativeMetadataBytes-g.metadata)
+	parents, e := g.server.DB.OCIReferenceParents(g.ctx, g.identity, g.repo.Name, g.image, kind, expected.Digest, g.server.OCIDescriptorParents, g.server.NativeMetadataBytes-g.metadata, g.repo.SourceRevision)
 	if e != nil {
 		return nil, e
 	}
@@ -100,7 +100,7 @@ func (g *ociGraphFill) retainedDescriptor(kind string, expected *store.OCIDescri
 // alternate URLs. Recover the canonical subject from verified cached referent
 // bytes and walk that source index again when refreshing a direct referent pin.
 func (g *ociGraphFill) retainedReferrerURLs(expected *store.OCIDescriptor) ([]string, error) {
-	a, e := g.server.DB.CachedOCIObject(g.ctx, g.identity, g.repo.Name, g.image+"/manifests/"+expected.Digest)
+	a, e := g.server.DB.CachedOCIObject(g.ctx, g.identity, g.repo.Name, g.image+"/manifests/"+expected.Digest, g.repo.SourceRevision)
 	if errors.Is(e, store.ErrNotFound) {
 		return nil, nil
 	}

@@ -40,8 +40,8 @@ func (s *Store) NPMCatalogArtifact(ctx context.Context, i Identity, repo, name s
 	e := s.Tx(ctx, i, false, func(tx pgx.Tx) error { var e error; a, e = npmCatalogArtifact(ctx, tx, i, repo, name); return e })
 	return a, e
 }
-func (s *Store) NPMSource(ctx context.Context, i Identity, repo, key string) (NPMSource, error) {
-	source, e := s.NativeSource(ctx, i, repo, key, "npm")
+func (s *Store) NPMSource(ctx context.Context, i Identity, repo, key string, expected ...int64) (NPMSource, error) {
+	source, e := s.NativeSource(ctx, i, repo, key, "npm", expected...)
 	return NPMSource{Key: source.Key, Name: source.Name, Version: source.Version, Tarball: source.URL, Integrity: source.Integrity, Package: source.Metadata}, e
 }
 
@@ -105,7 +105,7 @@ func (s *Store) NPMView(ctx context.Context, i Identity, repo, name string, maxV
 		count := 0
 		for _, r := range members {
 			member := NPMMember{Repository: r, Tags: map[string]string{}}
-			rows, e := tx.Query(ctx, `SELECT `+artifactColumns+` FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND starts_with(a.path,$2) ORDER BY a.path LIMIT $3`, r.Name, name+"/-/", maxVersions+1)
+			rows, e := tx.Query(ctx, `SELECT `+artifactColumns+` FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND starts_with(a.path,$2) AND ($4::boolean OR a.source_revision=$5) ORDER BY a.path LIMIT $3`, r.Name, name+"/-/", maxVersions+1, r.Mode != "proxy", r.SourceRevision)
 			if e != nil {
 				return e
 			}
@@ -193,7 +193,7 @@ func (s *Store) NPMView(ctx context.Context, i Identity, repo, name string, maxV
 				for _, key := range catalog.Versions {
 					keys = append(keys, key)
 				}
-				sources, e := tx.Query(ctx, `SELECT key,package,version,url,integrity,metadata FROM cratectl.native_sources WHERE format='npm' AND repository=$1 AND key=ANY($2::text[]) LIMIT $3`, r.Name, keys, maxVersions+1)
+				sources, e := tx.Query(ctx, `SELECT key,package,version,url,integrity,metadata FROM cratectl.native_sources WHERE format='npm' AND repository=$1 AND key=ANY($2::text[]) AND source_revision=$4 LIMIT $3`, r.Name, keys, maxVersions+1, r.SourceRevision)
 				if e != nil {
 					return e
 				}

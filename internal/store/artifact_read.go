@@ -21,6 +21,8 @@ func isManifest(media string) bool {
 type graphBudget struct {
 	retainedRoot    string
 	retained        bool
+	observation     bool
+	sourceRevision  *int64
 	remaining       int
 	depth           int
 	stack           map[string]bool
@@ -59,10 +61,13 @@ func readArtifact(ctx context.Context, tx pgx.Tx, repo, path string, review bool
 	if e != nil {
 		return a, e
 	}
-	if path != b.retainedRoot {
+	if !b.observation && path != b.retainedRoot {
 		if e = notDeletedInTx(ctx, tx, repo, path); e != nil {
 			return a, e
 		}
+	}
+	if b.sourceRevision != nil && a.SourceRevision != *b.sourceRevision {
+		return a, ErrSourceChanged
 	}
 	b.metadataBytes -= int64(len(a.Metadata))
 	if b.metadataBytes < 0 {
@@ -129,7 +134,7 @@ func readArtifact(ctx context.Context, tx pgx.Tx, repo, path string, review bool
 	b.checked[path] = a
 	return a, nil
 }
-func (s *Store) artifact(ctx context.Context, i Identity, repo, path string, intake bool) (Artifact, error) {
+func (s *Store) artifact(ctx context.Context, i Identity, repo, path string, intake bool, snapshots ...SourceSnapshot) (Artifact, error) {
 	var a Artifact
 	e := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
 		r, e := repositoryInTx(ctx, tx, i, repo, "read")
@@ -140,7 +145,13 @@ func (s *Store) artifact(ctx context.Context, i Identity, repo, path string, int
 		if e != nil {
 			return e
 		}
-		a, e = readArtifact(ctx, tx, repo, path, review && !intake, newGraphBudget())
+		if len(snapshots) > 0 {
+			review, e = checkSourceSnapshot(ctx, tx, i, r, snapshots[0])
+			if e != nil {
+				return e
+			}
+		}
+		a, e = readArtifact(ctx, tx, repo, path, review && !intake, repositoryReadBudget(r))
 		if e == nil && r.Format == "pypi" && a.MediaType != PythonCatalogMedia {
 			var metadata PythonFile
 			if json.Unmarshal(a.Metadata, &metadata) != nil || !metadata.Validated {
@@ -153,6 +164,10 @@ func (s *Store) artifact(ctx context.Context, i Identity, repo, path string, int
 }
 func (s *Store) Artifact(ctx context.Context, i Identity, repo, path string) (Artifact, error) {
 	return s.artifact(ctx, i, repo, path, false)
+}
+
+func (s *Store) ArtifactSelection(ctx context.Context, i Identity, repo, path string, snapshot SourceSnapshot) (Artifact, error) {
+	return s.artifact(ctx, i, repo, path, false, snapshot)
 }
 
 // ArtifactForPublication checks durable references for an authorized publisher.

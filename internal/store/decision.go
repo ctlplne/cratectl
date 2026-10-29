@@ -7,7 +7,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-const artifactColumns = `a.repository,a.path,a.digest,a.size,a.media_type,a.metadata,COALESCE(d.decision,a.decision),a.created_at`
+const artifactColumns = `a.repository,a.path,a.digest,a.size,a.media_type,a.metadata,COALESCE(d.decision,a.decision),a.created_at,a.source_revision`
 const decisionJoin = ` LEFT JOIN cratectl.content_decisions d ON (d.tenant,d.repository,d.digest)=(a.tenant,a.repository,a.digest) `
 
 // Decide binds a manual judgment to bytes in this repository, covering current

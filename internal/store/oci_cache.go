@@ -36,7 +36,7 @@ func refreshOCIMember(ctx context.Context, tx pgx.Tx, i Identity, lease Retrieva
 	if e != nil && !errors.Is(e, pgx.ErrNoRows) {
 		return e
 	}
-	if e == nil {
+	if e == nil && current.SourceRevision == lease.SourceRevision {
 		if current.State == "fetching" && current.LeaseUntil.After(current.Now) {
 			return ErrOCIMemberChanged
 		}
@@ -47,9 +47,9 @@ func refreshOCIMember(ctx context.Context, tx pgx.Tx, i Identity, lease Retrieva
 			return ErrOCIMemberChanged
 		}
 	}
-	_, e = tx.Exec(ctx, `INSERT INTO cratectl.retrievals(tenant,repository,path,generation,lease_token,lease_until,state,fresh_until,stale_until,etag,modified,last_status,last_error,source_fresh_seconds,source_stale_seconds,changed_at,validation_root,validation_generation,change_sequence)
- VALUES($1,$2,$3,1,'','epoch','ready',clock_timestamp()+make_interval(secs=>$4),clock_timestamp()+make_interval(secs=>($4+$5)),$6,$7,200,'',$4,$5,clock_timestamp(),$8,$9,$10)
- ON CONFLICT(tenant,repository,path) DO UPDATE SET generation=cratectl.retrievals.generation+1,lease_token='',lease_until='epoch',state='ready',fresh_until=excluded.fresh_until,stale_until=excluded.stale_until,etag=excluded.etag,modified=excluded.modified,last_status=200,last_error='',source_fresh_seconds=excluded.source_fresh_seconds,source_stale_seconds=excluded.source_stale_seconds,changed_at=excluded.changed_at,validation_root=excluded.validation_root,validation_generation=excluded.validation_generation,change_sequence=excluded.change_sequence`, i.Tenant, lease.Repository, a.Path, c.FreshSeconds, c.StaleSeconds, c.ETag, c.Modified, lease.Path, lease.Generation, sequence)
+	_, e = tx.Exec(ctx, `INSERT INTO cratectl.retrievals(tenant,repository,path,generation,lease_token,lease_until,state,fresh_until,stale_until,etag,modified,last_status,last_error,source_fresh_seconds,source_stale_seconds,changed_at,validation_root,validation_generation,change_sequence,source_revision)
+ VALUES($1,$2,$3,1,'','epoch','ready',clock_timestamp()+make_interval(secs=>$4),clock_timestamp()+make_interval(secs=>($4+$5)),$6,$7,200,'',$4,$5,clock_timestamp(),$8,$9,$10,$11)
+ ON CONFLICT(tenant,repository,path) DO UPDATE SET generation=cratectl.retrievals.generation+1,lease_token='',lease_until='epoch',state='ready',fresh_until=excluded.fresh_until,stale_until=excluded.stale_until,etag=excluded.etag,modified=excluded.modified,last_status=200,last_error='',source_fresh_seconds=excluded.source_fresh_seconds,source_stale_seconds=excluded.source_stale_seconds,changed_at=excluded.changed_at,validation_root=excluded.validation_root,validation_generation=excluded.validation_generation,change_sequence=excluded.change_sequence,source_revision=excluded.source_revision`, i.Tenant, lease.Repository, a.Path, c.FreshSeconds, c.StaleSeconds, c.ETag, c.Modified, lease.Path, lease.Generation, sequence, lease.SourceRevision)
 	return e
 }
 
@@ -86,6 +86,7 @@ func ociGraphBudget(repo Repository, admissions []OCIAdmission) *graphBudget {
 	b := newGraphBudget()
 	if repo.Mode == "proxy" {
 		b.cacheRepository = repo.Name
+		b.sourceRevision = &repo.SourceRevision
 		b.admissions = admissions
 	}
 	return b

@@ -41,7 +41,7 @@ func (s *Store) PythonProjects(ctx context.Context, i Identity, repo string, lim
 		}
 		seen := map[string]bool{}
 		for _, r := range members {
-			rows, e := tx.Query(ctx, `SELECT DISTINCT metadata->>'name' FROM cratectl.artifacts WHERE repository=$1 AND metadata->>'name' IS NOT NULL ORDER BY 1 LIMIT $2`, r.Name, limit+1)
+			rows, e := tx.Query(ctx, `SELECT DISTINCT metadata->>'name' FROM cratectl.artifacts WHERE repository=$1 AND metadata->>'name' IS NOT NULL AND ($3::boolean OR source_revision=$4) ORDER BY 1 LIMIT $2`, r.Name, limit+1, r.Mode != "proxy", r.SourceRevision)
 			if e != nil {
 				return e
 			}
@@ -184,8 +184,8 @@ func pythonViewInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, name strin
 			member := PythonMember{Repository: r}
 			cached := map[string]Artifact{}
 			denied := map[string]bool{}
-			columns := `a.repository,a.path,a.digest,a.size,a.media_type,a.metadata-'core_metadata',COALESCE(d.decision,a.decision),a.created_at`
-			rows, e := tx.Query(ctx, `SELECT `+columns+` FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND a.metadata->>'name'=$2 AND a.media_type<>$3 ORDER BY a.path LIMIT $4`, r.Name, name, PythonCatalogMedia, maxFiles+1)
+			columns := `a.repository,a.path,a.digest,a.size,a.media_type,a.metadata-'core_metadata',COALESCE(d.decision,a.decision),a.created_at,a.source_revision`
+			rows, e := tx.Query(ctx, `SELECT `+columns+` FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND a.metadata->>'name'=$2 AND a.media_type<>$3 AND ($5::boolean OR a.source_revision=$6) ORDER BY a.path LIMIT $4`, r.Name, name, PythonCatalogMedia, maxFiles+1, r.Mode != "proxy", r.SourceRevision)
 			if e != nil {
 				return e
 			}
@@ -275,7 +275,7 @@ func pythonViewInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, name strin
 				for _, key := range catalog.Files {
 					keys = append(keys, key)
 				}
-				sources, e := tx.Query(ctx, `SELECT key,format,package,coordinate,version,url,integrity,metadata FROM cratectl.native_sources WHERE repository=$1 AND format='pypi' AND key=ANY($2::text[]) LIMIT $3`, r.Name, keys, maxFiles+1)
+				sources, e := tx.Query(ctx, `SELECT key,format,package,coordinate,version,url,integrity,metadata FROM cratectl.native_sources WHERE repository=$1 AND format='pypi' AND key=ANY($2::text[]) AND source_revision=$4 LIMIT $3`, r.Name, keys, maxFiles+1, r.SourceRevision)
 				if e != nil {
 					return e
 				}

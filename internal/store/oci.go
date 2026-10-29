@@ -12,6 +12,33 @@ import (
 
 var ErrOCIUnvalidated = errors.New("OCI manifest structure has not been validated")
 
+// RetiredOCIObservation is internal catalog intake metadata. It never authorizes
+// serving, modifies a tombstone or reuses a network locator from retained data.
+func (s *Store) RetiredOCIObservation(ctx context.Context, i Identity, repo, path string) (Artifact, bool, error) {
+	var a Artifact
+	var retired bool
+	e := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
+		r, e := repositoryInTx(ctx, tx, i, repo, "read")
+		if e != nil {
+			return e
+		}
+		if r.Format != "oci" || r.Mode != "proxy" || !lifecycleOCIPath(path) {
+			return ErrConflict
+		}
+		if e = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM cratectl.artifact_lifecycle WHERE repository=$1 AND path=$2 AND deleted)`, repo, path).Scan(&retired); e != nil || !retired {
+			return e
+		}
+		if e = scanArtifact(tx.QueryRow(ctx, `SELECT `+artifactColumns+` FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND a.path=$2`, repo, path), &a); e != nil {
+			return e
+		}
+		if len(a.Metadata) > 8<<20 {
+			return ErrMetadataLimit
+		}
+		return nil
+	})
+	return a, retired, e
+}
+
 type OCIDescriptor struct {
 	MediaType string `json:"mediaType"`
 	Digest    string `json:"digest"`
@@ -34,7 +61,7 @@ type OCIReferrer struct {
 // CachedOCIObject is internal intake data, never a serving authorization.
 // Conditional revalidation can inspect quarantine; publication and serving
 // independently recheck current decisions and complete graph policy.
-func (s *Store) CachedOCIObject(ctx context.Context, i Identity, repo, path string) (Artifact, error) {
+func (s *Store) CachedOCIObject(ctx context.Context, i Identity, repo, path string, expected ...int64) (Artifact, error) {
 	var a Artifact
 	e := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
 		r, e := repositoryInTx(ctx, tx, i, repo, "read")
@@ -44,12 +71,18 @@ func (s *Store) CachedOCIObject(ctx context.Context, i Identity, repo, path stri
 		if r.Format != "oci" || r.Mode != "proxy" {
 			return ErrConflict
 		}
+		if len(expected) > 0 && r.SourceRevision != expected[0] {
+			return ErrSourceChanged
+		}
 		if e = notDeletedInTx(ctx, tx, repo, path); e != nil {
 			return e
 		}
 		e = scanArtifact(tx.QueryRow(ctx, `SELECT `+artifactColumns+` FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND a.path=$2`, repo, path), &a)
 		if errors.Is(e, pgx.ErrNoRows) {
 			return ErrNotFound
+		}
+		if e == nil && a.SourceRevision != r.SourceRevision {
+			return ErrSourceChanged
 		}
 		return e
 	})
@@ -69,16 +102,20 @@ func (s *Store) OCIManifest(ctx context.Context, i Identity, repo, image, ref st
 		digest := ref
 		if !strings.HasPrefix(ref, "sha256:") {
 			var deleted bool
-			if e = tx.QueryRow(ctx, `SELECT digest,deleted FROM cratectl.tags WHERE repository=$1 AND image=$2 AND tag=$3`, repo, image, ref).Scan(&digest, &deleted); errors.Is(e, pgx.ErrNoRows) {
+			var revision int64
+			if e = tx.QueryRow(ctx, `SELECT digest,deleted,source_revision FROM cratectl.tags WHERE repository=$1 AND image=$2 AND tag=$3`, repo, image, ref).Scan(&digest, &deleted, &revision); errors.Is(e, pgx.ErrNoRows) {
 				return ErrNotFound
 			} else if e != nil {
 				return e
+			}
+			if r.Mode == "proxy" && revision != r.SourceRevision {
+				return ErrSourceChanged
 			}
 			if deleted {
 				return ErrDeleted
 			}
 		}
-		a, e = readArtifact(ctx, tx, repo, image+"/manifests/"+digest, r.RequireReview, newGraphBudget())
+		a, e = readArtifact(ctx, tx, repo, image+"/manifests/"+digest, r.RequireReview, repositoryReadBudget(r))
 		if errors.Is(e, ErrNotFound) && !strings.HasPrefix(ref, "sha256:") {
 			return ErrDenied
 		}

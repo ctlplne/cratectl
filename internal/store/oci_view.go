@@ -121,13 +121,7 @@ func (s *Store) OCIDiscovery(ctx context.Context, i Identity, repo, image, kind,
 			}
 			for _, c := range candidates {
 				if c.deleted && source.Mode == "proxy" {
-					err := notDeletedInTx(ctx, tx, source.Name, c.path)
-					if err == nil {
-						continue
-					}
-					if !errors.Is(err, ErrDeleted) {
-						return err
-					}
+					continue
 				}
 				if seen[c.name] {
 					continue

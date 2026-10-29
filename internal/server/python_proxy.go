@@ -33,7 +33,7 @@ func (s *Server) fillPythonProxy(parent context.Context, i store.Identity, repo 
 		if len(parts) != 4 || parts[0] != "pypi-packages" {
 			return store.ErrConflict
 		}
-		source, e = s.DB.NativeSource(ctx, i, repo.Name, parts[2], "pypi")
+		source, e = s.DB.NativeSource(ctx, i, repo.Name, parts[2], "pypi", lease.SourceRevision)
 		if e != nil {
 			return e
 		}

@@ -149,7 +149,7 @@ paths:
                 access: {type: string, enum: [tenant, restricted], default: tenant}
                 settings:
                   type: object
-                  description: Early proxy/group implementations exist for generic, Maven, npm, PyPI and OCI; configuration is immutable after creation. Full format qualification remains open.
+                  description: Early proxy/group implementations exist for generic, Maven, npm, PyPI and OCI. Administrators can replace complete source settings through the versioned configuration endpoint. Full format qualification remains open.
                   properties:
                     upstream:
                       type: object
@@ -651,6 +651,62 @@ paths:
         '200': {description: Receipts ordered by generation with ordinal/pass/digest/size/status/worker/engine/time and more.}
         '403': {description: Tenant administrator required.}
         '404': {description: No such inventory in this tenant.}
+  /api/v1/repositories/{repository}/configuration:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+    get:
+      summary: Read retained source settings as a tenant administrator
+      responses:
+        '200': {description: 'Repository settings and read-only source_revision, including suspended/removed repositories. Credential references contain no secret values.'}
+        '403': {description: Administrator required}
+        '404': {description: No authorized retained repository}
+    put:
+      summary: Preview or replace complete proxy/group source settings
+      description: Every apply increments source_revision, including identical settings and historical rollback. Old source caches, validators and download locators require revalidation. Pending writers are fenced atomically with immutable history, journal, outbox and idempotency receipt. Preview checks local credential/destination bindings without contacting the upstream. A replay returns its original response without changing current settings. The request body is limited to 64 KiB.
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          description: Required unless dry_run is true. Retry only identical request bytes.
+          schema: {type: string, minLength: 8, maxLength: 128}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [expected_revision, settings, reason]
+              properties:
+                expected_revision: {type: integer, format: int64, minimum: 0}
+                settings: {type: object, description: Complete source settings in the repository creation settings format; omitted fields are removed.}
+                reason: {type: string, minLength: 1, maxLength: 1024, description: Nonempty bounded UTF-8 reason without controls; byte limit is 1024.}
+                dry_run: {type: boolean, default: false}
+      responses:
+        '200': {description: 'Current repository, validated settings, next_revision, active_retrievals, referencing groups, member_states, refresh_required and retained_bytes. Apply returns the committed current revision.'}
+        '400': {description: Invalid settings/reason/revision/key or upstream_credential_authority mismatch}
+        '403': {description: Administrator required}
+        '404': {description: No authorized retained repository}
+        '409': {description: configuration_changed revision conflict or reused key with different bytes}
+        '413': {description: Configuration JSON exceeds 64 KiB}
+        '503': {description: Bound, queue, schema or database failure; no partial configuration mutation}
+  /api/v1/repositories/{repository}/configuration/history:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+    get:
+      summary: Read immutable tenant-scoped source configuration receipts
+      parameters:
+        - in: query
+          name: after
+          schema: {type: integer, format: int64, minimum: 0, default: 0}
+        - in: query
+          name: limit
+          schema: {type: integer, minimum: 1, maximum: 1000, default: 10}
+      responses:
+        '200': {description: 'Ascending items with revision, previous_revision, previous_settings, settings, actor, reason, changed_at and change_sequence; after is the last returned revision.'}
+        '400': {description: Invalid, repeated or unknown query parameters}
+        '403': {description: Administrator required}
+        '404': {description: No authorized retained repository}
+        '503': {description: Response budget, schema or database unavailable}
   /api/v1/repositories/{repository}/state:
     parameters:
       - {$ref: '#/components/parameters/Repository'}

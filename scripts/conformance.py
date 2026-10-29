@@ -1,15 +1,15 @@
 # SPDX-License-Identifier: BUSL-1.1
 """Real local service + PostgreSQL + stock clients; all credentials stay private."""
-import base64,csv,hashlib,io,json,os,platform,shutil,subprocess,sys,tarfile,time,urllib.error,urllib.parse,urllib.request,uuid,zipfile
+import base64,csv,datetime,hashlib,io,json,os,platform,shutil,subprocess,sys,tarfile,time,urllib.error,urllib.parse,urllib.request,uuid,zipfile
 from concurrent.futures import ThreadPoolExecutor
 import xml.etree.ElementTree as XML
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT)
 BASE='http://127.0.0.1:38443';RUN=uuid.uuid4().hex[:10]
 PRIVATE=ROOT/'.private/conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)
-EVIDENCE=ROOT/'evidence/2026-10-28';EVIDENCE.mkdir(exist_ok=True)
+EVIDENCE=ROOT/'evidence'/datetime.datetime.now(datetime.timezone.utc).date().isoformat();EVIDENCE.mkdir(exist_ok=True)
 database_profile=os.environ.get('CRATECTL_DEV_DATABASE','container')
-config=json.loads((ROOT/('.private/native-db.json' if database_profile=='native' else '.private/db.json')).read_text())
+config=json.loads(Path(os.environ.get('CRATECTL_CONFORMANCE_DATABASE_FILE',str(ROOT/('.private/native-db.json' if database_profile=='native' else '.private/db.json')))).read_text())
 env=dict(os.environ,CRATECTL_OWNER_DSN=config['owner'],CRATECTL_DSN=config['runtime'])
 tokens={};checks=[];commands=[];proc=None;logfile=None
 
@@ -47,6 +47,12 @@ def repository(name,fmt,token='admin',review=False,**options):
 def start():
  global proc,logfile
  credentials=PRIVATE/'upstreams.json';credentials.write_text(json.dumps({tenants['admin']+'/oci-up':{'value':tokens['origin'],'allowed_url':BASE+'/v2/up-oci/'},tenants['admin']+'/fixture':{'value':tokens['origin'],'allowed_url':BASE+'/r/source/'},tenants['admin']+'/self':{'value':tokens['reader'],'allowed_url':BASE+'/r/java/'},tenants['admin']+'/bad-fixture':{'value':tokens['origin'],'allowed_url':BASE+'/r/bad-source/'},tenants['admin']+'/npm-fixture':{'value':tokens['origin'],'allowed_url':BASE+'/npm/up-npm/'},tenants['admin']+'/python-up':{'value':tokens['origin'],'allowed_url':BASE+'/pypi/up-python/'},tenants['admin']+'/npm-meta':{'value':tokens['npm-meta-origin'],'allowed_url':BASE+'/r/npm-meta/'},tenants['admin']+'/npm-files':{'value':tokens['npm-files-origin'],'allowed_url':BASE+'/r/npm-files/'}}));credentials.chmod(0o600)
+ if 'config-a' in tokens:
+  bindings=json.loads(credentials.read_text())
+  for side in ['a','b']:
+   for fmt,prefix in [('raw','r'),('java','r'),('js','npm'),('py','pypi'),('oci','v2')]:
+    bindings[tenants['admin']+'/config-'+fmt+'-'+side]={'value':tokens['config-'+side],'allowed_url':BASE+'/'+prefix+'/config-'+fmt+'-'+side+'/'}
+  credentials.write_text(json.dumps(bindings))
  logfile=(PRIVATE/'server.log').open('a')
  proc=subprocess.Popen([str(ROOT/'bin/cratectld'),'serve','--listen','127.0.0.1:38443','--public-url',BASE,'--dev-loopback-http','--objects',str(PRIVATE/'objects'),'--upstream-credentials',str(credentials),'--allow-private-upstreams','127.0.0.1/32'],env=env,stdout=logfile,stderr=subprocess.STDOUT)
  for _ in range(100):
@@ -707,6 +713,96 @@ def proxy():
  check('upstream authentication rejection cannot use stale bytes',req('/r/reviewed/object','reader')[0]==502)
 
 
+def sourceconfig():
+ """Separate native client caches prove each new source epoch supplies bytes."""
+ work=PRIVATE/'source-config';work.mkdir()
+ python=ROOT/'.cache/clients/bin/python';oras=ROOT/'.cache/bin/oras'
+ def settings(fmt,side):
+  prefix={'raw':'r','java':'r','js':'npm','py':'pypi','oci':'v2'}[fmt];base=BASE+'/'+prefix+'/config-'+fmt+'-'+side+'/'
+  authority={'url':base+('simple/'if fmt=='py'else''),'networks':['127.0.0.1/32'],'credential_ref':'config-'+fmt+'-'+side}
+  out={'upstream':authority,'cache':{'fresh_seconds':3600,'negative_seconds':30,'stale_seconds':3600,'allow_no_store':True,'require_checksum':fmt!='raw'}}
+  if fmt=='py':out['download_sources']=[{**authority,'url':base+'files/'}]
+  return out
+ def change(fmt,side,revision):
+  code,body,_=req('/api/v1/repositories/config-'+fmt+'/configuration',method='PUT',data={'expected_revision':revision,'settings':settings(fmt,side),'reason':'Owned native source replacement'},key=uuid.uuid4().hex)
+  check(fmt+': configuration replacement advances exact revision',code==200 and json.loads(body)['current']['source_revision']==revision+1)
+ for fmt,native in [('raw','generic'),('java','maven'),('js','npm'),('py','pypi'),('oci','oci')]:
+  for side in ['a','b']:
+   origin='config-'+fmt+'-'+side;repository(origin,native,'other',access='restricted')
+   check(origin+': grant only the matching source reader',req('/api/v1/repositories/'+origin+'/grants','other','PUT',{'actor':'config-'+side,'read':True,'write':False},uuid.uuid4().hex)[0]==200)
+   check(origin+': opposite source credential is denied',req('/api/v1/repositories/'+origin,'config-'+('b'if side=='a'else'a'))[0]in [403,404])
+  repository('config-'+fmt,native,mode='proxy',settings=settings(fmt,'a'))
+ for side in ['a','b']:check('raw source '+side+' publishes distinct bytes',req('/r/config-raw-'+side+'/file','other','PUT',('source '+side).encode())[0]==201)
+ check('raw initial source cached',req('/r/config-raw/file','reader')[1]==b'source a')
+ invalid=settings('raw','b');invalid['upstream']['credential_ref']='config-raw-a'
+ check('changed URL cannot borrow the previous source credential',req('/api/v1/repositories/config-raw/configuration',method='PUT',data={'expected_revision':0,'settings':invalid,'reason':'Owned authority rejection'},key=uuid.uuid4().hex)[0]==400)
+ change('raw','b',0);check('raw fresh cache is invalid after source replacement',req('/r/config-raw/file','reader')[1]==b'source b')
+ change('raw','a',1);check('raw rollback revalidates first source under a new revision',req('/r/config-raw/file','reader')[1]==b'source a')
+ # OCI uses independent registry credential files and pull directories.
+ auth={}
+ for role in ['other','reader']:
+  auth[role]=work/(role+'-oras.json');run([oras,'login','--plain-http','--registry-config',auth[role],'--username','token','--password-stdin','127.0.0.1:38443'],input_text=tokens[role]+'\n')
+ for side in ['a','b']:
+  d=work/('oci-origin-'+side);d.mkdir();(d/'payload.txt').write_text('OCI source '+side)
+  run([oras,'push','--plain-http','--registry-config',auth['other'],'127.0.0.1:38443/config-oci-'+side+'/app:latest','payload.txt:text/plain'],d)
+ def pull(label,expected):
+  d=work/('oci-pull-'+label);d.mkdir();run([oras,'pull','--plain-http','--registry-config',auth['reader'],'127.0.0.1:38443/config-oci/app:latest'],d)
+  check('stock ORAS exact bytes after '+label,(d/'payload.txt').read_text()=='OCI source '+expected)
+ pull('initial','a');change('oci','b',0);pull('replacement','b');change('oci','a',1);pull('rollback','a')
+ # npm metadata, locator receipts and transitive archive bytes must all move.
+ def npm_env(repo,label):
+  rc=work/(label+'.npmrc');rc.write_text('registry='+BASE+'/npm/'+repo+'/\n//127.0.0.1:38443/npm/'+repo+'/:_authToken='+tokens['other'if repo.endswith(('-a','-b'))else'reader']+'\n');rc.chmod(0o600)
+  return {'NPM_CONFIG_USERCONFIG':str(rc),'NPM_CONFIG_CACHE':str(work/(label+'-npm-cache'))}
+ for side,version,number in [('a','1.0.0',1),('b','2.0.0',2)]:
+  for name,dependencies,body in [('cratectl-config-dep',{},'module.exports=41;'),('cratectl-config-app',{'cratectl-config-dep':'1.0.0'},'module.exports=require("cratectl-config-dep")+'+str(number)+';')]:
+   d=work/('npm-'+side+'-'+name);d.mkdir();(d/'package.json').write_text(json.dumps({'name':name,'version':version if dependencies else'1.0.0','main':'index.js','description':'Owned source configuration fixture','license':'MIT','dependencies':dependencies}));(d/'index.js').write_text(body)
+   run(['npm','publish','--ignore-scripts','--access','public'],d,npm_env('config-js-'+side,'publish-'+side+'-'+name))
+ def npm_install(label,version,number):
+  d=work/('npm-consumer-'+label);d.mkdir();(d/'package.json').write_text('{"name":"owned-source-consumer","version":"1.0.0"}')
+  run(['npm','install','--ignore-scripts','--no-audit','--no-fund','cratectl-config-app@latest'],d,npm_env('config-js','consume-'+label))
+  run(['node','-e','if(require("cratectl-config-app")!=='+str(number)+'||require("cratectl-config-app/package.json").version!=="'+version+'")process.exit(1)'],d)
+  check('stock npm resolves current source and dependency after '+label,True)
+ npm_install('initial','1.0.0',42);old_npm=json.loads(req('/npm/config-js/cratectl-config-app','reader')[1])['versions']['1.0.0']['dist']['tarball'].replace(BASE,'')
+ change('js','b',0);check('old npm download locator cannot reuse the old source epoch',req(old_npm,'reader')[0]==503);npm_install('replacement','2.0.0',43)
+ change('js','a',1);npm_install('rollback','1.0.0',42)
+ # Python puts credentials in private netrc files, never source URLs.
+ for side,version,addend in [('a','1.0.0',1),('b','2.0.0',2)]:
+  dep=wheel('cratectl_config_dep');app=wheel('cratectl_config_app','cratectl-config-dep',version,addend)
+  run([python,'-m','twine','upload','--non-interactive','--repository-url',BASE+'/pypi/config-py-'+side+'/',dep,app],extra={'TWINE_USERNAME':'token','TWINE_PASSWORD':tokens['other'],'TWINE_DISABLE_PROGRESS_BAR':'1'})
+ netrc=work/'pip-netrc';netrc.write_text('machine 127.0.0.1 login token password '+tokens['reader']+'\n');netrc.chmod(0o600)
+ pip_env={'NETRC':str(netrc),'PIP_CONFIG_FILE':os.devnull,'PIP_KEYRING_PROVIDER':'disabled','PIP_DISABLE_PIP_VERSION_CHECK':'1','PIP_EXTRA_INDEX_URL':'','PIP_NO_INPUT':'1'}
+ def pip_install(label,number):
+  target=work/('pip-consumer-'+label)
+  run([python,'-m','pip','install','--no-cache-dir','--index-url',BASE+'/pypi/config-py/simple/','--target',target,'cratectl-config-app'],extra=pip_env)
+  run([python,'-c','import sys;sys.path.insert(0,'+repr(str(target))+');from cratectl_config_app import value;assert value=='+str(number)])
+  check('stock pip resolves current source and dependency after '+label,True)
+ pip_install('initial',42);change('py','b',0);pip_install('replacement',43);change('py','a',1);pip_install('rollback',42)
+ # Maven publishes native HTTP coordinates, then resolves with independent
+ # stock-client local repositories so downloaded application bytes cannot hide
+ # a server cache mistake. Maven tool plugins remain ordinary Central inputs.
+ expected={};group='dev/cratectl/source'
+ for side in ['a','b']:
+  for name,dependency in [('config-dep',False),('config-app',True)]:
+   stream=io.BytesIO()
+   with zipfile.ZipFile(stream,'w')as archive:archive.writestr('fixture.txt',side+' '+name)
+   jar=stream.getvalue();deps='<dependencies><dependency><groupId>dev.cratectl.source</groupId><artifactId>config-dep</artifactId><version>1.0.0</version></dependency></dependencies>'if dependency else''
+   pom=('<project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion><groupId>dev.cratectl.source</groupId><artifactId>'+name+'</artifactId><version>1.0.0</version>'+deps+'</project>').encode()
+   for ext,data in [('jar',jar),('pom',pom)]:check('Maven origin '+side+' publishes '+name+'.'+ext,req('/r/config-java-'+side+'/'+group+'/'+name+'/1.0.0/'+name+'-1.0.0.'+ext,'other','PUT',data)[0]==201)
+   expected[side,name]=jar
+ maven_settings=work/'maven-settings.xml';maven_settings.write_text('<settings><servers><server><id>cratectl</id><username>token</username><password>'+tokens['reader']+'</password></server></servers></settings>');maven_settings.chmod(0o600)
+ def maven_install(label,side):
+  cache=work/('maven-consumer-'+label)
+  run([ROOT/'.cache/apache-maven-3.10.0/bin/mvn','-B','-s',maven_settings,'-Dmaven.repo.local='+str(cache),'org.apache.maven.plugins:maven-dependency-plugin:3.8.1:get','-Dartifact=dev.cratectl.source:config-app:1.0.0','-DremoteRepositories=cratectl::default::'+BASE+'/r/config-java/','-Dtransitive=true'],work,{'JAVA_HOME':str(ROOT/'.cache/jdk-21.0.13+9/Contents/Home')})
+  check('stock Maven resolves exact source and dependency after '+label,all((cache/group/name/'1.0.0'/(name+'-1.0.0.jar')).read_bytes()==expected[side,name]for name in ['config-app','config-dep']))
+ maven_install('initial','a');change('java','b',0);maven_install('replacement','b');change('java','a',1);maven_install('rollback','a')
+ # Static private-provider values rotate during controlled suspension/restart.
+ check('suspend before reloading the private provider',req('/api/v1/repositories/config-oci/state',method='PUT',data={'action':'suspend','expected_revision':0,'reason':'Owned controlled credential rotation'},key=uuid.uuid4().hex)[0]==200)
+ stop();run(['bin/cratectld','revoke','--token-file',PRIVATE/'config-a.token'])
+ rotated=PRIVATE/'config-a-rotated.token';run(['bin/cratectld','provision','--tenant',tenants['other'],'--actor','config-a','--role','reader','--token-file',rotated]);tokens['config-a']=rotated.read_text().strip();start()
+ change('oci','a',2)
+ check('resume after new epoch with reloaded credential',req('/api/v1/repositories/config-oci/state',method='PUT',data={'action':'resume','expected_revision':1,'reason':'Owned controlled credential rotation complete'},key=uuid.uuid4().hex)[0]==200)
+ pull('credential-rotation','a');check('configuration history retains monotonic revisions through reload',len(json.loads(req('/api/v1/repositories/config-oci/configuration/history')[1])['items'])==3)
+
 def build_identity(name):
  go=ROOT/'.cache/go/bin/go'
  output=subprocess.check_output([str(go) if go.exists() else 'go','version','-m',str(ROOT/name)],text=True)
@@ -722,16 +818,17 @@ result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD']
 result['build_source_matches_candidate']=all(meta['settings'].get('vcs.revision')==result['candidate'] and meta['settings'].get('vcs.modified')=='false' for meta in result['build_identity'].values())
 tenants={}
 try:
+ mode=sys.argv[1] if len(sys.argv)>1 else 'all'
  if '--require-clean-build' in sys.argv[2:]:
   check('qualification source is clean',not result['source_dirty'])
   check('qualification binaries embed exact clean source commit',result['build_source_matches_candidate'])
- for label,role in [('admin','admin'),('reader','reader'),('other','admin'),('origin','reader'),('npm-meta-origin','reader'),('npm-files-origin','reader')]:
-  tenant='proof-'+RUN+('-b' if label in ['other','origin','npm-meta-origin','npm-files-origin'] else '-a');tenants[label]=tenant;token_file=PRIVATE/(label+'.token')
+ for label,role in [('admin','admin'),('reader','reader'),('other','admin'),('origin','reader'),('npm-meta-origin','reader'),('npm-files-origin','reader')]+([('config-a','reader'),('config-b','reader')]if mode in ['all','sourceconfig']else[]):
+  tenant='proof-'+RUN+('-b' if label in ['other','origin','npm-meta-origin','npm-files-origin','config-a','config-b'] else '-a');tenants[label]=tenant;token_file=PRIVATE/(label+'.token')
   run(['bin/cratectld','provision','--tenant',tenant,'--actor',label,'--role',role,'--token-file',token_file]);tokens[label]=token_file.read_text().strip()
  for label,lifetime in [('expired','1ms'),('revocable','1h')]:
   token_file=PRIVATE/(label+'.token');run(['bin/cratectld','provision','--tenant',tenants['admin'],'--actor',label,'--role','reader','--expires-in',lifetime,'--token-file',token_file]);tokens[label]=token_file.read_text().strip()
  start();mode=sys.argv[1] if len(sys.argv)>1 else 'all'
- for name,fn in [('generic',generic),('npm',npm),('npmproxy',npmproxy),('pypi',pypi),('pypiproxy',pypiproxy),('oci',oci),('ociproxy',ociproxy),('maven',maven),('proxy',proxy)]:
+ for name,fn in [('generic',generic),('npm',npm),('npmproxy',npmproxy),('pypi',pypi),('pypiproxy',pypiproxy),('oci',oci),('ociproxy',ociproxy),('maven',maven),('proxy',proxy),('sourceconfig',sourceconfig)]:
   if mode in ('all',name):fn()
  result['status']='passed';print(f'PASS: {len(checks)} assertions; native mode {mode}')
 except Exception as error:

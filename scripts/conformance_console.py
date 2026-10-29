@@ -74,7 +74,8 @@ try:
         raise AssertionError('owned process exited during UI review')
     browser_env=dict(runtime_env,CRATECTL_CONSOLE_FIXTURE_JSON=str(fixture_path),PLAYWRIGHT_BROWSERS_PATH=str(ROOT/'.cache/playwright-browsers'),PLAYWRIGHT_JSON_OUTPUT_NAME=str(PRIVATE/'browser-results.json'))
     command([ROOT/'web/node_modules/.bin/playwright','test','--config',ROOT/'web/playwright.config.mjs'],browser_env)
-    report=json.loads((PRIVATE/'browser-results.json').read_text());check('real-browser workflow suite passed without skips',report['stats']['unexpected']==0 and report['stats']['skipped']==0 and report['stats']['expected']==5)
+    report=json.loads((PRIVATE/'browser-results.json').read_text());check('real-browser workflow suite passed without skips',report['stats']['unexpected']==0 and report['stats']['skipped']==0 and report['stats']['expected']==6)
+    configuration=json.loads((PRIVATE/'source-configuration-browser-proof.json').read_text());result['source_configuration_browser']=configuration;checks.extend(configuration['checks'])
     lifecycle=json.loads((PRIVATE/'lifecycle-browser-proof.json').read_text());result['lifecycle_browser']=lifecycle;checks.extend(lifecycle['checks'])
     schema=json.loads((PRIVATE/'schema-browser-proof.json').read_text());result['schema_browser']=schema;checks.extend(schema['checks'])
     paging=json.loads((PRIVATE/'pagination-browser-proof.json').read_text());result['pagination_browser']=paging;checks.extend(paging['checks']);proof=json.loads((PRIVATE/'browser-proof.json').read_text());result['browser_stats']=report['stats'];result['browser']=proof;checks.extend(proof['checks']);result['database']=database

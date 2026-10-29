@@ -65,7 +65,7 @@ func (s *Store) RepositoryPage(ctx context.Context, i Identity, req ListRequest)
 		compare, order = "<", "DESC"
 	}
 	e := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
-		rows, e := tx.Query(ctx, `SELECT r.name,r.format,r.mode,r.require_review,r.access,CASE WHEN $1 THEN r.settings ELSE '{}'::jsonb END FROM cratectl.repositories r WHERE ($1 OR r.access='tenant' OR EXISTS(SELECT 1 FROM cratectl.repository_grants g WHERE (g.tenant,g.repository,g.actor)=(r.tenant,r.name,$2) AND g.can_read)) AND r.name COLLATE "C" `+compare+` $3 COLLATE "C" AND (r.name||' '||r.format||' '||r.mode) COLLATE "C" ~ $4 ORDER BY r.name COLLATE "C" `+order+` LIMIT $5`, i.Role == "admin", i.Actor, req.Key, literalSearch(req.Query), req.Limit+1)
+		rows, e := tx.Query(ctx, `SELECT r.name,r.format,r.mode,r.require_review,r.access,CASE WHEN $1 THEN r.settings ELSE '{}'::jsonb END,r.source_revision FROM cratectl.repositories r WHERE ($1 OR r.access='tenant' OR EXISTS(SELECT 1 FROM cratectl.repository_grants g WHERE (g.tenant,g.repository,g.actor)=(r.tenant,r.name,$2) AND g.can_read)) AND r.name COLLATE "C" `+compare+` $3 COLLATE "C" AND (r.name||' '||r.format||' '||r.mode) COLLATE "C" ~ $4 ORDER BY r.name COLLATE "C" `+order+` LIMIT $5`, i.Role == "admin", i.Actor, req.Key, literalSearch(req.Query), req.Limit+1)
 		if e != nil {
 			return e
 		}
@@ -74,7 +74,7 @@ func (s *Store) RepositoryPage(ctx context.Context, i Identity, req ListRequest)
 		for rows.Next() {
 			var r Repository
 			var settings []byte
-			if e = rows.Scan(&r.Name, &r.Format, &r.Mode, &r.RequireReview, &r.Access, &settings); e != nil {
+			if e = rows.Scan(&r.Name, &r.Format, &r.Mode, &r.RequireReview, &r.Access, &settings, &r.SourceRevision); e != nil {
 				return e
 			}
 			if json.Unmarshal(settings, &r.Settings) != nil {
@@ -122,7 +122,7 @@ func (s *Store) ArtifactPage(ctx context.Context, i Identity, repo, prefix strin
 		if req.Summary {
 			columns = strings.Replace(columns, "a.metadata", "'{}'::jsonb", 1)
 		}
-		rows, e := tx.Query(ctx, `SELECT `+columns+` FROM cratectl.artifacts a JOIN cratectl.repositories r ON (r.tenant,r.name)=(a.tenant,a.repository) `+decisionJoin+` WHERE a.repository=$1 AND starts_with(a.path,$2) AND ($3 OR (COALESCE(d.decision,a.decision)<>'denied' AND (NOT r.require_review OR COALESCE(d.decision,a.decision)='allowed'))) AND a.path COLLATE "C" `+compare+` $4 COLLATE "C" AND (a.path||' '||a.digest) COLLATE "C" ~ $5 ORDER BY a.path COLLATE "C" `+order+` LIMIT $6`, repo, prefix, inventory && i.Role == "admin", req.Key, literalSearch(req.Query), req.Limit+1)
+		rows, e := tx.Query(ctx, `SELECT `+columns+` FROM cratectl.artifacts a JOIN cratectl.repositories r ON (r.tenant,r.name)=(a.tenant,a.repository) `+decisionJoin+` WHERE a.repository=$1 AND starts_with(a.path,$2) AND ($3 OR (COALESCE(d.decision,a.decision)<>'denied' AND (NOT r.require_review OR COALESCE(d.decision,a.decision)='allowed') AND (r.mode<>'proxy' OR a.source_revision=r.source_revision))) AND a.path COLLATE "C" `+compare+` $4 COLLATE "C" AND (a.path||' '||a.digest) COLLATE "C" ~ $5 ORDER BY a.path COLLATE "C" `+order+` LIMIT $6`, repo, prefix, inventory && i.Role == "admin", req.Key, literalSearch(req.Query), req.Limit+1)
 		if e != nil {
 			return e
 		}
@@ -167,7 +167,7 @@ func (s *Store) ArtifactPage(ctx context.Context, i Identity, repo, prefix strin
 			count = actual.Limit
 		}
 		window.More = len(candidates) > count
-		budget := newGraphBudget()
+		budget := repositoryReadBudget(r)
 		for n := 0; n < count; n++ {
 			a := candidates[n]
 			if !inventory || i.Role != "admin" {
@@ -177,7 +177,7 @@ func (s *Store) ArtifactPage(ctx context.Context, i Identity, repo, prefix strin
 						window.More = true
 						break
 					}
-					if e != nil && !errors.Is(e, ErrDenied) && !errors.Is(e, ErrNotFound) && !errors.Is(e, ErrOCIUnvalidated) && !errors.Is(e, ErrDeleted) {
+					if e != nil && !errors.Is(e, ErrDenied) && !errors.Is(e, ErrNotFound) && !errors.Is(e, ErrOCIUnvalidated) && !errors.Is(e, ErrDeleted) && !errors.Is(e, ErrSourceChanged) {
 						return e
 					}
 				} else {
@@ -227,7 +227,7 @@ func (s *Store) ArtifactReference(ctx context.Context, i Identity, repo, path st
 			return e
 		}
 		if i.Role != "admin" {
-			a, e = readArtifact(ctx, tx, repo, path, r.RequireReview, newGraphBudget())
+			a, e = readArtifact(ctx, tx, repo, path, r.RequireReview, repositoryReadBudget(r))
 			return e
 		}
 		e = scanArtifact(tx.QueryRow(ctx, `SELECT `+artifactColumns+` FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND a.path=$2`, repo, path), &a)

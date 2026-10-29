@@ -54,6 +54,7 @@ func (s *Server) resolveOCI(ctx context.Context, i store.Identity, endpoint stor
 			result.ociRef = ref
 			if endpoint.Mode == "group" {
 				result.groups = []string{endpoint.Name}
+				result.groupRevisions = map[string]int64{endpoint.Name: endpoint.SourceRevision}
 			}
 			return result, nil
 		}

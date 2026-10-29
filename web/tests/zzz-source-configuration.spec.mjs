@@ -1,0 +1,36 @@
+// SPDX-License-Identifier: BUSL-1.1
+import {test,expect} from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+
+test('source configuration previews, changes native selection and rolls back with a new revision',async({page,browser,request})=>{
+  const fixture=JSON.parse(await fs.readFile(process.env.CRATECTL_CONSOLE_FIXTURE_JSON,'utf8'));
+  const token=(await fs.readFile(fixture.other_token,'utf8')).trim(),prefix='source-ui-'+fixture.run;
+  const first=prefix+'-a',second=prefix+'-b',group=prefix+'-group',proxy=prefix+'-proxy',checks=[],accessibility=[];
+  const api=(url,options={})=>request.fetch(fixture.base_url+url,{...options,headers:{Authorization:'Bearer '+token,'Idempotency-Key':'browser-source-'+crypto.randomUUID(),...options.headers}});
+  async function axe(state){const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();expect(result.violations).toEqual([]);accessibility.push({state,violations:0})}
+  async function open(name){await page.getByRole('link',{name:'Repositories',exact:true}).click();await page.getByRole('searchbox',{name:'Search repositories',exact:true}).fill(name);await page.getByRole('button',{name:'Search',exact:true}).click();const row=page.getByRole('row').filter({has:page.getByRole('link',{name,exact:true})});await row.getByRole('button',{name:'Sources',exact:true}).click();await expect(page.getByRole('dialog')).toBeVisible()}
+  async function preview(){await page.getByLabel('Reason',{exact:true}).fill('Owned source configuration browser proof');await page.getByRole('button',{name:'Preview source changes',exact:true}).click();await expect(page.getByText(/Previewed configuration revision/)).toBeVisible()}
+  async function apply(){await page.getByRole('button',{name:'Apply configuration',exact:true}).click();await expect(page.getByRole('dialog')).toHaveCount(0)}
+  async function body(){const response=await api('/r/'+group+'/fixture.txt');expect(response.status()).toBe(200);return response.text()}
+  try{
+    for(const [name,body] of [[first,'owned source A'],[second,'owned source B']]){
+      expect((await api('/api/v1/repositories',{method:'POST',data:{name,format:'generic'}})).status()).toBe(201);
+      expect((await api('/r/'+name+'/fixture.txt',{method:'PUT',data:body,headers:{'Content-Type':'text/plain'}})).status()).toBe(201);
+    }
+    expect((await api('/api/v1/repositories',{method:'POST',data:{name:group,format:'generic',mode:'group',settings:{members:[first,second]}}})).status()).toBe(201);
+    expect(await body()).toBe('owned source A');
+    await page.goto(fixture.base_url+'/console/');await page.getByLabel('Credential file').setInputFiles(fixture.other_token);await page.waitForFunction(()=>document.querySelector('#credential')?.value.length>=32);await page.getByRole('button',{name:'Connect to installation',exact:true}).click();
+    await open(group);const members=page.getByLabel('Source repository names, in priority order',{exact:true});await expect(members).toBeFocused();await expect(members).toHaveValue(first+', '+second);await axe('group source configuration form');
+    await members.fill(second);await preview();await axe('group source change impact preview');expect(await body()).toBe('owned source A');await apply();expect(await body()).toBe('owned source B');checks.push('preview preserves native selection; apply selects only the newly configured group member');
+    await open(group);await expect(page.getByText(/configuration revision 1$/)).toBeVisible();await page.getByText('Advanced complete source settings',{exact:true}).click();await page.getByLabel('Complete settings JSON',{exact:true}).fill('{"members":["discard-this-unsaved-draft"]}');
+    await page.getByText('Revision 1 · Owned source configuration browser proof',{exact:true}).click();await page.getByRole('button',{name:'Use settings before revision 1',exact:true}).click();await expect(page.getByLabel('Complete settings JSON',{exact:true})).toBeHidden();await expect(members).toHaveValue(first+', '+second);await axe('historical source settings prepared for monotonic rollback');
+    await preview();await apply();expect(await body()).toBe('owned source A');const current=await (await api('/api/v1/repositories/'+group+'/configuration')).json();expect(current.source_revision).toBe(2);checks.push('historical settings discard an unsaved advanced draft and restore selection using revision 2');
+    await open(group);await expect(members).toHaveValue(first+', '+second);await page.getByText('Advanced complete source settings',{exact:true}).click();await page.getByLabel('Complete settings JSON',{exact:true}).fill(JSON.stringify({members:[second]}));await page.getByText('Advanced complete source settings',{exact:true}).click();await expect(members).toHaveValue(second);await preview();await apply();expect(await body()).toBe('owned source B');checks.push('closing advanced source settings preserves valid JSON edits in the structured form');
+    const settings={upstream:{url:'https://first.invalid/approved/',networks:['0.0.0.0/0']},cache:{fresh_seconds:300,negative_seconds:30,stale_seconds:0,require_checksum:true}};
+    expect((await api('/api/v1/repositories',{method:'POST',data:{name:proxy,format:'generic',mode:'proxy',settings}})).status()).toBe(201);
+    await open(proxy);await expect(page.getByLabel('Upstream base URL',{exact:true})).toBeFocused();await page.getByLabel('Upstream base URL',{exact:true}).fill('https://second.invalid/approved/');await page.getByLabel('Fresh cache seconds',{exact:true}).fill('60');await axe('proxy source configuration fields');await preview();await axe('proxy source and cache revalidation preview');await page.keyboard.press('Escape');const unchanged=await (await api('/api/v1/repositories/'+proxy+'/configuration')).json();expect(unchanged.source_revision).toBe(0);expect(unchanged.settings.upstream.url).toBe(settings.upstream.url);checks.push('proxy source and cache settings can be previewed and cancelled without changing the source');
+    expect(await page.content()).not.toContain(token);expect(await page.evaluate(()=>localStorage.length+sessionStorage.length)).toBe(0);checks.push('source configuration exposes no credential value in DOM or persistent browser storage');
+  }finally{await fs.writeFile(path.join(fixture.private,'source-configuration-browser-proof.json'),JSON.stringify({checks,accessibility,browser:browser.version(),scope:'Named group/proxy source administration workflows in Chromium. Proxy connectivity is not claimed by preview; full client, provider, platform and assistive-technology qualification remains open.'},null,2))}
+});

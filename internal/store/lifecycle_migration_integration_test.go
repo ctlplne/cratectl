@@ -22,7 +22,7 @@ func TestLifecycleMigrationPreservesV2ReceiptsAndGuardsRLS(t *testing.T) {
 		t.Fatal(e)
 	}
 	plan, e := MigrationPlan(ctx, d.OwnerDSN)
-	if e != nil || plan.DatabaseState != "pending" || len(plan.Pending) != 1 || plan.Pending[0] != 3 || !plan.SafetyValid {
+	if e != nil || plan.DatabaseState != "pending" || len(plan.Pending) != 2 || plan.Pending[0] != 3 || plan.Pending[1] != 4 || !plan.SafetyValid {
 		t.Fatal(plan, e)
 	}
 	old := append([]SchemaReceipt(nil), plan.Applied...)
@@ -34,14 +34,14 @@ func TestLifecycleMigrationPreservesV2ReceiptsAndGuardsRLS(t *testing.T) {
 	if e = checkSchemaPlan(ctx, runtime, steps[:2], true); e != nil {
 		t.Fatal("valid v2 runtime", e)
 	}
-	if e = checkSchemaPlan(ctx, runtime, steps, true); !errors.Is(e, ErrSchemaIncompatible) {
+	if e = checkSchemaPlan(ctx, runtime, steps[:3], true); !errors.Is(e, ErrSchemaIncompatible) {
 		t.Fatal("new runtime admitted v2", e)
 	}
-	if e = Migrate(ctx, d.OwnerDSN); e != nil {
+	if e = migrateSteps(ctx, d.OwnerDSN, MigrationOptions{}, steps[:3]); e != nil {
 		t.Fatal(e)
 	}
 	plan, e = MigrationPlan(ctx, d.OwnerDSN)
-	if e != nil || plan.DatabaseState != "current" || len(plan.Applied) != 3 || !plan.SafetyValid {
+	if e != nil || plan.DatabaseState != "pending" || len(plan.Applied) != 3 || len(plan.Pending) != 1 || plan.Pending[0] != 4 || !plan.SafetyValid {
 		t.Fatal(plan, e)
 	}
 	for n := range old {
@@ -52,7 +52,7 @@ func TestLifecycleMigrationPreservesV2ReceiptsAndGuardsRLS(t *testing.T) {
 	if e = checkSchemaPlan(ctx, runtime, steps[:2], true); !errors.Is(e, ErrSchemaIncompatible) {
 		t.Fatal("old runtime admitted v3", e)
 	}
-	if e = checkSchemaPlan(ctx, runtime, steps, true); e != nil {
+	if e = checkSchemaPlan(ctx, runtime, steps[:3], true); e != nil {
 		t.Fatal(e)
 	}
 	for _, table := range []string{"artifact_lifecycle", "repository_lifecycle"} {
@@ -72,7 +72,7 @@ func TestLifecycleMigrationPreservesV2ReceiptsAndGuardsRLS(t *testing.T) {
 	if _, e = MigrationPlan(ctx, d.OwnerDSN); !errors.Is(e, ErrSchemaIncompatible) {
 		t.Fatal("unsafe lifecycle table accepted", e)
 	}
-	if e = checkSchemaPlan(ctx, runtime, steps, true); !errors.Is(e, ErrSchemaIncompatible) {
+	if e = checkSchemaPlan(ctx, runtime, steps[:3], true); !errors.Is(e, ErrSchemaIncompatible) {
 		t.Fatal("unsafe lifecycle runtime accepted", e)
 	}
 }

@@ -38,6 +38,27 @@ type ociGraphFill struct {
 	rootCache       *store.OCIMemberCache
 	catalogPath     string
 	descriptorTries int
+	observation     bool
+}
+
+func (g *ociGraphFill) retiredObject(kind, digest string, d *store.OCIDescriptor) (store.Artifact, bool, error) {
+	if !g.observation || !ociDigest.MatchString(digest) {
+		return store.Artifact{}, false, nil
+	}
+	p := g.image + "/" + kind + "/" + digest
+	a, retired, e := g.server.DB.RetiredOCIObservation(g.ctx, g.identity, g.repo.Name, p)
+	if e != nil || !retired {
+		return a, false, e
+	}
+	if a.Digest != strings.TrimPrefix(digest, "sha256:") || d != nil && (d.Size >= 0 && a.Size != d.Size || kind == "manifests" && d.MediaType != "" && a.MediaType != d.MediaType) {
+		return a, false, errUpstreamIntegrity
+	}
+	if len(g.objects) >= 4096 || g.metadata+int64(len(a.Metadata)) > g.server.NativeMetadataBytes {
+		return a, false, store.ErrMetadataLimit
+	}
+	g.metadata += int64(len(a.Metadata))
+	g.objects[p] = a
+	return a, true, nil
 }
 
 func (g *ociGraphFill) remember(path string, response *http.Response) error {
@@ -88,6 +109,12 @@ func (g *ociGraphFill) blob(d store.OCIDescriptor, response *http.Response, urls
 		}
 		return a, nil
 	}
+	if a, retired, e := g.retiredObject("blobs", d.Digest, &d); e != nil || retired {
+		if response != nil {
+			response.Body.Close()
+		}
+		return a, e
+	}
 	if len(g.objects) >= 4095 || d.Size > g.server.OCIGraphBytes-g.bytes {
 		return store.Artifact{}, store.ErrMetadataLimit
 	}
@@ -135,6 +162,12 @@ func (g *ociGraphFill) manifest(ref string, d *store.OCIDescriptor, response *ht
 			return a, errUpstreamIntegrity
 		}
 		return a, nil
+	}
+	if a, retired, e := g.retiredObject("manifests", ref, d); e != nil || retired {
+		if response != nil {
+			response.Body.Close()
+		}
+		return a, e
 	}
 	if depth >= 32 || len(g.objects) >= 4096 || g.stack[p] {
 		return store.Artifact{}, store.ErrMetadataLimit
@@ -192,6 +225,10 @@ func (g *ociGraphFill) manifest(ref string, d *store.OCIDescriptor, response *ht
 			return a, errUpstreamIntegrity
 		}
 		return a, nil
+	}
+	actual := store.OCIDescriptor{Digest: digest, Size: int64(len(data)), MediaType: m.MediaType}
+	if a, retired, e := g.retiredObject("manifests", digest, &actual); e != nil || retired {
+		return a, e
 	}
 	g.metadata += int64(len(data))
 	if g.metadata > g.server.NativeMetadataBytes {
@@ -319,7 +356,7 @@ func (s *Server) fillOCIProxy(parent context.Context, i store.Identity, repo sto
 				response = &http.Response{StatusCode: 200, Header: http.Header{"Content-Type": {ociIndexMediaType}, "Cache-Control": {"max-age=" + strconv.Itoa(repo.Settings.Cache.NegativeSeconds)}}, Body: io.NopCloser(bytes.NewReader(empty)), Request: response.Request, ContentLength: int64(len(empty))}
 			}
 		}
-		g := ociGraphFill{server: s, client: client, ctx: ctx, identity: i, repo: repo, image: image, objects: map[string]store.Artifact{}, stack: map[string]bool{}, fresh: repo.Settings.Cache.FreshSeconds, stale: repo.Settings.Cache.StaleSeconds}
+		g := ociGraphFill{server: s, client: client, ctx: ctx, identity: i, repo: repo, image: image, objects: map[string]store.Artifact{}, stack: map[string]bool{}, fresh: repo.Settings.Cache.FreshSeconds, stale: repo.Settings.Cache.StaleSeconds, observation: catalog}
 		var rootDescriptor *store.OCIDescriptor
 		if err == nil && !catalog && response.StatusCode == 404 && ociDigest.MatchString(ref) && (kind == "blobs" || kind == "manifests") {
 			d := store.OCIDescriptor{Digest: ref, Size: -1}

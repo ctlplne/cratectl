@@ -33,6 +33,9 @@ var bootstrapSchema string
 
 //go:embed lifecycle.sql
 var lifecycleSchema string
+
+//go:embed source_configuration.sql
+var sourceConfigurationSchema string
 var Name = regexp.MustCompile(`^[a-z][a-z0-9-]{0,62}$`)
 var ErrConflict = errors.New("conflict")
 var ErrDenied = errors.New("policy denied")
@@ -70,6 +73,7 @@ func Open(ctx context.Context, dsn string) (*Store, error) {
 var schemaTablesV1 = []string{"tenants", "repositories", "artifacts", "events", "mutations", "jobs", "uploads", "tags", "repository_grants", "retrievals", "content_decisions", "npm_tags", "npm_sources", "native_sources", "python_yanks", "queue_policies", "event_projections", "integrity_observations", "upload_parts", "sweep_items", "inventory_entries", "inventory_observations", "bootstrap_receipts"}
 
 var schemaTablesV3 = append(append([]string(nil), schemaTablesV1...), "artifact_lifecycle", "repository_lifecycle")
+var schemaTablesV4 = append(append([]string(nil), schemaTablesV3...), "repository_configurations")
 
 // legacySchemaSQL is migration 1. Freeze it and the five embedded SQL files;
 // subsequent schema changes belong in new checksummed steps.
@@ -306,6 +310,7 @@ func (s *Store) mutateIntentChecked(ctx context.Context, i Identity, key, finger
 }
 
 type Artifact struct {
+	SourceRevision  int64           `json:"source_revision"`
 	Lifecycle       *ArtifactState  `json:"lifecycle,omitempty"`
 	MetadataOmitted bool            `json:"metadata_omitted,omitempty"`
 	Repository      string          `json:"repository"`
@@ -319,7 +324,7 @@ type Artifact struct {
 }
 
 func scanArtifact(row pgx.Row, a *Artifact) error {
-	return row.Scan(&a.Repository, &a.Path, &a.Digest, &a.Size, &a.MediaType, &a.Metadata, &a.Decision, &a.Created)
+	return row.Scan(&a.Repository, &a.Path, &a.Digest, &a.Size, &a.MediaType, &a.Metadata, &a.Decision, &a.Created, &a.SourceRevision)
 }
 
 // Artifacts returns metadata only for currently servable objects unless an admin

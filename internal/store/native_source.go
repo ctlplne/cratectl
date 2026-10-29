@@ -29,13 +29,20 @@ type NativeCatalogPublication struct {
 
 func nativeSource(ctx context.Context, tx pgx.Tx, repo, key, format string) (NativeSource, error) {
 	var source NativeSource
-	e := tx.QueryRow(ctx, `SELECT key,format,package,coordinate,version,url,integrity,metadata FROM cratectl.native_sources WHERE repository=$1 AND key=$2 AND format=$3`, repo, key, format).Scan(&source.Key, &source.Format, &source.Name, &source.Coordinate, &source.Version, &source.URL, &source.Integrity, &source.Metadata)
+	e := tx.QueryRow(ctx, `SELECT s.key,s.format,s.package,s.coordinate,s.version,s.url,s.integrity,s.metadata FROM cratectl.native_sources s JOIN cratectl.repositories r ON (r.tenant,r.name,r.source_revision)=(s.tenant,s.repository,s.source_revision) WHERE s.repository=$1 AND s.key=$2 AND s.format=$3`, repo, key, format).Scan(&source.Key, &source.Format, &source.Name, &source.Coordinate, &source.Version, &source.URL, &source.Integrity, &source.Metadata)
 	if errors.Is(e, pgx.ErrNoRows) {
+		var exists bool
+		if e = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM cratectl.native_sources WHERE repository=$1 AND key=$2 AND format=$3)`, repo, key, format).Scan(&exists); e != nil {
+			return source, e
+		}
+		if exists {
+			return source, ErrSourceChanged
+		}
 		e = ErrNotFound
 	}
 	return source, e
 }
-func (s *Store) NativeSource(ctx context.Context, i Identity, repo, key, format string) (NativeSource, error) {
+func (s *Store) NativeSource(ctx context.Context, i Identity, repo, key, format string, expected ...int64) (NativeSource, error) {
 	var source NativeSource
 	e := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
 		r, e := repositoryInTx(ctx, tx, i, repo, "read")
@@ -44,6 +51,9 @@ func (s *Store) NativeSource(ctx context.Context, i Identity, repo, key, format 
 		}
 		if r.Format != format || r.Mode != "proxy" {
 			return ErrConflict
+		}
+		if len(expected) > 0 && r.SourceRevision != expected[0] {
+			return ErrSourceChanged
 		}
 		source, e = nativeSource(ctx, tx, repo, key, format)
 		return e
@@ -58,7 +68,7 @@ func nativeCatalogArtifact(ctx context.Context, tx pgx.Tx, i Identity, repo, nam
 	if r.Format != format || r.Mode != "proxy" {
 		return Artifact{}, ErrConflict
 	}
-	a, e := readArtifact(ctx, tx, repo, format+"-catalog/"+name, false, newGraphBudget())
+	a, e := readArtifact(ctx, tx, repo, format+"-catalog/"+name, false, repositoryReadBudget(r))
 	if e == nil && a.MediaType != media {
 		return a, ErrConflict
 	}

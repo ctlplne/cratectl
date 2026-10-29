@@ -130,7 +130,7 @@ func (s *Server) fillNPMProxy(parent context.Context, i store.Identity, repo sto
 		if len(parts) != 2 || !npmName.MatchString(parts[0]) || !strings.HasSuffix(parts[1], ".tgz") {
 			return store.ErrConflict
 		}
-		source, e = s.DB.NPMSource(ctx, i, repo.Name, strings.TrimSuffix(parts[1], ".tgz"))
+		source, e = s.DB.NPMSource(ctx, i, repo.Name, strings.TrimSuffix(parts[1], ".tgz"), lease.SourceRevision)
 		if e != nil {
 			return e
 		}

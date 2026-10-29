@@ -1,5 +1,22 @@
 # cratectl execution status
 
+Versioned proxy/group source configuration and schema 4 are implemented locally.
+Source revisions fence ready cache bodies, validators, native download locators,
+active fills and final source/group selection. Administrator preview, immutable
+history, exact-revision replacement and monotonic rollback are exposed in the API
+and console. Catalog intake retains retired/denied OCI observations without
+restoring them or losing visible peers. See ADR 0023 and the source-configuration
+operator guide. Migration definitions 1–3 remain frozen.
+
+Development preflight passed focused real-PostgreSQL/HTTP isolation, lease,
+credential-authority, idempotency, malformed-304, outbox-fault, migration and
+catalog regressions; 77 stock-client source assertions; 45 old-schema-3 upgrade
+assertions; and six Chromium workflows. These observations came from a dirty
+build and do not replace the exact clean candidate checkpoint below. Clean-build,
+full integration/race, security and updated-console qualification are pending.
+No new source capability or broad readiness verdict is declared complete.
+
+
 Latest qualified source: `bea2472271bd15993bcae9b8ea12a102b2608abe`, with both
 author and committer `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
 The authoritative checkpoint is `evidence/2026-10-29/lifecycle-checkpoint.json`;

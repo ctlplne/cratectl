@@ -13,7 +13,8 @@ func ociReferenceLifecycleInTx(ctx context.Context, tx pgx.Tx, repo Repository, 
 	digest := ref
 	if kind == "manifests" && !strings.HasPrefix(ref, "sha256:") {
 		var deleted bool
-		e := tx.QueryRow(ctx, `SELECT digest,deleted FROM cratectl.tags WHERE repository=$1 AND image=$2 AND tag=$3`, repo.Name, image, ref).Scan(&digest, &deleted)
+		var revision int64
+		e := tx.QueryRow(ctx, `SELECT digest,deleted,source_revision FROM cratectl.tags WHERE repository=$1 AND image=$2 AND tag=$3`, repo.Name, image, ref).Scan(&digest, &deleted, &revision)
 		if errors.Is(e, pgx.ErrNoRows) {
 			return nil
 		}
@@ -22,6 +23,9 @@ func ociReferenceLifecycleInTx(ctx context.Context, tx pgx.Tx, repo Repository, 
 		}
 		if deleted && repo.Mode == "hosted" {
 			return ErrDeleted
+		}
+		if repo.Mode == "proxy" && (deleted || revision != repo.SourceRevision) {
+			return nil
 		}
 	}
 	return notDeletedInTx(ctx, tx, repo.Name, image+"/"+kind+"/"+digest)
@@ -75,7 +79,7 @@ func (s *Store) CheckOCIDigestDecision(ctx context.Context, i Identity, repo, di
 // OCIReferenceParents returns bounded, canonical intake metadata. It is not a
 // serving authorization. Callers must verify/reparse the exact immutable bytes;
 // publication and every served read independently recheck current graph policy.
-func (s *Store) OCIReferenceParents(ctx context.Context, i Identity, repo, image, kind, digest string, limit int, byteLimit int64) ([]Artifact, error) {
+func (s *Store) OCIReferenceParents(ctx context.Context, i Identity, repo, image, kind, digest string, limit int, byteLimit int64, expected ...int64) ([]Artifact, error) {
 	out := []Artifact{}
 	e := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
 		r, e := repositoryInTx(ctx, tx, i, repo, "read")
@@ -84,6 +88,9 @@ func (s *Store) OCIReferenceParents(ctx context.Context, i Identity, repo, image
 		}
 		if r.Format != "oci" || r.Mode != "proxy" || (kind != "blobs" && kind != "manifests") || !strings.HasPrefix(digest, "sha256:") || limit < 1 || limit > 4096 || byteLimit < 1 {
 			return ErrConflict
+		}
+		if len(expected) > 0 && r.SourceRevision != expected[0] {
+			return ErrSourceChanged
 		}
 		var denied bool
 		if e = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM cratectl.content_decisions WHERE repository=$1 AND digest=$2 AND decision='denied')`, repo, strings.TrimPrefix(digest, "sha256:")).Scan(&denied); e != nil {
@@ -95,7 +102,7 @@ func (s *Store) OCIReferenceParents(ctx context.Context, i Identity, repo, image
 		if e = notDeletedInTx(ctx, tx, repo, image+"/"+kind+"/"+digest); e != nil {
 			return e
 		}
-		rows, e := tx.Query(ctx, `SELECT `+artifactColumns+` FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND a.path=$2 || '/manifests/sha256:' || a.digest AND a.metadata->>'oci_validated'='true' AND COALESCE(d.decision,a.decision)<>'denied' AND NOT EXISTS(SELECT 1 FROM cratectl.artifact_lifecycle l WHERE (l.tenant,l.repository,l.path)=(a.tenant,a.repository,a.path) AND l.deleted) AND ((a.metadata->'oci_descriptors') ? $3 OR ($4='manifests' AND (a.metadata->'oci_subject')->>'digest'=$5)) ORDER BY a.path LIMIT $6`, repo, image, image+"/"+kind+"/"+digest, kind, digest, limit+1)
+		rows, e := tx.Query(ctx, `SELECT `+artifactColumns+` FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND a.source_revision=$7 AND a.path=$2 || '/manifests/sha256:' || a.digest AND a.metadata->>'oci_validated'='true' AND COALESCE(d.decision,a.decision)<>'denied' AND NOT EXISTS(SELECT 1 FROM cratectl.artifact_lifecycle l WHERE (l.tenant,l.repository,l.path)=(a.tenant,a.repository,a.path) AND l.deleted) AND ((a.metadata->'oci_descriptors') ? $3 OR ($4='manifests' AND (a.metadata->'oci_subject')->>'digest'=$5)) ORDER BY a.path LIMIT $6`, repo, image, image+"/"+kind+"/"+digest, kind, digest, limit+1, r.SourceRevision)
 		if e != nil {
 			return e
 		}

@@ -113,6 +113,12 @@ func fail(w http.ResponseWriter, status int, code, action string) {
 }
 func respondErr(w http.ResponseWriter, e error) {
 	switch {
+	case errors.Is(e, store.ErrSourceChanged):
+		fail(w, 503, "source_configuration_changed", "The repository source or group configuration changed. Retry from current package metadata; prior cache bytes, validators and locators cannot be reused across this change.")
+	case errors.Is(e, store.ErrConfigurationRevision):
+		fail(w, 409, "configuration_changed", "Read current repository configuration, preview its impact, and apply that exact expected_revision with a new idempotency key.")
+	case errors.Is(e, store.ErrConfigurationInput):
+		fail(w, 400, "invalid_configuration", "Supply complete valid proxy/group settings, a nonnegative expected_revision and a nonempty reason of at most 1024 UTF-8 bytes without controls. Repository name, mode and format are immutable.")
 	case errors.Is(e, store.ErrDeleted):
 		fail(w, 404, "artifact_deleted", "This retained reference was deleted. A writer must preview and explicitly restore its verified bytes; cache refresh cannot restore it.")
 	case errors.Is(e, store.ErrRepositorySuspended):
@@ -306,6 +312,9 @@ func readJSON(w http.ResponseWriter, r *http.Request, v any, limit int64) bool {
 }
 func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Identity) {
 	p := strings.TrimPrefix(r.URL.Path, "/api/v1/")
+	if s.configurationManagement(w, r, i, p) {
+		return
+	}
 	if s.lifecycleManagement(w, r, i, p) {
 		return
 	}

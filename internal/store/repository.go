@@ -30,12 +30,13 @@ type RepositorySettings struct {
 	OCITokenService   string            `json:"oci_token_service,omitempty"`
 }
 type Repository struct {
-	Name          string             `json:"name"`
-	Format        string             `json:"format"`
-	Mode          string             `json:"mode"`
-	RequireReview bool               `json:"require_review"`
-	Access        string             `json:"access"`
-	Settings      RepositorySettings `json:"settings"`
+	SourceRevision int64              `json:"source_revision"`
+	Name           string             `json:"name"`
+	Format         string             `json:"format"`
+	Mode           string             `json:"mode"`
+	RequireReview  bool               `json:"require_review"`
+	Access         string             `json:"access"`
+	Settings       RepositorySettings `json:"settings"`
 }
 
 func repositoryInTx(ctx context.Context, tx pgx.Tx, i Identity, name, action string) (Repository, error) {
@@ -61,7 +62,7 @@ func repositoryInTx(ctx context.Context, tx pgx.Tx, i Identity, name, action str
 func repositoryRecordInTx(ctx context.Context, tx pgx.Tx, i Identity, name, action string) (Repository, error) {
 	var r Repository
 	var settings []byte
-	e := tx.QueryRow(ctx, `SELECT name,format,mode,require_review,access,settings FROM cratectl.repositories WHERE name=$1`, name).Scan(&r.Name, &r.Format, &r.Mode, &r.RequireReview, &r.Access, &settings)
+	e := tx.QueryRow(ctx, `SELECT name,format,mode,require_review,access,settings,source_revision FROM cratectl.repositories WHERE name=$1`, name).Scan(&r.Name, &r.Format, &r.Mode, &r.RequireReview, &r.Access, &settings, &r.SourceRevision)
 	if errors.Is(e, pgx.ErrNoRows) {
 		return r, ErrNotFound
 	}
@@ -99,6 +100,9 @@ func (s *Store) AuthorizeWrite(ctx context.Context, i Identity, name string) err
 	return s.Tx(ctx, i, false, func(tx pgx.Tx) error { _, e := repositoryInTx(ctx, tx, i, name, "write"); return e })
 }
 func ValidateRepository(r *Repository) error {
+	if r.SourceRevision != 0 {
+		return errors.New("source_revision is read-only")
+	}
 	if r.Settings.PythonIndexFormat != "" && (r.Format != "pypi" || r.Mode != "proxy" || (r.Settings.PythonIndexFormat != "auto" && r.Settings.PythonIndexFormat != "html" && r.Settings.PythonIndexFormat != "json")) {
 		return errors.New("Python index format requires a PyPI proxy and auto, html or json")
 	}

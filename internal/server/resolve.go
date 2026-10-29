@@ -22,13 +22,14 @@ var errUpstream = errors.New("configured upstream retrieval failed")
 var errUpstreamIntegrity = errors.New("configured upstream checksum verification failed")
 
 type resolvedArtifact struct {
-	artifact   store.Artifact
-	source     store.Repository
-	groups     []string
-	cache      string
-	ociImage   string
-	ociRef     string
-	admissions []store.OCIAdmission
+	artifact       store.Artifact
+	source         store.Repository
+	groups         []string
+	groupRevisions map[string]int64
+	cache          string
+	ociImage       string
+	ociRef         string
+	admissions     []store.OCIAdmission
 }
 
 func (s *Server) resolve(ctx context.Context, i store.Identity, repo store.Repository, p string, force bool) (resolvedArtifact, error) {
@@ -73,6 +74,10 @@ func (s *Server) resolve(ctx context.Context, i store.Identity, repo store.Repos
 				return a, store.ErrDenied
 			}
 			a.groups = append(a.groups, repo.Name)
+			if a.groupRevisions == nil {
+				a.groupRevisions = map[string]int64{}
+			}
+			a.groupRevisions[repo.Name] = repo.SourceRevision
 			return a, nil
 		}
 		return resolvedArtifact{}, store.ErrNotFound
@@ -83,8 +88,9 @@ func (s *Server) resolve(ctx context.Context, i store.Identity, repo store.Repos
 func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.Repository, p string, force bool) (resolvedArtifact, error) {
 	result := resolvedArtifact{source: repo}
 	waits := 0
+	sourceRetries := 0
 	for {
-		lease, e := s.DB.Retrieval(ctx, i, repo.Name, p)
+		lease, e := s.DB.Retrieval(ctx, i, repo.Name, p, repo.SourceRevision)
 		if e != nil && !errors.Is(e, store.ErrNotFound) {
 			return result, e
 		}
@@ -93,6 +99,11 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 			case "ready":
 				result.cache = "hit"
 				result.artifact, e = s.proxyArtifact(ctx, i, repo, p)
+				if errors.Is(e, store.ErrSourceChanged) && sourceRetries < 1 {
+					sourceRetries++
+					force = true
+					continue
+				}
 				return result, e
 			case "negative":
 				return result, store.ErrNotFound
@@ -147,7 +158,7 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 			<-s.fillSlots
 			return result, e
 		}
-		lease, e = s.DB.AcquireRetrievalWithLease(ctx, i, repo.Name, p, token, force, s.TenantProxyLimit, s.ProxyLease)
+		lease, e = s.DB.AcquireRetrievalWithLease(ctx, i, repo.Name, p, token, force, s.TenantProxyLimit, s.ProxyLease, repo.SourceRevision)
 		if errors.Is(e, store.ErrBusy) {
 			<-s.fillSlots
 			force = false
@@ -178,7 +189,7 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 		if e != nil {
 			return result, e
 		}
-		refreshed, e := s.DB.Retrieval(ctx, i, repo.Name, p)
+		refreshed, e := s.DB.Retrieval(ctx, i, repo.Name, p, repo.SourceRevision)
 		if e != nil {
 			return result, e
 		}
@@ -193,6 +204,11 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 				result.cache = "revalidated"
 			}
 			result.artifact, e = s.proxyArtifact(ctx, i, repo, p)
+			if errors.Is(e, store.ErrSourceChanged) && sourceRetries < 1 {
+				sourceRetries++
+				force = true
+				continue
+			}
 			return result, e
 		case "negative":
 			return result, store.ErrNotFound
@@ -283,6 +299,17 @@ func (s *Server) fillProxy(parent context.Context, i store.Identity, repo store.
 	ctx, stop, closeLease := keepLease(parent, s.ProxyLease, func(ctx context.Context) error { return s.DB.RenewRetrieval(ctx, i, lease, s.ProxyLease) }, nil)
 	defer closeLease()
 	e := s.fillProxyOnce(ctx, i, repo, lease)
+	if errors.Is(e, store.ErrSourceChanged) {
+		// A rejected revalidation cannot hold the current lease open. A changed
+		// repository epoch already fences it; otherwise record a terminal failure.
+		cleanup, done := context.WithTimeout(context.WithoutCancel(parent), 3*time.Second)
+		status := 0
+		if errors.Is(e, store.ErrSourceRevalidation) {
+			status = 304
+		}
+		_ = s.DB.CompleteRetrieval(cleanup, i, lease, store.RetrievalResult{Status: status, Failure: "source_revalidation_rejected"})
+		done()
+	}
 	if cause := stop(); cause != nil {
 		return cause
 	}
@@ -458,6 +485,7 @@ func (s *Server) fillProxyOnce(parent context.Context, i store.Identity, repo st
 func (s *Server) guardResolved(ctx context.Context, i store.Identity, a resolvedArtifact) (store.Artifact, error) {
 	var current store.Artifact
 	var e error
+	snapshot := store.SourceSnapshot{Repository: a.source.Name, Revision: a.source.SourceRevision, Groups: a.groupRevisions}
 	if a.ociRef != "" {
 		endpoint := a.source.Name
 		if len(a.groups) > 0 {
@@ -465,7 +493,7 @@ func (s *Server) guardResolved(ctx context.Context, i store.Identity, a resolved
 		}
 		_, kind, _ := parseOCIPath(a.artifact.Path)
 		var source store.Repository
-		current, source, e = s.DB.OCISelection(ctx, i, endpoint, a.ociImage, kind, a.ociRef, a.admissions...)
+		current, source, e = s.DB.OCISelectionAtRevision(ctx, i, endpoint, a.ociImage, kind, a.ociRef, snapshot, a.admissions...)
 		if e != nil {
 			return current, e
 		}
@@ -474,7 +502,7 @@ func (s *Server) guardResolved(ctx context.Context, i store.Identity, a resolved
 		}
 		return current, nil
 	} else {
-		current, e = s.DB.Artifact(ctx, i, a.source.Name, a.artifact.Path)
+		current, e = s.DB.ArtifactSelection(ctx, i, a.source.Name, a.artifact.Path, snapshot)
 	}
 	if e != nil {
 		return current, e
@@ -483,7 +511,7 @@ func (s *Server) guardResolved(ctx context.Context, i store.Identity, a resolved
 		return current, store.ErrConflict
 	}
 	if a.source.Mode == "proxy" {
-		entry, e := s.DB.Retrieval(ctx, i, a.source.Name, a.artifact.Path)
+		entry, e := s.DB.Retrieval(ctx, i, a.source.Name, a.artifact.Path, a.source.SourceRevision)
 		if e != nil {
 			return current, e
 		}

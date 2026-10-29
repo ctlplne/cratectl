@@ -53,9 +53,13 @@ func buildSchemaStateBody() string {
 
 var frozenSchemaStateBody = buildSchemaStateBody()
 var lifecycleSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationSafetySQL(), migrationSafetySQLFor(schemaTablesV3), 1)
+var sourceSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationSafetySQL(), migrationSafetySQLFor(schemaTablesV4), 1)
 
 func schemaStateBody() string { return frozenSchemaStateBody }
 func schemaStateBodyForVersion(version int) string {
+	if version >= 4 {
+		return sourceSchemaStateBody
+	}
 	if version >= 3 {
 		return lifecycleSchemaStateBody
 	}
@@ -75,7 +79,7 @@ func buildMigrations() []migrationStep {
 		lifecycle += `ALTER TABLE ` + q + ` ENABLE ROW LEVEL SECURITY; ALTER TABLE ` + q + ` FORCE ROW LEVEL SECURITY; CREATE POLICY tenant_scope ON ` + q + ` USING (tenant=current_setting('cratectl.tenant',true)) WITH CHECK (tenant=current_setting('cratectl.tenant',true)); GRANT SELECT,INSERT,UPDATE ON ` + q + ` TO cratectl_app;`
 	}
 	lifecycle += schemaStateSQL(lifecycleSchemaStateBody)
-	return []migrationStep{{1, "legacy baseline", legacySchemaSQL()}, {2, "schema state and runtime coordination", migrationLedgerSQL + "\n" + state}, {3, "retained artifact and repository lifecycle", lifecycle}}
+	return []migrationStep{{1, "legacy baseline", legacySchemaSQL()}, {2, "schema state and runtime coordination", migrationLedgerSQL + "\n" + state}, {3, "retained artifact and repository lifecycle", lifecycle}, {4, "versioned repository source configuration", sourceConfigurationSchema + schemaStateSQL(sourceSchemaStateBody)}}
 }
 
 var frozenMigrations = buildMigrations()
