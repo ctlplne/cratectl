@@ -13,80 +13,83 @@ implementation matches the pre-reset SHA-256 inventory. Test services are stoppe
 private database data and the original-history recovery copy are retained.
 See `evidence/2026-10-28/history-reset.json` for the authoritative new baseline.
 
-Every earlier commit/checkpoint reference below is historical evidence from the
-archived original history. It does not identify the new history's current source.
-All 450 capabilities, 41 format families and negative readiness verdicts remain.
+Pre-reset commit anchors in the older sections belong to archived original
+history. The current checkpoints and fresh root below identify the replacement
+history. All 450 capabilities, 41 format families and negative readiness verdicts
+remain.
 The owner authorized pushing this recreation; later feature pushes still require
 the owner's authority under the standing project contract.
 
-Latest source candidate: `60cf94768cd15df958c0bbb24e2e33e452e5f690`, committed with both author and
-committer `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
-The Go registry now embeds a React/TypeScript/Vite operator console at `/console/`.
-It uses the same management authorization, policy, transaction and worker paths.
-See [operator console](docs/operator/console.md) and
-[qualification checkpoint](evidence/2026-10-29/console-checkpoint.json).
+Latest source candidate: `51a74bd42866a6e33c77a670259ed0b4d9a959a8`, with both author and committer
+`imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
+Repository and stored-reference management now traverse all currently authorized
+records through bounded next/previous/first pages and global server search.
+See [operator guide](docs/operator/console.md) and [checkpoint](evidence/2026-10-29/pagination-checkpoint.json).
 
-Clean production and race-built registry/worker/CLI replays each passed 22 console
-assertions, including 19 workflow checks, two browser tests without skips, and 14
-named automated accessibility states with zero findings. Real npm publication is
-initially hidden by review policy, becomes installable after exact-digest approval,
-and is hidden after denial. Actual response loss after repository commit replays
-the original bytes/key without duplication. Current reader grants, revoked tokens,
-non-JSON unauthorized responses, delayed responses across tenant switches, hostile
-path text, stale/503 recovery and page-scoped audit export are exercised.
+Repository grants filter SQL before page bounds. OCI manifests use the existing
+complete child-graph policy reader; an empty visible page retains progress via an
+encrypted scan position. Every request rechecks current credentials, grants and
+policy under forced RLS. Cursors bind tenant, credential, actor/role, endpoint and
+filters and convey no authorization. Actual native restart retains its separate
+private key and accepts the preceding cursor. Concurrent key publication, scope,
+tampering, rotation and private-file checks pass within their named scope.
 
-A real worker completes an inventory admitted from the UI. Jobs, inventory flags,
-reference sweep and transfer lease previews expose observations without granting
-security or deletion approval. The browser keeps credentials only in tab memory;
-storage, cookie, URL and configuration-template checks pass. Dialog keyboard focus
-and mobile overflow defects have retained first failures and clean normal/race
-replays. Seeded accessibility controls detect contrast/label/button/image/target
-violations; no rule or CSP exclusions are added. Full WCAG and assistive-technology/
-other native-browser qualification remain required.
+Real PostgreSQL traverses 1108 repositories and 1108 references including UTF-8
+keys, plus 1105 hidden OCI roots before late permitted content. Forward/reverse,
+insertions, revocation, byte-shortened pages and oversized metadata recovery pass.
+The prior clean binary demonstrably omitted a late granted repository without a
+continuation. A first implementation also exposed database-locale Unicode case
+loss; explicit bounded simple-fold literal matching repairs it. Both defects have
+retained first failures and production/race replays. Short search/cursor fuzz
+campaigns pass; these are not the complete parser/security campaign.
 
-The clean candidate passed 640 production assertions across console, native TLS
-installation (30), inventory (67), referenced sweeps (80), transfer leases (63),
-workers (71), native-client combined journeys (274) and pinned public OCI (33).
-Separate race console and native installation runs passed 52 assertions. Real
-PostgreSQL/store/server/native-driver race suites ran twice without skips or race
-reports; production binaries were restored and checked by digest. Unit/vet/race,
-byte-for-byte embedded asset rebuild and source/asset negative controls pass.
+The browser traverses over 1000 repositories, finds late repositories/references,
+keeps a selected repository outside the chooser first page, handles empty OCI
+pages, and renders metadata as text. A creation card exposes a new repository even
+when preserved filters exclude its name. Three browser tests pass without skips
+on production and race binaries, with 19 existing workflow checks, 10 paging
+checks and 18 named automated accessibility states with zero findings per run.
+Complete WCAG, assistive technologies and other native browsers remain required.
 
-Scoped current Go/npm/Trivy/Gitleaks source/history scans report no findings;
-lockfile versions, registry integrity and runtime license notices are retained.
-Full artifact/image/security, parser/fault/scale campaigns and production packaging
-remain incomplete. Linux amd64/arm64 servers and Windows amd64 CLI compile only.
-Windows private-file ACL semantics, native runtimes and production PKI/credential
-lifecycle remain required.
+The clean candidate passed 653 production assertions across the console,
+native TLS initialization, inventory, sweeps, leases, workers, combined stock
+clients and pinned public OCI. Separate race console/installation runs passed
+65 assertions. PostgreSQL/store/server/native-driver race suites ran twice
+without skips or race reports after the tagged migration test was isolated into
+its own owned database. The initial shared-DDL deadlock and exact fixture patch
+are retained; no upload or tombstone assertion was relaxed. Runtime code/binaries
+remain from the clean candidate. Production bytes were restored and checked.
+Unit/vet/race, embedded asset reproduction, scoped source/dependency/history
+security scans pass. Linux amd64/arm64 servers and Windows amd64 CLI compile only;
+Windows ACL semantics and native runtime qualification remain required.
 
-Repository/artifact lists still apply legacy bounds before permission filtering;
-they can omit records even below the visible ceiling. Local filtering/loaded rows
-are explicitly partial. Complete management pagination and the full console for
-all committed workflows remain required. The browser fixture uses explicit
-loopback HTTP; native installation separately repeats verified local TLS. Browser
-CA deployment and production PKI are not established by the browser run.
+Pages are live observations, not a multi-page snapshot; earlier concurrent
+insertions require a first-page restart. Summary traversal and current full
+reference inspection are separate and metadata byte budgets are configurable.
+Management pagination does not establish complete native indexes, every operator
+workflow, multi-node failover, key rotation lifecycle, production packaging,
+PKI/credential lifecycle, performance/scale or full security qualification. Current
+schema migration still needs a controlled maintenance window: concurrent DDL can
+abort live requests. Safe rolling/online upgrade and recovery remain required.
 
-All 450 broad capabilities/journeys and 41 format families remain unfinished;
-every broad readiness verdict remains negative. Continue complete management
-pagination and operator workflows, OCI source lifecycle/races, Maven metadata
-union/snapshot/group, remaining npm/PyPI cases, scheduled sampling/repair,
-holds/retention/GC, S3, consistent backup/restore and every later product stage.
-Owned runtime fixtures and native PostgreSQL are stopped; private data, original
-Docker resources and history recovery are retained. The coordinator reported the
-manual Docker restart complete; read-only checks confirm engine 29.9.2 and the
-retained stopped cratectl container/volume. The interruption hold is released.
-No Docker lifecycle operation was executed. Owned OCI/container and packaging
-qualification must now be resumed; engine health alone is not packaging proof.
+All 450 broad capabilities/journeys and 41 format families remain unfinished.
+Every broad readiness verdict remains negative. Continue remaining console and
+native-index/search/format/identity/lifecycle work, OCI source lifecycle/races,
+Maven metadata union/snapshot/group, remaining npm/PyPI cases, sampling/repair,
+holds/retention/GC, S3, backup/restore and every later product stage. Docker recovery
+is verified and the coordination hold is released; owned OCI/container/packaging
+qualification can resume. No shared Docker lifecycle action was executed here.
+Owned native fixtures/PostgreSQL are stopped; private data/keys and original
+Docker resources are retained.
 
-No push or remote mutation was executed by this turn. Live provenance audit is
-retained in `evidence/2026-10-29/remote-state-console-audit.json`; shared-checkout
-pushes must not be attributed without evidence. Feature pushes, public visibility,
-releases and publication still require owner authority.
+No push or remote mutation was executed by this turn. The read-only provenance
+audit is `evidence/2026-10-29/remote-state-pagination-audit.json`. Feature pushes,
+public visibility, releases and publication still require owner authority.
 
 **Goal active; full product goal incomplete.** Origin remains the private
-`https://github.com/ctlplne/cratectl.git`, with the preserved fresh history rooted at
-`887c569ac96c451bccd91ae872317c06a890117a`. Earlier records below remain scoped
-historical observations, not proof of the current candidate's complete readiness.
+`https://github.com/ctlplne/cratectl.git`, rooted at
+`887c569ac96c451bccd91ae872317c06a890117a`. Earlier records below are historical
+scoped observations, not evidence of complete current readiness.
 
 Stage 0 has architecture, threat model, conventions, licensing hold and an initial
 450-row committed capability backlog across 41 protocol families. Documentary

@@ -130,3 +130,9 @@ Explicit CLI/server/worker flags override configuration defaults. `cratectl
 Config files are bounded and reject unknown fields. Production deployment,
 credential/PKI lifecycle, operating-system coverage, console accessibility,
 upgrade/recovery and the remaining product scope still need qualification.
+
+Schema migrations currently require a controlled maintenance window with registry
+and worker traffic stopped. Concurrent schema DDL has demonstrated a lock-order
+deadlock that aborts a live request. Dedicated test databases isolate migration
+replay from unrelated live-runtime tests; that isolation does not qualify rolling
+upgrades. Versioned online/rolling upgrade and recovery remain required work.

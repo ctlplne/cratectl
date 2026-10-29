@@ -368,9 +368,13 @@
       "summary": "Management repository listing omitted a granted late repository after the first 1000 inaccessible names and provided no continuation",
       "first_failure": "evidence/2026-10-29/pagination-first-failure.json",
       "first_failure_source": "Clean production binary from 60cf94768cd15df958c0bbb24e2e33e452e5f690, retained with build identity and SHA-256.",
-      "state": "repaired; final clean qualification pending",
+      "state": "repaired and replayed",
       "repair": "Filter grants before keyset page bounds; use bounded forward/reverse and server search with current RLS/credential checks. Artifact continuation uses encrypted scoped positions through hidden OCI candidates, summaries and byte-shortened pages.",
-      "limits": "Stored repository/reference management traversal only. Complete native indexes, every workflow/platform, HA/performance, accessibility and broad readiness remain separate required scope."
+      "limits": "Stored repository/reference management traversal only. Complete native indexes, every workflow/platform, HA/performance, accessibility and broad readiness remain separate required scope.",
+      "candidate": "51a74bd42866a6e33c77a670259ed0b4d9a959a8",
+      "native_replay": "evidence/2026-10-29/console-2de667a672.json",
+      "native_race_replay": "evidence/2026-10-29/console-df4664c05e.json",
+      "postgres_replay": "evidence/2026-10-29/pagination-clean-postgres-race.txt"
     },
     {
       "id": "DEFECT.0035",
@@ -378,9 +382,25 @@
       "first_failure": "evidence/2026-10-29/pagination-unicode-first.txt",
       "reproduction": "evidence/2026-10-29/pagination-unicode-regression.json",
       "first_failure_source": "921eed4d808fe6132e73cea5c734b69d392e367b runtime sources with only the regression test added.",
-      "state": "repaired; clean qualification pending",
+      "state": "repaired and replayed",
       "repair": "Build a bounded Unicode simple-fold literal matcher with quoted punctuation; bind it to PostgreSQL instead of depending on locale lower().",
-      "limits": "Unicode simple folding and literal substring search, not normalization, linguistic stemming, full-text indexing or broad search parity."
+      "limits": "Unicode simple folding and literal substring search, not normalization, linguistic stemming, full-text indexing or broad search parity.",
+      "candidate": "51a74bd42866a6e33c77a670259ed0b4d9a959a8",
+      "native_replay": "evidence/2026-10-29/console-2de667a672.json",
+      "native_race_replay": "evidence/2026-10-29/console-df4664c05e.json",
+      "postgres_replay": "evidence/2026-10-29/pagination-clean-postgres-race.txt"
+    },
+    {
+      "id": "DEFECT.0036",
+      "summary": "A migration replay test altered the shared runtime schema and deadlocked an upload heartbeat in another test package",
+      "first_failure": "evidence/2026-10-29/pagination-shared-ddl-first.txt",
+      "reproduction": "evidence/2026-10-29/pagination-shared-ddl-triage.json",
+      "first_failure_source": "51a74bd42866a6e33c77a670259ed0b4d9a959a8",
+      "state": "fixture isolated and replayed; production migration concurrency remains unqualified",
+      "repair": "Give the schema-replaying npm test its own owned database. Preserve migration tombstone/publication assertions and the independent upload permission-revocation status assertion.",
+      "limits": "Production concurrent-DDL/rolling upgrade safety remains required and unqualified. The current migrator can abort live requests and needs a controlled maintenance window.",
+      "candidate": "51a74bd42866a6e33c77a670259ed0b4d9a959a8",
+      "postgres_replay": "evidence/2026-10-29/pagination-clean-postgres-race.txt"
     }
   ]
 }

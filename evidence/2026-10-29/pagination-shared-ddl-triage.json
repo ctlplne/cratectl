@@ -1,0 +1,13 @@
+{
+  "source_candidate": "51a74bd42866a6e33c77a670259ed0b4d9a959a8",
+  "first_failure": "evidence/2026-10-29/pagination-shared-ddl-first.txt",
+  "observation": "Unchanged upload grant-revocation case returned fail-closed 503 instead of expected 403 while a different package replayed npm schema migration against the same database.",
+  "postgres_diagnostic": {
+    "error": "deadlock detected",
+    "runtime_wait": "AccessShareLock on repositories while holding a tokens read lock",
+    "migration_wait": "AccessExclusiveLock on tokens while holding earlier schema locks",
+    "source": "private native-postgres.log, 2026-10-29 11:41:03 EDT; no credential/parameter values copied"
+  },
+  "fixture_repair": "Use an isolated owned testdb database for the npm migration replay and keep all existing tag budget, tombstone and publication rollback assertions. Keep the upload 403 assertion unchanged and rerun packages concurrently.",
+  "production_limit": "The current migrator still needs a controlled maintenance window. Active DDL can abort live requests; rolling/online upgrade and recovery remain unqualified required work. This test fixture repair does not qualify or repair that product behavior."
+}

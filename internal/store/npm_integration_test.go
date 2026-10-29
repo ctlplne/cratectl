@@ -5,6 +5,8 @@ package store
 
 import (
 	"context"
+	crypt "ctlplne.dev/cratectl/internal/crypto"
+	"ctlplne.dev/cratectl/internal/testdb"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -18,12 +20,16 @@ import (
 
 func npmTestStore(t *testing.T) (*Store, context.Context, Identity, string) {
 	t.Helper()
+	return npmTestStoreAt(t, os.Getenv("CRATECTL_DSN"))
+}
+func npmTestStoreAt(t *testing.T, dsn string) (*Store, context.Context, Identity, string) {
+	t.Helper()
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	t.Cleanup(cancel)
-	if os.Getenv("CRATECTL_DSN") == "" {
+	if dsn == "" {
 		t.Fatal("CRATECTL_DSN required: integration never silently skips")
 	}
-	s, e := Open(ctx, os.Getenv("CRATECTL_DSN"))
+	s, e := Open(ctx, dsn)
 	if e != nil {
 		t.Fatal(e)
 	}
@@ -114,7 +120,22 @@ func TestDigestDecisionsCoverExistingAndFutureAliases(t *testing.T) {
 }
 
 func TestNPMTagsBudgetsAndPublicationRollback(t *testing.T) {
-	s, ctx, i, repo := npmTestStore(t)
+	// This case replays schema DDL. Own its database so migration cannot collide
+	// with live uploads/leases exercised concurrently by other test packages.
+	database := testdb.New(t)
+	setup, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	if e := Migrate(setup, database.OwnerDSN); e != nil {
+		t.Fatal(e)
+	}
+	token, e := crypt.Token()
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e = Provision(setup, database.OwnerDSN, "test-a", "operator", "admin", token, time.Now().Add(time.Hour)); e != nil {
+		t.Fatal(e)
+	}
+	s, ctx, i, repo := npmTestStoreAt(t, database.RuntimeDSN)
 	name := "@test/package"
 	first, second := npmTestArtifact("1.0.0", "a"), npmTestArtifact("2.0.0", "b")
 	if e := s.PublishNPM(ctx, i, repo, name, []Artifact{first}, map[string]string{"latest": "1.0.0"}, 1); e != nil {
@@ -148,10 +169,7 @@ func TestNPMTagsBudgetsAndPublicationRollback(t *testing.T) {
 	if e = s.ChangeNPMTag(ctx, i, repo, name, "latest", "", true); e != nil {
 		t.Fatal(e)
 	}
-	if os.Getenv("CRATECTL_OWNER_DSN") == "" {
-		t.Fatal("CRATECTL_OWNER_DSN required to verify migration replay")
-	}
-	if e = Migrate(ctx, os.Getenv("CRATECTL_OWNER_DSN")); e != nil {
+	if e = Migrate(ctx, database.OwnerDSN); e != nil {
 		t.Fatal(e)
 	}
 	_, tags, e = s.NPMState(ctx, i, repo, name, 2, 1<<20, 1)

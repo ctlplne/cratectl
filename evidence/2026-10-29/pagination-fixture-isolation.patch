@@ -1,0 +1,42 @@
+diff --git a/internal/store/npm_integration_test.go b/internal/store/npm_integration_test.go
+index ee30ea0..e863f1b 100644
+--- a/internal/store/npm_integration_test.go
++++ b/internal/store/npm_integration_test.go
+@@ -7,0 +8,2 @@ import (
++	crypt "ctlplne.dev/cratectl/internal/crypto"
++	"ctlplne.dev/cratectl/internal/testdb"
+@@ -19,0 +22,4 @@ func npmTestStore(t *testing.T) (*Store, context.Context, Identity, string) {
++	t.Helper()
++	return npmTestStoreAt(t, os.Getenv("CRATECTL_DSN"))
++}
++func npmTestStoreAt(t *testing.T, dsn string) (*Store, context.Context, Identity, string) {
+@@ -23 +29 @@ func npmTestStore(t *testing.T) (*Store, context.Context, Identity, string) {
+-	if os.Getenv("CRATECTL_DSN") == "" {
++	if dsn == "" {
+@@ -26 +32 @@ func npmTestStore(t *testing.T) (*Store, context.Context, Identity, string) {
+-	s, e := Open(ctx, os.Getenv("CRATECTL_DSN"))
++	s, e := Open(ctx, dsn)
+@@ -117 +123,16 @@ func TestNPMTagsBudgetsAndPublicationRollback(t *testing.T) {
+-	s, ctx, i, repo := npmTestStore(t)
++	// This case replays schema DDL. Own its database so migration cannot collide
++	// with live uploads/leases exercised concurrently by other test packages.
++	database := testdb.New(t)
++	setup, cancel := context.WithTimeout(context.Background(), 30*time.Second)
++	defer cancel()
++	if e := Migrate(setup, database.OwnerDSN); e != nil {
++		t.Fatal(e)
++	}
++	token, e := crypt.Token()
++	if e != nil {
++		t.Fatal(e)
++	}
++	if e = Provision(setup, database.OwnerDSN, "test-a", "operator", "admin", token, time.Now().Add(time.Hour)); e != nil {
++		t.Fatal(e)
++	}
++	s, ctx, i, repo := npmTestStoreAt(t, database.RuntimeDSN)
+@@ -151,4 +172 @@ func TestNPMTagsBudgetsAndPublicationRollback(t *testing.T) {
+-	if os.Getenv("CRATECTL_OWNER_DSN") == "" {
+-		t.Fatal("CRATECTL_OWNER_DSN required to verify migration replay")
+-	}
+-	if e = Migrate(ctx, os.Getenv("CRATECTL_OWNER_DSN")); e != nil {
++	if e = Migrate(ctx, database.OwnerDSN); e != nil {
