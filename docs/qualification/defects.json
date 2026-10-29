@@ -340,22 +340,28 @@
     {
       "id": "DEFECT.0032",
       "summary": "Operator console creation dialog focused Close rather than its first form field",
-      "state": "repaired; final clean replay pending",
+      "state": "repaired and replayed",
       "first_failure": "evidence/2026-10-29/console-focus-first.txt",
       "reproduction": "evidence/2026-10-29/console-focus-regression.json",
       "first_failure_source": "Uncommitted console prototype on e8f8caba59c90f65a47ffe9ebdf2c28701bbde64; exact source and embedded asset hashes retained.",
       "repair": "Show the native dialog before focusing the first enabled form field; preserve the caller for focus restoration and refocus when dialog content changes.",
-      "limits": "Named Chromium keyboard journey; complete assistive-technology/browser campaign remains required."
+      "limits": "Named Chromium keyboard journey; complete assistive-technology/browser campaign remains required.",
+      "candidate": "60cf94768cd15df958c0bbb24e2e33e452e5f690",
+      "native_replay": "evidence/2026-10-29/console-2e695cc1ff.json",
+      "native_race_replay": "evidence/2026-10-29/console-f5bd63f36c.json"
     },
     {
       "id": "DEFECT.0033",
       "summary": "A visually hidden absolute table header escaped the mobile scroll container and widened the document",
-      "state": "repaired; final clean replay pending",
+      "state": "repaired and replayed",
       "first_failure": "evidence/2026-10-29/console-mobile-first.txt",
       "reproduction": "evidence/2026-10-29/console-mobile-regression.json",
       "first_failure_source": "Uncommitted console prototype on e8f8caba59c90f65a47ffe9ebdf2c28701bbde64; source hash and measured layout retained.",
       "repair": "Position the table scroll container so the hidden header stays within its containing block; preserve internal table scrolling.",
-      "limits": "390-pixel Chromium repository fixture; all other layouts/platforms remain separately qualified."
+      "limits": "390-pixel Chromium repository fixture; all other layouts/platforms remain separately qualified.",
+      "candidate": "60cf94768cd15df958c0bbb24e2e33e452e5f690",
+      "native_replay": "evidence/2026-10-29/console-2e695cc1ff.json",
+      "native_race_replay": "evidence/2026-10-29/console-f5bd63f36c.json"
     }
   ]
 }

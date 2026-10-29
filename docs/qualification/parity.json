@@ -25971,17 +25971,26 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "internal/installation; internal/store/bootstrap.go and bootstrap.sql; internal/configfile; internal/crypto/local_tls.go; cmd/cratectl and cmd/cratectld",
+      "implementation": "internal/installation; internal/store/bootstrap.go and bootstrap.sql; internal/configfile; internal/crypto/local_tls.go; cmd/cratectl and cmd/cratectld; web/src; internal/consoleui; internal/server current session; scripts/conformance_console.py",
       "surfaces": {
         "cli": "cratectld init/serve/worker --config; cratectl --config; cratectl npm-config",
         "api": "Existing repository, decisions, jobs and audit API used through CLI",
-        "ui": null
+        "ui": "/console/: repositories, packages/decisions, jobs, filesystem inventory, reference/lease previews and audit"
       },
       "core": true,
       "dependencies": [],
       "acceptance_journey": "J.UX.BLANK-INSTALL",
-      "clients": [],
-      "client_versions": {},
+      "clients": [
+        "Chromium",
+        "npm"
+      ],
+      "client_versions": {
+        "Chromium": "156.0.8078.4",
+        "Playwright": "1.64.1",
+        "axe-core": "4.14.0",
+        "npm": "11.16.0",
+        "Node": "v26.0.0"
+      },
       "test_data": "Defined by the corresponding GOAL.md acceptance requirement.",
       "permission_cases": [
         "least privilege",
@@ -25995,17 +26004,19 @@
         "recovery"
       ],
       "state": "implementing",
-      "candidate": "3599faf6fae2ee6f70206d7147371941f64d2f28",
+      "candidate": "60cf94768cd15df958c0bbb24e2e33e452e5f690",
       "evidence": [
         "evidence/2026-10-29/installation-c49266d94f.json",
         "evidence/2026-10-29/installation-17fe431ba4.json",
         "evidence/2026-10-29/init-clean-postgres-race.txt",
         "evidence/2026-10-29/installation-5d218e61f9.json",
         "evidence/2026-10-29/installation-cb7efcadcd.json",
-        "evidence/2026-10-29/init-clean-postgres-race.txt"
+        "evidence/2026-10-29/console-checkpoint.json",
+        "evidence/2026-10-29/console-2e695cc1ff.json",
+        "evidence/2026-10-29/console-f5bd63f36c.json"
       ],
-      "limits": "Verified subset: dedicated empty native database initialization, durable private preparation and atomic first tenant/credentials/audit/receipt, actual initializer kill/resume, config-only runtime, verified local TLS and stock npm first publish/review/approval/install/restart/denial. Strict certificate regression retained. Operator supplies database/login and clients. Full console, production packaging/offline bundle, PKI/credential/identity lifecycle, native platforms and broad product qualification remain required.",
-      "next_action": "Complete the basic React/TypeScript/Vite console and first-use UI, production packaging and trust/credential lifecycle, plus native platform and full scope qualification."
+      "limits": "Verified basic console subset: empty tenant, repository creation and immutable response-loss replay, templates without active credentials, native npm review/approve/install/deny, jobs and completed storage inventory, sweep/lease previews and page-scoped audit export. Permission removal clears data, late prior-tenant responses are fenced, actual credential revocation and non-JSON 401 responses clear sessions, hostile paths render as text. Fourteen named automated accessibility states and keyboard focus/Escape/return actions pass in production and race replays. Full console, management pagination, all WCAG/AT/native-browser behavior and broader product remain required.",
+      "next_action": "Complete full management pagination and remaining operator workflows, native-browser/assistive-technology testing, production PKI/credential/identity lifecycle and packaging; retain every broader goal requirement."
     },
     {
       "id": "UX.CONSOLE",
@@ -26024,17 +26035,26 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "web/src; internal/consoleui; internal/server current session; scripts/conformance_console.py",
       "surfaces": {
-        "api": null,
+        "api": "/api/v1/session and the existing tenant-scoped management API",
         "cli": null,
-        "ui": null
+        "ui": "/console/: repositories, packages/decisions, jobs, filesystem inventory, reference/lease previews and audit"
       },
       "core": true,
       "dependencies": [],
       "acceptance_journey": "J.UX.CONSOLE",
-      "clients": [],
-      "client_versions": {},
+      "clients": [
+        "Chromium",
+        "npm"
+      ],
+      "client_versions": {
+        "Chromium": "156.0.8078.4",
+        "Playwright": "1.64.1",
+        "axe-core": "4.14.0",
+        "npm": "11.16.0",
+        "Node": "v26.0.0"
+      },
       "test_data": "Defined by the corresponding GOAL.md acceptance requirement.",
       "permission_cases": [
         "least privilege",
@@ -26047,11 +26067,15 @@
         "partial failure",
         "recovery"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "state": "implementing",
+      "candidate": "60cf94768cd15df958c0bbb24e2e33e452e5f690",
+      "evidence": [
+        "evidence/2026-10-29/console-checkpoint.json",
+        "evidence/2026-10-29/console-2e695cc1ff.json",
+        "evidence/2026-10-29/console-f5bd63f36c.json"
+      ],
+      "limits": "Verified basic console subset: empty tenant, repository creation and immutable response-loss replay, templates without active credentials, native npm review/approve/install/deny, jobs and completed storage inventory, sweep/lease previews and page-scoped audit export. Permission removal clears data, late prior-tenant responses are fenced, actual credential revocation and non-JSON 401 responses clear sessions, hostile paths render as text. Fourteen named automated accessibility states and keyboard focus/Escape/return actions pass in production and race replays. Full console, management pagination, all WCAG/AT/native-browser behavior and broader product remain required.",
+      "next_action": "Complete full management pagination and remaining operator workflows, native-browser/assistive-technology testing, production PKI/credential/identity lifecycle and packaging; retain every broader goal requirement."
     },
     {
       "id": "UX.API",
@@ -26070,17 +26094,26 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "internal/store/inventory.go and inventory.sql; internal/server/inventory.go; internal/worker/inventory.go; internal/blob/inventory.go and regular.go; current-worker callback reauthentication",
+      "implementation": "internal/store/inventory.go and inventory.sql; internal/server/inventory.go; internal/worker/inventory.go; internal/blob/inventory.go and regular.go; current-worker callback reauthentication; web/src; internal/consoleui; internal/server current session; scripts/conformance_console.py",
       "surfaces": {
         "api": "/api/v1/maintenance/storage-inventories; /api/v1/maintenance/integrity-sweeps; /api/v1/jobs",
         "cli": "cratectld worker; cratectl management API",
-        "ui": null
+        "ui": "/console/: repositories, packages/decisions, jobs, filesystem inventory, reference/lease previews and audit"
       },
       "core": true,
       "dependencies": [],
       "acceptance_journey": "J.UX.API",
-      "clients": [],
-      "client_versions": {},
+      "clients": [
+        "Chromium",
+        "npm"
+      ],
+      "client_versions": {
+        "Chromium": "156.0.8078.4",
+        "Playwright": "1.64.1",
+        "axe-core": "4.14.0",
+        "npm": "11.16.0",
+        "Node": "v26.0.0"
+      },
       "test_data": "Defined by the corresponding GOAL.md acceptance requirement.",
       "permission_cases": [
         "least privilege",
@@ -26094,7 +26127,7 @@
         "recovery"
       ],
       "state": "implementing",
-      "candidate": "2ad9bb3d6f8f6b88e65d4229a5e763088009dbd3",
+      "candidate": "60cf94768cd15df958c0bbb24e2e33e452e5f690",
       "evidence": [
         "evidence/2026-10-28/conformance-66bf8ca75a.json",
         "evidence/2026-10-28/sweeps-c054496011.json",
@@ -26102,10 +26135,13 @@
         "evidence/2026-10-28/sweep-clean-postgres-race.txt",
         "evidence/2026-10-28/inventory-95f5ea6640.json",
         "evidence/2026-10-28/inventory-cff4c6e32f.json",
-        "evidence/2026-10-28/inventory-clean-postgres-race.txt"
+        "evidence/2026-10-28/inventory-clean-postgres-race.txt",
+        "evidence/2026-10-29/console-checkpoint.json",
+        "evidence/2026-10-29/console-2e695cc1ff.json",
+        "evidence/2026-10-29/console-f5bd63f36c.json"
       ],
-      "limits": "Verified subset: bounded live supported-layout CAS/staged/legacy inventory, unreferenced CAS hashes and immutable reference snapshots; metadata/CAS/reference receipts, current fences, actual worker kill/reclaim, cancellation/resume/redrive, budgets, root replacement and worker callback expiry rollback. No security or deletion approval. Live walk and unsupported nested layouts do not establish atomic/full volume accounting. Scheduling/sampling, repair, holds/retention/GC, S3, backup/restore, full platform/scale/mixed-host and product qualification remain required.",
-      "next_action": "Complete scheduled bounded integrity sampling and supported repair; safe lifecycle/holds/retention/GC, S3, consistent backup/restore, console/install and full platform/scale qualification."
+      "limits": "Verified basic console subset: empty tenant, repository creation and immutable response-loss replay, templates without active credentials, native npm review/approve/install/deny, jobs and completed storage inventory, sweep/lease previews and page-scoped audit export. Permission removal clears data, late prior-tenant responses are fenced, actual credential revocation and non-JSON 401 responses clear sessions, hostile paths render as text. Fourteen named automated accessibility states and keyboard focus/Escape/return actions pass in production and race replays. Full console, management pagination, all WCAG/AT/native-browser behavior and broader product remain required.",
+      "next_action": "Complete full management pagination and remaining operator workflows, native-browser/assistive-technology testing, production PKI/credential/identity lifecycle and packaging; retain every broader goal requirement."
     },
     {
       "id": "UX.CLI",
@@ -26124,17 +26160,26 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "internal/installation; internal/store/bootstrap.go and bootstrap.sql; internal/configfile; internal/crypto/local_tls.go; cmd/cratectl and cmd/cratectld",
+      "implementation": "internal/installation; internal/store/bootstrap.go and bootstrap.sql; internal/configfile; internal/crypto/local_tls.go; cmd/cratectl and cmd/cratectld; web/src; internal/consoleui; internal/server current session; scripts/conformance_console.py",
       "surfaces": {
         "cli": "cratectld init/serve/worker --config; cratectl --config; cratectl npm-config",
         "api": "Existing repository, decisions, jobs and audit API used through CLI",
-        "ui": null
+        "ui": "/console/: repositories, packages/decisions, jobs, filesystem inventory, reference/lease previews and audit"
       },
       "core": true,
       "dependencies": [],
       "acceptance_journey": "J.UX.CLI",
-      "clients": [],
-      "client_versions": {},
+      "clients": [
+        "Chromium",
+        "npm"
+      ],
+      "client_versions": {
+        "Chromium": "156.0.8078.4",
+        "Playwright": "1.64.1",
+        "axe-core": "4.14.0",
+        "npm": "11.16.0",
+        "Node": "v26.0.0"
+      },
       "test_data": "Defined by the corresponding GOAL.md acceptance requirement.",
       "permission_cases": [
         "least privilege",
@@ -26148,7 +26193,7 @@
         "recovery"
       ],
       "state": "implementing",
-      "candidate": "3599faf6fae2ee6f70206d7147371941f64d2f28",
+      "candidate": "60cf94768cd15df958c0bbb24e2e33e452e5f690",
       "evidence": [
         "evidence/2026-10-28/conformance-66bf8ca75a.json",
         "evidence/2026-10-29/installation-c49266d94f.json",
@@ -26156,10 +26201,12 @@
         "evidence/2026-10-29/init-clean-postgres-race.txt",
         "evidence/2026-10-29/installation-5d218e61f9.json",
         "evidence/2026-10-29/installation-cb7efcadcd.json",
-        "evidence/2026-10-29/init-clean-postgres-race.txt"
+        "evidence/2026-10-29/console-checkpoint.json",
+        "evidence/2026-10-29/console-2e695cc1ff.json",
+        "evidence/2026-10-29/console-f5bd63f36c.json"
       ],
-      "limits": "Verified subset: dedicated empty native database initialization, durable private preparation and atomic first tenant/credentials/audit/receipt, actual initializer kill/resume, config-only runtime, verified local TLS and stock npm first publish/review/approval/install/restart/denial. Strict certificate regression retained. Operator supplies database/login and clients. Full console, production packaging/offline bundle, PKI/credential/identity lifecycle, native platforms and broad product qualification remain required.",
-      "next_action": "Complete the basic React/TypeScript/Vite console and first-use UI, production packaging and trust/credential lifecycle, plus native platform and full scope qualification."
+      "limits": "Verified basic console subset: empty tenant, repository creation and immutable response-loss replay, templates without active credentials, native npm review/approve/install/deny, jobs and completed storage inventory, sweep/lease previews and page-scoped audit export. Permission removal clears data, late prior-tenant responses are fenced, actual credential revocation and non-JSON 401 responses clear sessions, hostile paths render as text. Fourteen named automated accessibility states and keyboard focus/Escape/return actions pass in production and race replays. Full console, management pagination, all WCAG/AT/native-browser behavior and broader product remain required.",
+      "next_action": "Complete full management pagination and remaining operator workflows, native-browser/assistive-technology testing, production PKI/credential/identity lifecycle and packaging; retain every broader goal requirement."
     },
     {
       "id": "UX.DECLARATIVE",
@@ -26316,17 +26363,26 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "web/src; internal/consoleui; internal/server current session; scripts/conformance_console.py",
       "surfaces": {
-        "api": null,
+        "api": "/api/v1/session and the existing tenant-scoped management API",
         "cli": null,
-        "ui": null
+        "ui": "/console/: repositories, packages/decisions, jobs, filesystem inventory, reference/lease previews and audit"
       },
       "core": true,
       "dependencies": [],
       "acceptance_journey": "J.UX.ACCESSIBILITY",
-      "clients": [],
-      "client_versions": {},
+      "clients": [
+        "Chromium",
+        "npm"
+      ],
+      "client_versions": {
+        "Chromium": "156.0.8078.4",
+        "Playwright": "1.64.1",
+        "axe-core": "4.14.0",
+        "npm": "11.16.0",
+        "Node": "v26.0.0"
+      },
       "test_data": "Defined by the corresponding GOAL.md acceptance requirement.",
       "permission_cases": [
         "least privilege",
@@ -26339,11 +26395,15 @@
         "partial failure",
         "recovery"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "state": "implementing",
+      "candidate": "60cf94768cd15df958c0bbb24e2e33e452e5f690",
+      "evidence": [
+        "evidence/2026-10-29/console-checkpoint.json",
+        "evidence/2026-10-29/console-2e695cc1ff.json",
+        "evidence/2026-10-29/console-f5bd63f36c.json"
+      ],
+      "limits": "Verified basic console subset: empty tenant, repository creation and immutable response-loss replay, templates without active credentials, native npm review/approve/install/deny, jobs and completed storage inventory, sweep/lease previews and page-scoped audit export. Permission removal clears data, late prior-tenant responses are fenced, actual credential revocation and non-JSON 401 responses clear sessions, hostile paths render as text. Fourteen named automated accessibility states and keyboard focus/Escape/return actions pass in production and race replays. Full console, management pagination, all WCAG/AT/native-browser behavior and broader product remain required.",
+      "next_action": "Complete full management pagination and remaining operator workflows, native-browser/assistive-technology testing, production PKI/credential/identity lifecycle and packaging; retain every broader goal requirement."
     },
     {
       "id": "UX.EMPTY-ERROR-RECOVERY",
@@ -26362,17 +26422,26 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "internal/installation; internal/store/bootstrap.go and bootstrap.sql; internal/configfile; internal/crypto/local_tls.go; cmd/cratectl and cmd/cratectld",
+      "implementation": "internal/installation; internal/store/bootstrap.go and bootstrap.sql; internal/configfile; internal/crypto/local_tls.go; cmd/cratectl and cmd/cratectld; web/src; internal/consoleui; internal/server current session; scripts/conformance_console.py",
       "surfaces": {
         "cli": "cratectld init/serve/worker --config; cratectl --config; cratectl npm-config",
         "api": "Existing repository, decisions, jobs and audit API used through CLI",
-        "ui": null
+        "ui": "/console/: repositories, packages/decisions, jobs, filesystem inventory, reference/lease previews and audit"
       },
       "core": true,
       "dependencies": [],
       "acceptance_journey": "J.UX.EMPTY-ERROR-RECOVERY",
-      "clients": [],
-      "client_versions": {},
+      "clients": [
+        "Chromium",
+        "npm"
+      ],
+      "client_versions": {
+        "Chromium": "156.0.8078.4",
+        "Playwright": "1.64.1",
+        "axe-core": "4.14.0",
+        "npm": "11.16.0",
+        "Node": "v26.0.0"
+      },
       "test_data": "Defined by the corresponding GOAL.md acceptance requirement.",
       "permission_cases": [
         "least privilege",
@@ -26386,17 +26455,19 @@
         "recovery"
       ],
       "state": "implementing",
-      "candidate": "3599faf6fae2ee6f70206d7147371941f64d2f28",
+      "candidate": "60cf94768cd15df958c0bbb24e2e33e452e5f690",
       "evidence": [
         "evidence/2026-10-29/installation-c49266d94f.json",
         "evidence/2026-10-29/installation-17fe431ba4.json",
         "evidence/2026-10-29/init-clean-postgres-race.txt",
         "evidence/2026-10-29/installation-5d218e61f9.json",
         "evidence/2026-10-29/installation-cb7efcadcd.json",
-        "evidence/2026-10-29/init-clean-postgres-race.txt"
+        "evidence/2026-10-29/console-checkpoint.json",
+        "evidence/2026-10-29/console-2e695cc1ff.json",
+        "evidence/2026-10-29/console-f5bd63f36c.json"
       ],
-      "limits": "Verified subset: dedicated empty native database initialization, durable private preparation and atomic first tenant/credentials/audit/receipt, actual initializer kill/resume, config-only runtime, verified local TLS and stock npm first publish/review/approval/install/restart/denial. Strict certificate regression retained. Operator supplies database/login and clients. Full console, production packaging/offline bundle, PKI/credential/identity lifecycle, native platforms and broad product qualification remain required.",
-      "next_action": "Complete the basic React/TypeScript/Vite console and first-use UI, production packaging and trust/credential lifecycle, plus native platform and full scope qualification."
+      "limits": "Verified basic console subset: empty tenant, repository creation and immutable response-loss replay, templates without active credentials, native npm review/approve/install/deny, jobs and completed storage inventory, sweep/lease previews and page-scoped audit export. Permission removal clears data, late prior-tenant responses are fenced, actual credential revocation and non-JSON 401 responses clear sessions, hostile paths render as text. Fourteen named automated accessibility states and keyboard focus/Escape/return actions pass in production and race replays. Full console, management pagination, all WCAG/AT/native-browser behavior and broader product remain required.",
+      "next_action": "Complete full management pagination and remaining operator workflows, native-browser/assistive-technology testing, production PKI/credential/identity lifecycle and packaging; retain every broader goal requirement."
     },
     {
       "id": "QUAL.UNIT",
@@ -27646,5 +27717,5 @@
     "current_source_candidate": "887c569ac96c451bccd91ae872317c06a890117a",
     "historical_candidate_fields": "Earlier candidate fields below refer to the archived original history. Preserve their exact evidence scope; the new source baseline and repeated native proof are recorded separately."
   },
-  "current_source_candidate": "3599faf6fae2ee6f70206d7147371941f64d2f28"
+  "current_source_candidate": "60cf94768cd15df958c0bbb24e2e33e452e5f690"
 }

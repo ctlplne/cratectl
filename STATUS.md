@@ -19,68 +19,74 @@ All 450 capabilities, 41 format families and negative readiness verdicts remain.
 The owner authorized pushing this recreation; later feature pushes still require
 the owner's authority under the standing project contract.
 
-Latest source candidate: `3599faf6fae2ee6f70206d7147371941f64d2f28`, committed as `imfeelingtheagi`
-for both author and committer. A clean native installation passed 30 assertions
-from an empty owned database. A separate clean race-built initializer, registry
-and worker passed the same 30 assertions with no race reports; production binary
-bytes were restored and verified. Existing workflows passed 67 inventory, 80
-sweep, 63 transfer-recovery, 71 worker, 274 native-client and 33 pinned public OCI
-assertions against the same production builds. See
-`evidence/2026-10-29/initialization-checkpoint.json`.
+Latest source candidate: `60cf94768cd15df958c0bbb24e2e33e452e5f690`, committed with both author and
+committer `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
+The Go registry now embeds a React/TypeScript/Vite operator console at `/console/`.
+It uses the same management authorization, policy, transaction and worker paths.
+See [operator console](docs/operator/console.md) and
+[qualification checkpoint](evidence/2026-10-29/console-checkpoint.json).
 
-The initializer creates durable private preparation before database effects and
-atomically records the first tenant, separate administrator/worker credentials,
-audit and a replay receipt. It rejects unrelated nonempty databases before
-migration. Actual initializer kill/resume and a database commit before ready-file
-publication preserve the original credentials and trust. Concurrent replay and
-forced RLS tests pass. The documented owner role works without superuser,
-CREATEDB or CREATEROLE. Server, worker and CLI can load private configuration;
-runtime processes need no owner database environment.
+Clean production and race-built registry/worker/CLI replays each passed 22 console
+assertions, including 19 workflow checks, two browser tests without skips, and 14
+named automated accessibility states with zero findings. Real npm publication is
+initially hidden by review policy, becomes installable after exact-digest approval,
+and is hidden after denial. Actual response loss after repository commit replays
+the original bytes/key without duplication. Current reader grants, revoked tokens,
+non-JSON unauthorized responses, delayed responses across tenant switches, hostile
+path text, stale/503 recovery and page-scoped audit export are exercised.
 
-The native operator can create a first npm repository, export private npm client
-configuration, publish with stock npm over verified TLS, observe review denial,
-approve the exact digest and install, restart, complete event/integrity work and
-later deny installation. Hostname and unrelated CA checks fail closed. A strict
-stock TLS verifier exposed an omitted Authority Key Identifier in the prototype;
-the retained regression passes after the issuer parses its generated CA before
-signing the leaf. Failed prototype harness expectations are separately triaged.
+A real worker completes an inventory admitted from the UI. Jobs, inventory flags,
+reference sweep and transfer lease previews expose observations without granting
+security or deletion approval. The browser keeps credentials only in tab memory;
+storage, cookie, URL and configuration-template checks pass. Dialog keyboard focus
+and mobile overflow defects have retained first failures and clean normal/race
+replays. Seeded accessibility controls detect contrast/label/button/image/target
+violations; no rule or CSP exclusions are added. Full WCAG and assistive-technology/
+other native-browser qualification remain required.
 
-The script measured 2.779
-seconds to first publication/install on this owned fixture, including deliberate
-initialization faults. This is automated replay timing, not human onboarding or
-blank-machine/production performance evidence. PostgreSQL and clients are supplied
-by the operator. Generated certificates expire after 30 days; initial credentials
-default to 24 hours. Automatic PKI/credential lifecycle and identity integration
-remain required.
+The clean candidate passed 640 production assertions across console, native TLS
+installation (30), inventory (67), referenced sweeps (80), transfer leases (63),
+workers (71), native-client combined journeys (274) and pinned public OCI (33).
+Separate race console and native installation runs passed 52 assertions. Real
+PostgreSQL/store/server/native-driver race suites ran twice without skips or race
+reports; production binaries were restored and checked by digest. Unit/vet/race,
+byte-for-byte embedded asset rebuild and source/asset negative controls pass.
 
-Clean unit/vet/race gates pass. Real PostgreSQL/store/server/installation/native
-driver race suites ran twice without skips. Go vulnerability checks (238 records),
-scoped source Trivy and current/history Gitleaks report no findings. Linux amd64
-and arm64 servers and Windows amd64 CLI compile; those native runtimes are not
-qualified. Windows private-file checks still need ACL semantics. Full security and production packaging remain incomplete.
+Scoped current Go/npm/Trivy/Gitleaks source/history scans report no findings;
+lockfile versions, registry integrity and runtime license notices are retained.
+Full artifact/image/security, parser/fault/scale campaigns and production packaging
+remain incomplete. Linux amd64/arm64 servers and Windows amd64 CLI compile only.
+Windows private-file ACL semantics, native runtimes and production PKI/credential
+lifecycle remain required.
 
-Live GitHub audit found private remote main `1afdd521090af37fa03c793da94a13c1a324e640`.
-The shared checkout recorded another push during this work; this turn executed
-no push, and the initiating actor remains unknown. All remote commit author and
-committer identities remain `imfeelingtheagi`. See
-`evidence/2026-10-29/remote-state-init-audit.json`. Future feature pushes require
-owner authority. No repository reset or remote configuration change was made.
+Repository/artifact lists still apply legacy bounds before permission filtering;
+they can omit records even below the visible ceiling. Local filtering/loaded rows
+are explicitly partial. Complete management pagination and the full console for
+all committed workflows remain required. The browser fixture uses explicit
+loopback HTTP; native installation separately repeats verified local TLS. Browser
+CA deployment and production PKI are not established by the browser run.
 
-Next is the basic React/TypeScript/Vite console and first-use operator UI, with
-explicit empty/loading/denied/error/recovery states and real browser/accessibility
-proof. Complete OCI source lifecycle/races, Maven metadata union/snapshot/group,
-remaining npm/PyPI cases, storage scheduling/sampling/repair, holds/retention/GC,
-S3, consistent backup/restore and every later product stage. All 450 capabilities/
-journeys and 41 format families remain unfinished; broad readiness stays negative.
-Owned registry/worker/initializer/lock-holder and native PostgreSQL processes are
-stopped; private datasets, original databases/container/volume and history
-recovery remain retained.
+All 450 broad capabilities/journeys and 41 format families remain unfinished;
+every broad readiness verdict remains negative. Continue complete management
+pagination and operator workflows, OCI source lifecycle/races, Maven metadata
+union/snapshot/group, remaining npm/PyPI cases, scheduled sampling/repair,
+holds/retention/GC, S3, consistent backup/restore and every later product stage.
+Owned runtime fixtures and native PostgreSQL are stopped; private data, original
+Docker resources and history recovery are retained. The coordinator reported the
+manual Docker restart complete; read-only checks confirm engine 29.9.2 and the
+retained stopped cratectl container/volume. The interruption hold is released.
+No Docker lifecycle operation was executed. Owned OCI/container and packaging
+qualification must now be resumed; engine health alone is not packaging proof.
 
-**Goal active; full product goal incomplete.** No design-partner, ordinary-operator
-or enterprise readiness verdict is positive. Original-history starting commit
-`fa727a9` is retained only in private recovery; current local review range is
-`887c569..main`. Origin is the recreated private `https://github.com/ctlplne/cratectl.git`.
-Pushes, public visibility, releases and publication remain unauthorized.
+No push or remote mutation was executed by this turn. Live provenance audit is
+retained in `evidence/2026-10-29/remote-state-console-audit.json`; shared-checkout
+pushes must not be attributed without evidence. Feature pushes, public visibility,
+releases and publication still require owner authority.
+
+**Goal active; full product goal incomplete.** Origin remains the private
+`https://github.com/ctlplne/cratectl.git`, with the preserved fresh history rooted at
+`887c569ac96c451bccd91ae872317c06a890117a`. Earlier records below remain scoped
+historical observations, not proof of the current candidate's complete readiness.
 
 Stage 0 has architecture, threat model, conventions, licensing hold and an initial
 450-row committed capability backlog across 41 protocol families. Documentary

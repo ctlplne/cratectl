@@ -1,10 +1,13 @@
 {
+  "candidate": "60cf94768cd15df958c0bbb24e2e33e452e5f690",
   "checks": [
     "unchanged source and packaged assets pass offline consistency check",
-    "changed web/src/api.ts fails the offline consistency check",
-    "changed internal/consoleui/dist/index.html fails the offline consistency check",
-    "unrecorded console source fails the offline source-set check"
+    "changed web/src/api.ts fails offline consistency check",
+    "changed internal/consoleui/dist/index.html fails offline consistency check",
+    "unrecorded web/src/unrecorded.ts fails offline source/asset-set check",
+    "unrecorded internal/consoleui/dist/unrecorded.js fails offline source/asset-set check"
   ],
   "source_manifest": "web/build-manifest.json",
-  "scope": "Copied source/asset fixture only; the actual working tree was not modified by these controls."
+  "manifest_sha256": "cdeb7ccba7ba8b04bd63af76cf8e60ab5461e4fa2198b7b8a26c2842378324ea",
+  "scope": "Copied source/asset fixture only; actual working tree source and assets were not modified by these controls."
 }

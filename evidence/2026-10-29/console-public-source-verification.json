@@ -1,0 +1,12 @@
+{
+  "observed_at": "2026-10-29T14:35:31.235135+00:00",
+  "source": "https://docs.docker.com/desktop/enterprise/allow-list/",
+  "observed_allowlisted_authorities": [
+    "auth.docker.io",
+    "registry-1.docker.io",
+    "production.cloudfront.docker.com"
+  ],
+  "scope": "Official Docker documentation still lists the exact authorities used by the retained pinned public OCI fixture. This does not authorize unrelated providers, image execution or Docker lifecycle operations.",
+  "runner_correction": "The first wrapper invocation omitted required explicit fixture arguments and exited during argument parsing. The corrected invocation reuses the retained source parameters and immutable manifest digest.",
+  "first_runner_log": "evidence/2026-10-29/console-public-runner-first.txt"
+}
