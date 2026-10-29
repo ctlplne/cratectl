@@ -1,0 +1,19 @@
+{
+  "checked_at": "2026-10-29T17:27:02.105971+00:00",
+  "source_candidate": "ae69eb9f4f06ab8bd10ab8d3b7ee9641fdcdcdf8",
+  "first_failure": "evidence/2026-10-29/maven-proxy-age-first.txt",
+  "test_harness": "evidence/2026-10-29/maven-proxy-age-probe.txt",
+  "mechanism": "A cached older POM downloaded after upstream metadata publication supplied a later local created_at and replaced the upstream latest/release hints. Cache age is not source publication age.",
+  "observation_scope": "A pure algorithm regression added through Go -overlay without changing the worktree source while serial native qualification continued.",
+  "repair_overlay_replay": "evidence/2026-10-29/maven-proxy-age-overlay-replay.txt",
+  "clean_final_qualification_required": true,
+  "broad_readiness": false,
+  "native_first_failure": "evidence/2026-10-28/conformance-ab8c5cade9.json",
+  "native_observed_hints": {
+    "upstream_latest": "1.1-SNAPSHOT",
+    "proxy_latest": "2.0.0",
+    "upstream_release": "2.0.0",
+    "proxy_release": "2.0.0"
+  },
+  "repair_state": "Applied to working tree; negative unit and actual native HTTP failures retained; final clean-source campaign pending."
+}

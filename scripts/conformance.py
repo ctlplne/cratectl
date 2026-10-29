@@ -599,12 +599,18 @@ def maven():
  check('Maven merged metadata supports conditional and range requests',req('/r/java-group/'+metadata_path,'reader',headers={'If-None-Match':next(v for k,v in headers.items()if k.lower()=='etag')})[0]==304 and req('/r/java-group/'+metadata_path,'reader',headers={'Range':'bytes=0-15'})[:2]==(206,body[:16]))
  def consumer_cache(label):
   target=work/label;shutil.copytree(work/'cache',target);shutil.rmtree(target/'dev/cratectl/proof',ignore_errors=True);return target
- def consume(artifact,label,transitive=True):
+ def consume(artifact,label,transitive=True,endpoint='java-group'):
   target=consumer_cache(label)
-  mvn(['-U','-s',str(reader_settings),'org.apache.maven.plugins:maven-dependency-plugin:3.8.1:get','-Dmaven.repo.local='+str(target),'-Dartifact='+artifact,'-DremoteRepositories=cratectl::default::'+BASE+'/r/java-group/','-Dtransitive='+str(transitive).lower()])
+  mvn(['-U','-s',str(reader_settings),'org.apache.maven.plugins:maven-dependency-plugin:3.8.1:get','-Dmaven.repo.local='+str(target),'-Dartifact='+artifact,'-DremoteRepositories=cratectl::default::'+BASE+'/r/'+endpoint+'/','-Dtransitive='+str(transitive).lower()])
   return target/'dev/cratectl/proof'/artifact.split(':')[1]
  target=consume('dev.cratectl.proof:proof-app:[1.0.0,4.0.0)','range-consumer')
  check('stock Maven resolves a version range spanning group members',(target/'3.0.0/proof-app-3.0.0.jar').read_bytes()==(work/'proof-app-3.0.0.jar').read_bytes())
+ upstream=maven_xml(req('/r/java/'+metadata_path,'reader')[1]);proxied=maven_xml(req('/r/java-remote/'+metadata_path,'reader')[1])
+ result['maven_proxy_hints']={'upstream_latest':upstream.findtext('./versioning/latest'),'proxy_latest':proxied.findtext('./versioning/latest'),'upstream_release':upstream.findtext('./versioning/release'),'proxy_release':proxied.findtext('./versioning/release')}
+ check('Maven proxy preserves producer latest/release hints after an older POM cache fill',result['maven_proxy_hints']['upstream_latest']==result['maven_proxy_hints']['proxy_latest'] and result['maven_proxy_hints']['upstream_release']==result['maven_proxy_hints']['proxy_release'])
+ target=consume('dev.cratectl.proof:proof-app:LATEST','latest-consumer',endpoint='java-remote')
+ check('stock Maven LATEST resolves producer snapshot rather than the last cached older release',any(p.read_bytes()==(work/'proof-app-1.1-SNAPSHOT.jar').read_bytes()for p in target.glob('**/*.jar')))
+
  publishers=[('4.0.0',consumer_cache('publisher-four')),('5.0.0',consumer_cache('publisher-five'))]
  with ThreadPoolExecutor(max_workers=2)as executor:
   list(executor.map(lambda item:deploy('proof-app',item[0],True,'java-local',local_cache=item[1]),publishers))

@@ -18,7 +18,10 @@ coordinates and records. Validate path/coordinate binding and snapshot mappings.
 Hosted artifact-level versions also derive from stored POMs, so simultaneous
 client metadata replacements cannot erase an existing version. Version ordering
 in the list is deterministic; Maven clients apply their own native comparison.
-Latest/release hints use the most recently observed eligible publication.
+Latest/release hints use eligible publication metadata. Proxy producer timestamps
+and aliases govern these hints; cached POM creation records download time and
+must not reorder source publications. Equal source timestamps retain configured
+precedence. Explicit hints also work when a producer omits its version list.
 
 Groups merge version lists, plugin prefixes and snapshot extension/classifier
 maps. Snapshot maps choose the newest updated timestamp/build; equal collisions

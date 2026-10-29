@@ -90,7 +90,8 @@ func renderMavenMetadata(view store.MavenView, documents []mavenDocument, p stri
 	snapshots := map[string]mavenSnapshotCandidate{}
 	plugins := map[string]*mavenPlugin{}
 	var latest, release, latestTime, releaseTime, updated string
-	for _, document := range documents {
+	latestDocument, releaseDocument := -1, -1
+	for documentIndex, document := range documents {
 		md, member := document.model, document.member
 		review := view.Group.RequireReview || member.Repository.RequireReview
 		if md.Artifact != "" {
@@ -135,6 +136,13 @@ func renderMavenMetadata(view store.MavenView, documents []mavenDocument, p stri
 				}
 			}
 			candidates := append([]string{}, v.Versions...)
+			if member.Repository.Mode == "proxy" {
+				for _, hint := range []string{v.Latest, v.Release} {
+					if hint != "" {
+						candidates = append(candidates, hint)
+					}
+				}
+			}
 			if member.Repository.Mode == "hosted" {
 				for version := range known {
 					candidates = append(candidates, version)
@@ -162,6 +170,9 @@ func renderMavenMetadata(view store.MavenView, documents []mavenDocument, p stri
 						entry.blocked = true
 					}
 				}
+				if member.Repository.Mode == "proxy" {
+					entry.updated = v.Updated
+				}
 				versions[version] = entry
 				if entry.blocked {
 					continue
@@ -170,11 +181,11 @@ func renderMavenMetadata(view store.MavenView, documents []mavenDocument, p stri
 				if when == "" {
 					when = v.Updated
 				}
-				if latest == "" || when > latestTime || when == latestTime && version == v.Latest {
-					latest, latestTime = version, when
+				if latest == "" || when > latestTime || when == latestTime && latestDocument == documentIndex && version == v.Latest {
+					latest, latestTime, latestDocument = version, when, documentIndex
 				}
-				if !strings.HasSuffix(version, "-SNAPSHOT") && (release == "" || when > releaseTime || when == releaseTime && version == v.Release) {
-					release, releaseTime = version, when
+				if !strings.HasSuffix(version, "-SNAPSHOT") && (release == "" || when > releaseTime || when == releaseTime && releaseDocument == documentIndex && version == v.Release) {
+					release, releaseTime, releaseDocument = version, when, documentIndex
 				}
 				if when > updated {
 					updated = when

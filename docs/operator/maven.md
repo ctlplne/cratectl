@@ -32,7 +32,9 @@ reads current POM references, so a stale metadata replacement cannot erase a
 version published concurrently. Groups merge all eligible sources and apply
 longest-prefix namespace ownership to each resulting version/artifact path.
 Versions are listed deterministically; Maven applies its own version ordering to
-ranges. Latest/release hints follow the most recent eligible observed publication.
+ranges. Latest/release hints follow eligible publication metadata. Proxy hints retain the
+producer's last-updated time and aliases; downloading an older POM does not make
+it the latest publication. Equal source timestamps keep configured precedence.
 
 Snapshot mappings use the newest update/timestamp/build for each extension and
 classifier. Equal collisions retain configured source precedence. A known denied

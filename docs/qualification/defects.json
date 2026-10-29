@@ -436,6 +436,17 @@
       "state": "repaired in working tree; clean-source replay pending",
       "repair": "Render bounded native G/A/V discovery across current sources and actual hosted POMs with current grants/digest decisions, namespace ownership, snapshot classifier maps, exact checksums and atomic publisher checksum receipts.",
       "limits": "Native Maven only within named journeys; full Gradle/Ivy/SBT, metadata signatures, nonunique snapshots, recursive groups and lifecycle/scale/format qualification remain open."
+    },
+    {
+      "id": "DEFECT.0040",
+      "summary": "Maven proxy latest/release hints used local POM download age instead of upstream publication metadata",
+      "first_failure": "evidence/2026-10-29/maven-proxy-age-first.txt",
+      "reproduction": "evidence/2026-10-29/maven-proxy-age-discovery.json",
+      "first_failure_source": "ae69eb9f4f06ab8bd10ab8d3b7ee9641fdcdcdf8",
+      "state": "repaired in working tree; clean final replay pending",
+      "repair": "Use producer metadata timestamps and hints for proxies, preserve source precedence on equal times and support explicit hints with an omitted version list. Add a stock Maven LATEST journey after caching an older release.",
+      "limits": "The retained initial-candidate full campaign does not cover this regression. The corrected committed candidate must be qualified separately.",
+      "native_first_failure": "evidence/2026-10-28/conformance-ab8c5cade9.json"
     }
   ]
 }

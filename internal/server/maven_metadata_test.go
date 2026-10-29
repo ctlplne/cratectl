@@ -107,8 +107,26 @@ func TestMavenMergePolicyOwnershipAndStableBytes(t *testing.T) {
 func FuzzMavenMetadata(f *testing.F) {
 	f.Add([]byte(`<metadata><groupId>org.example</groupId><artifactId>tool</artifactId><versioning><versions><version>1.0</version></versions></versioning></metadata>`))
 	f.Add([]byte(`<!DOCTYPE metadata SYSTEM "https://example.invalid/entity"><metadata/>`))
+	f.Add([]byte(`<metadata><groupId>org.example</groupId><artifactId>tool</artifactId><version>1.0-SNAPSHOT</version><versioning><snapshotVersions><snapshotVersion><extension>jar</extension><value>1.0-20261029.120000-1</value><updated>20261029120000</updated></snapshotVersion></snapshotVersions></versioning></metadata>`))
 	f.Fuzz(func(t *testing.T, data []byte) {
-		_, _ = parseMavenMetadata(data, "org/example/tool/maven-metadata.xml", 100, 16384)
+		for _, p := range []string{"org/example/tool/maven-metadata.xml", "org/example/tool/1.0-SNAPSHOT/maven-metadata.xml"} {
+			md, e := parseMavenMetadata(data, p, 100, 16384)
+			if e != nil {
+				continue
+			}
+			repo := store.Repository{Name: "fuzz", Format: "maven", Mode: "proxy"}
+			member := store.MavenMember{Repository: repo}
+			encoded, e := renderMavenMetadata(store.MavenView{Group: repo, Members: []store.MavenMember{member}}, []mavenDocument{{md, member}}, p, 100, 16384)
+			if errors.Is(e, store.ErrNotFound) || errors.Is(e, store.ErrMetadataLimit) {
+				continue
+			}
+			if e != nil {
+				t.Fatal(e)
+			}
+			if _, e = parseMavenMetadata(encoded, p, 100, 16384); e != nil {
+				t.Fatalf("rendered native metadata does not parse: %v", e)
+			}
+		}
 	})
 }
 
