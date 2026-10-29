@@ -103,9 +103,13 @@ try:
     command([NEW,'migrate','--adopt-legacy'],initial)
     plan=json.loads(command([NEW,'migrate','--plan'],initial));check('adoption commits all four known receipts with safe RLS',plan['database_state']=='current'and len(plan['applied'])==4 and not plan['pending']and plan['safety_valid'])
     after=psql("SELECT jsonb_build_object('tenants',(SELECT jsonb_agg(t)FROM cratectl.tenants t),'repositories',(SELECT jsonb_agg(t ORDER BY t.name)FROM cratectl.repositories t),'artifacts',(SELECT jsonb_agg(t ORDER BY t.path)FROM cratectl.artifacts t),'events',(SELECT jsonb_agg(t ORDER BY t.sequence)FROM cratectl.events t),'tokens',(SELECT jsonb_agg(t ORDER BY t.hash)FROM cratectl_private.tokens t))::text")
-    check('tenant, repository, artifact, audit and token rows survive byte-for-byte as canonical JSON',after==state)
+    expected=json.loads(state)
+    for table in ['repositories','artifacts']:
+        for row in expected[table]:row['source_revision']=0
+    check('every original tenant, repository, artifact, audit and token field is preserved; new source revisions start at zero',json.loads(after)==expected)
     server(NEW)
-    check('new runtime authenticates original credential and returns original stored reference',api('/api/v1/repositories/packages/artifacts')['items']==artifacts_before)
+    expected_artifacts=[dict(artifact,source_revision=0)for artifact in artifacts_before]
+    check('new runtime authenticates original credential and returns original stored reference with source revision zero',api('/api/v1/repositories/packages/artifacts')['items']==expected_artifacts)
     check('adoption does not alter existing audit sequence or hashes',api('/api/v1/audit?limit=100')['items']==audit_before)
     for n in range(3):command([NEW,'migrate'],initial)
     check('current migration repeats while new registry serves requests',len(api('/api/v1/repositories')['items'])==2)
