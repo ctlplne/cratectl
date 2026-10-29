@@ -40,9 +40,9 @@ components:
       properties:
         sequence: {type: integer, format: int64}
         task: {type: string}
-        handler: {type: string, enum: [event.project, storage.integrity, leases.reconcile]}
+        handler: {type: string, enum: [event.project, storage.integrity, storage.sweep, leases.reconcile]}
         queue: {type: string, enum: [events, integrity, maintenance]}
-        kind: {type: string, description: Source event kind, artifact.integrity or leases.reconcile; handler identifies the actual effect.}
+        kind: {type: string, description: Source event kind, artifact.integrity, storage.sweep or leases.reconcile; handler identifies the actual effect.}
         state: {type: string, enum: [pending, running, retry, succeeded, failed, cancel_requested, cancelled, uncertain]}
         attempts: {type: integer, minimum: 0, description: Total attempts retained across operator redrives.}
         cycle_attempts: {type: integer, minimum: 0}
@@ -69,7 +69,7 @@ components:
         retry_max_seconds: {type: integer, minimum: 1, maximum: 604800, default: 300, description: Must be at least retry_seconds.}
     JobId:
       type: string
-      pattern: '^[1-9][0-9]*:(event|integrity-[a-f0-9]{64}|reconcile-[a-f0-9]{64})$'
+      pattern: '^[1-9][0-9]*:(event|integrity-[a-f0-9]{64}|reconcile-[a-f0-9]{64}|sweep-[a-f0-9]{64})$'
       description: Tenant-local source sequence plus effect key; equal IDs may exist in different tenants.
 paths:
   /api/v1/repositories:
@@ -430,3 +430,56 @@ paths:
         '403': {description: Tenant administrator required.}
         '409': {description: Idempotency key reused with different input.}
         '503': {description: Maintenance admission capacity exhausted; repair worker or queue policy.}
+
+  /api/v1/maintenance/integrity-sweeps:
+    get:
+      operationId: previewReferencedIntegritySweep
+      description: Administrator bounded preview of current artifact and retained OCI upload-part bindings, including denied and unassessed content. No hash, reservation, policy approval or partial snapshot admission.
+      parameters:
+        - {in: query, name: repository, schema: {type: string}}
+        - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 1000, default: 100}}
+      responses:
+        '200': {description: Targets sample, more, operator target budget and security_approval false.}
+        '403': {description: Tenant administrator required.}
+    post:
+      operationId: requestReferencedIntegritySweep
+      description: Atomically snapshot every current repository/digest/size binding in scope with its job, audit and idempotency response. Unreferenced CAS and temporary files require separate inventory. The operator target budget and SQL deadline reject oversized admission without retaining a partial run.
+      parameters:
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                repository: {type: string, description: Omit for the authenticated tenant.}
+      responses:
+        '202': {description: Job ID, immutable snapshot coverage and security_approval false.}
+        '400': {description: Invalid body or missing idempotency key.}
+        '403': {description: Tenant administrator required.}
+        '409': {description: Idempotency key reused with different input.}
+        '503': {description: Snapshot or integrity queue budget exceeded, or database unavailable; no partial snapshot accepted.}
+  /api/v1/maintenance/integrity-sweeps/{job_id}:
+    get:
+      operationId: inspectIntegritySweepCoverage
+      description: Inspection completion and integrity health are separate. A succeeded inspection with findings is not clean. Current snapshot counts and pass remain visible; security_approval is always false. Control through the jobs API; completed retry starts a new pass over the same snapshot, interrupted retry resumes its cursor.
+      parameters:
+        - {in: path, name: job_id, required: true, schema: {$ref: '#/components/schemas/JobId'}}
+      responses:
+        '200': {description: Job plus all_targets_assessed, integrity_clean, security_approval and exact scope.}
+        '403': {description: Tenant administrator required.}
+        '404': {description: No such sweep in the authenticated tenant.}
+  /api/v1/maintenance/integrity-sweeps/{job_id}/items:
+    get:
+      operationId: listIntegritySweepTargets
+      description: Immutable target bindings with alias/part counts and the current pass's latest per-target storage observation. Full history is the job observations API with ordinal and pass fields. No policy grant follows from a verified hash.
+      parameters:
+        - {in: path, name: job_id, required: true, schema: {$ref: '#/components/schemas/JobId'}}
+        - {in: query, name: after, schema: {type: integer, format: int64, minimum: 0, default: 0, description: Last returned ordinal.}}
+        - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 1000, default: 100}}
+      responses:
+        '200': {description: Items ordered by ordinal, more, security_approval false. Status is pending or a concrete storage finding; reference_conflict remains separately visible.}
+        '403': {description: Tenant administrator required.}
+        '404': {description: No such sweep in the authenticated tenant.}

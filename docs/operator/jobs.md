@@ -42,7 +42,8 @@ The worker implements three lanes:
 | Lane / handler | Observed effect |
 | --- | --- |
 | `events` / `event.project` | Verify a source journal event and publish its activity index entry |
-| `integrity` / `storage.integrity` | Hash the exact stored repository/digest/size binding and retain an attempt observation |
+| `integrity` / `storage.integrity` | Hash a publication repository/digest/size binding and retain an attempt observation |
+| `integrity` / `storage.sweep` | Inspect every target of an admitted referenced-storage snapshot, with durable coverage and per-pass receipts |
 | `maintenance` / `leases.reconcile` | Recover bounded pages of expired retrieval/upload lease metadata, retaining bytes and offsets |
 
 An event job's `kind` names its source event; `handler` names the effect actually
@@ -57,9 +58,10 @@ to the authenticated tenant; equal IDs can exist in different tenants. A path is
 the original display coordinate. The check binds immutable bytes, so a retargeted
 coordinate cannot transfer an old observation to its new digest.
 
-Integrity tasks cover new publication/cache-fill intent and explicit redrives of
-those tasks. A complete historical object inventory and sweep remain required;
-starting this worker does not imply every pre-existing artifact was checked.
+Publication tasks cover new publication/cache-fill intent and explicit redrives.
+Administrators can also request a [referenced-storage integrity sweep](integrity-sweeps.md)
+of pre-existing artifact/upload-part bindings. Full CAS/staged/orphan inventory
+remains required; starting a worker alone does not imply any sweep was scheduled.
 
 Inspect queues and jobs using a tenant administrator credential:
 

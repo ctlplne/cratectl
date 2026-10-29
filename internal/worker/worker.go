@@ -169,8 +169,15 @@ func execute(parent context.Context, db *store.Store, objects *blob.Local, o Opt
 	var projection store.EventProjection
 	var status string
 	var e error
+	var sweepItem store.SweepItem
 	if j.Queue == "events" {
 		projection, e = db.JobEvent(ctx, i, j, o.MaxEventBytes)
+	} else if j.Kind == "storage.sweep" {
+		var empty bool
+		sweepItem, empty, e = db.NextSweepItem(ctx, i, j)
+		if e == nil && !empty {
+			status, e = objects.CheckStored(ctx, i.Tenant, sweepItem.Digest, sweepItem.Size, o.MaxObjectBytes, o.BytesPerSecond)
+		}
 	} else {
 		var target store.IntegrityTarget
 		var current bool
@@ -202,6 +209,11 @@ func execute(parent context.Context, db *store.Store, objects *blob.Local, o Opt
 		outcome, e = db.FailJob(complete, i, j, "worker_stopped", false)
 	case j.Queue == "events" && e == nil:
 		outcome, e = db.FinishEvent(complete, i, j, projection)
+	case j.Kind == "storage.sweep" && (e == nil || errors.Is(e, context.DeadlineExceeded)):
+		if sweepItem.Ordinal > 0 && status == "" {
+			status = "timeout"
+		}
+		outcome, e = db.FinishSweepItem(complete, i, j, sweepItem, status)
 	case j.Queue == "integrity" && (e == nil || errors.Is(e, context.DeadlineExceeded)):
 		if status == "" {
 			status = "timeout"

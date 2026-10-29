@@ -20,6 +20,9 @@ var schema string
 
 //go:embed jobs.sql
 var jobSchema string
+
+//go:embed sweeps.sql
+var sweepSchema string
 var Name = regexp.MustCompile(`^[a-z][a-z0-9-]{0,62}$`)
 var ErrConflict = errors.New("conflict")
 var ErrDenied = errors.New("policy denied")
@@ -68,11 +71,14 @@ func Migrate(ctx context.Context, dsn string) error {
 	if _, e = tx.Exec(ctx, jobSchema); e != nil {
 		return e
 	}
+	if _, e = tx.Exec(ctx, sweepSchema); e != nil {
+		return e
+	}
 	// Fixed role is owned by this isolated database, never a shared production role.
 	if _, e = tx.Exec(ctx, `DO $$ BEGIN IF NOT EXISTS(SELECT FROM pg_roles WHERE rolname='cratectl_app') THEN CREATE ROLE cratectl_app NOLOGIN NOSUPERUSER NOBYPASSRLS NOINHERIT; END IF; END $$; GRANT USAGE ON SCHEMA cratectl TO cratectl_app; GRANT EXECUTE ON FUNCTION cratectl.authenticate(text),cratectl.authenticate_worker(text) TO cratectl_app;`); e != nil {
 		return e
 	}
-	for _, table := range []string{"tenants", "repositories", "artifacts", "events", "mutations", "jobs", "uploads", "tags", "repository_grants", "retrievals", "content_decisions", "npm_tags", "npm_sources", "native_sources", "python_yanks", "queue_policies", "event_projections", "integrity_observations", "upload_parts"} {
+	for _, table := range []string{"tenants", "repositories", "artifacts", "events", "mutations", "jobs", "uploads", "tags", "repository_grants", "retrievals", "content_decisions", "npm_tags", "npm_sources", "native_sources", "python_yanks", "queue_policies", "event_projections", "integrity_observations", "upload_parts", "sweep_items"} {
 		q := pgx.Identifier{"cratectl", table}.Sanitize()
 		if _, e = tx.Exec(ctx, `ALTER TABLE `+q+` ENABLE ROW LEVEL SECURITY; ALTER TABLE `+q+` FORCE ROW LEVEL SECURITY; DROP POLICY IF EXISTS tenant_scope ON `+q+`; CREATE POLICY tenant_scope ON `+q+` USING (tenant=current_setting('cratectl.tenant',true)) WITH CHECK (tenant=current_setting('cratectl.tenant',true)); GRANT SELECT,INSERT ON `+q+` TO cratectl_app`); e != nil {
 			return e
@@ -141,9 +147,26 @@ func (s *Store) Tx(ctx context.Context, i Identity, write bool, fn func(pgx.Tx) 
 			return e
 		}
 	}
+	if e = checkIdentity(ctx, tx, i); e != nil {
+		return e
+	}
+
+	if e = fn(tx); e != nil {
+		return e
+	}
+	if write {
+		if e = checkIdentity(ctx, tx, i); e != nil {
+			return e
+		}
+	}
+	return tx.Commit(ctx)
+}
+
+// Recheck after bulk metadata work as well as after waiting for the tenant lock.
+func checkIdentity(ctx context.Context, tx pgx.Tx, i Identity) error {
 	if i.CredentialHash != "" {
 		var tenant, actor, role string
-		e = tx.QueryRow(ctx, `SELECT tenant,actor,role FROM cratectl.authenticate($1)`, i.CredentialHash).Scan(&tenant, &actor, &role)
+		e := tx.QueryRow(ctx, `SELECT tenant,actor,role FROM cratectl.authenticate($1)`, i.CredentialHash).Scan(&tenant, &actor, &role)
 		if errors.Is(e, pgx.ErrNoRows) {
 			return ErrUnauthenticated
 		}
@@ -154,11 +177,7 @@ func (s *Store) Tx(ctx context.Context, i Identity, write bool, fn func(pgx.Tx) 
 			return ErrUnauthenticated
 		}
 	}
-
-	if e = fn(tx); e != nil {
-		return e
-	}
-	return tx.Commit(ctx)
+	return nil
 }
 
 // nextEventSequence is a mutation fence under Tx's tenant write lock. The

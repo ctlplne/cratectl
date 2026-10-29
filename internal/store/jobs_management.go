@@ -145,6 +145,15 @@ func (s *Store) ControlJob(ctx context.Context, i Identity, key, fingerprint, id
 			if e = queueRoom(ctx, tx, p, 1); e != nil {
 				return nil, 0, e
 			}
+			if j.Kind == "storage.sweep" && j.State == "succeeded" {
+				raw, e := resetCompletedSweep(&j)
+				if e != nil {
+					return nil, 0, e
+				}
+				if _, e = tx.Exec(ctx, `UPDATE cratectl.jobs SET payload=$1 WHERE sequence=$2 AND task=$3`, raw, seq, task); e != nil {
+					return nil, 0, e
+				}
+			}
 			e = scanJob(tx.QueryRow(ctx, `UPDATE cratectl.jobs SET state='retry',generation=generation+1,cycle_attempts=0,available_at=clock_timestamp(),lease_until='epoch',lease_token='',last_error='',finished_at=NULL,updated_at=clock_timestamp() WHERE sequence=$1 AND task=$2 RETURNING `+jobColumns, seq, task), &j)
 		} else {
 			switch j.State {
@@ -173,6 +182,8 @@ type IntegrityObservation struct {
 	Worker     string    `json:"worker"`
 	Engine     string    `json:"engine"`
 	ObservedAt time.Time `json:"observed_at"`
+	Ordinal    int64     `json:"ordinal"`
+	Pass       int64     `json:"pass"`
 }
 
 func (s *Store) JobObservations(ctx context.Context, i Identity, id string, after int64, limit int) ([]IntegrityObservation, bool, error) {
@@ -188,14 +199,14 @@ func (s *Store) JobObservations(ctx context.Context, i Identity, id string, afte
 		return out, false, ErrConflict
 	}
 	e = s.Tx(ctx, i, false, func(tx pgx.Tx) error {
-		rows, e := tx.Query(ctx, `SELECT sequence,task,generation,repository,digest,size,status,worker,engine,observed_at FROM cratectl.integrity_observations WHERE sequence=$1 AND task=$2 AND generation>$3 ORDER BY generation LIMIT $4`, seq, task, after, limit+1)
+		rows, e := tx.Query(ctx, `SELECT sequence,task,generation,repository,digest,size,status,worker,engine,observed_at,ordinal,pass FROM cratectl.integrity_observations WHERE sequence=$1 AND task=$2 AND generation>$3 ORDER BY generation LIMIT $4`, seq, task, after, limit+1)
 		if e != nil {
 			return e
 		}
 		defer rows.Close()
 		for rows.Next() {
 			var v IntegrityObservation
-			if e = rows.Scan(&v.Sequence, &v.Task, &v.Generation, &v.Repository, &v.Digest, &v.Size, &v.Status, &v.Worker, &v.Engine, &v.ObservedAt); e != nil {
+			if e = rows.Scan(&v.Sequence, &v.Task, &v.Generation, &v.Repository, &v.Digest, &v.Size, &v.Status, &v.Worker, &v.Engine, &v.ObservedAt, &v.Ordinal, &v.Pass); e != nil {
 				return e
 			}
 			out = append(out, v)

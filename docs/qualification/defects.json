@@ -253,6 +253,17 @@
       "limits": "Native local topology; CAS inventory/GC, holds, historical integrity sweep, production upgrade and broad fault/scale qualification remain required.",
       "candidate": "f8fed1f48e67ff142c4d253effb28437f5cb75ab",
       "native_race_replay": "evidence/2026-10-28/leases-3f7e506ef0.json"
+    },
+    {
+      "id": "DEFECT.0026",
+      "summary": "A credential could expire during a bulk metadata write callback before transaction commit",
+      "first_failure": "evidence/2026-10-28/sweep-auth-first.txt",
+      "first_failure_source": "7933455f2ca3c502bf2e7adcad4465e74bfe690c",
+      "reproduction": "evidence/2026-10-28/sweep-auth-regression.json",
+      "state": "repaired; working-tree regression passed; clean-source qualification pending",
+      "repair": "Recheck the current public identity after write callbacks as well as after acquiring the tenant lock; expiry rolls back the whole write, including sweep admission.",
+      "replay": "evidence/2026-10-28/sweep-preflight-postgres-race.txt",
+      "limits": "Named local PostgreSQL profile; full authorization/fault/load/security qualification remains required."
     }
   ]
 }

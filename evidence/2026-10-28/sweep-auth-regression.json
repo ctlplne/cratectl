@@ -1,0 +1,10 @@
+{
+  "baseline_candidate": "7933455f2ca3c502bf2e7adcad4465e74bfe690c",
+  "baseline_store_sha256": "d10a319353acc9f4d0b7973801be9e5d06d64d2f2bfc9ba05ee16732f44c1984",
+  "regression_test_sha256": "4f55f8a125d736e61436ce7dbfef6a9e573a3eee378b94e06e25e211d6c7cdb6",
+  "first_failure": "evidence/2026-10-28/sweep-auth-first.txt",
+  "method": "Run the new credential-expiry regression against an isolated git archive of the preceding committed source, using real owned PostgreSQL and a separate fixture tenant. The working source/history were not reset.",
+  "observed": "A callback outlived credential expiry and the old Tx committed its repository mutation. The regression fails on the old source and passes with the post-callback current-clock recheck.",
+  "replay": "evidence/2026-10-28/sweep-preflight-postgres-race.txt",
+  "scope": "Public write transaction expiry after bulk metadata work. Broader authorization race/scale/security qualification remains required."
+}

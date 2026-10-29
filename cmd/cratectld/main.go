@@ -112,6 +112,7 @@ func run() error {
 		uploadMetadata := f.Int64("upload-metadata-bytes", 1<<20, "maximum upload part metadata bytes")
 		uploadLease := f.Duration("upload-lease", 30*time.Second, "renewed OCI operation lease; 1 second–5 minutes")
 		uploadTTL := f.Duration("upload-ttl", 30*time.Minute, "rolling OCI session lifetime; at least the lease and at most 24 hours")
+		sweepTargets := f.Int("integrity-sweep-target-budget", 100000, "maximum immutable targets admitted in one referenced-storage snapshot")
 
 		nativeTags := f.Int("native-tag-budget", 128, "maximum tags in a complete native package index")
 		nativeVersions := f.Int("native-version-budget", 10000, "maximum versions in a complete native index")
@@ -164,6 +165,9 @@ func run() error {
 			return e
 		}
 		h := server.New(db, b, *public)
+		if e := h.ConfigureSweepBudget(*sweepTargets); e != nil {
+			return errors.New("integrity sweep target budget must be 1–2147483646")
+		}
 		if *proxyLease < time.Second || *proxyLease > 5*time.Minute {
 			return errors.New("proxy lease must be 1 second–5 minutes")
 		}
