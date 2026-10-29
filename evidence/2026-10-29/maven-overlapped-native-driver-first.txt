@@ -1,0 +1,43 @@
+RUN ['make', 'test']
+/Users/shankar/Desktop/ctlplne-cratectl/.cache/go/bin/go test ./...
+?   	ctlplne.dev/cratectl/cmd/cratectl	[no test files]
+?   	ctlplne.dev/cratectl/cmd/cratectld	[no test files]
+ok  	ctlplne.dev/cratectl/internal/blob	(cached)
+ok  	ctlplne.dev/cratectl/internal/configfile	(cached)
+ok  	ctlplne.dev/cratectl/internal/consoleui	(cached)
+ok  	ctlplne.dev/cratectl/internal/crypto	(cached)
+?   	ctlplne.dev/cratectl/internal/installation	[no test files]
+ok  	ctlplne.dev/cratectl/internal/server	0.581s
+ok  	ctlplne.dev/cratectl/internal/store	0.253s
+ok  	ctlplne.dev/cratectl/internal/upstream	(cached)
+?   	ctlplne.dev/cratectl/internal/worker	[no test files]
+RUN ['make', 'lint']
+/Users/shankar/Desktop/ctlplne-cratectl/.cache/go/bin/go vet ./...
+python3 scripts/check_architecture.py
+PASS: crypto imports, core-only dependency boundary, license IDs and tenant-table RLS declarations
+python3 scripts/check_console_assets.py
+PASS: embedded console matches the recorded source and asset digests
+RUN ['make', 'race']
+/Users/shankar/Desktop/ctlplne-cratectl/.cache/go/bin/go test -race ./...
+?   	ctlplne.dev/cratectl/cmd/cratectl	[no test files]
+?   	ctlplne.dev/cratectl/cmd/cratectld	[no test files]
+ok  	ctlplne.dev/cratectl/internal/blob	(cached)
+ok  	ctlplne.dev/cratectl/internal/configfile	(cached)
+ok  	ctlplne.dev/cratectl/internal/consoleui	(cached)
+ok  	ctlplne.dev/cratectl/internal/crypto	(cached)
+?   	ctlplne.dev/cratectl/internal/installation	[no test files]
+ok  	ctlplne.dev/cratectl/internal/server	1.831s
+ok  	ctlplne.dev/cratectl/internal/store	1.319s
+ok  	ctlplne.dev/cratectl/internal/upstream	(cached)
+?   	ctlplne.dev/cratectl/internal/worker	[no test files]
+RUN ['python3', 'scripts/dev.py', '.cache/go/bin/go', 'test', '-race', '-count=1', '-tags=integration', './internal/store', './internal/server', './internal/conformance']
+ok  	ctlplne.dev/cratectl/internal/store	23.503s
+ok  	ctlplne.dev/cratectl/internal/server	20.782s
+--- FAIL: TestOCIStockORASSignedDeliveryAndGovernedPublication (0.10s)
+    oci_delivery_integration_test.go:163: Owned native client port unavailable: listen tcp 127.0.0.1:38443: bind: address already in use
+--- FAIL: TestOCINativeProcessDescriptorURLsAndRetainedRefresh (4.21s)
+    oci_descriptor_integration_test.go:181: Native server SHA-256: a6064e1b6af4148cfb1c974cf73bfa1e3f874fef69b9a037fb799ee9a53ffc17
+    oci_descriptor_integration_test.go:265: stock ORAS failed: exit status 1 Error from source registry for "127.0.0.1:38443/oci-descriptor-1793293550675275000/app:latest": Get "http://127.0.0.1:38443/v2/oci-descriptor-1793293550675275000/app/manifests/latest": dial tcp 127.0.0.1:38443: connect: connection refused
+FAIL
+FAIL	ctlplne.dev/cratectl/internal/conformance	7.854s
+FAIL

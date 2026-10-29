@@ -383,6 +383,10 @@ func (s *Store) Events(ctx context.Context, i Identity, after int64) ([]Event, e
 // immutable object identities remain in the journal, and any manual decision
 // on the old bytes is deliberately reset for the replacement bytes.
 func (s *Store) ReplaceMetadata(ctx context.Context, i Identity, repo string, a Artifact) error {
+	return s.replaceMetadata(ctx, i, repo, a, nil)
+}
+
+func (s *Store) replaceMetadata(ctx context.Context, i Identity, repo string, a Artifact, checksums map[string]string) error {
 	if !i.CanWrite() {
 		return ErrDenied
 	}
@@ -394,6 +398,9 @@ func (s *Store) ReplaceMetadata(ctx context.Context, i Identity, repo string, a 
 		if r.Mode != "hosted" {
 			return nil, 0, ErrDenied
 		}
+		if len(checksums) > 0 && (r.Format != "maven" || !strings.HasSuffix(a.Path, "/maven-metadata.xml")) {
+			return nil, 0, ErrConflict
+		}
 		var old string
 		e = tx.QueryRow(ctx, `SELECT digest FROM cratectl.artifacts WHERE repository=$1 AND path=$2`, repo, a.Path).Scan(&old)
 		if e != nil && !errors.Is(e, pgx.ErrNoRows) {
@@ -402,6 +409,9 @@ func (s *Store) ReplaceMetadata(ctx context.Context, i Identity, repo string, a 
 		_, e = tx.Exec(ctx, `INSERT INTO cratectl.artifacts(tenant,repository,path,digest,size,media_type) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT(tenant,repository,path) DO UPDATE SET digest=excluded.digest,size=excluded.size,media_type=excluded.media_type,decision=CASE WHEN cratectl.artifacts.digest=excluded.digest THEN cratectl.artifacts.decision ELSE 'unassessed' END,created_at=CASE WHEN cratectl.artifacts.digest=excluded.digest THEN cratectl.artifacts.created_at ELSE now() END`, i.Tenant, repo, a.Path, a.Digest, a.Size, a.MediaType)
 		if e == nil {
 			e = enqueueIntegrity(ctx, tx, i, repo, []Artifact{a})
+		}
+		if e == nil {
+			e = insertMavenChecksumReceipts(ctx, tx, i, repo, a, checksums)
 		}
 		return map[string]any{"repository": repo, "path": a.Path, "previous_digest": old, "digest": a.Digest, "size": a.Size}, 201, e
 	})

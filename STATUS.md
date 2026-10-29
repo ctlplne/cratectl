@@ -20,6 +20,11 @@ remain.
 The owner authorized pushing this recreation; later feature pushes still require
 the owner's authority under the standing project contract.
 
+Maven native metadata union, snapshot/classifier resolution, parent POMs and
+concurrent publisher checksum receipts are implemented and pass working-tree
+preflight. Clean committed production/race qualification is pending. See
+`evidence/2026-10-29/maven-preflight-triage.json` and `docs/operator/maven.md`.
+
 Latest qualified source: `b4e6234f46a8f1f6410b27004a4481543808d89a`, with both
 author and committer `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
 The authoritative checkpoint is

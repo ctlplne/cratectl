@@ -1,0 +1,13 @@
+RUN ['make', 'build']
+python3 scripts/check_console_assets.py
+PASS: embedded console matches the recorded source and asset digests
+mkdir -p bin
+/Users/shankar/Desktop/ctlplne-cratectl/.cache/go/bin/go build -trimpath -o bin/cratectld ./cmd/cratectld
+/Users/shankar/Desktop/ctlplne-cratectl/.cache/go/bin/go build -trimpath -o bin/cratectl ./cmd/cratectl
+RUN ['python3', 'scripts/dev.py', 'python3', 'scripts/conformance.py', 'maven']
+PASS: 21 assertions; native mode maven
+Evidence: /Users/shankar/Desktop/ctlplne-cratectl/evidence/2026-10-28/conformance-c8f8a87fc5.json
+RUN ['python3', 'scripts/dev.py', '.cache/go/bin/go', 'test', '-race', '-count=1', '-tags=integration', './internal/store', './internal/server', './internal/conformance']
+ok  	ctlplne.dev/cratectl/internal/store	25.075s
+ok  	ctlplne.dev/cratectl/internal/server	21.343s
+ok  	ctlplne.dev/cratectl/internal/conformance	29.160s

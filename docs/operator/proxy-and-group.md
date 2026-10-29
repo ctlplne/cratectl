@@ -128,9 +128,11 @@ sources and checksum failures stop resolution. The longest matching namespace
 owner prevents public fallback even if the owned internal package is absent.
 A group can require stronger review; it cannot weaken source policy.
 
-Current groups select the first matching path. Maven metadata union/merge and the
-complete snapshot/group campaign remain unfinished, as do recursive groups and
-per-content selectors. These limits stay open in the capability ledger.
+Ordinary artifact paths select the first matching source. Maven discovery now
+uses the [native metadata view](maven.md), merging versions, plugin prefixes and
+snapshot extension/classifier mappings under current grants and digest policy.
+Recursive groups, complete format/client/lifecycle/scale campaigns and broader
+per-content selectors remain unfinished in the capability ledger.
 
 ## Explain and recover a request
 

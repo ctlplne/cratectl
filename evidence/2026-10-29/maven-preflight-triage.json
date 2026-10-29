@@ -1,0 +1,27 @@
+{
+  "checked_at": "2026-10-29T17:07:57.106905+00:00",
+  "scope": "Working-tree preflight; clean-source replay pending.",
+  "baseline": "evidence/2026-10-29/maven-union-baseline.json",
+  "initial_native_failure": "evidence/2026-10-28/conformance-547cbd909f.json",
+  "fixture_failures": [
+    {
+      "evidence": "evidence/2026-10-28/conformance-10946b06be.json",
+      "finding": "The new fixture indexed a case-sensitive Python header dict with ETag instead of the received Etag. Corrected case-insensitive lookup; no response assertion removed."
+    },
+    {
+      "evidence": "evidence/2026-10-28/conformance-b3699b1e23.json",
+      "finding": "Two publisher JVMs shared one local Maven metadata cache and could mutate its file during upload/checksum. Independent publisher caches pass all concurrent release assertions on the unchanged server validator. This does not qualify multi-process sharing of a Maven local cache."
+    },
+    {
+      "evidence": "evidence/2026-10-29/maven-overlapped-native-driver-first.txt",
+      "finding": "The agent overlapped stock Maven and native-driver suites, both using reserved port 38443. Store/server packages passed; native driver results are invalid. Rerun the suites serially before counting integration qualification."
+    }
+  ],
+  "working_tree_native_replay": "evidence/2026-10-28/conformance-f137e3dcf3.json",
+  "no_native_result_inferred_from_overlap": true,
+  "goal_complete": false,
+  "working_tree_parent_pom_and_serial_integration_replay": "evidence/2026-10-28/conformance-c8f8a87fc5.json",
+  "serial_integration": "evidence/2026-10-29/maven-serial-preflight.txt",
+  "final_source_unit_vet_race_and_targeted_maven": "evidence/2026-10-29/maven-seal-preflight.txt",
+  "source_state": "Uncommitted Maven implementation on 96fe57c985d1c126685e832786297efe79290e7c; clean-source replay still required."
+}

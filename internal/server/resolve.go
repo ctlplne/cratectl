@@ -8,6 +8,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"path"
 	"strconv"
 	"strings"
 	"time"
@@ -214,6 +215,9 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 	}
 }
 func (s *Server) proxyArtifact(ctx context.Context, i store.Identity, repo store.Repository, p string) (store.Artifact, error) {
+	if repo.Format == "maven" && path.Base(p) == "maven-metadata.xml" {
+		return s.DB.MavenCatalogArtifact(ctx, i, repo.Name, p)
+	}
 	if repo.Format == "oci" {
 		if strings.HasPrefix(p, "oci-catalog/") {
 			return s.DB.NativeCatalogArtifact(ctx, i, repo.Name, strings.TrimPrefix(p, "oci-catalog/"), "oci", store.OCICatalogMedia)
@@ -349,12 +353,37 @@ func (s *Server) fillProxyOnce(parent context.Context, i store.Identity, repo st
 			if response.StatusCode == 304 {
 				break
 			}
-			object, err := s.Blobs.Put(ctx, i.Tenant, response.Body, "", response.ContentLength)
+			metadataRequest := repo.Format == "maven" && path.Base(lease.Path) == "maven-metadata.xml"
+			if metadataRequest && response.ContentLength > s.NativeMetadataBytes {
+				result.Failure = "upstream_metadata_budget"
+				break
+			}
+			var body io.Reader = response.Body
+			if metadataRequest {
+				body = io.LimitReader(response.Body, s.NativeMetadataBytes+1)
+			}
+			object, err := s.Blobs.Put(ctx, i.Tenant, body, "", response.ContentLength)
 			if err != nil {
 				result.Failure = "upstream_transfer_failure"
 				break
 			}
 			result.Object = &object
+			if metadataRequest {
+				file, err := s.Blobs.OpenVerified(ctx, i.Tenant, object.Digest, object.Size)
+				if err == nil {
+					var data []byte
+					data, err = io.ReadAll(io.LimitReader(file, s.NativeMetadataBytes+1))
+					file.Close()
+					if err == nil {
+						_, err = parseMavenMetadata(data, lease.Path, s.NativeVersionLimit, s.NativeMetadataBytes)
+					}
+				}
+				if err != nil {
+					result.Object = nil
+					result.Failure = "upstream_metadata_invalid"
+					break
+				}
+			}
 			verification := "not_applicable"
 			if repo.Format == "maven" {
 				verification = "checksum_unavailable"

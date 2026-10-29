@@ -426,6 +426,16 @@
       "limits": "Only the named PostgreSQL role drift cases are covered.",
       "candidate": "b4e6234f46a8f1f6410b27004a4481543808d89a",
       "replay": "evidence/2026-10-29/schema-clean-postgres-race.txt"
+    },
+    {
+      "id": "DEFECT.0039",
+      "summary": "Maven group discovery selected only the first member metadata and omitted eligible versions in later sources",
+      "first_failure": "evidence/2026-10-28/conformance-547cbd909f.json",
+      "reproduction": "evidence/2026-10-29/maven-union-baseline.json",
+      "first_failure_source": "b4e6234f46a8f1f6410b27004a4481543808d89a",
+      "state": "repaired in working tree; clean-source replay pending",
+      "repair": "Render bounded native G/A/V discovery across current sources and actual hosted POMs with current grants/digest decisions, namespace ownership, snapshot classifier maps, exact checksums and atomic publisher checksum receipts.",
+      "limits": "Native Maven only within named journeys; full Gradle/Ivy/SBT, metadata signatures, nonunique snapshots, recursive groups and lifecycle/scale/format qualification remain open."
     }
   ]
 }

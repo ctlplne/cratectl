@@ -118,6 +118,13 @@ func respondErr(w http.ResponseWriter, e error) {
 		fail(w, 503, "schema_maintenance", "Schema maintenance is draining or changing database transactions. Keep the credential and retry after readiness recovers.")
 	case errors.Is(e, store.ErrSchemaIncompatible):
 		fail(w, 503, "schema_incompatible", "Use a compatible binary and inspect the owner migration plan and schema safety checks. No operation was accepted.")
+	case errors.Is(e, errMavenMetadata):
+		fail(w, 502, "maven_metadata_invalid", "Inspect the source Maven XML, path/coordinate binding and snapshot mappings. No partial metadata was returned.")
+	case errors.Is(e, store.ErrMavenSourceChanged):
+		fail(w, 503, "maven_source_changed", "Expire and revalidate this metadata cache entry against the current configured upstream authority. The previous source catalog was not used.")
+	case errors.Is(e, errMavenViewChanged):
+		w.Header().Set("Retry-After", "1")
+		fail(w, 503, "maven_metadata_changed", "Concurrent references or policy changed this metadata view during three read attempts. Retry after one second.")
 	case errors.Is(e, blob.ErrStorageChanged):
 		fail(w, 503, "storage_changed", "Inspect the configured storage root and start a new inventory; observations from different storage identities cannot be combined.")
 	case errors.Is(e, blob.ErrUnsupported):
@@ -591,11 +598,46 @@ func (s *Server) serveResolvedArtifact(w http.ResponseWriter, r *http.Request, i
 	http.ServeContent(w, r, path.Base(p), a.Created, f)
 }
 func (s *Server) raw(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, p string) {
+	var mavenChecksums map[string]string
 	if !ValidPath(p) {
 		fail(w, 400, "invalid_path", "Use a relative coordinate without dot segments or control characters.")
 		return
 	}
 	if repo.Format == "maven" {
+		metadataPath, metadataAlgorithm := p, ""
+		for _, algorithm := range []string{"sha1", "sha256", "sha512", "md5"} {
+			if strings.HasSuffix(p, "."+algorithm) {
+				metadataPath = strings.TrimSuffix(p, "."+algorithm)
+				metadataAlgorithm = algorithm
+				break
+			}
+		}
+		if path.Base(metadataPath) == "maven-metadata.xml" && (r.Method == "GET" || r.Method == "HEAD") {
+			s.serveMavenMetadata(w, r, i, repo, metadataPath, metadataAlgorithm)
+			return
+		}
+		if path.Base(p) == "maven-metadata.xml" && r.Method == "PUT" {
+			data, e := io.ReadAll(http.MaxBytesReader(w, r.Body, s.NativeMetadataBytes))
+			if e != nil {
+				fail(w, 413, "metadata_budget_exceeded", "Reduce Maven metadata size or adjust the native metadata budget after checking capacity.")
+				return
+			}
+			if _, e = parseMavenMetadata(data, p, s.NativeVersionLimit, s.NativeMetadataBytes); e != nil {
+				if errors.Is(e, store.ErrMetadataLimit) {
+					respondErr(w, e)
+				} else {
+					fail(w, 400, "invalid_maven_metadata", "Use bounded Maven G/A/V XML whose coordinates and snapshot filenames match this repository path.")
+				}
+				return
+			}
+			mavenChecksums = map[string]string{}
+			for _, algorithm := range []string{"sha256", "sha512", "sha1", "md5"} {
+				hash := crypt.CompatibilityHash(algorithm)
+				_, _ = hash.Write(data)
+				mavenChecksums[algorithm] = hex.EncodeToString(hash.Sum(nil))
+			}
+			r.Body = io.NopCloser(bytes.NewReader(data))
+		}
 		for _, algorithm := range []string{"sha1", "sha256", "sha512", "md5"} {
 			if strings.HasSuffix(p, "."+algorithm) {
 				parent := strings.TrimSuffix(p, "."+algorithm)
@@ -611,6 +653,23 @@ func (s *Server) raw(w http.ResponseWriter, r *http.Request, i store.Identity, r
 				if e != nil {
 					respondErr(w, e)
 					return
+				}
+				if r.Method == "PUT" && path.Base(parent) == "maven-metadata.xml" {
+					data, err := io.ReadAll(http.MaxBytesReader(w, r.Body, 1024))
+					if err != nil {
+						fail(w, 400, "checksum_mismatch", "Use a checksum of the exact accepted metadata publication.")
+						return
+					}
+					err = s.DB.MavenChecksumReceipt(r.Context(), i, repo.Name, parent, algorithm, strings.ToLower(strings.TrimSpace(string(data))))
+					if err == nil {
+						w.WriteHeader(201)
+						return
+					}
+					if !errors.Is(err, store.ErrNotFound) {
+						respondErr(w, err)
+						return
+					}
+					r.Body = io.NopCloser(bytes.NewReader(data))
 				}
 				file, e := s.Blobs.OpenVerified(r.Context(), i.Tenant, a.Digest, a.Size)
 				if e != nil {
@@ -667,7 +726,8 @@ func (s *Server) raw(w http.ResponseWriter, r *http.Request, i store.Identity, r
 	}
 	a := store.Artifact{Path: p, Digest: obj.Digest, Size: obj.Size, MediaType: "application/octet-stream"}
 	if repo.Format == "maven" && path.Base(p) == "maven-metadata.xml" {
-		e = s.DB.ReplaceMetadata(r.Context(), i, repo.Name, a)
+		a.MediaType = "application/xml"
+		e = s.DB.ReplaceMavenMetadata(r.Context(), i, repo.Name, a, mavenChecksums)
 	} else {
 		e = s.DB.Publish(r.Context(), i, repo.Name, []store.Artifact{a})
 	}

@@ -2,6 +2,7 @@
 """Real local service + PostgreSQL + stock clients; all credentials stay private."""
 import base64,csv,hashlib,io,json,os,platform,shutil,subprocess,sys,tarfile,time,urllib.error,urllib.parse,urllib.request,uuid,zipfile
 from concurrent.futures import ThreadPoolExecutor
+import xml.etree.ElementTree as XML
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT)
 BASE='http://127.0.0.1:38443';RUN=uuid.uuid4().hex[:10]
@@ -560,12 +561,13 @@ def maven():
  def mvn(args):
   return run([ROOT/'.cache/apache-maven-3.10.0/bin/mvn','-B','-s',settings,'-Dmaven.repo.local='+str(work/'cache')]+args,work,{'JAVA_HOME':str(ROOT/'.cache/jdk-21.0.13+9/Contents/Home')})
  commands.append({'version':mvn(['--version'])})
- for name,version,dependency in [('proof-dep','1.0.0',False),('proof-app','1.0.0',True),('proof-app','2.0.0',True),('proof-app','1.1-SNAPSHOT',True)]:
+ def deploy(name,version,dependency,repo='java',marker=None,local_cache=None):
   filename=name+'-'+version
-  with zipfile.ZipFile(work/(filename+'.jar'),'w') as jar:jar.writestr('META-INF/MANIFEST.MF','Manifest-Version: 1.0\n');jar.writestr('fixture.txt',filename)
+  with zipfile.ZipFile(work/(filename+'.jar'),'w') as jar:jar.writestr('META-INF/MANIFEST.MF','Manifest-Version: 1.0\n');jar.writestr('fixture.txt',marker or filename)
   deps='<dependencies><dependency><groupId>dev.cratectl.proof</groupId><artifactId>proof-dep</artifactId><version>1.0.0</version></dependency></dependencies>' if dependency else ''
   (work/(filename+'.pom')).write_text('<project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion><groupId>dev.cratectl.proof</groupId><artifactId>'+name+'</artifactId><version>'+version+'</version>'+deps+'</project>')
-  mvn(['org.apache.maven.plugins:maven-deploy-plugin:3.1.4:deploy-file','-Dfile='+str(work/(filename+'.jar')),'-DpomFile='+str(work/(filename+'.pom')),'-DrepositoryId=cratectl','-Durl='+BASE+'/r/java/'])
+  mvn((['-Dmaven.repo.local='+str(local_cache)]if local_cache else[])+['org.apache.maven.plugins:maven-deploy-plugin:3.1.4:deploy-file','-Dfile='+str(work/(filename+'.jar')),'-DpomFile='+str(work/(filename+'.pom')),'-DrepositoryId=cratectl','-Durl='+BASE+'/r/'+repo+'/'])
+ for name,version,dependency in [('proof-dep','1.0.0',False),('proof-app','1.0.0',True),('proof-app','2.0.0',True),('proof-app','1.1-SNAPSHOT',True)]:deploy(name,version,dependency)
  # Distinct local repository forces package resolution through cratectl while
  # Maven build plugins themselves remain ordinary central tool dependencies.
  mvn(['org.apache.maven.plugins:maven-dependency-plugin:3.8.1:get','-Dmaven.repo.local='+str(work/'consumer-cache'),'-Dartifact=dev.cratectl.proof:proof-app:2.0.0','-DremoteRepositories=cratectl::default::'+BASE+'/r/java/','-Dtransitive=true'])
@@ -584,6 +586,54 @@ def maven():
  check('stock Maven resolves transitive dependency through group and proxy',all((target_proxy/name/version/(name+'-'+version+'.jar')).read_bytes()==(work/(name+'-'+version+'.jar')).read_bytes() for name,version in [('proof-app','2.0.0'),('proof-dep','1.0.0')]))
  cached_items=json.loads(req('/api/v1/repositories/java-remote/artifacts')[1])['items']
  check('Maven proxy validates upstream checksums before publication',len(cached_items)>=4 and all(a['metadata'].get('upstream_checksum')=='sha256_verified' for a in cached_items))
+ deploy('proof-app','3.0.0',True,'java-local')
+ metadata_path='dev/cratectl/proof/proof-app/maven-metadata.xml'
+ def maven_xml(data):
+  root=XML.fromstring(data)
+  for element in root.iter():element.tag=element.tag.rsplit('}',1)[-1]
+  return root
+ code,body,headers=req('/r/java-group/'+metadata_path,'reader');document=maven_xml(body)
+ result['maven_first_union']={'status':code,'versions':[v.text for v in document.findall('./versioning/versions/version')],'source':headers.get('X-Cratectl-Repository'),'body_sha256':hashlib.sha256(body).hexdigest()}
+ check('Maven group metadata unions versions from hosted and proxy members',code==200 and {v.text for v in document.findall('./versioning/versions/version')}>={'1.0.0','2.0.0','3.0.0','1.1-SNAPSHOT'})
+ check('Maven merged checksum describes exact synthesized bytes',req('/r/java-group/'+metadata_path+'.sha256','reader')[1].decode()==hashlib.sha256(body).hexdigest())
+ check('Maven merged metadata supports conditional and range requests',req('/r/java-group/'+metadata_path,'reader',headers={'If-None-Match':next(v for k,v in headers.items()if k.lower()=='etag')})[0]==304 and req('/r/java-group/'+metadata_path,'reader',headers={'Range':'bytes=0-15'})[:2]==(206,body[:16]))
+ def consumer_cache(label):
+  target=work/label;shutil.copytree(work/'cache',target);shutil.rmtree(target/'dev/cratectl/proof',ignore_errors=True);return target
+ def consume(artifact,label,transitive=True):
+  target=consumer_cache(label)
+  mvn(['-U','-s',str(reader_settings),'org.apache.maven.plugins:maven-dependency-plugin:3.8.1:get','-Dmaven.repo.local='+str(target),'-Dartifact='+artifact,'-DremoteRepositories=cratectl::default::'+BASE+'/r/java-group/','-Dtransitive='+str(transitive).lower()])
+  return target/'dev/cratectl/proof'/artifact.split(':')[1]
+ target=consume('dev.cratectl.proof:proof-app:[1.0.0,4.0.0)','range-consumer')
+ check('stock Maven resolves a version range spanning group members',(target/'3.0.0/proof-app-3.0.0.jar').read_bytes()==(work/'proof-app-3.0.0.jar').read_bytes())
+ publishers=[('4.0.0',consumer_cache('publisher-four')),('5.0.0',consumer_cache('publisher-five'))]
+ with ThreadPoolExecutor(max_workers=2)as executor:
+  list(executor.map(lambda item:deploy('proof-app',item[0],True,'java-local',local_cache=item[1]),publishers))
+ code,concurrent_metadata,_=req('/r/java-group/'+metadata_path,'reader')
+ check('two concurrent stock Maven deployments retain both versions and accept their metadata checksums',code==200 and {v.text for v in maven_xml(concurrent_metadata).findall('./versioning/versions/version')}>={'3.0.0','4.0.0','5.0.0'})
+ snapshot_path='dev/cratectl/proof/proof-app/1.1-SNAPSHOT/maven-metadata.xml'
+ old_snapshot=req('/r/java-remote/'+snapshot_path,'reader')[1]
+ deploy('proof-app','1.1-SNAPSHOT',True,marker='second unique snapshot publication')
+ sources=work/'snapshot-sources.jar'
+ with zipfile.ZipFile(sources,'w')as jar:jar.writestr('fixture-source.txt','owned classifier fixture')
+ mvn(['org.apache.maven.plugins:maven-deploy-plugin:3.1.4:deploy-file','-Dfile='+str(sources),'-DgroupId=dev.cratectl.proof','-DartifactId=proof-app','-Dversion=1.1-SNAPSHOT','-Dpackaging=jar','-Dclassifier=sources','-DgeneratePom=false','-DrepositoryId=cratectl','-Durl='+BASE+'/r/java/'])
+ code,snapshot_bytes,_=req('/r/java-group/'+snapshot_path,'reader',headers={'Cache-Control':'no-cache'});snapshot=maven_xml(snapshot_bytes)
+ def snapshot_entries(data):return {(e.findtext('extension'),e.findtext('classifier')or''):e.findtext('value')for e in maven_xml(data).findall('./versioning/snapshotVersions/snapshotVersion')}
+ entries=snapshot_entries(snapshot_bytes)
+ check('Maven revalidation advances snapshots and retains extension/classifier mappings',code==200 and snapshot_bytes!=old_snapshot and all(key in entries for key in [('jar',''),('pom',''),('jar','sources')]))
+ target=consume('dev.cratectl.proof:proof-app:1.1-SNAPSHOT','snapshot-consumer')
+ check('stock Maven installs latest unique snapshot bytes through group and proxy',any(p.read_bytes()==(work/'proof-app-1.1-SNAPSHOT.jar').read_bytes()for p in (target/'1.1-SNAPSHOT').glob('*.jar')))
+ target=consume('dev.cratectl.proof:proof-app:1.1-SNAPSHOT:jar:sources','classifier-consumer',False)
+ check('stock Maven resolves the independent snapshot sources classifier',any(p.read_bytes()==sources.read_bytes()for p in (target/'1.1-SNAPSHOT').glob('*sources.jar')))
+ stop();start();check('Maven native merged snapshot discovery survives restart',entries==snapshot_entries(req('/r/java-group/'+snapshot_path,'reader')[1]))
+ parent=work/'proof-parent-1.0.0.pom';parent.write_text('<project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion><groupId>dev.cratectl.proof</groupId><artifactId>proof-parent</artifactId><version>1.0.0</version><packaging>pom</packaging><properties><proof.dep.version>1.0.0</proof.dep.version></properties></project>')
+ mvn(['org.apache.maven.plugins:maven-deploy-plugin:3.1.4:deploy-file','-Dfile='+str(parent),'-DpomFile='+str(parent),'-Dpackaging=pom','-DrepositoryId=cratectl','-Durl='+BASE+'/r/java-local/'])
+ mvn(['org.apache.maven.plugins:maven-install-plugin:3.1.4:install-file','-Dfile='+str(parent),'-DpomFile='+str(parent),'-Dpackaging=pom'])
+ child=work/'parent-child-1.0.0.jar'
+ with zipfile.ZipFile(child,'w')as jar:jar.writestr('fixture-child.txt','owned parent inheritance fixture')
+ child_pom=work/'parent-child-1.0.0.pom';child_pom.write_text('<project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion><parent><groupId>dev.cratectl.proof</groupId><artifactId>proof-parent</artifactId><version>1.0.0</version><relativePath/></parent><groupId>dev.cratectl.proof</groupId><artifactId>parent-child</artifactId><version>1.0.0</version><dependencies><dependency><groupId>dev.cratectl.proof</groupId><artifactId>proof-dep</artifactId><version>${proof.dep.version}</version></dependency></dependencies></project>')
+ mvn(['org.apache.maven.plugins:maven-deploy-plugin:3.1.4:deploy-file','-Dfile='+str(child),'-DpomFile='+str(child_pom),'-DrepositoryId=cratectl','-Durl='+BASE+'/r/java/'])
+ target=consume('dev.cratectl.proof:parent-child:1.0.0','parent-consumer')
+ check('stock Maven resolves parent POM inheritance and its transitive version property across group sources',(target/'1.0.0/parent-child-1.0.0.jar').read_bytes()==child.read_bytes() and (target.parent/'proof-parent/1.0.0/proof-parent-1.0.0.pom').read_bytes()==parent.read_bytes() and (target.parent/'proof-dep/1.0.0/proof-dep-1.0.0.jar').exists())
  artifacts=json.loads(req('/api/v1/repositories/java/artifacts')[1])['items'];target=next(a for a in artifacts if a['path'].endswith('proof-app-2.0.0.jar'))
  req('/api/v1/repositories/java/decisions',method='PUT',data={'path':target['path'],'digest':target['digest'],'decision':'denied'},key=uuid.uuid4().hex)
  check('Maven denial blocks artifact and checksum',req('/r/java/'+target['path'])[0]==403 and req('/r/java/'+target['path']+'.sha1')[0]==403)
@@ -681,6 +731,6 @@ try:
 except Exception as error:
  result['status']='failed';result['failure']=str(error);print('FAIL:',error);raise
 finally:
- stop();result['input_digests']={str(p.relative_to(PRIVATE)):hashlib.sha256(p.read_bytes()).hexdigest() for p in PRIVATE.rglob('*.whl')}
+ stop();result['input_digests']={str(p.relative_to(PRIVATE)):hashlib.sha256(p.read_bytes()).hexdigest() for p in list(PRIVATE.rglob('*.whl'))+list(PRIVATE.glob('maven/*.jar'))+list(PRIVATE.glob('maven/*.pom'))}
  (EVIDENCE/('conformance-'+RUN+'.json')).write_text(json.dumps(result,indent=2)+'\n')
  print('Evidence:',EVIDENCE/('conformance-'+RUN+'.json'))
