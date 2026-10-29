@@ -260,10 +260,12 @@
       "first_failure": "evidence/2026-10-28/sweep-auth-first.txt",
       "first_failure_source": "7933455f2ca3c502bf2e7adcad4465e74bfe690c",
       "reproduction": "evidence/2026-10-28/sweep-auth-regression.json",
-      "state": "repaired; working-tree regression passed; clean-source qualification pending",
+      "state": "repaired and replayed",
       "repair": "Recheck the current public identity after write callbacks as well as after acquiring the tenant lock; expiry rolls back the whole write, including sweep admission.",
-      "replay": "evidence/2026-10-28/sweep-preflight-postgres-race.txt",
-      "limits": "Named local PostgreSQL profile; full authorization/fault/load/security qualification remains required."
+      "replay": "evidence/2026-10-28/sweep-clean-postgres-race.txt",
+      "limits": "Named local PostgreSQL profile; full authorization/fault/load/security qualification remains required.",
+      "candidate": "51ece453d9cdf56f7a7504a9d833dc7ad4292f08",
+      "native_replay": "evidence/2026-10-28/sweeps-c054496011.json"
     }
   ]
 }
