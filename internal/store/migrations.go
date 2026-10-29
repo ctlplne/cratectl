@@ -37,24 +37,45 @@ type SchemaPlan struct {
 type MigrationOptions struct{ AdoptLegacy bool }
 
 func migrationSafetySQL() string {
+	return migrationSafetySQLFor(schemaTablesV1)
+}
+
+func migrationSafetySQLFor(tables []string) string {
 	names := []string{}
-	for _, name := range schemaTablesV1 {
+	for _, name := range tables {
 		names = append(names, "('"+name+"')")
 	}
-	return `SELECT count(*)=` + fmt.Sprint(len(schemaTablesV1)) + ` AND COALESCE(bool_and(c.relrowsecurity AND c.relforcerowsecurity AND (SELECT count(*) FROM pg_policy p WHERE p.polrelid=c.oid)=1 AND EXISTS(SELECT 1 FROM pg_policy p WHERE p.polrelid=c.oid AND p.polname='tenant_scope' AND p.polcmd='*' AND p.polpermissive AND p.polroles=ARRAY[0::oid] AND regexp_replace(pg_get_expr(p.polqual,p.polrelid),'\s','','g')='(tenant=current_setting(''cratectl.tenant''::text,true))' AND regexp_replace(pg_get_expr(p.polwithcheck,p.polrelid),'\s','','g')='(tenant=current_setting(''cratectl.tenant''::text,true))')),false) FROM (VALUES ` + strings.Join(names, ",") + `) expected(name) LEFT JOIN pg_namespace n ON n.nspname='cratectl' LEFT JOIN pg_class c ON c.relnamespace=n.oid AND c.relname=expected.name AND c.relkind IN ('r','p')`
+	return `SELECT count(*)=` + fmt.Sprint(len(tables)) + ` AND COALESCE(bool_and(c.relrowsecurity AND c.relforcerowsecurity AND (SELECT count(*) FROM pg_policy p WHERE p.polrelid=c.oid)=1 AND EXISTS(SELECT 1 FROM pg_policy p WHERE p.polrelid=c.oid AND p.polname='tenant_scope' AND p.polcmd='*' AND p.polpermissive AND p.polroles=ARRAY[0::oid] AND regexp_replace(pg_get_expr(p.polqual,p.polrelid),'\s','','g')='(tenant=current_setting(''cratectl.tenant''::text,true))' AND regexp_replace(pg_get_expr(p.polwithcheck,p.polrelid),'\s','','g')='(tenant=current_setting(''cratectl.tenant''::text,true))')),false) FROM (VALUES ` + strings.Join(names, ",") + `) expected(name) LEFT JOIN pg_namespace n ON n.nspname='cratectl' LEFT JOIN pg_class c ON c.relnamespace=n.oid AND c.relname=expected.name AND c.relkind IN ('r','p')`
 }
 func buildSchemaStateBody() string {
 	return `SELECT (SELECT COALESCE(max(version),0) FROM cratectl_private.schema_migrations),COALESCE((SELECT jsonb_agg(to_jsonb(h) ORDER BY h.version) FROM (SELECT version,checksum FROM cratectl_private.schema_migrations ORDER BY version LIMIT 129)h),'[]'::jsonb),(` + migrationSafetySQL() + `)`
 }
 
 var frozenSchemaStateBody = buildSchemaStateBody()
+var lifecycleSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationSafetySQL(), migrationSafetySQLFor(schemaTablesV3), 1)
 
 func schemaStateBody() string { return frozenSchemaStateBody }
+func schemaStateBodyForVersion(version int) string {
+	if version >= 3 {
+		return lifecycleSchemaStateBody
+	}
+	return frozenSchemaStateBody
+}
+
+func schemaStateSQL(body string) string {
+	return `CREATE OR REPLACE FUNCTION cratectl.schema_state() RETURNS TABLE(version integer,history jsonb,safety_valid boolean) LANGUAGE sql SECURITY DEFINER SET search_path=pg_catalog AS $schema$` + body + `$schema$;REVOKE ALL ON FUNCTION cratectl.schema_state() FROM PUBLIC;GRANT EXECUTE ON FUNCTION cratectl.schema_state() TO cratectl_app;`
+}
 
 func buildMigrations() []migrationStep {
 	body := schemaStateBody()
-	state := `CREATE OR REPLACE FUNCTION cratectl.schema_state() RETURNS TABLE(version integer,history jsonb,safety_valid boolean) LANGUAGE sql SECURITY DEFINER SET search_path=pg_catalog AS $schema$` + body + `$schema$;REVOKE ALL ON FUNCTION cratectl.schema_state() FROM PUBLIC;GRANT EXECUTE ON FUNCTION cratectl.schema_state() TO cratectl_app;`
-	return []migrationStep{{1, "legacy baseline", legacySchemaSQL()}, {2, "schema state and runtime coordination", migrationLedgerSQL + "\n" + state}}
+	state := schemaStateSQL(body)
+	lifecycle := lifecycleSchema
+	for _, table := range []string{"artifact_lifecycle", "repository_lifecycle"} {
+		q := pgx.Identifier{"cratectl", table}.Sanitize()
+		lifecycle += `ALTER TABLE ` + q + ` ENABLE ROW LEVEL SECURITY; ALTER TABLE ` + q + ` FORCE ROW LEVEL SECURITY; CREATE POLICY tenant_scope ON ` + q + ` USING (tenant=current_setting('cratectl.tenant',true)) WITH CHECK (tenant=current_setting('cratectl.tenant',true)); GRANT SELECT,INSERT,UPDATE ON ` + q + ` TO cratectl_app;`
+	}
+	lifecycle += schemaStateSQL(lifecycleSchemaStateBody)
+	return []migrationStep{{1, "legacy baseline", legacySchemaSQL()}, {2, "schema state and runtime coordination", migrationLedgerSQL + "\n" + state}, {3, "retained artifact and repository lifecycle", lifecycle}}
 }
 
 var frozenMigrations = buildMigrations()
@@ -107,7 +128,7 @@ func checkSchemaPlan(ctx context.Context, q interface {
 		}
 	}()
 	var correct bool
-	e := q.QueryRow(ctx, `SELECT COALESCE((SELECT p.prosecdef AND p.proconfig=ARRAY['search_path=pg_catalog']::text[] AND p.prosrc=$1 AND p.prolang=(SELECT oid FROM pg_language WHERE lanname='sql') AND (NOT $2::boolean OR p.proowner<>(SELECT oid FROM pg_roles WHERE rolname=current_user)) AND NOT EXISTS(SELECT 1 FROM aclexplode(COALESCE(p.proacl,acldefault('f',p.proowner))) a WHERE a.grantee=0 AND a.privilege_type='EXECUTE') FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='cratectl' AND p.proname='schema_state' AND p.pronargs=0),false)`, schemaStateBody(), runtime).Scan(&correct)
+	e := q.QueryRow(ctx, `SELECT COALESCE((SELECT p.prosecdef AND p.proconfig=ARRAY['search_path=pg_catalog']::text[] AND p.prosrc=$1 AND p.prolang=(SELECT oid FROM pg_language WHERE lanname='sql') AND (NOT $2::boolean OR p.proowner<>(SELECT oid FROM pg_roles WHERE rolname=current_user)) AND NOT EXISTS(SELECT 1 FROM aclexplode(COALESCE(p.proacl,acldefault('f',p.proowner))) a WHERE a.grantee=0 AND a.privilege_type='EXECUTE') FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='cratectl' AND p.proname='schema_state' AND p.pronargs=0),false)`, schemaStateBodyForVersion(steps[len(steps)-1].Version), runtime).Scan(&correct)
 	if e != nil {
 		return e
 	}

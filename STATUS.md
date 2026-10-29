@@ -1,5 +1,17 @@
 # cratectl execution status
 
+Retained OCI lifecycle implementation is now in local qualification. Schema 3
+adds forced-RLS tombstones and repository state while freezing both earlier
+receipts. Native deletion, explicit graph/byte-verified restore, administrator
+holds, source suspend/remove/recovery, in-flight writer fencing, API/CLI and
+console impact previews are implemented. Dirty preflights passed 43 stock ORAS
+assertions, five Chromium workflows/42 assertions and repeated real PostgreSQL
+race checks; these are development evidence, not a clean candidate verdict.
+The prior qualified source below remains authoritative until the new clean
+binaries and full regression campaigns finish. First failures and repairs for
+focus, forced-tag group fallback and nested-image restore remain retained.
+All 450 capabilities and 41 format families remain unfinished.
+
 Owner-directed repository reset completed on 2026-10-28. Private GitHub repository
 `ctlplne/cratectl` was recreated (new ID 1437631481); the preserved implementation
 has a fresh root `887c569ac96c451bccd91ae872317c06a890117a`. GitHub verifies both

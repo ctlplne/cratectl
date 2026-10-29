@@ -30,6 +30,9 @@ var inventorySchema string
 
 //go:embed bootstrap.sql
 var bootstrapSchema string
+
+//go:embed lifecycle.sql
+var lifecycleSchema string
 var Name = regexp.MustCompile(`^[a-z][a-z0-9-]{0,62}$`)
 var ErrConflict = errors.New("conflict")
 var ErrDenied = errors.New("policy denied")
@@ -65,6 +68,8 @@ func Open(ctx context.Context, dsn string) (*Store, error) {
 }
 
 var schemaTablesV1 = []string{"tenants", "repositories", "artifacts", "events", "mutations", "jobs", "uploads", "tags", "repository_grants", "retrievals", "content_decisions", "npm_tags", "npm_sources", "native_sources", "python_yanks", "queue_policies", "event_projections", "integrity_observations", "upload_parts", "sweep_items", "inventory_entries", "inventory_observations", "bootstrap_receipts"}
+
+var schemaTablesV3 = append(append([]string(nil), schemaTablesV1...), "artifact_lifecycle", "repository_lifecycle")
 
 // legacySchemaSQL is migration 1. Freeze it and the five embedded SQL files;
 // subsequent schema changes belong in new checksummed steps.
@@ -222,9 +227,17 @@ type Result struct {
 // changes without re-running admission I/O. Authorization and fingerprint still
 // apply; concurrent first admissions remain serialized by mutateIntent.
 func (s *Store) ReplayMutation(ctx context.Context, i Identity, key, fingerprint string) (Result, bool, error) {
+	return s.replayMutationChecked(ctx, i, key, fingerprint, nil)
+}
+func (s *Store) replayMutationChecked(ctx context.Context, i Identity, key, fingerprint string, authorize func(pgx.Tx) error) (Result, bool, error) {
 	var result Result
 	found := false
 	e := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
+		if authorize != nil {
+			if e := authorize(tx); e != nil {
+				return e
+			}
+		}
 		var expected string
 		e := tx.QueryRow(ctx, `SELECT fingerprint,response,status FROM cratectl.mutations WHERE actor=$1 AND key=$2`, i.Actor, key).Scan(&expected, &result.Body, &result.Status)
 		if errors.Is(e, pgx.ErrNoRows) {
@@ -248,8 +261,16 @@ func (s *Store) Mutate(ctx context.Context, i Identity, key, fingerprint, kind s
 	return s.mutateIntent(ctx, i, key, fingerprint, kind, true, fn)
 }
 func (s *Store) mutateIntent(ctx context.Context, i Identity, key, fingerprint, kind string, enqueue bool, fn func(pgx.Tx) (any, int, error)) (Result, error) {
+	return s.mutateIntentChecked(ctx, i, key, fingerprint, kind, enqueue, nil, fn)
+}
+func (s *Store) mutateIntentChecked(ctx context.Context, i Identity, key, fingerprint, kind string, enqueue bool, authorize func(pgx.Tx) error, fn func(pgx.Tx) (any, int, error)) (Result, error) {
 	var res Result
 	e := s.Tx(ctx, i, true, func(tx pgx.Tx) error {
+		if authorize != nil {
+			if e := authorize(tx); e != nil {
+				return e
+			}
+		}
 		if key != "" {
 			var fp string
 			e := tx.QueryRow(ctx, `SELECT fingerprint,response,status FROM cratectl.mutations WHERE actor=$1 AND key=$2`, i.Actor, key).Scan(&fp, &res.Body, &res.Status)
@@ -285,6 +306,7 @@ func (s *Store) mutateIntent(ctx context.Context, i Identity, key, fingerprint, 
 }
 
 type Artifact struct {
+	Lifecycle       *ArtifactState  `json:"lifecycle,omitempty"`
 	MetadataOmitted bool            `json:"metadata_omitted,omitempty"`
 	Repository      string          `json:"repository"`
 	Path            string          `json:"path"`
@@ -317,6 +339,9 @@ func InsertArtifacts(ctx context.Context, tx pgx.Tx, i Identity, repo string, as
 		return ErrDenied
 	}
 	for _, a := range as {
+		if e = notDeletedInTx(ctx, tx, repo, a.Path); e != nil {
+			return e
+		}
 		if a.Metadata == nil {
 			a.Metadata = json.RawMessage(`{}`)
 		}

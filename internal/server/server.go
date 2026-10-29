@@ -113,6 +113,18 @@ func fail(w http.ResponseWriter, status int, code, action string) {
 }
 func respondErr(w http.ResponseWriter, e error) {
 	switch {
+	case errors.Is(e, store.ErrDeleted):
+		fail(w, 404, "artifact_deleted", "This retained reference was deleted. A writer must preview and explicitly restore its verified bytes; cache refresh cannot restore it.")
+	case errors.Is(e, store.ErrRepositorySuspended):
+		fail(w, 503, "repository_suspended", "Ask a tenant administrator to inspect repository state and explicitly resume it.")
+	case errors.Is(e, store.ErrRepositoryRemoved):
+		fail(w, 404, "repository_removed", "The repository and its bytes are retained. A tenant administrator can inspect its state and explicitly restore it.")
+	case errors.Is(e, store.ErrHeld):
+		fail(w, 409, "artifact_held", "Inspect the current hold. An administrator must release it or wait for its recorded expiry before changing deletion state.")
+	case errors.Is(e, store.ErrReferenced):
+		fail(w, 409, "artifact_referenced", "Preview the active incoming manifest references and retire their parents before deleting this child.")
+	case errors.Is(e, store.ErrLifecycleRevision):
+		fail(w, 409, "lifecycle_changed", "Read and preview current state, then retry with its exact revision and digest using a new idempotency key.")
 	case errors.Is(e, store.ErrSchemaMaintenance):
 		w.Header().Set("Retry-After", "1")
 		fail(w, 503, "schema_maintenance", "Schema maintenance is draining or changing database transactions. Keep the credential and retry after readiness recovers.")
@@ -294,6 +306,9 @@ func readJSON(w http.ResponseWriter, r *http.Request, v any, limit int64) bool {
 }
 func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Identity) {
 	p := strings.TrimPrefix(r.URL.Path, "/api/v1/")
+	if s.lifecycleManagement(w, r, i, p) {
+		return
+	}
 	if p == "session" {
 		if r.Method != "GET" {
 			w.Header().Set("Allow", "GET")

@@ -177,14 +177,24 @@ func (s *Store) ArtifactPage(ctx context.Context, i Identity, repo, prefix strin
 						window.More = true
 						break
 					}
-					if e != nil && !errors.Is(e, ErrDenied) && !errors.Is(e, ErrNotFound) && !errors.Is(e, ErrOCIUnvalidated) {
+					if e != nil && !errors.Is(e, ErrDenied) && !errors.Is(e, ErrNotFound) && !errors.Is(e, ErrOCIUnvalidated) && !errors.Is(e, ErrDeleted) {
 						return e
 					}
 				} else {
-					e = nil
+					e = notDeletedInTx(ctx, tx, repo, a.Path)
+					if e != nil && !errors.Is(e, ErrDeleted) {
+						return e
+					}
 				}
 			} else {
 				e = nil
+				state, err := artifactStateInTx(ctx, tx, repo, a.Path)
+				if err != nil {
+					return err
+				}
+				if state.Revision > 0 {
+					a.Lifecycle = &state
+				}
 			}
 			if window.First == "" {
 				window.First = a.Path
@@ -223,6 +233,15 @@ func (s *Store) ArtifactReference(ctx context.Context, i Identity, repo, path st
 		e = scanArtifact(tx.QueryRow(ctx, `SELECT `+artifactColumns+` FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND a.path=$2`, repo, path), &a)
 		if errors.Is(e, pgx.ErrNoRows) {
 			return ErrNotFound
+		}
+		if e == nil {
+			state, err := artifactStateInTx(ctx, tx, repo, path)
+			if err != nil {
+				return err
+			}
+			if state.Revision > 0 {
+				a.Lifecycle = &state
+			}
 		}
 		return e
 	})

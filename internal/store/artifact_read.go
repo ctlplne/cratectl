@@ -19,6 +19,8 @@ func isManifest(media string) bool {
 }
 
 type graphBudget struct {
+	retainedRoot    string
+	retained        bool
 	remaining       int
 	depth           int
 	stack           map[string]bool
@@ -57,11 +59,16 @@ func readArtifact(ctx context.Context, tx pgx.Tx, repo, path string, review bool
 	if e != nil {
 		return a, e
 	}
+	if path != b.retainedRoot {
+		if e = notDeletedInTx(ctx, tx, repo, path); e != nil {
+			return a, e
+		}
+	}
 	b.metadataBytes -= int64(len(a.Metadata))
 	if b.metadataBytes < 0 {
 		return a, ErrMetadataLimit
 	}
-	if a.Decision == "denied" || (review && a.Decision != "allowed") {
+	if !b.retained && (a.Decision == "denied" || (review && a.Decision != "allowed")) {
 		return a, ErrDenied
 	}
 	if b.cacheRepository != "" {
@@ -186,7 +193,7 @@ func (s *Store) Tags(ctx context.Context, i Identity, repo, image string) ([]str
 		}
 		for _, p := range pairs {
 			_, e = readArtifact(ctx, tx, repo, image+"/manifests/"+p.digest, review, newGraphBudget())
-			if errors.Is(e, ErrDenied) || errors.Is(e, ErrNotFound) {
+			if errors.Is(e, ErrDenied) || errors.Is(e, ErrNotFound) || errors.Is(e, ErrDeleted) {
 				continue
 			}
 			if e != nil {

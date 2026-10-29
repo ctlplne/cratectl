@@ -33,6 +33,10 @@ func (s *Server) oci(w http.ResponseWriter, r *http.Request, i store.Identity, r
 			fail(w, 400, "DIGEST_INVALID", "Use a SHA-256 digest.")
 			return
 		}
+		if r.Method == "DELETE" {
+			s.deleteOCI(w, r, i, repo, image, "blobs", ref)
+			return
+		}
 		if r.Method != "GET" && r.Method != "HEAD" {
 			fail(w, 405, "UNSUPPORTED", "Use the upload workflow.")
 			return
@@ -46,6 +50,10 @@ func (s *Server) oci(w http.ResponseWriter, r *http.Request, i store.Identity, r
 	case "manifests":
 		if !ociDigest.MatchString(ref) && !ociTag.MatchString(ref) {
 			fail(w, 400, "TAG_INVALID", "Use a valid tag or SHA-256 digest.")
+			return
+		}
+		if r.Method == "DELETE" {
+			s.deleteOCI(w, r, i, repo, image, "manifests", ref)
 			return
 		}
 		if r.Method == "GET" || r.Method == "HEAD" {

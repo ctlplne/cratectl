@@ -39,6 +39,26 @@ type Repository struct {
 }
 
 func repositoryInTx(ctx context.Context, tx pgx.Tx, i Identity, name, action string) (Repository, error) {
+	r, e := repositoryRecordInTx(ctx, tx, i, name, action)
+	if e != nil {
+		return r, e
+	}
+	state, e := repositoryStateInTx(ctx, tx, name)
+	if e != nil {
+		return r, e
+	}
+	switch state.State {
+	case "suspended":
+		return r, ErrRepositorySuspended
+	case "removed":
+		return r, ErrRepositoryRemoved
+	}
+	return r, nil
+}
+
+// Lifecycle administration authorizes the retained record without admitting an
+// inactive repository to ordinary serving or publication.
+func repositoryRecordInTx(ctx context.Context, tx pgx.Tx, i Identity, name, action string) (Repository, error) {
 	var r Repository
 	var settings []byte
 	e := tx.QueryRow(ctx, `SELECT name,format,mode,require_review,access,settings FROM cratectl.repositories WHERE name=$1`, name).Scan(&r.Name, &r.Format, &r.Mode, &r.RequireReview, &r.Access, &settings)

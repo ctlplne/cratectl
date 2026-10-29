@@ -17,8 +17,11 @@ func (s *Server) resolveOCI(ctx context.Context, i store.Identity, endpoint stor
 		retry := false
 		for _, source := range sources {
 			result := resolvedArtifact{source: source}
+			if e = s.DB.CheckOCIReferenceLifecycle(ctx, i, source.Name, image, kind, ref); e != nil {
+				return result, e
+			}
 			if ociDigest.MatchString(ref) {
-				if e = s.DB.CheckOCIDigestDecision(ctx, i, source.Name, ref); e != nil {
+				if e = s.DB.CheckOCIDigestDecision(ctx, i, source.Name, ref, image+"/"+kind+"/"+ref); e != nil {
 					return result, e
 				}
 			}

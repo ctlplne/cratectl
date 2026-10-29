@@ -651,3 +651,89 @@ paths:
         '200': {description: Receipts ordered by generation with ordinal/pass/digest/size/status/worker/engine/time and more.}
         '403': {description: Tenant administrator required.}
         '404': {description: No such inventory in this tenant.}
+  /api/v1/repositories/{repository}/state:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+    get:
+      summary: Inspect retained repository lifecycle as a tenant administrator
+      description: Authorizes the retained record, including suspended and removed repositories. An untouched repository is active with revision 0.
+      responses:
+        '200': {description: 'Repository, state (active/suspended/removed), revision, reason, actor, changed_at and change_sequence.'}
+        '403': {description: Administrator required}
+        '404': {description: No authorized retained repository}
+        '503': {description: Schema or database unavailable}
+    put:
+      summary: Preview or apply a retained repository transition
+      description: Suspension/removal atomically fences bounded active retrievals and uploads with journal, outbox and idempotency response. Bytes and references remain. Resume/restore cannot revive fenced writers. Inactive members fail group reads without fallback. Source URL/configuration changes are a separate operation.
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          description: Required unless dry_run is true. Reuse only with identical request bytes.
+          schema: {type: string, minLength: 8, maxLength: 128}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [action, expected_revision]
+              properties:
+                action: {type: string, enum: [suspend, resume, remove, restore]}
+                expected_revision: {type: integer, minimum: 0}
+                reason: {type: string, maxLength: 1024, description: At most 1024 UTF-8 bytes without controls}
+                dry_run: {type: boolean, default: false}
+      responses:
+        '200': {description: 'Current lifecycle and desired state, active transfer counts and referencing groups. A preview has no durable effects; a mutation returns its committed revision.'}
+        '400': {description: Invalid JSON or missing explicit revision/key}
+        '403': {description: Administrator required}
+        '404': {description: Repository not found}
+        '409': {description: Stale revision or invalid transition; removed requires restore}
+        '503': {description: Budget, durable queue, schema or database failure; no partial transition}
+  /api/v1/repositories/{repository}/artifacts/lifecycle:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+    get:
+      summary: Inspect retained OCI reference lifecycle as an authorized writer
+      parameters:
+        - in: query
+          name: path
+          required: true
+          schema: {type: string, maxLength: 2048}
+          description: Canonical image/manifests/sha256:HEX or image/blobs/sha256:HEX path, never a tag alias
+      responses:
+        '200': {description: 'Repository, path, digest, deleted, held, revision, hold reason/expiry, actor and journal change sequence. Untouched revision is 0.'}
+        '403': {description: Current write role and grant required}
+        '404': {description: Reference or active repository not found}
+        '503': {description: Repository suspended or dependency unavailable}
+    put:
+      summary: Preview or apply retained OCI deletion, restore or administrator hold
+      description: Strong active manifest references block child deletion. Holds protect deletion/restore and native tag deletion. Restore verifies all retained CAS bytes and reparses manifests outside SQL, then rechecks exact graph identities and revision under the tenant write lock. It preserves security decisions and newer tag bindings. There is no physical byte reclamation. Proxy tombstones require explicit restore; refresh and group fallback cannot resurrect them. Native hosted digest/tag DELETE returns 202; native proxy/group writes remain read-only.
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          description: Required unless dry_run is true. Current role/grant is required even for replay.
+          schema: {type: string, minLength: 8, maxLength: 128}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [path, digest, action, expected_revision]
+              properties:
+                path: {type: string, maxLength: 2048}
+                digest: {type: string, pattern: '^[a-f0-9]{64}$'}
+                action: {type: string, enum: [delete, restore, hold, release_hold]}
+                expected_revision: {type: integer, minimum: 0}
+                reason: {type: string, maxLength: 1024, description: At most 1024 UTF-8 bytes without controls; a nonempty reason is required for hold}
+                hold_until: {type: string, format: date-time, description: Optional future expiry for hold; omit for indefinite hold}
+                dry_run: {type: boolean, default: false}
+      responses:
+        '200': {description: 'Current lifecycle, action, bounded strong parents, tag aliases, weak subject dependents, active retrieval count and retained_bytes=true. Dry-run reports blockers without changing state.'}
+        '400': {description: Invalid JSON or missing explicit revision/key}
+        '403': {description: Current writer/grant required; holds require administrator}
+        '404': {description: Canonical reference or active repository not found}
+        '409': {description: Active hold, incoming reference, stale identity/revision or changed graph}
+        '503': {description: Missing/corrupt bytes, metadata budget, durable queue, schema or dependency failure; no partial transition}

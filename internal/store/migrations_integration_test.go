@@ -19,14 +19,14 @@ func TestSchemaFreshCurrentAndPrivateReceipts(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	plan, e := MigrationPlan(ctx, d.OwnerDSN)
-	if e != nil || plan.DatabaseState != "empty" || len(plan.Pending) != 2 {
+	if e != nil || plan.DatabaseState != "empty" || len(plan.Pending) != len(currentMigrations()) {
 		t.Fatal("empty plan", plan, e)
 	}
 	if e = Migrate(ctx, d.OwnerDSN); e != nil {
 		t.Fatal("fresh migration", e)
 	}
 	plan, e = MigrationPlan(ctx, d.OwnerDSN)
-	if e != nil || plan.DatabaseState != "current" || len(plan.Applied) != 2 || !plan.SafetyValid {
+	if e != nil || plan.DatabaseState != "current" || len(plan.Applied) != len(currentMigrations()) || !plan.SafetyValid {
 		t.Fatal("current plan", plan, e)
 	}
 	db, e := Open(ctx, d.RuntimeDSN)
@@ -135,7 +135,7 @@ func waitSchemaBackend(t *testing.T, c *pgx.Conn, name string, waiting bool) uin
 }
 
 func futureSchemaStep(sql string) []migrationStep {
-	return append(currentMigrations(), migrationStep{3, "owned future-version fixture", sql})
+	return append(currentMigrations(), migrationStep{len(currentMigrations()) + 1, "owned future-version fixture", sql})
 }
 
 func TestSchemaDrainQueueAndFutureVersion(t *testing.T) {
@@ -208,7 +208,7 @@ func TestSchemaDrainQueueAndFutureVersion(t *testing.T) {
 		}
 	}
 	plan, e := inspectSchema(ctx, owner, steps)
-	if e != nil || plan.BinaryVersion != 3 || len(plan.Applied) != 3 || len(plan.Pending) != 0 {
+	if e != nil || plan.BinaryVersion != len(steps) || len(plan.Applied) != len(steps) || len(plan.Pending) != 0 {
 		t.Fatal("future fixture plan", plan, e)
 	}
 }
@@ -217,7 +217,7 @@ func TestSchemaDriftFailsClosed(t *testing.T) {
 	cases := map[string]string{
 		"checksum":              `UPDATE cratectl_private.schema_migrations SET checksum=repeat('a',64) WHERE version=1`,
 		"gap":                   `DELETE FROM cratectl_private.schema_migrations WHERE version=1`,
-		"unknown version":       `INSERT INTO cratectl_private.schema_migrations(version,checksum)VALUES(3,repeat('a',64))`,
+		"unknown version":       `INSERT INTO cratectl_private.schema_migrations(version,checksum)VALUES(4,repeat('a',64))`,
 		"RLS disabled":          `ALTER TABLE cratectl.artifacts DISABLE ROW LEVEL SECURITY`,
 		"RLS not forced":        `ALTER TABLE cratectl.repositories NO FORCE ROW LEVEL SECURITY`,
 		"extra policy":          `CREATE POLICY bypass ON cratectl.artifacts USING(true)`,
@@ -288,7 +288,7 @@ func TestSchemaInterruptedAndFailedDDLIsAtomic(t *testing.T) {
 			defer stop()
 			var absent bool
 			var receipts int
-			if e := owner.QueryRow(verify, `SELECT to_regclass('cratectl_private.rollback_probe') IS NULL,(SELECT count(*) FROM cratectl_private.schema_migrations)`).Scan(&absent, &receipts); e != nil || !absent || receipts != 2 {
+			if e := owner.QueryRow(verify, `SELECT to_regclass('cratectl_private.rollback_probe') IS NULL,(SELECT count(*) FROM cratectl_private.schema_migrations)`).Scan(&absent, &receipts); e != nil || !absent || receipts != len(currentMigrations()) {
 				t.Fatal("partial DDL or receipt survived", absent, receipts, e)
 			}
 			for {

@@ -3,14 +3,33 @@ package store
 
 import (
 	"context"
+	"errors"
 	"strings"
 
 	"github.com/jackc/pgx/v5"
 )
 
-// CheckOCIDigestDecision rejects a current byte-level denial before a direct
-// digest request enters cache or source retrieval. It does not admit a graph.
-func (s *Store) CheckOCIDigestDecision(ctx context.Context, i Identity, repo, digest string) error {
+func ociReferenceLifecycleInTx(ctx context.Context, tx pgx.Tx, repo Repository, image, kind, ref string) error {
+	digest := ref
+	if kind == "manifests" && !strings.HasPrefix(ref, "sha256:") {
+		var deleted bool
+		e := tx.QueryRow(ctx, `SELECT digest,deleted FROM cratectl.tags WHERE repository=$1 AND image=$2 AND tag=$3`, repo.Name, image, ref).Scan(&digest, &deleted)
+		if errors.Is(e, pgx.ErrNoRows) {
+			return nil
+		}
+		if e != nil {
+			return e
+		}
+		if deleted && repo.Mode == "hosted" {
+			return ErrDeleted
+		}
+	}
+	return notDeletedInTx(ctx, tx, repo.Name, image+"/"+kind+"/"+digest)
+}
+
+// A known deleted tag target stays authoritative even when cache validation has
+// expired or a forced upstream request could otherwise turn it into a miss.
+func (s *Store) CheckOCIReferenceLifecycle(ctx context.Context, i Identity, repo, image, kind, ref string) error {
 	return s.Tx(ctx, i, false, func(tx pgx.Tx) error {
 		r, e := repositoryInTx(ctx, tx, i, repo, "read")
 		if e != nil {
@@ -18,6 +37,29 @@ func (s *Store) CheckOCIDigestDecision(ctx context.Context, i Identity, repo, di
 		}
 		if r.Format != "oci" {
 			return ErrConflict
+		}
+		return ociReferenceLifecycleInTx(ctx, tx, r, image, kind, ref)
+	})
+}
+
+// CheckOCIDigestDecision rejects a current byte-level denial before a direct
+// digest request enters cache or source retrieval. It does not admit a graph.
+func (s *Store) CheckOCIDigestDecision(ctx context.Context, i Identity, repo, digest string, paths ...string) error {
+	return s.Tx(ctx, i, false, func(tx pgx.Tx) error {
+		r, e := repositoryInTx(ctx, tx, i, repo, "read")
+		if e != nil {
+			return e
+		}
+		if r.Format != "oci" {
+			return ErrConflict
+		}
+		for _, path := range paths {
+			if !lifecycleOCIPath(path) || !strings.HasSuffix(path, digest) {
+				return ErrConflict
+			}
+			if e = notDeletedInTx(ctx, tx, repo, path); e != nil {
+				return e
+			}
 		}
 		var denied bool
 		if e = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM cratectl.content_decisions WHERE repository=$1 AND digest=$2 AND decision='denied')`, repo, strings.TrimPrefix(digest, "sha256:")).Scan(&denied); e != nil {
@@ -50,7 +92,10 @@ func (s *Store) OCIReferenceParents(ctx context.Context, i Identity, repo, image
 		if denied {
 			return ErrDenied
 		}
-		rows, e := tx.Query(ctx, `SELECT `+artifactColumns+` FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND a.path=$2 || '/manifests/sha256:' || a.digest AND a.metadata->>'oci_validated'='true' AND COALESCE(d.decision,a.decision)<>'denied' AND ((a.metadata->'oci_descriptors') ? $3 OR ($4='manifests' AND (a.metadata->'oci_subject')->>'digest'=$5)) ORDER BY a.path LIMIT $6`, repo, image, image+"/"+kind+"/"+digest, kind, digest, limit+1)
+		if e = notDeletedInTx(ctx, tx, repo, image+"/"+kind+"/"+digest); e != nil {
+			return e
+		}
+		rows, e := tx.Query(ctx, `SELECT `+artifactColumns+` FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND a.path=$2 || '/manifests/sha256:' || a.digest AND a.metadata->>'oci_validated'='true' AND COALESCE(d.decision,a.decision)<>'denied' AND NOT EXISTS(SELECT 1 FROM cratectl.artifact_lifecycle l WHERE (l.tenant,l.repository,l.path)=(a.tenant,a.repository,a.path) AND l.deleted) AND ((a.metadata->'oci_descriptors') ? $3 OR ($4='manifests' AND (a.metadata->'oci_subject')->>'digest'=$5)) ORDER BY a.path LIMIT $6`, repo, image, image+"/"+kind+"/"+digest, kind, digest, limit+1)
 		if e != nil {
 			return e
 		}

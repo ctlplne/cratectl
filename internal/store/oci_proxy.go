@@ -29,6 +29,9 @@ type OCIPublication struct {
 }
 
 func insertOCIObject(ctx context.Context, tx pgx.Tx, i Identity, repo string, a Artifact) error {
+	if e := notDeletedInTx(ctx, tx, repo, a.Path); e != nil {
+		return e
+	}
 	if a.Metadata == nil {
 		a.Metadata = json.RawMessage(`{}`)
 	}
@@ -217,6 +220,9 @@ func (s *Store) OCISelection(ctx context.Context, i Identity, repo, image, kind,
 		}
 		for _, source := range members {
 			digest := ref
+			if e = ociReferenceLifecycleInTx(ctx, tx, source, image, kind, ref); e != nil {
+				return e
+			}
 			if source.Mode == "proxy" {
 				valid, e := ociCacheInTx(ctx, tx, source.Name, image+"/"+kind+"/"+ref, admissions...)
 				if e != nil {
@@ -227,12 +233,19 @@ func (s *Store) OCISelection(ctx context.Context, i Identity, repo, image, kind,
 				}
 			}
 			if kind == "manifests" && !strings.HasPrefix(ref, "sha256:") {
-				e = tx.QueryRow(ctx, `SELECT digest FROM cratectl.tags WHERE repository=$1 AND image=$2 AND tag=$3 AND NOT deleted`, source.Name, image, ref).Scan(&digest)
+				var deleted bool
+				e = tx.QueryRow(ctx, `SELECT digest,deleted FROM cratectl.tags WHERE repository=$1 AND image=$2 AND tag=$3`, source.Name, image, ref).Scan(&digest, &deleted)
 				if errors.Is(e, pgx.ErrNoRows) {
 					continue
 				}
 				if e != nil {
 					return e
+				}
+				if deleted {
+					if source.Mode == "hosted" {
+						return ErrDeleted
+					}
+					continue
 				}
 			}
 			p := image + "/" + kind + "/" + digest

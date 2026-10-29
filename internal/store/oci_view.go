@@ -69,16 +69,19 @@ func (s *Store) OCIDiscovery(ctx context.Context, i Identity, repo, image, kind,
 				catalog = &c
 			}
 			budget := ociGraphBudget(source, admissions)
-			type candidate struct{ name, digest, path string }
+			type candidate struct {
+				name, digest, path string
+				deleted            bool
+			}
 			candidates := []candidate{}
 			if kind == "tags/list" {
-				rows, e := tx.Query(ctx, `SELECT tag,digest FROM cratectl.tags WHERE repository=$1 AND image=$2 AND NOT deleted ORDER BY tag LIMIT $3`, source.Name, image, limit+1)
+				rows, e := tx.Query(ctx, `SELECT tag,digest,deleted FROM cratectl.tags WHERE repository=$1 AND image=$2 ORDER BY tag LIMIT $3`, source.Name, image, limit+1)
 				if e != nil {
 					return e
 				}
 				for rows.Next() {
 					var c candidate
-					if e = rows.Scan(&c.name, &c.digest); e != nil {
+					if e = rows.Scan(&c.name, &c.digest, &c.deleted); e != nil {
 						rows.Close()
 						return e
 					}
@@ -117,6 +120,15 @@ func (s *Store) OCIDiscovery(ctx context.Context, i Identity, repo, image, kind,
 				}
 			}
 			for _, c := range candidates {
+				if c.deleted && source.Mode == "proxy" {
+					err := notDeletedInTx(ctx, tx, source.Name, c.path)
+					if err == nil {
+						continue
+					}
+					if !errors.Is(err, ErrDeleted) {
+						return err
+					}
+				}
 				if seen[c.name] {
 					continue
 				}
@@ -125,8 +137,11 @@ func (s *Store) OCIDiscovery(ctx context.Context, i Identity, repo, image, kind,
 					return ErrMetadataLimit
 				}
 				seen[c.name] = true
+				if c.deleted {
+					continue
+				}
 				a, e := readArtifact(ctx, tx, source.Name, c.path, source.RequireReview || endpoint.RequireReview, budget)
-				if errors.Is(e, ErrDenied) || errors.Is(e, ErrNotFound) {
+				if errors.Is(e, ErrDenied) || errors.Is(e, ErrNotFound) || errors.Is(e, ErrDeleted) {
 					continue
 				}
 				if e != nil {

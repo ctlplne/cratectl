@@ -44,6 +44,9 @@ func (s *Store) CachedOCIObject(ctx context.Context, i Identity, repo, path stri
 		if r.Format != "oci" || r.Mode != "proxy" {
 			return ErrConflict
 		}
+		if e = notDeletedInTx(ctx, tx, repo, path); e != nil {
+			return e
+		}
 		e = scanArtifact(tx.QueryRow(ctx, `SELECT `+artifactColumns+` FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND a.path=$2`, repo, path), &a)
 		if errors.Is(e, pgx.ErrNoRows) {
 			return ErrNotFound
@@ -65,10 +68,14 @@ func (s *Store) OCIManifest(ctx context.Context, i Identity, repo, image, ref st
 		}
 		digest := ref
 		if !strings.HasPrefix(ref, "sha256:") {
-			if e = tx.QueryRow(ctx, `SELECT digest FROM cratectl.tags WHERE repository=$1 AND image=$2 AND tag=$3 AND NOT deleted`, repo, image, ref).Scan(&digest); errors.Is(e, pgx.ErrNoRows) {
+			var deleted bool
+			if e = tx.QueryRow(ctx, `SELECT digest,deleted FROM cratectl.tags WHERE repository=$1 AND image=$2 AND tag=$3`, repo, image, ref).Scan(&digest, &deleted); errors.Is(e, pgx.ErrNoRows) {
 				return ErrNotFound
 			} else if e != nil {
 				return e
+			}
+			if deleted {
+				return ErrDeleted
 			}
 		}
 		a, e = readArtifact(ctx, tx, repo, image+"/manifests/"+digest, r.RequireReview, newGraphBudget())
@@ -218,7 +225,7 @@ func (s *Store) OCIReferrers(ctx context.Context, i Identity, repo, image, subje
 		}
 		for _, p := range paths {
 			a, e := readArtifact(ctx, tx, repo, p, r.RequireReview, newGraphBudget())
-			if errors.Is(e, ErrDenied) || errors.Is(e, ErrNotFound) {
+			if errors.Is(e, ErrDenied) || errors.Is(e, ErrNotFound) || errors.Is(e, ErrDeleted) {
 				continue
 			}
 			if e != nil {
