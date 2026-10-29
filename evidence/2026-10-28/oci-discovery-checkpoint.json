@@ -1,0 +1,137 @@
+{
+  "candidate": "e23ba0cdaf634a8eea1469c1e383f0fed88a3a45",
+  "qualified_at": "2026-10-29T00:05:05.437527+00:00",
+  "source_dirty": false,
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "build_source_matches_candidate": true,
+  "commit_identity": {
+    "author": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>",
+    "committer": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>"
+  },
+  "this_checkpoint_changes_pushed": false,
+  "remote_main_verified": "b13550a5f744f4d9a6a8e11c36fd3bf7a3348cec",
+  "prior_remote_correction": "evidence/2026-10-28/remote-state-audit.json",
+  "artifacts": {
+    "bin/cratectld": "c3a2d425a241f27ef96d616451e87959364a292b7d3a8897ead517fb65c42d1e",
+    "bin/cratectl": "3e3c25366a81cd52f7f93935e0f2418f386a71f8e25e0ac6acb7711758c27451"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "e23ba0cdaf634a8eea1469c1e383f0fed88a3a45",
+        "vcs.time": "2026-10-29T00:01:45Z",
+        "vcs.modified": "false"
+      }
+    },
+    "bin/cratectl": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "e23ba0cdaf634a8eea1469c1e383f0fed88a3a45",
+        "vcs.time": "2026-10-29T00:01:45Z",
+        "vcs.modified": "false"
+      }
+    }
+  },
+  "native_assertions": 274,
+  "native_evidence": "evidence/2026-10-28/conformance-c4a6c36e53.json",
+  "public_provider_assertions": 33,
+  "public_provider_evidence": "evidence/2026-10-28/public-oci-83b65b98de.json",
+  "public_provider": {
+    "registry": "https://registry-1.docker.io/v2/",
+    "image": "library/busybox",
+    "manifest_digest": "sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c",
+    "token_realm": "https://auth.docker.io/token",
+    "service": "registry.docker.io",
+    "delivery_bases": [
+      "https://production.cloudfront.docker.com/"
+    ],
+    "documentation": "https://docs.docker.com/desktop/enterprise/allow-list/"
+  },
+  "observed_image_platform": {
+    "os": "linux",
+    "architecture": "arm64"
+  },
+  "database_profile": "native",
+  "topology": "macOS arm64 server, PostgreSQL 16.15 native, filesystem bytes, HTTP loopback only",
+  "public_topology": "native process on HTTP loopback 38443, real PostgreSQL runtime/owner roles, filesystem CAS; HTTPS public registry/realm/CDN",
+  "tested_clients": {
+    "npm": "11.16.0",
+    "twine": "7.0.0",
+    "pip": "26.1.2",
+    "ORAS": "1.3.6",
+    "Maven": "3.10.0",
+    "JDK": "21.0.13+9"
+  },
+  "gates": {
+    "unit_vet_race": "evidence/2026-10-28/oci-pagination-unit-vet-race.txt; passed",
+    "postgres_stock_client_race": "evidence/2026-10-28/oci-discovery-clean-postgres-race.txt; two repeated store/server/stock ORAS race runs passed",
+    "fuzz": "evidence/2026-10-28/oci-discovery-clean-fuzz.txt; 11520 executions in ten-second one-worker replay; earlier working replay 103408",
+    "go_vulnerability": "evidence/2026-10-28/govulncheck-oci-pagination-summary.json; 238 records, zero findings",
+    "trivy_source": "evidence/2026-10-28/trivy-oci-discovery-clean-source.json; zero vulnerability/misconfiguration/secret findings in sanitized source",
+    "secret_source": "evidence/2026-10-28/gitleaks-oci-pagination-source.json; zero findings",
+    "secret_history": "evidence/2026-10-28/gitleaks-oci-discovery-final-history.json; zero findings",
+    "secret_review": "evidence/2026-10-28/gitleaks-oci-discovery-final-review.json; zero findings",
+    "full_security": "incomplete; make security intentionally fails",
+    "production_packaging": "incomplete; make packaging intentionally fails"
+  },
+  "trivy_database": {
+    "Version": 2,
+    "NextUpdate": "2026-10-29T13:01:10.618103614Z",
+    "UpdatedAt": "2026-10-28T13:01:10.618103814Z",
+    "DownloadedAt": "2026-10-28T17:09:17.319606Z"
+  },
+  "completed_scope": [
+    "Complete bounded tag/referrer source page walks support one unambiguous next relation, quoted/URI commas, opaque exact-resource origin cursors and approved signed delivery links with isolated source credentials.",
+    "Every page passes common address/network/query/hop limits; cycles, ambiguity, entry/graph/metadata/page exhaustion and later-page failures cannot publish a partial catalog or graph.",
+    "Catalog refresh walks metadata unconditionally because a first-page validator cannot establish an unchanged complete collection. Manifest/blob conditional revalidation remains.",
+    "Native tags/referrers support n and exclusive last, current-policy filtering, relative next links, artifact-type filter context, HEAD, page ETags, zero/end pages and strict malformed/duplicate argument rejection.",
+    "Referrers API 404 uses the legacy sha256-subject tag index. Missing fallback is empty; authorization errors do not trigger fallback. Actual referents/known subjects still govern policy, including empty pages.",
+    "Graph checks are shared within a source discovery view. Resource exhaustion returns an explicit metadata-limit error rather than silently omitting candidates as policy-denied.",
+    "Stock ORAS and real PostgreSQL exercise source and native pages, fallback negatives, current subject/referrer denial, atomic later-page rejection and absence of ephemeral cursors/credentials in durable tenant data.",
+    "All earlier native clients and the real pinned Docker Hub/token/CloudFront journey replayed against the same exact clean binaries."
+  ],
+  "retained_first_failure": {
+    "evidence": "evidence/2026-10-28/oci-pagination-first.txt",
+    "cause": "Referrer pages were rejected; a tag page at an approved separate signed authority could not be walked.",
+    "replay": "evidence/2026-10-28/oci-discovery-clean-postgres-race.txt"
+  },
+  "limits": [
+    "All 450 broad capability rows and 41 protocol families remain open; no broad readiness verdict is positive.",
+    "Native cursors recheck current grants/policy per request; concurrent mutations can change later pages. No historical collection snapshot or full concurrent/fault/scale campaign is claimed.",
+    "Pagination preserves complete-view entry, graph and metadata bounds; fuller configuration and production-scale evidence remain required.",
+    "Public provider proof is one pinned Linux arm64 image on Docker Hub with anonymous token/CloudFront. Other providers, private credentials/token services, private PKI and every client/platform remain required.",
+    "Descriptor URL fallback, source removal/lifecycle/delete/restore, full Docker/Podman/Helm conformance, migration/recovery/HA, fair workers, scanner, S3, operator console and all remaining product stages remain required."
+  ],
+  "resources": {
+    "native_postgresql": "stopped; private dataset retained",
+    "original_postgresql_container": "stopped; original named volume retained",
+    "owned_conformance_services": "stopped",
+    "private_test_data": "retained; public images remain opaque OCI layout/CAS bytes",
+    "history_reset_recovery": "retained privately"
+  }
+}

@@ -19,49 +19,49 @@ All 450 capabilities, 41 format families and negative readiness verdicts remain.
 The owner authorized pushing this recreation; later feature pushes still require
 the owner's authority under the standing project contract.
 
-Latest source candidate: `40a7e006e4f8197c4c4c686660b98c81c4d92013`, committed locally with
+Latest source candidate: `e23ba0cdaf634a8eea1469c1e383f0fed88a3a45`, committed locally with
 `imfeelingtheagi` as both author and committer. Clean native qualification passed
-267 existing assertions plus a separate 33-assertion real-provider journey;
-both reports identify the same exact binaries and source. See
-`evidence/2026-10-28/oci-delivery-checkpoint.json`. Review range is
-`887c569..main`. This delivery source and its checkpoint remain local.
+274 assertions plus a separate 33-assertion real-provider journey. Both reports
+identify the same exact binaries and source. See
+`evidence/2026-10-28/oci-discovery-checkpoint.json`. Review range is
+`887c569..main`. This discovery source and checkpoint remain local.
 
-OCI proxy delivery now follows only explicit approved origin/CDN authorities,
-with separate credentials per hop, opaque signed-query opt-in, preserved query
-bytes and configurable URL/query/hop budgets. Registry/realm/downstream tokens,
-cookies and Referer cannot cross source authority. Common DNS/CIDR/private-network
-ceilings still apply; HTTPS downgrade and token-realm redirects are rejected.
-All graph, per-member cache and current-policy publication/serving fences remain.
-Malformed Location and transport errors cannot echo temporary query credentials.
+OCI discovery now walks complete bounded tag/referrer catalogs, including opaque
+origin cursors and explicitly approved signed delivery links. Every page retains
+source-specific credentials and network/query/hop budgets. Later-page failures,
+cycles, ambiguous links and resource limits cannot publish partial references.
+Catalog refresh is unconditional because a first-page validator cannot prove an
+entire collection unchanged. Native tags/referrers support bounded n/last pages,
+filter context, HEAD and page ETags; each request rechecks current policy.
+Referrers API 404 uses the legacy sha256-subject tag. Authorization errors never
+become fallback success; empty pages still enforce known subject denial.
 
-Stock ORAS proof covers owned origin/token/CDN fixtures and actual Docker Hub,
-its anonymous token realm and documented CloudFront delivery. The real-provider
-case pins one Linux arm64 BusyBox manifest and verifies missing-query-permission
-rejection, exact proxy/group OCI layouts, cached generation, native process
-restart, member refresh and current digest denial. Two repeated clean PostgreSQL/
-race/stock-client runs passed, including no partial graph after rejection and no
-query/credentials in durable repository/cache/journal/job data. Parser fuzzing
-reached 154589 executions. Unit/vet/race, scoped Govulncheck (238 records), retained-
-database Trivy source and Gitleaks source/history/review checks pass. This is not
-full security, packaging or format qualification.
+Two repeated clean real-PostgreSQL/race/stock ORAS runs prove complete source and
+native traversal, fallback negatives, policy and atomicity. Cursors/page secrets
+are absent from durable tenant data. Clean native npm/Python/OCI/Maven/generic
+journeys and the real pinned Docker Hub/anonymous-token/CloudFront image passed.
+Link-parser fuzzing ran 11520 executions in the clean replay (103408 earlier).
+Unit/vet/race, Govulncheck (238 records), scoped retained-database Trivy and
+Gitleaks source/history/review checks pass. Full security/packaging remain open.
 
 Remote-state correction remains authoritative: GitHub main is still `b13550a`,
-verified read-only with both GitHub identities `imfeelingtheagi`. The earlier OCI
-proxy checkpoint's local-only statement was inaccurate; its reflog records a
-prior push at 2026-10-28T17:58:19-04:00. The standing contract requires separate
-owner authority for feature pushes. No new push was made. See
+verified read-only with author and committer `imfeelingtheagi`. The earlier OCI
+proxy checkpoint's local-only statement was inaccurate; the reflog records a
+prior push at 2026-10-28T17:58:19-04:00. Feature pushes require separate owner
+authority. No new push was made. See
 `evidence/2026-10-28/remote-state-audit.json`.
 
-All 450 broad capabilities and 41 families remain open. Other providers/private
-credentials/token-service/client/platform combinations, referrer and signed-
-catalog pagination, descriptor URLs, source removal/lifecycle, faults/recovery,
-production and every later stage remain required. Owned native PostgreSQL and
-conformance services are stopped; private datasets, opaque public test layouts,
-the original container/volume and original-history recovery are retained.
+All 450 broad capabilities and 41 families remain open. Descriptor URL fallback,
+source lifecycle/delete/restore, mutable-catalog concurrency/fault/scale, other
+providers/private credentials/PKI/clients/platforms and every later product stage
+remain required. Owned native PostgreSQL and conformance services are stopped;
+private datasets, opaque layouts, original container/volume and history recovery
+are retained. Cursors reflect current policy per request, not a frozen snapshot.
 
 **Goal active; full product goal incomplete.** No design-partner, ordinary-operator
-or enterprise readiness verdict is positive. Starting commit: `fa727a9`; local
-review range is `fa727a9..main`. Origin is the owner-created private `https://github.com/ctlplne/cratectl.git`.
+or enterprise readiness verdict is positive. Original-history starting commit
+`fa727a9` is retained only in private recovery; current local review range is
+`887c569..main`. Origin is the recreated private `https://github.com/ctlplne/cratectl.git`.
 Pushes, public visibility, releases and publication remain unauthorized.
 
 Stage 0 has architecture, threat model, conventions, licensing hold and an initial

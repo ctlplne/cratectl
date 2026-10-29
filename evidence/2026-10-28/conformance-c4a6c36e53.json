@@ -1,0 +1,1585 @@
+{
+  "run": "c4a6c36e53",
+  "candidate": "e23ba0cdaf634a8eea1469c1e383f0fed88a3a45",
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "source_dirty": false,
+  "artifact_digests": {
+    "bin/cratectld": "c3a2d425a241f27ef96d616451e87959364a292b7d3a8897ead517fb65c42d1e",
+    "bin/cratectl": "3e3c25366a81cd52f7f93935e0f2418f386a71f8e25e0ac6acb7711758c27451"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "e23ba0cdaf634a8eea1469c1e383f0fed88a3a45",
+        "vcs.time": "2026-10-29T00:01:45Z",
+        "vcs.modified": "false"
+      }
+    },
+    "bin/cratectl": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "e23ba0cdaf634a8eea1469c1e383f0fed88a3a45",
+        "vcs.time": "2026-10-29T00:01:45Z",
+        "vcs.modified": "false"
+      }
+    }
+  },
+  "host": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "database_profile": "native",
+  "topology": "macOS arm64 server, PostgreSQL 16.15 native, filesystem bytes, HTTP loopback only",
+  "checks": [
+    "qualification source is clean",
+    "qualification binaries embed exact clean source commit",
+    "expiring credential denied",
+    "credential works before revocation",
+    "revocation affects subsequent requests",
+    "admin: create generic repository raw",
+    "other: create generic repository raw",
+    "management replay returns original response",
+    "changed request under same key conflicts",
+    "management mutation requires idempotency key",
+    "reader cannot publish",
+    "invalid credential denied",
+    "publish durable raw bytes",
+    "same-byte native replay succeeds",
+    "different-byte redeploy conflicts",
+    "cross-tenant coordinates do not leak",
+    "other tenant can use same coordinate",
+    "tenant bytes stay distinct",
+    "range preserves selected bytes",
+    "conditional GET returns 304",
+    "wrong checksum is rejected",
+    "checksum failure publishes no reference",
+    "concurrent first writer is unique",
+    "require review takes effect on existing bytes",
+    "manual review binds exact digest",
+    "manual review allows exact bytes",
+    "reference, policy and bytes survive restart",
+    "audit sequence 1",
+    "audit chain 1",
+    "audit sequence 2",
+    "audit chain 2",
+    "audit sequence 3",
+    "audit chain 3",
+    "audit sequence 4",
+    "audit chain 4",
+    "audit sequence 5",
+    "audit chain 5",
+    "audit sequence 6",
+    "audit chain 6",
+    "audit sequence 7",
+    "audit chain 7",
+    "audit sequence 8",
+    "audit chain 8",
+    "audit sequence 9",
+    "audit chain 9",
+    "audit sequence 10",
+    "audit chain 10",
+    "audit sequence 11",
+    "audit chain 11",
+    "audit sequence 12",
+    "audit chain 12",
+    "audit is tenant scoped",
+    "same-length storage corruption is never served",
+    "admin: create npm repository js",
+    "native npm tag update is independent from publication metadata",
+    "npm package version endpoint resolves exact release",
+    "npm package tag endpoint resolves current tag",
+    "native prerelease publish remains distinct from latest",
+    "removed npm tag does not return after restart",
+    "npm metadata supports weak conditional entity tags",
+    "npm tag mutation requires writer authority",
+    "npm archive identity mismatch rejected",
+    "npm archive traversal rejected",
+    "npm duplicate package manifest rejected",
+    "rejected npm archive creates no reference",
+    "archive-bound npm metadata accepted",
+    "npm dependency metadata comes from immutable archive bytes",
+    "stock npm installs archive-bound dependency graph",
+    "stock npm selects current latest release",
+    "stock npm selects prerelease through named tag",
+    "stock npm resolves scoped package and dependency",
+    "stock npm lockfile install survives server restart",
+    "npm policy denial hides package metadata",
+    "npm policy denial blocks tarball",
+    "other: create npm repository up-npm",
+    "admin: create npm repository npm-remote",
+    "stock npm installs scoped proxy package and dependency",
+    "npm proxy rewrites source URL to immutable local binding",
+    "npm proxy pinned download supports ranges",
+    "npm proxy blocks foreign tenant coordinates",
+    "npm proxy is read only",
+    "stock npm proxy lockfile survives restart",
+    "npm proxy metadata refresh observes new native version",
+    "old npm lockfile binding retains exact bytes after metadata refresh",
+    "admin: create npm repository npm-local",
+    "admin: create npm repository npm-combined",
+    "npm group unions versions with configured tag precedence",
+    "stock npm consumes hosted version and proxied dependency through group",
+    "npm namespace owner prevents public fallback",
+    "npm denied version collision cannot fall through to later source",
+    "npm group rechecks underlying grants for metadata and pinned downloads",
+    "npm proxy denial hides metadata and blocks locked bytes",
+    "stock npm fresh-cache lockfile install cannot bypass denial",
+    "admin: create npm repository npm-reviewed",
+    "npm review-required proxy hides unfetched package versions",
+    "npm conventional tarball route performs quarantined intake",
+    "npm reviewed bytes become visible after explicit approval",
+    "other: create generic repository npm-meta",
+    "other: create generic repository npm-files",
+    "admin: create npm repository npm-cdn-blocked",
+    "npm metadata cannot authorize an undeclared download origin",
+    "admin: create npm repository npm-cdn",
+    "stock npm installs from separately approved and credentialed download origin",
+    "stock npm cached metadata preserves normalized executable binding",
+    "npm rejects upstream_integrity_failure",
+    "npm rejected bytes create no tarball reference",
+    "npm known-invalid source is not advertised for fallback",
+    "npm rejects upstream_package_metadata_mismatch",
+    "npm rejected bytes create no tarball reference",
+    "npm known-invalid source is not advertised for fallback",
+    "admin: create pypi repository py",
+    "stock pip installs package and dependency from twine upload",
+    "Python normalized name resolution",
+    "Python publication metadata must match immutable archive identity",
+    "Python quarantine hides index contents",
+    "Python quarantine blocks direct files",
+    "other: create pypi repository up-python",
+    "admin: create pypi repository python-proxy",
+    "stock pip proxy installs dependency and skips incompatible Python release",
+    "PyPI normalized JSON index exposes all governed platform files",
+    "PyPI proxy rewrites pinned filename-preserving URLs",
+    "PEP 658 metadata is exact archive-derived bytes",
+    "PyPI wheel range and conditional reads remain native",
+    "stock pip hash-locked download survives restart",
+    "upstream yanking survives catalog refresh",
+    "stock pip excludes yanked release during normal resolution",
+    "stock pip exact pin can consume a yanked release",
+    "admin: create pypi repository python-html",
+    "stock pip consumes governed upstream HTML index",
+    "admin: create pypi repository python-local",
+    "admin: create pypi repository python-group",
+    "stock pip group consumes hosted package and proxied dependency",
+    "PyPI group unions filenames with first-source collision ownership",
+    "Python namespace owner prevents dependency-confusion fallback",
+    "denied Python filename collision cannot fall through",
+    "Python group checks source grants for index and metadata sidecars",
+    "Python denial governs package, sidecar and metadata index",
+    "stock pip cannot resolve denied exact version",
+    "admin: create pypi repository python-reviewed",
+    "review-required Python proxy hides unfetched metadata",
+    "Python conventional download performs quarantined intake",
+    "approved Python digest becomes visible with governed sidecar",
+    "stock pip builds governed source distribution only in owned consumer",
+    "admin: create oci repository containers",
+    "OCI image manifest requires a configuration descriptor",
+    "OCI intake remains quarantined after native publication",
+    "manual OCI graph member approval",
+    "manual OCI graph member approval",
+    "manual OCI graph member approval",
+    "manual OCI graph member approval",
+    "stock ORAS pulls exact multi-layer artifact",
+    "stock ORAS pull survives restart",
+    "OCI rejects unacceptable stored manifest representation",
+    "stock ORAS handles image names containing protocol words",
+    "OCI ambiguous duplicate manifest members are rejected",
+    "OCI referrer discovery hides quarantined attachment",
+    "stock ORAS discovers governed attachment",
+    "OCI referrer filtering preserves type and annotations",
+    "OCI referrer index supports conditional reads",
+    "stock ORAS pulls exact attachment bytes",
+    "OCI attachment remains tenant scoped",
+    "OCI weak subject accepts out-of-order attachment",
+    "OCI index descriptor media type must match durable child",
+    "OCI index intake is quarantined",
+    "OCI approved index resolves exact child",
+    "OCI native tag page returns its next Link",
+    "OCI native tag marker is exclusive",
+    "OCI tag page supports conditional reads",
+    "OCI tag page supports HEAD",
+    "OCI zero tag page has no next Link",
+    "OCI duplicate page parameters are rejected",
+    "OCI zero referrer page is empty",
+    "OCI referrers survive restart",
+    "OCI upload lease is durable before bytes",
+    "OCI first chunk accepted",
+    "OCI upload offset survives restart",
+    "OCI stale offset rejected",
+    "OCI resumed upload completes",
+    "OCI resumed bytes are quarantined",
+    "OCI resumed bytes are exact",
+    "OCI upload cannot cross tenant",
+    "OCI denied layer blocks an otherwise approved manifest",
+    "OCI denied subject graph blocks attachment reads and discovery",
+    "OCI denied layer hides its tag from metadata",
+    "OCI denied layer hides manifest from reader inventory",
+    "OCI denied digest blocks tag resolution",
+    "OCI denied digest disappears from tag index",
+    "other: create oci repository up-oci",
+    "admin: create oci repository oci-proxy",
+    "stock ORAS proxy pulls exact complete multi-layer graph",
+    "OCI proxy preserves manifest digest and bytes",
+    "OCI cached graph blobs support exact ranges",
+    "OCI implicit graph members have independently inspectable cache bindings",
+    "OCI member invalidation is versioned",
+    "OCI invalidated member revalidates its exact bytes",
+    "OCI fresh tag revalidates an expired graph member",
+    "OCI proxy rejects publication",
+    "stock ORAS discovers proxied governed referrers",
+    "OCI proxy tag catalog resolves exact bindings",
+    "OCI fresh tag catalog renews an invalidated graph member",
+    "admin: create oci repository oci-zero",
+    "OCI zero-freshness positive validation admits its current request",
+    "OCI zero-freshness next request revalidates again",
+    "OCI zero-freshness discovery keeps current graph validation",
+    "OCI zero-freshness referrers retain current subject and attachment validation",
+    "stock ORAS proxy digest pins survive restart",
+    "OCI proxy refresh observes new native tag",
+    "OCI retained digest pins preserve original manifest after refresh",
+    "OCI concurrent graph misses coalesce under one database generation",
+    "admin: create oci repository oci-local",
+    "admin: create oci repository oci-group",
+    "stock ORAS group pulls first hosted source",
+    "OCI group unions native tags with first-source precedence",
+    "OCI group tag collision retains first source",
+    "stock ORAS group pulls an authorized proxy fallback",
+    "OCI group reader requires underlying source grant",
+    "OCI group rechecks revoked source grants for graph and discovery",
+    "admin: create oci repository oci-strict-group",
+    "OCI group review governs unassessed children of an allowed root",
+    "OCI denied first-source tag cannot fall through",
+    "OCI namespace owner blocks upstream fallback",
+    "admin: create oci repository oci-reviewed",
+    "OCI proxy intake durably quarantines the complete graph",
+    "OCI quarantined intake retains canonical graph members",
+    "OCI reviewed graph becomes consumable after explicit decisions",
+    "OCI proxy fresh cache cannot bypass a child denial",
+    "OCI denied source graph blocks proxied referrer discovery",
+    "OCI cached tenant coordinates remain isolated",
+    "admin: create maven repository java",
+    "stock Maven resolves transitive dependency",
+    "stock Maven consumes exact published bytes",
+    "Maven metadata replacement survives restart",
+    "Maven snapshot metadata exists",
+    "admin: create maven repository java-remote",
+    "admin: create maven repository java-local",
+    "admin: create maven repository java-group",
+    "stock Maven resolves transitive dependency through group and proxy",
+    "Maven proxy validates upstream checksums before publication",
+    "Maven denial blocks artifact and checksum",
+    "other: create generic repository source",
+    "upstream reader grant",
+    "upstream credentials cannot cross tenant scope",
+    "upstream credential is bound to its approved authority and base path",
+    "admin: create generic repository remote",
+    "proxy never forwards caller credentials",
+    "fresh proxy hit is explicit",
+    "proxy is read only",
+    "conditional upstream revalidation preserves bytes",
+    "negative miss returns not found",
+    "negative cache does not create a second retrieval",
+    "concurrent proxy misses all receive exact bytes",
+    "concurrent proxy misses coalesce through PostgreSQL",
+    "admin: create generic repository local",
+    "admin: create generic repository combined",
+    "group serves authorized fallback source",
+    "namespace ownership prevents dependency-confusion fallback",
+    "revoked underlying grant blocks group fallback",
+    "restricted repository absent from unauthorized inventory",
+    "reader cannot inspect unrelated tenant audit events",
+    "cache status does not reveal credentials or lease tokens",
+    "admin: create generic repository reviewed",
+    "proxy intake is durable but quarantined before review",
+    "manual review allows exact proxy bytes",
+    "admin: create generic repository strict",
+    "upstream no-store requires explicit operator override",
+    "other: create generic repository bad-source",
+    "admin: create maven repository bad-cache",
+    "Maven upstream checksum mismatch is rejected",
+    "checksum mismatch publishes no artifact reference",
+    "explicit stale-on-503 preserves exact cached bytes",
+    "stale cache cannot bypass a current digest denial",
+    "an alias cannot bypass the same repository digest denial",
+    "proxy denial and cache state survive restart",
+    "upstream authentication rejection cannot use stale bytes"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-c4a6c36e53-a",
+        "--actor",
+        "admin",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/admin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-c4a6c36e53-a",
+        "--actor",
+        "reader",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/reader.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-c4a6c36e53-b",
+        "--actor",
+        "other",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/other.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-c4a6c36e53-b",
+        "--actor",
+        "origin",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/origin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-c4a6c36e53-b",
+        "--actor",
+        "npm-meta-origin",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/npm-meta-origin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-c4a6c36e53-b",
+        "--actor",
+        "npm-files-origin",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/npm-files-origin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-c4a6c36e53-a",
+        "--actor",
+        "expired",
+        "--role",
+        "reader",
+        "--expires-in",
+        "1ms",
+        "--token-file",
+        "PRIVATE/expired.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-c4a6c36e53-a",
+        "--actor",
+        "revocable",
+        "--role",
+        "reader",
+        "--expires-in",
+        "1h",
+        "--token-file",
+        "PRIVATE/revocable.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "revoke",
+        "--token-file",
+        "PRIVATE/revocable.token"
+      ],
+      "exit": 0,
+      "output": "Credential revoked; subsequent authentication fails.\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  cratectl-proof-dep@1.0.0\nnpm notice Tarball Contents\nnpm notice 20B index.js\nnpm notice 133B package.json\nnpm notice Tarball Details\nnpm notice name: cratectl-proof-dep\nnpm notice version: 1.0.0\nnpm notice filename: cratectl-proof-dep-1.0.0.tgz\nnpm notice package size: 237 B\nnpm notice unpacked size: 153 B\nnpm notice shasum: 093461e1eb06c56d0b438b03cfbf35fc4c0e002a\nnpm notice integrity: sha512-7DbzZKqvTPRWR[...]mMUDALlkcmIxw==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/js/ with tag latest and public access\n+ cratectl-proof-dep@1.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  @cratectl/proof-app@1.0.0\nnpm notice Tarball Contents\nnpm notice 51B index.js\nnpm notice 183B package.json\nnpm notice Tarball Details\nnpm notice name: @cratectl/proof-app\nnpm notice version: 1.0.0\nnpm notice filename: cratectl-proof-app-1.0.0.tgz\nnpm notice package size: 279 B\nnpm notice unpacked size: 234 B\nnpm notice shasum: b585ffd9b0d7bc27f129456d08599c4783987d4f\nnpm notice integrity: sha512-xCH5mZIIcF5Ai[...]oKsmBEQwhwV0w==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/js/ with tag latest and public access\n+ @cratectl/proof-app@1.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public",
+        "--tag",
+        "latest"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  @cratectl/tagged@1.0.0\nnpm notice Tarball Contents\nnpm notice 51B index.js\nnpm notice 184B package.json\nnpm notice Tarball Details\nnpm notice name: @cratectl/tagged\nnpm notice version: 1.0.0\nnpm notice filename: cratectl-tagged-1.0.0.tgz\nnpm notice package size: 279 B\nnpm notice unpacked size: 235 B\nnpm notice shasum: 0e001d65eec63d24dfd7bb6d032ddd82059227e0\nnpm notice integrity: sha512-aQifQRit4HUEH[...]vI7c/Qyd8t4ow==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/js/ with tag latest and public access\n+ @cratectl/tagged@1.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public",
+        "--tag",
+        "latest"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  @cratectl/tagged@2.0.0\nnpm notice Tarball Contents\nnpm notice 51B index.js\nnpm notice 184B package.json\nnpm notice Tarball Details\nnpm notice name: @cratectl/tagged\nnpm notice version: 2.0.0\nnpm notice filename: cratectl-tagged-2.0.0.tgz\nnpm notice package size: 281 B\nnpm notice unpacked size: 235 B\nnpm notice shasum: 2d1c13de1ee0c36921e193afb4b97a1f27daf355\nnpm notice integrity: sha512-XR0ZoTDCVNX7I[...]+w7JT1R7tu79w==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/js/ with tag latest and public access\n+ @cratectl/tagged@2.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public",
+        "--tag",
+        "next"
+      ],
+      "exit": 0,
+      "output": "npm warn publish npm auto-corrected some errors in your package.json when publishing.  Please run \"npm pkg fix\" to address these errors.\nnpm warn publish errors corrected:\nnpm warn publish \"version\" was cleaned and set to \"2.1.0-beta.1\"\nnpm notice\nnpm notice \ud83d\udce6  @cratectl/tagged@2.1.0-beta.1\nnpm notice Tarball Contents\nnpm notice 51B index.js\nnpm notice 199B package.json\nnpm notice Tarball Details\nnpm notice name: @cratectl/tagged\nnpm notice version: 2.1.0-beta.1\nnpm notice filename: cratectl-tagged-2.1.0-beta.1.tgz\nnpm notice package size: 295 B\nnpm notice unpacked size: 250 B\nnpm notice shasum: 7e2ec51f091ad429e8f1e52b31547f9b532ae92e\nnpm notice integrity: sha512-vvZw1bkuTDEpG[...]4mZKWw+HWqEaA==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/js/ with tag next and public access\n+ @cratectl/tagged@2.1.0-beta.1\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "dist-tag",
+        "add",
+        "@cratectl/tagged@1.0.0",
+        "stable"
+      ],
+      "exit": 0,
+      "output": "+stable: @cratectl/tagged@1.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "dist-tag",
+        "rm",
+        "@cratectl/tagged",
+        "stable"
+      ],
+      "exit": 0,
+      "output": "-stable: @cratectl/tagged@1.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "install",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "cratectl-archive-proof"
+      ],
+      "exit": 0,
+      "output": "\nadded 2 packages in 185ms\n"
+    },
+    {
+      "argv": [
+        "node",
+        "-e",
+        "if(require(\"cratectl-archive-proof\")!==42)process.exit(1)"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "npm",
+        "install",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "@cratectl/tagged@latest"
+      ],
+      "exit": 0,
+      "output": "\nadded 1 package in 206ms\n"
+    },
+    {
+      "argv": [
+        "node",
+        "-e",
+        "if(require(\"@cratectl/tagged/package.json\").version!==\"2.0.0\")process.exit(1)"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "npm",
+        "install",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "@cratectl/tagged@next"
+      ],
+      "exit": 0,
+      "output": "\nchanged 1 package in 189ms\n"
+    },
+    {
+      "argv": [
+        "node",
+        "-e",
+        "if(!require(\"@cratectl/tagged/package.json\").version.startsWith(\"2.1.0-beta.1\"))process.exit(1)"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "npm",
+        "install",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "@cratectl/proof-app@1.0.0"
+      ],
+      "exit": 0,
+      "output": "\nadded 1 package in 185ms\n"
+    },
+    {
+      "argv": [
+        "node",
+        "-e",
+        "if(require(\"@cratectl/proof-app\")!==42)process.exit(1)"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "npm",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "--cache",
+        "PRIVATE/npm/fresh-cache"
+      ],
+      "exit": 0,
+      "output": "\nadded 4 packages in 202ms\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  cratectl-remote-dep@1.0.0\nnpm notice Tarball Contents\nnpm notice 20B index.js\nnpm notice 134B package.json\nnpm notice Tarball Details\nnpm notice name: cratectl-remote-dep\nnpm notice version: 1.0.0\nnpm notice filename: cratectl-remote-dep-1.0.0.tgz\nnpm notice package size: 244 B\nnpm notice unpacked size: 154 B\nnpm notice shasum: 9d67f98a5062436de4641768c4641e55de1ceced\nnpm notice integrity: sha512-sNoNS4BcDkosR[...]fX8lBHFWpL/nw==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/up-npm/ with tag latest and public access\n+ cratectl-remote-dep@1.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  @crproxy/app@1.0.0\nnpm notice Tarball Contents\nnpm notice 20B index.js\nnpm notice 177B package.json\nnpm notice Tarball Details\nnpm notice name: @crproxy/app\nnpm notice version: 1.0.0\nnpm notice filename: crproxy-app-1.0.0.tgz\nnpm notice package size: 264 B\nnpm notice unpacked size: 197 B\nnpm notice shasum: 92df6819e633823b01b3c59399536257f3012d43\nnpm notice integrity: sha512-x0/NpYfGys8Xv[...]feYHo+oF2URPA==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/up-npm/ with tag latest and public access\n+ @crproxy/app@1.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  @crproxy/app@2.0.0\nnpm notice Tarball Contents\nnpm notice 20B index.js\nnpm notice 177B package.json\nnpm notice Tarball Details\nnpm notice name: @crproxy/app\nnpm notice version: 2.0.0\nnpm notice filename: crproxy-app-2.0.0.tgz\nnpm notice package size: 267 B\nnpm notice unpacked size: 197 B\nnpm notice shasum: 314a7492b98d5a7af395a6fc5e08e66cdd149b08\nnpm notice integrity: sha512-yFqB95L19b+AA[...]w/1VLAPaCm3ng==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/up-npm/ with tag latest and public access\n+ @crproxy/app@2.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  @crprivate/owned@1.0.0\nnpm notice Tarball Contents\nnpm notice 20B index.js\nnpm notice 181B package.json\nnpm notice Tarball Details\nnpm notice name: @crprivate/owned\nnpm notice version: 1.0.0\nnpm notice filename: crprivate-owned-1.0.0.tgz\nnpm notice package size: 269 B\nnpm notice unpacked size: 201 B\nnpm notice shasum: 2ad02e7ef5b9ee2e1576765120fc804d407ee71d\nnpm notice integrity: sha512-pXF7NG9X4HTIy[...]edBqBCnBdT4gw==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/up-npm/ with tag latest and public access\n+ @crprivate/owned@1.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "install",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "@crproxy/app@2.0.0"
+      ],
+      "exit": 0,
+      "output": "\nadded 2 packages in 316ms\n"
+    },
+    {
+      "argv": [
+        "node",
+        "-e",
+        "if(require(\"@crproxy/app\")!==43 || require(\"cratectl-remote-dep\")!==41)process.exit(1)"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "npm",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "--cache",
+        "PRIVATE/npm-proxy/restart-cache"
+      ],
+      "exit": 0,
+      "output": "\nadded 2 packages in 192ms\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  @crproxy/app@3.0.0\nnpm notice Tarball Contents\nnpm notice 20B index.js\nnpm notice 177B package.json\nnpm notice Tarball Details\nnpm notice name: @crproxy/app\nnpm notice version: 3.0.0\nnpm notice filename: crproxy-app-3.0.0.tgz\nnpm notice package size: 266 B\nnpm notice unpacked size: 197 B\nnpm notice shasum: 587564a1656eaf3c77b8ff1acf55345e5c5a487d\nnpm notice integrity: sha512-VuVXpSpx7S+06[...]y6GeXkUKCXgig==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/up-npm/ with tag latest and public access\n+ @crproxy/app@3.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  @crproxy/app@1.0.0\nnpm notice Tarball Contents\nnpm notice 21B index.js\nnpm notice 177B package.json\nnpm notice Tarball Details\nnpm notice name: @crproxy/app\nnpm notice version: 1.0.0\nnpm notice filename: crproxy-app-1.0.0.tgz\nnpm notice package size: 265 B\nnpm notice unpacked size: 198 B\nnpm notice shasum: bfe1b251096ed1b16ea12609360f80f6e26edd50\nnpm notice integrity: sha512-wZZSvYc6eC88/[...]3F7VWxZJ94gkg==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/npm-local/ with tag latest and public access\n+ @crproxy/app@1.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "publish",
+        "--ignore-scripts",
+        "--access",
+        "public"
+      ],
+      "exit": 0,
+      "output": "npm notice\nnpm notice \ud83d\udce6  @crproxy/app@4.0.0\nnpm notice Tarball Contents\nnpm notice 21B index.js\nnpm notice 177B package.json\nnpm notice Tarball Details\nnpm notice name: @crproxy/app\nnpm notice version: 4.0.0\nnpm notice filename: crproxy-app-4.0.0.tgz\nnpm notice package size: 267 B\nnpm notice unpacked size: 198 B\nnpm notice shasum: 8993faafe82f93d7250617739c5698d10420195d\nnpm notice integrity: sha512-mCrJtifGkAC+M[...]4b6NH2MWN7ysw==\nnpm notice total files: 2\nnpm notice\nnpm notice Publishing to http://127.0.0.1:38443/npm/npm-local/ with tag latest and public access\n+ @crproxy/app@4.0.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "install",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "@crproxy/app@latest"
+      ],
+      "exit": 0,
+      "output": "\nadded 2 packages in 204ms\n"
+    },
+    {
+      "argv": [
+        "node",
+        "-e",
+        "if(require(\"@crproxy/app\")!==101 || require(\"cratectl-remote-dep\")!==41)process.exit(1)"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "npm",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "--cache",
+        "PRIVATE/npm-proxy/denied-cache"
+      ],
+      "exit": 1,
+      "output": "npm error code E403\nnpm error 403 403 Forbidden - GET http://127.0.0.1:38443/npm/npm-remote/@crproxy/app/-/cratectl/npm-remote/proxy/7f1d90e041a8e926082ad21fb6f5b61d3d66ecea771657f3850e107a298a4016.tgz - [object Object]\nnpm error 403 In most cases, you or one of your dependencies are requesting a package version that is forbidden by your security policy, or on a server you do not have access to.\nnpm error A complete log of this run can be found in: /Users/shankar/Desktop/ctlplne-cratectl/.private/conformance/c4a6c36e53/npm-proxy/denied-cache/_logs/2026-10-29T00_02_46_089Z-debug-0.log\n",
+      "expected_failure": true
+    },
+    {
+      "argv": [
+        "npm",
+        "install",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "cratectl-cdn-app"
+      ],
+      "exit": 0,
+      "output": "\nadded 1 package in 240ms\n"
+    },
+    {
+      "argv": [
+        "node",
+        "-e",
+        "if(require(\"cratectl-cdn-app\")!==88)process.exit(1)"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "npm",
+        "install",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "cratectl-cdn-app"
+      ],
+      "exit": 0,
+      "output": "\nadded 1 package in 184ms\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "twine",
+        "upload",
+        "--non-interactive",
+        "--repository-url",
+        "http://127.0.0.1:38443/pypi/py/",
+        "PRIVATE/wheels/cratectl_proof_dep-1.0.0-py3-none-any.whl",
+        "PRIVATE/wheels/cratectl_proof_app-1.0.0-py3-none-any.whl"
+      ],
+      "exit": 0,
+      "output": "Uploading distributions to http://127.0.0.1:38443/pypi/py/\nUploading cratectl_proof_dep-1.0.0-py3-none-any.whl\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.5/2.5 kB \u2022 00:00 \u2022 ?\n\nUploading cratectl_proof_app-1.0.0-py3-none-any.whl\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.7/2.7 kB \u2022 00:00 \u2022 ?\n\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-cache-dir",
+        "--index-url",
+        "http://127.0.0.1:38443/pypi/py/simple/",
+        "--target",
+        "PRIVATE/python-install",
+        "cratectl-proof-app==1.0.0"
+      ],
+      "exit": 0,
+      "output": "Looking in indexes: http://127.0.0.1:38443/pypi/py/simple/\nCollecting cratectl-proof-app==1.0.0\n  Downloading cratectl_proof_app-1.0.0-py3-none-any.whl.metadata (173 bytes)\nCollecting cratectl-proof-dep==1.0.0 (from cratectl-proof-app==1.0.0)\n  Downloading cratectl_proof_dep-1.0.0-py3-none-any.whl.metadata (132 bytes)\nDownloading cratectl_proof_app-1.0.0-py3-none-any.whl (1.1 kB)\nDownloading cratectl_proof_dep-1.0.0-py3-none-any.whl (1.1 kB)\nInstalling collected packages: cratectl-proof-dep, cratectl-proof-app\n\nSuccessfully installed cratectl-proof-app-1.0.0 cratectl-proof-dep-1.0.0\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-c",
+        "import sys;sys.path.insert(0,'PRIVATE/python-install');from cratectl_proof_app import value;assert value==42"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "twine",
+        "upload",
+        "--non-interactive",
+        "--repository-url",
+        "http://127.0.0.1:38443/pypi/up-python/",
+        "PRIVATE/wheels/cratectl_py_proxy_dep-1.0.0-py3-none-any.whl",
+        "PRIVATE/wheels/cratectl_py_proxy_app-1.0.0-py3-none-any.whl",
+        "PRIVATE/wheels/cratectl_py_proxy_app-2.0.0-py3-none-any.whl",
+        "PRIVATE/wheels/cratectl_py_proxy_app-3.0.0-py3-none-any.whl",
+        "PRIVATE/wheels/cratectl_owned_private-1.0.0-py3-none-any.whl"
+      ],
+      "exit": 0,
+      "output": "Uploading distributions to http://127.0.0.1:38443/pypi/up-python/\nUploading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.5/2.5 kB \u2022 00:00 \u2022 ?\n\nUploading cratectl_py_proxy_app-1.0.0-py3-none-any.whl\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.7/2.7 kB \u2022 00:00 \u2022 ?\n\nUploading cratectl_py_proxy_app-2.0.0-py3-none-any.whl\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.7/2.7 kB \u2022 00:00 \u2022 ?\n\nUploading cratectl_py_proxy_app-3.0.0-py3-none-any.whl\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.7/2.7 kB \u2022 00:00 \u2022 ?\n\nUploading cratectl_owned_private-1.0.0-py3-none-any.whl\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.6/2.6 kB \u2022 00:00 \u2022 ?\n\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--index-url",
+        "http://127.0.0.1:38443/pypi/python-proxy/simple/",
+        "--target",
+        "PRIVATE/python-proxy/installed",
+        "cratectl-py-proxy-app"
+      ],
+      "exit": 0,
+      "output": "Looking in indexes: http://127.0.0.1:38443/pypi/python-proxy/simple/\nCollecting cratectl-py-proxy-app\n  Downloading cratectl_py_proxy_app-2.0.0-py3-none-any.whl.metadata (179 bytes)\nCollecting cratectl-py-proxy-dep==1.0.0 (from cratectl-py-proxy-app)\n  Downloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl.metadata (135 bytes)\nDownloading cratectl_py_proxy_app-2.0.0-py3-none-any.whl (1.1 kB)\nDownloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl (1.1 kB)\nInstalling collected packages: cratectl-py-proxy-dep, cratectl-py-proxy-app\n\nSuccessfully installed cratectl-py-proxy-app-2.0.0 cratectl-py-proxy-dep-1.0.0\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-c",
+        "import sys;sys.path.insert(0,'PRIVATE/python-proxy/installed');import cratectl_py_proxy_app as app;import cratectl_py_proxy_dep as dep;assert app.value==43 and dep.value==41"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "pip",
+        "download",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--require-hashes",
+        "--index-url",
+        "http://127.0.0.1:38443/pypi/python-proxy/simple/",
+        "--dest",
+        "PRIVATE/python-proxy/after-restart",
+        "-r",
+        "PRIVATE/python-proxy/requirements.txt"
+      ],
+      "exit": 0,
+      "output": "Looking in indexes: http://127.0.0.1:38443/pypi/python-proxy/simple/\nCollecting cratectl-py-proxy-app==2.0.0 (from -r /Users/shankar/Desktop/ctlplne-cratectl/.private/conformance/c4a6c36e53/python-proxy/requirements.txt (line 1))\n  Downloading cratectl_py_proxy_app-2.0.0-py3-none-any.whl (1.1 kB)\nCollecting cratectl-py-proxy-dep==1.0.0 (from -r /Users/shankar/Desktop/ctlplne-cratectl/.private/conformance/c4a6c36e53/python-proxy/requirements.txt (line 2))\n  Downloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl (1.1 kB)\nSaved ./.private/conformance/c4a6c36e53/python-proxy/after-restart/cratectl_py_proxy_app-2.0.0-py3-none-any.whl\nSaved ./.private/conformance/c4a6c36e53/python-proxy/after-restart/cratectl_py_proxy_dep-1.0.0-py3-none-any.whl\nSuccessfully downloaded cratectl-py-proxy-app cratectl-py-proxy-dep\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--index-url",
+        "http://127.0.0.1:38443/pypi/python-proxy/simple/",
+        "--target",
+        "PRIVATE/python-proxy/after-yank",
+        "cratectl-py-proxy-app"
+      ],
+      "exit": 0,
+      "output": "Looking in indexes: http://127.0.0.1:38443/pypi/python-proxy/simple/\nCollecting cratectl-py-proxy-app\n  Downloading cratectl_py_proxy_app-1.0.0-py3-none-any.whl.metadata (179 bytes)\nCollecting cratectl-py-proxy-dep==1.0.0 (from cratectl-py-proxy-app)\n  Downloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl.metadata (135 bytes)\nDownloading cratectl_py_proxy_app-1.0.0-py3-none-any.whl (1.1 kB)\nDownloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl (1.1 kB)\nInstalling collected packages: cratectl-py-proxy-dep, cratectl-py-proxy-app\n\nSuccessfully installed cratectl-py-proxy-app-1.0.0 cratectl-py-proxy-dep-1.0.0\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-c",
+        "import sys;sys.path.insert(0,'PRIVATE/python-proxy/after-yank');import cratectl_py_proxy_app as app;import cratectl_py_proxy_dep as dep;assert app.value==42 and dep.value==41"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--index-url",
+        "http://127.0.0.1:38443/pypi/python-proxy/simple/",
+        "--target",
+        "PRIVATE/python-proxy/exact-yank",
+        "cratectl-py-proxy-app==2.0.0"
+      ],
+      "exit": 0,
+      "output": "Looking in indexes: http://127.0.0.1:38443/pypi/python-proxy/simple/\nCollecting cratectl-py-proxy-app==2.0.0\n  Downloading cratectl_py_proxy_app-2.0.0-py3-none-any.whl.metadata (179 bytes)\nCollecting cratectl-py-proxy-dep==1.0.0 (from cratectl-py-proxy-app==2.0.0)\n  Downloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl.metadata (135 bytes)\nWARNING: The candidate selected for download or install is a yanked version: 'cratectl-py-proxy-app' candidate (version 2.0.0 at http://127.0.0.1:38443/pypi/python-proxy/files/python-proxy/proxy/14514a48641a4e6623b4f1b43c0e35ad973152374e72f99665209fcfe3374c6d/cratectl_py_proxy_app-2.0.0-py3-none-any.whl (from http://127.0.0.1:38443/pypi/python-proxy/simple/cratectl-py-proxy-app/) (requires-python:>=3.10))\nReason for being yanked: owned fixture yank\nDownloading cratectl_py_proxy_app-2.0.0-py3-none-any.whl (1.1 kB)\nDownloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl (1.1 kB)\nInstalling collected packages: cratectl-py-proxy-dep, cratectl-py-proxy-app\n\nSuccessfully installed cratectl-py-proxy-app-2.0.0 cratectl-py-proxy-dep-1.0.0\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-c",
+        "import sys;sys.path.insert(0,'PRIVATE/python-proxy/exact-yank');import cratectl_py_proxy_app as app;import cratectl_py_proxy_dep as dep;assert app.value==43 and dep.value==41"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--index-url",
+        "http://127.0.0.1:38443/pypi/python-html/simple/",
+        "--target",
+        "PRIVATE/python-proxy/html",
+        "cratectl-py-proxy-app"
+      ],
+      "exit": 0,
+      "output": "Looking in indexes: http://127.0.0.1:38443/pypi/python-html/simple/\nCollecting cratectl-py-proxy-app\n  Downloading cratectl_py_proxy_app-1.0.0-py3-none-any.whl.metadata (179 bytes)\nCollecting cratectl-py-proxy-dep==1.0.0 (from cratectl-py-proxy-app)\n  Downloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl.metadata (135 bytes)\nDownloading cratectl_py_proxy_app-1.0.0-py3-none-any.whl (1.1 kB)\nDownloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl (1.1 kB)\nInstalling collected packages: cratectl-py-proxy-dep, cratectl-py-proxy-app\n\nSuccessfully installed cratectl-py-proxy-app-1.0.0 cratectl-py-proxy-dep-1.0.0\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-c",
+        "import sys;sys.path.insert(0,'PRIVATE/python-proxy/html');import cratectl_py_proxy_app as app;import cratectl_py_proxy_dep as dep;assert app.value==42 and dep.value==41"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "twine",
+        "upload",
+        "--non-interactive",
+        "--repository-url",
+        "http://127.0.0.1:38443/pypi/python-local/",
+        "PRIVATE/wheels/cratectl_py_proxy_app-1.0.0-py3-none-any.whl",
+        "PRIVATE/wheels/cratectl_py_proxy_app-4.0.0-py3-none-any.whl"
+      ],
+      "exit": 0,
+      "output": "Uploading distributions to http://127.0.0.1:38443/pypi/python-local/\nUploading cratectl_py_proxy_app-1.0.0-py3-none-any.whl\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.7/2.7 kB \u2022 00:00 \u2022 ?\n\nUploading cratectl_py_proxy_app-4.0.0-py3-none-any.whl\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.7/2.7 kB \u2022 00:00 \u2022 ?\n\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--index-url",
+        "http://127.0.0.1:38443/pypi/python-group/simple/",
+        "--target",
+        "PRIVATE/python-proxy/group",
+        "cratectl-py-proxy-app"
+      ],
+      "exit": 0,
+      "output": "Looking in indexes: http://127.0.0.1:38443/pypi/python-group/simple/\nCollecting cratectl-py-proxy-app\n  Downloading cratectl_py_proxy_app-4.0.0-py3-none-any.whl.metadata (179 bytes)\nCollecting cratectl-py-proxy-dep==1.0.0 (from cratectl-py-proxy-app)\n  Downloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl.metadata (135 bytes)\nDownloading cratectl_py_proxy_app-4.0.0-py3-none-any.whl (1.1 kB)\nDownloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl (1.1 kB)\nInstalling collected packages: cratectl-py-proxy-dep, cratectl-py-proxy-app\n\nSuccessfully installed cratectl-py-proxy-app-4.0.0 cratectl-py-proxy-dep-1.0.0\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-c",
+        "import sys;sys.path.insert(0,'PRIVATE/python-proxy/group');import cratectl_py_proxy_app as app;import cratectl_py_proxy_dep as dep;assert app.value==45 and dep.value==41"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-cache-dir",
+        "--only-binary=:all:",
+        "--index-url",
+        "http://127.0.0.1:38443/pypi/python-proxy/simple/",
+        "--target",
+        "PRIVATE/python-proxy/denied",
+        "cratectl-py-proxy-app==2.0.0"
+      ],
+      "exit": 1,
+      "output": "Looking in indexes: http://127.0.0.1:38443/pypi/python-proxy/simple/\nERROR: Ignored the following versions that require a different python version: 3.0.0 Requires-Python >=99\nERROR: Could not find a version that satisfies the requirement cratectl-py-proxy-app==2.0.0 (from versions: 1.0.0)\nERROR: No matching distribution found for cratectl-py-proxy-app==2.0.0\n",
+      "expected_failure": true
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "twine",
+        "upload",
+        "--non-interactive",
+        "--repository-url",
+        "http://127.0.0.1:38443/pypi/up-python/",
+        "PRIVATE/python-proxy/cratectl_py_source_app-1.0.0.tar.gz"
+      ],
+      "exit": 0,
+      "output": "Uploading distributions to http://127.0.0.1:38443/pypi/up-python/\nUploading cratectl_py_source_app-1.0.0.tar.gz\n100% \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.3/2.3 kB \u2022 00:00 \u2022 ?\n\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-cache-dir",
+        "--no-build-isolation",
+        "--index-url",
+        "http://127.0.0.1:38443/pypi/python-proxy/simple/",
+        "--target",
+        "PRIVATE/python-proxy/source-consumer",
+        "cratectl-py-source-app"
+      ],
+      "exit": 0,
+      "output": "Looking in indexes: http://127.0.0.1:38443/pypi/python-proxy/simple/\nCollecting cratectl-py-source-app\n  Downloading cratectl_py_source_app-1.0.0.tar.gz (891 bytes)\n  Preparing metadata (pyproject.toml): started\n  Preparing metadata (pyproject.toml): finished with status 'done'\nCollecting cratectl-py-proxy-dep==1.0.0 (from cratectl-py-source-app)\n  Downloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl.metadata (135 bytes)\nDownloading cratectl_py_proxy_dep-1.0.0-py3-none-any.whl (1.1 kB)\nBuilding wheels for collected packages: cratectl-py-source-app\n  Building wheel for cratectl-py-source-app (pyproject.toml): started\n  Building wheel for cratectl-py-source-app (pyproject.toml): finished with status 'done'\n  Created wheel for cratectl-py-source-app: filename=cratectl_py_source_app-1.0.0-py3-none-any.whl size=1104 sha256=a2fe09475c95b7d43523b408c454411740115a613454069c41a107c47bc6f7d4\n  Stored in directory: /private/var/folders/q3/3vdpt6rs5fx08rz67jl4n14h0000gn/T/pip-ephem-wheel-cache-z7ulavig/wheels/e3/6c/16/c63c166189e6055418f34c19043a5f104cd230c63e93c01bdc\nSuccessfully built cratectl-py-source-app\nInstalling collected packages: cratectl-py-proxy-dep, cratectl-py-source-app\n\nSuccessfully installed cratectl-py-proxy-dep-1.0.0 cratectl-py-source-app-1.0.0\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/clients/bin/python",
+        "-c",
+        "import sys;sys.path.insert(0,'PRIVATE/python-proxy/source-consumer');from cratectl_py_source_app import value;assert value==46"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "login",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci/auth.json",
+        "--username",
+        "token",
+        "--password-stdin",
+        "127.0.0.1:38443"
+      ],
+      "exit": 0,
+      "output": "Login Succeeded\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci/auth.json",
+        "127.0.0.1:38443/containers/proof:v1",
+        "hello.txt:text/plain",
+        "dependency.txt:text/plain"
+      ],
+      "exit": 0,
+      "output": "Preparing hello.txt\nPreparing dependency.txt\nUploading 3ac3598da883 dependency.txt\nUploading 88fe3f045edf hello.txt\nUploading 44136fa355b3 application/vnd.oci.empty.v1+json\nUploaded  3ac3598da883 dependency.txt\nUploaded  88fe3f045edf hello.txt\nUploaded  44136fa355b3 application/vnd.oci.empty.v1+json\nUploading 8d236828b38e application/vnd.oci.image.manifest.v1+json\nUploaded  8d236828b38e application/vnd.oci.image.manifest.v1+json\nPushed [registry] 127.0.0.1:38443/containers/proof:v1\nArtifactType: application/vnd.unknown.artifact.v1\nDigest: sha256:8d236828b38e5f93f491e42f4ec7d26ec09fca308bfbc631bc454e4ae89ff56f\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci/auth.json",
+        "127.0.0.1:38443/containers/proof:v1"
+      ],
+      "exit": 0,
+      "output": "Downloading 8d236828b38e application/vnd.oci.image.manifest.v1+json\nProcessing  8d236828b38e application/vnd.oci.image.manifest.v1+json\nDownloading 3ac3598da883 dependency.txt\nDownloading 88fe3f045edf hello.txt\nDownloaded  3ac3598da883 dependency.txt\nDownloaded  88fe3f045edf hello.txt\nDownloaded  8d236828b38e application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/containers/proof:v1\nDigest: sha256:8d236828b38e5f93f491e42f4ec7d26ec09fca308bfbc631bc454e4ae89ff56f\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci/auth.json",
+        "127.0.0.1:38443/containers/proof:v1"
+      ],
+      "exit": 0,
+      "output": "Downloading 8d236828b38e application/vnd.oci.image.manifest.v1+json\nProcessing  8d236828b38e application/vnd.oci.image.manifest.v1+json\nDownloading 3ac3598da883 dependency.txt\nDownloading 88fe3f045edf hello.txt\nDownloaded  3ac3598da883 dependency.txt\nDownloaded  88fe3f045edf hello.txt\nDownloaded  8d236828b38e application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/containers/proof:v1\nDigest: sha256:8d236828b38e5f93f491e42f4ec7d26ec09fca308bfbc631bc454e4ae89ff56f\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci/auth.json",
+        "127.0.0.1:38443/containers/nested/manifests-subdir/blobs/uploads/name:v1",
+        "hello.txt:text/plain",
+        "dependency.txt:text/plain"
+      ],
+      "exit": 0,
+      "output": "Preparing hello.txt\nPreparing dependency.txt\nUploading 3ac3598da883 dependency.txt\nUploading 88fe3f045edf hello.txt\nUploading 44136fa355b3 application/vnd.oci.empty.v1+json\nUploaded  3ac3598da883 dependency.txt\nUploaded  88fe3f045edf hello.txt\nUploaded  44136fa355b3 application/vnd.oci.empty.v1+json\nUploading 8d236828b38e application/vnd.oci.image.manifest.v1+json\nUploaded  8d236828b38e application/vnd.oci.image.manifest.v1+json\nPushed [registry] 127.0.0.1:38443/containers/nested/manifests-subdir/blobs/uploads/name:v1\nArtifactType: application/vnd.unknown.artifact.v1\nDigest: sha256:8d236828b38e5f93f491e42f4ec7d26ec09fca308bfbc631bc454e4ae89ff56f\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci/auth.json",
+        "127.0.0.1:38443/containers/nested/manifests-subdir/blobs/uploads/name:v1"
+      ],
+      "exit": 0,
+      "output": "Downloading 8d236828b38e application/vnd.oci.image.manifest.v1+json\nProcessing  8d236828b38e application/vnd.oci.image.manifest.v1+json\nDownloading 3ac3598da883 dependency.txt\nDownloading 88fe3f045edf hello.txt\nDownloaded  3ac3598da883 dependency.txt\nDownloaded  88fe3f045edf hello.txt\nDownloaded  8d236828b38e application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/containers/nested/manifests-subdir/blobs/uploads/name:v1\nDigest: sha256:8d236828b38e5f93f491e42f4ec7d26ec09fca308bfbc631bc454e4ae89ff56f\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "attach",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci/auth.json",
+        "--distribution-spec",
+        "v1.1-referrers-api",
+        "--artifact-type",
+        "application/vnd.cratectl.proof.sbom.v1+json",
+        "--annotation",
+        "org.opencontainers.image.description=Owned proof attachment",
+        "--format",
+        "json",
+        "127.0.0.1:38443/containers/proof:v1",
+        "sbom.json:application/spdx+json"
+      ],
+      "exit": 0,
+      "output": "{\n  \"reference\": \"127.0.0.1:38443/containers/proof@sha256:bee1158170eaa9fcc5d80ecf369811794da1cbf9f949d2fd4e63c18455a6c442\",\n  \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n  \"digest\": \"sha256:bee1158170eaa9fcc5d80ecf369811794da1cbf9f949d2fd4e63c18455a6c442\",\n  \"size\": 806,\n  \"annotations\": {\n    \"org.opencontainers.image.created\": \"2026-10-29T00:02:52Z\",\n    \"org.opencontainers.image.description\": \"Owned proof attachment\"\n  },\n  \"artifactType\": \"application/vnd.cratectl.proof.sbom.v1+json\"\n}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "discover",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci/auth.json",
+        "--distribution-spec",
+        "v1.1-referrers-api",
+        "--format",
+        "json",
+        "--depth",
+        "1",
+        "127.0.0.1:38443/containers/proof:v1"
+      ],
+      "exit": 0,
+      "output": "{\n  \"reference\": \"127.0.0.1:38443/containers/proof@sha256:8d236828b38e5f93f491e42f4ec7d26ec09fca308bfbc631bc454e4ae89ff56f\",\n  \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n  \"digest\": \"sha256:8d236828b38e5f93f491e42f4ec7d26ec09fca308bfbc631bc454e4ae89ff56f\",\n  \"size\": 746,\n  \"referrers\": [\n    {\n      \"reference\": \"127.0.0.1:38443/containers/proof@sha256:bee1158170eaa9fcc5d80ecf369811794da1cbf9f949d2fd4e63c18455a6c442\",\n      \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n      \"digest\": \"sha256:bee1158170eaa9fcc5d80ecf369811794da1cbf9f949d2fd4e63c18455a6c442\",\n      \"size\": 806,\n      \"annotations\": {\n        \"org.opencontainers.image.created\": \"2026-10-29T00:02:52Z\",\n        \"org.opencontainers.image.description\": \"Owned proof attachment\"\n      },\n      \"artifactType\": \"application/vnd.cratectl.proof.sbom.v1+json\",\n      \"referrers\": []\n    }\n  ]\n}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci/auth.json",
+        "127.0.0.1:38443/containers/proof@sha256:bee1158170eaa9fcc5d80ecf369811794da1cbf9f949d2fd4e63c18455a6c442"
+      ],
+      "exit": 0,
+      "output": "Downloading bee1158170ea application/vnd.oci.image.manifest.v1+json\nProcessing  bee1158170ea application/vnd.oci.image.manifest.v1+json\nDownloading 021dbf83efec sbom.json\nDownloaded  021dbf83efec sbom.json\nDownloaded  bee1158170ea application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/containers/proof@sha256:bee1158170eaa9fcc5d80ecf369811794da1cbf9f949d2fd4e63c18455a6c442\nDigest: sha256:bee1158170eaa9fcc5d80ecf369811794da1cbf9f949d2fd4e63c18455a6c442\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "manifest",
+        "index",
+        "create",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci/auth.json",
+        "127.0.0.1:38443/containers/proof:platforms",
+        "v1"
+      ],
+      "exit": 0,
+      "output": "Fetching  v1\nFetched   sha256:8d236828b38e5f93f491e42f4ec7d26ec09fca308bfbc631bc454e4ae89ff56f v1\nPacked    280156533da1 application/vnd.oci.image.index.v1+json\nPushed    [registry] 127.0.0.1:38443/containers/proof:platforms\nDigest: sha256:280156533da1c3115e1d883ac29d8d4f7ad33c5727dd7a39a09bd9f7bb4a1e4d\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "login",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/origin-auth.json",
+        "--username",
+        "token",
+        "--password-stdin",
+        "127.0.0.1:38443"
+      ],
+      "exit": 0,
+      "output": "Login Succeeded\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "login",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/auth.json",
+        "--username",
+        "token",
+        "--password-stdin",
+        "127.0.0.1:38443"
+      ],
+      "exit": 0,
+      "output": "Login Succeeded\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/origin-auth.json",
+        "127.0.0.1:38443/up-oci/proof:v1",
+        "payload.txt:text/plain",
+        "dependency.txt:text/plain"
+      ],
+      "exit": 0,
+      "output": "Preparing payload.txt\nPreparing dependency.txt\nUploading b285baae7f00 dependency.txt\nUploading 44136fa355b3 application/vnd.oci.empty.v1+json\nUploading 1939c3f11d27 payload.txt\nUploaded  b285baae7f00 dependency.txt\nUploaded  44136fa355b3 application/vnd.oci.empty.v1+json\nUploaded  1939c3f11d27 payload.txt\nUploading 76561709b625 application/vnd.oci.image.manifest.v1+json\nUploaded  76561709b625 application/vnd.oci.image.manifest.v1+json\nPushed [registry] 127.0.0.1:38443/up-oci/proof:v1\nArtifactType: application/vnd.unknown.artifact.v1\nDigest: sha256:76561709b625b888efd224e2ac65cbdc1c73cbeaf9af65887df267e3eb444457\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "attach",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/origin-auth.json",
+        "--distribution-spec",
+        "v1.1-referrers-api",
+        "--artifact-type",
+        "application/vnd.cratectl.proof",
+        "--format",
+        "json",
+        "127.0.0.1:38443/up-oci/proof:v1",
+        "sbom.json:application/json"
+      ],
+      "exit": 0,
+      "output": "{\n  \"reference\": \"127.0.0.1:38443/up-oci/proof@sha256:07d07d7d73b67575b80bd8699ca7d0e2b02dde619cd1c86c1343ad6325ec7097\",\n  \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n  \"digest\": \"sha256:07d07d7d73b67575b80bd8699ca7d0e2b02dde619cd1c86c1343ad6325ec7097\",\n  \"size\": 724,\n  \"annotations\": {\n    \"org.opencontainers.image.created\": \"2026-10-29T00:02:53Z\"\n  },\n  \"artifactType\": \"application/vnd.cratectl.proof\"\n}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/auth.json",
+        "127.0.0.1:38443/oci-proxy/proof:v1"
+      ],
+      "exit": 0,
+      "output": "Downloading 76561709b625 application/vnd.oci.image.manifest.v1+json\nProcessing  76561709b625 application/vnd.oci.image.manifest.v1+json\nDownloading b285baae7f00 dependency.txt\nDownloading 1939c3f11d27 payload.txt\nDownloaded  b285baae7f00 dependency.txt\nDownloaded  1939c3f11d27 payload.txt\nDownloaded  76561709b625 application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/oci-proxy/proof:v1\nDigest: sha256:76561709b625b888efd224e2ac65cbdc1c73cbeaf9af65887df267e3eb444457\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "discover",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/auth.json",
+        "--distribution-spec",
+        "v1.1-referrers-api",
+        "--format",
+        "json",
+        "--depth",
+        "1",
+        "127.0.0.1:38443/oci-proxy/proof:v1"
+      ],
+      "exit": 0,
+      "output": "{\n  \"reference\": \"127.0.0.1:38443/oci-proxy/proof@sha256:76561709b625b888efd224e2ac65cbdc1c73cbeaf9af65887df267e3eb444457\",\n  \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n  \"digest\": \"sha256:76561709b625b888efd224e2ac65cbdc1c73cbeaf9af65887df267e3eb444457\",\n  \"size\": 748,\n  \"referrers\": [\n    {\n      \"reference\": \"127.0.0.1:38443/oci-proxy/proof@sha256:07d07d7d73b67575b80bd8699ca7d0e2b02dde619cd1c86c1343ad6325ec7097\",\n      \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n      \"digest\": \"sha256:07d07d7d73b67575b80bd8699ca7d0e2b02dde619cd1c86c1343ad6325ec7097\",\n      \"size\": 724,\n      \"annotations\": {\n        \"org.opencontainers.image.created\": \"2026-10-29T00:02:53Z\"\n      },\n      \"artifactType\": \"application/vnd.cratectl.proof\",\n      \"referrers\": []\n    }\n  ]\n}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/auth.json",
+        "127.0.0.1:38443/oci-proxy/proof:v1"
+      ],
+      "exit": 0,
+      "output": "Downloading 76561709b625 application/vnd.oci.image.manifest.v1+json\nProcessing  76561709b625 application/vnd.oci.image.manifest.v1+json\nDownloading b285baae7f00 dependency.txt\nDownloading 1939c3f11d27 payload.txt\nDownloaded  b285baae7f00 dependency.txt\nDownloaded  1939c3f11d27 payload.txt\nDownloaded  76561709b625 application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/oci-proxy/proof:v1\nDigest: sha256:76561709b625b888efd224e2ac65cbdc1c73cbeaf9af65887df267e3eb444457\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/origin-auth.json",
+        "127.0.0.1:38443/up-oci/proof:v2",
+        "payload.txt:text/plain",
+        "dependency.txt:text/plain"
+      ],
+      "exit": 0,
+      "output": "Preparing payload.txt\nPreparing dependency.txt\nExists    44136fa355b3 application/vnd.oci.empty.v1+json\nExists    b285baae7f00 dependency.txt\nUploading 55cd97efc98b payload.txt\nUploaded  55cd97efc98b payload.txt\nUploading c47cfbc64b7f application/vnd.oci.image.manifest.v1+json\nUploaded  c47cfbc64b7f application/vnd.oci.image.manifest.v1+json\nPushed [registry] 127.0.0.1:38443/up-oci/proof:v2\nArtifactType: application/vnd.unknown.artifact.v1\nDigest: sha256:c47cfbc64b7f2d7c87fcf92065cb99c04df8e5417ebd882ea308a4bb7ae8dd9f\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/origin-auth.json",
+        "127.0.0.1:38443/up-oci/concurrent:v1",
+        "payload.txt:text/plain"
+      ],
+      "exit": 0,
+      "output": "Preparing payload.txt\nUploading 55cd97efc98b payload.txt\nUploading 44136fa355b3 application/vnd.oci.empty.v1+json\nUploaded  55cd97efc98b payload.txt\nUploaded  44136fa355b3 application/vnd.oci.empty.v1+json\nUploading 55fe845df6ce application/vnd.oci.image.manifest.v1+json\nUploaded  55fe845df6ce application/vnd.oci.image.manifest.v1+json\nPushed [registry] 127.0.0.1:38443/up-oci/concurrent:v1\nArtifactType: application/vnd.unknown.artifact.v1\nDigest: sha256:55fe845df6ce81588f44f89e0696b4765f3c4c1715718310f695e43ee38b3d4e\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/auth.json",
+        "127.0.0.1:38443/oci-local/proof:local",
+        "local.txt:text/plain"
+      ],
+      "exit": 0,
+      "output": "Preparing local.txt\nUploading 97a9ddbe80a7 local.txt\nUploading 44136fa355b3 application/vnd.oci.empty.v1+json\nUploaded  97a9ddbe80a7 local.txt\nUploaded  44136fa355b3 application/vnd.oci.empty.v1+json\nUploading 766fd9ef1d9e application/vnd.oci.image.manifest.v1+json\nUploaded  766fd9ef1d9e application/vnd.oci.image.manifest.v1+json\nPushed [registry] 127.0.0.1:38443/oci-local/proof:local\nArtifactType: application/vnd.unknown.artifact.v1\nDigest: sha256:766fd9ef1d9eb701f877d8ac90f8e4b583050adf2709171723c358ac9f8461f8\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "tag",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/auth.json",
+        "127.0.0.1:38443/oci-local/proof:local",
+        "v1"
+      ],
+      "exit": 0,
+      "output": "Tagging [registry] 127.0.0.1:38443/oci-local/proof@sha256:766fd9ef1d9eb701f877d8ac90f8e4b583050adf2709171723c358ac9f8461f8\nTagged v1\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/auth.json",
+        "127.0.0.1:38443/oci-group/proof:local"
+      ],
+      "exit": 0,
+      "output": "Downloading 766fd9ef1d9e application/vnd.oci.image.manifest.v1+json\nProcessing  766fd9ef1d9e application/vnd.oci.image.manifest.v1+json\nDownloading 97a9ddbe80a7 local.txt\nDownloaded  97a9ddbe80a7 local.txt\nDownloaded  766fd9ef1d9e application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/oci-group/proof:local\nDigest: sha256:766fd9ef1d9eb701f877d8ac90f8e4b583050adf2709171723c358ac9f8461f8\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oci-proxy/auth.json",
+        "127.0.0.1:38443/oci-group/proof:v2"
+      ],
+      "exit": 0,
+      "output": "Downloading c47cfbc64b7f application/vnd.oci.image.manifest.v1+json\nProcessing  c47cfbc64b7f application/vnd.oci.image.manifest.v1+json\nDownloading b285baae7f00 dependency.txt\nDownloading 55cd97efc98b payload.txt\nDownloaded  b285baae7f00 dependency.txt\nDownloaded  55cd97efc98b payload.txt\nDownloaded  c47cfbc64b7f application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/oci-group/proof:v2\nDigest: sha256:c47cfbc64b7f2d7c87fcf92065cb99c04df8e5417ebd882ea308a4bb7ae8dd9f\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/apache-maven-3.10.0/bin/mvn",
+        "-B",
+        "-s",
+        "PRIVATE/maven/settings.xml",
+        "-Dmaven.repo.local=PRIVATE/maven/cache",
+        "--version"
+      ],
+      "exit": 0,
+      "output": "Apache Maven 3.10.0 (c43a36b8d67be7e0805a411bc0898af1a51f5472)\nMaven home: /Users/shankar/Desktop/ctlplne-cratectl/.cache/apache-maven-3.10.0\nJava version: 21.0.13, vendor: Eclipse Adoptium, runtime: /Users/shankar/Desktop/ctlplne-cratectl/.cache/jdk-21.0.13+9/Contents/Home\nDefault locale: en_US, platform encoding: UTF-8, time zone: America/New_York\nOS name: \"mac os x\", version: \"27.2\", arch: \"aarch64\", family: \"mac\"\n"
+    },
+    {
+      "version": "Apache Maven 3.10.0 (c43a36b8d67be7e0805a411bc0898af1a51f5472)\nMaven home: /Users/shankar/Desktop/ctlplne-cratectl/.cache/apache-maven-3.10.0\nJava version: 21.0.13, vendor: Eclipse Adoptium, runtime: /Users/shankar/Desktop/ctlplne-cratectl/.cache/jdk-21.0.13+9/Contents/Home\nDefault locale: en_US, platform encoding: UTF-8, time zone: America/New_York\nOS name: \"mac os x\", version: \"27.2\", arch: \"aarch64\", family: \"mac\"\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/apache-maven-3.10.0/bin/mvn",
+        "-B",
+        "-s",
+        "PRIVATE/maven/settings.xml",
+        "-Dmaven.repo.local=PRIVATE/maven/cache",
+        "org.apache.maven.plugins:maven-deploy-plugin:3.1.4:deploy-file",
+        "-Dfile=PRIVATE/maven/proof-dep-1.0.0.jar",
+        "-DpomFile=PRIVATE/maven/proof-dep-1.0.0.pom",
+        "-DrepositoryId=cratectl",
+        "-Durl=http://127.0.0.1:38443/r/java/"
+      ],
+      "exit": 0,
+      "output": "[INFO] Scanning for projects...\n[INFO] Loaded 24280 auto-discovered prefixes for remote repository central (prefixes-central.txt)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-deploy-plugin/3.1.4/maven-deploy-plugin-3.1.4.pom\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-deploy-plugin/3.1.4/maven-deploy-plugin-3.1.4.pom (9.2 kB at 37 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-plugins/43/maven-plugins-43.pom\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-plugins/43/maven-plugins-43.pom (7.5 kB at 27 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-parent/43/maven-parent-43.pom\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-parent/43/maven-parent-43.pom (50 kB at 189 kB/s)\n[INFO] Loaded 74 auto-discovered prefixes for remote repository apache.snapshots (prefixes-apache.snapshots.txt)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/apache/33/apache-33.pom\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/apache/33/apache-33.pom (24 kB at 173 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.10.3/junit-bom-5.10.3.pom\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.10.3/junit-bom-5.10.3.pom (5.6 kB at 22 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-deploy-plugin/3.1.4/maven-deploy-plugin-3.1.4.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-deploy-plugin/3.1.4/maven-deploy-plugin-3.1.4.jar (40 kB at 164 kB/s)\n[INFO] \n[INFO] ------------------< org.apache.maven:standalone-pom >-------------------\n[INFO] Building Maven Stub Project (No POM) 1\n[INFO] --------------------------------[ pom ]---------------------------------\n[INFO] \n[INFO] --- deploy:3.1.4:deploy-file (default-cli) @ standalone-pom ---\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/1.9.22/maven-resolver-util-1.9.22.pom\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/3.0.1/plexus-xml-3.0.1.pom\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/4.0.1/plexus-utils-4.0.1.pom\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/1.9.22/maven-resolver-util-1.9.22.pom (2.2 kB at 9.0 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/1.9.22/maven-resolver-1.9.22.pom\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/1.9.22/maven-resolver-1.9.22.pom (23 kB at 101 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-parent/42/maven-parent-42.pom\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/3.0.1/plexus-xml-3.0.1.pom (3.7 kB at 7.1 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus/18/plexus-18.pom\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/4.0.1/plexus-utils-4.0.1.pom (7.8 kB at 15 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus/17/plexus-17.pom\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-parent/42/maven-parent-42.pom (50 kB at 300 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/apache/32/apache-32.pom\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus/18/plexus-18.pom (29 kB at 122 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.10.2/junit-bom-5.10.2.pom\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus/17/plexus-17.pom (28 kB at 119 kB/s)\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/apache/32/apache-32.pom (24 kB at 157 kB/s)\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.10.2/junit-bom-5.10.2.pom (5.6 kB at 24 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/1.9.22/maven-resolver-api-1.9.22.pom\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/1.9.22/maven-resolver-api-1.9.22.pom (2.2 kB at 9.6 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/4.0.1/plexus-utils-4.0.1.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/4.0.1/plexus-utils-4.0.1.jar (193 kB at 369 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/3.0.1/plexus-xml-3.0.1.jar\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/1.9.22/maven-resolver-util-1.9.22.jar\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/1.9.22/maven-resolver-api-1.9.22.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/3.0.1/plexus-xml-3.0.1.jar (94 kB at 545 kB/s)\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/1.9.22/maven-resolver-api-1.9.22.jar (157 kB at 378 kB/s)\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/1.9.22/maven-resolver-util-1.9.22.jar (196 kB at 290 kB/s)\n[WARNING] Using credentials of server 'cratectl' for repository http://127.0.0.1:38443/r/java/, although no repository or mirror with this id is declared in settings or on the command line and the server declares no <repositoryOrigins>. Declare 'http://127.0.0.1:38443' in <repositoryOrigins> of that server in settings to bind these credentials explicitly, or set maven.repository.credentialScope=strict to refuse such credential use.\n[INFO] Uploading to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-dep/1.0.0/proof-dep-1.0.0.jar\n[INFO] Uploaded to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-dep/1.0.0/proof-dep-1.0.0.jar (273 B at 5.7 kB/s)\n[INFO] Uploading to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-dep/1.0.0/proof-dep-1.0.0.pom\n[INFO] Uploaded to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-dep/1.0.0/proof-dep-1.0.0.pom (190 B at 3.8 kB/s)\n[INFO] Downloading from cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-dep/maven-metadata.xml\n[INFO] Uploading to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-dep/maven-metadata.xml\n[INFO] Uploaded to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-dep/maven-metadata.xml (307 B at 7.3 kB/s)\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD SUCCESS\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  8.581 s\n[INFO] Finished at: 2026-10-28T20:03:06-04:00\n[INFO] ------------------------------------------------------------------------\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/apache-maven-3.10.0/bin/mvn",
+        "-B",
+        "-s",
+        "PRIVATE/maven/settings.xml",
+        "-Dmaven.repo.local=PRIVATE/maven/cache",
+        "org.apache.maven.plugins:maven-deploy-plugin:3.1.4:deploy-file",
+        "-Dfile=PRIVATE/maven/proof-app-1.0.0.jar",
+        "-DpomFile=PRIVATE/maven/proof-app-1.0.0.pom",
+        "-DrepositoryId=cratectl",
+        "-Durl=http://127.0.0.1:38443/r/java/"
+      ],
+      "exit": 0,
+      "output": "[INFO] Scanning for projects...\n[INFO] Loaded 24280 auto-discovered prefixes for remote repository central (prefixes-central.txt)\n[INFO] Loaded 74 auto-discovered prefixes for remote repository apache.snapshots (prefixes-apache.snapshots.txt)\n[INFO] \n[INFO] ------------------< org.apache.maven:standalone-pom >-------------------\n[INFO] Building Maven Stub Project (No POM) 1\n[INFO] --------------------------------[ pom ]---------------------------------\n[INFO] \n[INFO] --- deploy:3.1.4:deploy-file (default-cli) @ standalone-pom ---\n[WARNING] Using credentials of server 'cratectl' for repository http://127.0.0.1:38443/r/java/, although no repository or mirror with this id is declared in settings or on the command line and the server declares no <repositoryOrigins>. Declare 'http://127.0.0.1:38443' in <repositoryOrigins> of that server in settings to bind these credentials explicitly, or set maven.repository.credentialScope=strict to refuse such credential use.\n[INFO] Uploading to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/1.0.0/proof-app-1.0.0.jar\n[INFO] Uploaded to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/1.0.0/proof-app-1.0.0.jar (273 B at 7.6 kB/s)\n[INFO] Uploading to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/1.0.0/proof-app-1.0.0.pom\n[INFO] Uploaded to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/1.0.0/proof-app-1.0.0.pom (339 B at 12 kB/s)\n[INFO] Downloading from cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/maven-metadata.xml\n[INFO] Uploading to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/maven-metadata.xml\n[INFO] Uploaded to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/maven-metadata.xml (307 B at 6.1 kB/s)\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD SUCCESS\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  1.872 s\n[INFO] Finished at: 2026-10-28T20:03:09-04:00\n[INFO] ------------------------------------------------------------------------\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/apache-maven-3.10.0/bin/mvn",
+        "-B",
+        "-s",
+        "PRIVATE/maven/settings.xml",
+        "-Dmaven.repo.local=PRIVATE/maven/cache",
+        "org.apache.maven.plugins:maven-deploy-plugin:3.1.4:deploy-file",
+        "-Dfile=PRIVATE/maven/proof-app-2.0.0.jar",
+        "-DpomFile=PRIVATE/maven/proof-app-2.0.0.pom",
+        "-DrepositoryId=cratectl",
+        "-Durl=http://127.0.0.1:38443/r/java/"
+      ],
+      "exit": 0,
+      "output": "[INFO] Scanning for projects...\n[INFO] Loaded 24280 auto-discovered prefixes for remote repository central (prefixes-central.txt)\n[INFO] Loaded 74 auto-discovered prefixes for remote repository apache.snapshots (prefixes-apache.snapshots.txt)\n[INFO] \n[INFO] ------------------< org.apache.maven:standalone-pom >-------------------\n[INFO] Building Maven Stub Project (No POM) 1\n[INFO] --------------------------------[ pom ]---------------------------------\n[INFO] \n[INFO] --- deploy:3.1.4:deploy-file (default-cli) @ standalone-pom ---\n[WARNING] Using credentials of server 'cratectl' for repository http://127.0.0.1:38443/r/java/, although no repository or mirror with this id is declared in settings or on the command line and the server declares no <repositoryOrigins>. Declare 'http://127.0.0.1:38443' in <repositoryOrigins> of that server in settings to bind these credentials explicitly, or set maven.repository.credentialScope=strict to refuse such credential use.\n[INFO] Uploading to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/2.0.0/proof-app-2.0.0.jar\n[INFO] Uploaded to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/2.0.0/proof-app-2.0.0.jar (273 B at 4.0 kB/s)\n[INFO] Uploading to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/2.0.0/proof-app-2.0.0.pom\n[INFO] Uploaded to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/2.0.0/proof-app-2.0.0.pom (339 B at 9.2 kB/s)\n[INFO] Downloading from cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/maven-metadata.xml\n[INFO] Downloaded from cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/maven-metadata.xml (307 B at 14 kB/s)\n[INFO] Uploading to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/maven-metadata.xml\n[INFO] Uploaded to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/maven-metadata.xml (338 B at 13 kB/s)\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD SUCCESS\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  1.867 s\n[INFO] Finished at: 2026-10-28T20:03:11-04:00\n[INFO] ------------------------------------------------------------------------\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/apache-maven-3.10.0/bin/mvn",
+        "-B",
+        "-s",
+        "PRIVATE/maven/settings.xml",
+        "-Dmaven.repo.local=PRIVATE/maven/cache",
+        "org.apache.maven.plugins:maven-deploy-plugin:3.1.4:deploy-file",
+        "-Dfile=PRIVATE/maven/proof-app-1.1-SNAPSHOT.jar",
+        "-DpomFile=PRIVATE/maven/proof-app-1.1-SNAPSHOT.pom",
+        "-DrepositoryId=cratectl",
+        "-Durl=http://127.0.0.1:38443/r/java/"
+      ],
+      "exit": 0,
+      "output": "[INFO] Scanning for projects...\n[INFO] Loaded 24280 auto-discovered prefixes for remote repository central (prefixes-central.txt)\n[INFO] Loaded 74 auto-discovered prefixes for remote repository apache.snapshots (prefixes-apache.snapshots.txt)\n[INFO] \n[INFO] ------------------< org.apache.maven:standalone-pom >-------------------\n[INFO] Building Maven Stub Project (No POM) 1\n[INFO] --------------------------------[ pom ]---------------------------------\n[INFO] \n[INFO] --- deploy:3.1.4:deploy-file (default-cli) @ standalone-pom ---\n[WARNING] Using credentials of server 'cratectl' for repository http://127.0.0.1:38443/r/java/, although no repository or mirror with this id is declared in settings or on the command line and the server declares no <repositoryOrigins>. Declare 'http://127.0.0.1:38443' in <repositoryOrigins> of that server in settings to bind these credentials explicitly, or set maven.repository.credentialScope=strict to refuse such credential use.\n[INFO] Downloading from cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/1.1-SNAPSHOT/maven-metadata.xml\n[INFO] Uploading to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/1.1-SNAPSHOT/proof-app-1.1-20261029.000312-1.jar\n[INFO] Uploaded to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/1.1-SNAPSHOT/proof-app-1.1-20261029.000312-1.jar (280 B at 9.3 kB/s)\n[INFO] Uploading to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/1.1-SNAPSHOT/proof-app-1.1-20261029.000312-1.pom\n[INFO] Uploaded to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/1.1-SNAPSHOT/proof-app-1.1-20261029.000312-1.pom (346 B at 15 kB/s)\n[INFO] Downloading from cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/maven-metadata.xml\n[INFO] Downloaded from cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/maven-metadata.xml (338 B at 28 kB/s)\n[INFO] Uploading to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/1.1-SNAPSHOT/maven-metadata.xml\n[INFO] Uploaded to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/1.1-SNAPSHOT/maven-metadata.xml (771 B at 31 kB/s)\n[INFO] Uploading to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/maven-metadata.xml\n[INFO] Uploaded to cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/maven-metadata.xml (376 B at 16 kB/s)\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD SUCCESS\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  1.775 s\n[INFO] Finished at: 2026-10-28T20:03:14-04:00\n[INFO] ------------------------------------------------------------------------\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/apache-maven-3.10.0/bin/mvn",
+        "-B",
+        "-s",
+        "PRIVATE/maven/settings.xml",
+        "-Dmaven.repo.local=PRIVATE/maven/cache",
+        "org.apache.maven.plugins:maven-dependency-plugin:3.8.1:get",
+        "-Dmaven.repo.local=PRIVATE/maven/consumer-cache",
+        "-Dartifact=dev.cratectl.proof:proof-app:2.0.0",
+        "-DremoteRepositories=cratectl::default::http://127.0.0.1:38443/r/java/",
+        "-Dtransitive=true"
+      ],
+      "exit": 0,
+      "output": "om central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-apt/2.0.0/doxia-module-apt-2.0.0.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-core/2.0.0/doxia-core-2.0.0.jar (168 kB at 118 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-xdoc/2.0.0/doxia-module-xdoc-2.0.0.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-integration-tools/2.0.0/doxia-integration-tools-2.0.0.jar (50 kB at 35 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/3.6.2/maven-archiver-3.6.2.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-apt/2.0.0/doxia-module-apt-2.0.0.jar (54 kB at 33 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/1.4.1/maven-resolver-api-1.4.1.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/3.6.2/maven-archiver-3.6.2.jar (27 kB at 16 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.plexus/0.9.0.M3/org.eclipse.sisu.plexus-0.9.0.M3.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-site-renderer/2.0.0/doxia-site-renderer-2.0.0.jar (44 kB at 26 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/javax/inject/javax.inject/1/javax.inject-1.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/1.4.1/maven-resolver-api-1.4.1.jar (149 kB at 82 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/commons-io/commons-io/2.16.1/commons-io-2.16.1.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-xdoc/2.0.0/doxia-module-xdoc-2.0.0.jar (35 kB at 19 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.26.2/commons-compress-1.26.2.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.plexus/0.9.0.M3/org.eclipse.sisu.plexus-0.9.0.M3.jar (216 kB at 114 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/io/airlift/aircompressor/0.27/aircompressor-0.27.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/javax/inject/javax.inject/1/javax.inject-1.jar (2.5 kB at 1.3 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/tukaani/xz/1.9/xz-1.9.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/io/airlift/aircompressor/0.27/aircompressor-0.27.jar (255 kB at 116 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.6-3/zstd-jni-1.5.6-3.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/commons-io/commons-io/2.16.1/commons-io-2.16.1.jar (509 kB at 220 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.7/asm-9.7.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.26.2/commons-compress-1.26.2.jar (1.1 MB at 447 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-component-annotations/2.0.0/plexus-component-annotations-2.0.0.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.7/asm-9.7.jar (125 kB at 50 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.12.0/commons-text-1.12.0.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/tukaani/xz/1.9/xz-1.9.jar (116 kB at 46 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interpolation/1.27/plexus-interpolation-1.27.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-component-annotations/2.0.0/plexus-component-annotations-2.0.0.jar (4.2 kB at 1.6 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-skin-model/2.0.0/doxia-skin-model-2.0.0.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.12.0/commons-text-1.12.0.jar (251 kB at 92 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-xhtml5/2.0.0/doxia-module-xhtml5-2.0.0.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.6-3/zstd-jni-1.5.6-3.jar (6.7 MB at 2.3 MB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-velocity/2.2.0/plexus-velocity-2.2.0.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-skin-model/2.0.0/doxia-skin-model-2.0.0.jar (16 kB at 5.7 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/velocity/velocity-engine-core/2.4/velocity-engine-core-2.4.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interpolation/1.27/plexus-interpolation-1.27.jar (86 kB at 29 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/velocity/tools/velocity-tools-generic/3.1/velocity-tools-generic-3.1.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-xhtml5/2.0.0/doxia-module-xhtml5-2.0.0.jar (17 kB at 5.4 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/0.9.0.M3/org.eclipse.sisu.inject-0.9.0.M3.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-velocity/2.2.0/plexus-velocity-2.2.0.jar (5.7 kB at 1.8 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-classworlds/2.6.0/plexus-classworlds-2.6.0.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/velocity/velocity-engine-core/2.4/velocity-engine-core-2.4.jar (510 kB at 160 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.17.0/commons-codec-1.17.0.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-classworlds/2.6.0/plexus-classworlds-2.6.0.jar (53 kB at 16 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.9.4/commons-beanutils-1.9.4.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/0.9.0.M3/org.eclipse.sisu.inject-0.9.0.M3.jar (434 kB at 126 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-digester3/3.2/commons-digester3-3.2.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.17.0/commons-codec-1.17.0.jar (373 kB at 107 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/com/github/cliftonlabs/json-simple/3.0.2/json-simple-3.0.2.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.9.4/commons-beanutils-1.9.4.jar (247 kB at 70 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/velocity/tools/velocity-tools-generic/3.1/velocity-tools-generic-3.1.jar (217 kB at 60 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-digester3/3.2/commons-digester3-3.2.jar (242 kB at 66 kB/s)\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/com/github/cliftonlabs/json-simple/3.0.2/json-simple-3.0.2.jar (35 kB at 9.4 kB/s)\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar (62 kB at 16 kB/s)\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.17.0/commons-lang3-3.17.0.jar (674 kB at 141 kB/s)\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2.jar (588 kB at 110 kB/s)\n[INFO] Resolving dev.cratectl.proof:proof-app:jar:2.0.0 with transitive dependencies\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/dev/cratectl/proof/proof-app/2.0.0/proof-app-2.0.0.pom\n[INFO] Downloading from cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/2.0.0/proof-app-2.0.0.pom\n[INFO] Downloaded from cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/2.0.0/proof-app-2.0.0.pom (339 B at 28 kB/s)\n[WARNING] dev.cratectl.proof:proof-app:pom:2.0.0 was downloaded from http://127.0.0.1:38443/r/java/ while a cached not-found from a previous attempt suppresses re-checking https://repo.maven.apache.org/maven2/; expiring the cached not-found so that repository is checked again on the next resolution\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/dev/cratectl/proof/proof-dep/1.0.0/proof-dep-1.0.0.pom\n[INFO] Downloading from cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-dep/1.0.0/proof-dep-1.0.0.pom\n[INFO] Downloaded from cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-dep/1.0.0/proof-dep-1.0.0.pom (190 B at 32 kB/s)\n[WARNING] dev.cratectl.proof:proof-dep:pom:1.0.0 was downloaded from http://127.0.0.1:38443/r/java/ while a cached not-found from a previous attempt suppresses re-checking https://repo.maven.apache.org/maven2/; expiring the cached not-found so that repository is checked again on the next resolution\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/dev/cratectl/proof/proof-app/2.0.0/proof-app-2.0.0.jar\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/dev/cratectl/proof/proof-dep/1.0.0/proof-dep-1.0.0.jar\n[INFO] Downloading from cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/2.0.0/proof-app-2.0.0.jar\n[INFO] Downloaded from cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-app/2.0.0/proof-app-2.0.0.jar (273 B at 34 kB/s)\n[INFO] Downloading from cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-dep/1.0.0/proof-dep-1.0.0.jar\n[INFO] Downloaded from cratectl: http://127.0.0.1:38443/r/java/dev/cratectl/proof/proof-dep/1.0.0/proof-dep-1.0.0.jar (273 B at 34 kB/s)\n[WARNING] dev.cratectl.proof:proof-app:jar:2.0.0 was downloaded from http://127.0.0.1:38443/r/java/ while a cached not-found from a previous attempt suppresses re-checking https://repo.maven.apache.org/maven2/; expiring the cached not-found so that repository is checked again on the next resolution\n[WARNING] dev.cratectl.proof:proof-dep:jar:1.0.0 was downloaded from http://127.0.0.1:38443/r/java/ while a cached not-found from a previous attempt suppresses re-checking https://repo.maven.apache.org/maven2/; expiring the cached not-found so that repository is checked again on the next resolution\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD SUCCESS\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  19.388 s\n[INFO] Finished at: 2026-10-28T20:03:34-04:00\n[INFO] ------------------------------------------------------------------------\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/apache-maven-3.10.0/bin/mvn",
+        "-B",
+        "-s",
+        "PRIVATE/maven/settings.xml",
+        "-Dmaven.repo.local=PRIVATE/maven/cache",
+        "-s",
+        "PRIVATE/maven/reader-settings.xml",
+        "org.apache.maven.plugins:maven-dependency-plugin:3.8.1:get",
+        "-Dmaven.repo.local=PRIVATE/maven/consumer-proxy-cache",
+        "-Dartifact=dev.cratectl.proof:proof-app:2.0.0",
+        "-DremoteRepositories=cratectl::default::http://127.0.0.1:38443/r/java-group/",
+        "-Dtransitive=true"
+      ],
+      "exit": 0,
+      "output": "a-module-apt/2.0.0/doxia-module-apt-2.0.0.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-core/2.0.0/doxia-core-2.0.0.jar (168 kB at 98 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-xdoc/2.0.0/doxia-module-xdoc-2.0.0.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-integration-tools/2.0.0/doxia-integration-tools-2.0.0.jar (50 kB at 29 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/3.6.2/maven-archiver-3.6.2.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-site-renderer/2.0.0/doxia-site-renderer-2.0.0.jar (44 kB at 25 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/1.4.1/maven-resolver-api-1.4.1.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/3.6.2/maven-archiver-3.6.2.jar (27 kB at 14 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.plexus/0.9.0.M3/org.eclipse.sisu.plexus-0.9.0.M3.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-xdoc/2.0.0/doxia-module-xdoc-2.0.0.jar (35 kB at 18 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/javax/inject/javax.inject/1/javax.inject-1.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/1.4.1/maven-resolver-api-1.4.1.jar (149 kB at 73 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/commons-io/commons-io/2.16.1/commons-io-2.16.1.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/javax/inject/javax.inject/1/javax.inject-1.jar (2.5 kB at 1.2 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.26.2/commons-compress-1.26.2.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.plexus/0.9.0.M3/org.eclipse.sisu.plexus-0.9.0.M3.jar (216 kB at 99 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/io/airlift/aircompressor/0.27/aircompressor-0.27.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/4.10.0/plexus-archiver-4.10.0.jar (225 kB at 93 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/tukaani/xz/1.9/xz-1.9.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/io/airlift/aircompressor/0.27/aircompressor-0.27.jar (255 kB at 103 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.6-3/zstd-jni-1.5.6-3.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-apt/2.0.0/doxia-module-apt-2.0.0.jar (54 kB at 20 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.7/asm-9.7.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.26.2/commons-compress-1.26.2.jar (1.1 MB at 403 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-component-annotations/2.0.0/plexus-component-annotations-2.0.0.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/commons-io/commons-io/2.16.1/commons-io-2.16.1.jar (509 kB at 188 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.12.0/commons-text-1.12.0.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-component-annotations/2.0.0/plexus-component-annotations-2.0.0.jar (4.2 kB at 1.4 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interpolation/1.27/plexus-interpolation-1.27.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.12.0/commons-text-1.12.0.jar (251 kB at 83 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-skin-model/2.0.0/doxia-skin-model-2.0.0.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/tukaani/xz/1.9/xz-1.9.jar (116 kB at 37 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-xhtml5/2.0.0/doxia-module-xhtml5-2.0.0.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-skin-model/2.0.0/doxia-skin-model-2.0.0.jar (16 kB at 5.1 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-velocity/2.2.0/plexus-velocity-2.2.0.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interpolation/1.27/plexus-interpolation-1.27.jar (86 kB at 27 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/velocity/velocity-engine-core/2.4/velocity-engine-core-2.4.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.6-3/zstd-jni-1.5.6-3.jar (6.7 MB at 2.0 MB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/velocity/tools/velocity-tools-generic/3.1/velocity-tools-generic-3.1.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-xhtml5/2.0.0/doxia-module-xhtml5-2.0.0.jar (17 kB at 5.0 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/0.9.0.M3/org.eclipse.sisu.inject-0.9.0.M3.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-velocity/2.2.0/plexus-velocity-2.2.0.jar (5.7 kB at 1.6 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-classworlds/2.6.0/plexus-classworlds-2.6.0.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.7/asm-9.7.jar (125 kB at 36 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.17.0/commons-codec-1.17.0.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/velocity/tools/velocity-tools-generic/3.1/velocity-tools-generic-3.1.jar (217 kB at 60 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.9.4/commons-beanutils-1.9.4.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/velocity/velocity-engine-core/2.4/velocity-engine-core-2.4.jar (510 kB at 139 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-digester3/3.2/commons-digester3-3.2.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-classworlds/2.6.0/plexus-classworlds-2.6.0.jar (53 kB at 14 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/com/github/cliftonlabs/json-simple/3.0.2/json-simple-3.0.2.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.9.4/commons-beanutils-1.9.4.jar (247 kB at 65 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/com/github/cliftonlabs/json-simple/3.0.2/json-simple-3.0.2.jar (35 kB at 9.0 kB/s)\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2.jar\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-digester3/3.2/commons-digester3-3.2.jar (242 kB at 61 kB/s)\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar (62 kB at 15 kB/s)\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2.jar (588 kB at 137 kB/s)\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/0.9.0.M3/org.eclipse.sisu.inject-0.9.0.M3.jar (434 kB at 92 kB/s)\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.17.0/commons-codec-1.17.0.jar (373 kB at 78 kB/s)\n[INFO] Resolving dev.cratectl.proof:proof-app:jar:2.0.0 with transitive dependencies\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/dev/cratectl/proof/proof-app/2.0.0/proof-app-2.0.0.pom\n[INFO] Downloading from cratectl: http://127.0.0.1:38443/r/java-group/dev/cratectl/proof/proof-app/2.0.0/proof-app-2.0.0.pom\n[INFO] Downloaded from cratectl: http://127.0.0.1:38443/r/java-group/dev/cratectl/proof/proof-app/2.0.0/proof-app-2.0.0.pom (339 B at 4.8 kB/s)\n[WARNING] dev.cratectl.proof:proof-app:pom:2.0.0 was downloaded from http://127.0.0.1:38443/r/java-group/ while a cached not-found from a previous attempt suppresses re-checking https://repo.maven.apache.org/maven2/; expiring the cached not-found so that repository is checked again on the next resolution\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/dev/cratectl/proof/proof-dep/1.0.0/proof-dep-1.0.0.pom\n[INFO] Downloading from cratectl: http://127.0.0.1:38443/r/java-group/dev/cratectl/proof/proof-dep/1.0.0/proof-dep-1.0.0.pom\n[INFO] Downloaded from cratectl: http://127.0.0.1:38443/r/java-group/dev/cratectl/proof/proof-dep/1.0.0/proof-dep-1.0.0.pom (190 B at 3.2 kB/s)\n[WARNING] dev.cratectl.proof:proof-dep:pom:1.0.0 was downloaded from http://127.0.0.1:38443/r/java-group/ while a cached not-found from a previous attempt suppresses re-checking https://repo.maven.apache.org/maven2/; expiring the cached not-found so that repository is checked again on the next resolution\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/dev/cratectl/proof/proof-app/2.0.0/proof-app-2.0.0.jar\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/dev/cratectl/proof/proof-dep/1.0.0/proof-dep-1.0.0.jar\n[INFO] Downloading from cratectl: http://127.0.0.1:38443/r/java-group/dev/cratectl/proof/proof-app/2.0.0/proof-app-2.0.0.jar\n[INFO] Downloaded from cratectl: http://127.0.0.1:38443/r/java-group/dev/cratectl/proof/proof-app/2.0.0/proof-app-2.0.0.jar (273 B at 4.5 kB/s)\n[INFO] Downloading from cratectl: http://127.0.0.1:38443/r/java-group/dev/cratectl/proof/proof-dep/1.0.0/proof-dep-1.0.0.jar\n[INFO] Downloaded from cratectl: http://127.0.0.1:38443/r/java-group/dev/cratectl/proof/proof-dep/1.0.0/proof-dep-1.0.0.jar (273 B at 5.6 kB/s)\n[WARNING] dev.cratectl.proof:proof-app:jar:2.0.0 was downloaded from http://127.0.0.1:38443/r/java-group/ while a cached not-found from a previous attempt suppresses re-checking https://repo.maven.apache.org/maven2/; expiring the cached not-found so that repository is checked again on the next resolution\n[WARNING] dev.cratectl.proof:proof-dep:jar:1.0.0 was downloaded from http://127.0.0.1:38443/r/java-group/ while a cached not-found from a previous attempt suppresses re-checking https://repo.maven.apache.org/maven2/; expiring the cached not-found so that repository is checked again on the next resolution\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD SUCCESS\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  19.832 s\n[INFO] Finished at: 2026-10-28T20:03:55-04:00\n[INFO] ------------------------------------------------------------------------\n"
+    },
+    {
+      "argv": [
+        "bin/cratectld",
+        "revoke",
+        "--token-file",
+        "PRIVATE/origin.token"
+      ],
+      "exit": 0,
+      "output": "Credential revoked; subsequent authentication fails.\n"
+    }
+  ],
+  "limitations": [
+    "Not full format conformance or parity.",
+    "Proxy/group proof covers generic, Maven and early npm journeys; no complete mode, migration, HA, scale or scanner qualification.",
+    "Client fixture code executes only in the explicitly owned test consumer.",
+    "No claim of a separate-machine install."
+  ],
+  "build_source_matches_candidate": true,
+  "status": "passed",
+  "input_digests": {
+    "wheels/cratectl_proof_dep-1.0.0-py3-none-any.whl": "2a2761e092cc5844efd51523235ebb2f0b6024e5fbf3f8489813fa7d318770cb",
+    "wheels/cratectl_py_proxy_app-2.0.0-py3-none-any.whl": "44ccc69f2e51af666d8b5b5cdb37cc9db8cd1b6901c8761caf861c8ca276685d",
+    "wheels/cratectl_owned_private-1.0.0-py3-none-any.whl": "88184095cc7f132dc5109a65ac847120329f44ee0398ac15f5d5f68bf0e61dd2",
+    "wheels/cratectl_py_proxy_app-3.0.0-py3-none-any.whl": "6e8ccbbbf7ddc597b6038ae72f6f60f3621cd39fbc06ae5767b61ac2b7293b40",
+    "wheels/cratectl_proof_app-1.0.0-py3-none-any.whl": "fbaa7475f948ee3262523c14f029a698e1ebb11923b3e5c1a7b632a8bd4870c9",
+    "wheels/cratectl_py_proxy_dep-1.0.0-py3-none-any.whl": "21bde0c34914022ab50ae7d281cf4f7d4faab5ab5d5d409a150286620f6259b4",
+    "wheels/cratectl_binding_probe-1.0.0-py3-none-any.whl": "b4cae3017efb2b52f2bed1472c41edd7b8c6fdab5310b11dbb8d82a619b5f678",
+    "wheels/cratectl_py_proxy_app-4.0.0-py3-none-any.whl": "25cea757d0f050af3200984b57fe9e9eb1ed55df393227696a2666c7e9abcc9f",
+    "wheels/cratectl_py_proxy_app-1.0.0-py3-none-any.whl": "edad9759900c8b4848792a116ea8ba78bdcbbe29652f1e211c5e22f70026efcc",
+    "python-proxy/after-restart/cratectl_py_proxy_app-2.0.0-py3-none-any.whl": "44ccc69f2e51af666d8b5b5cdb37cc9db8cd1b6901c8761caf861c8ca276685d",
+    "python-proxy/after-restart/cratectl_py_proxy_dep-1.0.0-py3-none-any.whl": "21bde0c34914022ab50ae7d281cf4f7d4faab5ab5d5d409a150286620f6259b4"
+  }
+}

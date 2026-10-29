@@ -177,6 +177,17 @@
       "additional_regression": "evidence/2026-10-28/oci-delivery-clean-postgres-race.txt",
       "candidate": "40a7e006e4f8197c4c4c686660b98c81c4d92013",
       "limits": "One real Docker Hub anonymous-token/CloudFront image proof plus owned fixtures; full provider/client/fault/lifecycle conformance remains open."
+    },
+    {
+      "id": "DEFECT.0019",
+      "summary": "OCI discovery could not complete referrer or approved signed catalog pages",
+      "first_failure": "evidence/2026-10-28/oci-pagination-first.txt",
+      "state": "repaired and replayed",
+      "repair": "Walk complete bounded opaque/signed source catalogs, publish atomically, serve current-policy native pages and use legacy referrer-tag fallback only after API 404. Treat graph budget exhaustion explicitly.",
+      "replay": "evidence/2026-10-28/conformance-c4a6c36e53.json",
+      "additional_regression": "evidence/2026-10-28/oci-discovery-clean-postgres-race.txt",
+      "candidate": "e23ba0cdaf634a8eea1469c1e383f0fed88a3a45",
+      "limits": "Owned source-page fixtures and stock ORAS; mutable catalog concurrency, every provider/client and production-scale/fault qualification remain open."
     }
   ]
 }

@@ -1,6 +1,6 @@
 # cratectl product build and qualification goal
 
-- Owner: Shankar
+- Owner: imfeelingtheagi
 - Product: cratectl, a ctlplne studio product
 - Workspace: /Users/shankar/Desktop/ctlplne-cratectl
 - Created: 2026-10-28
