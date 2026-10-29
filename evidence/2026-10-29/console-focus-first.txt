@@ -1,0 +1,24 @@
+Error: expect(locator).toBeFocused() failed
+
+Locator:  getByLabel('Repository name', { exact: true })
+Expected: focused
+Received: inactive
+Timeout:  5000ms
+
+Call log:
+  - Expect "toBeFocused" getByLabel('Repository name', { exact: true }) with timeout 5000ms
+  - waiting for getByLabel('Repository name', { exact: true })
+    13 × locator resolved to <input value="" required="" maxlength="63" id="repository-name" pattern="[a-z][a-z0-9-]{0,62}"/>
+       - unexpected value "inactive"
+
+
+  38 |     await check('keyboard skip link reaches content and native dialog returns focus',async()=>{
+  39 |       await page.keyboard.press('Tab');await expect(page.getByRole('link',{name:'Skip to content'})).toBeFocused();await page.keyboard.press('Enter');await expect(page.locator('#main-content')).toBeFocused();
+> 40 |       await page.keyboard.press('Tab');await expect(page.getByRole('button',{name:'＋ Create repository',exact:true})).toBeFocused();await page.keyboard.press('Enter');await expect(page.getByLabel('Repository name',{exact:true})).toBeFocused();await page.keyboard.press('Escape');await expect(page.getByRole('dialog')).toHaveCount(0);await expect(page.getByRole('button',{name:'＋ Create repository',exact:true})).toBeFocused();
+     |                                                                                                                                                                                                                                      ^
+  41 |     });
+  42 |     const mutationKeys=[],mutationBodies=[];let cut=true;
+  43 |     await page.route('**/api/v1/repositories',async route=>{
+    at /Users/shankar/Desktop/ctlplne-cratectl/web/tests/operator.spec.mjs:40:230
+    at check (/Users/shankar/Desktop/ctlplne-cratectl/web/tests/operator.spec.mjs:13:36)
+    at /Users/shankar/Desktop/ctlplne-cratectl/web/tests/operator.spec.mjs:38:5

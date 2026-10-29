@@ -1,0 +1,58 @@
+{
+  "run": "2ba944a616",
+  "candidate": "e8f8caba59c90f65a47ffe9ebdf2c28701bbde64",
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "web",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "source_dirty": true,
+  "artifact_digests": {
+    "bin/cratectld": "3781e7ee7ac75a52a8f075fb846d9ee42d0e54f12af624c1de18f5890d81fbba",
+    "bin/cratectl": "de08f3b9c08bcfdffc7a8836dd7df782a0b6ac9b099aa206ada37e7e451524eb"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "e8f8caba59c90f65a47ffe9ebdf2c28701bbde64",
+      "vcs.time": "2026-10-29T04:36:11Z",
+      "vcs.modified": "true"
+    },
+    "bin/cratectl": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "e8f8caba59c90f65a47ffe9ebdf2c28701bbde64",
+      "vcs.time": "2026-10-29T04:36:11Z",
+      "vcs.modified": "true"
+    }
+  },
+  "checks": [
+    "packaged console shell is public and contains no tenant credential"
+  ],
+  "topology": "Real Chromium, native registry/worker and nonowner forced-RLS PostgreSQL. An empty owned database and two newly provisioned tenants; explicit loopback-only HTTP development profile on port 38443.",
+  "limits": [
+    "This browser run exercises the explicit loopback HTTP test profile. Normal native TLS trust remains separately qualified; browser CA deployment and network/production PKI are not established by this run.",
+    "Only tested views and named interactions are qualified. Full console, all WCAG behavior/assistive technologies/native browsers, production packaging and complete product scope remain open.",
+    "Legacy repository/artifact list ceilings are explicitly partial; full management pagination remains required."
+  ],
+  "build_source_matches_candidate": false,
+  "status": "manual-review-stopped"
+}

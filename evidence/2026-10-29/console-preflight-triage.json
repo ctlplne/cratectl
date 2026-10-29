@@ -1,0 +1,50 @@
+{
+  "source_state": "All listed console runs used an uncommitted prototype on e8f8caba59c90f65a47ffe9ebdf2c28701bbde64. They do not qualify the committed parent or the eventual clean candidate.",
+  "runs": [
+    {
+      "run": "ebf19c4662",
+      "classification": "browser runner limitation",
+      "observation": "Separate Chromium headless shell stalls in axe color-contrast; full Chromium completes current axe rules on good/bad controls without rule exclusions or CSP relaxation."
+    },
+    {
+      "run": "2ba944a616",
+      "classification": "manual review stopped",
+      "observation": "Owned fixture deliberately stopped after visual and dialog focus review; not a pass."
+    },
+    {
+      "run": "34f25b7510",
+      "classification": "product defect DEFECT.0032",
+      "observation": "Keyboard creation dialog initially focuses Close instead of Repository name."
+    },
+    {
+      "run": "f7bcdd97c5",
+      "classification": "test locator defect",
+      "observation": "Create repository locator matches both inert background empty-state and dialog submit buttons. Scope submission to the dialog."
+    },
+    {
+      "run": "64179f7175",
+      "classification": "test clock setup defect",
+      "observation": "Clock installed after application timers were created. Install the clock before navigation, then advance it to test actual stale labeling."
+    },
+    {
+      "run": "9bf6ccc8c9",
+      "classification": "test contract expectation defect",
+      "observation": "npm metadata with no permitted versions returns HTTP 404. Require native E404 rather than treating an arbitrary failure or expecting 403."
+    },
+    {
+      "run": "a194a68e9a",
+      "classification": "product defect DEFECT.0033",
+      "observation": "Visually hidden absolute Actions table header escapes the unpositioned scroll container and widens mobile document to 446 px at a 390 px viewport."
+    },
+    {
+      "run": "a7d79f9263",
+      "classification": "successful preflight",
+      "observation": "Both real-browser tests pass with no skips/flakiness, 19 workflow checks and 14 named accessibility states with zero findings."
+    }
+  ],
+  "other_observations": [
+    "A sandbox-only unit attempt could not bind an owned httptest socket; rerun with local socket authority rather than change tests.",
+    "Gitleaks classified an API source-file SHA-256 map value as a generic API credential. Store file paths and SHA-256 values in separate structured fields; no secret-scan exclusion added."
+  ],
+  "limits": "Only final clean source/binary replays can qualify the eventual candidate. Broad readiness remains negative."
+}

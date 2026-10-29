@@ -72,6 +72,24 @@ components:
       pattern: '^[1-9][0-9]*:(event|integrity-[a-f0-9]{64}|reconcile-[a-f0-9]{64}|sweep-[a-f0-9]{64}|inventory-[a-f0-9]{64})$'
       description: Tenant-local source sequence plus effect key; equal IDs may exist in different tenants.
 paths:
+  /api/v1/session:
+    get:
+      summary: Read current authenticated tenant identity and supported native adapters
+      responses:
+        '200':
+          description: Current tenant, actor, role, public_url and implemented format names. No credential, credential hash or browser cookie is returned. Rechecks the current credential.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [tenant, actor, role, public_url, formats]
+                properties:
+                  tenant: {type: string}
+                  actor: {type: string}
+                  role: {type: string, enum: [admin, writer, reader]}
+                  public_url: {type: string}
+                  formats: {type: array, items: {type: string}}
+        '401': {description: Missing, expired, revoked or worker-purpose credential}
   /api/v1/repositories:
     get:
       operationId: listRepositories

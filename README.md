@@ -17,6 +17,9 @@ completion.
 
 ## Initialize a blank native installation
 
+The [operator console](docs/operator/console.md) is embedded at `/console/`. It uses
+the same tenant authorization, policy and durable operations as the CLI/API.
+
 The [native install guide](docs/operator/native-install.md) starts with an empty
 PostgreSQL database, creates private administrator/worker configuration and local
 TLS trust, then walks through first npm publication, exact-digest approval and

@@ -1,0 +1,13 @@
+Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: true
+Received: false
+
+  93 |       await page.route('**/api/v1/repositories',route=>route.fulfill({status:503,json:{error:{code:'owned_fault',action:'Owned service fault; retry after recovery.'}}}));await page.getByRole('button',{name:'Refresh',exact:true}).click();await expect(page.getByRole('alert')).toContainText('showing an older observation');await page.unroute('**/api/v1/repositories');await page.getByRole('button',{name:'Try again',exact:true}).click();await expect(page.getByRole('alert')).toHaveCount(0);
+  94 |     });
+> 95 |     await page.setViewportSize({width:390,height:844});await axe('mobile repository view');expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:path.join(fixture.private,'console-mobile.png'),fullPage:true});await page.setViewportSize({width:1440,height:1000});await page.screenshot({path:path.join(fixture.private,'console-repositories.png'),fullPage:true});
+     |                                                                                                                                                                              ^
+  96 |     let release;const gate=new Promise(resolve=>{release=resolve});let intercepted;const arrived=new Promise(resolve=>{intercepted=resolve});
+  97 |     await page.route('**/api/v1/repositories',async route=>{if(route.request().method()!=='GET')return route.continue();const r=await route.fetch();intercepted();await gate;try{await route.fulfill({response:r})}catch{}});
+  98 |     await page.getByRole('button',{name:'Refresh',exact:true}).click();await arrived;await page.getByRole('button',{name:'Disconnect',exact:true}).click();await login(page,'other');release();await page.unroute('**/api/v1/repositories');
+    at /Users/shankar/Desktop/ctlplne-cratectl/web/tests/operator.spec.mjs:95:174

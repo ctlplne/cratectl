@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"ctlplne.dev/cratectl/internal/blob"
+	"ctlplne.dev/cratectl/internal/consoleui"
 	crypt "ctlplne.dev/cratectl/internal/crypto"
 	"ctlplne.dev/cratectl/internal/store"
 	"ctlplne.dev/cratectl/internal/upstream"
@@ -166,6 +167,10 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("X-Content-Type-Options", "nosniff")
 	w.Header().Set("Cache-Control", "private, no-store")
 	w.Header().Set("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'")
+	if r.URL.Path == "/" || r.URL.Path == "/console" || strings.HasPrefix(r.URL.Path, "/console/") {
+		consoleui.Serve(w, r)
+		return
+	}
 	if r.URL.Path == "/health/live" {
 		writeJSON(w, 200, map[string]string{"status": "live"})
 		return
@@ -266,6 +271,25 @@ func readJSON(w http.ResponseWriter, r *http.Request, v any, limit int64) bool {
 }
 func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Identity) {
 	p := strings.TrimPrefix(r.URL.Path, "/api/v1/")
+	if p == "session" {
+		if r.Method != "GET" {
+			w.Header().Set("Allow", "GET")
+			fail(w, 405, "method_not_allowed", "Read current identity with GET.")
+			return
+		}
+		if e := s.DB.Tx(r.Context(), i, false, func(pgx.Tx) error { return nil }); e != nil {
+			respondErr(w, e)
+			return
+		}
+		formats := []string{}
+		for _, name := range []string{"generic", "maven", "npm", "pypi", "oci"} {
+			if s.adapters[name] != nil {
+				formats = append(formats, name)
+			}
+		}
+		writeJSON(w, 200, map[string]any{"tenant": i.Tenant, "actor": i.Actor, "role": i.Role, "public_url": s.PublicURL, "formats": formats})
+		return
+	}
 	if p == "maintenance/storage-inventories" || strings.HasPrefix(p, "maintenance/storage-inventories/") {
 		s.inventoryManagement(w, r, i, p)
 		return
