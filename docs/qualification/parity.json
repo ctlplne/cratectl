@@ -35,10 +35,10 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "internal/server/oci*.go, internal/store/oci*.go, shared retrieval/authorization/blob and upstream transport",
+      "implementation": "internal/store/uploads.go, reconciliation.go and retrieval.go; internal/blob/uploads.go; internal/server/uploads.go and leases.go; internal/worker",
       "surfaces": {
-        "api": "/v2/REPOSITORY/IMAGE/...",
-        "cli": null,
+        "api": "OCI upload status/progress/cancel; /api/v1/maintenance/reconciliations; /api/v1/jobs",
+        "cli": "cratectld worker; cratectl management API",
         "ui": null
       },
       "core": true,
@@ -76,7 +76,7 @@
         "delete/restore"
       ],
       "state": "implementing",
-      "candidate": "a5fa76bea4476ff795c148d1fedab53fb4fbed8a",
+      "candidate": "f8fed1f48e67ff142c4d253effb28437f5cb75ab",
       "evidence": [
         "evidence/2026-10-28/conformance-fc7ad95c82.json",
         "evidence/2026-10-28/conformance-122db557f4.json",
@@ -92,10 +92,14 @@
         "evidence/2026-10-28/oci-discovery-clean-postgres-race.txt",
         "evidence/2026-10-28/conformance-536f022f68.json",
         "evidence/2026-10-28/public-oci-fbd1f0d8c7.json",
-        "evidence/2026-10-28/oci-descriptor-clean-postgres-race.txt"
+        "evidence/2026-10-28/oci-descriptor-clean-postgres-race.txt",
+        "evidence/2026-10-28/leases-51a334f550.json",
+        "evidence/2026-10-28/leases-3f7e506ef0.json",
+        "evidence/2026-10-28/conformance-b21bf4dd2f.json",
+        "evidence/2026-10-28/recovery-clean-postgres-race.txt"
       ],
-      "limits": "Stock ORAS/real PostgreSQL proof includes complete paged discovery, governed descriptor URL fallback, exact nested/duplicate graphs, real native server process restarts and direct pin refresh, rotated alternate-only referrer advertisements, current policy and no locator/source credentials in normalized durable data. Original manifest bytes retain publisher fields. A pinned real Docker Hub/anonymous-token/CloudFront image replays exact layouts/restart/refresh/denial. Other providers/private credentials/PKI/clients/platforms, source lifecycle/delete/restore, mutable-source races/faults/scale and production campaigns remain required.",
-      "next_action": "Complete source lifecycle/delete/restore, locator/grant/source races, broader providers/private credentials/clients, fault/scale and production qualification; no full format verdict."
+      "limits": "Verified subset: bounded immutable OCI parts and legacy-prefix recovery; current credential/grant/lease fences; actual registry crashes; fixed-cutoff, page-resumable lease metadata recovery with cancellation and exact offsets. CAS inventory/orphan GC, full historical integrity sweep, holds/retention, S3, production upgrades/restore and broad client/fault/multi-host/scale qualification remain required. Full capability is not verified.",
+      "next_action": "Complete full inventory/orphan/GC/holds/retention, historical integrity sweep, S3, production rolling upgrade/restore and broader fault/scale/client qualification."
     },
     {
       "id": "FMT.OCI.PROXY",
@@ -23869,10 +23873,10 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "internal/upstream, internal/store/repository.go, internal/store/retrieval.go, internal/server/resolve.go",
+      "implementation": "internal/store/uploads.go, reconciliation.go and retrieval.go; internal/blob/uploads.go; internal/server/uploads.go and leases.go; internal/worker",
       "surfaces": {
-        "api": null,
-        "cli": null,
+        "api": "OCI upload status/progress/cancel; /api/v1/maintenance/reconciliations; /api/v1/jobs",
+        "cli": "cratectld worker; cratectl management API",
         "ui": null
       },
       "core": true,
@@ -23893,12 +23897,16 @@
         "recovery"
       ],
       "state": "implementing",
-      "candidate": "7f0ce80f9fc8b5f55200495331f9f1a61ba521cc",
+      "candidate": "f8fed1f48e67ff142c4d253effb28437f5cb75ab",
       "evidence": [
-        "evidence/2026-10-28/conformance-732d2ed67e.json"
+        "evidence/2026-10-28/conformance-732d2ed67e.json",
+        "evidence/2026-10-28/leases-51a334f550.json",
+        "evidence/2026-10-28/leases-3f7e506ef0.json",
+        "evidence/2026-10-28/conformance-b21bf4dd2f.json",
+        "evidence/2026-10-28/recovery-clean-postgres-race.txt"
       ],
-      "limits": "Early generic/Maven raw proof only; full client/mode, metadata merge, private HTTPS/PKI, process-crash, fair scheduling and scale qualification remain open.",
-      "next_action": "Qualify remaining native semantics and fault campaigns; no full-format result follows from this proof."
+      "limits": "Verified subset: bounded immutable OCI parts and legacy-prefix recovery; current credential/grant/lease fences; actual registry crashes; fixed-cutoff, page-resumable lease metadata recovery with cancellation and exact offsets. CAS inventory/orphan GC, full historical integrity sweep, holds/retention, S3, production upgrades/restore and broad client/fault/multi-host/scale qualification remain required. Full capability is not verified.",
+      "next_action": "Complete full inventory/orphan/GC/holds/retention, historical integrity sweep, S3, production rolling upgrade/restore and broader fault/scale/client qualification."
     },
     {
       "id": "STATE.BOUNDED-QUEUES",
@@ -23917,9 +23925,9 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "internal/store/jobs*, internal/worker, internal/blob/check.go, internal/server/jobs.go, publication/retrieval intent hooks and cmd/cratectld/worker.go",
+      "implementation": "internal/store/uploads.go, reconciliation.go and retrieval.go; internal/blob/uploads.go; internal/server/uploads.go and leases.go; internal/worker",
       "surfaces": {
-        "api": "/api/v1/jobs, /api/v1/activity",
+        "api": "OCI upload status/progress/cancel; /api/v1/maintenance/reconciliations; /api/v1/jobs",
         "cli": "cratectld worker; cratectl management API",
         "ui": null
       },
@@ -23941,14 +23949,18 @@
         "recovery"
       ],
       "state": "implementing",
-      "candidate": "17182b6aa6bae022f5f18a4d3842fb90ee82479a",
+      "candidate": "f8fed1f48e67ff142c4d253effb28437f5cb75ab",
       "evidence": [
         "evidence/2026-10-28/jobs-184a346769.json",
         "evidence/2026-10-28/conformance-04e22aa966.json",
-        "evidence/2026-10-28/worker-clean-postgres-race.txt"
+        "evidence/2026-10-28/worker-clean-postgres-race.txt",
+        "evidence/2026-10-28/leases-51a334f550.json",
+        "evidence/2026-10-28/leases-3f7e506ef0.json",
+        "evidence/2026-10-28/conformance-b21bf4dd2f.json",
+        "evidence/2026-10-28/recovery-clean-postgres-race.txt"
       ],
-      "limits": "Dedicated tenant-purpose workers execute event projections and exact-byte storage-integrity checks with admission/running budgets, separate lane slots, local round robin, fenced renewable leases, durable retry/cancellation and immutable attempt observations. Real PostgreSQL and two-tenant actual-process API/CLI proof covers crashes, corruption/repair, credential rollover, policy independence, out-of-order activity and source capacity recovery. Full multi-host scheduling, scanners/external adapters, S3, orphan/retrieval/upload reapers, retention, restore, production and full security remain required; storage integrity does not approve content.",
-      "next_action": "Complete mixed-load/multi-host fairness, scanner/external effect handlers, orphan/retrieval/upload reconciliation, S3, retention/restore and full qualification."
+      "limits": "Verified subset: bounded immutable OCI parts and legacy-prefix recovery; current credential/grant/lease fences; actual registry crashes; fixed-cutoff, page-resumable lease metadata recovery with cancellation and exact offsets. CAS inventory/orphan GC, full historical integrity sweep, holds/retention, S3, production upgrades/restore and broad client/fault/multi-host/scale qualification remain required. Full capability is not verified.",
+      "next_action": "Complete full inventory/orphan/GC/holds/retention, historical integrity sweep, S3, production rolling upgrade/restore and broader fault/scale/client qualification."
     },
     {
       "id": "STATE.FAIRNESS",
@@ -23967,10 +23979,10 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "internal/store/uploads.go, reconciliation.go and retrieval.go; internal/blob/uploads.go; internal/server/uploads.go and leases.go; internal/worker",
       "surfaces": {
-        "api": null,
-        "cli": null,
+        "api": "OCI upload status/progress/cancel; /api/v1/maintenance/reconciliations; /api/v1/jobs",
+        "cli": "cratectld worker; cratectl management API",
         "ui": null
       },
       "core": true,
@@ -23990,11 +24002,16 @@
         "partial failure",
         "recovery"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "state": "implementing",
+      "candidate": "f8fed1f48e67ff142c4d253effb28437f5cb75ab",
+      "evidence": [
+        "evidence/2026-10-28/leases-51a334f550.json",
+        "evidence/2026-10-28/leases-3f7e506ef0.json",
+        "evidence/2026-10-28/conformance-b21bf4dd2f.json",
+        "evidence/2026-10-28/recovery-clean-postgres-race.txt"
+      ],
+      "limits": "Verified subset: bounded immutable OCI parts and legacy-prefix recovery; current credential/grant/lease fences; actual registry crashes; fixed-cutoff, page-resumable lease metadata recovery with cancellation and exact offsets. CAS inventory/orphan GC, full historical integrity sweep, holds/retention, S3, production upgrades/restore and broad client/fault/multi-host/scale qualification remain required. Full capability is not verified.",
+      "next_action": "Complete full inventory/orphan/GC/holds/retention, historical integrity sweep, S3, production rolling upgrade/restore and broader fault/scale/client qualification."
     },
     {
       "id": "STATE.PROJECTIONS",
@@ -24207,10 +24224,10 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "internal/store/uploads.go, reconciliation.go and retrieval.go; internal/blob/uploads.go; internal/server/uploads.go and leases.go; internal/worker",
       "surfaces": {
-        "api": null,
-        "cli": null,
+        "api": "OCI upload status/progress/cancel; /api/v1/maintenance/reconciliations; /api/v1/jobs",
+        "cli": "cratectld worker; cratectl management API",
         "ui": null
       },
       "core": true,
@@ -24230,11 +24247,16 @@
         "partial failure",
         "recovery"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "state": "implementing",
+      "candidate": "f8fed1f48e67ff142c4d253effb28437f5cb75ab",
+      "evidence": [
+        "evidence/2026-10-28/leases-51a334f550.json",
+        "evidence/2026-10-28/leases-3f7e506ef0.json",
+        "evidence/2026-10-28/conformance-b21bf4dd2f.json",
+        "evidence/2026-10-28/recovery-clean-postgres-race.txt"
+      ],
+      "limits": "Verified subset: bounded immutable OCI parts and legacy-prefix recovery; current credential/grant/lease fences; actual registry crashes; fixed-cutoff, page-resumable lease metadata recovery with cancellation and exact offsets. CAS inventory/orphan GC, full historical integrity sweep, holds/retention, S3, production upgrades/restore and broad client/fault/multi-host/scale qualification remain required. Full capability is not verified.",
+      "next_action": "Complete full inventory/orphan/GC/holds/retention, historical integrity sweep, S3, production rolling upgrade/restore and broader fault/scale/client qualification."
     },
     {
       "id": "STORE.QUOTAS",
@@ -24540,10 +24562,10 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "internal/store/uploads.go, reconciliation.go and retrieval.go; internal/blob/uploads.go; internal/server/uploads.go and leases.go; internal/worker",
       "surfaces": {
-        "api": null,
-        "cli": null,
+        "api": "OCI upload status/progress/cancel; /api/v1/maintenance/reconciliations; /api/v1/jobs",
+        "cli": "cratectld worker; cratectl management API",
         "ui": null
       },
       "core": true,
@@ -24563,11 +24585,16 @@
         "partial failure",
         "recovery"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "state": "implementing",
+      "candidate": "f8fed1f48e67ff142c4d253effb28437f5cb75ab",
+      "evidence": [
+        "evidence/2026-10-28/leases-51a334f550.json",
+        "evidence/2026-10-28/leases-3f7e506ef0.json",
+        "evidence/2026-10-28/conformance-b21bf4dd2f.json",
+        "evidence/2026-10-28/recovery-clean-postgres-race.txt"
+      ],
+      "limits": "Verified subset: bounded immutable OCI parts and legacy-prefix recovery; current credential/grant/lease fences; actual registry crashes; fixed-cutoff, page-resumable lease metadata recovery with cancellation and exact offsets. CAS inventory/orphan GC, full historical integrity sweep, holds/retention, S3, production upgrades/restore and broad client/fault/multi-host/scale qualification remain required. Full capability is not verified.",
+      "next_action": "Complete full inventory/orphan/GC/holds/retention, historical integrity sweep, S3, production rolling upgrade/restore and broader fault/scale/client qualification."
     },
     {
       "id": "STORE.BACKUP",
@@ -25198,10 +25225,10 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "internal/store/uploads.go, reconciliation.go and retrieval.go; internal/blob/uploads.go; internal/server/uploads.go and leases.go; internal/worker",
       "surfaces": {
-        "api": null,
-        "cli": null,
+        "api": "OCI upload status/progress/cancel; /api/v1/maintenance/reconciliations; /api/v1/jobs",
+        "cli": "cratectld worker; cratectl management API",
         "ui": null
       },
       "core": true,
@@ -25221,11 +25248,16 @@
         "partial failure",
         "recovery"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "state": "implementing",
+      "candidate": "f8fed1f48e67ff142c4d253effb28437f5cb75ab",
+      "evidence": [
+        "evidence/2026-10-28/leases-51a334f550.json",
+        "evidence/2026-10-28/leases-3f7e506ef0.json",
+        "evidence/2026-10-28/conformance-b21bf4dd2f.json",
+        "evidence/2026-10-28/recovery-clean-postgres-race.txt"
+      ],
+      "limits": "Verified subset: bounded immutable OCI parts and legacy-prefix recovery; current credential/grant/lease fences; actual registry crashes; fixed-cutoff, page-resumable lease metadata recovery with cancellation and exact offsets. CAS inventory/orphan GC, full historical integrity sweep, holds/retention, S3, production upgrades/restore and broad client/fault/multi-host/scale qualification remain required. Full capability is not verified.",
+      "next_action": "Complete full inventory/orphan/GC/holds/retention, historical integrity sweep, S3, production rolling upgrade/restore and broader fault/scale/client qualification."
     },
     {
       "id": "OPS.OBSERVABILITY",
@@ -27539,5 +27571,5 @@
     "current_source_candidate": "887c569ac96c451bccd91ae872317c06a890117a",
     "historical_candidate_fields": "Earlier candidate fields below refer to the archived original history. Preserve their exact evidence scope; the new source baseline and repeated native proof are recorded separately."
   },
-  "current_source_candidate": "17182b6aa6bae022f5f18a4d3842fb90ee82479a"
+  "current_source_candidate": "f8fed1f48e67ff142c4d253effb28437f5cb75ab"
 }

@@ -246,11 +246,13 @@
       "id": "DEFECT.0025",
       "summary": "Slow OCI chunk body held the tenant journal mutation lock",
       "first_failure": "evidence/2026-10-28/upload-lock-first.txt",
-      "state": "repaired; working-tree replay passed; clean qualification pending",
+      "state": "repaired and replayed",
       "repair": "Stage immutable bounded chunks outside the SQL transaction; renew exact upload/proxy fences and current authorization; commit upload offsets under a short fence check; preserve legacy acknowledged prefixes. Add bounded auditable expired-lease reconciliation that retains bytes.",
-      "replay": "evidence/2026-10-28/recovery-legacy-grants.txt",
-      "native_replay": "evidence/2026-10-28/leases-d98101d216.json",
-      "limits": "Native local topology; CAS inventory/GC, holds, historical integrity sweep, production upgrade and broad fault/scale qualification remain required."
+      "replay": "evidence/2026-10-28/recovery-clean-postgres-race.txt",
+      "native_replay": "evidence/2026-10-28/leases-51a334f550.json",
+      "limits": "Native local topology; CAS inventory/GC, holds, historical integrity sweep, production upgrade and broad fault/scale qualification remain required.",
+      "candidate": "f8fed1f48e67ff142c4d253effb28437f5cb75ab",
+      "native_race_replay": "evidence/2026-10-28/leases-3f7e506ef0.json"
     }
   ]
 }

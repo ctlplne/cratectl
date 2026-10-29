@@ -1,0 +1,155 @@
+{
+  "candidate": "f8fed1f48e67ff142c4d253effb28437f5cb75ab",
+  "qualified_at": "2026-10-29T02:07:52.442535+00:00",
+  "source_dirty": false,
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "build_source_matches_candidate": true,
+  "commit_identity": {
+    "author": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>",
+    "committer": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>"
+  },
+  "this_checkpoint_changes_pushed": false,
+  "remote_main_last_verified": "b13550a5f744f4d9a6a8e11c36fd3bf7a3348cec",
+  "prior_remote_correction": "evidence/2026-10-28/remote-state-audit.json",
+  "previous_checkpoint": "evidence/2026-10-28/worker-checkpoint.json",
+  "provenance_audit": {
+    "github_authenticated_login": "imfeelingtheagi",
+    "github_user_id": 288773099,
+    "private_repository_id": 1437631481,
+    "recreation_already_completed": true,
+    "repeat_reset_or_remote_mutation": false,
+    "all_local_commits_verified_identity": true
+  },
+  "artifacts": {
+    "bin/cratectld": "09fb36b1f81e3012f44ac32ff8d2902f5dc16c4cd524ff0c03cb601bf8c71ff4",
+    "bin/cratectl": "b37210f5620cd4c06a692acb1ec31e566cf0680ab785bc0d1811d6ab49c29ecd"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "f8fed1f48e67ff142c4d253effb28437f5cb75ab",
+        "vcs.time": "2026-10-29T02:02:05Z",
+        "vcs.modified": "false"
+      }
+    },
+    "bin/cratectl": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "f8fed1f48e67ff142c4d253effb28437f5cb75ab",
+        "vcs.time": "2026-10-29T02:02:05Z",
+        "vcs.modified": "false"
+      }
+    }
+  },
+  "race_artifacts": {
+    "bin/cratectld": "87073152052de8358311396b94050aa21ba1eaabc561d96505c1a7961acdc1af",
+    "bin/cratectl": "b37210f5620cd4c06a692acb1ec31e566cf0680ab785bc0d1811d6ab49c29ecd"
+  },
+  "race_build_identity": {
+    "bin/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-race": "true",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "f8fed1f48e67ff142c4d253effb28437f5cb75ab",
+      "vcs.time": "2026-10-29T02:02:05Z",
+      "vcs.modified": "false"
+    },
+    "bin/cratectl": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "f8fed1f48e67ff142c4d253effb28437f5cb75ab",
+      "vcs.time": "2026-10-29T02:02:05Z",
+      "vcs.modified": "false"
+    }
+  },
+  "race_detector": "Actual registry/maintenance processes use -race; GORACE halt_on_error=1 exitcode=66; private logs have no WARNING: DATA RACE. Production binary restored and hash checked.",
+  "native_assertions": 274,
+  "native_evidence": "evidence/2026-10-28/conformance-b21bf4dd2f.json",
+  "public_provider_assertions": 33,
+  "public_provider_evidence": "evidence/2026-10-28/public-oci-d3c7785d5e.json",
+  "worker_assertions": 71,
+  "worker_evidence": "evidence/2026-10-28/jobs-b9a6cdeae3.json",
+  "recovery_assertions": 63,
+  "recovery_evidence": "evidence/2026-10-28/leases-51a334f550.json",
+  "recovery_race_assertions": 63,
+  "recovery_race_evidence": "evidence/2026-10-28/leases-3f7e506ef0.json",
+  "database_profile": "native",
+  "topology": "macOS arm64; owned loopback registry/worker and native PostgreSQL; actual process kills; held HTTP chunk/source bodies; shared local CAS; two tenants",
+  "gates": {
+    "unit_vet_race": "evidence/2026-10-28/recovery-unit-vet-race.txt; passed",
+    "postgres_native_race": "evidence/2026-10-28/recovery-clean-postgres-race.txt; all suites twice under race detector",
+    "native_recovery": "evidence/2026-10-28/leases-51a334f550.json",
+    "native_recovery_race": "evidence/2026-10-28/leases-3f7e506ef0.json",
+    "existing_native_clients": "evidence/2026-10-28/conformance-b21bf4dd2f.json",
+    "existing_worker": "evidence/2026-10-28/jobs-b9a6cdeae3.json",
+    "pinned_public_oci": "evidence/2026-10-28/public-oci-d3c7785d5e.json",
+    "fuzz": "evidence/2026-10-28/recovery-fuzz.txt; 54309 canonical Content-Range executions",
+    "go_vulnerability": "evidence/2026-10-28/govulncheck-recovery-summary.json; 238 records, no findings",
+    "trivy_source": "evidence/2026-10-28/trivy-recovery-source.json; no vulnerability, misconfiguration or secret findings in scoped source",
+    "secret_review": "evidence/2026-10-28/gitleaks-recovery-final-review.json; final review snapshot clean",
+    "secret_history": "evidence/2026-10-28/gitleaks-recovery-final-history.json; source commit history clean",
+    "full_security": "incomplete; make security intentionally fails",
+    "production_packaging": "incomplete; make packaging intentionally fails"
+  },
+  "trivy_database": {
+    "Version": 2,
+    "NextUpdate": "2026-10-29T13:01:10.618103614Z",
+    "UpdatedAt": "2026-10-28T13:01:10.618103814Z",
+    "DownloadedAt": "2026-10-28T17:09:17.319606Z"
+  },
+  "completed_scope": [
+    "Immutable bounded OCI parts with streaming per-part verification and exact final assembly outside the tenant SQL lock.",
+    "Renewed generation/token/deadline and current credential/repository grants; cancellation and legacy acknowledged-prefix import retain old bytes.",
+    "Renewable source leases and final current-deadline completion fence.",
+    "Administrator preview and idempotent bounded maintenance admission, fixed cutoff, atomic per-page progress/audit, cancellation and same-cursor redrive.",
+    "Recovery retains live and after-cutoff work, advances abandoned-owner fences, retains offsets and never deletes bytes."
+  ],
+  "retained_failures": [
+    "evidence/2026-10-28/upload-lock-first.txt"
+  ],
+  "fixture_correction": "leases-0efdb31665.json failed on case-sensitive HTTP header lookup in the harness. Header handling and unused-yet cache inspection URL were corrected. No product failure inferred.",
+  "limits": [
+    "All 450 broad capabilities and journeys and 41 format families remain committed; broad readiness remains negative.",
+    "Lease metadata recovery is partial storage reconciliation. Full historical integrity sweep, CAS/staged/orphan inventory, holds, retention and safe GC remain required.",
+    "No scanner/external effect executor, S3, production rolling upgrade/restore or mixed-host/scale/soak qualification.",
+    "Broader protocol/client/provider, source lifecycle, console/install and every later product stage remain required."
+  ],
+  "resources": "Owned registry/worker/fixture and native PostgreSQL processes stopped after qualification; private datasets, recovery copies and original container/volume retained."
+}

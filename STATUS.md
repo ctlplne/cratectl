@@ -19,57 +19,52 @@ All 450 capabilities, 41 format families and negative readiness verdicts remain.
 The owner authorized pushing this recreation; later feature pushes still require
 the owner's authority under the standing project contract.
 
-Latest source candidate: `17182b6aa6bae022f5f18a4d3842fb90ee82479a`, committed locally as
-`imfeelingtheagi` for author and committer. Clean qualification passed 71 new
-worker assertions, 274 existing native-client assertions and 33 real-provider
-assertions against the same exact binaries. See
-`evidence/2026-10-28/worker-checkpoint.json`. Review range remains `887c569..main`;
-this worker source and checkpoint remain local.
+Latest source candidate: `f8fed1f48e67ff142c4d253effb28437f5cb75ab`, committed locally as
+`imfeelingtheagi` for both author and committer. Clean qualification passed
+63 recovery assertions, 71 existing worker assertions, 274 native-client
+assertions and 33 pinned real-provider assertions against the exact production
+binaries. Separate clean race-instrumented registry/maintenance processes passed
+all 63 recovery assertions with no race reports; production bytes were restored.
+See `evidence/2026-10-28/recovery-checkpoint.json`. This source and checkpoint remain
+local; no new push or remote configuration change was made.
 
-A dedicated native worker now executes source-event indexing and stored-byte
-SHA-256 integrity checks. Publications record exact-byte work atomically with
-references/journal/idempotency. Persisted tenant lane budgets bound admission,
-running concurrency, attempts and backoff. Independent lane slots and local
-round robin prevent the tested hash backlog from starving event indexing or the
-second tenant. Dedicated worker credentials cannot use the public API; each
-worker operation rechecks purpose, revocation and current expiry under forced RLS.
+OCI upload chunks are immutable CAS objects. Reading the body and assembling the
+final blob no longer hold the tenant database lock. Renewed operation fences and
+current credentials/grants control acceptance of each acknowledged offset. Native
+DELETE cancels in-flight ownership. Bounded streaming assembly checks every part.
+Legacy sessions import only the acknowledged prefix while retaining their old
+files and unacknowledged tails. Source fills now renew their own generation/token
+leases; final completion rechecks its current deadline.
 
-Lease generations/tokens fence stale owners. Actual process kills and restart
-recover work without observations from the killed attempt. Cancellation and
-idempotent redrive retain honest state and attempt history. Integrity checks
-stream bounded paced reads; observations never approve quarantine or bypass
-serving policy. Native proof covers same-length corruption, bounded retry,
-repair, current denial, credential rollover and registry restart.
+A third reserved worker lane performs expired lease metadata reconciliation.
+Administrator preview/admission, fixed cutoff, atomic page effects/audit/cursor,
+cancellation and same-cursor retry are implemented. Native actual process kills
+prove upload resume at the exact acknowledged offset and new-generation source
+retry. Live heartbeats and after-cutoff expiration are preserved. Recovery never
+deletes bytes or approves security policy; full CAS inventory and GC remain open.
 
-Repaired and retained: source-sequence activity pagination lost late projections;
-transaction-start authentication let a waiting claim outlive expiry; queue
-rejection could leave a source fill fetching. Completion positions, current-clock
-authentication and audited fence-specific abandonment pass their regressions and
-native source-capacity recovery. An initial fixture incorrectly treated tenant-
-local job IDs as globally unique; no tenant leak was established by that failure.
+The retained initial regression showed slow OCI body I/O holding the tenant lock.
+Real PostgreSQL/server/native-client integration runs pass twice under the race
+detector, including cancellation, credential expiry, revoked write grants, stale
+owners, bounded pages and legacy-prefix import. Canonical upload-range fuzzing
+ran 54309 executions. Unit/vet/race, Govulncheck (238 records), scoped Trivy
+and Gitleaks review/history pass. Full security and packaging remain incomplete.
+The first recovery harness failed on HTTP header case handling; that fixture
+failure did not establish a product failure.
 
-Two repeated clean PostgreSQL/store/server/native-process race suites pass.
-The separately identified race-instrumented registry/worker build also passes all
-71 worker assertions with no Go race reports; production binaries were restored.
-Canonical job selector fuzzing ran 103502 executions. Unit/vet/race,
-Govulncheck (238 records), scoped Trivy and Gitleaks source/history/review
-pass. Exact native registry/worker binaries also pass the earlier npm/Python/OCI/
-Maven/generic and pinned Docker Hub/token/CloudFront journeys. Full security and
-production packaging remain incomplete.
+Live provenance audit confirms authenticated GitHub user `imfeelingtheagi`
+(ID 288773099), the already-recreated private repository ID 1437631481 and correct
+author/committer identity across local history. No repeat reset was needed.
+Last verified remote main remains `b13550a`; the earlier remote-state correction
+remains authoritative. Feature pushes still require owner authority.
 
-Last verified GitHub main remains `b13550a` with author/committer
-`imfeelingtheagi`. The prior remote-state correction remains authoritative.
-No new push was made; feature pushes require owner authority. See
-`evidence/2026-10-28/remote-state-audit.json`.
-
-All 450 broad capabilities and 41 families remain open. Worker scanners/external
-adapters, orphan/CAS and retrieval/upload reconciliation, retention, multi-host/
-mixed-load fairness, S3, source lifecycle/delete/restore, remaining format
-semantics, operator install/console, recovery and every later product stage remain
-required. A complete historical storage-integrity sweep is also required.
-Owned registry/worker/fixture and native PostgreSQL processes are
-stopped; private datasets, repaired owned fixtures, original container/volume and
-history recovery are retained.
+All 450 capabilities/journeys and 41 format families remain committed and broad
+readiness stays negative. Required work includes historical integrity sweeps,
+CAS/staged/orphan inventory, holds/retention/safe GC, scanner/external handlers,
+S3, source lifecycle/delete/restore, native operator install/console, production
+upgrade/restore, mixed-host/scale/soak and remaining protocol/product scope.
+Owned registry/worker/fixture and native PostgreSQL processes are stopped;
+private datasets, original container/volume and history recovery are retained.
 
 **Goal active; full product goal incomplete.** No design-partner, ordinary-operator
 or enterprise readiness verdict is positive. Original-history starting commit
