@@ -98,8 +98,11 @@ Repository configuration contains only `credential_ref` and matching
 scheme/host/port, a path outside `allowed_url`, or another authentication scheme.
 The server operator owns both the credential binding and the private-network
 ceiling. A tenant administrator's repository allowlist can only narrow that ceiling.
-Reconfiguration currently requires a server restart; live credential rotation and
-versioned source configuration remain required work.
+Private credential values currently require a server restart to reload. Proxy
+and group settings have a versioned administrator replacement workflow; see
+[source configuration](source-configuration.md) for preview, rollback, cache
+revalidation and controlled credential rotation. Hot private-provider reload
+remains required work.
 
 ## Restrict repositories and select sources
 

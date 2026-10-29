@@ -1,0 +1,69 @@
+{
+  "run": "201762a315",
+  "candidate": "55d0aa57e3e6e8966ca77e469ed86a1b445d37f5",
+  "source_dirty": false,
+  "artifact_digests": {
+    ".cache/pagination-production/cratectld": "cbdf03debda8c90b8197b5f9e96ab3efd2c2eb8790e137ef6e0159bf10f2250a",
+    "bin/cratectld": "9bb89af346db3482b8b206a40628b3afb5647a902439d2be40eaef80c5b87be8",
+    "bin/cratectl": "f4c8db253c05e73beb1c4f993d90d68096cde92eb74212b7220537adf7a6e736"
+  },
+  "build_identity": {
+    ".cache/pagination-production/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "51a74bd42866a6e33c77a670259ed0b4d9a959a8",
+      "vcs.time": "2026-10-29T15:35:39Z",
+      "vcs.modified": "false"
+    },
+    "bin/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "55d0aa57e3e6e8966ca77e469ed86a1b445d37f5",
+      "vcs.time": "2026-10-29T20:05:38Z",
+      "vcs.modified": "false"
+    },
+    "bin/cratectl": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "55d0aa57e3e6e8966ca77e469ed86a1b445d37f5",
+      "vcs.time": "2026-10-29T20:05:38Z",
+      "vcs.modified": "false"
+    }
+  },
+  "checks": [
+    "new CLI and runtime have clean matching candidate identities",
+    "legacy executable is the retained clean pagination source",
+    "legacy runtime publishes real npm bytes before adoption",
+    "owner plan identifies unversioned data and explicit adoption requirement",
+    "ordinary migration refuses legacy data without acknowledgement",
+    "actual killed migration process rolls back baseline DDL and receipts",
+    "adoption commits all four known receipts with safe RLS"
+  ],
+  "topology": "Native macOS legacy/current registry CLI processes, actual SIGKILL during uncommitted DDL, real PostgreSQL 16.15 restricted runtime, stock npm; explicit loopback HTTP fixture.",
+  "limits": [
+    "Legacy adoption is a controlled maintenance operation with registry and workers stopped. Pre-gate binaries do not cooperate with new transaction admission.",
+    "The fault is an owned database event trigger and advisory barrier; no production pause hook is compiled into the runtime.",
+    "This is not rolling/zero-downtime adoption, whole-transfer draining, expand/contract compatibility, HA, downgrade, backup/restore or independent-host qualification."
+  ],
+  "build_source_matches_candidate": true,
+  "status": "failed",
+  "failure": "AssertionError: tenant, repository, artifact, audit and token rows survive byte-for-byte as canonical JSON"
+}

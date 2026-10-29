@@ -1,0 +1,157 @@
+{
+  "checked_at": "2026-10-29T20:18:41.297419+00:00",
+  "candidate": "06156af19b9759035e96d63cf7a8bf52903235f7",
+  "author_and_committer": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>",
+  "previous_qualified_source": "bea2472271bd15993bcae9b8ea12a102b2608abe",
+  "runtime_records": [
+    {
+      "path": "evidence/2026-10-28/inventory-e3d4687be1.json",
+      "checks": 67,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/jobs-78647b4e8f.json",
+      "checks": 71,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/leases-4270308c28.json",
+      "checks": 63,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/public-oci-f3156ae066.json",
+      "checks": 33,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/sweeps-9b4a176959.json",
+      "checks": 80,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-29/conformance-23ed8c675d.json",
+      "checks": 79,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-29/conformance-557c91ee1d.json",
+      "checks": 46,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-29/conformance-a86293e7bb.json",
+      "checks": 43,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-29/conformance-e046925d37.json",
+      "checks": 363,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-29/console-6599d615c6.json",
+      "checks": 48,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-29/console-da238c453d.json",
+      "checks": 48,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-29/installation-18946c305d.json",
+      "checks": 30,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-29/installation-eeb01c9812.json",
+      "checks": 30,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-29/lifecycle-0f8814a281.json",
+      "checks": 46,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-29/lifecycle-6e17615a12.json",
+      "checks": 44,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-29/lifecycle-b441275b6e.json",
+      "checks": 44,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-29/lifecycle-e3d59c1eeb.json",
+      "checks": 46,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-29/schema-2249a81cf9.json",
+      "checks": 14,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-29/schema-9023d3c8b4.json",
+      "checks": 14,
+      "race": true
+    }
+  ],
+  "assertions": {
+    "production": 859,
+    "race": 350
+  },
+  "browser_tests_per_build": 6,
+  "automated_accessibility_states_per_console": 29,
+  "postgres_race_repetitions": 2,
+  "new_real_postgres_tests": 9,
+  "console": {
+    "production": "evidence/2026-10-29/console-6599d615c6.json",
+    "race": "evidence/2026-10-29/console-da238c453d.json"
+  },
+  "old_binary_upgrades": {
+    "3-production": "evidence/2026-10-29/lifecycle-e3d59c1eeb.json",
+    "3-race": "evidence/2026-10-29/lifecycle-0f8814a281.json",
+    "2-production": "evidence/2026-10-29/lifecycle-b441275b6e.json",
+    "2-race": "evidence/2026-10-29/lifecycle-6e17615a12.json"
+  },
+  "schema_version": 4,
+  "frozen_migration_checksums": [
+    "1e0f7b93d872f8ab83f85742000a6282f2722a0a338d8f2bc81755345ba66d16",
+    "9e023c96c8cf33549ce81f1eac22551b5cdb6267d146f65d430ec254dc8b10b5",
+    "44527dcd4be5177203e2b0eb93e5886a4dae437fbebf4cec14f7737ecb2f15d3",
+    "8b287dda8e78324c44275d31850418d7e7166d9d6fe49c71d539dbd44a52d209"
+  ],
+  "tests": {
+    "unit_vet_race_console_reproduction": "evidence/2026-10-29/source-clean-unit-vet-race.txt",
+    "postgres_race": "evidence/2026-10-29/source-clean-postgres-race.txt",
+    "focused_verbose_postgres_race": "evidence/2026-10-29/source-focused-postgres-race.txt",
+    "serial_replay": "evidence/2026-10-29/source-clean-replay.json",
+    "initial_primary_upgrade_candidate": "55d0aa57e3e6e8966ca77e469ed86a1b445d37f5",
+    "initial_primary_plan": "evidence/2026-10-29/source-primary-v3-plan.txt",
+    "initial_primary_upgrade": "evidence/2026-10-29/source-primary-v3-upgrade.txt"
+  },
+  "artifact_manifest": "evidence/2026-10-29/source-configuration-artifacts.json",
+  "security": "evidence/2026-10-29/source-configuration-security.json",
+  "test_services": "Owned registry/worker and native PostgreSQL stopped; private data/artifacts retained.",
+  "this_turn_executed_push": false,
+  "this_turn_remote_mutation": false,
+  "identity_hooks": {
+    "enabled": ".githooks",
+    "author_override_rejected": true,
+    "committer_override_rejected": true
+  },
+  "goal_turn_classification": "progress: clean source revision, native cache/credential replacement, retained discovery and operator workflows qualified within named fixtures",
+  "limits": [
+    "All 450 capabilities/journeys and 41 families remain unfinished; broad readiness is negative.",
+    "Named macOS arm64 clients, loopback HTTP, filesystem and PostgreSQL fixtures only. Full source/grant/network/locator races, client/provider/platform, fault/scale and production qualification remain required.",
+    "Static private provider reload is covered through suspension/restart/same-settings epoch/resume. Hot reload and managed secret lifecycle remain open.",
+    "CAS bytes and source receipts remain retained. No reclamation, retention/GC, recursive groups or supported corrupt/old-byte repair is claimed.",
+    "Schema 4 preserves receipts 1\u20133 under controlled maintenance; rolling upgrade, transfer draining, backup/restore and downgrade remain open.",
+    "Six Chromium workflows and 29 automated A/AA states per build do not establish full WCAG or assistive-technology coverage. Other-platform binaries compile only."
+  ],
+  "remote_audit": "evidence/2026-10-29/remote-state-source-audit.json"
+}

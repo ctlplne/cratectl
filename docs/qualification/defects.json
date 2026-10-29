@@ -482,6 +482,36 @@
       "limits": "The ignored negative Go overlay changes only this kind test. Full native client and platform coverage remains open.",
       "candidate": "bea2472271bd15993bcae9b8ea12a102b2608abe",
       "replay": "evidence/2026-10-29/lifecycle-checkpoint.json"
+    },
+    {
+      "id": "DEFECT.0044",
+      "summary": "OCI catalog refresh lost visible peers when an advertised object was locally retired",
+      "first_failure": "evidence/2026-10-29/source-discovery-first-failure.txt",
+      "state": "repaired and clean-source replayed",
+      "repair": "Retain structurally verified catalog observations without granting serving authority or changing tombstones/denials.",
+      "candidate": "06156af19b9759035e96d63cf7a8bf52903235f7",
+      "replay": "evidence/2026-10-29/source-configuration-checkpoint.json",
+      "limits": "Named fixtures only; full qualification remains open."
+    },
+    {
+      "id": "DEFECT.0045",
+      "summary": "Rejected cross-epoch 304 left a live fill stuck",
+      "first_failure": "evidence/2026-10-29/source-304-lease-first-failure.txt",
+      "state": "repaired and clean-source replayed",
+      "repair": "Classify invalid revalidation and perform bounded terminal lease cleanup; permit immediate forced retry.",
+      "candidate": "06156af19b9759035e96d63cf7a8bf52903235f7",
+      "replay": "evidence/2026-10-29/source-configuration-checkpoint.json",
+      "limits": "Named fixtures only; full qualification remains open."
+    },
+    {
+      "id": "DEFECT.0046",
+      "summary": "Legacy migration comparison omitted new revision-zero columns",
+      "first_failure": "evidence/2026-10-29/source-legacy-comparison-first-failure.txt",
+      "state": "repaired and clean-source replayed",
+      "repair": "Compare every original field and require zero for new source revision columns; retain original credential/native reads.",
+      "candidate": "06156af19b9759035e96d63cf7a8bf52903235f7",
+      "replay": "evidence/2026-10-29/source-configuration-checkpoint.json",
+      "limits": "Named fixtures only; full qualification remains open."
     }
   ]
 }

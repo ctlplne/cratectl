@@ -72,17 +72,20 @@ preserves denial and quarantine; it never labels unassessed bytes security-clean
 A stored idempotency response can confirm an earlier successful restore even if
 storage subsequently becomes unavailable, while current write grants still apply.
 
-Schema 3 adds forced-RLS lifecycle tables. Stop registry and workers, inspect
+Schema 3 adds forced-RLS lifecycle tables; schema 4 adds source revisions and
+immutable configuration history. Stop registry and workers, inspect
 `cratectld migrate --plan` with the owner configuration, apply migration, then
-start the new binaries. Steps 1 and 2 retain their original checksums. The new
-migrator validates a safe version-2 database before planning step 3. Older runtime
-binaries reject version 3. This is controlled maintenance; rolling compatibility,
+start the new binaries. Steps 1–3 retain their original checksums. The new
+migrator validates safe version-2/3 databases before planning the remaining
+steps through version 4. Older runtimes reject version 4. This is controlled maintenance; rolling compatibility,
 whole-transfer draining, backup/restore and downgrade recovery remain unqualified.
 
 The native campaign is `scripts/conformance_lifecycle.py --require-clean-build`;
 it retains the old 405 baseline and tests a real version-2 upgrade, stock ORAS,
 restart, holds, strong references, verified restore, policy and proxy lifecycle.
-Use the project-owned PostgreSQL environment and clean matching binaries.
-Full lifecycle parity, source URL/configuration changes, locator/grant races,
+Add `--baseline-version 3` to test a real schema-3 cached OCI graph upgrade.
+Use the project-owned PostgreSQL environment and clean matching binaries. See
+[source configuration](source-configuration.md) for versioned source changes.
+Full lifecycle parity, broader source/locator/grant races,
 retention policy, physical erasure/GC, large graphs, other clients/platforms and
 production recovery remain committed work.

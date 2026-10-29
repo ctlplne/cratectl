@@ -1,23 +1,36 @@
 # cratectl execution status
 
-Versioned proxy/group source configuration and schema 4 are implemented locally.
-Source revisions fence ready cache bodies, validators, native download locators,
-active fills and final source/group selection. Administrator preview, immutable
-history, exact-revision replacement and monotonic rollback are exposed in the API
-and console. Catalog intake retains retired/denied OCI observations without
-restoring them or losing visible peers. See ADR 0023 and the source-configuration
-operator guide. Migration definitions 1–3 remain frozen.
+Latest qualified source: `06156af19b9759035e96d63cf7a8bf52903235f7`, authored and committed only as
+`imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
+The authoritative checkpoint is `evidence/2026-10-29/source-configuration-checkpoint.json`.
 
-Development preflight passed focused real-PostgreSQL/HTTP isolation, lease,
-credential-authority, idempotency, malformed-304, outbox-fault, migration and
-catalog regressions; 77 stock-client source assertions; 45 old-schema-3 upgrade
-assertions; and six Chromium workflows. These observations came from a dirty
-build and do not replace the exact clean candidate checkpoint below. Clean-build,
-full integration/race, security and updated-console qualification are pending.
-No new source capability or broad readiness verdict is declared complete.
+Proxy/group source settings now have administrator preview, immutable history,
+exact-revision replacement, monotonic rollback and cache/locator/writer fences.
+Source/group configuration, grants and artifact admission share one snapshot.
+Old validators, stale windows and native download authority cannot cross source
+revisions. Invalid 304 responses terminate their lease. OCI catalog observations
+retain retired/denied peers without reviving them or losing visible content.
+See ADR 0023 and `docs/operator/source-configuration.md`.
 
+Clean production artifacts passed 859 assertions and separate race artifacts
+passed 350, across 19 runtime records. Stock ORAS, npm, pip and Maven
+source replacement/rollback use independent client caches and nontrivial content;
+controlled suspension/private-provider reload/epoch refresh/resume is covered.
+Six Chromium workflows and 29 named automated A/AA states pass per build. Schema-2
+and schema-3 old-binary upgrades, legacy adoption/process kill and repeated real
+PostgreSQL race suites pass. Migration receipts 1–3 remain frozen; schema 4 is
+current on the owned test database. Unit/vet/race, console reproduction, current
+vulnerability and scoped credential/history checks pass. Linux/Windows compile
+only. Identity hooks are enabled and reject author and committer overrides.
+No reset, recreation, remote mutation or push was executed by this turn.
 
-Latest qualified source: `bea2472271bd15993bcae9b8ea12a102b2608abe`, with both
+All 450 capabilities and 41 families remain unfinished, with broad readiness
+negative. Complete wider source/grant/locator/network races, managed/hot secret
+providers, supported corrupt/old-byte repair, retention/GC, other clients/providers/
+platforms, fault/scale and production recovery. Owned test services are stopped;
+private data and clean artifacts are retained. Earlier checkpoint evidence follows.
+
+Previous lifecycle-qualified source: `bea2472271bd15993bcae9b8ea12a102b2608abe`, with both
 author and committer `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
 The authoritative checkpoint is `evidence/2026-10-29/lifecycle-checkpoint.json`;
 see `docs/operator/oci-lifecycle.md` for operation and current limits.
