@@ -45,6 +45,11 @@ before migration. Both credentials expire in 24 hours by default; choose
 `--credential-lifetime` at preparation. This is an initial access credential,
 not a permanent identity-provider integration.
 
+Pre-migration inspection reads at most 257 catalog entries and rejects more than
+256 application tables. This is a bound on checking a supposedly empty database,
+not a limit on tenants, packages or a running installation. Select the intended
+dedicated empty database if the check rejects an existing large schema.
+
 The JSON receipt gives configuration paths, credential expiry and the CA's
 SHA-256 fingerprint. The generated certificate is for `localhost` on loopback
 38443; `--listen` and `--public-url` can select another literal loopback listener

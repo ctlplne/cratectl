@@ -19,62 +19,61 @@ All 450 capabilities, 41 format families and negative readiness verdicts remain.
 The owner authorized pushing this recreation; later feature pushes still require
 the owner's authority under the standing project contract.
 
-Latest source candidate: `2ad9bb3d6f8f6b88e65d4229a5e763088009dbd3`, committed locally as
-`imfeelingtheagi` for both author and committer. Clean production builds passed
-67 inventory assertions, 80 referenced-sweep assertions, 63 transfer-recovery
-assertions, 71 worker assertions, 274 stock-client assertions and 33 pinned
-public-provider assertions. A separately identified clean race-built registry
-and worker passed all 67 inventory assertions with no race reports. Production
-binary bytes were restored and verified. See
-`evidence/2026-10-28/inventory-checkpoint.json`.
+Latest source candidate: `9a45daad4889217b2623c64d1e3b5e350cddb996`, committed as `imfeelingtheagi`
+for both author and committer. A clean native installation passed 30 assertions
+from an empty owned database. A separate clean race-built initializer, registry
+and worker passed the same 30 assertions with no race reports; production binary
+bytes were restored and verified. Existing workflows passed 67 inventory, 80
+sweep, 63 transfer-recovery, 71 worker, 274 native-client and 33 pinned public OCI
+assertions against the same production builds. See
+`evidence/2026-10-29/initialization-checkpoint.json`.
 
-Administrators can admit a durable tenant filesystem inventory that captures a
-storage-root fingerprint and immutable current-reference snapshot. Ordered bounded
-pages account for the supported local CAS, staged and legacy upload layout,
-including unreferenced CAS. Exact-byte observations and cursor progress commit
-under current worker fences. Actual worker kills, cancellation/resume, completed
-redrive, current-reference changes, storage replacement and budget failures were
-replayed against the named clean candidate.
+The initializer creates durable private preparation before database effects and
+atomically records the first tenant, separate administrator/worker credentials,
+audit and a replay receipt. It rejects unrelated nonempty databases before
+migration. Actual initializer kill/resume and a database commit before ready-file
+publication preserve the original credentials and trust. Concurrent replay and
+forced RLS tests pass. Server, worker and CLI can load private configuration;
+runtime processes need no owner database environment.
 
-Enumeration, supported-layout coverage, CAS integrity and reference-snapshot
-health have separate verdicts. Unknown nested layouts stay visible and prevent
-complete layout/CAS claims; links are not followed. Temporary and legacy files
-remain unverified. The walk is live, not an atomic volume snapshot; concurrent
-entries behind completed cursors need another run. No inventory observation
-authorizes security approval or deletion. Logical file bytes count pathnames,
-not physical allocated disk space.
+The native operator can create a first npm repository, export private npm client
+configuration, publish with stock npm over verified TLS, observe review denial,
+approve the exact digest and install, restart, complete event/integrity work and
+later deny installation. Hostname and unrelated CA checks fail closed. A strict
+stock TLS verifier exposed an omitted Authority Key Identifier in the prototype;
+the retained regression passes after the issuer parses its generated CA before
+signing the leaf. Failed prototype harness expectations are separately triaged.
 
-Three retained regressions fail against isolated preceding source `11cc57c` and
-pass on this candidate: named-pipe inspection exceeded its deadline, publication
-followed an unsupported tenant-root symlink into another owned fixture namespace,
-and worker credentials expired during a callback before commit. Checked
-descriptor-rooted publication/readback rejects links and special files; worker
-callbacks reauthenticate before commit. The symlink fixture requires an unsupported
-local filesystem change; it does not establish a remotely creatable symlink.
+The script measured 2.313
+seconds to first publication/install on this owned fixture, including deliberate
+initialization faults. This is automated replay timing, not human onboarding or
+blank-machine/production performance evidence. PostgreSQL and clients are supplied
+by the operator. Generated certificates expire after 30 days; initial credentials
+default to 24 hours. Automatic PKI/credential lifecycle and identity integration
+remain required.
 
-Unit/vet/race and real PostgreSQL/store/server/native-driver race suites pass;
-the latter were repeated twice without skips. Bounded fuzzing passed
-1917411 filename-cursor and 388889 job-selector
-executions. Go vulnerability checks (238 records), scoped source Trivy and
-Gitleaks current/history checks pass. Windows blob tests compile, but native
-Windows and non-Unix storage behavior remain unqualified. Full security and
-production packaging remain incomplete.
+Clean unit/vet/race gates pass. Real PostgreSQL/store/server/installation/native
+driver race suites ran twice without skips. Go vulnerability checks (238 records),
+scoped source Trivy and current/history Gitleaks report no findings. Linux amd64
+and arm64 servers and Windows amd64 CLI compile; those native runtimes are not
+qualified. Full security and production packaging remain incomplete.
 
-The authenticated GitHub audit verifies the existing replacement private
-repository ID 1437631481 and all remote commit identities. Remote main at the
-audit is `51ece453d9cdf56f7a7504a9d833dc7ad4292f08`. This turn executed no push or remote mutation;
-the earlier shared-checkout push remains recorded with its actor unknown. See
-`evidence/2026-10-28/remote-state-inventory-audit.json`. Future feature pushes
-still require owner authority. No repeat history reset was necessary.
+Live GitHub audit found private remote main `1afdd521090af37fa03c793da94a13c1a324e640`.
+The shared checkout recorded another push during this work; this turn executed
+no push, and the initiating actor remains unknown. All remote commit author and
+committer identities remain `imfeelingtheagi`. See
+`evidence/2026-10-29/remote-state-init-audit.json`. Future feature pushes require
+owner authority. No repository reset or remote configuration change was made.
 
-Scheduling/sampling, supported repair, holds/retention/safe GC, S3 and consistent
-backup/restore remain required. Ordered page computation rescans directories;
-large-directory cost, adversarial filesystem races, outage/restore and mixed-host
-fairness remain unqualified. Native blank installation/console, remaining formats
-and all later product stages remain committed. All 450 capabilities/journeys and
-41 format families remain unfinished; every broad readiness verdict is negative.
-Owned registry/worker/fixture and native PostgreSQL processes are stopped;
-private datasets, original container/volume and history recovery are retained.
+Next is the basic React/TypeScript/Vite console and first-use operator UI, with
+explicit empty/loading/denied/error/recovery states and real browser/accessibility
+proof. Complete OCI source lifecycle/races, Maven metadata union/snapshot/group,
+remaining npm/PyPI cases, storage scheduling/sampling/repair, holds/retention/GC,
+S3, consistent backup/restore and every later product stage. All 450 capabilities/
+journeys and 41 format families remain unfinished; broad readiness stays negative.
+Owned registry/worker/initializer/lock-holder and native PostgreSQL processes are
+stopped; private datasets, original databases/container/volume and history
+recovery remain retained.
 
 **Goal active; full product goal incomplete.** No design-partner, ordinary-operator
 or enterprise readiness verdict is positive. Original-history starting commit

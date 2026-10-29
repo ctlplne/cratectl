@@ -48,7 +48,7 @@ func CheckBootstrapDatabase(ctx context.Context, dsn string, in BootstrapInput) 
 			return tx.Commit(ctx)
 		}
 	}
-	rows, e := tx.Query(ctx, `SELECT n.nspname,c.relname FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname NOT LIKE 'pg_%' AND n.nspname<>'information_schema' AND c.relkind IN ('r','p','m','f')`)
+	rows, e := tx.Query(ctx, `SELECT n.nspname,c.relname FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname NOT LIKE 'pg_%' AND n.nspname<>'information_schema' AND c.relkind IN ('r','p','m','f') LIMIT 257`)
 	if e != nil {
 		return e
 	}
@@ -65,6 +65,9 @@ func CheckBootstrapDatabase(ctx context.Context, dsn string, in BootstrapInput) 
 	rows.Close()
 	if e != nil {
 		return e
+	}
+	if len(tables) > 256 {
+		return errors.New("database catalog exceeds the initialization inspection budget; select a dedicated empty database")
 	}
 	for _, name := range tables {
 		if name[0] != "cratectl" && name[0] != "cratectl_private" {

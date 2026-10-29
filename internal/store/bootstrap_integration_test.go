@@ -7,11 +7,41 @@ import (
 	"context"
 	crypt "ctlplne.dev/cratectl/internal/crypto"
 	"ctlplne.dev/cratectl/internal/testdb"
+	"fmt"
 	"github.com/jackc/pgx/v5"
 	"sync"
 	"testing"
 	"time"
 )
+
+func TestBootstrapCatalogInspectionIsBounded(t *testing.T) {
+	d := testdb.New(t)
+	ctx := context.Background()
+	c, e := pgx.Connect(ctx, d.OwnerDSN)
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer c.Close(ctx)
+	tx, e := c.Begin(ctx)
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer tx.Rollback(ctx)
+	if _, e = tx.Exec(ctx, `CREATE SCHEMA cratectl`); e != nil {
+		t.Fatal(e)
+	}
+	for n := range 257 {
+		if _, e = tx.Exec(ctx, fmt.Sprintf(`CREATE TABLE cratectl.empty_fixture_%d(value text)`, n)); e != nil {
+			t.Fatal(e)
+		}
+	}
+	if e = tx.Commit(ctx); e != nil {
+		t.Fatal(e)
+	}
+	if e = CheckBootstrapDatabase(ctx, d.OwnerDSN, BootstrapInput{Tenant: "first-team"}); e == nil {
+		t.Fatal("oversized catalog was accepted without an inspection budget")
+	}
+}
 
 func TestBlankBootstrapAtomicReplayAndRLS(t *testing.T) {
 	d := testdb.New(t)

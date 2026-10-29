@@ -1,0 +1,9 @@
+{
+  "source_candidate": "9a45daad4889217b2623c64d1e3b5e350cddb996",
+  "source_file": "internal/store/bootstrap.go",
+  "source_sha256": "ae498acfa6bc931c53973fa4d43bb3e0dd566406052954429389adeb75a052f8",
+  "first_failure": "evidence/2026-10-29/init-catalog-first.txt",
+  "preflight_replay": "evidence/2026-10-29/init-catalog-replay.txt",
+  "reproduction": "Create 257 empty tables under the application schema in a new owned database. The previous preflight retained and queried the whole catalog; the new SQL result budget rejects oversized catalogs without claiming empty-database coverage.",
+  "scope": "Installer catalog inspection only; no running tenant/package/table cap is imposed."
+}

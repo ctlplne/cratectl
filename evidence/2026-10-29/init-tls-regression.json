@@ -6,5 +6,9 @@
   "strict_client_failure": "evidence/2026-10-29/init-tls-first.txt",
   "regression_failure": "evidence/2026-10-29/init-tls-regression-first.txt",
   "cause": "Certificate was signed using the unparsed CA template, whose auto-generated Subject Key Identifier was absent. The leaf therefore omitted its Authority Key Identifier; Python strict default verification rejects it.",
-  "scope": "A new, uncommitted initializer prototype; not a defect attributed to the preceding committed production binary."
+  "scope": "A new, uncommitted initializer prototype; not a defect attributed to the preceding committed production binary.",
+  "repaired_candidate": "9a45daad4889217b2623c64d1e3b5e350cddb996",
+  "clean_native_replay": "evidence/2026-10-29/installation-c49266d94f.json",
+  "clean_native_race_replay": "evidence/2026-10-29/installation-17fe431ba4.json",
+  "regression_replay": "evidence/2026-10-29/init-clean-unit-vet-race.txt"
 }
