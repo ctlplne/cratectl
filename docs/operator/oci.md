@@ -105,7 +105,7 @@ Explicitly approved CDN delivery and opaque query credentials have owned
 transport and stock-client/PostgreSQL proof. One pinned Linux arm64 image also has real Docker Hub/token/CloudFront proof.
 Other providers and registry/token-service/client/platform combinations still
 need qualification.
-Full Docker/Podman/Helm, descriptor URL fallback, deletion, signatures,
+Full Docker/Podman/Helm, every descriptor provider, deletion, signatures,
 lifecycle and security/fault/production campaigns remain open.
 
 For native tags and referrers, send `n=100` and follow the returned relative
@@ -138,6 +138,31 @@ Entry, metadata and graph budgets also apply to the complete view. A limit error
 requires reducing the catalog or deliberately adjusting the relevant configured
 budget; pages never silently truncate it. See [ADR 0011](../adr/0011-oci-complete-discovery.md)
 for the publication and cursor contract and its primary protocol references.
+
+When a canonical upstream digest returns 404, cratectl can fetch its bytes from
+an approved alternate URL in the parent descriptor. This covers index children,
+configs, layers and weak subjects. Every candidate uses only its selected source
+credential and existing authority, query and network controls. Canonical 401/403
+and other errors do not start fallback. Unavailable candidates can advance to
+another URL; corruption, size mismatch and authorization errors stop retrieval.
+
+Direct digest refresh after restart recovers alternate locators by verifying and
+reparsing retained parent manifest bytes. It never turns an alternate URL into a
+durable cache address. Original manifest bytes retain any URLs the publisher put
+there; normalized metadata, cache, journal and jobs do not duplicate them. An
+expired signed URL embedded in immutable bytes may require a usable alternate or
+a newly published manifest. Changing the bytes would change its digest.
+
+| Flag | Default | Meaning |
+| --- | --- | --- |
+| `--oci-descriptor-urls` | 32 | Alternate URI candidates per retrieval; 0 disables fallback; maximum 4096 |
+| `--oci-descriptor-parents` | 64 | Retained canonical parents per lookup; range 1–4096 |
+
+Parent count and aggregate metadata limits fail explicitly. The parser also caps
+each descriptor at 64 URLs of at most 32 KiB; the configured delivery URL/query
+limits still apply before network use. For a failure, inspect the canonical
+digest's cache explanation and repair its approved source or original manifest.
+Signed URLs are omitted from errors. See [ADR 0012](../adr/0012-oci-descriptor-locators.md).
 
 
 To consume a registry that redirects blobs to another service, add that service's

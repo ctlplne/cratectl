@@ -119,6 +119,8 @@ func run() error {
 		ociGraphBytes := f.Int64("oci-graph-bytes", 4<<30, "maximum aggregate bytes staged by one OCI graph/catalog retrieval")
 		ociPages := f.Int("oci-catalog-pages", 32, "maximum pages in one complete OCI upstream discovery walk")
 		ociPageSize := f.Int("oci-page-size", 1000, "default and maximum entries in an OCI discovery response page")
+		ociDescriptorURLs := f.Int("oci-descriptor-urls", 32, "maximum alternate descriptor URI candidates per OCI retrieval; zero disables fallback")
+		ociDescriptorParents := f.Int("oci-descriptor-parents", 64, "maximum retained parent manifests inspected for a direct OCI member refresh")
 		ociRedirects := f.Int("oci-delivery-redirects", 5, "maximum approved delivery redirect hops per OCI request; zero disables redirects")
 		ociURLBytes := f.Int("oci-delivery-url-bytes", 16384, "maximum ephemeral OCI delivery URL bytes, within the response-header ceiling")
 		ociQueryBytes := f.Int("oci-delivery-query-bytes", 8192, "maximum opaque query bytes on explicitly approved OCI sources")
@@ -176,6 +178,10 @@ func run() error {
 			return errors.New("OCI catalog pages must be 1–4096 and response page size 1–100000")
 		}
 		h.OCICatalogPages, h.OCIPageSize = *ociPages, *ociPageSize
+		if *ociDescriptorURLs < 0 || *ociDescriptorURLs > 4096 || *ociDescriptorParents < 1 || *ociDescriptorParents > 4096 {
+			return errors.New("OCI descriptor URL budget must be 0–4096 and parent budget 1–4096")
+		}
+		h.OCIDescriptorURLs, h.OCIDescriptorParents = *ociDescriptorURLs, *ociDescriptorParents
 		if e := h.ConfigureOCIDelivery(*ociRedirects, upstream.RegistryDeliveryLimits{URLBytes: *ociURLBytes, QueryBytes: *ociQueryBytes, QueryPairs: *ociQueryPairs}); e != nil {
 			return e
 		}

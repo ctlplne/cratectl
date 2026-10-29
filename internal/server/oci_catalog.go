@@ -168,7 +168,7 @@ func (g *ociGraphFill) catalog(kind, subject string, response *http.Response) (s
 					return catalog, store.ErrMetadataLimit
 				}
 				seenEntries[d.Digest] = true
-				a, e := g.manifest(d.Digest, &d.OCIDescriptor, nil, 0)
+				a, e := g.manifest(d.Digest, &d.OCIDescriptor, nil, 0, d.URLs...)
 				if e != nil {
 					return catalog, e
 				}

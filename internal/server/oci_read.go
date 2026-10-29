@@ -17,6 +17,11 @@ func (s *Server) resolveOCI(ctx context.Context, i store.Identity, endpoint stor
 		retry := false
 		for _, source := range sources {
 			result := resolvedArtifact{source: source}
+			if ociDigest.MatchString(ref) {
+				if e = s.DB.CheckOCIDigestDecision(ctx, i, source.Name, ref); e != nil {
+					return result, e
+				}
+			}
 			if source.Mode == "proxy" {
 				result, e = s.resolveProxy(ctx, i, source, image+"/"+kind+"/"+ref, force || retrySource == source.Name)
 			} else {

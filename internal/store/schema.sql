@@ -119,6 +119,7 @@ INSERT INTO cratectl.native_sources(tenant,repository,key,format,package,coordin
  SELECT tenant,repository,key,'npm',package,version,version,tarball,integrity,metadata FROM cratectl.npm_sources
  ON CONFLICT DO NOTHING;
 CREATE INDEX IF NOT EXISTS artifacts_package_idx ON cratectl.artifacts(tenant,repository,(metadata->>'name'),path);
+CREATE INDEX IF NOT EXISTS artifacts_oci_descriptors_idx ON cratectl.artifacts USING gin ((metadata->'oci_descriptors')) WHERE metadata->>'oci_validated'='true';
 CREATE INDEX IF NOT EXISTS artifacts_oci_subject_idx ON cratectl.artifacts(tenant,repository,((metadata->'oci_subject')->>'digest'),path);
 CREATE TABLE IF NOT EXISTS cratectl.python_yanks (
  tenant text NOT NULL, repository text NOT NULL, filename text NOT NULL,

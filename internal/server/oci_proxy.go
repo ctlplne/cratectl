@@ -37,6 +37,7 @@ type ociGraphFill struct {
 	rootResponse    *http.Response
 	rootCache       *store.OCIMemberCache
 	catalogPath     string
+	descriptorTries int
 }
 
 func (g *ociGraphFill) remember(path string, response *http.Response) error {
@@ -79,7 +80,7 @@ func (g *ociGraphFill) response(response *http.Response) error {
 	g.stale = min(g.stale, stale)
 	return nil
 }
-func (g *ociGraphFill) blob(d store.OCIDescriptor, provided ...*http.Response) (store.Artifact, error) {
+func (g *ociGraphFill) blob(d store.OCIDescriptor, response *http.Response, urls ...string) (store.Artifact, error) {
 	p := g.image + "/blobs/" + d.Digest
 	if a, ok := g.objects[p]; ok {
 		if d.Size >= 0 && a.Size != d.Size {
@@ -90,13 +91,14 @@ func (g *ociGraphFill) blob(d store.OCIDescriptor, provided ...*http.Response) (
 	if len(g.objects) >= 4095 || d.Size > g.server.OCIGraphBytes-g.bytes {
 		return store.Artifact{}, store.ErrMetadataLimit
 	}
-	var response *http.Response
 	var e error
-	if len(provided) > 0 {
-		response = provided[0]
-	} else {
+	if response == nil {
 		response, e = g.client.get(g.ctx, p, nil, nil)
 	}
+	if e != nil {
+		return store.Artifact{}, e
+	}
+	response, e = g.descriptorResponse("blobs", &d, response, urls)
 	if e != nil {
 		return store.Artifact{}, e
 	}
@@ -126,7 +128,7 @@ func (g *ociGraphFill) blob(d store.OCIDescriptor, provided ...*http.Response) (
 	g.objects[p] = a
 	return a, nil
 }
-func (g *ociGraphFill) manifest(ref string, d *store.OCIDescriptor, response *http.Response, depth int) (store.Artifact, error) {
+func (g *ociGraphFill) manifest(ref string, d *store.OCIDescriptor, response *http.Response, depth int, urls ...string) (store.Artifact, error) {
 	p := g.image + "/manifests/" + ref
 	if a, ok := g.objects[p]; ok {
 		if d != nil && (a.Size != d.Size || a.MediaType != d.MediaType) {
@@ -144,6 +146,19 @@ func (g *ociGraphFill) manifest(ref string, d *store.OCIDescriptor, response *ht
 		response, e = g.client.get(g.ctx, p, nil, http.Header{"Accept": {ociManifestAccept}})
 		if e != nil {
 			return store.Artifact{}, e
+		}
+	}
+	if response.StatusCode == 404 && ociDigest.MatchString(ref) {
+		expected := store.OCIDescriptor{Digest: ref, Size: -1}
+		if d != nil {
+			expected = *d
+		}
+		response, e = g.descriptorResponse("manifests", &expected, response, urls)
+		if e != nil {
+			return store.Artifact{}, e
+		}
+		if expected.Size >= 0 {
+			d = &expected
 		}
 	}
 	defer response.Body.Close()
@@ -183,15 +198,30 @@ func (g *ociGraphFill) manifest(ref string, d *store.OCIDescriptor, response *ht
 		return store.Artifact{}, store.ErrMetadataLimit
 	}
 	if m.Subject != nil {
-		if _, e = g.manifest(m.Subject.Digest, m.Subject, nil, depth+1); e != nil && !errors.Is(e, errOCIOriginMissing) {
+		if _, e = g.manifest(m.Subject.Digest, m.Subject, nil, depth+1, m.SubjectURLs...); e != nil && !errors.Is(e, errOCIOriginMissing) {
 			return store.Artifact{}, e
 		}
 	}
+	locators := map[string][]string{}
+	seenLocator := map[string]map[string]bool{}
 	for _, child := range m.Children {
+		key := child.Kind + "/" + child.Digest
+		if seenLocator[key] == nil {
+			seenLocator[key] = map[string]bool{}
+		}
+		for _, locator := range child.URLs {
+			if !seenLocator[key][locator] {
+				locators[key] = append(locators[key], locator)
+				seenLocator[key][locator] = true
+			}
+		}
+	}
+	for _, child := range m.Children {
+		urls := locators[child.Kind+"/"+child.Digest]
 		if child.Kind == "manifests" {
-			_, e = g.manifest(child.Digest, &child.OCIDescriptor, nil, depth+1)
+			_, e = g.manifest(child.Digest, &child.OCIDescriptor, nil, depth+1, urls...)
 		} else {
-			_, e = g.blob(child.OCIDescriptor)
+			_, e = g.blob(child.OCIDescriptor, nil, urls...)
 		}
 		if e != nil {
 			return store.Artifact{}, e
@@ -289,6 +319,15 @@ func (s *Server) fillOCIProxy(parent context.Context, i store.Identity, repo sto
 				response = &http.Response{StatusCode: 200, Header: http.Header{"Content-Type": {ociIndexMediaType}, "Cache-Control": {"max-age=" + strconv.Itoa(repo.Settings.Cache.NegativeSeconds)}}, Body: io.NopCloser(bytes.NewReader(empty)), Request: response.Request, ContentLength: int64(len(empty))}
 			}
 		}
+		g := ociGraphFill{server: s, client: client, ctx: ctx, identity: i, repo: repo, image: image, objects: map[string]store.Artifact{}, stack: map[string]bool{}, fresh: repo.Settings.Cache.FreshSeconds, stale: repo.Settings.Cache.StaleSeconds}
+		var rootDescriptor *store.OCIDescriptor
+		if err == nil && !catalog && response.StatusCode == 404 && ociDigest.MatchString(ref) && (kind == "blobs" || kind == "manifests") {
+			d := store.OCIDescriptor{Digest: ref, Size: -1}
+			response, err = g.descriptorResponse(kind, &d, response, nil)
+			if d.Size >= 0 {
+				rootDescriptor = &d
+			}
+		}
 		e = err
 		if e == nil {
 			defer response.Body.Close()
@@ -335,7 +374,7 @@ func (s *Server) fillOCIProxy(parent context.Context, i store.Identity, repo sto
 					defer body.Close()
 					rootCache = &store.OCIMemberCache{ETag: lease.ETag, Modified: lease.Modified, FreshSeconds: result.FreshSeconds, StaleSeconds: result.StaleSeconds}
 				}
-				g := ociGraphFill{server: s, client: client, ctx: ctx, identity: i, repo: repo, image: image, objects: map[string]store.Artifact{}, stack: map[string]bool{}, fresh: result.FreshSeconds, stale: result.StaleSeconds}
+				g.fresh, g.stale = min(g.fresh, result.FreshSeconds), min(g.stale, result.StaleSeconds)
 				g.catalogPath = fallbackPath
 				g.rootResponse = response
 				g.rootCache = rootCache
@@ -359,7 +398,7 @@ func (s *Server) fillOCIProxy(parent context.Context, i store.Identity, repo sto
 						publication.CompleteTags = kind == "tags/list"
 					}
 				} else if kind == "manifests" {
-					root, e = g.manifest(ref, nil, response, 0)
+					root, e = g.manifest(ref, rootDescriptor, response, 0)
 					if e == nil {
 						publication.Reference = ref
 						if !ociDigest.MatchString(ref) {
@@ -370,7 +409,11 @@ func (s *Server) fillOCIProxy(parent context.Context, i store.Identity, repo sto
 						result.MediaType = root.MediaType
 					}
 				} else if kind == "blobs" {
-					root, e = g.blob(store.OCIDescriptor{Digest: ref, Size: -1}, response)
+					d := store.OCIDescriptor{Digest: ref, Size: -1}
+					if rootDescriptor != nil {
+						d = *rootDescriptor
+					}
+					root, e = g.blob(d, response)
 					if e == nil {
 						result.Object = &blob.Object{Digest: root.Digest, Size: root.Size}
 						result.Metadata = root.Metadata
@@ -433,6 +476,9 @@ func (s *Server) fillOCIProxy(parent context.Context, i store.Identity, repo sto
 		defer done()
 	}
 	err := s.DB.CompleteRetrieval(completion, i, lease, result)
+	if err == nil && (errors.Is(e, store.ErrDenied) || errors.Is(e, store.ErrUnauthenticated)) {
+		return e
+	}
 	if err != nil && result.OCI != nil && !errors.Is(err, store.ErrLeaseLost) {
 		failure := store.RetrievalResult{Status: result.Status, Failure: "upstream_graph_publication_rejected"}
 		if cleanup := s.DB.CompleteRetrieval(completion, i, lease, failure); cleanup != nil {

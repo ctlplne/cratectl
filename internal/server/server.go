@@ -59,6 +59,8 @@ type Server struct {
 	OCIDeliveryLimits       upstream.RegistryDeliveryLimits
 	OCICatalogPages         int
 	OCIPageSize             int
+	OCIDescriptorURLs       int
+	OCIDescriptorParents    int
 	fillSlots               chan struct{}
 	slots                   chan struct{}
 	adapters                map[string]Adapter
@@ -72,6 +74,8 @@ func New(db *store.Store, b *blob.Local, public string) *Server {
 	s.OCIDeliveryRedirects = 5
 	s.OCICatalogPages = 32
 	s.OCIPageSize = 1000
+	s.OCIDescriptorURLs = 32
+	s.OCIDescriptorParents = 64
 	s.OCIDeliveryLimits = upstream.DefaultRegistryDeliveryLimits()
 	for _, a := range []adapter{{"generic", s.raw}, {"maven", s.raw}, {"npm", s.npm}, {"pypi", s.pypi}, {"oci", s.oci}} {
 		s.adapters[a.Format()] = a

@@ -298,3 +298,56 @@ func TestOCIGraphBudgetIsExplicitAndCheckedNodesRemainReusable(t *testing.T) {
 		t.Fatal(e)
 	}
 }
+
+func TestOCIRetainedParentsAreBoundedTenantScopedAndCurrent(t *testing.T) {
+	s, ctx, i, repo, _, result := ociCacheFixture(t, 60)
+	digest := "sha256:" + result.OCI.Objects[1].Digest
+	parents, e := s.OCIReferenceParents(ctx, i, repo, "app", "blobs", digest, 4, 1<<20)
+	if e != nil || len(parents) != 1 || parents[0].Digest != result.OCI.Objects[0].Digest {
+		t.Fatalf("retained parent missing: %d %v", len(parents), e)
+	}
+	if parents, e = s.OCIReferenceParents(ctx, i, repo, "different", "blobs", digest, 4, 1<<20); e != nil || len(parents) != 0 {
+		t.Fatal("descriptor crossed image namespace", e)
+	}
+	if _, e = s.OCIReferenceParents(ctx, Identity{Tenant: "other-tenant", Actor: "reader", Role: "reader"}, repo, "app", "blobs", digest, 4, 1<<20); !errors.Is(e, ErrNotFound) {
+		t.Fatal("retained metadata crossed tenant", e)
+	}
+	if _, e = s.OCIReferenceParents(ctx, i, repo, "app", "blobs", digest, 4, 1); !errors.Is(e, ErrMetadataLimit) {
+		t.Fatal("retained parent bytes were unbounded", e)
+	}
+	if e = s.Tx(ctx, i, true, func(tx pgx.Tx) error {
+		_, e := tx.Exec(ctx, `UPDATE cratectl.repositories SET access='restricted' WHERE name=$1`, repo)
+		return e
+	}); e != nil {
+		t.Fatal(e)
+	}
+	if _, e = s.OCIReferenceParents(ctx, Identity{Tenant: i.Tenant, Actor: "parent-reader", Role: "reader"}, repo, "app", "blobs", digest, 4, 1<<20); !errors.Is(e, ErrDenied) {
+		t.Fatal("retained parents bypassed current repository grant", e)
+	}
+	root := result.OCI.Objects[0]
+	if e = s.Tx(ctx, i, true, func(tx pgx.Tx) error { _, e := Decide(ctx, tx, i, repo, root.Path, root.Digest, "denied"); return e }); e != nil {
+		t.Fatal(e)
+	}
+	if parents, e = s.OCIReferenceParents(ctx, i, repo, "app", "blobs", digest, 4, 1<<20); e != nil || len(parents) != 0 {
+		t.Fatal("denied parent retained as a locator source", e)
+	}
+	if e = s.Tx(ctx, i, true, func(tx pgx.Tx) error { _, e := Decide(ctx, tx, i, repo, root.Path, root.Digest, "allowed"); return e }); e != nil {
+		t.Fatal(e)
+	}
+	second := root
+	second.Digest = strings.Repeat("c", 64)
+	second.Path = "app/manifests/sha256:" + second.Digest
+	if e = s.Tx(ctx, i, true, func(tx pgx.Tx) error { return insertOCIObject(ctx, tx, i, repo, second) }); e != nil {
+		t.Fatal(e)
+	}
+	if _, e = s.OCIReferenceParents(ctx, i, repo, "app", "blobs", digest, 1, 1<<20); !errors.Is(e, ErrMetadataLimit) {
+		t.Fatal("retained parent count silently truncated", e)
+	}
+	child := result.OCI.Objects[1]
+	if e = s.Tx(ctx, i, true, func(tx pgx.Tx) error { _, e := Decide(ctx, tx, i, repo, child.Path, child.Digest, "denied"); return e }); e != nil {
+		t.Fatal(e)
+	}
+	if _, e = s.OCIReferenceParents(ctx, i, repo, "app", "blobs", digest, 4, 1<<20); !errors.Is(e, ErrDenied) {
+		t.Fatal("retained locator lookup bypassed current digest denial", e)
+	}
+}

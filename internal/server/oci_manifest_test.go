@@ -129,6 +129,10 @@ func TestOCIPathAndAccept(t *testing.T) {
 func FuzzOCIManifest(f *testing.F) {
 	data, _ := json.Marshal(ociFixture())
 	f.Add(data)
+	withURLs := ociFixture()
+	withURLs["config"].(map[string]any)["urls"] = []string{"https://delivery.example/objects/config?signature=a%2Fb&order=two&order=one"}
+	data, _ = json.Marshal(withURLs)
+	f.Add(data)
 	f.Add([]byte(`{"schemaVersion":2,"mediaType":"` + testOCIIndex + `","manifests":[]}`))
 	f.Fuzz(func(t *testing.T, data []byte) {
 		m, e := parseOCIManifest(data, "")

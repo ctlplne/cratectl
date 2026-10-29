@@ -70,7 +70,7 @@ paths:
                         networks: {type: array, minItems: 1, maxItems: 64, items: {type: string}}
                         credential_ref: {type: string, description: Operator-owned tenant-scoped reference; never a credential value.}
                         authentication: {type: string, enum: [bearer, basic], default: bearer}
-                        allow_signed_query: {type: boolean, default: false, description: OCI proxy delivery redirects and catalog links. Permit bounded opaque query strings at this authority; signatures are validated by the source. Exact origin catalog cursors use a resource-scoped permission.}
+                        allow_signed_query: {type: boolean, default: false, description: OCI proxy delivery redirects, descriptor URLs and catalog links. Permit bounded opaque query strings at this authority; signatures are validated by the source. Exact origin catalog cursors use a resource-scoped permission.}
                     cache:
                       type: object
                       properties:
@@ -93,7 +93,7 @@ paths:
                     download_sources:
                       type: array
                       maxItems: 16
-                      description: npm/PyPI/OCI proxy only. Explicit additional download authorities; each redirect uses its own approved source credentials. OCI signed queries require allow_signed_query and are never retained as cache bindings.
+                      description: npm/PyPI/OCI proxy only. Explicit additional download authorities; OCI descriptor URLs and each redirect use only the selected approved source credentials. OCI signed queries require allow_signed_query and are never retained as cache bindings.
                       items:
                         type: object
                         required: [url, networks]

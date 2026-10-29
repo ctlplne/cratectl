@@ -29,12 +29,14 @@ var ociMedia = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9!#$&^_.+-]{0,126}/[A-Za
 type ociChild struct {
 	Kind string
 	store.OCIDescriptor
+	URLs []string
 }
 type parsedOCIManifest struct {
 	MediaType, ArtifactType string
 	Annotations             map[string]string
 	Children                []ociChild
 	Subject                 *store.OCIDescriptor
+	SubjectURLs             []string
 }
 
 // Reject duplicate JSON members before decoding. Otherwise different readers can
@@ -164,15 +166,8 @@ func parseOCIDescriptor(raw json.RawMessage) (store.OCIDescriptor, error) {
 		}
 	}
 	if raw, ok := fields["urls"]; ok {
-		var urls []string
-		if json.Unmarshal(raw, &urls) != nil || urls == nil {
-			return descriptor, errOCIManifest
-		}
-		for _, uri := range urls {
-			u, e := url.Parse(uri)
-			if e != nil || !u.IsAbs() || strings.IndexFunc(uri, unicode.IsControl) >= 0 {
-				return descriptor, errOCIManifest
-			}
+		if _, e := ociDescriptorURLs(raw); e != nil {
+			return descriptor, e
 		}
 	}
 	if _, e = ociAnnotations(fields["annotations"]); e != nil {
@@ -249,6 +244,7 @@ func parseOCIManifest(data []byte, contentType string) (parsedOCIManifest, error
 			return m, e
 		}
 		m.Subject = &d
+		m.SubjectURLs, _ = ociRawDescriptorURLs(raw)
 	}
 	array, kind := "manifests", "manifests"
 	if image {
@@ -259,7 +255,8 @@ func parseOCIManifest(data []byte, contentType string) (parsedOCIManifest, error
 		if e != nil || (d.MediaType == "application/vnd.oci.empty.v1+json" && m.ArtifactType == "") {
 			return m, errOCIManifest
 		}
-		m.Children = append(m.Children, ociChild{"blobs", d})
+		urls, _ := ociRawDescriptorURLs(fields["config"])
+		m.Children = append(m.Children, ociChild{Kind: "blobs", OCIDescriptor: d, URLs: urls})
 		if m.ArtifactType == "" {
 			m.ArtifactType = d.MediaType
 		}
@@ -281,7 +278,8 @@ func parseOCIManifest(data []byte, contentType string) (parsedOCIManifest, error
 		if e != nil {
 			return m, e
 		}
-		m.Children = append(m.Children, ociChild{kind, d})
+		urls, _ := ociRawDescriptorURLs(raw)
+		m.Children = append(m.Children, ociChild{Kind: kind, OCIDescriptor: d, URLs: urls})
 	}
 	seen := map[string]store.OCIDescriptor{}
 	for _, child := range m.Children {
@@ -292,6 +290,30 @@ func parseOCIManifest(data []byte, contentType string) (parsedOCIManifest, error
 		seen[key] = child.OCIDescriptor
 	}
 	return m, nil
+}
+
+func ociDescriptorURLs(raw json.RawMessage) ([]string, error) {
+	var urls []string
+	if json.Unmarshal(raw, &urls) != nil || urls == nil || len(urls) > 64 {
+		return nil, errOCIManifest
+	}
+	for _, uri := range urls {
+		u, e := url.Parse(uri)
+		if e != nil || !u.IsAbs() || len(uri) > 32<<10 || strings.IndexFunc(uri, unicode.IsControl) >= 0 {
+			return nil, errOCIManifest
+		}
+	}
+	return urls, nil
+}
+func ociRawDescriptorURLs(raw json.RawMessage) ([]string, error) {
+	fields, e := ociObject(raw)
+	if e != nil {
+		return nil, e
+	}
+	if raw, ok := fields["urls"]; ok {
+		return ociDescriptorURLs(raw)
+	}
+	return nil, nil
 }
 
 func parseOCIPath(p string) (image, operation, ref string) {

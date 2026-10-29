@@ -1,0 +1,8 @@
+=== RUN   TestOCINativeProcessDescriptorURLsAndRetainedRefresh
+    oci_descriptor_integration_test.go:220: PASS: native server and stock ORAS proxy/group copy index, child manifest, config and signed alternate layer with isolated credentials
+    oci_descriptor_integration_test.go:261: PASS: real native process restart followed by invalidated direct layer/manifest pins recovers locators from verified retained parent bytes
+    oci_descriptor_integration_test.go:277: PASS: corrupt alternates neither serve stale bytes nor publish partial graph references; valid repair recovers
+    oci_descriptor_integration_test.go:307: PASS: current digest policy blocks alternate requests; normalized metadata/cache/journal/jobs retain no descriptor query or source credential (original immutable manifest bytes remain exact)
+--- PASS: TestOCINativeProcessDescriptorURLsAndRetainedRefresh (8.05s)
+PASS
+ok  	ctlplne.dev/cratectl/internal/conformance	9.419s
