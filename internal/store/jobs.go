@@ -28,7 +28,9 @@ type QueuePolicy struct {
 	RetryMaxSeconds int    `json:"retry_max_seconds"`
 }
 
-func QueueName(name string) bool { return name == "events" || name == "integrity" }
+func QueueName(name string) bool {
+	return name == "events" || name == "integrity" || name == "maintenance"
+}
 func (p QueuePolicy) Validate() error {
 	if !QueueName(p.Queue) || p.Capacity < 1 || p.Capacity > 2147483647 || p.MaxRunning < 1 || p.MaxRunning > 100000 || p.MaxAttempts < 1 || p.MaxAttempts > 10000 || p.RetrySeconds < 1 || p.RetryMaxSeconds < p.RetrySeconds || p.RetryMaxSeconds > 604800 {
 		return ErrConflict
@@ -214,11 +216,11 @@ func ParseJobID(id string) (int64, string, error) {
 	}
 	seq, task, ok := strings.Cut(id, ":")
 	n, e := strconv.ParseInt(seq, 10, 64)
-	if !ok || e != nil || n < 1 || strconv.FormatInt(n, 10) != seq || strings.ToLower(task) != task || task != "event" && (len(task) != 74 || !strings.HasPrefix(task, "integrity-")) {
+	if !ok || e != nil || n < 1 || strconv.FormatInt(n, 10) != seq || strings.ToLower(task) != task || task != "event" && (len(task) != 74 || !strings.HasPrefix(task, "integrity-") && !strings.HasPrefix(task, "reconcile-")) {
 		return 0, "", ErrConflict
 	}
 	if task != "event" {
-		if _, e = hex.DecodeString(strings.TrimPrefix(task, "integrity-")); e != nil {
+		if _, e = hex.DecodeString(task[10:]); e != nil {
 			return 0, "", ErrConflict
 		}
 	}
@@ -233,6 +235,9 @@ func scanJob(row pgx.Row, j *Job) error {
 		j.Handler = "event.project"
 		if j.Queue == "integrity" {
 			j.Handler = "storage.integrity"
+		}
+		if j.Queue == "maintenance" {
+			j.Handler = "leases.reconcile"
 		}
 	}
 	return e
@@ -263,7 +268,7 @@ func (s *Store) ClaimJob(ctx context.Context, i WorkerIdentity, queue, worker st
 			return ErrBusy
 		}
 		for skipped := 0; skipped < 32; skipped++ {
-			e = scanJob(tx.QueryRow(ctx, `SELECT `+jobColumns+` FROM cratectl.jobs WHERE queue=$1 AND ((state IN ('pending','retry') AND available_at<=clock_timestamp()) OR (state IN ('running','cancel_requested') AND lease_until<=clock_timestamp())) ORDER BY sequence,task FOR UPDATE SKIP LOCKED LIMIT 1`, queue), &j)
+			e = scanJob(tx.QueryRow(ctx, `SELECT `+jobColumns+` FROM cratectl.jobs WHERE queue=$1 AND ((state IN ('pending','retry') AND available_at<=clock_timestamp()) OR (state IN ('running','cancel_requested') AND lease_until<=clock_timestamp())) ORDER BY available_at,sequence,task FOR UPDATE SKIP LOCKED LIMIT 1`, queue), &j)
 			if errors.Is(e, pgx.ErrNoRows) {
 				empty = true
 				return nil

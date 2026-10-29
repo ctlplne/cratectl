@@ -32,6 +32,18 @@ func (s *Server) jobManagement(w http.ResponseWriter, r *http.Request, i store.I
 			return
 		}
 		switch {
+		case p == "maintenance/reconciliations":
+			input := store.ReconciliationRequest{Repository: values.Get("repository"), PageSize: limit}
+			if len(values["repository"]) > 1 {
+				respondErr(w, store.ErrConflict)
+				return
+			}
+			preview, e := s.DB.PreviewReconciliation(r.Context(), i, input)
+			if e != nil {
+				respondErr(w, e)
+				return
+			}
+			writeJSON(w, 200, preview)
 		case p == "jobs":
 			items, next, e := s.DB.Jobs(r.Context(), i, values.Get("queue"), values.Get("state"), values.Get("after"), limit)
 			if e != nil {
@@ -101,6 +113,13 @@ func (s *Server) jobManagement(w http.ResponseWriter, r *http.Request, i store.I
 	fingerprint := crypt.Digest(append([]byte(r.Method+"\n"+r.URL.Path+"\n"), data...))
 	var result store.Result
 	switch {
+	case p == "maintenance/reconciliations" && r.Method == "POST":
+		input := store.ReconciliationRequest{PageSize: 100}
+		if !decodeManagement(data, &input) || input.Validate() != nil {
+			fail(w, 400, "invalid_reconciliation", "Use an optional repository and page_size 1–1000.")
+			return
+		}
+		result, e = s.DB.StartReconciliation(r.Context(), i, key, fingerprint, input)
 	case len(parts) == 3 && parts[1] == "queues" && r.Method == "PUT":
 		var policy store.QueuePolicy
 		if !decodeManagement(data, &policy) || policy.Queue != "" && policy.Queue != parts[2] {

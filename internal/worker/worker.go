@@ -22,12 +22,16 @@ type Options struct {
 	Name                                          string
 	Identities                                    []store.WorkerIdentity
 	EventConcurrency, IntegrityConcurrency        int
+	MaintenanceConcurrency                        int
 	Lease, Poll, Timeout                          time.Duration
 	MaxObjectBytes, MaxEventBytes, BytesPerSecond int64
 	Notice                                        func(Notice)
 }
 
 func (o Options) Validate() error {
+	if o.MaintenanceConcurrency < 1 || o.MaintenanceConcurrency > 256 {
+		return store.ErrConflict
+	}
 	if !store.Name.MatchString(o.Name) || len(o.Identities) == 0 || o.EventConcurrency < 1 || o.EventConcurrency > 256 || o.IntegrityConcurrency < 1 || o.IntegrityConcurrency > 256 || o.Lease < time.Second || o.Lease > 5*time.Minute || o.Poll < 10*time.Millisecond || o.Poll > time.Minute || o.Timeout < time.Second || o.Timeout > 24*time.Hour || o.MaxObjectBytes < 1 || o.MaxObjectBytes >= 1<<62 || o.MaxEventBytes < 1 || o.MaxEventBytes > 1<<30 || o.BytesPerSecond < 0 {
 		return store.ErrConflict
 	}
@@ -60,7 +64,7 @@ func Run(ctx context.Context, db *store.Store, objects *blob.Local, o Options) e
 		}
 	}
 	var all sync.WaitGroup
-	for queue, count := range map[string]int{"events": o.EventConcurrency, "integrity": o.IntegrityConcurrency} {
+	for queue, count := range map[string]int{"events": o.EventConcurrency, "integrity": o.IntegrityConcurrency, "maintenance": o.MaintenanceConcurrency} {
 		lane := &lane{errors: map[string]string{}}
 		for n := 0; n < count; n++ {
 			all.Add(1)
@@ -115,6 +119,27 @@ func Run(ctx context.Context, db *store.Store, objects *blob.Local, o Options) e
 	return nil
 }
 func execute(parent context.Context, db *store.Store, objects *blob.Local, o Options, i store.WorkerIdentity, j store.Job) string {
+	if j.Queue == "maintenance" {
+		ctx, cancel := context.WithTimeout(parent, min(o.Timeout, o.Lease))
+		defer cancel()
+		outcome, e := db.ReconcileLeases(ctx, i, j)
+		if e == nil {
+			return outcome
+		}
+		if parent.Err() != nil {
+			return "abandoned"
+		}
+		if errors.Is(e, store.ErrJobLeaseLost) || errors.Is(e, store.ErrUnauthenticated) {
+			return "lease_or_credential_lost"
+		}
+		complete, done := context.WithTimeout(context.WithoutCancel(parent), 3*time.Second)
+		defer done()
+		outcome, e = db.FailJob(complete, i, j, "handler_failure", errors.Is(e, store.ErrConflict))
+		if e != nil {
+			return "completion_unconfirmed"
+		}
+		return outcome
+	}
 	ctx, cancel := context.WithTimeout(parent, o.Timeout)
 	defer cancel()
 	heartCtx, stopHeart := context.WithCancel(parent)

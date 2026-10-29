@@ -66,3 +66,20 @@ CREATE INDEX IF NOT EXISTS integrity_digest_idx ON cratectl.integrity_observatio
 ALTER TABLE cratectl.event_projections ADD COLUMN IF NOT EXISTS position bigint NOT NULL DEFAULT 0;
 UPDATE cratectl.event_projections SET position=sequence WHERE position=0;
 CREATE UNIQUE INDEX IF NOT EXISTS event_projection_position_idx ON cratectl.event_projections(tenant,position);
+-- Immutable chunk references replace mutable upload files for new sessions.
+ALTER TABLE cratectl.uploads ADD COLUMN IF NOT EXISTS generation bigint NOT NULL DEFAULT 1;
+ALTER TABLE cratectl.uploads ADD COLUMN IF NOT EXISTS operation_token text NOT NULL DEFAULT '';
+ALTER TABLE cratectl.uploads ADD COLUMN IF NOT EXISTS operation_until timestamptz NOT NULL DEFAULT 'epoch';
+ALTER TABLE cratectl.uploads ADD COLUMN IF NOT EXISTS parts_version integer NOT NULL DEFAULT 0;
+CREATE TABLE IF NOT EXISTS cratectl.upload_parts (
+ tenant text NOT NULL, upload_id text NOT NULL, offset_bytes bigint NOT NULL,
+ digest text NOT NULL CHECK(digest ~ '^[a-f0-9]{64}$'), size bigint NOT NULL CHECK(size>0),
+ PRIMARY KEY(tenant,upload_id,offset_bytes),
+ FOREIGN KEY(tenant,upload_id) REFERENCES cratectl.uploads(tenant,id)
+);
+CREATE INDEX IF NOT EXISTS uploads_recovery_idx ON cratectl.uploads(tenant,repository,id) WHERE state='active';
+CREATE INDEX IF NOT EXISTS retrievals_recovery_idx ON cratectl.retrievals(tenant,repository,path) WHERE state='fetching';
+
+-- Replace the development two-lane check while preserving policies and jobs.
+ALTER TABLE cratectl.queue_policies DROP CONSTRAINT IF EXISTS queue_policies_queue_check;
+ALTER TABLE cratectl.queue_policies ADD CONSTRAINT queue_policies_queue_check CHECK(queue IN ('events','integrity','maintenance'));

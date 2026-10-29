@@ -10,6 +10,7 @@ import (
 func FuzzJobID(f *testing.F) {
 	f.Add("1:event")
 	f.Add("23:integrity-" + strings.Repeat("a", 64))
+	f.Add("42:reconcile-" + strings.Repeat("b", 64))
 	f.Add("01:event")
 	f.Add("-1:event")
 	f.Add("1:unknown")

@@ -37,33 +37,37 @@ func (a adapter) Serve(w http.ResponseWriter, r *http.Request, i store.Identity,
 }
 
 type Server struct {
-	DB                      *store.Store
-	Blobs                   *blob.Local
-	PublicURL               string
-	UpstreamCredentials     map[string]UpstreamCredential
-	PrivateUpstreamNetworks []string
-	TenantProxyLimit        int
-	NativeVersionLimit      int
-	NativeTagLimit          int
-	NativeMetadataBytes     int64
-	NPMPublishBytes         int64
-	NPMExpandedBytes        int64
-	NPMFileLimit            int
-	NPMPackageJSONBytes     int64
-	PythonUploadBytes       int64
-	PythonExpandedBytes     int64
-	PythonFileLimit         int
-	PythonMetadataBytes     int64
-	OCIGraphBytes           int64
-	OCIDeliveryRedirects    int
-	OCIDeliveryLimits       upstream.RegistryDeliveryLimits
-	OCICatalogPages         int
-	OCIPageSize             int
-	OCIDescriptorURLs       int
-	OCIDescriptorParents    int
-	fillSlots               chan struct{}
-	slots                   chan struct{}
-	adapters                map[string]Adapter
+	DB                           *store.Store
+	Blobs                        *blob.Local
+	PublicURL                    string
+	UpstreamCredentials          map[string]UpstreamCredential
+	PrivateUpstreamNetworks      []string
+	TenantProxyLimit             int
+	ProxyLease                   time.Duration
+	NativeVersionLimit           int
+	NativeTagLimit               int
+	NativeMetadataBytes          int64
+	NPMPublishBytes              int64
+	NPMExpandedBytes             int64
+	NPMFileLimit                 int
+	NPMPackageJSONBytes          int64
+	PythonUploadBytes            int64
+	PythonExpandedBytes          int64
+	PythonFileLimit              int
+	PythonMetadataBytes          int64
+	OCIGraphBytes                int64
+	OCIDeliveryRedirects         int
+	OCIDeliveryLimits            upstream.RegistryDeliveryLimits
+	OCICatalogPages              int
+	OCIPageSize                  int
+	OCIDescriptorURLs            int
+	OCIDescriptorParents         int
+	UploadLimit, UploadPartLimit int
+	UploadMetadataBytes          int64
+	UploadLease, UploadTTL       time.Duration
+	fillSlots                    chan struct{}
+	slots                        chan struct{}
+	adapters                     map[string]Adapter
 }
 
 func New(db *store.Store, b *blob.Local, public string) *Server {
@@ -76,6 +80,8 @@ func New(db *store.Store, b *blob.Local, public string) *Server {
 	s.OCIPageSize = 1000
 	s.OCIDescriptorURLs = 32
 	s.OCIDescriptorParents = 64
+	s.ProxyLease = 150 * time.Second
+	s.UploadLimit, s.UploadPartLimit, s.UploadMetadataBytes, s.UploadLease, s.UploadTTL = 32, 4096, 1<<20, 30*time.Second, 30*time.Minute
 	s.OCIDeliveryLimits = upstream.DefaultRegistryDeliveryLimits()
 	for _, a := range []adapter{{"generic", s.raw}, {"maven", s.raw}, {"npm", s.npm}, {"pypi", s.pypi}, {"oci", s.oci}} {
 		s.adapters[a.Format()] = a
@@ -95,6 +101,11 @@ func fail(w http.ResponseWriter, status int, code, action string) {
 }
 func respondErr(w http.ResponseWriter, e error) {
 	switch {
+	case errors.Is(e, store.ErrUploadBusy):
+		w.Header().Set("Retry-After", "1")
+		fail(w, 503, "upload_in_progress", "Retry after one second; inspect the current upload offset.")
+	case errors.Is(e, store.ErrUploadLeaseLost):
+		fail(w, 409, "upload_superseded", "Read the upload status and retry from its acknowledged offset; this operation was not accepted.")
 	case errors.Is(e, store.ErrQueueFull):
 		w.Header().Set("Retry-After", "5")
 		fail(w, 503, "durable_queue_full", "Inspect /api/v1/jobs/queues, start or repair the worker, or adjust the tenant queue capacity; this mutation was rolled back.")
@@ -245,7 +256,7 @@ func readJSON(w http.ResponseWriter, r *http.Request, v any, limit int64) bool {
 }
 func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Identity) {
 	p := strings.TrimPrefix(r.URL.Path, "/api/v1/")
-	if p == "jobs" || strings.HasPrefix(p, "jobs/") || p == "activity" {
+	if p == "jobs" || strings.HasPrefix(p, "jobs/") || p == "activity" || p == "maintenance/reconciliations" {
 		s.jobManagement(w, r, i, p)
 		return
 	}

@@ -87,7 +87,7 @@ func (s *Store) Queues(ctx context.Context, i Identity) ([]QueueStatus, error) {
 		return out, ErrDenied
 	}
 	e := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
-		for _, queue := range []string{"events", "integrity"} {
+		for _, queue := range []string{"events", "integrity", "maintenance"} {
 			p := QueueStatus{QueuePolicy: QueuePolicy{Queue: queue, Capacity: 100000, MaxRunning: 2, MaxAttempts: 5, RetrySeconds: 5, RetryMaxSeconds: 300}}
 			e := tx.QueryRow(ctx, `SELECT capacity,max_running,max_attempts,retry_seconds,retry_max_seconds FROM cratectl.queue_policies WHERE queue=$1`, queue).Scan(&p.Capacity, &p.MaxRunning, &p.MaxAttempts, &p.RetrySeconds, &p.RetryMaxSeconds)
 			if e != nil && !errors.Is(e, pgx.ErrNoRows) {

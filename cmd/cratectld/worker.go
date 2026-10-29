@@ -25,6 +25,7 @@ func runWorker() error {
 	name := f.String("name", "cratectl-worker", "worker process name")
 	events := f.Int("event-concurrency", 1, "reserved event projection slots")
 	integrity := f.Int("integrity-concurrency", 1, "reserved integrity verification slots")
+	maintenance := f.Int("maintenance-concurrency", 1, "reserved lease reconciliation slots")
 	lease := f.Duration("lease", 30*time.Second, "renewed fenced job lease; 1 second–5 minutes")
 	poll := f.Duration("poll", 250*time.Millisecond, "idle queue polling interval")
 	timeout := f.Duration("job-timeout", 2*time.Minute, "maximum duration of one attempt")
@@ -66,7 +67,7 @@ func runWorker() error {
 		return e
 	}
 	defer db.Pool.Close()
-	opts := worker.Options{Name: *name, EventConcurrency: *events, IntegrityConcurrency: *integrity, Lease: *lease, Poll: *poll, Timeout: *timeout, MaxObjectBytes: *maxBytes, MaxEventBytes: *maxEvent, BytesPerSecond: *rate}
+	opts := worker.Options{Name: *name, EventConcurrency: *events, IntegrityConcurrency: *integrity, MaintenanceConcurrency: *maintenance, Lease: *lease, Poll: *poll, Timeout: *timeout, MaxObjectBytes: *maxBytes, MaxEventBytes: *maxEvent, BytesPerSecond: *rate}
 	for _, path := range config.TokenFiles {
 		file, e := os.Open(path)
 		if e != nil {

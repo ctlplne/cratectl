@@ -3,12 +3,9 @@ package server
 
 import (
 	"bytes"
-	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"regexp"
-	"strconv"
 	"strings"
 
 	crypt "ctlplne.dev/cratectl/internal/crypto"
@@ -30,106 +27,7 @@ func (s *Server) oci(w http.ResponseWriter, r *http.Request, i store.Identity, r
 	ctx := r.Context()
 	switch operation {
 	case "blobs/uploads":
-		if r.Method == "POST" && ref == "" {
-			id, e := crypt.Token()
-			if e != nil {
-				respondErr(w, e)
-				return
-			}
-			_, e = s.DB.MutateRepository(ctx, i, repo.Name, "", "", "oci.upload.created", func(tx pgx.Tx) (any, int, error) {
-				var n int
-				if e := tx.QueryRow(ctx, `SELECT count(*) FROM cratectl.uploads WHERE state='active' AND expires_at>now()`).Scan(&n); e != nil {
-					return nil, 0, e
-				}
-				if n >= 32 {
-					return nil, 0, errors.New("upload queue full")
-				}
-				_, e := tx.Exec(ctx, `INSERT INTO cratectl.uploads(tenant,repository,image,id) VALUES($1,$2,$3,$4)`, i.Tenant, repo.Name, image, id)
-				return map[string]string{"upload_id": id, "repository": repo.Name, "image": image}, 202, e
-			})
-			if e != nil {
-				respondErr(w, e)
-				return
-			}
-			w.Header().Set("Location", s.url("/v2/"+repo.Name+"/"+image+"/blobs/uploads/"+id))
-			w.Header().Set("Docker-Upload-UUID", id)
-			w.Header().Set("Range", "0-0")
-			w.WriteHeader(202)
-			return
-		}
-		if ref == "" || (r.Method != "PATCH" && r.Method != "PUT" && r.Method != "GET") {
-			fail(w, 405, "UNSUPPORTED", "Use POST to begin, PATCH to append, PUT with digest to finish.")
-			return
-		}
-		digest := r.URL.Query().Get("digest")
-		if r.Method == "PUT" && !ociDigest.MatchString(digest) {
-			fail(w, 400, "DIGEST_INVALID", "Supply the SHA-256 of the complete blob.")
-			return
-		}
-		var offset int64
-		if r.Method == "GET" {
-			e := s.DB.Tx(ctx, i, false, func(tx pgx.Tx) error {
-				return tx.QueryRow(ctx, `SELECT offset_bytes FROM cratectl.uploads WHERE id=$1 AND repository=$2 AND image=$3 AND state='active' AND expires_at>now()`, ref, repo.Name, image).Scan(&offset)
-			})
-			if e != nil {
-				respondErr(w, store.ErrNotFound)
-				return
-			}
-			w.Header().Set("Range", fmt.Sprintf("0-%d", max(0, offset-1)))
-			w.WriteHeader(204)
-			return
-		}
-		_, e := s.DB.MutateRepository(ctx, i, repo.Name, "", "", "oci.upload.progress", func(tx pgx.Tx) (any, int, error) {
-			e := tx.QueryRow(ctx, `SELECT offset_bytes FROM cratectl.uploads WHERE id=$1 AND repository=$2 AND image=$3 AND state='active' AND expires_at>now() FOR UPDATE`, ref, repo.Name, image).Scan(&offset)
-			if errors.Is(e, pgx.ErrNoRows) {
-				return nil, 0, store.ErrNotFound
-			}
-			if e != nil {
-				return nil, 0, e
-			}
-			if cr := r.Header.Get("Content-Range"); cr != "" {
-				parts := strings.Split(strings.TrimPrefix(cr, "bytes "), "-")
-				if len(parts) != 2 {
-					return nil, 0, store.ErrConflict
-				}
-				start, e := strconv.ParseInt(parts[0], 10, 64)
-				if e != nil || start != offset {
-					return nil, 0, store.ErrConflict
-				}
-			}
-			offset, e = s.Blobs.AppendUpload(ctx, i.Tenant, ref, offset, r.Body)
-			if e != nil {
-				return nil, 0, e
-			}
-			state := "active"
-			if r.Method == "PUT" {
-				obj, e := s.Blobs.FinishUpload(ctx, i.Tenant, ref, strings.TrimPrefix(digest, "sha256:"), offset)
-				if e != nil {
-					return nil, 0, e
-				}
-				if e = store.InsertArtifacts(ctx, tx, i, repo.Name, []store.Artifact{{Path: image + "/blobs/" + digest, Digest: obj.Digest, Size: obj.Size, MediaType: "application/octet-stream"}}); e != nil {
-					return nil, 0, e
-				}
-				state = "complete"
-			}
-			_, e = tx.Exec(ctx, `UPDATE cratectl.uploads SET offset_bytes=$1,state=$2 WHERE id=$3`, offset, state, ref)
-			return map[string]any{"upload_id": ref, "offset": offset, "state": state}, 202, e
-		})
-		if e != nil {
-			respondErr(w, e)
-			return
-		}
-		location := "/v2/" + repo.Name + "/" + image + "/blobs/uploads/" + ref
-		status := 202
-		if r.Method == "PUT" {
-			location = "/v2/" + repo.Name + "/" + image + "/blobs/" + digest
-			status = 201
-			w.Header().Set("Docker-Content-Digest", digest)
-		}
-		w.Header().Set("Location", s.url(location))
-		w.Header().Set("Range", fmt.Sprintf("0-%d", max(0, offset-1)))
-		w.Header().Set("Docker-Upload-UUID", ref)
-		w.WriteHeader(status)
+		s.ociUpload(w, r, i, repo, image, ref)
 	case "blobs":
 		if !ociDigest.MatchString(ref) {
 			fail(w, 400, "DIGEST_INVALID", "Use a SHA-256 digest.")

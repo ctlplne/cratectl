@@ -37,12 +37,13 @@ expiry and revocation after acquiring the database lock. To rotate, provision a
 replacement, update the private configuration and restart the worker. Revoking
 one tenant's credential stops its effects while other configured tenants proceed.
 
-The worker implements two lanes:
+The worker implements three lanes:
 
 | Lane / handler | Observed effect |
 | --- | --- |
 | `events` / `event.project` | Verify a source journal event and publish its activity index entry |
 | `integrity` / `storage.integrity` | Hash the exact stored repository/digest/size binding and retain an attempt observation |
+| `maintenance` / `leases.reconcile` | Recover bounded pages of expired retrieval/upload lease metadata, retaining bytes and offsets |
 
 An event job's `kind` names its source event; `handler` names the effect actually
 performed. A successful hash means the observed stored bytes matched their
@@ -148,3 +149,8 @@ CAS. It kills only its worker, injects corruption only into its own retained
 fixture object, repairs those exact bytes and stops its own processes. Credentials
 and private logs remain under `.private/jobs-conformance/`; evidence records
 source/binary identity and assertions without credential values.
+
+The independent maintenance lane executes bounded expired retrieval/upload lease
+reconciliation. See [recovery.md](recovery.md) for preview, admission, progress,
+cancellation, retry and the byte-retention contract. CAS inventory and GC remain
+required; starting a worker does not automatically schedule a maintenance scan.

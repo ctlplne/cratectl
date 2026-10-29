@@ -146,7 +146,7 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 			<-s.fillSlots
 			return result, e
 		}
-		lease, e = s.DB.AcquireRetrieval(ctx, i, repo.Name, p, token, force, s.TenantProxyLimit)
+		lease, e = s.DB.AcquireRetrievalWithLease(ctx, i, repo.Name, p, token, force, s.TenantProxyLimit, s.ProxyLease)
 		if errors.Is(e, store.ErrBusy) {
 			<-s.fillSlots
 			force = false
@@ -276,6 +276,15 @@ func cachePolicy(h http.Header, repo store.Repository, lease store.Retrieval, st
 	return fresh, stale, nil
 }
 func (s *Server) fillProxy(parent context.Context, i store.Identity, repo store.Repository, lease store.Retrieval) error {
+	ctx, stop, closeLease := keepLease(parent, s.ProxyLease, func(ctx context.Context) error { return s.DB.RenewRetrieval(ctx, i, lease, s.ProxyLease) }, nil)
+	defer closeLease()
+	e := s.fillProxyOnce(ctx, i, repo, lease)
+	if cause := stop(); cause != nil {
+		return cause
+	}
+	return e
+}
+func (s *Server) fillProxyOnce(parent context.Context, i store.Identity, repo store.Repository, lease store.Retrieval) error {
 	if repo.Format == "oci" {
 		return s.fillOCIProxy(parent, i, repo, lease)
 	}

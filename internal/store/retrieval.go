@@ -71,7 +71,10 @@ func (s *Store) AcquireRetrieval(ctx context.Context, i Identity, repo, path, to
 	if len(limits) > 0 {
 		limit = limits[0]
 	}
-	if limit <= 0 {
+	return s.AcquireRetrievalWithLease(ctx, i, repo, path, token, force, limit, 150*time.Second)
+}
+func (s *Store) AcquireRetrievalWithLease(ctx context.Context, i Identity, repo, path, token string, force bool, limit int, lease time.Duration) (Retrieval, error) {
+	if limit <= 0 || lease < time.Second || lease > 5*time.Minute || token == "" {
 		return Retrieval{}, ErrConflict
 	}
 	r := Retrieval{Repository: repo, Path: path}
@@ -96,7 +99,7 @@ func (s *Store) AcquireRetrieval(ctx context.Context, i Identity, repo, path, to
 			}
 		}
 		var n int
-		if e = tx.QueryRow(ctx, `SELECT count(*) FROM cratectl.retrievals WHERE state='fetching' AND lease_until>now()`).Scan(&n); e != nil {
+		if e = tx.QueryRow(ctx, `SELECT count(*) FROM cratectl.retrievals WHERE state='fetching' AND lease_until>clock_timestamp()`).Scan(&n); e != nil {
 			return e
 		}
 		if n >= limit {
@@ -108,7 +111,7 @@ func (s *Store) AcquireRetrieval(ctx context.Context, i Identity, repo, path, to
 		}
 		r.Generation++
 		r.Token = token
-		e = scanRetrieval(tx.QueryRow(ctx, `INSERT INTO cratectl.retrievals(tenant,repository,path,generation,lease_token,lease_until,state,change_sequence) VALUES($1,$2,$3,$4,$5,now()+interval '150 seconds','fetching',$6) ON CONFLICT(tenant,repository,path) DO UPDATE SET generation=excluded.generation,lease_token=excluded.lease_token,lease_until=excluded.lease_until,state='fetching',changed_at=clock_timestamp(),change_sequence=excluded.change_sequence RETURNING `+retrievalColumns, i.Tenant, repo, path, r.Generation, token, sequence), &r)
+		e = scanRetrieval(tx.QueryRow(ctx, `INSERT INTO cratectl.retrievals(tenant,repository,path,generation,lease_token,lease_until,state,change_sequence) VALUES($1,$2,$3,$4,$5,clock_timestamp()+make_interval(secs=>$7),'fetching',$6) ON CONFLICT(tenant,repository,path) DO UPDATE SET generation=excluded.generation,lease_token=excluded.lease_token,lease_until=excluded.lease_until,state='fetching',changed_at=clock_timestamp(),change_sequence=excluded.change_sequence RETURNING `+retrievalColumns, i.Tenant, repo, path, r.Generation, token, sequence, lease.Seconds()), &r)
 		if e != nil {
 			return e
 		}
@@ -116,6 +119,38 @@ func (s *Store) AcquireRetrieval(ctx context.Context, i Identity, repo, path, to
 		return appendEvent(ctx, tx, i, "proxy.retrieval.started", map[string]any{"repository": repo, "path": path, "generation": r.Generation})
 	})
 	return r, e
+}
+
+func (s *Store) RenewRetrieval(ctx context.Context, i Identity, r Retrieval, lease time.Duration) error {
+	if lease < time.Second || lease > 5*time.Minute {
+		return ErrConflict
+	}
+	return s.Tx(ctx, i, true, func(tx pgx.Tx) error {
+		if _, e := repositoryInTx(ctx, tx, i, r.Repository, "read"); e != nil {
+			return e
+		}
+		var state string
+		var valid bool
+		e := tx.QueryRow(ctx, `SELECT state,lease_until>clock_timestamp() FROM cratectl.retrievals WHERE repository=$1 AND path=$2 AND generation=$3 AND lease_token=$4 FOR UPDATE`, r.Repository, r.Path, r.Generation, r.Token).Scan(&state, &valid)
+		if errors.Is(e, pgx.ErrNoRows) {
+			return ErrLeaseLost
+		}
+		if e != nil {
+			return e
+		}
+		// A heartbeat racing its own completion has no further lease to extend.
+		if state != "fetching" {
+			return nil
+		}
+		if !valid {
+			return ErrLeaseLost
+		}
+		tag, e := tx.Exec(ctx, `UPDATE cratectl.retrievals SET lease_until=clock_timestamp()+make_interval(secs=>$1) WHERE repository=$2 AND path=$3 AND lease_until>clock_timestamp()`, lease.Seconds(), r.Repository, r.Path)
+		if e == nil && tag.RowsAffected() != 1 {
+			return ErrLeaseLost
+		}
+		return e
+	})
 }
 
 type RetrievalResult struct {
@@ -250,9 +285,12 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 				return errors.New("failure classification required")
 			}
 		}
-		_, e = tx.Exec(ctx, `UPDATE cratectl.retrievals SET state=$1,lease_until='epoch',fresh_until=now()+make_interval(secs=>$2),stale_until=CASE WHEN $3::int<0 THEN stale_until ELSE now()+make_interval(secs=>($2+$3)) END,etag=CASE WHEN $1='negative' THEN '' WHEN $1='ready' AND $6=200 THEN $4 WHEN $1='ready' AND $4<>'' THEN $4 ELSE etag END,modified=CASE WHEN $1='negative' THEN '' WHEN $1='ready' AND $6=200 THEN $5 WHEN $1='ready' AND $5<>'' THEN $5 ELSE modified END,last_status=$6,last_error=$7,source_fresh_seconds=CASE WHEN $1='ready' THEN $2 ELSE source_fresh_seconds END,source_stale_seconds=CASE WHEN $1='ready' THEN $3 ELSE source_stale_seconds END,changed_at=clock_timestamp(),change_sequence=$10,validation_root=CASE WHEN $1='ready' THEN path ELSE validation_root END,validation_generation=CASE WHEN $1='ready' THEN generation ELSE validation_generation END WHERE repository=$8 AND path=$9`, state, fresh, stale, result.ETag, result.Modified, result.Status, result.Failure, lease.Repository, lease.Path, sequence)
+		tag, e := tx.Exec(ctx, `UPDATE cratectl.retrievals SET state=$1,lease_until='epoch',fresh_until=now()+make_interval(secs=>$2),stale_until=CASE WHEN $3::int<0 THEN stale_until ELSE now()+make_interval(secs=>($2+$3)) END,etag=CASE WHEN $1='negative' THEN '' WHEN $1='ready' AND $6=200 THEN $4 WHEN $1='ready' AND $4<>'' THEN $4 ELSE etag END,modified=CASE WHEN $1='negative' THEN '' WHEN $1='ready' AND $6=200 THEN $5 WHEN $1='ready' AND $5<>'' THEN $5 ELSE modified END,last_status=$6,last_error=$7,source_fresh_seconds=CASE WHEN $1='ready' THEN $2 ELSE source_fresh_seconds END,source_stale_seconds=CASE WHEN $1='ready' THEN $3 ELSE source_stale_seconds END,changed_at=clock_timestamp(),change_sequence=$10,validation_root=CASE WHEN $1='ready' THEN path ELSE validation_root END,validation_generation=CASE WHEN $1='ready' THEN generation ELSE validation_generation END WHERE repository=$8 AND path=$9 AND state='fetching' AND generation=$11 AND lease_token=$12 AND lease_until>clock_timestamp()`, state, fresh, stale, result.ETag, result.Modified, result.Status, result.Failure, lease.Repository, lease.Path, sequence, lease.Generation, lease.Token)
 		if e != nil {
 			return e
+		}
+		if tag.RowsAffected() != 1 {
+			return ErrLeaseLost
 		}
 		data := map[string]any{"repository": lease.Repository, "path": lease.Path, "generation": lease.Generation, "state": state, "upstream_status": result.Status, "failure": result.Failure}
 		if result.Object != nil {

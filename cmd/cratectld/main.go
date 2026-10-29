@@ -106,6 +106,12 @@ func run() error {
 		transfers := f.Int("transfer-concurrency", 16, "maximum admitted requests")
 		fills := f.Int("proxy-concurrency", 4, "maximum local proxy retrievals; reserve capacity for cached reads")
 		tenantFills := f.Int("tenant-proxy-concurrency", 32, "maximum durable active retrievals per tenant across nodes")
+		proxyLease := f.Duration("proxy-lease", 150*time.Second, "renewed proxy retrieval lease; 1 second–5 minutes")
+		uploads := f.Int("tenant-upload-concurrency", 32, "maximum active OCI upload sessions per tenant")
+		uploadParts := f.Int("upload-part-budget", 4096, "maximum immutable parts per OCI upload")
+		uploadMetadata := f.Int64("upload-metadata-bytes", 1<<20, "maximum upload part metadata bytes")
+		uploadLease := f.Duration("upload-lease", 30*time.Second, "renewed OCI operation lease; 1 second–5 minutes")
+		uploadTTL := f.Duration("upload-ttl", 30*time.Minute, "rolling OCI session lifetime; at least the lease and at most 24 hours")
 
 		nativeTags := f.Int("native-tag-budget", 128, "maximum tags in a complete native package index")
 		nativeVersions := f.Int("native-version-budget", 10000, "maximum versions in a complete native index")
@@ -158,6 +164,13 @@ func run() error {
 			return e
 		}
 		h := server.New(db, b, *public)
+		if *proxyLease < time.Second || *proxyLease > 5*time.Minute {
+			return errors.New("proxy lease must be 1 second–5 minutes")
+		}
+		h.ProxyLease = *proxyLease
+		if e := h.ConfigureUploads(*uploads, *uploadParts, *uploadMetadata, *uploadLease, *uploadTTL); e != nil {
+			return errors.New("invalid upload session, part, byte or lease budgets")
+		}
 		if *nativeVersions <= 0 || *nativeBytes <= 0 || *nativeTags <= 0 {
 			return errors.New("native metadata budgets must be positive")
 		}

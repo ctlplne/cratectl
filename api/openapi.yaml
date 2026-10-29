@@ -40,9 +40,9 @@ components:
       properties:
         sequence: {type: integer, format: int64}
         task: {type: string}
-        handler: {type: string, enum: [event.project, storage.integrity]}
-        queue: {type: string, enum: [events, integrity]}
-        kind: {type: string, description: Source event kind or artifact.integrity; handler identifies the actual effect.}
+        handler: {type: string, enum: [event.project, storage.integrity, leases.reconcile]}
+        queue: {type: string, enum: [events, integrity, maintenance]}
+        kind: {type: string, description: Source event kind, artifact.integrity or leases.reconcile; handler identifies the actual effect.}
         state: {type: string, enum: [pending, running, retry, succeeded, failed, cancel_requested, cancelled, uncertain]}
         attempts: {type: integer, minimum: 0, description: Total attempts retained across operator redrives.}
         cycle_attempts: {type: integer, minimum: 0}
@@ -55,13 +55,13 @@ components:
         finished_at: {type: [string, 'null'], format: date-time}
         target:
           type: object
-          description: Canonical repository/path/digest/size binding for integrity work; empty for event projection.
+          description: Canonical integrity binding, empty event target, or durable maintenance progress with cutoff, phase, cursor and recovery counts.
     QueuePolicy:
       type: object
       additionalProperties: false
       required: [capacity, max_running, max_attempts, retry_seconds, retry_max_seconds]
       properties:
-        queue: {type: string, enum: [events, integrity]}
+        queue: {type: string, enum: [events, integrity, maintenance]}
         capacity: {type: integer, minimum: 1, maximum: 2147483647, default: 100000}
         max_running: {type: integer, minimum: 1, maximum: 100000, default: 2}
         max_attempts: {type: integer, minimum: 1, maximum: 10000, default: 5}
@@ -69,7 +69,7 @@ components:
         retry_max_seconds: {type: integer, minimum: 1, maximum: 604800, default: 300, description: Must be at least retry_seconds.}
     JobId:
       type: string
-      pattern: '^[1-9][0-9]*:(event|integrity-[a-f0-9]{64})$'
+      pattern: '^[1-9][0-9]*:(event|integrity-[a-f0-9]{64}|reconcile-[a-f0-9]{64})$'
       description: Tenant-local source sequence plus effect key; equal IDs may exist in different tenants.
 paths:
   /api/v1/repositories:
@@ -299,7 +299,7 @@ paths:
       operationId: listJobs
       description: Tenant administrator inventory; refresh or read individual jobs to observe state changes. Worker-purpose tokens cannot use this API.
       parameters:
-        - {in: query, name: queue, schema: {type: string, enum: [events, integrity]}}
+        - {in: query, name: queue, schema: {type: string, enum: [events, integrity, maintenance]}}
         - {in: query, name: state, schema: {type: string, enum: [pending, running, retry, succeeded, failed, cancel_requested, cancelled, uncertain]}}
         - {in: query, name: after, schema: {$ref: '#/components/schemas/JobId'}}
         - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 1000, default: 100}}
@@ -321,7 +321,7 @@ paths:
       operationId: listQueueStatus
       description: Tenant administrator status. Capacity is operator configuration; outstanding and running are observed counters.
       responses:
-        '200': {description: Two lane policies with current outstanding and live-running counts.}
+        '200': {description: Three lane policies with current outstanding and live-running counts.}
         '403': {description: Tenant administrator required.}
   /api/v1/jobs/queues/{queue}:
     put:
@@ -329,7 +329,7 @@ paths:
       description: Audited local recovery control remains available while outbox capacity is full. Reduced capacity preserves existing work.
       parameters:
         - {$ref: '#/components/parameters/IdempotencyKey'}
-        - {in: path, name: queue, required: true, schema: {type: string, enum: [events, integrity]}}
+        - {in: path, name: queue, required: true, schema: {type: string, enum: [events, integrity, maintenance]}}
       requestBody:
         required: true
         content:
@@ -398,3 +398,35 @@ paths:
       responses:
         '200': {description: Projection items with position, source sequence/hash, actor/kind and supplied coordinate fields; more flag.}
         '403': {description: Tenant administrator required.}
+
+  /api/v1/maintenance/reconciliations:
+    get:
+      operationId: previewLeaseReconciliation
+      description: Tenant administrator bounded sample of expired retrieval/upload leases at a database-clock cutoff. No reservation, effect or byte deletion; execution takes its own cutoff.
+      parameters:
+        - {in: query, name: repository, schema: {type: string}}
+        - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 1000, default: 100}}
+      responses:
+        '200': {description: Cutoff, retrievals and uploads samples with items/more, bytes_deleted zero.}
+        '403': {description: Tenant administrator required.}
+    post:
+      operationId: requestLeaseReconciliation
+      description: Admit durable maintenance work. Pages recheck current leases and atomically save effects/audit/cursor. Cancel preserves completed pages; retry resumes the same cutoff and cursor. Create a new request for a later cutoff. No physical deletion.
+      parameters:
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                repository: {type: string, description: Omit for the authenticated tenant.}
+                page_size: {type: integer, minimum: 1, maximum: 1000, default: 100}
+      responses:
+        '202': {description: Tenant-local job ID and initial progress. Inspect through the jobs API.}
+        '400': {description: Invalid input or missing idempotency key.}
+        '403': {description: Tenant administrator required.}
+        '409': {description: Idempotency key reused with different input.}
+        '503': {description: Maintenance admission capacity exhausted; repair worker or queue policy.}
