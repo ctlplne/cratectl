@@ -241,7 +241,7 @@ func ParseJobID(id string) (int64, string, error) {
 	}
 	if task != "event" {
 		prefix, digest, found := strings.Cut(task, "-")
-		if !found || (prefix != "integrity" && prefix != "reconcile" && prefix != "sweep" && prefix != "inventory") || len(digest) != 64 {
+		if !found || (prefix != "integrity" && prefix != "reconcile" && prefix != "sweep" && prefix != "inventory" && prefix != "repair") || len(digest) != 64 {
 			return 0, "", ErrConflict
 		}
 		if _, e = hex.DecodeString(digest); e != nil {
@@ -268,6 +268,10 @@ func scanJob(row pgx.Row, j *Job) error {
 		}
 		if j.Queue == "integrity" && j.Kind == "storage.sweep" {
 			j.Handler = "storage.sweep"
+		}
+		if j.Queue == "integrity" && j.Kind == "storage.repair" {
+			j.Handler = "storage.repair"
+			j.Target, e = publicRepairPayload(j.Target)
 		}
 	}
 	return e
@@ -298,7 +302,7 @@ func (s *Store) ClaimJob(ctx context.Context, i WorkerIdentity, queue, worker st
 			return ErrBusy
 		}
 		for skipped := 0; skipped < 32; skipped++ {
-			e = scanJob(tx.QueryRow(ctx, `SELECT `+jobColumns+` FROM cratectl.jobs WHERE queue=$1 AND ((state IN ('pending','retry') AND available_at<=clock_timestamp()) OR (state IN ('running','cancel_requested') AND lease_until<=clock_timestamp())) ORDER BY available_at,sequence,task FOR UPDATE SKIP LOCKED LIMIT 1`, queue), &j)
+			e = scanJob(tx.QueryRow(ctx, `SELECT `+jobColumns+` FROM cratectl.jobs WHERE queue=$1 AND (kind<>'storage.repair' OR payload->>'source_ready'='true') AND ((state IN ('pending','retry') AND available_at<=clock_timestamp()) OR (state IN ('running','cancel_requested') AND lease_until<=clock_timestamp())) ORDER BY available_at,sequence,task FOR UPDATE SKIP LOCKED LIMIT 1`, queue), &j)
 			if errors.Is(e, pgx.ErrNoRows) {
 				empty = true
 				return nil

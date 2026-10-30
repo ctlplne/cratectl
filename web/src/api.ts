@@ -17,16 +17,18 @@ export class Client {
   constructor(private token:string,private unauthorized:()=>void){}
   get closed(){return this.controller.signal.aborted}
   dispose(){this.controller.abort();this.token=''}
-  async request<T>(path:string,options:{signal?:AbortSignal;mutation?:PendingRequest}={}):Promise<{value:T;replayed:boolean;status:number}>{
+  async request<T>(path:string,options:{signal?:AbortSignal;mutation?:PendingRequest;upload?:{file:File;key:string}}={}):Promise<{value:T;replayed:boolean;status:number}>{
     if(!path.startsWith('/api/v1/')||path.length>8192)throw new ApiError(0,'invalid_path','Use a management endpoint on this server.');
     if(this.active>=6)throw new ApiError(0,'client_busy','Wait for a current request to finish, then refresh.');
+    if(options.mutation&&options.upload)throw new ApiError(0,'invalid_request','Send a JSON plan or a repair source file in one request.');
     this.active++;
-    const signal=AbortSignal.any([this.controller.signal,AbortSignal.timeout(20000),...(options.signal?[options.signal]:[])]);
+    const signal=AbortSignal.any([this.controller.signal,AbortSignal.timeout(options.upload?600000:20000),...(options.signal?[options.signal]:[])]);
     try{
       const headers:Record<string,string>={Authorization:`Bearer ${this.token}`};
       const mutation=options.mutation;
       if(mutation){headers['Content-Type']='application/json';headers['Idempotency-Key']=mutation.key}
-      const response=await fetch(path,{method:mutation?.method??'GET',headers,body:mutation?.body,signal,redirect:'error',cache:'no-store',credentials:'omit'});
+      if(options.upload){headers['Content-Type']='application/octet-stream';headers['Idempotency-Key']=options.upload.key}
+      const response=await fetch(path,{method:mutation?.method??(options.upload?'PUT':'GET'),headers,body:mutation?.body??options.upload?.file,signal,redirect:'error',cache:'no-store',credentials:'omit'});
       if(signal.aborted)throw signal.reason;
       if(response.status===401){this.dispose();this.unauthorized();throw new ApiError(401,'credential_required','The credential expired, was revoked or is not valid for this console. Reconnect with a current tenant credential.')}
       const reader=response.body?.getReader();let size=0;const chunks:Uint8Array[]=[];

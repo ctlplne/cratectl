@@ -1,5 +1,18 @@
 # cratectl execution status
 
+Audited exact-byte repair is implemented locally and awaiting clean-candidate
+qualification. It provides administrator preview, a durable source-waiting job,
+streaming source submission, fenced installation and immutable readback receipts
+while retaining corrupt bytes and preserving policy/lifecycle state. Schema 5
+rejects older workers without changing migration receipts 1–4. API, streaming CLI
+and console workflows are present. See ADR 0024 and docs/operator/byte-repair.md.
+
+Dirty-build preflights passed real PostgreSQL/race fault, authorization, source,
+cancellation and lease checks; stock ORAS recovery; parser fuzzing; and seven
+Chromium workflows. These are preliminary observations, not a new clean-build
+checkpoint. All broad readiness verdicts and the full remaining scope stay open.
+
+
 Latest qualified source: `06156af19b9759035e96d63cf7a8bf52903235f7`, authored and committed only as
 `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
 The authoritative checkpoint is `evidence/2026-10-29/source-configuration-checkpoint.json`.

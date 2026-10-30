@@ -119,6 +119,14 @@ func respondErr(w http.ResponseWriter, e error) {
 		fail(w, 409, "configuration_changed", "Read current repository configuration, preview its impact, and apply that exact expected_revision with a new idempotency key.")
 	case errors.Is(e, store.ErrConfigurationInput):
 		fail(w, 400, "invalid_configuration", "Supply complete valid proxy/group settings, a nonnegative expected_revision and a nonempty reason of at most 1024 UTF-8 bytes without controls. Repository name, mode and format are immutable.")
+	case errors.Is(e, store.ErrRepairInput):
+		fail(w, 400, "invalid_repair", "Supply an exact retained path/digest, current expected_source_revision, nonempty reason and source provenance of at most 1024 UTF-8 bytes each.")
+	case errors.Is(e, store.ErrRepairChanged):
+		fail(w, 409, "repair_changed", "Read the retained reference and current source revision, then create a new repair plan; this source or target changed.")
+	case errors.Is(e, store.ErrRepairAuthorization):
+		fail(w, 403, "repair_authorization_changed", "Use the original still-valid requesting administrator credential for source submission. If it expired or was revoked, create a new authorized plan.")
+	case errors.Is(e, store.ErrRepairReferences):
+		fail(w, 409, "repair_reference_conflict", "References disagree on the size of these exact bytes. Inspect metadata consistency before repair; no bytes were replaced.")
 	case errors.Is(e, store.ErrDeleted):
 		fail(w, 404, "artifact_deleted", "This retained reference was deleted. A writer must preview and explicitly restore its verified bytes; cache refresh cannot restore it.")
 	case errors.Is(e, store.ErrRepositorySuspended):
@@ -144,7 +152,7 @@ func respondErr(w http.ResponseWriter, e error) {
 		w.Header().Set("Retry-After", "1")
 		fail(w, 503, "maven_metadata_changed", "Concurrent references or policy changed this metadata view during three read attempts. Retry after one second.")
 	case errors.Is(e, blob.ErrStorageChanged):
-		fail(w, 503, "storage_changed", "Inspect the configured storage root and start a new inventory; observations from different storage identities cannot be combined.")
+		fail(w, 503, "storage_changed", "Inspect the configured storage root and preview a new maintenance operation; observations or repair sources from different storage identities cannot be combined.")
 	case errors.Is(e, blob.ErrUnsupported):
 		fail(w, 503, "unsupported_storage_entry", "Inspect storage for links, special files or an unsupported layout; no content was accepted or deleted.")
 	case errors.Is(e, store.ErrSweepBudget):
@@ -312,6 +320,9 @@ func readJSON(w http.ResponseWriter, r *http.Request, v any, limit int64) bool {
 }
 func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Identity) {
 	p := strings.TrimPrefix(r.URL.Path, "/api/v1/")
+	if s.repairManagement(w, r, i, p) {
+		return
+	}
 	if s.configurationManagement(w, r, i, p) {
 		return
 	}

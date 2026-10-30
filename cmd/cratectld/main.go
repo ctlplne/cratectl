@@ -133,6 +133,7 @@ func run() error {
 		max := f.Int64("max-object-bytes", 1<<30, "per-object byte limit")
 		privateNetworks := f.String("allow-private-upstreams", "", "operator-authorized private upstream CIDRs, comma separated")
 		transfers := f.Int("transfer-concurrency", 16, "maximum admitted requests")
+		transferTimeout := f.Duration("transfer-timeout", 5*time.Minute, "request read/write deadline, 1 second–24 hours")
 		fills := f.Int("proxy-concurrency", 4, "maximum local proxy retrievals; reserve capacity for cached reads")
 		tenantFills := f.Int("tenant-proxy-concurrency", 32, "maximum durable active retrievals per tenant across nodes")
 		proxyLease := f.Duration("proxy-lease", 150*time.Second, "renewed proxy retrieval lease; 1 second–5 minutes")
@@ -179,6 +180,9 @@ func run() error {
 			}
 			set := flagSet(f)
 			dsn = c.DSN
+			if !set["transfer-timeout"] && c.TransferTimeoutSeconds > 0 {
+				*transferTimeout = time.Duration(c.TransferTimeoutSeconds) * time.Second
+			}
 			if !set["pagination-key-file"] {
 				*paginationKey = c.PaginationKeyFile
 				if *paginationKey == "" {
@@ -200,6 +204,9 @@ func run() error {
 			if !set["tls-key"] {
 				*key = c.TLSKey
 			}
+		}
+		if *transferTimeout < time.Second || *transferTimeout > 24*time.Hour {
+			return errors.New("transfer-timeout must be 1 second–24 hours")
 		}
 		host, _, e := net.SplitHostPort(*listen)
 		if e != nil {
@@ -312,7 +319,7 @@ func run() error {
 				return e
 			}
 		}
-		srv := &http.Server{Addr: *listen, Handler: h, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 5 * time.Minute, WriteTimeout: 5 * time.Minute, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 32 << 10}
+		srv := &http.Server{Addr: *listen, Handler: h, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: *transferTimeout, WriteTimeout: *transferTimeout, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 32 << 10}
 		stop, cancel := signal.NotifyContext(ctx, syscall.SIGINT, syscall.SIGTERM)
 		defer cancel()
 		go func() {

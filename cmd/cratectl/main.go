@@ -30,9 +30,14 @@ func run() error {
 	method := f.String("method", "GET", "HTTP method")
 	p := f.String("path", "/api/v1/repositories", "API path")
 	file := f.String("body-file", "", "JSON request file")
+	upload := f.String("upload-file", "", "stream exact repair source bytes from this regular file")
+	timeout := f.Duration("timeout", 30*time.Second, "request timeout, 1s–24h; increase explicitly for large repair sources")
 	key := f.String("idempotency-key", "", "durable mutation key")
 	if e := f.Parse(os.Args[1:]); e != nil {
 		return e
+	}
+	if *file != "" && *upload != "" || *timeout < time.Second || *timeout > 24*time.Hour {
+		return errors.New("choose body-file or upload-file and a timeout from 1s through 24h")
 	}
 	if *configuration != "" {
 		var c configfile.Client
@@ -79,12 +84,31 @@ func run() error {
 			return e
 		}
 	}
-	req, e := http.NewRequest(*method, strings.TrimRight(*base, "/")+*p, bytes.NewReader(body))
+	var reader io.Reader = bytes.NewReader(body)
+	length := int64(len(body))
+	if *upload != "" {
+		source, e := os.Open(*upload)
+		if e != nil {
+			return errors.New("cannot open repair source file")
+		}
+		defer source.Close()
+		info, e := source.Stat()
+		if e != nil || !info.Mode().IsRegular() || info.Size() < 0 || info.Size() >= 1<<62 {
+			return errors.New("repair source must be a regular file with a bounded declared size")
+		}
+		reader = source
+		length = info.Size()
+	}
+	req, e := http.NewRequest(*method, strings.TrimRight(*base, "/")+*p, reader)
 	if e != nil {
 		return e
 	}
 	req.Header.Set("Authorization", "Bearer "+strings.TrimSpace(string(token)))
 	req.Header.Set("Content-Type", "application/json")
+	if *upload != "" {
+		req.Header.Set("Content-Type", "application/octet-stream")
+		req.ContentLength = length
+	}
 	req.Header.Set("Idempotency-Key", *key)
 	transport := http.DefaultTransport.(*http.Transport).Clone()
 	if *caFile != "" {
@@ -98,7 +122,7 @@ func run() error {
 		}
 	}
 	defer transport.CloseIdleConnections()
-	client := &http.Client{Transport: transport, Timeout: 30 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
+	client := &http.Client{Transport: transport, Timeout: *timeout, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
 	resp, e := client.Do(req)
 	if e != nil {
 		return errors.New("request failed; check the URL and configured TLS trust")

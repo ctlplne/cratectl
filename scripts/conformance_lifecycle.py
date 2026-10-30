@@ -4,10 +4,10 @@
 import argparse,datetime,hashlib,json,os,subprocess,time,urllib.error,urllib.parse,urllib.request,uuid
 from pathlib import Path
 
-parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');parser.add_argument('--baseline-version',type=int,choices=[2,3],default=2);args=parser.parse_args()
+parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');parser.add_argument('--baseline-version',type=int,choices=[2,3,4],default=2);args=parser.parse_args()
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT);RUN=uuid.uuid4().hex[:10]
 PRIVATE=ROOT/'.private/lifecycle-conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)
-BASE='http://127.0.0.1:38443';OLD=ROOT/('.cache/maven-final-production/cratectld'if args.baseline_version==2 else'.cache/lifecycle-final-production/cratectld');NEW=ROOT/'bin/cratectld';ORAS=ROOT/'.cache/bin/oras'
+BASE='http://127.0.0.1:38443';OLD=ROOT/('.cache/maven-final-production/cratectld'if args.baseline_version==2 else'.cache/lifecycle-final-production/cratectld'if args.baseline_version==3 else'.cache/source-final-production/cratectld');NEW=ROOT/'bin/cratectld';ORAS=ROOT/'.cache/bin/oras'
 env=dict(os.environ);checks=[];commands=[];proc=None;log=None
 def identity(binary):
     values={}
@@ -16,7 +16,7 @@ def identity(binary):
         if len(parts)==2 and parts[0]=='build' and '='in parts[1]:key,value=parts[1].split('=',1);values[key]=value
     return values
 scope=['cmd','internal','scripts','web','api','go.mod','go.sum','Makefile'];candidate=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
-result={'run':RUN,'candidate':candidate,'baseline_version':args.baseline_version,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope]).strip()),'checks':checks,'commands':commands,'artifact_digests':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()for p in [OLD,NEW,ROOT/'bin/cratectl',ORAS]},'build_identity':{str(p.relative_to(ROOT)):identity(p)for p in [OLD,NEW,ROOT/'bin/cratectl']},'topology':f'Native macOS arm64, retained clean schema-{args.baseline_version} binary then schema-4 binary, real PostgreSQL 16.15 nonowner forced RLS, stock ORAS; explicit HTTP loopback on 38443.','limits':['Logical retirement retains CAS bytes and all references; no physical erasure or reclaimed storage is claimed.','Source URL/configuration changes, recursive groups, retention/GC, scale, rolling upgrade, backup/restore and other clients/platforms remain required.','This campaign uses controlled maintenance with the registry stopped during migration; it does not establish compatible rolling versions.']}
+result={'run':RUN,'candidate':candidate,'baseline_version':args.baseline_version,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope]).strip()),'checks':checks,'commands':commands,'artifact_digests':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()for p in [OLD,NEW,ROOT/'bin/cratectl',ORAS]},'build_identity':{str(p.relative_to(ROOT)):identity(p)for p in [OLD,NEW,ROOT/'bin/cratectl']},'topology':f'Native macOS arm64, retained clean schema-{args.baseline_version} binary then schema-5 binary, real PostgreSQL 16.15 nonowner forced RLS, stock ORAS; explicit HTTP loopback on 38443.','limits':['Logical retirement retains CAS bytes and all references; no physical erasure or reclaimed storage is claimed.','Source URL/configuration changes, recursive groups, retention/GC, scale, rolling upgrade, backup/restore and other clients/platforms remain required.','This campaign uses controlled maintenance with the registry stopped during migration; it does not establish compatible rolling versions.']}
 result['build_source_matches_candidate']=all(result['build_identity'][str(p.relative_to(ROOT))].get('vcs.revision')==candidate and result['build_identity'][str(p.relative_to(ROOT))].get('vcs.modified')=='false'for p in [NEW,ROOT/'bin/cratectl'])
 def check(label,value):
     if not value:raise AssertionError(label)
@@ -65,7 +65,7 @@ def change(repo,action,revision,path=None,digest=None,dry=False):
     return api('/api/v1/repositories/'+repo+('/artifacts/lifecycle'if path else'/state'),'PUT',body)
 try:
     if args.require_clean_build:check('lifecycle source and new binaries match a clean candidate',not result['source_dirty']and result['build_source_matches_candidate'])
-    check('baseline is the retained qualified source',result['build_identity'][str(OLD.relative_to(ROOT))].get('vcs.revision')==('10ea6499d874018178b43ee38a9070e81e5a0686'if args.baseline_version==2 else'bea2472271bd15993bcae9b8ea12a102b2608abe'))
+    check('baseline is the retained qualified source',result['build_identity'][str(OLD.relative_to(ROOT))].get('vcs.revision')==('10ea6499d874018178b43ee38a9070e81e5a0686'if args.baseline_version==2 else'bea2472271bd15993bcae9b8ea12a102b2608abe'if args.baseline_version==3 else'06156af19b9759035e96d63cf7a8bf52903235f7'))
     owner=urllib.parse.urlsplit(env['CRATECTL_OWNER_DSN']);database='cratectl_lifecycle_'+RUN
     pgenv=dict(env,PGHOST=owner.hostname,PGPORT=str(owner.port or 5432),PGUSER=urllib.parse.unquote(owner.username),PGPASSWORD=urllib.parse.unquote(owner.password),PGDATABASE=owner.path.lstrip('/'))
     run([ROOT/'.cache/postgresql-16.15-install/bin/psql','-X','-v','ON_ERROR_STOP=1','-At','-c','CREATE DATABASE '+database],pgenv)
@@ -90,12 +90,12 @@ try:
         check('schema-3 baseline creates a governed proxy',api('/api/v1/repositories','POST',{'name':'legacy-proxy','format':'oci','mode':'proxy','settings':{'upstream':{'url':BASE+'/v2/containers/','networks':['127.0.0.1/32'],'credential_ref':'self'},'cache':{'fresh_seconds':3600,'stale_seconds':0,'allow_no_store':True}}})[0]==201)
         legacy=PRIVATE/'legacy-pull';legacy.mkdir();oras('pull','127.0.0.1:38443/legacy-proxy/proof:v1',cwd=legacy,reader=True);check('actual schema-3 binary caches stock OCI graph',(legacy/'payload.txt').read_bytes()==payload)
     stop()
-    plan=json.loads(run([NEW,'migrate','--plan']));check('new migrator safely plans only remaining immutable steps',plan['pending']==list(range(args.baseline_version+1,5))and plan['safety_valid'])
-    run([NEW,'migrate']);plan=json.loads(run([NEW,'migrate','--plan']));check('actual upgrade preserves every old receipt and adds safe remaining steps',plan['applied'][:args.baseline_version]==old_plan['applied']and len(plan['applied'])==4 and plan['safety_valid'])
+    plan=json.loads(run([NEW,'migrate','--plan']));check('new migrator safely plans only remaining immutable steps',plan['pending']==list(range(args.baseline_version+1,6))and plan['safety_valid'])
+    run([NEW,'migrate']);plan=json.loads(run([NEW,'migrate','--plan']));check('actual upgrade preserves every old receipt and adds safe remaining steps',plan['applied'][:args.baseline_version]==old_plan['applied']and len(plan['applied'])==5 and plan['safety_valid'])
     run([OLD,'migrate','--plan'],ok=False);check('old binary refuses the upgraded database',True)
     start(NEW)
-    if args.baseline_version==3:
-        upgraded=PRIVATE/'upgraded-proxy-pull';upgraded.mkdir();oras('pull','127.0.0.1:38443/legacy-proxy/proof:v1',cwd=upgraded,reader=True);check('schema-4 keeps valid schema-3 cached graph at source revision zero',(upgraded/'payload.txt').read_bytes()==payload and json.loads(api('/api/v1/repositories/legacy-proxy/configuration')[1])['source_revision']==0)
+    if args.baseline_version>=3:
+        upgraded=PRIVATE/'upgraded-proxy-pull';upgraded.mkdir();oras('pull','127.0.0.1:38443/legacy-proxy/proof:v1',cwd=upgraded,reader=True);check('schema-5 keeps valid baseline cached graph at source revision zero',(upgraded/'payload.txt').read_bytes()==payload and json.loads(api('/api/v1/repositories/legacy-proxy/configuration')[1])['source_revision']==0)
     pull=PRIVATE/'initial-pull';pull.mkdir();oras('pull',ref,cwd=pull,reader=True);check('stock ORAS installs retained bytes after actual upgrade',(pull/'payload.txt').read_bytes()==payload)
     code,body,_=change('containers','hold',0,path,digest[7:]);check('administrator hold commits exact revision',code==200 and json.loads(body)['current']['held'])
     oras('manifest','delete','--force','127.0.0.1:38443/containers/proof@'+digest,ok=False);check('stock ORAS cannot delete a held manifest',True)

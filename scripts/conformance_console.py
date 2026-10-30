@@ -50,10 +50,10 @@ try:
     initial=dict(env,CRATECTL_OWNER_DSN=database_dsn(env['CRATECTL_OWNER_DSN']),CRATECTL_DSN=database_dsn(env['CRATECTL_DSN']))
     owner_config=private('database.json',{'owner':initial['CRATECTL_OWNER_DSN'],'runtime':initial['CRATECTL_DSN']})
     receipt=json.loads(command([ROOT/'bin/cratectld','init','--directory',PRIVATE/'installation','--tenant','console-a'],initial))
-    for identity,tenant,role in [('reader','console-a','reader'),('writer','console-a','writer'),('other','console-b','admin')]:
+    for identity,tenant,role in [('reader','console-a','reader'),('writer','console-a','writer'),('repair-admin','console-a','admin'),('other','console-b','admin')]:
         command([ROOT/'bin/cratectld','provision','--tenant',tenant,'--actor',identity,'--role',role,'--token-file',PRIVATE/(identity+'.token')],initial)
     install=PRIVATE/'installation'
-    fixture={'run':RUN,'base_url':base,'root':str(ROOT),'private':str(PRIVATE),'owner_config':str(owner_config),'admin_token':str(install/'admin.token'),'worker_token':str(install/'worker.token'),'reader_token':str(PRIVATE/'reader.token'),'writer_token':str(PRIVATE/'writer.token'),'other_token':str(PRIVATE/'other.token')}
+    fixture={'run':RUN,'base_url':base,'root':str(ROOT),'private':str(PRIVATE),'owner_config':str(owner_config),'admin_token':str(install/'admin.token'),'worker_token':str(install/'worker.token'),'reader_token':str(PRIVATE/'reader.token'),'writer_token':str(PRIVATE/'writer.token'),'other_token':str(PRIVATE/'other.token'),'repair_admin_token':str(PRIVATE/'repair-admin.token')}
     fixture_path=private('browser-fixture.json',fixture)
     token=(install/'admin.token').read_text().strip()
     private('npmrc',f'registry={base}/npm/web-packages/\n//127.0.0.1:38443/npm/web-packages/:_authToken={token}\n'.encode())
@@ -74,7 +74,8 @@ try:
         raise AssertionError('owned process exited during UI review')
     browser_env=dict(runtime_env,CRATECTL_CONSOLE_FIXTURE_JSON=str(fixture_path),PLAYWRIGHT_BROWSERS_PATH=str(ROOT/'.cache/playwright-browsers'),PLAYWRIGHT_JSON_OUTPUT_NAME=str(PRIVATE/'browser-results.json'))
     command([ROOT/'web/node_modules/.bin/playwright','test','--config',ROOT/'web/playwright.config.mjs'],browser_env)
-    report=json.loads((PRIVATE/'browser-results.json').read_text());check('real-browser workflow suite passed without skips',report['stats']['unexpected']==0 and report['stats']['skipped']==0 and report['stats']['expected']==6)
+    report=json.loads((PRIVATE/'browser-results.json').read_text());check('real-browser workflow suite passed without skips',report['stats']['unexpected']==0 and report['stats']['skipped']==0 and report['stats']['expected']==7)
+    repair=json.loads((PRIVATE/'repair-browser-proof.json').read_text());result['repair_browser']=repair;checks.extend(repair['checks'])
     configuration=json.loads((PRIVATE/'source-configuration-browser-proof.json').read_text());result['source_configuration_browser']=configuration;checks.extend(configuration['checks'])
     lifecycle=json.loads((PRIVATE/'lifecycle-browser-proof.json').read_text());result['lifecycle_browser']=lifecycle;checks.extend(lifecycle['checks'])
     schema=json.loads((PRIVATE/'schema-browser-proof.json').read_text());result['schema_browser']=schema;checks.extend(schema['checks'])

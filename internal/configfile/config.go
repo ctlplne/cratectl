@@ -11,18 +11,22 @@ import (
 )
 
 type Runtime struct {
-	PaginationKeyFile string `json:"pagination_key_file,omitempty"`
-	Version           int    `json:"version"`
-	DSN               string `json:"database_dsn"`
-	Listen            string `json:"listen"`
-	PublicURL         string `json:"public_url"`
-	Objects           string `json:"objects"`
-	TLSCert           string `json:"tls_cert"`
-	TLSKey            string `json:"tls_key"`
-	WorkerIdentities  string `json:"worker_identities"`
+	TransferTimeoutSeconds int64  `json:"transfer_timeout_seconds,omitempty"`
+	PaginationKeyFile      string `json:"pagination_key_file,omitempty"`
+	Version                int    `json:"version"`
+	DSN                    string `json:"database_dsn"`
+	Listen                 string `json:"listen"`
+	PublicURL              string `json:"public_url"`
+	Objects                string `json:"objects"`
+	TLSCert                string `json:"tls_cert"`
+	TLSKey                 string `json:"tls_key"`
+	WorkerIdentities       string `json:"worker_identities"`
 }
 
 func (c Runtime) Validate() error {
+	if c.TransferTimeoutSeconds < 0 || c.TransferTimeoutSeconds > 86400 {
+		return errors.New("transfer_timeout_seconds must be zero for the default or 1–86400")
+	}
 	if c.Version != 1 || c.DSN == "" || c.Listen == "" || c.PublicURL == "" {
 		return errors.New("invalid runtime configuration version or required fields")
 	}

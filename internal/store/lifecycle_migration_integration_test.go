@@ -22,7 +22,7 @@ func TestLifecycleMigrationPreservesV2ReceiptsAndGuardsRLS(t *testing.T) {
 		t.Fatal(e)
 	}
 	plan, e := MigrationPlan(ctx, d.OwnerDSN)
-	if e != nil || plan.DatabaseState != "pending" || len(plan.Pending) != 2 || plan.Pending[0] != 3 || plan.Pending[1] != 4 || !plan.SafetyValid {
+	if e != nil || plan.DatabaseState != "pending" || len(plan.Pending) != len(steps)-2 || plan.Pending[0] != 3 || plan.Pending[1] != 4 || !plan.SafetyValid {
 		t.Fatal(plan, e)
 	}
 	old := append([]SchemaReceipt(nil), plan.Applied...)
@@ -41,7 +41,7 @@ func TestLifecycleMigrationPreservesV2ReceiptsAndGuardsRLS(t *testing.T) {
 		t.Fatal(e)
 	}
 	plan, e = MigrationPlan(ctx, d.OwnerDSN)
-	if e != nil || plan.DatabaseState != "pending" || len(plan.Applied) != 3 || len(plan.Pending) != 1 || plan.Pending[0] != 4 || !plan.SafetyValid {
+	if e != nil || plan.DatabaseState != "pending" || len(plan.Applied) != 3 || len(plan.Pending) != len(steps)-3 || plan.Pending[0] != 4 || !plan.SafetyValid {
 		t.Fatal(plan, e)
 	}
 	for n := range old {

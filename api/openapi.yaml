@@ -65,7 +65,7 @@ components:
       properties:
         sequence: {type: integer, format: int64}
         task: {type: string}
-        handler: {type: string, enum: [event.project, storage.integrity, storage.sweep, storage.inventory, leases.reconcile]}
+        handler: {type: string, enum: [event.project, storage.integrity, storage.sweep, storage.inventory, storage.repair, leases.reconcile]}
         queue: {type: string, enum: [events, integrity, maintenance]}
         kind: {type: string, description: Source event kind, artifact.integrity, storage.sweep or leases.reconcile; handler identifies the actual effect.}
         state: {type: string, enum: [pending, running, retry, succeeded, failed, cancel_requested, cancelled, uncertain]}
@@ -94,7 +94,7 @@ components:
         retry_max_seconds: {type: integer, minimum: 1, maximum: 604800, default: 300, description: Must be at least retry_seconds.}
     JobId:
       type: string
-      pattern: '^[1-9][0-9]*:(event|integrity-[a-f0-9]{64}|reconcile-[a-f0-9]{64}|sweep-[a-f0-9]{64}|inventory-[a-f0-9]{64})$'
+      pattern: '^[1-9][0-9]*:(event|integrity-[a-f0-9]{64}|reconcile-[a-f0-9]{64}|sweep-[a-f0-9]{64}|inventory-[a-f0-9]{64}|repair-[a-f0-9]{64})$'
       description: Tenant-local source sequence plus effect key; equal IDs may exist in different tenants.
 paths:
   /api/v1/session:
@@ -651,6 +651,66 @@ paths:
         '200': {description: Receipts ordered by generation with ordinal/pass/digest/size/status/worker/engine/time and more.}
         '403': {description: Tenant administrator required.}
         '404': {description: No such inventory in this tenant.}
+  /api/v1/repositories/{repository}/artifacts/repairs:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+    post:
+      summary: Preview or create an exact-byte repair as a tenant administrator
+      description: Uses an existing retained path/digest/size as truth. Apply records a durable integrity job waiting for its source. Workers cannot claim it until source acceptance. Current policy, holds, tombstones and source epochs remain unchanged. Shared tenant-local references may benefit. The JSON limit is 8 KiB; duplicate or noncanonical field names are rejected.
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          description: Required unless dry_run is true. Reuse only with the identical plan.
+          schema: {type: string, minLength: 8, maxLength: 128}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [path, digest, expected_source_revision, reason, provenance]
+              properties:
+                path: {type: string, minLength: 1, maxLength: 2048}
+                digest: {type: string, pattern: '^[a-f0-9]{64}$'}
+                expected_source_revision: {type: integer, format: int64, minimum: 0}
+                reason: {type: string, minLength: 1, maxLength: 1024, description: At most 1024 UTF-8 bytes without controls.}
+                provenance: {type: string, minLength: 1, maxLength: 1024, description: Source of the independently retained recovery copy; an operator statement, not a scanner approval.}
+                dry_run: {type: boolean, default: false}
+      responses:
+        '200': {description: 'Preview target, source_revision, affected_references, actor/reason/provenance and security_approval=false; no operation created.'}
+        '202': {description: 'Durable job, plan and state=awaiting_source; no bytes have been replaced.'}
+        '400': {description: Invalid or ambiguous repair JSON}
+        '403': {description: Tenant administrator required}
+        '404': {description: No authorized retained reference}
+        '409': {description: Reference/source revision changed, conflicting retained sizes or reused key with different plan}
+        '413': {description: Repair JSON exceeds 8 KiB}
+        '503': {description: Queue, bound, schema, storage or database unavailable; no partial operation}
+  /api/v1/maintenance/repairs/{job}/source:
+    parameters:
+      - in: path
+        name: job
+        required: true
+        schema: {$ref: '#/components/schemas/JobId'}
+    put:
+      summary: Stream the exact source for an existing waiting repair
+      description: The original requesting administrator supplies application/octet-stream bytes. Full digest and size must match the plan. Synced staging precedes atomic acceptance and job readiness. Apply-time authority, source/reference identity, cancellation and generation are rechecked by the worker. A replay confirms its previously accepted source without reading a new body. Completion requires a succeeded job and immutable verified observation; cancellation never undoes bytes already installed.
+      parameters:
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema: {type: string, format: binary}
+      responses:
+        '202': {description: 'Source accepted, source_ready=true and state=queued. Installation and readback are still pending.'}
+        '400': {description: Declared length or actual digest/length mismatch}
+        '403': {description: Original requesting tenant administrator required}
+        '404': {description: No repair in this tenant}
+        '409': {description: Source already accepted under another key, operation stopped or reference/source changed}
+        '413': {description: Source exceeds the configured object limit}
+        '415': {description: Use application/octet-stream}
+        '503': {description: Bounded upload lane, storage identity/layout, schema or database unavailable}
   /api/v1/repositories/{repository}/configuration:
     parameters:
       - {$ref: '#/components/parameters/Repository'}

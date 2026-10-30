@@ -188,6 +188,10 @@ func (s *Store) FinishIntegrity(ctx context.Context, i WorkerIdentity, j Job, st
 func (s *Store) FailJob(ctx context.Context, i WorkerIdentity, j Job, code string, permanent bool) (string, error) {
 	switch code {
 	case "invalid_event", "invalid_target", "event_budget", "worker_stopped", "handler_timeout", "handler_failure", "inventory_budget", "storage_changed", "unsupported_storage":
+	case "repair_attempt_unconfirmed", "repair_requester_authorization", "repair_target_changed", "repair_storage_changed", "repair_unsupported_storage", "repair_source_integrity", "repair_object_limit", "repair_invalid_intent", "repair_cancelled", "repair_completion_authority_changed", "repair_reference_conflict":
+		if j.Kind != "storage.repair" {
+			return "", ErrConflict
+		}
 	default:
 		return "", ErrConflict
 	}
