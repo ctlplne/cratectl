@@ -1,5 +1,22 @@
 # cratectl execution status
 
+Recurring bounded integrity sampling is implemented locally and awaiting a clean
+candidate (ADR 0025; docs/operator/recurring-integrity.md). Schema 6 adds forced-RLS
+schedules, immutable configuration history and run receipts. Admission atomically
+captures a rotating reference set with job/cursor/slot/journal; queue pressure,
+unresolved prior work and expired/revoked authorization retain explicit state.
+API, CLI and console workflows are present. Pausing preserves existing jobs.
+
+Dirty-build preflights passed the full PostgreSQL store/server/native-driver race
+packages without skips or races, 31 stock ORAS/CLI recurrence/recovery assertions,
+a focused Chromium workflow with eight automated accessibility states, parser
+fuzzing and unit/race/lint checks. First failures for late requester expiry,
+empty-sample verification and malformed OpenAPI descriptions are retained with
+replays. See evidence/2026-10-30/schedule-preflight-notes.json. Full clean-candidate
+qualification is pending. All broad readiness verdicts and remaining scope stay open.
+Owned native PostgreSQL is running for disposable development; the qualified
+primary remains schema 5. Prior qualified artifacts are retained.
+
 Latest qualified source: `1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6`, authored and committed only as
 `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
 The authoritative checkpoint is `evidence/2026-10-30/repair-checkpoint.json`.

@@ -1,0 +1,60 @@
+{
+  "candidate": "ea1fa83bfd3223b97e2d57ce53bf5ca315a14476",
+  "source_dirty": true,
+  "status": "preflight observations; clean qualification pending",
+  "normalized_logs": [
+    {
+      "path": "evidence/2026-10-30/schedule-expiry-first-failure.txt",
+      "original_sha256": "72940ed71747b8b172a96948d9fe8d871b43f52dad794243b00eadd02c06c8d9"
+    },
+    {
+      "path": "evidence/2026-10-30/schedule-empty-first-failure.txt",
+      "original_sha256": "5363af3da53f2ca0eb0dc8d63c4cf055ab3eb4986cc918704552e84983c59b32"
+    },
+    {
+      "path": "evidence/2026-10-30/schedule-focused-race-preflight.txt",
+      "original_sha256": "65ab26c25af58ece4ef8663c23e67f5d92c93a3c0caf816932fb9e25077fb862"
+    },
+    {
+      "path": "evidence/2026-10-30/schedule-parser-fuzz-preflight.txt",
+      "original_sha256": "b6356017cb23b5984e5737c043dbd074c03d232a6057c4325ee722e15c17d3ca"
+    },
+    {
+      "path": "evidence/2026-10-30/schedule-full-postgres-preflight.txt",
+      "original_sha256": "8ba5a34a7f2f24b03cfe7006c2a4c89b3f1670f350dc5442a30eb46a9587974b"
+    },
+    {
+      "path": "evidence/2026-10-30/schedule-retained-bindings-preflight.txt",
+      "original_sha256": "b3fe80e71b0f689c533be017890356340da4e9a10a26f3d55c23b96a5ba95e22"
+    },
+    {
+      "path": "evidence/2026-10-30/schedule-authority-preflight.txt",
+      "original_sha256": "e32a067a7146efb2e430c695e41ace5d4df152021cade0d86b5dab2cf4b2d838"
+    }
+  ],
+  "normalization": "Trailing horizontal whitespace removed in retained text copies. Original bytes remain in ignored local logs.",
+  "product_first_failures": [
+    "schedule-expiry-first-failure.txt",
+    "schedule-empty-first-failure.txt",
+    "schedule-openapi-first.json"
+  ],
+  "fixture_corrections": [
+    {
+      "record": "console-aa9e927a19.json",
+      "correction": "Wait for the actual grant-update response before testing a subsequent reader refresh; scope repeated blocked-state text to the active dialog."
+    },
+    {
+      "record": "console-e891091c0d.json",
+      "correction": "Use the combobox accessible role/name for schedule history rather than exact implicit-label text containing option labels."
+    },
+    {
+      "record": "schedules-3ba12b7e12.json",
+      "correction": "Sample paths can represent retained upload parts. Resolve the native manifest/blob coordinate from the digest and repair the corresponding retained artifact binding."
+    }
+  ],
+  "positive_observations": [
+    "schedules-59e7481f8d.json",
+    "console-9659e1c171.json"
+  ],
+  "limits": "Native recurrence and focused browser observations are dirty-build preflights. Full eight-workflow clean replay, security and broad qualification remain required."
+}

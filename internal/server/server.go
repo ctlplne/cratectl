@@ -119,6 +119,10 @@ func respondErr(w http.ResponseWriter, e error) {
 		fail(w, 409, "configuration_changed", "Read current repository configuration, preview its impact, and apply that exact expected_revision with a new idempotency key.")
 	case errors.Is(e, store.ErrConfigurationInput):
 		fail(w, 400, "invalid_configuration", "Supply complete valid proxy/group settings, a nonnegative expected_revision and a nonempty reason of at most 1024 UTF-8 bytes without controls. Repository name, mode and format are immutable.")
+	case errors.Is(e, store.ErrScheduleRevision):
+		fail(w, 409, "schedule_changed", "Read the current schedule, preview a replacement at its exact revision, then apply with a new idempotency key.")
+	case errors.Is(e, store.ErrScheduleInput):
+		fail(w, 400, "invalid_schedule", "Supply expected_revision, interval_seconds 60–31536000, sample_size within the operator target budget, enabled and a nonempty reason of at most 1024 UTF-8 bytes. Use a retained-byte repository or omit repository for tenant scope.")
 	case errors.Is(e, store.ErrRepairInput):
 		fail(w, 400, "invalid_repair", "Supply an exact retained path/digest, current expected_source_revision, nonempty reason and source provenance of at most 1024 UTF-8 bytes each.")
 	case errors.Is(e, store.ErrRepairChanged):
@@ -350,6 +354,10 @@ func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Iden
 	}
 	if p == "maintenance/storage-inventories" || strings.HasPrefix(p, "maintenance/storage-inventories/") {
 		s.inventoryManagement(w, r, i, p)
+		return
+	}
+	if p == "maintenance/integrity-schedules" || strings.HasPrefix(p, "maintenance/integrity-schedules/") {
+		s.scheduleManagement(w, r, i, p)
 		return
 	}
 	if p == "maintenance/integrity-sweeps" || strings.HasPrefix(p, "maintenance/integrity-sweeps/") {

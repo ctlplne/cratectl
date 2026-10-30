@@ -198,7 +198,7 @@ func TestSourceConfigurationMigrationPreservesV3AndForcedRLS(t *testing.T) {
 		t.Fatal(e)
 	}
 	after, e := MigrationPlan(ctx, d.OwnerDSN)
-	if e != nil || after.DatabaseState != "pending" || len(after.Applied) != 4 || len(after.Pending) != 1 || after.Pending[0] != 5 || !after.SafetyValid {
+	if e != nil || after.DatabaseState != "pending" || len(after.Applied) != 4 || len(after.Pending) != len(steps)-4 || after.Pending[0] != 5 || !after.SafetyValid {
 		t.Fatal(after, e)
 	}
 	for n := range before.Applied {

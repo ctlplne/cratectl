@@ -36,6 +36,9 @@ var lifecycleSchema string
 
 //go:embed source_configuration.sql
 var sourceConfigurationSchema string
+
+//go:embed integrity_schedules.sql
+var integrityScheduleSchema string
 var Name = regexp.MustCompile(`^[a-z][a-z0-9-]{0,62}$`)
 var ErrConflict = errors.New("conflict")
 var ErrDenied = errors.New("policy denied")
@@ -74,6 +77,7 @@ var schemaTablesV1 = []string{"tenants", "repositories", "artifacts", "events", 
 
 var schemaTablesV3 = append(append([]string(nil), schemaTablesV1...), "artifact_lifecycle", "repository_lifecycle")
 var schemaTablesV4 = append(append([]string(nil), schemaTablesV3...), "repository_configurations")
+var schemaTablesV6 = append(append([]string(nil), schemaTablesV4...), "integrity_schedules", "integrity_schedule_revisions", "integrity_schedule_runs")
 
 // legacySchemaSQL is migration 1. Freeze it and the five embedded SQL files;
 // subsequent schema changes belong in new checksummed steps.

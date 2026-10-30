@@ -217,7 +217,7 @@ func TestSchemaDriftFailsClosed(t *testing.T) {
 	cases := map[string]string{
 		"checksum":              `UPDATE cratectl_private.schema_migrations SET checksum=repeat('a',64) WHERE version=1`,
 		"gap":                   `DELETE FROM cratectl_private.schema_migrations WHERE version=1`,
-		"unknown version":       `INSERT INTO cratectl_private.schema_migrations(version,checksum)VALUES(6,repeat('a',64))`,
+		"unknown version":       `INSERT INTO cratectl_private.schema_migrations(version,checksum)VALUES(7,repeat('a',64))`,
 		"RLS disabled":          `ALTER TABLE cratectl.artifacts DISABLE ROW LEVEL SECURITY`,
 		"RLS not forced":        `ALTER TABLE cratectl.repositories NO FORCE ROW LEVEL SECURITY`,
 		"extra policy":          `CREATE POLICY bypass ON cratectl.artifacts USING(true)`,

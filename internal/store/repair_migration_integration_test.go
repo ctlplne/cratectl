@@ -19,7 +19,7 @@ func TestRepairMigrationPreservesFourReceiptsAndRejectsOldWorkers(t *testing.T) 
 		t.Fatal(e)
 	}
 	before, e := MigrationPlan(ctx, d.OwnerDSN)
-	if e != nil || len(before.Applied) != 4 || len(before.Pending) != 1 || before.Pending[0] != 5 || !before.SafetyValid {
+	if e != nil || len(before.Applied) != 4 || len(before.Pending) != len(steps)-4 || before.Pending[0] != 5 || !before.SafetyValid {
 		t.Fatal(before, e)
 	}
 	runtime, e := pgx.Connect(ctx, d.RuntimeDSN)
@@ -30,11 +30,11 @@ func TestRepairMigrationPreservesFourReceiptsAndRejectsOldWorkers(t *testing.T) 
 	if e = checkSchemaPlan(ctx, runtime, steps[:4], true); e != nil {
 		t.Fatal("valid old runtime rejected before upgrade", e)
 	}
-	if e = Migrate(ctx, d.OwnerDSN); e != nil {
+	if e = migrateSteps(ctx, d.OwnerDSN, MigrationOptions{}, steps[:5]); e != nil {
 		t.Fatal(e)
 	}
 	after, e := MigrationPlan(ctx, d.OwnerDSN)
-	if e != nil || after.DatabaseState != "current" || len(after.Applied) != 5 || !after.SafetyValid {
+	if e != nil || after.DatabaseState != "pending" || len(after.Applied) != 5 || len(after.Pending) != len(steps)-5 || !after.SafetyValid {
 		t.Fatal(after, e)
 	}
 	for n, receipt := range before.Applied {

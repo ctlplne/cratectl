@@ -1,0 +1,295 @@
+{
+  "run": "3ba12b7e12",
+  "candidate": "ea1fa83bfd3223b97e2d57ce53bf5ca315a14476",
+  "source_dirty": true,
+  "checks": [
+    "retained old baseline is the qualified schema-5 source",
+    "actual old database has five safe frozen receipts",
+    "old baseline creates hosted OCI",
+    "retained old console offered an unsupported abandoned job filter",
+    "stock ORAS consumes nontrivial old-baseline content and dependency",
+    "migrator plans only the new schedule step",
+    "upgrade preserves receipts 1\u20135 and adds safe schedule tables",
+    "actual old worker rejects the upgraded database",
+    "native OCI graph exposes at least four retained byte bindings"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/postgresql-16.15-install/bin/psql",
+        "-X",
+        "-v",
+        "ON_ERROR_STOP=1",
+        "-At",
+        "-c",
+        "CREATE DATABASE cratectl_schedules_3ba12b7e12"
+      ],
+      "exit": 0,
+      "output": "CREATE DATABASE\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/repair-final-production/cratectld",
+        "migrate"
+      ],
+      "exit": 0,
+      "output": "Schema is current. Applied changes and receipts committed together.\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/repair-final-production/cratectld",
+        "migrate",
+        "--plan"
+      ],
+      "exit": 0,
+      "output": "{\"binary_version\":5,\"database_state\":\"current\",\"applied\":[{\"version\":1,\"checksum\":\"1e0f7b93d872f8ab83f85742000a6282f2722a0a338d8f2bc81755345ba66d16\"},{\"version\":2,\"checksum\":\"9e023c96c8cf33549ce81f1eac22551b5cdb6267d146f65d430ec254dc8b10b5\"},{\"version\":3,\"checksum\":\"44527dcd4be5177203e2b0eb93e5886a4dae437fbebf4cec14f7737ecb2f15d3\"},{\"version\":4,\"checksum\":\"8b287dda8e78324c44275d31850418d7e7166d9d6fe49c71d539dbd44a52d209\"},{\"version\":5,\"checksum\":\"0e835ed82b84cdd3d85858b0a76611b3ed6d387bbf55fee76d2abdf7c7f313a9\"}],\"pending\":[],\"requires_legacy_adoption\":false,\"safety_valid\":true}\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/repair-final-production/cratectld",
+        "provision",
+        "--tenant",
+        "schedules-3ba12b7e12",
+        "--actor",
+        "admin",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/admin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/repair-final-production/cratectld",
+        "provision",
+        "--tenant",
+        "schedules-3ba12b7e12",
+        "--actor",
+        "recovery",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/recovery.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/repair-final-production/cratectld",
+        "provision",
+        "--tenant",
+        "schedules-3ba12b7e12",
+        "--actor",
+        "reader",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/reader.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/repair-final-production/cratectld",
+        "provision",
+        "--tenant",
+        "schedules-3ba12b7e12",
+        "--actor",
+        "worker",
+        "--role",
+        "worker",
+        "--token-file",
+        "PRIVATE/worker.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/repair-final-production/cratectld",
+        "provision",
+        "--tenant",
+        "schedules-3ba12b7e12-other",
+        "--actor",
+        "other",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/other.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "login",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oras.json",
+        "--username",
+        "token",
+        "--password-stdin",
+        "127.0.0.1:38443"
+      ],
+      "exit": 0,
+      "output": "Login Succeeded\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "login",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/publisher.json",
+        "--username",
+        "token",
+        "--password-stdin",
+        "127.0.0.1:38443"
+      ],
+      "exit": 0,
+      "output": "Login Succeeded\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "127.0.0.1:38443/containers/proof:v1",
+        "primary.txt:text/plain",
+        "dependency.txt:text/plain",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/publisher.json"
+      ],
+      "exit": 0,
+      "output": "Preparing primary.txt\nPreparing dependency.txt\nUploading 81a68c419738 dependency.txt\nUploading 44136fa355b3 application/vnd.oci.empty.v1+json\nUploading aed0dd4196db primary.txt\nUploaded  44136fa355b3 application/vnd.oci.empty.v1+json\nUploaded  81a68c419738 dependency.txt\nUploaded  aed0dd4196db primary.txt\nUploading 5c6f9d8778bb application/vnd.oci.image.manifest.v1+json\nUploaded  5c6f9d8778bb application/vnd.oci.image.manifest.v1+json\nPushed [registry] 127.0.0.1:38443/containers/proof:v1\nArtifactType: application/vnd.unknown.artifact.v1\nDigest: sha256:5c6f9d8778bbfbe6d0751a814dd8776c28ffb6556060d459c4d18f9f5a3cdfb6\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "127.0.0.1:38443/containers/proof:v1",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oras.json"
+      ],
+      "exit": 0,
+      "output": "Downloading 5c6f9d8778bb application/vnd.oci.image.manifest.v1+json\nProcessing  5c6f9d8778bb application/vnd.oci.image.manifest.v1+json\nDownloading 81a68c419738 dependency.txt\nDownloading aed0dd4196db primary.txt\nDownloaded  81a68c419738 dependency.txt\nDownloaded  aed0dd4196db primary.txt\nDownloaded  5c6f9d8778bb application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/containers/proof:v1\nDigest: sha256:5c6f9d8778bbfbe6d0751a814dd8776c28ffb6556060d459c4d18f9f5a3cdfb6\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "manifest",
+        "fetch",
+        "127.0.0.1:38443/containers/proof:v1",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oras.json"
+      ],
+      "exit": 0,
+      "output": "{\"schemaVersion\":2,\"mediaType\":\"application/vnd.oci.image.manifest.v1+json\",\"artifactType\":\"application/vnd.unknown.artifact.v1\",\"config\":{\"mediaType\":\"application/vnd.oci.empty.v1+json\",\"digest\":\"sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a\",\"size\":2,\"data\":\"e30=\"},\"layers\":[{\"mediaType\":\"text/plain\",\"digest\":\"sha256:aed0dd4196dba5f21334b2c82b4f568d5bf7572f29cdd9cfcdb4eb07839196f8\",\"size\":32768,\"annotations\":{\"org.opencontainers.image.title\":\"primary.txt\"}},{\"mediaType\":\"text/plain\",\"digest\":\"sha256:81a68c419738365d40033e2d3e2f878942faf71f5af88aa26ac19ddedcb4986c\",\"size\":14848,\"annotations\":{\"org.opencontainers.image.title\":\"dependency.txt\"}}],\"annotations\":{\"org.opencontainers.image.created\":\"2026-10-30T23:48:00Z\"}}",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/bin/cratectld",
+        "migrate",
+        "--plan"
+      ],
+      "exit": 0,
+      "output": "{\"binary_version\":6,\"database_state\":\"pending\",\"applied\":[{\"version\":1,\"checksum\":\"1e0f7b93d872f8ab83f85742000a6282f2722a0a338d8f2bc81755345ba66d16\"},{\"version\":2,\"checksum\":\"9e023c96c8cf33549ce81f1eac22551b5cdb6267d146f65d430ec254dc8b10b5\"},{\"version\":3,\"checksum\":\"44527dcd4be5177203e2b0eb93e5886a4dae437fbebf4cec14f7737ecb2f15d3\"},{\"version\":4,\"checksum\":\"8b287dda8e78324c44275d31850418d7e7166d9d6fe49c71d539dbd44a52d209\"},{\"version\":5,\"checksum\":\"0e835ed82b84cdd3d85858b0a76611b3ed6d387bbf55fee76d2abdf7c7f313a9\"}],\"pending\":[6],\"requires_legacy_adoption\":false,\"safety_valid\":true}\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/bin/cratectld",
+        "migrate"
+      ],
+      "exit": 0,
+      "output": "Schema is current. Applied changes and receipts committed together.\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/bin/cratectld",
+        "migrate",
+        "--plan"
+      ],
+      "exit": 0,
+      "output": "{\"binary_version\":6,\"database_state\":\"current\",\"applied\":[{\"version\":1,\"checksum\":\"1e0f7b93d872f8ab83f85742000a6282f2722a0a338d8f2bc81755345ba66d16\"},{\"version\":2,\"checksum\":\"9e023c96c8cf33549ce81f1eac22551b5cdb6267d146f65d430ec254dc8b10b5\"},{\"version\":3,\"checksum\":\"44527dcd4be5177203e2b0eb93e5886a4dae437fbebf4cec14f7737ecb2f15d3\"},{\"version\":4,\"checksum\":\"8b287dda8e78324c44275d31850418d7e7166d9d6fe49c71d539dbd44a52d209\"},{\"version\":5,\"checksum\":\"0e835ed82b84cdd3d85858b0a76611b3ed6d387bbf55fee76d2abdf7c7f313a9\"},{\"version\":6,\"checksum\":\"557b3f6612a403e24d0c9726c9b048d62188b3e1a93bcb3f158616da30b1fe6c\"}],\"pending\":[],\"requires_legacy_adoption\":false,\"safety_valid\":true}\n",
+      "expected_failure": false
+    }
+  ],
+  "artifact_digests": {
+    ".cache/repair-final-production/cratectld": "ee804a5a1ae1709af552ba9594eb7405bd7ccc9d3386f2e60f9d3083ec8a86ce",
+    "bin/cratectld": "41e11be76d6f1b51172f92eaab033e527686b60fe96cdc21014b870c1e4a7d74",
+    "bin/cratectl": "7c6f89fd56db504804345469727437f4d83bafcd4c4640c65c84aedd202b5b1c",
+    ".cache/bin/oras": "a75c9dfd7f8f4f1f8ff09c88e7dd03431714f5f760366dff50b7f3cea4850930"
+  },
+  "build_identity": {
+    ".cache/repair-final-production/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6",
+      "vcs.time": "2026-10-30T22:58:49Z",
+      "vcs.modified": "false"
+    },
+    "bin/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "ea1fa83bfd3223b97e2d57ce53bf5ca315a14476",
+      "vcs.time": "2026-10-30T23:13:07Z",
+      "vcs.modified": "true"
+    },
+    "bin/cratectl": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "ea1fa83bfd3223b97e2d57ce53bf5ca315a14476",
+      "vcs.time": "2026-10-30T23:13:07Z",
+      "vcs.modified": "true"
+    }
+  },
+  "topology": "Native macOS arm64, real PostgreSQL 16.15 forced-RLS restricted runtime, retained clean schema-5 baseline then schema-6 registry/worker, stock ORAS 1.3.6 and streaming cratectl CLI. Explicit owned HTTP loopback on 38443.",
+  "limits": [
+    "Deterministic rotating referenced-byte samples, not random statistical or full-volume/security assessments. SQL scan cost and large-profile behavior remain unqualified.",
+    "A real 60-second recurrence, supported exact-byte recovery, credential revocation/reauthorization and actual process restart are observed. No S3, unreferenced-file schedules, retention/GC, multi-host fairness or production backup/restore is claimed.",
+    "Schema-5 to schema-6 upgrade uses controlled maintenance with all old processes stopped; rolling compatibility remains open."
+  ],
+  "build_source_matches_candidate": false,
+  "status": "failed",
+  "failure": "AssertionError: independent source captures exact future sample target"
+}

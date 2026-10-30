@@ -64,6 +64,8 @@ func Run(ctx context.Context, db *store.Store, objects *blob.Local, o Options) e
 		}
 	}
 	var all sync.WaitGroup
+	all.Add(1)
+	go func() { defer all.Done(); runIntegritySchedules(ctx, db, o, emit) }()
 	for queue, count := range map[string]int{"events": o.EventConcurrency, "integrity": o.IntegrityConcurrency, "maintenance": o.MaintenanceConcurrency} {
 		lane := &lane{errors: map[string]string{}}
 		for n := 0; n < count; n++ {

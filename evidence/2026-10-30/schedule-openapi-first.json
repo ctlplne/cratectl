@@ -1,0 +1,270 @@
+{
+  "response_failures": [
+    {
+      "path": "/api/v1/session",
+      "method": "get",
+      "status": "401",
+      "keys": [
+        "description",
+        "expired",
+        "revoked or worker-purpose credential"
+      ]
+    },
+    {
+      "path": "/api/v1/jobs",
+      "method": "get",
+      "status": "401",
+      "keys": [
+        "description",
+        "expired",
+        "revoked or worker-purpose credential."
+      ]
+    },
+    {
+      "path": "/api/v1/jobs/queues/{queue}",
+      "method": "put",
+      "status": "400",
+      "keys": [
+        "description",
+        "body or mutation key."
+      ]
+    },
+    {
+      "path": "/api/v1/jobs/{job_id}/observations",
+      "method": "get",
+      "status": "200",
+      "keys": [
+        "description",
+        "more flag",
+        "assessment_kind storage_integrity and security_approval false."
+      ]
+    },
+    {
+      "path": "/api/v1/activity",
+      "method": "get",
+      "status": "200",
+      "keys": [
+        "description",
+        "source sequence/hash",
+        "actor/kind and supplied coordinate fields; more flag."
+      ]
+    },
+    {
+      "path": "/api/v1/maintenance/reconciliations",
+      "method": "get",
+      "status": "200",
+      "keys": [
+        "description",
+        "retrievals and uploads samples with items/more",
+        "bytes_deleted zero."
+      ]
+    },
+    {
+      "path": "/api/v1/maintenance/integrity-sweeps",
+      "method": "get",
+      "status": "200",
+      "keys": [
+        "description",
+        "more",
+        "operator target budget and security_approval false."
+      ]
+    },
+    {
+      "path": "/api/v1/maintenance/integrity-sweeps",
+      "method": "post",
+      "status": "202",
+      "keys": [
+        "description",
+        "immutable snapshot coverage and security_approval false."
+      ]
+    },
+    {
+      "path": "/api/v1/maintenance/integrity-sweeps",
+      "method": "post",
+      "status": "503",
+      "keys": [
+        "description",
+        "or database unavailable; no partial snapshot accepted."
+      ]
+    },
+    {
+      "path": "/api/v1/maintenance/integrity-sweeps/{job_id}",
+      "method": "get",
+      "status": "200",
+      "keys": [
+        "description",
+        "integrity_clean",
+        "security_approval and exact scope."
+      ]
+    },
+    {
+      "path": "/api/v1/maintenance/integrity-sweeps/{job_id}/items",
+      "method": "get",
+      "status": "200",
+      "keys": [
+        "description",
+        "more",
+        "security_approval false. Status is pending or a concrete storage finding; reference_conflict remains separately visible."
+      ]
+    },
+    {
+      "path": "/api/v1/maintenance/storage-inventories",
+      "method": "post",
+      "status": "202",
+      "keys": [
+        "description",
+        "root fingerprint",
+        "immutable reference snapshot and resource budgets; safe_to_delete/security_approval false."
+      ]
+    },
+    {
+      "path": "/api/v1/maintenance/storage-inventories",
+      "method": "post",
+      "status": "400",
+      "keys": [
+        "description",
+        "page budget or missing idempotency key."
+      ]
+    },
+    {
+      "path": "/api/v1/maintenance/storage-inventories",
+      "method": "post",
+      "status": "503",
+      "keys": [
+        "description",
+        "oversized reference snapshot or exhausted integrity admission capacity; no partial admission."
+      ]
+    },
+    {
+      "path": "/api/v1/maintenance/storage-inventories/{job_id}",
+      "method": "get",
+      "status": "200",
+      "keys": [
+        "description",
+        "coverage and integrity fields",
+        "unverified temporary/legacy count",
+        "safe_to_delete false and security_approval false."
+      ]
+    },
+    {
+      "path": "/api/v1/maintenance/storage-inventories/{job_id}/items",
+      "method": "get",
+      "status": "200",
+      "keys": [
+        "description",
+        "more and safe_to_delete/security_approval false."
+      ]
+    },
+    {
+      "path": "/api/v1/maintenance/storage-inventories/{job_id}/references",
+      "method": "get",
+      "status": "200",
+      "keys": [
+        "description",
+        "current-pass receipts and more. Full reference history is the jobs observations endpoint."
+      ]
+    },
+    {
+      "path": "/api/v1/repositories/{repository}/artifacts/repairs",
+      "method": "post",
+      "status": "409",
+      "keys": [
+        "description",
+        "conflicting retained sizes or reused key with different plan"
+      ]
+    },
+    {
+      "path": "/api/v1/repositories/{repository}/artifacts/repairs",
+      "method": "post",
+      "status": "503",
+      "keys": [
+        "description",
+        "bound",
+        "schema",
+        "storage or database unavailable; no partial operation"
+      ]
+    },
+    {
+      "path": "/api/v1/maintenance/repairs/{job}/source",
+      "method": "put",
+      "status": "409",
+      "keys": [
+        "description",
+        "operation stopped or reference/source changed"
+      ]
+    },
+    {
+      "path": "/api/v1/maintenance/repairs/{job}/source",
+      "method": "put",
+      "status": "503",
+      "keys": [
+        "description",
+        "storage identity/layout",
+        "schema or database unavailable"
+      ]
+    },
+    {
+      "path": "/api/v1/repositories/{repository}/configuration",
+      "method": "put",
+      "status": "503",
+      "keys": [
+        "description",
+        "queue",
+        "schema or database failure; no partial configuration mutation"
+      ]
+    },
+    {
+      "path": "/api/v1/repositories/{repository}/configuration/history",
+      "method": "get",
+      "status": "400",
+      "keys": [
+        "description",
+        "repeated or unknown query parameters"
+      ]
+    },
+    {
+      "path": "/api/v1/repositories/{repository}/configuration/history",
+      "method": "get",
+      "status": "503",
+      "keys": [
+        "description",
+        "schema or database unavailable"
+      ]
+    },
+    {
+      "path": "/api/v1/repositories/{repository}/state",
+      "method": "put",
+      "status": "503",
+      "keys": [
+        "description",
+        "durable queue",
+        "schema or database failure; no partial transition"
+      ]
+    },
+    {
+      "path": "/api/v1/repositories/{repository}/artifacts/lifecycle",
+      "method": "put",
+      "status": "409",
+      "keys": [
+        "description",
+        "incoming reference",
+        "stale identity/revision or changed graph"
+      ]
+    },
+    {
+      "path": "/api/v1/repositories/{repository}/artifacts/lifecycle",
+      "method": "put",
+      "status": "503",
+      "keys": [
+        "description",
+        "metadata budget",
+        "durable queue",
+        "schema or dependency failure; no partial transition"
+      ]
+    }
+  ],
+  "candidate": "ea1fa83bfd3223b97e2d57ce53bf5ca315a14476",
+  "document_sha256": "63b88d7d118155ab190d54b9c948d63fdb4196e49ad97d3ab33700d5b123e34f",
+  "status": "failed",
+  "limits": "Independent YAML response-map parse of the immutable pre-change API document; full OpenAPI validation is separate."
+}

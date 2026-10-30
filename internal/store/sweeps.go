@@ -27,18 +27,22 @@ func (r SweepRequest) Validate() error {
 
 type SweepProgress struct {
 	SweepRequest
-	Cutoff             time.Time `json:"cutoff"`
-	Targets            int64     `json:"targets"`
-	ArtifactReferences int64     `json:"artifact_references"`
-	UploadParts        int64     `json:"upload_parts"`
-	AfterOrdinal       int64     `json:"after_ordinal"`
-	Checked            int64     `json:"checked"`
-	Verified           int64     `json:"verified"`
-	Issues             int64     `json:"issues"`
-	Pass               int64     `json:"pass"`
+	Sampling           *SweepSampling `json:"sampling,omitempty"`
+	Cutoff             time.Time      `json:"cutoff"`
+	Targets            int64          `json:"targets"`
+	ArtifactReferences int64          `json:"artifact_references"`
+	UploadParts        int64          `json:"upload_parts"`
+	AfterOrdinal       int64          `json:"after_ordinal"`
+	Checked            int64          `json:"checked"`
+	Verified           int64          `json:"verified"`
+	Issues             int64          `json:"issues"`
+	Pass               int64          `json:"pass"`
 }
 
 func (p SweepProgress) Validate() error {
+	if p.Sampling != nil && (!p.Sampling.valid() || p.Targets > int64(p.Sampling.SampleSize)) {
+		return ErrConflict
+	}
 	if p.SweepRequest.Validate() != nil || p.Cutoff.IsZero() || p.Targets < 0 || p.Targets > 2147483646 || p.ArtifactReferences < 0 || p.UploadParts < 0 || p.AfterOrdinal != p.Checked || p.Checked < 0 || p.Checked > p.Targets || p.Verified < 0 || p.Verified > p.Checked || p.Issues < 0 || p.Issues > p.Checked || p.Verified+p.Issues != p.Checked || p.Pass < 1 {
 		return ErrConflict
 	}
@@ -270,7 +274,15 @@ func (s *Store) Sweep(ctx context.Context, i Identity, id string) (map[string]an
 		return nil, e
 	}
 	complete := j.State == "succeeded" && p.Checked == p.Targets
-	return map[string]any{"job": j, "all_targets_assessed": complete, "integrity_clean": complete && p.Issues == 0, "security_approval": false, "scope": "Immutable snapshot of current artifact and retained upload-part repository/digest/size bindings. Unreferenced CAS and temporary files are outside this snapshot."}, nil
+	scope := "Immutable snapshot of current artifact and retained upload-part repository/digest/size bindings. Unreferenced CAS and temporary files are outside this snapshot."
+	if p.Sampling != nil {
+		scope = "Bounded rotating sample of retained repository/digest/size bindings. Assessment and clean results apply only to the captured sample, not all tenant content or security approval."
+	}
+	clean := complete && p.Issues == 0
+	if p.Sampling != nil && p.Targets == 0 {
+		clean = false
+	}
+	return map[string]any{"job": j, "all_targets_assessed": complete, "integrity_clean": clean, "security_approval": false, "scope": scope}, nil
 }
 func (s *Store) SweepItems(ctx context.Context, i Identity, id string, after int64, limit int) ([]SweepItem, bool, error) {
 	return s.referenceSnapshotItems(ctx, i, id, after, limit, "storage.sweep")
