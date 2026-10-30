@@ -38,7 +38,9 @@ def start(name,binary,worker=False):
  logs[name]=(PRIVATE/(name+'.log')).open('ab')
  argv=[binary,'worker'if worker else'serve','--objects',PRIVATE/'objects']
  if worker:argv+=['--identities',PRIVATE/'workers.json','--poll','20ms']
- else:argv+=['--listen','127.0.0.1:38443','--public-url',BASE,'--dev-loopback-http','--transfer-timeout','60s']
+ else:
+  argv+=['--listen','127.0.0.1:38443','--public-url',BASE,'--dev-loopback-http']
+  if binary==NEW:argv+=['--transfer-timeout','60s']
  processes[name]=subprocess.Popen([str(x)for x in argv],env=env,stdout=logs[name],stderr=subprocess.STDOUT)
  if not worker:
   for _ in range(150):
