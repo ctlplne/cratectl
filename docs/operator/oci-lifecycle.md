@@ -65,25 +65,28 @@ operations fail without partial work.
 
 Restore hashes retained objects, checks their exact sizes, reparses manifests and
 revalidates the complete retained graph. Deleted children must be restored first.
-Missing/corrupt bytes or changed graph identities reject the operation. Older
-unvalidated manifests require native intake repair before deletion; complete
-supported repair for invalid or denied layouts remains open. Restore
+Missing/corrupt bytes or changed graph identities reject the operation. Use
+[exact-byte repair](byte-repair.md) with an independently retained matching copy
+before retrying restore. Older unvalidated manifests require native intake repair
+before deletion; byte repair preserves their existing metadata. Restore
 preserves denial and quarantine; it never labels unassessed bytes security-clean.
 A stored idempotency response can confirm an earlier successful restore even if
 storage subsequently becomes unavailable, while current write grants still apply.
 
 Schema 3 adds forced-RLS lifecycle tables; schema 4 adds source revisions and
-immutable configuration history. Stop registry and workers, inspect
+immutable configuration history; schema 5 adds repair-capable runtime admission.
+Stop registry and workers, inspect
 `cratectld migrate --plan` with the owner configuration, apply migration, then
-start the new binaries. Steps 1–3 retain their original checksums. The new
-migrator validates safe version-2/3 databases before planning the remaining
-steps through version 4. Older runtimes reject version 4. This is controlled maintenance; rolling compatibility,
+start the new binaries. Steps 1–4 retain their original checksums. The new
+migrator validates safe version-2/3/4 databases before planning the remaining
+steps through version 5. Older runtimes reject version 5. This is controlled maintenance; rolling compatibility,
 whole-transfer draining, backup/restore and downgrade recovery remain unqualified.
 
 The native campaign is `scripts/conformance_lifecycle.py --require-clean-build`;
 it retains the old 405 baseline and tests a real version-2 upgrade, stock ORAS,
 restart, holds, strong references, verified restore, policy and proxy lifecycle.
 Add `--baseline-version 3` to test a real schema-3 cached OCI graph upgrade.
+Use `--baseline-version 4` for the retained source-configuration baseline.
 Use the project-owned PostgreSQL environment and clean matching binaries. See
 [source configuration](source-configuration.md) for versioned source changes.
 Full lifecycle parity, broader source/locator/grant races,

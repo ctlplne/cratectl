@@ -79,3 +79,9 @@ unknown repair jobs. This is controlled maintenance; rolling worker compatibilit
 is not established. Native Windows filesystem replacement, S3 repair, legacy
 format metadata repair, automatic upstream repair, scheduling, retention/GC,
 large-scale recovery and complete backup/restore remain required work.
+
+The named clean candidate and exact artifact hashes are retained in
+[`repair-checkpoint.json`](../../evidence/2026-10-30/repair-checkpoint.json).
+It covers stock ORAS recovery, streaming CLI, seven Chromium workflows and real
+PostgreSQL race regressions, including a lost database receipt after installation.
+The checkpoint lists the tested topology and remaining limits.

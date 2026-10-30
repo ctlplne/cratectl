@@ -632,17 +632,19 @@
         "delete/restore"
       ],
       "state": "implementing",
-      "candidate": "06156af19b9759035e96d63cf7a8bf52903235f7",
+      "candidate": "1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6",
       "evidence": [
         "evidence/2026-10-29/lifecycle-checkpoint.json",
         "evidence/2026-10-29/lifecycle-b932eef0f1.json",
         "evidence/2026-10-29/lifecycle-8fad1990d5.json",
         "evidence/2026-10-29/lifecycle-clean-postgres-race.txt",
         "evidence/2026-10-29/source-configuration-checkpoint.json",
-        "evidence/2026-10-29/source-clean-postgres-race.txt"
+        "evidence/2026-10-29/source-clean-postgres-race.txt",
+        "evidence/2026-10-30/repair-checkpoint.json",
+        "evidence/2026-10-30/repair-clean-postgres-race.txt"
       ],
-      "limits": "Named clean PostgreSQL, stock-client source replacement/rollback/controlled credential reload and Chromium source administration workflows are qualified. Full source/grant/network races, formats/clients/providers/platforms, repair, retention/GC and production recovery remain required.",
-      "next_action": "Complete broader source/grant/fault/scale/client/provider outcomes and supported repair/retention/GC; retain every later-stage requirement."
+      "limits": "Named clean exact retained-byte recovery, immutable readback, original-requester/source/cancellation/lease fences, shared-reference denial preservation, lost-database-receipt retry, stock ORAS and streaming CLI plus Chromium workflows pass. This does not establish metadata repair, automatic upstream repair, native Windows/S3 recovery, scheduled sampling, retention/GC, full clients/providers/platforms, scale or production backup/restore.",
+      "next_action": "Complete remaining metadata/client/provider/platform repair and safe retention/GC, scheduled integrity, fault/scale and production recovery; retain every later-stage requirement."
     },
     {
       "id": "FMT.MAVEN.HOSTED",
@@ -15965,11 +15967,14 @@
         "upstream outage",
         "delete/restore"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "No implementation or native-client proof yet.",
-      "next_action": "Implement generic lifecycle and execute the complete stock-client journey."
+      "state": "implementing",
+      "candidate": "1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6",
+      "evidence": [
+        "evidence/2026-10-30/repair-checkpoint.json",
+        "evidence/2026-10-30/repair-clean-postgres-race.txt"
+      ],
+      "limits": "Named clean exact retained-byte recovery, immutable readback, original-requester/source/cancellation/lease fences, shared-reference denial preservation, lost-database-receipt retry, stock ORAS and streaming CLI plus Chromium workflows pass. This does not establish metadata repair, automatic upstream repair, native Windows/S3 recovery, scheduled sampling, retention/GC, full clients/providers/platforms, scale or production backup/restore.",
+      "next_action": "Complete remaining metadata/client/provider/platform repair and safe retention/GC, scheduled integrity, fault/scale and production recovery; retain every later-stage requirement."
     },
     {
       "id": "FMT.AGENT-PLUGINS.HOSTED",
@@ -20847,18 +20852,23 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "internal/blob/repair.go; internal/store/repairs.go; internal/server/repairs.go; internal/worker/repair.go; web/src/repair.tsx",
       "surfaces": {
-        "api": null,
-        "cli": null,
-        "ui": null
+        "api": "POST /api/v1/repositories/{repository}/artifacts/repairs; PUT /api/v1/maintenance/repairs/{job}/source; jobs/observations/control",
+        "cli": "cratectl --upload-file --timeout; cratectld worker",
+        "ui": "Packages \u2192 Repair bytes; Jobs \u2192 Supply repair source"
       },
       "core": true,
       "dependencies": [],
       "acceptance_journey": "J.REPO.REPAIR",
-      "clients": [],
-      "client_versions": {},
-      "test_data": "Defined by the corresponding GOAL.md acceptance requirement.",
+      "clients": [
+        "ORAS",
+        "cratectl"
+      ],
+      "client_versions": {
+        "ORAS": "1.3.6"
+      },
+      "test_data": "Retained missing/shared corrupt raw and OCI objects; deleted corrupt manifest; independently retained exact source; real old schema-4 database.",
       "permission_cases": [
         "least privilege",
         "tenant collision",
@@ -20870,11 +20880,14 @@
         "partial failure",
         "recovery"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "state": "implementing",
+      "candidate": "1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6",
+      "evidence": [
+        "evidence/2026-10-30/repair-checkpoint.json",
+        "evidence/2026-10-30/repair-clean-postgres-race.txt"
+      ],
+      "limits": "Named clean exact retained-byte recovery, immutable readback, original-requester/source/cancellation/lease fences, shared-reference denial preservation, lost-database-receipt retry, stock ORAS and streaming CLI plus Chromium workflows pass. This does not establish metadata repair, automatic upstream repair, native Windows/S3 recovery, scheduled sampling, retention/GC, full clients/providers/platforms, scale or production backup/restore.",
+      "next_action": "Complete remaining metadata/client/provider/platform repair and safe retention/GC, scheduled integrity, fault/scale and production recovery; retain every later-stage requirement."
     },
     {
       "id": "REPO.GC",
@@ -24658,7 +24671,7 @@
         "recovery"
       ],
       "state": "implementing",
-      "candidate": "2ad9bb3d6f8f6b88e65d4229a5e763088009dbd3",
+      "candidate": "1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6",
       "evidence": [
         "evidence/2026-10-28/jobs-184a346769.json",
         "evidence/2026-10-28/conformance-04e22aa966.json",
@@ -24668,10 +24681,12 @@
         "evidence/2026-10-28/sweep-clean-postgres-race.txt",
         "evidence/2026-10-28/inventory-95f5ea6640.json",
         "evidence/2026-10-28/inventory-cff4c6e32f.json",
-        "evidence/2026-10-28/inventory-clean-postgres-race.txt"
+        "evidence/2026-10-28/inventory-clean-postgres-race.txt",
+        "evidence/2026-10-30/repair-checkpoint.json",
+        "evidence/2026-10-30/repair-clean-postgres-race.txt"
       ],
-      "limits": "Verified subset: bounded live supported-layout CAS/staged/legacy inventory, unreferenced CAS hashes and immutable reference snapshots; metadata/CAS/reference receipts, current fences, actual worker kill/reclaim, cancellation/resume/redrive, budgets, root replacement and worker callback expiry rollback. No security or deletion approval. Live walk and unsupported nested layouts do not establish atomic/full volume accounting. Scheduling/sampling, repair, holds/retention/GC, S3, backup/restore, full platform/scale/mixed-host and product qualification remain required.",
-      "next_action": "Complete scheduled bounded integrity sampling and supported repair; safe lifecycle/holds/retention/GC, S3, consistent backup/restore, console/install and full platform/scale qualification."
+      "limits": "Named clean exact retained-byte recovery, immutable readback, original-requester/source/cancellation/lease fences, shared-reference denial preservation, lost-database-receipt retry, stock ORAS and streaming CLI plus Chromium workflows pass. This does not establish metadata repair, automatic upstream repair, native Windows/S3 recovery, scheduled sampling, retention/GC, full clients/providers/platforms, scale or production backup/restore.",
+      "next_action": "Complete remaining metadata/client/provider/platform repair and safe retention/GC, scheduled integrity, fault/scale and production recovery; retain every later-stage requirement."
     },
     {
       "id": "STORE.RECONCILIATION",
@@ -24715,7 +24730,7 @@
         "recovery"
       ],
       "state": "implementing",
-      "candidate": "2ad9bb3d6f8f6b88e65d4229a5e763088009dbd3",
+      "candidate": "1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6",
       "evidence": [
         "evidence/2026-10-28/leases-51a334f550.json",
         "evidence/2026-10-28/leases-3f7e506ef0.json",
@@ -24726,10 +24741,12 @@
         "evidence/2026-10-28/sweep-clean-postgres-race.txt",
         "evidence/2026-10-28/inventory-95f5ea6640.json",
         "evidence/2026-10-28/inventory-cff4c6e32f.json",
-        "evidence/2026-10-28/inventory-clean-postgres-race.txt"
+        "evidence/2026-10-28/inventory-clean-postgres-race.txt",
+        "evidence/2026-10-30/repair-checkpoint.json",
+        "evidence/2026-10-30/repair-clean-postgres-race.txt"
       ],
-      "limits": "Verified subset: bounded live supported-layout CAS/staged/legacy inventory, unreferenced CAS hashes and immutable reference snapshots; metadata/CAS/reference receipts, current fences, actual worker kill/reclaim, cancellation/resume/redrive, budgets, root replacement and worker callback expiry rollback. No security or deletion approval. Live walk and unsupported nested layouts do not establish atomic/full volume accounting. Scheduling/sampling, repair, holds/retention/GC, S3, backup/restore, full platform/scale/mixed-host and product qualification remain required.",
-      "next_action": "Complete scheduled bounded integrity sampling and supported repair; safe lifecycle/holds/retention/GC, S3, consistent backup/restore, console/install and full platform/scale qualification."
+      "limits": "Named clean exact retained-byte recovery, immutable readback, original-requester/source/cancellation/lease fences, shared-reference denial preservation, lost-database-receipt retry, stock ORAS and streaming CLI plus Chromium workflows pass. This does not establish metadata repair, automatic upstream repair, native Windows/S3 recovery, scheduled sampling, retention/GC, full clients/providers/platforms, scale or production backup/restore.",
+      "next_action": "Complete remaining metadata/client/provider/platform repair and safe retention/GC, scheduled integrity, fault/scale and production recovery; retain every later-stage requirement."
     },
     {
       "id": "STORE.BACKUP",
@@ -25346,15 +25363,17 @@
         "recovery"
       ],
       "state": "implementing",
-      "candidate": "06156af19b9759035e96d63cf7a8bf52903235f7",
+      "candidate": "1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6",
       "evidence": [
         "evidence/2026-10-29/schema-checkpoint.json",
         "evidence/2026-10-29/schema-clean-postgres-race.txt",
         "evidence/2026-10-29/source-configuration-checkpoint.json",
-        "evidence/2026-10-29/source-clean-postgres-race.txt"
+        "evidence/2026-10-29/source-clean-postgres-race.txt",
+        "evidence/2026-10-30/repair-checkpoint.json",
+        "evidence/2026-10-30/repair-clean-postgres-race.txt"
       ],
-      "limits": "Named clean PostgreSQL, stock-client source replacement/rollback/controlled credential reload and Chromium source administration workflows are qualified. Full source/grant/network races, formats/clients/providers/platforms, repair, retention/GC and production recovery remain required.",
-      "next_action": "Complete broader source/grant/fault/scale/client/provider outcomes and supported repair/retention/GC; retain every later-stage requirement."
+      "limits": "Named clean exact retained-byte recovery, immutable readback, original-requester/source/cancellation/lease fences, shared-reference denial preservation, lost-database-receipt retry, stock ORAS and streaming CLI plus Chromium workflows pass. This does not establish metadata repair, automatic upstream repair, native Windows/S3 recovery, scheduled sampling, retention/GC, full clients/providers/platforms, scale or production backup/restore.",
+      "next_action": "Complete remaining metadata/client/provider/platform repair and safe retention/GC, scheduled integrity, fault/scale and production recovery; retain every later-stage requirement."
     },
     {
       "id": "OPS.RECOVERY",
@@ -26176,7 +26195,7 @@
         "recovery"
       ],
       "state": "implementing",
-      "candidate": "06156af19b9759035e96d63cf7a8bf52903235f7",
+      "candidate": "1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6",
       "evidence": [
         "evidence/2026-10-29/console-checkpoint.json",
         "evidence/2026-10-29/console-2e695cc1ff.json",
@@ -26185,10 +26204,12 @@
         "evidence/2026-10-29/console-2de667a672.json",
         "evidence/2026-10-29/console-df4664c05e.json",
         "evidence/2026-10-29/source-configuration-checkpoint.json",
-        "evidence/2026-10-29/source-clean-postgres-race.txt"
+        "evidence/2026-10-29/source-clean-postgres-race.txt",
+        "evidence/2026-10-30/repair-checkpoint.json",
+        "evidence/2026-10-30/repair-clean-postgres-race.txt"
       ],
-      "limits": "Named clean PostgreSQL, stock-client source replacement/rollback/controlled credential reload and Chromium source administration workflows are qualified. Full source/grant/network races, formats/clients/providers/platforms, repair, retention/GC and production recovery remain required.",
-      "next_action": "Complete broader source/grant/fault/scale/client/provider outcomes and supported repair/retention/GC; retain every later-stage requirement."
+      "limits": "Named clean exact retained-byte recovery, immutable readback, original-requester/source/cancellation/lease fences, shared-reference denial preservation, lost-database-receipt retry, stock ORAS and streaming CLI plus Chromium workflows pass. This does not establish metadata repair, automatic upstream repair, native Windows/S3 recovery, scheduled sampling, retention/GC, full clients/providers/platforms, scale or production backup/restore.",
+      "next_action": "Complete remaining metadata/client/provider/platform repair and safe retention/GC, scheduled integrity, fault/scale and production recovery; retain every later-stage requirement."
     },
     {
       "id": "UX.API",
@@ -27839,5 +27860,5 @@
     "current_source_candidate": "887c569ac96c451bccd91ae872317c06a890117a",
     "historical_candidate_fields": "Earlier candidate fields below refer to the archived original history. Preserve their exact evidence scope; the new source baseline and repeated native proof are recorded separately."
   },
-  "current_source_candidate": "06156af19b9759035e96d63cf7a8bf52903235f7"
+  "current_source_candidate": "1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6"
 }

@@ -512,6 +512,16 @@
       "candidate": "06156af19b9759035e96d63cf7a8bf52903235f7",
       "replay": "evidence/2026-10-29/source-configuration-checkpoint.json",
       "limits": "Named fixtures only; full qualification remains open."
+    },
+    {
+      "id": "DEFECT.0047",
+      "summary": "Repair worker error codes were absent from the durable failure registry, leaving failed attempts running",
+      "first_failure": "evidence/2026-10-30/repair-failure-code-first-failure.txt",
+      "state": "repaired and clean-source replayed",
+      "repair": "Allowlist the classified repair-specific codes only for storage.repair jobs; retain forced database-receipt loss and requester revocation/cancellation regressions.",
+      "candidate": "1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6",
+      "replay": "evidence/2026-10-30/repair-clean-postgres-race.txt",
+      "limits": "Named exact-byte repair fixtures only; full worker and product qualification remains open."
     }
   ]
 }

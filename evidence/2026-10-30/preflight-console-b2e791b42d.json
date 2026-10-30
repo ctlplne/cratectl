@@ -1,0 +1,59 @@
+{
+  "run": "b2e791b42d",
+  "candidate": "92dfa454d190b02130c5d598b5f05422c6469cfb",
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "web",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "source_dirty": true,
+  "artifact_digests": {
+    "bin/cratectld": "fcbb8c09d9e15e6917ff54c63ce3891658bed85ca3cb53dd890f7459bd50dbf1",
+    "bin/cratectl": "7b7eac0f6b41ba9b9fe9af1d1815a4a1676e3029e38eee6378e0083877b818f1"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "92dfa454d190b02130c5d598b5f05422c6469cfb",
+      "vcs.time": "2026-10-29T20:21:27Z",
+      "vcs.modified": "true"
+    },
+    "bin/cratectl": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "92dfa454d190b02130c5d598b5f05422c6469cfb",
+      "vcs.time": "2026-10-29T20:21:27Z",
+      "vcs.modified": "true"
+    }
+  },
+  "checks": [
+    "packaged console shell is public and contains no tenant credential"
+  ],
+  "topology": "Real Chromium, native registry/worker and nonowner forced-RLS PostgreSQL. An empty owned database and two newly provisioned tenants; explicit loopback-only HTTP development profile on port 38443.",
+  "limits": [
+    "This browser run exercises the explicit loopback HTTP test profile. Normal native TLS trust remains separately qualified; browser CA deployment and network/production PKI are not established by this run.",
+    "Only tested views and named interactions are qualified. Full console, all WCAG behavior/assistive technologies/native browsers, production packaging and complete product scope remain open.",
+    "Management repository/artifact pages use current grants/policy, scoped encrypted scan cursors, bounded live traversal and server search. This is not a multi-page snapshot or full native-format index qualification."
+  ],
+  "build_source_matches_candidate": false,
+  "status": "failed",
+  "failure": "AssertionError: real browser suite failed; inspect its private report"
+}

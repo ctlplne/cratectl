@@ -1,0 +1,18 @@
+{
+  "candidate": "1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6",
+  "gates": [
+    {
+      "command": "make security",
+      "exit_code": 2,
+      "output": "Security campaign is not yet complete; see docs/qualification/remaining.json\nmake: *** [security] Error 1\n",
+      "qualified": false
+    },
+    {
+      "command": "make packaging",
+      "exit_code": 2,
+      "output": "Release packaging is not yet qualified; see docs/qualification/remaining.json\nmake: *** [packaging] Error 1\n",
+      "qualified": false
+    }
+  ],
+  "limits": "Named scoped security scans and compile-only artifacts are separate observations; full security and release packaging gates remain incomplete."
+}

@@ -1,19 +1,35 @@
 # cratectl execution status
 
-Audited exact-byte repair is implemented locally and awaiting clean-candidate
-qualification. It provides administrator preview, a durable source-waiting job,
-streaming source submission, fenced installation and immutable readback receipts
-while retaining corrupt bytes and preserving policy/lifecycle state. Schema 5
-rejects older workers without changing migration receipts 1–4. API, streaming CLI
-and console workflows are present. See ADR 0024 and docs/operator/byte-repair.md.
+Latest qualified source: `1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6`, authored and committed only as
+`imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
+The authoritative checkpoint is `evidence/2026-10-30/repair-checkpoint.json`.
 
-Dirty-build preflights passed real PostgreSQL/race fault, authorization, source,
-cancellation and lease checks; stock ORAS recovery; parser fuzzing; and seven
-Chromium workflows. These are preliminary observations, not a new clean-build
-checkpoint. All broad readiness verdicts and the full remaining scope stay open.
+Administrator exact-byte repair now has preview, a durable source-waiting job,
+streaming source submission, fenced installation and immutable readback receipts.
+It retains staged inputs/prior corrupt files and preserves policy, holds and
+tombstones. A lost database receipt after installation can retry from actual bytes.
+API, streaming CLI and console use the same authorized operation. See ADR 0024
+and `docs/operator/byte-repair.md`.
 
+Clean production artifacts passed 954 assertions and separate race artifacts
+passed 445, across 23 runtime records. Stock ORAS recovery, source replacement,
+independent npm/pip/Maven client caches, seven Chromium workflows and 34 named
+automated A/AA states pass per build. Full real PostgreSQL race suites ran twice
+without skips or races. Schema-2/3/4 old-binary upgrades and legacy adoption/process
+kill pass. Schema 5 preserves receipts 1–4 and fences old workers; it is current
+on the owned test database. Unit/vet/race, architecture, console reproduction,
+current vulnerability and scoped credential/history checks pass. Linux/Windows
+binaries compile only. Identity hooks remain enabled. No push or remote mutation
+was executed by this work.
 
-Latest qualified source: `06156af19b9759035e96d63cf7a8bf52903235f7`, authored and committed only as
+All 450 capabilities and 41 families remain unfinished; broad readiness is
+negative. Complete remaining metadata/provider/platform repair, scheduled integrity,
+retention/GC, wider source/grant/locator/network races, managed/hot secret providers,
+other clients, faults, scale and production backup/restore. Owned test services
+are stopped; private data and clean artifacts are retained. Historical checkpoints
+below retain their original scope.
+
+Previous source-configuration-qualified source: `06156af19b9759035e96d63cf7a8bf52903235f7`, authored and committed only as
 `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
 The authoritative checkpoint is `evidence/2026-10-29/source-configuration-checkpoint.json`.
 

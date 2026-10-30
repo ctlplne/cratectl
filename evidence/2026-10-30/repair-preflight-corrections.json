@@ -1,0 +1,32 @@
+{
+  "qualified_candidate": "1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6",
+  "product_defect": "DEFECT.0047",
+  "fixture_corrections": [
+    {
+      "evidence": "evidence/2026-10-30/preflight-console-ea7f45a527.json",
+      "cause": "Browser repair fixture reused a credential intentionally revoked by an earlier workflow.",
+      "correction": "Provision a separate repair-admin credential in the owned fixture."
+    },
+    {
+      "evidence": "evidence/2026-10-30/preflight-console-b2e791b42d.json",
+      "cause": "Browser asserted Jobs pagination before the Jobs response and heading loaded.",
+      "correction": "Wait for the actual Jobs response and scope the Jobs pager."
+    },
+    {
+      "evidence": "evidence/2026-10-30/preflight-console-14662b67bf.json",
+      "cause": "Expected raw verified status instead of existing human-readable SHA-256 verified label.",
+      "correction": "Assert the rendered product label."
+    },
+    {
+      "evidence": "evidence/2026-10-30/preflight-repairs-67c8cab61d.json",
+      "cause": "Harness passed a new timeout flag to the retained old schema-4 binary.",
+      "correction": "Use the new flag only for the current repair-capable binary."
+    }
+  ],
+  "limits": "Preflight records and the failed earlier clean candidate are retained observations; use the successful clean checkpoint for candidate qualification.",
+  "failure_log_retention": {
+    "evidence": "evidence/2026-10-30/repair-failure-code-first-failure.txt",
+    "normalization": "Trailing horizontal whitespace removed from displayed test output for Git whitespace checks. Original bytes remain in the ignored local preflight log.",
+    "original_sha256": "998d6a24e4b593acaef04033a7ccd5c14062a4817fee0b7ff88aff5bfbd482a7"
+  }
+}

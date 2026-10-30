@@ -85,6 +85,8 @@ and special files. A named pipe cannot block the normal integrity-open path.
 Worker credentials are checked again after metadata callbacks, and timed-out
 attempts stop renewing their leases even if OS I/O stalls.
 
-This is inventory and integrity evidence. Scheduling/sampling, supported repair,
-holds/retention/GC, S3, consistent backup/restore, operator console and full
-platform/scale qualification remain required.
+Use [exact-byte repair](byte-repair.md) to recover retained missing/corrupt
+references from an independently retained matching copy. Original inventory and
+integrity observations remain immutable. Scheduling/sampling, metadata/provider/
+platform repair, full holds/retention/GC, S3, consistent backup/restore, complete
+operator console and platform/scale qualification remain required.
