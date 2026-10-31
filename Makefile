@@ -24,6 +24,7 @@ console-check:
 	python3 scripts/build_console.py --check
 integration: build
 	$(GO) test -count=1 -tags=integration ./internal/store ./internal/server ./internal/conformance
+	python3 scripts/test_sql_timing.py
 conformance: build
 	python3 scripts/conformance.py all
 security:

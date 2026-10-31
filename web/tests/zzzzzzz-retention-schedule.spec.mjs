@@ -17,7 +17,8 @@ test('operator explicitly authorizes future retirement and recovers fenced autom
   const schedule=()=>value(schedulePath),runs=async()=>(await value(schedulePath+'/runs?limit=100')).items;
   const detail=id=>value('/api/v1/maintenance/retention-runs/'+id),modal=()=>page.getByRole('dialog');
   const consent=()=>page.getByRole('checkbox',{name:'I authorize future complete target captures under these policy and source revisions',exact:true});
-  let paused=false,lockProcess,sql,barrierInstalled=false;
+  let paused=false,lockProcess,sql,pgenv,barrierInstalled=false;
+  const timingState=path.join(fixture.private,'retention-schedule-timing.json'),timingHelpers=[];
   async function axe(state){const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();expect(result.violations).toEqual([]);accessibility.push({state,violations:0})}
   async function control(action){
     const id=crypto.randomUUID(),temporary=fixture.worker_control_request+'.next';
@@ -50,8 +51,21 @@ test('operator explicitly authorizes future retirement and recovers fenced autom
     await expect.poll(async()=>(await detail(id)).job.state,{timeout:30000}).toBe('succeeded');return detail(id);
   }
   async function dropBarrier(){
-    if(barrierInstalled){await sql('DROP TRIGGER cratectl_retention_console_claim_barrier ON cratectl.jobs; DROP FUNCTION cratectl.retention_console_claim_barrier()');barrierInstalled=false}
-    if(lockProcess){const child=lockProcess;lockProcess=undefined;child.kill('SIGTERM');await new Promise(resolve=>{if(child.exitCode!==null||child.signalCode!==null)resolve();else child.once('exit',resolve)})}
+    try{
+      if(barrierInstalled){await sql('DROP TRIGGER IF EXISTS cratectl_retention_console_claim_barrier ON cratectl.jobs; DROP FUNCTION IF EXISTS cratectl.retention_console_claim_barrier()');barrierInstalled=false}
+    }finally{
+      if(lockProcess){
+        const child=lockProcess;lockProcess=undefined;
+        if(child.exitCode===null&&child.signalCode===null)child.kill('SIGTERM');
+        try{await new Promise((resolve,reject)=>{if(child.exitCode!==null||child.signalCode!==null){resolve();return}const timer=setTimeout(()=>reject(new Error('Owned timing controller did not stop')),10000);child.once('exit',()=>{clearTimeout(timer);resolve()})})}
+        finally{if(child.exitCode===null&&child.signalCode===null)child.kill('SIGKILL');await exec('python3',[path.join(fixture.root,'scripts/sql_timing.py'),'close','--state',timingState],{env:pgenv,timeout:15000})}
+        const state=JSON.parse(await fs.readFile(timingState,'utf8'));
+        expect(child.exitCode).toBe(0);expect(state.status).toBe('closed');expect(state.cleanup.backend_absent).toBe(true);expect(Number.isSafeInteger(state.backend.pid)).toBe(true);
+        const stamp=state.backend.backend_start.replaceAll("'","''");
+        expect((await sql(`SELECT count(*) FROM pg_stat_activity WHERE pid=${state.backend.pid} AND backend_start='${stamp}'::timestamptz`)).stdout.trim()).toBe('0');
+        timingHelpers.push(state);checks.push('owned SQL timing backend is absent before the browser resumes worker recovery');
+      }
+    }
   }
   try{
     await control('pause');
@@ -60,7 +74,7 @@ test('operator explicitly authorizes future retirement and recovers fenced autom
     expect((await api('/api/v1/repositories/'+repo+'/artifacts/lifecycle',{method:'PUT',data:{path:held.path,digest:held.digest,action:'hold',expected_revision:0,reason:'Keep the owned held release'}})).status()).toBe(200);
     const session=await value('/api/v1/session'),database=JSON.parse(await fs.readFile(fixture.owner_config,'utf8')),owner=new URL(database.owner);
     expect(repo).toMatch(/^[a-z][a-z0-9-]{0,62}$/);expect(session.tenant).toMatch(/^[a-z][a-z0-9-]{0,62}$/);
-    const pgenv={...process.env,PGHOST:owner.hostname,PGPORT:owner.port,PGUSER:decodeURIComponent(owner.username),PGPASSWORD:decodeURIComponent(owner.password),PGDATABASE:owner.pathname.slice(1)},psql=path.join(fixture.root,'.cache/postgresql-16.15-install/bin/psql');
+    pgenv={...process.env,PGHOST:owner.hostname,PGPORT:owner.port,PGUSER:decodeURIComponent(owner.username),PGPASSWORD:decodeURIComponent(owner.password),PGDATABASE:owner.pathname.slice(1)};const psql=path.join(fixture.root,'.cache/postgresql-16.15-install/bin/psql');
     sql=command=>exec(psql,['-X','-At','-v','ON_ERROR_STOP=1','-c',command],{env:pgenv});
     await sql(`UPDATE cratectl.artifacts SET created_at=created_at-interval '600 seconds' WHERE tenant='${session.tenant}' AND repository='${repo}'`);
     const policy={expected_revision:0,min_age_seconds:60,keep_last:1,protect_tagged:true,enabled:true,reason:'Protect held and current tagged releases'};
@@ -89,8 +103,11 @@ test('operator explicitly authorizes future retirement and recovers fenced autom
     // Owned SQL claim barrier creates an actual admitted pending job. It is a timing fixture,
     // not a product configuration, authority bypass, or metadata repair mechanism.
     await control('pause');const lock=1000000+parseInt(fixture.run.slice(0,6),16);
-    lockProcess=spawn(psql,['-X','-At','-v','ON_ERROR_STOP=1','-c',`SELECT pg_advisory_lock(${lock}); SELECT pg_sleep(180)`],{env:pgenv,stdio:'ignore'});
-    await expect.poll(async()=>(await sql(`SELECT EXISTS(SELECT 1 FROM pg_locks WHERE locktype='advisory' AND objid=${lock} AND granted)`)).stdout.trim()).toBe('t');
+    const timingLog=await fs.open(path.join(fixture.private,'retention-schedule-timing.log'),'wx',0o600);
+    lockProcess=spawn('python3',[path.join(fixture.root,'scripts/sql_timing.py'),'hold','--state',timingState,'--label','cratectl-barrier-browser-'+fixture.run,'--lock',String(lock),'--seconds','180'],{env:pgenv,stdio:['ignore',timingLog.fd,timingLog.fd]});await timingLog.close();
+    await expect.poll(async()=>{if(lockProcess.exitCode!==null||lockProcess.signalCode!==null)throw new Error('Owned timing controller exited before readiness');try{return JSON.parse(await fs.readFile(timingState,'utf8')).status}catch(error){if(error.code==='ENOENT')return'';throw error}},{timeout:15000}).toBe('ready');
+    const ownedTiming=JSON.parse(await fs.readFile(timingState,'utf8'));expect(Number.isSafeInteger(ownedTiming.backend.pid)).toBe(true);
+    await expect.poll(async()=>(await sql(`SELECT EXISTS(SELECT 1 FROM pg_locks WHERE pid=${ownedTiming.backend.pid} AND locktype='advisory' AND objid=${lock} AND classid=0 AND objsubid=1 AND granted)`)).stdout.trim()).toBe('t');
     await sql(`CREATE FUNCTION cratectl.retention_console_claim_barrier() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.kind='repository.retention' AND NEW.state='running' AND NEW.payload->'policy'->>'repository'='${repo}' THEN PERFORM pg_advisory_xact_lock(${lock}); END IF; RETURN NEW; END $$; CREATE TRIGGER cratectl_retention_console_claim_barrier BEFORE UPDATE ON cratectl.jobs FOR EACH ROW EXECUTE FUNCTION cratectl.retention_console_claim_barrier()`);barrierInstalled=true;
     await openSchedule();await editor();await apply();const prior=first.job.sequence+':'+first.job.task;await control('resume');
     await expect.poll(async()=>(await schedule()).last_job??'',{timeout:30000}).not.toBe(prior);const pending=(await schedule()).last_job;await expect.poll(async()=>(await detail(pending)).job.state).toBe('pending');await control('pause');
@@ -127,6 +144,6 @@ test('operator explicitly authorizes future retirement and recovers fenced autom
   }finally{
     if(barrierInstalled||lockProcess){if(!paused)await control('pause');await dropBarrier()}
     if(paused)await control('resume');
-    await fs.writeFile(path.join(fixture.private,'retention-schedule-browser-proof.json'),JSON.stringify({checks,accessibility,browser:browser.version(),scope:'Real PostgreSQL, Chromium and owned registry/worker. Future-authority consent, exact lost-response retry, complete-set deferral, scheduled native retirement/restore, process-stop pause fence using a declared owned SQL claim timing barrier, revoked-credential/changed-policy/empty-proxy-source reapproval, concurrent revision rejection and immutable configuration pages. Artifact age and claim timing are owned SQL fixtures. Empty proxy source administration performs no upstream fetch or byte verification. Real scheduled-retirement cadence, other browsers/assistive technology, physical GC, scale and broad readiness are not established.'},null,2));
+    await fs.writeFile(path.join(fixture.private,'retention-schedule-browser-proof.json'),JSON.stringify({checks,accessibility,timing_helpers:timingHelpers,browser:browser.version(),scope:'Real PostgreSQL, Chromium and owned registry/worker. Future-authority consent, exact lost-response retry, complete-set deferral, scheduled native retirement/restore, process-stop pause fence using a declared owned SQL claim timing barrier, revoked-credential/changed-policy/empty-proxy-source reapproval, concurrent revision rejection and immutable configuration pages. Artifact age and claim timing are owned SQL fixtures. Empty proxy source administration performs no upstream fetch or byte verification. Real scheduled-retirement cadence, other browsers/assistive technology, physical GC, scale and broad readiness are not established.'},null,2));
   }
 });

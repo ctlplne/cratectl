@@ -15,6 +15,7 @@ import os
 from pathlib import Path
 import socket
 import subprocess
+import sys
 import time
 import urllib.error
 import urllib.parse
@@ -40,6 +41,8 @@ env = dict(os.environ)
 tokens, processes, logs = {}, {}, {}
 commands, checks, process_events = [], [], []
 barrier = None
+barrier_state = None
+barrier_number = 0
 
 
 def identity(binary):
@@ -61,6 +64,7 @@ result = {
     'build_identity': {str(p.relative_to(ROOT)): identity(p) for p in [OLD, NEW, CLI]},
     'artifact_digests': {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in [OLD, NEW, CLI, ORAS]},
     'checks': checks, 'commands': commands, 'process_events': process_events,
+    'timing_helpers': [],
     'private_logs': str(PRIVATE.relative_to(ROOT)),
     'topology': 'Native macOS arm64, qualified schema-7 binary then schema-9 registry/worker, PostgreSQL 16.15 forced RLS and restricted runtime, stock ORAS 1.3.6 and cratectl CLI. Explicit HTTP loopback 38443. Runtime processes omit the owner DSN; native clients omit both database DSNs.',
     'limits': [
@@ -304,15 +308,29 @@ def sql(statement):
 
 
 def install_barrier(repo, observations=False):
-    global barrier
+    global barrier, barrier_state, barrier_number
     if barrier is not None:
         raise AssertionError('timing barrier already present')
     lock = 1000000 + int(RUN[:6], 16)
     table = 'retention_observations' if observations else 'jobs'
     barrier = table
-    spawn('timing-lock', [PSQL, '-X', '-At', '-v', 'ON_ERROR_STOP=1', '-c',
-                          f'SELECT pg_advisory_lock({lock}); SELECT pg_sleep(600)'], pgenv)
-    wait('owned timing lock', lambda: sql(f"SELECT EXISTS(SELECT 1 FROM pg_locks WHERE locktype='advisory' AND objid={lock} AND granted)") == 't')
+    barrier_number += 1
+    barrier_state = PRIVATE / ('timing-helper-%d.json' % barrier_number)
+    child = spawn('timing-lock', [sys.executable, ROOT / 'scripts/sql_timing.py', 'hold',
+        '--state', barrier_state, '--label', 'cratectl-barrier-native-' + RUN + '-' + str(barrier_number),
+        '--lock', str(lock)], pgenv)
+
+    def ready():
+        if child.poll() is not None:
+            raise AssertionError('owned timing controller exited before readiness; inspect private log')
+        if not barrier_state.exists():
+            return False
+        state = json.loads(barrier_state.read_text())
+        if state['status'] != 'ready':
+            return False
+        return sql(f"SELECT EXISTS(SELECT 1 FROM pg_locks WHERE pid={int(state['backend']['pid'])} AND locktype='advisory' AND objid={lock} AND classid=0 AND objsubid=1 AND granted)") == 't'
+
+    wait('exact owned timing session holds its lock', ready, timeout=15)
     predicate = (f"NEW.ordinal=2 AND EXISTS(SELECT 1 FROM cratectl.retention_runs r WHERE(r.tenant,r.sequence,r.task)=(NEW.tenant,NEW.sequence,NEW.task) AND r.repository='{repo}')"
                  if observations else f"NEW.kind='repository.retention' AND NEW.state='running' AND NEW.payload->'policy'->>'repository'='{repo}'")
     event = 'INSERT' if observations else 'UPDATE'
@@ -320,11 +338,22 @@ def install_barrier(repo, observations=False):
 
 
 def clear_barrier():
-    global barrier
-    if barrier is not None:
-        sql(f'DROP TRIGGER IF EXISTS cratectl_retention_native_timing_barrier ON cratectl.{barrier}; DROP FUNCTION IF EXISTS cratectl.retention_native_timing_barrier()')
-        barrier = None
-    stop('timing-lock')
+    global barrier, barrier_state
+    try:
+        if barrier is not None:
+            sql(f'DROP TRIGGER IF EXISTS cratectl_retention_native_timing_barrier ON cratectl.{barrier}; DROP FUNCTION IF EXISTS cratectl.retention_native_timing_barrier()')
+            barrier = None
+    finally:
+        child = processes.get('timing-lock')
+        stop('timing-lock')
+        if barrier_state is not None:
+            run([sys.executable, ROOT / 'scripts/sql_timing.py', 'close', '--state', barrier_state], pgenv)
+            state = json.loads(barrier_state.read_text())
+            check('owned timing helper backend closes before the next native step',
+                  state['status'] == 'closed' and state['cleanup']['backend_absent']
+                  and (child is None or child.returncode == 0))
+            result['timing_helpers'].append(state)
+            barrier_state = None
 
 
 def age(repo):
@@ -618,7 +647,7 @@ except BaseException as error:
 finally:
     stop('worker')
     try:
-        if barrier is not None or 'timing-lock' in processes:
+        if barrier is not None or barrier_state is not None or 'timing-lock' in processes:
             clear_barrier()
     except BaseException as error:
         result['status'] = 'failed'

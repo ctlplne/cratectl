@@ -1,0 +1,94 @@
+{
+  "source_parent": "01f083f12d9b169a3b79b416faae40f595dac0ae",
+  "source_dirty": true,
+  "checked_at": "2026-10-31T08:26:04.729425+00:00",
+  "defect": "DEFECT.0066",
+  "scope": "Qualification fixture backend ownership and cleanup only; product/runtime schema remains 9 and all 450 capabilities and 41 format families stay committed.",
+  "status": "Real PostgreSQL regression and standard integration/lint pass; clean native/browser replay pending.",
+  "baseline": {
+    "source_parent": "01f083f12d9b169a3b79b416faae40f595dac0ae",
+    "observed_at": "2026-10-31T08:13:32.244733+00:00",
+    "database": "cratectl_timing_46792952e6",
+    "client_pid": 4559,
+    "client_exit": -15,
+    "backend": {
+      "pid": 4561,
+      "backend_start": "2026-10-31T04:13:31.98469-04:00",
+      "held": true
+    },
+    "backend_still_live": true,
+    "independent_lock_acquired": false,
+    "expected_regression_failure": "Client-only cleanup leaves its database session and advisory lock alive.",
+    "scope": "Owned empty PostgreSQL16.15 database; no product data, migration, due slot or lease clocks modified."
+  },
+  "first_reproducer_driver_failure": {
+    "private_record": ".private/timing-helper-development/reproducer-first-driver-failure.json",
+    "sha256": "0ce797921832fc4a31ffcc819aed6969d1771ebf51e09b1e82c47e916694725c",
+    "scope": "Ignored reproducer SQL typo corrected; its exact named helper was closed before the successful baseline replay."
+  },
+  "implementation": [
+    "One shared loopback-only helper for native and browser SQL barriers.",
+    "Atomically persisted private ownership manifest binds database/user, unique application name, backend PID/start timestamp and exact helper statement.",
+    "Backend termination waits up to five seconds and checks fresh absence. Client exit alone never counts as cleanup.",
+    "Interrupted controllers recover through their exact state record; substituted identity, nonprivate state and wrong destinations fail without signaling another session.",
+    "A blocked helper can be closed without releasing a different holder; both fixture drivers verify cleanup before continuing."
+  ],
+  "source_sha256": {
+    "scripts/sql_timing.py": "fb1768ffbca96dd383459575c63c98b330e8dd42e891c556af6d2aff4d1674d7",
+    "scripts/test_sql_timing.py": "8a589c1e75316d2eabe021820faf047d1f71ea6d45c5a58a90066cf0d7602061",
+    "scripts/conformance_retention_schedules.py": "6249d896058fbde811de6675cf744df18b55b5ceb67aa8fb660124a837e8574c",
+    "web/tests/zzzzzzz-retention-schedule.spec.mjs": "f2d85b4ecd82b9589d4123a4e2ce94f9a3295258414c9753b118ef97fd4b0bb8",
+    "Makefile": "4b1d6a9d6db860f6445b4dc9fc1110b5ba16f6bd55d06e9603eec3a70a064468"
+  },
+  "regression_tests": [
+    "SIGTERM ends exact backend and releases lock; repeated close is idempotent",
+    "SIGKILL controller recovery closes only its recorded backend",
+    "blocked waiter cleanup preserves another live holder",
+    "substituted PID, start timestamp or both terminate no session",
+    "recovery before backend identity persistence",
+    "wrong database/host/port and unsafe state paths/permissions preserve the holder"
+  ],
+  "commands": {
+    "make integration lint": {
+      "exit_code": 0,
+      "go_packages": 3,
+      "timing_tests": 6,
+      "skips": 0,
+      "private_log": ".private/timing-helper-development/integration.log",
+      "sha256": "a5af34ee9cac4a4a5baf858a401f85b96a60052f74364f6edeab5f1336417ecf"
+    },
+    "Python/Node syntax and git diff check": {
+      "status": "passed"
+    },
+    "final six timing regressions": {
+      "exit_code": 0,
+      "tests": 6,
+      "private_log": ".private/timing-helper-development/regression-final.log",
+      "sha256": "8320b3109e0592827567abf63b740bab09366edb5838ad92ed52672876a980ae"
+    }
+  },
+  "after_tests": {
+    "owned_timing_backends": 0,
+    "primary": "Schema9/all nine receipts safe; exact qualified ab28ee9production bin restored.",
+    "data_retained": true
+  },
+  "qualified_product_source": "ab28ee966077f7e96a9d96a8898eb389200e30e4",
+  "remaining": [
+    "Clean native scheduled-retirement journeys on production/race artifacts, preserving all original cadence/cancellation/expiry/recovery assertions.",
+    "Affected browser workflow with real worker control and fresh SQL backend absence checks.",
+    "All independent hold cases, bulk/legal/other-format/GC and every remaining product requirement."
+  ],
+  "source_secret_review": {
+    "status": "passed; final metadata replay required before commit",
+    "files": 1430,
+    "known_private_value_entries": 9274,
+    "distinct_private_byte_values": 5037,
+    "exact_value_matches": 0,
+    "gitleaks_findings": 0,
+    "report": "evidence/2026-10-31/timing-helper-development-source-secrets.json",
+    "checked_at": "2026-10-31T08:28:37.887350+00:00",
+    "rules_sha256": "18190efe56496ecbd3b308f1881c3fdd6641a8a70118a3a96f7881057203662f",
+    "scope": "All tracked and nonignored source/evidence, including current retained fixture credentials; rules unchanged."
+  },
+  "reference": "https://www.postgresql.org/docs/16/functions-admin.html#FUNCTIONS-ADMIN-SIGNAL"
+}
