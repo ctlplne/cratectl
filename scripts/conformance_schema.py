@@ -4,6 +4,7 @@
 import argparse,datetime,hashlib,json,os,subprocess,time,urllib.parse,urllib.request,uuid
 from pathlib import Path
 
+CURRENT_SCHEMA=10
 parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');options=parser.parse_args()
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT);RUN=uuid.uuid4().hex[:10]
 PRIVATE=ROOT/'.private/schema-conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)
@@ -21,6 +22,7 @@ candidate=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
 scope=['cmd','internal','scripts','web','api','go.mod','go.sum','Makefile']
 result={'run':RUN,'candidate':candidate,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope]).strip()),'artifact_digests':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()for p in [OLD,NEW,ROOT/'bin/cratectl']},'build_identity':{str(p.relative_to(ROOT)):identity(p)for p in [OLD,NEW,ROOT/'bin/cratectl']},'checks':checks,'topology':'Native macOS legacy/current registry CLI processes, actual SIGKILL during uncommitted DDL, real PostgreSQL 16.15 restricted runtime, stock npm; explicit loopback HTTP fixture.','limits':['Legacy adoption is a controlled maintenance operation with registry and workers stopped. Pre-gate binaries do not cooperate with new transaction admission.','The fault is an owned database event trigger and advisory barrier; no production pause hook is compiled into the runtime.','This is not rolling/zero-downtime adoption, whole-transfer draining, expand/contract compatibility, HA, downgrade, backup/restore or independent-host qualification.']}
 result['build_source_matches_candidate']=all(result['build_identity'][str(p.relative_to(ROOT))].get('vcs.revision')==candidate and result['build_identity'][str(p.relative_to(ROOT))].get('vcs.modified')=='false'for p in [NEW,ROOT/'bin/cratectl'])
+result['expected_schema'] = CURRENT_SCHEMA
 def check(label,condition):
     if not condition:raise AssertionError(label)
     checks.append(label)
@@ -85,7 +87,7 @@ try:
     stop('registry')
     state=psql("SELECT jsonb_build_object('tenants',(SELECT jsonb_agg(t)FROM cratectl.tenants t),'repositories',(SELECT jsonb_agg(t ORDER BY t.name)FROM cratectl.repositories t),'artifacts',(SELECT jsonb_agg(t ORDER BY t.path)FROM cratectl.artifacts t),'events',(SELECT jsonb_agg(t ORDER BY t.sequence)FROM cratectl.events t),'tokens',(SELECT jsonb_agg(t ORDER BY t.hash)FROM cratectl_private.tokens t))::text")
     private('pre-adoption-state.json',state.encode())
-    plan=json.loads(command([NEW,'migrate','--plan'],initial));check('owner plan identifies unversioned data and explicit adoption requirement',plan['database_state']=='legacy'and plan['requires_legacy_adoption']and plan['pending']==[1,2,3,4,5,6,7,8,9])
+    plan=json.loads(command([NEW,'migrate','--plan'],initial));check('owner plan identifies unversioned data and explicit adoption requirement',plan['database_state']=='legacy'and plan['requires_legacy_adoption']and plan['binary_version']==CURRENT_SCHEMA and plan['pending']==list(range(1,CURRENT_SCHEMA+1)))
     command([NEW,'migrate'],initial,ok=False);check('ordinary migration refuses legacy data without acknowledgement',psql("SELECT to_regclass('cratectl_private.schema_migrations') IS NULL")=='t')
     psql("CREATE FUNCTION cratectl_private.schema_fault_pause() RETURNS event_trigger LANGUAGE plpgsql AS $$ BEGIN IF EXISTS(SELECT 1 FROM pg_event_trigger_ddl_commands() WHERE object_identity='cratectl.schema_state()') THEN PERFORM pg_advisory_xact_lock(731445924); END IF; END $$;CREATE EVENT TRIGGER cratectl_schema_fault ON ddl_command_end WHEN TAG IN ('CREATE FUNCTION') EXECUTE FUNCTION cratectl_private.schema_fault_pause()")
     blocker_env=dict(pgenv,PGAPPNAME='cratectl-schema-barrier-'+RUN)
@@ -101,7 +103,7 @@ try:
     check('actual killed migration process rolls back baseline DDL and receipts',psql("SELECT to_regclass('cratectl_private.schema_migrations') IS NULL AND to_regprocedure('cratectl.schema_state()') IS NULL")=='t')
     psql('DROP EVENT TRIGGER cratectl_schema_fault;DROP FUNCTION cratectl_private.schema_fault_pause()')
     command([NEW,'migrate','--adopt-legacy'],initial)
-    plan=json.loads(command([NEW,'migrate','--plan'],initial));check('adoption commits all nine known receipts with safe RLS',plan['database_state']=='current'and len(plan['applied'])==9 and not plan['pending']and plan['safety_valid'])
+    plan=json.loads(command([NEW,'migrate','--plan'],initial));check('adoption commits all ten known receipts with safe RLS',plan['database_state']=='current'and plan['binary_version']==CURRENT_SCHEMA and len(plan['applied'])==CURRENT_SCHEMA and not plan['pending']and plan['safety_valid'])
     after=psql("SELECT jsonb_build_object('tenants',(SELECT jsonb_agg(t)FROM cratectl.tenants t),'repositories',(SELECT jsonb_agg(t ORDER BY t.name)FROM cratectl.repositories t),'artifacts',(SELECT jsonb_agg(t ORDER BY t.path)FROM cratectl.artifacts t),'events',(SELECT jsonb_agg(t ORDER BY t.sequence)FROM cratectl.events t),'tokens',(SELECT jsonb_agg(t ORDER BY t.hash)FROM cratectl_private.tokens t))::text")
     expected=json.loads(state)
     for table in ['repositories','artifacts']:
