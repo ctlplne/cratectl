@@ -62,7 +62,7 @@ func authorizeHoldCase(ctx context.Context, tx pgx.Tx, i Identity, repo, path, i
 	if !Name.MatchString(repo) || !validHoldPath(path) || !validCaseID(id) {
 		return Artifact{}, ErrConflict
 	}
-	return artifactLifecycleRecordRetained(ctx, tx, i, repo, path)
+	return holdReferenceInTx(ctx, tx, i, repo, path)
 }
 func holdCaseInTx(ctx context.Context, tx pgx.Tx, repo, path, id string) (HoldCase, error) {
 	c := HoldCase{Repository: repo, Path: path, CaseID: id}

@@ -20676,11 +20676,11 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "internal/store/hold_management.go and migration 9 lookup indexes; common canonical OCI lifecycle/journal/retention path; internal/server/hold_management.go; web/src/holds.tsx and lifecycle.tsx; internal/store/hold_cases.go, hold_case_pages.go and migration10; internal/server/hold_cases.go; web/src/hold-cases.tsx",
+      "implementation": "internal/store/hold_management.go and migration 9 lookup indexes; common canonical OCI lifecycle/journal/retention path; internal/server/hold_management.go; web/src/holds.tsx and lifecycle.tsx; internal/store/hold_cases.go, hold_case_pages.go and migration10; internal/server/hold_cases.go; web/src/hold-cases.tsx; internal/store/hold_matter*.go and migration11; internal/server/hold_matters.go; internal/worker/hold_matters.go; web/src/hold-matters.tsx (development)",
       "surfaces": {
-        "api": "Canonical OCI /repositories/{repository}/artifacts/lifecycle GET/PUT hold/release_hold with exact revision and digest; administrator GET /api/v1/holds and /repositories/{repository}/artifacts/lifecycle/history; /api/v1/hold-cases and /repositories/{repository}/artifacts/holds/{case_id} GET/PUT and /history",
+        "api": "Canonical OCI /repositories/{repository}/artifacts/lifecycle GET/PUT hold/release_hold with exact revision and digest; administrator GET /api/v1/holds and /repositories/{repository}/artifacts/lifecycle/history; /api/v1/hold-cases and /repositories/{repository}/artifacts/holds/{case_id} GET/PUT and /history; /api/v1/hold-matters and matter metadata/members/operations/preview/items/approve/cancel/history (development)",
         "cli": "cratectl management CLI; stock ORAS observes enforced protection",
-        "ui": "Canonical OCI Lifecycle plus Storage \u2192 Reference holds inventory, original journal history and current-revision retained-repository recovery; independent named case inventory/editor/history and case-specific release"
+        "ui": "Canonical OCI Lifecycle plus Storage \u2192 Reference holds inventory, original journal history and current-revision retained-repository recovery; independent named case inventory/editor/history and case-specific release; Cross-reference hold matters with complete reviewed manifest and independent approval (development)"
       },
       "core": true,
       "dependencies": [],
@@ -20716,7 +20716,8 @@
         "evidence/2026-10-31/hold-clean-postgres-race.txt",
         "evidence/2026-10-31/hold-cases-checkpoint.json",
         "evidence/2026-10-31/hold-cases-clean-postgres-race.txt",
-        "evidence/2026-10-31/case-full-checkpoint.json"
+        "evidence/2026-10-31/case-full-checkpoint.json",
+        "evidence/2026-10-31/hold-matters-development-checkpoint.json"
       ],
       "limits": "Qualified subset: tenant-administrator inventory of active/expired/released canonical OCI holds, scoped encrypted live paging/search, original immutable hold/release snapshots, actual-time expiry and retained-repository/current-administrator recovery. Exact clean production/race artifacts, native old-schema8 receipt/CLI/ORAS, seven old upgrade baselines and eleven Chromium workflows pass within the checkpoint scope. The legacy slot remains separate. Independent cases/case-specific release pass clean production/race qualification on isolated schema10: 414 PostgreSQL passes; actual schema9/ORAS/CLI; twelve Chromium workflows and 91 automated A/AA states per build. The complete recorded native runtime campaign now passes on the latest source; primary10 maintenance preserves old receipts and existing table bytes. Cross-reference legal matters, bulk approval/release, other formats, safe physical GC and production recovery remain required. No legal-compliance or broad readiness verdict.",
       "next_action": "Complete cross-reference/legal matter membership, bulk admission/release and approvals, other formats and safe physicalGC, with every later-stage requirement preserved.",
@@ -20741,6 +20742,13 @@
         "record": "evidence/2026-10-31/hold-cases-checkpoint.json",
         "schema": 10,
         "primary_schema": 9
+      },
+      "development_matter_work": {
+        "source_parent": "79d1a5b198f7559f55208eccfeded43bf1724fd5",
+        "source_dirty": true,
+        "state": "implemented but unverified",
+        "record": "evidence/2026-10-31/hold-matters-development-checkpoint.json",
+        "scope": "Canonical OCI cross-reference memberships and complete bounded bulk placement/release with distinct-current-administrator approval; partial cancellation/retry and durable target outcomes. Development PostgreSQL/browser evidence only. Clean native/race artifact campaigns and broader capability scope remain required."
       }
     },
     {
@@ -21053,11 +21061,11 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "Canonical OCI matter operations in internal/store/hold_matter*.go, internal/server/hold_matters.go, internal/worker/hold_matters.go and web/src/hold-matters.tsx (development)",
       "surfaces": {
-        "api": null,
-        "cli": null,
-        "ui": null
+        "api": "/api/v1/hold-matters/{matter}/operations and complete preview; immutable target/outcome pages; pending proposal and common durable job cancellation/retry",
+        "cli": "Generic cratectl management CLI against the same APIs",
+        "ui": "Storage \u2192 Reference holds \u2192 Cross-reference hold matters"
       },
       "core": true,
       "dependencies": [],
@@ -21076,11 +21084,20 @@
         "partial failure",
         "recovery"
       ],
-      "state": "planned",
+      "state": "implementing",
       "candidate": null,
-      "evidence": [],
-      "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "evidence": [
+        "evidence/2026-10-31/hold-matters-development-checkpoint.json"
+      ],
+      "limits": "Development implementation for canonical OCI matter membership only. Other bulk operations, formats, broader legal policy, clean matching native/race campaigns and complete capability qualification remain unfinished.",
+      "next_action": "Qualify clean matter source/artifacts and all failure/recovery cases, then complete broader bulk and format scope.",
+      "development_matter_work": {
+        "source_parent": "79d1a5b198f7559f55208eccfeded43bf1724fd5",
+        "source_dirty": true,
+        "state": "implemented but unverified",
+        "record": "evidence/2026-10-31/hold-matters-development-checkpoint.json",
+        "scope": "Canonical OCI cross-reference memberships and complete bounded bulk placement/release with distinct-current-administrator approval; partial cancellation/retry and durable target outcomes. Development PostgreSQL/browser evidence only. Clean native/race artifact campaigns and broader capability scope remain required."
+      }
     },
     {
       "id": "REPO.BULK-CANCEL",
@@ -21100,11 +21117,11 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "Canonical OCI matter operations in internal/store/hold_matter*.go, internal/server/hold_matters.go, internal/worker/hold_matters.go and web/src/hold-matters.tsx (development)",
       "surfaces": {
-        "api": null,
-        "cli": null,
-        "ui": null
+        "api": "/api/v1/hold-matters/{matter}/operations and complete preview; immutable target/outcome pages; pending proposal and common durable job cancellation/retry",
+        "cli": "Generic cratectl management CLI against the same APIs",
+        "ui": "Storage \u2192 Reference holds \u2192 Cross-reference hold matters"
       },
       "core": true,
       "dependencies": [],
@@ -21123,11 +21140,20 @@
         "partial failure",
         "recovery"
       ],
-      "state": "planned",
+      "state": "implementing",
       "candidate": null,
-      "evidence": [],
-      "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "evidence": [
+        "evidence/2026-10-31/hold-matters-development-checkpoint.json"
+      ],
+      "limits": "Development implementation for canonical OCI matter membership only. Other bulk operations, formats, broader legal policy, clean matching native/race campaigns and complete capability qualification remain unfinished.",
+      "next_action": "Qualify clean matter source/artifacts and all failure/recovery cases, then complete broader bulk and format scope.",
+      "development_matter_work": {
+        "source_parent": "79d1a5b198f7559f55208eccfeded43bf1724fd5",
+        "source_dirty": true,
+        "state": "implemented but unverified",
+        "record": "evidence/2026-10-31/hold-matters-development-checkpoint.json",
+        "scope": "Canonical OCI cross-reference memberships and complete bounded bulk placement/release with distinct-current-administrator approval; partial cancellation/retry and durable target outcomes. Development PostgreSQL/browser evidence only. Clean native/race artifact campaigns and broader capability scope remain required."
+      }
     },
     {
       "id": "REPO.CLIENT-CONFIG",

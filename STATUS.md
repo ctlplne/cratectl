@@ -1,5 +1,16 @@
 # cratectl execution status
 
+Development update: schema11 cross-reference matters now have immutable memberships,
+complete bounded manifests, independent release approval and durable partial
+progress/cancellation/retry through store, worker, API/CLI and console. This is
+implemented but unverified against a clean candidate. See
+`evidence/2026-10-31/hold-matters-development-checkpoint.json` and ADR0030.
+Development real PostgreSQL tests, Chromium and stock ORAS observations retain
+the dirty source parent and exact limits. Clean production/race/native upgrade
+campaigns remain required. Primary and active qualified binaries stay schema10;
+never restore schema9/8 or point a schema11 server at that primary prematurely.
+All450capabilities/41families and every later requirement remain committed.
+
 Latest scoped native runtime-qualified source: `ed9ee5e8a6b38843a01ff9ccb9eb5ca7752255c0`,
 authored and committed only as imfeelingtheagi. The authoritative checkpoint is
 `evidence/2026-10-31/case-full-checkpoint.json`.

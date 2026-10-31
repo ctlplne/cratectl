@@ -113,6 +113,14 @@ func fail(w http.ResponseWriter, status int, code, action string) {
 }
 func respondErr(w http.ResponseWriter, e error) {
 	switch {
+	case errors.Is(e, store.ErrMatterInput):
+		fail(w, 400, "invalid_hold_matter", "Supply a complete bounded matter request or the exact reviewed target manifest and revision.")
+	case errors.Is(e, store.ErrMatterChanged):
+		fail(w, 409, "hold_matter_changed", "Read the current matter and memberships, then preview again. Existing outcomes stay recorded; a changed or expired review cannot authorize remaining work.")
+	case errors.Is(e, store.ErrMatterBudget):
+		fail(w, 413, "hold_matter_budget", "The complete target manifest exceeds the configured target or metadata budget. No partial list was admitted.")
+	case errors.Is(e, store.ErrMatterAuthorization):
+		fail(w, 403, "hold_matter_authorization_changed", "The original requester or distinct approver is no longer authorized. Inspect committed outcomes and create a fresh proposal for remaining references.")
 	case errors.Is(e, store.ErrRetentionScheduleChanged):
 		fail(w, 409, "retention_schedule_changed", "Read the current schedule revision and inspect earlier outcomes. A paused or replaced schedule stops its remaining targets; retrying an old job cannot replace that approval.")
 	case errors.Is(e, store.ErrRetentionInput):
@@ -336,6 +344,9 @@ func readJSON(w http.ResponseWriter, r *http.Request, v any, limit int64) bool {
 }
 func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Identity) {
 	p := strings.TrimPrefix(r.URL.Path, "/api/v1/")
+	if s.holdMatterManagement(w, r, i, p) {
+		return
+	}
 	if s.holdCaseManagement(w, r, i, p) {
 		return
 	}

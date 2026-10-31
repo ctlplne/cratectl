@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
-"""Owned schema2–9 upgrades and stock ORAS retained deletion/recovery, on real PostgreSQL."""
+"""Owned schema2–10 upgrades and stock ORAS retained deletion/recovery, on real PostgreSQL."""
 import argparse,datetime,hashlib,json,os,subprocess,time,urllib.error,urllib.parse,urllib.request,uuid
 from pathlib import Path
 
-parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');parser.add_argument('--baseline-version',type=int,choices=[2,3,4,5,6,7,8,9],default=2);args=parser.parse_args()
+parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');parser.add_argument('--binary-directory',type=Path,help='Owned candidate binaries; defaults to bin');parser.add_argument('--baseline-version',type=int,choices=[2,3,4,5,6,7,8,9,10],default=2);args=parser.parse_args()
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT);RUN=uuid.uuid4().hex[:10]
 PRIVATE=ROOT/'.private/lifecycle-conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)
-BASELINES={2:('.cache/maven-final-production/cratectld','10ea6499d874018178b43ee38a9070e81e5a0686'),3:('.cache/lifecycle-final-production/cratectld','bea2472271bd15993bcae9b8ea12a102b2608abe'),4:('.cache/source-final-production/cratectld','06156af19b9759035e96d63cf7a8bf52903235f7'),5:('.cache/repair-final-production/cratectld','1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6'),6:('.cache/schedule-final-production/cratectld','b19d1ae393320a2adc051f61db24693fec62591a'),7:('.cache/retention-final-production/cratectld','6cac8851da675dcaf531d6f8ed2aa26c927a243b'),8:('.cache/retention-schedule-final-399f37a048d7-production/cratectld','399f37a048d73fddd8f6b98b93669f5ba2c3fad5'),9:('.cache/hold-final-ab28ee966077-production/cratectld','ab28ee966077f7e96a9d96a8898eb389200e30e4')}
+BASELINES={2:('.cache/maven-final-production/cratectld','10ea6499d874018178b43ee38a9070e81e5a0686'),3:('.cache/lifecycle-final-production/cratectld','bea2472271bd15993bcae9b8ea12a102b2608abe'),4:('.cache/source-final-production/cratectld','06156af19b9759035e96d63cf7a8bf52903235f7'),5:('.cache/repair-final-production/cratectld','1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6'),6:('.cache/schedule-final-production/cratectld','b19d1ae393320a2adc051f61db24693fec62591a'),7:('.cache/retention-final-production/cratectld','6cac8851da675dcaf531d6f8ed2aa26c927a243b'),8:('.cache/retention-schedule-final-399f37a048d7-production/cratectld','399f37a048d73fddd8f6b98b93669f5ba2c3fad5'),9:('.cache/hold-final-ab28ee966077-production/cratectld','ab28ee966077f7e96a9d96a8898eb389200e30e4'),10:('.cache/case-full-ed9ee5e8a6b3-production/cratectld','ed9ee5e8a6b38843a01ff9ccb9eb5ca7752255c0')}
 from qualification_contract import CURRENT_SCHEMA
-BASE='http://127.0.0.1:38443';OLD=ROOT/BASELINES[args.baseline_version][0];NEW=ROOT/'bin/cratectld';ORAS=ROOT/'.cache/bin/oras'
+BIN=(args.binary_directory or ROOT/'bin').resolve();BIN.relative_to(ROOT)
+BASE='http://127.0.0.1:38443';OLD=ROOT/BASELINES[args.baseline_version][0];NEW=BIN/'cratectld';ORAS=ROOT/'.cache/bin/oras'
 env=dict(os.environ);checks=[];commands=[];proc=None;log=None
 def identity(binary):
     values={}
@@ -18,8 +19,8 @@ def identity(binary):
         if len(parts)==2 and parts[0]=='build' and '='in parts[1]:key,value=parts[1].split('=',1);values[key]=value
     return values
 scope=['cmd','internal','scripts','web','api','go.mod','go.sum','Makefile'];candidate=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
-result={'run':RUN,'candidate':candidate,'baseline_version':args.baseline_version,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope]).strip()),'checks':checks,'commands':commands,'artifact_digests':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()for p in [OLD,NEW,ROOT/'bin/cratectl',ORAS]},'build_identity':{str(p.relative_to(ROOT)):identity(p)for p in [OLD,NEW,ROOT/'bin/cratectl']},'topology':f'Native macOS arm64, retained clean schema-{args.baseline_version} binary then schema-{CURRENT_SCHEMA} binary, real PostgreSQL 16.15 nonowner forced RLS, stock ORAS; explicit HTTP loopback on 38443.','limits':['Logical retirement retains CAS bytes and all references; no physical erasure or reclaimed storage is claimed.','Source URL/configuration changes, recursive groups, retention/GC, scale, rolling upgrade, backup/restore and other clients/platforms remain required.','This campaign uses controlled maintenance with the registry stopped during migration; it does not establish compatible rolling versions.']}
-result['build_source_matches_candidate']=all(result['build_identity'][str(p.relative_to(ROOT))].get('vcs.revision')==candidate and result['build_identity'][str(p.relative_to(ROOT))].get('vcs.modified')=='false'for p in [NEW,ROOT/'bin/cratectl'])
+result={'run':RUN,'candidate':candidate,'baseline_version':args.baseline_version,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope]).strip()),'checks':checks,'commands':commands,'artifact_digests':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()for p in [OLD,NEW,BIN/'cratectl',ORAS]},'build_identity':{str(p.relative_to(ROOT)):identity(p)for p in [OLD,NEW,BIN/'cratectl']},'topology':f'Native macOS arm64, retained clean schema-{args.baseline_version} binary then schema-{CURRENT_SCHEMA} binary, real PostgreSQL 16.15 nonowner forced RLS, stock ORAS; explicit HTTP loopback on 38443.','limits':['Logical retirement retains CAS bytes and all references; no physical erasure or reclaimed storage is claimed.','Source URL/configuration changes, recursive groups, retention/GC, scale, rolling upgrade, backup/restore and other clients/platforms remain required.','This campaign uses controlled maintenance with the registry stopped during migration; it does not establish compatible rolling versions.']}
+result['build_source_matches_candidate']=all(result['build_identity'][str(p.relative_to(ROOT))].get('vcs.revision')==candidate and result['build_identity'][str(p.relative_to(ROOT))].get('vcs.modified')=='false'for p in [NEW,BIN/'cratectl'])
 def check(label,value):
     if not value:raise AssertionError(label)
     checks.append(label)
@@ -96,6 +97,16 @@ try:
         old_events=json.loads(api('/api/v1/audit')[1])['items']
         old_hold=next(e for e in reversed(old_events)if json.loads(e['payload']).get('kind')=='artifact.lifecycle.changed'and json.loads(e['payload'])['data']['current']['path']==old_child_path)
         result['pre_upgrade_hold_receipt']={'sequence':old_hold['sequence'],'hash':old_hold['hash'],'snapshot':json.loads(old_hold['payload'])['data']['current']}
+    if args.baseline_version>=10:
+        prior_case_ref='127.0.0.1:38443/containers/preupgrade-case:v1'
+        oras('push',prior_case_ref,*files);prior_case_digest=oras('resolve',prior_case_ref).decode().strip();prior_case_path='preupgrade-case/manifests/'+prior_case_digest
+        prior_case_endpoint='/api/v1/repositories/containers/artifacts/holds/preupgrade'
+        prior_case_input={'path':prior_case_path,'digest':prior_case_digest[7:],'action':'hold','expected_revision':0,'reason':'Actual old runtime independent case preservation'}
+        status,raw,_=api(prior_case_endpoint,'PUT',prior_case_input);prior_case=json.loads(raw)
+        check('actual schema10 runtime places an independent case before upgrade',status==200 and prior_case['case']['revision']==1 and prior_case['case']['held'])
+        prior_case_events=json.loads(api('/api/v1/audit')[1])['items']
+        prior_case_event=next(e for e in reversed(prior_case_events)if json.loads(e['payload']).get('kind')=='artifact.hold_case.changed'and json.loads(e['payload'])['data']['case']['path']==prior_case_path)
+        result['pre_upgrade_case_receipt']={'sequence':prior_case_event['sequence'],'hash':prior_case_event['hash'],'snapshot':json.loads(prior_case_event['payload'])['data']}
     if args.baseline_version==2:check('old native digest deletion is missing (retained negative baseline)',api('/v2/containers/'+path,'DELETE')[0]==405)
     else:
         check(f'schema-{args.baseline_version} baseline creates a governed proxy',api('/api/v1/repositories','POST',{'name':'legacy-proxy','format':'oci','mode':'proxy','settings':{'upstream':{'url':BASE+'/v2/containers/','networks':['127.0.0.1/32'],'credential_ref':'self'},'cache':{'fresh_seconds':3600,'stale_seconds':0,'allow_no_store':True}}})[0]==201)
@@ -111,7 +122,7 @@ try:
     if args.baseline_version>=8:
         client_env={k:v for k,v in env.items()if k not in ['CRATECTL_OWNER_DSN','CRATECTL_DSN']}
         def management_cli(endpoint,method='GET',value=None,key='native-hold-upgrade'):
-            argv=[ROOT/'bin/cratectl','--url',BASE,'--token-file',PRIVATE/'admin.token','--method',method,'--path',endpoint]
+            argv=[BIN/'cratectl','--url',BASE,'--token-file',PRIVATE/'admin.token','--method',method,'--path',endpoint]
             if value is not None:
                 body_file=private('hold-cli-body.json',value);argv+=['--body-file',body_file,'--idempotency-key',key]
             return json.loads(run(argv,runenv=client_env))
@@ -129,7 +140,18 @@ try:
         check('stock ORAS consumes the nontrivial retained package and independent dependency after upgrade',(pull/'payload.txt').read_bytes()==payload and (pull/'dependency.txt').read_bytes()==dependency)
         history_after_retry=management_cli('/api/v1/repositories/containers/artifacts/lifecycle/history?'+urllib.parse.urlencode({'path':old_child_path}))
         check('exact native CLI release replay leaves one original hold and one release receipt',[v['action']for v in history_after_retry['items']]==['hold','release_hold'])
-    if args.baseline_version==9:
+    if args.baseline_version>=10:
+        prior_current=management_cli(prior_case_endpoint+'?'+urllib.parse.urlencode({'path':prior_case_path}))
+        check('new runtime preserves the old independent case record exactly',prior_current==prior_case['case'])
+        prior_history=management_cli(prior_case_endpoint+'/history?'+urllib.parse.urlencode({'path':prior_case_path}))
+        check('native CLI preserves the original schema10 independent case snapshot and hash',len(prior_history['items'])==1 and prior_history['items'][0]['event_hash']==prior_case_event['hash'] and prior_history['items'][0]['case']==prior_case['case'])
+        oras('manifest','delete','--force','127.0.0.1:38443/containers/preupgrade-case@'+prior_case_digest,ok=False);check('old independent case still protects native deletion after upgrade',True)
+        prior_case_input.update(action='release_hold',expected_revision=1,reason='Current administrator completes old case review')
+        prior_released=management_cli(prior_case_endpoint,'PUT',prior_case_input,key='native-preupgrade-case-release')
+        check('current CLI releases only the old case while preserving its reason',prior_released['case']['released'] and prior_released['case']['hold_reason']==prior_case['case']['hold_reason'])
+        prior_pull=PRIVATE/'preupgrade-case-pull';prior_pull.mkdir();oras('pull',prior_case_ref,cwd=prior_pull,reader=True)
+        check('stock ORAS consumes exact independent case bytes across schema10to11',(prior_pull/'payload.txt').read_bytes()==payload and(prior_pull/'dependency.txt').read_bytes()==dependency)
+    if args.baseline_version>=9:
         case_ref='127.0.0.1:38443/containers/independent:v1'
         oras('push',case_ref,*files);case_digest=oras('resolve',case_ref).decode().strip();case_path='independent/manifests/'+case_digest
         case_base='/api/v1/repositories/containers/artifacts/holds/'

@@ -42,7 +42,7 @@ test('administrator discovers holds, reads original receipts and recovers retain
   const history=await(await api(endpoint+'/history?'+new URLSearchParams({path:reference}))).json(),original=history.items.find(v=>v.state.hold_until&&Date.parse(v.state.hold_until)===Date.parse(expires));expect(original.state.held).toBe(true);expect((await state()).held).toBe(false);checks.push('real elapsed expiry changes the current list while the original timed-hold journal snapshot remains held');
   const expired=await state();expect((await api(endpoint,{method:'PUT',data:{action:'hold',path:reference,digest,expected_revision:expired.revision,reason:'Hold survives credential revocation'}})).status()).toBe(200);
   const database=JSON.parse(await fs.readFile(fixture.owner_config,'utf8'));
-  execFileSync(path.join(fixture.root,'bin/cratectld'),['revoke','--token-file',fixture.hold_admin_token],{env:{...process.env,CRATECTL_OWNER_DSN:database.owner},stdio:'pipe',timeout:30000});
+  execFileSync(path.join(fixture.binary_directory??path.join(fixture.root,'bin'),'cratectld'),['revoke','--token-file',fixture.hold_admin_token],{env:{...process.env,CRATECTL_OWNER_DSN:database.owner},stdio:'pipe',timeout:30000});
   await page.getByRole('button',{name:'Refresh holds',exact:true}).click();await expect(page.getByRole('button',{name:'Connect to installation',exact:true})).toBeVisible();await axe('revoked hold administrator reconnect');
   expect((await api(native,{method:'DELETE'},recovery)).status()).toBe(409);
   await login(fixture.hold_recovery_token);await inventory();await expect(row().getByText('active',{exact:true})).toBeVisible();await axe('current administrator hold recovery');

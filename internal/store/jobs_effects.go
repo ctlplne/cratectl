@@ -187,6 +187,10 @@ func (s *Store) FinishIntegrity(ctx context.Context, i WorkerIdentity, j Job, st
 }
 func (s *Store) FailJob(ctx context.Context, i WorkerIdentity, j Job, code string, permanent bool) (string, error) {
 	switch code {
+	case "hold_matter_authorization", "hold_matter_changed":
+		if j.Kind != "hold.matter.operation" {
+			return "", ErrConflict
+		}
 	case "retention_requester_authorization", "retention_plan_changed", "retention_schedule_changed":
 		if j.Kind != "repository.retention" {
 			return "", ErrConflict

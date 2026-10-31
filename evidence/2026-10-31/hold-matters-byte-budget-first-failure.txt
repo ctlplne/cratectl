@@ -1,0 +1,13 @@
+Development regression on source parent 79d1a5b198f7559f55208eccfeded43bf1724fd5 with uncommitted matter changes.
+This failing observation does not qualify the candidate.
+
+=== RUN   TestHoldMattersPreserveOverlappingLegacyCaseAndTombstoneProtection
+--- PASS: TestHoldMattersPreserveOverlappingLegacyCaseAndTombstoneProtection (0.54s)
+=== RUN   TestHoldMatterExactManifestAdmissionAndCurrentRevision
+--- PASS: TestHoldMatterExactManifestAdmissionAndCurrentRevision (0.50s)
+=== RUN   TestHoldMatterCompletePreviewIncludesDigestInByteBudget
+    hold_matters_integration_test.go:269: complete preview exceeded its byte budget <nil>
+--- FAIL: TestHoldMatterCompletePreviewIncludesDigestInByteBudget (0.32s)
+FAIL
+FAIL	ctlplne.dev/cratectl/internal/store	1.653s
+FAIL

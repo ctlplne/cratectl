@@ -4232,7 +4232,8 @@
         "evidence/2026-10-31/hold-clean-postgres-race.txt",
         "evidence/2026-10-31/hold-cases-checkpoint.json",
         "evidence/2026-10-31/hold-cases-clean-postgres-race.txt",
-        "evidence/2026-10-31/case-full-checkpoint.json"
+        "evidence/2026-10-31/case-full-checkpoint.json",
+        "evidence/2026-10-31/hold-matters-development-checkpoint.json"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -4263,6 +4264,12 @@
         "record": "evidence/2026-10-31/hold-cases-checkpoint.json",
         "schema": 10,
         "primary_schema": 9
+      },
+      "development_matter_work": {
+        "source_parent": "79d1a5b198f7559f55208eccfeded43bf1724fd5",
+        "source_dirty": true,
+        "evidence": "evidence/2026-10-31/hold-matters-development-checkpoint.json",
+        "limits": "Development PostgreSQL and real Chromium/ORAS observations only; no clean-candidate or broad completion claim."
       }
     },
     {
@@ -4353,28 +4360,44 @@
     {
       "id": "J.REPO.BULK-PREVIEW",
       "capability": "REPO.BULK-PREVIEW",
-      "state": "planned",
+      "state": "implementing",
       "candidate": null,
-      "evidence": [],
+      "evidence": [
+        "evidence/2026-10-31/hold-matters-development-checkpoint.json"
+      ],
       "required": [
         "publish/consume exact bytes where applicable",
         "permissions/tenant isolation",
         "policy denial",
         "failure/recovery"
-      ]
+      ],
+      "development_matter_work": {
+        "source_parent": "79d1a5b198f7559f55208eccfeded43bf1724fd5",
+        "source_dirty": true,
+        "evidence": "evidence/2026-10-31/hold-matters-development-checkpoint.json",
+        "limits": "Development PostgreSQL and real Chromium/ORAS observations only; no clean-candidate or broad completion claim."
+      }
     },
     {
       "id": "J.REPO.BULK-CANCEL",
       "capability": "REPO.BULK-CANCEL",
-      "state": "planned",
+      "state": "implementing",
       "candidate": null,
-      "evidence": [],
+      "evidence": [
+        "evidence/2026-10-31/hold-matters-development-checkpoint.json"
+      ],
       "required": [
         "publish/consume exact bytes where applicable",
         "permissions/tenant isolation",
         "policy denial",
         "failure/recovery"
-      ]
+      ],
+      "development_matter_work": {
+        "source_parent": "79d1a5b198f7559f55208eccfeded43bf1724fd5",
+        "source_dirty": true,
+        "evidence": "evidence/2026-10-31/hold-matters-development-checkpoint.json",
+        "limits": "Development PostgreSQL and real Chromium/ORAS observations only; no clean-candidate or broad completion claim."
+      }
     },
     {
       "id": "J.REPO.CLIENT-CONFIG",

@@ -241,7 +241,7 @@ func ParseJobID(id string) (int64, string, error) {
 	}
 	if task != "event" {
 		prefix, digest, found := strings.Cut(task, "-")
-		if !found || (prefix != "integrity" && prefix != "reconcile" && prefix != "sweep" && prefix != "inventory" && prefix != "repair" && prefix != "retention") || len(digest) != 64 {
+		if !found || (prefix != "integrity" && prefix != "reconcile" && prefix != "sweep" && prefix != "inventory" && prefix != "repair" && prefix != "retention" && prefix != "hold") || len(digest) != 64 {
 			return 0, "", ErrConflict
 		}
 		if _, e = hex.DecodeString(digest); e != nil {
@@ -265,6 +265,9 @@ func scanJob(row pgx.Row, j *Job) error {
 		}
 		if j.Queue == "maintenance" && j.Kind == "repository.retention" {
 			j.Handler = "repository.retention"
+		}
+		if j.Queue == "maintenance" && j.Kind == "hold.matter.operation" {
+			j.Handler = "hold.matter.operation"
 		}
 		if j.Queue == "integrity" && j.Kind == "storage.inventory" {
 			j.Handler = "storage.inventory"

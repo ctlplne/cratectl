@@ -90,7 +90,8 @@ func (s *Store) HoldPage(ctx context.Context, i Identity, req HoldListRequest) (
    l.hold_reason<>'' AND (l.hold_until IS NULL OR l.hold_until>$1),
    l.revision,l.hold_reason,l.hold_until,l.reason,l.actor,l.changed_at,l.change_sequence,
    COALESCE(rl.state,'active'),r.format,r.mode,
-   EXISTS(SELECT 1 FROM cratectl.artifact_hold_cases c WHERE (c.tenant,c.repository,c.path)=(l.tenant,l.repository,l.path) AND NOT c.released AND (c.hold_until IS NULL OR c.hold_until>$1))
+   EXISTS(SELECT 1 FROM cratectl.artifact_hold_cases c WHERE (c.tenant,c.repository,c.path)=(l.tenant,l.repository,l.path) AND NOT c.released AND (c.hold_until IS NULL OR c.hold_until>$1)),
+   EXISTS(SELECT 1 FROM cratectl.hold_matter_members m WHERE (m.tenant,m.repository,m.path)=(l.tenant,l.repository,l.path) AND NOT m.released AND (m.hold_until IS NULL OR m.hold_until>$1))
    FROM cratectl.artifact_lifecycle l
    JOIN cratectl.repositories r ON (r.tenant,r.name)=(l.tenant,l.repository)
    LEFT JOIN cratectl.repository_lifecycle rl ON (rl.tenant,rl.repository)=(l.tenant,l.repository)
@@ -114,7 +115,7 @@ func (s *Store) HoldPage(ctx context.Context, i Identity, req HoldListRequest) (
 		actual := req.ListRequest
 		for rows.Next() {
 			var v HoldRecord
-			if err = rows.Scan(&v.Repository, &v.Path, &v.Digest, &v.Deleted, &v.LegacyHeld, &v.Revision, &v.HoldReason, &v.HoldUntil, &v.Reason, &v.Actor, &v.ChangedAt, &v.ChangeSequence, &v.RepositoryState, &v.Format, &v.Mode, &v.CaseHeld); err != nil {
+			if err = rows.Scan(&v.Repository, &v.Path, &v.Digest, &v.Deleted, &v.LegacyHeld, &v.Revision, &v.HoldReason, &v.HoldUntil, &v.Reason, &v.Actor, &v.ChangedAt, &v.ChangeSequence, &v.RepositoryState, &v.Format, &v.Mode, &v.CaseHeld, &v.MatterHeld); err != nil {
 				return err
 			}
 			v.Status = "released"
@@ -124,7 +125,7 @@ func (s *Store) HoldPage(ctx context.Context, i Identity, req HoldListRequest) (
 					v.Status = "active"
 				}
 			}
-			v.Held = v.LegacyHeld || v.CaseHeld
+			v.Held = v.LegacyHeld || v.CaseHeld || v.MatterHeld
 			raw, err := json.Marshal(v)
 			if err != nil {
 				return err

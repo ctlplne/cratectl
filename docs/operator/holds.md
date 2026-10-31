@@ -32,8 +32,8 @@ The original per-reference API retains one hold slot. A new placement replaces
 that slot's reason/expiry under the exact lifecycle revision. Independent named
 cases now provide additional protection for the same reference. Releasing the
 original slot or any one case leaves every other active protection in force.
-Bulk/legal workflows, cross-reference matters, approval workflows, other formats,
-physical GC and full production recovery remain required. This feature is not a
+Canonical OCI cross-reference matters and reviewed bulk changes are in development
+below. Other formats, broader legal policy, physical GC and full production recovery remain required. This feature is not a
 legal-compliance verdict. An omitted expiry requires explicit administrator release.
 
 ## Independent named cases
@@ -87,6 +87,89 @@ Scoped clean schema-10 case qualification passes on both builds; see
 records the controlled primary9to10 maintenance and unchanged existing table
 byte digests. Older runtimes reject schema10. The schema-9 evidence below retains
 its original historical scope.
+
+## Cross-reference matters and reviewed bulk work (development)
+
+In **Storage → Reference holds → Cross-reference hold matters**, create an open
+matter with its purpose and reason. Inspect the matter and choose **Preview
+membership change**. Supply one repository and canonical digest path per line,
+separated by a space. For example, a manifest reference is
+`example app/manifests/sha256:EXACT_DIGEST`. The server resolves each immutable
+reference; it rejects duplicates and a complete list that exceeds its configured
+target or metadata budget. A matter can span repositories within one tenant.
+
+Review all targets, reason and optional future expiry. Admission must echo the
+complete preview unchanged within fifteen minutes. A concurrent metadata,
+membership or lifecycle change invalidates admission. Placement queues a durable
+operation. Release creates a proposal with no release job. In **Operations and
+approvals**, a different current administrator inspects and acknowledges every
+target page, supplies a review reason and approves the exact proposal revision
+and digest. Another token belonging to the requester cannot approve it.
+
+Every worker step rechecks the original requester and, for release, the original
+approver. Editing matter metadata, expired intent or changed authority stops
+further effects. A changed membership is recorded as `changed` and remains
+protected. Members added after the reviewed manifest remain outside its release.
+Releasing a member preserves other matters, independent cases and the original
+hold slot. Repository suspension/removal continues to fence serving.
+
+Inspect actual job state and per-target outcomes, rather than treating the
+operation's `approved` review state as completion. `Processed` includes skips;
+`changed` and `already_released` are observations rather than new releases.
+Cancellation preserves committed effects and stops remaining work when observed.
+Retry resumes the same immutable intent and never repeats observed targets.
+Retry does not transfer authority or extend its deadline. After revocation or
+expiry, use a current administrator's fresh preview/proposal for the remaining
+targets and obtain a new independent approval. A current administrator may cancel
+a stranded pending proposal. Closing a matter requires every member explicitly
+released, including expired members, and no pending proposal or live job.
+
+The CLI uses the same management API and exact JSON bytes. Keep request files and
+idempotency keys for uncertain responses. For example:
+
+```sh
+cratectl --config /srv/cratectl/operator/client.json --method PUT \
+  --path /api/v1/hold-matters/investigation \
+  --body-file /srv/cratectl/operator/matter.json \
+  --idempotency-key create-investigation
+
+cratectl --config /srv/cratectl/operator/client.json --method POST \
+  --path /api/v1/hold-matters/investigation/operations/preview \
+  --body-file /srv/cratectl/operator/targets.json \
+  > /srv/cratectl/operator/reviewed-plan.json
+
+cratectl --config /srv/cratectl/operator/client.json --method POST \
+  --path /api/v1/hold-matters/investigation/operations \
+  --body-file /srv/cratectl/operator/reviewed-plan.json \
+  --idempotency-key investigation-operation
+```
+
+`matter.json` contains explicit `expected_revision: 0`, `state: "open"`, `title`
+and `reason`. `targets.json` contains `action: "hold"` or `"release_hold"`,
+`reason`, a complete `targets` array of `{ "repository": "example", "path":
+"app/manifests/sha256:EXACT_DIGEST" }`, and an optional future `hold_until` for
+placement only. Omit expiry for indefinite preservation and release. The preview
+does not require an idempotency key; the CLI may supply one without changing its
+read-only semantics. Increase `--response-limit` explicitly for a complete large
+preview; never submit truncated output.
+
+Read `/api/v1/hold-matters/investigation/operations/SEQUENCE/items` with bounded
+`limit` and returned `cursor` to inspect every immutable target. Submit `POST`
+to the operation's `/approve` or pending `/cancel` endpoint with explicit
+`expected_revision`, `preview_digest` and review `reason`, plus an idempotency
+key. After admission, ordinary `/api/v1/jobs/JOB_ID/cancel` and `/retry` apply.
+Matter inventory supports literal `q`; members support `state`, exact
+`repository` and literal `q`. Inventory, members, operations, items and history
+support `limit` 1–100 and opaque cursors bound to their endpoint, filters and
+current credential. These are live pages, not a snapshot. Filtered history
+preserves original receipts and does not independently prove the complete chain.
+
+Migration 11 adds five forced-RLS tables and preserves receipts 1–10. Current
+development evidence exercises disposable databases only. Primary database and
+active qualified binaries remain schema10. Full matching native/browser/race
+qualification, actual old-binary upgrades and controlled maintenance remain
+required before promoting schema11. No broad release or legal-compliance claim
+follows from this development workflow.
 
 ## API and CLI
 

@@ -13,6 +13,20 @@ components:
       type: http
       scheme: bearer
   parameters:
+    MatterName:
+      in: path
+      name: matter
+      required: true
+      schema: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$'}
+    MatterSequence:
+      in: path
+      name: operation
+      required: true
+      schema: {type: integer, format: int64, minimum: 1}
+    MatterLimit:
+      in: query
+      name: limit
+      schema: {type: integer, minimum: 1, maximum: 100, default: 100}
     IdempotencyKey:
       in: header
       name: Idempotency-Key
@@ -39,6 +53,103 @@ components:
       schema: {type: string, maxLength: 256}
       description: Literal case-insensitive substring search, at most 256 UTF-8 bytes without control characters. Repositories match name/format/mode; references match path/digest. Searches cover all authorized pages.
   schemas:
+    HoldMatter:
+      type: object
+      required: [name, revision, state, title, reason, actor, created_sequence, change_sequence, changed_at]
+      properties:
+        name: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$'}
+        revision: {type: integer, format: int64, minimum: 1}
+        state: {type: string, enum: [open, closed]}
+        title: {type: string, minLength: 1, maxLength: 256}
+        reason: {type: string, minLength: 1, maxLength: 1024}
+        actor: {type: string}
+        created_sequence: {type: integer, format: int64, minimum: 1}
+        change_sequence: {type: integer, format: int64, minimum: 1}
+        changed_at: {type: string, format: date-time}
+    HoldMatterRequest:
+      type: object
+      additionalProperties: false
+      required: [expected_revision, state, title, reason]
+      properties:
+        expected_revision: {type: integer, format: int64, minimum: 0, maximum: 9223372036854775806}
+        state: {type: string, enum: [open, closed]}
+        title: {type: string, minLength: 1, maxLength: 256, description: At most 256 UTF-8 bytes without control characters}
+        reason: {type: string, minLength: 1, maxLength: 1024, description: Nonblank and at most 1024 UTF-8 bytes without control characters}
+        dry_run: {type: boolean, default: false}
+    MatterSelector:
+      type: object
+      additionalProperties: false
+      required: [repository, path]
+      properties:
+        repository: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$'}
+        path: {type: string, maxLength: 2048, description: Canonical immutable OCI manifest or blob digest path}
+    MatterPreviewRequest:
+      type: object
+      additionalProperties: false
+      required: [action, reason, targets]
+      properties:
+        action: {type: string, enum: [hold, release_hold]}
+        reason: {type: string, minLength: 1, maxLength: 1024}
+        hold_until: {type: string, format: date-time, description: Future expiry for placement only; omit for indefinite placement and release}
+        targets:
+          type: array
+          minItems: 1
+          maxItems: 10000
+          description: Complete explicit reference list; duplicate references fail; server resource budgets may be smaller
+          items: {$ref: '#/components/schemas/MatterSelector'}
+    MatterTarget:
+      type: object
+      additionalProperties: false
+      required: [ordinal, repository, path, digest, revision, status, effective_held, lifecycle_revision]
+      properties:
+        ordinal: {type: integer, format: int64, minimum: 1}
+        repository: {type: string}
+        path: {type: string, maxLength: 2048}
+        digest: {type: string, pattern: '^[a-f0-9]{64}$'}
+        revision: {type: integer, format: int64, minimum: 0, description: Revision of this matter membership; zero means new}
+        status: {type: string, enum: [new, active, expired, released]}
+        effective_held: {type: boolean, description: Union of every protection at preview time}
+        lifecycle_revision: {type: integer, format: int64, minimum: 0}
+    MatterPlan:
+      type: object
+      additionalProperties: false
+      required: [matter, action, reason, requester, evaluated_at, expires_at, target_count, preview_digest]
+      properties:
+        matter: {$ref: '#/components/schemas/HoldMatter'}
+        action: {type: string, enum: [hold, release_hold]}
+        reason: {type: string, minLength: 1, maxLength: 1024}
+        hold_until: {type: string, format: date-time}
+        requester: {type: string}
+        evaluated_at: {type: string, format: date-time}
+        expires_at: {type: string, format: date-time, description: Fifteen minutes after evaluation; worker effects must also precede this deadline}
+        target_count: {type: integer, minimum: 1, maximum: 10000}
+        targets: {type: array, minItems: 1, maxItems: 10000, items: {$ref: '#/components/schemas/MatterTarget'}, description: Complete for preview and admission; omitted from stored operation summary; inspect immutable target pages}
+        preview_digest: {type: string, pattern: '^[a-f0-9]{64}$', description: Binds the complete manifest to its tenant and original credential}
+    MatterOperation:
+      type: object
+      required: [sequence, matter, revision, state, plan, requester, expires_at, change_sequence, created_at, changed_at]
+      properties:
+        sequence: {type: integer, format: int64, minimum: 1}
+        matter: {type: string}
+        revision: {type: integer, format: int64, minimum: 1}
+        state: {type: string, enum: [awaiting_approval, approved, cancelled]}
+        plan: {$ref: '#/components/schemas/MatterPlan'}
+        requester: {type: string}
+        approver: {type: string}
+        approval_reason: {type: string}
+        expires_at: {type: string, format: date-time}
+        job: {type: string, description: Durable job ID when admitted; inspect detail for actual progress and terminal state}
+        change_sequence: {type: integer, format: int64}
+        created_at: {type: string, format: date-time}
+        changed_at: {type: string, format: date-time}
+    MatterReview:
+      type: object
+      additionalProperties: false
+      required: [expected_revision, preview_digest, reason]
+      properties:
+        expected_revision: {type: integer, format: int64, minimum: 1, maximum: 9223372036854775806}
+        preview_digest: {type: string, pattern: '^[a-f0-9]{64}$'}
+        reason: {type: string, minLength: 1, maxLength: 1024}
     RetentionPolicyRequest:
       type: object
       additionalProperties: false
@@ -240,6 +351,226 @@ components:
         recorded_at: {type: string, format: date-time}
         event_hash: {type: string, pattern: '^[a-f0-9]{64}$'}
 paths:
+  /api/v1/hold-matters:
+    get:
+      summary: Discover tenant-wide cross-reference preservation matters
+      description: Current tenant administrator required. Live bounded pages use literal search across name/title/state/reason. Unknown or repeated query parameters fail. Every matter remains independent of per-reference cases and the legacy hold slot.
+      parameters:
+        - {$ref: '#/components/parameters/MatterLimit'}
+        - {$ref: '#/components/parameters/ListCursor'}
+        - {$ref: '#/components/parameters/ListSearch'}
+      responses:
+        '200': {description: 'Page of HoldMatter items with limit, next, previous and credential-bound scope'}
+        '400': {description: Invalid query or differently scoped cursor}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current tenant administrator required}
+        '503': {description: Page byte budget or database failure}
+  /api/v1/hold-matters/{matter}:
+    parameters:
+      - {$ref: '#/components/parameters/MatterName'}
+    get:
+      summary: Read current matter metadata
+      responses:
+        '200':
+          description: Current matter
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/HoldMatter'}
+        '400': {description: Invalid name or query}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current tenant administrator required}
+        '404': {description: Matter not found in this tenant}
+    put:
+      summary: Create or change matter metadata under its exact revision
+      description: Zero revision creates an open matter. Closing requires every membership released and no pending proposal or live job. Editing metadata fences prior previews and jobs. Dry-run writes nothing. Applied metadata plus journal plus outbox plus idempotent response commit together.
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          schema: {type: string, minLength: 8, maxLength: 128}
+          description: Required unless dry_run is true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/HoldMatterRequest'}
+      responses:
+        '200': {description: Matter snapshot plus dry_run and retained_bytes true}
+        '400': {description: Invalid body or missing review fields}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current tenant administrator required including on replay}
+        '409': {description: Stale revision or unreleased memberships or unfinished work}
+        '413': {description: Body exceeds 16 KiB}
+        '503': {description: Queue or database failure; no transition committed}
+  /api/v1/hold-matters/{matter}/members:
+    parameters:
+      - {$ref: '#/components/parameters/MatterName'}
+    get:
+      summary: Read matter membership including retained and deleted references
+      parameters:
+        - {$ref: '#/components/parameters/MatterLimit'}
+        - {$ref: '#/components/parameters/ListCursor'}
+        - {$ref: '#/components/parameters/ListSearch'}
+        - in: query
+          name: state
+          schema: {type: string, enum: [active, expired, released, all], default: active}
+        - in: query
+          name: repository
+          schema: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$'}
+      responses:
+        '200': {description: 'Membership page includes immutable coordinates/digest/creation sequence; independent revision; preservation reason/expiry; latest reason/actor; held/released/status; repository_state and deleted. Page includes observed_at and encrypted continuation fields.'}
+        '400': {description: Invalid filters or differently scoped cursor}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current tenant administrator required}
+        '404': {description: Matter not found}
+        '503': {description: Page byte budget or database failure}
+  /api/v1/hold-matters/{matter}/operations/preview:
+    parameters:
+      - {$ref: '#/components/parameters/MatterName'}
+    post:
+      summary: Resolve a complete bounded immutable membership manifest without writing state
+      description: Canonical OCI references only. Sorted duplicate-free explicit targets resolve to current digest and revisions. The complete response including digest must fit the metadata budget. No truncated preview is admitted. The original current administrator credential must submit the exact plan within fifteen minutes.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/MatterPreviewRequest'}
+      responses:
+        '200':
+          description: Complete reviewed plan including every target
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MatterPlan'}
+        '400': {description: Invalid or duplicate targets or resource ceiling exceeded}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current tenant administrator required}
+        '404': {description: Matter or reference not found}
+        '409': {description: Closed matter or missing release membership or invalid reference or expiry}
+        '413': {description: Complete manifest or request exceeds metadata budget; narrow the explicit target set}
+  /api/v1/hold-matters/{matter}/operations:
+    parameters:
+      - {$ref: '#/components/parameters/MatterName'}
+    get:
+      summary: Read immutable operation summaries and their current review state
+      parameters:
+        - {$ref: '#/components/parameters/MatterLimit'}
+        - {$ref: '#/components/parameters/ListCursor'}
+      responses:
+        '200': {description: Page of MatterOperation summaries; target manifests are separate bounded immutable pages}
+        '400': {description: Invalid query or differently scoped cursor}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current tenant administrator required}
+        '404': {description: Matter not found}
+        '503': {description: Page byte budget or database failure}
+    post:
+      summary: Admit the exact preview as placement work or an independently reviewed release proposal
+      description: Echo the full preview unchanged. Current state and complete plan bytes are rechecked under the tenant lock. Placement admits a maintenance job; release stays awaiting_approval with no release job. Immutable plan and targets plus journal plus applicable job/outbox plus idempotent response commit together. New members outside this manifest remain protected.
+      parameters:
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - {$ref: '#/components/schemas/MatterPlan'}
+                - {required: [targets]}
+      responses:
+        '202': {description: MatterOperation summary in operation plus matter_name and retained_bytes true}
+        '400': {description: Invalid complete plan or missing explicit fields or key}
+        '401': {description: Expired or revoked credential including on replay}
+        '403': {description: Current tenant administrator required}
+        '404': {description: Matter or reference not found}
+        '409': {description: Altered or expired or stale preview or idempotency conflict}
+        '413': {description: Complete plan or request exceeds metadata budget}
+        '503': {description: Queue or database failure; no operation committed}
+  /api/v1/hold-matters/{matter}/operations/{operation}:
+    parameters:
+      - {$ref: '#/components/parameters/MatterName'}
+      - {$ref: '#/components/parameters/MatterSequence'}
+    get:
+      summary: Read actual durable progress and job state for one operation
+      description: Processed targets include changed or already released skips. all_targets_processed requires the complete manifest observed and job succeeded; it does not mean every target was changed. The operation review state approved is separate from actual job completion.
+      responses:
+        '200': {description: 'Operation summary plus processed, effected, skipped, remaining, retained_bytes and job/all_targets_processed when admitted'}
+        '400': {description: Invalid path or query}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current tenant administrator required}
+        '404': {description: Matter operation not found}
+  /api/v1/hold-matters/{matter}/operations/{operation}/items:
+    parameters:
+      - {$ref: '#/components/parameters/MatterName'}
+      - {$ref: '#/components/parameters/MatterSequence'}
+    get:
+      summary: Inspect every immutable target and its once-only observed outcome
+      parameters:
+        - {$ref: '#/components/parameters/MatterLimit'}
+        - {$ref: '#/components/parameters/ListCursor'}
+      responses:
+        '200': {description: 'Page of MatterTarget fields plus outcome pending/held/released/already_released/changed, member_revision, outcome_revision, optional effective_held_after and observed_at. Completed outcomes survive cancellation and retry.'}
+        '400': {description: Invalid query or differently scoped cursor}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current tenant administrator required}
+        '404': {description: Matter operation not found}
+        '503': {description: Page byte budget or database failure}
+  /api/v1/hold-matters/{matter}/operations/{operation}/approve:
+    parameters:
+      - {$ref: '#/components/parameters/MatterName'}
+      - {$ref: '#/components/parameters/MatterSequence'}
+    post:
+      summary: Approve an exact release proposal as a different current administrator
+      description: The requester actor cannot approve with another token. Both original requester and approver must remain current through every worker effect. Approval plus immutable job binding plus journal/outbox plus idempotent response commit together. Retry never substitutes the administrator operating job controls. Recover revoked or expired intent through a fresh preview and independently reviewed proposal for remaining targets.
+      parameters:
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/MatterReview'}
+      responses:
+        '202': {description: Approved MatterOperation in operation with its durable maintenance job ID}
+        '400': {description: Invalid review or missing explicit revision or key}
+        '401': {description: Expired or revoked current credential}
+        '403': {description: Same requester actor or changed original authority or nonadministrator}
+        '404': {description: Matter operation not found}
+        '409': {description: Stale revision or digest or metadata or deadline or nonpending proposal}
+        '503': {description: Queue or database failure; approval and job rolled back}
+  /api/v1/hold-matters/{matter}/operations/{operation}/cancel:
+    parameters:
+      - {$ref: '#/components/parameters/MatterName'}
+      - {$ref: '#/components/parameters/MatterSequence'}
+    post:
+      summary: Cancel a still-pending release proposal under its exact revision and digest
+      description: Any current tenant administrator can cancel stranded pending approval without taking over its authority. Use ordinary job cancellation after admission; committed effects remain and unobserved targets stop when cancellation is observed.
+      parameters:
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/MatterReview'}
+      responses:
+        '202': {description: Cancelled MatterOperation in operation with no admitted release job}
+        '400': {description: Invalid review or missing explicit revision or key}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current tenant administrator required}
+        '404': {description: Matter operation not found}
+        '409': {description: Stale revision or digest or proposal already admitted or cancelled}
+        '503': {description: Queue or database failure; no cancellation committed}
+  /api/v1/hold-matters/{matter}/history:
+    parameters:
+      - {$ref: '#/components/parameters/MatterName'}
+    get:
+      summary: Read original immutable matter events in journal order
+      parameters:
+        - {$ref: '#/components/parameters/MatterLimit'}
+        - {$ref: '#/components/parameters/ListCursor'}
+      responses:
+        '200': {description: 'Bounded matter-event page includes sequence, kind, actor, data, recorded_at and event_hash. Original target snapshots retain their observed protection; this filtered list is not a complete audit-chain proof.'}
+        '400': {description: Invalid query or differently scoped cursor}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current tenant administrator required}
+        '404': {description: Matter not found}
+        '503': {description: Page byte budget or database failure}
   /api/v1/hold-cases:
     get:
       summary: Discover independent hold cases as a current tenant administrator
