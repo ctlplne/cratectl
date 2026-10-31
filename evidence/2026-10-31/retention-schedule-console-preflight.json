@@ -1,0 +1,192 @@
+{
+  "observed_at": "2026-10-31T03:41:34.198047+00:00",
+  "qualification_kind": "Dirty-source console development preflight; exact clean qualification pending",
+  "source_parent": "01a3c6abe54b91339bc171a04dc6ebe7e6443e1a",
+  "source_dirty": true,
+  "source_inputs": [
+    {
+      "path": "web/src/retention-schedule.tsx",
+      "sha256": "838e5d0305b6b999731ec6e1c790221c4d1136ee6d147f57ac6ec742b5327065"
+    },
+    {
+      "path": "web/src/retention.tsx",
+      "sha256": "a6c951d956c5363e928f5df471f10af6fde156a7a6c10d7b67e30eef2784e016"
+    },
+    {
+      "path": "web/tests/zzzzzzz-retention-schedule.spec.mjs",
+      "sha256": "b9a0eb71b500cb4ce8e4b24273d29c715ecce15369badbf1afe3b9744f93051a"
+    },
+    {
+      "path": "scripts/conformance_console.py",
+      "sha256": "e845e38b5b673fbdcd77391526733315cf546dff492a87a966d5c61a8a97e818"
+    },
+    {
+      "path": "web/build-manifest.json",
+      "sha256": "2c3cd20086060c8c1e16b8be0429942df79e592207cd8882bd29982f7518e714"
+    },
+    {
+      "path": "docs/operator/scheduled-retention.md",
+      "sha256": "a92f716f45f983e56ab1dc2bb7782ca016aa58dc744a32d479f37f6f1b50c535"
+    },
+    {
+      "path": "docs/adr/0027-scheduled-retained-retirement.md",
+      "sha256": "85d61285a1308d751a9b5bd45393144e0cce09bc23761945e1e87e557d42803a"
+    }
+  ],
+  "browser_suite": {
+    "record": "evidence/2026-10-31/console-a0c772a702.json",
+    "workflows": 10,
+    "assertions": 79,
+    "accessibility_states": 71,
+    "new_retention_schedule_states": 15,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0,
+    "browser": "156.0.8078.4"
+  },
+  "targeted_replays": [
+    {
+      "report": ".private/console-conformance/f08083c358/retention-schedule-targeted-results.json",
+      "sha256": "3c9fc6f50995669dc30a915f8404d7a76a0d118b061e2d98c0d6cb33f99da8e4",
+      "stats": {
+        "startTime": "2026-10-31T03:35:49.082Z",
+        "duration": 12882.776,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    {
+      "report": ".private/console-conformance/051b4a1a34/retention-schedule-targeted-results.json",
+      "sha256": "def2a87fe4057ef826d3632573d7f8a2287c6d02749ad64ebf84fc8642760d92",
+      "stats": {
+        "startTime": "2026-10-31T03:36:42.178Z",
+        "duration": 14908.178,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    }
+  ],
+  "first_failed_probe": "evidence/2026-10-31/retention-schedule-console-first-probe.json",
+  "build_artifacts": ".cache/retention-schedule-console-20261031T033725Z-full",
+  "artifact_digests": {
+    "bin/cratectld": "76c9595e878b2994b2d70eca01c6428ae9c4677c4d9f9cff74260398e01d4ee0",
+    "bin/cratectl": "23ae3aa04e1e6c5c077a3d6ef616d9386f6dc3cc2f7c7cd7c83cf89222ceaa32"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "01a3c6abe54b91339bc171a04dc6ebe7e6443e1a",
+      "vcs.time": "2026-10-31T03:16:22Z",
+      "vcs.modified": "true"
+    },
+    "bin/cratectl": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "01a3c6abe54b91339bc171a04dc6ebe7e6443e1a",
+      "vcs.time": "2026-10-31T03:16:22Z",
+      "vcs.modified": "true"
+    }
+  },
+  "checks": {
+    "unit_lint_console_reproduction_and_syntax": ".cache/retention-schedule-console-checks.txt",
+    "race": ".cache/retention-schedule-console-race.txt",
+    "final_proof_wording_syntax": "node --check passed after a scope-description-only correction; browser assertions and product bytes unchanged from the full run",
+    "review": {
+      "status": "passed",
+      "checked_at": "2026-10-31T03:42:39.723223+00:00",
+      "files": 1180,
+      "known_private_value_entries": 6089,
+      "exact_value_matches": 0,
+      "gitleaks_findings": 0,
+      "scope": "Tracked and nonignored source/evidence; all console fixture credentials included; existing scanner rules unchanged. Final metadata scan follows."
+    }
+  },
+  "visual_review": [
+    {
+      "path": ".private/console-conformance/a0c772a702/retention-schedule-preview.png",
+      "sha256": "9caafa2128f35223130ba33f8504f576630046ff217395fdcb1f155129d12d33",
+      "result": "Inspected in this turn; desktop preview actions and narrow paused-state wrapping visible"
+    },
+    {
+      "path": ".private/console-conformance/a0c772a702/retention-schedule-paused-narrow.png",
+      "sha256": "6884a927293658b681b6252dbb3f548b80ec1cab23ea241b54ed3f04c30cf7dd",
+      "result": "Inspected in this turn; desktop preview actions and narrow paused-state wrapping visible"
+    }
+  ],
+  "primary_schema_plan": {
+    "binary_version": 8,
+    "database_state": "pending",
+    "applied": [
+      {
+        "version": 1,
+        "checksum": "1e0f7b93d872f8ab83f85742000a6282f2722a0a338d8f2bc81755345ba66d16"
+      },
+      {
+        "version": 2,
+        "checksum": "9e023c96c8cf33549ce81f1eac22551b5cdb6267d146f65d430ec254dc8b10b5"
+      },
+      {
+        "version": 3,
+        "checksum": "44527dcd4be5177203e2b0eb93e5886a4dae437fbebf4cec14f7737ecb2f15d3"
+      },
+      {
+        "version": 4,
+        "checksum": "8b287dda8e78324c44275d31850418d7e7166d9d6fe49c71d539dbd44a52d209"
+      },
+      {
+        "version": 5,
+        "checksum": "0e835ed82b84cdd3d85858b0a76611b3ed6d387bbf55fee76d2abdf7c7f313a9"
+      },
+      {
+        "version": 6,
+        "checksum": "557b3f6612a403e24d0c9726c9b048d62188b3e1a93bcb3f158616da30b1fe6c"
+      },
+      {
+        "version": 7,
+        "checksum": "596eed6ab2287c8fd4b332d53f4d4867ceda7a1cebaf78e215da70b7eac6ff12"
+      }
+    ],
+    "pending": [
+      8
+    ],
+    "requires_legacy_adoption": false,
+    "safety_valid": true
+  },
+  "identity_audit": "evidence/2026-10-31/retention-schedule-console-remote-audit.json",
+  "services": "Owned native PostgreSQL, registry and worker stopped; retained databases and private state preserved. Exact qualified schema-7 production bin bytes restored. No remote mutation or push.",
+  "latest_qualified_source": "6cac8851da675dcaf531d6f8ed2aa26c927a243b",
+  "latest_qualified_checkpoint": "evidence/2026-10-31/retention-checkpoint.json",
+  "next": [
+    "Dedicated stock ORAS/CLI scheduled-retention real-cadence, process-restart/cancellation/revocation/reapproval and actual schema-7 old-binary upgrade journeys, with permanent private failure logs.",
+    "Adapt required schema upgrade/native harnesses to schema 8 while preserving all older qualified baselines.",
+    "Commit only as imfeelingtheagi; qualify exact clean production/race artifacts before promoting the qualified source.",
+    "Retain all 450 unfinished capabilities, 41 format families, later-stage scope and negative broad readiness."
+  ],
+  "limits": [
+    "Development-source artifacts only, not a new clean checkpoint. The latest qualifying schema remains 7; primary plan has only migration 8 pending.",
+    "The first targeted selector failure is retained as test-fixture evidence; no product failure was inferred.",
+    "Owned SQL ages fixture artifacts and briefly blocks a worker claim to expose an actual pending job. The explicit product pause and real restarted worker produce the terminal schedule-change result; this is not product metadata repair.",
+    "Changed-source approval uses an empty OCI proxy without upstream requests or byte verification. The full runtime proof retains conservative wording about source-change recovery; its explicit check proves this empty-proxy administration subset only.",
+    "Real scheduled-retirement cadence, dedicated native-client/process-restart/cancellation, controlled schema-7 upgrade and exact clean production/race campaigns remain pending. Existing integrity-schedule cadence coverage is not transferred to retirement.",
+    "Desktop and one narrow Chromium viewport plus automated A/AA rules do not establish all browsers, assistive technology or WCAG behavior.",
+    "Vite reports a JavaScript chunk above its 350 kB warning threshold (353.68 kB); no performance qualification is claimed.",
+    "No physical byte erasure or reclaimed-storage claim. Full security, packaging, production recovery and broad product readiness remain negative."
+  ]
+}

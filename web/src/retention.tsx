@@ -6,12 +6,14 @@ import type {Job,Page,PendingRequest} from './api';
 import type {Common} from './view-types';
 import {Badge,CursorPages,Details,Empty,ErrorBox,Freshness,LocalPages,MutationForm,Panel,bytes,useResource} from './components';
 import {Lifecycle} from './lifecycle';
+import {RetentionScheduleView,ScheduleProvenance} from './retention-schedule';
+import type {ScheduleReceipt} from './retention-schedule';
 
 type Settings={min_age_seconds:number;keep_last:number;protect_tagged:boolean;enabled:boolean;reason:string};
-type Policy=Settings&{repository:string;name:string;revision:number;actor:string;configured_at:string};
+export type Policy=Settings&{repository:string;name:string;revision:number;actor:string;configured_at:string};
 type PolicyInput=Settings&{expected_revision:number};
 type Target={ordinal:number;path:string;digest:string;size:number;created_at:string;lifecycle_revision:number;status:string;tags:string[];strong_parents:string[]};
-type Plan={policy:Policy;source_revision:number;evaluated_at:string;expires_at:string;reason:string;targets:number;eligible:number;items?:Target[];preview_digest:string;bytes_reclaimed:number};
+type Plan={policy:Policy;source_revision:number;evaluated_at:string;expires_at:string;reason:string;targets:number;eligible:number;items?:Target[];preview_digest:string;bytes_reclaimed:number;schedule?:ScheduleReceipt};
 type Run={job:string;state:string;plan:Plan};
 type Outcome=Target&{outcome:string;outcome_revision:number;observed_at?:string};
 type RunDetail={job:Job;plan:Plan;processed:number;retired:number;skipped:number;all_targets_processed:boolean;bytes_reclaimed:number};
@@ -94,7 +96,7 @@ function PolicyEditor({repository,current,...p}:Common&{repository:string;curren
     </fieldset></form>:<>
       <div className="message" role="status"><p>Policy preview: <strong>{snapshot.policy.name}</strong> will be {snapshot.policy.enabled?'enabled':'disabled'} at revision {exactRevision(snapshot.policy.revision)}.</p><p>Changing or disabling this policy stops further effects from its earlier runs. Existing outcomes and tombstones remain retained.</p></div>
       <Details title="Proposed retention configuration" value={snapshot.policy}/>
-      <MutationForm client={p.client} label="Apply retention policy" build={()=>({method:'PUT',path:policyPath(repository,name),body:snapshot.body})} onDone={p.done}><p>Saving a policy does not retire content or schedule automatic execution. Review and approve each run separately.</p></MutationForm>
+      <MutationForm client={p.client} label="Apply retention policy" build={()=>({method:'PUT',path:policyPath(repository,name),body:snapshot.body})} onDone={p.done}><p>Saving a policy does not retire content. Review one-time runs separately. An automatic schedule needs explicit future-capture approval bound to this policy revision.</p></MutationForm>
       <button onClick={()=>setSnapshot(undefined)}>Edit policy plan</button>
     </>}
     {error&&<ErrorBox error={error} retry={()=>{setError(undefined);setSnapshot(undefined)}}/>}
@@ -113,16 +115,18 @@ function PolicyDetail({repository,name,...p}:Common&{repository:string;name:stri
       <button onClick={()=>{data.refresh();records.refresh()}}>Refresh retention policy</button>
       <button disabled={!current||!!data.error||data.loading||!Number.isSafeInteger(current.revision)} onClick={()=>p.open('Edit retention policy · '+name,<PolicyEditor {...p} repository={repository} current={current}/>)}>Edit retention policy</button>
       <button className="primary" disabled={!current?.enabled||!!data.error||data.loading||!Number.isSafeInteger(current?.revision)} onClick={()=>p.open('Preview retirement · '+name,<RunPreview {...p} policy={current!}/>)}>Preview retirement</button>
+      <button disabled={!current||!!data.error||data.loading} onClick={()=>p.open('Automatic retirement · '+name,<RetentionScheduleView {...p} repository={repository} name={name} openRun={id=>p.open('Retirement run',<RetentionRun {...p} id={id}/>)}/>)}>Inspect automatic retirement</button>
     </div>
     {data.error&&<ErrorBox error={data.error} retry={data.refresh} stale={!!current}/>}
     {data.loading&&!current&&<p role="status">Loading current retention policy…</p>}
-    {current&&<><dl className="facts"><div><dt>Repository</dt><dd>{repository}</dd></div><div><dt>Policy revision</dt><dd>{exactRevision(current.revision)}</dd></div><div><dt>Minimum creation age</dt><dd>{current.min_age_seconds} seconds</dd></div><div><dt>Newest kept per image</dt><dd>{current.keep_last}</dd></div></dl><p>{current.enabled?'Each run requires a fresh approved preview.':'This policy is disabled. Edit it to allow newly approved runs.'} Bytes and security decisions remain retained.</p><Details title="Current retention configuration" value={current}/></>}
+    {current&&<><dl className="facts"><div><dt>Repository</dt><dd>{repository}</dd></div><div><dt>Policy revision</dt><dd>{exactRevision(current.revision)}</dd></div><div><dt>Minimum creation age</dt><dd>{current.min_age_seconds} seconds</dd></div><div><dt>Newest kept per image</dt><dd>{current.keep_last}</dd></div></dl><p>{current.enabled?'One-time runs require a fresh approved preview. Automatic runs require a separate future-capture approval.':'This policy is disabled. Edit it to allow newly approved runs.'} Bytes and security decisions remain retained.</p><Details title="Current retention configuration" value={current}/></>}
     <label className="select-field">Retention records<select value={section} onChange={e=>{setSection(e.target.value);setAfter('')}}><option value="runs">Retirement runs</option><option value="history">Configuration history</option></select></label>
     <Freshness at={records.at} loading={records.loading}/>{records.error&&<ErrorBox error={records.error} retry={records.refresh} stale={!!records.data}/>}
     {records.loading&&!records.data&&<p role="status">Loading retention records…</p>}
     {records.data?.items.map(row=>section==='runs'?<section className="message" key={(row as Run).job}>
       <h3>Retirement run <code className="break">{(row as Run).job}</code></h3><Badge value={(row as Run).state}/>
-      <p>Approved targets: {(row as Run).plan.targets}. Initially eligible: {(row as Run).plan.eligible}. Policy revision {exactRevision((row as Run).plan.policy.revision)}.</p>
+      <p>{(row as Run).plan.schedule?'Captured targets':'Approved targets'}: {(row as Run).plan.targets}. Initially eligible: {(row as Run).plan.eligible}. Policy revision {exactRevision((row as Run).plan.policy.revision)}.</p>
+      {(row as Run).plan.schedule&&<ScheduleProvenance receipt={(row as Run).plan.schedule!}/>}
       <button onClick={()=>p.open('Retirement run',<RetentionRun {...p} id={(row as Run).job}/>)}>Inspect retirement run</button>
     </section>:<Details key={(row as Policy).revision} title={'Retention configuration revision '+exactRevision((row as Policy).revision)} value={row}/>)}
     {records.data&&!records.data.items.length&&<p className="muted">No {section==='runs'?'retirement runs':'configuration revisions'} on this page.</p>}
@@ -194,16 +198,17 @@ export function RetentionRun({id,...p}:Common&{id:string}){
   const path='/api/v1/maintenance/retention-runs/'+encodeURIComponent(id),data=useResource<RunDetail>(p.client,path,p.revision);
   const [after,setAfter]=useState(''),rows=useResource<Page<Outcome>>(p.client,path+'/items?limit=50&after='+(after||'0'),p.revision);
   const detail=data.data,j=detail?.job,policy=detail?.plan.policy;
-  const needsNewApproval=j&&['retention_requester_authorization','retention_plan_changed'].includes(j.last_error);
+  const needsNewApproval=j&&['retention_requester_authorization','retention_plan_changed','retention_schedule_changed'].includes(j.last_error);
   return <>
     <p><code className="break">{id}</code></p>
     <div className="view-toolbar">{j&&<Badge value={j.state}/>}<Freshness at={data.at} loading={data.loading}/><button onClick={()=>{data.refresh();rows.refresh()}}>Refresh retirement run</button>
       {policy&&<button onClick={()=>p.open('Retention policy · '+policy.name,<PolicyDetail {...p} repository={policy.repository} name={policy.name}/>)}>Review current retention policy</button>}
     </div>
+    {detail?.plan.schedule&&<><ScheduleProvenance receipt={detail.plan.schedule}/>{policy&&<button onClick={()=>p.open('Automatic retirement · '+policy.name,<RetentionScheduleView {...p} repository={policy.repository} name={policy.name} openRun={run=>p.open('Retirement run',<RetentionRun {...p} id={run}/>)}/>)}>Review current retirement schedule</button>}</>}
     {data.error&&<ErrorBox error={data.error} retry={data.refresh} stale={!!detail}/>}
     {data.loading&&!detail&&<p role="status">Loading retirement outcomes…</p>}
-    {detail&&<><dl className="facts"><div><dt>Approved targets</dt><dd>{detail.plan.targets}</dd></div><div><dt>Processed targets</dt><dd>{detail.processed}</dd></div><div><dt>Retired manifests</dt><dd>{detail.retired}</dd></div><div><dt>Skipped targets</dt><dd>{detail.skipped}</dd></div></dl><p>{detail.all_targets_processed?'All approved targets have committed outcomes.':'Remaining targets are not confirmed complete.'} Bytes reclaimed: 0. Bytes, history and security decisions remain retained.</p></>}
-    {needsNewApproval&&<p className="message warning" role="status">The policy, source or requesting credential changed. Inspect earlier outcomes, then review the current policy and approve a new run. Retrying this job does not replace its original authority.</p>}
+    {detail&&<><dl className="facts"><div><dt>{detail.plan.schedule?'Captured targets':'Approved targets'}</dt><dd>{detail.plan.targets}</dd></div><div><dt>Processed targets</dt><dd>{detail.processed}</dd></div><div><dt>Retired manifests</dt><dd>{detail.retired}</dd></div><div><dt>Skipped targets</dt><dd>{detail.skipped}</dd></div></dl><p>{detail.all_targets_processed?(detail.plan.schedule?'All captured targets have committed outcomes.':'All approved targets have committed outcomes.'):'Remaining targets are not confirmed complete.'} Bytes reclaimed: 0. Bytes, history and security decisions remain retained.</p></>}
+    {needsNewApproval&&<p className="message warning" role="status">{j?.last_error==='retention_schedule_changed'?'The schedule was paused or replaced. Inspect earlier outcomes and the current schedule before approving further retirement.':detail?.plan.schedule?'The scheduled run’s policy, source or requesting credential changed. Inspect earlier outcomes and explicitly review a new schedule revision.':'The policy, source or requesting credential changed. Inspect earlier outcomes, then review the current policy and approve a new run.'} Retrying this job does not replace its original authority.</p>}
     {j&&<div className="inline">
       <button disabled={!!data.error||data.loading||['succeeded','failed','cancelled','uncertain'].includes(j.state)} onClick={()=>p.run('Cancel retirement run','Stop remaining retirement after the worker confirms cancellation. Earlier outcomes and tombstones stay retained.',{method:'POST',path:'/api/v1/jobs/'+id+'/cancel',body:{}})}>Cancel retirement run</button>
       <button disabled={!!data.error||data.loading||!!needsNewApproval||['pending','running','retry','cancel_requested'].includes(j.state)} onClick={()=>p.run('Retry retirement run','Resume only unprocessed approved targets with the original authority. Already committed targets do not repeat.',{method:'POST',path:'/api/v1/jobs/'+id+'/retry',body:{acknowledge_unknown:true}})}>Retry retirement run</button>
@@ -212,6 +217,6 @@ export function RetentionRun({id,...p}:Common&{id:string}){
     {rows.data&&<TargetTable items={rows.data.items} outcomes onInspect={policy?row=>p.open('Retained manifest lifecycle',<Lifecycle {...p} repository={policy.repository} path={row.path}/>):undefined}/>}
     {rows.data&&!rows.data.items.length&&<p className="muted">No targets on this approved page. An empty run retires no content.</p>}
     <CursorPages after={after} more={rows.data?.more} last={String(rows.data?.items.at(-1)?.ordinal??'')} setAfter={setAfter} label="Retirement outcome pages"/>
-    {detail&&<Details title="Immutable approved retention plan" value={detail.plan}/>}{j&&<Details title="Recorded job projection" value={j}/>}
+    {detail&&<Details title={detail.plan.schedule?'Immutable scheduled capture':'Immutable approved retention plan'} value={detail.plan}/>}{j&&<Details title="Recorded job projection" value={j}/>}
   </>;
 }

@@ -16,9 +16,22 @@ failure-code, unknown-version fixture and receipt-identity failures and their
 replays are retained in evidence/2026-10-31/retention-schedule-backend-preflight.json.
 These are dirty-source development preflights, not a new clean qualification.
 
-Next: complete schedule console controls and dedicated stock ORAS/CLI real-cadence,
-process-restart/cancellation/authorization and schema-7 old-binary journeys;
-adapt native harnesses to schema 8 and qualify exact clean production/race builds.
+The separate automatic-retirement console is now implemented locally. All ten
+real PostgreSQL/Chromium workflows pass: 79 assertions and 71 named automated
+A/AA states, including fifteen new schedule states, with zero skips/flaky results.
+Fresh future consent, exact lost-response retries, complete-capture deferral,
+native retained-byte retirement/restore, real pending-job pause fencing, revoked
+credential/new-policy/empty-proxy-source reapproval, concurrent revision rejection
+and immutable history pages pass. Unit/race/lint and byte reproduction pass;
+desktop and narrow captures were inspected. The owned SQL age/claim timing fixtures,
+first selector mismatch and scope limits are retained in
+evidence/2026-10-31/retention-schedule-console-preflight.json. These remain
+development-source observations, not a promoted clean checkpoint.
+
+Next: dedicated stock ORAS/CLI real scheduled-retirement cadence, process-restart/
+cancellation/authorization and schema-7 old-binary journeys with permanent native
+failure logs; adapt required native harnesses to schema 8, then qualify exact clean
+production/race builds.
 The owned primary remains schema 7; isolated retained integration databases use
 schema 8. Test services are stopped; private data/artifacts and qualified schema-7
 production bin bytes are retained. Only imfeelingtheagi is author and committer;

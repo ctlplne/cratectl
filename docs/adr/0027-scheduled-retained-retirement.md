@@ -1,6 +1,7 @@
 # ADR 0027: explicitly authorized scheduled retirement
 
-Status: implementation in progress; qualification pending.
+Status: backend and console implemented locally; dedicated native and exact clean
+qualification pending.
 
 One-time retention approval continues to cover its exact captured target set.
 A separate schedule authorizes future bounded captures under one exact OCI

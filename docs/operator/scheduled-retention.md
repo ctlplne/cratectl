@@ -6,10 +6,31 @@ and repository source revision. Each admitted run still records immutable target
 and outcomes. It creates retained tombstones, preserves bytes and decisions and
 reports zero reclaimed storage. Read [retention](retention.md) first.
 
-The management API and CLI implementation is in development. Console controls,
-dedicated stock-client/real-cadence/process-restart journeys and exact clean
-production/race qualification remain pending. The latest qualified source remains
-the schema-7 retention checkpoint. No broad release readiness is established.
+The management API, CLI and console implementation is in development. Dedicated
+stock-client/real-cadence/process-restart journeys and exact clean production/race
+qualification remain pending. The latest qualified source remains the schema-7
+retention checkpoint. No broad release readiness is established.
+
+In Storage → Retention, load an OCI repository, inspect a policy and choose
+**Inspect automatic retirement**. Configure the interval and complete manifest
+limit, review the displayed current policy/source revisions, and explicitly
+acknowledge future captures. The acknowledgment starts unchecked each time.
+Preview reads the proposed configuration without saving it. Apply authorizes
+future complete sets under those exact revisions and your current credential.
+
+If an approval reply is lost, **Retry same automatic retirement request** sends
+the original bytes and idempotency key. Editing is disabled while the outcome is
+uncertain. If you close the dialog, inspect current configuration and its history
+before another approval. A concurrent replacement rejects a stale preview;
+refresh the current state before reviewing a new approval.
+
+The console distinguishes paused, enabled, deferred and blocked configurations.
+An enabled due configuration alone proves no retirement. **Inspect last scheduled
+run** opens immutable capture identity, actual outcomes and common verified
+restore. **Review current retirement schedule** returns to the current approval.
+Configuration and run histories use bounded pages. Preparing historical settings
+copies cadence, limit and enabled state; current bindings and fresh consent govern
+the new approval. Revisions beyond exact browser integer precision require the CLI.
 
 Read the policy endpoint for its current revision and repository detail for
 `source_revision`. Read the policy's `/schedule` endpoint for its schedule
