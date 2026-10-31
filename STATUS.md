@@ -1,17 +1,41 @@
 # cratectl execution status
 
-Development update: schema11 cross-reference matters now have immutable memberships,
-complete bounded manifests, independent release approval and durable partial
-progress/cancellation/retry through store, worker, API/CLI and console. This is
-implemented but unverified against a clean candidate. See
-`evidence/2026-10-31/hold-matters-development-checkpoint.json` and ADR0030.
-Development real PostgreSQL tests, Chromium and stock ORAS observations retain
-the dirty source parent and exact limits. Clean production/race/native upgrade
-campaigns remain required. Primary and active qualified binaries stay schema10;
-never restore schema9/8 or point a schema11 server at that primary prematurely.
-All450capabilities/41families and every later requirement remain committed.
+Clean isolated qualification source: `d7d9bdbf2a3a255121c11572d8032bfc8d810607`,
+authored and committed only as imfeelingtheagi. The scoped checkpoint is
+`evidence/2026-10-31/matter-full-checkpoint.json`.
 
-Latest scoped native runtime-qualified source: `ed9ee5e8a6b38843a01ff9ccb9eb5ca7752255c0`,
+Both clean production/race artifacts pass all23native/browser drivers:
+1487assertions perbuild across46exact artifact-matched runtime records. All three
+PostgreSQL race packages pass twice (444top-level passes; zero skips/races).
+Each build passes13Chromium workflows and100named automated A/AA states.
+Actual schema2–10 binaries preserve their receipts and package/dependency bytes;
+legacy adoption/process-kill, earlier native workflows and pinned publicOCI pass.
+
+New native matter recovery passes31assertions perbuild, including two real worker
+SIGKILLs, actual lease expiry, paused second-target rollback, partial cancellation/
+retry, in-flight requester/approver revocation and fresh independent approval.
+All eight exact timing-helper backends close. Late matter placement also protects
+an already-admitted retirement target. API/CLI/console share the same scoped path.
+
+Build/unit/race/lint, byte-for-byte console, API61paths/342responses/115references,
+Go/npm/Trivy source/artifact, history and bounded cursor fuzz pass in scope.
+The aggregate verifier's first empty-list-versus-zero mismatch is retained and
+corrected without rewriting reports or changing counts. Cross-built Linux/Windows
+artifacts compile only; full security/packaging and every broad verdict stay negative.
+
+Primary maintenance was not executed. Automatic approval review rejected the
+proposed durable schema10to11 change without explicit owner authority. Primary10,
+its ten receipts and qualified ed9 active binary bytes remain unchanged. Candidate
+schema11 artifacts stay separate; every native fixture now selects owned candidate
+paths without replacing active bin. The concrete proposal is
+`evidence/2026-10-31/matter-full-primary-maintenance-proposal.json`.
+Continue independent work in isolated11 databases while that decision is pending.
+Never restore9/8 or run a schema11 server against the retained primary10.
+All450capabilities/41families, broader legal/format/GC and every later requirement
+remain committed and unfinished. No push/publication/remote, Docker/sibling or
+customer changes occurred.
+
+Retained primary-qualified schema10 source: `ed9ee5e8a6b38843a01ff9ccb9eb5ca7752255c0`,
 authored and committed only as imfeelingtheagi. The authoritative checkpoint is
 `evidence/2026-10-31/case-full-checkpoint.json`.
 

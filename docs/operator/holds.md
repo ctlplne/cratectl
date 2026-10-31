@@ -88,7 +88,7 @@ records the controlled primary9to10 maintenance and unchanged existing table
 byte digests. Older runtimes reject schema10. The schema-9 evidence below retains
 its original historical scope.
 
-## Cross-reference matters and reviewed bulk work (development)
+## Cross-reference matters and reviewed bulk work
 
 In **Storage → Reference holds → Cross-reference hold matters**, create an open
 matter with its purpose and reason. Inspect the matter and choose **Preview
@@ -164,12 +164,19 @@ support `limit` 1–100 and opaque cursors bound to their endpoint, filters and
 current credential. These are live pages, not a snapshot. Filtered history
 preserves original receipts and does not independently prove the complete chain.
 
-Migration 11 adds five forced-RLS tables and preserves receipts 1–10. Current
-development evidence exercises disposable databases only. Primary database and
-active qualified binaries remain schema10. Full matching native/browser/race
-qualification, actual old-binary upgrades and controlled maintenance remain
-required before promoting schema11. No broad release or legal-compliance claim
-follows from this development workflow.
+Migration11 adds five forced-RLS tables and preserves receipts1–10. Clean source
+`d7d9bdbf2a3a255121c11572d8032bfc8d810607` passes the named isolated production/race
+campaign: 444PostgreSQL test passes, all13browser workflows/100automated
+accessibility states perbuild, actual old2–10 native upgrades and31native matter
+recovery assertions perbuild. See [the scoped checkpoint](../../evidence/2026-10-31/matter-full-checkpoint.json).
+This does not qualify other formats, broader legal policy or production recovery.
+
+The project primary and active binaries remain schema10. Automatic approval
+review rejected a durable primary10to11 migration without explicit owner authority;
+no primary migration ran. The [maintenance proposal](../../evidence/2026-10-31/matter-full-primary-maintenance-proposal.json)
+records the completed checks and remaining controlled steps. Use isolated schema11
+candidate deployments while primary maintenance is pending. Full release and
+legal-compliance qualification remain open.
 
 The native fault journey runs with `python3 scripts/conformance_hold_matters.py
 --require-clean-build` using the configured owned test PostgreSQL environment.

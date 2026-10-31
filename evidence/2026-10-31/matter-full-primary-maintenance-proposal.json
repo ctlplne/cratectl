@@ -1,0 +1,56 @@
+{
+  "status": "not executed; explicit owner approval required",
+  "action": "Controlled local primary schema10to11 migration",
+  "review": "Automatically rejected: durable primary schema mutation requires explicit authority beyond broad goal; isolated qualification alternatives exist",
+  "observed_at": "2026-10-31T12:01:32.262880+00:00",
+  "primary_schema_retained": 10,
+  "active_binary_schema_retained": 10,
+  "candidate": "d7d9bdbf2a3a255121c11572d8032bfc8d810607",
+  "current_primary_schema": 10,
+  "proposed_schema": 11,
+  "current_receipts": [
+    {
+      "version": 1,
+      "checksum": "1e0f7b93d872f8ab83f85742000a6282f2722a0a338d8f2bc81755345ba66d16"
+    },
+    {
+      "version": 2,
+      "checksum": "9e023c96c8cf33549ce81f1eac22551b5cdb6267d146f65d430ec254dc8b10b5"
+    },
+    {
+      "version": 3,
+      "checksum": "44527dcd4be5177203e2b0eb93e5886a4dae437fbebf4cec14f7737ecb2f15d3"
+    },
+    {
+      "version": 4,
+      "checksum": "8b287dda8e78324c44275d31850418d7e7166d9d6fe49c71d539dbd44a52d209"
+    },
+    {
+      "version": 5,
+      "checksum": "0e835ed82b84cdd3d85858b0a76611b3ed6d387bbf55fee76d2abdf7c7f313a9"
+    },
+    {
+      "version": 6,
+      "checksum": "557b3f6612a403e24d0c9726c9b048d62188b3e1a93bcb3f158616da30b1fe6c"
+    },
+    {
+      "version": 7,
+      "checksum": "596eed6ab2287c8fd4b332d53f4d4867ceda7a1cebaf78e215da70b7eac6ff12"
+    },
+    {
+      "version": 8,
+      "checksum": "fddb52ee509a46ce949d6c879feb47fc4603b7cb4de986b300e6f2b5243ae7dc"
+    },
+    {
+      "version": 9,
+      "checksum": "5794b2b9420d489ce0530c22174047b0a608a14d45d5ea1fb4c563585af0ab04"
+    },
+    {
+      "version": 10,
+      "checksum": "f8c9da14c14a2f18575ce1583a8cc94bd0b424740b96cc4367dcd016e96db0ba"
+    }
+  ],
+  "preconditions_already_passed": "All60clean runtime/build tasks,46exact artifact-matched records and scoped source/artifact checks",
+  "next_preconditions": "If approved, reverify zero other clients/no registry, stream digests of all existing durable tables before and after, preserve all ten receipts, append only migration11, then select matching schema11 production bytes",
+  "risk": "Durable primary schema change; old schema10 runtimes reject an upgraded database. No rollback or production recovery claim."
+}

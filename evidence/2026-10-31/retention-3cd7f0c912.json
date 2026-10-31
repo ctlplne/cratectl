@@ -1,0 +1,936 @@
+{
+  "run": "3cd7f0c912",
+  "candidate": "d7d9bdbf2a3a255121c11572d8032bfc8d810607",
+  "source_dirty": false,
+  "checks": [
+    "owned native port is available",
+    "retention source and artifacts identify one clean candidate",
+    "retained baseline is qualified clean schema-6 source",
+    "baseline database has six safe frozen receipts",
+    "old baseline creates hosted OCI",
+    "old baseline has no retention administration route",
+    "old baseline creates governed proxy/group",
+    "stock ORAS exact application/dependency bytes after old-proxy-pull",
+    "stock ORAS exact application/dependency bytes after old-hosted-pull",
+    "native index descriptor names exact retained child bytes",
+    "old baseline establishes an active retained hold",
+    "new migrator plans retention, automatic-retirement, inventory and case-hold schemas 7 through 11",
+    "controlled upgrade preserves all six receipts and adds safe retention tables",
+    "actual schema-6 worker rejects the schema-11 database",
+    "proxy retirement preview selects its retained canonical manifest",
+    "proxy retirement records one immutable outcome",
+    "local proxy tombstone prevents group fallback to still-live hosted content",
+    "stock ORAS exact application/dependency bytes after restored-group",
+    "hosted preview retains hold/current-tag/strong-parent protections",
+    "changed native tag impact cannot cross an earlier preview",
+    "remove only the owned late tag binding",
+    "current manual digest denial is established before retirement",
+    "native response is deliberately unread after independently observed admission",
+    "management CLI confirms exactly one lost-response admission",
+    "actual registry restart retains the pending approved job",
+    "hosted retirement records exact bounded outcomes and no reclaimed bytes",
+    "immutable native target observations preserve every protection",
+    "stock ORAS exact application/dependency bytes after held-still-live",
+    "stock ORAS exact application/dependency bytes after child-still-live",
+    "restore preserves the current explicit digest denial",
+    "explicit current manual approval permits serving the restored exact digest",
+    "stock ORAS exact application/dependency bytes after restored-exact-hosted",
+    "restore does not rebind the current native tag",
+    "cancellation before worker execution leaves zero committed target effects",
+    "revoked original requester cannot delegate retirement after worker restart",
+    "replacement administrator supplies a fresh approved retirement",
+    "reader/worker/other-tenant credentials cannot administer retention",
+    "disabled current policy retains immutable configuration and run history"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/postgresql-16.15-install/bin/psql",
+        "-X",
+        "-At",
+        "-v",
+        "ON_ERROR_STOP=1",
+        "-c",
+        "CREATE DATABASE cratectl_retention_3cd7f0c912"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "CREATE DATABASE\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/schedule-final-production/cratectld",
+        "migrate"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Schema is current. Applied changes and receipts committed together.\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/schedule-final-production/cratectld",
+        "migrate",
+        "--plan"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "{\"binary_version\":6,\"database_state\":\"current\",\"applied\":[{\"version\":1,\"checksum\":\"1e0f7b93d872f8ab83f85742000a6282f2722a0a338d8f2bc81755345ba66d16\"},{\"version\":2,\"checksum\":\"9e023c96c8cf33549ce81f1eac22551b5cdb6267d146f65d430ec254dc8b10b5\"},{\"version\":3,\"checksum\":\"44527dcd4be5177203e2b0eb93e5886a4dae437fbebf4cec14f7737ecb2f15d3\"},{\"version\":4,\"checksum\":\"8b287dda8e78324c44275d31850418d7e7166d9d6fe49c71d539dbd44a52d209\"},{\"version\":5,\"checksum\":\"0e835ed82b84cdd3d85858b0a76611b3ed6d387bbf55fee76d2abdf7c7f313a9\"},{\"version\":6,\"checksum\":\"557b3f6612a403e24d0c9726c9b048d62188b3e1a93bcb3f158616da30b1fe6c\"}],\"pending\":[],\"requires_legacy_adoption\":false,\"safety_valid\":true}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/schedule-final-production/cratectld",
+        "provision",
+        "--tenant",
+        "retention-3cd7f0c912",
+        "--actor",
+        "admin",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/admin.token"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/schedule-final-production/cratectld",
+        "provision",
+        "--tenant",
+        "retention-3cd7f0c912",
+        "--actor",
+        "recovery",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/recovery.token"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/schedule-final-production/cratectld",
+        "provision",
+        "--tenant",
+        "retention-3cd7f0c912",
+        "--actor",
+        "reader",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/reader.token"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/schedule-final-production/cratectld",
+        "provision",
+        "--tenant",
+        "retention-3cd7f0c912",
+        "--actor",
+        "worker",
+        "--role",
+        "worker",
+        "--token-file",
+        "PRIVATE/worker.token"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/schedule-final-production/cratectld",
+        "provision",
+        "--tenant",
+        "retention-3cd7f0c912-other",
+        "--actor",
+        "other",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/other.token"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "login",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/publisher-auth.json",
+        "--username",
+        "token",
+        "--password-stdin",
+        "127.0.0.1:38443"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Login Succeeded\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "login",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/reader-auth.json",
+        "--username",
+        "token",
+        "--password-stdin",
+        "127.0.0.1:38443"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Login Succeeded\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "127.0.0.1:38443/containers/proof:latest",
+        "primary.txt:text/plain",
+        "dependency.txt:text/plain",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/publisher-auth.json"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Preparing primary.txt\nPreparing dependency.txt\nUploading 44136fa355b3 application/vnd.oci.empty.v1+json\nUploading d3f803f8703b primary.txt\nUploading a9ca1507ae68 dependency.txt\nUploaded  44136fa355b3 application/vnd.oci.empty.v1+json\nUploaded  a9ca1507ae68 dependency.txt\nUploaded  d3f803f8703b primary.txt\nUploading 7fd29481afaf application/vnd.oci.image.manifest.v1+json\nUploaded  7fd29481afaf application/vnd.oci.image.manifest.v1+json\nPushed [registry] 127.0.0.1:38443/containers/proof:latest\nArtifactType: application/vnd.unknown.artifact.v1\nDigest: sha256:7fd29481afaffb8f328d8080a9d193773c5472175a5b14f3fc81cd38ae5d7951\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "resolve",
+        "127.0.0.1:38443/containers/proof:latest",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/publisher-auth.json"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "sha256:7fd29481afaffb8f328d8080a9d193773c5472175a5b14f3fc81cd38ae5d7951\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "127.0.0.1:38443/containers/proof:latest",
+        "primary.txt:text/plain",
+        "dependency.txt:text/plain",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/publisher-auth.json"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Preparing primary.txt\nPreparing dependency.txt\nUploading d88394d99e80 primary.txt\nExists    a9ca1507ae68 dependency.txt\nExists    44136fa355b3 application/vnd.oci.empty.v1+json\nUploaded  d88394d99e80 primary.txt\nUploading 823608eca915 application/vnd.oci.image.manifest.v1+json\nUploaded  823608eca915 application/vnd.oci.image.manifest.v1+json\nPushed [registry] 127.0.0.1:38443/containers/proof:latest\nArtifactType: application/vnd.unknown.artifact.v1\nDigest: sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "resolve",
+        "127.0.0.1:38443/containers/proof:latest",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/publisher-auth.json"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "127.0.0.1:38443/cache/proof@sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/reader-auth.json"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Downloading 823608eca915 application/vnd.oci.image.manifest.v1+json\nProcessing  823608eca915 application/vnd.oci.image.manifest.v1+json\nDownloading a9ca1507ae68 dependency.txt\nDownloading d88394d99e80 primary.txt\nDownloaded  a9ca1507ae68 dependency.txt\nDownloaded  d88394d99e80 primary.txt\nDownloaded  823608eca915 application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/cache/proof@sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\nDigest: sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "127.0.0.1:38443/containers/proof:latest",
+        "primary.txt:text/plain",
+        "dependency.txt:text/plain",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/publisher-auth.json"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Preparing primary.txt\nPreparing dependency.txt\nUploading 55d7d7dbb44e primary.txt\nExists    44136fa355b3 application/vnd.oci.empty.v1+json\nExists    a9ca1507ae68 dependency.txt\nUploaded  55d7d7dbb44e primary.txt\nUploading 9f61a3093342 application/vnd.oci.image.manifest.v1+json\nUploaded  9f61a3093342 application/vnd.oci.image.manifest.v1+json\nPushed [registry] 127.0.0.1:38443/containers/proof:latest\nArtifactType: application/vnd.unknown.artifact.v1\nDigest: sha256:9f61a30933424889f921d04dd30089999c85532176e0c2466465ce0bedeeafa9\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "resolve",
+        "127.0.0.1:38443/containers/proof:latest",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/publisher-auth.json"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "sha256:9f61a30933424889f921d04dd30089999c85532176e0c2466465ce0bedeeafa9\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "127.0.0.1:38443/containers/proof@sha256:9f61a30933424889f921d04dd30089999c85532176e0c2466465ce0bedeeafa9",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/reader-auth.json"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Downloading 9f61a3093342 application/vnd.oci.image.manifest.v1+json\nProcessing  9f61a3093342 application/vnd.oci.image.manifest.v1+json\nDownloading a9ca1507ae68 dependency.txt\nDownloading 55d7d7dbb44e primary.txt\nDownloaded  55d7d7dbb44e primary.txt\nDownloaded  a9ca1507ae68 dependency.txt\nDownloaded  9f61a3093342 application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/containers/proof@sha256:9f61a30933424889f921d04dd30089999c85532176e0c2466465ce0bedeeafa9\nDigest: sha256:9f61a30933424889f921d04dd30089999c85532176e0c2466465ce0bedeeafa9\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "manifest",
+        "push",
+        "127.0.0.1:38443/containers/proof:latest",
+        "index.json",
+        "--media-type",
+        "application/vnd.oci.image.index.v1+json",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/publisher-auth.json"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Uploading e357810d72ad application/vnd.oci.image.index.v1+json\nUploaded  e357810d72ad application/vnd.oci.image.index.v1+json\nPushed: [registry] 127.0.0.1:38443/containers/proof:latest\nDigest: sha256:e357810d72ad30ff53b8c4d9b6e34a0a3381283236ef18affbf71af36e413d9e\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "resolve",
+        "127.0.0.1:38443/containers/proof:latest",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/publisher-auth.json"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "sha256:e357810d72ad30ff53b8c4d9b6e34a0a3381283236ef18affbf71af36e413d9e\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/postgresql-16.15-install/bin/psql",
+        "-X",
+        "-At",
+        "-v",
+        "ON_ERROR_STOP=1",
+        "-c",
+        "UPDATE cratectl.artifacts SET created_at=created_at-interval '600 seconds' WHERE tenant='retention-3cd7f0c912'"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "UPDATE 13\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectld",
+        "migrate",
+        "--plan"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "{\"binary_version\":11,\"database_state\":\"pending\",\"applied\":[{\"version\":1,\"checksum\":\"1e0f7b93d872f8ab83f85742000a6282f2722a0a338d8f2bc81755345ba66d16\"},{\"version\":2,\"checksum\":\"9e023c96c8cf33549ce81f1eac22551b5cdb6267d146f65d430ec254dc8b10b5\"},{\"version\":3,\"checksum\":\"44527dcd4be5177203e2b0eb93e5886a4dae437fbebf4cec14f7737ecb2f15d3\"},{\"version\":4,\"checksum\":\"8b287dda8e78324c44275d31850418d7e7166d9d6fe49c71d539dbd44a52d209\"},{\"version\":5,\"checksum\":\"0e835ed82b84cdd3d85858b0a76611b3ed6d387bbf55fee76d2abdf7c7f313a9\"},{\"version\":6,\"checksum\":\"557b3f6612a403e24d0c9726c9b048d62188b3e1a93bcb3f158616da30b1fe6c\"}],\"pending\":[7,8,9,10,11],\"requires_legacy_adoption\":false,\"safety_valid\":true}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectld",
+        "migrate"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Schema is current. Applied changes and receipts committed together.\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectld",
+        "migrate",
+        "--plan"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "{\"binary_version\":11,\"database_state\":\"current\",\"applied\":[{\"version\":1,\"checksum\":\"1e0f7b93d872f8ab83f85742000a6282f2722a0a338d8f2bc81755345ba66d16\"},{\"version\":2,\"checksum\":\"9e023c96c8cf33549ce81f1eac22551b5cdb6267d146f65d430ec254dc8b10b5\"},{\"version\":3,\"checksum\":\"44527dcd4be5177203e2b0eb93e5886a4dae437fbebf4cec14f7737ecb2f15d3\"},{\"version\":4,\"checksum\":\"8b287dda8e78324c44275d31850418d7e7166d9d6fe49c71d539dbd44a52d209\"},{\"version\":5,\"checksum\":\"0e835ed82b84cdd3d85858b0a76611b3ed6d387bbf55fee76d2abdf7c7f313a9\"},{\"version\":6,\"checksum\":\"557b3f6612a403e24d0c9726c9b048d62188b3e1a93bcb3f158616da30b1fe6c\"},{\"version\":7,\"checksum\":\"596eed6ab2287c8fd4b332d53f4d4867ceda7a1cebaf78e215da70b7eac6ff12\"},{\"version\":8,\"checksum\":\"fddb52ee509a46ce949d6c879feb47fc4603b7cb4de986b300e6f2b5243ae7dc\"},{\"version\":9,\"checksum\":\"5794b2b9420d489ce0530c22174047b0a608a14d45d5ea1fb4c563585af0ab04\"},{\"version\":10,\"checksum\":\"f8c9da14c14a2f18575ce1583a8cc94bd0b424740b96cc4367dcd016e96db0ba\"},{\"version\":11,\"checksum\":\"9fadadf954d8c0cdc5c905c367e49e1cffc31c82e72205f21a0e690653802feb\"}],\"pending\":[],\"requires_legacy_adoption\":false,\"safety_valid\":true}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/schedule-final-production/cratectld",
+        "migrate",
+        "--plan"
+      ],
+      "exit": 1,
+      "expected_failure": true,
+      "output": "cratectld failed: schema version or integrity is incompatible\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/repositories/cache/retention-policies/age",
+        "--method",
+        "PUT",
+        "--body-file",
+        "PRIVATE/request.json",
+        "--idempotency-key",
+        "ac5780252c0e47ffaee12ba127ae24cb"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "{\"min_age_seconds\":60,\"keep_last\":0,\"protect_tagged\":false,\"enabled\":true,\"reason\":\"Owned native retained retirement\",\"repository\":\"cache\",\"name\":\"age\",\"revision\":1,\"actor\":\"admin\",\"configured_at\":\"2026-10-31T07:30:25.249794-04:00\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/repositories/cache/retention-policies/age/runs",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request.json",
+        "--idempotency-key",
+        "a4dc4dce28434e778043e90fce63723c"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "{\"policy\":{\"min_age_seconds\":60,\"keep_last\":0,\"protect_tagged\":false,\"enabled\":true,\"reason\":\"Owned native retained retirement\",\"repository\":\"cache\",\"name\":\"age\",\"revision\":1,\"actor\":\"admin\",\"configured_at\":\"2026-10-31T07:30:25.249794-04:00\"},\"source_revision\":0,\"evaluated_at\":\"2026-10-31T11:30:25.27315Z\",\"expires_at\":\"2026-10-31T11:35:25.27315Z\",\"reason\":\"Approve exact owned native targets\",\"targets\":1,\"eligible\":1,\"items\":[{\"ordinal\":1,\"path\":\"proof/manifests/sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\",\"digest\":\"823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\",\"size\":754,\"created_at\":\"2026-10-31T07:20:24.578916-04:00\",\"lifecycle_revision\":0,\"status\":\"eligible\",\"tags\":[],\"strong_parents\":[]}],\"preview_digest\":\"d05ff09d1f15e9389a8cf42e06792ea77a67cb9c02357079ae2288121cb7a78e\",\"bytes_reclaimed\":0}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/repositories/cache/retention-policies/age/runs",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request.json",
+        "--idempotency-key",
+        "ef6b241180f14378ad2c86fbc8136c86"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "{\"bytes_reclaimed\":0,\"job\":\"37:retention-3332e05399ea6e99c5e1821ad0b24ed605f8f6fb304ab6a1f4d154f9f7b77f74\",\"plan\":{\"policy\":{\"min_age_seconds\":60,\"keep_last\":0,\"protect_tagged\":false,\"enabled\":true,\"reason\":\"Owned native retained retirement\",\"repository\":\"cache\",\"name\":\"age\",\"revision\":1,\"actor\":\"admin\",\"configured_at\":\"2026-10-31T07:30:25.249794-04:00\"},\"source_revision\":0,\"evaluated_at\":\"2026-10-31T11:30:25.27315Z\",\"expires_at\":\"2026-10-31T11:35:25.27315Z\",\"reason\":\"Approve exact owned native targets\",\"targets\":1,\"eligible\":1,\"preview_digest\":\"d05ff09d1f15e9389a8cf42e06792ea77a67cb9c02357079ae2288121cb7a78e\",\"bytes_reclaimed\":0}}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "127.0.0.1:38443/combined/proof@sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/reader-auth.json"
+      ],
+      "exit": 1,
+      "expected_failure": true,
+      "output": "Error response from registry: 127.0.0.1:38443/combined/proof@sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f: not found\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/repositories/cache/artifacts/lifecycle",
+        "--method",
+        "PUT",
+        "--body-file",
+        "PRIVATE/request.json",
+        "--idempotency-key",
+        "580d348985654638982504665d9df4f8"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "{\"current\":{\"repository\":\"cache\",\"path\":\"proof/manifests/sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\",\"digest\":\"823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\",\"deleted\":false,\"held\":false,\"revision\":2,\"reason\":\"Verify exact retained native bytes\",\"actor\":\"admin\",\"changed_at\":\"2026-10-31T07:30:25.482845-04:00\",\"change_sequence\":107},\"action\":\"restore\",\"strong_parents\":[],\"tags\":[],\"weak_subject_dependents\":[],\"active_retrievals\":0,\"retained_bytes\":true,\"dry_run\":false}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "127.0.0.1:38443/combined/proof@sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/reader-auth.json"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Downloading 823608eca915 application/vnd.oci.image.manifest.v1+json\nProcessing  823608eca915 application/vnd.oci.image.manifest.v1+json\nDownloading a9ca1507ae68 dependency.txt\nDownloading d88394d99e80 primary.txt\nDownloaded  a9ca1507ae68 dependency.txt\nDownloaded  d88394d99e80 primary.txt\nDownloaded  823608eca915 application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/combined/proof@sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\nDigest: sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/repositories/containers/retention-policies/age",
+        "--method",
+        "PUT",
+        "--body-file",
+        "PRIVATE/request.json",
+        "--idempotency-key",
+        "b7254f6f4b7e447bad3c0e93a09e92b2"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "{\"min_age_seconds\":60,\"keep_last\":1,\"protect_tagged\":true,\"enabled\":true,\"reason\":\"Owned native retained retirement\",\"repository\":\"containers\",\"name\":\"age\",\"revision\":1,\"actor\":\"admin\",\"configured_at\":\"2026-10-31T07:30:25.558581-04:00\"}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/repositories/containers/retention-policies/age/runs",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request.json",
+        "--idempotency-key",
+        "c39057f959954a6f866a621c974d757c"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "{\"policy\":{\"min_age_seconds\":60,\"keep_last\":1,\"protect_tagged\":true,\"enabled\":true,\"reason\":\"Owned native retained retirement\",\"repository\":\"containers\",\"name\":\"age\",\"revision\":1,\"actor\":\"admin\",\"configured_at\":\"2026-10-31T07:30:25.558581-04:00\"},\"source_revision\":0,\"evaluated_at\":\"2026-10-31T11:30:25.578801Z\",\"expires_at\":\"2026-10-31T11:35:25.578801Z\",\"reason\":\"Approve exact owned native targets\",\"targets\":4,\"eligible\":1,\"items\":[{\"ordinal\":1,\"path\":\"proof/manifests/sha256:7fd29481afaffb8f328d8080a9d193773c5472175a5b14f3fc81cd38ae5d7951\",\"digest\":\"7fd29481afaffb8f328d8080a9d193773c5472175a5b14f3fc81cd38ae5d7951\",\"size\":754,\"created_at\":\"2026-10-31T07:20:24.279871-04:00\",\"lifecycle_revision\":1,\"status\":\"held\",\"tags\":[],\"strong_parents\":[]},{\"ordinal\":2,\"path\":\"proof/manifests/sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\",\"digest\":\"823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\",\"size\":754,\"created_at\":\"2026-10-31T07:20:24.410937-04:00\",\"lifecycle_revision\":0,\"status\":\"eligible\",\"tags\":[],\"strong_parents\":[]},{\"ordinal\":3,\"path\":\"proof/manifests/sha256:9f61a30933424889f921d04dd30089999c85532176e0c2466465ce0bedeeafa9\",\"digest\":\"9f61a30933424889f921d04dd30089999c85532176e0c2466465ce0bedeeafa9\",\"size\":754,\"created_at\":\"2026-10-31T07:20:24.795045-04:00\",\"lifecycle_revision\":0,\"status\":\"referenced\",\"tags\":[],\"strong_parents\":[\"proof/manifests/sha256:e357810d72ad30ff53b8c4d9b6e34a0a3381283236ef18affbf71af36e413d9e\"]},{\"ordinal\":4,\"path\":\"proof/manifests/sha256:e357810d72ad30ff53b8c4d9b6e34a0a3381283236ef18affbf71af36e413d9e\",\"digest\":\"e357810d72ad30ff53b8c4d9b6e34a0a3381283236ef18affbf71af36e413d9e\",\"size\":250,\"created_at\":\"2026-10-31T07:20:24.984051-04:00\",\"lifecycle_revision\":0,\"status\":\"tagged\",\"tags\":[\"latest\"],\"strong_parents\":[]}],\"preview_digest\":\"48b8ed5a00ff29c25d9c2e832ed46acb2f20f911de9151c712225153ff59d699\",\"bytes_reclaimed\":0}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "tag",
+        "127.0.0.1:38443/containers/proof@sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f",
+        "late",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/publisher-auth.json"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Tagging [registry] 127.0.0.1:38443/containers/proof@sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\nTagged late\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/repositories/containers/retention-policies/age/runs",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request.json",
+        "--idempotency-key",
+        "7abbb59c9eeb412db4c755eaeb379f3f"
+      ],
+      "exit": 1,
+      "expected_failure": true,
+      "output": "{\"error\":{\"action\":\"Read current policy and preview again. Apply its exact digest and evaluation time within five minutes; changed policy, membership or source needs a new preview.\",\"code\":\"retention_changed\"}}\n\nmanagement request returned HTTP 409\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/repositories/containers/retention-policies/age/runs",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request.json",
+        "--idempotency-key",
+        "1a72326df45646f5a71e7edb36e4efd1"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "{\"policy\":{\"min_age_seconds\":60,\"keep_last\":1,\"protect_tagged\":true,\"enabled\":true,\"reason\":\"Owned native retained retirement\",\"repository\":\"containers\",\"name\":\"age\",\"revision\":1,\"actor\":\"admin\",\"configured_at\":\"2026-10-31T07:30:25.558581-04:00\"},\"source_revision\":0,\"evaluated_at\":\"2026-10-31T11:30:25.691006Z\",\"expires_at\":\"2026-10-31T11:35:25.691006Z\",\"reason\":\"Approve exact owned native targets\",\"targets\":4,\"eligible\":1,\"items\":[{\"ordinal\":1,\"path\":\"proof/manifests/sha256:7fd29481afaffb8f328d8080a9d193773c5472175a5b14f3fc81cd38ae5d7951\",\"digest\":\"7fd29481afaffb8f328d8080a9d193773c5472175a5b14f3fc81cd38ae5d7951\",\"size\":754,\"created_at\":\"2026-10-31T07:20:24.279871-04:00\",\"lifecycle_revision\":1,\"status\":\"held\",\"tags\":[],\"strong_parents\":[]},{\"ordinal\":2,\"path\":\"proof/manifests/sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\",\"digest\":\"823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\",\"size\":754,\"created_at\":\"2026-10-31T07:20:24.410937-04:00\",\"lifecycle_revision\":0,\"status\":\"eligible\",\"tags\":[],\"strong_parents\":[]},{\"ordinal\":3,\"path\":\"proof/manifests/sha256:9f61a30933424889f921d04dd30089999c85532176e0c2466465ce0bedeeafa9\",\"digest\":\"9f61a30933424889f921d04dd30089999c85532176e0c2466465ce0bedeeafa9\",\"size\":754,\"created_at\":\"2026-10-31T07:20:24.795045-04:00\",\"lifecycle_revision\":0,\"status\":\"referenced\",\"tags\":[],\"strong_parents\":[\"proof/manifests/sha256:e357810d72ad30ff53b8c4d9b6e34a0a3381283236ef18affbf71af36e413d9e\"]},{\"ordinal\":4,\"path\":\"proof/manifests/sha256:e357810d72ad30ff53b8c4d9b6e34a0a3381283236ef18affbf71af36e413d9e\",\"digest\":\"e357810d72ad30ff53b8c4d9b6e34a0a3381283236ef18affbf71af36e413d9e\",\"size\":250,\"created_at\":\"2026-10-31T07:20:24.984051-04:00\",\"lifecycle_revision\":0,\"status\":\"tagged\",\"tags\":[\"latest\"],\"strong_parents\":[]}],\"preview_digest\":\"e6ef85ca9df2660919dedb70ac9abef26495dc66cab3cb239200b04afa29a049\",\"bytes_reclaimed\":0}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/repositories/containers/retention-policies/age/runs",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request.json",
+        "--idempotency-key",
+        "unread-response-3cd7f0c912"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "{\"bytes_reclaimed\":0,\"job\":\"122:retention-dcfe2416038a890d64c99d8e2c8bd0d72daba8cc14166408a81eb95c4ad986fc\",\"plan\":{\"policy\":{\"min_age_seconds\":60,\"keep_last\":1,\"protect_tagged\":true,\"enabled\":true,\"reason\":\"Owned native retained retirement\",\"repository\":\"containers\",\"name\":\"age\",\"revision\":1,\"actor\":\"admin\",\"configured_at\":\"2026-10-31T07:30:25.558581-04:00\"},\"source_revision\":0,\"evaluated_at\":\"2026-10-31T11:30:25.691006Z\",\"expires_at\":\"2026-10-31T11:35:25.691006Z\",\"reason\":\"Approve exact owned native targets\",\"targets\":4,\"eligible\":1,\"preview_digest\":\"e6ef85ca9df2660919dedb70ac9abef26495dc66cab3cb239200b04afa29a049\",\"bytes_reclaimed\":0}}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "127.0.0.1:38443/containers/proof@sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/reader-auth.json"
+      ],
+      "exit": 1,
+      "expected_failure": true,
+      "output": "Error response from registry: 127.0.0.1:38443/containers/proof@sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f: not found\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "127.0.0.1:38443/containers/proof@sha256:7fd29481afaffb8f328d8080a9d193773c5472175a5b14f3fc81cd38ae5d7951",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/reader-auth.json"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Downloading 7fd29481afaf application/vnd.oci.image.manifest.v1+json\nProcessing  7fd29481afaf application/vnd.oci.image.manifest.v1+json\nDownloading a9ca1507ae68 dependency.txt\nDownloading d3f803f8703b primary.txt\nDownloaded  a9ca1507ae68 dependency.txt\nDownloaded  d3f803f8703b primary.txt\nDownloaded  7fd29481afaf application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/containers/proof@sha256:7fd29481afaffb8f328d8080a9d193773c5472175a5b14f3fc81cd38ae5d7951\nDigest: sha256:7fd29481afaffb8f328d8080a9d193773c5472175a5b14f3fc81cd38ae5d7951\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "127.0.0.1:38443/containers/proof@sha256:9f61a30933424889f921d04dd30089999c85532176e0c2466465ce0bedeeafa9",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/reader-auth.json"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Downloading 9f61a3093342 application/vnd.oci.image.manifest.v1+json\nProcessing  9f61a3093342 application/vnd.oci.image.manifest.v1+json\nDownloading a9ca1507ae68 dependency.txt\nDownloading 55d7d7dbb44e primary.txt\nDownloaded  55d7d7dbb44e primary.txt\nDownloaded  a9ca1507ae68 dependency.txt\nDownloaded  9f61a3093342 application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/containers/proof@sha256:9f61a30933424889f921d04dd30089999c85532176e0c2466465ce0bedeeafa9\nDigest: sha256:9f61a30933424889f921d04dd30089999c85532176e0c2466465ce0bedeeafa9\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/repositories/containers/artifacts/lifecycle",
+        "--method",
+        "PUT",
+        "--body-file",
+        "PRIVATE/request.json",
+        "--idempotency-key",
+        "7135af20e50b4493a32246194869fd7b"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "{\"current\":{\"repository\":\"containers\",\"path\":\"proof/manifests/sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\",\"digest\":\"823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\",\"deleted\":false,\"held\":false,\"revision\":2,\"reason\":\"Verify exact retained native bytes\",\"actor\":\"admin\",\"changed_at\":\"2026-10-31T07:30:26.305023-04:00\",\"change_sequence\":147},\"action\":\"restore\",\"strong_parents\":[],\"tags\":[],\"weak_subject_dependents\":[],\"active_retrievals\":0,\"retained_bytes\":true,\"dry_run\":false}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "127.0.0.1:38443/containers/proof@sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/reader-auth.json"
+      ],
+      "exit": 1,
+      "expected_failure": true,
+      "output": "Error response from registry: GET \"http://127.0.0.1:38443/v2/containers/proof/manifests/sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\": response status code 403: Forbidden\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "127.0.0.1:38443/containers/proof@sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/reader-auth.json"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Downloading 823608eca915 application/vnd.oci.image.manifest.v1+json\nProcessing  823608eca915 application/vnd.oci.image.manifest.v1+json\nDownloading a9ca1507ae68 dependency.txt\nDownloading d88394d99e80 primary.txt\nDownloaded  a9ca1507ae68 dependency.txt\nDownloaded  d88394d99e80 primary.txt\nDownloaded  823608eca915 application/vnd.oci.image.manifest.v1+json\nPulled [registry] 127.0.0.1:38443/containers/proof@sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\nDigest: sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "resolve",
+        "127.0.0.1:38443/containers/proof:latest",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/publisher-auth.json"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "sha256:e357810d72ad30ff53b8c4d9b6e34a0a3381283236ef18affbf71af36e413d9e\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/repositories/containers/retention-policies/age/runs",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request.json",
+        "--idempotency-key",
+        "91d9a564de164c29baed13d92cbfd7ce"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "{\"policy\":{\"min_age_seconds\":60,\"keep_last\":1,\"protect_tagged\":true,\"enabled\":true,\"reason\":\"Owned native retained retirement\",\"repository\":\"containers\",\"name\":\"age\",\"revision\":1,\"actor\":\"admin\",\"configured_at\":\"2026-10-31T07:30:25.558581-04:00\"},\"source_revision\":0,\"evaluated_at\":\"2026-10-31T11:30:26.561115Z\",\"expires_at\":\"2026-10-31T11:35:26.561115Z\",\"reason\":\"Approve exact owned native targets\",\"targets\":4,\"eligible\":1,\"items\":[{\"ordinal\":1,\"path\":\"proof/manifests/sha256:7fd29481afaffb8f328d8080a9d193773c5472175a5b14f3fc81cd38ae5d7951\",\"digest\":\"7fd29481afaffb8f328d8080a9d193773c5472175a5b14f3fc81cd38ae5d7951\",\"size\":754,\"created_at\":\"2026-10-31T07:20:24.279871-04:00\",\"lifecycle_revision\":1,\"status\":\"held\",\"tags\":[],\"strong_parents\":[]},{\"ordinal\":2,\"path\":\"proof/manifests/sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\",\"digest\":\"823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\",\"size\":754,\"created_at\":\"2026-10-31T07:20:24.410937-04:00\",\"lifecycle_revision\":2,\"status\":\"eligible\",\"tags\":[],\"strong_parents\":[]},{\"ordinal\":3,\"path\":\"proof/manifests/sha256:9f61a30933424889f921d04dd30089999c85532176e0c2466465ce0bedeeafa9\",\"digest\":\"9f61a30933424889f921d04dd30089999c85532176e0c2466465ce0bedeeafa9\",\"size\":754,\"created_at\":\"2026-10-31T07:20:24.795045-04:00\",\"lifecycle_revision\":0,\"status\":\"referenced\",\"tags\":[],\"strong_parents\":[\"proof/manifests/sha256:e357810d72ad30ff53b8c4d9b6e34a0a3381283236ef18affbf71af36e413d9e\"]},{\"ordinal\":4,\"path\":\"proof/manifests/sha256:e357810d72ad30ff53b8c4d9b6e34a0a3381283236ef18affbf71af36e413d9e\",\"digest\":\"e357810d72ad30ff53b8c4d9b6e34a0a3381283236ef18affbf71af36e413d9e\",\"size\":250,\"created_at\":\"2026-10-31T07:20:24.984051-04:00\",\"lifecycle_revision\":0,\"status\":\"tagged\",\"tags\":[\"latest\"],\"strong_parents\":[]}],\"preview_digest\":\"9598de55f5c42cecf29e7c083d67564aaab6c8626e091148c98b7e8f76ba3ccd\",\"bytes_reclaimed\":0}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/repositories/containers/retention-policies/age/runs",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request.json",
+        "--idempotency-key",
+        "4102104d1c354eff938d9000b8c42ba7"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "{\"bytes_reclaimed\":0,\"job\":\"153:retention-9ab0e7f11f492009fe3eb9943e032d01c66e93781e3f83c64ab8bb6e2ca08672\",\"plan\":{\"policy\":{\"min_age_seconds\":60,\"keep_last\":1,\"protect_tagged\":true,\"enabled\":true,\"reason\":\"Owned native retained retirement\",\"repository\":\"containers\",\"name\":\"age\",\"revision\":1,\"actor\":\"admin\",\"configured_at\":\"2026-10-31T07:30:25.558581-04:00\"},\"source_revision\":0,\"evaluated_at\":\"2026-10-31T11:30:26.561115Z\",\"expires_at\":\"2026-10-31T11:35:26.561115Z\",\"reason\":\"Approve exact owned native targets\",\"targets\":4,\"eligible\":1,\"preview_digest\":\"9598de55f5c42cecf29e7c083d67564aaab6c8626e091148c98b7e8f76ba3ccd\",\"bytes_reclaimed\":0}}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/jobs/153:retention-9ab0e7f11f492009fe3eb9943e032d01c66e93781e3f83c64ab8bb6e2ca08672/cancel",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request.json",
+        "--idempotency-key",
+        "29aada738a754a40a10c6cfa1b08731a"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "{\"handler\":\"repository.retention\",\"sequence\":153,\"task\":\"retention-9ab0e7f11f492009fe3eb9943e032d01c66e93781e3f83c64ab8bb6e2ca08672\",\"queue\":\"maintenance\",\"kind\":\"repository.retention\",\"state\":\"cancelled\",\"attempts\":0,\"cycle_attempts\":0,\"generation\":1,\"worker\":\"\",\"lease_until\":\"1969-12-31T19:00:00-05:00\",\"available_at\":\"2026-10-31T07:30:26.578895-04:00\",\"last_error\":\"cancelled\",\"updated_at\":\"2026-10-31T07:30:26.604014-04:00\",\"finished_at\":\"2026-10-31T07:30:26.604014-04:00\",\"target\":{\"policy\":{\"name\":\"age\",\"actor\":\"admin\",\"reason\":\"Owned native retained retirement\",\"enabled\":true,\"revision\":1,\"keep_last\":1,\"repository\":\"containers\",\"configured_at\":\"2026-10-31T07:30:25.558581-04:00\",\"protect_tagged\":true,\"min_age_seconds\":60},\"reason\":\"Approve exact owned native targets\",\"targets\":4,\"eligible\":1,\"expires_at\":\"2026-10-31T11:35:26.561115Z\",\"evaluated_at\":\"2026-10-31T11:30:26.561115Z\",\"preview_digest\":\"9598de55f5c42cecf29e7c083d67564aaab6c8626e091148c98b7e8f76ba3ccd\",\"bytes_reclaimed\":0,\"source_revision\":0}}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/repositories/containers/retention-policies/age/runs",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request.json",
+        "--idempotency-key",
+        "d2e2aac01bba47f4b83016e2bf6d3e42"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "{\"policy\":{\"min_age_seconds\":60,\"keep_last\":1,\"protect_tagged\":true,\"enabled\":true,\"reason\":\"Owned native retained retirement\",\"repository\":\"containers\",\"name\":\"age\",\"revision\":1,\"actor\":\"admin\",\"configured_at\":\"2026-10-31T07:30:25.558581-04:00\"},\"source_revision\":0,\"evaluated_at\":\"2026-10-31T11:30:26.636405Z\",\"expires_at\":\"2026-10-31T11:35:26.636405Z\",\"reason\":\"Approve exact owned native targets\",\"targets\":4,\"eligible\":1,\"items\":[{\"ordinal\":1,\"path\":\"proof/manifests/sha256:7fd29481afaffb8f328d8080a9d193773c5472175a5b14f3fc81cd38ae5d7951\",\"digest\":\"7fd29481afaffb8f328d8080a9d193773c5472175a5b14f3fc81cd38ae5d7951\",\"size\":754,\"created_at\":\"2026-10-31T07:20:24.279871-04:00\",\"lifecycle_revision\":1,\"status\":\"held\",\"tags\":[],\"strong_parents\":[]},{\"ordinal\":2,\"path\":\"proof/manifests/sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\",\"digest\":\"823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\",\"size\":754,\"created_at\":\"2026-10-31T07:20:24.410937-04:00\",\"lifecycle_revision\":2,\"status\":\"eligible\",\"tags\":[],\"strong_parents\":[]},{\"ordinal\":3,\"path\":\"proof/manifests/sha256:9f61a30933424889f921d04dd30089999c85532176e0c2466465ce0bedeeafa9\",\"digest\":\"9f61a30933424889f921d04dd30089999c85532176e0c2466465ce0bedeeafa9\",\"size\":754,\"created_at\":\"2026-10-31T07:20:24.795045-04:00\",\"lifecycle_revision\":0,\"status\":\"referenced\",\"tags\":[],\"strong_parents\":[\"proof/manifests/sha256:e357810d72ad30ff53b8c4d9b6e34a0a3381283236ef18affbf71af36e413d9e\"]},{\"ordinal\":4,\"path\":\"proof/manifests/sha256:e357810d72ad30ff53b8c4d9b6e34a0a3381283236ef18affbf71af36e413d9e\",\"digest\":\"e357810d72ad30ff53b8c4d9b6e34a0a3381283236ef18affbf71af36e413d9e\",\"size\":250,\"created_at\":\"2026-10-31T07:20:24.984051-04:00\",\"lifecycle_revision\":0,\"status\":\"tagged\",\"tags\":[\"latest\"],\"strong_parents\":[]}],\"preview_digest\":\"78311d7be82b7abffbe6751226119a3128f9852ee6d87bb959b17cdaa6adadbd\",\"bytes_reclaimed\":0}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/repositories/containers/retention-policies/age/runs",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request.json",
+        "--idempotency-key",
+        "93cfb237dc024430a3685c01a05141e2"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "{\"bytes_reclaimed\":0,\"job\":\"155:retention-88529e4eb403edc311b6246023f84d0b9c16bdbc985169fb0c0f79e536e23109\",\"plan\":{\"policy\":{\"min_age_seconds\":60,\"keep_last\":1,\"protect_tagged\":true,\"enabled\":true,\"reason\":\"Owned native retained retirement\",\"repository\":\"containers\",\"name\":\"age\",\"revision\":1,\"actor\":\"admin\",\"configured_at\":\"2026-10-31T07:30:25.558581-04:00\"},\"source_revision\":0,\"evaluated_at\":\"2026-10-31T11:30:26.636405Z\",\"expires_at\":\"2026-10-31T11:35:26.636405Z\",\"reason\":\"Approve exact owned native targets\",\"targets\":4,\"eligible\":1,\"preview_digest\":\"78311d7be82b7abffbe6751226119a3128f9852ee6d87bb959b17cdaa6adadbd\",\"bytes_reclaimed\":0}}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectld",
+        "revoke",
+        "--token-file",
+        "PRIVATE/admin.token"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "Credential revoked; subsequent authentication fails.\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/recovery.token",
+        "--path",
+        "/api/v1/repositories/containers/retention-policies/age/runs",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request.json",
+        "--idempotency-key",
+        "c4ae6aa3b70243f1bb2bf8e1843450e0"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "{\"policy\":{\"min_age_seconds\":60,\"keep_last\":1,\"protect_tagged\":true,\"enabled\":true,\"reason\":\"Owned native retained retirement\",\"repository\":\"containers\",\"name\":\"age\",\"revision\":1,\"actor\":\"admin\",\"configured_at\":\"2026-10-31T07:30:25.558581-04:00\"},\"source_revision\":0,\"evaluated_at\":\"2026-10-31T11:30:26.821663Z\",\"expires_at\":\"2026-10-31T11:35:26.821663Z\",\"reason\":\"Approve exact owned native targets\",\"targets\":4,\"eligible\":1,\"items\":[{\"ordinal\":1,\"path\":\"proof/manifests/sha256:7fd29481afaffb8f328d8080a9d193773c5472175a5b14f3fc81cd38ae5d7951\",\"digest\":\"7fd29481afaffb8f328d8080a9d193773c5472175a5b14f3fc81cd38ae5d7951\",\"size\":754,\"created_at\":\"2026-10-31T07:20:24.279871-04:00\",\"lifecycle_revision\":1,\"status\":\"held\",\"tags\":[],\"strong_parents\":[]},{\"ordinal\":2,\"path\":\"proof/manifests/sha256:823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\",\"digest\":\"823608eca91501666d4c6ec7d51f141087af287cb413c50240815304ad26b30f\",\"size\":754,\"created_at\":\"2026-10-31T07:20:24.410937-04:00\",\"lifecycle_revision\":2,\"status\":\"eligible\",\"tags\":[],\"strong_parents\":[]},{\"ordinal\":3,\"path\":\"proof/manifests/sha256:9f61a30933424889f921d04dd30089999c85532176e0c2466465ce0bedeeafa9\",\"digest\":\"9f61a30933424889f921d04dd30089999c85532176e0c2466465ce0bedeeafa9\",\"size\":754,\"created_at\":\"2026-10-31T07:20:24.795045-04:00\",\"lifecycle_revision\":0,\"status\":\"referenced\",\"tags\":[],\"strong_parents\":[\"proof/manifests/sha256:e357810d72ad30ff53b8c4d9b6e34a0a3381283236ef18affbf71af36e413d9e\"]},{\"ordinal\":4,\"path\":\"proof/manifests/sha256:e357810d72ad30ff53b8c4d9b6e34a0a3381283236ef18affbf71af36e413d9e\",\"digest\":\"e357810d72ad30ff53b8c4d9b6e34a0a3381283236ef18affbf71af36e413d9e\",\"size\":250,\"created_at\":\"2026-10-31T07:20:24.984051-04:00\",\"lifecycle_revision\":0,\"status\":\"tagged\",\"tags\":[\"latest\"],\"strong_parents\":[]}],\"preview_digest\":\"4cf7a49d42384f06f6675619c6c1686ca41ee8e5987fa42643f2cf757cb7e11a\",\"bytes_reclaimed\":0}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/recovery.token",
+        "--path",
+        "/api/v1/repositories/containers/retention-policies/age/runs",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request.json",
+        "--idempotency-key",
+        "49f265bf7f844c99b52c3cc4db7aa637"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "{\"bytes_reclaimed\":0,\"job\":\"163:retention-796509db4dc312d2aeacc17d9d96d4db07203d3d95df3f9f54e709af4d9f1303\",\"plan\":{\"policy\":{\"min_age_seconds\":60,\"keep_last\":1,\"protect_tagged\":true,\"enabled\":true,\"reason\":\"Owned native retained retirement\",\"repository\":\"containers\",\"name\":\"age\",\"revision\":1,\"actor\":\"admin\",\"configured_at\":\"2026-10-31T07:30:25.558581-04:00\"},\"source_revision\":0,\"evaluated_at\":\"2026-10-31T11:30:26.821663Z\",\"expires_at\":\"2026-10-31T11:35:26.821663Z\",\"reason\":\"Approve exact owned native targets\",\"targets\":4,\"eligible\":1,\"preview_digest\":\"4cf7a49d42384f06f6675619c6c1686ca41ee8e5987fa42643f2cf757cb7e11a\",\"bytes_reclaimed\":0}}\n"
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/matter-full-d7d9bdbf2a3a-production/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/recovery.token",
+        "--path",
+        "/api/v1/repositories/containers/retention-policies/age",
+        "--method",
+        "PUT",
+        "--body-file",
+        "PRIVATE/request.json",
+        "--idempotency-key",
+        "d0f096c037314d19af3fd5d447800f5e"
+      ],
+      "exit": 0,
+      "expected_failure": false,
+      "output": "{\"min_age_seconds\":60,\"keep_last\":1,\"protect_tagged\":true,\"enabled\":false,\"reason\":\"Owned native retained retirement\",\"repository\":\"containers\",\"name\":\"age\",\"revision\":2,\"actor\":\"recovery\",\"configured_at\":\"2026-10-31T07:30:26.986536-04:00\"}\n"
+    }
+  ],
+  "build_identity": {
+    ".cache/schedule-final-production/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "b19d1ae393320a2adc051f61db24693fec62591a",
+      "vcs.time": "2026-10-31T00:26:41Z",
+      "vcs.modified": "false"
+    },
+    ".cache/matter-full-d7d9bdbf2a3a-production/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "d7d9bdbf2a3a255121c11572d8032bfc8d810607",
+      "vcs.time": "2026-10-31T11:24:59Z",
+      "vcs.modified": "false"
+    },
+    ".cache/matter-full-d7d9bdbf2a3a-production/cratectl": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "d7d9bdbf2a3a255121c11572d8032bfc8d810607",
+      "vcs.time": "2026-10-31T11:24:59Z",
+      "vcs.modified": "false"
+    }
+  },
+  "artifact_digests": {
+    ".cache/schedule-final-production/cratectld": "9d777acddf0989490b22889883eeade4efbaae5b38b11e19648678ae7b851c34",
+    ".cache/matter-full-d7d9bdbf2a3a-production/cratectld": "77d5b911449b36afb0a296cb9a6c2808517cc340bc9444c1036e71c0c13f91e9",
+    ".cache/matter-full-d7d9bdbf2a3a-production/cratectl": "fcedc1da90e947e90eab1478f9b0f1440a5b75e5a6d12b2d6e3669a06527088c",
+    ".cache/bin/oras": "a75c9dfd7f8f4f1f8ff09c88e7dd03431714f5f760366dff50b7f3cea4850930"
+  },
+  "topology": "Native macOS arm64, retained qualified schema-6 binary then schema-11 registry/worker, PostgreSQL 16.15 forced RLS and restricted runtime; stock ORAS and management CLI. Explicit HTTP loopback 38443. Registry/worker environments omit the owner DSN.",
+  "limits": [
+    "Named canonical OCI manifest age/newest/tag/hold/reference retirement only. No physical erasure, last-access selection, automatic scheduling or reclaimed storage.",
+    "Hosted/proxy/group native consumption, current authority and exact retained-byte restore within this owned fixture. Other rules/formats, providers/platforms, fault/clock/scale and production recovery remain required.",
+    "Controlled maintenance stops old processes before migration; rolling compatibility and consistent backup/restore remain open."
+  ],
+  "build_source_matches_candidate": true,
+  "expected_schema": 11,
+  "status": "passed",
+  "database": "cratectl_retention_3cd7f0c912"
+}

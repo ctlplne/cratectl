@@ -1,6 +1,8 @@
 # 0030: cross-reference matters and reviewed bulk preservation
 
-Status: implementation in progress; no new qualification claim.
+Status: named canonical OCI workflows qualified on clean isolated production/race
+builds; broader scope remains required. See `evidence/2026-10-31/matter-full-checkpoint.json`.
+Primary10 maintenance requires explicit owner authority and has not run.
 
 An independent per-reference case cannot describe one investigation spanning
 repositories. A tenant-wide matter records its purpose and a versioned metadata
