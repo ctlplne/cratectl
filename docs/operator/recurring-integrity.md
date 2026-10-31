@@ -112,3 +112,6 @@ runtimes reject the new schema. Controlled maintenance is required; rolling
 compatibility, backup/restore and downgrade remain open. Scheduling unreferenced
 filesystem inventory, randomized/full-volume sampling, calendar schedules, S3,
 retention/GC, alerts, other platforms and production-scale behavior remain work.
+
+The named clean source, artifact hashes, runtime records and limits are retained in
+[`schedule-checkpoint.json`](../../evidence/2026-10-31/schedule-checkpoint.json).

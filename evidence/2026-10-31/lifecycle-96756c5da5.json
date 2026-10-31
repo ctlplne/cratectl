@@ -1,0 +1,263 @@
+{
+  "run": "96756c5da5",
+  "candidate": "b19d1ae393320a2adc051f61db24693fec62591a",
+  "baseline_version": 5,
+  "source_dirty": false,
+  "checks": [
+    "lifecycle source and new binaries match a clean candidate",
+    "baseline is the retained qualified source",
+    "old baseline database has its safe immutable receipts",
+    "baseline creates hosted OCI repository",
+    "schema-3 baseline creates a governed proxy",
+    "actual schema-3 binary caches stock OCI graph",
+    "new migrator safely plans only remaining immutable steps",
+    "actual upgrade preserves every old receipt and adds safe remaining steps",
+    "old binary refuses the upgraded database",
+    "schema-6 keeps valid baseline cached graph at source revision zero",
+    "stock ORAS installs retained bytes after actual upgrade",
+    "administrator hold commits exact revision",
+    "stock ORAS cannot delete a held manifest",
+    "hold release compares revision",
+    "strong incoming manifest reference protects blob",
+    "preview reports tag aliases without deleting",
+    "stock ORAS digest deletion commits",
+    "deleted canonical path rejects GET []",
+    "deleted canonical path rejects HEAD []",
+    "deleted canonical path rejects GET ['If-None-Match']",
+    "deleted canonical path rejects GET ['Range']",
+    "deleted canonical path rejects GET ['Cache-Control']",
+    "deleted target hides tags",
+    "real registry restart preserves tombstone",
+    "same-byte native publication cannot implicitly restore",
+    "restore rejects corrupt retained bytes",
+    "manual denial persists separately from deletion",
+    "explicit restore verifies old graph without changing policy",
+    "restored denied bytes remain unavailable",
+    "restore preserves a newer tag target",
+    "manual exact-byte allowance remains explicit",
+    "stock ORAS recovers exact restored bytes",
+    "create explicit credential-bound proxy",
+    "stock ORAS fills governed proxy graph",
+    "source suspend commits retained state",
+    "source suspend serving state is explicit",
+    "source resume commits retained state",
+    "source resume serving state is explicit",
+    "source remove commits retained state",
+    "source remove serving state is explicit",
+    "source restore commits retained state",
+    "source restore serving state is explicit",
+    "local proxy tombstone commits",
+    "forced proxy refresh cannot resurrect",
+    "explicit proxy restore verifies retained complete graph",
+    "bytes remain retained after all lifecycle transitions"
+  ],
+  "commands": [
+    {
+      "binary": "psql",
+      "exit": 0,
+      "seconds": 0.138,
+      "expected_success": true
+    },
+    {
+      "binary": "cratectld",
+      "exit": 0,
+      "seconds": 0.091,
+      "expected_success": true
+    },
+    {
+      "binary": "cratectld",
+      "exit": 0,
+      "seconds": 0.019,
+      "expected_success": true
+    },
+    {
+      "binary": "cratectld",
+      "exit": 0,
+      "seconds": 0.032,
+      "expected_success": true
+    },
+    {
+      "binary": "cratectld",
+      "exit": 0,
+      "seconds": 0.032,
+      "expected_success": true
+    },
+    {
+      "binary": "oras",
+      "exit": 0,
+      "seconds": 0.014,
+      "expected_success": true
+    },
+    {
+      "binary": "oras",
+      "exit": 0,
+      "seconds": 0.014,
+      "expected_success": true
+    },
+    {
+      "binary": "oras",
+      "exit": 0,
+      "seconds": 0.232,
+      "expected_success": true
+    },
+    {
+      "binary": "oras",
+      "exit": 0,
+      "seconds": 0.029,
+      "expected_success": true
+    },
+    {
+      "binary": "oras",
+      "exit": 0,
+      "seconds": 0.138,
+      "expected_success": true
+    },
+    {
+      "binary": "cratectld",
+      "exit": 0,
+      "seconds": 1.043,
+      "expected_success": true
+    },
+    {
+      "binary": "cratectld",
+      "exit": 0,
+      "seconds": 1.071,
+      "expected_success": true
+    },
+    {
+      "binary": "cratectld",
+      "exit": 0,
+      "seconds": 1.054,
+      "expected_success": true
+    },
+    {
+      "binary": "cratectld",
+      "exit": 1,
+      "seconds": 0.023,
+      "expected_success": false
+    },
+    {
+      "binary": "oras",
+      "exit": 0,
+      "seconds": 0.099,
+      "expected_success": true
+    },
+    {
+      "binary": "oras",
+      "exit": 0,
+      "seconds": 0.056,
+      "expected_success": true
+    },
+    {
+      "binary": "oras",
+      "exit": 1,
+      "seconds": 0.071,
+      "expected_success": false
+    },
+    {
+      "binary": "oras",
+      "exit": 0,
+      "seconds": 0.076,
+      "expected_success": true
+    },
+    {
+      "binary": "oras",
+      "exit": 1,
+      "seconds": 0.021,
+      "expected_success": false
+    },
+    {
+      "binary": "oras",
+      "exit": 0,
+      "seconds": 0.212,
+      "expected_success": true
+    },
+    {
+      "binary": "oras",
+      "exit": 0,
+      "seconds": 0.034,
+      "expected_success": true
+    },
+    {
+      "binary": "oras",
+      "exit": 0,
+      "seconds": 0.033,
+      "expected_success": true
+    },
+    {
+      "binary": "oras",
+      "exit": 0,
+      "seconds": 0.055,
+      "expected_success": true
+    },
+    {
+      "binary": "oras",
+      "exit": 0,
+      "seconds": 0.158,
+      "expected_success": true
+    },
+    {
+      "binary": "oras",
+      "exit": 1,
+      "seconds": 0.019,
+      "expected_success": false
+    }
+  ],
+  "artifact_digests": {
+    ".cache/repair-final-production/cratectld": "ee804a5a1ae1709af552ba9594eb7405bd7ccc9d3386f2e60f9d3083ec8a86ce",
+    "bin/cratectld": "ac802bb5e37d62ababf7dfd16442f1badef767c2b3346098b95a354cf31f7535",
+    "bin/cratectl": "5f5e1123a3e0778282b0fa4e4796adf7a63177d2d8f76b44651da74d24c9ddb0",
+    ".cache/bin/oras": "a75c9dfd7f8f4f1f8ff09c88e7dd03431714f5f760366dff50b7f3cea4850930"
+  },
+  "build_identity": {
+    ".cache/repair-final-production/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6",
+      "vcs.time": "2026-10-30T22:58:49Z",
+      "vcs.modified": "false"
+    },
+    "bin/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-race": "true",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "b19d1ae393320a2adc051f61db24693fec62591a",
+      "vcs.time": "2026-10-31T00:26:41Z",
+      "vcs.modified": "false"
+    },
+    "bin/cratectl": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-race": "true",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "b19d1ae393320a2adc051f61db24693fec62591a",
+      "vcs.time": "2026-10-31T00:26:41Z",
+      "vcs.modified": "false"
+    }
+  },
+  "topology": "Native macOS arm64, retained clean schema-5 binary then schema-6 binary, real PostgreSQL 16.15 nonowner forced RLS, stock ORAS; explicit HTTP loopback on 38443.",
+  "limits": [
+    "Logical retirement retains CAS bytes and all references; no physical erasure or reclaimed storage is claimed.",
+    "Source URL/configuration changes, recursive groups, retention/GC, scale, rolling upgrade, backup/restore and other clients/platforms remain required.",
+    "This campaign uses controlled maintenance with the registry stopped during migration; it does not establish compatible rolling versions."
+  ],
+  "build_source_matches_candidate": true,
+  "status": "passed"
+}

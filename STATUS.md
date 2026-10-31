@@ -1,28 +1,45 @@
 # cratectl execution status
 
-Recurring bounded integrity sampling is implemented locally and awaiting a clean
-candidate (ADR 0025; docs/operator/recurring-integrity.md). Schema 6 adds forced-RLS
-schedules, immutable configuration history and run receipts. Admission atomically
-captures a rotating reference set with job/cursor/slot/journal; queue pressure,
-unresolved prior work and expired/revoked authorization retain explicit state.
-API, CLI and console workflows are present. Pausing preserves existing jobs.
+Latest qualified source: `b19d1ae393320a2adc051f61db24693fec62591a`, authored and committed only as
+`imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
+The authoritative checkpoint is `evidence/2026-10-31/schedule-checkpoint.json`.
 
-Dirty-build preflights passed the full PostgreSQL store/server/native-driver race
-packages without skips or races, 31 stock ORAS/CLI recurrence/recovery assertions,
-a focused Chromium workflow with eight automated accessibility states, parser
-fuzzing and unit/race/lint checks. First failures for late requester expiry,
-empty-sample verification and malformed OpenAPI descriptions are retained with
-replays. See evidence/2026-10-30/schedule-preflight-notes.json. Full clean-candidate
-qualification is pending. All broad readiness verdicts and remaining scope stay open.
-Owned native PostgreSQL is running. The primary was upgraded from schema 5 to 6
-with clean c6c3a49 artifacts during controlled maintenance; receipts 1–5 remain
-frozen. Candidate c6c3a49 qualification was intentionally stopped after a separate
-real-PostgreSQL fault probe showed mutable progress replacing immutable run identity.
-Inspection, target pages and worker read/completion now crosscheck the immutable
-receipt, with focused race replays passing. This repair is awaiting a new clean
-source build. The rejected candidate artifacts and partial evidence are retained.
+Recurring referenced-byte schedules now have exact-revision configuration,
+immutable history and due-slot receipts, bounded rotating snapshots, explicit
+capacity/nonoverlap/authorization states and atomic job/cursor/journal admission.
+Real 60-second cadence, pause, revoked/expired credential fences, reauthorization,
+supported exact-byte recovery and process restart pass. A clean later sample
+preserves earlier findings; empty samples claim no byte verification. Immutable
+receipt mismatches fail inspection and worker execution without observations.
+See ADR 0025 and `docs/operator/recurring-integrity.md`.
 
-Latest qualified source: `1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6`, authored and committed only as
+Clean production artifacts passed 1041 assertions and separate race artifacts
+passed 532, across 27 runtime records. Eight Chromium workflows and 43
+named automated A/AA states pass per build. Thirteen new real PostgreSQL tests
+and the complete store/server/native-driver race packages ran twice without skips
+or races. Stock ORAS/npm/pip/Maven, supported repair, controlled schema-2/3/4/5
+upgrades, legacy adoption/process kill and maintenance regressions pass. Schema 6
+preserves receipts 1–5 and is current on the owned primary. Linux/Windows compile
+only. Unit/vet/race, architecture, console reproduction, API parse/reference and
+scoped vulnerability/credential/history checks pass. Full security and release
+packaging gates remain explicitly negative.
+
+Candidate c6c3a49 was rejected after an independent mutable-progress fault probe;
+its partial campaign and exact artifacts remain retained. The repair above has a
+new complete clean replay. The first controlled schema-6 upgrade used c6c3a49;
+later qualifying replays include fresh old-binary databases and primary no-op.
+A read-only remote audit observed an external advance to prior ea1fa83; all 47
+published authors/committers resolve to imfeelingtheagi. The initiating actor is
+not inferred. No push or remote mutation was issued by this work.
+
+All 450 capabilities and 41 families remain unfinished; broad readiness is
+negative. Complete broader schedules/sampling/alerts, source/grant/network races,
+hot/managed secret providers, metadata/provider/platform recovery, retention/GC,
+other clients, faults, scale and production backup/restore. Owned test services
+are stopped; private data and exact artifacts are retained. Historical checkpoints
+below retain their original scope.
+
+Previous byte-repair-qualified source: `1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6`, authored and committed only as
 `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
 The authoritative checkpoint is `evidence/2026-10-30/repair-checkpoint.json`.
 

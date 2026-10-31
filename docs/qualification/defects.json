@@ -522,6 +522,56 @@
       "candidate": "1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6",
       "replay": "evidence/2026-10-30/repair-clean-postgres-race.txt",
       "limits": "Named exact-byte repair fixtures only; full worker and product qualification remains open."
+    },
+    {
+      "id": "DEFECT.0048",
+      "summary": "Schedule requester expiry during final admission writes could retain a run",
+      "first_failure": "evidence/2026-10-30/schedule-expiry-first-failure.txt",
+      "state": "repaired and clean-source replayed",
+      "repair": "Recheck the original administrator after final journal/outbox writes and roll back the whole admission; distinguish requester expiry from worker credential loss.",
+      "candidate": "b19d1ae393320a2adc051f61db24693fec62591a",
+      "replay": "evidence/2026-10-31/schedule-checkpoint.json",
+      "limits": "Named fault/operator fixtures only; automatic metadata recovery and full product/security/scale qualification remain open."
+    },
+    {
+      "id": "DEFECT.0049",
+      "summary": "Expanded OpenAPI descriptions reintroduced unintended YAML flow-map response properties",
+      "first_failure": "evidence/2026-10-30/schedule-openapi-first.json",
+      "state": "repaired and clean-source replayed",
+      "repair": "Quote comma-containing flow descriptions, add a portable lint guard and independently parse every response/local reference.",
+      "candidate": "b19d1ae393320a2adc051f61db24693fec62591a",
+      "replay": "evidence/2026-10-31/schedule-checkpoint.json",
+      "limits": "Named fault/operator fixtures only; automatic metadata recovery and full product/security/scale qualification remain open."
+    },
+    {
+      "id": "DEFECT.0050",
+      "summary": "A completed empty sample claimed byte verification without an observation",
+      "first_failure": "evidence/2026-10-30/schedule-empty-first-failure.txt",
+      "state": "repaired and clean-source replayed",
+      "repair": "Complete the empty captured set while withholding positive byte-verification and full-tenant/security verdicts; make the console state explicit.",
+      "candidate": "b19d1ae393320a2adc051f61db24693fec62591a",
+      "replay": "evidence/2026-10-31/schedule-checkpoint.json",
+      "limits": "Named fault/operator fixtures only; automatic metadata recovery and full product/security/scale qualification remain open."
+    },
+    {
+      "id": "DEFECT.0051",
+      "summary": "Console job selector offered abandoned even though the API accepts uncertain",
+      "first_failure": "evidence/2026-10-30/schedules-59e7481f8d.json",
+      "state": "repaired and clean-source replayed",
+      "repair": "Offer the supported uncertain value; retain the old-source rejected-filter baseline and a real browser/server accepted-filter replay.",
+      "candidate": "b19d1ae393320a2adc051f61db24693fec62591a",
+      "replay": "evidence/2026-10-31/schedule-checkpoint.json",
+      "limits": "Named fault/operator fixtures only; automatic metadata recovery and full product/security/scale qualification remain open."
+    },
+    {
+      "id": "DEFECT.0052",
+      "summary": "Mutable schedule progress could replace immutable admitted run identity",
+      "first_failure": "evidence/2026-10-31/schedule-receipt-first-failure.json",
+      "state": "repaired and clean-source replayed",
+      "repair": "Crosscheck immutable schedule/revision/due/coalescing receipts in inspection, target reads and worker read/completion. Return an explicit evidence error and durably fail invalid targets without observations; label retained browser data as older.",
+      "candidate": "b19d1ae393320a2adc051f61db24693fec62591a",
+      "replay": "evidence/2026-10-31/schedule-checkpoint.json",
+      "limits": "Named fault/operator fixtures only; automatic metadata recovery and full product/security/scale qualification remain open."
     }
   ]
 }

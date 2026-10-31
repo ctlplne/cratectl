@@ -1,6 +1,6 @@
 # ADR 0025: durable recurring integrity samples
 
-Status: implemented locally; clean-candidate qualification pending.
+Status: accepted for the named qualification fixtures; broader scope remains open.
 
 An administrator may configure a tenant-local recurring referenced-byte sample.
 The schedule records an interval, repository scope, target count, authorizing
@@ -40,3 +40,6 @@ Schema 6 adds forced-RLS schedule, immutable configuration revision and run tabl
 Receipts 1–5 remain frozen. Upgrade requires controlled maintenance; rolling
 compatibility, full-volume sampling, unreferenced-file scheduling, S3, retention/GC,
 large-profile behavior and broader production recovery remain required.
+
+The named clean source, artifact hashes, runtime records and limits are retained in
+[`schedule-checkpoint.json`](../../evidence/2026-10-31/schedule-checkpoint.json).

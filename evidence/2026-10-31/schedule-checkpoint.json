@@ -1,0 +1,224 @@
+{
+  "candidate": "b19d1ae393320a2adc051f61db24693fec62591a",
+  "checked_at": "2026-10-31T00:49:50.241110+00:00",
+  "author_and_committer": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>",
+  "implementation_source": "c6c3a4986f5382787a0cff5d4da192d0cfe40a13",
+  "previous_qualified_source": "1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6",
+  "rejected_earlier_candidate": "evidence/2026-10-31/schedule-c6c3a49-rejected.json",
+  "runtime_records": [
+    {
+      "path": "evidence/2026-10-28/inventory-1ed7eb49a0.json",
+      "checks": 67,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/jobs-cee87250de.json",
+      "checks": 71,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/leases-807536df0e.json",
+      "checks": 63,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/public-oci-c8b109b685.json",
+      "checks": 33,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/sweeps-fec2966f8b.json",
+      "checks": 80,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/conformance-14c856d27b.json",
+      "checks": 363,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/conformance-388aa29d23.json",
+      "checks": 46,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/conformance-c1792156f6.json",
+      "checks": 79,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/conformance-d1e3b844b3.json",
+      "checks": 43,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/console-8e4b96e6f0.json",
+      "checks": 61,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/console-c31150f2ab.json",
+      "checks": 61,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/installation-18b392d175.json",
+      "checks": 30,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/installation-62f8dd88c7.json",
+      "checks": 30,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-0008a060ad.json",
+      "checks": 46,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-0e4fb27175.json",
+      "checks": 46,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-1a70951f9e.json",
+      "checks": 46,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-22e89091ca.json",
+      "checks": 44,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-241dc8ef1a.json",
+      "checks": 44,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-401f50fa81.json",
+      "checks": 46,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-8dd5063b08.json",
+      "checks": 46,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-96756c5da5.json",
+      "checks": 46,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/repairs-5538a178c5.json",
+      "checks": 45,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/repairs-df3c6e0ba5.json",
+      "checks": 45,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/schedules-153ffdd8bc.json",
+      "checks": 32,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/schedules-6522a67be2.json",
+      "checks": 32,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/schema-4cd2fa6d7f.json",
+      "checks": 14,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/schema-999c28e660.json",
+      "checks": 14,
+      "race": true
+    }
+  ],
+  "assertions": {
+    "production": 1041,
+    "race": 532
+  },
+  "browser_tests_per_build": 8,
+  "automated_accessibility_states_per_console": 43,
+  "postgres_race_repetitions": 2,
+  "new_real_postgres_tests": [
+    "TestIntegrityScheduleMigrationPreservesFiveReceiptsAndGuardsNewTenantTables",
+    "TestIntegrityScheduleRotatesImmutableSamplesAndDoesNotOverlap",
+    "TestIntegrityScheduleConcurrentAdmissionAndQueueDeferral",
+    "TestIntegrityScheduleCredentialExpiryAndRevocationBlockUntilReauthorized",
+    "TestIntegrityScheduleTenantIsolationAndImmutableReceipts",
+    "TestIntegrityScheduleConfigurationAndDispatchRollbackWithJournal",
+    "TestIntegrityScheduleRequesterExpiryDuringAdmissionRollsBackAllEffects",
+    "TestIntegrityScheduleSamplesRetiredHeldDeniedAndConflictingUploadBindings",
+    "TestIntegrityScheduleEmptyCaptureDoesNotClaimByteVerification",
+    "TestIntegrityScheduleRunInspectionAndWorkerRejectMutableReceiptDrift",
+    "TestIntegrityScheduleHTTPWorkerReadsActualBytesAndSurvivesRestart",
+    "TestIntegrityScheduleHTTPPurposeAndTenantBoundaries",
+    "TestIntegrityScheduleHTTPRejectsReceiptDriftAndWorkerFailsWithoutObservations"
+  ],
+  "console": {
+    "production": "evidence/2026-10-31/console-c31150f2ab.json",
+    "race": "evidence/2026-10-31/console-8e4b96e6f0.json"
+  },
+  "recurring_schedule": {
+    "production": "evidence/2026-10-31/schedules-6522a67be2.json",
+    "race": "evidence/2026-10-31/schedules-153ffdd8bc.json"
+  },
+  "byte_repair_replay": {
+    "race": "evidence/2026-10-31/repairs-df3c6e0ba5.json",
+    "production": "evidence/2026-10-31/repairs-5538a178c5.json"
+  },
+  "old_binary_upgrades": {
+    "5-production": "evidence/2026-10-31/lifecycle-8dd5063b08.json",
+    "3-production": "evidence/2026-10-31/lifecycle-0008a060ad.json",
+    "4-race": "evidence/2026-10-31/lifecycle-401f50fa81.json",
+    "3-race": "evidence/2026-10-31/lifecycle-0e4fb27175.json",
+    "2-production": "evidence/2026-10-31/lifecycle-241dc8ef1a.json",
+    "4-production": "evidence/2026-10-31/lifecycle-1a70951f9e.json",
+    "5-race": "evidence/2026-10-31/lifecycle-96756c5da5.json",
+    "2-race": "evidence/2026-10-31/lifecycle-22e89091ca.json"
+  },
+  "schema_version": 6,
+  "frozen_migration_checksums": [
+    "1e0f7b93d872f8ab83f85742000a6282f2722a0a338d8f2bc81755345ba66d16",
+    "9e023c96c8cf33549ce81f1eac22551b5cdb6267d146f65d430ec254dc8b10b5",
+    "44527dcd4be5177203e2b0eb93e5886a4dae437fbebf4cec14f7737ecb2f15d3",
+    "8b287dda8e78324c44275d31850418d7e7166d9d6fe49c71d539dbd44a52d209",
+    "0e835ed82b84cdd3d85858b0a76611b3ed6d387bbf55fee76d2abdf7c7f313a9",
+    "557b3f6612a403e24d0c9726c9b048d62188b3e1a93bcb3f158616da30b1fe6c"
+  ],
+  "tests": {
+    "unit_vet_race_console_reproduction": "evidence/2026-10-31/schedule-clean-unit-vet-race.txt",
+    "postgres_race": "evidence/2026-10-31/schedule-clean-postgres-race.txt",
+    "serial_replay": "evidence/2026-10-31/schedule-clean-replay.json",
+    "initial_primary_upgrade_candidate": "c6c3a4986f5382787a0cff5d4da192d0cfe40a13",
+    "initial_primary_plan": "evidence/2026-10-31/schedule-primary-v5-plan.txt",
+    "initial_primary_upgrade": "evidence/2026-10-31/schedule-primary-v5-upgrade.txt",
+    "parser_fuzz_preflight": "evidence/2026-10-30/schedule-parser-fuzz-preflight.txt"
+  },
+  "artifact_manifest": "evidence/2026-10-31/schedule-artifacts.json",
+  "security": "evidence/2026-10-31/schedule-security.json",
+  "broad_required_gates": "evidence/2026-10-31/schedule-broad-gates.json",
+  "remote_identity_audit": "evidence/2026-10-31/schedule-remote-state-audit.json",
+  "service_stop_evidence": "evidence/2026-10-31/schedule-final-services.json",
+  "test_services": "Owned registry/worker and PostgreSQL stopped; private data and exact artifacts retained.",
+  "this_work_push": false,
+  "this_work_remote_mutation": false,
+  "goal_turn_classification": "progress: durable recurring samples and fenced evidence/worker/operator recovery qualified within named fixtures",
+  "limits": [
+    "All 450 capabilities/journeys and 41 format families remain unfinished; broad readiness is negative.",
+    "Named macOS arm64, local filesystem, real PostgreSQL and loopback HTTP fixtures only. Full source/grant/network races, providers/platforms, fault/clock/scale and production recovery remain required.",
+    "Deterministic bounded referenced-byte rotation is not randomized/full-volume sampling. Unreferenced-file scheduling, calendar schedules, alerts, S3, retention/GC and global multi-host fairness remain required.",
+    "Immutable receipt drift fails inspection and worker execution. Automatic repair of corrupted metadata, consistent backup/restore and full tamper-evident evidence remain open.",
+    "Schema 6 preserves receipts 1\u20135 under controlled maintenance. Rolling compatibility, whole-transfer draining and downgrade remain open.",
+    "Eight Chromium workflows and 43 automated A/AA states do not establish full WCAG, assistive-technology or other-browser coverage. Other-platform artifacts compile only."
+  ]
+}

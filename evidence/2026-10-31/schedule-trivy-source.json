@@ -1,0 +1,1899 @@
+{
+  "SchemaVersion": 2,
+  "Trivy": {
+    "Version": "0.72.0"
+  },
+  "ReportID": "01a18f5d-b9f9-73ff-af1e-cc76009806db",
+  "CreatedAt": "2026-10-30T20:30:46.777264-04:00",
+  "ArtifactName": "/Users/shankar/Desktop/ctlplne-cratectl/.cache/review-lifecycle-input",
+  "ArtifactType": "filesystem",
+  "Results": [
+    {
+      "Target": "go.mod",
+      "Class": "lang-pkgs",
+      "Type": "gomod",
+      "Packages": [
+        {
+          "ID": "ctlplne.dev/cratectl",
+          "Name": "ctlplne.dev/cratectl",
+          "Identifier": {
+            "PURL": "pkg:golang/ctlplne.dev/cratectl",
+            "UID": "7a2dfdb2906b090f"
+          },
+          "Relationship": "root",
+          "DependsOn": [
+            "github.com/Masterminds/semver/v3@v3.4.0",
+            "github.com/aquasecurity/go-pep440-version@v0.0.1",
+            "github.com/jackc/pgx/v5@v5.11.0",
+            "golang.org/x/net@v0.62.0",
+            "github.com/aquasecurity/go-version@v0.0.1",
+            "golang.org/x/xerrors@v0.0.0-20231012003039-104605ab7028"
+          ],
+          "AnalyzedBy": "gomod"
+        },
+        {
+          "ID": "github.com/Masterminds/semver/v3@v3.4.0",
+          "Name": "github.com/Masterminds/semver/v3",
+          "Identifier": {
+            "PURL": "pkg:golang/github.com/masterminds/semver/v3@v3.4.0",
+            "UID": "5cf5c9f0fee30091"
+          },
+          "Version": "v3.4.0",
+          "Relationship": "direct",
+          "AnalyzedBy": "gomod"
+        },
+        {
+          "ID": "github.com/aquasecurity/go-pep440-version@v0.0.1",
+          "Name": "github.com/aquasecurity/go-pep440-version",
+          "Identifier": {
+            "PURL": "pkg:golang/github.com/aquasecurity/go-pep440-version@v0.0.1",
+            "UID": "8fabc2b9f392b395"
+          },
+          "Version": "v0.0.1",
+          "Relationship": "direct",
+          "AnalyzedBy": "gomod"
+        },
+        {
+          "ID": "github.com/jackc/pgx/v5@v5.11.0",
+          "Name": "github.com/jackc/pgx/v5",
+          "Identifier": {
+            "PURL": "pkg:golang/github.com/jackc/pgx/v5@v5.11.0",
+            "UID": "6ebc39f2183a2279"
+          },
+          "Version": "v5.11.0",
+          "Licenses": [
+            "MIT"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "github.com/jackc/pgpassfile@v1.0.0",
+            "github.com/jackc/pgservicefile@v0.0.0-20240606120523-5a60cdf6a761",
+            "github.com/jackc/puddle/v2@v2.2.2",
+            "golang.org/x/sync@v0.24.0",
+            "golang.org/x/text@v0.43.0"
+          ],
+          "AnalyzedBy": "gomod"
+        },
+        {
+          "ID": "golang.org/x/net@v0.62.0",
+          "Name": "golang.org/x/net",
+          "Identifier": {
+            "PURL": "pkg:golang/golang.org/x/net@v0.62.0",
+            "UID": "dccba268bb1412a2"
+          },
+          "Version": "v0.62.0",
+          "Licenses": [
+            "BSD-3-Clause"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "golang.org/x/text@v0.43.0"
+          ],
+          "AnalyzedBy": "gomod"
+        },
+        {
+          "ID": "github.com/aquasecurity/go-version@v0.0.1",
+          "Name": "github.com/aquasecurity/go-version",
+          "Identifier": {
+            "PURL": "pkg:golang/github.com/aquasecurity/go-version@v0.0.1",
+            "UID": "dc3750b0ecc080ed"
+          },
+          "Version": "v0.0.1",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "gomod"
+        },
+        {
+          "ID": "github.com/jackc/pgpassfile@v1.0.0",
+          "Name": "github.com/jackc/pgpassfile",
+          "Identifier": {
+            "PURL": "pkg:golang/github.com/jackc/pgpassfile@v1.0.0",
+            "UID": "2bab45fd9d7b2c86"
+          },
+          "Version": "v1.0.0",
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "gomod"
+        },
+        {
+          "ID": "github.com/jackc/pgservicefile@v0.0.0-20240606120523-5a60cdf6a761",
+          "Name": "github.com/jackc/pgservicefile",
+          "Identifier": {
+            "PURL": "pkg:golang/github.com/jackc/pgservicefile@v0.0.0-20240606120523-5a60cdf6a761",
+            "UID": "ea0d3d3d4e027702"
+          },
+          "Version": "v0.0.0-20240606120523-5a60cdf6a761",
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "gomod"
+        },
+        {
+          "ID": "github.com/jackc/puddle/v2@v2.2.2",
+          "Name": "github.com/jackc/puddle/v2",
+          "Identifier": {
+            "PURL": "pkg:golang/github.com/jackc/puddle/v2@v2.2.2",
+            "UID": "fe2f635dd3adcb37"
+          },
+          "Version": "v2.2.2",
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "golang.org/x/sync@v0.24.0"
+          ],
+          "AnalyzedBy": "gomod"
+        },
+        {
+          "ID": "golang.org/x/sync@v0.24.0",
+          "Name": "golang.org/x/sync",
+          "Identifier": {
+            "PURL": "pkg:golang/golang.org/x/sync@v0.24.0",
+            "UID": "c5f9a5be83fbb14d"
+          },
+          "Version": "v0.24.0",
+          "Licenses": [
+            "BSD-3-Clause"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "gomod"
+        },
+        {
+          "ID": "golang.org/x/text@v0.43.0",
+          "Name": "golang.org/x/text",
+          "Identifier": {
+            "PURL": "pkg:golang/golang.org/x/text@v0.43.0",
+            "UID": "cd298a4c39ea4961"
+          },
+          "Version": "v0.43.0",
+          "Licenses": [
+            "BSD-3-Clause"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "gomod"
+        },
+        {
+          "ID": "golang.org/x/xerrors@v0.0.0-20231012003039-104605ab7028",
+          "Name": "golang.org/x/xerrors",
+          "Identifier": {
+            "PURL": "pkg:golang/golang.org/x/xerrors@v0.0.0-20231012003039-104605ab7028",
+            "UID": "b8f847afc250749e"
+          },
+          "Version": "v0.0.0-20231012003039-104605ab7028",
+          "Indirect": true,
+          "Relationship": "indirect",
+          "AnalyzedBy": "gomod"
+        }
+      ]
+    },
+    {
+      "Target": "web/package-lock.json",
+      "Class": "lang-pkgs",
+      "Type": "npm",
+      "Packages": [
+        {
+          "ID": "@axe-core/playwright@4.14.0",
+          "Name": "@axe-core/playwright",
+          "Identifier": {
+            "PURL": "pkg:npm/%40axe-core/playwright@4.14.0",
+            "UID": "74ae48264ff15e1a"
+          },
+          "Version": "4.14.0",
+          "Dev": true,
+          "Licenses": [
+            "MPL-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "axe-core@4.14.0",
+            "playwright-core@1.64.1"
+          ],
+          "Locations": [
+            {
+              "StartLine": 25,
+              "EndLine": 40
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@playwright/test@1.64.1",
+          "Name": "@playwright/test",
+          "Identifier": {
+            "PURL": "pkg:npm/%40playwright/test@1.64.1",
+            "UID": "e7bf65de14b3a2f2"
+          },
+          "Version": "1.64.1",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "playwright@1.64.1"
+          ],
+          "Locations": [
+            {
+              "StartLine": 51,
+              "EndLine": 66
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@types/react@19.3.0",
+          "Name": "@types/react",
+          "Identifier": {
+            "PURL": "pkg:npm/%40types/react@19.3.0",
+            "UID": "fd9e8abb70e7ad62"
+          },
+          "Version": "19.3.0",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "csstype@3.2.3"
+          ],
+          "Locations": [
+            {
+              "StartLine": 347,
+              "EndLine": 356
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@types/react-dom@19.3.0",
+          "Name": "@types/react-dom",
+          "Identifier": {
+            "PURL": "pkg:npm/%40types/react-dom@19.3.0",
+            "UID": "1e32e8ac3b5f3648"
+          },
+          "Version": "19.3.0",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "@types/react@19.3.0"
+          ],
+          "Locations": [
+            {
+              "StartLine": 357,
+              "EndLine": 366
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@vitejs/plugin-react@6.1.2",
+          "Name": "@vitejs/plugin-react",
+          "Identifier": {
+            "PURL": "pkg:npm/%40vitejs/plugin-react@6.1.2",
+            "UID": "a25b8540192082e5"
+          },
+          "Version": "6.1.2",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "@rolldown/pluginutils@1.0.1",
+            "vite@8.3.5"
+          ],
+          "Locations": [
+            {
+              "StartLine": 707,
+              "EndLine": 736
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "react@19.3.1",
+          "Name": "react",
+          "Identifier": {
+            "PURL": "pkg:npm/react@19.3.1",
+            "UID": "702a9571971e9790"
+          },
+          "Version": "19.3.1",
+          "Licenses": [
+            "MIT"
+          ],
+          "Relationship": "direct",
+          "Locations": [
+            {
+              "StartLine": 1167,
+              "EndLine": 1175
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "react-dom@19.3.1",
+          "Name": "react-dom",
+          "Identifier": {
+            "PURL": "pkg:npm/react-dom@19.3.1",
+            "UID": "b75d5d04960e3a79"
+          },
+          "Version": "19.3.1",
+          "Licenses": [
+            "MIT"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "react@19.3.1",
+            "scheduler@0.28.0"
+          ],
+          "Locations": [
+            {
+              "StartLine": 1176,
+              "EndLine": 1187
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "typescript@7.0.2",
+          "Name": "typescript",
+          "Identifier": {
+            "PURL": "pkg:npm/typescript@7.0.2",
+            "UID": "a83004122ded088f"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "@typescript/typescript-aix-ppc64@7.0.2",
+            "@typescript/typescript-darwin-arm64@7.0.2",
+            "@typescript/typescript-darwin-x64@7.0.2",
+            "@typescript/typescript-freebsd-arm64@7.0.2",
+            "@typescript/typescript-freebsd-x64@7.0.2",
+            "@typescript/typescript-linux-arm64@7.0.2",
+            "@typescript/typescript-linux-arm@7.0.2",
+            "@typescript/typescript-linux-loong64@7.0.2",
+            "@typescript/typescript-linux-mips64el@7.0.2",
+            "@typescript/typescript-linux-ppc64@7.0.2",
+            "@typescript/typescript-linux-riscv64@7.0.2",
+            "@typescript/typescript-linux-s390x@7.0.2",
+            "@typescript/typescript-linux-x64@7.0.2",
+            "@typescript/typescript-netbsd-arm64@7.0.2",
+            "@typescript/typescript-netbsd-x64@7.0.2",
+            "@typescript/typescript-openbsd-arm64@7.0.2",
+            "@typescript/typescript-openbsd-x64@7.0.2",
+            "@typescript/typescript-sunos-x64@7.0.2",
+            "@typescript/typescript-win32-arm64@7.0.2",
+            "@typescript/typescript-win32-x64@7.0.2"
+          ],
+          "Locations": [
+            {
+              "StartLine": 1255,
+              "EndLine": 1289
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "vite@8.3.5",
+          "Name": "vite",
+          "Identifier": {
+            "PURL": "pkg:npm/vite@8.3.5",
+            "UID": "b5851ad2e4cd46f5"
+          },
+          "Version": "8.3.5",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Relationship": "direct",
+          "DependsOn": [
+            "fsevents@2.3.3",
+            "lightningcss@1.33.0",
+            "picomatch@4.0.7",
+            "postcss@8.5.32",
+            "rolldown@1.2.15",
+            "tinyglobby@0.2.17"
+          ],
+          "Locations": [
+            {
+              "StartLine": 1290,
+              "EndLine": 1367
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@oxc-project/types@0.155.0",
+          "Name": "@oxc-project/types",
+          "Identifier": {
+            "PURL": "pkg:npm/%40oxc-project/types@0.155.0",
+            "UID": "a464720a88744c8f"
+          },
+          "Version": "0.155.0",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 41,
+              "EndLine": 50
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@rolldown/binding-android-arm-eabi@1.2.15",
+          "Name": "@rolldown/binding-android-arm-eabi",
+          "Identifier": {
+            "PURL": "pkg:npm/%40rolldown/binding-android-arm-eabi@1.2.15",
+            "UID": "af9b46a1879160a5"
+          },
+          "Version": "1.2.15",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 67,
+              "EndLine": 83
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@rolldown/binding-android-arm64@1.2.15",
+          "Name": "@rolldown/binding-android-arm64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40rolldown/binding-android-arm64@1.2.15",
+            "UID": "3fab4d31a4ce528a"
+          },
+          "Version": "1.2.15",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 84,
+              "EndLine": 100
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@rolldown/binding-darwin-arm64@1.2.15",
+          "Name": "@rolldown/binding-darwin-arm64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40rolldown/binding-darwin-arm64@1.2.15",
+            "UID": "38ec3cdf70b027c"
+          },
+          "Version": "1.2.15",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 101,
+              "EndLine": 117
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@rolldown/binding-darwin-x64@1.2.15",
+          "Name": "@rolldown/binding-darwin-x64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40rolldown/binding-darwin-x64@1.2.15",
+            "UID": "6317750388717ebd"
+          },
+          "Version": "1.2.15",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 118,
+              "EndLine": 134
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@rolldown/binding-freebsd-x64@1.2.15",
+          "Name": "@rolldown/binding-freebsd-x64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40rolldown/binding-freebsd-x64@1.2.15",
+            "UID": "602cb921b0d5a949"
+          },
+          "Version": "1.2.15",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 135,
+              "EndLine": 151
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@rolldown/binding-linux-arm-gnueabihf@1.2.15",
+          "Name": "@rolldown/binding-linux-arm-gnueabihf",
+          "Identifier": {
+            "PURL": "pkg:npm/%40rolldown/binding-linux-arm-gnueabihf@1.2.15",
+            "UID": "4cba9aba9e9542a5"
+          },
+          "Version": "1.2.15",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 152,
+              "EndLine": 168
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@rolldown/binding-linux-arm64-gnu@1.2.15",
+          "Name": "@rolldown/binding-linux-arm64-gnu",
+          "Identifier": {
+            "PURL": "pkg:npm/%40rolldown/binding-linux-arm64-gnu@1.2.15",
+            "UID": "f99b03047e531742"
+          },
+          "Version": "1.2.15",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 169,
+              "EndLine": 188
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@rolldown/binding-linux-arm64-musl@1.2.15",
+          "Name": "@rolldown/binding-linux-arm64-musl",
+          "Identifier": {
+            "PURL": "pkg:npm/%40rolldown/binding-linux-arm64-musl@1.2.15",
+            "UID": "55e6208f2e281fe5"
+          },
+          "Version": "1.2.15",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 189,
+              "EndLine": 208
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@rolldown/binding-linux-ppc64-gnu@1.2.15",
+          "Name": "@rolldown/binding-linux-ppc64-gnu",
+          "Identifier": {
+            "PURL": "pkg:npm/%40rolldown/binding-linux-ppc64-gnu@1.2.15",
+            "UID": "1c2648eea2f80508"
+          },
+          "Version": "1.2.15",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 209,
+              "EndLine": 228
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@rolldown/binding-linux-s390x-gnu@1.2.15",
+          "Name": "@rolldown/binding-linux-s390x-gnu",
+          "Identifier": {
+            "PURL": "pkg:npm/%40rolldown/binding-linux-s390x-gnu@1.2.15",
+            "UID": "dc3bac9340b38954"
+          },
+          "Version": "1.2.15",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 229,
+              "EndLine": 248
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@rolldown/binding-linux-x64-gnu@1.2.15",
+          "Name": "@rolldown/binding-linux-x64-gnu",
+          "Identifier": {
+            "PURL": "pkg:npm/%40rolldown/binding-linux-x64-gnu@1.2.15",
+            "UID": "d4ba143327c8ac4c"
+          },
+          "Version": "1.2.15",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 249,
+              "EndLine": 268
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@rolldown/binding-linux-x64-musl@1.2.15",
+          "Name": "@rolldown/binding-linux-x64-musl",
+          "Identifier": {
+            "PURL": "pkg:npm/%40rolldown/binding-linux-x64-musl@1.2.15",
+            "UID": "f5ef83b58b0f632d"
+          },
+          "Version": "1.2.15",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 269,
+              "EndLine": 288
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@rolldown/binding-openharmony-arm64@1.2.15",
+          "Name": "@rolldown/binding-openharmony-arm64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40rolldown/binding-openharmony-arm64@1.2.15",
+            "UID": "71eba7466e34aa1f"
+          },
+          "Version": "1.2.15",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 289,
+              "EndLine": 305
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@rolldown/binding-win32-arm64-msvc@1.2.15",
+          "Name": "@rolldown/binding-win32-arm64-msvc",
+          "Identifier": {
+            "PURL": "pkg:npm/%40rolldown/binding-win32-arm64-msvc@1.2.15",
+            "UID": "98d9af9634e33995"
+          },
+          "Version": "1.2.15",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 306,
+              "EndLine": 322
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@rolldown/binding-win32-x64-msvc@1.2.15",
+          "Name": "@rolldown/binding-win32-x64-msvc",
+          "Identifier": {
+            "PURL": "pkg:npm/%40rolldown/binding-win32-x64-msvc@1.2.15",
+            "UID": "d34e85f757812325"
+          },
+          "Version": "1.2.15",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 323,
+              "EndLine": 339
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@rolldown/pluginutils@1.0.1",
+          "Name": "@rolldown/pluginutils",
+          "Identifier": {
+            "PURL": "pkg:npm/%40rolldown/pluginutils@1.0.1",
+            "UID": "d9692ff96eb3fdc1"
+          },
+          "Version": "1.0.1",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 340,
+              "EndLine": 346
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@typescript/typescript-aix-ppc64@7.0.2",
+          "Name": "@typescript/typescript-aix-ppc64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40typescript/typescript-aix-ppc64@7.0.2",
+            "UID": "cd3fce6ecbc92feb"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 367,
+              "EndLine": 383
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@typescript/typescript-darwin-arm64@7.0.2",
+          "Name": "@typescript/typescript-darwin-arm64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40typescript/typescript-darwin-arm64@7.0.2",
+            "UID": "d26313310369169b"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 384,
+              "EndLine": 400
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@typescript/typescript-darwin-x64@7.0.2",
+          "Name": "@typescript/typescript-darwin-x64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40typescript/typescript-darwin-x64@7.0.2",
+            "UID": "5f6382cd5384de25"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 401,
+              "EndLine": 417
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@typescript/typescript-freebsd-arm64@7.0.2",
+          "Name": "@typescript/typescript-freebsd-arm64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40typescript/typescript-freebsd-arm64@7.0.2",
+            "UID": "7d46767731928024"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 418,
+              "EndLine": 434
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@typescript/typescript-freebsd-x64@7.0.2",
+          "Name": "@typescript/typescript-freebsd-x64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40typescript/typescript-freebsd-x64@7.0.2",
+            "UID": "d9d2c4dc75730018"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 435,
+              "EndLine": 451
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@typescript/typescript-linux-arm@7.0.2",
+          "Name": "@typescript/typescript-linux-arm",
+          "Identifier": {
+            "PURL": "pkg:npm/%40typescript/typescript-linux-arm@7.0.2",
+            "UID": "fd70e2652fe44e15"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 452,
+              "EndLine": 468
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@typescript/typescript-linux-arm64@7.0.2",
+          "Name": "@typescript/typescript-linux-arm64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40typescript/typescript-linux-arm64@7.0.2",
+            "UID": "3c40ce26eddbc64"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 469,
+              "EndLine": 485
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@typescript/typescript-linux-loong64@7.0.2",
+          "Name": "@typescript/typescript-linux-loong64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40typescript/typescript-linux-loong64@7.0.2",
+            "UID": "c64a8c9b1eb18f16"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 486,
+              "EndLine": 502
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@typescript/typescript-linux-mips64el@7.0.2",
+          "Name": "@typescript/typescript-linux-mips64el",
+          "Identifier": {
+            "PURL": "pkg:npm/%40typescript/typescript-linux-mips64el@7.0.2",
+            "UID": "393f2c606deff6b"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 503,
+              "EndLine": 519
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@typescript/typescript-linux-ppc64@7.0.2",
+          "Name": "@typescript/typescript-linux-ppc64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40typescript/typescript-linux-ppc64@7.0.2",
+            "UID": "3f6fd217fe72b1d1"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 520,
+              "EndLine": 536
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@typescript/typescript-linux-riscv64@7.0.2",
+          "Name": "@typescript/typescript-linux-riscv64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40typescript/typescript-linux-riscv64@7.0.2",
+            "UID": "973c4dc1128b2df6"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 537,
+              "EndLine": 553
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@typescript/typescript-linux-s390x@7.0.2",
+          "Name": "@typescript/typescript-linux-s390x",
+          "Identifier": {
+            "PURL": "pkg:npm/%40typescript/typescript-linux-s390x@7.0.2",
+            "UID": "8e1b2e2cc8fdc30e"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 554,
+              "EndLine": 570
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@typescript/typescript-linux-x64@7.0.2",
+          "Name": "@typescript/typescript-linux-x64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40typescript/typescript-linux-x64@7.0.2",
+            "UID": "7a45d6d776cd63f4"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 571,
+              "EndLine": 587
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@typescript/typescript-netbsd-arm64@7.0.2",
+          "Name": "@typescript/typescript-netbsd-arm64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40typescript/typescript-netbsd-arm64@7.0.2",
+            "UID": "2fbf068013bcd48"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 588,
+              "EndLine": 604
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@typescript/typescript-netbsd-x64@7.0.2",
+          "Name": "@typescript/typescript-netbsd-x64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40typescript/typescript-netbsd-x64@7.0.2",
+            "UID": "bd65bfebd0ceb059"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 605,
+              "EndLine": 621
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@typescript/typescript-openbsd-arm64@7.0.2",
+          "Name": "@typescript/typescript-openbsd-arm64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40typescript/typescript-openbsd-arm64@7.0.2",
+            "UID": "d5bc3e0d8d44449b"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 622,
+              "EndLine": 638
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@typescript/typescript-openbsd-x64@7.0.2",
+          "Name": "@typescript/typescript-openbsd-x64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40typescript/typescript-openbsd-x64@7.0.2",
+            "UID": "97f6a4307021450a"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 639,
+              "EndLine": 655
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@typescript/typescript-sunos-x64@7.0.2",
+          "Name": "@typescript/typescript-sunos-x64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40typescript/typescript-sunos-x64@7.0.2",
+            "UID": "d5ec9aedd12e3933"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 656,
+              "EndLine": 672
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@typescript/typescript-win32-arm64@7.0.2",
+          "Name": "@typescript/typescript-win32-arm64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40typescript/typescript-win32-arm64@7.0.2",
+            "UID": "88d446aa649bf5a5"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 673,
+              "EndLine": 689
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "@typescript/typescript-win32-x64@7.0.2",
+          "Name": "@typescript/typescript-win32-x64",
+          "Identifier": {
+            "PURL": "pkg:npm/%40typescript/typescript-win32-x64@7.0.2",
+            "UID": "275911d553229e86"
+          },
+          "Version": "7.0.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 690,
+              "EndLine": 706
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "axe-core@4.14.0",
+          "Name": "axe-core",
+          "Identifier": {
+            "PURL": "pkg:npm/axe-core@4.14.0",
+            "UID": "7ec4e3dd6340dccd"
+          },
+          "Version": "4.14.0",
+          "Dev": true,
+          "Licenses": [
+            "MPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 737,
+              "EndLine": 746
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "csstype@3.2.3",
+          "Name": "csstype",
+          "Identifier": {
+            "PURL": "pkg:npm/csstype@3.2.3",
+            "UID": "6e3efb0836331a78"
+          },
+          "Version": "3.2.3",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 747,
+              "EndLine": 753
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "detect-libc@2.1.2",
+          "Name": "detect-libc",
+          "Identifier": {
+            "PURL": "pkg:npm/detect-libc@2.1.2",
+            "UID": "97db5092312db659"
+          },
+          "Version": "2.1.2",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 754,
+              "EndLine": 763
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "fdir@6.5.0",
+          "Name": "fdir",
+          "Identifier": {
+            "PURL": "pkg:npm/fdir@6.5.0",
+            "UID": "62e1d30bfb2fa43f"
+          },
+          "Version": "6.5.0",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "picomatch@4.0.7"
+          ],
+          "Locations": [
+            {
+              "StartLine": 764,
+              "EndLine": 781
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "fsevents@2.3.3",
+          "Name": "fsevents",
+          "Identifier": {
+            "PURL": "pkg:npm/fsevents@2.3.3",
+            "UID": "283ac0570ba46f48"
+          },
+          "Version": "2.3.3",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 782,
+              "EndLine": 796
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "lightningcss@1.33.0",
+          "Name": "lightningcss",
+          "Identifier": {
+            "PURL": "pkg:npm/lightningcss@1.33.0",
+            "UID": "1402861f5d3bd2b0"
+          },
+          "Version": "1.33.0",
+          "Dev": true,
+          "Licenses": [
+            "MPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "detect-libc@2.1.2",
+            "lightningcss-android-arm64@1.33.0",
+            "lightningcss-darwin-arm64@1.33.0",
+            "lightningcss-darwin-x64@1.33.0",
+            "lightningcss-freebsd-x64@1.33.0",
+            "lightningcss-linux-arm-gnueabihf@1.33.0",
+            "lightningcss-linux-arm64-gnu@1.33.0",
+            "lightningcss-linux-arm64-musl@1.33.0",
+            "lightningcss-linux-x64-gnu@1.33.0",
+            "lightningcss-linux-x64-musl@1.33.0",
+            "lightningcss-win32-arm64-msvc@1.33.0",
+            "lightningcss-win32-x64-msvc@1.33.0"
+          ],
+          "Locations": [
+            {
+              "StartLine": 797,
+              "EndLine": 826
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "lightningcss-android-arm64@1.33.0",
+          "Name": "lightningcss-android-arm64",
+          "Identifier": {
+            "PURL": "pkg:npm/lightningcss-android-arm64@1.33.0",
+            "UID": "9188a600b83f01ae"
+          },
+          "Version": "1.33.0",
+          "Dev": true,
+          "Licenses": [
+            "MPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 827,
+              "EndLine": 847
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "lightningcss-darwin-arm64@1.33.0",
+          "Name": "lightningcss-darwin-arm64",
+          "Identifier": {
+            "PURL": "pkg:npm/lightningcss-darwin-arm64@1.33.0",
+            "UID": "93458005cd7be844"
+          },
+          "Version": "1.33.0",
+          "Dev": true,
+          "Licenses": [
+            "MPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 848,
+              "EndLine": 868
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "lightningcss-darwin-x64@1.33.0",
+          "Name": "lightningcss-darwin-x64",
+          "Identifier": {
+            "PURL": "pkg:npm/lightningcss-darwin-x64@1.33.0",
+            "UID": "631dc97603293247"
+          },
+          "Version": "1.33.0",
+          "Dev": true,
+          "Licenses": [
+            "MPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 869,
+              "EndLine": 889
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "lightningcss-freebsd-x64@1.33.0",
+          "Name": "lightningcss-freebsd-x64",
+          "Identifier": {
+            "PURL": "pkg:npm/lightningcss-freebsd-x64@1.33.0",
+            "UID": "68083e5ccbe763b"
+          },
+          "Version": "1.33.0",
+          "Dev": true,
+          "Licenses": [
+            "MPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 890,
+              "EndLine": 910
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "lightningcss-linux-arm-gnueabihf@1.33.0",
+          "Name": "lightningcss-linux-arm-gnueabihf",
+          "Identifier": {
+            "PURL": "pkg:npm/lightningcss-linux-arm-gnueabihf@1.33.0",
+            "UID": "563499b42f9b5b2e"
+          },
+          "Version": "1.33.0",
+          "Dev": true,
+          "Licenses": [
+            "MPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 911,
+              "EndLine": 931
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "lightningcss-linux-arm64-gnu@1.33.0",
+          "Name": "lightningcss-linux-arm64-gnu",
+          "Identifier": {
+            "PURL": "pkg:npm/lightningcss-linux-arm64-gnu@1.33.0",
+            "UID": "ae1fbb0f92bc01d4"
+          },
+          "Version": "1.33.0",
+          "Dev": true,
+          "Licenses": [
+            "MPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 932,
+              "EndLine": 955
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "lightningcss-linux-arm64-musl@1.33.0",
+          "Name": "lightningcss-linux-arm64-musl",
+          "Identifier": {
+            "PURL": "pkg:npm/lightningcss-linux-arm64-musl@1.33.0",
+            "UID": "7826ddea2f78bbf8"
+          },
+          "Version": "1.33.0",
+          "Dev": true,
+          "Licenses": [
+            "MPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 956,
+              "EndLine": 979
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "lightningcss-linux-x64-gnu@1.33.0",
+          "Name": "lightningcss-linux-x64-gnu",
+          "Identifier": {
+            "PURL": "pkg:npm/lightningcss-linux-x64-gnu@1.33.0",
+            "UID": "888a26ed7ee6e409"
+          },
+          "Version": "1.33.0",
+          "Dev": true,
+          "Licenses": [
+            "MPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 980,
+              "EndLine": 1003
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "lightningcss-linux-x64-musl@1.33.0",
+          "Name": "lightningcss-linux-x64-musl",
+          "Identifier": {
+            "PURL": "pkg:npm/lightningcss-linux-x64-musl@1.33.0",
+            "UID": "1dbb75407e173be1"
+          },
+          "Version": "1.33.0",
+          "Dev": true,
+          "Licenses": [
+            "MPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 1004,
+              "EndLine": 1027
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "lightningcss-win32-arm64-msvc@1.33.0",
+          "Name": "lightningcss-win32-arm64-msvc",
+          "Identifier": {
+            "PURL": "pkg:npm/lightningcss-win32-arm64-msvc@1.33.0",
+            "UID": "ab749786a51f945"
+          },
+          "Version": "1.33.0",
+          "Dev": true,
+          "Licenses": [
+            "MPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 1028,
+              "EndLine": 1048
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "lightningcss-win32-x64-msvc@1.33.0",
+          "Name": "lightningcss-win32-x64-msvc",
+          "Identifier": {
+            "PURL": "pkg:npm/lightningcss-win32-x64-msvc@1.33.0",
+            "UID": "3dfde16ccfdf494e"
+          },
+          "Version": "1.33.0",
+          "Dev": true,
+          "Licenses": [
+            "MPL-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 1049,
+              "EndLine": 1069
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "nanoid@3.3.20",
+          "Name": "nanoid",
+          "Identifier": {
+            "PURL": "pkg:npm/nanoid@3.3.20",
+            "UID": "6bb862ae57e1d85a"
+          },
+          "Version": "3.3.20",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 1070,
+              "EndLine": 1088
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "picocolors@1.1.1",
+          "Name": "picocolors",
+          "Identifier": {
+            "PURL": "pkg:npm/picocolors@1.1.1",
+            "UID": "c9424e7bb5a9f38c"
+          },
+          "Version": "1.1.1",
+          "Dev": true,
+          "Licenses": [
+            "ISC"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 1089,
+              "EndLine": 1095
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "picomatch@4.0.7",
+          "Name": "picomatch",
+          "Identifier": {
+            "PURL": "pkg:npm/picomatch@4.0.7",
+            "UID": "f90953ad40a3d504"
+          },
+          "Version": "4.0.7",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 1096,
+              "EndLine": 1108
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "playwright@1.64.1",
+          "Name": "playwright",
+          "Identifier": {
+            "PURL": "pkg:npm/playwright@1.64.1",
+            "UID": "e838e1c0de592432"
+          },
+          "Version": "1.64.1",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "playwright-core@1.64.1"
+          ],
+          "Locations": [
+            {
+              "StartLine": 1109,
+              "EndLine": 1124
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "playwright-core@1.64.1",
+          "Name": "playwright-core",
+          "Identifier": {
+            "PURL": "pkg:npm/playwright-core@1.64.1",
+            "UID": "585050ce56da9d35"
+          },
+          "Version": "1.64.1",
+          "Dev": true,
+          "Licenses": [
+            "Apache-2.0"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 1125,
+              "EndLine": 1137
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "postcss@8.5.32",
+          "Name": "postcss",
+          "Identifier": {
+            "PURL": "pkg:npm/postcss@8.5.32",
+            "UID": "c7a9e6db8bc8017a"
+          },
+          "Version": "8.5.32",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "nanoid@3.3.20",
+            "picocolors@1.1.1",
+            "source-map-js@1.2.2"
+          ],
+          "Locations": [
+            {
+              "StartLine": 1138,
+              "EndLine": 1166
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "rolldown@1.2.15",
+          "Name": "rolldown",
+          "Identifier": {
+            "PURL": "pkg:npm/rolldown@1.2.15",
+            "UID": "6ee1c6b51c069df"
+          },
+          "Version": "1.2.15",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "@oxc-project/types@0.155.0",
+            "@rolldown/binding-android-arm-eabi@1.2.15",
+            "@rolldown/binding-android-arm64@1.2.15",
+            "@rolldown/binding-darwin-arm64@1.2.15",
+            "@rolldown/binding-darwin-x64@1.2.15",
+            "@rolldown/binding-freebsd-x64@1.2.15",
+            "@rolldown/binding-linux-arm-gnueabihf@1.2.15",
+            "@rolldown/binding-linux-arm64-gnu@1.2.15",
+            "@rolldown/binding-linux-arm64-musl@1.2.15",
+            "@rolldown/binding-linux-ppc64-gnu@1.2.15",
+            "@rolldown/binding-linux-s390x-gnu@1.2.15",
+            "@rolldown/binding-linux-x64-gnu@1.2.15",
+            "@rolldown/binding-linux-x64-musl@1.2.15",
+            "@rolldown/binding-openharmony-arm64@1.2.15",
+            "@rolldown/binding-win32-arm64-msvc@1.2.15",
+            "@rolldown/binding-win32-x64-msvc@1.2.15",
+            "@rolldown/pluginutils@1.0.1"
+          ],
+          "Locations": [
+            {
+              "StartLine": 1188,
+              "EndLine": 1221
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "scheduler@0.28.0",
+          "Name": "scheduler",
+          "Identifier": {
+            "PURL": "pkg:npm/scheduler@0.28.0",
+            "UID": "fb42370b1881ef53"
+          },
+          "Version": "0.28.0",
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 1222,
+              "EndLine": 1227
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "source-map-js@1.2.2",
+          "Name": "source-map-js",
+          "Identifier": {
+            "PURL": "pkg:npm/source-map-js@1.2.2",
+            "UID": "f82c2f2c0b99155b"
+          },
+          "Version": "1.2.2",
+          "Dev": true,
+          "Licenses": [
+            "BSD-3-Clause"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "Locations": [
+            {
+              "StartLine": 1228,
+              "EndLine": 1237
+            }
+          ],
+          "AnalyzedBy": "npm"
+        },
+        {
+          "ID": "tinyglobby@0.2.17",
+          "Name": "tinyglobby",
+          "Identifier": {
+            "PURL": "pkg:npm/tinyglobby@0.2.17",
+            "UID": "8b863c9a3b1c26db"
+          },
+          "Version": "0.2.17",
+          "Dev": true,
+          "Licenses": [
+            "MIT"
+          ],
+          "Indirect": true,
+          "Relationship": "indirect",
+          "DependsOn": [
+            "fdir@6.5.0",
+            "picomatch@4.0.7"
+          ],
+          "Locations": [
+            {
+              "StartLine": 1238,
+              "EndLine": 1254
+            }
+          ],
+          "AnalyzedBy": "npm"
+        }
+      ]
+    }
+  ]
+}
