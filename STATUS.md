@@ -1,5 +1,19 @@
 # cratectl execution status
 
+Current source: `91911eb8281d8ca612be2f240937a4f662c2fd42`, authored and
+committed only as imfeelingtheagi. Four separate native production/race binaries
+embed that exact clean source. Existing stock-client compatibility passes363
+assertions plus all3native ORAS Go integration tests. Go/npm/Trivy source and
+four-artifact checks pass in scope. Full security/packaging remain negative.
+See `evidence/2026-10-31/native-lifecycle-clean-checkpoint.json`.
+
+The new materialized lifecycle feature remains implemented but unverified until
+its dedicated stock-client, clean new-feature and browser/A/AA journeys pass.
+The 224development store/server race passes and baseline client compatibility
+are separate evidence. Primary10, all ten receipts and active ed9 bytes remain
+unchanged; owned services stopped after zero other clients. No push or sibling
+changes occurred. Continue all450capabilities/41families and every later stage.
+
 Current development: materialized generic/Maven/npm/PyPI single-reference
 lifecycle is implemented but unverified. Holds/tombstones, current revision and
 verified-byte restoration share the common path. Native metadata retains blocked

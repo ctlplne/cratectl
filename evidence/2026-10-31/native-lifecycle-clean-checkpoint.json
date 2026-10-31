@@ -1,0 +1,66 @@
+{
+  "candidate": "91911eb8281d8ca612be2f240937a4f662c2fd42",
+  "source_tree": "84597f20ab050c59c2325a879a972fe8347993f6",
+  "recorded_at": "2026-10-31T12:45:17.426033+00:00",
+  "status": "clean artifacts and existing client compatibility passed; new lifecycle client/browser qualification remains open",
+  "goal_complete": false,
+  "identity": {
+    "author": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>",
+    "committer": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>"
+  },
+  "development_regression": "evidence/2026-10-31/native-lifecycle-development-checkpoint.json",
+  "artifacts": "evidence/2026-10-31/native-lifecycle-clean-artifacts.json",
+  "compatibility": {
+    "record": "evidence/2026-10-31/conformance-6c13451c59.json",
+    "assertions": 363,
+    "native_go_record": "evidence/2026-10-31/native-lifecycle-clean-go-conformance.txt",
+    "native_go_tests": 3,
+    "skips": 0,
+    "races": 0,
+    "scope": "Existing generic/npm/PyPI/OCI/Maven hosted/proxy/group, package/dependency, policy, restart, source-configuration and native ORAS regressions. This does not exercise new lifecycle actions with stock clients."
+  },
+  "source_gates": [
+    "make build BINDIR=.cache/native-lifecycle-development",
+    "make test",
+    "make race",
+    "make lint",
+    "python3 scripts/build_console.py --check"
+  ],
+  "development_postgres_race": {
+    "packages": [
+      "internal/store",
+      "internal/server"
+    ],
+    "top_level_passes": 224,
+    "subtest_passes": 260,
+    "skips": 0,
+    "races": 0,
+    "source_parent": "46e0b538a6897b3cc98e607e1233f84800e466ee",
+    "source_dirty": true,
+    "record": "evidence/2026-10-31/native-lifecycle-development-postgres-race.txt"
+  },
+  "security": "evidence/2026-10-31/native-lifecycle-clean-security.json",
+  "openapi": "evidence/2026-10-31/native-lifecycle-openapi.json",
+  "primary_observation": "evidence/2026-10-31/native-lifecycle-primary-observation.json",
+  "services": "evidence/2026-10-31/native-lifecycle-final-services.json",
+  "broad_gates": {
+    "security": {
+      "exit_code": 2,
+      "qualified": false
+    },
+    "packaging": {
+      "exit_code": 2,
+      "qualified": false
+    }
+  },
+  "runner_state": ".cache/native-lifecycle-clean-91911eb8281d/state.json",
+  "limits": [
+    "All 450 capabilities/41 format families remain committed and unfinished; no broad readiness verdict changes.",
+    "New materialized lifecycle requires maintained stock-client hold/delete/restore, clean new-feature HTTP/DB replay and browser/automated A/AA journeys before named feature qualification. Existing client compatibility alone does not prove it.",
+    "Reference-local changes do not retire an entire multi-file package or prevent another descriptor/path/coordinate. Non-OCI cases/matters, legal/bulk/retention/GC, release/replica/restore and remaining original requirements remain open.",
+    "Four native macOS clean artifacts are retained separately. No new Linux/Windows/container/offline/multi-host runtime qualification.",
+    "No schema migration or primary10/active ed9 byte change occurred. Explicit primary maintenance approval is still pending."
+  ],
+  "next": "Add maintained stock-client lifecycle journeys with dependencies for generic/Maven/npm/PyPI and native proxy/group metadata; verify current authority, holds, deletion, fresh-cache install failure, corruption/missing bytes, restoration, policy, tags/yanks, in-flight replacement and restart. Add console native lifecycle workflows and run clean production/race new-feature campaigns without touching the retained primary.",
+  "final_review": "evidence/2026-10-31/native-lifecycle-final-review.json"
+}
