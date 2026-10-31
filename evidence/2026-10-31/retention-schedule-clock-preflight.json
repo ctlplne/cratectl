@@ -1,0 +1,31 @@
+{
+  "source_parent": "1b7b81090c1d61617fadbf9442a9142156f9efc9",
+  "source_dirty": true,
+  "recorded_at": "2026-10-31T04:37:11.236805+00:00",
+  "harness_source": {
+    "path": "scripts/conformance_retention_schedules.py",
+    "sha256": "3d00b82771e17137d571fbc41958070629b193d1363545a3cc943ccb03284e46"
+  },
+  "failed_candidate": "evidence/2026-10-31/retention-schedule-candidate-1b7b810-rejected.json",
+  "race_replay": "evidence/2026-10-31/retention-schedules-7678937ce8.json",
+  "assertions": 56,
+  "actual_recurrence_seconds": 123.701,
+  "actual_stopped_seconds": 118.815,
+  "required_stopped_seconds": 118.633,
+  "log": "evidence/2026-10-31/retention-schedule-clock-replay.txt",
+  "raw_log_sha256": "4d16f463da36bb0afb993b18a5d91d0570a47eeb9d901742427781612b8fa07f",
+  "new_clean_expected_assertions": 57,
+  "schema": 8,
+  "services": "All owned fixture registry/worker and native PostgreSQL processes stopped; ports35432/38443closed. Primary8data and allprivate/artifact state retained. Active bin matches rejected1b7b810 production schema8; never restore schema7.",
+  "limits": "The repaired clock predicates passed on actual race artifacts and real elapsed time. Public clock diagnostic fields were added after this replay started; their emitted format awaits the next clean run. No new product or clean-candidate qualification is inferred.",
+  "secret_review": {
+    "status": "passed",
+    "checked_at": "2026-10-31T04:39:54.857923+00:00",
+    "files": 1228,
+    "known_private_value_entries": 7171,
+    "exact_value_matches": 0,
+    "gitleaks_findings": 0,
+    "scope": "All tracked/nonignored source and evidence; scanner rules unchanged. Final metadata replay follows."
+  },
+  "service_stop_evidence": "evidence/2026-10-31/retention-schedule-clock-services.json"
+}

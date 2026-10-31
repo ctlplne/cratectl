@@ -1,5 +1,37 @@
 # cratectl execution status
 
+Clean candidate `1b7b81090c1d61617fadbf9442a9142156f9efc9` is rejected.
+All nineteen production journeys passed on exact clean artifacts, including
+dedicated scheduled retirement, schema-2–7 upgrades, ten console workflows,
+installation/storage/jobs and stock/public native clients. The first native race
+journey then failed a harness timing assertion. It compared a pause measured after
+restore/client setup with a window beginning before those steps. Independent
+receipt inspection confirms correct sixty-second due slots, missed-slot coalescing
+and committed outcomes. No complete clean qualification is claimed.
+
+The corrected harness anchors recurrence before the first approval, verifies stop
+before the next due slot, waits monotonically for the calculated two-slot pause,
+and checks both elapsed clocks plus immutable receipt/effect results. Its actual
+race replay passes 56 development assertions: 123.701 seconds of recurrence and
+118.815 stopped against 118.633 required. Public clock diagnostics will be emitted
+by the next clean run. DEFECT.0060, rejected artifacts and both real run receipts
+are retained in evidence/2026-10-31/retention-schedule-clock-preflight.json.
+
+The controlled primary upgrade completed at the rejected candidate. The owned
+primary is now schema 8 with all eight safe frozen receipts. Active bin bytes are
+schema-8-compatible production from that candidate; all older baselines remain.
+Do not restore schema-7 bin bytes or downgrade data. Fixture registries/workers are
+stopped, including owned native PostgreSQL; both project ports are closed. Docker
+and sibling resources are untouched.
+
+Next: commit the reviewed clock repair as imfeelingtheagi, then rebuild and replay
+the complete exact clean production/race campaign. Revalidate the primary schema-8
+no-op and repeat fresh schema-7 old-binary upgrades per build. The qualified source
+remains `6cac885`; all 450 capabilities/41 families and negative broad readiness
+remain unchanged. No push or remote mutation.
+
+Earlier development observations follow; they do not promote the rejected source.
+
 Explicitly authorized scheduled OCI retirement is implemented locally (ADR 0027;
 docs/operator/scheduled-retention.md). A separate schedule binds future bounded
 captures to exact policy/source revisions and the current administrator credential.

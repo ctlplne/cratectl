@@ -102,7 +102,9 @@ retain their existing meaning. Recover retired content through verified restore.
 
 Schema 8 adds forced-RLS schedules and immutable configuration/due-slot receipts
 and preserves migrations 1–7. Upgrade requires controlled maintenance. The owned
-primary remains schema 7 during development qualification. Other rules/formats,
+primary reached schema 8 during a controlled clean-candidate campaign. That
+candidate was rejected on a harness timing assertion, so the latest qualified
+source remains schema 7 pending the complete clean replay. Other rules/formats,
 calendar schedules, legal-hold administration, physical GC, release/replica/
 restore protections, providers/platforms, fault/clock/scale and production
 recovery remain committed work.

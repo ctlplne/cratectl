@@ -434,6 +434,7 @@ try:
     check('oversized complete capture defers without partial work or due advance', schedule()['next_due_at'] == due and not get(policy('containers') + '/schedule/runs?limit=100')['items'])
     check('native current denial is set before automatic retirement', api('/api/v1/repositories/containers/decisions', 'PUT',
           {'path': 'proof/manifests/' + roots[1], 'digest': roots[1][7:], 'decision': 'denied'})[0] == 200)
+    recurrence_started = time.monotonic()
     configure()
     first = await_run()
     first_id = schedule()['last_job']
@@ -448,20 +449,40 @@ try:
     scheduled = schedule()
     stop('worker')
     stop('registry')
-    restart_at = datetime.datetime.fromisoformat(scheduled['next_due_at'].replace('Z', '+00:00')) + datetime.timedelta(seconds=63)
+    first_unexecuted_due = datetime.datetime.fromisoformat(scheduled['next_due_at'].replace('Z', '+00:00'))
+    stopped_at = datetime.datetime.now(datetime.timezone.utc)
+    check('worker stops before the first unexecuted due slot', stopped_at < first_unexecuted_due)
+    restart_at = first_unexecuted_due + datetime.timedelta(seconds=63)
     started_wait = time.monotonic()
+    required_stopped_seconds = (restart_at - stopped_at).total_seconds()
+    resume_after = started_wait + required_stopped_seconds
     print('Waiting with registry/worker stopped across real due slots until ' + restart_at.isoformat(), flush=True)
-    while datetime.datetime.now(datetime.timezone.utc) < restart_at:
+    while time.monotonic() < resume_after:
         time.sleep(.2)
-    result['actual_stopped_recurrence_seconds'] = round(time.monotonic() - started_wait, 3)
+    stopped_seconds = time.monotonic() - started_wait
+    result['actual_stopped_recurrence_seconds'] = round(stopped_seconds, 3)
+    result['required_stopped_seconds'] = round(required_stopped_seconds, 3)
     start('registry')
     check('real registry restart preserves due authority and exact prior receipt', schedule()['revision'] == 2 and schedule()['last_job'] == first_id and schedule()['next_due_at'] == scheduled['next_due_at'])
     start('worker', worker=True)
     second = await_run(previous=first_id)
+    result['actual_recurrence_seconds'] = round(time.monotonic() - recurrence_started, 3)
     second_id = schedule()['last_job']
     a, b = first['plan']['schedule'], second['plan']['schedule']
+    result['clock_observations'] = {
+        'first_capture': a, 'second_capture': b,
+        'worker_and_registry_stopped_at': stopped_at.isoformat(),
+        'first_unexecuted_due_at': first_unexecuted_due.isoformat(),
+        'planned_restart_at': restart_at.isoformat(),
+        'second_capture_evaluated_at': second['plan']['evaluated_at'],
+        'next_due_after_second_capture': schedule()['next_due_at'],
+        'first_run': first_id, 'second_run': second_id,
+        'second_retired': second['retired'],
+    }
     elapsed_slots = (datetime.datetime.fromisoformat(b['due_at'].replace('Z', '+00:00')) - datetime.datetime.fromisoformat(a['due_at'].replace('Z', '+00:00'))).total_seconds()
-    check('real sixty-second due slots survive process downtime and coalesce missed intervals', result['actual_stopped_recurrence_seconds'] >= 119 and elapsed_slots == 60 and b['coalesced_intervals'] >= 1 and second['retired'] == 1)
+    check('real sixty-second due slots survive process downtime and coalesce missed intervals',
+          result['actual_recurrence_seconds'] >= 120 and stopped_seconds >= required_stopped_seconds
+          and elapsed_slots == 60 and b['coalesced_intervals'] >= 1 and second['retired'] == 1)
     rows = get(policy('containers') + '/schedule/runs?limit=100')['items']
     check('restart admits one current capture without a catch-up burst', [r['job'] for r in rows] == [first_id, second_id] and datetime.datetime.fromisoformat(schedule()['next_due_at'].replace('Z', '+00:00')) > datetime.datetime.now(datetime.timezone.utc))
     configure(enabled=False)

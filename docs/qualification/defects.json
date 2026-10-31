@@ -643,6 +643,18 @@
       "replay": "evidence/2026-10-31/retention-schedule-native-preflight.json",
       "candidate": null,
       "limits": "Five names, reader/admin/other-tenant and actual nested routes pass twice with PostgreSQL/race; full native and affected regressions pass on dirty source. Exact clean qualification pending."
+    },
+    {
+      "id": "DEFECT.0060",
+      "summary": "Scheduled-retirement qualification compared stop duration with a recurrence window beginning before setup",
+      "state": "repaired and race development replayed; clean qualification pending",
+      "first_failure": "evidence/2026-10-31/retention-schedules-03fbc05a22.json",
+      "rejected_candidate": "evidence/2026-10-31/retention-schedule-candidate-1b7b810-rejected.json",
+      "independent_inspection": "evidence/2026-10-31/retention-schedule-clock-receipt-inspection.json",
+      "repair": "Anchor the two real clock measurements separately, wait monotonically for both missed due slots, and preserve exact receipt/effect checks.",
+      "replay": "evidence/2026-10-31/retention-schedule-clock-preflight.json",
+      "candidate": null,
+      "limits": "Product receipts/outcomes were correct on the rejected race run. Source-only harness fix; actual race replay56assertions passes. New exact clean production/race campaign remains required."
     }
   ]
 }
