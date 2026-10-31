@@ -1,5 +1,31 @@
 # cratectl execution status
 
+Clean candidate `403d72b61696e7469e107a035ac94769803a4788` remains rejected.
+All nineteen production and eleven subsequent race journeys passed, including
+both 57-assertion native scheduled-retirement runs and corrected clock receipts.
+The next race console run passed nine workflows and failed repair when its browser
+driver read a response body after navigation. No product defect is inferred.
+All 39 attempted tasks, the first failure and exact artifacts remain retained in
+evidence/2026-10-31/retention-schedule-candidate-403d72b-rejected.json.
+
+The repaired driver observes newly issued Jobs requests and consumes selected JSON
+bodies immediately. Targeted repair and the full ten-workflow race browser replay
+pass: 79 assertions, 71 named automated A/AA states, zero skips/flaky results.
+No delays, timeout increases or relaxed assertions. These dirty-driver-source
+observations are development evidence only; DEFECT.0061 and the original report
+remain in evidence/2026-10-31/retention-schedule-repair-browser-preflight.json.
+
+Next: commit the reviewed driver/evidence as imfeelingtheagi, build new clean
+production/race/platform bytes and replay all required journeys. Primary schema8
+no-op and fresh old-binary schema7 upgrades remain required; never restore schema7
+bin. The primary, private state and all artifacts remain retained. Owned fixtures
+and native PostgreSQL are stopped; active bin matches403d72b production schema8.
+No Docker/sibling mutation or push. Latest qualified source remains6cac885;
+all450 capabilities/41families and every negative broad readiness verdict remain.
+
+Earlier development snapshot follows; the paragraphs above supersede its next
+action, current source and service state. Historical evidence retains its limits.
+
 Clean candidate `1b7b81090c1d61617fadbf9442a9142156f9efc9` is rejected.
 All nineteen production journeys passed on exact clean artifacts, including
 dedicated scheduled retirement, schema-2–7 upgrades, ten console workflows,

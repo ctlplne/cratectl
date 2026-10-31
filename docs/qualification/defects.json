@@ -655,6 +655,17 @@
       "replay": "evidence/2026-10-31/retention-schedule-clock-preflight.json",
       "candidate": null,
       "limits": "Product receipts/outcomes were correct on the rejected race run. Source-only harness fix; actual race replay56assertions passes. New exact clean production/race campaign remains required."
+    },
+    {
+      "id": "DEFECT.0061",
+      "summary": "Repair browser driver reads a navigated response body too late under race qualification",
+      "state": "repaired and race development replayed; clean qualification pending",
+      "first_failure": "evidence/2026-10-31/console-abba1c4459.json",
+      "rejected_candidate": "evidence/2026-10-31/retention-schedule-candidate-403d72b-rejected.json",
+      "repair": "Scope Jobs responses to requests issued after action observation and consume response JSON immediately; preserve bounded traversal, all assertions and actual worker checks.",
+      "replay": "evidence/2026-10-31/retention-schedule-repair-browser-preflight.json",
+      "candidate": null,
+      "limits": "Targeted workflow and full10-workflow/79assertion/71automated-state Chromium replay pass on retained race artifacts with dirty driver source. Full new clean campaign required; no product defect inferred."
     }
   ]
 }
