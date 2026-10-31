@@ -20708,15 +20708,17 @@
         "recovery"
       ],
       "state": "implementing",
-      "candidate": "ab28ee966077f7e96a9d96a8898eb389200e30e4",
+      "candidate": "9b73cfd2b6e05032044272cb50e0879a3c03fdf0",
       "evidence": [
         "evidence/2026-10-31/retention-schedule-checkpoint.json",
         "evidence/2026-10-31/retention-schedule-clean-postgres-race.txt",
         "evidence/2026-10-31/hold-checkpoint.json",
-        "evidence/2026-10-31/hold-clean-postgres-race.txt"
+        "evidence/2026-10-31/hold-clean-postgres-race.txt",
+        "evidence/2026-10-31/hold-cases-checkpoint.json",
+        "evidence/2026-10-31/hold-cases-clean-postgres-race.txt"
       ],
-      "limits": "Qualified subset: tenant-administrator inventory of active/expired/released canonical OCI holds, scoped encrypted live paging/search, original immutable hold/release snapshots, actual-time expiry and retained-repository/current-administrator recovery. Exact clean production/race artifacts, native old-schema8 receipt/CLI/ORAS, seven old upgrade baselines and eleven Chromium workflows pass within the checkpoint scope. The legacy slot remains separate. Independent cases/case-specific release are implemented and development-tested; clean qualification is pending. Cross-reference legal matters, bulk approval/release, other formats, safe physical GC and production recovery remain required. No legal-compliance or broad readiness verdict.",
-      "next_action": "Complete clean production/race independent-case qualification; preserve primary9/qualified9 artifacts. Then finish cross-reference/bulk/legal and other-format workflows, safe physical GC and every later-stage requirement.",
+      "limits": "Qualified subset: tenant-administrator inventory of active/expired/released canonical OCI holds, scoped encrypted live paging/search, original immutable hold/release snapshots, actual-time expiry and retained-repository/current-administrator recovery. Exact clean production/race artifacts, native old-schema8 receipt/CLI/ORAS, seven old upgrade baselines and eleven Chromium workflows pass within the checkpoint scope. The legacy slot remains separate. Independent cases/case-specific release pass clean production/race qualification on isolated schema10: 414 PostgreSQL passes; actual schema9/ORAS/CLI; twelve Chromium workflows and 91 automated A/AA states per build. The primary stays schema9 pending other current-candidate campaigns. Cross-reference legal matters, bulk approval/release, other formats, safe physical GC and production recovery remain required. No legal-compliance or broad readiness verdict.",
+      "next_action": "Complete remaining current-candidate runtime/old-schema campaigns before primary10 maintenance, then cross-reference/bulk/legal and other-format workflows, safe physical GC and every later-stage requirement.",
       "development": {
         "source_parent": "4d213aca140b4098bf7e9e3c78d74174664bba13",
         "source_dirty": true,
@@ -20732,6 +20734,12 @@
         "status": "implemented; development-tested; clean qualification pending",
         "primary_schema": 9,
         "development_schema": 10
+      },
+      "independent_cases_qualified": {
+        "candidate": "9b73cfd2b6e05032044272cb50e0879a3c03fdf0",
+        "record": "evidence/2026-10-31/hold-cases-checkpoint.json",
+        "schema": 10,
+        "primary_schema": 9
       }
     },
     {

@@ -81,8 +81,10 @@ Migration 10 adds case storage with forced tenant RLS and preserves receipts 1â€
 It does not convert old slots into cases or invent historical actions. The
 development implementation uses isolated databases; the existing qualified primary
 and active binaries remain schema 9 until the complete new runtime campaign passes.
-Clean schema-10 qualification is pending; the schema-9 evidence below retains its
-original scope.
+Scoped clean schema-10 case qualification passes on both builds; see
+[the case checkpoint](../../evidence/2026-10-31/hold-cases-checkpoint.json). The
+primary remains schema9 pending the other current-candidate runtime/upgrade
+campaigns. The schema-9 evidence below retains its original scope.
 
 ## API and CLI
 

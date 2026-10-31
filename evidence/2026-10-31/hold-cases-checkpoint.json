@@ -1,0 +1,219 @@
+{
+  "qualified_at": "2026-10-31T09:29:27.018465+00:00",
+  "candidate": "9b73cfd2b6e05032044272cb50e0879a3c03fdf0",
+  "source_dirty": false,
+  "status": "scoped clean qualification passed on isolated schema10 databases",
+  "goal_complete": false,
+  "identity": {
+    "author": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>",
+    "committer": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>",
+    "source_commit_count": 65,
+    "root": "887c569ac96c451bccd91ae872317c06a890117a"
+  },
+  "scope": "Independent named canonical OCI reference holds with per-case revision/expiry/release and legacy-slot coexistence; common native deletion/restore/retention enforcement; bounded administrator inventory/history/API/CLI/console and current-authority recovery.",
+  "qualification_state": ".cache/hold-cases-clean-20261031T091815Z/state.json",
+  "builds": {
+    "production/cratectld": {
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "9b73cfd2b6e05032044272cb50e0879a3c03fdf0",
+        "vcs.time": "2026-10-31T09:16:50Z",
+        "vcs.modified": "false"
+      },
+      "sha256": "8eb50a29e293b7d6e56078c1ac4f90bbb579bf7b31343b82f5aacf0f07eeea4c"
+    },
+    "production/cratectl": {
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "9b73cfd2b6e05032044272cb50e0879a3c03fdf0",
+        "vcs.time": "2026-10-31T09:16:50Z",
+        "vcs.modified": "false"
+      },
+      "sha256": "c5520ab0ffa6640f6096a5b5770287614efdf2a45fe4c8e3317b1898a6f3a56d"
+    },
+    "race/cratectld": {
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-race": "true",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "9b73cfd2b6e05032044272cb50e0879a3c03fdf0",
+        "vcs.time": "2026-10-31T09:16:50Z",
+        "vcs.modified": "false"
+      },
+      "sha256": "dfcbfb128388043cf2d9f06401fbab9cfcdab7f8db05390dfbc965d218a55281"
+    },
+    "race/cratectl": {
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-race": "true",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "9b73cfd2b6e05032044272cb50e0879a3c03fdf0",
+        "vcs.time": "2026-10-31T09:16:50Z",
+        "vcs.modified": "false"
+      },
+      "sha256": "4914b9ea895f19474a0d670a296c485bc8b6763204b94c82c70312c08bbb3a8d"
+    }
+  },
+  "checks": {
+    "standard": [
+      "make build",
+      "make test",
+      "make race",
+      "make lint",
+      "make console-check"
+    ],
+    "postgres": {
+      "production": {
+        "top_level_passes": 207,
+        "skips": 0,
+        "races": 0,
+        "raw_log": ".cache/hold-cases-clean-20261031T091815Z/production-postgres-race.log",
+        "raw_sha256": "b2f933666e70bf0c28591d323565108aeac29dfb08e6d800fe008fc192d73da9"
+      },
+      "race": {
+        "top_level_passes": 207,
+        "skips": 0,
+        "races": 0,
+        "raw_log": ".cache/hold-cases-clean-20261031T091815Z/race-postgres-race.log",
+        "raw_sha256": "ea5d78cd4260e39f3948cf32bcea7ea8e21061fecfdded200b4ef761a9173301"
+      }
+    },
+    "public_postgres_log": "evidence/2026-10-31/hold-cases-clean-postgres-race.txt",
+    "sql_timing_cleanup_regressions": {
+      "tests": 6,
+      "passed": 6,
+      "skipped": 0,
+      "log": ".cache/hold-cases-clean-20261031T091815Z/sql-timing-regressions.log"
+    },
+    "native": {
+      "production": {
+        "record": "evidence/2026-10-31/lifecycle-0f3e504168.json",
+        "actual_old_schema": 9,
+        "assertions": 64
+      },
+      "race": {
+        "record": "evidence/2026-10-31/lifecycle-175fd86f8f.json",
+        "actual_old_schema": 9,
+        "assertions": 64
+      }
+    },
+    "browser": {
+      "production": {
+        "record": "evidence/2026-10-31/console-22825a1311.json",
+        "stats": {
+          "startTime": "2026-10-31T09:19:29.075Z",
+          "duration": 156969.698,
+          "expected": 12,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        },
+        "automated_axe_states": 91,
+        "axe_states_by_workflow": {
+          "hold_cases_browser": 10,
+          "hold_browser": 10,
+          "retention_schedule_browser": 15,
+          "retention_browser": 13,
+          "schedule_browser": 9,
+          "repair_browser": 5,
+          "source_configuration_browser": 5,
+          "lifecycle_browser": 5,
+          "schema_browser": 1,
+          "pagination_browser": 4,
+          "browser": 14
+        },
+        "case_checks": 8,
+        "case_axe_states": 10,
+        "fixture_connections_after": 0
+      },
+      "race": {
+        "record": "evidence/2026-10-31/console-c3a5892dee.json",
+        "stats": {
+          "startTime": "2026-10-31T09:23:40.543Z",
+          "duration": 179131.918,
+          "expected": 12,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        },
+        "automated_axe_states": 91,
+        "axe_states_by_workflow": {
+          "hold_cases_browser": 10,
+          "hold_browser": 10,
+          "retention_schedule_browser": 15,
+          "retention_browser": 13,
+          "schedule_browser": 9,
+          "repair_browser": 5,
+          "source_configuration_browser": 5,
+          "lifecycle_browser": 5,
+          "schema_browser": 1,
+          "pagination_browser": 4,
+          "browser": 14
+        },
+        "case_checks": 8,
+        "case_axe_states": 10,
+        "fixture_connections_after": 0
+      }
+    },
+    "go_source_vulnerability_scan": {
+      "status": "passed; no vulnerabilities found",
+      "raw_log": ".private/hold-cases-development/govulncheck-source.log",
+      "sha256": "3016e51e4eac0d421674d2128bbbdefb2924b4646e0c14a1ab034977ad73fae5"
+    },
+    "source_history_secrets": {
+      "commits": 65,
+      "findings": 0,
+      "report": ".cache/hold-cases-source-history-secrets.json"
+    },
+    "openapi": {
+      "paths": 51,
+      "response_maps": 267,
+      "local_references_resolved": true,
+      "scope": "Safe YAML parse and local response/reference structure only."
+    }
+  },
+  "migration": {
+    "new_schema": 10,
+    "checksum": "f8c9da14c14a2f18575ce1583a8cc94bd0b424740b96cc4367dcd016e96db0ba",
+    "receipts_1_through_9_preserved": true,
+    "old_actual_schema9_binary_rejects10": true,
+    "primary_schema": 9,
+    "primary_receipts_unchanged": true
+  },
+  "services": "evidence/2026-10-31/hold-cases-final-services.json",
+  "development_and_first_failures": "evidence/2026-10-31/hold-cases-development-preflight.json",
+  "limits": [
+    "This is qualification of the stated independent-case subset on native macOS arm64/PostgreSQL16.15/Chromium with explicit HTTP loopback fixtures; other platforms and production PKI remain open.",
+    "The primary and active binaries remain schema9/ab28ee9. Complete the other current-candidate runtime campaigns and actual old schema2\u20138 baselines before controlled primary10 maintenance; do not run schema9 binaries against schema10.",
+    "The legacy slot and each named case remain independent. Cross-reference legal matters, bulk approval/release, separation of duties, other formats, physical GC, release/replica/restore protections and production recovery remain unfinished.",
+    "All450capabilities/41formatfamilies and every later goal stage remain committed. Full security/packaging and every broad readiness verdict remain negative.",
+    "No push/publication/remote mutation, reset/recreation, Docker or sibling changes occurred."
+  ],
+  "source_and_evidence_review": "evidence/2026-10-31/hold-cases-source-review.json"
+}

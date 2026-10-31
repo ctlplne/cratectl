@@ -1,6 +1,8 @@
 # 0029: independent preservation cases for immutable references
 
-Status: implemented; clean candidate qualification remains pending.
+Status: implemented; scoped clean qualification passed on isolated schema-10
+databases. See `evidence/2026-10-31/hold-cases-checkpoint.json`; primary9 and
+its qualified runtime remain unchanged.
 
 A replaceable reason cannot represent simultaneous preservation decisions. If
 two administrators are investigating the same bytes, completing one review must

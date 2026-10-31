@@ -1,24 +1,39 @@
 # cratectl execution status
 
-Independent hold cases are implemented and development-tested in isolated
-schema-10 databases. Each canonical OCI reference may have multiple named cases
-with independent revisions, expiry and release. The common native deletion,
-restore and retention path enforces their union with the original hold slot.
-Case state, lifecycle fencing, immutable receipts, job intent and idempotency
-commit together. API/CLI and Storage → Reference holds expose bounded inventory,
-case-specific history and preview/apply/recovery. See ADR 0029 and
-`evidence/2026-10-31/hold-cases-development-preflight.json`.
+Scoped clean independent-case source: `9b73cfd2b6e05032044272cb50e0879a3c03fdf0`. Both author
+and committer are the required imfeelingtheagi identity. See
+`evidence/2026-10-31/hold-cases-checkpoint.json` and ADR 0029.
 
-Build/unit/race/lint and all three PostgreSQL packages pass. Eight new store/HTTP
-regressions pass twice under race detection. The corrected case Chromium workflow
-passes eight checks/ten automated A/AA states, and an actual schema-9 binary to
-schema-10 upgrade passes stock ORAS/CLI checks. These development artifacts have
-a dirty source parent; clean production/race qualification is the next gate.
-The previous full eleven browser workflows passed before the new case fixture
-credential/locator corrections. First failures are retained rather than counted
-as passes. The qualified primary and active binaries remain schema 9/ab28ee9;
-all earlier receipts/data/private state are preserved. No remote mutation/push.
-All 450 capabilities and 41 format families remain unfinished.
+Named canonical OCI reference cases have independent revisions, expiry and
+release. Releasing one case preserves every other active case and the original
+hold slot. Shared native deletion, verified restore and retention paths enforce
+the union. Case state, lifecycle revision, immutable receipt, job intent and
+idempotent response commit together. API/CLI and Storage → Reference holds expose
+bounded inventory/history and case-specific preview/apply/current-admin recovery.
+
+Both clean production/race artifacts pass all three PostgreSQL packages: 414
+top-level passes without skips/races. Eight new store/HTTP regressions also passed
+twice during development. Actual old schema9 binaries and stock ORAS/CLI pass
+64 native assertions per build while preserving the old hold snapshot/hash.
+Both builds pass twelve Chromium workflows and 91 automated A/AA states,
+including eight case outcomes/ten case states. Real expiry and original receipts,
+legacy coexistence, revoked-actor recovery, queue rollback, concurrent independent
+creation/stale same-case release and late retention-worker protection pass.
+
+Build/unit/race/lint, byte-for-byte console reproduction, source vulnerability
+scan and the 65-commit secret/identity audit pass. The six PostgreSQL timing
+cleanup/recovery regressions also pass. Development failures retain their actual
+scope and corrected replays; no skip or dirty build counts as clean evidence.
+
+The qualified primary and active binaries remain schema9/ab28ee9. Its nine
+receipts are unchanged; schema10 is isolated and its new receipt is frozen.
+Complete the remaining current-candidate runtime campaigns and actual schema2–8
+old-binary baselines before primary10 maintenance. Owned registry/workers/native
+PostgreSQL are stopped with zero client sessions before stop. All data, private
+state and exact binaries remain. No push/publication/remote mutation or
+Docker/sibling changes occurred. All450capabilities/41families, bulk/legal and
+other-format work, physical GC and every later stage remain unfinished; full
+security/packaging and every broad readiness verdict remain negative.
 
 Validation follow-up: `e111dbbaee435e08d238c5449213d03defeb67ee` repairs
 DEFECT.0066 in native and browser SQL timing fixtures. A private ownership record
@@ -33,7 +48,7 @@ This changes validation tools, not product/runtime/schema/UI behavior. The scope
 qualified product source below remains authoritative; all 450 capabilities and
 41 families and every broader readiness requirement remain open.
 
-Latest scoped qualified source: `ab28ee966077f7e96a9d96a8898eb389200e30e4`, authored and committed
+Retained schema-9 qualified runtime source: `ab28ee966077f7e96a9d96a8898eb389200e30e4`, authored and committed
 only as `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
 The authoritative checkpoint is `evidence/2026-10-31/hold-checkpoint.json`.
 
@@ -83,7 +98,7 @@ all data, private state and exact artifacts remain.
 No Docker/sibling changes, reset, publication, push or remote mutation occurred.
 
 The legacy hold API retains its separate replaceable slot. Independent cases and
-case-specific release are implemented above with clean qualification pending.
+case-specific release have the scoped clean qualification above.
 Cross-reference matters, bulk/legal approval, other formats and safe physical GC
 remain committed scope. All 450 capabilities and 41 families remain unfinished;
 all broad readiness verdicts remain negative. Complete every later stage.
