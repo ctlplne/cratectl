@@ -1,6 +1,16 @@
 # cratectl execution status
 
-Current source: `91911eb8281d8ca612be2f240937a4f662c2fd42`, authored and
+Current work: proxy lifecycle group checks now follow the current native
+catalog descriptor. Historical tombstones remain on their old direct paths;
+descriptor replacement/removal permits ordinary fallback. The first failing
+npm/PyPI cases, repair and full replay are retained in
+`evidence/2026-10-31/native-lifecycle-catalog-checkpoint.json`.
+Build/test/race/lint and224top-level store/server race passes succeeded with zero
+skips/races. This correction follows the previous91911eb clean compatibility
+campaign below; final clean new-feature/client/browser qualification remains open.
+No schema change or primary10 migration occurred. All goal scope remains required.
+
+Previous clean compatibility source: `91911eb8281d8ca612be2f240937a4f662c2fd42`, authored and
 committed only as imfeelingtheagi. Four separate native production/race binaries
 embed that exact clean source. Existing stock-client compatibility passes363
 assertions plus all3native ORAS Go integration tests. Go/npm/Trivy source and

@@ -1,0 +1,49 @@
+{
+  "recorded_at": "2026-10-31T12:54:13.649429+00:00",
+  "source_parent": "06e5b8060de6a0ebca61cf205908f07f5d93ffd1",
+  "source_dirty": true,
+  "status": "catalog-scoped correction passed development regression; new clean lifecycle qualification pending",
+  "first_failure": {
+    "path": "evidence/2026-10-31/native-lifecycle-catalog-first-failure.txt",
+    "sha256": "9fa1add43d217a2c3f6d1ca32d9b245cb74a38e0a094cc45e605d9a9d4525c55",
+    "behavior": "Both npm/PyPI source-pinned fallback reads incorrectly inherited a tombstone after its proxy catalog removed that coordinate."
+  },
+  "repair": "Read only the current bounded descriptor key under the same serving transaction, with current catalog source epoch/decision and retrieval state. Check the selected materialized path, preserving old tombstones after descriptor replacement or removal.",
+  "regressions": [
+    "Currently selected retired proxy descriptor blocks pinned lower-source reads.",
+    "Replacing a descriptor does not create a package-wide denial from its historical tombstone.",
+    "Removing a catalog coordinate permits ordinary fallback without resurrecting the old path.",
+    "All prior native lifecycle store and HTTP hold/deletion/corruption/restore/group/tag/yank/replacement cases pass."
+  ],
+  "records": {
+    "build": {
+      "path": "evidence/2026-10-31/native-lifecycle-catalog-build.txt",
+      "sha256": "69a4955ddb6b9ec804f69964ea8cf159d0f5d9a66b0db4aa4b06099621201bf6"
+    },
+    "test": {
+      "path": "evidence/2026-10-31/native-lifecycle-catalog-test.txt",
+      "sha256": "5905ff1c6481fba9f1e307d8a44bf02d657311ddcaa11b57a3b030babf837e88"
+    },
+    "race": {
+      "path": "evidence/2026-10-31/native-lifecycle-catalog-race.txt",
+      "sha256": "d7449e792f9422167fc59b1d6f4c85f8f235ad60a506f5d320a606749753739c"
+    },
+    "lint": {
+      "path": "evidence/2026-10-31/native-lifecycle-catalog-lint.txt",
+      "sha256": "ad38a4402bba05361279d7f515208320773f745e76222f20af16b33aece1637d"
+    },
+    "postgres-race": {
+      "path": "evidence/2026-10-31/native-lifecycle-catalog-postgres-race.txt",
+      "sha256": "600dea4484d1c4a0f03667e14be24857464c5c8d7284a3a96c304f7945c9b09b"
+    }
+  },
+  "top_level_passes": 224,
+  "subtest_passes": 260,
+  "skips": 0,
+  "races": 0,
+  "schema_change": false,
+  "primary_schema": 10,
+  "previous_clean_compatibility_candidate": "91911eb8281d8ca612be2f240937a4f662c2fd42",
+  "limits": "Previous clean artifact and 363-assertion stock-client compatibility checkpoint predates this correction. Exact final-source native lifecycle stock-client/browser and broader qualification remain required. All goal scope and negative readiness verdicts remain.",
+  "next": "Commit current correction only as imfeelingtheagi; build separate clean final source artifacts; add maintained stock-client/native-browser lifecycle journeys and qualify final production/race bytes. Preserve primary10 and pending maintenance authority."
+}

@@ -743,6 +743,17 @@
       "source": "91911eb8281d8ca612be2f240937a4f662c2fd42",
       "compatibility_checkpoint": "evidence/2026-10-31/native-lifecycle-clean-checkpoint.json",
       "new_feature_qualification": "Dedicated stock-client lifecycle and browser journeys remain required."
+    },
+    {
+      "id": "DEFECT.0069",
+      "summary": "Historical proxy lifecycle tombstones blocked native fallback after catalog removal/replacement",
+      "first_failure": "evidence/2026-10-31/native-lifecycle-catalog-first-failure.txt",
+      "repair": "Read only the current bounded descriptor key under the same serving transaction, with current catalog source epoch/decision and retrieval state. Check the selected materialized path, preserving old tombstones after descriptor replacement or removal.",
+      "state": "repaired; development PostgreSQL replay passed; clean feature/client/browser qualification remains required",
+      "replay": "evidence/2026-10-31/native-lifecycle-catalog-checkpoint.json",
+      "source_parent": "06e5b8060de6a0ebca61cf205908f07f5d93ffd1",
+      "source_dirty": true,
+      "limits": "Previous clean artifact and 363-assertion stock-client compatibility checkpoint predates this correction. Exact final-source native lifecycle stock-client/browser and broader qualification remain required. All goal scope and negative readiness verdicts remain."
     }
   ]
 }

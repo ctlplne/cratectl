@@ -1,0 +1,11 @@
+=== RUN   TestMaterializedNativeProxyMetadataRetainsDeletedSourceIdentity
+=== RUN   TestMaterializedNativeProxyMetadataRetainsDeletedSourceIdentity/npm
+    native_lifecycle_integration_test.go:373: historical proxy tombstone blocked ordinary fallback after catalog removal {0 <nil> false false fallback owned/-/owned-1.0.0.tgz 461aa22d5dfe0a4f49c414b54f0cb5050bdd427a18b3af42c82132a9734c93da 79 application/octet-stream {"name": "owned", "package": {"name": "owned", "version": "1.0.0"}, "version": "1.0.0"} unassessed 2026-10-31 08:49:43.015766 -0400 EDT} retained artifact reference is deleted
+=== RUN   TestMaterializedNativeProxyMetadataRetainsDeletedSourceIdentity/pypi
+    native_lifecycle_integration_test.go:373: historical proxy tombstone blocked ordinary fallback after catalog removal {0 <nil> false false fallback owned-1.0-py3-none-any.whl 22c798ccae6538104cca284c2d2598eee6019d41ee32ba693d3366c85b134034 120 application/octet-stream {"name": "owned", "version": "1.0", "filename": "owned-1.0-py3-none-any.whl", "core_available": false, "archive_validated": true} unassessed 2026-10-31 08:49:43.489764 -0400 EDT} retained artifact reference is deleted
+--- FAIL: TestMaterializedNativeProxyMetadataRetainsDeletedSourceIdentity (1.07s)
+    --- FAIL: TestMaterializedNativeProxyMetadataRetainsDeletedSourceIdentity/npm (0.60s)
+    --- FAIL: TestMaterializedNativeProxyMetadataRetainsDeletedSourceIdentity/pypi (0.47s)
+FAIL
+FAIL	ctlplne.dev/cratectl/internal/store	1.442s
+FAIL

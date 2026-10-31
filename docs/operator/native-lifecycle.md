@@ -21,6 +21,9 @@ download stops serving that reference. Native version/file metadata omits retire
 candidates while retaining their blocked source identity internally, so a group
 cannot silently substitute a lower-priority copy. Source-pinned npm/Python group
 URLs also recheck known earlier-source tombstones immediately before serving.
+For proxies, that check follows the current catalog descriptor. Replacing or
+removing a descriptor does not turn its historical tombstone into a package-wide
+ban; the old materialized path stays deleted.
 Deleting one source does not deny the same digest in another directly addressed
 repository. No physical storage is reclaimed.
 

@@ -286,7 +286,7 @@ func TestMaterializedNativeProxyMetadataRetainsDeletedSourceIdentity(t *testing.
 				if e != nil {
 					t.Fatal(e)
 				}
-				lease, e := db.AcquireRetrieval(ctx, i, repo.Name, p, p, false)
+				lease, e := db.AcquireRetrieval(ctx, i, repo.Name, p, p, true)
 				if e != nil {
 					t.Fatal(e)
 				}
@@ -327,6 +327,68 @@ func TestMaterializedNativeProxyMetadataRetainsDeletedSourceIdentity(t *testing.
 				if e != nil || len(view) != 1 || len(view[0].Files) != 1 || !view[0].Files[0].Blocked || view[0].Files[0].Key != key {
 					t.Fatal("Python proxy lost retired first-source identity", view, e)
 				}
+			}
+			if e = db.Tx(ctx, i, true, func(tx pgx.Tx) error {
+				if e := CreateRepository(ctx, tx, i, Repository{Name: "fallback", Format: format}); e != nil {
+					return e
+				}
+				return CreateRepository(ctx, tx, i, Repository{Name: "native-group", Format: format, Mode: "group", Settings: RepositorySettings{Members: []string{repo.Name, "fallback"}}})
+			}); e != nil {
+				t.Fatal(e)
+			}
+			fallback := a
+			fallback.Metadata = metadata
+			fallback.MediaType = "application/octet-stream"
+			if format == "npm" {
+				fallback.Path = NPMPath(name, version)
+				e = db.PublishNPM(ctx, i, "fallback", name, []Artifact{fallback}, map[string]string{"latest": version})
+			} else {
+				fallback.Path = filename
+				e = db.PublishPython(ctx, i, "fallback", fallback)
+			}
+			if e != nil {
+				t.Fatal(e)
+			}
+			group, e := db.Repository(ctx, i, "native-group")
+			if e != nil {
+				t.Fatal(e)
+			}
+			member, e := db.Repository(ctx, i, "fallback")
+			if e != nil {
+				t.Fatal(e)
+			}
+			snapshot := SourceSnapshot{Repository: member.Name, Revision: member.SourceRevision, Groups: map[string]int64{group.Name: group.SourceRevision}}
+			if _, e = db.ArtifactSelection(ctx, i, member.Name, fallback.Path, snapshot); !errors.Is(e, ErrDeleted) {
+				t.Fatal("pinned fallback bypassed a currently selected proxy tombstone", e)
+			}
+			// A new descriptor at the same native coordinate has its own retained
+			// reference. The old descriptor's tombstone cannot become a version ban.
+			newKey := crypt.Digest([]byte("replacement source descriptor"))
+			publication.Entries = map[string]string{coordinate: newKey}
+			publication.Sources[0].Key = newKey
+			publication.Sources[0].URL += "/replacement"
+			if format == "npm" {
+				encoded, _ = json.Marshal(NPMCatalog{Name: name, Versions: publication.Entries, Tags: map[string]string{"latest": version}})
+			} else {
+				encoded, _ = json.Marshal(PythonCatalog{Name: name, Files: publication.Entries})
+			}
+			put(catalogPath, encoded, media, publication)
+			if _, e = db.ArtifactSelection(ctx, i, member.Name, fallback.Path, snapshot); e != nil {
+				t.Fatal("old descriptor tombstone became a package-wide denial", e)
+			}
+			publication.Entries = map[string]string{}
+			publication.Sources = nil
+			if format == "npm" {
+				encoded, _ = json.Marshal(NPMCatalog{Name: name, Versions: publication.Entries, Tags: map[string]string{}})
+			} else {
+				encoded, _ = json.Marshal(PythonCatalog{Name: name, Files: publication.Entries})
+			}
+			put(catalogPath, encoded, media, publication)
+			if selected, e := db.ArtifactSelection(ctx, i, member.Name, fallback.Path, snapshot); e != nil || selected.Digest != fallback.Digest {
+				t.Fatal("historical proxy tombstone blocked ordinary fallback after catalog removal", selected, e)
+			}
+			if _, e = db.Artifact(ctx, i, repo.Name, path); !errors.Is(e, ErrDeleted) {
+				t.Fatal("catalog removal resurrected the retained old reference", e)
 			}
 		})
 	}

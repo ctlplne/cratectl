@@ -9,6 +9,9 @@ generic, Maven, npm and PyPI references must use the common retained deletion,
 hold, current-revision, journal/idempotency and verified-byte restoration path.
 Each format's native metadata must preserve a blocked first-source identity while
 omitting deleted candidates from client-visible selection.
+Source-pinned native URLs enforce the same current-catalog scope: an old proxy
+descriptor's tombstone stays local to that reference after replacement/removal,
+rather than becoming a permanent denial of the native version or filename.
 
 Mutable catalogs and generated metadata are projections rather than packaged
 content. They are excluded from per-reference lifecycle operations: npm/PyPI
