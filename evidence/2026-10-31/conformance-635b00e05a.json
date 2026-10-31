@@ -1,0 +1,87 @@
+{
+  "run": "635b00e05a",
+  "candidate": "ab28ee966077f7e96a9d96a8898eb389200e30e4",
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "source_dirty": false,
+  "artifact_digests": {
+    "bin/cratectld": "677c308758ae3fe461fdf8e6f43c364704398d699fc92c739477fa75bb7c42d6",
+    "bin/cratectl": "7e23a4cccab636c3eb095ec195adb7fe5fd854fb67a2ba1f26f7285a3ca9f213"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "ab28ee966077f7e96a9d96a8898eb389200e30e4",
+        "vcs.time": "2026-10-31T07:28:01Z",
+        "vcs.modified": "false"
+      }
+    },
+    "bin/cratectl": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "ab28ee966077f7e96a9d96a8898eb389200e30e4",
+        "vcs.time": "2026-10-31T07:28:01Z",
+        "vcs.modified": "false"
+      }
+    }
+  },
+  "host": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "database_profile": "native",
+  "topology": "macOS arm64 server, PostgreSQL 16.15 native, filesystem bytes, HTTP loopback only",
+  "checks": [
+    "qualification source is clean",
+    "qualification binaries embed exact clean source commit"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-635b00e05a-a",
+        "--actor",
+        "admin",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/admin.token"
+      ],
+      "exit": 1,
+      "output": "cratectld failed: schema version or integrity is incompatible\n"
+    }
+  ],
+  "limitations": [
+    "Not full format conformance or parity.",
+    "Proxy/group proof covers generic, Maven and early npm journeys; no complete mode, migration, HA, scale or scanner qualification.",
+    "Client fixture code executes only in the explicitly owned test consumer.",
+    "No claim of a separate-machine install."
+  ],
+  "build_source_matches_candidate": true,
+  "status": "failed",
+  "failure": "bin/cratectld exited 1: cratectld failed: schema version or integrity is incompatible\n",
+  "input_digests": {}
+}

@@ -1,0 +1,57 @@
+{
+  "candidate": "ab28ee966077f7e96a9d96a8898eb389200e30e4",
+  "checked_at": "2026-10-31T07:45:09.579255+00:00",
+  "first_auto_review": "Combined resumption rejected: public OCI destinations/payload came from untrusted evidence, with possible external artifact or credential export. No rejected command executed.",
+  "authorization": "GOAL.md:151 explicitly requires supported hosted/proxy/group journeys with private and public sources. This is a read-only public-source consumption case; no push/publication or remote configuration change.",
+  "fixed_public_source": {
+    "registry": "https://registry-1.docker.io/v2/",
+    "image": "library/busybox",
+    "manifest_digest": "sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c",
+    "token_realm": "https://auth.docker.io/token",
+    "service": "registry.docker.io",
+    "delivery_bases": [
+      "https://production.cloudfront.docker.com/"
+    ],
+    "documentation": "https://docs.docker.com/desktop/enterprise/allow-list/"
+  },
+  "official_sources": [
+    "https://docs.docker.com/desktop/enterprise/allow-list/",
+    "https://docs.docker.com/reference/api/registry/auth/"
+  ],
+  "review_findings": [
+    "All external destinations are exact Docker-documented HTTPS registry/authentication/CDN bases, with no userinfo/query/fragment in configuration.",
+    "Only a fixed public library/busybox SHA-256 graph is requested. External transport constructs GET requests and an anonymous repository:library/busybox:pull token scope.",
+    "The public fixture sets no upstream credential_ref. Fresh upstream requests do not forward downstream Authorization. CDN requests retain their separate configured authority path.",
+    "Mutating fixture API calls and the generated administrator token target only127.0.0.1:38443. ORAS copies from that loopback registry to a private local OCI layout, never to a remote repository.",
+    "Artifact bytes are checksum/size validated and retained opaque; never executed or extracted.",
+    "The safer retry will use literal vetted arguments instead of deriving command destinations from the evidence file."
+  ],
+  "reviewed_source_hashes": {
+    "scripts/conformance_public_oci.py": "fd9caa700e92df62873da666681c730ee7df4f0d5e1f6f822fc68d5ee812deae",
+    "internal/upstream/upstream.go": "f51b74a717d557bee8f2126012483d8cda39dce170eb9ef05bc259c2a19b515a",
+    "internal/upstream/registry.go": "063adb59d833c6bae5ed6fa635422b6907e77e4315cd0264548ac9dca6e01a5f",
+    "internal/upstream/registry_delivery.go": "f4b46b245830e3a45999d2efaa027b48c75a82e36c77969476bc32b3764f04a0",
+    "internal/server/oci_upstream.go": "37e1dba3ede366463be9878a0fe68d3bdec4a982178c46eca361df336b785406"
+  },
+  "status": "Reviewed literal-destination public download passed",
+  "command": [
+    "python3",
+    "scripts/conformance_public_oci.py",
+    "--require-clean-build",
+    "--registry",
+    "https://registry-1.docker.io/v2/",
+    "--image",
+    "library/busybox",
+    "--digest",
+    "sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c",
+    "--token-realm",
+    "https://auth.docker.io/token",
+    "--service",
+    "registry.docker.io",
+    "--delivery-base",
+    "https://production.cloudfront.docker.com/",
+    "--source-document",
+    "https://docs.docker.com/desktop/enterprise/allow-list/"
+  ],
+  "log_sha256": "8f85154d4ac17b3b48053953616f19a090970211ac74025c38246843a7fa7274"
+}

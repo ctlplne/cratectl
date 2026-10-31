@@ -81,8 +81,11 @@ and start matching binaries. Index construction reads the existing tables and
 needs a controlled maintenance window. Older runtimes reject schema 9. Rolling
 compatibility, downgrade and production backup/recovery remain unqualified.
 
-Development evidence covers PostgreSQL/HTTP, actual-time expiry, concurrent stale
-revision rejection, queue rollback, tenant/cursor/credential boundaries, native
-schema-8-to-9 upgrade, CLI/ORAS and Chromium. Exact clean-candidate qualification
-is still pending; see the current status and qualification ledgers. Full product,
-format, legal-retention, provider/platform, accessibility and scale scope remains.
+Named clean production/race evidence covers PostgreSQL/HTTP, actual-time expiry,
+concurrent stale revision rejection, queue rollback, tenant/cursor/credential
+boundaries, actual old schema-8 hold receipts, CLI/ORAS and eleven Chromium
+workflows/81 automated A/AA states. The owned primary is schema 9 after controlled
+maintenance; every earlier receipt is unchanged. Full product, format, legal
+retention, provider/platform, accessibility, scale and production recovery remain
+required. [The checkpoint](../../evidence/2026-10-31/hold-checkpoint.json) identifies
+the exact source, artifacts, observations and limits.

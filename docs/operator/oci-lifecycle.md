@@ -76,10 +76,11 @@ storage subsequently becomes unavailable, while current write grants still apply
 Schema 3 adds forced-RLS lifecycle tables; schema 4 adds source revisions and
 immutable configuration history; schema 5 admits repair-capable runtimes. Schema
 6 adds recurring integrity, schema 7 retained retirement and schema 8 explicitly
-authorized automatic retirement. Stop registry and workers, inspect
+authorized automatic retirement. Schema 9 indexes hold inventory and original
+journal history. Stop registry and workers, inspect
 `cratectld migrate --plan` with owner configuration, apply the planned steps, then
-start the matching new binaries. Receipts 1–7 keep their original checksums.
-Older runtimes reject schema 8. This is controlled maintenance; rolling
+start the matching new binaries. Receipts 1–8 keep their original checksums.
+The owned primary is schema 9; older runtimes reject it. This is controlled maintenance; rolling
 compatibility, whole-transfer draining, backup/restore and downgrade recovery
 remain unqualified.
 
@@ -88,10 +89,15 @@ it retains the old 405 baseline and tests a real version-2 upgrade, stock ORAS,
 restart, holds, strong references, verified restore, policy and proxy lifecycle.
 Add `--baseline-version 3` to test a real schema-3 cached OCI graph upgrade.
 Use `--baseline-version 4` for source configuration, `5` for byte repair, `6` for
-recurring integrity and `7` for retained retirement. Every baseline is an actual
+recurring integrity, `7` for retained retirement and `8` for automatic retirement
+with an actual pre-upgrade hold receipt. Every baseline is an actual
 retained qualified binary, not a schema-version label on the current executable.
 Use the project-owned PostgreSQL environment and clean matching binaries. See
 [source configuration](source-configuration.md) for versioned source changes.
+See [reference holds](holds.md) for tenant inventory, original history and
+administrator recovery in retained repositories. The
+[current checkpoint](../../evidence/2026-10-31/hold-checkpoint.json) identifies
+the exact production/race artifacts and scope.
 Full lifecycle parity, broader source/locator/grant races,
 other retention rules/formats, legal-hold administration, physical erasure/GC,
 large graphs, other clients/platforms and

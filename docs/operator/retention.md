@@ -113,7 +113,7 @@ the verified lifecycle restore workflow; current unrelated tags are preserved.
 Schema 7 preserves receipts 1–6 and requires controlled maintenance with earlier
 registry/worker processes stopped. Earlier runtimes reject it. Clean production
 and separate race artifacts pass dedicated stock ORAS/CLI, browser and repeated
-real PostgreSQL journeys. The primary test database is now schema 7. Native
+real PostgreSQL journeys. That historical checkpoint observed schema 7. Native
 replays include controlled schema-6 upgrade, actual process restart, lost-response
 retry, cancellation, revoked authority, current-policy restore and proxy/group
 tombstone precedence. Nine Chromium workflows cover 56 named automated A/AA
@@ -129,7 +129,8 @@ A separate [scheduled-retention workflow](scheduled-retention.md) explicitly
 authorizes future captures through API, CLI and console. Dedicated stock ORAS/CLI
 real cadence/coalescing, restart, cancellation, credential/policy/source reapproval
 and partial-effect worker-kill recovery pass on the named clean production/race
-source. The primary is schema 8; fresh schema-7 upgrades and all earlier baselines
-repeat. [The new checkpoint](../../evidence/2026-10-31/retention-schedule-checkpoint.json) identifies
-current artifacts and limits. The manual-retention checkpoint above remains a
-historical schema-7 observation; other formats/rules and safe physical GC stay open.
+source. Its [schema-8 checkpoint](../../evidence/2026-10-31/retention-schedule-checkpoint.json)
+remains a historical observation. The owned primary is now schema 9; the
+[current checkpoint](../../evidence/2026-10-31/hold-checkpoint.json) repeats these
+retirement journeys alongside hold discovery/history and all schema-2–8 baselines.
+Other formats/rules and safe physical GC stay open.

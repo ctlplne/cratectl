@@ -102,9 +102,12 @@ retain their existing meaning. Recover retired content through verified restore.
 
 Schema 8 adds forced-RLS schedules and immutable configuration/due-slot receipts
 and preserves migrations 1–7. Upgrade requires controlled maintenance. The owned
-primary is schema 8. Its first controlled upgrade occurred at a subsequently
-rejected candidate; the current clean candidate verifies a no-op on that primary
-and repeats fresh actual schema-7 old-binary upgrades. Other rules/formats,
+primary is now schema 9, after the index-only hold-inventory migration. Its
+first schema-8 upgrade occurred at a subsequently rejected candidate; the
+historical schedule checkpoint verifies a schema-8 no-op and fresh actual
+schema-7 upgrades. The [current checkpoint](../../evidence/2026-10-31/hold-checkpoint.json)
+repeats the native/browser schedule journeys on exact schema-9 production/race
+artifacts and preserves every earlier receipt. Other rules/formats,
 calendar schedules, legal-hold administration, physical GC, release/replica/
 restore protections, providers/platforms, fault/clock/scale and production
 recovery remain committed work.

@@ -1,8 +1,8 @@
 # Hold inventory and immutable history
 
-Status: implemented with scoped development evidence; exact clean-candidate
-qualification remains pending. See
-`evidence/2026-10-31/hold-administration-development-preflight.json`.
+Status: accepted for the named clean production/race fixtures. Full hold-case,
+legal-retention, provider/platform and production-recovery scope remains required.
+See `evidence/2026-10-31/hold-checkpoint.json`.
 
 Administrators need to discover active, expired and released holds across their
 tenant, inspect the original hold/release receipts, and recover a hold while its

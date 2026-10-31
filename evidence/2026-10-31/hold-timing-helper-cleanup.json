@@ -1,0 +1,46 @@
+{
+  "observation": {
+    "observed_at": "2026-10-31T07:49:32.910416+00:00",
+    "scope": "Read-only names/state/classification of owned isolated native timing-helper backends; no SQL text/credentials emitted and no cancellation performed.",
+    "sessions": [
+      {
+        "pid": 64882,
+        "database": "cratectl_retention_schedules_09dce467c3",
+        "state": "active",
+        "wait_type": "Timeout",
+        "wait": "PgSleep",
+        "query_age_seconds": 851,
+        "timing_helper": true
+      },
+      {
+        "pid": 65115,
+        "database": "cratectl_retention_schedules_09dce467c3",
+        "state": "active",
+        "wait_type": "Lock",
+        "wait": "advisory",
+        "query_age_seconds": 837,
+        "timing_helper": true
+      }
+    ]
+  },
+  "cleanup": {
+    "candidate": "ab28ee966077f7e96a9d96a8898eb389200e30e4",
+    "checked_at": "2026-10-31T07:51:00.931588+00:00",
+    "completed_record": "evidence/2026-10-31/retention-schedules-09dce467c3.json",
+    "database": "cratectl_retention_schedules_09dce467c3",
+    "before": ".cache/hold-final-qualification-20261031T073303Z/timing-helper-observation.json",
+    "closed_helpers": [
+      {
+        "pid": 64882,
+        "terminated": true
+      },
+      {
+        "pid": 65115,
+        "terminated": true
+      }
+    ],
+    "reason": "Terminated psql client processes left declared fixture-only advisory-lock/PgSleep backends. Closed only the two exact backends of this already-passed isolated database. No product data, clocks, receipts or current race fixture changed.",
+    "follow_up": "Improve native timing-helper cleanup so terminating the fixture client also closes its backend; current campaign records this manual owned cleanup and final owned PostgreSQL shutdown."
+  },
+  "scope": "Completed isolated fixture helper lifecycle only. No product data, clocks or receipts changed; source-level helper cleanup remains a tracked qualification defect."
+}

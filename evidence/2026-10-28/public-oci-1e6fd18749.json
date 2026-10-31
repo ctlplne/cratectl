@@ -1,0 +1,264 @@
+{
+  "run": "1e6fd18749",
+  "candidate": "ab28ee966077f7e96a9d96a8898eb389200e30e4",
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "source_dirty": false,
+  "artifact_digests": {
+    "bin/cratectld": "677c308758ae3fe461fdf8e6f43c364704398d699fc92c739477fa75bb7c42d6",
+    "bin/cratectl": "7e23a4cccab636c3eb095ec195adb7fe5fd854fb67a2ba1f26f7285a3ca9f213"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "ab28ee966077f7e96a9d96a8898eb389200e30e4",
+        "vcs.time": "2026-10-31T07:28:01Z",
+        "vcs.modified": "false"
+      }
+    },
+    "bin/cratectl": {
+      "go_version": "go1.27.3",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "ab28ee966077f7e96a9d96a8898eb389200e30e4",
+        "vcs.time": "2026-10-31T07:28:01Z",
+        "vcs.modified": "false"
+      }
+    }
+  },
+  "host": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "database_profile": "native",
+  "topology": "native process on HTTP loopback 38443, real PostgreSQL runtime/owner roles, filesystem CAS; HTTPS public registry/realm/CDN",
+  "source": {
+    "registry": "https://registry-1.docker.io/v2/",
+    "image": "library/busybox",
+    "manifest_digest": "sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c",
+    "token_realm": "https://auth.docker.io/token",
+    "service": "registry.docker.io",
+    "delivery_bases": [
+      "https://production.cloudfront.docker.com/"
+    ],
+    "documentation": "https://docs.docker.com/desktop/enterprise/allow-list/"
+  },
+  "checks": [
+    "qualification source is clean",
+    "qualification binaries embed exact clean source commit",
+    "create bounded public OCI proxy",
+    "create governed public OCI group",
+    "create real-provider signed-query negative control",
+    "real provider requires explicitly approved signed delivery",
+    "real-provider query rejection publishes no partial graph",
+    "proxy-layout: immutable root bytes match pinned digest",
+    "proxy-layout: complete native image graph",
+    "proxy-layout: exact opaque blob sha256:ad4f11f7c85f87c0a6d6c0fe492ad53f9cdcff6e8c88b881360c70eff701c67b",
+    "proxy-layout: bounded image platform metadata",
+    "proxy-layout: exact opaque blob sha256:af820adcc158da1182aefa4259d1eb0a2e72416663faf00f6700f5415111974e",
+    "group-layout: immutable root bytes match pinned digest",
+    "group-layout: complete native image graph",
+    "group-layout: exact opaque blob sha256:ad4f11f7c85f87c0a6d6c0fe492ad53f9cdcff6e8c88b881360c70eff701c67b",
+    "group-layout: bounded image platform metadata",
+    "group-layout: exact opaque blob sha256:af820adcc158da1182aefa4259d1eb0a2e72416663faf00f6700f5415111974e",
+    "fresh group uses the same canonical cache generation",
+    "restart-layout: immutable root bytes match pinned digest",
+    "restart-layout: complete native image graph",
+    "restart-layout: exact opaque blob sha256:ad4f11f7c85f87c0a6d6c0fe492ad53f9cdcff6e8c88b881360c70eff701c67b",
+    "restart-layout: bounded image platform metadata",
+    "restart-layout: exact opaque blob sha256:af820adcc158da1182aefa4259d1eb0a2e72416663faf00f6700f5415111974e",
+    "exact pinned cache survives native process restart",
+    "public provider member invalidation is authorized",
+    "refresh-layout: immutable root bytes match pinned digest",
+    "refresh-layout: complete native image graph",
+    "refresh-layout: exact opaque blob sha256:ad4f11f7c85f87c0a6d6c0fe492ad53f9cdcff6e8c88b881360c70eff701c67b",
+    "refresh-layout: bounded image platform metadata",
+    "refresh-layout: exact opaque blob sha256:af820adcc158da1182aefa4259d1eb0a2e72416663faf00f6700f5415111974e",
+    "member refresh retrieves a current public source graph",
+    "explicit digest denial is recorded",
+    "current policy blocks pinned source and group"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "bin/cratectld",
+        "provision",
+        "--tenant",
+        "proof-public-1e6fd18749",
+        "--actor",
+        "qualification",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/admin.token"
+      ],
+      "exit": 0,
+      "output": "Created expiring tenant-scoped credential. Credential is in the private file.\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "version"
+      ],
+      "exit": 0,
+      "output": "Version:    1.3.6\nGo version: go1.27.3\nOS/Arch:    darwin/arm64\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "login",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/registry.json",
+        "--username",
+        "token",
+        "--password-stdin",
+        "127.0.0.1:38443"
+      ],
+      "exit": 0,
+      "output": "Login Succeeded\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "copy",
+        "--from-plain-http",
+        "--from-registry-config",
+        "PRIVATE/registry.json",
+        "--to-oci-layout",
+        "127.0.0.1:38443/public-query-denied/library/busybox@sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c",
+        "PRIVATE/query-denied-layout:proof"
+      ],
+      "exit": 1,
+      "output": "Error from source registry for \"127.0.0.1:38443/public-query-denied/library/busybox@sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c\": GET \"http://127.0.0.1:38443/v2/public-query-denied/library/busybox/manifests/sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c\": response status code 502: Bad Gateway\n",
+      "expected_failure": true
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "copy",
+        "--from-plain-http",
+        "--from-registry-config",
+        "PRIVATE/registry.json",
+        "--to-oci-layout",
+        "127.0.0.1:38443/public-proxy/library/busybox@sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c",
+        "PRIVATE/proxy-layout:proof"
+      ],
+      "exit": 0,
+      "output": "Copying af820adcc158 application/vnd.oci.image.layer.v1.tar+gzip\nCopying ad4f11f7c85f application/vnd.oci.image.config.v1+json\nCopied  af820adcc158 application/vnd.oci.image.layer.v1.tar+gzip\nCopied  ad4f11f7c85f application/vnd.oci.image.config.v1+json\nCopying d82c2ab94640 application/vnd.oci.image.manifest.v1+json\nCopied  d82c2ab94640 application/vnd.oci.image.manifest.v1+json\nCopied [registry] 127.0.0.1:38443/public-proxy/library/busybox@sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c => [oci-layout] /Users/shankar/Desktop/ctlplne-cratectl/.private/public-oci/1e6fd18749/proxy-layout:proof\nDigest: sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "copy",
+        "--from-plain-http",
+        "--from-registry-config",
+        "PRIVATE/registry.json",
+        "--to-oci-layout",
+        "127.0.0.1:38443/public-group/library/busybox@sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c",
+        "PRIVATE/group-layout:proof"
+      ],
+      "exit": 0,
+      "output": "Copying af820adcc158 application/vnd.oci.image.layer.v1.tar+gzip\nCopying ad4f11f7c85f application/vnd.oci.image.config.v1+json\nCopied  ad4f11f7c85f application/vnd.oci.image.config.v1+json\nCopied  af820adcc158 application/vnd.oci.image.layer.v1.tar+gzip\nCopying d82c2ab94640 application/vnd.oci.image.manifest.v1+json\nCopied  d82c2ab94640 application/vnd.oci.image.manifest.v1+json\nCopied [registry] 127.0.0.1:38443/public-group/library/busybox@sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c => [oci-layout] /Users/shankar/Desktop/ctlplne-cratectl/.private/public-oci/1e6fd18749/group-layout:proof\nDigest: sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "copy",
+        "--from-plain-http",
+        "--from-registry-config",
+        "PRIVATE/registry.json",
+        "--to-oci-layout",
+        "127.0.0.1:38443/public-group/library/busybox@sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c",
+        "PRIVATE/restart-layout:proof"
+      ],
+      "exit": 0,
+      "output": "Copying af820adcc158 application/vnd.oci.image.layer.v1.tar+gzip\nCopying ad4f11f7c85f application/vnd.oci.image.config.v1+json\nCopied  af820adcc158 application/vnd.oci.image.layer.v1.tar+gzip\nCopied  ad4f11f7c85f application/vnd.oci.image.config.v1+json\nCopying d82c2ab94640 application/vnd.oci.image.manifest.v1+json\nCopied  d82c2ab94640 application/vnd.oci.image.manifest.v1+json\nCopied [registry] 127.0.0.1:38443/public-group/library/busybox@sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c => [oci-layout] /Users/shankar/Desktop/ctlplne-cratectl/.private/public-oci/1e6fd18749/restart-layout:proof\nDigest: sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "copy",
+        "--from-plain-http",
+        "--from-registry-config",
+        "PRIVATE/registry.json",
+        "--to-oci-layout",
+        "127.0.0.1:38443/public-group/library/busybox@sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c",
+        "PRIVATE/refresh-layout:proof"
+      ],
+      "exit": 0,
+      "output": "Copying af820adcc158 application/vnd.oci.image.layer.v1.tar+gzip\nCopying ad4f11f7c85f application/vnd.oci.image.config.v1+json\nCopied  ad4f11f7c85f application/vnd.oci.image.config.v1+json\nCopied  af820adcc158 application/vnd.oci.image.layer.v1.tar+gzip\nCopying d82c2ab94640 application/vnd.oci.image.manifest.v1+json\nCopied  d82c2ab94640 application/vnd.oci.image.manifest.v1+json\nCopied [registry] 127.0.0.1:38443/public-group/library/busybox@sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c => [oci-layout] /Users/shankar/Desktop/ctlplne-cratectl/.private/public-oci/1e6fd18749/refresh-layout:proof\nDigest: sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c\n",
+      "expected_failure": false
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "copy",
+        "--from-plain-http",
+        "--from-registry-config",
+        "PRIVATE/registry.json",
+        "--to-oci-layout",
+        "127.0.0.1:38443/public-group/library/busybox@sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c",
+        "PRIVATE/denied-layout:proof"
+      ],
+      "exit": 1,
+      "output": "Error from source registry for \"127.0.0.1:38443/public-group/library/busybox@sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c\": GET \"http://127.0.0.1:38443/v2/public-group/library/busybox/manifests/sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c\": response status code 403: Forbidden\n",
+      "expected_failure": true
+    }
+  ],
+  "limits": [
+    "One explicitly pinned public image and one configured provider combination; no full format, security or readiness verdict.",
+    "Image bytes are copied into private OCI layouts and never executed or extracted.",
+    "No Docker/Podman engine, private PKI, every provider/platform, lifecycle, HA, fault or scale qualification."
+  ],
+  "build_source_matches_candidate": true,
+  "oras_version": "Version:    1.3.6\nGo version: go1.27.3\nOS/Arch:    darwin/arm64",
+  "signed_delivery_negative_control": true,
+  "image_platform": {
+    "os": "linux",
+    "architecture": "arm64"
+  },
+  "graph": {
+    "media_type": "application/vnd.oci.image.manifest.v1+json",
+    "manifest_digest": "sha256:d82c2ab94640ded77cf76514ce6a84870761105058a4a9e51b05a8a79be97a6c",
+    "config": {
+      "mediaType": "application/vnd.oci.image.config.v1+json",
+      "digest": "sha256:ad4f11f7c85f87c0a6d6c0fe492ad53f9cdcff6e8c88b881360c70eff701c67b",
+      "size": 477
+    },
+    "layers": [
+      {
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "digest": "sha256:af820adcc158da1182aefa4259d1eb0a2e72416663faf00f6700f5415111974e",
+        "size": 1900773
+      }
+    ]
+  },
+  "status": "passed"
+}
