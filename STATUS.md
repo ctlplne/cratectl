@@ -1,5 +1,18 @@
 # cratectl execution status
 
+Validation follow-up: `e111dbbaee435e08d238c5449213d03defeb67ee` repairs
+DEFECT.0066 in native and browser SQL timing fixtures. A private ownership record
+binds database/user, unique application name, backend PID/start and exact helper
+statement. Both clean production/race replays pass 60 native assertions and the
+affected Chromium workflow (ten checks/15 automated A/AA states); all eight helper
+sessions are absent afterward. Six real PostgreSQL cleanup/recovery/identity/
+destination regressions pass and now run in `make integration`; lint passes.
+Original elapsed-time cadence, immutable receipts, worker-kill/lease and recovery
+assertions remain. See `evidence/2026-10-31/timing-helper-cleanup-checkpoint.json`.
+This changes validation tools, not product/runtime/schema/UI behavior. The scoped
+qualified product source below remains authoritative; all 450 capabilities and
+41 families and every broader readiness requirement remain open.
+
 Latest scoped qualified source: `ab28ee966077f7e96a9d96a8898eb389200e30e4`, authored and committed
 only as `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
 The authoritative checkpoint is `evidence/2026-10-31/hold-checkpoint.json`.
@@ -43,8 +56,9 @@ production-binary, npm, Trivy source/artifact and history checks pass. Native ra
 advisory streams remain retained unchanged locally with hashes; scanner rules are
 unchanged. Final source/evidence generated-credential review is recorded with the
 security checkpoint. Full security and packaging gates still fail explicitly.
-Two completed SQL timing-helper backends needed explicit owned cleanup;
-DEFECT.0066 tracks source-level helper cleanup. Owned services are stopped;
+The earlier product campaign required explicit cleanup of two completed SQL
+timing-helper backends. DEFECT.0066 now has the clean validation replay above.
+Owned services are stopped;
 all data, private state and exact artifacts remain.
 No Docker/sibling changes, reset, publication, push or remote mutation occurred.
 

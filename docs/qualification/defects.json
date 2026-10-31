@@ -710,11 +710,12 @@
     {
       "id": "DEFECT.0066",
       "summary": "Terminating a native timing-helper client can leave its PostgreSQL advisory-lock/PgSleep backend alive",
-      "state": "open; current owned cleanup recorded",
+      "state": "repaired and clean native/browser replayed",
       "first_failure": "evidence/2026-10-31/hold-timing-helper-cleanup.json",
-      "repair": "Implement explicit backend ownership/cancellation for declared SQL timing helpers and prove release after each fixture; preserve original cadence, job and journal assertions.",
-      "candidate": null,
-      "limits": "Qualification fixture hygiene; no product data/clock/receipt mutation. Current campaign closed only two exact completed-fixture backends and stopped the owned PostgreSQL at handoff. Functional native assertions retain their declared scope."
+      "repair": "Shared private ownership manifests bind the exact isolated backend; both native and browser drivers terminate and verify the session before continuing. Six real PostgreSQL lifetime/identity/destination regressions run in make integration.",
+      "candidate": "e111dbbaee435e08d238c5449213d03defeb67ee",
+      "limits": "The named clean production/race native and affected Chromium fixtures verify all eight recorded helpers absent; actual cadence/lease/recovery assertions preserved. Validation-only change; broad platform, product and readiness scope remains open.",
+      "replay": "evidence/2026-10-31/timing-helper-cleanup-checkpoint.json"
     }
   ]
 }

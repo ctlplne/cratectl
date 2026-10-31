@@ -1,0 +1,183 @@
+{
+  "validation_source": "e111dbbaee435e08d238c5449213d03defeb67ee",
+  "qualified_product_source": "ab28ee966077f7e96a9d96a8898eb389200e30e4",
+  "checked_at": "2026-10-31T08:40:08.280051+00:00",
+  "defect": "DEFECT.0066",
+  "status": "passed for the named clean native/browser and real PostgreSQL fixtures",
+  "scope": "Validation-only backend ownership/cleanup fix. Runtime/schema/UI code is unchanged in cmd, internal, web/src, api, go.mod and go.sum. Integration adds six real PostgreSQL regression tests. This is not a new full-product qualification.",
+  "artifact_identities": {
+    ".cache/timing-clean-e111dbbaee43-production/cratectl": {
+      "sha256": "a4a4307e65f675788cfaeee5d1510dccff0d237f46ec79e06ffb604b8280c567",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "e111dbbaee435e08d238c5449213d03defeb67ee",
+        "vcs.time": "2026-10-31T08:30:26Z",
+        "vcs.modified": "false"
+      }
+    },
+    ".cache/timing-clean-e111dbbaee43-production/cratectld": {
+      "sha256": "571cf6a2e71308df4fd3600f6c4d122ab434dc3b2b422081bbd90f382e21e5e2",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "e111dbbaee435e08d238c5449213d03defeb67ee",
+        "vcs.time": "2026-10-31T08:30:26Z",
+        "vcs.modified": "false"
+      }
+    },
+    ".cache/timing-clean-e111dbbaee43-race/cratectl": {
+      "sha256": "70520c3462e4778466b95f1ccb044e71dcbb06fdfc671e753697687a93d9833d",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-race": "true",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "e111dbbaee435e08d238c5449213d03defeb67ee",
+        "vcs.time": "2026-10-31T08:30:26Z",
+        "vcs.modified": "false"
+      }
+    },
+    ".cache/timing-clean-e111dbbaee43-race/cratectld": {
+      "sha256": "9f554d2c0e58943adf92c1a7281483f00e5bf9e6b3bc54fe6ee49ca23b0d8f4e",
+      "settings": {
+        "-buildmode": "exe",
+        "-compiler": "gc",
+        "-race": "true",
+        "-trimpath": "true",
+        "CGO_ENABLED": "1",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "GOARM64": "v8.0",
+        "vcs": "git",
+        "vcs.revision": "e111dbbaee435e08d238c5449213d03defeb67ee",
+        "vcs.time": "2026-10-31T08:30:26Z",
+        "vcs.modified": "false"
+      }
+    }
+  },
+  "tasks": [
+    {
+      "name": "build-production",
+      "exit_code": 0,
+      "seconds": 1.834,
+      "log": ".cache/timing-clean-qualification-20261031T083059Z/build-production.log"
+    },
+    {
+      "name": "build-race-cratectld",
+      "exit_code": 0,
+      "seconds": 1.384,
+      "log": ".cache/timing-clean-qualification-20261031T083059Z/build-race-cratectld.log"
+    },
+    {
+      "name": "build-race-cratectl",
+      "exit_code": 0,
+      "seconds": 0.595,
+      "log": ".cache/timing-clean-qualification-20261031T083059Z/build-race-cratectl.log"
+    },
+    {
+      "name": "production-native",
+      "exit_code": 0,
+      "seconds": 149.658,
+      "log": ".cache/timing-clean-qualification-20261031T083059Z/production-native.log"
+    },
+    {
+      "name": "production-browser",
+      "exit_code": 0,
+      "seconds": 19.41,
+      "log": ".cache/timing-clean-qualification-20261031T083059Z/production-browser.log"
+    },
+    {
+      "name": "race-native",
+      "exit_code": 0,
+      "seconds": 209.413,
+      "log": ".cache/timing-clean-qualification-20261031T083059Z/race-native.log"
+    },
+    {
+      "name": "race-browser",
+      "exit_code": 0,
+      "seconds": 30.23,
+      "log": ".cache/timing-clean-qualification-20261031T083059Z/race-browser.log"
+    }
+  ],
+  "native": {
+    "production": {
+      "record": "evidence/2026-10-31/retention-schedules-43cbd15da8.json",
+      "checks": 60,
+      "owned_backend_count_after": 0
+    },
+    "race": {
+      "record": "evidence/2026-10-31/retention-schedules-fb9b27b62b.json",
+      "checks": 60,
+      "owned_backend_count_after": 0
+    }
+  },
+  "browser": {
+    "production": {
+      "record": "evidence/2026-10-31/timing-helper-browser-production.json",
+      "checks": 10,
+      "automated_accessibility_states": 15,
+      "owned_backend_count_after": 0
+    },
+    "race": {
+      "record": "evidence/2026-10-31/timing-helper-browser-race.json",
+      "checks": 10,
+      "automated_accessibility_states": 15,
+      "owned_backend_count_after": 0
+    }
+  },
+  "recorded_helper_sessions": 8,
+  "helper_sessions_remaining": 0,
+  "regression_preflight": "evidence/2026-10-31/timing-helper-development-preflight.json",
+  "services": "evidence/2026-10-31/timing-helper-final-services.json",
+  "identity": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>",
+  "guards": [
+    "Exact unique application/database/user/backend PID/start timestamp and helper statement.",
+    "SIGTERM closes the controller and backend; SIGKILL recovery uses the private ownership record.",
+    "Substituted PID/start identity, wrong destination and nonprivate state fail without signaling another holder.",
+    "A blocked waiter can be removed while another holder keeps its advisory lock.",
+    "Backend termination waits up to five seconds, fresh absence is verified, and independent clients reacquire released locks.",
+    "Native readiness observes the exact owned backend, never another holder with the same lock key."
+  ],
+  "preserved_assertions": "All original cadence/coalescing, authority expiry/revocation, policy/source approval, pending cancellation/pause and real worker-SIGKILL/lease recovery assertions remain. Three backend-closure assertions added per native run; one added per browser run. No due-slot, lease or hold clocks edited.",
+  "first_failures": {
+    "baseline": "The client exited while its recorded PostgreSQL backend remained alive and an independent lock attempt failed. Exact backend was closed after observing the failure.",
+    "ignored_reproducer_typo": "Initial SELECT1 typo retained and its exact helper closed before successful reproduction; not a product failure."
+  },
+  "limits": [
+    "Only named native macOS arm64/PostgreSQL 16.15 loopback fixtures; other runtimes/platforms and production recovery remain unqualified.",
+    "One targeted Chromium workflow with 15 automated A/AA states per build does not replace the previous full eleven-workflow product checkpoint or establish full accessibility.",
+    "All 450 capabilities and 41 format families, independent hold cases/bulk/legal/other-format/GC and every later-stage requirement remain committed.",
+    "Full security and packaging remain negative; no push, publication, remote, Docker or sibling mutation."
+  ],
+  "source_secret_review": {
+    "status": "passed",
+    "checked_at": "2026-10-31T08:42:20.629038+00:00",
+    "files": 1439,
+    "known_private_value_entries": 9408,
+    "distinct_private_byte_values": 5115,
+    "exact_value_matches": 0,
+    "gitleaks_findings": 0,
+    "report": "evidence/2026-10-31/timing-helper-final-source-secrets.json",
+    "helper_sha256": "cbd547520dd611be991d6e7f75b6a43b17a5c9679b2d694e8ea71c9a74d45fcd",
+    "rules_sha256": "18190efe56496ecbd3b308f1881c3fdd6641a8a70118a3a96f7881057203662f",
+    "scope": "All tracked/nonignored source/evidence and current retained credential values. Final metadata replay required before commit; rules unchanged. Full security readiness remains negative."
+  }
+}

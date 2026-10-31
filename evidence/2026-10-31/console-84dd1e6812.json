@@ -1,0 +1,61 @@
+{
+  "run": "84dd1e6812",
+  "candidate": "e111dbbaee435e08d238c5449213d03defeb67ee",
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "web",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "source_dirty": false,
+  "artifact_digests": {
+    "bin/cratectld": "9f554d2c0e58943adf92c1a7281483f00e5bf9e6b3bc54fe6ee49ca23b0d8f4e",
+    "bin/cratectl": "70520c3462e4778466b95f1ccb044e71dcbb06fdfc671e753697687a93d9833d"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-race": "true",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "e111dbbaee435e08d238c5449213d03defeb67ee",
+      "vcs.time": "2026-10-31T08:30:26Z",
+      "vcs.modified": "false"
+    },
+    "bin/cratectl": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-race": "true",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "e111dbbaee435e08d238c5449213d03defeb67ee",
+      "vcs.time": "2026-10-31T08:30:26Z",
+      "vcs.modified": "false"
+    }
+  },
+  "checks": [
+    "console source and binaries match a clean candidate",
+    "packaged console shell is public and contains no tenant credential"
+  ],
+  "topology": "Real Chromium, native registry/worker and nonowner forced-RLS PostgreSQL. An empty owned database and two newly provisioned tenants; explicit loopback-only HTTP development profile on port 38443.",
+  "limits": [
+    "This browser run exercises the explicit loopback HTTP test profile. Normal native TLS trust remains separately qualified; browser CA deployment and network/production PKI are not established by this run.",
+    "Only tested views and named interactions are qualified. Full console, all WCAG behavior/assistive technologies/native browsers, production packaging and complete product scope remain open.",
+    "Management repository/artifact pages use current grants/policy, scoped encrypted scan cursors, bounded live traversal and server search. This is not a multi-page snapshot or full native-format index qualification."
+  ],
+  "build_source_matches_candidate": true,
+  "status": "manual-review-stopped"
+}

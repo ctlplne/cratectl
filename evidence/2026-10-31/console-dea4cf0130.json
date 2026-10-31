@@ -1,0 +1,59 @@
+{
+  "run": "dea4cf0130",
+  "candidate": "e111dbbaee435e08d238c5449213d03defeb67ee",
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "web",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "source_dirty": false,
+  "artifact_digests": {
+    "bin/cratectld": "571cf6a2e71308df4fd3600f6c4d122ab434dc3b2b422081bbd90f382e21e5e2",
+    "bin/cratectl": "a4a4307e65f675788cfaeee5d1510dccff0d237f46ec79e06ffb604b8280c567"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "e111dbbaee435e08d238c5449213d03defeb67ee",
+      "vcs.time": "2026-10-31T08:30:26Z",
+      "vcs.modified": "false"
+    },
+    "bin/cratectl": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "e111dbbaee435e08d238c5449213d03defeb67ee",
+      "vcs.time": "2026-10-31T08:30:26Z",
+      "vcs.modified": "false"
+    }
+  },
+  "checks": [
+    "console source and binaries match a clean candidate",
+    "packaged console shell is public and contains no tenant credential"
+  ],
+  "topology": "Real Chromium, native registry/worker and nonowner forced-RLS PostgreSQL. An empty owned database and two newly provisioned tenants; explicit loopback-only HTTP development profile on port 38443.",
+  "limits": [
+    "This browser run exercises the explicit loopback HTTP test profile. Normal native TLS trust remains separately qualified; browser CA deployment and network/production PKI are not established by this run.",
+    "Only tested views and named interactions are qualified. Full console, all WCAG behavior/assistive technologies/native browsers, production packaging and complete product scope remain open.",
+    "Management repository/artifact pages use current grants/policy, scoped encrypted scan cursors, bounded live traversal and server search. This is not a multi-page snapshot or full native-format index qualification."
+  ],
+  "build_source_matches_candidate": true,
+  "status": "manual-review-stopped"
+}
