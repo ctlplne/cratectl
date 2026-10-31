@@ -25,7 +25,7 @@ import uuid
 parser = argparse.ArgumentParser()
 parser.add_argument('--require-clean-build', action='store_true')
 args = parser.parse_args()
-CURRENT_SCHEMA = 10
+from qualification_contract import CURRENT_SCHEMA
 ROOT = Path(__file__).resolve().parents[1]
 os.chdir(ROOT)
 RUN = uuid.uuid4().hex[:10]

@@ -1,9 +1,11 @@
 # cratectl execution status
 
-Validation repair in progress: DEFECT.0067 reproduces four native upgrade
-fixtures requiring schema9 after migration10. Exact schema10 plan/version
-expectations now preserve every original check and receipt comparison; clean
-production/race replay is pending. Core/runtime/UI/schema bytes are unchanged.
+Validation repair in progress: DEFECT.0067 reproduces five native upgrade
+fixtures requiring schema9 after migration10. All six upgrade drivers now share
+one explicit schema10 target and retain every original check and receipt
+comparison. Affected repair/ORAS/CLI development replay passes; the prior clean
+campaign stops at the retained fifth-fixture failure. Full matching production/
+race replay is pending. Core/runtime/UI/schema bytes are unchanged.
 See `evidence/2026-10-31/schema10-fixture-version-repair.json`. Primary9 remains.
 
 Scoped clean independent-case source: `9b73cfd2b6e05032044272cb50e0879a3c03fdf0`. Both author

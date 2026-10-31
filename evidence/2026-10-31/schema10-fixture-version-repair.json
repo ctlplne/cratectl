@@ -4,14 +4,29 @@
   "reproducer": ".cache/schema10-fixture-first-failure/state.json",
   "first_failure": "evidence/2026-10-31/schema-89a39e0a11.json",
   "expected_schema": 10,
-  "repair": "Exact schema10 binary/version and pending-step expectations in four native upgrade fixtures; original receipt-preservation, killed-process, native-client, elapsed-time and authority checks retained.",
+  "repair": "Shared explicit CURRENT_SCHEMA10 contract for all six native upgrade drivers, exact binary-version and full pending-step checks. No assertion counts, timeouts, clock or native recovery conditions removed.",
   "check_call_counts_unchanged": {
     "scripts/conformance_schema.py": 14,
     "scripts/conformance_schedules.py": 32,
     "scripts/conformance_retention.py": 33,
-    "scripts/conformance_retention_schedules.py": 47
+    "scripts/conformance_retention_schedules.py": 47,
+    "scripts/conformance_lifecycle.py": 54,
+    "scripts/conformance_repairs.py": 28
   },
-  "validation": "Python compile passes; native clean replay pending.",
+  "validation": "Compile and affected real schema4 repair/ORAS/CLI development replay pass. Full matching clean replay pending.",
   "core_go_ui_schema_changes": false,
-  "scope": "Validation-only repair; no primary migration or broad readiness claim."
+  "scope": "Validation-only repair; no primary migration or broad readiness claim.",
+  "updated_at": "2026-10-31T09:50:15.854158+00:00",
+  "shared_contract": "scripts/qualification_contract.py",
+  "followup_first_failure": "evidence/2026-10-31/repairs-c1d416da36.json",
+  "followup_development_replay": {
+    "record": "evidence/2026-10-31/repairs-e1f66e9a2b.json",
+    "checks": 44,
+    "source_dirty": true
+  },
+  "partial_clean_campaign": {
+    "candidate": "df2937e99f16edf02c9f0f78474b6f4a69030637",
+    "state": ".cache/case-full-qualification-20261031T094033Z/state.json",
+    "status": "failed at fifth stale fixture; earlier positive records retain their actual scope; primary9 restored"
+  }
 }

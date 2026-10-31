@@ -8,7 +8,7 @@ parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',act
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT);RUN=uuid.uuid4().hex[:10]
 PRIVATE=ROOT/'.private/lifecycle-conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)
 BASELINES={2:('.cache/maven-final-production/cratectld','10ea6499d874018178b43ee38a9070e81e5a0686'),3:('.cache/lifecycle-final-production/cratectld','bea2472271bd15993bcae9b8ea12a102b2608abe'),4:('.cache/source-final-production/cratectld','06156af19b9759035e96d63cf7a8bf52903235f7'),5:('.cache/repair-final-production/cratectld','1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6'),6:('.cache/schedule-final-production/cratectld','b19d1ae393320a2adc051f61db24693fec62591a'),7:('.cache/retention-final-production/cratectld','6cac8851da675dcaf531d6f8ed2aa26c927a243b'),8:('.cache/retention-schedule-final-399f37a048d7-production/cratectld','399f37a048d73fddd8f6b98b93669f5ba2c3fad5'),9:('.cache/hold-final-ab28ee966077-production/cratectld','ab28ee966077f7e96a9d96a8898eb389200e30e4')}
-CURRENT_SCHEMA=10
+from qualification_contract import CURRENT_SCHEMA
 BASE='http://127.0.0.1:38443';OLD=ROOT/BASELINES[args.baseline_version][0];NEW=ROOT/'bin/cratectld';ORAS=ROOT/'.cache/bin/oras'
 env=dict(os.environ);checks=[];commands=[];proc=None;log=None
 def identity(binary):

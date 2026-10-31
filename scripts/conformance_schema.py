@@ -4,7 +4,7 @@
 import argparse,datetime,hashlib,json,os,subprocess,time,urllib.parse,urllib.request,uuid
 from pathlib import Path
 
-CURRENT_SCHEMA=10
+from qualification_contract import CURRENT_SCHEMA
 parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');options=parser.parse_args()
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT);RUN=uuid.uuid4().hex[:10]
 PRIVATE=ROOT/'.private/schema-conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)

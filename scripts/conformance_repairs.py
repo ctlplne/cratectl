@@ -3,6 +3,7 @@
 """Owned schema-4 upgrade, stock ORAS recovery and streaming repair CLI proof."""
 import argparse,datetime,hashlib,json,os,subprocess,time,urllib.error,urllib.parse,urllib.request,uuid
 from pathlib import Path
+from qualification_contract import CURRENT_SCHEMA
 parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');args=parser.parse_args()
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT);RUN=uuid.uuid4().hex[:10];PRIVATE=ROOT/'.private/repair-conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)
 BASE='http://127.0.0.1:38443';OLD=ROOT/'.cache/source-final-production/cratectld';NEW=ROOT/'bin/cratectld';ORAS=ROOT/'.cache/bin/oras';env=dict(os.environ);checks=[];commands=[];processes={};logs={};tokens={}
@@ -14,6 +15,7 @@ def identity(binary):
  return out
 candidate=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip();scope=['cmd','internal','scripts','web','api','go.mod','go.sum','Makefile']
 result={'run':RUN,'candidate':candidate,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope]).strip()),'checks':checks,'commands':commands,'artifact_digests':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()for p in [OLD,NEW,ROOT/'bin/cratectl',ORAS]},'build_identity':{str(p.relative_to(ROOT)):identity(p)for p in [OLD,NEW,ROOT/'bin/cratectl']},'topology':'Native macOS arm64, real PostgreSQL 16.15 with nonowner forced RLS, owned registry/worker, stock ORAS and streaming cratectl CLI; explicit HTTP loopback.','limits':['Exact local-byte repair retains corrupt/staged data and preserves policy/lifecycle. No erasure, reclaimed space or security approval is claimed.','Named raw/OCI outcomes only; all format/client, legacy metadata repair, S3, scale, backup/restore and other-platform requirements remain open.','Maintenance upgrade with all old processes stopped; rolling versions and transfer draining remain unqualified.']}
+result['expected_schema'] = CURRENT_SCHEMA
 result['build_source_matches_candidate']=all(result['build_identity'][str(p.relative_to(ROOT))].get('vcs.revision')==candidate and result['build_identity'][str(p.relative_to(ROOT))].get('vcs.modified')=='false'for p in [NEW,ROOT/'bin/cratectl'])
 def check(label,condition):
  if not condition:raise AssertionError(label)
@@ -97,7 +99,7 @@ try:
  run([ORAS,'login','--plain-http','--registry-config',PRIVATE/'oras.json','--username','token','--password-stdin','127.0.0.1:38443'],input_bytes=(tokens['admin']+'\n').encode())
  ref='127.0.0.1:38443/containers/proof:v1';oras('push',ref,'payload.txt:text/plain');root_digest=oras('resolve',ref).decode().strip();root_path='proof/manifests/'+root_digest
  manifest=api('/v2/containers/'+root_path)[1];manifest_source=private('manifest.json',manifest);stop('registry')
- pending=json.loads(run([NEW,'migrate','--plan']));check('repair-capable migrator plans the remaining versions 5 through 9',pending['pending']==[5,6,7,8,9]and pending['safety_valid']);run([NEW,'migrate']);after=json.loads(run([NEW,'migrate','--plan']));check('upgrade retains all four receipts and adds five remaining steps',after['applied'][:4]==before['applied']and len(after['applied'])==9 and after['safety_valid']);run([OLD,'migrate','--plan'],ok=False);check('old runtime rejects repair jobs database',True)
+ pending=json.loads(run([NEW,'migrate','--plan']));check('repair-capable migrator plans the remaining versions 5 through 10',pending['binary_version']==CURRENT_SCHEMA and pending['pending']==list(range(5,CURRENT_SCHEMA+1))and pending['safety_valid']);run([NEW,'migrate']);after=json.loads(run([NEW,'migrate','--plan']));check('upgrade retains all four receipts and adds six remaining steps',after['applied'][:4]==before['applied']and after['binary_version']==CURRENT_SCHEMA and len(after['applied'])==CURRENT_SCHEMA and not after['pending']and after['safety_valid']);run([OLD,'migrate','--plan'],ok=False);check('old runtime rejects repair jobs database',True)
  run([NEW,'serve','--transfer-timeout','0s'],ok=False);check('unbounded transfer deadline is rejected before startup',True)
  start('registry',NEW);start('worker',NEW,True)
  physical=PRIVATE/'objects'/tenant/'sha256'/digest[:2]/digest;physical.unlink();check('missing bytes fail the native download',api('/r/raw/file')[0]==503);missing=PRIVATE/'missing-pull';missing.mkdir();oras('pull',ref,cwd=missing,ok=False)
