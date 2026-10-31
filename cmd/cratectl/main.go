@@ -32,12 +32,16 @@ func run() error {
 	file := f.String("body-file", "", "JSON request file")
 	upload := f.String("upload-file", "", "stream exact repair source bytes from this regular file")
 	timeout := f.Duration("timeout", 30*time.Second, "request timeout, 1s–24h; increase explicitly for large repair sources")
+	responseLimit := f.Int64("response-limit", 4<<20, "maximum management response bytes, 1–1073741824; increase explicitly for complete large previews")
 	key := f.String("idempotency-key", "", "durable mutation key")
 	if e := f.Parse(os.Args[1:]); e != nil {
 		return e
 	}
 	if *file != "" && *upload != "" || *timeout < time.Second || *timeout > 24*time.Hour {
 		return errors.New("choose body-file or upload-file and a timeout from 1s through 24h")
+	}
+	if *responseLimit < 1 || *responseLimit > 1<<30 {
+		return errors.New("response-limit must be 1–1073741824 bytes")
 	}
 	if *configuration != "" {
 		var c configfile.Client
@@ -128,8 +132,10 @@ func run() error {
 		return errors.New("request failed; check the URL and configured TLS trust")
 	}
 	defer resp.Body.Close()
-	_, e = io.Copy(os.Stdout, io.LimitReader(resp.Body, 4<<20))
-	if e != nil {
+	if resp.ContentLength > *responseLimit {
+		return managementResponseLimit(*responseLimit)
+	}
+	if e = copyManagementResponse(os.Stdout, resp.Body, *responseLimit); e != nil {
 		return e
 	}
 	fmt.Println()
@@ -137,6 +143,28 @@ func run() error {
 		return fmt.Errorf("management request returned HTTP %d", resp.StatusCode)
 	}
 	return nil
+}
+
+func managementResponseLimit(limit int64) error {
+	return fmt.Errorf("management response exceeds %d bytes and is incomplete; retry the identical request/key with a larger --response-limit or use a smaller read page", limit)
+}
+func copyManagementResponse(out io.Writer, body io.Reader, limit int64) error {
+	n, e := io.Copy(out, io.LimitReader(body, limit))
+	if e != nil {
+		return e
+	}
+	if n < limit {
+		return nil
+	}
+	var sentinel [1]byte
+	_, e = io.ReadFull(body, sentinel[:])
+	if e == io.EOF {
+		return nil
+	}
+	if e != nil {
+		return e
+	}
+	return managementResponseLimit(limit)
 }
 func main() {
 	if e := run(); e != nil {

@@ -602,6 +602,16 @@
       "candidate": null,
       "replay": "evidence/2026-10-31/retention-backend-preflight.json",
       "limits": "Dirty-source backend development preflights only; dedicated native/browser and exact clean-candidate qualification remain pending."
+    },
+    {
+      "id": "DEFECT.0056",
+      "summary": "CLI acknowledged success after silently clipping a management JSON reply at 4 MiB",
+      "first_failure": "evidence/2026-10-31/retention-cli-response-first-failure.json",
+      "state": "repaired and development replayed",
+      "repair": "Detect incomplete responses with bounded sentinel reading; fail explicitly, support an operator response budget and reject known oversized Content-Length before output.",
+      "candidate": null,
+      "replay": "evidence/2026-10-31/retention-surface-preflight.json",
+      "limits": "Owned actual CLI-entry and bounded-reader fixtures passed under the race detector; exact clean production/race artifact qualification remains pending."
     }
   ]
 }

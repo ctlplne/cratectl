@@ -17,14 +17,30 @@ productive-attempt and post-approval tag failures are retained with development
 replays in evidence/2026-10-31/retention-backend-preflight.json. These are dirty-source
 preflights, not a new clean-candidate qualification.
 
-Next: complete the retention console and dedicated stock ORAS/CLI process-restart,
-restore/cancellation/race and schema-6 old-binary journeys, adapt current native
-harnesses to schema 7, then build and qualify exact clean production/race artifacts.
+The retention console now supports policy preview/configuration, complete paged
+target review, exact-request recovery after uncertain admission, immutable
+outcomes, cancellation and current-authority recovery through verified restore.
+Nine real Chromium workflows pass with 56 named automated A/AA states, including
+13 retention states. The final native ORAS/CLI retention campaign passes 37
+assertions; schema-6 lifecycle, legacy adoption/process kill, repair and real
+schedule-cadence replays pass another 133. These use retained dirty-source
+development artifacts, not a new clean qualified source. The CLI now rejects
+incomplete oversized management replies and accepts an explicit response budget;
+its first failure and bounded-response regression replays are retained.
+See evidence/2026-10-31/retention-surface-preflight.json.
+
+Next: build and qualify exact clean production/race artifacts and complete all
+affected existing native journeys.
 Other rules/formats/scheduled retention, physical GC, providers/platforms, scale
 and production recovery remain required. The primary remains schema 6; a separate
 schema-7 development database and its private state are retained. Owned test
 services are stopped and the prior qualified production bin bytes are restored.
-No push or remote mutation was issued by this work. Only imfeelingtheagi may be
+The read-only GitHub audit confirms the existing private replacement repository
+1437631481 and all 47 published author/committer identities as imfeelingtheagi;
+the original owner-directed reset is already complete. The connector's 404 was
+an access discrepancy; direct authenticated API checks succeeded. See
+evidence/2026-10-31/remote-state-retention-audit.json. No additional reset,
+recreation, push or remote mutation was issued by this work. Only imfeelingtheagi may be
 the Git author and committer. Full scope and negative readiness remain unchanged.
 
 Latest qualified source: `b19d1ae393320a2adc051f61db24693fec62591a`, authored and committed only as

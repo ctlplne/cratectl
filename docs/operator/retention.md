@@ -6,6 +6,14 @@ deletion. It keeps the bytes and history, preserves security decisions and can b
 reversed through the existing verified [restore workflow](oci-lifecycle.md).
 It reports zero reclaimed bytes. Physical garbage collection remains separate.
 
+In the console, open **Storage → Retention**, enter the OCI repository and load
+its policies. Create or inspect a policy, preview its complete selection, review
+all target pages and approve the run. Inspect its committed outcomes to confirm
+retirement. **Inspect lifecycle or restore** opens the current retained-reference
+workflow. An uncertain admission keeps its exact approval and request key for
+retry; it does not enable a second approval. If you close while waiting, inspect
+the policy's run history before creating another run.
+
 Policies require a tenant administrator and apply to hosted or proxy OCI
 repositories. Group endpoints do not own these references. Selection uses:
 
@@ -71,6 +79,13 @@ budget, at most 10,000 targets and 8 MiB of retained target metadata. Oversized
 plans fail with `retention_budget`; they are not silently truncated. Large-repo
 pagination, additional selection rules and production-scale cost remain work.
 
+The console accepts responses up to 4 MiB. For a larger complete preview, use
+`cratectl --response-limit 16777216` with the same request. The CLI defaults to
+4 MiB and allows an explicit response budget from 1 byte to 1 GiB. A larger reply
+fails instead of reporting truncated JSON as success. Retry a mutation with the
+identical body and idempotency key to confirm its outcome; changing the response
+budget does not change the operation.
+
 Admission returns a maintenance job. The worker must be running. Inspect:
 
 - Policy run history: `/{name}/runs?after=0&limit=50`; continue from the sequence
@@ -97,8 +112,13 @@ the verified lifecycle restore workflow; current unrelated tags are preserved.
 
 Schema 7 preserves receipts 1–6 and requires controlled maintenance with earlier
 registry/worker processes stopped. Earlier runtimes reject it. The owned primary
-remains on schema 6 during development. Backend PostgreSQL/HTTP preflights are
-in progress; clean-candidate artifacts, a dedicated stock-client retention replay
-and console workflow remain pending. Other formats, scheduled runs, last-access
+remains on schema 6 during development. Backend PostgreSQL/HTTP, dedicated stock
+ORAS/CLI and console development preflights pass; exact clean production/race
+qualification remains pending. The native replay includes controlled schema-6
+upgrade, actual process restart, lost-response replay, cancellation, revoked
+authority, current-policy restore and proxy/group tombstone precedence. Nine
+Chromium workflows cover 56 named automated A/AA states, including 13 retention
+states. These are scoped development observations, not full accessibility or
+release qualification. Other formats, scheduled runs, last-access
 rules, legal-hold administration, physical GC, providers/platforms, scale and
 production backup/restore remain committed requirements.

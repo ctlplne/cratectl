@@ -20578,17 +20578,25 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "internal/store/retention.go, retention_execution.go, retention_management.go and retention.sql; internal/server/retention.go; internal/worker/retention.go",
+      "implementation": "internal/store/retention.go, retention_execution.go, retention_management.go and retention.sql; internal/server/retention.go; internal/worker/retention.go; web/src/retention.tsx; scripts/conformance_retention.py",
       "surfaces": {
         "api": "/api/v1/repositories/{repository}/retention-policies; immutable history and run admission; /api/v1/maintenance/retention-runs/{job} and items; common job control and verified lifecycle restore",
-        "cli": "cratectl management API",
-        "ui": "pending"
+        "cli": "cratectl management API with explicit --response-limit for complete large previews",
+        "ui": "Storage \u2192 Retention; policy/target review, exact uncertain-admission retry, immutable outcomes and common verified lifecycle restore"
       },
       "core": true,
       "dependencies": [],
       "acceptance_journey": "J.REPO.RETENTION",
-      "clients": [],
-      "client_versions": {},
+      "clients": [
+        "ORAS",
+        "cratectl",
+        "Chromium"
+      ],
+      "client_versions": {
+        "ORAS": "1.3.6",
+        "Chromium": "156.0.8078.4",
+        "cratectl": "dirty development artifacts; clean qualification pending"
+      },
       "test_data": "Defined by the corresponding GOAL.md acceptance requirement.",
       "permission_cases": [
         "least privilege",
@@ -20604,10 +20612,11 @@
       "state": "implementing",
       "candidate": null,
       "evidence": [
-        "evidence/2026-10-31/retention-backend-preflight.json"
+        "evidence/2026-10-31/retention-backend-preflight.json",
+        "evidence/2026-10-31/retention-surface-preflight.json"
       ],
-      "limits": "Policy-driven OCI manifest retirement has dirty-source real PostgreSQL/HTTP development preflights. Dedicated native-client/console and exact clean-candidate qualification remain pending. Full format/rule/scheduled retention, legal-hold administration, physical GC, provider/platform/scale and production recovery remain required.",
-      "next_action": "Complete the retention console, dedicated stock ORAS/CLI process and schema-6 upgrade journeys, then requalify clean production/race artifacts; retain every broader retention/GC and later-stage requirement."
+      "limits": "Policy-driven OCI manifest retirement has real PostgreSQL/HTTP, stock ORAS/CLI process/recovery/schema-6 upgrade and nine-workflow browser development preflights. Exact clean production/race qualification remains pending. Full format/rule/scheduled retention, legal-hold administration, physical GC, provider/platform/scale and production recovery remain required.",
+      "next_action": "Build and qualify exact clean production/race artifacts, including retention, all affected native journeys and repeated full real-PostgreSQL race suites; retain every broader retention/GC and later-stage requirement."
     },
     {
       "id": "REPO.HOLDS",

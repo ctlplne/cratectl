@@ -1,0 +1,223 @@
+{
+  "recorded_at": "2026-10-31T02:06:10.285017+00:00",
+  "phase": "Retention console, native process/recovery journeys, schema-7 harnesses and complete CLI response handling",
+  "source_parent": "5879ac4acf2f4bc5704a201a349baf3857195396",
+  "source_dirty": true,
+  "clean_candidate_qualification": false,
+  "runtime_records": [
+    {
+      "kind": "browser",
+      "path": "evidence/2026-10-31/console-5f0a565dfa.json",
+      "checks": 70,
+      "source_dirty": true,
+      "clean_candidate_qualification": false
+    },
+    {
+      "kind": "native retention",
+      "path": "evidence/2026-10-31/retention-daf866e155.json",
+      "checks": 37,
+      "source_dirty": true,
+      "clean_candidate_qualification": false
+    },
+    {
+      "kind": "schema-6 lifecycle",
+      "path": "evidence/2026-10-31/lifecycle-7830e4fdec.json",
+      "checks": 45,
+      "source_dirty": true,
+      "clean_candidate_qualification": false
+    },
+    {
+      "kind": "legacy schema",
+      "path": "evidence/2026-10-31/schema-3abb4643be.json",
+      "checks": 13,
+      "source_dirty": true,
+      "clean_candidate_qualification": false
+    },
+    {
+      "kind": "byte repair",
+      "path": "evidence/2026-10-31/repairs-916dc4f511.json",
+      "checks": 44,
+      "source_dirty": true,
+      "clean_candidate_qualification": false
+    },
+    {
+      "kind": "real recurring integrity",
+      "path": "evidence/2026-10-31/schedules-48a4249ed8.json",
+      "checks": 31,
+      "source_dirty": true,
+      "clean_candidate_qualification": false
+    }
+  ],
+  "browser": {
+    "stats": {
+      "startTime": "2026-10-31T01:51:39.369Z",
+      "duration": 124770.947,
+      "expected": 9,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "named_automated_A_AA_states": 56,
+    "retention_states": 13,
+    "violations": 0,
+    "retention_targets": 106,
+    "retired": 100,
+    "skipped": 6,
+    "outcome_page_sizes": [
+      50,
+      50,
+      6
+    ],
+    "oversized_response": "One synthetic owned reply verifies the browser response-budget error and CLI recovery action. No server scale or native oversized server preview is established."
+  },
+  "cli_response": {
+    "first_failure": "evidence/2026-10-31/retention-cli-response-first-failure.json",
+    "repair": "Detect incomplete replies within response-limit+1 consumed bytes, return nonzero, accept an explicit 1-byte through 1-GiB budget, and reject known oversized Content-Length before output.",
+    "regression_scope": "Actual CLI run entry and boundary/reader-failure fixtures, repeated under race detector. Full unit/race checks include the regression.",
+    "replay": "evidence/2026-10-31/retention-cli-response-replay.txt"
+  },
+  "first_native_failure": {
+    "record": "evidence/2026-10-31/retention-97ee12267d.json",
+    "notes": "evidence/2026-10-31/retention-native-first-failure-notes.json",
+    "classification": "Harness expected 404 for preserved policy denial; actual product correctly returned 403. No product bypass observed.",
+    "first_corrected_replay": "evidence/2026-10-31/retention-b523789197.json"
+  },
+  "earlier_browser": "evidence/2026-10-31/console-570e6358a6.json",
+  "checks": {
+    "unit": "passed",
+    "race": "passed",
+    "lint": "passed",
+    "console_reproduction": "byte-for-byte passed",
+    "postgres_and_stock_clients": "Owned real PostgreSQL 16.15, stock ORAS 1.3.6, native CLI and Chromium with development artifacts.",
+    "full_current_postgres_race": "Previous backend preflight only; new full clean-candidate replay remains pending."
+  },
+  "logs": [
+    {
+      "path": "evidence/2026-10-31/retention-surface-unit-race-lint.txt",
+      "raw_path": ".cache/retention-surface-final-checks.txt",
+      "raw_sha256": "491615dbcf117ab7911ec403e3c8ca9e87d1c51e4e7f8b2dd225242a8c0a78cc",
+      "normalization": "Trailing horizontal whitespace removed in evidence copy; raw retained in ignored cache."
+    },
+    {
+      "path": "evidence/2026-10-31/retention-cli-response-replay.txt",
+      "raw_path": ".cache/retention-cli-response-final-replay.txt",
+      "raw_sha256": "8c0c8538fda2c41114b609133414aba7bf32287e9d74eea7c5289ea9db143f57",
+      "normalization": "Trailing horizontal whitespace removed in evidence copy; raw retained in ignored cache."
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".cache/retention-ui-final-preflight-production/cratectld",
+      "sha256": "e4db48ccc8dae4494eec7021b43621030f5dbdcc33cfe8b348dbcac572c186e6",
+      "native_build_identity": ".cache/retention-ui-final-preflight-production/cratectld: go1.27.3\n\tpath\tctlplne.dev/cratectl/cmd/cratectld\n\tmod\tctlplne.dev/cratectl\tv0.0.0-20261031012223-5879ac4acf2f+dirty\t\n\tdep\tgithub.com/Masterminds/semver/v3\tv3.4.0\th1:Zog+i5UMtVoCU8oKka5P7i9q9HgrJeGzI9SA1Xbatp0=\n\tdep\tgithub.com/aquasecurity/go-pep440-version\tv0.0.1\th1:8VKKQtH2aV61+0hovZS3T//rUF+6GDn18paFTVS0h0M=\n\tdep\tgithub.com/aquasecurity/go-version\tv0.0.1\th1:4cNl516agK0TCn5F7mmYN+xVs1E3S45LkgZk3cbaW2E=\n\tdep\tgithub.com/jackc/pgpassfile\tv1.0.0\th1:/6Hmqy13Ss2zCq62VdNG8tM1wchn8zjSGOBJ6icpsIM=\n\tdep\tgithub.com/jackc/pgservicefile\tv0.0.0-20240606120523-5a60cdf6a761\th1:iCEnooe7UlwOQYpKFhBabPMi4aNAfoODPEFNiAnClxo=\n\tdep\tgithub.com/jackc/pgx/v5\tv5.11.0\th1:IzBBtyK9AHqf98cctWFifYSci2hgQR/cd56wB4p+ogg=\n\tdep\tgithub.com/jackc/puddle/v2\tv2.2.2\th1:PR8nw+E/1w0GLuRFSmiioY6UooMp6KJv0/61nB7icHo=\n\tdep\tgolang.org/x/net\tv0.62.0\th1:18ELalfM5+XNRwzM2nYqXsZQ9ByS1uhj2O/U7+5jqRY=\n\tdep\tgolang.org/x/sync\tv0.24.0\th1:iqiDrGoDgyuvAKrhLQthUEzU/R378N78gXbBjxed7oA=\n\tdep\tgolang.org/x/text\tv0.43.0\th1:1QivrlhwAsnMOcqgOdl9my7s9OyZl8O5/UGUTJVXoWc=\n\tdep\tgolang.org/x/xerrors\tv0.0.0-20231012003039-104605ab7028\th1:+cNy6SZtPcJQH3LJVLOSmiC7MMxXNOb3PU/VUEz+EhU=\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-trimpath=true\n\tbuild\tCGO_ENABLED=1\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=darwin\n\tbuild\tGOARM64=v8.0\n\tbuild\tvcs=git\n\tbuild\tvcs.revision=5879ac4acf2f4bc5704a201a349baf3857195396\n\tbuild\tvcs.time=2026-10-31T01:22:23Z\n\tbuild\tvcs.modified=true\n"
+    },
+    {
+      "path": ".cache/retention-ui-final-preflight-production/cratectl",
+      "sha256": "b0218042974202e314182f6e119fddce81450fcca07c577ea1d689a1d26981b1",
+      "native_build_identity": ".cache/retention-ui-final-preflight-production/cratectl: go1.27.3\n\tpath\tctlplne.dev/cratectl/cmd/cratectl\n\tmod\tctlplne.dev/cratectl\tv0.0.0-20261031012223-5879ac4acf2f+dirty\t\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-trimpath=true\n\tbuild\tCGO_ENABLED=1\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=darwin\n\tbuild\tGOARM64=v8.0\n\tbuild\tvcs=git\n\tbuild\tvcs.revision=5879ac4acf2f4bc5704a201a349baf3857195396\n\tbuild\tvcs.time=2026-10-31T01:22:23Z\n\tbuild\tvcs.modified=true\n"
+    }
+  ],
+  "symbol_vulnerability_scan": {
+    "configuration": {
+      "protocol_version": "v1.0.0",
+      "scanner_name": "govulncheck",
+      "scanner_version": "v1.9.0",
+      "db": "https://vuln.go.dev",
+      "db_last_modified": "2026-10-27T21:16:18Z",
+      "go_version": "go1.27.3",
+      "scan_level": "symbol",
+      "scan_mode": "source"
+    },
+    "records": 238,
+    "findings": 0,
+    "raw_path": ".cache/retention-surface-govulncheck.json",
+    "raw_sha256": "69d65e93566f44c488454bd89594d2224bcf414cac2f066cf6519a1f9930f98c"
+  },
+  "unchanged_dependency_lockfiles": {
+    "go.mod": "cc267e88962f8fe70d925bee308d72cb67dc86c78d12a3dafb90595499dd624f",
+    "go.sum": "e6d2b2121b7df4623c278f22a7c75762986dcdc0ab7b9ef7699b19fbd13ef411",
+    "web/package.json": "d07528894d3bb6218c2a421d3a213ab3ec01eec7393a6e2e1d348a13839efd20",
+    "web/package-lock.json": "f2b5ef59debedcbad42494b98207329e72852c82ea04f745caccf8069f3d5152"
+  },
+  "unchanged_dependency_scan": "evidence/2026-10-31/schedule-trivy-source.json",
+  "dependency_scan_limits": "Reuses only unchanged dependencies; current native release/image analysis and full security gate remain pending.",
+  "source_secret_scan": "evidence/2026-10-31/retention-surface-source-secrets.json",
+  "source_secret_review": {
+    "status": "passed",
+    "checked_at": "2026-10-31T02:07:27.229061+00:00",
+    "files": 1096,
+    "known_private_value_entries": 5398,
+    "exact_value_matches": 0,
+    "gitleaks_findings": 0,
+    "scope": "All tracked and nonignored source/evidence files, including current retention native/browser fixtures in the private-value comparison. Existing Gitleaks rules unchanged."
+  },
+  "source_inputs": [
+    {
+      "path": "cmd/cratectl/main.go",
+      "sha256": "98f6c3c0fc510322df7ebca1ee3f57bf4f87986c0d2ffa69960e74140b04c899"
+    },
+    {
+      "path": "cmd/cratectl/main_test.go",
+      "sha256": "c99905283ceae68bfc73eb58103e7066038e4c1e8190d1fe4aa8d2340a18f9e1"
+    },
+    {
+      "path": "web/src/retention.tsx",
+      "sha256": "dd141e55fc65ac7ddaf268dba9785400303ea7e66fa4353067ef55d3bc0298ad"
+    },
+    {
+      "path": "web/src/operations.tsx",
+      "sha256": "d0e82cc47d6cf4a7423e0e6509089e80da6d3f45224df1a8ea93a7e53661678b"
+    },
+    {
+      "path": "web/tests/zzzzzz-retention.spec.mjs",
+      "sha256": "405073848176f574326d89898c7134c0f4c95d570358b388f9f35957aab592d4"
+    },
+    {
+      "path": "scripts/conformance_retention.py",
+      "sha256": "b29c221a6d4477fc8ae3f59597688286fa8cbf509a4fbdfbe6327af421882b1f"
+    },
+    {
+      "path": "scripts/conformance_console.py",
+      "sha256": "96170c91ad3a1a05fb2eab9bd004a8a247d2fd18c3664a4b51eceac0decc8002"
+    },
+    {
+      "path": "scripts/conformance_lifecycle.py",
+      "sha256": "309b523bbc1dba473f6d831ea4baa50729c4c509e0f9bd8a4fcbcfc46e7a4e1e"
+    },
+    {
+      "path": "scripts/conformance_repairs.py",
+      "sha256": "514072371dc3c94d5650c3723d9b73b36538cbe542f3c639b319cf38930a87c0"
+    },
+    {
+      "path": "scripts/conformance_schedules.py",
+      "sha256": "f2119c9c3f34e5b19002084c3adbc7fb35ffa5e22ffc8f4c2288f6cdc60d73a7"
+    },
+    {
+      "path": "scripts/conformance_schema.py",
+      "sha256": "feb6f852ada2c1a20bf8896adf067dd9afc5b5e561cda674a6b0b5b98cd1ca9f"
+    },
+    {
+      "path": "web/build-manifest.json",
+      "sha256": "f70aa89130154fc30e876d2aa2ecccdafebcb7c406e0c19778f561f47e81e06d"
+    }
+  ],
+  "schema": {
+    "development_and_isolated_campaigns": 7,
+    "primary": 6,
+    "migration_7_checksum": "596eed6ab2287c8fd4b332d53f4d4867ceda7a1cebaf78e215da70b7eac6ff12",
+    "earlier_six_receipts_frozen": true
+  },
+  "services": "Owned native PostgreSQL and test registry/worker stopped; ports 35432/38443 have no listeners. Private data and all prior preflight artifacts retained. Qualified b19 production bin bytes restored. Docker and sibling resources untouched.",
+  "remote_identity_audit": "evidence/2026-10-31/remote-state-retention-audit.json",
+  "latest_qualified_checkpoint": "evidence/2026-10-31/schedule-checkpoint.json",
+  "next": [
+    "Build clean production/race artifacts from committed current source; repeat retention, console, old-schema and all affected native and real-PostgreSQL race campaigns.",
+    "Complete broader retention rules/formats/scheduling, physical GC, release/replica/restore protections, providers/platforms, fault/scale and production recovery."
+  ],
+  "limits": [
+    "Dirty-source development preflight, not clean-candidate or release qualification.",
+    "Retained canonical OCI manifest retirement only; zero physical bytes reclaimed.",
+    "Named automated A/AA states do not establish full WCAG or assistive-technology qualification.",
+    "All 450 capabilities and 41 format families remain unfinished; every broad readiness verdict remains negative."
+  ]
+}

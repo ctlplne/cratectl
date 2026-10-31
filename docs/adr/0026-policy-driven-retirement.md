@@ -1,6 +1,7 @@
 # ADR 0026: policy-driven retained retirement
 
-Status: backend implemented locally; console and clean-candidate qualification pending.
+Status: backend and console implemented locally; native/browser development
+preflights pass; exact clean-candidate qualification pending.
 
 Retention policies select canonical OCI manifests by minimum age and the number
 of newest live manifests to keep per image. Policies can protect every live tag.
@@ -44,3 +45,12 @@ maintenance and rejects earlier runtimes; rolling compatibility remains open.
 
 Backend failures and development replays are retained in
 [`retention-backend-preflight.json`](../../evidence/2026-10-31/retention-backend-preflight.json).
+
+The console reviews complete bounded target pages and freezes the admission
+request and key across uncertain replies. Run inspection reads immutable approval
+and outcome records and links to the common lifecycle restore workflow. A reply
+that exceeds the browser budget provides an explicit CLI response-budget action.
+The CLI fails on incomplete replies instead of accepting clipped JSON.
+Native process/old-binary, browser and bounded-response development observations
+are retained in
+[`retention-surface-preflight.json`](../../evidence/2026-10-31/retention-surface-preflight.json).
