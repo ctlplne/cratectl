@@ -1,0 +1,197 @@
+{
+  "SchemaVersion": 2,
+  "Trivy": {
+    "Version": "0.72.0"
+  },
+  "ReportID": "01a18fbd-37ba-7897-9f31-e7306d103322",
+  "CreatedAt": "2026-10-30T22:15:04.890565-04:00",
+  "ArtifactName": ".cache/retention-final-production",
+  "ArtifactType": "filesystem",
+  "Results": [
+    {
+      "Target": "cratectl",
+      "Class": "lang-pkgs",
+      "Type": "gobinary",
+      "Packages": [
+        {
+          "ID": "ctlplne.dev/cratectl@v0.0.0-20261031020816-6cac8851da67",
+          "Name": "ctlplne.dev/cratectl",
+          "Identifier": {
+            "PURL": "pkg:golang/ctlplne.dev/cratectl@v0.0.0-20261031020816-6cac8851da67",
+            "UID": "f26f79d3944e9173"
+          },
+          "Version": "v0.0.0-20261031020816-6cac8851da67",
+          "Relationship": "root",
+          "DependsOn": [
+            "stdlib@v1.27.3"
+          ],
+          "AnalyzedBy": "gobinary"
+        },
+        {
+          "ID": "stdlib@v1.27.3",
+          "Name": "stdlib",
+          "Identifier": {
+            "PURL": "pkg:golang/stdlib@v1.27.3",
+            "UID": "483178474fabd602"
+          },
+          "Version": "v1.27.3",
+          "Relationship": "direct",
+          "AnalyzedBy": "gobinary"
+        }
+      ]
+    },
+    {
+      "Target": "cratectld",
+      "Class": "lang-pkgs",
+      "Type": "gobinary",
+      "Packages": [
+        {
+          "ID": "ctlplne.dev/cratectl@v0.0.0-20261031020816-6cac8851da67",
+          "Name": "ctlplne.dev/cratectl",
+          "Identifier": {
+            "PURL": "pkg:golang/ctlplne.dev/cratectl@v0.0.0-20261031020816-6cac8851da67",
+            "UID": "340ef2fcf25b71fd"
+          },
+          "Version": "v0.0.0-20261031020816-6cac8851da67",
+          "Relationship": "root",
+          "DependsOn": [
+            "github.com/Masterminds/semver/v3@v3.4.0",
+            "github.com/aquasecurity/go-pep440-version@v0.0.1",
+            "github.com/aquasecurity/go-version@v0.0.1",
+            "github.com/jackc/pgpassfile@v1.0.0",
+            "github.com/jackc/pgservicefile@v0.0.0-20240606120523-5a60cdf6a761",
+            "github.com/jackc/pgx/v5@v5.11.0",
+            "github.com/jackc/puddle/v2@v2.2.2",
+            "golang.org/x/net@v0.62.0",
+            "golang.org/x/sync@v0.24.0",
+            "golang.org/x/text@v0.43.0",
+            "golang.org/x/xerrors@v0.0.0-20231012003039-104605ab7028",
+            "stdlib@v1.27.3"
+          ],
+          "AnalyzedBy": "gobinary"
+        },
+        {
+          "ID": "stdlib@v1.27.3",
+          "Name": "stdlib",
+          "Identifier": {
+            "PURL": "pkg:golang/stdlib@v1.27.3",
+            "UID": "942b643e8f21a79a"
+          },
+          "Version": "v1.27.3",
+          "Relationship": "direct",
+          "AnalyzedBy": "gobinary"
+        },
+        {
+          "ID": "github.com/Masterminds/semver/v3@v3.4.0",
+          "Name": "github.com/Masterminds/semver/v3",
+          "Identifier": {
+            "PURL": "pkg:golang/github.com/masterminds/semver/v3@v3.4.0",
+            "UID": "ebfd58b229e9dc1"
+          },
+          "Version": "v3.4.0",
+          "AnalyzedBy": "gobinary"
+        },
+        {
+          "ID": "github.com/aquasecurity/go-pep440-version@v0.0.1",
+          "Name": "github.com/aquasecurity/go-pep440-version",
+          "Identifier": {
+            "PURL": "pkg:golang/github.com/aquasecurity/go-pep440-version@v0.0.1",
+            "UID": "601aff09c0050cc1"
+          },
+          "Version": "v0.0.1",
+          "AnalyzedBy": "gobinary"
+        },
+        {
+          "ID": "github.com/aquasecurity/go-version@v0.0.1",
+          "Name": "github.com/aquasecurity/go-version",
+          "Identifier": {
+            "PURL": "pkg:golang/github.com/aquasecurity/go-version@v0.0.1",
+            "UID": "a772f0edc0662ab8"
+          },
+          "Version": "v0.0.1",
+          "AnalyzedBy": "gobinary"
+        },
+        {
+          "ID": "github.com/jackc/pgpassfile@v1.0.0",
+          "Name": "github.com/jackc/pgpassfile",
+          "Identifier": {
+            "PURL": "pkg:golang/github.com/jackc/pgpassfile@v1.0.0",
+            "UID": "12ad159daf69e4ac"
+          },
+          "Version": "v1.0.0",
+          "AnalyzedBy": "gobinary"
+        },
+        {
+          "ID": "github.com/jackc/pgservicefile@v0.0.0-20240606120523-5a60cdf6a761",
+          "Name": "github.com/jackc/pgservicefile",
+          "Identifier": {
+            "PURL": "pkg:golang/github.com/jackc/pgservicefile@v0.0.0-20240606120523-5a60cdf6a761",
+            "UID": "1915022978a30355"
+          },
+          "Version": "v0.0.0-20240606120523-5a60cdf6a761",
+          "AnalyzedBy": "gobinary"
+        },
+        {
+          "ID": "github.com/jackc/pgx/v5@v5.11.0",
+          "Name": "github.com/jackc/pgx/v5",
+          "Identifier": {
+            "PURL": "pkg:golang/github.com/jackc/pgx/v5@v5.11.0",
+            "UID": "aa98f78ec079f2e2"
+          },
+          "Version": "v5.11.0",
+          "AnalyzedBy": "gobinary"
+        },
+        {
+          "ID": "github.com/jackc/puddle/v2@v2.2.2",
+          "Name": "github.com/jackc/puddle/v2",
+          "Identifier": {
+            "PURL": "pkg:golang/github.com/jackc/puddle/v2@v2.2.2",
+            "UID": "25214c1d314163ef"
+          },
+          "Version": "v2.2.2",
+          "AnalyzedBy": "gobinary"
+        },
+        {
+          "ID": "golang.org/x/net@v0.62.0",
+          "Name": "golang.org/x/net",
+          "Identifier": {
+            "PURL": "pkg:golang/golang.org/x/net@v0.62.0",
+            "UID": "57646d10bdb8844c"
+          },
+          "Version": "v0.62.0",
+          "AnalyzedBy": "gobinary"
+        },
+        {
+          "ID": "golang.org/x/sync@v0.24.0",
+          "Name": "golang.org/x/sync",
+          "Identifier": {
+            "PURL": "pkg:golang/golang.org/x/sync@v0.24.0",
+            "UID": "bb35725fa7e2b6b5"
+          },
+          "Version": "v0.24.0",
+          "AnalyzedBy": "gobinary"
+        },
+        {
+          "ID": "golang.org/x/text@v0.43.0",
+          "Name": "golang.org/x/text",
+          "Identifier": {
+            "PURL": "pkg:golang/golang.org/x/text@v0.43.0",
+            "UID": "6002c6b418a74273"
+          },
+          "Version": "v0.43.0",
+          "AnalyzedBy": "gobinary"
+        },
+        {
+          "ID": "golang.org/x/xerrors@v0.0.0-20231012003039-104605ab7028",
+          "Name": "golang.org/x/xerrors",
+          "Identifier": {
+            "PURL": "pkg:golang/golang.org/x/xerrors@v0.0.0-20231012003039-104605ab7028",
+            "UID": "91665dae13838b42"
+          },
+          "Version": "v0.0.0-20231012003039-104605ab7028",
+          "AnalyzedBy": "gobinary"
+        }
+      ]
+    }
+  ]
+}

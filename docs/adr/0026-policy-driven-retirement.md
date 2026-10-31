@@ -1,7 +1,6 @@
 # ADR 0026: policy-driven retained retirement
 
-Status: backend and console implemented locally; native/browser development
-preflights pass; exact clean-candidate qualification pending.
+Status: accepted for the named clean qualification fixtures; broader scope remains open.
 
 Retention policies select canonical OCI manifests by minimum age and the number
 of newest live manifests to keep per image. Policies can protect every live tag.
@@ -54,3 +53,6 @@ The CLI fails on incomplete replies instead of accepting clipped JSON.
 Native process/old-binary, browser and bounded-response development observations
 are retained in
 [`retention-surface-preflight.json`](../../evidence/2026-10-31/retention-surface-preflight.json).
+
+The named clean source, artifact hashes, runtime records and limits are retained in
+[`retention-checkpoint.json`](../../evidence/2026-10-31/retention-checkpoint.json).

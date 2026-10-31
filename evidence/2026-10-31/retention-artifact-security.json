@@ -1,0 +1,96 @@
+{
+  "candidate": "6cac8851da675dcaf531d6f8ed2aa26c927a243b",
+  "checked_at": "2026-10-31T02:15:28.502043+00:00",
+  "go_binary_scans": [
+    {
+      "artifact": ".cache/retention-final-production/cratectld",
+      "artifact_sha256": "7874a243c786c823811230e3c83f92dc91d0e2fb66673c45c083036d2f43698b",
+      "scanner_configuration": {
+        "protocol_version": "v1.0.0",
+        "scanner_name": "govulncheck",
+        "scanner_version": "v1.9.0",
+        "db": "https://vuln.go.dev",
+        "db_last_modified": "2026-10-27T21:16:18Z",
+        "scan_level": "symbol",
+        "scan_mode": "binary"
+      },
+      "findings": 0,
+      "raw_path": ".cache/retention-binary-cratectld-govulncheck.json",
+      "raw_sha256": "dc07cb1b6b1e573861a4d954f9727915a731498dfac166557bfb5c5366107516"
+    },
+    {
+      "artifact": ".cache/retention-final-production/cratectl",
+      "artifact_sha256": "2a2e016e62d930e3f69375c3ec924bbcebd5d814ef3839a34b9af4e972350672",
+      "scanner_configuration": {
+        "protocol_version": "v1.0.0",
+        "scanner_name": "govulncheck",
+        "scanner_version": "v1.9.0",
+        "db": "https://vuln.go.dev",
+        "db_last_modified": "2026-10-27T21:16:18Z",
+        "scan_level": "symbol",
+        "scan_mode": "binary"
+      },
+      "findings": 0,
+      "raw_path": ".cache/retention-binary-cratectl-govulncheck.json",
+      "raw_sha256": "a4f115c881534b4e618670066f341a35ae33fe0b2225ac9d0c6d75609ff401b5"
+    }
+  ],
+  "trivy_rootfs_targets": [
+    {
+      "artifact": ".cache/retention-final-production/cratectl",
+      "artifact_sha256": "2a2e016e62d930e3f69375c3ec924bbcebd5d814ef3839a34b9af4e972350672",
+      "report": ".cache/retention-production-rootfs-trivy.json",
+      "type": "gobinary",
+      "packages": 2,
+      "findings": 0
+    },
+    {
+      "artifact": ".cache/retention-final-production/cratectld",
+      "artifact_sha256": "7874a243c786c823811230e3c83f92dc91d0e2fb66673c45c083036d2f43698b",
+      "report": ".cache/retention-production-rootfs-trivy.json",
+      "type": "gobinary",
+      "packages": 13,
+      "findings": 0
+    },
+    {
+      "artifact": ".cache/retention-final-platform/linux-amd64-cratectld",
+      "artifact_sha256": "c8d58001b7cdc246d62e02e6d82ba4e042f45ed3192069a46e501ab0b8a8af89",
+      "report": ".cache/retention-platform-rootfs-trivy.json",
+      "type": "gobinary",
+      "packages": 13,
+      "findings": 0
+    },
+    {
+      "artifact": ".cache/retention-final-platform/linux-arm64-cratectld",
+      "artifact_sha256": "932705286fe8a6b9d8b4c01ee46e606062c5ad2e33f31d3991b05f8646f775bc",
+      "report": ".cache/retention-platform-rootfs-trivy.json",
+      "type": "gobinary",
+      "packages": 13,
+      "findings": 0
+    },
+    {
+      "artifact": ".cache/retention-final-platform/windows-amd64-cratectl.exe",
+      "artifact_sha256": "086aa8c07eec3dc3262d6bcf1fc11ee245e0348cd4f28490f69872df07fa9820",
+      "report": ".cache/retention-platform-rootfs-trivy.json",
+      "type": "gobinary",
+      "packages": 2,
+      "findings": 0
+    }
+  ],
+  "trivy_database": {
+    "Version": 2,
+    "NextUpdate": "2026-10-31T19:07:50.77378224Z",
+    "UpdatedAt": "2026-10-30T19:07:50.77378237Z",
+    "DownloadedAt": "2026-10-30T22:57:19.478733Z"
+  },
+  "first_filesystem_mode": {
+    "reports": [
+      ".cache/retention-binary-trivy.json",
+      ".cache/retention-platform-trivy.json"
+    ],
+    "recognized_targets": 0,
+    "qualified": false,
+    "resolution": "Root-filesystem mode recognized both native production binaries and all three cross-compiled Go artifacts. No ignore or scanner rule was changed."
+  },
+  "limits": "Go compiled-binary and dependency analysis for these exact artifacts only. Race binaries, container images, malicious content, runtime behavior on other platforms and the full security campaign remain unqualified."
+}

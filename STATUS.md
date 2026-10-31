@@ -1,49 +1,54 @@
 # cratectl execution status
 
-Policy-driven retained OCI retirement is implemented locally (ADR 0026;
-docs/operator/retention.md). The management API and common CLI support exact-revision
-policies, immutable configuration history, bounded digest-bound previews, durable
-maintenance jobs and immutable target outcomes. Execution rechecks current policy,
-source, requester/worker authority, tags, holds, newest selection and incoming
-references. Changed tag sets cannot cross an older approval. Retirement uses the
-common tombstone/verified-restore path and reports zero reclaimed bytes.
+Latest qualified source: `6cac8851da675dcaf531d6f8ed2aa26c927a243b`, authored and committed only as
+`imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
+The authoritative checkpoint is `evidence/2026-10-31/retention-checkpoint.json`.
 
-Eleven new real PostgreSQL tests passed twice under the race detector, including
-HTTP admission, worker resume and exact native-route restore. The complete
-store/server/stock-client PostgreSQL race suites passed once without skips or
-races after correcting isolated fixture setup. Unit/race/lint, parser fuzzing
-(15,936 executions) and the current Go symbol scan pass. First SQL compatibility,
-productive-attempt and post-approval tag failures are retained with development
-replays in evidence/2026-10-31/retention-backend-preflight.json. These are dirty-source
-preflights, not a new clean-candidate qualification.
+Reviewed OCI retention now spans API, CLI and Storage → Retention. Exact policy
+revisions and complete target previews bind approval to immutable run records.
+Workers recheck original requester/current worker authority, source/configuration,
+holds, tags, references, lifecycle identity and newest selection before each
+retained tombstone. Changed targets are skipped; earlier committed outcomes stay
+recorded. Cancellation, uncertain admission and revoked-requester recovery expose
+their actual durable state. Verified restore preserves policy and current tags.
+No CAS bytes are erased or reported as reclaimed. See ADR 0026 and
+`docs/operator/retention.md`.
 
-The retention console now supports policy preview/configuration, complete paged
-target review, exact-request recovery after uncertain admission, immutable
-outcomes, cancellation and current-authority recovery through verified restore.
-Nine real Chromium workflows pass with 56 named automated A/AA states, including
-13 retention states. The final native ORAS/CLI retention campaign passes 37
-assertions; schema-6 lifecycle, legacy adoption/process kill, repair and real
-schedule-cadence replays pass another 133. These use retained dirty-source
-development artifacts, not a new clean qualified source. The CLI now rejects
-incomplete oversized management replies and accepts an explicit response budget;
-its first failure and bounded-response regression replays are retained.
-See evidence/2026-10-31/retention-surface-preflight.json.
+Clean production artifacts passed 1135 assertions and separate race artifacts
+passed 626, across 31 runtime records. Nine Chromium workflows and 56
+named automated A/AA states pass per build, including 13 retention states. Eleven
+new real PostgreSQL retention tests and the complete store/server/native-driver
+race packages ran twice without skips or races. Stock ORAS/npm/pip/Maven, supported
+repair and recurring schedules, controlled schema-2/3/4/5/6 upgrades, legacy adoption/
+process kill and maintenance regressions pass. Schema 7 preserves receipts 1–6
+and is current on the owned primary. Linux/Windows compile only.
 
-Next: build and qualify exact clean production/race artifacts and complete all
-affected existing native journeys.
-Other rules/formats/scheduled retention, physical GC, providers/platforms, scale
-and production recovery remain required. The primary remains schema 6; a separate
-schema-7 development database and its private state are retained. Owned test
-services are stopped and the prior qualified production bin bytes are restored.
-The read-only GitHub audit confirms the existing private replacement repository
-1437631481 and all 47 published author/committer identities as imfeelingtheagi;
-the original owner-directed reset is already complete. The connector's 404 was
-an access discrepancy; direct authenticated API checks succeeded. See
-evidence/2026-10-31/remote-state-retention-audit.json. No additional reset,
-recreation, push or remote mutation was issued by this work. Only imfeelingtheagi may be
-the Git author and committer. Full scope and negative readiness remain unchanged.
+The CLI now fails explicitly on incomplete oversized management replies and
+allows an operator response budget. Browser uncertain admission retries identical
+request bytes and key, and a 106-target run records 100 retirements and six skips
+over bounded outcome pages. The oversized browser reply is a synthetic budget
+fixture, not a server-scale claim. First failures and development preflights
+remain historical evidence; current clean replays identify the source above.
 
-Latest qualified source: `b19d1ae393320a2adc051f61db24693fec62591a`, authored and committed only as
+Unit/vet/race, architecture, console byte reproduction, API parse/reference and
+scoped vulnerability/credential/history checks pass. Compiled Go analysis covers
+both production binaries; Trivy root-filesystem analysis recognizes them and
+all three cross-compiled artifacts, with zero findings. Initial filesystem-mode
+scans found no targets and are retained as incomplete coverage. Full security and release
+packaging gates remain explicitly negative. The read-only GitHub audit retained
+in `evidence/2026-10-31/remote-state-retention-audit.json` confirms the private
+replacement repository and all 47 then-published authors/committers as
+imfeelingtheagi. No additional reset, recreation, push or remote mutation occurred.
+
+All 450 capabilities and 41 families remain unfinished; broad readiness is
+negative. Complete other retention rules/formats/scheduling, legal-hold
+administration, physical GC and release/replica/restore protections; broader
+source/grant/network races, managed/hot secrets, metadata/provider/platform
+recovery, other clients, scanners, identity, fault/scale and every later stage
+remain required. Owned test services are stopped; private data and exact clean
+artifacts are retained. Historical checkpoints below retain their original scope.
+
+Previous schedule-qualified source: `b19d1ae393320a2adc051f61db24693fec62591a`, authored and committed only as
 `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
 The authoritative checkpoint is `evidence/2026-10-31/schedule-checkpoint.json`.
 

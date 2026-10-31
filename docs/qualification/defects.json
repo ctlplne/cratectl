@@ -577,41 +577,41 @@
       "id": "DEFECT.0053",
       "summary": "Retention preview used SQL absent from PostgreSQL 16",
       "first_failure": "evidence/2026-10-31/retention-store-first-failure.json",
-      "state": "repaired and development replayed",
+      "state": "repaired and clean-source replayed",
       "repair": "Use a supported bounded suffix expression and replay the actual PostgreSQL query.",
-      "candidate": null,
-      "replay": "evidence/2026-10-31/retention-backend-preflight.json",
-      "limits": "Dirty-source backend development preflights only; dedicated native/browser and exact clean-candidate qualification remain pending."
+      "candidate": "6cac8851da675dcaf531d6f8ed2aa26c927a243b",
+      "replay": "evidence/2026-10-31/retention-checkpoint.json",
+      "limits": "Named real PostgreSQL, native process/browser and bounded CLI-response fixtures; full product/security/scale qualification remains open."
     },
     {
       "id": "DEFECT.0054",
       "summary": "Productive retirement steps exhausted the job retry budget",
       "first_failure": "evidence/2026-10-31/retention-attempt-budget-first-failure.json",
-      "state": "repaired and development replayed",
+      "state": "repaired and clean-source replayed",
       "repair": "Reset cycle_attempts on successful durable progress; retain total attempts and immutable outcomes. Ten-target and completed-retry fixtures pass.",
-      "candidate": null,
-      "replay": "evidence/2026-10-31/retention-backend-preflight.json",
-      "limits": "Dirty-source backend development preflights only; dedicated native/browser and exact clean-candidate qualification remain pending."
+      "candidate": "6cac8851da675dcaf531d6f8ed2aa26c927a243b",
+      "replay": "evidence/2026-10-31/retention-checkpoint.json",
+      "limits": "Named real PostgreSQL, native process/browser and bounded CLI-response fixtures; full product/security/scale qualification remains open."
     },
     {
       "id": "DEFECT.0055",
       "summary": "An older retention approval could hide a newly added tag",
       "first_failure": "evidence/2026-10-31/retention-new-tag-first-failure.json",
-      "state": "repaired and development replayed",
+      "state": "repaired and clean-source replayed",
       "repair": "Compare current tags to the exact approved tag impact even when tag protection is disabled; skip the changed target until a new preview is approved.",
-      "candidate": null,
-      "replay": "evidence/2026-10-31/retention-backend-preflight.json",
-      "limits": "Dirty-source backend development preflights only; dedicated native/browser and exact clean-candidate qualification remain pending."
+      "candidate": "6cac8851da675dcaf531d6f8ed2aa26c927a243b",
+      "replay": "evidence/2026-10-31/retention-checkpoint.json",
+      "limits": "Named real PostgreSQL, native process/browser and bounded CLI-response fixtures; full product/security/scale qualification remains open."
     },
     {
       "id": "DEFECT.0056",
       "summary": "CLI acknowledged success after silently clipping a management JSON reply at 4 MiB",
       "first_failure": "evidence/2026-10-31/retention-cli-response-first-failure.json",
-      "state": "repaired and development replayed",
+      "state": "repaired and clean-source replayed",
       "repair": "Detect incomplete responses with bounded sentinel reading; fail explicitly, support an operator response budget and reject known oversized Content-Length before output.",
-      "candidate": null,
-      "replay": "evidence/2026-10-31/retention-surface-preflight.json",
-      "limits": "Owned actual CLI-entry and bounded-reader fixtures passed under the race detector; exact clean production/race artifact qualification remains pending."
+      "candidate": "6cac8851da675dcaf531d6f8ed2aa26c927a243b",
+      "replay": "evidence/2026-10-31/retention-checkpoint.json",
+      "limits": "Named real PostgreSQL, native process/browser and bounded CLI-response fixtures; full product/security/scale qualification remains open."
     }
   ]
 }

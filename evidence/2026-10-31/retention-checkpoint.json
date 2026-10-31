@@ -1,0 +1,253 @@
+{
+  "candidate": "6cac8851da675dcaf531d6f8ed2aa26c927a243b",
+  "checked_at": "2026-10-31T02:31:37.767979+00:00",
+  "author_and_committer": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>",
+  "implementation_sources": [
+    "5879ac4acf2f4bc5704a201a349baf3857195396",
+    "6cac8851da675dcaf531d6f8ed2aa26c927a243b"
+  ],
+  "previous_qualified_source": "b19d1ae393320a2adc051f61db24693fec62591a",
+  "runtime_records": [
+    {
+      "path": "evidence/2026-10-28/inventory-355c6637cf.json",
+      "checks": 67,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/jobs-6a3cbb8d62.json",
+      "checks": 71,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/leases-3eafd07230.json",
+      "checks": 63,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/public-oci-87191e6453.json",
+      "checks": 33,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-28/sweeps-d525b06df6.json",
+      "checks": 80,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/conformance-12fd858f92.json",
+      "checks": 43,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/conformance-25d993680d.json",
+      "checks": 46,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/conformance-26432c21a5.json",
+      "checks": 363,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/conformance-c94b108699.json",
+      "checks": 79,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/console-21d3e43045.json",
+      "checks": 71,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/console-5862f58f3c.json",
+      "checks": 71,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/installation-42ef1653b8.json",
+      "checks": 30,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/installation-88be26c165.json",
+      "checks": 30,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-118394b968.json",
+      "checks": 46,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-2420835e28.json",
+      "checks": 46,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-2dab343585.json",
+      "checks": 46,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-37a223650a.json",
+      "checks": 46,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-549048197c.json",
+      "checks": 46,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-70d9874989.json",
+      "checks": 44,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-9a118e478a.json",
+      "checks": 46,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-9f2d4d1ee1.json",
+      "checks": 46,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-a7f97106a9.json",
+      "checks": 44,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-b2a69f00e9.json",
+      "checks": 46,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/repairs-4d84b199c2.json",
+      "checks": 45,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/repairs-6db9c52191.json",
+      "checks": 45,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/retention-41a9b00c78.json",
+      "checks": 38,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/retention-8cd0b64d17.json",
+      "checks": 38,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/schedules-5479ab5a3c.json",
+      "checks": 32,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/schedules-742b546cf4.json",
+      "checks": 32,
+      "race": false
+    },
+    {
+      "path": "evidence/2026-10-31/schema-a43837e893.json",
+      "checks": 14,
+      "race": true
+    },
+    {
+      "path": "evidence/2026-10-31/schema-ac40c0899b.json",
+      "checks": 14,
+      "race": false
+    }
+  ],
+  "assertions": {
+    "production": 1135,
+    "race": 626
+  },
+  "browser_tests_per_build": 9,
+  "automated_accessibility_states_per_console": 56,
+  "retention_accessibility_states_per_console": 13,
+  "postgres_race_repetitions": 2,
+  "new_real_postgres_tests": [
+    "TestRetentionPolicyPreviewRevisionHistoryAndBudget",
+    "TestRetentionPlanDigestRejectsChangedMembershipAndExpiredPreview",
+    "TestRetentionKeepsNewestTagsHoldsParentsAndUnvalidatedContent",
+    "TestRetentionExecutionRechecksLateHoldsTagsAndParentsAndIgnoresMutableJobAuthority",
+    "TestRetentionRequesterAndPolicyChangesStopUnprocessedEffects",
+    "TestRetentionTargetJournalFailureAndLateRequesterExpiryRollbackTogether",
+    "TestRetentionUnprotectedApprovalDoesNotRetireANewTagBinding",
+    "TestRetentionRunAndExecutionRollBackWhenOutboxIsFull",
+    "TestRetentionTenantIsolationAndCancellationPreserveApprovedTargets",
+    "TestRetentionMigrationPreservesSixReceiptsAndForcesTenantEvidenceIsolation",
+    "TestRetentionHTTPWorkerResumesApprovedTargetsAndNativeRestorePreservesBytes"
+  ],
+  "console": {
+    "production": "evidence/2026-10-31/console-5862f58f3c.json",
+    "race": "evidence/2026-10-31/console-21d3e43045.json"
+  },
+  "retention": {
+    "production": "evidence/2026-10-31/retention-41a9b00c78.json",
+    "race": "evidence/2026-10-31/retention-8cd0b64d17.json"
+  },
+  "recurring_schedule_regression": {
+    "production": "evidence/2026-10-31/schedules-742b546cf4.json",
+    "race": "evidence/2026-10-31/schedules-5479ab5a3c.json"
+  },
+  "byte_repair_regression": {
+    "race": "evidence/2026-10-31/repairs-6db9c52191.json",
+    "production": "evidence/2026-10-31/repairs-4d84b199c2.json"
+  },
+  "old_binary_upgrades": {
+    "6-race": "evidence/2026-10-31/lifecycle-118394b968.json",
+    "5-production": "evidence/2026-10-31/lifecycle-9a118e478a.json",
+    "2-production": "evidence/2026-10-31/lifecycle-a7f97106a9.json",
+    "6-production": "evidence/2026-10-31/lifecycle-37a223650a.json",
+    "2-race": "evidence/2026-10-31/lifecycle-70d9874989.json",
+    "4-race": "evidence/2026-10-31/lifecycle-b2a69f00e9.json",
+    "3-production": "evidence/2026-10-31/lifecycle-2420835e28.json",
+    "4-production": "evidence/2026-10-31/lifecycle-9f2d4d1ee1.json",
+    "5-race": "evidence/2026-10-31/lifecycle-2dab343585.json",
+    "3-race": "evidence/2026-10-31/lifecycle-549048197c.json"
+  },
+  "schema_version": 7,
+  "frozen_migration_checksums": [
+    "1e0f7b93d872f8ab83f85742000a6282f2722a0a338d8f2bc81755345ba66d16",
+    "9e023c96c8cf33549ce81f1eac22551b5cdb6267d146f65d430ec254dc8b10b5",
+    "44527dcd4be5177203e2b0eb93e5886a4dae437fbebf4cec14f7737ecb2f15d3",
+    "8b287dda8e78324c44275d31850418d7e7166d9d6fe49c71d539dbd44a52d209",
+    "0e835ed82b84cdd3d85858b0a76611b3ed6d387bbf55fee76d2abdf7c7f313a9",
+    "557b3f6612a403e24d0c9726c9b048d62188b3e1a93bcb3f158616da30b1fe6c",
+    "596eed6ab2287c8fd4b332d53f4d4867ceda7a1cebaf78e215da70b7eac6ff12"
+  ],
+  "tests": {
+    "unit_vet_race_console_reproduction": "evidence/2026-10-31/retention-clean-unit-vet-race.txt",
+    "postgres_race": "evidence/2026-10-31/retention-clean-postgres-race.txt",
+    "serial_replay": "evidence/2026-10-31/retention-clean-replay.json",
+    "initial_primary_upgrade_candidate": "6cac8851da675dcaf531d6f8ed2aa26c927a243b",
+    "initial_primary_plan": "evidence/2026-10-31/retention-primary-v6-plan.txt",
+    "initial_primary_upgrade": "evidence/2026-10-31/retention-primary-v6-upgrade.txt",
+    "parser_fuzz_development_preflight": "evidence/2026-10-31/retention-backend-preflight.json"
+  },
+  "artifact_manifest": "evidence/2026-10-31/retention-artifacts.json",
+  "security": "evidence/2026-10-31/retention-security.json",
+  "broad_required_gates": "evidence/2026-10-31/retention-broad-gates.json",
+  "remote_identity_audit": "evidence/2026-10-31/remote-state-retention-audit.json",
+  "service_stop_evidence": "evidence/2026-10-31/retention-final-services.json",
+  "test_services": "Owned registry/worker and PostgreSQL stopped; private data and exact artifacts retained.",
+  "this_work_push": false,
+  "this_work_remote_mutation": false,
+  "goal_turn_classification": "progress: reviewed OCI retention and native/browser/worker/schema recovery qualified within named fixtures",
+  "limits": [
+    "All 450 capabilities/journeys and 41 format families remain unfinished; broad readiness is negative.",
+    "Named macOS arm64 local filesystem, real PostgreSQL and loopback HTTP fixtures only; other providers/platforms, fault/clock/scale and production recovery remain required.",
+    "Canonical OCI manifest retirement by creation age/newest/tag protection only. No physical bytes erased; other formats/rules, legal-hold administration, automatic retention scheduling and safe GC remain required.",
+    "Immutable approval/outcomes govern execution; the owned mutable-progress fault is a test and does not qualify supported metadata repair.",
+    "Schema 7 preserves receipts 1\u20136 under controlled maintenance. Rolling compatibility, whole-transfer draining, downgrade and consistent backup/restore remain open.",
+    "Nine Chromium workflows and 56 named automated A/AA states do not establish full WCAG, assistive-technology or other-browser coverage.",
+    "Large-response CLI/browser recovery is tested with owned fixtures. The synthetic browser oversized response is not server-scale qualification. Other-platform artifacts compile only."
+  ]
+}

@@ -111,14 +111,16 @@ it does not undo prior retirement. Recover a specific retired manifest through
 the verified lifecycle restore workflow; current unrelated tags are preserved.
 
 Schema 7 preserves receipts 1–6 and requires controlled maintenance with earlier
-registry/worker processes stopped. Earlier runtimes reject it. The owned primary
-remains on schema 6 during development. Backend PostgreSQL/HTTP, dedicated stock
-ORAS/CLI and console development preflights pass; exact clean production/race
-qualification remains pending. The native replay includes controlled schema-6
-upgrade, actual process restart, lost-response replay, cancellation, revoked
-authority, current-policy restore and proxy/group tombstone precedence. Nine
-Chromium workflows cover 56 named automated A/AA states, including 13 retention
-states. These are scoped development observations, not full accessibility or
-release qualification. Other formats, scheduled runs, last-access
-rules, legal-hold administration, physical GC, providers/platforms, scale and
-production backup/restore remain committed requirements.
+registry/worker processes stopped. Earlier runtimes reject it. Clean production
+and separate race artifacts pass dedicated stock ORAS/CLI, browser and repeated
+real PostgreSQL journeys. The primary test database is now schema 7. Native
+replays include controlled schema-6 upgrade, actual process restart, lost-response
+retry, cancellation, revoked authority, current-policy restore and proxy/group
+tombstone precedence. Nine Chromium workflows cover 56 named automated A/AA
+states, including 13 retention states. This does not establish full accessibility,
+server scale or release qualification. Other formats, scheduled runs, last-access
+rules, legal-hold administration, physical GC, providers/platforms and production
+backup/restore remain committed requirements.
+
+The named clean source, artifact hashes, runtime records and limits are retained in
+[`retention-checkpoint.json`](../../evidence/2026-10-31/retention-checkpoint.json).
