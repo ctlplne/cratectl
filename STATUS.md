@@ -1,5 +1,17 @@
 # cratectl execution status
 
+Latest follow-up: native catalog descriptors use the existing canonical digest
+validator. A public hexadecimal alphabet in the earlier expression triggered
+Gitleaks. The local commit step continued despite that finding; the original
+redacted report and unchanged history are retained. The exact historical
+statement/file and exact public review-identity exceptions pass324 source/history fixtures, including isolated
+generic-credential counterexamples. Unit/race/lint and native PostgreSQL/HTTP
+lifecycle replay pass. See
+`evidence/2026-10-31/native-lifecycle-secret-rule-review.json`.
+Final source/history scans have zero findings under the narrowly tested rules.
+Final clean new-feature/client/browser qualification remains required; primary10
+and active ed9 bytes remain unchanged and owned services are stopped.
+
 Current work: proxy lifecycle group checks now follow the current native
 catalog descriptor. Historical tombstones remain on their old direct paths;
 descriptor replacement/removal permits ordinary fallback. The first failing

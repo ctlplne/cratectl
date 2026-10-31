@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"strings"
 
 	"github.com/jackc/pgx/v5"
 )
@@ -117,7 +116,7 @@ func currentNativeProxySubject(ctx context.Context, tx pgx.Tx, member Repository
 	if !present {
 		return "", false, nil
 	}
-	if len(key) != 64 || strings.Trim(key, "0123456789abcdef") != "" {
+	if !uploadDigest.MatchString(key) {
 		return "", false, ErrConflict
 	}
 	if member.Format == "pypi" {

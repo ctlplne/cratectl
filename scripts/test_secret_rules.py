@@ -51,10 +51,33 @@ cases.extend([
  ('history-other-file','evidence/2026-10-31/other-history.json','"Commit": "'+history_parent+'"',True),
 ])
 results=[]
+native_review='evidence/2026-10-31/native-lifecycle-secret-rule-review.json'
+native_parent=json.loads((root/native_review).read_text())['source_parent']
+cases.extend([
+ ('native-review-public-source',native_review,'"source_parent": "'+native_parent+'"',False),
+ ('native-review-prefixed-token',native_review,'"source_parent": "'+synthetic+'"',True),
+ ('native-review-bare-token',native_review,'"source_parent": "'+synthetic[4:]+'"',True),
+ ('native-review-other-field',native_review,'"token": "'+native_parent+'"',True),
+ ('native-review-other-file','evidence/2026-10-31/another-native-review.json','"source_parent": "'+native_parent+'"',True),
+])
+validation_path='internal/store/native_lifecycle_selection.go'
+alphabet=''.join('0123456789abcdef')
+validation='if len(key) != 64 || strings.Trim(key, "'+alphabet+'") != "" {'
+generic=hashlib.sha256(b'benign generic detector counterexample').hexdigest()[:40]
+generic_cases=[
+ ('historical-validation-alphabet',validation_path,validation,False),
+ ('validation-other-file','internal/store/another_selection.go',validation,True),
+ ('validation-other-value',validation_path,validation.replace(alphabet,generic),True),
+ ('validation-comment',validation_path,'// '+validation,True),
+ ('validation-appended-token',validation_path,validation+' api_key = "'+generic+'"',True),
+ ('validation-token-assignment',validation_path,'api_key = "'+generic+'"',True),
+]
+cases.extend(generic_cases)
+generic_names={case[0]for case in generic_cases}
 for name,path,text,expected in cases:
  # The rule's keyword must be present even for a public/bare 40-hex value.
  # Otherwise a benign URL could pass without exercising the exception at all.
- d=base/name;f=d/path;f.parent.mkdir(parents=True,exist_ok=True);f.write_text('sourcegraph regression context\n'+text+'\n')
+ d=base/name;f=d/path;f.parent.mkdir(parents=True,exist_ok=True);f.write_text(('generic detector regression context\n'if name in generic_names else'sourcegraph regression context\n')+text+'\n')
  native=os.environ.get('CRATECTL_GITLEAKS_BIN')
  # Each ignored fixture has one local commit, always under the owner's identity.
  identity=dict(os.environ,GIT_AUTHOR_NAME='imfeelingtheagi',GIT_AUTHOR_EMAIL='288773099+imfeelingtheagi@users.noreply.github.com',GIT_COMMITTER_NAME='imfeelingtheagi',GIT_COMMITTER_EMAIL='288773099+imfeelingtheagi@users.noreply.github.com')

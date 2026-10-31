@@ -2,6 +2,18 @@ title = "cratectl secret scanning"
 [extend]
 useDefault = true
 
+# One historical validation expression contains the public hexadecimal alphabet.
+# Keep the default detector everywhere except this exact statement in this file.
+# The source now reuses the existing canonical digest validator.
+[[rules]]
+id = "generic-api-key"
+[[rules.allowlists]]
+description = "Historical exact hexadecimal alphabet validation expression"
+condition = "AND"
+regexTarget = "line"
+paths = ['''(^|/)internal/store/native_lifecycle_selection\.go$''']
+regexes = ['''^\s*if len\(key\) != 64 \|\| strings\.Trim\(key, "0123456789abcdef"\) != "" \{\s*$''']
+
 # Gitleaks 8.30.1 labels public 40-hex commit URLs in govulncheck's OSV
 # records as Sourcegraph tokens. Match only that rule, those two evidence
 # filenames, and a complete URL field without userinfo, query or fragment.
@@ -50,3 +62,12 @@ condition = "AND"
 regexTarget = "line"
 paths = ['''(^|/)evidence/2026-10-31/retention-schedule-postcommit-history-first-failure\.json$''']
 regexes = ['''^\s*"Commit": "(ce69fffc51f50105d84d)(c3eab0cab98c800dbf5c)"[,]?\s*$''']
+
+# The native lifecycle review names the detector while recording this public
+# source identity. Restrict the exception to that exact field, value and file.
+[[rules.allowlists]]
+description = "Exact public source identity in the native lifecycle rule review"
+condition = "AND"
+regexTarget = "line"
+paths = ['''(^|/)evidence/2026-10-31/native-lifecycle-secret-rule-review\.json$''']
+regexes = ['''^\s*"source_parent": "(edc8e58beeeba4023ec3)(c99cca413f73c98f710d)"[,]?\s*$''']
