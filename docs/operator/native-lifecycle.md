@@ -1,8 +1,8 @@
 # Retain, hold and restore native package references
 
-Development status: implemented. Named native-client and browser journeys passed
-in development; matching clean production/race qualification remains required.
-See `evidence/2026-10-31/native-lifecycle-client-development-checkpoint.json`.
+Named materialized-reference native-client and browser journeys are verified on
+matching clean production and race artifacts. See
+`evidence/2026-10-31/native-lifecycle-clients-checkpoint.json`.
 Complete format lifecycle, legal compliance and release readiness remain open.
 
 Generic files, Maven package files, npm tarballs and Python distributions use the

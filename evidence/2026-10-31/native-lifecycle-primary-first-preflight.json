@@ -1,0 +1,23 @@
+{
+  "candidate": "5483878b211f9d30ebf4e72a9bc6ed20fc9d7040",
+  "state": {
+    "status": "failed",
+    "candidate": "5483878b211f9d30ebf4e72a9bc6ed20fc9d7040",
+    "approval": "Explicit owner reply: Approve primary migration",
+    "old_source": "ed9ee5e8a6b38843a01ff9ccb9eb5ca7752255c0",
+    "tasks": [
+      {
+        "name": "schema10-before",
+        "exit_code": 0,
+        "log": ".cache/native-lifecycle-clients-clean-5483878b211f/primary-maintenance/schema10-before.json"
+      }
+    ],
+    "started_at": "2026-10-31T14:18:32.447690+00:00",
+    "other_clients_before": 0,
+    "failure": "AssertionError: ",
+    "finished_at": "2026-10-31T14:18:32.735451+00:00"
+  },
+  "cause": "Preflight compared plan version/checksum pairs with SQL receipts that also have applied_at. It rejected the different shapes before any schema mutation.",
+  "repair": "Compare version/checksum pairs and independently compare actual stored timestamps with the historical receipts; preserve all ten complete SQL receipts before/after and all eleven on no-op replay.",
+  "replay": "evidence/2026-10-31/native-lifecycle-primary-schema11.json"
+}

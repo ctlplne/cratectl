@@ -1,0 +1,121 @@
+{
+  "candidate": "5483878b211f9d30ebf4e72a9bc6ed20fc9d7040",
+  "status": "passed in scope",
+  "source_and_four_artifacts": "govulncheck source/four binary symbol scans; npm audit; Trivy source/two production/two race artifacts; zero reported findings",
+  "tasks": [
+    {
+      "name": "go-source",
+      "exit_code": 0,
+      "log": ".cache/native-lifecycle-clients-clean-5483878b211f/security/go-source.log"
+    },
+    {
+      "name": "go-production-cratectl",
+      "exit_code": 0,
+      "log": ".cache/native-lifecycle-clients-clean-5483878b211f/security/go-production-cratectl.log"
+    },
+    {
+      "name": "go-production-cratectld",
+      "exit_code": 0,
+      "log": ".cache/native-lifecycle-clients-clean-5483878b211f/security/go-production-cratectld.log"
+    },
+    {
+      "name": "go-race-cratectl",
+      "exit_code": 0,
+      "log": ".cache/native-lifecycle-clients-clean-5483878b211f/security/go-race-cratectl.log"
+    },
+    {
+      "name": "go-race-cratectld",
+      "exit_code": 0,
+      "log": ".cache/native-lifecycle-clients-clean-5483878b211f/security/go-race-cratectld.log"
+    },
+    {
+      "name": "npm-audit",
+      "exit_code": 0,
+      "log": ".cache/native-lifecycle-clients-clean-5483878b211f/security/npm-audit.log"
+    },
+    {
+      "name": "trivy-source",
+      "exit_code": 0,
+      "log": ".cache/native-lifecycle-clients-clean-5483878b211f/security/trivy-source.log"
+    },
+    {
+      "name": "trivy-production",
+      "exit_code": 0,
+      "log": ".cache/native-lifecycle-clients-clean-5483878b211f/security/trivy-production.log"
+    },
+    {
+      "name": "trivy-race",
+      "exit_code": 0,
+      "log": ".cache/native-lifecycle-clients-clean-5483878b211f/security/trivy-race.log"
+    },
+    {
+      "name": "history",
+      "exit_code": 0,
+      "log": ".cache/native-lifecycle-clients-clean-5483878b211f/security/history.log"
+    }
+  ],
+  "go_config": {
+    "source": {
+      "protocol_version": "v1.0.0",
+      "scanner_name": "govulncheck",
+      "scanner_version": "v1.9.0",
+      "db": "https://vuln.go.dev",
+      "db_last_modified": "2026-10-27T21:16:18Z",
+      "go_version": "go1.27.3",
+      "scan_level": "symbol",
+      "scan_mode": "source"
+    },
+    "production-cratectl": {
+      "protocol_version": "v1.0.0",
+      "scanner_name": "govulncheck",
+      "scanner_version": "v1.9.0",
+      "db": "https://vuln.go.dev",
+      "db_last_modified": "2026-10-27T21:16:18Z",
+      "scan_level": "symbol",
+      "scan_mode": "binary"
+    },
+    "production-cratectld": {
+      "protocol_version": "v1.0.0",
+      "scanner_name": "govulncheck",
+      "scanner_version": "v1.9.0",
+      "db": "https://vuln.go.dev",
+      "db_last_modified": "2026-10-27T21:16:18Z",
+      "scan_level": "symbol",
+      "scan_mode": "binary"
+    },
+    "race-cratectl": {
+      "protocol_version": "v1.0.0",
+      "scanner_name": "govulncheck",
+      "scanner_version": "v1.9.0",
+      "db": "https://vuln.go.dev",
+      "db_last_modified": "2026-10-27T21:16:18Z",
+      "scan_level": "symbol",
+      "scan_mode": "binary"
+    },
+    "race-cratectld": {
+      "protocol_version": "v1.0.0",
+      "scanner_name": "govulncheck",
+      "scanner_version": "v1.9.0",
+      "db": "https://vuln.go.dev",
+      "db_last_modified": "2026-10-27T21:16:18Z",
+      "scan_level": "symbol",
+      "scan_mode": "binary"
+    }
+  },
+  "npm_vulnerabilities": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "trivy_database": {
+    "Version": 2,
+    "NextUpdate": "2026-10-31T19:07:50.77378224Z",
+    "UpdatedAt": "2026-10-30T19:07:50.77378237Z",
+    "DownloadedAt": "2026-10-30T22:57:19.478733Z"
+  },
+  "raw_private_or_cache_reports": ".cache/native-lifecycle-clients-clean-5483878b211f/security",
+  "limits": "Retained scanner/feed observations and exact artifact coverage only. Full security and packaging gates still fail explicitly; no broad security assurance."
+}

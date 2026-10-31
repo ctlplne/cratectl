@@ -1,3 +1,24 @@
+# cratectl execution status
+
+Current bounded task completed; broader goal paused by owner. Clean source
+`5483878b211f9d30ebf4e72a9bc6ed20fc9d7040` passes 335 native lifecycle stock-client checks and 363
+existing compatibility assertions on each production/race build. Each build passes
+14 Chromium workflows and 134 automated A/AA states, including 34 native states, with
+zero skipped/flaky/unexpected results. All 227 PostgreSQL race tests pass. Scoped
+source/four-artifact scans pass. See `evidence/2026-10-31/native-lifecycle-clients-checkpoint.json`.
+
+Explicit owner approval authorized local primary schema 10→11 maintenance. Zero other
+clients and no registry listener were verified; all ten existing receipts and
+all 39 existing durable table byte digests are unchanged. Schema 11 no-op replay also
+preserves them. Active bin now matches the clean qualified production source above.
+Owned registry/PostgreSQL are stopped; credentials, objects, databases and old
+qualified binaries remain retained. No push/publication or sibling/customer change.
+All 450 capabilities / 41 families and later-stage requirements remain unfinished.
+
+Full security, packaging and broad release readiness remain unqualified.
+
+Earlier observations below are historical checkpoints with their original scope.
+
 Current client/browser development: maintained native lifecycle journeys pass334
 stock-client checks across eight hosted/proxy cases. The complete Chromium suite
 passes14workflows and134automated A/AA states, including34native states, with
@@ -7,8 +28,6 @@ race artifacts. Preserve both original fixture failures and scope limits in
 `evidence/2026-10-31/native-lifecycle-client-development-checkpoint.json`.
 Primary10 and active ed9 bytes remain unchanged; no primary maintenance ran.
 All450capabilities/41families and every later stage remain committed and unfinished.
-
-# cratectl execution status
 
 Latest follow-up: native catalog descriptors use the existing canonical digest
 validator. A public hexadecimal alphabet in the earlier expression triggered

@@ -1,0 +1,26 @@
+{
+  "candidate": "5483878b211f9d30ebf4e72a9bc6ed20fc9d7040",
+  "original": [
+    {
+      "name": "postgres-race",
+      "status": "failed",
+      "log": ".cache/native-lifecycle-clients-clean-5483878b211f/postgres-race.log",
+      "exit_code": 1,
+      "expected_exit_code": 0,
+      "cause": "Fresh campaign base omitted required legacy test-a/test-b tenant provisioning. Foreign key failures are fixture failures; this observation does not count as qualification.",
+      "replay_task": "postgres-race-replay",
+      "original_state": ".cache/native-lifecycle-clients-clean-5483878b211f/state-first-failure.json"
+    }
+  ],
+  "original_log": "evidence/2026-10-31/native-lifecycle-clients-postgres-first-failure.txt",
+  "cause": "Fresh isolated base lacked required test-a/test-b tenants. Existing integration cases failed repository tenant foreign keys; the original run is not a pass.",
+  "repair": "Provision both tenants through the management CLI on the same isolated database, then rerun the complete unmodified three-package race suite.",
+  "replay": {
+    "top_level_passes": 227,
+    "subtest_passes": 260,
+    "skips": 0,
+    "races": 0,
+    "record": "evidence/2026-10-31/native-lifecycle-clients-postgres-race.txt"
+  },
+  "primary_unchanged_until_replay_passed": true
+}
