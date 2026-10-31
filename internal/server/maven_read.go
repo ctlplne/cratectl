@@ -45,7 +45,7 @@ func mavenSourceAllowed(group store.Repository, source, p string) bool {
 	return false
 }
 func mavenBlocked(a store.Artifact, review bool) bool {
-	return a.Decision == "denied" || review && a.Decision != "allowed"
+	return a.Deleted || a.Decision == "denied" || review && a.Decision != "allowed"
 }
 func mavenSnapshotNewer(a, b mavenSnapshotVersion) bool {
 	if a.Updated != b.Updated {

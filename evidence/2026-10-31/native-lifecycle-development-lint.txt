@@ -1,0 +1,13 @@
+/Users/shankar/Desktop/ctlplne-cratectl/.cache/go/bin/go vet ./...
+python3 scripts/check_architecture.py
+PASS: crypto imports, core-only dependency boundary, license IDs and tenant-table RLS declarations
+python3 scripts/check_console_assets.py
+PASS: embedded console matches the recorded source and asset digests
+python3 scripts/check_openapi_descriptions.py
+PASS: comma-containing OpenAPI flow descriptions are quoted
+python3 scripts/test_qualification_contract.py
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.002s
+
+OK

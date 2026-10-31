@@ -59,7 +59,7 @@ func (s *Server) holdManagement(w http.ResponseWriter, r *http.Request, i store.
 		kind = "hold-history-v1"
 		repo = bits[1]
 		if !store.Name.MatchString(repo) || !ValidPath(path) || len(path) > 2048 {
-			fail(w, 400, "invalid_hold_query", "Supply one repository and canonical OCI digest path.")
+			fail(w, 400, "invalid_hold_query", "Supply one repository and materialized package path. OCI references require a canonical digest path.")
 			return true
 		}
 	}

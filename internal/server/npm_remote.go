@@ -242,6 +242,7 @@ func (s *Server) serveNPMDownload(w http.ResponseWriter, r *http.Request, i stor
 	}
 	if repo.Mode == "group" {
 		resolved.groups = append(resolved.groups, repo.Name)
+		resolved.groupRevisions = map[string]int64{repo.Name: repo.SourceRevision}
 	}
 	s.serveResolvedArtifact(w, r, i, resolved)
 }

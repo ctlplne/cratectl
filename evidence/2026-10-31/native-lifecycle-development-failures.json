@@ -1,0 +1,48 @@
+{
+  "source_parent": "46e0b538a6897b3cc98e607e1233f84800e466ee",
+  "source_dirty": true,
+  "baseline_rejection": {
+    "path": "evidence/2026-10-31/native-lifecycle-development-first-failure.txt",
+    "sha256": "2ae364f83579166f292cf012ba4378f658bb4000a16df966309eb53ee841691e"
+  },
+  "intermediate_failures": [
+    {
+      "report": {
+        "path": "evidence/2026-10-31/native-lifecycle-development-replacement-compile-failure.txt",
+        "sha256": "0034668a0223f62746267cedd8696f3b5ac7555728893a47684661eada80fe80"
+      },
+      "cause": "New renewal guard initially referenced a duration as a retrieval; compilation stopped before tests. Corrected before runtime replay."
+    },
+    {
+      "report": {
+        "path": "evidence/2026-10-31/native-lifecycle-development-http-fixture-first-failure.txt",
+        "sha256": "6501adad38f2aec8db3240772534ff965fb13df209d9aac75e75087bf76dedd0",
+        "raw_path": ".cache/native-lifecycle-http-test.txt",
+        "raw_sha256": "eef232267b345996aff0ac5b08d858379122c66c64e1b0cfd0b99f3e61d1f346",
+        "presentation": "Trailing whitespace removed in this public text rendering; the raw command output is retained locally unchanged."
+      },
+      "cause": "Wheel fixture was regenerated with varying ZIP order; lower-source URL carried the first fixture digest. Corrected fixture to reuse exact archive bytes."
+    },
+    {
+      "path": ".cache/native-lifecycle-targeted-race.txt",
+      "sha256": "8700ec17e923448547fa16a614c86dfbe516f523f70fe82135978d35666e3298",
+      "cause": "Corrected fixture exposed real source-pinned Python group URL bypass of an earlier-source tombstone. npm had the same missing final check; both paths now carry group revisions into the common transaction."
+    },
+    {
+      "path": ".cache/native-lifecycle-console-build.txt",
+      "sha256": "beb95bc6607a81e35a0c15b6d5c1481fc59eeda6a84e6ba3d66cf6271d45a534",
+      "cause": "Console format is optional; first TypeScript build required the selector helper to accept undefined."
+    },
+    {
+      "path": ".cache/native-lifecycle-test.txt",
+      "sha256": "769908ddbaf7524e80559851728e8af3df3b2c4acc54272fe6dfc2811fbd51f1",
+      "cause": "Sandbox blocked httptest loopback bind. Same standard unit command passed with authorized loopback access; no test assertion changed."
+    }
+  ],
+  "raw_binary_fixture_log": "Retained byte-for-byte locally; public record contains only its digest and explanation.",
+  "replay": {
+    "path": "evidence/2026-10-31/native-lifecycle-development-postgres-race.txt",
+    "sha256": "a6d1a6c7de419dfeaf981d8e9bf087178b5517af22727de4032e7460c738b8b6"
+  },
+  "scope": "PostgreSQL and native HTTP regression proof; stock package clients and browser qualification of the new lifecycle feature remain required."
+}

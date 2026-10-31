@@ -6,9 +6,12 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"path"
 	"sort"
 	"strings"
 	"time"
+	"unicode"
+	"unicode/utf8"
 
 	"github.com/jackc/pgx/v5"
 )
@@ -53,7 +56,7 @@ func artifactLifecycleRecordMode(ctx context.Context, tx pgx.Tx, i Identity, rep
 	if e != nil {
 		return Artifact{}, e
 	}
-	if r.Format != "oci" || r.Mode == "group" || !lifecycleOCIPath(path) {
+	if r.Mode == "group" || !materializedLifecyclePath(path) {
 		return Artifact{}, ErrConflict
 	}
 	var a Artifact
@@ -61,10 +64,34 @@ func artifactLifecycleRecordMode(ctx context.Context, tx pgx.Tx, i Identity, rep
 	if errors.Is(e, pgx.ErrNoRows) {
 		return a, ErrNotFound
 	}
-	if e == nil && !strings.HasSuffix(path, "sha256:"+a.Digest) {
+	if e == nil && !materializedLifecycleReference(r, a) {
 		return a, ErrConflict
 	}
 	return a, e
+}
+
+func materializedLifecyclePath(p string) bool {
+	return p != "" && len(p) <= 2048 && utf8.ValidString(p) && path.Clean(p) == p &&
+		p != "." && p != ".." && !strings.HasPrefix(p, "../") && !strings.HasPrefix(p, "/") &&
+		!strings.ContainsRune(p, '\\') && strings.IndexFunc(p, unicode.IsControl) < 0
+}
+
+// Catalogs are mutable discovery projections. A retained lifecycle subject is
+// the materialized package reference, bound to the exact bytes in the request.
+func materializedLifecycleReference(r Repository, a Artifact) bool {
+	switch r.Format {
+	case "oci":
+		return lifecycleOCIPath(a.Path) && strings.HasSuffix(a.Path, "sha256:"+a.Digest)
+	case "generic":
+		return true
+	case "maven":
+		return path.Base(a.Path) != "maven-metadata.xml"
+	case "npm":
+		return a.MediaType != NPMCatalogMedia && !strings.HasPrefix(a.Path, "npm-catalog/")
+	case "pypi":
+		return a.MediaType != PythonCatalogMedia && !strings.HasPrefix(a.Path, "pypi-catalog/")
+	}
+	return false
 }
 
 func artifactStatePreview(ctx context.Context, tx pgx.Tx, i Identity, repo string, input ArtifactStateRequest, budget int) (ArtifactStatePreview, error) {
@@ -83,7 +110,11 @@ func artifactStatePreview(ctx context.Context, tx pgx.Tx, i Identity, repo strin
 	if e != nil {
 		return out, e
 	}
-	if input.Action == "delete" && strings.HasSuffix(input.Path, "/manifests/sha256:"+a.Digest) {
+	r, e := repositoryRecordInTx(ctx, tx, i, repo, "write")
+	if e != nil {
+		return out, e
+	}
+	if r.Format == "oci" && input.Action == "delete" && strings.HasSuffix(input.Path, "/manifests/sha256:"+a.Digest) {
 		var metadata OCIManifestMetadata
 		if json.Unmarshal(a.Metadata, &metadata) != nil || !metadata.Validated {
 			return out, ErrOCIUnvalidated
@@ -142,11 +173,13 @@ func artifactStatePreview(ctx context.Context, tx pgx.Tx, i Identity, repo strin
 		}
 		return values, rows.Err()
 	}
-	out.StrongParents, e = query(`SELECT a.path FROM cratectl.artifacts a WHERE a.repository=$1 AND (a.metadata->'oci_references') ? $2 AND NOT EXISTS(SELECT 1 FROM cratectl.artifact_lifecycle l WHERE (l.tenant,l.repository,l.path)=(a.tenant,a.repository,a.path) AND l.deleted) ORDER BY a.path LIMIT $3`, repo, input.Path, budget+1)
-	if e != nil {
-		return out, e
+	if r.Format == "oci" {
+		out.StrongParents, e = query(`SELECT a.path FROM cratectl.artifacts a WHERE a.repository=$1 AND (a.metadata->'oci_references') ? $2 AND NOT EXISTS(SELECT 1 FROM cratectl.artifact_lifecycle l WHERE (l.tenant,l.repository,l.path)=(a.tenant,a.repository,a.path) AND l.deleted) ORDER BY a.path LIMIT $3`, repo, input.Path, budget+1)
+		if e != nil {
+			return out, e
+		}
 	}
-	if n := strings.LastIndex(input.Path, "/manifests/"); n > 0 {
+	if n := strings.LastIndex(input.Path, "/manifests/"); r.Format == "oci" && n > 0 {
 		image := input.Path[:n]
 		out.Tags, e = query(`SELECT tag FROM cratectl.tags WHERE repository=$1 AND image=$2 AND digest=$3 AND NOT deleted ORDER BY tag LIMIT $4`, repo, image, "sha256:"+a.Digest, budget+1)
 		if e != nil {

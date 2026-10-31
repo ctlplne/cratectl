@@ -105,7 +105,7 @@ func (s *Store) NPMView(ctx context.Context, i Identity, repo, name string, maxV
 		count := 0
 		for _, r := range members {
 			member := NPMMember{Repository: r, Tags: map[string]string{}}
-			rows, e := tx.Query(ctx, `SELECT `+artifactColumns+` FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND starts_with(a.path,$2) AND ($4::boolean OR a.source_revision=$5) ORDER BY a.path LIMIT $3`, r.Name, name+"/-/", maxVersions+1, r.Mode != "proxy", r.SourceRevision)
+			rows, e := tx.Query(ctx, `SELECT `+artifactColumns+`,COALESCE(nl.deleted,false) FROM cratectl.artifacts a `+decisionJoin+nativeLifecycleJoin+` WHERE a.repository=$1 AND starts_with(a.path,$2) AND ($4::boolean OR a.source_revision=$5) ORDER BY a.path LIMIT $3`, r.Name, name+"/-/", maxVersions+1, r.Mode != "proxy", r.SourceRevision)
 			if e != nil {
 				return e
 			}
@@ -113,7 +113,7 @@ func (s *Store) NPMView(ctx context.Context, i Identity, repo, name string, maxV
 			integrityDecisions := map[string]string{}
 			for rows.Next() {
 				var a Artifact
-				if e = scanArtifact(rows, &a); e != nil {
+				if e = scanNativeArtifact(rows, &a); e != nil {
 					rows.Close()
 					return e
 				}
@@ -136,7 +136,7 @@ func (s *Store) NPMView(ctx context.Context, i Identity, repo, name string, maxV
 					integrityDecisions[m.Integrity] = a.Decision
 				}
 				if r.Mode == "hosted" {
-					member.Versions = append(member.Versions, NPMVersion{Version: m.Version, Path: a.Path, Package: m.Package, Blocked: a.Decision == "denied" || ((r.RequireReview || group.RequireReview) && a.Decision != "allowed")})
+					member.Versions = append(member.Versions, NPMVersion{Version: m.Version, Path: a.Path, Package: m.Package, Blocked: a.Deleted || a.Decision == "denied" || ((r.RequireReview || group.RequireReview) && a.Decision != "allowed")})
 				}
 			}
 			rows.Close()
@@ -222,6 +222,7 @@ func (s *Store) NPMView(ctx context.Context, i Identity, repo, name string, maxV
 					}
 					if a, ok := cached[v.Path]; ok {
 						decision = a.Decision
+						v.Blocked = a.Deleted
 						var m struct {
 							Package json.RawMessage `json:"package"`
 						}
@@ -231,7 +232,7 @@ func (s *Store) NPMView(ctx context.Context, i Identity, repo, name string, maxV
 						}
 						v.Package = m.Package
 					}
-					v.Blocked = decision == "denied" || ((r.RequireReview || group.RequireReview) && decision != "allowed")
+					v.Blocked = v.Blocked || decision == "denied" || ((r.RequireReview || group.RequireReview) && decision != "allowed")
 					member.Versions = append(member.Versions, v)
 				}
 				sources.Close()

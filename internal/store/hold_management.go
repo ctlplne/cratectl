@@ -49,7 +49,7 @@ func (req HoldListRequest) Validate() error {
 	}
 	if req.Key != "" {
 		bits := strings.Split(req.Key, "\n")
-		if len(bits) != 2 || !Name.MatchString(bits[0]) || len(bits[1]) > 2048 || !validHoldPath(bits[1]) {
+		if len(bits) != 2 || !Name.MatchString(bits[0]) || !materializedLifecyclePath(bits[1]) {
 			return ErrConflict
 		}
 	}
@@ -99,7 +99,8 @@ func (s *Store) HoldPage(ctx context.Context, i Identity, req HoldListRequest) (
    AND (l.hold_reason<>'' OR EXISTS(SELECT 1 FROM cratectl.events e
      WHERE e.tenant=l.tenant AND `+holdEventPredicate+`
      AND (e.payload::jsonb#>>'{data,current,repository}')=l.repository
-     AND (e.payload::jsonb#>>'{data,current,path}')=l.path))
+     AND (e.payload::jsonb#>>'{data,current,path}')=l.path
+     AND (e.payload::jsonb#>>'{data,current,digest}')=l.digest))
    AND ($3='all' OR $3='active' AND l.hold_reason<>'' AND (l.hold_until IS NULL OR l.hold_until>$1)
      OR $3='expired' AND l.hold_reason<>'' AND l.hold_until<=$1
      OR $3='released' AND l.hold_reason='')
@@ -154,7 +155,7 @@ func (s *Store) HoldHistory(ctx context.Context, i Identity, repo, path string, 
 	if i.Role != "admin" {
 		return out, window, ErrDenied
 	}
-	if req.Validate() != nil || req.Limit > 100 || req.Query != "" || req.Summary || !Name.MatchString(repo) || !validHoldPath(path) {
+	if req.Validate() != nil || req.Limit > 100 || req.Query != "" || req.Summary || !Name.MatchString(repo) || !materializedLifecyclePath(path) {
 		return out, window, ErrConflict
 	}
 	var position int64

@@ -53,7 +53,7 @@ func (s *Server) lifecycleManagement(w http.ResponseWriter, r *http.Request, i s
 		} else {
 			path := r.URL.Query().Get("path")
 			if len(r.URL.Query()) != 1 || len(r.URL.Query()["path"]) != 1 || len(path) > 2048 {
-				fail(w, 400, "invalid_path", "Supply one canonical OCI digest path in the path query.")
+				fail(w, 400, "invalid_path", "Supply one materialized package path in the path query. OCI references require a canonical digest path.")
 				return true
 			}
 			state, e := s.DB.ArtifactState(r.Context(), i, repo, path)

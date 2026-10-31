@@ -1,7 +1,8 @@
 # Find, inspect and recover reference holds
 
-A hold protects one exact canonical OCI manifest or blob reference from deletion
-and restore. Downloads keep their existing repository and content-policy checks.
+A hold protects one exact canonical OCI manifest/blob or materialized generic,
+Maven, npm or PyPI reference from deletion, restore and changed-byte replacement.
+Downloads keep their existing repository, cache freshness and content-policy checks.
 Release preserves the reference, bytes and earlier journal receipts.
 
 In **Storage → Reference holds**, choose active, expired, released or all records.
@@ -32,8 +33,10 @@ The original per-reference API retains one hold slot. A new placement replaces
 that slot's reason/expiry under the exact lifecycle revision. Independent named
 cases now provide additional protection for the same reference. Releasing the
 original slot or any one case leaves every other active protection in force.
+Independent cases and matters currently require canonical OCI subjects. Other
+formats use the original slot; see [native reference lifecycle](native-lifecycle.md).
 Canonical OCI cross-reference matters and reviewed bulk changes are in development
-below. Other formats, broader legal policy, physical GC and full production recovery remain required. This feature is not a
+below. Complete other-format legal/bulk policy, physical GC and full production recovery remain required. This feature is not a
 legal-compliance verdict. An omitted expiry requires explicit administrator release.
 
 ## Independent named cases

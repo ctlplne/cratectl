@@ -336,6 +336,7 @@ type Artifact struct {
 	SourceRevision  int64           `json:"source_revision"`
 	Lifecycle       *ArtifactState  `json:"lifecycle,omitempty"`
 	MetadataOmitted bool            `json:"metadata_omitted,omitempty"`
+	Deleted         bool            `json:"deleted,omitempty"`
 	Repository      string          `json:"repository"`
 	Path            string          `json:"path"`
 	Digest          string          `json:"digest"`
@@ -348,6 +349,14 @@ type Artifact struct {
 
 func scanArtifact(row pgx.Row, a *Artifact) error {
 	return row.Scan(&a.Repository, &a.Path, &a.Digest, &a.Size, &a.MediaType, &a.Metadata, &a.Decision, &a.Created, &a.SourceRevision)
+}
+
+// Native metadata retains tombstones as blocked coordinates, so group merging
+// cannot replace a retired first-source package with a lower-priority copy.
+const nativeLifecycleJoin = ` LEFT JOIN cratectl.artifact_lifecycle nl ON (nl.tenant,nl.repository,nl.path)=(a.tenant,a.repository,a.path) `
+
+func scanNativeArtifact(row pgx.Row, a *Artifact) error {
+	return row.Scan(&a.Repository, &a.Path, &a.Digest, &a.Size, &a.MediaType, &a.Metadata, &a.Decision, &a.Created, &a.SourceRevision, &a.Deleted)
 }
 
 // Artifacts returns metadata only for currently servable objects unless an admin
@@ -459,6 +468,14 @@ func (s *Store) replaceMetadata(ctx context.Context, i Identity, repo string, a 
 		if e != nil && !errors.Is(e, pgx.ErrNoRows) {
 			return nil, 0, e
 		}
+		sequence, e := nextEventSequence(ctx, tx, i)
+		if e != nil {
+			return nil, 0, e
+		}
+		replacement, e := prepareReferenceReplacement(ctx, tx, i, repo, a.Path, a.Digest, sequence)
+		if e != nil {
+			return nil, 0, e
+		}
 		_, e = tx.Exec(ctx, `INSERT INTO cratectl.artifacts(tenant,repository,path,digest,size,media_type) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT(tenant,repository,path) DO UPDATE SET digest=excluded.digest,size=excluded.size,media_type=excluded.media_type,decision=CASE WHEN cratectl.artifacts.digest=excluded.digest THEN cratectl.artifacts.decision ELSE 'unassessed' END,created_at=CASE WHEN cratectl.artifacts.digest=excluded.digest THEN cratectl.artifacts.created_at ELSE now() END`, i.Tenant, repo, a.Path, a.Digest, a.Size, a.MediaType)
 		if e == nil {
 			e = enqueueIntegrity(ctx, tx, i, repo, []Artifact{a})
@@ -466,7 +483,11 @@ func (s *Store) replaceMetadata(ctx context.Context, i Identity, repo string, a 
 		if e == nil {
 			e = insertMavenChecksumReceipts(ctx, tx, i, repo, a, checksums)
 		}
-		return map[string]any{"repository": repo, "path": a.Path, "previous_digest": old, "digest": a.Digest, "size": a.Size}, 201, e
+		data := map[string]any{"repository": repo, "path": a.Path, "previous_digest": old, "digest": a.Digest, "size": a.Size}
+		if replacement != nil {
+			data["reference_replacement"] = replacement
+		}
+		return data, 201, e
 	})
 	return e
 }

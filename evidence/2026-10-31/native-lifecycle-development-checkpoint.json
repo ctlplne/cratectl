@@ -1,0 +1,82 @@
+{
+  "recorded_at": "2026-10-31T12:35:48.267431+00:00",
+  "source_parent": "46e0b538a6897b3cc98e607e1233f84800e466ee",
+  "source_dirty": true,
+  "status": "implemented but unverified",
+  "regression_status": "development build/test/race/lint and store/server PostgreSQL race coverage passed",
+  "records": {
+    "first-failure": {
+      "path": "evidence/2026-10-31/native-lifecycle-development-first-failure.txt",
+      "sha256": "2ae364f83579166f292cf012ba4378f658bb4000a16df966309eb53ee841691e"
+    },
+    "replacement-compile-failure": {
+      "path": "evidence/2026-10-31/native-lifecycle-development-replacement-compile-failure.txt",
+      "sha256": "0034668a0223f62746267cedd8696f3b5ac7555728893a47684661eada80fe80"
+    },
+    "http-fixture-first-failure": {
+      "path": "evidence/2026-10-31/native-lifecycle-development-http-fixture-first-failure.txt",
+      "sha256": "6501adad38f2aec8db3240772534ff965fb13df209d9aac75e75087bf76dedd0",
+      "raw_path": ".cache/native-lifecycle-http-test.txt",
+      "raw_sha256": "eef232267b345996aff0ac5b08d858379122c66c64e1b0cfd0b99f3e61d1f346",
+      "presentation": "Trailing whitespace removed in this public text rendering; the raw command output is retained locally unchanged."
+    },
+    "postgres-race": {
+      "path": "evidence/2026-10-31/native-lifecycle-development-postgres-race.txt",
+      "sha256": "a6d1a6c7de419dfeaf981d8e9bf087178b5517af22727de4032e7460c738b8b6"
+    },
+    "build": {
+      "path": "evidence/2026-10-31/native-lifecycle-development-build.txt",
+      "sha256": "4956fdec2ba3962859d15dc20302d85c42514ae6892244ae72ffd82610f6d5ed"
+    },
+    "test": {
+      "path": "evidence/2026-10-31/native-lifecycle-development-test.txt",
+      "sha256": "1e8a7519b4ea4d1896d4d1f2085dbcedcd9203dfb9f12542684b68619a19d89a"
+    },
+    "race": {
+      "path": "evidence/2026-10-31/native-lifecycle-development-race.txt",
+      "sha256": "1118737ddcbb3352b506bb682df92821a4cd89242b715a2c38d4c0546bb72851"
+    },
+    "lint": {
+      "path": "evidence/2026-10-31/native-lifecycle-development-lint.txt",
+      "sha256": "81b56ec3216892c7c36f146d82d68114792b3c31a09e0f5a00202f3cfe6a98a8"
+    },
+    "console-reproduction": {
+      "path": "evidence/2026-10-31/native-lifecycle-development-console-reproduction.txt",
+      "sha256": "bad8f1d939fac8010bf24bc5fa5651bcc3948fde800fd2981b100d5431f6a063",
+      "raw_path": ".cache/native-lifecycle-console-reproduction.txt",
+      "raw_sha256": "ce368d946e0a8769a2920cbf8b3a4733b6c8b2f45f3f661da4bd111f1689c3e5",
+      "presentation": "Trailing whitespace removed in this public text rendering; the raw command output is retained locally unchanged."
+    }
+  },
+  "failures": "evidence/2026-10-31/native-lifecycle-development-failures.json",
+  "top_level_go_passes": 224,
+  "subtest_passes": 260,
+  "skips": 0,
+  "races": 0,
+  "implementation": [
+    "Shared single-reference lifecycle for materialized generic/Maven/npm/PyPI with immutable original receipts and current digest/revision fences.",
+    "Native metadata hides tombstones and retains blocked first-source identities. Source-pinned npm/Python URLs check earlier-source tombstones in the final serving transaction.",
+    "Corrupt retained CAS objects cannot restore; npm tag removal and Python yanks survive verified restoration.",
+    "Proxy replacements recheck holds/tombstones after retrieval, atomically advance released/expired lifecycle identity with publication event, and roll back on queue failure. Rejected held changes release only their lease without inventing freshness.",
+    "Mutable native catalogs remain excluded. Canonical OCI graph/case/matter rules remain."
+  ],
+  "primary": {
+    "schema": 10,
+    "active_source": "ed9ee5e8a6b38843a01ff9ccb9eb5ca7752255c0",
+    "active_artifacts": {
+      "bin/cratectl": "67c85bc7049d0e324cc801e20c10a26d4cd4c858b19e031974618c636f70c94b",
+      "bin/cratectld": "7ddc71993aba99b2de3dff37a6911ea053e58f2ef7806c86e541175574c59e39"
+    },
+    "maintenance": "Still pending explicit owner approval; no migration or active byte replacement performed."
+  },
+  "isolated_schema": 11,
+  "schema_change": false,
+  "limits": [
+    "No clean-source artifact or stock-client/browser qualification for this new lifecycle feature in this development record.",
+    "Reference-local operations do not retire every file in a version or prevent new paths/descriptors/coordinates.",
+    "Non-OCI independent cases/matters, broader legal/bulk/retention/GC, release/replica/restore and every later goal remain required.",
+    "All 450 capabilities/41 format families and all broad readiness verdicts remain incomplete."
+  ],
+  "next": "Commit exact reviewed implementation as owner, build clean separate candidate bytes, then add/replay stock-client lifecycle and browser journeys plus affected native/schema/security gates; preserve primary10.",
+  "security": "evidence/2026-10-31/native-lifecycle-development-security.json"
+}

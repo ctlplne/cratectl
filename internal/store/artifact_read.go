@@ -158,6 +158,9 @@ func (s *Store) artifact(ctx context.Context, i Identity, repo, path string, int
 				return ErrPythonUnvalidated
 			}
 		}
+		if e == nil && len(snapshots) > 0 {
+			e = checkNativeRetirementPrecedence(ctx, tx, i, r, a, snapshots[0].Groups)
+		}
 		return e
 	})
 	return a, e

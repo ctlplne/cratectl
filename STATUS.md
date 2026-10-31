@@ -1,5 +1,22 @@
 # cratectl execution status
 
+Current development: materialized generic/Maven/npm/PyPI single-reference
+lifecycle is implemented but unverified. Holds/tombstones, current revision and
+verified-byte restoration share the common path. Native metadata retains blocked
+first-source identities; pinned npm/Python group URLs recheck earlier tombstones
+in the final serving transaction. Proxy refresh rechecks protection, journals
+released replacement identity and rolls back at queue admission. Rejected held
+refreshes release their own lease without extending freshness.
+
+Development build/test/race/lint, console reproduction and 224 top-level Go passes
+in isolated PostgreSQL store/server race suites passed with no skips/races.
+First failures and precise limits are retained in
+`evidence/2026-10-31/native-lifecycle-development-checkpoint.json`.
+Stock-client/browser/clean candidate lifecycle qualification remains required.
+No schema migration is needed for this extension; primary10 and active ed9 bytes
+remain unchanged pending the separate explicit maintenance approval. All goal
+scope remains committed; no broad readiness verdict changed.
+
 Clean isolated qualification source: `d7d9bdbf2a3a255121c11572d8032bfc8d810607`,
 authored and committed only as imfeelingtheagi. The scoped checkpoint is
 `evidence/2026-10-31/matter-full-checkpoint.json`.

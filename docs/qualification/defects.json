@@ -729,6 +729,17 @@
       "followup_failure": "evidence/2026-10-31/repairs-c1d416da36.json",
       "development_replay": "evidence/2026-10-31/repairs-e1f66e9a2b.json",
       "candidate": "ed9ee5e8a6b38843a01ff9ccb9eb5ca7752255c0"
+    },
+    {
+      "id": "DEFECT.0068",
+      "summary": "Source-pinned native group download URLs could bypass an earlier-source lifecycle tombstone",
+      "first_failure": "evidence/2026-10-31/native-lifecycle-development-failures.json",
+      "state": "repaired; development regression replay passed; clean stock-client qualification pending",
+      "repair": "Carry group revision into final ArtifactSelection and check known earlier-source npm/PyPI tombstones in the same current-grant, revision and artifact transaction. Preserve direct-source access and namespace ownership.",
+      "replay": "evidence/2026-10-31/native-lifecycle-development-postgres-race.txt",
+      "source_parent": "46e0b538a6897b3cc98e607e1233f84800e466ee",
+      "source_dirty": true,
+      "limits": "Named native HTTP and PostgreSQL regression scope; other format, fault, source and client qualification remain required."
     }
   ]
 }

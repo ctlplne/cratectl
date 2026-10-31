@@ -185,13 +185,13 @@ func pythonViewInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, name strin
 			cached := map[string]Artifact{}
 			denied := map[string]bool{}
 			columns := `a.repository,a.path,a.digest,a.size,a.media_type,a.metadata-'core_metadata',COALESCE(d.decision,a.decision),a.created_at,a.source_revision`
-			rows, e := tx.Query(ctx, `SELECT `+columns+` FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND a.metadata->>'name'=$2 AND a.media_type<>$3 AND ($5::boolean OR a.source_revision=$6) ORDER BY a.path LIMIT $4`, r.Name, name, PythonCatalogMedia, maxFiles+1, r.Mode != "proxy", r.SourceRevision)
+			rows, e := tx.Query(ctx, `SELECT `+columns+`,COALESCE(nl.deleted,false) FROM cratectl.artifacts a `+decisionJoin+nativeLifecycleJoin+` WHERE a.repository=$1 AND a.metadata->>'name'=$2 AND a.media_type<>$3 AND ($5::boolean OR a.source_revision=$6) ORDER BY a.path LIMIT $4`, r.Name, name, PythonCatalogMedia, maxFiles+1, r.Mode != "proxy", r.SourceRevision)
 			if e != nil {
 				return e
 			}
 			for rows.Next() {
 				var a Artifact
-				if e = scanArtifact(rows, &a); e != nil {
+				if e = scanNativeArtifact(rows, &a); e != nil {
 					rows.Close()
 					return e
 				}
@@ -210,7 +210,7 @@ func pythonViewInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, name strin
 					denied[file.Integrity] = true
 				}
 				if r.Mode == "hosted" {
-					member.Files = append(member.Files, PythonFileView{File: file, Path: a.Path, Digest: a.Digest, Size: a.Size, Blocked: !file.Validated || a.Decision == "denied" || ((r.RequireReview || group.RequireReview) && a.Decision != "allowed")})
+					member.Files = append(member.Files, PythonFileView{File: file, Path: a.Path, Digest: a.Digest, Size: a.Size, Blocked: a.Deleted || !file.Validated || a.Decision == "denied" || ((r.RequireReview || group.RequireReview) && a.Decision != "allowed")})
 				}
 			}
 			rows.Close()
@@ -315,8 +315,9 @@ func pythonViewInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, name strin
 						v.Size = a.Size
 						v.Digest = a.Digest
 						decision = a.Decision
+						v.Blocked = a.Deleted
 					}
-					v.Blocked = decision == "denied" || ((r.RequireReview || group.RequireReview) && (!v.File.Validated || decision != "allowed"))
+					v.Blocked = v.Blocked || decision == "denied" || ((r.RequireReview || group.RequireReview) && (!v.File.Validated || decision != "allowed"))
 					member.Files = append(member.Files, v)
 				}
 				sources.Close()

@@ -1623,22 +1623,22 @@ paths:
     parameters:
       - {$ref: '#/components/parameters/Repository'}
     get:
-      summary: Inspect retained OCI reference lifecycle as an authorized writer
+      summary: Inspect retained materialized package lifecycle as an authorized writer
       description: Current tenant administrators can inspect references in suspended or removed repositories. Other writers retain the active-repository requirement. Inspection grants no native serving or destructive-operation bypass.
       parameters:
         - in: query
           name: path
           required: true
           schema: {type: string, maxLength: 2048}
-          description: Canonical image/manifests/sha256:HEX or image/blobs/sha256:HEX path, never a tag alias
+          description: Exact materialized generic/Maven/npm/PyPI package path, or canonical OCI image/manifests/sha256:HEX or image/blobs/sha256:HEX path. Mutable catalogs and Maven maven-metadata.xml are excluded.
       responses:
         '200': {description: 'Repository, path, digest, deleted, held, revision, hold reason/expiry, actor and journal change sequence. Untouched revision is 0.'}
         '403': {description: Current write role and grant required}
         '404': {description: Reference or authorized repository not found}
         '503': {description: Repository suspended or dependency unavailable}
     put:
-      summary: Preview or apply retained OCI deletion, restore or administrator hold
-      description: Strong active manifest references block child deletion. Holds protect deletion/restore and native tag deletion. Current administrators may place or release a hold in a suspended or removed repository; deletion and restore retain the active-repository requirement. Restore verifies all retained CAS bytes and reparses manifests outside SQL, then rechecks exact graph identities and revision under the tenant write lock. It preserves security decisions and newer tag bindings. There is no physical byte reclamation. Proxy tombstones require explicit restore; refresh and group fallback cannot resurrect them. Native hosted digest/tag DELETE returns 202; native proxy/group writes remain read-only.
+      summary: Preview or apply retained package deletion, restore or administrator hold
+      description: One exact materialized reference in a generic/Maven/npm/PyPI or canonical OCI repository. Mutable native catalogs are excluded. Native metadata retains retired first-source identities as blocked coordinates so groups cannot fall through; native tags and Python yanks keep their independent state through restoration. A proxy refresh cannot change held bytes or resurrect a tombstone. Replacement after release or expiry advances the lifecycle revision and journals old/new identities atomically; earlier hold receipts retain their original digest. Strong active OCI manifest references block child deletion. Holds protect deletion/restore and native OCI tag deletion. Current administrators may place or release a hold in a suspended or removed repository; deletion and restore retain the active-repository requirement. Restore verifies all retained CAS bytes and reparses manifests outside SQL, then rechecks exact graph identities and revision under the tenant write lock. It preserves security decisions and newer tag bindings. There is no physical byte reclamation. Proxy tombstones require explicit restore; refresh and group fallback cannot resurrect them. Native hosted OCI digest/tag DELETE returns 202; native proxy/group writes remain read-only.
       parameters:
         - in: header
           name: Idempotency-Key
@@ -1670,7 +1670,7 @@ paths:
   /api/v1/holds:
     get:
       summary: Discover current tenant hold observations as an administrator
-      description: Lists active, expired or released per-reference OCI holds across the tenant, including suspended and removed repositories. Released records require an actual earlier hold/release receipt; unrelated native deletions are excluded. Status is computed at observed_at. Pages are live; expiry and concurrent changes can alter later pages. No bytes are erased or serving authority granted.
+      description: Lists active, expired or released per-reference holds for canonical OCI and materialized generic/Maven/npm/PyPI content across the tenant, including suspended and removed repositories. Released records require an actual earlier hold/release receipt for the current digest; unrelated native deletions are excluded. Status is computed at observed_at. Pages are live; expiry and concurrent changes can alter later pages. No bytes are erased or serving authority granted.
       parameters:
         - in: query
           name: state
@@ -1721,7 +1721,7 @@ paths:
           name: path
           required: true
           schema: {type: string, maxLength: 2048}
-          description: Canonical OCI manifest or blob digest path
+          description: Exact materialized package path; OCI requires a canonical manifest or blob digest path
         - in: query
           name: limit
           schema: {type: integer, minimum: 1, maximum: 100, default: 100}

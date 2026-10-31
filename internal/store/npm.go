@@ -118,18 +118,18 @@ func (s *Store) NPMState(ctx context.Context, i Identity, repo, name string, max
 		if count > maxVersions || bytes > maxBytes {
 			return ErrMetadataLimit
 		}
-		rows, e := tx.Query(ctx, `SELECT `+artifactColumns+` FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND starts_with(a.path,$2) ORDER BY a.path LIMIT $3`, repo, name+"/-/", maxVersions+1)
+		rows, e := tx.Query(ctx, `SELECT `+artifactColumns+`,COALESCE(nl.deleted,false) FROM cratectl.artifacts a `+decisionJoin+nativeLifecycleJoin+` WHERE a.repository=$1 AND starts_with(a.path,$2) ORDER BY a.path LIMIT $3`, repo, name+"/-/", maxVersions+1)
 		if e != nil {
 			return e
 		}
 		visibleVersions := map[string]bool{}
 		for rows.Next() {
 			var a Artifact
-			if e = scanArtifact(rows, &a); e != nil {
+			if e = scanNativeArtifact(rows, &a); e != nil {
 				rows.Close()
 				return e
 			}
-			if a.Decision == "denied" || (r.RequireReview && a.Decision != "allowed") {
+			if a.Deleted || a.Decision == "denied" || (r.RequireReview && a.Decision != "allowed") {
 				continue
 			}
 			out = append(out, a)

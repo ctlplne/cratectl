@@ -96,6 +96,9 @@ func (s *Store) AcquireRetrievalWithLease(ctx context.Context, i Identity, repo,
 		if len(expected) > 0 && cfg.SourceRevision != expected[0] {
 			return ErrSourceChanged
 		}
+		if e = notDeletedInTx(ctx, tx, repo, path); e != nil {
+			return e
+		}
 		e = scanRetrieval(tx.QueryRow(ctx, `SELECT `+retrievalColumns+` FROM cratectl.retrievals WHERE repository=$1 AND path=$2 FOR UPDATE`, repo, path), &r)
 		if e != nil && !errors.Is(e, pgx.ErrNoRows) {
 			return e
@@ -159,6 +162,9 @@ func (s *Store) RenewRetrieval(ctx context.Context, i Identity, r Retrieval, lea
 		if !valid {
 			return ErrLeaseLost
 		}
+		if e = notDeletedInTx(ctx, tx, r.Repository, r.Path); e != nil {
+			return e
+		}
 		tag, e := tx.Exec(ctx, `UPDATE cratectl.retrievals SET lease_until=clock_timestamp()+make_interval(secs=>$1) WHERE repository=$2 AND path=$3 AND lease_until>clock_timestamp()`, lease.Seconds(), r.Repository, r.Path)
 		if e == nil && tag.RowsAffected() != 1 {
 			return ErrLeaseLost
@@ -200,6 +206,9 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 		if !valid {
 			return ErrLeaseLost
 		}
+		if e = notDeletedInTx(ctx, tx, lease.Repository, lease.Path); e != nil {
+			return e
+		}
 		if result.Status == 304 && result.Failure == "" {
 			var bound bool
 			if e = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM cratectl.artifacts WHERE repository=$1 AND path=$2 AND source_revision=$3)`, lease.Repository, lease.Path, lease.SourceRevision).Scan(&bound); e != nil {
@@ -214,6 +223,7 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 			return e
 		}
 		state := "ready"
+		var replacement *referenceReplacement
 		fresh := result.FreshSeconds
 		stale := result.StaleSeconds
 		if (result.Status == 200 || (result.Status == 304 && result.OCI != nil)) && result.Failure == "" {
@@ -266,6 +276,10 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 			media := result.MediaType
 			if media == "" {
 				media = "application/octet-stream"
+			}
+			replacement, e = prepareReferenceReplacement(ctx, tx, i, lease.Repository, lease.Path, result.Object.Digest, sequence)
+			if e != nil {
+				return e
 			}
 			_, e = tx.Exec(ctx, `INSERT INTO cratectl.artifacts(tenant,repository,path,digest,size,media_type,metadata,source_revision) VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT(tenant,repository,path) DO UPDATE SET digest=excluded.digest,size=excluded.size,media_type=excluded.media_type,metadata=excluded.metadata,source_revision=excluded.source_revision,decision=CASE WHEN cratectl.artifacts.digest=excluded.digest THEN cratectl.artifacts.decision ELSE 'unassessed' END,created_at=CASE WHEN cratectl.artifacts.digest=excluded.digest THEN cratectl.artifacts.created_at ELSE now() END`, i.Tenant, lease.Repository, lease.Path, result.Object.Digest, result.Object.Size, media, result.Metadata, lease.SourceRevision)
 			if e != nil {
@@ -327,6 +341,9 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 			data["graph_members"] = len(result.OCI.Objects)
 			data["native_tags"] = len(result.OCI.Tags)
 		}
+		if replacement != nil {
+			data["reference_replacement"] = replacement
+		}
 		return appendEvent(ctx, tx, i, "proxy.retrieval."+state, data)
 	})
 	if errors.Is(e, ErrQueueFull) {
@@ -336,7 +353,41 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 			return release
 		}
 	}
+	if errors.Is(e, ErrHeld) {
+		cleanup, done := context.WithTimeout(context.WithoutCancel(ctx), 3*time.Second)
+		defer done()
+		if release := s.rejectHeldReplacement(cleanup, i, lease); release != nil && !errors.Is(release, ErrLeaseLost) {
+			return release
+		}
+	}
 	return e
+}
+
+// Reject a changed upstream object without stranding the fill lease. The prior
+// validators and freshness deadlines stay unchanged: a hold never invents a
+// successful upstream revalidation or permission to serve expired cached bytes.
+func (s *Store) rejectHeldReplacement(ctx context.Context, i Identity, lease Retrieval) error {
+	return s.Tx(ctx, i, true, func(tx pgx.Tx) error {
+		r, e := repositoryInTx(ctx, tx, i, lease.Repository, "read")
+		if e != nil {
+			return e
+		}
+		if r.SourceRevision != lease.SourceRevision {
+			return ErrLeaseLost
+		}
+		sequence, e := nextEventSequence(ctx, tx, i)
+		if e != nil {
+			return e
+		}
+		tag, e := tx.Exec(ctx, `UPDATE cratectl.retrievals SET state='ready',lease_token='',lease_until='epoch',last_error='reference_held',changed_at=clock_timestamp(),change_sequence=$1 WHERE repository=$2 AND path=$3 AND generation=$4 AND lease_token=$5 AND state='fetching' AND lease_until>clock_timestamp()`, sequence, lease.Repository, lease.Path, lease.Generation, lease.Token)
+		if e != nil {
+			return e
+		}
+		if tag.RowsAffected() != 1 {
+			return ErrLeaseLost
+		}
+		return appendEventIntent(ctx, tx, i, "proxy.retrieval.rejected", map[string]any{"repository": lease.Repository, "path": lease.Path, "generation": lease.Generation, "reason": "reference_held", "source_revision": lease.SourceRevision}, false)
+	})
 }
 func InvalidateRetrieval(ctx context.Context, tx pgx.Tx, i Identity, repo, path string) (any, error) {
 	if i.Role != "admin" {
