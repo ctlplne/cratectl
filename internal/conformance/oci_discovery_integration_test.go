@@ -194,7 +194,7 @@ func TestOCIStockDiscoveryPagesFallbackAndAtomicity(t *testing.T) {
 	finished := make(chan error, 1)
 	go func() { finished <- live.Serve(listener) }()
 	defer func() { live.Close(); <-finished }()
-	private := t.TempDir()
+	private := retainedNativeDir(t)
 	auth := filepath.Join(private, "registry.json")
 	oras, e := filepath.Abs("../../.cache/bin/oras")
 	if e != nil {
@@ -203,9 +203,11 @@ func TestOCIStockDiscoveryPagesFallbackAndAtomicity(t *testing.T) {
 	run := func(input string, args ...string) []byte {
 		t.Helper()
 		command := exec.CommandContext(ctx, oras, args...)
+		command.Env = nativeClientEnvironment()
 		command.Dir = private
 		command.Stdin = strings.NewReader(input)
 		out, e := command.CombinedOutput()
+		retainNativeOutput(t, private, out)
 		if e != nil {
 			t.Fatalf("stock discovery failed: %v %s", e, strings.ReplaceAll(string(out), token, "[REDACTED]"))
 		}

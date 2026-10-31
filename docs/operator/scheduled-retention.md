@@ -6,10 +6,12 @@ and repository source revision. Each admitted run still records immutable target
 and outcomes. It creates retained tombstones, preserves bytes and decisions and
 reports zero reclaimed storage. Read [retention](retention.md) first.
 
-The management API, CLI and console implementation is in development. Dedicated
-stock-client/real-cadence/process-restart journeys and exact clean production/race
-qualification remain pending. The latest qualified source remains the schema-7
-retention checkpoint. No broad release readiness is established.
+The management API, CLI, console and dedicated stock ORAS/CLI journeys have
+development preflights. Actual due-slot coalescing, process restart, cancellation,
+credential expiry/revocation, current policy/source approval and recovery after
+worker SIGKILL are observed. Exact clean production/race qualification remains
+pending. The latest qualified source remains the schema-7 retention checkpoint.
+No broad release readiness is established.
 
 In Storage → Retention, load an OCI repository, inspect a policy and choose
 **Inspect automatic retirement**. Configure the interval and complete manifest
@@ -100,7 +102,24 @@ retain their existing meaning. Recover retired content through verified restore.
 
 Schema 8 adds forced-RLS schedules and immutable configuration/due-slot receipts
 and preserves migrations 1–7. Upgrade requires controlled maintenance. The owned
-primary remains schema 7 during backend development. Other rules/formats,
+primary remains schema 7 during development qualification. Other rules/formats,
 calendar schedules, legal-hold administration, physical GC, release/replica/
 restore protections, providers/platforms, fault/clock/scale and production
 recovery remain committed work.
+
+The dedicated development campaign is
+`python3 scripts/conformance_retention_schedules.py --require-clean-build`.
+It requires matching clean current binaries, the retained qualified schema-7
+server at `.cache/retention-final-production/cratectld` (source `6cac885`), stock
+ORAS 1.3.6, and the owned PostgreSQL owner/runtime DSNs in the existing private
+environment. Port 38443 must be free. The campaign creates an isolated database;
+it does not migrate the database named by the supplied DSNs. It leaves registry
+and worker stopped across two real due slots, so it takes over two minutes.
+
+Each native command writes a permanent private log, including expected failures
+and timeouts, under `.private/retention-schedule-conformance/RUN`. Process logs,
+raw command output, credential files and the isolated database remain retained.
+Public evidence records source/build identities, command statuses and log paths.
+Owned SQL ages artifact fixtures and briefly blocks a worker claim or second
+outcome; schedule clocks, credential expiry and worker lease expiry use actual
+elapsed time. These declared faults do not provide product metadata repair.

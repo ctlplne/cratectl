@@ -164,7 +164,7 @@ func TestOCINativeProcessDescriptorURLsAndRetainedRefresh(t *testing.T) {
 		w.WriteHeader(404)
 	}))
 	defer origin.Close()
-	private := t.TempDir()
+	private := retainedNativeDir(t)
 	credentials := filepath.Join(private, "upstreams.json")
 	raw, _ := json.Marshal(map[string]any{"test-a/origin": map[string]string{"value": "owned-descriptor-origin", "allowed_url": origin.URL + "/v2/"}, "test-a/alternate": map[string]string{"value": "alternate:owned-descriptor-password", "allowed_url": cdn.URL + "/objects/", "authentication": "basic"}})
 	if e = os.WriteFile(credentials, raw, 0600); e != nil {
@@ -205,7 +205,7 @@ func TestOCINativeProcessDescriptorURLsAndRetainedRefresh(t *testing.T) {
 			t.Fatal(e)
 		}
 		process = exec.CommandContext(ctx, binary, "serve", "--listen", "127.0.0.1:38443", "--public-url", "http://127.0.0.1:38443", "--dev-loopback-http", "--objects", filepath.Join(private, "objects"), "--upstream-credentials", credentials, "--allow-private-upstreams", "127.0.0.1/32")
-		process.Env = os.Environ()
+		process.Env = append(nativeClientEnvironment(), "CRATECTL_DSN="+os.Getenv("CRATECTL_DSN"))
 		process.Stdout = log
 		process.Stderr = log
 		if e = process.Start(); e != nil {
@@ -243,9 +243,11 @@ func TestOCINativeProcessDescriptorURLsAndRetainedRefresh(t *testing.T) {
 	run := func(input string, wantFailure bool, args ...string) {
 		t.Helper()
 		cmd := exec.CommandContext(ctx, oras, args...)
+		cmd.Env = nativeClientEnvironment()
 		cmd.Dir = private
 		cmd.Stdin = strings.NewReader(input)
 		out, e := cmd.CombinedOutput()
+		retainNativeOutput(t, private, out)
 		if wantFailure {
 			if e == nil {
 				t.Fatal("invalid native descriptor copy succeeded")

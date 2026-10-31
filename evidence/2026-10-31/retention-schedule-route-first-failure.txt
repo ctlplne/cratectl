@@ -1,0 +1,23 @@
+=== RUN   TestRepositoryNamesDoNotSelectNestedManagementRoutes
+=== RUN   TestRepositoryNamesDoNotSelectNestedManagementRoutes/cache
+    repository_routes_integration_test.go:54: repository detail cache: 400 {"error":{"action":"Choose one canonical package path in the path query.","code":"invalid_path"}}
+    repository_routes_integration_test.go:54: repository detail cache: 400 {"error":{"action":"Choose one canonical package path in the path query.","code":"invalid_path"}}
+    repository_routes_integration_test.go:62: other tenant detail: 400
+    repository_routes_integration_test.go:71: detail query must not become cache inspection: 409
+=== RUN   TestRepositoryNamesDoNotSelectNestedManagementRoutes/artifacts
+    repository_routes_integration_test.go:44: create repository artifacts: 409 {"error":{"action":"Use a new coordinate or idempotency key for different content.","code":"conflict"}}
+=== RUN   TestRepositoryNamesDoNotSelectNestedManagementRoutes/configuration
+    repository_routes_integration_test.go:44: create repository configuration: 409 {"error":{"action":"Use a new coordinate or idempotency key for different content.","code":"conflict"}}
+=== RUN   TestRepositoryNamesDoNotSelectNestedManagementRoutes/state
+    repository_routes_integration_test.go:44: create repository state: 409 {"error":{"action":"Use a new coordinate or idempotency key for different content.","code":"conflict"}}
+=== RUN   TestRepositoryNamesDoNotSelectNestedManagementRoutes/retention-policies
+    repository_routes_integration_test.go:44: create repository retention-policies: 409 {"error":{"action":"Use a new coordinate or idempotency key for different content.","code":"conflict"}}
+--- FAIL: TestRepositoryNamesDoNotSelectNestedManagementRoutes (0.28s)
+    --- FAIL: TestRepositoryNamesDoNotSelectNestedManagementRoutes/cache (0.02s)
+    --- FAIL: TestRepositoryNamesDoNotSelectNestedManagementRoutes/artifacts (0.00s)
+    --- FAIL: TestRepositoryNamesDoNotSelectNestedManagementRoutes/configuration (0.00s)
+    --- FAIL: TestRepositoryNamesDoNotSelectNestedManagementRoutes/state (0.00s)
+    --- FAIL: TestRepositoryNamesDoNotSelectNestedManagementRoutes/retention-policies (0.00s)
+FAIL
+FAIL	ctlplne.dev/cratectl/internal/server	0.602s
+FAIL

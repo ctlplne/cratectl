@@ -1,0 +1,11 @@
+{
+  "source_parent": "fe0b176820f4252445015c542f7253cdf7023baf",
+  "source_dirty": true,
+  "first_native_failure": "evidence/2026-10-31/retention-schedules-ec5d634a16.json",
+  "isolated_regression": "evidence/2026-10-31/retention-schedule-route-isolated-first-failure.txt",
+  "fixture_key_failure": "evidence/2026-10-31/retention-schedule-route-first-failure.txt",
+  "behavior": "GET /repositories/cache selects cache inspection and returns invalid_path400; GET /repositories/artifacts selects artifact listing and returns a page instead of repository detail. Both are valid repository names.",
+  "repair": "Prioritize exact single-segment repository detail before nested GET suffix routes; preserve role-based settings visibility, tenant authorization and strict detail queries.",
+  "replay": "evidence/2026-10-31/retention-schedule-native-preflight.json",
+  "limits": "The first Go regression also reused a fixture mutation key; distinct method/path/body-derived keys isolate the two route failures. This fixture error is retained separately, not a product failure."
+}

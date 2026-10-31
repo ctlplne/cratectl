@@ -175,14 +175,16 @@ func TestOCIStockORASSignedDeliveryAndGovernedPublication(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	private := t.TempDir()
+	private := retainedNativeDir(t)
 	auth := filepath.Join(private, "registry.json")
 	command := func(dir, input string, wantFailure bool, args ...string) {
 		t.Helper()
 		cmd := exec.CommandContext(ctx, oras, args...)
+		cmd.Env = nativeClientEnvironment()
 		cmd.Dir = dir
 		cmd.Stdin = strings.NewReader(input)
 		out, e := cmd.CombinedOutput()
+		retainNativeOutput(t, private, out)
 		text := string(out)
 		for _, value := range []string{token, nonce, nonceAfter, "owned-realm-password", "owned-delivery-password", "owned-issued-registry-pull"} {
 			text = strings.ReplaceAll(text, value, "[REDACTED]")
@@ -197,7 +199,10 @@ func TestOCIStockORASSignedDeliveryAndGovernedPublication(t *testing.T) {
 			t.Fatalf("stock ORAS failed: %v: %s", e, text)
 		}
 	}
-	version, e := exec.CommandContext(ctx, oras, "version").CombinedOutput()
+	versionCommand := exec.CommandContext(ctx, oras, "version")
+	versionCommand.Env = nativeClientEnvironment()
+	version, e := versionCommand.CombinedOutput()
+	retainNativeOutput(t, private, version)
 	if e != nil {
 		t.Fatal("Stock ORAS required:", e)
 	}

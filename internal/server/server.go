@@ -407,6 +407,22 @@ func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Iden
 				return
 			}
 			writeJSON(w, 200, map[string]any{"items": v, "limit": 1000})
+		case strings.HasPrefix(p, "repositories/") && !strings.Contains(strings.TrimPrefix(p, "repositories/"), "/"):
+			name := strings.TrimPrefix(p, "repositories/")
+			if !store.Name.MatchString(name) || r.URL.RawQuery != "" {
+				fail(w, 400, "invalid_repository", "Choose one repository name without query parameters.")
+				return
+			}
+			value, e := s.DB.Repository(r.Context(), i, name)
+			if e != nil {
+				respondErr(w, e)
+				return
+			}
+			if i.Role != "admin" {
+				value.Settings = store.RepositorySettings{}
+			}
+			writeJSON(w, 200, value)
+
 		case strings.HasPrefix(p, "repositories/") && strings.HasSuffix(p, "/artifacts/reference"):
 			s.managementReference(w, r, i, p)
 		case strings.HasPrefix(p, "repositories/") && strings.HasSuffix(p, "/artifacts"):
@@ -422,22 +438,6 @@ func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Iden
 			if e != nil {
 				respondErr(w, e)
 				return
-			}
-			writeJSON(w, 200, value)
-
-		case strings.HasPrefix(p, "repositories/") && !strings.Contains(strings.TrimPrefix(p, "repositories/"), "/"):
-			name := strings.TrimPrefix(p, "repositories/")
-			if !store.Name.MatchString(name) || r.URL.RawQuery != "" {
-				fail(w, 400, "invalid_repository", "Choose one repository name without query parameters.")
-				return
-			}
-			value, e := s.DB.Repository(r.Context(), i, name)
-			if e != nil {
-				respondErr(w, e)
-				return
-			}
-			if i.Role != "admin" {
-				value.Settings = store.RepositorySettings{}
 			}
 			writeJSON(w, 200, value)
 

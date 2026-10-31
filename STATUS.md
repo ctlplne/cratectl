@@ -28,12 +28,28 @@ first selector mismatch and scope limits are retained in
 evidence/2026-10-31/retention-schedule-console-preflight.json. These remain
 development-source observations, not a promoted clean checkpoint.
 
-Next: dedicated stock ORAS/CLI real scheduled-retirement cadence, process-restart/
-cancellation/authorization and schema-7 old-binary journeys with permanent native
-failure logs; adapt required native harnesses to schema 8, then qualify exact clean
-production/race builds.
+The dedicated stock ORAS/CLI scheduled-retirement campaign passes 55 assertions.
+It observes real 60-second due slots/coalescing across process downtime, cancellation,
+pending pause fences, revoked/expired authority and current policy/source approval,
+exact proxy/group/hosted restore, actual schema-7 to schema-8 upgrade, and worker SIGKILL
+after one committed target with lease-fenced completion of the remaining two.
+The first native run exposed reserved-looking repository names selecting nested
+GET routes; DEFECT.0059 is repaired and replayed. Five-name routing coverage and
+all thirteen schedule/route PostgreSQL tests pass twice; complete store/server/stock-ORAS
+race packages pass twice, without skips or races. Twelve regression tasks cover
+actual baseline 2–7 upgrades, legacy adoption, repair, retention, integrity schedules
+and all ten console workflows. Native raw logs persist privately, including failures;
+the three Go native drivers now retain 40 logs across six completed fixtures.
+All are development-source observations in
+evidence/2026-10-31/retention-schedule-native-preflight.json.
+
+Next: commit reviewed source/evidence as imfeelingtheagi, then build and qualify
+exact clean production/race/platform artifacts against all required existing and
+new journeys. Preserve the qualified schema-7 baseline; upgrade the owned primary
+to schema 8 only within the controlled clean-candidate campaign.
 The owned primary remains schema 7; isolated retained integration databases use
-schema 8. Test services are stopped; private data/artifacts and qualified schema-7
+schema 8. Fixture registries/workers are stopped; owned native PostgreSQL remains
+running for the next clean campaign. Private data/artifacts and qualified schema-7
 production bin bytes are retained. Only imfeelingtheagi is author and committer;
 no push or remote mutation occurred. All broader scope and negative readiness
 remain unchanged. The latest qualified checkpoint follows.

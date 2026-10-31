@@ -125,6 +125,8 @@ backup/restore remain committed requirements.
 The named clean source, artifact hashes, runtime records and limits are retained in
 [`retention-checkpoint.json`](../../evidence/2026-10-31/retention-checkpoint.json).
 
-A separate [scheduled-retention API](scheduled-retention.md) is implemented in
-local development. It explicitly authorizes future captures; scheduled console,
-dedicated native cadence/restart and clean qualification remain pending.
+A separate [scheduled-retention workflow](scheduled-retention.md) explicitly
+authorizes future captures through API, CLI and console. Dedicated stock ORAS/CLI
+real-cadence, process-restart, cancellation, credential/policy/source reapproval
+and worker-kill recovery development preflights pass. Exact clean qualification
+remains pending; the qualified source above has not been promoted.

@@ -1,0 +1,387 @@
+{
+  "observed_at": "2026-10-31T04:07:31.735231+00:00",
+  "qualification_kind": "Dirty-source native/schema8 development and regression preflight; exact clean qualification pending",
+  "source_parent": "fe0b176820f4252445015c542f7253cdf7023baf",
+  "source_dirty": true,
+  "source_inputs": [
+    {
+      "path": "scripts/conformance_retention_schedules.py",
+      "sha256": "f900eeef10c249b4817bc919547442a9c2de8ceaa7fe8a3d74a09a01bbf2f0b3"
+    },
+    {
+      "path": "scripts/conformance_lifecycle.py",
+      "sha256": "f307acefb9b33bf68e92fb25eeac5590ebc9954fa327ede1aa0362fb58ffd783"
+    },
+    {
+      "path": "scripts/conformance_repairs.py",
+      "sha256": "04ae4bc23b661bded4bd699851f4cb16e6eeadef2a0cdbdb1809d408f8969fe1"
+    },
+    {
+      "path": "scripts/conformance_retention.py",
+      "sha256": "476330ae0ee9a959d77344b260fbc52fdb97cd9b614ea7bb4451eb4ea005966e"
+    },
+    {
+      "path": "scripts/conformance_schedules.py",
+      "sha256": "a88f8a06f90d5df4c520bdf515dbb7c7d88f2c0ef02ee3d53f0d9f4b45f39c83"
+    },
+    {
+      "path": "scripts/conformance_schema.py",
+      "sha256": "4f3cea543c343467dbcc23b4b06ce9226fd710477610c102c5674023c5f2bdc9"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "cdf77766400067f3e7850fc6a0911a977480ef95a00ea084cd3e0af62c628454"
+    },
+    {
+      "path": "internal/server/repository_routes_integration_test.go",
+      "sha256": "fc047e391496c223973204729eb9a76c05e2c79d419ca08969d415a7bae2f2ed"
+    },
+    {
+      "path": "internal/conformance/native_logs_integration_test.go",
+      "sha256": "9206e720d3c8c9d6a3b897894599bc845c592b24b9ce3f9a0cb99f0fb3d06a03"
+    },
+    {
+      "path": "internal/conformance/oci_descriptor_integration_test.go",
+      "sha256": "cdeff569ecac46b77bde92c0f96cfc91640c97ba0b922d4479624c66bf9ee3d4"
+    },
+    {
+      "path": "internal/conformance/oci_delivery_integration_test.go",
+      "sha256": "c645398b36f1a5ba96e80baecc6d19865f3159a0bd5819d8dc5fa9ebc97094da"
+    },
+    {
+      "path": "internal/conformance/oci_discovery_integration_test.go",
+      "sha256": "b7fe652c7cdd294ff2ecce2fbc698ffabcc581a1dfe92ff2a9af3f5e2f32afb3"
+    }
+  ],
+  "native_record": "evidence/2026-10-31/retention-schedules-9d6302fe50.json",
+  "first_native_failure": "evidence/2026-10-31/retention-schedules-ec5d634a16.json",
+  "native_assertions": 55,
+  "actual_stopped_recurrence_seconds": 121.954,
+  "regression_tasks": [
+    {
+      "name": "postgres-race",
+      "exit": 0,
+      "seconds": 84.405,
+      "log": "/Users/shankar/Desktop/ctlplne-cratectl/.cache/retention-schedule-regressions-20261031T035937Z/postgres-race.log"
+    },
+    {
+      "name": "manual-retention",
+      "exit": 0,
+      "seconds": 4.248,
+      "log": "/Users/shankar/Desktop/ctlplne-cratectl/.cache/retention-schedule-regressions-20261031T035937Z/manual-retention.log"
+    },
+    {
+      "name": "integrity-schedules",
+      "exit": 0,
+      "seconds": 63.256,
+      "log": "/Users/shankar/Desktop/ctlplne-cratectl/.cache/retention-schedule-regressions-20261031T035937Z/integrity-schedules.log"
+    },
+    {
+      "name": "byte-repair",
+      "exit": 0,
+      "seconds": 8.883,
+      "log": "/Users/shankar/Desktop/ctlplne-cratectl/.cache/retention-schedule-regressions-20261031T035937Z/byte-repair.log"
+    },
+    {
+      "name": "lifecycle-upgrade-2",
+      "exit": 0,
+      "seconds": 2.27,
+      "log": "/Users/shankar/Desktop/ctlplne-cratectl/.cache/retention-schedule-regressions-20261031T035937Z/lifecycle-upgrade-2.log"
+    },
+    {
+      "name": "lifecycle-upgrade-3",
+      "exit": 0,
+      "seconds": 2.839,
+      "log": "/Users/shankar/Desktop/ctlplne-cratectl/.cache/retention-schedule-regressions-20261031T035937Z/lifecycle-upgrade-3.log"
+    },
+    {
+      "name": "lifecycle-upgrade-4",
+      "exit": 0,
+      "seconds": 2.472,
+      "log": "/Users/shankar/Desktop/ctlplne-cratectl/.cache/retention-schedule-regressions-20261031T035937Z/lifecycle-upgrade-4.log"
+    },
+    {
+      "name": "lifecycle-upgrade-5",
+      "exit": 0,
+      "seconds": 2.064,
+      "log": "/Users/shankar/Desktop/ctlplne-cratectl/.cache/retention-schedule-regressions-20261031T035937Z/lifecycle-upgrade-5.log"
+    },
+    {
+      "name": "lifecycle-upgrade-6",
+      "exit": 0,
+      "seconds": 2.267,
+      "log": "/Users/shankar/Desktop/ctlplne-cratectl/.cache/retention-schedule-regressions-20261031T035937Z/lifecycle-upgrade-6.log"
+    },
+    {
+      "name": "lifecycle-upgrade-7",
+      "exit": 0,
+      "seconds": 2.614,
+      "log": "/Users/shankar/Desktop/ctlplne-cratectl/.cache/retention-schedule-regressions-20261031T035937Z/lifecycle-upgrade-7.log"
+    },
+    {
+      "name": "legacy-adoption",
+      "exit": 0,
+      "seconds": 2.366,
+      "log": "/Users/shankar/Desktop/ctlplne-cratectl/.cache/retention-schedule-regressions-20261031T035937Z/legacy-adoption.log"
+    },
+    {
+      "name": "console",
+      "exit": 0,
+      "seconds": 153.431,
+      "log": "/Users/shankar/Desktop/ctlplne-cratectl/.cache/retention-schedule-regressions-20261031T035937Z/console.log"
+    }
+  ],
+  "passing_runtime_records": [
+    {
+      "path": "evidence/2026-10-31/console-6ad806977c.json",
+      "assertions": 79,
+      "candidate": "fe0b176820f4252445015c542f7253cdf7023baf",
+      "source_dirty": true,
+      "artifacts": {
+        "bin/cratectld": "554a857ae25a4331152a6e21eb04b74a90f8ac6de0d035d5925ca45cfb9d6dc5",
+        "bin/cratectl": "07a50e47cc571ae2bb1b1b70e252e94d24d2a3a1547ada37ee242af5ab8db605"
+      }
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-48e6932e1c.json",
+      "assertions": 45,
+      "candidate": "fe0b176820f4252445015c542f7253cdf7023baf",
+      "source_dirty": true,
+      "artifacts": {
+        ".cache/retention-final-production/cratectld": "7874a243c786c823811230e3c83f92dc91d0e2fb66673c45c083036d2f43698b",
+        "bin/cratectld": "554a857ae25a4331152a6e21eb04b74a90f8ac6de0d035d5925ca45cfb9d6dc5",
+        "bin/cratectl": "07a50e47cc571ae2bb1b1b70e252e94d24d2a3a1547ada37ee242af5ab8db605",
+        ".cache/bin/oras": "a75c9dfd7f8f4f1f8ff09c88e7dd03431714f5f760366dff50b7f3cea4850930"
+      }
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-787aa6f765.json",
+      "assertions": 45,
+      "candidate": "fe0b176820f4252445015c542f7253cdf7023baf",
+      "source_dirty": true,
+      "artifacts": {
+        ".cache/source-final-production/cratectld": "9d662d3e0da676296a2edf541f4476400c427bb160aa5f199953415511837dd6",
+        "bin/cratectld": "554a857ae25a4331152a6e21eb04b74a90f8ac6de0d035d5925ca45cfb9d6dc5",
+        "bin/cratectl": "07a50e47cc571ae2bb1b1b70e252e94d24d2a3a1547ada37ee242af5ab8db605",
+        ".cache/bin/oras": "a75c9dfd7f8f4f1f8ff09c88e7dd03431714f5f760366dff50b7f3cea4850930"
+      }
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-84f4bcc840.json",
+      "assertions": 45,
+      "candidate": "fe0b176820f4252445015c542f7253cdf7023baf",
+      "source_dirty": true,
+      "artifacts": {
+        ".cache/repair-final-production/cratectld": "ee804a5a1ae1709af552ba9594eb7405bd7ccc9d3386f2e60f9d3083ec8a86ce",
+        "bin/cratectld": "554a857ae25a4331152a6e21eb04b74a90f8ac6de0d035d5925ca45cfb9d6dc5",
+        "bin/cratectl": "07a50e47cc571ae2bb1b1b70e252e94d24d2a3a1547ada37ee242af5ab8db605",
+        ".cache/bin/oras": "a75c9dfd7f8f4f1f8ff09c88e7dd03431714f5f760366dff50b7f3cea4850930"
+      }
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-af7d6a22a7.json",
+      "assertions": 45,
+      "candidate": "fe0b176820f4252445015c542f7253cdf7023baf",
+      "source_dirty": true,
+      "artifacts": {
+        ".cache/lifecycle-final-production/cratectld": "3174afbe87e1e0549d666f8619105a633eb3c2f8370234f9febabb51054dd118",
+        "bin/cratectld": "554a857ae25a4331152a6e21eb04b74a90f8ac6de0d035d5925ca45cfb9d6dc5",
+        "bin/cratectl": "07a50e47cc571ae2bb1b1b70e252e94d24d2a3a1547ada37ee242af5ab8db605",
+        ".cache/bin/oras": "a75c9dfd7f8f4f1f8ff09c88e7dd03431714f5f760366dff50b7f3cea4850930"
+      }
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-bdda26986e.json",
+      "assertions": 45,
+      "candidate": "fe0b176820f4252445015c542f7253cdf7023baf",
+      "source_dirty": true,
+      "artifacts": {
+        ".cache/schedule-final-production/cratectld": "9d777acddf0989490b22889883eeade4efbaae5b38b11e19648678ae7b851c34",
+        "bin/cratectld": "554a857ae25a4331152a6e21eb04b74a90f8ac6de0d035d5925ca45cfb9d6dc5",
+        "bin/cratectl": "07a50e47cc571ae2bb1b1b70e252e94d24d2a3a1547ada37ee242af5ab8db605",
+        ".cache/bin/oras": "a75c9dfd7f8f4f1f8ff09c88e7dd03431714f5f760366dff50b7f3cea4850930"
+      }
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-c747b50393.json",
+      "assertions": 43,
+      "candidate": "fe0b176820f4252445015c542f7253cdf7023baf",
+      "source_dirty": true,
+      "artifacts": {
+        ".cache/maven-final-production/cratectld": "40561b2f03d265bd7a7ca37642bc7f4c2dc6f89335f47a9e31ac61492de86238",
+        "bin/cratectld": "554a857ae25a4331152a6e21eb04b74a90f8ac6de0d035d5925ca45cfb9d6dc5",
+        "bin/cratectl": "07a50e47cc571ae2bb1b1b70e252e94d24d2a3a1547ada37ee242af5ab8db605",
+        ".cache/bin/oras": "a75c9dfd7f8f4f1f8ff09c88e7dd03431714f5f760366dff50b7f3cea4850930"
+      }
+    },
+    {
+      "path": "evidence/2026-10-31/repairs-79824636ea.json",
+      "assertions": 44,
+      "candidate": "fe0b176820f4252445015c542f7253cdf7023baf",
+      "source_dirty": true,
+      "artifacts": {
+        ".cache/source-final-production/cratectld": "9d662d3e0da676296a2edf541f4476400c427bb160aa5f199953415511837dd6",
+        "bin/cratectld": "554a857ae25a4331152a6e21eb04b74a90f8ac6de0d035d5925ca45cfb9d6dc5",
+        "bin/cratectl": "07a50e47cc571ae2bb1b1b70e252e94d24d2a3a1547ada37ee242af5ab8db605",
+        ".cache/bin/oras": "a75c9dfd7f8f4f1f8ff09c88e7dd03431714f5f760366dff50b7f3cea4850930"
+      }
+    },
+    {
+      "path": "evidence/2026-10-31/retention-24254431d9.json",
+      "assertions": 37,
+      "candidate": "fe0b176820f4252445015c542f7253cdf7023baf",
+      "source_dirty": true,
+      "artifacts": {
+        ".cache/schedule-final-production/cratectld": "9d777acddf0989490b22889883eeade4efbaae5b38b11e19648678ae7b851c34",
+        "bin/cratectld": "554a857ae25a4331152a6e21eb04b74a90f8ac6de0d035d5925ca45cfb9d6dc5",
+        "bin/cratectl": "07a50e47cc571ae2bb1b1b70e252e94d24d2a3a1547ada37ee242af5ab8db605",
+        ".cache/bin/oras": "a75c9dfd7f8f4f1f8ff09c88e7dd03431714f5f760366dff50b7f3cea4850930"
+      }
+    },
+    {
+      "path": "evidence/2026-10-31/retention-schedules-9d6302fe50.json",
+      "assertions": 55,
+      "candidate": "fe0b176820f4252445015c542f7253cdf7023baf",
+      "source_dirty": true,
+      "artifacts": {
+        ".cache/retention-final-production/cratectld": "7874a243c786c823811230e3c83f92dc91d0e2fb66673c45c083036d2f43698b",
+        "bin/cratectld": "554a857ae25a4331152a6e21eb04b74a90f8ac6de0d035d5925ca45cfb9d6dc5",
+        "bin/cratectl": "07a50e47cc571ae2bb1b1b70e252e94d24d2a3a1547ada37ee242af5ab8db605",
+        ".cache/bin/oras": "a75c9dfd7f8f4f1f8ff09c88e7dd03431714f5f760366dff50b7f3cea4850930"
+      }
+    },
+    {
+      "path": "evidence/2026-10-31/schedules-3b15f0bcab.json",
+      "assertions": 31,
+      "candidate": "fe0b176820f4252445015c542f7253cdf7023baf",
+      "source_dirty": true,
+      "artifacts": {
+        ".cache/repair-final-production/cratectld": "ee804a5a1ae1709af552ba9594eb7405bd7ccc9d3386f2e60f9d3083ec8a86ce",
+        "bin/cratectld": "554a857ae25a4331152a6e21eb04b74a90f8ac6de0d035d5925ca45cfb9d6dc5",
+        "bin/cratectl": "07a50e47cc571ae2bb1b1b70e252e94d24d2a3a1547ada37ee242af5ab8db605",
+        ".cache/bin/oras": "a75c9dfd7f8f4f1f8ff09c88e7dd03431714f5f760366dff50b7f3cea4850930"
+      }
+    },
+    {
+      "path": "evidence/2026-10-31/schema-01f39aa7ef.json",
+      "assertions": 13,
+      "candidate": "fe0b176820f4252445015c542f7253cdf7023baf",
+      "source_dirty": true,
+      "artifacts": {
+        ".cache/pagination-production/cratectld": "cbdf03debda8c90b8197b5f9e96ab3efd2c2eb8790e137ef6e0159bf10f2250a",
+        "bin/cratectld": "554a857ae25a4331152a6e21eb04b74a90f8ac6de0d035d5925ca45cfb9d6dc5",
+        "bin/cratectl": "07a50e47cc571ae2bb1b1b70e252e94d24d2a3a1547ada37ee242af5ab8db605"
+      }
+    }
+  ],
+  "focused_postgres_tests_repeated_twice": [
+    "TestRetentionSchedulePreviewRevisionAndReplayPreserveApproval",
+    "TestRetentionScheduleConcurrentCaptureCoalescesAndDoesNotOverlap",
+    "TestRetentionSchedulePauseFencesPendingEffectsAndPreservesManualApproval",
+    "TestRetentionScheduleRequesterLossBlocksUntilExplicitReauthorization",
+    "TestRetentionSchedulePolicyAndSourceChangesRequireNewApproval",
+    "TestRetentionScheduleBudgetAndQueueDeferralsKeepDueIntent",
+    "TestRetentionScheduleFinalJournalAndRequesterFailureRollBackAdmission",
+    "TestRetentionScheduleInspectionAndExecutionRejectContradictoryReceipts",
+    "TestRetentionScheduleTenantIsolationAndImmutableHistory",
+    "TestRetentionScheduleRejectsCrossLinkedPolicyAndRequesterEvidence",
+    "TestRetentionScheduleMigrationPreservesSevenReceiptsAndGuardsTenantTables",
+    "TestRetentionScheduleHTTPExplicitAuthorityAndWorkerFences",
+    "TestRepositoryNamesDoNotSelectNestedManagementRoutes"
+  ],
+  "browser": {
+    "record": "evidence/2026-10-31/console-6ad806977c.json",
+    "workflows": 10,
+    "assertions": 79,
+    "named_accessibility_states": 71,
+    "skipped": 0,
+    "flaky": 0
+  },
+  "retained_native_logs": {
+    "campaign_log_files": 95,
+    "go_driver_directories": 6,
+    "go_driver_logs": 40,
+    "private_directory_mode": "0700",
+    "credential_and_log_file_mode": "0600",
+    "path_roots": [
+      ".private/retention-schedule-conformance",
+      ".private/native-client-integration"
+    ]
+  },
+  "schema": {
+    "primary_plan": {
+      "binary_version": 8,
+      "database_state": "pending",
+      "applied": [
+        {
+          "version": 1,
+          "checksum": "1e0f7b93d872f8ab83f85742000a6282f2722a0a338d8f2bc81755345ba66d16"
+        },
+        {
+          "version": 2,
+          "checksum": "9e023c96c8cf33549ce81f1eac22551b5cdb6267d146f65d430ec254dc8b10b5"
+        },
+        {
+          "version": 3,
+          "checksum": "44527dcd4be5177203e2b0eb93e5886a4dae437fbebf4cec14f7737ecb2f15d3"
+        },
+        {
+          "version": 4,
+          "checksum": "8b287dda8e78324c44275d31850418d7e7166d9d6fe49c71d539dbd44a52d209"
+        },
+        {
+          "version": 5,
+          "checksum": "0e835ed82b84cdd3d85858b0a76611b3ed6d387bbf55fee76d2abdf7c7f313a9"
+        },
+        {
+          "version": 6,
+          "checksum": "557b3f6612a403e24d0c9726c9b048d62188b3e1a93bcb3f158616da30b1fe6c"
+        },
+        {
+          "version": 7,
+          "checksum": "596eed6ab2287c8fd4b332d53f4d4867ceda7a1cebaf78e215da70b7eac6ff12"
+        }
+      ],
+      "pending": [
+        8
+      ],
+      "requires_legacy_adoption": false,
+      "safety_valid": true
+    },
+    "seven_receipts_unchanged": true,
+    "new_isolated_receipt": {
+      "version": 8,
+      "checksum": "fddb52ee509a46ce949d6c879feb47fc4603b7cb4de986b300e6f2b5243ae7dc"
+    }
+  },
+  "checks": {
+    "unit_race_lint": ".cache/retention-schedule-native-unit-vet-race.txt",
+    "route_race_replay_twice": "evidence/2026-10-31/retention-schedule-route-replay.txt",
+    "full_postgres_race_twice": ".cache/retention-schedule-regressions-20261031T035937Z/postgres-race.log",
+    "secret_review": {
+      "status": "passed",
+      "checked_at": "2026-10-31T04:09:11.393417+00:00",
+      "files": 1202,
+      "known_private_value_entries": 6851,
+      "exact_value_matches": 0,
+      "gitleaks_findings": 0,
+      "scope": "Tracked and nonignored source/evidence, dedicated native tokens/database config and decoded Go-client registry credentials. Existing scanner rules unchanged; final metadata replay follows."
+    }
+  },
+  "latest_qualified_source": "6cac8851da675dcaf531d6f8ed2aa26c927a243b",
+  "latest_qualified_checkpoint": "evidence/2026-10-31/retention-checkpoint.json",
+  "services": "All preflight registry/worker processes stopped. Owned native PostgreSQL remains running for the next clean qualification campaign. Primary stays schema7 with only8pending; exact qualified schema7 bin bytes restored. Every native fixture database and artifact retained.",
+  "next": [
+    "Commit reviewed source/evidence only as imfeelingtheagi, then build exact clean production/race/platform artifacts. Preserve the qualified schema7 baseline and every older artifact folder.",
+    "Run all required native/browser/storage/job/installation/upgrades plus the dedicated schedule campaign on the exact clean production/race candidate; controlled primary7-to8 migration only as part of that campaign.",
+    "Complete current source/binary/platform vulnerability, credential/history and architecture checks; promote only scoped qualified evidence when every required replay has passed.",
+    "Retain all 450 unfinished capabilities and 41 families, full security/packaging/HA/performance/platform/recovery and all later-stage scope. No push or remote mutation."
+  ],
+  "limits": [
+    "Dirty-source development evidence does not promote the qualified source. Linux/Windows runtime, all browsers/assistive technology, broad readiness and full goal remain unqualified.",
+    "The first native40-assertion campaign failed on real repository-name routing. The repaired native campaign passed55; the initial routing regression fixture-key collision and isolated failures remain retained.",
+    "Artifact age and claim/second-outcome barriers are owned SQL timing fixtures. Actual due slots, revoked/expired authority, original-worker SIGKILL and later lease reclaim are independently observed without schedule/lease clock edits. No product metadata repair is claimed.",
+    "Existing Go native drivers now retain raw command/server logs and omit database credentials from stock clients; server children receive restricted runtime DSN only. Their per-test databases retain their existing disposable lifecycle, unlike the dedicated native campaign databases.",
+    "Canonical OCI manifests only; zero physical bytes erased or reclaimed. Other formats/rules, legal holds, GC safety, release/replica protections and production recovery remain required."
+  ]
+}

@@ -15,6 +15,13 @@ integrity with fenced leases, retries and cancellation. Neither a hash match nor
 a manual decision is a malware or vulnerability scan. Pending intent is not
 completion.
 
+Reviewed OCI [retirement and restore](docs/operator/retention.md), separately
+authorized [automatic retirement](docs/operator/scheduled-retention.md),
+[recurring integrity checks](docs/operator/recurring-integrity.md) and
+[exact-byte repair](docs/operator/byte-repair.md) have scoped development or
+qualification evidence. Retained retirement reclaims zero storage. These records
+identify the actual source, clients and limits; full lifecycle and GC remain open.
+
 ## Initialize a blank native installation
 
 The [operator console](docs/operator/console.md) is embedded at `/console/`. It uses
@@ -82,8 +89,9 @@ early native proof; see [operator configuration](docs/operator/proxy-and-group.m
 Full proxy/group semantics, content selectors, production S3, quotas, global
 worker scheduling, scanners, identity federation, console,
 replication, migration, governance and the remaining format families are open.
-Management list endpoints currently cap at 1,000 rows; full management cursor
-pagination is unfinished. Jobs and activity support documented cursors. Native OCI tags/referrers have bounded `n`/`last`
+Repository/artifact management lists use bounded cursor pages and current grants,
+policy and server search. Traversal is live rather than a multi-page snapshot.
+Jobs and activity support documented cursors. Native OCI tags/referrers have bounded `n`/`last`
 pages and complete upstream page walks; see the OCI operator guide.
 Filesystem reads rehash the entire object before sending it. This detects
 same-length corruption but adds disk I/O and has not met transfer targets.
