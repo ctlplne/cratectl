@@ -78,13 +78,15 @@ continuation rules as the original hold inventory. Editing a case preserves its
 inventory position; filtering and expiry can still change later live pages.
 
 Migration 10 adds case storage with forced tenant RLS and preserves receipts 1–9.
-It does not convert old slots into cases or invent historical actions. The
-development implementation uses isolated databases; the existing qualified primary
-and active binaries remain schema 9 until the complete new runtime campaign passes.
+It does not convert old slots into cases or invent historical actions. The implementation uses isolated qualification databases. The project-owned
+primary and active binaries reached schema10 after the complete recorded native
+production/race campaign and scoped source/artifact checks passed.
 Scoped clean schema-10 case qualification passes on both builds; see
 [the case checkpoint](../../evidence/2026-10-31/hold-cases-checkpoint.json). The
-primary remains schema9 pending the other current-candidate runtime/upgrade
-campaigns. The schema-9 evidence below retains its original scope.
+[full runtime checkpoint](../../evidence/2026-10-31/case-full-checkpoint.json)
+records the controlled primary9to10 maintenance and unchanged existing table
+byte digests. Older runtimes reject schema10. The schema-9 evidence below retains
+its original historical scope.
 
 ## API and CLI
 
@@ -136,8 +138,13 @@ compatibility, downgrade and production backup/recovery remain unqualified.
 Named clean production/race evidence covers PostgreSQL/HTTP, actual-time expiry,
 concurrent stale revision rejection, queue rollback, tenant/cursor/credential
 boundaries, actual old schema-8 hold receipts, CLI/ORAS and eleven Chromium
-workflows/81 automated A/AA states. The owned primary is schema 9 after controlled
-maintenance; every earlier receipt is unchanged. Full product, format, legal
+workflows/81 automated A/AA states. That historical checkpoint recorded primary9 after controlled maintenance;
+every earlier receipt was unchanged. The current primary10 maintenance is
+recorded above. Full product, format, legal
 retention, provider/platform, accessibility, scale and production recovery remain
 required. [The checkpoint](../../evidence/2026-10-31/hold-checkpoint.json) identifies
 the exact source, artifacts, observations and limits.
+
+A released original-slot row may still report `held: true` when a named case
+remains active. Use the independent-case inventory with the exact repository
+and path to find that protection. Releasing one slot never releases all cases.

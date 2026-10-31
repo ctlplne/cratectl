@@ -1,12 +1,38 @@
 # cratectl execution status
 
-Validation repair in progress: DEFECT.0067 reproduces five native upgrade
-fixtures requiring schema9 after migration10. All six upgrade drivers now share
-one explicit schema10 target and retain every original check and receipt
-comparison. Affected repair/ORAS/CLI development replay passes; the prior clean
-campaign stops at the retained fifth-fixture failure. Full matching production/
-race replay is pending. Core/runtime/UI/schema bytes are unchanged.
-See `evidence/2026-10-31/schema10-fixture-version-repair.json`. Primary9 remains.
+Latest scoped native runtime-qualified source: `ed9ee5e8a6b38843a01ff9ccb9eb5ca7752255c0`,
+authored and committed only as imfeelingtheagi. The authoritative checkpoint is
+`evidence/2026-10-31/case-full-checkpoint.json`.
+
+All39 matching clean production/race runtime records pass: 1381 production
+assertions and 872 race assertions. Actual old schema2–9 binaries preserve
+their receipts and native package bytes. Legacy adoption/SIGKILL, held-case/legacy
+coexistence, retirement, recurring maintenance, repair, install, native clients,
+leases/jobs, inventory/sweeps, source configuration and pinned public OCI pass
+within their recorded scope. Both builds pass twelve Chromium workflows/91
+named automated A/AA states and all three PostgreSQL race packages (414 top-level
+passes; no skips/races). Original elapsed-time cadence and cleanup assertions stay.
+
+DEFECT.0067 is repaired: all six native upgrade drivers share one explicit schema
+contract. Every original check/receipt comparison remains, and both original
+schema9-expectation failures plus the partial campaign are retained. Native
+repair and all affected upgrade fixtures replay cleanly
+on both builds. No failed or dirty development observation counts as a pass.
+
+Build/unit/race/lint, byte-for-byte console, API51paths/267responses/76references,
+Go source/production-binary symbol scans, npm, Trivy source/five artifacts,
+history and bounded cursor fuzz pass in scope. Full security/packaging remain
+negative. Cross-platform binaries compile only; native qualification is open.
+
+The project-owned primary reached schema10 only after all runtime/scoped checks
+passed. Controlled maintenance had zero other client sessions and no registry
+listening. Its original nine receipts and byte digests of every existing durable
+table are unchanged. Step10 is frozen; active bin matches the clean schema10
+production artifacts. Never restore schema9/8 binaries onto this primary.
+Owned services are stopped and private data, credentials and exact artifacts
+remain. No push/publication/remote or Docker/sibling changes occurred.
+All450capabilities/41families, cross-reference/bulk/legal and other-format work,
+physicalGC and every later stage remain unfinished; every broad verdict is negative.
 
 Scoped clean independent-case source: `9b73cfd2b6e05032044272cb50e0879a3c03fdf0`. Both author
 and committer are the required imfeelingtheagi identity. See
@@ -33,10 +59,9 @@ scan and the 65-commit secret/identity audit pass. The six PostgreSQL timing
 cleanup/recovery regressions also pass. Development failures retain their actual
 scope and corrected replays; no skip or dirty build counts as clean evidence.
 
-The qualified primary and active binaries remain schema9/ab28ee9. Its nine
-receipts are unchanged; schema10 is isolated and its new receipt is frozen.
-Complete the remaining current-candidate runtime campaigns and actual schema2–8
-old-binary baselines before primary10 maintenance. Owned registry/workers/native
+The independent-case checkpoint below predates the complete runtime replay and
+controlled primary10 maintenance above. Its observations retain their exact
+source and isolated schema10 scope. Owned registry/workers/native
 PostgreSQL are stopped with zero client sessions before stop. All data, private
 state and exact binaries remain. No push/publication/remote mutation or
 Docker/sibling changes occurred. All450capabilities/41families, bulk/legal and

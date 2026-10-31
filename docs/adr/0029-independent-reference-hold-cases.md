@@ -1,8 +1,8 @@
 # 0029: independent preservation cases for immutable references
 
-Status: implemented; scoped clean qualification passed on isolated schema-10
-databases. See `evidence/2026-10-31/hold-cases-checkpoint.json`; primary9 and
-its qualified runtime remain unchanged.
+Status: implemented; scoped clean production/race native qualification passed.
+See `evidence/2026-10-31/case-full-checkpoint.json`; the project-owned primary
+is schema10 after controlled maintenance with unchanged existing data.
 
 A replaceable reason cannot represent simultaneous preservation decisions. If
 two administrators are investigating the same bytes, completing one review must
@@ -52,7 +52,9 @@ bulk admission/release, approval/separation-of-duties workflows, physical GC,
 replicas/releases, production recovery and all other goal requirements remain
 committed. No legal-compliance or release-readiness claim follows from this ADR.
 
-The primary remains schema 9 with the previously qualified schema-9 binaries.
-Schema-10 development and qualification use isolated owned databases. Controlled
-primary maintenance requires the complete matching runtime qualification first;
-schema-9 binaries must never run against a migrated schema-10 primary.
+The project-owned primary reached schema10 after all named runtime and scoped
+source/artifact checks passed, with no registry or other client connection.
+Original receipts and existing table byte digests are unchanged. Exact qualified
+production binaries match the primary. Never restore schema9/8 binaries onto it.
+Rolling compatibility, downgrade, transfer draining and production recovery
+remain unqualified.

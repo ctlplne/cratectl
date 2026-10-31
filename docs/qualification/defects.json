@@ -720,14 +720,15 @@
     {
       "id": "DEFECT.0067",
       "summary": "Five native upgrade fixtures retained schema9 plan expectations after immutable schema10",
-      "state": "implemented; shared schema contract and affected native development replay passed; full matching clean campaign pending",
+      "state": "repaired and matching clean production/race native replayed",
       "first_failure": "evidence/2026-10-31/schema-89a39e0a11.json",
       "repair": "All six upgrade drivers now import one explicit schema10 target and retain exact binary-version/pending-step, original check-count, old-receipt and native interruption/recovery assertions.",
       "candidate_parent": "df2ee498504b568a335c0c2834ed15f72d3a68e5",
-      "replay": "evidence/2026-10-31/schema10-fixture-version-repair.json",
-      "limits": "Validation-only repair; full production/race runtime campaign must pass before primary10 maintenance.",
+      "replay": "evidence/2026-10-31/case-full-checkpoint.json",
+      "limits": "Six native upgrade drivers share exact target10; old receipt/client/interruption/cadence assertions preserved. Both retained first failures and partial campaign remain unqualified. Broader goal/security/packaging remain open.",
       "followup_failure": "evidence/2026-10-31/repairs-c1d416da36.json",
-      "development_replay": "evidence/2026-10-31/repairs-e1f66e9a2b.json"
+      "development_replay": "evidence/2026-10-31/repairs-e1f66e9a2b.json",
+      "candidate": "ed9ee5e8a6b38843a01ff9ccb9eb5ca7752255c0"
     }
   ]
 }
