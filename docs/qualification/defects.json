@@ -572,6 +572,36 @@
       "candidate": "b19d1ae393320a2adc051f61db24693fec62591a",
       "replay": "evidence/2026-10-31/schedule-checkpoint.json",
       "limits": "Named fault/operator fixtures only; automatic metadata recovery and full product/security/scale qualification remain open."
+    },
+    {
+      "id": "DEFECT.0053",
+      "summary": "Retention preview used SQL absent from PostgreSQL 16",
+      "first_failure": "evidence/2026-10-31/retention-store-first-failure.json",
+      "state": "repaired and development replayed",
+      "repair": "Use a supported bounded suffix expression and replay the actual PostgreSQL query.",
+      "candidate": null,
+      "replay": "evidence/2026-10-31/retention-backend-preflight.json",
+      "limits": "Dirty-source backend development preflights only; dedicated native/browser and exact clean-candidate qualification remain pending."
+    },
+    {
+      "id": "DEFECT.0054",
+      "summary": "Productive retirement steps exhausted the job retry budget",
+      "first_failure": "evidence/2026-10-31/retention-attempt-budget-first-failure.json",
+      "state": "repaired and development replayed",
+      "repair": "Reset cycle_attempts on successful durable progress; retain total attempts and immutable outcomes. Ten-target and completed-retry fixtures pass.",
+      "candidate": null,
+      "replay": "evidence/2026-10-31/retention-backend-preflight.json",
+      "limits": "Dirty-source backend development preflights only; dedicated native/browser and exact clean-candidate qualification remain pending."
+    },
+    {
+      "id": "DEFECT.0055",
+      "summary": "An older retention approval could hide a newly added tag",
+      "first_failure": "evidence/2026-10-31/retention-new-tag-first-failure.json",
+      "state": "repaired and development replayed",
+      "repair": "Compare current tags to the exact approved tag impact even when tag protection is disabled; skip the changed target until a new preview is approved.",
+      "candidate": null,
+      "replay": "evidence/2026-10-31/retention-backend-preflight.json",
+      "limits": "Dirty-source backend development preflights only; dedicated native/browser and exact clean-candidate qualification remain pending."
     }
   ]
 }

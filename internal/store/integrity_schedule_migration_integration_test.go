@@ -20,7 +20,7 @@ func TestIntegrityScheduleMigrationPreservesFiveReceiptsAndGuardsNewTenantTables
 		t.Fatal(e)
 	}
 	before, e := MigrationPlan(ctx, d.OwnerDSN)
-	if e != nil || len(before.Applied) != 5 || len(before.Pending) != 1 || before.Pending[0] != 6 || !before.SafetyValid {
+	if e != nil || len(before.Applied) != 5 || len(before.Pending) != len(steps)-5 || before.Pending[0] != 6 || !before.SafetyValid {
 		t.Fatal(before, e)
 	}
 	runtime, e := pgx.Connect(ctx, d.RuntimeDSN)
@@ -35,7 +35,7 @@ func TestIntegrityScheduleMigrationPreservesFiveReceiptsAndGuardsNewTenantTables
 		t.Fatal(e)
 	}
 	after, e := MigrationPlan(ctx, d.OwnerDSN)
-	if e != nil || len(after.Applied) != 6 || !after.SafetyValid || len(after.Pending) != 0 {
+	if e != nil || len(after.Applied) != len(steps) || !after.SafetyValid || len(after.Pending) != 0 {
 		t.Fatal(after, e)
 	}
 	for n, receipt := range before.Applied {

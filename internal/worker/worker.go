@@ -121,6 +121,9 @@ func Run(ctx context.Context, db *store.Store, objects *blob.Local, o Options) e
 	return nil
 }
 func execute(parent context.Context, db *store.Store, objects *blob.Local, o Options, i store.WorkerIdentity, j store.Job) string {
+	if j.Kind == "repository.retention" {
+		return executeRetention(parent, db, o, i, j)
+	}
 	if j.Kind == "storage.repair" {
 		return executeRepair(parent, db, objects, o, i, j)
 	}

@@ -1,0 +1,30 @@
+=== RUN   TestRetentionPolicyPreviewRevisionHistoryAndBudget
+    retention_integration_test.go:151: reader policy credential expired or revoked
+--- FAIL: TestRetentionPolicyPreviewRevisionHistoryAndBudget (0.32s)
+=== RUN   TestRetentionPlanDigestRejectsChangedMembershipAndExpiredPreview
+--- PASS: TestRetentionPlanDigestRejectsChangedMembershipAndExpiredPreview (0.40s)
+=== RUN   TestRetentionKeepsNewestTagsHoldsParentsAndUnvalidatedContent
+    retention_integration_test.go:214: {repository.retention 5 retention-8ea9743ec86d021ca916b3755acc3f58bebe1de1f785758434ee3564b5c9dc51 maintenance repository.retention failed 5 5 5 retention-fixture 1969-12-31 19:00:00 -0500 EST 2026-10-30 21:01:54.969184 -0400 EDT  2026-10-30 21:01:54.969185 -0400 EDT <nil> {"policy": {"name": "age", "actor": "admin", "reason": "Owned retained retirement regression", "enabled": true, "revision": 1, "keep_last": 1, "repository": "retained", "configured_at": "2026-10-30T21:01:54.841469-04:00", "protect_tagged": true, "min_age_seconds": 60}, "reason": "Owned explicit approved retirement", "targets": 10, "eligible": 1, "expires_at": "2026-10-31T01:06:54.881933Z", "evaluated_at": "2026-10-31T01:01:54.881933Z", "preview_digest": "cf7e2349145697467c0be0218e1cfb215539f5d308fddc3b467c848b4cad5307", "bytes_reclaimed": 0, "source_revision": 0} } not found
+--- FAIL: TestRetentionKeepsNewestTagsHoldsParentsAndUnvalidatedContent (0.52s)
+=== RUN   TestRetentionExecutionRechecksLateHoldsTagsAndParentsAndIgnoresMutableJobAuthority
+--- PASS: TestRetentionExecutionRechecksLateHoldsTagsAndParentsAndIgnoresMutableJobAuthority (0.38s)
+=== RUN   TestRetentionRequesterAndPolicyChangesStopUnprocessedEffects
+=== RUN   TestRetentionRequesterAndPolicyChangesStopUnprocessedEffects/requester
+=== RUN   TestRetentionRequesterAndPolicyChangesStopUnprocessedEffects/policy
+--- PASS: TestRetentionRequesterAndPolicyChangesStopUnprocessedEffects (0.61s)
+    --- PASS: TestRetentionRequesterAndPolicyChangesStopUnprocessedEffects/requester (0.30s)
+    --- PASS: TestRetentionRequesterAndPolicyChangesStopUnprocessedEffects/policy (0.31s)
+=== RUN   TestRetentionTargetJournalFailureAndLateRequesterExpiryRollbackTogether
+=== RUN   TestRetentionTargetJournalFailureAndLateRequesterExpiryRollbackTogether/journal
+=== RUN   TestRetentionTargetJournalFailureAndLateRequesterExpiryRollbackTogether/late_expiry
+--- PASS: TestRetentionTargetJournalFailureAndLateRequesterExpiryRollbackTogether (0.66s)
+    --- PASS: TestRetentionTargetJournalFailureAndLateRequesterExpiryRollbackTogether/journal (0.32s)
+    --- PASS: TestRetentionTargetJournalFailureAndLateRequesterExpiryRollbackTogether/late_expiry (0.35s)
+=== RUN   TestRetentionMigrationPreservesSixReceiptsAndForcesTenantEvidenceIsolation
+    retention_migration_integration_test.go:81: migration seven checksum: 596eed6ab2287c8fd4b332d53f4d4867ceda7a1cebaf78e215da70b7eac6ff12
+--- PASS: TestRetentionMigrationPreservesSixReceiptsAndForcesTenantEvidenceIsolation (0.30s)
+=== RUN   TestRetentionSettingsRejectUnsafeOrUnboundedRules
+--- PASS: TestRetentionSettingsRejectUnsafeOrUnboundedRules (0.00s)
+FAIL
+FAIL	ctlplne.dev/cratectl/internal/store	3.546s
+FAIL

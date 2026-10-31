@@ -1,0 +1,213 @@
+{
+  "recorded_at": "2026-10-31T01:17:16.453736+00:00",
+  "source_parent": "8cd74f6f982048d75d4c6db8272ff958b2f06047",
+  "source_dirty": true,
+  "clean_candidate_qualification": false,
+  "phase": "policy-driven retained OCI retirement backend and management API",
+  "real_postgres_tests_replayed_twice": [
+    "TestRetentionPolicyPreviewRevisionHistoryAndBudget",
+    "TestRetentionPlanDigestRejectsChangedMembershipAndExpiredPreview",
+    "TestRetentionKeepsNewestTagsHoldsParentsAndUnvalidatedContent",
+    "TestRetentionExecutionRechecksLateHoldsTagsAndParentsAndIgnoresMutableJobAuthority",
+    "TestRetentionRequesterAndPolicyChangesStopUnprocessedEffects",
+    "TestRetentionTargetJournalFailureAndLateRequesterExpiryRollbackTogether",
+    "TestRetentionUnprotectedApprovalDoesNotRetireANewTagBinding",
+    "TestRetentionRunAndExecutionRollBackWhenOutboxIsFull",
+    "TestRetentionTenantIsolationAndCancellationPreserveApprovedTargets",
+    "TestRetentionMigrationPreservesSixReceiptsAndForcesTenantEvidenceIsolation",
+    "TestRetentionHTTPWorkerResumesApprovedTargetsAndNativeRestorePreservesBytes"
+  ],
+  "full_postgres_race_packages": 3,
+  "full_postgres_race_repetitions": 1,
+  "skips": 0,
+  "race_reports": 0,
+  "parser_fuzz": {
+    "seconds": 10,
+    "workers": 2,
+    "executions": 15936
+  },
+  "logs": {
+    "evidence/2026-10-31/retention-backend-race-preflight.txt": {
+      "raw_sha256": "94511bbb8935eb0d518a23530fb690dcc3a30caf3a98c53bf28256d536b27816",
+      "normalization": "trailing horizontal whitespace removed from evidence copy; raw input retained in ignored cache"
+    },
+    "evidence/2026-10-31/retention-extra-fences-preflight.txt": {
+      "raw_sha256": "793671e124e258f3d2adafca0247a796041ffa682911ccf69b36b7723df0d725",
+      "normalization": "trailing horizontal whitespace removed from evidence copy; raw input retained in ignored cache"
+    },
+    "evidence/2026-10-31/retention-full-postgres-race-preflight.txt": {
+      "raw_sha256": "8117c844cf8b240dd9c9c600ebf793c9f5aedb7b79e416d849c95ea7556d0a71",
+      "normalization": "trailing horizontal whitespace removed from evidence copy; raw input retained in ignored cache"
+    },
+    "evidence/2026-10-31/retention-unit-race-lint-preflight.txt": {
+      "raw_sha256": "21c38cedc43ac15344308b9d818b7e3c5c8c6354038b85f91c69eeb7535b0bc9",
+      "normalization": "trailing horizontal whitespace removed from evidence copy; raw input retained in ignored cache"
+    },
+    "evidence/2026-10-31/retention-parser-fuzz-preflight.txt": {
+      "raw_sha256": "1c89eb8a008fdbabd54c7781e91c3b05294a24740662dda4376accf78455a358",
+      "normalization": "trailing horizontal whitespace removed from evidence copy; raw input retained in ignored cache"
+    },
+    "evidence/2026-10-31/retention-service-stop.json": {
+      "raw_sha256": "9fcdf75490ca8dbf6beb545a9f802b151d7ea0c67d1c30d129e6cc363905df44",
+      "normalization": "trailing horizontal whitespace removed from evidence copy; raw input retained in ignored cache"
+    }
+  },
+  "development_artifacts": {
+    ".cache/retention-preflight-production/cratectl": {
+      "sha256": "fbf2fe7174e64b0a05f677ad5915c2e48a9724276bc99ea977c74694cb7f8771",
+      "native_build_identity": ".cache/retention-preflight-production/cratectl: go1.27.3\n\tpath\tctlplne.dev/cratectl/cmd/cratectl\n\tmod\tctlplne.dev/cratectl\tv0.0.0-20261031005153-8cd74f6f9820+dirty\t\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-trimpath=true\n\tbuild\tCGO_ENABLED=1\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=darwin\n\tbuild\tGOARM64=v8.0\n\tbuild\tvcs=git\n\tbuild\tvcs.revision=8cd74f6f982048d75d4c6db8272ff958b2f06047\n\tbuild\tvcs.time=2026-10-31T00:51:53Z\n\tbuild\tvcs.modified=true\n"
+    },
+    ".cache/retention-preflight-production/cratectld": {
+      "sha256": "9a254003b21a65ebb98185ae11320e8645c65c8cb55778eed64cb35f7c88d7e2",
+      "native_build_identity": ".cache/retention-preflight-production/cratectld: go1.27.3\n\tpath\tctlplne.dev/cratectl/cmd/cratectld\n\tmod\tctlplne.dev/cratectl\tv0.0.0-20261031005153-8cd74f6f9820+dirty\t\n\tdep\tgithub.com/Masterminds/semver/v3\tv3.4.0\th1:Zog+i5UMtVoCU8oKka5P7i9q9HgrJeGzI9SA1Xbatp0=\n\tdep\tgithub.com/aquasecurity/go-pep440-version\tv0.0.1\th1:8VKKQtH2aV61+0hovZS3T//rUF+6GDn18paFTVS0h0M=\n\tdep\tgithub.com/aquasecurity/go-version\tv0.0.1\th1:4cNl516agK0TCn5F7mmYN+xVs1E3S45LkgZk3cbaW2E=\n\tdep\tgithub.com/jackc/pgpassfile\tv1.0.0\th1:/6Hmqy13Ss2zCq62VdNG8tM1wchn8zjSGOBJ6icpsIM=\n\tdep\tgithub.com/jackc/pgservicefile\tv0.0.0-20240606120523-5a60cdf6a761\th1:iCEnooe7UlwOQYpKFhBabPMi4aNAfoODPEFNiAnClxo=\n\tdep\tgithub.com/jackc/pgx/v5\tv5.11.0\th1:IzBBtyK9AHqf98cctWFifYSci2hgQR/cd56wB4p+ogg=\n\tdep\tgithub.com/jackc/puddle/v2\tv2.2.2\th1:PR8nw+E/1w0GLuRFSmiioY6UooMp6KJv0/61nB7icHo=\n\tdep\tgolang.org/x/net\tv0.62.0\th1:18ELalfM5+XNRwzM2nYqXsZQ9ByS1uhj2O/U7+5jqRY=\n\tdep\tgolang.org/x/sync\tv0.24.0\th1:iqiDrGoDgyuvAKrhLQthUEzU/R378N78gXbBjxed7oA=\n\tdep\tgolang.org/x/text\tv0.43.0\th1:1QivrlhwAsnMOcqgOdl9my7s9OyZl8O5/UGUTJVXoWc=\n\tdep\tgolang.org/x/xerrors\tv0.0.0-20231012003039-104605ab7028\th1:+cNy6SZtPcJQH3LJVLOSmiC7MMxXNOb3PU/VUEz+EhU=\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-trimpath=true\n\tbuild\tCGO_ENABLED=1\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=darwin\n\tbuild\tGOARM64=v8.0\n\tbuild\tvcs=git\n\tbuild\tvcs.revision=8cd74f6f982048d75d4c6db8272ff958b2f06047\n\tbuild\tvcs.time=2026-10-31T00:51:53Z\n\tbuild\tvcs.modified=true\n"
+    }
+  },
+  "symbol_vulnerability_scan": {
+    "configuration": {
+      "protocol_version": "v1.0.0",
+      "scanner_name": "govulncheck",
+      "scanner_version": "v1.9.0",
+      "db": "https://vuln.go.dev",
+      "db_last_modified": "2026-10-27T21:16:18Z",
+      "go_version": "go1.27.3",
+      "scan_level": "symbol",
+      "scan_mode": "source"
+    },
+    "findings": 0,
+    "raw_sha256": "2172d33d38d3fd335c3d337d21c3fd36a377eba327e47ebaba8aad5d1814fcae"
+  },
+  "unchanged_dependency_lockfiles": {
+    "go.mod": "cc267e88962f8fe70d925bee308d72cb67dc86c78d12a3dafb90595499dd624f",
+    "go.sum": "e6d2b2121b7df4623c278f22a7c75762986dcdc0ab7b9ef7699b19fbd13ef411",
+    "web/package.json": "d07528894d3bb6218c2a421d3a213ab3ec01eec7393a6e2e1d348a13839efd20",
+    "web/package-lock.json": "f2b5ef59debedcbad42494b98207329e72852c82ea04f745caccf8069f3d5152"
+  },
+  "unchanged_dependency_scan": "evidence/2026-10-31/schedule-trivy-source.json",
+  "dependency_scan_limits": "Reuses only the unchanged dependency set; no new native release or image scan is claimed.",
+  "source_secret_scan": "evidence/2026-10-31/retention-backend-source-secrets.json",
+  "source_secret_review": {
+    "status": "passed",
+    "checked_at": "2026-10-31T01:20:48.708570+00:00",
+    "files": 1075,
+    "known_private_value_entries": 5229,
+    "exact_value_matches": 0,
+    "gitleaks_findings": 0,
+    "scope": "All tracked and nonignored source/evidence files. Existing Gitleaks rules unchanged. Known private credential-value entries absent."
+  },
+  "first_failures": [
+    "evidence/2026-10-31/retention-store-first-failure.json",
+    "evidence/2026-10-31/retention-attempt-budget-first-failure.json",
+    "evidence/2026-10-31/retention-new-tag-first-failure.json",
+    "evidence/2026-10-31/retention-full-suite-first.json"
+  ],
+  "schema": {
+    "development": 7,
+    "primary": 6,
+    "migration_7_checksum": "596eed6ab2287c8fd4b332d53f4d4867ceda7a1cebaf78e215da70b7eac6ff12",
+    "earlier_six_receipts_frozen": true
+  },
+  "services": "Owned PostgreSQL and test registry stopped; private data/artifacts retained. Production bin bytes restored.",
+  "latest_qualified_checkpoint": "evidence/2026-10-31/schedule-checkpoint.json",
+  "next": [
+    "Implement the console retention policy/preview/run/outcome/recovery workflow and real browser/accessibility coverage.",
+    "Add dedicated stock ORAS and cratectl retention/restore/restart/cancellation/race journeys plus real schema-6 old-binary upgrade. Adapt all native qualification harnesses to schema 7 without weakening their older-schema assertions.",
+    "Build exact clean production/race artifacts and requalify the current feature and affected existing journeys. Update ledgers to that exact candidate only after full named evidence passes.",
+    "Complete all remaining format/rule/scheduled retention, physical GC, release/replica/restore protections, providers/platforms, fault/scale and production recovery."
+  ],
+  "limits": [
+    "This is a dirty-source development preflight. Dedicated native retention, console, clean production/race candidates, packaging and broad security qualification remain pending.",
+    "Only retained canonical OCI manifest retirement by minimum creation age and newest-per-image rules; no CAS bytes are removed.",
+    "All 450 capabilities and 41 families remain unfinished. Every broad readiness verdict stays negative."
+  ],
+  "openapi_parse": "evidence/2026-10-31/retention-openapi-preflight.json",
+  "source_inputs": [
+    {
+      "path": "api/openapi.yaml",
+      "sha256": "8bfb642e126e54402b81326e86e9be1ad03c7bcbba2c0b15882e0147aea8ff0e"
+    },
+    {
+      "path": "internal/server/retention.go",
+      "sha256": "fb8f6218985a1b3c10d126092b14d824c1a811835fb29236b7faf877537bd400"
+    },
+    {
+      "path": "internal/server/retention_integration_test.go",
+      "sha256": "aef488057192e0fb1f8a15058f45bed3732ab25b62ad4017df6007927601dd6a"
+    },
+    {
+      "path": "internal/server/retention_test.go",
+      "sha256": "d610cbe967572dcf9d2bea3ec6d2bc757baece12c76339776c007e6cc73268dd"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "bf6ceb93181c95b434e7b10b9a6e1ef2a7cd2545c55334c64462073548dd2bc7"
+    },
+    {
+      "path": "internal/store/integrity_schedule_migration_integration_test.go",
+      "sha256": "ca80c7d7dbc8d8257368ef4f327055a422ff9b80b9f6f31b631c2b3306eb7911"
+    },
+    {
+      "path": "internal/store/jobs.go",
+      "sha256": "b1c1995e331af8010600cadf6a6ad661aa0eb6b6f38d10fed7b30b490aad2bf1"
+    },
+    {
+      "path": "internal/store/jobs_effects.go",
+      "sha256": "b4ca74dba487ea172a4f3e464549f4182a772a38df236ae06be00039c527199c"
+    },
+    {
+      "path": "internal/store/migrations.go",
+      "sha256": "b5db1bf17a4c1338c664fc09e464141d52cfab85811fcd563dc35748daa5d3fa"
+    },
+    {
+      "path": "internal/store/migrations_integration_test.go",
+      "sha256": "1d7e6dca3d7675ad78b585c52dea27701dff7ff41f065d035956df3ddd15cea1"
+    },
+    {
+      "path": "internal/store/migrations_test.go",
+      "sha256": "2823a5a89c1ec0c895dc18de3925b148c8fabe6938772b65f853f6edf4c8c8a8"
+    },
+    {
+      "path": "internal/store/retention.go",
+      "sha256": "1f40d14b3ab9732c625c78fa74ca030e9fe96732f3daae2be3b2ae86cc7f84c1"
+    },
+    {
+      "path": "internal/store/retention.sql",
+      "sha256": "61633afaa5d1e3e10b42a56d308204fe70bf41ed3413a038f496ce14047fa7d8"
+    },
+    {
+      "path": "internal/store/retention_execution.go",
+      "sha256": "dce4f4e1e776f0f99695dcaa0fdb5756d315616b264dc1e45d73cb87fb88b567"
+    },
+    {
+      "path": "internal/store/retention_integration_test.go",
+      "sha256": "0407988f0b94889aec2effe905b70458d29591f6dec1c9d4c0fbe047d1fa96b8"
+    },
+    {
+      "path": "internal/store/retention_management.go",
+      "sha256": "0133ff6d5c9cc818a62533a28a47853ea2688011079b1a5e000e9f645aa86de2"
+    },
+    {
+      "path": "internal/store/retention_migration_integration_test.go",
+      "sha256": "44ca0be0ea6fde5f278697830c6be6ce8f8d2d04a594d98c5fc05e619fd50da8"
+    },
+    {
+      "path": "internal/store/retention_test.go",
+      "sha256": "15f0b2be28ee0585309d0c084007ac1ad18962589dc74efa930b9a9b3a7e1e35"
+    },
+    {
+      "path": "internal/store/store.go",
+      "sha256": "ac8ff5b6a7caf3031dd9f505b3a976fd8009bc7e78a597feedd15e972926de91"
+    },
+    {
+      "path": "internal/worker/retention.go",
+      "sha256": "71beb4b5b8a341bc4e8af09f0fce71d0d5fd0496633e30b93f8788c0eee986fb"
+    },
+    {
+      "path": "internal/worker/worker.go",
+      "sha256": "9247006e88b1c0ac9267b112fc92a27cd1c400434ac2a32a1b9f02717ab1c7ab"
+    },
+    {
+      "path": "scripts/check_architecture.py",
+      "sha256": "b29f41c2b13094f1279f6ae5bb81ba89f377dcae9ba7a84c6576d2aff1a84ae8"
+    }
+  ]
+}

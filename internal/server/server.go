@@ -113,6 +113,14 @@ func fail(w http.ResponseWriter, status int, code, action string) {
 }
 func respondErr(w http.ResponseWriter, e error) {
 	switch {
+	case errors.Is(e, store.ErrRetentionInput):
+		fail(w, 400, "invalid_retention", "Supply a complete OCI retention policy or an exact approved preview, current expected_revision and nonempty bounded reason.")
+	case errors.Is(e, store.ErrRetentionChanged):
+		fail(w, 409, "retention_changed", "Read current policy and preview again. Apply its exact digest and evaluation time within five minutes; changed policy, membership or source needs a new preview.")
+	case errors.Is(e, store.ErrRetentionBudget):
+		fail(w, 413, "retention_budget", "The complete retention plan exceeds the operator target or metadata budget. No partial plan was admitted; inspect repository size and configured limits.")
+	case errors.Is(e, store.ErrRetentionAuthorization):
+		fail(w, 403, "retention_authorization_changed", "The requesting administrator credential changed or expired. Inspect already committed outcomes and create a newly authorized preview for remaining work.")
 	case errors.Is(e, store.ErrSourceChanged):
 		fail(w, 503, "source_configuration_changed", "The repository source or group configuration changed. Retry from current package metadata; prior cache bytes, validators and locators cannot be reused across this change.")
 	case errors.Is(e, store.ErrConfigurationRevision):
@@ -326,6 +334,9 @@ func readJSON(w http.ResponseWriter, r *http.Request, v any, limit int64) bool {
 }
 func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Identity) {
 	p := strings.TrimPrefix(r.URL.Path, "/api/v1/")
+	if s.retentionManagement(w, r, i, p) {
+		return
+	}
 	if s.repairManagement(w, r, i, p) {
 		return
 	}

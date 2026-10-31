@@ -1,5 +1,32 @@
 # cratectl execution status
 
+Policy-driven retained OCI retirement is implemented locally (ADR 0026;
+docs/operator/retention.md). The management API and common CLI support exact-revision
+policies, immutable configuration history, bounded digest-bound previews, durable
+maintenance jobs and immutable target outcomes. Execution rechecks current policy,
+source, requester/worker authority, tags, holds, newest selection and incoming
+references. Changed tag sets cannot cross an older approval. Retirement uses the
+common tombstone/verified-restore path and reports zero reclaimed bytes.
+
+Eleven new real PostgreSQL tests passed twice under the race detector, including
+HTTP admission, worker resume and exact native-route restore. The complete
+store/server/stock-client PostgreSQL race suites passed once without skips or
+races after correcting isolated fixture setup. Unit/race/lint, parser fuzzing
+(15,936 executions) and the current Go symbol scan pass. First SQL compatibility,
+productive-attempt and post-approval tag failures are retained with development
+replays in evidence/2026-10-31/retention-backend-preflight.json. These are dirty-source
+preflights, not a new clean-candidate qualification.
+
+Next: complete the retention console and dedicated stock ORAS/CLI process-restart,
+restore/cancellation/race and schema-6 old-binary journeys, adapt current native
+harnesses to schema 7, then build and qualify exact clean production/race artifacts.
+Other rules/formats/scheduled retention, physical GC, providers/platforms, scale
+and production recovery remain required. The primary remains schema 6; a separate
+schema-7 development database and its private state are retained. Owned test
+services are stopped and the prior qualified production bin bytes are restored.
+No push or remote mutation was issued by this work. Only imfeelingtheagi may be
+the Git author and committer. Full scope and negative readiness remain unchanged.
+
 Latest qualified source: `b19d1ae393320a2adc051f61db24693fec62591a`, authored and committed only as
 `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
 The authoritative checkpoint is `evidence/2026-10-31/schedule-checkpoint.json`.

@@ -1,0 +1,14 @@
+{
+  "observed_at": "2026-10-31T01:10:19.608951+00:00",
+  "head": "8cd74f6f982048d75d4c6db8272ff958b2f06047",
+  "source_dirty": true,
+  "result": "failed",
+  "qualified": false,
+  "failures": [
+    "New isolated database omitted the standard test-b tenant required by existing store fixtures.",
+    "Native process conformance used the preserved schema-6 production binary against the isolated schema-7 database."
+  ],
+  "repair": "Provision the disposable standard fixture tenants, build the current dirty development binary, replay the same full suite and restore the preserved production binaries in finally. No primary migration.",
+  "raw_sha256": "1e4ea0caf29b9ee01a822d14895e87cf39076d78336a5a8e87e0a30c03c85779",
+  "log": "evidence/2026-10-31/retention-full-suite-first.txt"
+}

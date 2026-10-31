@@ -39,6 +39,28 @@ components:
       schema: {type: string, maxLength: 256}
       description: Literal case-insensitive substring search, at most 256 UTF-8 bytes without control characters. Repositories match name/format/mode; references match path/digest. Searches cover all authorized pages.
   schemas:
+    RetentionPolicyRequest:
+      type: object
+      additionalProperties: false
+      required: [expected_revision, min_age_seconds, keep_last, protect_tagged, enabled, reason]
+      properties:
+        expected_revision: {type: integer, format: int64, minimum: 0, maximum: 9223372036854775806}
+        min_age_seconds: {type: integer, minimum: 60, maximum: 315360000, description: Age since creation of the canonical manifest reference; not last download or tag update.}
+        keep_last: {type: integer, minimum: 0, maximum: 1000000, description: Number of newest live canonical manifests to retain per image name; zero disables this rule.}
+        protect_tagged: {type: boolean, description: Keep every manifest with a current live tag. A changed tag set after admission always requires a new preview.}
+        enabled: {type: boolean}
+        reason: {type: string, minLength: 1, maxLength: 1024, description: Nonempty UTF-8 reason of at most 1024 bytes without controls.}
+        dry_run: {type: boolean, default: false}
+    RetentionRunRequest:
+      type: object
+      additionalProperties: false
+      required: [expected_revision, reason]
+      properties:
+        expected_revision: {type: integer, format: int64, minimum: 1}
+        reason: {type: string, minLength: 1, maxLength: 1024}
+        dry_run: {type: boolean, default: false}
+        evaluated_at: {type: string, format: date-time, description: Required for apply; copy the exact evaluation time from the approved preview.}
+        preview_digest: {type: string, pattern: '^[a-f0-9]{64}$', description: Required for apply within five minutes of evaluated_at; binds the complete plan and its observed impact.}
     IntegrityScheduleRequest:
       type: object
       additionalProperties: false
@@ -78,7 +100,7 @@ components:
       properties:
         sequence: {type: integer, format: int64}
         task: {type: string}
-        handler: {type: string, enum: [event.project, storage.integrity, storage.sweep, storage.inventory, storage.repair, leases.reconcile]}
+        handler: {type: string, enum: [event.project, storage.integrity, storage.sweep, storage.inventory, storage.repair, leases.reconcile, repository.retention]}
         queue: {type: string, enum: [events, integrity, maintenance]}
         kind: {type: string, description: "Source event kind, artifact.integrity, storage.sweep or leases.reconcile; handler identifies the actual effect."}
         state: {type: string, enum: [pending, running, retry, succeeded, failed, cancel_requested, cancelled, uncertain]}
@@ -534,6 +556,112 @@ paths:
         '409': {description: Idempotency key reused with different input.}
         '503': {description: Maintenance admission capacity exhausted; repair worker or queue policy.}
 
+  /api/v1/repositories/{repository}/retention-policies:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+    get:
+      operationId: listRetentionPolicies
+      description: Administrator-only live name traversal of OCI retention policies. Inactive repositories retain administrative history.
+      parameters:
+        - {in: query, name: after, schema: {type: string, maxLength: 63}}
+        - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 100, default: 100}}
+      responses:
+        '200': {description: "Policy items and more; continue from the last policy name."}
+        '400': {description: Invalid or repeated pagination fields.}
+        '403': {description: Tenant administrator required.}
+  /api/v1/repositories/{repository}/retention-policies/{name}:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+      - {in: path, name: name, required: true, schema: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$'}}
+    get:
+      operationId: inspectRetentionPolicy
+      responses:
+        '200': {description: Complete current configuration and exact revision.}
+        '403': {description: Tenant administrator required.}
+        '404': {description: No such policy in the authorized tenant repository.}
+    put:
+      operationId: configureRetentionPolicy
+      description: Create at revision zero or replace the complete policy at its exact revision. Preview has no effects. Apply atomically retains configuration/history with journal/outbox and idempotency response. Replacing or disabling the policy stops further effects of earlier runs. OCI hosted and proxy repositories only; physical GC and automatic scheduling remain separate.
+      parameters:
+        - {in: header, name: Idempotency-Key, required: false, schema: {type: string, minLength: 8, maxLength: 128}, description: Required for apply; identical replays retain their original response.}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/RetentionPolicyRequest'}
+      responses:
+        '200': {description: Preview or committed configuration.}
+        '400': {description: "Invalid or incomplete policy; duplicate, unknown and null required fields are rejected."}
+        '403': {description: Tenant administrator required.}
+        '409': {description: Stale revision or changed idempotency request.}
+        '503': {description: "Database or queue unavailable; configuration/history and journal roll back together."}
+  /api/v1/repositories/{repository}/retention-policies/{name}/history:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+      - {in: path, name: name, required: true, schema: {type: string}}
+    get:
+      operationId: listRetentionPolicyHistory
+      parameters:
+        - {in: query, name: after, schema: {type: integer, format: int64, minimum: 0, default: 0}}
+        - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 100, default: 100}}
+      responses:
+        '200': {description: "Immutable configuration items and more; continue from the last revision."}
+        '403': {description: Tenant administrator required.}
+        '404': {description: No such policy.}
+  /api/v1/repositories/{repository}/retention-policies/{name}/runs:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+      - {in: path, name: name, required: true, schema: {type: string}}
+    get:
+      operationId: listRetentionRuns
+      parameters:
+        - {in: query, name: after, schema: {type: integer, format: int64, minimum: 0, default: 0}}
+        - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 100, default: 100}}
+      responses:
+        '200': {description: "Immutable plan summaries and job states with more; continue from the last job sequence prefix."}
+        '403': {description: Tenant administrator required.}
+        '404': {description: No such policy.}
+    post:
+      operationId: previewOrAdmitRetentionRun
+      description: Preview the complete bounded live canonical manifest set and its exact tag/reference/lifecycle impact. Apply requires that preview digest and evaluation time within five minutes; admission recomputes it under the tenant lock. Limits are at most 10000 targets and 8 MiB of target metadata within the operator budget; no truncated plan is admitted. Immutable run/targets and a maintenance job commit with journal/outbox and idempotency. Workers recheck current policy/source and original requester authority plus each target's holds/references/tags/newest/content identity. Targets may be skipped but are never added. Bytes and decisions remain retained; reclaimed bytes is always zero.
+      parameters:
+        - {in: header, name: Idempotency-Key, required: false, schema: {type: string, minLength: 8, maxLength: 128}, description: Required for apply; successful identical replay survives expiration of the preview window.}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/RetentionRunRequest'}
+      responses:
+        '200': {description: "Preview with policy, fixed evaluation/expiry times, exact target set and digest."}
+        '202': {description: "Durable job and immutable plan summary; bytes reclaimed is zero."}
+        '400': {description: Invalid or incomplete preview/apply request.}
+        '403': {description: Tenant administrator required.}
+        '409': {description: Changed or expired preview or policy revision; obtain a new preview.}
+        '413': {description: Complete plan exceeds the configured target or metadata budget.}
+        '503': {description: "Queue or database unavailable; admission rolls back together."}
+  /api/v1/maintenance/retention-runs/{job}:
+    parameters:
+      - {in: path, name: job, required: true, schema: {type: string}}
+    get:
+      operationId: inspectRetentionRun
+      description: Immutable approved plan with counts derived from append-only outcomes. Mutable job payload is never execution authority. Cancellation and retry use the jobs API; completed targets do not repeat. A changed policy/source or requester credential requires a new approved run for remaining targets.
+      responses:
+        '200': {description: "Job, immutable plan and processed/retired/skipped counts; no private credential fence."}
+        '403': {description: Tenant administrator required.}
+        '404': {description: No such authorized job.}
+  /api/v1/maintenance/retention-runs/{job}/items:
+    parameters:
+      - {in: path, name: job, required: true, schema: {type: string}}
+    get:
+      operationId: listRetentionTargetsAndOutcomes
+      parameters:
+        - {in: query, name: after, schema: {type: integer, format: int64, minimum: 0, default: 0}}
+        - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 100, default: 100}}
+      responses:
+        '200': {description: "Immutable approved targets and committed outcomes with more; continue from the last target ordinal."}
+        '400': {description: Invalid or repeated pagination parameters.}
+        '403': {description: Tenant administrator required.}
+        '404': {description: No such authorized job.}
   /api/v1/maintenance/integrity-schedules:
     get:
       operationId: listIntegritySchedules

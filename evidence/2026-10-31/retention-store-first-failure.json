@@ -1,0 +1,18 @@
+{
+  "observed_at": "2026-10-31T01:01:51.505161+00:00",
+  "head": "8cd74f6f982048d75d4c6db8272ff958b2f06047",
+  "source_dirty": true,
+  "qualification": false,
+  "failure": "Retention preview used ends_with, which is absent from the supported PostgreSQL 16 runtime. The real database rejected the SQL; no run was admitted.",
+  "command": "go test -race -v -count=1 -tags=integration ./internal/store -run ^TestRetention",
+  "result": "failed",
+  "log": "evidence/2026-10-31/retention-store-first-failure.txt",
+  "raw_log_sha256": "4102629590d0858d9ceb3d3079469d3da33aa1cee82b8e3d3a648e740fcff065",
+  "source_sha256": {
+    "internal/store/retention.go": "1b7f1cc0fe6b8e6b6b99b523b366f4d2cdc571e2ec368c1e04952d81bf6cca0f",
+    "internal/store/retention_execution.go": "1d0b45e49786ad51343278c7199733c51fe62b02ab2e2f5da895f76796c1ef10",
+    "internal/store/retention.sql": "61633afaa5d1e3e10b42a56d308204fe70bf41ed3413a038f496ce14047fa7d8",
+    "internal/store/retention_integration_test.go": "8293cf176b2e5cf1fb36cf59aefe304f6a4959b3557fab3082ce12fd49bbf8a8"
+  },
+  "limits": "Dirty source development baseline; not clean-candidate or native-client qualification."
+}

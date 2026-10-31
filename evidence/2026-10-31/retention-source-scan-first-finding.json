@@ -1,0 +1,14 @@
+{
+  "observed_at": "2026-10-31T01:19:01.862441+00:00",
+  "tool": "Gitleaks 8.30.1",
+  "rule": "generic-api-key",
+  "classification": "verified public content checksum false positive",
+  "input": "evidence/2026-10-31/retention-backend-preflight.json source_sha256 mapping for api/openapi.yaml",
+  "verification": "The flagged value equals SHA-256 of the current public OpenAPI source bytes. Exact known-private-value review had zero matches.",
+  "repair": "Represent source input identities as path/sha256 records on separate fields. No scanner rule or path exemption is added.",
+  "report_sha256": "84a32eecf267cfc8b98037cc5f3c6f487b5912405b9c69f0f12a944fa9cc06c9",
+  "limits": "Scanner heuristic false positive only; not a discovered credential.",
+  "raw_report_retained": ".cache/retention-source-secret-first-finding.json",
+  "raw_input_retained": ".cache/retention-preflight-first-scan-input.json",
+  "raw_input_sha256": "f7d4df13f59614fd8b6ce2bf9fc0bb0a8049d6c12d81846a2b2651029a401847"
+}

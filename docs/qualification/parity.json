@@ -20578,11 +20578,11 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "internal/store/retention.go, retention_execution.go, retention_management.go and retention.sql; internal/server/retention.go; internal/worker/retention.go",
       "surfaces": {
-        "api": null,
-        "cli": null,
-        "ui": null
+        "api": "/api/v1/repositories/{repository}/retention-policies; immutable history and run admission; /api/v1/maintenance/retention-runs/{job} and items; common job control and verified lifecycle restore",
+        "cli": "cratectl management API",
+        "ui": "pending"
       },
       "core": true,
       "dependencies": [],
@@ -20601,11 +20601,13 @@
         "partial failure",
         "recovery"
       ],
-      "state": "planned",
+      "state": "implementing",
       "candidate": null,
-      "evidence": [],
-      "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "evidence": [
+        "evidence/2026-10-31/retention-backend-preflight.json"
+      ],
+      "limits": "Policy-driven OCI manifest retirement has dirty-source real PostgreSQL/HTTP development preflights. Dedicated native-client/console and exact clean-candidate qualification remain pending. Full format/rule/scheduled retention, legal-hold administration, physical GC, provider/platform/scale and production recovery remain required.",
+      "next_action": "Complete the retention console, dedicated stock ORAS/CLI process and schema-6 upgrade journeys, then requalify clean production/race artifacts; retain every broader retention/GC and later-stage requirement."
     },
     {
       "id": "REPO.HOLDS",
