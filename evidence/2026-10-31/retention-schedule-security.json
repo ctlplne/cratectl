@@ -88,15 +88,15 @@
   },
   "final_evidence_review": {
     "status": "passed",
-    "checked_at": "2026-10-31T06:02:37.864069+00:00",
-    "initial_snapshot_files": 1342,
-    "final_snapshot_files": 1343,
+    "checked_at": "2026-10-31T06:16:18.516609+00:00",
+    "initial_snapshot_files": 1348,
+    "final_snapshot_files": 1348,
     "known_private_value_entries": 8358,
     "distinct_private_byte_values": 4517,
     "exact_value_matches": 0,
     "gitleaks_findings": 0,
     "report": "evidence/2026-10-31/retention-schedule-final-source-secrets.json",
-    "scope": "All tracked and nonignored source/evidence, including native/browser/SQL/scanner logs. Retained generated credentials are absent. Current rules are recorded by exact SHA256; final metadata/report snapshot repeated before commit."
+    "scope": "Complete current source/evidence with paired directory/Git control expansion. Retained generated credentials absent; exact current rule/driver hashes recorded. Final metadata snapshot replayed before follow-up commit."
   },
   "compiled_artifact_identities": "evidence/2026-10-31/retention-schedule-artifact-identities.json",
   "dependency_scan": "evidence/2026-10-31/retention-schedule-trivy-source.json",
@@ -114,18 +114,19 @@
   "validation_changes_after_runtime_qualification": [
     {
       "path": ".gitleaks.toml",
-      "sha256": "ede8d28d6e1288d60a91228a1a9791ed9afadb02a492436df188b84f5280dbe9"
+      "sha256": "18190efe56496ecbd3b308f1881c3fdd6641a8a70118a3a96f7881057203662f"
     },
     {
       "path": "scripts/test_secret_rules.py",
-      "sha256": "70355981903fe22c6821d80bf770a52041863b59ee9eda3d201a7bdf1a1741b0"
+      "sha256": "055a5817f585234c814e96e6d51a7b029f27ce5e8715db64cb28f87c6de66145"
     }
   ],
   "scan_rule_inputs": {
     "path": ".gitleaks.toml",
-    "sha256": "ede8d28d6e1288d60a91228a1a9791ed9afadb02a492436df188b84f5280dbe9",
+    "sha256": "18190efe56496ecbd3b308f1881c3fdd6641a8a70118a3a96f7881057203662f",
     "focused_controls": "evidence/2026-10-31/gitleaks-rule-fixtures.json",
-    "case_count": 65,
-    "scope": "Validation configuration/fixture changes after the clean399f37a runtime campaign; compiled Go/frontend/API source unchanged. Raw vulnerability advisory streams retained unchanged."
-  }
+    "case_count": 302,
+    "scope": "Validation-only changes after clean399f37a runtime.302native directory/Git cases with264credential/scope counterexamples; all raw advisory bytes preserved."
+  },
+  "postcommit_history_replay": "evidence/2026-10-31/retention-schedule-history-replay-summary.json"
 }

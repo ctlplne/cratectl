@@ -44,11 +44,13 @@ recognized in artifact analysis. Full security and packaging gates remain negati
 Owned test services are stopped; all data, private state and exact artifacts remain.
 Active bin bytes match this clean schema-8 production candidate. No Docker/sibling
 changes, remote mutations or push occurred. DEFECT.0057–0061 have clean replays.
-A validation-only public-advisory URL exception is extended to three exact new
-report filenames and one exact public source-identity field. DEFECT.0062 retains
-the88first URL false positives,75metadata matches and65native rule fixtures,
-including56credential/scope counterexamples. Raw tool bytes remain
-unchanged; final source/evidence scanning uses the recorded exact rules hash.
+A validation-only public-advisory URL exception covers three exact native report
+filenames; two exact public identity fields are bound to their individual reports.
+DEFECT.0062 retains the88first URL matches,75metadata matches and16postcommit
+history matches.302native directory/Git controls preserve264credential/scope
+counterexamples. The full59commit history replay has zero findings. Raw advisory
+bytes remain unchanged; exact current rule/driver hashes and declared validation
+changes are recorded separately from the qualified product runtime source.
 
 All 450 capabilities and 41 format families remain unfinished. Continue remaining
 retention rules/formats/calendar schedules, legal-hold administration, safe GC and

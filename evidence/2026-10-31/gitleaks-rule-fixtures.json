@@ -1,461 +1,2422 @@
 {
   "scanner": "gitleaks v8.30.1",
-  "source_parent": "399f37a048d73fddd8f6b98b93669f5ba2c3fad5",
+  "source_parent": "ce69fffc51f50105d84dc3eab0cab98c800dbf5c",
   "source_dirty": true,
-  "rules_sha256": "ede8d28d6e1288d60a91228a1a9791ed9afadb02a492436df188b84f5280dbe9",
-  "fixture_driver_sha256": "70355981903fe22c6821d80bf770a52041863b59ee9eda3d201a7bdf1a1741b0",
-  "fixture_logs": ".cache/secret-rule-fixtures/20261031T055950486120Z",
+  "rules_sha256": "18190efe56496ecbd3b308f1881c3fdd6641a8a70118a3a96f7881057203662f",
+  "fixture_driver_sha256": "055a5817f585234c814e96e6d51a7b029f27ce5e8715db64cb28f87c6de66145",
+  "fixture_logs": ".cache/secret-rule-fixtures/20261031T061237775305Z",
   "results": [
     {
-      "case": "public-reference",
+      "case": "public-reference-dir",
+      "mode": "dir",
       "expected_finding": false,
       "observed_finding": false,
       "exit": 0,
       "passed": true
     },
     {
-      "case": "synthetic-token-same-file",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "outside-evidence",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "scanner-report-commit",
+      "case": "public-reference-git",
+      "mode": "git",
       "expected_finding": false,
       "observed_finding": false,
       "exit": 0,
       "passed": true
     },
     {
-      "case": "scanner-report-token",
+      "case": "synthetic-token-same-file-dir",
+      "mode": "dir",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "url-query",
+      "case": "synthetic-token-same-file-git",
+      "mode": "git",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "go-go-symbol-vulnerability-public-reference",
+      "case": "outside-evidence-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "outside-evidence-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "scanner-report-commit-dir",
+      "mode": "dir",
       "expected_finding": false,
       "observed_finding": false,
       "exit": 0,
       "passed": true
     },
     {
-      "case": "go-go-symbol-vulnerability-prefixed-token",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "go-go-symbol-vulnerability-bare-token",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "go-go-symbol-vulnerability-other-field",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "go-go-symbol-vulnerability-query",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "go-go-symbol-vulnerability-fragment",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "go-go-symbol-vulnerability-userinfo",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "go-go-symbol-vulnerability-other-host",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "go-go-symbol-vulnerability-other-file",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "go-binary-symbol-cratectld-public-reference",
+      "case": "scanner-report-commit-git",
+      "mode": "git",
       "expected_finding": false,
       "observed_finding": false,
       "exit": 0,
       "passed": true
     },
     {
-      "case": "go-binary-symbol-cratectld-prefixed-token",
+      "case": "scanner-report-token-dir",
+      "mode": "dir",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "go-binary-symbol-cratectld-bare-token",
+      "case": "scanner-report-token-git",
+      "mode": "git",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "go-binary-symbol-cratectld-other-field",
+      "case": "url-query-dir",
+      "mode": "dir",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "go-binary-symbol-cratectld-query",
+      "case": "url-query-git",
+      "mode": "git",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "go-binary-symbol-cratectld-fragment",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "go-binary-symbol-cratectld-userinfo",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "go-binary-symbol-cratectld-other-host",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "go-binary-symbol-cratectld-other-file",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "go-binary-symbol-cratectl-public-reference",
+      "case": "go-go-symbol-vulnerability-public-reference-dir",
+      "mode": "dir",
       "expected_finding": false,
       "observed_finding": false,
       "exit": 0,
       "passed": true
     },
     {
-      "case": "go-binary-symbol-cratectl-prefixed-token",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "go-binary-symbol-cratectl-bare-token",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "go-binary-symbol-cratectl-other-field",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "go-binary-symbol-cratectl-query",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "go-binary-symbol-cratectl-fragment",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "go-binary-symbol-cratectl-userinfo",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "go-binary-symbol-cratectl-other-host",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "go-binary-symbol-cratectl-other-file",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "net-go-symbol-vulnerability-public-reference",
+      "case": "go-go-symbol-vulnerability-public-reference-git",
+      "mode": "git",
       "expected_finding": false,
       "observed_finding": false,
       "exit": 0,
       "passed": true
     },
     {
-      "case": "net-go-symbol-vulnerability-prefixed-token",
+      "case": "go-go-symbol-vulnerability-prefixed-token-dir",
+      "mode": "dir",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "net-go-symbol-vulnerability-bare-token",
+      "case": "go-go-symbol-vulnerability-prefixed-token-git",
+      "mode": "git",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "net-go-symbol-vulnerability-other-field",
+      "case": "go-go-symbol-vulnerability-bare-token-dir",
+      "mode": "dir",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "net-go-symbol-vulnerability-query",
+      "case": "go-go-symbol-vulnerability-bare-token-git",
+      "mode": "git",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "net-go-symbol-vulnerability-fragment",
+      "case": "go-go-symbol-vulnerability-other-field-dir",
+      "mode": "dir",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "net-go-symbol-vulnerability-userinfo",
+      "case": "go-go-symbol-vulnerability-other-field-git",
+      "mode": "git",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "net-go-symbol-vulnerability-other-host",
+      "case": "go-go-symbol-vulnerability-query-dir",
+      "mode": "dir",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "net-go-symbol-vulnerability-other-file",
+      "case": "go-go-symbol-vulnerability-query-git",
+      "mode": "git",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "net-binary-symbol-cratectld-public-reference",
+      "case": "go-go-symbol-vulnerability-fragment-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-go-symbol-vulnerability-fragment-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-go-symbol-vulnerability-userinfo-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-go-symbol-vulnerability-userinfo-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-go-symbol-vulnerability-other-host-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-go-symbol-vulnerability-other-host-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-go-symbol-vulnerability-other-file-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-go-symbol-vulnerability-other-file-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectld-public-reference-dir",
+      "mode": "dir",
       "expected_finding": false,
       "observed_finding": false,
       "exit": 0,
       "passed": true
     },
     {
-      "case": "net-binary-symbol-cratectld-prefixed-token",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "net-binary-symbol-cratectld-bare-token",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "net-binary-symbol-cratectld-other-field",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "net-binary-symbol-cratectld-query",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "net-binary-symbol-cratectld-fragment",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "net-binary-symbol-cratectld-userinfo",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "net-binary-symbol-cratectld-other-host",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "net-binary-symbol-cratectld-other-file",
-      "expected_finding": true,
-      "observed_finding": true,
-      "exit": 1,
-      "passed": true
-    },
-    {
-      "case": "net-binary-symbol-cratectl-public-reference",
+      "case": "go-binary-symbol-cratectld-public-reference-git",
+      "mode": "git",
       "expected_finding": false,
       "observed_finding": false,
       "exit": 0,
       "passed": true
     },
     {
-      "case": "net-binary-symbol-cratectl-prefixed-token",
+      "case": "go-binary-symbol-cratectld-prefixed-token-dir",
+      "mode": "dir",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "net-binary-symbol-cratectl-bare-token",
+      "case": "go-binary-symbol-cratectld-prefixed-token-git",
+      "mode": "git",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "net-binary-symbol-cratectl-other-field",
+      "case": "go-binary-symbol-cratectld-bare-token-dir",
+      "mode": "dir",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "net-binary-symbol-cratectl-query",
+      "case": "go-binary-symbol-cratectld-bare-token-git",
+      "mode": "git",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "net-binary-symbol-cratectl-fragment",
+      "case": "go-binary-symbol-cratectld-other-field-dir",
+      "mode": "dir",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "net-binary-symbol-cratectl-userinfo",
+      "case": "go-binary-symbol-cratectld-other-field-git",
+      "mode": "git",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "net-binary-symbol-cratectl-other-host",
+      "case": "go-binary-symbol-cratectld-query-dir",
+      "mode": "dir",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "net-binary-symbol-cratectl-other-file",
+      "case": "go-binary-symbol-cratectld-query-git",
+      "mode": "git",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "public-review-parent",
+      "case": "go-binary-symbol-cratectld-fragment-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectld-fragment-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectld-userinfo-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectld-userinfo-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectld-other-host-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectld-other-host-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectld-other-file-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectld-other-file-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectl-public-reference-dir",
+      "mode": "dir",
       "expected_finding": false,
       "observed_finding": false,
       "exit": 0,
       "passed": true
     },
     {
-      "case": "review-prefixed-token",
+      "case": "go-binary-symbol-cratectl-public-reference-git",
+      "mode": "git",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectl-prefixed-token-dir",
+      "mode": "dir",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "review-bare-token",
+      "case": "go-binary-symbol-cratectl-prefixed-token-git",
+      "mode": "git",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "review-other-field",
+      "case": "go-binary-symbol-cratectl-bare-token-dir",
+      "mode": "dir",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
       "passed": true
     },
     {
-      "case": "review-other-file",
+      "case": "go-binary-symbol-cratectl-bare-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectl-other-field-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectl-other-field-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectl-query-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectl-query-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectl-fragment-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectl-fragment-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectl-userinfo-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectl-userinfo-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectl-other-host-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectl-other-host-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectl-other-file-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "go-binary-symbol-cratectl-other-file-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-go-symbol-vulnerability-public-reference-dir",
+      "mode": "dir",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "net-go-symbol-vulnerability-public-reference-git",
+      "mode": "git",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "net-go-symbol-vulnerability-prefixed-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-go-symbol-vulnerability-prefixed-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-go-symbol-vulnerability-bare-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-go-symbol-vulnerability-bare-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-go-symbol-vulnerability-other-field-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-go-symbol-vulnerability-other-field-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-go-symbol-vulnerability-query-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-go-symbol-vulnerability-query-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-go-symbol-vulnerability-fragment-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-go-symbol-vulnerability-fragment-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-go-symbol-vulnerability-userinfo-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-go-symbol-vulnerability-userinfo-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-go-symbol-vulnerability-other-host-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-go-symbol-vulnerability-other-host-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-go-symbol-vulnerability-other-file-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-go-symbol-vulnerability-other-file-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectld-public-reference-dir",
+      "mode": "dir",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectld-public-reference-git",
+      "mode": "git",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectld-prefixed-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectld-prefixed-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectld-bare-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectld-bare-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectld-other-field-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectld-other-field-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectld-query-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectld-query-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectld-fragment-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectld-fragment-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectld-userinfo-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectld-userinfo-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectld-other-host-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectld-other-host-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectld-other-file-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectld-other-file-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectl-public-reference-dir",
+      "mode": "dir",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectl-public-reference-git",
+      "mode": "git",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectl-prefixed-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectl-prefixed-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectl-bare-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectl-bare-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectl-other-field-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectl-other-field-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectl-query-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectl-query-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectl-fragment-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectl-fragment-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectl-userinfo-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectl-userinfo-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectl-other-host-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectl-other-host-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectl-other-file-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "net-binary-symbol-cratectl-other-file-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-go-symbol-vulnerability-public-reference-dir",
+      "mode": "dir",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "text-go-symbol-vulnerability-public-reference-git",
+      "mode": "git",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "text-go-symbol-vulnerability-prefixed-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-go-symbol-vulnerability-prefixed-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-go-symbol-vulnerability-bare-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-go-symbol-vulnerability-bare-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-go-symbol-vulnerability-other-field-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-go-symbol-vulnerability-other-field-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-go-symbol-vulnerability-query-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-go-symbol-vulnerability-query-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-go-symbol-vulnerability-fragment-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-go-symbol-vulnerability-fragment-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-go-symbol-vulnerability-userinfo-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-go-symbol-vulnerability-userinfo-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-go-symbol-vulnerability-other-host-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-go-symbol-vulnerability-other-host-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-go-symbol-vulnerability-other-file-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-go-symbol-vulnerability-other-file-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectld-public-reference-dir",
+      "mode": "dir",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectld-public-reference-git",
+      "mode": "git",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectld-prefixed-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectld-prefixed-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectld-bare-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectld-bare-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectld-other-field-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectld-other-field-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectld-query-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectld-query-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectld-fragment-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectld-fragment-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectld-userinfo-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectld-userinfo-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectld-other-host-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectld-other-host-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectld-other-file-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectld-other-file-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectl-public-reference-dir",
+      "mode": "dir",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectl-public-reference-git",
+      "mode": "git",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectl-prefixed-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectl-prefixed-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectl-bare-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectl-bare-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectl-other-field-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectl-other-field-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectl-query-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectl-query-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectl-fragment-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectl-fragment-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectl-userinfo-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectl-userinfo-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectl-other-host-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectl-other-host-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectl-other-file-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "text-binary-symbol-cratectl-other-file-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-go-symbol-vulnerability-public-reference-dir",
+      "mode": "dir",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "pgx-go-symbol-vulnerability-public-reference-git",
+      "mode": "git",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "pgx-go-symbol-vulnerability-prefixed-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-go-symbol-vulnerability-prefixed-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-go-symbol-vulnerability-bare-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-go-symbol-vulnerability-bare-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-go-symbol-vulnerability-other-field-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-go-symbol-vulnerability-other-field-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-go-symbol-vulnerability-query-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-go-symbol-vulnerability-query-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-go-symbol-vulnerability-fragment-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-go-symbol-vulnerability-fragment-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-go-symbol-vulnerability-userinfo-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-go-symbol-vulnerability-userinfo-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-go-symbol-vulnerability-other-host-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-go-symbol-vulnerability-other-host-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-go-symbol-vulnerability-other-file-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-go-symbol-vulnerability-other-file-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectld-public-reference-dir",
+      "mode": "dir",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectld-public-reference-git",
+      "mode": "git",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectld-prefixed-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectld-prefixed-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectld-bare-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectld-bare-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectld-other-field-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectld-other-field-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectld-query-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectld-query-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectld-fragment-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectld-fragment-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectld-userinfo-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectld-userinfo-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectld-other-host-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectld-other-host-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectld-other-file-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectld-other-file-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectl-public-reference-dir",
+      "mode": "dir",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectl-public-reference-git",
+      "mode": "git",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectl-prefixed-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectl-prefixed-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectl-bare-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectl-bare-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectl-other-field-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectl-other-field-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectl-query-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectl-query-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectl-fragment-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectl-fragment-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectl-userinfo-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectl-userinfo-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectl-other-host-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectl-other-host-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectl-other-file-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgx-binary-symbol-cratectl-other-file-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-go-symbol-vulnerability-public-reference-dir",
+      "mode": "dir",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-go-symbol-vulnerability-public-reference-git",
+      "mode": "git",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-go-symbol-vulnerability-prefixed-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-go-symbol-vulnerability-prefixed-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-go-symbol-vulnerability-bare-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-go-symbol-vulnerability-bare-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-go-symbol-vulnerability-other-field-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-go-symbol-vulnerability-other-field-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-go-symbol-vulnerability-query-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-go-symbol-vulnerability-query-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-go-symbol-vulnerability-fragment-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-go-symbol-vulnerability-fragment-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-go-symbol-vulnerability-userinfo-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-go-symbol-vulnerability-userinfo-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-go-symbol-vulnerability-other-host-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-go-symbol-vulnerability-other-host-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-go-symbol-vulnerability-other-file-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-go-symbol-vulnerability-other-file-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectld-public-reference-dir",
+      "mode": "dir",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectld-public-reference-git",
+      "mode": "git",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectld-prefixed-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectld-prefixed-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectld-bare-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectld-bare-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectld-other-field-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectld-other-field-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectld-query-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectld-query-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectld-fragment-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectld-fragment-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectld-userinfo-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectld-userinfo-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectld-other-host-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectld-other-host-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectld-other-file-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectld-other-file-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectl-public-reference-dir",
+      "mode": "dir",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectl-public-reference-git",
+      "mode": "git",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectl-prefixed-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectl-prefixed-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectl-bare-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectl-bare-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectl-other-field-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectl-other-field-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectl-query-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectl-query-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectl-fragment-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectl-fragment-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectl-userinfo-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectl-userinfo-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectl-other-host-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectl-other-host-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectl-other-file-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "pgproto3-binary-symbol-cratectl-other-file-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "public-review-parent-dir",
+      "mode": "dir",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "public-review-parent-git",
+      "mode": "git",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "review-prefixed-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "review-prefixed-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "review-bare-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "review-bare-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "review-other-field-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "review-other-field-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "review-other-file-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "review-other-file-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "public-history-commit-dir",
+      "mode": "dir",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "public-history-commit-git",
+      "mode": "git",
+      "expected_finding": false,
+      "observed_finding": false,
+      "exit": 0,
+      "passed": true
+    },
+    {
+      "case": "history-prefixed-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "history-prefixed-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "history-bare-token-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "history-bare-token-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "history-other-field-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "history-other-field-git",
+      "mode": "git",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "history-other-file-dir",
+      "mode": "dir",
+      "expected_finding": true,
+      "observed_finding": true,
+      "exit": 1,
+      "passed": true
+    },
+    {
+      "case": "history-other-file-git",
+      "mode": "git",
       "expected_finding": true,
       "observed_finding": true,
       "exit": 1,
