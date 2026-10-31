@@ -75,7 +75,7 @@ try:
     initial=dict(env,CRATECTL_OWNER_DSN=database_dsn(env['CRATECTL_OWNER_DSN']),CRATECTL_DSN=database_dsn(env['CRATECTL_DSN']))
     owner_config=private('database.json',{'owner':initial['CRATECTL_OWNER_DSN'],'runtime':initial['CRATECTL_DSN']})
     receipt=json.loads(command([BIN/'cratectld','init','--directory',PRIVATE/'installation','--tenant','console-a'],initial))
-    for identity,tenant,role in [('reader','console-a','reader'),('writer','console-a','writer'),('repair-admin','console-a','admin'),('schedule-admin','console-a','admin'),('schedule-recovery','console-a','admin'),('retention-admin','console-a','admin'),('retention-recovery','console-a','admin'),('retention-auto-admin','console-a','admin'),('retention-auto-recovery','console-a','admin'),('hold-admin','console-a','admin'),('hold-recovery','console-a','admin'),('case-admin','console-a','admin'),('case-recovery','console-a','admin'),('matter-admin','console-a','admin'),('matter-approver','console-a','admin'),('matter-recovery','console-a','admin'),('other','console-b','admin')]:
+    for identity,tenant,role in [('reader','console-a','reader'),('writer','console-a','writer'),('repair-admin','console-a','admin'),('schedule-admin','console-a','admin'),('schedule-recovery','console-a','admin'),('retention-admin','console-a','admin'),('retention-recovery','console-a','admin'),('retention-auto-admin','console-a','admin'),('retention-auto-recovery','console-a','admin'),('hold-admin','console-a','admin'),('hold-recovery','console-a','admin'),('case-admin','console-a','admin'),('case-recovery','console-a','admin'),('matter-admin','console-a','admin'),('matter-approver','console-a','admin'),('matter-recovery','console-a','admin'),('native-admin','console-a','admin'),('native-reader','console-a','reader'),('native-writer','console-a','writer'),('other','console-b','admin')]:
         command([BIN/'cratectld','provision','--tenant',tenant,'--actor',identity,'--role',role,'--token-file',PRIVATE/(identity+'.token')],initial)
     install=PRIVATE/'installation'
     fixture={'run':RUN,'base_url':base,'root':str(ROOT),'binary_directory':str(BIN),'private':str(PRIVATE),'owner_config':str(owner_config),'admin_token':str(install/'admin.token'),'worker_token':str(install/'worker.token'),'reader_token':str(PRIVATE/'reader.token'),'writer_token':str(PRIVATE/'writer.token'),'other_token':str(PRIVATE/'other.token'),'repair_admin_token':str(PRIVATE/'repair-admin.token'),'schedule_admin_token':str(PRIVATE/'schedule-admin.token'),'schedule_recovery_token':str(PRIVATE/'schedule-recovery.token')}
@@ -84,6 +84,7 @@ try:
     fixture.update(hold_admin_token=str(PRIVATE/'hold-admin.token'),hold_recovery_token=str(PRIVATE/'hold-recovery.token'))
     fixture.update(case_admin_token=str(PRIVATE/'case-admin.token'),case_recovery_token=str(PRIVATE/'case-recovery.token'))
     fixture.update(matter_admin_token=str(PRIVATE/'matter-admin.token'),matter_approver_token=str(PRIVATE/'matter-approver.token'),matter_recovery_token=str(PRIVATE/'matter-recovery.token'))
+    fixture.update(native_admin_token=str(PRIVATE/'native-admin.token'),native_reader_token=str(PRIVATE/'native-reader.token'),native_writer_token=str(PRIVATE/'native-writer.token'))
     fixture_path=private('browser-fixture.json',fixture)
     token=(install/'admin.token').read_text().strip()
     private('npmrc',f'registry={base}/npm/web-packages/\n//127.0.0.1:38443/npm/web-packages/:_authToken={token}\n'.encode())
@@ -105,7 +106,8 @@ try:
         raise AssertionError('owned process exited during UI review')
     browser_env=dict(runtime_env,CRATECTL_CONSOLE_FIXTURE_JSON=str(fixture_path),PLAYWRIGHT_BROWSERS_PATH=str(ROOT/'.cache/playwright-browsers'),PLAYWRIGHT_JSON_OUTPUT_NAME=str(PRIVATE/'browser-results.json'))
     command([ROOT/'web/node_modules/.bin/playwright','test','--config',ROOT/'web/playwright.config.mjs'],browser_env)
-    report=json.loads((PRIVATE/'browser-results.json').read_text());check('real-browser workflow suite passed without skips or flaky results',report['stats']['unexpected']==0 and report['stats']['skipped']==0 and report['stats']['flaky']==0 and report['stats']['expected']==13)
+    report=json.loads((PRIVATE/'browser-results.json').read_text());check('real-browser workflow suite passed without skips or flaky results',report['stats']['unexpected']==0 and report['stats']['skipped']==0 and report['stats']['flaky']==0 and report['stats']['expected']==14)
+    native=json.loads((PRIVATE/'native-lifecycle-browser-proof.json').read_text());result['native_lifecycle_browser']=native;checks.extend(native['checks'])
     matters=json.loads((PRIVATE/'hold-matters-browser-proof.json').read_text());result['hold_matters_browser']=matters;checks.extend(matters['checks'])
     cases=json.loads((PRIVATE/'hold-cases-browser-proof.json').read_text());result['hold_cases_browser']=cases;checks.extend(cases['checks'])
     holds=json.loads((PRIVATE/'hold-browser-proof.json').read_text());result['hold_browser']=holds;checks.extend(holds['checks'])

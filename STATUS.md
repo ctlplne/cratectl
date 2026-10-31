@@ -1,3 +1,13 @@
+Current client/browser development: maintained native lifecycle journeys pass334
+stock-client checks across eight hosted/proxy cases. The complete Chromium suite
+passes14workflows and134automated A/AA states, including34native states, with
+zero skips/flaky/unexpected results. These used clean430ae product bytes with
+dirty new test drivers. Commit the drivers, then qualify matching clean production/
+race artifacts. Preserve both original fixture failures and scope limits in
+`evidence/2026-10-31/native-lifecycle-client-development-checkpoint.json`.
+Primary10 and active ed9 bytes remain unchanged; no primary maintenance ran.
+All450capabilities/41families and every later stage remain committed and unfinished.
+
 # cratectl execution status
 
 Latest follow-up: native catalog descriptors use the existing canonical digest

@@ -1,0 +1,1103 @@
+{
+  "run": "29527115f0",
+  "candidate": "430ae315d5f16cf4b347a157e1cdd02d061cc817",
+  "status": "passed",
+  "formats": [
+    "pypi",
+    "maven"
+  ],
+  "source_dirty": true,
+  "driver_sha256": "c51d3ef2b5b1c60bd00ebccbd55b3e56ebb0251d732e93ca344f0eb6eaf90cfb",
+  "build_identity": {
+    ".cache/native-lifecycle-430ae315d5f1-production/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "430ae315d5f16cf4b347a157e1cdd02d061cc817",
+      "vcs.time": "2026-10-31T13:13:01Z",
+      "vcs.modified": "false"
+    },
+    ".cache/native-lifecycle-430ae315d5f1-production/cratectl": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "430ae315d5f16cf4b347a157e1cdd02d061cc817",
+      "vcs.time": "2026-10-31T13:13:01Z",
+      "vcs.modified": "false"
+    }
+  },
+  "artifact_digests": {
+    ".cache/native-lifecycle-430ae315d5f1-production/cratectld": "8334211a1d6711c84b8271059c385011ff2374ae237c47edebbb624952f05fe6",
+    ".cache/native-lifecycle-430ae315d5f1-production/cratectl": "766d5edb8a3874488f5d9a71e0c4c82f40bc1f1b35683159be5ff81c3f268b01"
+  },
+  "checks": [
+    "owned registry port38443 is free",
+    "owned PostgreSQL uses loopback35432",
+    "isolated schema receipts are complete and safe",
+    "create native-pypi",
+    "create fallback-pypi",
+    "create proxy-pypi",
+    "create host-group-pypi",
+    "create proxy-group-pypi",
+    "pypi-hosted-initial exact Python app",
+    "pypi-hosted-initial exact Python dep",
+    "pypi-hosted reader and foreign tenant lifecycle denied",
+    "pypi-hosted writer cannot place hold",
+    "pypi-hosted-held exact Python app",
+    "pypi-hosted-held exact Python dep",
+    "pypi-hosted hold blocks deletion",
+    "pypi-hosted stale lifecycle revision rejected",
+    "pypi-hosted native metadata initially selects target",
+    "pypi-hosted tombstone retained",
+    "pypi-hosted-deleted fresh native install fails",
+    "pypi-hosted-other-version exact Python app",
+    "pypi-hosted-other-version exact Python dep",
+    "pypi-hosted native metadata does not substitute fallback",
+    "pypi-hosted pinned lower-source Python URL cannot bypass tombstone",
+    "pypi-hosted-direct-fallback exact Python app",
+    "pypi-hosted-direct-fallback exact Python dep",
+    "pypi-hosted native republish leaves tombstone",
+    "pypi-hosted preserve native yank",
+    "pypi-hosted actual CAS identity matches reference",
+    "pypi-hosted corrupt restore has no lifecycle effect",
+    "pypi-hosted missing restore has no lifecycle effect",
+    "pypi-hosted current exact digest denial",
+    "pypi-hosted verified restore and original replay",
+    "pypi-hosted-denied-after-restore fresh native install fails",
+    "pypi-hosted allow exact restored bytes",
+    "pypi-hosted-restored exact Python app",
+    "pypi-hosted-restored exact Python dep",
+    "pypi-hosted-restart exact Python app",
+    "pypi-hosted-restart exact Python dep",
+    "pypi-hosted restored metadata survives restart",
+    "pypi-hosted native yank remains after verified restoration",
+    "pypi-hosted revoked hold replay denied",
+    "pypi-hosted hold outlives placing credential",
+    "pypi-hosted current independent administrator releases hold",
+    "pypi-proxy-initial exact Python app",
+    "pypi-proxy-initial exact Python dep",
+    "pypi-proxy reader and foreign tenant lifecycle denied",
+    "pypi-proxy writer cannot place hold",
+    "pypi-proxy-held exact Python app",
+    "pypi-proxy-held exact Python dep",
+    "pypi-proxy hold blocks deletion",
+    "pypi-proxy stale lifecycle revision rejected",
+    "pypi-proxy native metadata initially selects target",
+    "pypi-proxy tombstone retained",
+    "pypi-proxy-deleted fresh native install fails",
+    "pypi-proxy-other-version exact Python app",
+    "pypi-proxy-other-version exact Python dep",
+    "pypi-proxy native metadata does not substitute fallback",
+    "pypi-proxy pinned lower-source Python URL cannot bypass tombstone",
+    "pypi-proxy-direct-fallback exact Python app",
+    "pypi-proxy-direct-fallback exact Python dep",
+    "pypi-proxy preserve native yank",
+    "pypi-proxy actual CAS identity matches reference",
+    "pypi-proxy corrupt restore has no lifecycle effect",
+    "pypi-proxy missing restore has no lifecycle effect",
+    "pypi-proxy current exact digest denial",
+    "pypi-proxy verified restore and original replay",
+    "pypi-proxy-denied-after-restore fresh native install fails",
+    "pypi-proxy allow exact restored bytes",
+    "pypi-proxy-restored exact Python app",
+    "pypi-proxy-restored exact Python dep",
+    "pypi-proxy-restart exact Python app",
+    "pypi-proxy-restart exact Python dep",
+    "pypi-proxy restored metadata survives restart",
+    "pypi-proxy native yank remains after verified restoration",
+    "pypi-proxy revoked hold replay denied",
+    "pypi-proxy hold outlives placing credential",
+    "pypi-proxy current independent administrator releases hold",
+    "create native-maven",
+    "create fallback-maven",
+    "create proxy-maven",
+    "create host-group-maven",
+    "create proxy-group-maven",
+    "maven-hosted-initial Maven cache starts without fixture artifacts",
+    "maven-hosted-initial exact Maven app",
+    "maven-hosted-initial exact Maven dep",
+    "maven-hosted reader and foreign tenant lifecycle denied",
+    "maven-hosted writer cannot place hold",
+    "maven-hosted-held Maven cache starts without fixture artifacts",
+    "maven-hosted-held exact Maven app",
+    "maven-hosted-held exact Maven dep",
+    "maven-hosted hold blocks deletion",
+    "maven-hosted stale lifecycle revision rejected",
+    "maven-hosted native metadata initially selects target",
+    "maven-hosted tombstone retained",
+    "maven-hosted-deleted Maven cache starts without fixture artifacts",
+    "maven-hosted-deleted fresh native install fails",
+    "maven-hosted-other-version Maven cache starts without fixture artifacts",
+    "maven-hosted-other-version exact Maven app",
+    "maven-hosted-other-version exact Maven dep",
+    "maven-hosted native metadata does not substitute fallback",
+    "maven-hosted group keeps explicit native tombstone",
+    "maven-hosted-direct-fallback Maven cache starts without fixture artifacts",
+    "maven-hosted-direct-fallback exact Maven app",
+    "maven-hosted-direct-fallback exact Maven dep",
+    "maven-hosted native republish leaves tombstone",
+    "maven-hosted actual CAS identity matches reference",
+    "maven-hosted corrupt restore has no lifecycle effect",
+    "maven-hosted missing restore has no lifecycle effect",
+    "maven-hosted current exact digest denial",
+    "maven-hosted verified restore and original replay",
+    "maven-hosted-denied-after-restore Maven cache starts without fixture artifacts",
+    "maven-hosted-denied-after-restore fresh native install fails",
+    "maven-hosted allow exact restored bytes",
+    "maven-hosted-restored Maven cache starts without fixture artifacts",
+    "maven-hosted-restored exact Maven app",
+    "maven-hosted-restored exact Maven dep",
+    "maven-hosted-restart Maven cache starts without fixture artifacts",
+    "maven-hosted-restart exact Maven app",
+    "maven-hosted-restart exact Maven dep",
+    "maven-hosted restored metadata survives restart",
+    "maven-hosted revoked hold replay denied",
+    "maven-hosted hold outlives placing credential",
+    "maven-hosted current independent administrator releases hold",
+    "maven-proxy-initial Maven cache starts without fixture artifacts",
+    "maven-proxy-initial exact Maven app",
+    "maven-proxy-initial exact Maven dep",
+    "maven-proxy reader and foreign tenant lifecycle denied",
+    "maven-proxy writer cannot place hold",
+    "maven-proxy-held Maven cache starts without fixture artifacts",
+    "maven-proxy-held exact Maven app",
+    "maven-proxy-held exact Maven dep",
+    "maven-proxy hold blocks deletion",
+    "maven-proxy stale lifecycle revision rejected",
+    "maven-proxy native metadata initially selects target",
+    "maven-proxy tombstone retained",
+    "maven-proxy-deleted Maven cache starts without fixture artifacts",
+    "maven-proxy-deleted fresh native install fails",
+    "maven-proxy-other-version Maven cache starts without fixture artifacts",
+    "maven-proxy-other-version exact Maven app",
+    "maven-proxy-other-version exact Maven dep",
+    "maven-proxy native metadata does not substitute fallback",
+    "maven-proxy group keeps explicit native tombstone",
+    "maven-proxy-direct-fallback Maven cache starts without fixture artifacts",
+    "maven-proxy-direct-fallback exact Maven app",
+    "maven-proxy-direct-fallback exact Maven dep",
+    "maven-proxy actual CAS identity matches reference",
+    "maven-proxy corrupt restore has no lifecycle effect",
+    "maven-proxy missing restore has no lifecycle effect",
+    "maven-proxy current exact digest denial",
+    "maven-proxy verified restore and original replay",
+    "maven-proxy-denied-after-restore Maven cache starts without fixture artifacts",
+    "maven-proxy-denied-after-restore fresh native install fails",
+    "maven-proxy allow exact restored bytes",
+    "maven-proxy-restored Maven cache starts without fixture artifacts",
+    "maven-proxy-restored exact Maven app",
+    "maven-proxy-restored exact Maven dep",
+    "maven-proxy-restart Maven cache starts without fixture artifacts",
+    "maven-proxy-restart exact Maven app",
+    "maven-proxy-restart exact Maven dep",
+    "maven-proxy restored metadata survives restart",
+    "maven-proxy revoked hold replay denied",
+    "maven-proxy hold outlives placing credential",
+    "maven-proxy current independent administrator releases hold"
+  ],
+  "commands": [
+    {
+      "label": "create isolated database",
+      "binary": "psql",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0000.log",
+      "exit": 0,
+      "seconds": 0.225
+    },
+    {
+      "label": "migrate isolated fixture",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0001.log",
+      "exit": 0,
+      "seconds": 0.177
+    },
+    {
+      "label": "read isolated schema plan",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0002.log",
+      "exit": 0,
+      "seconds": 0.021
+    },
+    {
+      "label": "provision admin",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0003.log",
+      "exit": 0,
+      "seconds": 0.07
+    },
+    {
+      "label": "provision recovery",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0004.log",
+      "exit": 0,
+      "seconds": 0.086
+    },
+    {
+      "label": "provision reader",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0005.log",
+      "exit": 0,
+      "seconds": 0.042
+    },
+    {
+      "label": "provision writer",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0006.log",
+      "exit": 0,
+      "seconds": 0.039
+    },
+    {
+      "label": "provision other",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0007.log",
+      "exit": 0,
+      "seconds": 0.035
+    },
+    {
+      "label": "publish native-pypi dep1.0.0",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0008.log",
+      "exit": 0,
+      "seconds": 0.39
+    },
+    {
+      "label": "publish native-pypi app1.0.0",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0009.log",
+      "exit": 0,
+      "seconds": 0.276
+    },
+    {
+      "label": "publish native-pypi app2.0.0",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0010.log",
+      "exit": 0,
+      "seconds": 0.399
+    },
+    {
+      "label": "publish fallback-pypi dep1.0.0",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0011.log",
+      "exit": 0,
+      "seconds": 0.284
+    },
+    {
+      "label": "publish fallback-pypi app1.0.0",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0012.log",
+      "exit": 0,
+      "seconds": 0.298
+    },
+    {
+      "label": "publish fallback-pypi app2.0.0",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0013.log",
+      "exit": 0,
+      "seconds": 0.297
+    },
+    {
+      "label": "pypi-hosted-initial",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0014.log",
+      "exit": 0,
+      "seconds": 0.539
+    },
+    {
+      "label": "native-pypi hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0015.log",
+      "exit": 0,
+      "seconds": 0.035
+    },
+    {
+      "label": "pypi-hosted-held",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0016.log",
+      "exit": 0,
+      "seconds": 0.385
+    },
+    {
+      "label": "native-pypi release_hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0017.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "native-pypi delete",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0018.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "pypi-hosted-deleted",
+      "binary": "python",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0019.log",
+      "exit": 1,
+      "seconds": 0.284
+    },
+    {
+      "label": "pypi-hosted-other-version",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0020.log",
+      "exit": 0,
+      "seconds": 0.488
+    },
+    {
+      "label": "pypi-hosted-direct-fallback",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0021.log",
+      "exit": 0,
+      "seconds": 0.386
+    },
+    {
+      "label": "publish native-pypi app1.0.0",
+      "binary": "python",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0022.log",
+      "exit": 1,
+      "seconds": 0.28
+    },
+    {
+      "label": "pypi-hosted-corrupt-restore",
+      "binary": "cratectl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0023.log",
+      "exit": 1,
+      "seconds": 0.02
+    },
+    {
+      "label": "pypi-hosted-missing-restore",
+      "binary": "cratectl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0024.log",
+      "exit": 1,
+      "seconds": 0.018
+    },
+    {
+      "label": "pypi-hosted-verified-restore",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0025.log",
+      "exit": 0,
+      "seconds": 0.038
+    },
+    {
+      "label": "pypi-hosted-restore-replay",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0026.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "pypi-hosted-denied-after-restore",
+      "binary": "python",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0027.log",
+      "exit": 1,
+      "seconds": 0.288
+    },
+    {
+      "label": "pypi-hosted-restored",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0028.log",
+      "exit": 0,
+      "seconds": 0.38
+    },
+    {
+      "label": "pypi-hosted-restart",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0029.log",
+      "exit": 0,
+      "seconds": 0.386
+    },
+    {
+      "label": "provision revoked-pypi-hosted",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0030.log",
+      "exit": 0,
+      "seconds": 0.04
+    },
+    {
+      "label": "pypi-hosted-revocable-hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0031.log",
+      "exit": 0,
+      "seconds": 0.036
+    },
+    {
+      "label": "revoke revoked-pypi-hosted",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0032.log",
+      "exit": 0,
+      "seconds": 0.036
+    },
+    {
+      "label": "native-pypi release_hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0033.log",
+      "exit": 0,
+      "seconds": 0.036
+    },
+    {
+      "label": "pypi-proxy-initial",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0034.log",
+      "exit": 0,
+      "seconds": 0.549
+    },
+    {
+      "label": "proxy-pypi hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0035.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "pypi-proxy-held",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0036.log",
+      "exit": 0,
+      "seconds": 0.497
+    },
+    {
+      "label": "proxy-pypi release_hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0037.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "proxy-pypi delete",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0038.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "pypi-proxy-deleted",
+      "binary": "python",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0039.log",
+      "exit": 1,
+      "seconds": 0.34
+    },
+    {
+      "label": "pypi-proxy-other-version",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0040.log",
+      "exit": 0,
+      "seconds": 0.541
+    },
+    {
+      "label": "pypi-proxy-direct-fallback",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0041.log",
+      "exit": 0,
+      "seconds": 0.393
+    },
+    {
+      "label": "pypi-proxy-corrupt-restore",
+      "binary": "cratectl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0042.log",
+      "exit": 1,
+      "seconds": 0.02
+    },
+    {
+      "label": "pypi-proxy-missing-restore",
+      "binary": "cratectl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0043.log",
+      "exit": 1,
+      "seconds": 0.018
+    },
+    {
+      "label": "pypi-proxy-verified-restore",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0044.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "pypi-proxy-restore-replay",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0045.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "pypi-proxy-denied-after-restore",
+      "binary": "python",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0046.log",
+      "exit": 1,
+      "seconds": 0.339
+    },
+    {
+      "label": "pypi-proxy-restored",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0047.log",
+      "exit": 0,
+      "seconds": 0.494
+    },
+    {
+      "label": "pypi-proxy-restart",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0048.log",
+      "exit": 0,
+      "seconds": 0.582
+    },
+    {
+      "label": "provision revoked-pypi-proxy",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0049.log",
+      "exit": 0,
+      "seconds": 0.038
+    },
+    {
+      "label": "pypi-proxy-revocable-hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0050.log",
+      "exit": 0,
+      "seconds": 0.036
+    },
+    {
+      "label": "revoke revoked-pypi-proxy",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0051.log",
+      "exit": 0,
+      "seconds": 0.078
+    },
+    {
+      "label": "proxy-pypi release_hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0052.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "publish native-maven dep1.0.0",
+      "binary": "mvn",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0053.log",
+      "exit": 0,
+      "seconds": 7.664
+    },
+    {
+      "label": "publish native-maven app1.0.0",
+      "binary": "mvn",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0054.log",
+      "exit": 0,
+      "seconds": 2.671
+    },
+    {
+      "label": "publish native-maven app2.0.0",
+      "binary": "mvn",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0055.log",
+      "exit": 0,
+      "seconds": 2.387
+    },
+    {
+      "label": "publish fallback-maven dep1.0.0",
+      "binary": "mvn",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0056.log",
+      "exit": 0,
+      "seconds": 2.484
+    },
+    {
+      "label": "publish fallback-maven app1.0.0",
+      "binary": "mvn",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0057.log",
+      "exit": 0,
+      "seconds": 2.369
+    },
+    {
+      "label": "publish fallback-maven app2.0.0",
+      "binary": "mvn",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0058.log",
+      "exit": 0,
+      "seconds": 2.622
+    },
+    {
+      "label": "warm pinned Maven tooling before fresh mirrored consumers",
+      "binary": "mvn",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0059.log",
+      "exit": 0,
+      "seconds": 14.828
+    },
+    {
+      "label": "maven-hosted-initial",
+      "binary": "mvn",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0060.log",
+      "exit": 0,
+      "seconds": 1.69
+    },
+    {
+      "label": "native-maven hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0061.log",
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "label": "maven-hosted-held",
+      "binary": "mvn",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0062.log",
+      "exit": 0,
+      "seconds": 1.502
+    },
+    {
+      "label": "native-maven release_hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0063.log",
+      "exit": 0,
+      "seconds": 0.021
+    },
+    {
+      "label": "native-maven delete",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0064.log",
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "label": "maven-hosted-deleted",
+      "binary": "mvn",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0065.log",
+      "exit": 1,
+      "seconds": 1.811
+    },
+    {
+      "label": "maven-hosted-other-version",
+      "binary": "mvn",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0066.log",
+      "exit": 0,
+      "seconds": 1.61
+    },
+    {
+      "label": "maven-hosted-direct-fallback",
+      "binary": "mvn",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0067.log",
+      "exit": 0,
+      "seconds": 1.512
+    },
+    {
+      "label": "publish native-maven app1.0.0",
+      "binary": "mvn",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0068.log",
+      "exit": 1,
+      "seconds": 2.2
+    },
+    {
+      "label": "maven-hosted-corrupt-restore",
+      "binary": "cratectl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0069.log",
+      "exit": 1,
+      "seconds": 0.021
+    },
+    {
+      "label": "maven-hosted-missing-restore",
+      "binary": "cratectl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0070.log",
+      "exit": 1,
+      "seconds": 0.02
+    },
+    {
+      "label": "maven-hosted-verified-restore",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0071.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "maven-hosted-restore-replay",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0072.log",
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "label": "maven-hosted-denied-after-restore",
+      "binary": "mvn",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0073.log",
+      "exit": 1,
+      "seconds": 1.545
+    },
+    {
+      "label": "maven-hosted-restored",
+      "binary": "mvn",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0074.log",
+      "exit": 0,
+      "seconds": 1.688
+    },
+    {
+      "label": "maven-hosted-restart",
+      "binary": "mvn",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0075.log",
+      "exit": 0,
+      "seconds": 1.598
+    },
+    {
+      "label": "provision revoked-maven-hosted",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0076.log",
+      "exit": 0,
+      "seconds": 0.038
+    },
+    {
+      "label": "maven-hosted-revocable-hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0077.log",
+      "exit": 0,
+      "seconds": 0.038
+    },
+    {
+      "label": "revoke revoked-maven-hosted",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0078.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "native-maven release_hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0079.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "maven-proxy-initial",
+      "binary": "mvn",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0080.log",
+      "exit": 0,
+      "seconds": 1.92
+    },
+    {
+      "label": "proxy-maven hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0081.log",
+      "exit": 0,
+      "seconds": 0.021
+    },
+    {
+      "label": "maven-proxy-held",
+      "binary": "mvn",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0082.log",
+      "exit": 0,
+      "seconds": 1.703
+    },
+    {
+      "label": "proxy-maven release_hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0083.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "proxy-maven delete",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0084.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "maven-proxy-deleted",
+      "binary": "mvn",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0085.log",
+      "exit": 1,
+      "seconds": 1.629
+    },
+    {
+      "label": "maven-proxy-other-version",
+      "binary": "mvn",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0086.log",
+      "exit": 0,
+      "seconds": 2.245
+    },
+    {
+      "label": "maven-proxy-direct-fallback",
+      "binary": "mvn",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0087.log",
+      "exit": 0,
+      "seconds": 1.52
+    },
+    {
+      "label": "maven-proxy-corrupt-restore",
+      "binary": "cratectl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0088.log",
+      "exit": 1,
+      "seconds": 0.021
+    },
+    {
+      "label": "maven-proxy-missing-restore",
+      "binary": "cratectl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0089.log",
+      "exit": 1,
+      "seconds": 0.02
+    },
+    {
+      "label": "maven-proxy-verified-restore",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0090.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "maven-proxy-restore-replay",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0091.log",
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "label": "maven-proxy-denied-after-restore",
+      "binary": "mvn",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0092.log",
+      "exit": 1,
+      "seconds": 1.677
+    },
+    {
+      "label": "maven-proxy-restored",
+      "binary": "mvn",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0093.log",
+      "exit": 0,
+      "seconds": 1.726
+    },
+    {
+      "label": "maven-proxy-restart",
+      "binary": "mvn",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0094.log",
+      "exit": 0,
+      "seconds": 1.896
+    },
+    {
+      "label": "provision revoked-maven-proxy",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0095.log",
+      "exit": 0,
+      "seconds": 0.037
+    },
+    {
+      "label": "maven-proxy-revocable-hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0096.log",
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "label": "revoke revoked-maven-proxy",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0097.log",
+      "exit": 0,
+      "seconds": 0.035
+    },
+    {
+      "label": "proxy-maven release_hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/29527115f0/command-0098.log",
+      "exit": 0,
+      "seconds": 0.02
+    }
+  ],
+  "cases": [
+    {
+      "format": "pypi",
+      "mode": "hosted",
+      "repository": "native-pypi",
+      "group": "host-group-pypi",
+      "path": "cratectl_lifecycle_app-1.0.0-py3-none-any.whl",
+      "digest": "1b879edba431e752998d47ed22d2d5d500d82614ad01a2723ea2580906ebd26e",
+      "size": 1094,
+      "final_revision": 6
+    },
+    {
+      "format": "pypi",
+      "mode": "proxy",
+      "repository": "proxy-pypi",
+      "group": "proxy-group-pypi",
+      "path": "pypi-packages/cratectl-lifecycle-app/fa368c79f4c6af875617f754e5e62b03e1707eff81c10ad99ca91a5c4f2e0ec3/cratectl_lifecycle_app-1.0.0-py3-none-any.whl",
+      "digest": "1b879edba431e752998d47ed22d2d5d500d82614ad01a2723ea2580906ebd26e",
+      "size": 1094,
+      "final_revision": 6
+    },
+    {
+      "format": "maven",
+      "mode": "hosted",
+      "repository": "native-maven",
+      "group": "host-group-maven",
+      "path": "dev/cratectl/lifecycle/r29527115f0/lifecycle-app/1.0.0/lifecycle-app-1.0.0.jar",
+      "digest": "1c6f7fdb8a7e48ccbbbb2f2460040a6f34629146f87f593e7b5e4d693dfc6f50",
+      "size": 280,
+      "final_revision": 6
+    },
+    {
+      "format": "maven",
+      "mode": "proxy",
+      "repository": "proxy-maven",
+      "group": "proxy-group-maven",
+      "path": "dev/cratectl/lifecycle/r29527115f0/lifecycle-app/1.0.0/lifecycle-app-1.0.0.jar",
+      "digest": "1c6f7fdb8a7e48ccbbbb2f2460040a6f34629146f87f593e7b5e4d693dfc6f50",
+      "size": 280,
+      "final_revision": 6
+    }
+  ],
+  "input_digests": {
+    "inputs/pypi/origin/cratectl_lifecycle_dep-1.0.0-py3-none-any.whl": {
+      "sha256": "01cd96980b3ac2af99a199ee2bf320bdb8eab96028cd8deae678570885a5f450",
+      "size": 1072
+    },
+    "inputs/pypi/origin/cratectl_lifecycle_app-1.0.0-py3-none-any.whl": {
+      "sha256": "1b879edba431e752998d47ed22d2d5d500d82614ad01a2723ea2580906ebd26e",
+      "size": 1094
+    },
+    "inputs/pypi/origin/cratectl_lifecycle_app-2.0.0-py3-none-any.whl": {
+      "sha256": "74b8ea2e2a8d3043e7d256ab50627b9fdaf4aad007fca3cfc9773c5cf8612fdc",
+      "size": 1092
+    },
+    "inputs/pypi/fallback/cratectl_lifecycle_dep-1.0.0-py3-none-any.whl": {
+      "sha256": "f56beb1a6834194a5747f2eea4f379036659aef78b5b6f4010eb86359f6f0f36",
+      "size": 1076
+    },
+    "inputs/pypi/fallback/cratectl_lifecycle_app-1.0.0-py3-none-any.whl": {
+      "sha256": "355123f5f11f38c6c512159c66f08d6afc929c9ba73c21702b79e32b9ebdf0ce",
+      "size": 1097
+    },
+    "inputs/pypi/fallback/cratectl_lifecycle_app-2.0.0-py3-none-any.whl": {
+      "sha256": "b3511732adcb19e017ffb98a08a1900c0dd4a000858b56a3e0325ba7518bd09f",
+      "size": 1092
+    },
+    "inputs/maven/origin/dep-1.0.0/lifecycle-dep-1.0.0.jar": {
+      "sha256": "acc1ad64e5ce45b478bd21318cc4f3da2b8ffd947243645b8303d7d68e1d1a02",
+      "size": 280
+    },
+    "inputs/maven/origin/app-1.0.0/lifecycle-app-1.0.0.jar": {
+      "sha256": "1c6f7fdb8a7e48ccbbbb2f2460040a6f34629146f87f593e7b5e4d693dfc6f50",
+      "size": 280
+    },
+    "inputs/maven/origin/app-2.0.0/lifecycle-app-2.0.0.jar": {
+      "sha256": "c580c717c3dceeffe4f5307d587665e4701ce793020fca2e7889d1169fe7a407",
+      "size": 280
+    },
+    "inputs/maven/fallback/dep-1.0.0/lifecycle-dep-1.0.0.jar": {
+      "sha256": "edb4fc9f7eec3c7fdbc925790c0b08c2734f581b302b41cc44499c5031d2dd2a",
+      "size": 282
+    },
+    "inputs/maven/fallback/app-1.0.0/lifecycle-app-1.0.0.jar": {
+      "sha256": "7749c1f4e94e163796a7e09c9ea461913ac386b2dc7f4f16cba7039366af3f7a",
+      "size": 282
+    },
+    "inputs/maven/fallback/app-2.0.0/lifecycle-app-2.0.0.jar": {
+      "sha256": "de9d4d2b333f0c571bf36245ebe39a1ef12e59dd21d8b8810fb39678dee7e8aa",
+      "size": 282
+    }
+  },
+  "private_logs": ".private/native-lifecycle-conformance/29527115f0",
+  "topology": "Native macOS registry, isolated PostgreSQL on35432, filesystem objects and stock curl/npm/pip/twine/Maven on loopback38443. Runtime omits owner DSN; clients omit both DSNs.",
+  "limits": [
+    "Named single-reference hosted/proxy/group workflows with owned dependency fixtures; no full format/legal/retention/GC or release readiness verdict.",
+    "One host and explicit loopback HTTP development profile; production TLS, independent machines, other clients/providers/platforms and scale remain required.",
+    "Corruption/missing-object faults touch only this run's private CAS files. No lifecycle, policy, retrieval, lease or job outcome is manufactured with SQL.",
+    "Maven tooling plugins use ordinary configured public Central. Fixture artifacts and dependencies use only the named cratectl repositories. No package scripts, model loading or application modules execute."
+  ],
+  "build_source_matches_candidate": true
+}

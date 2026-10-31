@@ -1,0 +1,1545 @@
+{
+  "run": "4de2158d0b",
+  "candidate": "430ae315d5f16cf4b347a157e1cdd02d061cc817",
+  "status": "failed",
+  "formats": [
+    "generic",
+    "npm",
+    "pypi",
+    "maven"
+  ],
+  "source_dirty": true,
+  "driver_sha256": "05d47730aa2190e9ee325cf5589220b1236b8b02e990af897085260d3d01ab63",
+  "build_identity": {
+    ".cache/native-lifecycle-430ae315d5f1-production/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "430ae315d5f16cf4b347a157e1cdd02d061cc817",
+      "vcs.time": "2026-10-31T13:13:01Z",
+      "vcs.modified": "false"
+    },
+    ".cache/native-lifecycle-430ae315d5f1-production/cratectl": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "430ae315d5f16cf4b347a157e1cdd02d061cc817",
+      "vcs.time": "2026-10-31T13:13:01Z",
+      "vcs.modified": "false"
+    }
+  },
+  "artifact_digests": {
+    ".cache/native-lifecycle-430ae315d5f1-production/cratectld": "8334211a1d6711c84b8271059c385011ff2374ae237c47edebbb624952f05fe6",
+    ".cache/native-lifecycle-430ae315d5f1-production/cratectl": "766d5edb8a3874488f5d9a71e0c4c82f40bc1f1b35683159be5ff81c3f268b01"
+  },
+  "checks": [
+    "owned registry port38443 is free",
+    "owned PostgreSQL uses loopback35432",
+    "isolated schema receipts are complete and safe",
+    "create native-generic",
+    "create fallback-generic",
+    "create proxy-generic",
+    "create host-group-generic",
+    "create proxy-group-generic",
+    "generic-hosted-initial exact generic app",
+    "generic-hosted-initial exact generic dep",
+    "generic-hosted reader and foreign tenant lifecycle denied",
+    "generic-hosted writer cannot place hold",
+    "generic-hosted-held exact generic app",
+    "generic-hosted-held exact generic dep",
+    "generic-hosted hold blocks deletion",
+    "generic-hosted stale lifecycle revision rejected",
+    "generic-hosted tombstone retained",
+    "generic-hosted-deleted exact generic dep",
+    "generic-hosted-deleted fresh native install fails",
+    "generic-hosted-other-version exact generic app",
+    "generic-hosted-other-version exact generic dep",
+    "generic-hosted group keeps explicit native tombstone",
+    "generic-hosted-direct-fallback exact generic app",
+    "generic-hosted-direct-fallback exact generic dep",
+    "generic-hosted native republish leaves tombstone",
+    "generic-hosted actual CAS identity matches reference",
+    "generic-hosted corrupt restore has no lifecycle effect",
+    "generic-hosted missing restore has no lifecycle effect",
+    "generic-hosted current exact digest denial",
+    "generic-hosted verified restore and original replay",
+    "generic-hosted-denied-after-restore exact generic dep",
+    "generic-hosted-denied-after-restore fresh native install fails",
+    "generic-hosted allow exact restored bytes",
+    "generic-hosted-restored exact generic app",
+    "generic-hosted-restored exact generic dep",
+    "generic-hosted-restart exact generic app",
+    "generic-hosted-restart exact generic dep",
+    "generic-hosted revoked hold replay denied",
+    "generic-hosted hold outlives placing credential",
+    "generic-hosted current independent administrator releases hold",
+    "generic-proxy-initial exact generic app",
+    "generic-proxy-initial exact generic dep",
+    "generic-proxy reader and foreign tenant lifecycle denied",
+    "generic-proxy writer cannot place hold",
+    "generic-proxy-held exact generic app",
+    "generic-proxy-held exact generic dep",
+    "generic-proxy hold blocks deletion",
+    "generic-proxy stale lifecycle revision rejected",
+    "generic-proxy tombstone retained",
+    "generic-proxy-deleted exact generic dep",
+    "generic-proxy-deleted fresh native install fails",
+    "generic-proxy-other-version exact generic app",
+    "generic-proxy-other-version exact generic dep",
+    "generic-proxy group keeps explicit native tombstone",
+    "generic-proxy-direct-fallback exact generic app",
+    "generic-proxy-direct-fallback exact generic dep",
+    "generic-proxy actual CAS identity matches reference",
+    "generic-proxy corrupt restore has no lifecycle effect",
+    "generic-proxy missing restore has no lifecycle effect",
+    "generic-proxy current exact digest denial",
+    "generic-proxy verified restore and original replay",
+    "generic-proxy-denied-after-restore exact generic dep",
+    "generic-proxy-denied-after-restore fresh native install fails",
+    "generic-proxy allow exact restored bytes",
+    "generic-proxy-restored exact generic app",
+    "generic-proxy-restored exact generic dep",
+    "generic-proxy-restart exact generic app",
+    "generic-proxy-restart exact generic dep",
+    "generic-proxy revoked hold replay denied",
+    "generic-proxy hold outlives placing credential",
+    "generic-proxy current independent administrator releases hold",
+    "create native-npm",
+    "create fallback-npm",
+    "create proxy-npm",
+    "create host-group-npm",
+    "create proxy-group-npm",
+    "npm-hosted-initial exact npm app",
+    "npm-hosted-initial exact npm dep",
+    "npm-hosted reader and foreign tenant lifecycle denied",
+    "npm-hosted writer cannot place hold",
+    "npm-hosted-held exact npm app",
+    "npm-hosted-held exact npm dep",
+    "npm-hosted hold blocks deletion",
+    "npm-hosted stale lifecycle revision rejected",
+    "npm-hosted native metadata initially selects target",
+    "npm-hosted tombstone retained",
+    "npm-hosted-deleted fresh native install fails",
+    "npm-hosted-other-version exact npm app",
+    "npm-hosted-other-version exact npm dep",
+    "npm-hosted native metadata does not substitute fallback",
+    "npm-hosted pinned lower-source npm URL cannot bypass tombstone",
+    "npm-hosted-direct-fallback exact npm app",
+    "npm-hosted-direct-fallback exact npm dep",
+    "npm-hosted native republish leaves tombstone",
+    "npm-hosted explicit native tag removal",
+    "npm-hosted actual CAS identity matches reference",
+    "npm-hosted corrupt restore has no lifecycle effect",
+    "npm-hosted missing restore has no lifecycle effect",
+    "npm-hosted current exact digest denial",
+    "npm-hosted verified restore and original replay",
+    "npm-hosted-denied-after-restore fresh native install fails",
+    "npm-hosted allow exact restored bytes",
+    "npm-hosted-restored exact npm app",
+    "npm-hosted-restored exact npm dep",
+    "npm-hosted-restart exact npm app",
+    "npm-hosted-restart exact npm dep",
+    "npm-hosted restored metadata survives restart",
+    "npm-hosted restore does not resurrect removed npm tag",
+    "npm-hosted revoked hold replay denied",
+    "npm-hosted hold outlives placing credential",
+    "npm-hosted current independent administrator releases hold",
+    "npm-proxy-initial exact npm app",
+    "npm-proxy-initial exact npm dep",
+    "npm-proxy reader and foreign tenant lifecycle denied",
+    "npm-proxy writer cannot place hold",
+    "npm-proxy-held exact npm app",
+    "npm-proxy-held exact npm dep",
+    "npm-proxy hold blocks deletion",
+    "npm-proxy stale lifecycle revision rejected",
+    "npm-proxy native metadata initially selects target",
+    "npm-proxy tombstone retained",
+    "npm-proxy-deleted fresh native install fails",
+    "npm-proxy-other-version exact npm app",
+    "npm-proxy-other-version exact npm dep",
+    "npm-proxy native metadata does not substitute fallback",
+    "npm-proxy pinned lower-source npm URL cannot bypass tombstone",
+    "npm-proxy-direct-fallback exact npm app",
+    "npm-proxy-direct-fallback exact npm dep",
+    "npm-proxy actual CAS identity matches reference",
+    "npm-proxy corrupt restore has no lifecycle effect",
+    "npm-proxy missing restore has no lifecycle effect",
+    "npm-proxy current exact digest denial",
+    "npm-proxy verified restore and original replay",
+    "npm-proxy-denied-after-restore fresh native install fails",
+    "npm-proxy allow exact restored bytes",
+    "npm-proxy-restored exact npm app",
+    "npm-proxy-restored exact npm dep",
+    "npm-proxy-restart exact npm app",
+    "npm-proxy-restart exact npm dep",
+    "npm-proxy restored metadata survives restart",
+    "npm-proxy restore does not resurrect removed npm tag",
+    "npm-proxy revoked hold replay denied",
+    "npm-proxy hold outlives placing credential",
+    "npm-proxy current independent administrator releases hold",
+    "create native-pypi",
+    "create fallback-pypi",
+    "create proxy-pypi",
+    "create host-group-pypi",
+    "create proxy-group-pypi",
+    "pypi-hosted-initial exact Python app",
+    "pypi-hosted-initial exact Python dep",
+    "pypi-hosted reader and foreign tenant lifecycle denied",
+    "pypi-hosted writer cannot place hold",
+    "pypi-hosted-held exact Python app",
+    "pypi-hosted-held exact Python dep",
+    "pypi-hosted hold blocks deletion",
+    "pypi-hosted stale lifecycle revision rejected",
+    "pypi-hosted native metadata initially selects target",
+    "pypi-hosted tombstone retained",
+    "pypi-hosted-deleted fresh native install fails",
+    "pypi-hosted-other-version exact Python app",
+    "pypi-hosted-other-version exact Python dep",
+    "pypi-hosted native metadata does not substitute fallback",
+    "pypi-hosted pinned lower-source Python URL cannot bypass tombstone",
+    "pypi-hosted-direct-fallback exact Python app",
+    "pypi-hosted-direct-fallback exact Python dep",
+    "pypi-hosted native republish leaves tombstone",
+    "pypi-hosted preserve native yank",
+    "pypi-hosted actual CAS identity matches reference",
+    "pypi-hosted corrupt restore has no lifecycle effect",
+    "pypi-hosted missing restore has no lifecycle effect",
+    "pypi-hosted current exact digest denial",
+    "pypi-hosted verified restore and original replay",
+    "pypi-hosted-denied-after-restore fresh native install fails",
+    "pypi-hosted allow exact restored bytes",
+    "pypi-hosted-restored exact Python app",
+    "pypi-hosted-restored exact Python dep",
+    "pypi-hosted-restart exact Python app",
+    "pypi-hosted-restart exact Python dep",
+    "pypi-hosted restored metadata survives restart",
+    "pypi-hosted native yank remains after verified restoration",
+    "pypi-hosted revoked hold replay denied",
+    "pypi-hosted hold outlives placing credential",
+    "pypi-hosted current independent administrator releases hold"
+  ],
+  "commands": [
+    {
+      "label": "create isolated database",
+      "binary": "psql",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0000.log",
+      "exit": 0,
+      "seconds": 0.174
+    },
+    {
+      "label": "migrate isolated fixture",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0001.log",
+      "exit": 0,
+      "seconds": 0.125
+    },
+    {
+      "label": "read isolated schema plan",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0002.log",
+      "exit": 0,
+      "seconds": 0.037
+    },
+    {
+      "label": "provision admin",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0003.log",
+      "exit": 0,
+      "seconds": 0.039
+    },
+    {
+      "label": "provision recovery",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0004.log",
+      "exit": 0,
+      "seconds": 0.036
+    },
+    {
+      "label": "provision reader",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0005.log",
+      "exit": 0,
+      "seconds": 0.037
+    },
+    {
+      "label": "provision writer",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0006.log",
+      "exit": 0,
+      "seconds": 0.036
+    },
+    {
+      "label": "provision other",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0007.log",
+      "exit": 0,
+      "seconds": 0.036
+    },
+    {
+      "label": "publish native-generic dep1.0.0",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0008.log",
+      "exit": 0,
+      "seconds": 0.069
+    },
+    {
+      "label": "publish native-generic app1.0.0",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0009.log",
+      "exit": 0,
+      "seconds": 0.069
+    },
+    {
+      "label": "publish native-generic app2.0.0",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0010.log",
+      "exit": 0,
+      "seconds": 0.071
+    },
+    {
+      "label": "publish fallback-generic dep1.0.0",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0011.log",
+      "exit": 0,
+      "seconds": 0.069
+    },
+    {
+      "label": "publish fallback-generic app1.0.0",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0012.log",
+      "exit": 0,
+      "seconds": 0.074
+    },
+    {
+      "label": "publish fallback-generic app2.0.0",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0013.log",
+      "exit": 0,
+      "seconds": 0.07
+    },
+    {
+      "label": "generic-hosted-initial app",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0014.log",
+      "exit": 0,
+      "seconds": 0.04
+    },
+    {
+      "label": "generic-hosted-initial dep",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0015.log",
+      "exit": 0,
+      "seconds": 0.036
+    },
+    {
+      "label": "native-generic hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0016.log",
+      "exit": 0,
+      "seconds": 0.039
+    },
+    {
+      "label": "generic-hosted-held app",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0017.log",
+      "exit": 0,
+      "seconds": 0.04
+    },
+    {
+      "label": "generic-hosted-held dep",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0018.log",
+      "exit": 0,
+      "seconds": 0.036
+    },
+    {
+      "label": "native-generic release_hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0019.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "native-generic delete",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0020.log",
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "label": "generic-hosted-deleted app",
+      "binary": "curl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0021.log",
+      "exit": 22,
+      "seconds": 0.043
+    },
+    {
+      "label": "generic-hosted-deleted dep",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0022.log",
+      "exit": 0,
+      "seconds": 0.04
+    },
+    {
+      "label": "generic-hosted-other-version app",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0023.log",
+      "exit": 0,
+      "seconds": 0.037
+    },
+    {
+      "label": "generic-hosted-other-version dep",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0024.log",
+      "exit": 0,
+      "seconds": 0.039
+    },
+    {
+      "label": "generic-hosted-direct-fallback app",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0025.log",
+      "exit": 0,
+      "seconds": 0.037
+    },
+    {
+      "label": "generic-hosted-direct-fallback dep",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0026.log",
+      "exit": 0,
+      "seconds": 0.037
+    },
+    {
+      "label": "publish native-generic app1.0.0",
+      "binary": "curl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0027.log",
+      "exit": 22,
+      "seconds": 0.035
+    },
+    {
+      "label": "generic-hosted-corrupt-restore",
+      "binary": "cratectl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0028.log",
+      "exit": 1,
+      "seconds": 0.021
+    },
+    {
+      "label": "generic-hosted-missing-restore",
+      "binary": "cratectl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0029.log",
+      "exit": 1,
+      "seconds": 0.02
+    },
+    {
+      "label": "generic-hosted-verified-restore",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0030.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "generic-hosted-restore-replay",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0031.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "generic-hosted-denied-after-restore app",
+      "binary": "curl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0032.log",
+      "exit": 22,
+      "seconds": 0.035
+    },
+    {
+      "label": "generic-hosted-denied-after-restore dep",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0033.log",
+      "exit": 0,
+      "seconds": 0.035
+    },
+    {
+      "label": "generic-hosted-restored app",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0034.log",
+      "exit": 0,
+      "seconds": 0.036
+    },
+    {
+      "label": "generic-hosted-restored dep",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0035.log",
+      "exit": 0,
+      "seconds": 0.037
+    },
+    {
+      "label": "generic-hosted-restart app",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0036.log",
+      "exit": 0,
+      "seconds": 0.036
+    },
+    {
+      "label": "generic-hosted-restart dep",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0037.log",
+      "exit": 0,
+      "seconds": 0.037
+    },
+    {
+      "label": "provision revoked-generic-hosted",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0038.log",
+      "exit": 0,
+      "seconds": 0.039
+    },
+    {
+      "label": "generic-hosted-revocable-hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0039.log",
+      "exit": 0,
+      "seconds": 0.021
+    },
+    {
+      "label": "revoke revoked-generic-hosted",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0040.log",
+      "exit": 0,
+      "seconds": 0.039
+    },
+    {
+      "label": "native-generic release_hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0041.log",
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "label": "generic-proxy-initial app",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0042.log",
+      "exit": 0,
+      "seconds": 0.073
+    },
+    {
+      "label": "generic-proxy-initial dep",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0043.log",
+      "exit": 0,
+      "seconds": 0.069
+    },
+    {
+      "label": "proxy-generic hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0044.log",
+      "exit": 0,
+      "seconds": 0.026
+    },
+    {
+      "label": "generic-proxy-held app",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0045.log",
+      "exit": 0,
+      "seconds": 0.039
+    },
+    {
+      "label": "generic-proxy-held dep",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0046.log",
+      "exit": 0,
+      "seconds": 0.036
+    },
+    {
+      "label": "proxy-generic release_hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0047.log",
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "label": "proxy-generic delete",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0048.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "generic-proxy-deleted app",
+      "binary": "curl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0049.log",
+      "exit": 22,
+      "seconds": 0.036
+    },
+    {
+      "label": "generic-proxy-deleted dep",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0050.log",
+      "exit": 0,
+      "seconds": 0.037
+    },
+    {
+      "label": "generic-proxy-other-version app",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0051.log",
+      "exit": 0,
+      "seconds": 0.071
+    },
+    {
+      "label": "generic-proxy-other-version dep",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0052.log",
+      "exit": 0,
+      "seconds": 0.04
+    },
+    {
+      "label": "generic-proxy-direct-fallback app",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0053.log",
+      "exit": 0,
+      "seconds": 0.036
+    },
+    {
+      "label": "generic-proxy-direct-fallback dep",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0054.log",
+      "exit": 0,
+      "seconds": 0.035
+    },
+    {
+      "label": "generic-proxy-corrupt-restore",
+      "binary": "cratectl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0055.log",
+      "exit": 1,
+      "seconds": 0.02
+    },
+    {
+      "label": "generic-proxy-missing-restore",
+      "binary": "cratectl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0056.log",
+      "exit": 1,
+      "seconds": 0.021
+    },
+    {
+      "label": "generic-proxy-verified-restore",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0057.log",
+      "exit": 0,
+      "seconds": 0.035
+    },
+    {
+      "label": "generic-proxy-restore-replay",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0058.log",
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "label": "generic-proxy-denied-after-restore app",
+      "binary": "curl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0059.log",
+      "exit": 22,
+      "seconds": 0.039
+    },
+    {
+      "label": "generic-proxy-denied-after-restore dep",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0060.log",
+      "exit": 0,
+      "seconds": 0.035
+    },
+    {
+      "label": "generic-proxy-restored app",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0061.log",
+      "exit": 0,
+      "seconds": 0.038
+    },
+    {
+      "label": "generic-proxy-restored dep",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0062.log",
+      "exit": 0,
+      "seconds": 0.038
+    },
+    {
+      "label": "generic-proxy-restart app",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0063.log",
+      "exit": 0,
+      "seconds": 0.038
+    },
+    {
+      "label": "generic-proxy-restart dep",
+      "binary": "curl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0064.log",
+      "exit": 0,
+      "seconds": 0.04
+    },
+    {
+      "label": "provision revoked-generic-proxy",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0065.log",
+      "exit": 0,
+      "seconds": 0.036
+    },
+    {
+      "label": "generic-proxy-revocable-hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0066.log",
+      "exit": 0,
+      "seconds": 0.021
+    },
+    {
+      "label": "revoke revoked-generic-proxy",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0067.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "proxy-generic release_hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0068.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "pack npm origin dep1.0.0",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0069.log",
+      "exit": 0,
+      "seconds": 0.553
+    },
+    {
+      "label": "pack npm origin app1.0.0",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0070.log",
+      "exit": 0,
+      "seconds": 0.286
+    },
+    {
+      "label": "pack npm origin app2.0.0",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0071.log",
+      "exit": 0,
+      "seconds": 0.287
+    },
+    {
+      "label": "pack npm fallback dep1.0.0",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0072.log",
+      "exit": 0,
+      "seconds": 0.285
+    },
+    {
+      "label": "pack npm fallback app1.0.0",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0073.log",
+      "exit": 0,
+      "seconds": 0.343
+    },
+    {
+      "label": "pack npm fallback app2.0.0",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0074.log",
+      "exit": 0,
+      "seconds": 0.278
+    },
+    {
+      "label": "publish native-npm dep1.0.0",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0075.log",
+      "exit": 0,
+      "seconds": 0.385
+    },
+    {
+      "label": "publish native-npm app1.0.0",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0076.log",
+      "exit": 0,
+      "seconds": 0.381
+    },
+    {
+      "label": "publish native-npm app2.0.0",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0077.log",
+      "exit": 0,
+      "seconds": 0.389
+    },
+    {
+      "label": "publish fallback-npm dep1.0.0",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0078.log",
+      "exit": 0,
+      "seconds": 0.449
+    },
+    {
+      "label": "publish fallback-npm app1.0.0",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0079.log",
+      "exit": 0,
+      "seconds": 1.09
+    },
+    {
+      "label": "publish fallback-npm app2.0.0",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0080.log",
+      "exit": 0,
+      "seconds": 0.397
+    },
+    {
+      "label": "npm-hosted-initial",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0081.log",
+      "exit": 0,
+      "seconds": 0.382
+    },
+    {
+      "label": "native-npm hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0082.log",
+      "exit": 0,
+      "seconds": 0.039
+    },
+    {
+      "label": "npm-hosted-held",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0083.log",
+      "exit": 0,
+      "seconds": 0.381
+    },
+    {
+      "label": "native-npm release_hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0084.log",
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "label": "native-npm delete",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0085.log",
+      "exit": 0,
+      "seconds": 0.021
+    },
+    {
+      "label": "npm-hosted-deleted",
+      "binary": "npm",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0086.log",
+      "exit": 1,
+      "seconds": 0.337
+    },
+    {
+      "label": "npm-hosted-other-version",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0087.log",
+      "exit": 0,
+      "seconds": 0.337
+    },
+    {
+      "label": "npm-hosted-direct-fallback",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0088.log",
+      "exit": 0,
+      "seconds": 0.392
+    },
+    {
+      "label": "publish native-npm app1.0.0",
+      "binary": "npm",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0089.log",
+      "exit": 1,
+      "seconds": 0.489
+    },
+    {
+      "label": "npm-hosted-corrupt-restore",
+      "binary": "cratectl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0090.log",
+      "exit": 1,
+      "seconds": 0.02
+    },
+    {
+      "label": "npm-hosted-missing-restore",
+      "binary": "cratectl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0091.log",
+      "exit": 1,
+      "seconds": 0.019
+    },
+    {
+      "label": "npm-hosted-verified-restore",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0092.log",
+      "exit": 0,
+      "seconds": 0.036
+    },
+    {
+      "label": "npm-hosted-restore-replay",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0093.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "npm-hosted-denied-after-restore",
+      "binary": "npm",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0094.log",
+      "exit": 1,
+      "seconds": 0.341
+    },
+    {
+      "label": "npm-hosted-restored",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0095.log",
+      "exit": 0,
+      "seconds": 0.34
+    },
+    {
+      "label": "npm-hosted-restart",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0096.log",
+      "exit": 0,
+      "seconds": 0.342
+    },
+    {
+      "label": "provision revoked-npm-hosted",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0097.log",
+      "exit": 0,
+      "seconds": 0.039
+    },
+    {
+      "label": "npm-hosted-revocable-hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0098.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "revoke revoked-npm-hosted",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0099.log",
+      "exit": 0,
+      "seconds": 0.021
+    },
+    {
+      "label": "native-npm release_hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0100.log",
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "label": "npm-proxy-initial",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0101.log",
+      "exit": 0,
+      "seconds": 0.495
+    },
+    {
+      "label": "proxy-npm hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0102.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "npm-proxy-held",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0103.log",
+      "exit": 0,
+      "seconds": 0.391
+    },
+    {
+      "label": "proxy-npm release_hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0104.log",
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "label": "proxy-npm delete",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0105.log",
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "label": "npm-proxy-deleted",
+      "binary": "npm",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0106.log",
+      "exit": 1,
+      "seconds": 0.334
+    },
+    {
+      "label": "npm-proxy-other-version",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0107.log",
+      "exit": 0,
+      "seconds": 0.385
+    },
+    {
+      "label": "npm-proxy-direct-fallback",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0108.log",
+      "exit": 0,
+      "seconds": 0.329
+    },
+    {
+      "label": "npm-proxy-corrupt-restore",
+      "binary": "cratectl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0109.log",
+      "exit": 1,
+      "seconds": 0.021
+    },
+    {
+      "label": "npm-proxy-missing-restore",
+      "binary": "cratectl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0110.log",
+      "exit": 1,
+      "seconds": 0.02
+    },
+    {
+      "label": "npm-proxy-verified-restore",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0111.log",
+      "exit": 0,
+      "seconds": 0.018
+    },
+    {
+      "label": "npm-proxy-restore-replay",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0112.log",
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "label": "npm-proxy-denied-after-restore",
+      "binary": "npm",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0113.log",
+      "exit": 1,
+      "seconds": 0.286
+    },
+    {
+      "label": "npm-proxy-restored",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0114.log",
+      "exit": 0,
+      "seconds": 0.378
+    },
+    {
+      "label": "npm-proxy-restart",
+      "binary": "npm",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0115.log",
+      "exit": 0,
+      "seconds": 0.394
+    },
+    {
+      "label": "provision revoked-npm-proxy",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0116.log",
+      "exit": 0,
+      "seconds": 0.037
+    },
+    {
+      "label": "npm-proxy-revocable-hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0117.log",
+      "exit": 0,
+      "seconds": 0.021
+    },
+    {
+      "label": "revoke revoked-npm-proxy",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0118.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "proxy-npm release_hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0119.log",
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "label": "publish native-pypi dep1.0.0",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0120.log",
+      "exit": 0,
+      "seconds": 0.386
+    },
+    {
+      "label": "publish native-pypi app1.0.0",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0121.log",
+      "exit": 0,
+      "seconds": 0.286
+    },
+    {
+      "label": "publish native-pypi app2.0.0",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0122.log",
+      "exit": 0,
+      "seconds": 0.282
+    },
+    {
+      "label": "publish fallback-pypi dep1.0.0",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0123.log",
+      "exit": 0,
+      "seconds": 0.231
+    },
+    {
+      "label": "publish fallback-pypi app1.0.0",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0124.log",
+      "exit": 0,
+      "seconds": 0.285
+    },
+    {
+      "label": "publish fallback-pypi app2.0.0",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0125.log",
+      "exit": 0,
+      "seconds": 0.28
+    },
+    {
+      "label": "pypi-hosted-initial",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0126.log",
+      "exit": 0,
+      "seconds": 0.497
+    },
+    {
+      "label": "native-pypi hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0127.log",
+      "exit": 0,
+      "seconds": 0.021
+    },
+    {
+      "label": "pypi-hosted-held",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0128.log",
+      "exit": 0,
+      "seconds": 0.387
+    },
+    {
+      "label": "native-pypi release_hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0129.log",
+      "exit": 0,
+      "seconds": 0.021
+    },
+    {
+      "label": "native-pypi delete",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0130.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "pypi-hosted-deleted",
+      "binary": "python",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0131.log",
+      "exit": 1,
+      "seconds": 0.284
+    },
+    {
+      "label": "pypi-hosted-other-version",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0132.log",
+      "exit": 0,
+      "seconds": 0.39
+    },
+    {
+      "label": "pypi-hosted-direct-fallback",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0133.log",
+      "exit": 0,
+      "seconds": 0.388
+    },
+    {
+      "label": "publish native-pypi app1.0.0",
+      "binary": "python",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0134.log",
+      "exit": 1,
+      "seconds": 0.238
+    },
+    {
+      "label": "pypi-hosted-corrupt-restore",
+      "binary": "cratectl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0135.log",
+      "exit": 1,
+      "seconds": 0.02
+    },
+    {
+      "label": "pypi-hosted-missing-restore",
+      "binary": "cratectl",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0136.log",
+      "exit": 1,
+      "seconds": 0.02
+    },
+    {
+      "label": "pypi-hosted-verified-restore",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0137.log",
+      "exit": 0,
+      "seconds": 0.04
+    },
+    {
+      "label": "pypi-hosted-restore-replay",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0138.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "pypi-hosted-denied-after-restore",
+      "binary": "python",
+      "expected_success": false,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0139.log",
+      "exit": 1,
+      "seconds": 0.327
+    },
+    {
+      "label": "pypi-hosted-restored",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0140.log",
+      "exit": 0,
+      "seconds": 0.441
+    },
+    {
+      "label": "pypi-hosted-restart",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0141.log",
+      "exit": 0,
+      "seconds": 0.395
+    },
+    {
+      "label": "provision revoked-pypi-hosted",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0142.log",
+      "exit": 0,
+      "seconds": 0.039
+    },
+    {
+      "label": "pypi-hosted-revocable-hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0143.log",
+      "exit": 0,
+      "seconds": 0.036
+    },
+    {
+      "label": "revoke revoked-pypi-hosted",
+      "binary": "cratectld",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0144.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "native-pypi release_hold",
+      "binary": "cratectl",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0145.log",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "label": "pypi-proxy-initial",
+      "binary": "python",
+      "expected_success": true,
+      "private_log": ".private/native-lifecycle-conformance/4de2158d0b/command-0146.log",
+      "exit": 0,
+      "seconds": 0.438
+    }
+  ],
+  "cases": [
+    {
+      "format": "generic",
+      "mode": "hosted",
+      "repository": "native-generic",
+      "group": "host-group-generic",
+      "path": "app/1.0.0/app.bin",
+      "digest": "745caf950c77b5e9a72746df248db112d40ac7a59a6e534c0ad1015d777f473d",
+      "size": 23552,
+      "final_revision": 6
+    },
+    {
+      "format": "generic",
+      "mode": "proxy",
+      "repository": "proxy-generic",
+      "group": "proxy-group-generic",
+      "path": "app/1.0.0/app.bin",
+      "digest": "745caf950c77b5e9a72746df248db112d40ac7a59a6e534c0ad1015d777f473d",
+      "size": 23552,
+      "final_revision": 6
+    },
+    {
+      "format": "npm",
+      "mode": "hosted",
+      "repository": "native-npm",
+      "group": "host-group-npm",
+      "path": "@owned/lifecycle-app/-/@owned/lifecycle-app-1.0.0.tgz",
+      "digest": "42871d4235d6717a2ced58599227e3d293eb53b64146748836cf4ff1144b8a48",
+      "size": 264,
+      "final_revision": 6
+    },
+    {
+      "format": "npm",
+      "mode": "proxy",
+      "repository": "proxy-npm",
+      "group": "proxy-group-npm",
+      "path": "@owned/lifecycle-app/-/cratectl/56f7cb75b3192772ab78795f643869656f09e57f2eb9d14b7fac6f18f054d1f8.tgz",
+      "digest": "42871d4235d6717a2ced58599227e3d293eb53b64146748836cf4ff1144b8a48",
+      "size": 264,
+      "final_revision": 6
+    },
+    {
+      "format": "pypi",
+      "mode": "hosted",
+      "repository": "native-pypi",
+      "group": "host-group-pypi",
+      "path": "cratectl_lifecycle_app-1.0.0-py3-none-any.whl",
+      "digest": "1e415b92ca6bc3e3240d11e2ba2d90625668c2fe8879d41f50deff72f11032d1",
+      "size": 1094,
+      "final_revision": 6
+    }
+  ],
+  "input_digests": {
+    "inputs/generic/origin/dep-1.0.0/dep.bin": {
+      "sha256": "06ba8e219c85fc09cb391496d17da5502caf51ae0e2b747be8b50a4e885114fc",
+      "size": 23552
+    },
+    "inputs/generic/origin/app-1.0.0/app.bin": {
+      "sha256": "745caf950c77b5e9a72746df248db112d40ac7a59a6e534c0ad1015d777f473d",
+      "size": 23552
+    },
+    "inputs/generic/origin/app-2.0.0/app.bin": {
+      "sha256": "af3aa61e3a1c3df663547146ad0019eb98307b9161ec170eba46801354865eec",
+      "size": 23552
+    },
+    "inputs/generic/fallback/dep-1.0.0/dep.bin": {
+      "sha256": "37ecf338536e622b805197a55114bb830f35343a1a99f65709f6bd8925a83553",
+      "size": 25600
+    },
+    "inputs/generic/fallback/app-1.0.0/app.bin": {
+      "sha256": "211d5bd58afe7990447f9dbc67552a11e16a2c13f633f3e541438956e52fe0b7",
+      "size": 25600
+    },
+    "inputs/generic/fallback/app-2.0.0/app.bin": {
+      "sha256": "8870b06beca4145904d7387cb022a8a056d486734e08ebee009e2bd2691abac1",
+      "size": 25600
+    },
+    "inputs/npm/origin/dep-1.0.0/cratectl-lifecycle-dep-1.0.0.tgz": {
+      "sha256": "7502a9ed0b04ab71bd565fc6101ee196b07f73831a60272ab028a5f164bb5f59",
+      "size": 241
+    },
+    "inputs/npm/origin/app-1.0.0/owned-lifecycle-app-1.0.0.tgz": {
+      "sha256": "42871d4235d6717a2ced58599227e3d293eb53b64146748836cf4ff1144b8a48",
+      "size": 264
+    },
+    "inputs/npm/origin/app-2.0.0/owned-lifecycle-app-2.0.0.tgz": {
+      "sha256": "1437869d243a07ce56f452c4007f8ce2d8c9203d5146ad853a41844ef99a6bc2",
+      "size": 266
+    },
+    "inputs/npm/fallback/dep-1.0.0/cratectl-lifecycle-dep-1.0.0.tgz": {
+      "sha256": "3383d280b2b3a1099420e92dbae6a3665a35c4e4121f4f02de3075344697a580",
+      "size": 244
+    },
+    "inputs/npm/fallback/app-1.0.0/owned-lifecycle-app-1.0.0.tgz": {
+      "sha256": "1d5b493ab46d5b61d2213e360e25f856e6086fe8d6755dcd5aad54962f2ed48a",
+      "size": 266
+    },
+    "inputs/npm/fallback/app-2.0.0/owned-lifecycle-app-2.0.0.tgz": {
+      "sha256": "1fd21c9dfcf1f9534f61e7170d96abdfe157b459bc345e865d289f3fcfab425a",
+      "size": 269
+    },
+    "inputs/pypi/origin/cratectl_lifecycle_dep-1.0.0-py3-none-any.whl": {
+      "sha256": "bb66bd1353e65e75184256262b600e796c37d6e62d0a747ce04324421d901054",
+      "size": 1072
+    },
+    "inputs/pypi/origin/cratectl_lifecycle_app-1.0.0-py3-none-any.whl": {
+      "sha256": "1e415b92ca6bc3e3240d11e2ba2d90625668c2fe8879d41f50deff72f11032d1",
+      "size": 1094
+    },
+    "inputs/pypi/origin/cratectl_lifecycle_app-2.0.0-py3-none-any.whl": {
+      "sha256": "f9814b070a466ae43c3bda97d9d59845d67359a7839c074a28b5fada9423c1c6",
+      "size": 1092
+    },
+    "inputs/pypi/fallback/cratectl_lifecycle_dep-1.0.0-py3-none-any.whl": {
+      "sha256": "99dd5e23c34d9c4678d0076d5fc49bd5a53fb1ba98f1fc4a861fbb3e0dd21363",
+      "size": 1076
+    },
+    "inputs/pypi/fallback/cratectl_lifecycle_app-1.0.0-py3-none-any.whl": {
+      "sha256": "b0b99647d656a5bf7ee9b98ce1d4f2b005c2c1e526545b5301e65fa789381f4b",
+      "size": 1097
+    },
+    "inputs/pypi/fallback/cratectl_lifecycle_app-2.0.0-py3-none-any.whl": {
+      "sha256": "e53bcba1cf993e9420b3474707c7906bfa03534e465dacb14069373bcec00e2c",
+      "size": 1092
+    }
+  },
+  "private_logs": ".private/native-lifecycle-conformance/4de2158d0b",
+  "topology": "Native macOS registry, isolated PostgreSQL on35432, filesystem objects and stock curl/npm/pip/twine/Maven on loopback38443. Runtime omits owner DSN; clients omit both DSNs.",
+  "limits": [
+    "Named single-reference hosted/proxy/group workflows with owned dependency fixtures; no full format/legal/retention/GC or release readiness verdict.",
+    "One host and explicit loopback HTTP development profile; production TLS, independent machines, other clients/providers/platforms and scale remain required.",
+    "Corruption/missing-object faults touch only this run's private CAS files. No lifecycle, policy, retrieval, lease or job outcome is manufactured with SQL.",
+    "Maven tooling plugins use ordinary configured public Central. Fixture artifacts and dependencies use only the named cratectl repositories. No package scripts, model loading or application modules execute."
+  ],
+  "build_source_matches_candidate": true,
+  "failure": "AssertionError: pypi-proxy-initial exact Python app"
+}

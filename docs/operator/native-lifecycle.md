@@ -1,8 +1,9 @@
 # Retain, hold and restore native package references
 
-Development status: implemented; PostgreSQL/HTTP regression coverage is being
-retained. Stock-client and clean candidate qualification remain required. This
-does not qualify complete format lifecycle, legal compliance or release readiness.
+Development status: implemented. Named native-client and browser journeys passed
+in development; matching clean production/race qualification remains required.
+See `evidence/2026-10-31/native-lifecycle-client-development-checkpoint.json`.
+Complete format lifecycle, legal compliance and release readiness remain open.
 
 Generic files, Maven package files, npm tarballs and Python distributions use the
 same lifecycle API as canonical OCI references. In a source repository's package
