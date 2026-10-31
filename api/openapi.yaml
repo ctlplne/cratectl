@@ -591,7 +591,7 @@ paths:
   /api/v1/maintenance/integrity-schedules/{name}/runs:
     get:
       operationId: listIntegrityScheduleRuns
-      description: Durable due-slot and job identities with current assessment state. Each sample captures bounded repository/digest/size bindings and immutable per-pass observations. A completed run may contain findings. Sample cleanliness never establishes all-tenant or security approval. Continue from the source sequence prefix of the last returned job ID.
+      description: Durable due-slot and job identities with current assessment state. Mutable progress must match the immutable schedule/revision/due/coalescing receipt. Each sample captures bounded repository/digest/size bindings and immutable per-pass observations. A completed run may contain findings. Sample cleanliness never establishes all-tenant or security approval. Continue from the source sequence prefix of the last returned job ID.
       parameters:
         - {in: path, name: name, required: true, schema: {type: string}}
         - {in: query, name: after, schema: {type: integer, format: int64, minimum: 0, default: 0}}
@@ -600,6 +600,7 @@ paths:
         '200': {description: "Run items and more with sample coverage, coalesced intervals and false all-tenant/security verdicts."}
         '403': {description: Tenant administrator required.}
         '404': {description: No such schedule in this tenant.}
+        '503': {description: Stored progress disagrees with immutable admission evidence; no current assessment is returned.}
 
   /api/v1/maintenance/integrity-sweeps:
     get:
@@ -641,6 +642,7 @@ paths:
         '200': {description: "Job plus all_targets_assessed, integrity_clean, security_approval and exact scope."}
         '403': {description: Tenant administrator required.}
         '404': {description: No such sweep in the authenticated tenant.}
+        '503': {description: Scheduled progress disagrees with its immutable admission receipt; investigate retained evidence.}
   /api/v1/maintenance/integrity-sweeps/{job_id}/items:
     get:
       operationId: listIntegritySweepTargets
@@ -653,6 +655,7 @@ paths:
         '200': {description: "Items ordered by ordinal, more, security_approval false. Status is pending or a concrete storage finding; reference_conflict remains separately visible."}
         '403': {description: Tenant administrator required.}
         '404': {description: No such sweep in the authenticated tenant.}
+        '503': {description: Scheduled progress disagrees with its immutable admission receipt; no target page is returned.}
 
   /api/v1/maintenance/storage-inventories:
     get:

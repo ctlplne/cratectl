@@ -30,6 +30,12 @@ there is no unbounded catch-up queue. A failed run remains visible. Subsequent
 samples cannot turn its findings into a global clean verdict. Schedules do not
 authorize repair, deletion, policy changes or security approval.
 
+Run inspection and worker read/completion paths crosscheck mutable progress against
+the immutable admission name, revision, due slot and coalesced-interval receipt.
+Mismatch or missing identity fails closed. Inspection returns an explicit evidence
+error; workers durably fail the invalid target without producing observations.
+Automatic repair of corrupt database metadata is outside this operation.
+
 Schema 6 adds forced-RLS schedule, immutable configuration revision and run tables.
 Receipts 1–5 remain frozen. Upgrade requires controlled maintenance; rolling
 compatibility, full-volume sampling, unreferenced-file scheduling, S3, retention/GC,

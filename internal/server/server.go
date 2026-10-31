@@ -121,6 +121,8 @@ func respondErr(w http.ResponseWriter, e error) {
 		fail(w, 400, "invalid_configuration", "Supply complete valid proxy/group settings, a nonnegative expected_revision and a nonempty reason of at most 1024 UTF-8 bytes without controls. Repository name, mode and format are immutable.")
 	case errors.Is(e, store.ErrScheduleRevision):
 		fail(w, 409, "schedule_changed", "Read the current schedule, preview a replacement at its exact revision, then apply with a new idempotency key.")
+	case errors.Is(e, store.ErrScheduleEvidence):
+		fail(w, 503, "schedule_evidence_unavailable", "The job progress disagrees with its immutable admission receipt. Stop interpreting this run as verified and inspect the retained database evidence; automatic metadata repair is unavailable.")
 	case errors.Is(e, store.ErrScheduleInput):
 		fail(w, 400, "invalid_schedule", "Supply expected_revision, interval_seconds 60–31536000, sample_size within the operator target budget, enabled and a nonempty reason of at most 1024 UTF-8 bytes. Use a retained-byte repository or omit repository for tenant scope.")
 	case errors.Is(e, store.ErrRepairInput):

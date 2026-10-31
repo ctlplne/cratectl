@@ -205,7 +205,7 @@ func execute(parent context.Context, db *store.Store, objects *blob.Local, o Opt
 		code, permanent := "handler_failure", false
 		if errors.Is(e, store.ErrMetadataLimit) {
 			code, permanent = "event_budget", true
-		} else if errors.Is(e, store.ErrConflict) {
+		} else if errors.Is(e, store.ErrConflict) || errors.Is(e, store.ErrScheduleEvidence) {
 			code, permanent = "invalid_event", true
 			if j.Queue == "integrity" {
 				code = "invalid_target"

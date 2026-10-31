@@ -170,7 +170,11 @@ func loadSweep(ctx context.Context, tx pgx.Tx, j Job) (SweepProgress, error) {
 	if e := tx.QueryRow(ctx, `SELECT payload FROM cratectl.jobs WHERE sequence=$1 AND task=$2 AND kind='storage.sweep'`, j.Sequence, j.Task).Scan(&raw); e != nil {
 		return SweepProgress{}, e
 	}
-	return sweepProgress(raw)
+	p, e := sweepProgress(raw)
+	if e != nil {
+		return p, e
+	}
+	return p, verifySweepReceipt(ctx, tx, j, p)
 }
 func (s *Store) NextSweepItem(ctx context.Context, i WorkerIdentity, j Job) (SweepItem, bool, error) {
 	var item SweepItem
@@ -273,6 +277,9 @@ func (s *Store) Sweep(ctx context.Context, i Identity, id string) (map[string]an
 	if e != nil {
 		return nil, e
 	}
+	if e = s.Tx(ctx, i, false, func(tx pgx.Tx) error { return verifySweepReceipt(ctx, tx, j, p) }); e != nil {
+		return nil, e
+	}
 	complete := j.State == "succeeded" && p.Checked == p.Targets
 	scope := "Immutable snapshot of current artifact and retained upload-part repository/digest/size bindings. Unreferenced CAS and temporary files are outside this snapshot."
 	if p.Sampling != nil {
@@ -314,6 +321,9 @@ func (s *Store) referenceSnapshotItems(ctx context.Context, i Identity, id strin
 		} else {
 			p, e := sweepProgress(j.Target)
 			if e != nil {
+				return e
+			}
+			if e = verifySweepReceipt(ctx, tx, j, p); e != nil {
 				return e
 			}
 			pass = p.Pass

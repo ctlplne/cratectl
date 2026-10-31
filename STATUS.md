@@ -14,8 +14,13 @@ fuzzing and unit/race/lint checks. First failures for late requester expiry,
 empty-sample verification and malformed OpenAPI descriptions are retained with
 replays. See evidence/2026-10-30/schedule-preflight-notes.json. Full clean-candidate
 qualification is pending. All broad readiness verdicts and remaining scope stay open.
-Owned native PostgreSQL is running for disposable development; the qualified
-primary remains schema 5. Prior qualified artifacts are retained.
+Owned native PostgreSQL is running. The primary was upgraded from schema 5 to 6
+with clean c6c3a49 artifacts during controlled maintenance; receipts 1–5 remain
+frozen. Candidate c6c3a49 qualification was intentionally stopped after a separate
+real-PostgreSQL fault probe showed mutable progress replacing immutable run identity.
+Inspection, target pages and worker read/completion now crosscheck the immutable
+receipt, with focused race replays passing. This repair is awaiting a new clean
+source build. The rejected candidate artifacts and partial evidence are retained.
 
 Latest qualified source: `1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6`, authored and committed only as
 `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.

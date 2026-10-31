@@ -550,3 +550,77 @@ func TestIntegrityScheduleEmptyCaptureDoesNotClaimByteVerification(t *testing.T)
 		t.Fatal("empty sample endpoint claimed verified bytes", detail, e)
 	}
 }
+
+func TestIntegrityScheduleRunInspectionAndWorkerRejectMutableReceiptDrift(t *testing.T) {
+	db, ctx, admin, worker, _, _ := jobFixture(t)
+	seedScheduleBindings(t, db, ctx, admin)
+	configureSchedule(t, db, ctx, admin, "receipt", "receipt-create", scheduleInput())
+	out, e := db.DispatchIntegritySchedule(ctx, worker)
+	if e != nil {
+		t.Fatal(e)
+	}
+	seq, task, e := ParseJobID(out.Job)
+	if e != nil {
+		t.Fatal(e)
+	}
+	original, e := db.Job(ctx, admin, out.Job)
+	if e != nil {
+		t.Fatal(e)
+	}
+	claimed, e := db.ClaimJob(ctx, worker, "integrity", "receipt-check", time.Minute)
+	if e != nil || claimed.ID() != out.Job {
+		t.Fatal("claim receipt fixture", e)
+	}
+	item, empty, e := db.NextSweepItem(ctx, worker, claimed)
+	if e != nil || empty {
+		t.Fatal("valid original receipt rejected", e)
+	}
+	for _, test := range []struct{ name, expression string }{
+		{"revision", `jsonb_set(payload,'{sampling,revision}','2'::jsonb)`},
+		{"due slot", `jsonb_set(payload,'{sampling,due_at}','"2001-01-01T00:00:00Z"'::jsonb)`},
+		{"coalesced intervals", `jsonb_set(payload,'{sampling,coalesced_intervals}','1'::jsonb)`},
+		{"schedule", `jsonb_set(payload,'{sampling,schedule}','"another-name"'::jsonb)`},
+		{"missing sampling identity", `payload-'sampling'`},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			e := db.Tx(ctx, admin, true, func(tx pgx.Tx) error {
+				_, e := tx.Exec(ctx, `UPDATE cratectl.jobs SET payload=`+test.expression+` WHERE sequence=$1 AND task=$2`, seq, task)
+				return e
+			})
+			if e != nil {
+				t.Fatal(e)
+			}
+			defer func() {
+				if e := db.Tx(ctx, admin, true, func(tx pgx.Tx) error {
+					_, e := tx.Exec(ctx, `UPDATE cratectl.jobs SET payload=$3 WHERE sequence=$1 AND task=$2`, seq, task, original.Target)
+					return e
+				}); e != nil {
+					t.Error(e)
+				}
+			}()
+			if _, _, e = db.IntegrityScheduleRuns(ctx, admin, "receipt", 0, 100); !errors.Is(e, ErrScheduleEvidence) {
+				t.Fatal("mutable progress replaced immutable run identity", e)
+			}
+			if _, e = db.Sweep(ctx, admin, out.Job); !errors.Is(e, ErrScheduleEvidence) {
+				t.Fatal("sample detail accepted receipt drift", e)
+			}
+			if _, _, e = db.SweepItems(ctx, admin, out.Job, 0, 100); !errors.Is(e, ErrScheduleEvidence) {
+				t.Fatal("sample target page accepted receipt drift", e)
+			}
+			if _, _, e = db.NextSweepItem(ctx, worker, claimed); !errors.Is(e, ErrScheduleEvidence) {
+				t.Fatal("worker read accepted receipt drift", e)
+			}
+			if _, e = db.FinishSweepItem(ctx, worker, claimed, item, "verified"); !errors.Is(e, ErrScheduleEvidence) {
+				t.Fatal("worker completion accepted receipt drift", e)
+			}
+			observations, _, e := db.JobObservations(ctx, admin, out.Job, 0, 100)
+			if e != nil || len(observations) != 0 {
+				t.Fatal("receipt drift produced an observation", e)
+			}
+		})
+	}
+	runs, _, e := db.IntegrityScheduleRuns(ctx, admin, "receipt", 0, 100)
+	if e != nil || len(runs) != 1 || runs[0].Revision != 1 {
+		t.Fatal("original immutable receipt did not recover", e)
+	}
+}

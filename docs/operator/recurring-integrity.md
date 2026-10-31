@@ -37,6 +37,13 @@ A clean nonempty sample applies only to its captured targets. No sample grants a
 security approval or declares the full tenant volume healthy. Earlier findings
 remain visible after a later clean sample.
 
+If inspection reports `schedule_evidence_unavailable`, stored progress disagrees
+with the immutable admission identity. It cannot be treated as current verified
+evidence. The console labels any retained view as an older observation. Workers
+fail that invalid target without adding verification receipts. Investigate the
+database evidence and verified recovery sources; automatic metadata repair is
+unavailable. A new idempotency key does not repair stored evidence.
+
 Use **Packages → Repair bytes** with an independently retained exact copy to
 recover a missing/corrupt binding, then admit another sample or retry the original
 captured set through its job. See [byte repair](byte-repair.md). A retry of a

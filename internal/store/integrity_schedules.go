@@ -17,6 +17,7 @@ import (
 var ErrScheduleInput = errors.New("invalid integrity schedule")
 var ErrScheduleRevision = errors.New("integrity schedule revision changed")
 var ErrScheduleAuthorization = errors.New("schedule requester authorization changed during admission")
+var ErrScheduleEvidence = errors.New("schedule progress disagrees with immutable admission evidence")
 
 type ScheduleSettings struct {
 	Repository      string `json:"repository"`
@@ -260,6 +261,29 @@ func (p SweepSampling) valid() bool {
 	return Name.MatchString(p.Schedule) && p.Revision > 0 && !p.DueAt.IsZero() && p.CoalescedIntervals >= 0 && p.SampleSize >= 1 && p.SampleSize <= 1000000 && p.Before.valid() && p.After.valid()
 }
 
+func samplingMatchesReceipt(p *SweepSampling, name string, revision int64, due time.Time, missed int64) bool {
+	return p != nil && p.Schedule == name && p.Revision == revision && p.DueAt.Equal(due) && p.CoalescedIntervals == missed
+}
+func verifySweepReceipt(ctx context.Context, tx pgx.Tx, j Job, p SweepProgress) error {
+	var name string
+	var revision, missed int64
+	var due time.Time
+	e := tx.QueryRow(ctx, `SELECT name,revision,due_at,coalesced_intervals FROM cratectl.integrity_schedule_runs WHERE sequence=$1 AND task=$2`, j.Sequence, j.Task).Scan(&name, &revision, &due, &missed)
+	if errors.Is(e, pgx.ErrNoRows) {
+		if p.Sampling != nil {
+			return ErrScheduleEvidence
+		}
+		return nil
+	}
+	if e != nil {
+		return e
+	}
+	if !samplingMatchesReceipt(p.Sampling, name, revision, due, missed) {
+		return ErrScheduleEvidence
+	}
+	return nil
+}
+
 type ScheduleRun struct {
 	SweepSampling
 	AdmittedAt               time.Time     `json:"admitted_at"`
@@ -284,7 +308,7 @@ func (s *Store) IntegrityScheduleRuns(ctx context.Context, i Identity, name stri
 		if _, _, e := readSchedule(ctx, tx, name); e != nil {
 			return e
 		}
-		rows, e := tx.Query(ctx, `SELECT r.admitted_at,r.sequence,r.task,j.state,j.payload FROM cratectl.integrity_schedule_runs r JOIN cratectl.jobs j ON(j.tenant,j.sequence,j.task)=(r.tenant,r.sequence,r.task) WHERE r.name=$1 AND r.sequence>$2 ORDER BY r.sequence LIMIT $3`, name, after, limit+1)
+		rows, e := tx.Query(ctx, `SELECT r.admitted_at,r.sequence,r.task,r.revision,r.due_at,r.coalesced_intervals,j.state,j.payload FROM cratectl.integrity_schedule_runs r JOIN cratectl.jobs j ON(j.tenant,j.sequence,j.task)=(r.tenant,r.sequence,r.task) WHERE r.name=$1 AND r.sequence>$2 ORDER BY r.sequence LIMIT $3`, name, after, limit+1)
 		if e != nil {
 			return e
 		}
@@ -294,16 +318,18 @@ func (s *Store) IntegrityScheduleRuns(ctx context.Context, i Identity, name stri
 			var seq int64
 			var task string
 			var raw []byte
-			if e = rows.Scan(&run.AdmittedAt, &seq, &task, &run.State, &raw); e != nil {
+			var revision, missed int64
+			var due time.Time
+			if e = rows.Scan(&run.AdmittedAt, &seq, &task, &revision, &due, &missed, &run.State, &raw); e != nil {
 				return e
 			}
 			run.Job = (Job{Sequence: seq, Task: task}).ID()
 			run.Progress, e = sweepProgress(raw)
 			if e != nil {
-				return e
+				return ErrScheduleEvidence
 			}
-			if run.Progress.Sampling == nil || run.Progress.Sampling.Schedule != name {
-				return ErrScheduleInput
+			if !samplingMatchesReceipt(run.Progress.Sampling, name, revision, due, missed) {
+				return ErrScheduleEvidence
 			}
 			run.SweepSampling = *run.Progress.Sampling
 			run.SampleAssessed = run.State == "succeeded" && run.Progress.Checked == run.Progress.Targets

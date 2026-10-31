@@ -1,0 +1,180 @@
+{
+  "candidate": "c6c3a4986f5382787a0cff5d4da192d0cfe40a13",
+  "qualification_status": "rejected after independent immutable-receipt fault test",
+  "why_stopped": "The current owned native harness was interrupted intentionally after the separate fault probe disproved the candidate. Its interrupted record is not a product/native-client failure.",
+  "first_failure": "evidence/2026-10-31/schedule-receipt-first-failure.json",
+  "partial_runtime_records": [
+    {
+      "path": "evidence/2026-10-28/leases-b17e537189.json",
+      "status": "passed",
+      "checks": 63
+    },
+    {
+      "path": "evidence/2026-10-28/jobs-14ef8ea00e.json",
+      "status": "passed",
+      "checks": 71
+    },
+    {
+      "path": "evidence/2026-10-28/sweeps-e44d5e8807.json",
+      "status": "passed",
+      "checks": 80
+    },
+    {
+      "path": "evidence/2026-10-28/inventory-0e7b805135.json",
+      "status": "passed",
+      "checks": 67
+    },
+    {
+      "path": "evidence/2026-10-31/installation-03af710818.json",
+      "status": "passed",
+      "checks": 30
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-36ebb66bf6.json",
+      "status": "passed",
+      "checks": 46
+    },
+    {
+      "path": "evidence/2026-10-31/repairs-bb529d5a14.json",
+      "status": "passed",
+      "checks": 45
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-4b57b3eefb.json",
+      "status": "passed",
+      "checks": 44
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-0226c5a3ca.json",
+      "status": "passed",
+      "checks": 46
+    },
+    {
+      "path": "evidence/2026-10-31/console-319d56e6b5.json",
+      "status": "passed",
+      "checks": 11
+    },
+    {
+      "path": "evidence/2026-10-31/conformance-b9da2a9ea1.json",
+      "status": null,
+      "checks": 241
+    },
+    {
+      "path": "evidence/2026-10-31/lifecycle-4fc628dcfd.json",
+      "status": "passed",
+      "checks": 46
+    },
+    {
+      "path": "evidence/2026-10-31/schedules-13c738305f.json",
+      "status": "passed",
+      "checks": 32
+    },
+    {
+      "path": "evidence/2026-10-31/schema-de217bf68a.json",
+      "status": "passed",
+      "checks": 14
+    },
+    {
+      "path": "evidence/2026-10-31/console-b4584ef505.json",
+      "status": "passed",
+      "checks": 60
+    }
+  ],
+  "serialized_tasks": [
+    {
+      "name": "primary-migration-plan",
+      "exit_code": 0
+    },
+    {
+      "name": "primary-controlled-upgrade",
+      "exit_code": 0
+    },
+    {
+      "name": "production-schedules",
+      "exit_code": 0
+    },
+    {
+      "name": "production-schedule-upgrade",
+      "exit_code": 0
+    },
+    {
+      "name": "production-repairs",
+      "exit_code": 0
+    },
+    {
+      "name": "production-repair-upgrade",
+      "exit_code": 0
+    },
+    {
+      "name": "production-lifecycle",
+      "exit_code": 0
+    },
+    {
+      "name": "production-source-upgrade",
+      "exit_code": 0
+    },
+    {
+      "name": "production-schema",
+      "exit_code": 0
+    },
+    {
+      "name": "production-console",
+      "exit_code": 0
+    },
+    {
+      "name": "production-installation",
+      "exit_code": 0
+    },
+    {
+      "name": "production-inventory",
+      "exit_code": 0
+    },
+    {
+      "name": "production-sweeps",
+      "exit_code": 0
+    },
+    {
+      "name": "production-leases",
+      "exit_code": 0
+    },
+    {
+      "name": "production-jobs",
+      "exit_code": 0
+    },
+    {
+      "name": "production-native",
+      "exit_code": 254
+    }
+  ],
+  "artifacts": {
+    ".cache/schedule-c6c3a49-production/cratectl": {
+      "sha256": "7e78c09309b82cccdc72553b8405503089b9a92416e893fca9626db95c75dc31",
+      "build_info": ".cache/schedule-c6c3a49-production/cratectl: go1.27.3\n\tpath\tctlplne.dev/cratectl/cmd/cratectl\n\tmod\tctlplne.dev/cratectl\tv0.0.0-20261030235918-c6c3a4986f53\t\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-trimpath=true\n\tbuild\tCGO_ENABLED=1\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=darwin\n\tbuild\tGOARM64=v8.0\n\tbuild\tvcs=git\n\tbuild\tvcs.revision=c6c3a4986f5382787a0cff5d4da192d0cfe40a13\n\tbuild\tvcs.time=2026-10-30T23:59:18Z\n\tbuild\tvcs.modified=false\n"
+    },
+    ".cache/schedule-c6c3a49-production/cratectld": {
+      "sha256": "f2559577053e84df1890974ec88e61cf3ad3d5f4d38a5f720f2e0ce6494f4a3d",
+      "build_info": ".cache/schedule-c6c3a49-production/cratectld: go1.27.3\n\tpath\tctlplne.dev/cratectl/cmd/cratectld\n\tmod\tctlplne.dev/cratectl\tv0.0.0-20261030235918-c6c3a4986f53\t\n\tdep\tgithub.com/Masterminds/semver/v3\tv3.4.0\th1:Zog+i5UMtVoCU8oKka5P7i9q9HgrJeGzI9SA1Xbatp0=\n\tdep\tgithub.com/aquasecurity/go-pep440-version\tv0.0.1\th1:8VKKQtH2aV61+0hovZS3T//rUF+6GDn18paFTVS0h0M=\n\tdep\tgithub.com/aquasecurity/go-version\tv0.0.1\th1:4cNl516agK0TCn5F7mmYN+xVs1E3S45LkgZk3cbaW2E=\n\tdep\tgithub.com/jackc/pgpassfile\tv1.0.0\th1:/6Hmqy13Ss2zCq62VdNG8tM1wchn8zjSGOBJ6icpsIM=\n\tdep\tgithub.com/jackc/pgservicefile\tv0.0.0-20240606120523-5a60cdf6a761\th1:iCEnooe7UlwOQYpKFhBabPMi4aNAfoODPEFNiAnClxo=\n\tdep\tgithub.com/jackc/pgx/v5\tv5.11.0\th1:IzBBtyK9AHqf98cctWFifYSci2hgQR/cd56wB4p+ogg=\n\tdep\tgithub.com/jackc/puddle/v2\tv2.2.2\th1:PR8nw+E/1w0GLuRFSmiioY6UooMp6KJv0/61nB7icHo=\n\tdep\tgolang.org/x/net\tv0.62.0\th1:18ELalfM5+XNRwzM2nYqXsZQ9ByS1uhj2O/U7+5jqRY=\n\tdep\tgolang.org/x/sync\tv0.24.0\th1:iqiDrGoDgyuvAKrhLQthUEzU/R378N78gXbBjxed7oA=\n\tdep\tgolang.org/x/text\tv0.43.0\th1:1QivrlhwAsnMOcqgOdl9my7s9OyZl8O5/UGUTJVXoWc=\n\tdep\tgolang.org/x/xerrors\tv0.0.0-20231012003039-104605ab7028\th1:+cNy6SZtPcJQH3LJVLOSmiC7MMxXNOb3PU/VUEz+EhU=\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-trimpath=true\n\tbuild\tCGO_ENABLED=1\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=darwin\n\tbuild\tGOARM64=v8.0\n\tbuild\tvcs=git\n\tbuild\tvcs.revision=c6c3a4986f5382787a0cff5d4da192d0cfe40a13\n\tbuild\tvcs.time=2026-10-30T23:59:18Z\n\tbuild\tvcs.modified=false\n"
+    },
+    ".cache/schedule-c6c3a49-race/cratectl": {
+      "sha256": "49232b494f8b91a5f30d5091987a060dd5d65bbc8beae81642f0da004005927d",
+      "build_info": ".cache/schedule-c6c3a49-race/cratectl: go1.27.3\n\tpath\tctlplne.dev/cratectl/cmd/cratectl\n\tmod\tctlplne.dev/cratectl\tv0.0.0-20261030235918-c6c3a4986f53\t\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-race=true\n\tbuild\t-trimpath=true\n\tbuild\tCGO_ENABLED=1\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=darwin\n\tbuild\tGOARM64=v8.0\n\tbuild\tvcs=git\n\tbuild\tvcs.revision=c6c3a4986f5382787a0cff5d4da192d0cfe40a13\n\tbuild\tvcs.time=2026-10-30T23:59:18Z\n\tbuild\tvcs.modified=false\n"
+    },
+    ".cache/schedule-c6c3a49-race/cratectld": {
+      "sha256": "124e52895a9cea2d913283102f43f500d77b61f5ef057eb8a2aba831c146e9f3",
+      "build_info": ".cache/schedule-c6c3a49-race/cratectld: go1.27.3\n\tpath\tctlplne.dev/cratectl/cmd/cratectld\n\tmod\tctlplne.dev/cratectl\tv0.0.0-20261030235918-c6c3a4986f53\t\n\tdep\tgithub.com/Masterminds/semver/v3\tv3.4.0\th1:Zog+i5UMtVoCU8oKka5P7i9q9HgrJeGzI9SA1Xbatp0=\n\tdep\tgithub.com/aquasecurity/go-pep440-version\tv0.0.1\th1:8VKKQtH2aV61+0hovZS3T//rUF+6GDn18paFTVS0h0M=\n\tdep\tgithub.com/aquasecurity/go-version\tv0.0.1\th1:4cNl516agK0TCn5F7mmYN+xVs1E3S45LkgZk3cbaW2E=\n\tdep\tgithub.com/jackc/pgpassfile\tv1.0.0\th1:/6Hmqy13Ss2zCq62VdNG8tM1wchn8zjSGOBJ6icpsIM=\n\tdep\tgithub.com/jackc/pgservicefile\tv0.0.0-20240606120523-5a60cdf6a761\th1:iCEnooe7UlwOQYpKFhBabPMi4aNAfoODPEFNiAnClxo=\n\tdep\tgithub.com/jackc/pgx/v5\tv5.11.0\th1:IzBBtyK9AHqf98cctWFifYSci2hgQR/cd56wB4p+ogg=\n\tdep\tgithub.com/jackc/puddle/v2\tv2.2.2\th1:PR8nw+E/1w0GLuRFSmiioY6UooMp6KJv0/61nB7icHo=\n\tdep\tgolang.org/x/net\tv0.62.0\th1:18ELalfM5+XNRwzM2nYqXsZQ9ByS1uhj2O/U7+5jqRY=\n\tdep\tgolang.org/x/sync\tv0.24.0\th1:iqiDrGoDgyuvAKrhLQthUEzU/R378N78gXbBjxed7oA=\n\tdep\tgolang.org/x/text\tv0.43.0\th1:1QivrlhwAsnMOcqgOdl9my7s9OyZl8O5/UGUTJVXoWc=\n\tdep\tgolang.org/x/xerrors\tv0.0.0-20231012003039-104605ab7028\th1:+cNy6SZtPcJQH3LJVLOSmiC7MMxXNOb3PU/VUEz+EhU=\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-race=true\n\tbuild\t-trimpath=true\n\tbuild\tCGO_ENABLED=1\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=darwin\n\tbuild\tGOARM64=v8.0\n\tbuild\tvcs=git\n\tbuild\tvcs.revision=c6c3a4986f5382787a0cff5d4da192d0cfe40a13\n\tbuild\tvcs.time=2026-10-30T23:59:18Z\n\tbuild\tvcs.modified=false\n"
+    },
+    ".cache/schedule-c6c3a49-platform/linux-amd64-cratectld": {
+      "sha256": "7f86e88ba242308943a0e2556b65d2b0416c0bfc24b3b4fa0938d2d0fc924f72",
+      "build_info": ".cache/schedule-c6c3a49-platform/linux-amd64-cratectld: go1.27.3\n\tpath\tctlplne.dev/cratectl/cmd/cratectld\n\tmod\tctlplne.dev/cratectl\tv0.0.0-20261030235918-c6c3a4986f53\t\n\tdep\tgithub.com/Masterminds/semver/v3\tv3.4.0\th1:Zog+i5UMtVoCU8oKka5P7i9q9HgrJeGzI9SA1Xbatp0=\n\tdep\tgithub.com/aquasecurity/go-pep440-version\tv0.0.1\th1:8VKKQtH2aV61+0hovZS3T//rUF+6GDn18paFTVS0h0M=\n\tdep\tgithub.com/aquasecurity/go-version\tv0.0.1\th1:4cNl516agK0TCn5F7mmYN+xVs1E3S45LkgZk3cbaW2E=\n\tdep\tgithub.com/jackc/pgpassfile\tv1.0.0\th1:/6Hmqy13Ss2zCq62VdNG8tM1wchn8zjSGOBJ6icpsIM=\n\tdep\tgithub.com/jackc/pgservicefile\tv0.0.0-20240606120523-5a60cdf6a761\th1:iCEnooe7UlwOQYpKFhBabPMi4aNAfoODPEFNiAnClxo=\n\tdep\tgithub.com/jackc/pgx/v5\tv5.11.0\th1:IzBBtyK9AHqf98cctWFifYSci2hgQR/cd56wB4p+ogg=\n\tdep\tgithub.com/jackc/puddle/v2\tv2.2.2\th1:PR8nw+E/1w0GLuRFSmiioY6UooMp6KJv0/61nB7icHo=\n\tdep\tgolang.org/x/net\tv0.62.0\th1:18ELalfM5+XNRwzM2nYqXsZQ9ByS1uhj2O/U7+5jqRY=\n\tdep\tgolang.org/x/sync\tv0.24.0\th1:iqiDrGoDgyuvAKrhLQthUEzU/R378N78gXbBjxed7oA=\n\tdep\tgolang.org/x/text\tv0.43.0\th1:1QivrlhwAsnMOcqgOdl9my7s9OyZl8O5/UGUTJVXoWc=\n\tdep\tgolang.org/x/xerrors\tv0.0.0-20231012003039-104605ab7028\th1:+cNy6SZtPcJQH3LJVLOSmiC7MMxXNOb3PU/VUEz+EhU=\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-trimpath=true\n\tbuild\tCGO_ENABLED=0\n\tbuild\tGOARCH=amd64\n\tbuild\tGOOS=linux\n\tbuild\tGOAMD64=v1\n\tbuild\tvcs=git\n\tbuild\tvcs.revision=c6c3a4986f5382787a0cff5d4da192d0cfe40a13\n\tbuild\tvcs.time=2026-10-30T23:59:18Z\n\tbuild\tvcs.modified=false\n"
+    },
+    ".cache/schedule-c6c3a49-platform/linux-arm64-cratectld": {
+      "sha256": "09262c343bbb388af961ad31fd03c0927528508e18f04833059055975d28d455",
+      "build_info": ".cache/schedule-c6c3a49-platform/linux-arm64-cratectld: go1.27.3\n\tpath\tctlplne.dev/cratectl/cmd/cratectld\n\tmod\tctlplne.dev/cratectl\tv0.0.0-20261030235918-c6c3a4986f53\t\n\tdep\tgithub.com/Masterminds/semver/v3\tv3.4.0\th1:Zog+i5UMtVoCU8oKka5P7i9q9HgrJeGzI9SA1Xbatp0=\n\tdep\tgithub.com/aquasecurity/go-pep440-version\tv0.0.1\th1:8VKKQtH2aV61+0hovZS3T//rUF+6GDn18paFTVS0h0M=\n\tdep\tgithub.com/aquasecurity/go-version\tv0.0.1\th1:4cNl516agK0TCn5F7mmYN+xVs1E3S45LkgZk3cbaW2E=\n\tdep\tgithub.com/jackc/pgpassfile\tv1.0.0\th1:/6Hmqy13Ss2zCq62VdNG8tM1wchn8zjSGOBJ6icpsIM=\n\tdep\tgithub.com/jackc/pgservicefile\tv0.0.0-20240606120523-5a60cdf6a761\th1:iCEnooe7UlwOQYpKFhBabPMi4aNAfoODPEFNiAnClxo=\n\tdep\tgithub.com/jackc/pgx/v5\tv5.11.0\th1:IzBBtyK9AHqf98cctWFifYSci2hgQR/cd56wB4p+ogg=\n\tdep\tgithub.com/jackc/puddle/v2\tv2.2.2\th1:PR8nw+E/1w0GLuRFSmiioY6UooMp6KJv0/61nB7icHo=\n\tdep\tgolang.org/x/net\tv0.62.0\th1:18ELalfM5+XNRwzM2nYqXsZQ9ByS1uhj2O/U7+5jqRY=\n\tdep\tgolang.org/x/sync\tv0.24.0\th1:iqiDrGoDgyuvAKrhLQthUEzU/R378N78gXbBjxed7oA=\n\tdep\tgolang.org/x/text\tv0.43.0\th1:1QivrlhwAsnMOcqgOdl9my7s9OyZl8O5/UGUTJVXoWc=\n\tdep\tgolang.org/x/xerrors\tv0.0.0-20231012003039-104605ab7028\th1:+cNy6SZtPcJQH3LJVLOSmiC7MMxXNOb3PU/VUEz+EhU=\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-trimpath=true\n\tbuild\tCGO_ENABLED=0\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=linux\n\tbuild\tGOARM64=v8.0\n\tbuild\tvcs=git\n\tbuild\tvcs.revision=c6c3a4986f5382787a0cff5d4da192d0cfe40a13\n\tbuild\tvcs.time=2026-10-30T23:59:18Z\n\tbuild\tvcs.modified=false\n"
+    },
+    ".cache/schedule-c6c3a49-platform/windows-amd64-cratectl.exe": {
+      "sha256": "983105a711e2e02ae26a5503c846d4c2a32d12516ef73bba2d5258ce21f4fbb9",
+      "build_info": ".cache/schedule-c6c3a49-platform/windows-amd64-cratectl.exe: go1.27.3\n\tpath\tctlplne.dev/cratectl/cmd/cratectl\n\tmod\tctlplne.dev/cratectl\tv0.0.0-20261030235918-c6c3a4986f53\t\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-trimpath=true\n\tbuild\tCGO_ENABLED=0\n\tbuild\tGOARCH=amd64\n\tbuild\tGOOS=windows\n\tbuild\tGOAMD64=v1\n\tbuild\tvcs=git\n\tbuild\tvcs.revision=c6c3a4986f5382787a0cff5d4da192d0cfe40a13\n\tbuild\tvcs.time=2026-10-30T23:59:18Z\n\tbuild\tvcs.modified=false\n"
+    }
+  },
+  "limits": "Passing named assertions in these partial records do not qualify this candidate. Repaired source requires a fresh complete clean campaign."
+}

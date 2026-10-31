@@ -1,0 +1,53 @@
+=== RUN   TestIntegrityScheduleMigrationPreservesFiveReceiptsAndGuardsNewTenantTables
+    integrity_schedule_migration_integration_test.go:69: migration six checksum: 557b3f6612a403e24d0c9726c9b048d62188b3e1a93bcb3f158616da30b1fe6c
+--- PASS: TestIntegrityScheduleMigrationPreservesFiveReceiptsAndGuardsNewTenantTables (0.49s)
+=== RUN   TestIntegrityScheduleRotatesImmutableSamplesAndDoesNotOverlap
+--- PASS: TestIntegrityScheduleRotatesImmutableSamplesAndDoesNotOverlap (0.26s)
+=== RUN   TestIntegrityScheduleConcurrentAdmissionAndQueueDeferral
+--- PASS: TestIntegrityScheduleConcurrentAdmissionAndQueueDeferral (0.20s)
+=== RUN   TestIntegrityScheduleCredentialExpiryAndRevocationBlockUntilReauthorized
+=== RUN   TestIntegrityScheduleCredentialExpiryAndRevocationBlockUntilReauthorized/revoked
+=== RUN   TestIntegrityScheduleCredentialExpiryAndRevocationBlockUntilReauthorized/expired
+--- PASS: TestIntegrityScheduleCredentialExpiryAndRevocationBlockUntilReauthorized (0.30s)
+    --- PASS: TestIntegrityScheduleCredentialExpiryAndRevocationBlockUntilReauthorized/revoked (0.15s)
+    --- PASS: TestIntegrityScheduleCredentialExpiryAndRevocationBlockUntilReauthorized/expired (0.15s)
+=== RUN   TestIntegrityScheduleTenantIsolationAndImmutableReceipts
+--- PASS: TestIntegrityScheduleTenantIsolationAndImmutableReceipts (0.17s)
+=== RUN   TestIntegrityScheduleConfigurationAndDispatchRollbackWithJournal
+--- PASS: TestIntegrityScheduleConfigurationAndDispatchRollbackWithJournal (0.14s)
+=== RUN   TestIntegrityScheduleRequesterExpiryDuringAdmissionRollsBackAllEffects
+--- PASS: TestIntegrityScheduleRequesterExpiryDuringAdmissionRollsBackAllEffects (0.11s)
+=== RUN   TestIntegrityScheduleSamplesRetiredHeldDeniedAndConflictingUploadBindings
+--- PASS: TestIntegrityScheduleSamplesRetiredHeldDeniedAndConflictingUploadBindings (0.14s)
+=== RUN   TestIntegrityScheduleEmptyCaptureDoesNotClaimByteVerification
+--- PASS: TestIntegrityScheduleEmptyCaptureDoesNotClaimByteVerification (0.11s)
+=== RUN   TestIntegrityScheduleRunInspectionAndWorkerRejectMutableReceiptDrift
+=== RUN   TestIntegrityScheduleRunInspectionAndWorkerRejectMutableReceiptDrift/revision
+=== RUN   TestIntegrityScheduleRunInspectionAndWorkerRejectMutableReceiptDrift/due_slot
+=== RUN   TestIntegrityScheduleRunInspectionAndWorkerRejectMutableReceiptDrift/coalesced_intervals
+=== RUN   TestIntegrityScheduleRunInspectionAndWorkerRejectMutableReceiptDrift/schedule
+=== RUN   TestIntegrityScheduleRunInspectionAndWorkerRejectMutableReceiptDrift/missing_sampling_identity
+--- PASS: TestIntegrityScheduleRunInspectionAndWorkerRejectMutableReceiptDrift (0.23s)
+    --- PASS: TestIntegrityScheduleRunInspectionAndWorkerRejectMutableReceiptDrift/revision (0.02s)
+    --- PASS: TestIntegrityScheduleRunInspectionAndWorkerRejectMutableReceiptDrift/due_slot (0.05s)
+    --- PASS: TestIntegrityScheduleRunInspectionAndWorkerRejectMutableReceiptDrift/coalesced_intervals (0.02s)
+    --- PASS: TestIntegrityScheduleRunInspectionAndWorkerRejectMutableReceiptDrift/schedule (0.02s)
+    --- PASS: TestIntegrityScheduleRunInspectionAndWorkerRejectMutableReceiptDrift/missing_sampling_identity (0.02s)
+=== RUN   TestSweepSnapshotsAllReferencesFencesProgressAndRetainsPasses
+--- PASS: TestSweepSnapshotsAllReferencesFencesProgressAndRetainsPasses (0.16s)
+=== RUN   TestSweepRunningCancellationDoesNotRecordAnObservation
+--- PASS: TestSweepRunningCancellationDoesNotRecordAnObservation (0.10s)
+=== RUN   TestSweepSizeConflictsFollowTenantCASAcrossRepositories
+--- PASS: TestSweepSizeConflictsFollowTenantCASAcrossRepositories (0.08s)
+PASS
+ok  	ctlplne.dev/cratectl/internal/store	3.811s
+=== RUN   TestIntegrityScheduleHTTPWorkerReadsActualBytesAndSurvivesRestart
+--- PASS: TestIntegrityScheduleHTTPWorkerReadsActualBytesAndSurvivesRestart (0.62s)
+=== RUN   TestIntegrityScheduleHTTPPurposeAndTenantBoundaries
+--- PASS: TestIntegrityScheduleHTTPPurposeAndTenantBoundaries (0.31s)
+=== RUN   TestIntegrityScheduleHTTPRejectsReceiptDriftAndWorkerFailsWithoutObservations
+--- PASS: TestIntegrityScheduleHTTPRejectsReceiptDriftAndWorkerFailsWithoutObservations (0.41s)
+=== RUN   TestIntegrityScheduleParserRejectsAmbiguousOrUnboundedPlans
+--- PASS: TestIntegrityScheduleParserRejectsAmbiguousOrUnboundedPlans (0.00s)
+PASS
+ok  	ctlplne.dev/cratectl/internal/server	2.697s

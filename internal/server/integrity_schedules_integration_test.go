@@ -204,3 +204,52 @@ func TestIntegrityScheduleHTTPPurposeAndTenantBoundaries(t *testing.T) {
 		t.Fatal("invalid requests changed configuration", w.Code, w.Body.String())
 	}
 }
+
+func TestIntegrityScheduleHTTPRejectsReceiptDriftAndWorkerFailsWithoutObservations(t *testing.T) {
+	s, d, token, admin := schemaServer(t)
+	ctx := context.Background()
+	api := lifecycleHTTP(t, s, token)
+	input := store.ScheduleRequest{ScheduleSettings: store.ScheduleSettings{IntervalSeconds: 60, SampleSize: 1, Enabled: true, Reason: "Owned immutable receipt fault regression"}, RunImmediately: true}
+	path := "/api/v1/maintenance/integrity-schedules/receipt"
+	if w := api("PUT", path, input, "receipt-create"); w.Code != 201 {
+		t.Fatal(w.Code, w.Body.String())
+	}
+	workerToken, _ := crypt.Token()
+	if e := store.Provision(ctx, d.OwnerDSN, admin.Tenant, "receipt-worker", "worker", workerToken, time.Now().Add(time.Hour)); e != nil {
+		t.Fatal(e)
+	}
+	identity, e := s.DB.AuthenticateWorker(ctx, workerToken)
+	if e != nil {
+		t.Fatal(e)
+	}
+	out, e := s.DB.DispatchIntegritySchedule(ctx, identity)
+	if e != nil {
+		t.Fatal(e)
+	}
+	seq, task, e := store.ParseJobID(out.Job)
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e = s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
+		_, e := tx.Exec(ctx, `UPDATE cratectl.jobs SET payload=jsonb_set(payload,'{sampling,revision}','2'::jsonb) WHERE sequence=$1 AND task=$2`, seq, task)
+		return e
+	}); e != nil {
+		t.Fatal(e)
+	}
+	for _, endpoint := range []string{path + "/runs", "/api/v1/maintenance/integrity-sweeps/" + out.Job, "/api/v1/maintenance/integrity-sweeps/" + out.Job + "/items"} {
+		w := api("GET", endpoint, nil, "")
+		if w.Code != 503 || !strings.Contains(w.Body.String(), "schedule_evidence_unavailable") {
+			t.Fatal("drift reported as usable evidence", endpoint, w.Code, w.Body.String())
+		}
+	}
+	stop := repairWorker(t, s, d)
+	defer stop()
+	job := waitRepair(t, s, admin, out.Job, func(j store.Job) bool { return j.State == "failed" })
+	if job.LastError != "invalid_target" {
+		t.Fatal("worker failure was not durably classified", job.LastError)
+	}
+	observations, _, e := s.DB.JobObservations(ctx, admin, out.Job, 0, 100)
+	if e != nil || len(observations) != 0 {
+		t.Fatal("drift produced an integrity receipt", e)
+	}
+}
