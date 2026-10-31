@@ -3,6 +3,8 @@
 """Owned native worker/API/CLI proof with real PostgreSQL and actual process kills."""
 import argparse,hashlib,json,os,platform,signal,subprocess,time,urllib.error,urllib.request,uuid,http.server,threading
 from pathlib import Path
+from qualification_contract import candidate_binary_directory, candidate_artifact_names
+BIN = candidate_binary_directory()
 parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');args=parser.parse_args()
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT);RUN=uuid.uuid4().hex[:10]
 PRIVATE=ROOT/'.private'/'jobs-conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)
@@ -15,7 +17,7 @@ def build_identity(name):
   value=line.strip().split('\t')
   if len(value)==2 and value[0]=='build' and '='in value[1]:k,v=value[1].split('=',1);fields[k]=v
  return fields
-result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':source_scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*source_scope],text=True).strip()),'artifact_digests':{n:hashlib.sha256((ROOT/n).read_bytes()).hexdigest()for n in ['bin/cratectld','bin/cratectl']},'build_identity':{n:build_identity(n)for n in ['bin/cratectld','bin/cratectl']},'database_profile':env.get('CRATECTL_DEV_DATABASE','container'),'host':platform.platform(),'topology':'actual native registry and workers; nonowner forced-RLS PostgreSQL; shared local CAS; loopback 38443/35432','checks':checks,'commands':commands,'limits':['Builtin event indexing and SHA-256 storage integrity only; no scanner, signature approval, webhook, replication, GC or migration executor.','Two configured tenants on one native host; broader multi-host/fairness/scale, OS, storage outage and restore campaigns remain required.','A storage integrity observation cannot approve security policy; cancelled or stale attempts cannot publish observations.']}
+result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':source_scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*source_scope],text=True).strip()),'artifact_digests':{n:hashlib.sha256((ROOT/n).read_bytes()).hexdigest()for n in candidate_artifact_names()},'build_identity':{n:build_identity(n)for n in candidate_artifact_names()},'database_profile':env.get('CRATECTL_DEV_DATABASE','container'),'host':platform.platform(),'topology':'actual native registry and workers; nonowner forced-RLS PostgreSQL; shared local CAS; loopback 38443/35432','checks':checks,'commands':commands,'limits':['Builtin event indexing and SHA-256 storage integrity only; no scanner, signature approval, webhook, replication, GC or migration executor.','Two configured tenants on one native host; broader multi-host/fairness/scale, OS, storage outage and restore campaigns remain required.','A storage integrity observation cannot approve security policy; cancelled or stale attempts cannot publish observations.']}
 result['build_source_matches_candidate']=all(v.get('vcs.revision')==result['candidate']and v.get('vcs.modified')=='false'for v in result['build_identity'].values())
 def check(name,condition):
  if not condition:raise AssertionError(name)
@@ -43,7 +45,7 @@ def write_private(name,data):
  p.write_bytes(data);p.chmod(0o600);return p
 def start_server():
  logfile=(PRIVATE/'registry.log').open('ab');logs['server']=logfile
- p=subprocess.Popen([str(ROOT/'bin/cratectld'),'serve','--listen','127.0.0.1:38443','--public-url',BASE,'--dev-loopback-http','--objects',str(PRIVATE/'objects'),'--allow-private-upstreams','127.0.0.1/32'],env=runtime,stdout=logfile,stderr=subprocess.STDOUT);processes['server']=p
+ p=subprocess.Popen([str(BIN/'cratectld'),'serve','--listen','127.0.0.1:38443','--public-url',BASE,'--dev-loopback-http','--objects',str(PRIVATE/'objects'),'--allow-private-upstreams','127.0.0.1/32'],env=runtime,stdout=logfile,stderr=subprocess.STDOUT);processes['server']=p
  for _ in range(100):
   if p.poll()is not None:raise AssertionError('owned registry process stopped during startup')
   try:
@@ -62,7 +64,7 @@ def stop(name,hard=False):
  if name in logs:logs.pop(name).close()
 def start_worker(name,rate=0,config=None):
  logfile=(PRIVATE/(name+'.log')).open('ab');logs[name]=logfile
- p=subprocess.Popen([str(ROOT/'bin/cratectld'),'worker','--identities',str(config or PRIVATE/'workers.json'),'--objects',str(PRIVATE/'objects'),'--name','cratectl-'+name,'--lease','2s','--poll','50ms','--job-timeout','60s','--max-job-bytes',str(8<<20),'--verify-bytes-per-second',str(rate)],env=runtime,stdout=logfile,stderr=subprocess.STDOUT);processes[name]=p;return p
+ p=subprocess.Popen([str(BIN/'cratectld'),'worker','--identities',str(config or PRIVATE/'workers.json'),'--objects',str(PRIVATE/'objects'),'--name','cratectl-'+name,'--lease','2s','--poll','50ms','--job-timeout','60s','--max-job-bytes',str(8<<20),'--verify-bytes-per-second',str(rate)],env=runtime,stdout=logfile,stderr=subprocess.STDOUT);processes[name]=p;return p
 def jobs(identity='a',queue='',state=''):
  query='?limit=1000&queue='+queue+'&state='+state
  code,raw,_=request('/api/v1/jobs'+query,identity)
@@ -108,11 +110,11 @@ try:
  for identity in ['a','b']:
   tenant='jobs-'+identity+'-'+RUN;tenants[identity]=tenant
   for role,label in [('admin',identity),('worker',identity+'-worker')]:
-   p=PRIVATE/(label+'.token');command([ROOT/'bin/cratectld','provision','--tenant',tenant,'--actor','executor'if role=='worker'else'operator','--role',role,'--token-file',p]);tokens[label]=p.read_text().strip()
- reader=PRIVATE/'a-reader.token';command([ROOT/'bin/cratectld','provision','--tenant',tenants['a'],'--actor','reader','--role','reader','--token-file',reader]);tokens['a-reader']=reader.read_text().strip()
+   p=PRIVATE/(label+'.token');command([BIN/'cratectld','provision','--tenant',tenant,'--actor','executor'if role=='worker'else'operator','--role',role,'--token-file',p]);tokens[label]=p.read_text().strip()
+ reader=PRIVATE/'a-reader.token';command([BIN/'cratectld','provision','--tenant',tenants['a'],'--actor','reader','--role','reader','--token-file',reader]);tokens['a-reader']=reader.read_text().strip()
  write_private('workers.json',{'token_files':[str(PRIVATE/'a-worker.token'),str(PRIVATE/'b-worker.token')]})
  wrong=write_private('wrong-purpose.json',{'token_files':[str(PRIVATE/'a.token')]})
- command([ROOT/'bin/cratectld','worker','--identities',wrong,'--objects',PRIVATE/'objects'],expected=1,runenv=runtime)
+ command([BIN/'cratectld','worker','--identities',wrong,'--objects',PRIVATE/'objects'],expected=1,runenv=runtime)
  check('public admin credential cannot start a worker',True)
  start_server()
  for identity in ['a','b']:
@@ -130,7 +132,7 @@ try:
  check('job cursor traverses each job once',len(pages)==len({job_id(j)for j in pages})and len(pages)==len(jobs()))
  check('public job records omit claim tokens',all('lease_token'not in j and 'Token'not in j and 'token'not in j for j in pages))
  first=next(j for j in jobs()if j['queue']=='integrity');check('other tenant cannot read this job identity',request('/api/v1/jobs/'+job_id(first),'b')[0]==404)
- cli=command([ROOT/'bin/cratectl','--url',BASE,'--token-file',PRIVATE/'a.token','--path','/api/v1/jobs?limit=1000'],runenv=runtime);check('first-party CLI lists durable jobs',len(json.loads(cli)['items'])==len(pages))
+ cli=command([BIN/'cratectl','--url',BASE,'--token-file',PRIVATE/'a.token','--path','/api/v1/jobs?limit=1000'],runenv=runtime);check('first-party CLI lists durable jobs',len(json.loads(cli)['items'])==len(pages))
  start_worker('crash',64<<10)
  running=wait_for('slow integrity claim',lambda:next((j for j in jobs('a','integrity','running')),None));crashed_id=job_id(running);old_generation=running['generation']
  wait_for('reserved event lane serves second tenant during a slow hash',lambda:all(j['state']=='succeeded'for j in jobs('b','events')))
@@ -198,12 +200,12 @@ try:
  policy('integrity',64);policy('events',1)
  start_worker('revoked',64<<10)
  live=wait_for('job before credential revocation',lambda:next((j for j in jobs('a','integrity','running')),None));live_id=job_id(live);generation=live['generation']
- command([ROOT/'bin/cratectld','revoke','--token-file',PRIVATE/'a-worker.token'])
+ command([BIN/'cratectld','revoke','--token-file',PRIVATE/'a-worker.token'])
  wait_for('worker notices revoked execution authority',lambda:any(n.get('state')=='lease_or_credential_lost'for n in notes('revoked')))
  check('revoked in-flight attempt cannot commit an observation',observations(live_id)['items']==[])
  previous_b=len(jobs('b','integrity'));publish('still-working.bin',b'valid other tenant progresses','b');check('new work is admitted independently for a valid tenant',len(jobs('b','integrity'))==previous_b+1);wait_for('valid tenant proceeds after another credential is revoked',lambda:all(s=='succeeded'for s in states('b')))
  check('one revoked tenant does not stop other tenants',processes['revoked'].poll()is None)
- new_token=PRIVATE/'a-worker-new.token';command([ROOT/'bin/cratectld','provision','--tenant',tenants['a'],'--actor','executor-new','--role','worker','--token-file',new_token]);tokens['a-worker-new']=new_token.read_text().strip()
+ new_token=PRIVATE/'a-worker-new.token';command([BIN/'cratectld','provision','--tenant',tenants['a'],'--actor','executor-new','--role','worker','--token-file',new_token]);tokens['a-worker-new']=new_token.read_text().strip()
  config=write_private('workers-new.json',{'token_files':[str(new_token),str(PRIVATE/'b-worker.token')]})
  stop('revoked');start_worker('final',config=config)
  wait_for('replacement credential reclaims old work',lambda:get_job(live_id)['state']=='succeeded')

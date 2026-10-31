@@ -13,6 +13,8 @@ import hashlib
 import json
 import os
 from pathlib import Path
+from qualification_contract import candidate_binary_directory, candidate_artifact_names
+BIN = candidate_binary_directory()
 import socket
 import subprocess
 import sys
@@ -34,7 +36,7 @@ PRIVATE.mkdir(parents=True, mode=0o700)
 PRIVATE.chmod(0o700)
 OLD = ROOT / '.cache/retention-final-production/cratectld'
 OLD_SOURCE = '6cac8851da675dcaf531d6f8ed2aa26c927a243b'
-NEW, CLI = ROOT / 'bin/cratectld', ROOT / 'bin/cratectl'
+NEW, CLI = BIN / 'cratectld', BIN / 'cratectl'
 ORAS = ROOT / '.cache/bin/oras'
 PSQL = ROOT / '.cache/postgresql-16.15-install/bin/psql'
 BASE = 'http://127.0.0.1:38443'
@@ -67,7 +69,7 @@ result = {
     'checks': checks, 'commands': commands, 'process_events': process_events,
     'timing_helpers': [],
     'private_logs': str(PRIVATE.relative_to(ROOT)),
-    'topology': 'Native macOS arm64, qualified schema-7 binary then schema-10 registry/worker, PostgreSQL 16.15 forced RLS and restricted runtime, stock ORAS 1.3.6 and cratectl CLI. Explicit HTTP loopback 38443. Runtime processes omit the owner DSN; native clients omit both database DSNs.',
+    'topology': f'Native macOS arm64, qualified schema-7 binary then schema-{CURRENT_SCHEMA} registry/worker, PostgreSQL 16.15 forced RLS and restricted runtime, stock ORAS 1.3.6 and cratectl CLI. Explicit HTTP loopback 38443. Runtime processes omit the owner DSN; native clients omit both database DSNs.',
     'limits': [
         'Canonical OCI manifest creation-age/newest/tag/hold/reference rules. No physical erasure or reclaimed storage; other formats/rules and production recovery remain required.',
         'Artifact creation age is an owned SQL fixture. Claim and second-outcome barriers are declared timing faults in the isolated database, not supported product hooks or metadata repair.',
@@ -178,7 +180,7 @@ def start(name, binary=NEW, worker=False, reject=False):
         except subprocess.TimeoutExpired:
             raise AssertionError('old runtime stayed admitted to the upgraded schema')
         text = (PRIVATE / (name + '.log')).read_text(errors='replace').lower()
-        check('actual old ' + name + ' rejects schema 10', code != 0 and 'schema' in text and 'flag provided but not defined' not in text)
+        check('actual old ' + name + f' rejects schema {CURRENT_SCHEMA}', code != 0 and 'schema' in text and 'flag provided but not defined' not in text)
         stop(name)
     elif not worker:
         def ready():
@@ -431,7 +433,7 @@ try:
                  'evaluated_at': old_plan['evaluated_at'], 'preview_digest': old_plan['preview_digest']}, method='POST')['job']
     stop('registry')
     planned = json.loads(run([NEW, 'migrate', '--plan']))
-    check('new migrator plans immutable schema steps 8 through 10', planned['binary_version'] == CURRENT_SCHEMA and planned['pending'] == list(range(8,CURRENT_SCHEMA+1)) and planned['safety_valid'])
+    check(f'new migrator plans immutable schema steps 8 through {CURRENT_SCHEMA}', planned['binary_version'] == CURRENT_SCHEMA and planned['pending'] == list(range(8,CURRENT_SCHEMA+1)) and planned['safety_valid'])
     run([NEW, 'migrate'])
     after = json.loads(run([NEW, 'migrate', '--plan']))
     check('controlled upgrade preserves all seven receipts and adds safe schedule tables', after['applied'][:7] == before['applied'] and after['binary_version'] == CURRENT_SCHEMA and len(after['applied']) == CURRENT_SCHEMA and not after['pending'] and after['safety_valid'])

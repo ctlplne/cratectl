@@ -170,9 +170,27 @@ func TestOCINativeProcessDescriptorURLsAndRetainedRefresh(t *testing.T) {
 	if e = os.WriteFile(credentials, raw, 0600); e != nil {
 		t.Fatal(e)
 	}
-	binary, e := filepath.Abs("../../bin/cratectld")
+	binaryDirectory := os.Getenv("CRATECTL_QUALIFICATION_BIN_DIR")
+	if binaryDirectory == "" {
+		binaryDirectory = "../../bin"
+	} else if !filepath.IsAbs(binaryDirectory) {
+		binaryDirectory = filepath.Join("../..", binaryDirectory)
+	}
+	binary, e := filepath.Abs(filepath.Join(binaryDirectory, "cratectld"))
 	if e != nil {
 		t.Fatal(e)
+	}
+	workspace, e := filepath.Abs("../..")
+	if e != nil {
+		t.Fatal(e)
+	}
+	selected, e := filepath.EvalSymlinks(binary)
+	if e != nil {
+		t.Fatal(e)
+	}
+	relative, e := filepath.Rel(workspace, selected)
+	if e != nil || relative == ".." || strings.HasPrefix(relative, ".."+string(filepath.Separator)) {
+		t.Fatal("qualification binary must stay inside the cratectl workspace")
 	}
 	serverBytes, e := os.ReadFile(binary)
 	if e != nil {

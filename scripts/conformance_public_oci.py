@@ -2,6 +2,8 @@
 """Bounded real-provider OCI proof. Retain exact opaque bytes; never run an image."""
 import argparse,hashlib,json,os,platform,re,subprocess,time,urllib.error,urllib.parse,urllib.request,uuid
 from pathlib import Path
+from qualification_contract import candidate_binary_directory, candidate_artifact_names
+BIN = candidate_binary_directory()
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT)
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--registry',required=True,help='Explicit HTTPS registry native base, without credentials or query')
@@ -30,7 +32,7 @@ def identity(name):
   if len(fields)==2 and fields[0]=='build'and'='in fields[1]:key,value=fields[1].split('=',1);settings[key]=value
  return {'go_version':output.splitlines()[0].split()[-1],'settings':settings}
 
-result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':source_scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*source_scope],text=True).strip()),'artifact_digests':{name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest()for name in ['bin/cratectld','bin/cratectl']},'build_identity':{name:identity(name)for name in ['bin/cratectld','bin/cratectl']},'host':platform.platform(),'database_profile':os.environ.get('CRATECTL_DEV_DATABASE','container'),'topology':'native process on HTTP loopback 38443, real PostgreSQL runtime/owner roles, filesystem CAS; HTTPS public registry/realm/CDN','source':{'registry':args.registry,'image':args.image,'manifest_digest':args.digest,'token_realm':args.token_realm,'service':args.service,'delivery_bases':args.delivery_base,'documentation':args.source_document},'checks':checks,'commands':commands,'limits':['One explicitly pinned public image and one configured provider combination; no full format, security or readiness verdict.','Image bytes are copied into private OCI layouts and never executed or extracted.','No Docker/Podman engine, private PKI, every provider/platform, lifecycle, HA, fault or scale qualification.']}
+result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':source_scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*source_scope],text=True).strip()),'artifact_digests':{name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest()for name in candidate_artifact_names()},'build_identity':{name:identity(name)for name in candidate_artifact_names()},'host':platform.platform(),'database_profile':os.environ.get('CRATECTL_DEV_DATABASE','container'),'topology':'native process on HTTP loopback 38443, real PostgreSQL runtime/owner roles, filesystem CAS; HTTPS public registry/realm/CDN','source':{'registry':args.registry,'image':args.image,'manifest_digest':args.digest,'token_realm':args.token_realm,'service':args.service,'delivery_bases':args.delivery_base,'documentation':args.source_document},'checks':checks,'commands':commands,'limits':['One explicitly pinned public image and one configured provider combination; no full format, security or readiness verdict.','Image bytes are copied into private OCI layouts and never executed or extracted.','No Docker/Podman engine, private PKI, every provider/platform, lifecycle, HA, fault or scale qualification.']}
 result['build_source_matches_candidate']=all(v['settings'].get('vcs.revision')==result['candidate']and v['settings'].get('vcs.modified')=='false'for v in result['build_identity'].values())
 
 def check(name,condition):
@@ -62,7 +64,7 @@ def stop():
 def start():
  global proc,log
  fd=os.open(PRIVATE/'server.log',os.O_CREAT|os.O_WRONLY|os.O_APPEND,0o600);log=os.fdopen(fd,'a')
- proc=subprocess.Popen([str(ROOT/'bin/cratectld'),'serve','--listen','127.0.0.1:38443','--public-url',BASE,'--dev-loopback-http','--objects',str(PRIVATE/'objects'),'--oci-graph-bytes',str(16<<20)],stdout=log,stderr=subprocess.STDOUT)
+ proc=subprocess.Popen([str(BIN/'cratectld'),'serve','--listen','127.0.0.1:38443','--public-url',BASE,'--dev-loopback-http','--objects',str(PRIVATE/'objects'),'--oci-graph-bytes',str(16<<20)],stdout=log,stderr=subprocess.STDOUT)
  for _ in range(100):
   if proc.poll()is not None:raise AssertionError('Owned registry failed to start; private server log retained')
   try:
@@ -81,7 +83,7 @@ try:
   check('qualification source is clean',not result['source_dirty'])
   check('qualification binaries embed exact clean source commit',result['build_source_matches_candidate'])
  if not os.environ.get('CRATECTL_DSN')or not os.environ.get('CRATECTL_OWNER_DSN'):raise AssertionError('Owned PostgreSQL runtime and owner configuration required')
- token_file=PRIVATE/'admin.token';run(['bin/cratectld','provision','--tenant','proof-public-'+RUN,'--actor','qualification','--role','admin','--token-file',token_file]);token=token_file.read_text().strip()
+ token_file=PRIVATE/'admin.token';run([BIN/'cratectld','provision','--tenant','proof-public-'+RUN,'--actor','qualification','--role','admin','--token-file',token_file]);token=token_file.read_text().strip()
  start()
  settings={'upstream':{'url':args.registry,'networks':['0.0.0.0/0','::/0']},'oci_token_endpoint':{'url':args.token_realm,'networks':['0.0.0.0/0','::/0']},'oci_token_service':args.service,'download_sources':[{'url':base,'networks':['0.0.0.0/0','::/0'],'allow_signed_query':True}for base in args.delivery_base],'cache':{'fresh_seconds':60,'negative_seconds':30,'stale_seconds':0}}
  check('create bounded public OCI proxy',request('/api/v1/repositories','POST',{'name':'public-proxy','format':'oci','mode':'proxy','settings':settings})[0]==201)

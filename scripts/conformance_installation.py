@@ -3,6 +3,8 @@
 """Blank native operator journey; TLS stays verified and no development tenants are seeded."""
 import argparse,datetime,hashlib,json,os,signal,ssl,subprocess,time,urllib.parse,urllib.request,urllib.error,uuid
 from pathlib import Path
+from qualification_contract import candidate_binary_directory, candidate_artifact_names
+BIN = candidate_binary_directory()
 parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');args=parser.parse_args()
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT);RUN=uuid.uuid4().hex[:10]
 PRIVATE=ROOT/'.private/installation-conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)
@@ -17,7 +19,7 @@ def settings(name):
         if len(parts)==2 and parts[0]=='build' and '='in parts[1]:key,value=parts[1].split('=',1);out[key]=value
     return out
 scope=['cmd','internal','scripts','api','go.mod','go.sum','Makefile']
-result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope],text=True).strip()),'artifact_digests':{name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest()for name in ['bin/cratectld','bin/cratectl']},'build_identity':{name:settings(name)for name in ['bin/cratectld','bin/cratectl']},'checks':checks,'topology':'Native macOS process; new empty database in owned PostgreSQL 16.15 cluster; HTTPS on loopback 38443; stock npm and node; config-only runtime processes without owner/runtime DSN environment.','limits':['Database server and restricted login are supplied by the operator; no claim of blank-machine, Compose/Helm or offline-bundle qualification.','Generated local CA and certificate expire after 30 days; initial credentials default to 24 hours; production PKI and credential lifecycle remain required.','Single native host and filesystem; broader OS, outage/restore, production scale and full security qualification remain open.']}
+result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope],text=True).strip()),'artifact_digests':{name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest()for name in candidate_artifact_names()},'build_identity':{name:settings(name)for name in candidate_artifact_names()},'checks':checks,'topology':'Native macOS process; new empty database in owned PostgreSQL 16.15 cluster; HTTPS on loopback 38443; stock npm and node; config-only runtime processes without owner/runtime DSN environment.','limits':['Database server and restricted login are supplied by the operator; no claim of blank-machine, Compose/Helm or offline-bundle qualification.','Generated local CA and certificate expire after 30 days; initial credentials default to 24 hours; production PKI and credential lifecycle remain required.','Single native host and filesystem; broader OS, outage/restore, production scale and full security qualification remain open.']}
 result['build_source_matches_candidate']=all(v.get('vcs.revision')==result['candidate']and v.get('vcs.modified')=='false'for v in result['build_identity'].values())
 def check(label,condition):
     if not condition:raise AssertionError(label)
@@ -42,12 +44,12 @@ def start_process(name,argv,runenv=public_env):
     processes[name]=subprocess.Popen([str(x)for x in argv],env=runenv,stdout=log,stderr=subprocess.STDOUT)
     return processes[name]
 def cli(path,method='GET',body=None,key=None,extra=(),ok=True):
-    argv=[ROOT/'bin/cratectl','--config',INSTALL/'client.json','--path',path,'--method',method]
+    argv=[BIN/'cratectl','--config',INSTALL/'client.json','--path',path,'--method',method]
     if body is not None:argv+=['--body-file',private('request-'+uuid.uuid4().hex+'.json',body)]
     if key:argv+=['--idempotency-key',key]
     return command([*argv,*extra],ok=ok)
 def start_server():
-    start_process('registry',[ROOT/'bin/cratectld','serve','--config',INSTALL/'runtime.json'])
+    start_process('registry',[BIN/'cratectld','serve','--config',INSTALL/'runtime.json'])
     for _ in range(150):
         if processes['registry'].poll()is not None:raise AssertionError('registry stopped during startup')
         try:
@@ -70,7 +72,7 @@ try:
     check('new database has no cratectl schema or seeded tenant',psql("SELECT count(*) FROM pg_namespace WHERE nspname='cratectl'")=='0')
     initial_env=dict(env,CRATECTL_OWNER_DSN=with_database(env['CRATECTL_OWNER_DSN'],database),CRATECTL_DSN=with_database(env['CRATECTL_DSN'],database))
     psql('CREATE TABLE public.cratectl_owned_existing_fixture(value text); INSERT INTO public.cratectl_owned_existing_fixture VALUES (\'preserved\')')
-    command([ROOT/'bin/cratectld','init','--directory',INSTALL,'--tenant','first-team'],initial_env,ok=False)
+    command([BIN/'cratectld','init','--directory',INSTALL,'--tenant','first-team'],initial_env,ok=False)
     check('nonempty database is rejected before any cratectl schema migration',psql("SELECT count(*) FROM pg_namespace WHERE nspname='cratectl'")=='0'and psql('SELECT value FROM public.cratectl_owned_existing_fixture')=='preserved')
     psql('DROP TABLE public.cratectl_owned_existing_fixture')
     # Hold the documented initialization lock in this owned empty database,
@@ -81,7 +83,7 @@ try:
         if psql("SELECT count(*) FROM pg_locks l JOIN pg_stat_activity a ON a.pid=l.pid WHERE a.application_name='"+blocker_name+"' AND l.locktype='advisory' AND l.granted")=='1':break
         time.sleep(.02)
     check('owned database lock is held before initializer fault',psql("SELECT count(*) FROM pg_locks l JOIN pg_stat_activity a ON a.pid=l.pid WHERE a.application_name='"+blocker_name+"' AND l.locktype='advisory' AND l.granted")=='1')
-    initializer=start_process('initializer',[ROOT/'bin/cratectld','init','--directory',INSTALL,'--tenant','first-team'],initial_env)
+    initializer=start_process('initializer',[BIN/'cratectld','init','--directory',INSTALL,'--tenant','first-team'],initial_env)
     for _ in range(150):
         if (INSTALL/'prepare.json').exists()and (INSTALL/'admin.token').exists():break
         if initializer.poll()is not None:raise AssertionError('initializer exited before durable preparation')
@@ -89,7 +91,7 @@ try:
     check('initializer prepared private credentials before ready configuration', (INSTALL/'prepare.json').exists()and not (INSTALL/'runtime.json').exists())
     before=(INSTALL/'prepare.json').read_bytes();initializer.kill();initializer.wait(timeout=5);stop('initializer')
     psql("SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE application_name='"+blocker_name+"' AND datname='"+database+"'");stop('blocker')
-    receipt=json.loads(command([ROOT/'bin/cratectld','init','--directory',INSTALL,'--tenant','first-team'],initial_env))
+    receipt=json.loads(command([BIN/'cratectld','init','--directory',INSTALL,'--tenant','first-team'],initial_env))
     check('real killed initializer resumes original credentials and trust',(INSTALL/'prepare.json').read_bytes()==before)
     check('only one tenant and two purpose-separated credentials exist',psql('SELECT (SELECT count(*) FROM cratectl.tenants)::text || \'/\' || (SELECT count(*) FROM cratectl_private.tokens)::text')=='1/2')
     check('first database has no precreated repositories',psql('SELECT count(*) FROM cratectl.repositories')=='0')
@@ -99,7 +101,7 @@ try:
     check('all generated credential and configuration files are private',all(p.stat().st_mode&0o077==0 for p in INSTALL.iterdir()if p.is_file()))
     owner_bytes=initial_env['CRATECTL_OWNER_DSN'].encode();owner_password=urllib.parse.unquote(owner.password).encode()
     check('owner database authority is absent from retained installation files',all(owner_bytes not in p.read_bytes()and owner_password not in p.read_bytes()for p in INSTALL.iterdir()if p.is_file()))
-    repeated=json.loads(command([ROOT/'bin/cratectld','init','--directory',INSTALL],initial_env))
+    repeated=json.loads(command([BIN/'cratectld','init','--directory',INSTALL],initial_env))
     check('completed initialization replays original receipt',receipt==repeated)
     start_server()
     check('config-only CLI starts with an empty repository inventory',json.loads(cli('/api/v1/repositories'))['items']==[])
@@ -113,9 +115,9 @@ try:
     package=PRIVATE/'package';package.mkdir();name='cratectl-first-'+RUN
     (package/'package.json').write_text(json.dumps({'name':name,'version':'1.0.0','description':'Owned blank-install proof','license':'MIT','main':'index.js'}));(package/'index.js').write_text('module.exports=42;\n')
     npmrc=PRIVATE/'npmrc'
-    generated=json.loads(command([ROOT/'bin/cratectl','npm-config','--config',INSTALL/'client.json','--repository','packages','--output',npmrc]))
+    generated=json.loads(command([BIN/'cratectl','npm-config','--config',INSTALL/'client.json','--repository','packages','--output',npmrc]))
     check('CLI writes a private native npm configuration with TLS verification',generated['tls_verification']is True and npmrc.stat().st_mode&0o077==0)
-    original=npmrc.read_bytes();command([ROOT/'bin/cratectl','npm-config','--config',INSTALL/'client.json','--repository','packages','--output',npmrc],ok=False)
+    original=npmrc.read_bytes();command([BIN/'cratectl','npm-config','--config',INSTALL/'client.json','--repository','packages','--output',npmrc],ok=False)
     check('native credential configuration cannot overwrite an existing file',npmrc.read_bytes()==original)
     npm_env=dict(public_env,NPM_CONFIG_USERCONFIG=str(npmrc),NPM_CONFIG_CACHE=str(PRIVATE/'npm-cache'),NPM_CONFIG_AUDIT='false',NPM_CONFIG_FUND='false')
     command(['npm','publish','--ignore-scripts','--access','public'],npm_env,package)
@@ -132,7 +134,7 @@ try:
     check('approved exact package installs and its benign fixture returns expected value',True)
     stop('registry');start_server()
     check('first repository and package survive config-only restart',len(json.loads(cli('/api/v1/repositories/packages/artifacts'))['items'])==1)
-    start_process('worker',[ROOT/'bin/cratectld','worker','--config',INSTALL/'runtime.json','--poll','50ms'])
+    start_process('worker',[BIN/'cratectld','worker','--config',INSTALL/'runtime.json','--poll','50ms'])
     for _ in range(200):
         jobs=json.loads(cli('/api/v1/jobs?limit=100'))['items']
         if jobs and all(j['state']=='succeeded'for j in jobs):break
@@ -146,7 +148,7 @@ try:
     command(['npm','install','--ignore-scripts','--no-audit','--no-fund',name+'@1.0.0'],denial_env,other,ok=False)
     check('current policy denial still blocks a fresh stock-client install after restart',True)
     # A different directory cannot take over this initialized database.
-    command([ROOT/'bin/cratectld','init','--directory',PRIVATE/'other-installation','--tenant','other-team'],initial_env,ok=False)
+    command([BIN/'cratectld','init','--directory',PRIVATE/'other-installation','--tenant','other-team'],initial_env,ok=False)
     check('a second initializer cannot replace existing tenant state',psql('SELECT count(*) FROM cratectl.tenants')=='1')
     cli('/api/v1/repositories',extra=['--ca-file',PRIVATE/'other-installation/ca.crt'],ok=False)
     check('unrelated root cannot authenticate the server',True)

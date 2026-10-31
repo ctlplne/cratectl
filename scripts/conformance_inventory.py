@@ -4,6 +4,8 @@
 import socket
 import argparse,hashlib,json,os,platform,signal,subprocess,time,urllib.error,urllib.request,uuid,http.server,threading
 from pathlib import Path
+from qualification_contract import candidate_binary_directory, candidate_artifact_names
+BIN = candidate_binary_directory()
 parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');args=parser.parse_args()
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT);RUN=uuid.uuid4().hex[:10]
 PRIVATE=ROOT/'.private'/'inventory-conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)
@@ -16,7 +18,7 @@ def build_identity(name):
   value=line.strip().split('\t')
   if len(value)==2 and value[0]=='build' and '='in value[1]:k,v=value[1].split('=',1);fields[k]=v
  return fields
-result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':source_scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*source_scope],text=True).strip()),'artifact_digests':{n:hashlib.sha256((ROOT/n).read_bytes()).hexdigest()for n in ['bin/cratectld','bin/cratectl']},'build_identity':{n:build_identity(n)for n in ['bin/cratectld','bin/cratectl']},'database_profile':env.get('CRATECTL_DEV_DATABASE','container'),'host':platform.platform(),'topology':'actual native registry and workers; nonowner forced-RLS PostgreSQL; shared local CAS; loopback 38443/35432','checks':checks,'commands':commands,'limits':['Builtin event indexing and SHA-256 storage integrity only; no scanner, signature approval, webhook, replication, GC or migration executor.','Two configured tenants on one native host; broader multi-host/fairness/scale, OS, storage outage and restore campaigns remain required.','A storage integrity observation cannot approve security policy; cancelled or stale attempts cannot publish observations.']}
+result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':source_scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*source_scope],text=True).strip()),'artifact_digests':{n:hashlib.sha256((ROOT/n).read_bytes()).hexdigest()for n in candidate_artifact_names()},'build_identity':{n:build_identity(n)for n in candidate_artifact_names()},'database_profile':env.get('CRATECTL_DEV_DATABASE','container'),'host':platform.platform(),'topology':'actual native registry and workers; nonowner forced-RLS PostgreSQL; shared local CAS; loopback 38443/35432','checks':checks,'commands':commands,'limits':['Builtin event indexing and SHA-256 storage integrity only; no scanner, signature approval, webhook, replication, GC or migration executor.','Two configured tenants on one native host; broader multi-host/fairness/scale, OS, storage outage and restore campaigns remain required.','A storage integrity observation cannot approve security policy; cancelled or stale attempts cannot publish observations.']}
 result['limits']=['Live ordered local filesystem inventory, not an atomic volume snapshot or deletion authorization. Concurrent entries behind completed cursors require another run.','Only owned macOS/Linux-compatible fixtures; Windows, large directories, multi-host storage identity, S3, GC/holds/retention, scheduling/repair and backup/restore remain required.','Owner connection is used only for explicit fixture faults and legacy metadata setup; registry/worker use nonowner forced-RLS runtime connections.']
 result['build_source_matches_candidate']=all(v.get('vcs.revision')==result['candidate']and v.get('vcs.modified')=='false'for v in result['build_identity'].values())
 def check(name,condition):
@@ -45,7 +47,7 @@ def write_private(name,data):
  p.write_bytes(data);p.chmod(0o600);return p
 def start_server(entries=10000,directory=10000):
  logfile=(PRIVATE/'registry.log').open('ab');logs['server']=logfile
- p=subprocess.Popen([str(ROOT/'bin/cratectld'),'serve','--listen','127.0.0.1:38443','--public-url',BASE,'--dev-loopback-http','--objects',str(PRIVATE/'objects'),'--allow-private-upstreams','127.0.0.1/32','--inventory-entry-budget',str(entries),'--inventory-directory-entry-budget',str(directory)],env=runtime,stdout=logfile,stderr=subprocess.STDOUT);processes['server']=p
+ p=subprocess.Popen([str(BIN/'cratectld'),'serve','--listen','127.0.0.1:38443','--public-url',BASE,'--dev-loopback-http','--objects',str(PRIVATE/'objects'),'--allow-private-upstreams','127.0.0.1/32','--inventory-entry-budget',str(entries),'--inventory-directory-entry-budget',str(directory)],env=runtime,stdout=logfile,stderr=subprocess.STDOUT);processes['server']=p
  for _ in range(100):
   if p.poll()is not None:raise AssertionError('owned registry process stopped during startup')
   try:
@@ -64,7 +66,7 @@ def stop(name,hard=False):
  if name in logs:logs.pop(name).close()
 def start_worker(name,rate=0,config=None):
  logfile=(PRIVATE/(name+'.log')).open('ab');logs[name]=logfile
- p=subprocess.Popen([str(ROOT/'bin/cratectld'),'worker','--identities',str(config or PRIVATE/'workers.json'),'--objects',str(PRIVATE/'objects'),'--name','cratectl-'+name,'--lease','2s','--poll','50ms','--job-timeout','60s','--max-job-bytes',str(8<<20),'--verify-bytes-per-second',str(rate)],env=runtime,stdout=logfile,stderr=subprocess.STDOUT);processes[name]=p;return p
+ p=subprocess.Popen([str(BIN/'cratectld'),'worker','--identities',str(config or PRIVATE/'workers.json'),'--objects',str(PRIVATE/'objects'),'--name','cratectl-'+name,'--lease','2s','--poll','50ms','--job-timeout','60s','--max-job-bytes',str(8<<20),'--verify-bytes-per-second',str(rate)],env=runtime,stdout=logfile,stderr=subprocess.STDOUT);processes[name]=p;return p
 def jobs(identity='a',queue='',state=''):
  query='?limit=1000&queue='+queue+'&state='+state
  code,raw,_=request('/api/v1/jobs'+query,identity)
@@ -154,7 +156,7 @@ try:
  for identity in ['a','b']:
   tenant='inventory-'+identity+'-'+RUN;tenants[identity]=tenant
   for role,label in [('admin',identity),('worker',identity+'-worker'),('reader',identity+'-reader')]:
-   p=PRIVATE/(label+'.token');command([ROOT/'bin/cratectld','provision','--tenant',tenant,'--actor',role,'--role',role,'--token-file',p]);tokens[label]=p.read_text().strip()
+   p=PRIVATE/(label+'.token');command([BIN/'cratectld','provision','--tenant',tenant,'--actor',role,'--role',role,'--token-file',p]);tokens[label]=p.read_text().strip()
  write_private('workers.json',{'token_files':[str(PRIVATE/'a-worker.token'),str(PRIVATE/'b-worker.token')]})
  start_server()
  for identity in ['a','b']:

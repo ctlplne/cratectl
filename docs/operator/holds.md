@@ -171,6 +171,22 @@ qualification, actual old-binary upgrades and controlled maintenance remain
 required before promoting schema11. No broad release or legal-compliance claim
 follows from this development workflow.
 
+The native fault journey runs with `python3 scripts/conformance_hold_matters.py
+--require-clean-build` using the configured owned test PostgreSQL environment.
+It creates a separate database and stops its registry/workers afterward, retaining
+private data/logs and public scoped evidence. `--binary-directory` selects an owned
+candidate directory inside the workspace without replacing active binaries.
+The journey declares its SQL timing faults and verifies real process death,
+elapsed lease expiry, partial cancellation/retry and both authorities' revocation
+before fresh independent approval. It does not qualify production recovery.
+
+All native qualification drivers also honor `CRATECTL_QUALIFICATION_BIN_DIR`.
+Build a separate candidate with `make build BINDIR=.cache/candidate-production`,
+then set that variable to the candidate directory when running native checks.
+The selectors reject paths or symlinks outside this workspace. This keeps the
+active `bin/` bytes intact while another schema is tested in isolated databases.
+Evidence records the selected artifact paths and actual embedded source identity.
+
 ## API and CLI
 
 Use a private client configuration that contains the server trust and credential

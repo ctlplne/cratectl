@@ -758,3 +758,29 @@ func TestHoldMatterFirstOversizedRecordsFailInsteadOfTruncating(t *testing.T) {
 		t.Fatal("oversized original history record", e)
 	}
 }
+
+func TestHoldMatterAddedAfterRetirementAdmissionProtectsCapturedReference(t *testing.T) {
+	db, ctx, admin, worker, _ := retentionFixture(t)
+	retentionConfigure(t, db, ctx, admin, retentionPolicyInput())
+	root := retentionManifest(t, db, ctx, admin, "late-matter", "late-matter-reference", 3600, nil)
+	retirement := retentionAdmit(t, db, ctx, admin, retentionPreviewFixture(t, db, ctx, admin), "capture-before-matter")
+	lease, e := db.ClaimJob(ctx, worker, "maintenance", "retirement-before-matter", time.Minute)
+	if e != nil || lease.ID() != retirement {
+		t.Fatal(lease, e)
+	}
+	f := matterFixture{db: db, ctx: ctx, admin: admin, worker: worker, targets: []MatterSelector{{Repository: "retained", Path: root.Path}}, roots: []Artifact{root}}
+	f.create(t, "late-protection")
+	hold := f.start(t, admin, f.plan(t, admin, "late-protection", "hold", f.targets), "place-late-matter")
+	f.drain(t, hold.Job)
+	if state, e := db.StepRetention(ctx, worker, lease); e != nil || state != "succeeded" {
+		t.Fatal(state, e)
+	}
+	rows, _, e := db.RetentionItems(ctx, admin, retirement, 0, 10)
+	if e != nil || len(rows) != 1 || rows[0].Outcome != "held" {
+		t.Fatal("captured retirement bypassed later matter protection", rows, e)
+	}
+	current := f.state(t, 0)
+	if !current.Held || !current.MatterHeld || current.Deleted {
+		t.Fatal("retirement changed protected reference", current)
+	}
+}

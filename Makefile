@@ -1,14 +1,16 @@
 SHELL := /bin/sh
 GO := $(if $(wildcard .cache/go/bin/go),$(CURDIR)/.cache/go/bin/go,go)
+BINDIR ?= $(if $(CRATECTL_QUALIFICATION_BIN_DIR),$(CRATECTL_QUALIFICATION_BIN_DIR),bin)
+export CRATECTL_QUALIFICATION_BIN_DIR := $(abspath $(BINDIR))
 export GOCACHE := $(CURDIR)/.cache/go-build
 export GOMODCACHE := $(CURDIR)/.cache/go-mod
 export GOTOOLCHAIN := local
 .PHONY: build test race lint integration conformance security packaging console console-check
 build:
 	python3 scripts/check_console_assets.py
-	mkdir -p bin
-	$(GO) build -trimpath -o bin/cratectld ./cmd/cratectld
-	$(GO) build -trimpath -o bin/cratectl ./cmd/cratectl
+	mkdir -p "$(BINDIR)"
+	$(GO) build -trimpath -o "$(BINDIR)/cratectld" ./cmd/cratectld
+	$(GO) build -trimpath -o "$(BINDIR)/cratectl" ./cmd/cratectl
 test:
 	$(GO) test ./...
 race:
@@ -18,6 +20,7 @@ lint:
 	python3 scripts/check_architecture.py
 	python3 scripts/check_console_assets.py
 	python3 scripts/check_openapi_descriptions.py
+	python3 scripts/test_qualification_contract.py
 console:
 	python3 scripts/build_console.py
 console-check:

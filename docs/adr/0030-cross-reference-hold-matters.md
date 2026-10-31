@@ -44,3 +44,12 @@ This work establishes canonical OCI matter workflows. Mutable coordinates and
 retirement adapters for every other format, broader legal policy, physical GC,
 release/replica/restore protections, production recovery and all later committed
 scope remain required. No legal-compliance or broad readiness verdict follows.
+
+The maintained native journey is `scripts/conformance_hold_matters.py`. It uses
+stock ORAS and the management CLI against a fresh isolated database, kills leased
+workers between targets, waits for actual lease expiry, and tests partial
+cancellation/retry plus requester/approver revocation during a paused effect.
+An explicit ordinal-two SQL trigger supplies the timing fault. The shared owned
+timing helper records and closes its exact backend; it never edits leases or
+manufactures memberships/outcomes. Clean production/race qualification must run
+this journey in addition to the store, browser and prior native regressions.

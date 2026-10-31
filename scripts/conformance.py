@@ -4,6 +4,8 @@ import base64,csv,datetime,hashlib,io,json,os,platform,shutil,subprocess,sys,tar
 from concurrent.futures import ThreadPoolExecutor
 import xml.etree.ElementTree as XML
 from pathlib import Path
+from qualification_contract import candidate_binary_directory, candidate_artifact_names
+BIN = candidate_binary_directory()
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT)
 BASE='http://127.0.0.1:38443';RUN=uuid.uuid4().hex[:10]
 PRIVATE=ROOT/'.private/conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)
@@ -54,7 +56,7 @@ def start():
     bindings[tenants['admin']+'/config-'+fmt+'-'+side]={'value':tokens['config-'+side],'allowed_url':BASE+'/'+prefix+'/config-'+fmt+'-'+side+'/'}
   credentials.write_text(json.dumps(bindings))
  logfile=(PRIVATE/'server.log').open('a')
- proc=subprocess.Popen([str(ROOT/'bin/cratectld'),'serve','--listen','127.0.0.1:38443','--public-url',BASE,'--dev-loopback-http','--objects',str(PRIVATE/'objects'),'--upstream-credentials',str(credentials),'--allow-private-upstreams','127.0.0.1/32'],env=env,stdout=logfile,stderr=subprocess.STDOUT)
+ proc=subprocess.Popen([str(BIN/'cratectld'),'serve','--listen','127.0.0.1:38443','--public-url',BASE,'--dev-loopback-http','--objects',str(PRIVATE/'objects'),'--upstream-credentials',str(credentials),'--allow-private-upstreams','127.0.0.1/32'],env=env,stdout=logfile,stderr=subprocess.STDOUT)
  for _ in range(100):
   if proc.poll() is not None:raise AssertionError('server failed: '+(PRIVATE/'server.log').read_text())
   try:
@@ -72,7 +74,7 @@ def stop():
 def generic():
  check('expiring credential denied',req('/api/v1/repositories','expired')[0]==401)
  check('credential works before revocation',req('/api/v1/repositories','revocable')[0]==200)
- run(['bin/cratectld','revoke','--token-file',PRIVATE/'revocable.token'])
+ run([BIN/'cratectld','revoke','--token-file',PRIVATE/'revocable.token'])
  check('revocation affects subsequent requests',req('/api/v1/repositories','revocable')[0]==401)
  repository('raw','generic');repository('raw','generic','other')
  key=uuid.uuid4().hex;body={'name':'idem','format':'generic'}
@@ -708,7 +710,7 @@ def proxy():
  check('an alias cannot bypass the same repository digest denial',req('/r/remote/concurrent','reader')[0]==403)
  stop();start();check('proxy denial and cache state survive restart',req('/r/remote/object','reader')[0]==403)
  source_path.write_bytes(payload)
- run(['bin/cratectld','revoke','--token-file',PRIVATE/'origin.token'])
+ run([BIN/'cratectld','revoke','--token-file',PRIVATE/'origin.token'])
  req('/api/v1/repositories/reviewed/cache',method='PUT',data={'path':'object'},key=uuid.uuid4().hex)
  check('upstream authentication rejection cannot use stale bytes',req('/r/reviewed/object','reader')[0]==502)
 
@@ -797,8 +799,8 @@ def sourceconfig():
  maven_install('initial','a');change('java','b',0);maven_install('replacement','b');change('java','a',1);maven_install('rollback','a')
  # Static private-provider values rotate during controlled suspension/restart.
  check('suspend before reloading the private provider',req('/api/v1/repositories/config-oci/state',method='PUT',data={'action':'suspend','expected_revision':0,'reason':'Owned controlled credential rotation'},key=uuid.uuid4().hex)[0]==200)
- stop();run(['bin/cratectld','revoke','--token-file',PRIVATE/'config-a.token'])
- rotated=PRIVATE/'config-a-rotated.token';run(['bin/cratectld','provision','--tenant',tenants['other'],'--actor','config-a','--role','reader','--token-file',rotated]);tokens['config-a']=rotated.read_text().strip();start()
+ stop();run([BIN/'cratectld','revoke','--token-file',PRIVATE/'config-a.token'])
+ rotated=PRIVATE/'config-a-rotated.token';run([BIN/'cratectld','provision','--tenant',tenants['other'],'--actor','config-a','--role','reader','--token-file',rotated]);tokens['config-a']=rotated.read_text().strip();start()
  change('oci','a',2)
  check('resume after new epoch with reloaded credential',req('/api/v1/repositories/config-oci/state',method='PUT',data={'action':'resume','expected_revision':1,'reason':'Owned controlled credential rotation complete'},key=uuid.uuid4().hex)[0]==200)
  pull('credential-rotation','a');check('configuration history retains monotonic revisions through reload',len(json.loads(req('/api/v1/repositories/config-oci/configuration/history')[1])['items'])==3)
@@ -814,7 +816,7 @@ def build_identity(name):
  return {'go_version':output.splitlines()[0].split()[-1],'settings':settings}
 
 source_scope=['cmd','internal','scripts','api','go.mod','go.sum','Makefile']
-result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':source_scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*source_scope],text=True).strip()),'artifact_digests':{name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in ['bin/cratectld','bin/cratectl']},'build_identity':{name:build_identity(name) for name in ['bin/cratectld','bin/cratectl']},'host':platform.platform(),'database_profile':database_profile,'topology':f'macOS arm64 server, PostgreSQL 16.15 {database_profile}, filesystem bytes, HTTP loopback only','checks':checks,'commands':commands,'limitations':['Not full format conformance or parity.','Proxy/group proof covers generic, Maven and early npm journeys; no complete mode, migration, HA, scale or scanner qualification.','Client fixture code executes only in the explicitly owned test consumer.','No claim of a separate-machine install.']}
+result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':source_scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*source_scope],text=True).strip()),'artifact_digests':{name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in candidate_artifact_names()},'build_identity':{name:build_identity(name) for name in candidate_artifact_names()},'host':platform.platform(),'database_profile':database_profile,'topology':f'macOS arm64 server, PostgreSQL 16.15 {database_profile}, filesystem bytes, HTTP loopback only','checks':checks,'commands':commands,'limitations':['Not full format conformance or parity.','Proxy/group proof covers generic, Maven and early npm journeys; no complete mode, migration, HA, scale or scanner qualification.','Client fixture code executes only in the explicitly owned test consumer.','No claim of a separate-machine install.']}
 result['build_source_matches_candidate']=all(meta['settings'].get('vcs.revision')==result['candidate'] and meta['settings'].get('vcs.modified')=='false' for meta in result['build_identity'].values())
 tenants={}
 try:
@@ -824,9 +826,9 @@ try:
   check('qualification binaries embed exact clean source commit',result['build_source_matches_candidate'])
  for label,role in [('admin','admin'),('reader','reader'),('other','admin'),('origin','reader'),('npm-meta-origin','reader'),('npm-files-origin','reader')]+([('config-a','reader'),('config-b','reader')]if mode in ['all','sourceconfig']else[]):
   tenant='proof-'+RUN+('-b' if label in ['other','origin','npm-meta-origin','npm-files-origin','config-a','config-b'] else '-a');tenants[label]=tenant;token_file=PRIVATE/(label+'.token')
-  run(['bin/cratectld','provision','--tenant',tenant,'--actor',label,'--role',role,'--token-file',token_file]);tokens[label]=token_file.read_text().strip()
+  run([BIN/'cratectld','provision','--tenant',tenant,'--actor',label,'--role',role,'--token-file',token_file]);tokens[label]=token_file.read_text().strip()
  for label,lifetime in [('expired','1ms'),('revocable','1h')]:
-  token_file=PRIVATE/(label+'.token');run(['bin/cratectld','provision','--tenant',tenants['admin'],'--actor',label,'--role','reader','--expires-in',lifetime,'--token-file',token_file]);tokens[label]=token_file.read_text().strip()
+  token_file=PRIVATE/(label+'.token');run([BIN/'cratectld','provision','--tenant',tenants['admin'],'--actor',label,'--role','reader','--expires-in',lifetime,'--token-file',token_file]);tokens[label]=token_file.read_text().strip()
  start();mode=sys.argv[1] if len(sys.argv)>1 else 'all'
  for name,fn in [('generic',generic),('npm',npm),('npmproxy',npmproxy),('pypi',pypi),('pypiproxy',pypiproxy),('oci',oci),('ociproxy',ociproxy),('maven',maven),('proxy',proxy),('sourceconfig',sourceconfig)]:
   if mode in ('all',name):fn()

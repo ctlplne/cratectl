@@ -3,9 +3,10 @@
 """Owned real-database/browser journey. --serve holds a fixture for manual UI review."""
 import argparse,datetime,hashlib,json,os,subprocess,time,urllib.parse,urllib.request,uuid
 from pathlib import Path
+from qualification_contract import candidate_binary_directory, candidate_artifact_names
 parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');parser.add_argument('--serve',action='store_true');parser.add_argument('--binary-directory',type=Path,help='Owned candidate binary directory; defaults to bin without replacing active primary binaries');args=parser.parse_args()
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT);RUN=uuid.uuid4().hex[:10];PRIVATE=ROOT/'.private/console-conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)
-BIN=(args.binary_directory or ROOT/'bin').resolve();BIN.relative_to(ROOT)
+BIN=candidate_binary_directory(args.binary_directory)
 ARTIFACTS=[str((BIN/name).relative_to(ROOT))for name in ['cratectld','cratectl']]
 env=dict(os.environ);runtime_env=dict(env)
 for name in ['CRATECTL_OWNER_DSN','CRATECTL_DSN']:runtime_env.pop(name,None)

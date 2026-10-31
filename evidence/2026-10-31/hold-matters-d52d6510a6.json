@@ -1,0 +1,1550 @@
+{
+  "run": "d52d6510a6",
+  "candidate": "493befea3e52453f7e4ecc0722c1235829829700",
+  "status": "passed",
+  "expected_schema": 11,
+  "source_dirty": true,
+  "build_identity": {
+    ".cache/hold-matters-development/bin/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "79d1a5b198f7559f55208eccfeded43bf1724fd5",
+      "vcs.time": "2026-10-31T10:25:37Z",
+      "vcs.modified": "true"
+    },
+    ".cache/hold-matters-development/bin/cratectl": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "79d1a5b198f7559f55208eccfeded43bf1724fd5",
+      "vcs.time": "2026-10-31T10:25:37Z",
+      "vcs.modified": "true"
+    }
+  },
+  "artifact_digests": {
+    ".cache/hold-matters-development/bin/cratectld": "4ac54fbfe89672958336f6999cc425a41e302cfe1a416c2ea90dd201cc832c16",
+    ".cache/hold-matters-development/bin/cratectl": "6bf778c51b2883cbc7b84f7336e6f6f2da198d84b8450c023f107748fa19c104",
+    ".cache/bin/oras": "a75c9dfd7f8f4f1f8ff09c88e7dd03431714f5f760366dff50b7f3cea4850930"
+  },
+  "checks": [
+    "owned registry port is available",
+    "native PostgreSQL is project-owned loopback35432",
+    "isolated native matter database has safe exact current receipts",
+    "reader worker and other tenant cannot inspect this matter",
+    "CLI confirms exact placement admission without duplicate operation",
+    "actual registry restart retains the complete immutable pending intent",
+    "exact owned timing backend is absent after cleanup",
+    "SIGKILL and real lease expiry preserve the committed target and roll back target two",
+    "replacement worker resumes only unfinished targets after SIGKILL",
+    "native deletion is fenced by the placed matter",
+    "stock ORAS consumes exact held package and dependency bytes",
+    "native deletion is fenced by the placed matter",
+    "stock ORAS consumes exact held package and dependency bytes",
+    "native deletion is fenced by the placed matter",
+    "stock ORAS consumes exact held package and dependency bytes",
+    "release proposal has no admitted release job",
+    "exact owned timing backend is absent after cleanup",
+    "SIGKILL and real lease expiry preserve the committed target and roll back target two",
+    "native cancellation preserves committed release and leaves remaining targets protected",
+    "native retry completes only the original unobserved release targets",
+    "exact owned timing backend is absent after cleanup",
+    "current requester revocation rolls back the in-flight second release",
+    "job retry by recovery administrator cannot transfer requester authority",
+    "fresh requester and independent approval recover only remaining requester targets",
+    "exact owned timing backend is absent after cleanup",
+    "current approver revocation rolls back the in-flight second release",
+    "job retry by recovery administrator cannot transfer approver authority",
+    "fresh requester and independent approval recover only remaining approver targets",
+    "original placement receipts survive all subsequent release and recovery operations",
+    "every declared timing helper was closed by exact owned identity"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/postgresql-16.15-install/bin/psql",
+        "-X",
+        "-At",
+        "-v",
+        "ON_ERROR_STOP=1",
+        "-c",
+        "CREATE DATABASE cratectl_matter_d52d6510a6"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0000.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.125
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectld",
+        "migrate"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0001.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.129
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectld",
+        "migrate",
+        "--plan"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0002.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.023
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectld",
+        "provision",
+        "--tenant",
+        "matter-d52d6510a6",
+        "--actor",
+        "admin",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/admin.token"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0003.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.04
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectld",
+        "provision",
+        "--tenant",
+        "matter-d52d6510a6",
+        "--actor",
+        "recovery",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/recovery.token"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0004.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.04
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectld",
+        "provision",
+        "--tenant",
+        "matter-d52d6510a6",
+        "--actor",
+        "reviewer",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/reviewer.token"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0005.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.038
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectld",
+        "provision",
+        "--tenant",
+        "matter-d52d6510a6",
+        "--actor",
+        "reader",
+        "--role",
+        "reader",
+        "--token-file",
+        "PRIVATE/reader.token"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0006.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.041
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectld",
+        "provision",
+        "--tenant",
+        "matter-d52d6510a6",
+        "--actor",
+        "worker",
+        "--role",
+        "worker",
+        "--token-file",
+        "PRIVATE/worker.token"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0007.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.035
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectld",
+        "provision",
+        "--tenant",
+        "matter-d52d6510a6-other",
+        "--actor",
+        "other",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/other.token"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0008.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.039
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/hold-matters/investigation",
+        "--method",
+        "PUT",
+        "--body-file",
+        "PRIVATE/request-0009.json",
+        "--idempotency-key",
+        "cdd8e81a0ce74394b7580ad5d72882e8"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0009.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.04
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/repositories",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0010.json",
+        "--idempotency-key",
+        "ba1491e8276240fca3d0ca23b179dac5"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0010.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.022
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/repositories",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0011.json",
+        "--idempotency-key",
+        "6e94805881a94e82a416c489aef2d851"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0011.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "login",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oras-auth.json",
+        "--username",
+        "admin",
+        "--password-stdin",
+        "127.0.0.1:38443"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0012.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.038
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "127.0.0.1:38443/matter-a/app:v0",
+        "package.txt:text/plain",
+        "dependency.txt:text/plain",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oras-auth.json"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0013.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.234
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "resolve",
+        "127.0.0.1:38443/matter-a/app:v0",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oras-auth.json"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0014.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.039
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "127.0.0.1:38443/matter-a/app:v1",
+        "package.txt:text/plain",
+        "dependency.txt:text/plain",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oras-auth.json"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0015.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.12
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "resolve",
+        "127.0.0.1:38443/matter-a/app:v1",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oras-auth.json"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0016.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.068
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "push",
+        "127.0.0.1:38443/matter-b/app:v2",
+        "package.txt:text/plain",
+        "dependency.txt:text/plain",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oras-auth.json"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0017.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.231
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "resolve",
+        "127.0.0.1:38443/matter-b/app:v2",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oras-auth.json"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0018.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.139
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations/preview",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0019.json",
+        "--idempotency-key",
+        "8f44ee65da434778b1ab753e358124bb"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0019.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.035
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0020.json",
+        "--idempotency-key",
+        "native-lost-admission"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0020.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.035
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0021.json",
+        "--idempotency-key",
+        "native-lost-admission"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0021.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/postgresql-16.15-install/bin/psql",
+        "-X",
+        "-At",
+        "-v",
+        "ON_ERROR_STOP=1",
+        "-c",
+        "CREATE FUNCTION cratectl.matter_native_barrier() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.tenant='matter-d52d6510a6' AND NEW.operation=33 AND NEW.ordinal=2 THEN PERFORM pg_advisory_xact_lock(14970789); END IF; RETURN NEW; END $$; CREATE TRIGGER cratectl_matter_native_barrier BEFORE INSERT ON cratectl.hold_matter_outcomes FOR EACH ROW EXECUTE FUNCTION cratectl.matter_native_barrier()"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0022.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/postgresql-16.15-install/bin/psql",
+        "-X",
+        "-At",
+        "-v",
+        "ON_ERROR_STOP=1",
+        "-c",
+        "SELECT COALESCE(json_agg(json_build_object('pid',pid,'backend_start',backend_start)), '[]') FROM pg_stat_activity WHERE datname=current_database() AND usename='cratectl_app' AND state='active' AND wait_event='advisory' AND query LIKE 'INSERT INTO cratectl.hold_matter_outcomes%'"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0023.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.023
+    },
+    {
+      "argv": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/shankar/Desktop/ctlplne-cratectl/scripts/sql_timing.py",
+        "close",
+        "--state",
+        "PRIVATE/timing-helper-1.json"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0024.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.121
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/postgresql-16.15-install/bin/psql",
+        "-X",
+        "-At",
+        "-v",
+        "ON_ERROR_STOP=1",
+        "-c",
+        "DROP TRIGGER cratectl_matter_native_barrier ON cratectl.hold_matter_outcomes; DROP FUNCTION cratectl.matter_native_barrier()"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0025.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.021
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/postgresql-16.15-install/bin/psql",
+        "-X",
+        "-At",
+        "-v",
+        "ON_ERROR_STOP=1",
+        "-c",
+        "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid=30459 AND backend_start='2026-10-31T07:18:28.870938-04:00'::timestamptz"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0026.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "127.0.0.1:38443/matter-a/app@sha256:f248ec8ae9a56848987404c9c76b67bb9f05e48811a46ef6bf65cb2e6e0411f9",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oras-auth.json"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0027.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.067
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "127.0.0.1:38443/matter-a/app@sha256:ac1e6eb9a919514ee01ce0beefb99a524a7d7a26c1fe8b8026df2a725da68af9",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oras-auth.json"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0028.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.07
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/bin/oras",
+        "pull",
+        "127.0.0.1:38443/matter-b/app@sha256:8bbf73a108c6d1e6ed97c349735514ef24c452fdfe2211044cb8d79184166f08",
+        "--plain-http",
+        "--registry-config",
+        "PRIVATE/oras-auth.json"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0029.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.073
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations/preview",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0030.json",
+        "--idempotency-key",
+        "f7aa8bdd6b9b463faae09b6fd507ef1e"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0030.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0031.json",
+        "--idempotency-key",
+        "b368a22e91b0412aae9edaab38038ab8"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0031.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.022
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations/113/approve",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0032.json",
+        "--idempotency-key",
+        "11ed9cd8aca24a2cb05f7bc7e16820f2"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0032.log",
+      "expected_success": false,
+      "exit": 1,
+      "seconds": 0.02
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/reviewer.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations/113/approve",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0033.json",
+        "--idempotency-key",
+        "aff3624a3fc645dab8d42c515987ca73"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0033.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/postgresql-16.15-install/bin/psql",
+        "-X",
+        "-At",
+        "-v",
+        "ON_ERROR_STOP=1",
+        "-c",
+        "CREATE FUNCTION cratectl.matter_native_barrier() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.tenant='matter-d52d6510a6' AND NEW.operation=113 AND NEW.ordinal=2 THEN PERFORM pg_advisory_xact_lock(14970789); END IF; RETURN NEW; END $$; CREATE TRIGGER cratectl_matter_native_barrier BEFORE INSERT ON cratectl.hold_matter_outcomes FOR EACH ROW EXECUTE FUNCTION cratectl.matter_native_barrier()"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0034.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/postgresql-16.15-install/bin/psql",
+        "-X",
+        "-At",
+        "-v",
+        "ON_ERROR_STOP=1",
+        "-c",
+        "SELECT COALESCE(json_agg(json_build_object('pid',pid,'backend_start',backend_start)), '[]') FROM pg_stat_activity WHERE datname=current_database() AND usename='cratectl_app' AND state='active' AND wait_event='advisory' AND query LIKE 'INSERT INTO cratectl.hold_matter_outcomes%'"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0035.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.022
+    },
+    {
+      "argv": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/shankar/Desktop/ctlplne-cratectl/scripts/sql_timing.py",
+        "close",
+        "--state",
+        "PRIVATE/timing-helper-2.json"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0036.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.127
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/postgresql-16.15-install/bin/psql",
+        "-X",
+        "-At",
+        "-v",
+        "ON_ERROR_STOP=1",
+        "-c",
+        "DROP TRIGGER cratectl_matter_native_barrier ON cratectl.hold_matter_outcomes; DROP FUNCTION cratectl.matter_native_barrier()"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0037.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.022
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/postgresql-16.15-install/bin/psql",
+        "-X",
+        "-At",
+        "-v",
+        "ON_ERROR_STOP=1",
+        "-c",
+        "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid=30566 AND backend_start='2026-10-31T07:18:32.008841-04:00'::timestamptz"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0038.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.021
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/jobs/114:hold-46a948f6ce7f951a9a9e1909ef54966348b6131c8a018b88289c01a4ccee8ce1/cancel",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0039.json",
+        "--idempotency-key",
+        "ea58218f6eca49d09d1b43356f0e8645"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0039.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/jobs/114:hold-46a948f6ce7f951a9a9e1909ef54966348b6131c8a018b88289c01a4ccee8ce1/retry",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0040.json",
+        "--idempotency-key",
+        "763b19ada7e24ffa9bcbecb5fe323eed"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0040.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.022
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations/preview",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0041.json",
+        "--idempotency-key",
+        "16cc3583880d468aad73b8cb439b615f"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0041.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0042.json",
+        "--idempotency-key",
+        "5d4e9e6e868f46548723c8fdac98e0dc"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0042.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectld",
+        "provision",
+        "--tenant",
+        "matter-d52d6510a6",
+        "--actor",
+        "requester-requester",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/requester-requester.token"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0043.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.047
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectld",
+        "provision",
+        "--tenant",
+        "matter-d52d6510a6",
+        "--actor",
+        "approver-requester",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/approver-requester.token"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0044.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.043
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/requester-requester.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations/preview",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0045.json",
+        "--idempotency-key",
+        "e632621ecb264b378590f92ed479fb81"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0045.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/requester-requester.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0046.json",
+        "--idempotency-key",
+        "a9a941dc4d6e42dbb4956bcfd0fd4d18"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0046.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/approver-requester.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations/159/approve",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0047.json",
+        "--idempotency-key",
+        "483fe0cfc9a24e1b83d3085557bafe7f"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0047.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.023
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/postgresql-16.15-install/bin/psql",
+        "-X",
+        "-At",
+        "-v",
+        "ON_ERROR_STOP=1",
+        "-c",
+        "CREATE FUNCTION cratectl.matter_native_barrier() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.tenant='matter-d52d6510a6' AND NEW.operation=159 AND NEW.ordinal=2 THEN PERFORM pg_advisory_xact_lock(14970789); END IF; RETURN NEW; END $$; CREATE TRIGGER cratectl_matter_native_barrier BEFORE INSERT ON cratectl.hold_matter_outcomes FOR EACH ROW EXECUTE FUNCTION cratectl.matter_native_barrier()"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0048.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/postgresql-16.15-install/bin/psql",
+        "-X",
+        "-At",
+        "-v",
+        "ON_ERROR_STOP=1",
+        "-c",
+        "SELECT COALESCE(json_agg(json_build_object('pid',pid,'backend_start',backend_start)), '[]') FROM pg_stat_activity WHERE datname=current_database() AND usename='cratectl_app' AND state='active' AND wait_event='advisory' AND query LIKE 'INSERT INTO cratectl.hold_matter_outcomes%'"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0049.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.022
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectld",
+        "revoke",
+        "--token-file",
+        "PRIVATE/requester-requester.token"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0050.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 1.984
+    },
+    {
+      "argv": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/shankar/Desktop/ctlplne-cratectl/scripts/sql_timing.py",
+        "close",
+        "--state",
+        "PRIVATE/timing-helper-3.json"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0051.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.126
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/postgresql-16.15-install/bin/psql",
+        "-X",
+        "-At",
+        "-v",
+        "ON_ERROR_STOP=1",
+        "-c",
+        "DROP TRIGGER cratectl_matter_native_barrier ON cratectl.hold_matter_outcomes; DROP FUNCTION cratectl.matter_native_barrier()"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0052.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/recovery.token",
+        "--path",
+        "/api/v1/jobs/160:hold-51af4795c584f253f1f0e9e82cd4508fdef2cc01b78a8e1a3b064bb5136246e7/retry",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0053.json",
+        "--idempotency-key",
+        "6635504d8d044ec9b2a599ad99dde9a1"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0053.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/recovery.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations/preview",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0054.json",
+        "--idempotency-key",
+        "aefefe5d3ad14f37b5f13e438279d8cd"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0054.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.022
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/recovery.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0055.json",
+        "--idempotency-key",
+        "8c54399ab6ba46e78c735529a83c5f0e"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0055.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/reviewer.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations/177/approve",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0056.json",
+        "--idempotency-key",
+        "e5a93c0db1e74a1eb408df855ef1fd07"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0056.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations/preview",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0057.json",
+        "--idempotency-key",
+        "f5b0d00fc45a494f8af274562c2a620e"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0057.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.018
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/admin.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0058.json",
+        "--idempotency-key",
+        "f277a116b49646d19dc1429f3bdec1b1"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0058.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.022
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectld",
+        "provision",
+        "--tenant",
+        "matter-d52d6510a6",
+        "--actor",
+        "requester-approver",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/requester-approver.token"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0059.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.039
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectld",
+        "provision",
+        "--tenant",
+        "matter-d52d6510a6",
+        "--actor",
+        "approver-approver",
+        "--role",
+        "admin",
+        "--token-file",
+        "PRIVATE/approver-approver.token"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0060.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.037
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/requester-approver.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations/preview",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0061.json",
+        "--idempotency-key",
+        "dbc564dc5d964935a7aa28210c1c9490"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0061.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/requester-approver.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0062.json",
+        "--idempotency-key",
+        "c7656247e83a4f3f968ae5a8a54a69c2"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0062.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.023
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/approver-approver.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations/213/approve",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0063.json",
+        "--idempotency-key",
+        "be54ce7f37104db4972a5f7da2982438"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0063.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.022
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/postgresql-16.15-install/bin/psql",
+        "-X",
+        "-At",
+        "-v",
+        "ON_ERROR_STOP=1",
+        "-c",
+        "CREATE FUNCTION cratectl.matter_native_barrier() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.tenant='matter-d52d6510a6' AND NEW.operation=213 AND NEW.ordinal=2 THEN PERFORM pg_advisory_xact_lock(14970789); END IF; RETURN NEW; END $$; CREATE TRIGGER cratectl_matter_native_barrier BEFORE INSERT ON cratectl.hold_matter_outcomes FOR EACH ROW EXECUTE FUNCTION cratectl.matter_native_barrier()"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0064.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.022
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/postgresql-16.15-install/bin/psql",
+        "-X",
+        "-At",
+        "-v",
+        "ON_ERROR_STOP=1",
+        "-c",
+        "SELECT COALESCE(json_agg(json_build_object('pid',pid,'backend_start',backend_start)), '[]') FROM pg_stat_activity WHERE datname=current_database() AND usename='cratectl_app' AND state='active' AND wait_event='advisory' AND query LIKE 'INSERT INTO cratectl.hold_matter_outcomes%'"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0065.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.023
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectld",
+        "revoke",
+        "--token-file",
+        "PRIVATE/approver-approver.token"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0066.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 1.989
+    },
+    {
+      "argv": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/shankar/Desktop/ctlplne-cratectl/scripts/sql_timing.py",
+        "close",
+        "--state",
+        "PRIVATE/timing-helper-4.json"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0067.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.133
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/postgresql-16.15-install/bin/psql",
+        "-X",
+        "-At",
+        "-v",
+        "ON_ERROR_STOP=1",
+        "-c",
+        "DROP TRIGGER cratectl_matter_native_barrier ON cratectl.hold_matter_outcomes; DROP FUNCTION cratectl.matter_native_barrier()"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0068.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.023
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/recovery.token",
+        "--path",
+        "/api/v1/jobs/214:hold-f7b0f93947e5ab98b1bc760ebd95ac0ee510fa9f5cbf63f5ee11173ca4ae8ea1/retry",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0069.json",
+        "--idempotency-key",
+        "d3fecc8fd8f3482fba836e42a9ca3511"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0069.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.024
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/recovery.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations/preview",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0070.json",
+        "--idempotency-key",
+        "9fe0c7137efa448c89db12fc81d30f48"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0070.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/recovery.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0071.json",
+        "--idempotency-key",
+        "4f6df7d2d215406486bddda7b4a60cdd"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0071.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "argv": [
+        "/Users/shankar/Desktop/ctlplne-cratectl/.cache/hold-matters-development/bin/cratectl",
+        "--url",
+        "http://127.0.0.1:38443",
+        "--token-file",
+        "PRIVATE/reviewer.token",
+        "--path",
+        "/api/v1/hold-matters/investigation/operations/232/approve",
+        "--method",
+        "POST",
+        "--body-file",
+        "PRIVATE/request-0072.json",
+        "--idempotency-key",
+        "58c8107e905b4f2fb09c769ed090bae7"
+      ],
+      "private_log": ".private/hold-matters-conformance/d52d6510a6/command-0072.log",
+      "expected_success": true,
+      "exit": 0,
+      "seconds": 0.023
+    }
+  ],
+  "process_events": [
+    {
+      "process": "registry",
+      "pid": 30408,
+      "exit": 0,
+      "kill_requested": false
+    },
+    {
+      "process": "worker",
+      "pid": 30458,
+      "exit": -9,
+      "kill_requested": true
+    },
+    {
+      "process": "timing",
+      "pid": 30441,
+      "exit": 0,
+      "kill_requested": false
+    },
+    {
+      "process": "worker",
+      "pid": 30534,
+      "exit": 0,
+      "kill_requested": false
+    },
+    {
+      "process": "worker",
+      "pid": 30565,
+      "exit": -9,
+      "kill_requested": true
+    },
+    {
+      "process": "timing",
+      "pid": 30555,
+      "exit": 0,
+      "kill_requested": false
+    },
+    {
+      "process": "worker",
+      "pid": 30627,
+      "exit": 0,
+      "kill_requested": false
+    },
+    {
+      "process": "worker",
+      "pid": 30636,
+      "exit": 0,
+      "kill_requested": false
+    },
+    {
+      "process": "worker",
+      "pid": 30646,
+      "exit": 0,
+      "kill_requested": false
+    },
+    {
+      "process": "timing",
+      "pid": 30664,
+      "exit": 0,
+      "kill_requested": false
+    },
+    {
+      "process": "worker",
+      "pid": 30673,
+      "exit": 0,
+      "kill_requested": false
+    },
+    {
+      "process": "worker",
+      "pid": 30761,
+      "exit": 0,
+      "kill_requested": false
+    },
+    {
+      "process": "worker",
+      "pid": 30777,
+      "exit": 0,
+      "kill_requested": false
+    },
+    {
+      "process": "timing",
+      "pid": 30797,
+      "exit": 0,
+      "kill_requested": false
+    },
+    {
+      "process": "worker",
+      "pid": 30812,
+      "exit": 0,
+      "kill_requested": false
+    },
+    {
+      "process": "worker",
+      "pid": 30891,
+      "exit": 0,
+      "kill_requested": false
+    },
+    {
+      "process": "registry",
+      "pid": 30433,
+      "exit": 0,
+      "kill_requested": false
+    }
+  ],
+  "timing_helpers": [
+    {
+      "kind": "cratectl-owned-advisory-barrier-v1",
+      "status": "closed",
+      "application_name": "cratectl-barrier-matter-d52d6510a6-1-30441",
+      "database": "cratectl_matter_d52d6510a6",
+      "user": "cratectl_owner",
+      "lock": 14970789,
+      "seconds": 600,
+      "helper_pid": 30441,
+      "client_pid": 30445,
+      "backend": {
+        "pid": 30453,
+        "backend_start": "2026-10-31T07:18:28.80439-04:00"
+      },
+      "cleanup": {
+        "backend_absent": true,
+        "termination_wait_ms": 5000,
+        "termination_requested": true
+      }
+    },
+    {
+      "kind": "cratectl-owned-advisory-barrier-v1",
+      "status": "closed",
+      "application_name": "cratectl-barrier-matter-d52d6510a6-2-30555",
+      "database": "cratectl_matter_d52d6510a6",
+      "user": "cratectl_owner",
+      "lock": 14970789,
+      "seconds": 600,
+      "helper_pid": 30555,
+      "client_pid": 30558,
+      "backend": {
+        "pid": 30560,
+        "backend_start": "2026-10-31T07:18:31.930576-04:00"
+      },
+      "cleanup": {
+        "backend_absent": true,
+        "termination_wait_ms": 5000,
+        "termination_requested": true
+      }
+    },
+    {
+      "kind": "cratectl-owned-advisory-barrier-v1",
+      "status": "closed",
+      "application_name": "cratectl-barrier-matter-d52d6510a6-3-30664",
+      "database": "cratectl_matter_d52d6510a6",
+      "user": "cratectl_owner",
+      "lock": 14970789,
+      "seconds": 600,
+      "helper_pid": 30664,
+      "client_pid": 30667,
+      "backend": {
+        "pid": 30669,
+        "backend_start": "2026-10-31T07:18:35.16231-04:00"
+      },
+      "cleanup": {
+        "backend_absent": true,
+        "termination_wait_ms": 5000,
+        "termination_requested": true
+      }
+    },
+    {
+      "kind": "cratectl-owned-advisory-barrier-v1",
+      "status": "closed",
+      "application_name": "cratectl-barrier-matter-d52d6510a6-4-30797",
+      "database": "cratectl_matter_d52d6510a6",
+      "user": "cratectl_owner",
+      "lock": 14970789,
+      "seconds": 600,
+      "helper_pid": 30797,
+      "client_pid": 30805,
+      "backend": {
+        "pid": 30807,
+        "backend_start": "2026-10-31T07:18:38.406033-04:00"
+      },
+      "cleanup": {
+        "backend_absent": true,
+        "termination_wait_ms": 5000,
+        "termination_requested": true
+      }
+    }
+  ],
+  "private_logs": ".private/hold-matters-conformance/d52d6510a6",
+  "topology": "Native registry and maintenance workers, isolated forced-RLS PostgreSQL on 35432, stock ORAS and cratectl CLI on loopback HTTP38443. Runtime processes omit the owner DSN; clients omit both DSNs.",
+  "limits": [
+    "Canonical OCI references across two repositories on one native host; broader formats, legal policy, providers/platforms, HA and scale remain required.",
+    "An ordinal-two outcome trigger is an explicit SQL timing fault. Worker death, lease expiry, transaction rollback, revocation and API recovery use actual processes and clocks.",
+    "No lease/outcome/membership values are manufactured through SQL. Immutable snapshots, committed progress and API observations determine assertions.",
+    "Private raw logs, timing ownership records, credentials, objects and the isolated database are retained; no physical deletion, production maintenance or release readiness is established."
+  ],
+  "build_source_matches_candidate": false
+}
