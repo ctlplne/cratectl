@@ -160,6 +160,8 @@ components:
         digest: {type: string, pattern: '^[a-f0-9]{64}$'}
         deleted: {type: boolean}
         held: {type: boolean, description: Held at the observation or original receipt time}
+        legacy_held: {type: boolean, description: Original hold slot is active at the observation time; absent in older immutable receipts}
+        case_held: {type: boolean, description: At least one independent case is active at the observation time; absent in older immutable receipts}
         revision: {type: integer, format: int64, minimum: 0}
         hold_reason: {type: string, description: Present while a recorded hold reason remains}
         hold_until: {type: string, format: date-time, description: Omitted for an indefinite hold or a released hold}
@@ -187,7 +189,162 @@ components:
         actor: {type: string}
         recorded_at: {type: string, format: date-time}
         event_hash: {type: string, pattern: '^[a-f0-9]{64}$', description: Identifies the full journal event; the filtered snapshot alone is not a complete audit-chain proof}
+    HoldCase:
+      type: object
+      required: [repository, path, digest, case_id, revision, held, released, created_sequence, change_sequence]
+      properties:
+        repository: {type: string}
+        path: {type: string, maxLength: 2048}
+        digest: {type: string, pattern: '^[a-f0-9]{64}$'}
+        case_id: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$', description: Scoped to this repository and immutable reference; legacy is reserved}
+        revision: {type: integer, format: int64, minimum: 0}
+        held: {type: boolean, description: This case is unreleased and unexpired at observation time}
+        released: {type: boolean}
+        hold_reason: {type: string, description: Last preservation reason; retained after release}
+        hold_until: {type: string, format: date-time, description: Omitted for indefinite preservation; retained after release}
+        reason: {type: string, description: Latest case-change reason}
+        actor: {type: string}
+        changed_at: {type: string, format: date-time}
+        created_sequence: {type: integer, format: int64, description: Immutable inventory position from first creation; zero for a new case}
+        change_sequence: {type: integer, format: int64}
+    HoldCaseRequest:
+      type: object
+      additionalProperties: false
+      required: [path, digest, action, expected_revision, reason]
+      properties:
+        path: {type: string, maxLength: 2048}
+        digest: {type: string, pattern: '^[a-f0-9]{64}$'}
+        action: {type: string, enum: [hold, release_hold]}
+        expected_revision: {type: integer, format: int64, minimum: 0, description: This named case revision; zero for a new case; independent cases have independent revisions}
+        reason: {type: string, minLength: 1, maxLength: 1024, description: Nonblank reason at most 1024 UTF-8 bytes without control characters}
+        hold_until: {type: string, format: date-time, description: Optional future expiry for hold; omit for indefinite preservation and release}
+        dry_run: {type: boolean, default: false}
+    HoldCasePreview:
+      type: object
+      required: [case, current, action, retained_bytes, dry_run]
+      properties:
+        case: {$ref: '#/components/schemas/HoldCase'}
+        current: {$ref: '#/components/schemas/HoldState'}
+        action: {type: string, enum: [hold, release_hold]}
+        retained_bytes: {const: true}
+        dry_run: {type: boolean}
+    HoldCaseChange:
+      type: object
+      required: [sequence, action, case, current, actor, recorded_at, event_hash]
+      properties:
+        sequence: {type: integer, format: int64}
+        action: {type: string, enum: [hold, release_hold]}
+        case: {$ref: '#/components/schemas/HoldCase'}
+        current: {$ref: '#/components/schemas/HoldState'}
+        actor: {type: string}
+        recorded_at: {type: string, format: date-time}
+        event_hash: {type: string, pattern: '^[a-f0-9]{64}$'}
 paths:
+  /api/v1/hold-cases:
+    get:
+      summary: Discover independent hold cases as a current tenant administrator
+      description: Live bounded pages include canonical OCI references in retained repositories. Each case has its own revision and expiry. Status applies to that case only. Releasing it never changes another case or the legacy hold slot. Creation sequence gives a stable order while concurrent changes and expiry can change filter membership. Unknown and repeated parameters fail.
+      parameters:
+        - in: query
+          name: state
+          schema: {type: string, enum: [active, expired, released, all], default: active}
+        - in: query
+          name: repository
+          schema: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$'}
+        - in: query
+          name: path
+          schema: {type: string, maxLength: 2048}
+        - in: query
+          name: case_id
+          schema: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$'}
+        - {$ref: '#/components/parameters/ListSearch'}
+        - in: query
+          name: limit
+          schema: {type: integer, minimum: 1, maximum: 100, default: 100}
+        - {$ref: '#/components/parameters/ListCursor'}
+      responses:
+        '200': {description: 'Items contain HoldCase fields plus status and repository_state. The page includes observed_at, limit, next, previous and scope. Encrypted continuations bind endpoint, filters and current credential.'}
+        '400': {description: "Malformed filters, repeated fields or differently scoped continuation"}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current tenant administrator required}
+        '503': {description: "Byte budget, schema or database failure; no partial record returned"}
+  /api/v1/repositories/{repository}/artifacts/holds/{case_id}:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+      - in: path
+        name: case_id
+        required: true
+        schema: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$'}
+    get:
+      summary: Read one independent case or revision zero for a new case
+      parameters:
+        - in: query
+          name: path
+          required: true
+          schema: {type: string, maxLength: 2048}
+      responses:
+        '200':
+          description: Current case state with exact retained reference digest
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/HoldCase'}
+        '400': {description: Malformed query}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current tenant administrator required}
+        '404': {description: Canonical reference or repository not found}
+        '409': {description: Invalid name or noncanonical reference}
+    put:
+      summary: Preview or apply a case-specific preservation decision
+      description: Expected revision belongs only to this case. Placement updates or reopens that case; release retains its reason and expiry and affects no other protection. Every applied change also advances the common lifecycle revision to invalidate earlier destructive previews. Current administrator authority applies even to exact idempotent replay. Effect plus journal plus job intent plus idempotency response commit together. Dry-run changes no state. Suspended or removed repositories remain fenced from serving.
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          description: Required unless dry_run is true; reuse only for the identical request
+          schema: {type: string, minLength: 8, maxLength: 128}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/HoldCaseRequest'}
+      responses:
+        '200':
+          description: Current case and aggregate reference state at preview or committed change
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/HoldCasePreview'}
+        '400': {description: Invalid JSON or missing explicit revision or idempotency key}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current tenant administrator required including on replay}
+        '404': {description: Canonical reference or repository not found}
+        '409': {description: "Stale case revision, changed digest, invalid action or expiry, or already released case"}
+        '413': {description: Request exceeds 16 KiB}
+        '503': {description: "Queue, schema or database failure; entire transition rolled back"}
+  /api/v1/repositories/{repository}/artifacts/holds/{case_id}/history:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+      - in: path
+        name: case_id
+        required: true
+        schema: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$'}
+    get:
+      summary: Read original immutable changes for one named reference case
+      description: Returns actual journal snapshots ordered by event sequence. Expiry invents no release event. The case snapshot and aggregate state retain their original meaning; filtered event hashes identify receipts in the complete audit export.
+      parameters:
+        - in: query
+          name: path
+          required: true
+          schema: {type: string, maxLength: 2048}
+        - in: query
+          name: limit
+          schema: {type: integer, minimum: 1, maximum: 100, default: 100}
+        - {$ref: '#/components/parameters/ListCursor'}
+      responses:
+        '200': {description: 'Bounded items of HoldCaseChange with limit, next, previous and scope. Cursor binds the case, reference and current credential.'}
+        '400': {description: Invalid query or differently scoped continuation}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current tenant administrator required}
+        '404': {description: Canonical reference or repository not found}
+        '503': {description: "Byte budget, schema or database failure; no partial record returned"}
   /api/v1/session:
     get:
       summary: Read current authenticated tenant identity and supported native adapters

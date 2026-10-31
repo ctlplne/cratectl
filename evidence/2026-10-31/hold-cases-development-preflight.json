@@ -1,0 +1,169 @@
+{
+  "observed_at": "2026-10-31T09:14:07.732491+00:00",
+  "status": "development passed; clean candidate qualification pending",
+  "source_parent": "cb7e724d33d51c7687d71a0f5055a46cf0d8479e",
+  "source_dirty": true,
+  "identity": {
+    "author_and_committer": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>",
+    "all_existing_local_commits": 64
+  },
+  "migration": {
+    "version": 10,
+    "checksum": "f8c9da14c14a2f18575ce1583a8cc94bd0b424740b96cc4367dcd016e96db0ba",
+    "earlier_receipts_frozen": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "primary_schema": 9,
+    "primary_untouched": true
+  },
+  "checks": {
+    "standard": [
+      "make build",
+      "make test",
+      "make race",
+      "make lint"
+    ],
+    "console_reproduces_byte_for_byte": true,
+    "api_response_maps_and_local_references": 267,
+    "postgres": {
+      "packages": 3,
+      "top_level_passes": 207,
+      "top_level_failures": 0,
+      "skips": 0,
+      "races": false,
+      "raw_log": ".cache/hold-cases-development-20261031T090245Z/postgres-race.log",
+      "sha256": "606182388b124ec2e7fd4ae0225c021a9f3744056e52f49c5b0de4c0a9c19dba"
+    },
+    "new_store_http_race_regressions": {
+      "tests": 8,
+      "repetitions": 2,
+      "log": ".cache/hold-cases-expanded-postgres-replay.txt",
+      "sha256": "aa9f3e744d34bd50a66aac6e7643e866dbe3aee400783dc84da9145044d7420d"
+    },
+    "browser": {
+      "record": ".cache/hold-cases-runtime-20261031T091136Z/state.json",
+      "stats": {
+        "startTime": "2026-10-31T09:11:40.835Z",
+        "duration": 11861.219000000001,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "proof": {
+        "checks": [
+          "two console placements coexist with safely rendered reasons and independent revision-zero admission",
+          "console release of case A preserves case B and the original hold slot",
+          "releasing the original hold slot also preserves case B",
+          "case history retains the original placement and release with aggregate protection still true",
+          "real elapsed expiry preserves original receipts and leaves the other active case enforced",
+          "revocation clears the workspace while case B remains enforced for the independent recovery administrator",
+          "last case release permits native deletion only after the timed case has actually expired",
+          "released and expired cases remain inspectable without credential values in DOM or browser storage"
+        ],
+        "accessibility": [
+          {
+            "state": "empty case inventory",
+            "violations": 0
+          },
+          {
+            "state": "review-a independent placement preview",
+            "violations": 0
+          },
+          {
+            "state": "review-b independent placement preview",
+            "violations": 0
+          },
+          {
+            "state": "two independent active cases",
+            "violations": 0
+          },
+          {
+            "state": "release one case preview",
+            "violations": 0
+          },
+          {
+            "state": "case-specific immutable history",
+            "violations": 0
+          },
+          {
+            "state": "expired case while another remains active",
+            "violations": 0
+          },
+          {
+            "state": "revoked case administrator reconnect",
+            "violations": 0
+          },
+          {
+            "state": "independent current case administrator recovery",
+            "violations": 0
+          },
+          {
+            "state": "narrow independent case inventory",
+            "violations": 0
+          }
+        ],
+        "browser": "156.0.8078.4",
+        "scope": "Independent canonical OCI reference cases and legacy coexistence through console/API/native DELETE, original receipts and real elapsed expiry. Bulk/legal processes, other formats, physical GC, assistive technology, scale and production recovery remain required."
+      },
+      "prior_full_suite": "eleven prior workflows passed; new case workflow exposed fixture credential reuse and required a focused corrected replay"
+    },
+    "native": {
+      "record": "evidence/2026-10-31/lifecycle-19d763bf19.json",
+      "actual_old_schema": 9,
+      "assertions": 63,
+      "source_dirty": true
+    }
+  },
+  "failures_retained": [
+    {
+      "record": "evidence/2026-10-31/hold-cases-first-failure.txt",
+      "meaning": "Expected 404 before case API implementation",
+      "raw_record": ".cache/hold-cases-first-failure.raw.txt",
+      "raw_sha256": "3471a437c782771ea30f37d1c9c7858ceee32e3aa5a6f13db4aba0416b371375",
+      "public_copy": "Trailing whitespace removed; original bytes retained locally with this digest."
+    },
+    {
+      "record": ".cache/hold-cases-expanded-postgres.txt",
+      "meaning": "Test setup selected illegal queue capacity zero and checked preview status instead of worker outcome; corrected regression fixtures"
+    },
+    {
+      "record": "evidence/2026-10-31/console-95b40dfa18.json",
+      "meaning": "Existing eleven workflows passed; new case workflow reused a credential deliberately revoked by an earlier workflow"
+    },
+    {
+      "record": ".cache/hold-cases-runtime-20261031T090741Z/state.json",
+      "meaning": "Case flow passed through placement and releases; nested select label locator included option text. Corrected to the accessible combobox role/name."
+    }
+  ],
+  "artifacts": {
+    "cratectl": "545fb6be948a3f823c4734d8d0d4f876ac41b856da7678583edd26675ca127df",
+    "cratectld": "66ac8a88bfa7248dcccc11d41b5ab414b2837d0cfd2c2253a0079e1abed6bf4d"
+  },
+  "qualified_primary_runtime": {
+    "schema": 9,
+    "source": "ab28ee966077f7e96a9d96a8898eb389200e30e4",
+    "restored_after_development": true
+  },
+  "limits": [
+    "These are development observations from a dirty source parent, not clean-source qualification.",
+    "Named cases protect canonical immutable OCI references; cross-reference legal matters, bulk approval/release, other formats, physical GC and production recovery remain unfinished.",
+    "All450capabilities/41formatfamilies and every later stage remain committed; every broad readiness verdict remains negative.",
+    "No reset/recreation/push/publication/remote mutation or Docker/sibling changes occurred."
+  ],
+  "source_review": {
+    "files": 1454,
+    "generated_private_entries_absent": 9616,
+    "distinct_private_values_absent": 5234,
+    "gitleaks_findings": 0,
+    "scanner_rules_changed": false
+  }
+}

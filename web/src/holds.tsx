@@ -4,6 +4,7 @@ import type {Page} from './api';
 import type {Common} from './view-types';
 import {Badge,CursorPages,Details,Empty,ErrorBox,Freshness,Panel,useResource} from './components';
 import {Lifecycle} from './lifecycle';
+import {HoldCases} from './hold-cases';
 
 type HoldState={repository:string;path:string;digest:string;revision:number;held:boolean;deleted:boolean;hold_reason?:string;hold_until?:string;reason:string;actor:string;changed_at:string;change_sequence:number};
 type Hold=HoldState&{status:'active'|'expired'|'released';repository_state:string;format:string;mode:string};
@@ -14,8 +15,8 @@ export function Holds(p:Common){
  const [state,setState]=useState('active'),[query,setQuery]=useState(''),[repository,setRepository]=useState(''),[filters,setFilters]=useState({q:'',repository:''}),[cursor,setCursor]=useState('');
  const params=new URLSearchParams({state,limit:'100',...filters,...(cursor?{cursor}:{})});
  const data=useResource<Page<Hold>&{observed_at:string}>(p.client,'/api/v1/holds?'+params,p.revision);
- return <Panel title="Reference holds" action={<button onClick={data.refresh}>Refresh holds</button>}>
-  <p className="panel-copy">A hold protects an exact retained reference from deletion. Releasing a hold retains its history and bytes. Place a new hold from the package's Lifecycle action.</p>
+ return <><HoldCases {...p}/><Panel title="Reference holds" action={<button onClick={data.refresh}>Refresh holds</button>}>
+  <p className="panel-copy">This list shows the original hold slot for each exact reference. Releasing it preserves independent case holds, history and bytes. Place or update this slot from the package's Lifecycle action.</p>
   <form className="hold-filters" onSubmit={e=>{e.preventDefault();setFilters({q:query,repository});setCursor('')}}>
    <label>Hold state<select value={state}onChange={e=>{setState(e.target.value);setCursor('')}}><option value="active">Active holds</option><option value="expired">Expired holds</option><option value="released">Released holds</option><option value="all">All hold records</option></select></label>
    <label>Exact repository (optional)<input value={repository}maxLength={63}pattern="[a-z][a-z0-9-]{0,62}"onChange={e=>setRepository(e.target.value)}/></label>
@@ -34,7 +35,7 @@ export function Holds(p:Common){
    </tr>)}</tbody></table></div>}
    <CursorPages after={cursor}next={data.data.next}setAfter={setCursor}label="Hold record pages"/>
   </>}
- </Panel>
+ </Panel></>
 }
 
 export function HoldHistory({repository,path,...p}:Common&{repository:string;path:string}){

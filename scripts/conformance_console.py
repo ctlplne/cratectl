@@ -72,13 +72,14 @@ try:
     initial=dict(env,CRATECTL_OWNER_DSN=database_dsn(env['CRATECTL_OWNER_DSN']),CRATECTL_DSN=database_dsn(env['CRATECTL_DSN']))
     owner_config=private('database.json',{'owner':initial['CRATECTL_OWNER_DSN'],'runtime':initial['CRATECTL_DSN']})
     receipt=json.loads(command([ROOT/'bin/cratectld','init','--directory',PRIVATE/'installation','--tenant','console-a'],initial))
-    for identity,tenant,role in [('reader','console-a','reader'),('writer','console-a','writer'),('repair-admin','console-a','admin'),('schedule-admin','console-a','admin'),('schedule-recovery','console-a','admin'),('retention-admin','console-a','admin'),('retention-recovery','console-a','admin'),('retention-auto-admin','console-a','admin'),('retention-auto-recovery','console-a','admin'),('hold-admin','console-a','admin'),('hold-recovery','console-a','admin'),('other','console-b','admin')]:
+    for identity,tenant,role in [('reader','console-a','reader'),('writer','console-a','writer'),('repair-admin','console-a','admin'),('schedule-admin','console-a','admin'),('schedule-recovery','console-a','admin'),('retention-admin','console-a','admin'),('retention-recovery','console-a','admin'),('retention-auto-admin','console-a','admin'),('retention-auto-recovery','console-a','admin'),('hold-admin','console-a','admin'),('hold-recovery','console-a','admin'),('case-admin','console-a','admin'),('case-recovery','console-a','admin'),('other','console-b','admin')]:
         command([ROOT/'bin/cratectld','provision','--tenant',tenant,'--actor',identity,'--role',role,'--token-file',PRIVATE/(identity+'.token')],initial)
     install=PRIVATE/'installation'
     fixture={'run':RUN,'base_url':base,'root':str(ROOT),'private':str(PRIVATE),'owner_config':str(owner_config),'admin_token':str(install/'admin.token'),'worker_token':str(install/'worker.token'),'reader_token':str(PRIVATE/'reader.token'),'writer_token':str(PRIVATE/'writer.token'),'other_token':str(PRIVATE/'other.token'),'repair_admin_token':str(PRIVATE/'repair-admin.token'),'schedule_admin_token':str(PRIVATE/'schedule-admin.token'),'schedule_recovery_token':str(PRIVATE/'schedule-recovery.token')}
     fixture.update(retention_admin_token=str(PRIVATE/'retention-admin.token'),retention_recovery_token=str(PRIVATE/'retention-recovery.token'),worker_control_request=str(PRIVATE/'worker-control-request.json'),worker_control_reply=str(PRIVATE/'worker-control-reply.json'))
     fixture.update(retention_auto_admin_token=str(PRIVATE/'retention-auto-admin.token'),retention_auto_recovery_token=str(PRIVATE/'retention-auto-recovery.token'))
     fixture.update(hold_admin_token=str(PRIVATE/'hold-admin.token'),hold_recovery_token=str(PRIVATE/'hold-recovery.token'))
+    fixture.update(case_admin_token=str(PRIVATE/'case-admin.token'),case_recovery_token=str(PRIVATE/'case-recovery.token'))
     fixture_path=private('browser-fixture.json',fixture)
     token=(install/'admin.token').read_text().strip()
     private('npmrc',f'registry={base}/npm/web-packages/\n//127.0.0.1:38443/npm/web-packages/:_authToken={token}\n'.encode())
@@ -100,7 +101,8 @@ try:
         raise AssertionError('owned process exited during UI review')
     browser_env=dict(runtime_env,CRATECTL_CONSOLE_FIXTURE_JSON=str(fixture_path),PLAYWRIGHT_BROWSERS_PATH=str(ROOT/'.cache/playwright-browsers'),PLAYWRIGHT_JSON_OUTPUT_NAME=str(PRIVATE/'browser-results.json'))
     command([ROOT/'web/node_modules/.bin/playwright','test','--config',ROOT/'web/playwright.config.mjs'],browser_env)
-    report=json.loads((PRIVATE/'browser-results.json').read_text());check('real-browser workflow suite passed without skips or flaky results',report['stats']['unexpected']==0 and report['stats']['skipped']==0 and report['stats']['flaky']==0 and report['stats']['expected']==11)
+    report=json.loads((PRIVATE/'browser-results.json').read_text());check('real-browser workflow suite passed without skips or flaky results',report['stats']['unexpected']==0 and report['stats']['skipped']==0 and report['stats']['flaky']==0 and report['stats']['expected']==12)
+    cases=json.loads((PRIVATE/'hold-cases-browser-proof.json').read_text());result['hold_cases_browser']=cases;checks.extend(cases['checks'])
     holds=json.loads((PRIVATE/'hold-browser-proof.json').read_text());result['hold_browser']=holds;checks.extend(holds['checks'])
     retention_schedule=json.loads((PRIVATE/'retention-schedule-browser-proof.json').read_text());result['retention_schedule_browser']=retention_schedule;checks.extend(retention_schedule['checks'])
     retention=json.loads((PRIVATE/'retention-browser-proof.json').read_text());result['retention_browser']=retention;checks.extend(retention['checks']);result['worker_controls']=worker_controls

@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
-"""Owned schema2–8 upgrades and stock ORAS retained deletion/recovery, on real PostgreSQL."""
+"""Owned schema2–9 upgrades and stock ORAS retained deletion/recovery, on real PostgreSQL."""
 import argparse,datetime,hashlib,json,os,subprocess,time,urllib.error,urllib.parse,urllib.request,uuid
 from pathlib import Path
 
-parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');parser.add_argument('--baseline-version',type=int,choices=[2,3,4,5,6,7,8],default=2);args=parser.parse_args()
+parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');parser.add_argument('--baseline-version',type=int,choices=[2,3,4,5,6,7,8,9],default=2);args=parser.parse_args()
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT);RUN=uuid.uuid4().hex[:10]
 PRIVATE=ROOT/'.private/lifecycle-conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)
-BASELINES={2:('.cache/maven-final-production/cratectld','10ea6499d874018178b43ee38a9070e81e5a0686'),3:('.cache/lifecycle-final-production/cratectld','bea2472271bd15993bcae9b8ea12a102b2608abe'),4:('.cache/source-final-production/cratectld','06156af19b9759035e96d63cf7a8bf52903235f7'),5:('.cache/repair-final-production/cratectld','1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6'),6:('.cache/schedule-final-production/cratectld','b19d1ae393320a2adc051f61db24693fec62591a'),7:('.cache/retention-final-production/cratectld','6cac8851da675dcaf531d6f8ed2aa26c927a243b'),8:('.cache/retention-schedule-final-399f37a048d7-production/cratectld','399f37a048d73fddd8f6b98b93669f5ba2c3fad5')}
-CURRENT_SCHEMA=9
+BASELINES={2:('.cache/maven-final-production/cratectld','10ea6499d874018178b43ee38a9070e81e5a0686'),3:('.cache/lifecycle-final-production/cratectld','bea2472271bd15993bcae9b8ea12a102b2608abe'),4:('.cache/source-final-production/cratectld','06156af19b9759035e96d63cf7a8bf52903235f7'),5:('.cache/repair-final-production/cratectld','1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6'),6:('.cache/schedule-final-production/cratectld','b19d1ae393320a2adc051f61db24693fec62591a'),7:('.cache/retention-final-production/cratectld','6cac8851da675dcaf531d6f8ed2aa26c927a243b'),8:('.cache/retention-schedule-final-399f37a048d7-production/cratectld','399f37a048d73fddd8f6b98b93669f5ba2c3fad5'),9:('.cache/hold-final-ab28ee966077-production/cratectld','ab28ee966077f7e96a9d96a8898eb389200e30e4')}
+CURRENT_SCHEMA=10
 BASE='http://127.0.0.1:38443';OLD=ROOT/BASELINES[args.baseline_version][0];NEW=ROOT/'bin/cratectld';ORAS=ROOT/'.cache/bin/oras'
 env=dict(os.environ);checks=[];commands=[];proc=None;log=None
 def identity(binary):
@@ -83,16 +83,16 @@ try:
     check('baseline creates hosted OCI repository',api('/api/v1/repositories','POST',{'name':'containers','format':'oci'})[0]==201)
     for role in ['admin','reader']:
         run([ORAS,'login','--plain-http','--registry-config',PRIVATE/('reader-auth.json'if role=='reader'else'auth.json'),'--username','token','--password-stdin','127.0.0.1:38443'],runenv={k:v for k,v in env.items()if k not in ['CRATECTL_OWNER_DSN','CRATECTL_DSN']},input_bytes=(tokens[role]+'\n').encode())
-    payload=b'owned native retained lifecycle bytes\n'*(2048 if args.baseline_version==8 else 1);private('payload.txt',payload)
+    payload=b'owned native retained lifecycle bytes\n'*(2048 if args.baseline_version>=8 else 1);private('payload.txt',payload)
     ref='127.0.0.1:38443/containers/proof:v1'
     files=['payload.txt:text/plain']
-    if args.baseline_version==8:
+    if args.baseline_version>=8:
         dependency=b'owned independent dependency bytes\n'*256;private('dependency.txt',dependency);files.append('dependency.txt:text/plain')
     oras('push',ref,*files);digest=oras('resolve',ref).decode().strip();path='proof/manifests/'+digest
     manifest=api('/v2/containers/'+path)[1];metadata=json.loads(manifest);child=metadata['layers'][0]['digest']
-    if args.baseline_version==8:
+    if args.baseline_version>=8:
         old_child_path='proof/blobs/'+child
-        check('actual schema8 runtime places a retained hold before upgrade',change('containers','hold',0,old_child_path,child[7:])[0]==200)
+        check('actual prior runtime places a retained hold before upgrade',change('containers','hold',0,old_child_path,child[7:])[0]==200)
         old_events=json.loads(api('/api/v1/audit')[1])['items']
         old_hold=next(e for e in reversed(old_events)if json.loads(e['payload']).get('kind')=='artifact.lifecycle.changed'and json.loads(e['payload'])['data']['current']['path']==old_child_path)
         result['pre_upgrade_hold_receipt']={'sequence':old_hold['sequence'],'hash':old_hold['hash'],'snapshot':json.loads(old_hold['payload'])['data']['current']}
@@ -108,7 +108,7 @@ try:
     if args.baseline_version>=3:
         upgraded=PRIVATE/'upgraded-proxy-pull';upgraded.mkdir();oras('pull','127.0.0.1:38443/legacy-proxy/proof:v1',cwd=upgraded,reader=True);check(f'schema-{CURRENT_SCHEMA} keeps valid baseline cached graph at source revision zero',(upgraded/'payload.txt').read_bytes()==payload and json.loads(api('/api/v1/repositories/legacy-proxy/configuration')[1])['source_revision']==0)
     pull=PRIVATE/'initial-pull';pull.mkdir();oras('pull',ref,cwd=pull,reader=True);check('stock ORAS installs retained bytes after actual upgrade',(pull/'payload.txt').read_bytes()==payload)
-    if args.baseline_version==8:
+    if args.baseline_version>=8:
         client_env={k:v for k,v in env.items()if k not in ['CRATECTL_OWNER_DSN','CRATECTL_DSN']}
         def management_cli(endpoint,method='GET',value=None,key='native-hold-upgrade'):
             argv=[ROOT/'bin/cratectl','--url',BASE,'--token-file',PRIVATE/'admin.token','--method',method,'--path',endpoint]
@@ -116,7 +116,7 @@ try:
                 body_file=private('hold-cli-body.json',value);argv+=['--body-file',body_file,'--idempotency-key',key]
             return json.loads(run(argv,runenv=client_env))
         inventory=management_cli('/api/v1/holds?state=active&repository=containers')
-        check('native CLI discovers the actual pre-upgrade schema8 held reference',len(inventory['items'])==1 and inventory['items'][0]['path']==old_child_path and inventory['items'][0]['held'])
+        check('native CLI discovers the actual pre-upgrade held reference',len(inventory['items'])==1 and inventory['items'][0]['path']==old_child_path and inventory['items'][0]['held'])
         history=management_cli('/api/v1/repositories/containers/artifacts/lifecycle/history?'+urllib.parse.urlencode({'path':old_child_path}))
         check('native CLI reads the unchanged original pre-upgrade hold journal snapshot',len(history['items'])==1 and history['items'][0]['event_hash']==old_hold['hash']and history['items'][0]['state']==json.loads(old_hold['payload'])['data']['current'])
         release={'path':old_child_path,'digest':child[7:],'action':'release_hold','expected_revision':1,'reason':'Owned administrator completes pre-upgrade review'}
@@ -125,10 +125,38 @@ try:
         check('native CLI confirms exact release and lost-response retry without duplicating the effect',completed==repeated and completed['current']['revision']==2 and not completed['current']['held'])
         released=management_cli('/api/v1/holds?state=released&repository=containers')
         check('released pre-upgrade reference remains discoverable with its immutable receipts',len(released['items'])==1 and released['items'][0]['path']==old_child_path)
-    if args.baseline_version==8:
+    if args.baseline_version>=8:
         check('stock ORAS consumes the nontrivial retained package and independent dependency after upgrade',(pull/'payload.txt').read_bytes()==payload and (pull/'dependency.txt').read_bytes()==dependency)
         history_after_retry=management_cli('/api/v1/repositories/containers/artifacts/lifecycle/history?'+urllib.parse.urlencode({'path':old_child_path}))
         check('exact native CLI release replay leaves one original hold and one release receipt',[v['action']for v in history_after_retry['items']]==['hold','release_hold'])
+    if args.baseline_version==9:
+        case_ref='127.0.0.1:38443/containers/independent:v1'
+        oras('push',case_ref,*files);case_digest=oras('resolve',case_ref).decode().strip();case_path='independent/manifests/'+case_digest
+        case_base='/api/v1/repositories/containers/artifacts/holds/'
+        def case_input(action,revision,reason,**extra):
+            return dict(path=case_path,digest=case_digest[7:],action=action,expected_revision=revision,reason=reason,**extra)
+        check('legacy hold remains independent of named cases',change('containers','hold',0,case_path,case_digest[7:])[0]==200)
+        for case_id in ['review-a','review-b']:
+            placed=management_cli(case_base+case_id,'PUT',case_input('hold',0,'Owned independent '+case_id),key='native-case-place-'+case_id)
+            check('native CLI places independent '+case_id,placed['case']['revision']==1 and placed['case']['held']and placed['current']['held'])
+        release_a=case_input('release_hold',1,'Owned review A complete')
+        released_a=management_cli(case_base+'review-a','PUT',release_a,key='native-case-release-a')
+        replay_a=management_cli(case_base+'review-a','PUT',release_a,key='native-case-release-a')
+        check('case-specific release retry preserves other protections without a second effect',released_a==replay_a and released_a['case']['released']and released_a['current']['held'])
+        legacy_release=json.loads(change('containers','release_hold',4,case_path,case_digest[7:])[1])
+        check('legacy release preserves independent case B',legacy_release['current']['held']and legacy_release['current']['case_held']and not legacy_release['current'].get('legacy_held',False))
+        oras('manifest','delete','--force','127.0.0.1:38443/containers/independent@'+case_digest,ok=False)
+        check('stock ORAS cannot delete after only case A and legacy release',api('/v2/containers/'+case_path)[0]==200)
+        original=management_cli(case_base+'review-a/history?'+urllib.parse.urlencode({'path':case_path}))
+        check('native CLI sees one original case hold and one release after retry',[v['action']for v in original['items']]==['hold','release_hold']and original['items'][1]['current']['held'])
+        released_b=management_cli(case_base+'review-b','PUT',case_input('release_hold',1,'Owned review B complete'),key='native-case-release-b')
+        check('last independent release removes the aggregate hold',not released_b['current']['held'])
+        oras('manifest','delete','--force','127.0.0.1:38443/containers/independent@'+case_digest)
+        check('stock ORAS deletes only after every protection is released',api('/v2/containers/'+case_path)[0]==404)
+        case_state=json.loads(api('/api/v1/repositories/containers/artifacts/lifecycle?'+urllib.parse.urlencode({'path':case_path}))[1])
+        check('explicit retained restore still verifies the independent reference',change('containers','restore',case_state['revision'],case_path,case_digest[7:])[0]==200)
+        case_pull=PRIVATE/'case-recovered';case_pull.mkdir();oras('pull','127.0.0.1:38443/containers/independent@'+case_digest,cwd=case_pull,reader=True)
+        check('stock ORAS installs exact bytes after all-case release and retained restore',(case_pull/'payload.txt').read_bytes()==payload and (case_pull/'dependency.txt').read_bytes()==dependency)
     code,body,_=change('containers','hold',0,path,digest[7:]);check('administrator hold commits exact revision',code==200 and json.loads(body)['current']['held'])
     oras('manifest','delete','--force','127.0.0.1:38443/containers/proof@'+digest,ok=False);check('stock ORAS cannot delete a held manifest',True)
     check('hold release compares revision',change('containers','release_hold',1,path,digest[7:])[0]==200)

@@ -20676,11 +20676,11 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "internal/store/hold_management.go and migration 9 lookup indexes; common canonical OCI lifecycle/journal/retention path; internal/server/hold_management.go; web/src/holds.tsx and lifecycle.tsx",
+      "implementation": "internal/store/hold_management.go and migration 9 lookup indexes; common canonical OCI lifecycle/journal/retention path; internal/server/hold_management.go; web/src/holds.tsx and lifecycle.tsx; internal/store/hold_cases.go, hold_case_pages.go and migration10; internal/server/hold_cases.go; web/src/hold-cases.tsx",
       "surfaces": {
-        "api": "Canonical OCI /repositories/{repository}/artifacts/lifecycle GET/PUT hold/release_hold with exact revision and digest; administrator GET /api/v1/holds and /repositories/{repository}/artifacts/lifecycle/history",
+        "api": "Canonical OCI /repositories/{repository}/artifacts/lifecycle GET/PUT hold/release_hold with exact revision and digest; administrator GET /api/v1/holds and /repositories/{repository}/artifacts/lifecycle/history; /api/v1/hold-cases and /repositories/{repository}/artifacts/holds/{case_id} GET/PUT and /history",
         "cli": "cratectl management CLI; stock ORAS observes enforced protection",
-        "ui": "Canonical OCI Lifecycle plus Storage \u2192 Reference holds inventory, original journal history and current-revision retained-repository recovery"
+        "ui": "Canonical OCI Lifecycle plus Storage \u2192 Reference holds inventory, original journal history and current-revision retained-repository recovery; independent named case inventory/editor/history and case-specific release"
       },
       "core": true,
       "dependencies": [],
@@ -20715,8 +20715,8 @@
         "evidence/2026-10-31/hold-checkpoint.json",
         "evidence/2026-10-31/hold-clean-postgres-race.txt"
       ],
-      "limits": "Qualified subset: tenant-administrator inventory of active/expired/released canonical OCI holds, scoped encrypted live paging/search, original immutable hold/release snapshots, actual-time expiry and retained-repository/current-administrator recovery. Exact clean production/race artifacts, native old-schema8 receipt/CLI/ORAS, seven old upgrade baselines and eleven Chromium workflows pass within the checkpoint scope. One replaceable per-reference hold slot remains; independent cases/case-specific release, bulk/legal retention, other formats, safe physical GC and production recovery remain required. No legal-compliance or broad readiness verdict.",
-      "next_action": "Implement independent simultaneous hold cases and case-specific release without weakening current native deletion/restore/retention protections, then complete bulk/legal/other-format workflows, safe GC and every later-stage requirement.",
+      "limits": "Qualified subset: tenant-administrator inventory of active/expired/released canonical OCI holds, scoped encrypted live paging/search, original immutable hold/release snapshots, actual-time expiry and retained-repository/current-administrator recovery. Exact clean production/race artifacts, native old-schema8 receipt/CLI/ORAS, seven old upgrade baselines and eleven Chromium workflows pass within the checkpoint scope. The legacy slot remains separate. Independent cases/case-specific release are implemented and development-tested; clean qualification is pending. Cross-reference legal matters, bulk approval/release, other formats, safe physical GC and production recovery remain required. No legal-compliance or broad readiness verdict.",
+      "next_action": "Complete clean production/race independent-case qualification; preserve primary9/qualified9 artifacts. Then finish cross-reference/bulk/legal and other-format workflows, safe physical GC and every later-stage requirement.",
       "development": {
         "source_parent": "4d213aca140b4098bf7e9e3c78d74174664bba13",
         "source_dirty": true,
@@ -20726,6 +20726,12 @@
           "evidence/2026-10-31/console-4cd050a118.json",
           "evidence/2026-10-31/lifecycle-538eddda94.json"
         ]
+      },
+      "independent_cases_development": {
+        "record": "evidence/2026-10-31/hold-cases-development-preflight.json",
+        "status": "implemented; development-tested; clean qualification pending",
+        "primary_schema": 9,
+        "development_schema": 10
       }
     },
     {

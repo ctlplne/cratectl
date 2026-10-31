@@ -25,6 +25,8 @@ type ArtifactState struct {
 	Digest         string     `json:"digest"`
 	Deleted        bool       `json:"deleted"`
 	Held           bool       `json:"held"`
+	LegacyHeld     bool       `json:"legacy_held,omitempty"`
+	CaseHeld       bool       `json:"case_held,omitempty"`
 	Revision       int64      `json:"revision"`
 	HoldReason     string     `json:"hold_reason,omitempty"`
 	HoldUntil      *time.Time `json:"hold_until,omitempty"`
@@ -45,7 +47,10 @@ type RepositoryState struct {
 
 func artifactStateInTx(ctx context.Context, tx pgx.Tx, repo, p string) (ArtifactState, error) {
 	s := ArtifactState{Repository: repo, Path: p}
-	e := tx.QueryRow(ctx, `SELECT digest,deleted,hold_reason<>'' AND (hold_until IS NULL OR hold_until>clock_timestamp()),revision,hold_reason,hold_until,reason,actor,changed_at,change_sequence FROM cratectl.artifact_lifecycle WHERE repository=$1 AND path=$2`, repo, p).Scan(&s.Digest, &s.Deleted, &s.Held, &s.Revision, &s.HoldReason, &s.HoldUntil, &s.Reason, &s.Actor, &s.ChangedAt, &s.ChangeSequence)
+	e := tx.QueryRow(ctx, `SELECT digest,deleted,hold_reason<>'' AND (hold_until IS NULL OR hold_until>clock_timestamp()),revision,hold_reason,hold_until,reason,actor,changed_at,change_sequence,
+ EXISTS(SELECT 1 FROM cratectl.artifact_hold_cases c WHERE (c.tenant,c.repository,c.path)=(l.tenant,l.repository,l.path) AND NOT c.released AND (c.hold_until IS NULL OR c.hold_until>clock_timestamp()))
+ FROM cratectl.artifact_lifecycle l WHERE repository=$1 AND path=$2`, repo, p).Scan(&s.Digest, &s.Deleted, &s.LegacyHeld, &s.Revision, &s.HoldReason, &s.HoldUntil, &s.Reason, &s.Actor, &s.ChangedAt, &s.ChangeSequence, &s.CaseHeld)
+	s.Held = s.LegacyHeld || s.CaseHeld
 	if errors.Is(e, pgx.ErrNoRows) {
 		return s, nil
 	}

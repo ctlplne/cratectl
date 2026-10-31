@@ -1,5 +1,25 @@
 # cratectl execution status
 
+Independent hold cases are implemented and development-tested in isolated
+schema-10 databases. Each canonical OCI reference may have multiple named cases
+with independent revisions, expiry and release. The common native deletion,
+restore and retention path enforces their union with the original hold slot.
+Case state, lifecycle fencing, immutable receipts, job intent and idempotency
+commit together. API/CLI and Storage → Reference holds expose bounded inventory,
+case-specific history and preview/apply/recovery. See ADR 0029 and
+`evidence/2026-10-31/hold-cases-development-preflight.json`.
+
+Build/unit/race/lint and all three PostgreSQL packages pass. Eight new store/HTTP
+regressions pass twice under race detection. The corrected case Chromium workflow
+passes eight checks/ten automated A/AA states, and an actual schema-9 binary to
+schema-10 upgrade passes stock ORAS/CLI checks. These development artifacts have
+a dirty source parent; clean production/race qualification is the next gate.
+The previous full eleven browser workflows passed before the new case fixture
+credential/locator corrections. First failures are retained rather than counted
+as passes. The qualified primary and active binaries remain schema 9/ab28ee9;
+all earlier receipts/data/private state are preserved. No remote mutation/push.
+All 450 capabilities and 41 format families remain unfinished.
+
 Validation follow-up: `e111dbbaee435e08d238c5449213d03defeb67ee` repairs
 DEFECT.0066 in native and browser SQL timing fixtures. A private ownership record
 binds database/user, unique application name, backend PID/start and exact helper
@@ -62,8 +82,9 @@ Owned services are stopped;
 all data, private state and exact artifacts remain.
 No Docker/sibling changes, reset, publication, push or remote mutation occurred.
 
-The hold API still has one replaceable per-reference slot. Independent cases and
-case-specific release, bulk/legal retention, other formats and safe physical GC
+The legacy hold API retains its separate replaceable slot. Independent cases and
+case-specific release are implemented above with clean qualification pending.
+Cross-reference matters, bulk/legal approval, other formats and safe physical GC
 remain committed scope. All 450 capabilities and 41 families remain unfinished;
 all broad readiness verdicts remain negative. Complete every later stage.
 Historical first failures, dirty development runs and earlier checkpoints remain.

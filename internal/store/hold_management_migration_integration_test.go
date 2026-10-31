@@ -15,10 +15,17 @@ import (
 )
 
 func TestHoldManagementUpgradePreservesEightReceiptsAndJournal(t *testing.T) {
+	testHoldUpgradePreservesReceiptsAndJournal(t, 8)
+}
+func TestHoldCasesUpgradePreservesNineReceiptsAndJournal(t *testing.T) {
+	testHoldUpgradePreservesReceiptsAndJournal(t, 9)
+}
+func testHoldUpgradePreservesReceiptsAndJournal(t *testing.T, baseline int) {
+	t.Helper()
 	d := testdb.New(t)
 	ctx := context.Background()
 	steps := currentMigrations()
-	if e := migrateSteps(ctx, d.OwnerDSN, MigrationOptions{}, steps[:8]); e != nil {
+	if e := migrateSteps(ctx, d.OwnerDSN, MigrationOptions{}, steps[:baseline]); e != nil {
 		t.Fatal(e)
 	}
 	owner, e := pgx.Connect(ctx, d.OwnerDSN)
@@ -56,22 +63,22 @@ func TestHoldManagementUpgradePreservesEightReceiptsAndJournal(t *testing.T) {
 	if e = tx.Commit(ctx); e != nil {
 		t.Fatal(e)
 	}
-	// This is a declared schema-eight SQL fixture; stock old-binary upgrade is a
+	// This is a declared prior-schema SQL fixture; stock old-binary upgrade is a
 	// separate native journey, not inferred from these rows.
 	var payloadBefore, hashBefore string
 	if e = owner.QueryRow(ctx, "SELECT payload,hash FROM cratectl.events WHERE tenant=$1 AND sequence=1", i.Tenant).Scan(&payloadBefore, &hashBefore); e != nil {
 		t.Fatal(e)
 	}
 	before, e := MigrationPlan(ctx, d.OwnerDSN)
-	if e != nil || len(before.Applied) != 8 || len(before.Pending) != len(steps)-8 || before.Pending[0] != 9 {
-		t.Fatal("schema-eight baseline", before, e)
+	if e != nil || len(before.Applied) != baseline || len(before.Pending) != len(steps)-baseline || before.Pending[0] != baseline+1 {
+		t.Fatal("prior-schema baseline", before, e)
 	}
 	runtime, e := pgx.Connect(ctx, d.RuntimeDSN)
 	if e != nil {
 		t.Fatal("owned runtime connection")
 	}
 	defer runtime.Close(ctx)
-	if e = checkSchemaPlan(ctx, runtime, steps[:8], true); e != nil {
+	if e = checkSchemaPlan(ctx, runtime, steps[:baseline], true); e != nil {
 		t.Fatal("old runtime admission before maintenance", e)
 	}
 	if e = Migrate(ctx, d.OwnerDSN); e != nil {
@@ -90,8 +97,8 @@ func TestHoldManagementUpgradePreservesEightReceiptsAndJournal(t *testing.T) {
 	if e = owner.QueryRow(ctx, "SELECT payload,hash FROM cratectl.events WHERE tenant=$1 AND sequence=1", i.Tenant).Scan(&payloadAfter, &hashAfter); e != nil || payloadAfter != payloadBefore || hashAfter != hashBefore {
 		t.Fatal("upgrade rewrote journal bytes", e)
 	}
-	if e = checkSchemaPlan(ctx, runtime, steps[:8], true); !errors.Is(e, ErrSchemaIncompatible) {
-		t.Fatal("old runtime admitted schema-nine", e)
+	if e = checkSchemaPlan(ctx, runtime, steps[:baseline], true); !errors.Is(e, ErrSchemaIncompatible) {
+		t.Fatal("old runtime admitted newer schema", e)
 	}
 	db, e := Open(ctx, d.RuntimeDSN)
 	if e != nil {

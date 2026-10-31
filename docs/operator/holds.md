@@ -28,11 +28,61 @@ fence remains in force until then. Revoking the original administrator credentia
 does not remove an existing hold. A different current administrator can recover
 the same record using its current revision.
 
-The current per-reference API has one hold slot. A new placement replaces that
-slot's reason/expiry under the exact revision. Independent case-scoped holds,
-case-specific release, bulk/legal workflows, other formats, physical GC and full
-production recovery remain required work. This feature is not a legal-compliance
-verdict. An omitted expiry means explicit administrator release is required.
+The original per-reference API retains one hold slot. A new placement replaces
+that slot's reason/expiry under the exact lifecycle revision. Independent named
+cases now provide additional protection for the same reference. Releasing the
+original slot or any one case leaves every other active protection in force.
+Bulk/legal workflows, cross-reference matters, approval workflows, other formats,
+physical GC and full production recovery remain required. This feature is not a
+legal-compliance verdict. An omitted expiry requires explicit administrator release.
+
+## Independent named cases
+
+Storage → Reference holds includes **Independent hold cases**. Choose **Place
+independent hold**, enter the repository, canonical digest path and case name,
+then read the current case before previewing. Each case has its own revision.
+Names start with a lowercase letter and contain at most 63 lowercase letters,
+digits or hyphens; `legacy` is reserved. A name identifies a case for that exact
+repository/reference, rather than a tenant-wide legal matter.
+
+The management CLI exposes the same API. For example:
+
+```sh
+cratectl --config /srv/cratectl/operator/client.json \
+  --path '/api/v1/hold-cases?state=all&repository=example&limit=100'
+
+cratectl --config /srv/cratectl/operator/client.json \
+  --path '/api/v1/repositories/example/artifacts/holds/review-a?path=app%2Fmanifests%2Fsha256%3AEXACT_DIGEST'
+```
+
+A new case returns revision zero with the existing reference's exact digest.
+Send `PUT` to that case endpoint with `path`, `digest`, `action: "hold"`, explicit
+`expected_revision`, nonblank `reason` and optional future `hold_until`. Preview
+with `dry_run: true`; apply with `dry_run: false` and a fresh idempotency key.
+Use the CLI's `--body-file` and `--idempotency-key` options. Keep the exact body
+and key for an uncertain response. Reading the case never bypasses current
+administrator authorization.
+
+Release uses `action: "release_hold"`, the current **case** revision, a release
+reason and no expiry field. Releasing case A preserves case B and the original
+slot. The returned `current.held` reports whether any active protection remains.
+The original preservation reason/expiry remains in the released case, while
+`reason` explains its latest change. A previously released or expired case may
+be placed again using its current revision. Its original receipts remain intact.
+
+Read `/artifacts/holds/review-a/history?path=...` for actual case events. Case
+inventory supports `state`, exact `repository`, exact `path`, exact `case_id`,
+literal `q`, `limit` and returned `cursor`. History supports `path`, `limit` and
+`cursor`. These pages use the same current-authority, row/byte limits and encrypted
+continuation rules as the original hold inventory. Editing a case preserves its
+inventory position; filtering and expiry can still change later live pages.
+
+Migration 10 adds case storage with forced tenant RLS and preserves receipts 1–9.
+It does not convert old slots into cases or invent historical actions. The
+development implementation uses isolated databases; the existing qualified primary
+and active binaries remain schema 9 until the complete new runtime campaign passes.
+Clean schema-10 qualification is pending; the schema-9 evidence below retains its
+original scope.
 
 ## API and CLI
 
