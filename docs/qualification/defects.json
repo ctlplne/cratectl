@@ -617,55 +617,65 @@
       "id": "DEFECT.0057",
       "summary": "Schedule-change failures could not record a terminal durable job outcome",
       "first_failure": "evidence/2026-10-31/retention-schedule-error-code-first-failure.json",
-      "state": "repaired and development replayed",
+      "state": "repaired and clean-source replayed",
       "repair": "Register retention_schedule_changed only for repository.retention jobs; replay direct PostgreSQL and actual worker pause terminal-state cases.",
-      "candidate": null,
-      "replay": "evidence/2026-10-31/retention-schedule-backend-preflight.json",
-      "limits": "Owned real PostgreSQL/HTTP/worker and metadata-fault development fixtures only; dedicated native/browser and exact clean-candidate qualification remain pending."
+      "candidate": "399f37a048d73fddd8f6b98b93669f5ba2c3fad5",
+      "replay": "evidence/2026-10-31/retention-schedule-checkpoint.json",
+      "limits": "Named real PostgreSQL, native client/process/worker and browser fixtures pass on the exact clean production/race candidate; full product/security/platform/fault/scale scope remains open."
     },
     {
       "id": "DEFECT.0058",
       "summary": "Scheduled retention receipt inspection omitted exact policy and requester identity checks",
       "first_failure": "evidence/2026-10-31/retention-schedule-identity-first-failure.json",
-      "state": "repaired and development replayed",
+      "state": "repaired and clean-source replayed",
       "repair": "Crosscheck receipt repository/policy and immutable authorizing actor against the original run before inspection, history reads or worker effects.",
-      "candidate": null,
-      "replay": "evidence/2026-10-31/retention-schedule-backend-preflight.json",
-      "limits": "Owned real PostgreSQL/HTTP/worker and metadata-fault development fixtures only; dedicated native/browser and exact clean-candidate qualification remain pending."
+      "candidate": "399f37a048d73fddd8f6b98b93669f5ba2c3fad5",
+      "replay": "evidence/2026-10-31/retention-schedule-checkpoint.json",
+      "limits": "Named real PostgreSQL, native client/process/worker and browser fixtures pass on the exact clean production/race candidate; full product/security/platform/fault/scale scope remains open."
     },
     {
       "id": "DEFECT.0059",
       "summary": "Repository names cache/artifacts selected nested GET management routes instead of repository detail",
-      "state": "repaired and development replayed",
+      "state": "repaired and clean-source replayed",
       "first_failure": "evidence/2026-10-31/retention-schedules-ec5d634a16.json",
       "isolated_failure": "evidence/2026-10-31/retention-schedule-route-isolated-first-failure.txt",
       "repair": "Route exact single-segment repository details before nested artifact/cache suffixes; keep authorization, role-based settings redaction and strict queries.",
-      "replay": "evidence/2026-10-31/retention-schedule-native-preflight.json",
-      "candidate": null,
-      "limits": "Five names, reader/admin/other-tenant and actual nested routes pass twice with PostgreSQL/race; full native and affected regressions pass on dirty source. Exact clean qualification pending."
+      "replay": "evidence/2026-10-31/retention-schedule-checkpoint.json",
+      "candidate": "399f37a048d73fddd8f6b98b93669f5ba2c3fad5",
+      "limits": "Named real PostgreSQL, native client/process/worker and browser fixtures pass on the exact clean production/race candidate; full product/security/platform/fault/scale scope remains open."
     },
     {
       "id": "DEFECT.0060",
       "summary": "Scheduled-retirement qualification compared stop duration with a recurrence window beginning before setup",
-      "state": "repaired and race development replayed; clean qualification pending",
+      "state": "repaired and clean-source replayed",
       "first_failure": "evidence/2026-10-31/retention-schedules-03fbc05a22.json",
       "rejected_candidate": "evidence/2026-10-31/retention-schedule-candidate-1b7b810-rejected.json",
       "independent_inspection": "evidence/2026-10-31/retention-schedule-clock-receipt-inspection.json",
       "repair": "Anchor the two real clock measurements separately, wait monotonically for both missed due slots, and preserve exact receipt/effect checks.",
-      "replay": "evidence/2026-10-31/retention-schedule-clock-preflight.json",
-      "candidate": null,
-      "limits": "Product receipts/outcomes were correct on the rejected race run. Source-only harness fix; actual race replay56assertions passes. New exact clean production/race campaign remains required."
+      "replay": "evidence/2026-10-31/retention-schedule-checkpoint.json",
+      "candidate": "399f37a048d73fddd8f6b98b93669f5ba2c3fad5",
+      "limits": "Named real PostgreSQL, native client/process/worker and browser fixtures pass on the exact clean production/race candidate; full product/security/platform/fault/scale scope remains open."
     },
     {
       "id": "DEFECT.0061",
       "summary": "Repair browser driver reads a navigated response body too late under race qualification",
-      "state": "repaired and race development replayed; clean qualification pending",
+      "state": "repaired and clean-source replayed",
       "first_failure": "evidence/2026-10-31/console-abba1c4459.json",
       "rejected_candidate": "evidence/2026-10-31/retention-schedule-candidate-403d72b-rejected.json",
       "repair": "Scope Jobs responses to requests issued after action observation and consume response JSON immediately; preserve bounded traversal, all assertions and actual worker checks.",
-      "replay": "evidence/2026-10-31/retention-schedule-repair-browser-preflight.json",
+      "replay": "evidence/2026-10-31/retention-schedule-checkpoint.json",
+      "candidate": "399f37a048d73fddd8f6b98b93669f5ba2c3fad5",
+      "limits": "Named real PostgreSQL, native client/process/worker and browser fixtures pass on the exact clean production/race candidate; full product/security/platform/fault/scale scope remains open."
+    },
+    {
+      "id": "DEFECT.0062",
+      "summary": "Public fixing-commit URLs in raw advisory evidence falsely detected as credentials",
+      "state": "repaired and focused/full-evidence replayed",
+      "first_failure": "evidence/2026-10-31/retention-schedule-final-source-secrets-first-failure.json",
+      "repair": "Limit public Go/net fix URL exceptions to complete URL fields in three exact report filenames; separately permit only the recorded public source_parent identity in its one review. Keep hash metadata typed as path/sha256 records.",
+      "replay": "evidence/2026-10-31/retention-schedule-secret-rule-preflight.json",
       "candidate": null,
-      "limits": "Targeted workflow and full10-workflow/79assertion/71automated-state Chromium replay pass on retained race artifacts with dirty driver source. Full new clean campaign required; no product defect inferred."
+      "limits": "Validation-only changes after399f37a runtime qualification. First88publicURLs and75metadata matches retained;65native offline fixtures preserve56credential/scope counterexamples. Complete current source/evidence replay has zero retained-credential matches and zero Gitleaks findings; broad security scope remains open."
     }
   ]
 }

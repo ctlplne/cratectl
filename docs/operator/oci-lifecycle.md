@@ -74,21 +74,25 @@ A stored idempotency response can confirm an earlier successful restore even if
 storage subsequently becomes unavailable, while current write grants still apply.
 
 Schema 3 adds forced-RLS lifecycle tables; schema 4 adds source revisions and
-immutable configuration history; schema 5 adds repair-capable runtime admission.
-Stop registry and workers, inspect
-`cratectld migrate --plan` with the owner configuration, apply migration, then
-start the new binaries. Steps 1–4 retain their original checksums. The new
-migrator validates safe version-2/3/4 databases before planning the remaining
-steps through version 5. Older runtimes reject version 5. This is controlled maintenance; rolling compatibility,
-whole-transfer draining, backup/restore and downgrade recovery remain unqualified.
+immutable configuration history; schema 5 admits repair-capable runtimes. Schema
+6 adds recurring integrity, schema 7 retained retirement and schema 8 explicitly
+authorized automatic retirement. Stop registry and workers, inspect
+`cratectld migrate --plan` with owner configuration, apply the planned steps, then
+start the matching new binaries. Receipts 1–7 keep their original checksums.
+Older runtimes reject schema 8. This is controlled maintenance; rolling
+compatibility, whole-transfer draining, backup/restore and downgrade recovery
+remain unqualified.
 
 The native campaign is `scripts/conformance_lifecycle.py --require-clean-build`;
 it retains the old 405 baseline and tests a real version-2 upgrade, stock ORAS,
 restart, holds, strong references, verified restore, policy and proxy lifecycle.
 Add `--baseline-version 3` to test a real schema-3 cached OCI graph upgrade.
-Use `--baseline-version 4` for the retained source-configuration baseline.
+Use `--baseline-version 4` for source configuration, `5` for byte repair, `6` for
+recurring integrity and `7` for retained retirement. Every baseline is an actual
+retained qualified binary, not a schema-version label on the current executable.
 Use the project-owned PostgreSQL environment and clean matching binaries. See
 [source configuration](source-configuration.md) for versioned source changes.
 Full lifecycle parity, broader source/locator/grant races,
-retention policy, physical erasure/GC, large graphs, other clients/platforms and
+other retention rules/formats, legal-hold administration, physical erasure/GC,
+large graphs, other clients/platforms and
 production recovery remain committed work.

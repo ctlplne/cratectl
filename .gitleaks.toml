@@ -24,3 +24,21 @@ condition = "AND"
 regexTarget = "line"
 paths = ['''(^|/)evidence/2026-10-28/gitleaks-history\.json$''']
 regexes = ['''^\s*"Commit": "(71c63208e09eef2c7572)(139c365eb5717cf5a13d)"[,]?\s*$''']
+
+# Keep raw native govulncheck advisory streams. These three generated reports
+# contain the same public Go commit references; extend no other file or URL.
+[[rules.allowlists]]
+description = "Public Go fix commit URL fields in scheduled-retirement OSV reports"
+condition = "AND"
+regexTarget = "line"
+paths = ['''(^|/)evidence/2026-10-31/retention-schedule-(go-symbol-vulnerability|binary-symbol-cratectld|binary-symbol-cratectl)\.jsonl$''']
+regexes = ['''^\s*"url": "https://go\.googlesource\.com/(go|net)/\+/[a-f0-9]{40}"[,]?\s*$''']
+
+# This review names the detector and its actual public source commit. Permit
+# only that exact identity field in that one report; credential fields stay scanned.
+[[rules.allowlists]]
+description = "Exact public source identity in the retained rule review"
+condition = "AND"
+regexTarget = "line"
+paths = ['''(^|/)evidence/2026-10-31/retention-schedule-secret-rule-preflight\.json$''']
+regexes = ['''^\s*"source_parent": "(399f37a048d73fddd8f6)(b98b93669f5ba2c3fad5)"[,]?\s*$''']

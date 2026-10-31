@@ -127,6 +127,9 @@ The named clean source, artifact hashes, runtime records and limits are retained
 
 A separate [scheduled-retention workflow](scheduled-retention.md) explicitly
 authorizes future captures through API, CLI and console. Dedicated stock ORAS/CLI
-real-cadence, process-restart, cancellation, credential/policy/source reapproval
-and worker-kill recovery development preflights pass. Exact clean qualification
-remains pending; the qualified source above has not been promoted.
+real cadence/coalescing, restart, cancellation, credential/policy/source reapproval
+and partial-effect worker-kill recovery pass on the named clean production/race
+source. The primary is schema 8; fresh schema-7 upgrades and all earlier baselines
+repeat. [The new checkpoint](../../evidence/2026-10-31/retention-schedule-checkpoint.json) identifies
+current artifacts and limits. The manual-retention checkpoint above remains a
+historical schema-7 observation; other formats/rules and safe physical GC stay open.

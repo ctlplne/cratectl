@@ -1,7 +1,7 @@
 # ADR 0027: explicitly authorized scheduled retirement
 
-Status: backend, console and dedicated stock-client/cadence/recovery development
-preflights pass; exact clean qualification pending.
+Status: accepted for the named clean production/race fixtures; broader scope
+remains required.
 
 One-time retention approval continues to cover its exact captured target set.
 A separate schedule authorizes future bounded captures under one exact OCI
@@ -40,3 +40,6 @@ new schema. No physical bytes are erased or reported as reclaimed.
 Other retention rules/formats, calendar schedules, legal-hold administration,
 physical GC, release/replica/restore protections, provider/platform/fault/scale
 and production recovery remain required. This record does not qualify them.
+
+Scoped source, artifact identities, raw/native/browser/schema results and limits are
+recorded in [the qualification checkpoint](../../evidence/2026-10-31/retention-schedule-checkpoint.json).

@@ -6,12 +6,12 @@ and repository source revision. Each admitted run still records immutable target
 and outcomes. It creates retained tombstones, preserves bytes and decisions and
 reports zero reclaimed storage. Read [retention](retention.md) first.
 
-The management API, CLI, console and dedicated stock ORAS/CLI journeys have
-development preflights. Actual due-slot coalescing, process restart, cancellation,
-credential expiry/revocation, current policy/source approval and recovery after
-worker SIGKILL are observed. Exact clean production/race qualification remains
-pending. The latest qualified source remains the schema-7 retention checkpoint.
-No broad release readiness is established.
+The management API, CLI, console and dedicated stock ORAS/CLI journeys pass on
+named clean production and separate race artifacts. Actual due-slot coalescing,
+process restart, cancellation, credential expiry/revocation, current policy/source
+approval and recovery after worker SIGKILL are observed. Ten Chromium workflows
+and 71 named automated A/AA states pass per build. This does not establish full
+accessibility, scale, every provider/platform or broad release readiness.
 
 In Storage → Retention, load an OCI repository, inspect a policy and choose
 **Inspect automatic retirement**. Configure the interval and complete manifest
@@ -102,9 +102,9 @@ retain their existing meaning. Recover retired content through verified restore.
 
 Schema 8 adds forced-RLS schedules and immutable configuration/due-slot receipts
 and preserves migrations 1–7. Upgrade requires controlled maintenance. The owned
-primary reached schema 8 during a controlled clean-candidate campaign. That
-candidate was rejected on a harness timing assertion, so the latest qualified
-source remains schema 7 pending the complete clean replay. Other rules/formats,
+primary is schema 8. Its first controlled upgrade occurred at a subsequently
+rejected candidate; the current clean candidate verifies a no-op on that primary
+and repeats fresh actual schema-7 old-binary upgrades. Other rules/formats,
 calendar schedules, legal-hold administration, physical GC, release/replica/
 restore protections, providers/platforms, fault/clock/scale and production
 recovery remain committed work.
@@ -125,3 +125,6 @@ Public evidence records source/build identities, command statuses and log paths.
 Owned SQL ages artifact fixtures and briefly blocks a worker claim or second
 outcome; schedule clocks, credential expiry and worker lease expiry use actual
 elapsed time. These declared faults do not provide product metadata repair.
+
+The exact source, artifacts, results and limits are retained in
+[the qualification checkpoint](../../evidence/2026-10-31/retention-schedule-checkpoint.json).

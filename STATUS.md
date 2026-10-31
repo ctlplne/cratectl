@@ -1,118 +1,62 @@
 # cratectl execution status
 
-Clean candidate `403d72b61696e7469e107a035ac94769803a4788` remains rejected.
-All nineteen production and eleven subsequent race journeys passed, including
-both 57-assertion native scheduled-retirement runs and corrected clock receipts.
-The next race console run passed nine workflows and failed repair when its browser
-driver read a response body after navigation. No product defect is inferred.
-All 39 attempted tasks, the first failure and exact artifacts remain retained in
-evidence/2026-10-31/retention-schedule-candidate-403d72b-rejected.json.
+Latest scoped qualified source: `399f37a048d73fddd8f6b98b93669f5ba2c3fad5`, authored and committed
+only as `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
+The authoritative checkpoint is `evidence/2026-10-31/retention-schedule-checkpoint.json`.
 
-The repaired driver observes newly issued Jobs requests and consumes selected JSON
-bodies immediately. Targeted repair and the full ten-workflow race browser replay
-pass: 79 assertions, 71 named automated A/AA states, zero skips/flaky results.
-No delays, timeout increases or relaxed assertions. These dirty-driver-source
-observations are development evidence only; DEFECT.0061 and the original report
-remain in evidence/2026-10-31/retention-schedule-repair-browser-preflight.json.
+Explicitly authorized automatic OCI retirement now spans API, CLI and console.
+Future approval binds exact policy/source revisions and the current administrator
+credential. Complete bounded captures preserve immutable targets, outcomes and due
+receipts. Actual due slots coalesce across downtime. Pause/replacement, expired or
+revoked authority and changed policy/source prevent unapproved future effects.
+Workers recheck current holds, tags, references and original authority per target.
+Exact-byte restore preserves current policy and tags. Zero physical bytes erased
+or reclaimed. See ADR 0027 and docs/operator/scheduled-retention.md.
 
-Next: commit the reviewed driver/evidence as imfeelingtheagi, build new clean
-production/race/platform bytes and replay all required journeys. Primary schema8
-no-op and fresh old-binary schema7 upgrades remain required; never restore schema7
-bin. The primary, private state and all artifacts remain retained. Owned fixtures
-and native PostgreSQL are stopped; active bin matches403d72b production schema8.
-No Docker/sibling mutation or push. Latest qualified source remains6cac885;
-all450 capabilities/41families and every negative broad readiness verdict remain.
+Clean production artifacts passed 1247 assertions and separate race
+artifacts passed 738, across 35 runtime records and 38 serialized runtime
+tasks. Each build passes 57 dedicated native schedule assertions and ten Chromium
+workflows/71 named automated A/AA states, including fifteen automatic-retirement
+states. Real ORAS/CLI proves cadence/coalescing, pending cancellation/pause fences,
+actual credential expiry/revocation, current policy/source reapproval, native
+hosted/proxy/group restore and worker SIGKILL after one committed target followed
+by lease-fenced completion of the remaining two. Both clock anchors and immutable
+due/effect receipts are recorded. No schedule or lease clock edits substitute for
+elapsed time; declared SQL artifact-age and timing barriers remain fixture limits.
 
-Earlier development snapshot follows; the paragraphs above supersede its next
-action, current source and service state. Historical evidence retains its limits.
+All three PostgreSQL race packages passed twice without skips/races; thirteen
+schedule/routing and eleven manual-retention tests repeat twice. Schema-2–7 old
+binaries and legacy adoption/process kill pass. Production includes the full
+stock-client suite and pinned public OCI; race repeats OCI hosted/proxy/source
+configuration modes. Repair, integrity schedules, installation, storage/jobs and
+bounded console regressions retain their exact per-build record scope. Primary schema 8 no-op preserves all eight frozen receipts;
+fresh schema-7 upgrades execute independently for both builds. The original primary
+7-to-8 upgrade occurred at rejected 1b7b810; that complete failed attempt and first
+failures remain retained. Candidate403d72b also remains rejected after its browser
+driver failure; both complete development replays and first failures are retained.
+Native command/server logs persist privately. Linux and
+Windows artifacts compile only; no native-runtime qualification is inferred.
 
-Clean candidate `1b7b81090c1d61617fadbf9442a9142156f9efc9` is rejected.
-All nineteen production journeys passed on exact clean artifacts, including
-dedicated scheduled retirement, schema-2–7 upgrades, ten console workflows,
-installation/storage/jobs and stock/public native clients. The first native race
-journey then failed a harness timing assertion. It compared a pause measured after
-restore/client setup with a window beginning before those steps. Independent
-receipt inspection confirms correct sixty-second due slots, missed-slot coalescing
-and committed outcomes. No complete clean qualification is claimed.
+Unit/race/lint, architecture, console byte reproduction, safe API parse/reference,
+bounded parser fuzz and scoped current source/binary/dependency/history/credential
+checks pass. Both production binaries and all three cross-compiled artifacts are
+recognized in artifact analysis. Full security and packaging gates remain negative.
+Owned test services are stopped; all data, private state and exact artifacts remain.
+Active bin bytes match this clean schema-8 production candidate. No Docker/sibling
+changes, remote mutations or push occurred. DEFECT.0057–0061 have clean replays.
+A validation-only public-advisory URL exception is extended to three exact new
+report filenames and one exact public source-identity field. DEFECT.0062 retains
+the88first URL false positives,75metadata matches and65native rule fixtures,
+including56credential/scope counterexamples. Raw tool bytes remain
+unchanged; final source/evidence scanning uses the recorded exact rules hash.
 
-The corrected harness anchors recurrence before the first approval, verifies stop
-before the next due slot, waits monotonically for the calculated two-slot pause,
-and checks both elapsed clocks plus immutable receipt/effect results. Its actual
-race replay passes 56 development assertions: 123.701 seconds of recurrence and
-118.815 stopped against 118.633 required. Public clock diagnostics will be emitted
-by the next clean run. DEFECT.0060, rejected artifacts and both real run receipts
-are retained in evidence/2026-10-31/retention-schedule-clock-preflight.json.
+All 450 capabilities and 41 format families remain unfinished. Continue remaining
+retention rules/formats/calendar schedules, legal-hold administration, safe GC and
+release/replica/restore protections; broader sources/grants/keys/providers/platforms,
+identity, clients, scanners, fault/scale and every later stage remain committed.
+All broad readiness verdicts remain negative. Historical checkpoints retain scope.
 
-The controlled primary upgrade completed at the rejected candidate. The owned
-primary is now schema 8 with all eight safe frozen receipts. Active bin bytes are
-schema-8-compatible production from that candidate; all older baselines remain.
-Do not restore schema-7 bin bytes or downgrade data. Fixture registries/workers are
-stopped, including owned native PostgreSQL; both project ports are closed. Docker
-and sibling resources are untouched.
-
-Next: commit the reviewed clock repair as imfeelingtheagi, then rebuild and replay
-the complete exact clean production/race campaign. Revalidate the primary schema-8
-no-op and repeat fresh schema-7 old-binary upgrades per build. The qualified source
-remains `6cac885`; all 450 capabilities/41 families and negative broad readiness
-remain unchanged. No push or remote mutation.
-
-Earlier development observations follow; they do not promote the rejected source.
-
-Explicitly authorized scheduled OCI retirement is implemented locally (ADR 0027;
-docs/operator/scheduled-retention.md). A separate schedule binds future bounded
-captures to exact policy/source revisions and the current administrator credential.
-Due slots coalesce without catch-up bursts. Immutable targets, job, journal/outbox
-and due-slot receipts commit together. Pause or revision changes stop unprocessed
-scheduled targets; manual approvals retain their existing meaning. Original
-requester/current worker authority and all native retention protections remain.
-
-Twelve new real PostgreSQL/HTTP/worker tests passed twice on the repaired source;
-the complete store/server/stock-ORAS-driver PostgreSQL race suites passed once
-without skips or races. Unit/race/lint, 70,907 bounded parser fuzz executions,
-228 parsed API response maps/local references and the Go symbol scan pass. First
-failure-code, unknown-version fixture and receipt-identity failures and their
-replays are retained in evidence/2026-10-31/retention-schedule-backend-preflight.json.
-These are dirty-source development preflights, not a new clean qualification.
-
-The separate automatic-retirement console is now implemented locally. All ten
-real PostgreSQL/Chromium workflows pass: 79 assertions and 71 named automated
-A/AA states, including fifteen new schedule states, with zero skips/flaky results.
-Fresh future consent, exact lost-response retries, complete-capture deferral,
-native retained-byte retirement/restore, real pending-job pause fencing, revoked
-credential/new-policy/empty-proxy-source reapproval, concurrent revision rejection
-and immutable history pages pass. Unit/race/lint and byte reproduction pass;
-desktop and narrow captures were inspected. The owned SQL age/claim timing fixtures,
-first selector mismatch and scope limits are retained in
-evidence/2026-10-31/retention-schedule-console-preflight.json. These remain
-development-source observations, not a promoted clean checkpoint.
-
-The dedicated stock ORAS/CLI scheduled-retirement campaign passes 55 assertions.
-It observes real 60-second due slots/coalescing across process downtime, cancellation,
-pending pause fences, revoked/expired authority and current policy/source approval,
-exact proxy/group/hosted restore, actual schema-7 to schema-8 upgrade, and worker SIGKILL
-after one committed target with lease-fenced completion of the remaining two.
-The first native run exposed reserved-looking repository names selecting nested
-GET routes; DEFECT.0059 is repaired and replayed. Five-name routing coverage and
-all thirteen schedule/route PostgreSQL tests pass twice; complete store/server/stock-ORAS
-race packages pass twice, without skips or races. Twelve regression tasks cover
-actual baseline 2–7 upgrades, legacy adoption, repair, retention, integrity schedules
-and all ten console workflows. Native raw logs persist privately, including failures;
-the three Go native drivers now retain 40 logs across six completed fixtures.
-All are development-source observations in
-evidence/2026-10-31/retention-schedule-native-preflight.json.
-
-Next: commit reviewed source/evidence as imfeelingtheagi, then build and qualify
-exact clean production/race/platform artifacts against all required existing and
-new journeys. Preserve the qualified schema-7 baseline; upgrade the owned primary
-to schema 8 only within the controlled clean-candidate campaign.
-The owned primary remains schema 7; isolated retained integration databases use
-schema 8. Fixture registries/workers are stopped; owned native PostgreSQL remains
-running for the next clean campaign. Private data/artifacts and qualified schema-7
-production bin bytes are retained. Only imfeelingtheagi is author and committer;
-no push or remote mutation occurred. All broader scope and negative readiness
-remain unchanged. The latest qualified checkpoint follows.
-
-Latest qualified source: `6cac8851da675dcaf531d6f8ed2aa26c927a243b`, authored and committed only as
+Previous retained-retirement-qualified source: `6cac8851da675dcaf531d6f8ed2aa26c927a243b`, authored and committed only as
 `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
 The authoritative checkpoint is `evidence/2026-10-31/retention-checkpoint.json`.
 

@@ -1,0 +1,98 @@
+{
+  "run": "f6bacde1a4",
+  "candidate": "399f37a048d73fddd8f6b98b93669f5ba2c3fad5",
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "source_dirty": false,
+  "artifact_digests": {
+    "bin/cratectld": "e76db5f6b00c5959629db47070797d2c25b5e1543a92625058e4a44f50d9498b",
+    "bin/cratectl": "ac36ff67faa0512b4c9b07aacfc688e88b3c68822ac8affed57e9aedaaaa30a3"
+  },
+  "build_identity": {
+    "bin/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "399f37a048d73fddd8f6b98b93669f5ba2c3fad5",
+      "vcs.time": "2026-10-31T05:19:17Z",
+      "vcs.modified": "false"
+    },
+    "bin/cratectl": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "399f37a048d73fddd8f6b98b93669f5ba2c3fad5",
+      "vcs.time": "2026-10-31T05:19:17Z",
+      "vcs.modified": "false"
+    }
+  },
+  "checks": [
+    "source and both binary identities match a clean candidate",
+    "new database has no cratectl schema or seeded tenant",
+    "nonempty database is rejected before any cratectl schema migration",
+    "owned database lock is held before initializer fault",
+    "initializer prepared private credentials before ready configuration",
+    "real killed initializer resumes original credentials and trust",
+    "only one tenant and two purpose-separated credentials exist",
+    "first database has no precreated repositories",
+    "receipt names independently computed CA fingerprint",
+    "installation directory is private",
+    "all generated credential and configuration files are private",
+    "owner database authority is absent from retained installation files",
+    "completed initialization replays original receipt",
+    "config-only CLI starts with an empty repository inventory",
+    "wrong TLS hostname fails even with the installation CA",
+    "explicit CLI token override is honored and worker purpose is denied",
+    "first repository mutation replays identical output",
+    "CLI writes a private native npm configuration with TLS verification",
+    "native credential configuration cannot overwrite an existing file",
+    "stock npm publishes its first package over verified TLS",
+    "unassessed package is denied by the chosen review policy",
+    "administrator sees exact pending package bytes",
+    "approved exact package installs and its benign fixture returns expected value",
+    "first repository and package survive config-only restart",
+    "config-only dedicated worker completes publication and policy intents",
+    "publication completes both event projection and byte-integrity handlers",
+    "current policy denial still blocks a fresh stock-client install after restart",
+    "a second initializer cannot replace existing tenant state",
+    "unrelated root cannot authenticate the server",
+    "bootstrap and native mutations retain tenant audit evidence"
+  ],
+  "topology": "Native macOS process; new empty database in owned PostgreSQL 16.15 cluster; HTTPS on loopback 38443; stock npm and node; config-only runtime processes without owner/runtime DSN environment.",
+  "limits": [
+    "Database server and restricted login are supplied by the operator; no claim of blank-machine, Compose/Helm or offline-bundle qualification.",
+    "Generated local CA and certificate expire after 30 days; initial credentials default to 24 hours; production PKI and credential lifecycle remain required.",
+    "Single native host and filesystem; broader OS, outage/restore, production scale and full security qualification remain open."
+  ],
+  "build_source_matches_candidate": true,
+  "seconds_to_first_publish_and_install": 1.99,
+  "database": "cratectl_blank_f6bacde1a4",
+  "operator_inputs": [
+    "empty database owner and restricted runtime connections",
+    "private installation directory",
+    "tenant name (administrator/listener/lifetimes use documented defaults)",
+    "first repository name, npm format and require-review policy",
+    "native npm CA/token configuration",
+    "explicit digest approval and later denial"
+  ],
+  "ca_sha256": "8a4a30ad3a29f29aae009ea571a2ff0741823c845af9b794198cac87774a73b9",
+  "status": "passed",
+  "seconds_total": 2.689
+}

@@ -1,0 +1,118 @@
+{
+  "run": "4df52d8cf0",
+  "candidate": "399f37a048d73fddd8f6b98b93669f5ba2c3fad5",
+  "source_dirty": false,
+  "artifact_digests": {
+    ".cache/pagination-production/cratectld": "cbdf03debda8c90b8197b5f9e96ab3efd2c2eb8790e137ef6e0159bf10f2250a",
+    "bin/cratectld": "e76db5f6b00c5959629db47070797d2c25b5e1543a92625058e4a44f50d9498b",
+    "bin/cratectl": "ac36ff67faa0512b4c9b07aacfc688e88b3c68822ac8affed57e9aedaaaa30a3"
+  },
+  "build_identity": {
+    ".cache/pagination-production/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "51a74bd42866a6e33c77a670259ed0b4d9a959a8",
+      "vcs.time": "2026-10-29T15:35:39Z",
+      "vcs.modified": "false"
+    },
+    "bin/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "399f37a048d73fddd8f6b98b93669f5ba2c3fad5",
+      "vcs.time": "2026-10-31T05:19:17Z",
+      "vcs.modified": "false"
+    },
+    "bin/cratectl": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "399f37a048d73fddd8f6b98b93669f5ba2c3fad5",
+      "vcs.time": "2026-10-31T05:19:17Z",
+      "vcs.modified": "false"
+    }
+  },
+  "checks": [
+    "new CLI and runtime have clean matching candidate identities",
+    "legacy executable is the retained clean pagination source",
+    "legacy runtime publishes real npm bytes before adoption",
+    "owner plan identifies unversioned data and explicit adoption requirement",
+    "ordinary migration refuses legacy data without acknowledgement",
+    "actual killed migration process rolls back baseline DDL and receipts",
+    "adoption commits all eight known receipts with safe RLS",
+    "every original tenant, repository, artifact, audit and token field is preserved; new source revisions start at zero",
+    "new runtime authenticates original credential and returns original stored reference with source revision zero",
+    "adoption does not alter existing audit sequence or hashes",
+    "current migration repeats while new registry serves requests",
+    "stock npm installs preserved legacy bytes through new runtime",
+    "current schema and original credentials survive actual registry restart",
+    "retained installation files exclude owner DSN and password"
+  ],
+  "topology": "Native macOS legacy/current registry CLI processes, actual SIGKILL during uncommitted DDL, real PostgreSQL 16.15 restricted runtime, stock npm; explicit loopback HTTP fixture.",
+  "limits": [
+    "Legacy adoption is a controlled maintenance operation with registry and workers stopped. Pre-gate binaries do not cooperate with new transaction admission.",
+    "The fault is an owned database event trigger and advisory barrier; no production pause hook is compiled into the runtime.",
+    "This is not rolling/zero-downtime adoption, whole-transfer draining, expand/contract compatibility, HA, downgrade, backup/restore or independent-host qualification."
+  ],
+  "build_source_matches_candidate": true,
+  "database": "cratectl_schema_4df52d8cf0",
+  "plan": {
+    "binary_version": 8,
+    "database_state": "current",
+    "applied": [
+      {
+        "version": 1,
+        "checksum": "1e0f7b93d872f8ab83f85742000a6282f2722a0a338d8f2bc81755345ba66d16"
+      },
+      {
+        "version": 2,
+        "checksum": "9e023c96c8cf33549ce81f1eac22551b5cdb6267d146f65d430ec254dc8b10b5"
+      },
+      {
+        "version": 3,
+        "checksum": "44527dcd4be5177203e2b0eb93e5886a4dae437fbebf4cec14f7737ecb2f15d3"
+      },
+      {
+        "version": 4,
+        "checksum": "8b287dda8e78324c44275d31850418d7e7166d9d6fe49c71d539dbd44a52d209"
+      },
+      {
+        "version": 5,
+        "checksum": "0e835ed82b84cdd3d85858b0a76611b3ed6d387bbf55fee76d2abdf7c7f313a9"
+      },
+      {
+        "version": 6,
+        "checksum": "557b3f6612a403e24d0c9726c9b048d62188b3e1a93bcb3f158616da30b1fe6c"
+      },
+      {
+        "version": 7,
+        "checksum": "596eed6ab2287c8fd4b332d53f4d4867ceda7a1cebaf78e215da70b7eac6ff12"
+      },
+      {
+        "version": 8,
+        "checksum": "fddb52ee509a46ce949d6c879feb47fc4603b7cb4de986b300e6f2b5243ae7dc"
+      }
+    ],
+    "pending": [],
+    "requires_legacy_adoption": false,
+    "safety_valid": true
+  },
+  "elapsed_seconds": 1.564,
+  "status": "passed"
+}
