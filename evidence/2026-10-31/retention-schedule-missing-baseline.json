@@ -1,0 +1,29 @@
+{
+  "observed_at": "2026-10-31T02:39:56.200907+00:00",
+  "source_parent": "69cae4bf48bd07c53af2233cf5445ac18157e0d7",
+  "baseline_artifact": ".cache/retention-final-production/cratectld",
+  "baseline_artifact_sha256": "7874a243c786c823811230e3c83f92dc91d0e2fb66673c45c083036d2f43698b",
+  "qualified_artifact_source": "6cac8851da675dcaf531d6f8ed2aa26c927a243b",
+  "existing_policy_status": 200,
+  "schedule_get": {
+    "status": 404,
+    "body": {
+      "error": {
+        "action": "Read policy history or runs.",
+        "code": "not_found"
+      }
+    }
+  },
+  "schedule_preview_put": {
+    "status": 405,
+    "body": {
+      "error": {
+        "action": "Read retention state with GET, replace a named policy with PUT, or preview/admit its run with POST.",
+        "code": "method_not_allowed"
+      }
+    }
+  },
+  "classification": "Missing scheduled-retention capability; existing manual policy does not authorize future retirement.",
+  "limits": "Owned real PostgreSQL schema-7 and native clean registry. No scheduled job or retirement was admitted.",
+  "private_fixture": ".private/retention-schedule-development"
+}

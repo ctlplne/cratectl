@@ -157,16 +157,17 @@ type RetentionItem struct {
 	StrongParents     []string  `json:"strong_parents"`
 }
 type RetentionPlan struct {
-	Policy         RetentionPolicy `json:"policy"`
-	SourceRevision int64           `json:"source_revision"`
-	EvaluatedAt    time.Time       `json:"evaluated_at"`
-	ExpiresAt      time.Time       `json:"expires_at"`
-	Reason         string          `json:"reason"`
-	Targets        int             `json:"targets"`
-	Eligible       int             `json:"eligible"`
-	Items          []RetentionItem `json:"items,omitempty"`
-	Digest         string          `json:"preview_digest"`
-	BytesReclaimed int64           `json:"bytes_reclaimed"`
+	Policy         RetentionPolicy           `json:"policy"`
+	SourceRevision int64                     `json:"source_revision"`
+	EvaluatedAt    time.Time                 `json:"evaluated_at"`
+	ExpiresAt      time.Time                 `json:"expires_at"`
+	Reason         string                    `json:"reason"`
+	Targets        int                       `json:"targets"`
+	Eligible       int                       `json:"eligible"`
+	Items          []RetentionItem           `json:"items,omitempty"`
+	Digest         string                    `json:"preview_digest"`
+	BytesReclaimed int64                     `json:"bytes_reclaimed"`
+	Schedule       *RetentionScheduleReceipt `json:"schedule,omitempty"`
 }
 
 func retentionStatus(policy RetentionPolicy, state ArtifactStatePreview, created time.Time, rank int64, validated bool, evaluated time.Time) string {
@@ -307,40 +308,47 @@ func (s *Store) StartRetention(ctx context.Context, i Identity, repo, name, key,
 		if out.Digest != r.PreviewDigest {
 			return nil, 0, ErrRetentionChanged
 		}
-		policy, e := queuePolicy(ctx, tx, i.Tenant, "maintenance")
-		if e != nil {
-			return nil, 0, e
-		}
-		if e = queueRoom(ctx, tx, policy, 1); e != nil {
-			return nil, 0, e
-		}
-		seq, e := nextEventSequence(ctx, tx, i)
-		if e != nil {
-			return nil, 0, e
-		}
 		task := "retention-" + crypt.Digest([]byte(i.Actor+"\x00"+key+"\x00"+fp))
-		id := (Job{Sequence: seq, Task: task}).ID()
-		summary := out
-		summary.Items = nil
-		raw, e := json.Marshal(summary)
-		if e != nil {
-			return nil, 0, e
-		}
-		if _, e = tx.Exec(ctx, `INSERT INTO cratectl.jobs(tenant,sequence,task,queue,kind,payload)VALUES($1,$2,$3,'maintenance','repository.retention',$4)`, i.Tenant, seq, task, raw); e != nil {
-			return nil, 0, e
-		}
-		if _, e = tx.Exec(ctx, `INSERT INTO cratectl.retention_runs(tenant,sequence,task,repository,name,revision,plan,requester_actor,requester_hash)VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)`, i.Tenant, seq, task, repo, name, out.Policy.Revision, raw, i.Actor, i.CredentialHash); e != nil {
-			return nil, 0, e
-		}
-		for _, item := range out.Items {
-			raw, e := json.Marshal(item)
-			if e != nil {
-				return nil, 0, e
-			}
-			if _, e = tx.Exec(ctx, `INSERT INTO cratectl.retention_items(tenant,sequence,task,ordinal,target)VALUES($1,$2,$3,$4,$5)`, i.Tenant, seq, task, item.Ordinal, raw); e != nil {
-				return nil, 0, e
-			}
-		}
-		return map[string]any{"job": id, "plan": summary, "bytes_reclaimed": 0}, 202, nil
+		value, e := admitRetention(ctx, tx, i, out, task)
+		return value, 202, e
 	})
+}
+
+// admitRetention is shared by exact one-time approval and explicitly authorized
+// scheduled capture. The caller commits its journal and receipt in this transaction.
+func admitRetention(ctx context.Context, tx pgx.Tx, i Identity, out RetentionPlan, task string) (map[string]any, error) {
+	policy, e := queuePolicy(ctx, tx, i.Tenant, "maintenance")
+	if e != nil {
+		return nil, e
+	}
+	if e = queueRoom(ctx, tx, policy, 1); e != nil {
+		return nil, e
+	}
+	seq, e := nextEventSequence(ctx, tx, i)
+	if e != nil {
+		return nil, e
+	}
+	id := (Job{Sequence: seq, Task: task}).ID()
+	summary := out
+	summary.Items = nil
+	raw, e := json.Marshal(summary)
+	if e != nil {
+		return nil, e
+	}
+	if _, e = tx.Exec(ctx, `INSERT INTO cratectl.jobs(tenant,sequence,task,queue,kind,payload)VALUES($1,$2,$3,'maintenance','repository.retention',$4)`, i.Tenant, seq, task, raw); e != nil {
+		return nil, e
+	}
+	if _, e = tx.Exec(ctx, `INSERT INTO cratectl.retention_runs(tenant,sequence,task,repository,name,revision,plan,requester_actor,requester_hash)VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)`, i.Tenant, seq, task, out.Policy.Repository, out.Policy.Name, out.Policy.Revision, raw, i.Actor, i.CredentialHash); e != nil {
+		return nil, e
+	}
+	for _, item := range out.Items {
+		raw, e := json.Marshal(item)
+		if e != nil {
+			return nil, e
+		}
+		if _, e = tx.Exec(ctx, `INSERT INTO cratectl.retention_items(tenant,sequence,task,ordinal,target)VALUES($1,$2,$3,$4,$5)`, i.Tenant, seq, task, item.Ordinal, raw); e != nil {
+			return nil, e
+		}
+	}
+	return map[string]any{"job": id, "plan": summary, "bytes_reclaimed": 0}, nil
 }

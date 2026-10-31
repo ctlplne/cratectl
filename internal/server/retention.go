@@ -31,7 +31,7 @@ func readRetentionBody(w http.ResponseWriter, r *http.Request, target any, field
 	}
 	for _, field := range fields {
 		if values[field] == nil || string(values[field]) == "null" {
-			fail(w, 400, "retention_field_required", "Supply every required policy field explicitly, including expected_revision and tag protection.")
+			fail(w, 400, "retention_field_required", "Supply every required field explicitly, including revisions and the requested protections or future-run authorization.")
 			return nil, false
 		}
 	}
@@ -78,6 +78,9 @@ func (s *Server) retentionManagement(w http.ResponseWriter, r *http.Request, i s
 	if i.Role != "admin" {
 		respondErr(w, store.ErrDenied)
 		return true
+	}
+	if policies && len(bits) >= 5 && bits[4] == "schedule" {
+		return s.retentionScheduleManagement(w, r, i, bits)
 	}
 	if policies && (!store.Name.MatchString(bits[1]) || len(bits) > 5 || len(bits) >= 4 && !store.Name.MatchString(bits[3])) {
 		respondErr(w, store.ErrRetentionInput)

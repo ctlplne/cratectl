@@ -35,6 +35,9 @@ func retentionIntent(ctx context.Context, tx pgx.Tx, tenant string, j Job) (Rete
 	if count != int64(p.Targets) || last != int64(p.Targets) {
 		return p, requester, ErrRetentionInput
 	}
+	if e = verifyRetentionScheduleReceipt(ctx, tx, j, p, requester); e != nil {
+		return p, requester, e
+	}
 	return p, requester, nil
 }
 func retentionRequester(ctx context.Context, tx pgx.Tx, requester Identity) error {
@@ -46,6 +49,9 @@ func retentionRequester(ctx context.Context, tx pgx.Tx, requester Identity) erro
 }
 func retentionCurrent(ctx context.Context, tx pgx.Tx, i Identity, p RetentionPlan) error {
 	if e := retentionRequester(ctx, tx, i); e != nil {
+		return e
+	}
+	if e := retentionScheduleCurrent(ctx, tx, i, p); e != nil {
 		return e
 	}
 	repo, e := retentionRepository(ctx, tx, i, p.Policy.Repository)

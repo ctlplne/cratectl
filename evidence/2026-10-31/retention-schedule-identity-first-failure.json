@@ -1,0 +1,24 @@
+{
+  "observed_at": "2026-10-31T03:05:15.394793+00:00",
+  "source_parent": "69cae4bf48bd07c53af2233cf5445ac18157e0d7",
+  "source_dirty": true,
+  "test": "TestRetentionScheduleRejectsCrossLinkedPolicyAndRequesterEvidence",
+  "failure": "Owned receipt faults changed the policy link or immutable configuration authorizing actor while preserving other plan fields. Run inspection accepted both because verification did not compare the receipt policy identity and requester actor explicitly.",
+  "log": "evidence/2026-10-31/retention-schedule-identity-first-failure.txt",
+  "raw_sha256": "1b985db3ecf2493664321a97c5b30eca45b0a7a079c6892e3357f301b87ea6da",
+  "source_inputs": [
+    {
+      "path": "internal/store/retention_schedule_dispatch.go",
+      "sha256": "8bcf7ea7625b86c289d62a1723c1b32881f52c212b3d8118b8df6a3ca6476614"
+    },
+    {
+      "path": "internal/store/retention_execution.go",
+      "sha256": "938df57b8e52d0cfafde5c92284d48d523fc1cb06ef6364dab950d9e6586d657"
+    },
+    {
+      "path": "internal/store/retention_schedules_integration_test.go",
+      "sha256": "588f0b35e928e12574cca2789d523cf13b56fd4bb4623af498bfed645aa7850f"
+    }
+  ],
+  "limits": "Privileged owned metadata-fault probes; not a supported product metadata-repair workflow or clean-candidate qualification."
+}

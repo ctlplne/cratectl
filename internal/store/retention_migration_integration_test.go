@@ -21,7 +21,7 @@ func TestRetentionMigrationPreservesSixReceiptsAndForcesTenantEvidenceIsolation(
 		t.Fatal(e)
 	}
 	before, e := MigrationPlan(ctx, d.OwnerDSN)
-	if e != nil || len(before.Applied) != 6 || len(before.Pending) != 1 || before.Pending[0] != 7 || !before.SafetyValid {
+	if e != nil || len(before.Applied) != 6 || len(before.Pending) != len(steps)-6 || before.Pending[0] != 7 || !before.SafetyValid {
 		t.Fatal(before, e)
 	}
 	runtime, e := pgx.Connect(ctx, d.RuntimeDSN)
@@ -36,7 +36,7 @@ func TestRetentionMigrationPreservesSixReceiptsAndForcesTenantEvidenceIsolation(
 		t.Fatal(e)
 	}
 	after, e := MigrationPlan(ctx, d.OwnerDSN)
-	if e != nil || len(after.Applied) != 7 || len(after.Pending) != 0 || !after.SafetyValid {
+	if e != nil || len(after.Applied) != len(steps) || len(after.Pending) != 0 || !after.SafetyValid {
 		t.Fatal(after, e)
 	}
 	for n, r := range before.Applied {

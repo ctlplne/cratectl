@@ -28,6 +28,10 @@ func executeRetention(parent context.Context, db *store.Store, o Options, i stor
 		code = "retention_requester_authorization"
 		permanent = true
 	}
+	if errors.Is(e, store.ErrRetentionScheduleChanged) {
+		code = "retention_schedule_changed"
+		permanent = true
+	}
 	if errors.Is(e, store.ErrRetentionChanged) || errors.Is(e, store.ErrDenied) || errors.Is(e, store.ErrRepositorySuspended) || errors.Is(e, store.ErrRepositoryRemoved) {
 		code = "retention_plan_changed"
 		permanent = true

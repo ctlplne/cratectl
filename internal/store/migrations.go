@@ -56,9 +56,13 @@ var lifecycleSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationS
 var sourceSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationSafetySQL(), migrationSafetySQLFor(schemaTablesV4), 1)
 var scheduleSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationSafetySQL(), migrationSafetySQLFor(schemaTablesV6), 1)
 var retentionSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationSafetySQL(), migrationSafetySQLFor(schemaTablesV7), 1)
+var retentionScheduleSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationSafetySQL(), migrationSafetySQLFor(schemaTablesV8), 1)
 
 func schemaStateBody() string { return frozenSchemaStateBody }
 func schemaStateBodyForVersion(version int) string {
+	if version >= 8 {
+		return retentionScheduleSchemaStateBody
+	}
 	if version >= 7 {
 		return retentionSchemaStateBody
 	}
@@ -99,7 +103,13 @@ func buildMigrations() []migrationStep {
 		retention += `ALTER TABLE ` + q + ` ENABLE ROW LEVEL SECURITY; ALTER TABLE ` + q + ` FORCE ROW LEVEL SECURITY; CREATE POLICY tenant_scope ON ` + q + ` USING (tenant=current_setting('cratectl.tenant',true)) WITH CHECK (tenant=current_setting('cratectl.tenant',true)); GRANT SELECT,INSERT ON ` + q + ` TO cratectl_app;`
 	}
 	retention += `GRANT UPDATE ON cratectl.retention_policies TO cratectl_app;` + schemaStateSQL(retentionSchemaStateBody)
-	return []migrationStep{{1, "legacy baseline", legacySchemaSQL()}, {2, "schema state and runtime coordination", migrationLedgerSQL + "\n" + state}, {3, "retained artifact and repository lifecycle", lifecycle}, {4, "versioned repository source configuration", sourceConfigurationSchema + schemaStateSQL(sourceSchemaStateBody)}, {5, "fenced exact-byte repair jobs", schemaStateSQL(sourceSchemaStateBody)}, {6, "recurring bounded integrity sampling", schedules}, {7, "policy-driven retained retirement", retention}}
+	retentionSchedules := retentionScheduleSchema
+	for _, table := range []string{"retention_schedules", "retention_schedule_revisions", "retention_schedule_runs"} {
+		q := pgx.Identifier{"cratectl", table}.Sanitize()
+		retentionSchedules += `ALTER TABLE ` + q + ` ENABLE ROW LEVEL SECURITY; ALTER TABLE ` + q + ` FORCE ROW LEVEL SECURITY; CREATE POLICY tenant_scope ON ` + q + ` USING (tenant=current_setting('cratectl.tenant',true)) WITH CHECK (tenant=current_setting('cratectl.tenant',true)); GRANT SELECT,INSERT ON ` + q + ` TO cratectl_app;`
+	}
+	retentionSchedules += `GRANT UPDATE ON cratectl.retention_schedules TO cratectl_app;` + schemaStateSQL(retentionScheduleSchemaStateBody)
+	return []migrationStep{{1, "legacy baseline", legacySchemaSQL()}, {2, "schema state and runtime coordination", migrationLedgerSQL + "\n" + state}, {3, "retained artifact and repository lifecycle", lifecycle}, {4, "versioned repository source configuration", sourceConfigurationSchema + schemaStateSQL(sourceSchemaStateBody)}, {5, "fenced exact-byte repair jobs", schemaStateSQL(sourceSchemaStateBody)}, {6, "recurring bounded integrity sampling", schedules}, {7, "policy-driven retained retirement", retention}, {8, "explicitly authorized scheduled retirement", retentionSchedules}}
 }
 
 var frozenMigrations = buildMigrations()

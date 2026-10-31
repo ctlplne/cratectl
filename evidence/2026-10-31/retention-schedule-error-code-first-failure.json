@@ -1,0 +1,24 @@
+{
+  "observed_at": "2026-10-31T02:50:13.302458+00:00",
+  "source_parent": "69cae4bf48bd07c53af2233cf5445ac18157e0d7",
+  "source_dirty": true,
+  "test": "TestRetentionSchedulePauseFencesPendingEffectsAndPreservesManualApproval",
+  "failure": "StepRetention correctly rejected the paused schedule, but FailJob returned ErrConflict for the new retention_schedule_changed code, preventing terminal failure recording.",
+  "log": "evidence/2026-10-31/retention-schedule-error-code-first-failure.txt",
+  "raw_sha256": "6750bebd4061c34c94bcbae75f9e2274f9aa95cffd40c6039a80ac42881a644e",
+  "source_inputs": [
+    {
+      "path": "internal/store/jobs_effects.go",
+      "sha256": "b4ca74dba487ea172a4f3e464549f4182a772a38df236ae06be00039c527199c"
+    },
+    {
+      "path": "internal/worker/retention.go",
+      "sha256": "c1bb36b962c96c01e8877c9f010c27996b24d7e0f123e2d126d4141196c6ae73"
+    },
+    {
+      "path": "internal/store/retention_schedules_integration_test.go",
+      "sha256": "861cfd3609a4eace2c0daf075d8fde2cda7f51b0acc1612653eb862ade67adeb"
+    }
+  ],
+  "limits": "Dirty-source real PostgreSQL regression. No clean-candidate or native scheduled-retention qualification."
+}

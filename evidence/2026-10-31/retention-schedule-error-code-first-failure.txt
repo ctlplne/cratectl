@@ -1,0 +1,34 @@
+=== RUN   TestRetentionSchedulePreviewRevisionAndReplayPreserveApproval
+--- PASS: TestRetentionSchedulePreviewRevisionAndReplayPreserveApproval (0.44s)
+=== RUN   TestRetentionScheduleConcurrentCaptureCoalescesAndDoesNotOverlap
+--- PASS: TestRetentionScheduleConcurrentCaptureCoalescesAndDoesNotOverlap (0.46s)
+=== RUN   TestRetentionSchedulePauseFencesPendingEffectsAndPreservesManualApproval
+    retention_schedules_integration_test.go:190: conflict
+--- FAIL: TestRetentionSchedulePauseFencesPendingEffectsAndPreservesManualApproval (0.37s)
+=== RUN   TestRetentionScheduleRequesterLossBlocksUntilExplicitReauthorization
+=== RUN   TestRetentionScheduleRequesterLossBlocksUntilExplicitReauthorization/expired
+=== RUN   TestRetentionScheduleRequesterLossBlocksUntilExplicitReauthorization/revoked
+--- PASS: TestRetentionScheduleRequesterLossBlocksUntilExplicitReauthorization (0.78s)
+    --- PASS: TestRetentionScheduleRequesterLossBlocksUntilExplicitReauthorization/expired (0.39s)
+    --- PASS: TestRetentionScheduleRequesterLossBlocksUntilExplicitReauthorization/revoked (0.39s)
+=== RUN   TestRetentionSchedulePolicyAndSourceChangesRequireNewApproval
+=== RUN   TestRetentionSchedulePolicyAndSourceChangesRequireNewApproval/policy
+=== RUN   TestRetentionSchedulePolicyAndSourceChangesRequireNewApproval/source
+--- PASS: TestRetentionSchedulePolicyAndSourceChangesRequireNewApproval (0.75s)
+    --- PASS: TestRetentionSchedulePolicyAndSourceChangesRequireNewApproval/policy (0.41s)
+    --- PASS: TestRetentionSchedulePolicyAndSourceChangesRequireNewApproval/source (0.34s)
+=== RUN   TestRetentionScheduleBudgetAndQueueDeferralsKeepDueIntent
+--- PASS: TestRetentionScheduleBudgetAndQueueDeferralsKeepDueIntent (0.40s)
+=== RUN   TestRetentionScheduleFinalJournalAndRequesterFailureRollBackAdmission
+=== RUN   TestRetentionScheduleFinalJournalAndRequesterFailureRollBackAdmission/journal
+=== RUN   TestRetentionScheduleFinalJournalAndRequesterFailureRollBackAdmission/late_requester
+--- PASS: TestRetentionScheduleFinalJournalAndRequesterFailureRollBackAdmission (0.73s)
+    --- PASS: TestRetentionScheduleFinalJournalAndRequesterFailureRollBackAdmission/journal (0.35s)
+    --- PASS: TestRetentionScheduleFinalJournalAndRequesterFailureRollBackAdmission/late_requester (0.38s)
+=== RUN   TestRetentionScheduleInspectionAndExecutionRejectContradictoryReceipts
+--- PASS: TestRetentionScheduleInspectionAndExecutionRejectContradictoryReceipts (0.40s)
+=== RUN   TestRetentionScheduleRequiresExplicitBoundedFutureAuthority
+--- PASS: TestRetentionScheduleRequiresExplicitBoundedFutureAuthority (0.00s)
+FAIL
+FAIL	ctlplne.dev/cratectl/internal/store	4.662s
+FAIL

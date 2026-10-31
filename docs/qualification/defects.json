@@ -612,6 +612,26 @@
       "candidate": "6cac8851da675dcaf531d6f8ed2aa26c927a243b",
       "replay": "evidence/2026-10-31/retention-checkpoint.json",
       "limits": "Named real PostgreSQL, native process/browser and bounded CLI-response fixtures; full product/security/scale qualification remains open."
+    },
+    {
+      "id": "DEFECT.0057",
+      "summary": "Schedule-change failures could not record a terminal durable job outcome",
+      "first_failure": "evidence/2026-10-31/retention-schedule-error-code-first-failure.json",
+      "state": "repaired and development replayed",
+      "repair": "Register retention_schedule_changed only for repository.retention jobs; replay direct PostgreSQL and actual worker pause terminal-state cases.",
+      "candidate": null,
+      "replay": "evidence/2026-10-31/retention-schedule-backend-preflight.json",
+      "limits": "Owned real PostgreSQL/HTTP/worker and metadata-fault development fixtures only; dedicated native/browser and exact clean-candidate qualification remain pending."
+    },
+    {
+      "id": "DEFECT.0058",
+      "summary": "Scheduled retention receipt inspection omitted exact policy and requester identity checks",
+      "first_failure": "evidence/2026-10-31/retention-schedule-identity-first-failure.json",
+      "state": "repaired and development replayed",
+      "repair": "Crosscheck receipt repository/policy and immutable authorizing actor against the original run before inspection, history reads or worker effects.",
+      "candidate": null,
+      "replay": "evidence/2026-10-31/retention-schedule-backend-preflight.json",
+      "limits": "Owned real PostgreSQL/HTTP/worker and metadata-fault development fixtures only; dedicated native/browser and exact clean-candidate qualification remain pending."
     }
   ]
 }

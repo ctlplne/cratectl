@@ -1,5 +1,30 @@
 # cratectl execution status
 
+Explicitly authorized scheduled OCI retirement is implemented locally (ADR 0027;
+docs/operator/scheduled-retention.md). A separate schedule binds future bounded
+captures to exact policy/source revisions and the current administrator credential.
+Due slots coalesce without catch-up bursts. Immutable targets, job, journal/outbox
+and due-slot receipts commit together. Pause or revision changes stop unprocessed
+scheduled targets; manual approvals retain their existing meaning. Original
+requester/current worker authority and all native retention protections remain.
+
+Twelve new real PostgreSQL/HTTP/worker tests passed twice on the repaired source;
+the complete store/server/stock-ORAS-driver PostgreSQL race suites passed once
+without skips or races. Unit/race/lint, 70,907 bounded parser fuzz executions,
+228 parsed API response maps/local references and the Go symbol scan pass. First
+failure-code, unknown-version fixture and receipt-identity failures and their
+replays are retained in evidence/2026-10-31/retention-schedule-backend-preflight.json.
+These are dirty-source development preflights, not a new clean qualification.
+
+Next: complete schedule console controls and dedicated stock ORAS/CLI real-cadence,
+process-restart/cancellation/authorization and schema-7 old-binary journeys;
+adapt native harnesses to schema 8 and qualify exact clean production/race builds.
+The owned primary remains schema 7; isolated retained integration databases use
+schema 8. Test services are stopped; private data/artifacts and qualified schema-7
+production bin bytes are retained. Only imfeelingtheagi is author and committer;
+no push or remote mutation occurred. All broader scope and negative readiness
+remain unchanged. The latest qualified checkpoint follows.
+
 Latest qualified source: `6cac8851da675dcaf531d6f8ed2aa26c927a243b`, authored and committed only as
 `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
 The authoritative checkpoint is `evidence/2026-10-31/retention-checkpoint.json`.

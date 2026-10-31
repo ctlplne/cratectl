@@ -1,0 +1,14 @@
+{
+  "observed_at": "2026-10-31T03:00:31.503182+00:00",
+  "source_parent": "69cae4bf48bd07c53af2233cf5445ac18157e0d7",
+  "source_dirty": true,
+  "classification": "Existing unknown-version fixture used hardcoded version 8; migration 8 now exists, so fixture insertion failed with duplicate ledger key before the guard could be exercised.",
+  "raw_log": ".cache/retention-schedule-full-postgres-first.txt",
+  "raw_sha256": "1dbe26d369b9b3443f8c97e0178f99e2f245547fe663fed7310a1739338c0c0b",
+  "diagnostic": "=== RUN   TestSchemaDriftFailsClosed\n=== RUN   TestSchemaDriftFailsClosed/checksum\n=== RUN   TestSchemaDriftFailsClosed/gap\n=== RUN   TestSchemaDriftFailsClosed/RLS_not_forced\n=== RUN   TestSchemaDriftFailsClosed/extra_policy\n=== RUN   TestSchemaDriftFailsClosed/weakened_write_policy\n=== RUN   TestSchemaDriftFailsClosed/function_body\n=== RUN   TestSchemaDriftFailsClosed/public_function\n=== RUN   TestSchemaDriftFailsClosed/missing_function\n=== RUN   TestSchemaDriftFailsClosed/unknown_version\n    migrations_integration_test.go:237: ERROR: duplicate key value violates unique constraint \"schema_migrations_pkey\" (SQLSTATE 23505)\n=== RUN   TestSchemaDriftFailsClosed/RLS_disabled\n=== RUN   TestSchemaDriftFailsClosed/weakened_read_policy\n=== RUN   TestSchemaDriftFailsClosed/missing_ledger\n--- FAIL: TestSchemaDriftFailsClosed (6.53s)\n    --- PASS: TestSchemaDriftFailsClosed/checksum (0.43s)\n    --- PASS: TestSchemaDriftFailsClosed/gap (0.32s)\n    --- PASS: TestSchemaDriftFailsClosed/RLS_not_forced (0.59s)\n    --- PASS: TestSchemaDriftFailsClosed/extra_policy (0.58s)\n    --- PASS: TestSchemaDriftFailsClosed/weakened_write_policy (0.53s)\n    --- PASS: TestSchemaDriftFailsClosed/function_body (0.48s)\n    --- PASS: TestSchemaDriftFailsClosed/public_function (0.48s)\n    --- PASS: TestSchemaDriftFailsClosed/missing_function (0.40s)\n    --- FAIL: TestSchemaDriftFailsClosed/unknown_version (0.69s)\n    --- PASS: TestSchemaDriftFailsClosed/RLS_disabled (1.08s)\n    --- PASS: TestSchemaDriftFailsClosed/weakened_read_policy (0.60s)\n    --- PASS: TestSchemaDriftFailsClosed/missing_ledger (0.35s)\n",
+  "store_package": "failed fixture setup",
+  "server_package": "passed",
+  "native_stock_ORAS_driver_package": "passed",
+  "correction": "Use len(currentMigrations())+1 for a genuinely unknown version, retaining every authentication/readiness/mutation/migration refusal assertion.",
+  "limits": "Dirty-source development preflight; no clean scheduled-retention candidate qualification."
+}

@@ -113,6 +113,8 @@ func fail(w http.ResponseWriter, status int, code, action string) {
 }
 func respondErr(w http.ResponseWriter, e error) {
 	switch {
+	case errors.Is(e, store.ErrRetentionScheduleChanged):
+		fail(w, 409, "retention_schedule_changed", "Read the current schedule revision and inspect earlier outcomes. A paused or replaced schedule stops its remaining targets; retrying an old job cannot replace that approval.")
 	case errors.Is(e, store.ErrRetentionInput):
 		fail(w, 400, "invalid_retention", "Supply a complete OCI retention policy or an exact approved preview, current expected_revision and nonempty bounded reason.")
 	case errors.Is(e, store.ErrRetentionChanged):

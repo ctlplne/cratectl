@@ -20582,11 +20582,11 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "internal/store/retention.go, retention_execution.go, retention_management.go and retention.sql; internal/server/retention.go; internal/worker/retention.go; web/src/retention.tsx; scripts/conformance_retention.py",
+      "implementation": "internal/store/retention.go, retention_execution.go, retention_management.go and retention.sql; internal/server/retention.go; internal/worker/retention.go; web/src/retention.tsx; scripts/conformance_retention.py; internal/store/retention_schedules.go and retention_schedule_dispatch.go; internal/worker/retention_schedules.go; internal/server/retention_schedules.go",
       "surfaces": {
-        "api": "/api/v1/repositories/{repository}/retention-policies; immutable history and run admission; /api/v1/maintenance/retention-runs/{job} and items; common job control and verified lifecycle restore",
+        "api": "/api/v1/repositories/{repository}/retention-policies; immutable history and run admission; /api/v1/maintenance/retention-runs/{job} and items; common job control and verified lifecycle restore; named policy /schedule, schedule/history and schedule/runs",
         "cli": "cratectl management API with explicit --response-limit for complete large previews",
-        "ui": "Storage \u2192 Retention; policy/target review, exact uncertain-admission retry, immutable outcomes and common verified lifecycle restore"
+        "ui": "Storage \u2192 Retention; policy/target review, exact uncertain-admission retry, immutable outcomes and common verified lifecycle restore; scheduled-retention controls pending"
       },
       "core": true,
       "dependencies": [],
@@ -20619,10 +20619,11 @@
         "evidence/2026-10-31/retention-backend-preflight.json",
         "evidence/2026-10-31/retention-surface-preflight.json",
         "evidence/2026-10-31/retention-checkpoint.json",
-        "evidence/2026-10-31/retention-clean-postgres-race.txt"
+        "evidence/2026-10-31/retention-clean-postgres-race.txt",
+        "evidence/2026-10-31/retention-schedule-backend-preflight.json"
       ],
-      "limits": "Named clean OCI creation-age/newest/tag-aware retirement, immutable approval/outcomes, native ORAS/CLI process/restart/cancellation/current-authority restore and Chromium workflows pass. Logical tombstones retain all bytes and reclaim zero storage. Other formats/rules, scheduled retention, legal-hold administration, release/replica/restore protections, physical GC, providers/platforms, clock/fault/scale and production recovery remain required.",
-      "next_action": "Complete remaining retention/rule/format/GC and operator/identity/provider/platform/recovery outcomes; preserve every later-stage requirement."
+      "limits": "Named clean OCI creation-age/newest/tag-aware retirement, immutable approval/outcomes, native ORAS/CLI process/restart/cancellation/current-authority restore and Chromium workflows pass. Logical tombstones retain all bytes and reclaim zero storage. Other formats/rules, scheduled retention, legal-hold administration, release/replica/restore protections, physical GC, providers/platforms, clock/fault/scale and production recovery remain required. Scheduled OCI retirement now has dirty-source real PostgreSQL/HTTP/worker/schema-8 development preflights. Scheduled console, dedicated native cadence/restart/recovery and exact clean-candidate qualification remain pending.",
+      "next_action": "Complete scheduled-retention console and dedicated stock-client/cadence/restart/schema-7 journeys, adapt required native harnesses to schema 8 and qualify exact clean production/race artifacts. Preserve every remaining retention/GC and later-stage requirement."
     },
     {
       "id": "REPO.HOLDS",

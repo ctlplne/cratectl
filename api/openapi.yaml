@@ -61,6 +61,26 @@ components:
         dry_run: {type: boolean, default: false}
         evaluated_at: {type: string, format: date-time, description: Required for apply; copy the exact evaluation time from the approved preview.}
         preview_digest: {type: string, pattern: '^[a-f0-9]{64}$', description: Required for apply within five minutes of evaluated_at; binds the complete plan and its observed impact.}
+    RetentionScheduleRequest:
+      type: object
+      additionalProperties: false
+      required: [expected_revision, expected_policy_revision, expected_source_revision, interval_seconds, max_targets, enabled, authorize_future_retirements, reason]
+      properties:
+        expected_revision: {type: integer, format: int64, minimum: 0, maximum: 9223372036854775806}
+        expected_policy_revision: {type: integer, format: int64, minimum: 1}
+        expected_source_revision: {type: integer, format: int64, minimum: 0}
+        interval_seconds: {type: integer, minimum: 60, maximum: 31536000}
+        max_targets: {type: integer, minimum: 1, maximum: 10000, description: The complete capture must fit this approved maximum and the server target ceiling. No partial target set is admitted.}
+        enabled: {type: boolean}
+        authorize_future_retirements: {type: boolean, description: Must be explicitly true to enable future target captures under these exact policy and source revisions.}
+        reason: {type: string, minLength: 1, maxLength: 1024, description: Nonempty UTF-8 reason of at most 1024 bytes without control characters.}
+        run_immediately: {type: boolean, default: false, description: Make the first slot due at configuration commit; requires enabled true.}
+        dry_run: {type: boolean, default: false, description: Preview complete configuration without changing future authority or admitting work.}
+      allOf:
+        - if: {properties: {enabled: {const: true}}, required: [enabled]}
+          then: {properties: {authorize_future_retirements: {const: true}}}
+        - if: {properties: {run_immediately: {const: true}}, required: [run_immediately]}
+          then: {properties: {enabled: {const: true}}}
     IntegrityScheduleRequest:
       type: object
       additionalProperties: false
@@ -639,6 +659,64 @@ paths:
         '409': {description: Changed or expired preview or policy revision; obtain a new preview.}
         '413': {description: Complete plan exceeds the configured target or metadata budget.}
         '503': {description: "Queue or database unavailable; admission rolls back together."}
+  /api/v1/repositories/{repository}/retention-policies/{name}/schedule:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+      - {in: path, name: name, required: true, schema: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$'}}
+    get:
+      operationId: inspectRetentionSchedule
+      description: Read exact authorized policy and source revisions with due/retry status and last job. The enabled setting is approval configuration; recorded deferral and job outcomes describe actual admission and effects. Private credential hashes are never returned.
+      responses:
+        '200': {description: "Current approval configuration, due/retry times and last job state."}
+        '403': {description: "Tenant administrator required."}
+        '404': {description: "No such schedule in the authorized repository."}
+    put:
+      operationId: configureRetentionSchedule
+      description: Explicitly approve future complete bounded target captures under exact policy/source revisions. Enabling requires authorize_future_retirements true. Preview has no effects. Apply records configuration/history with journal/outbox and idempotency. A database-clock due slot captures one immutable run; missed slots coalesce without a burst. Active runs or queue/budget pressure defer without consuming the slot. Revocation or changed policy/source blocks until reauthorized. Pausing or replacing the schedule stops unprocessed targets of its earlier runs; prior outcomes and retained bytes remain.
+      parameters:
+        - {in: header, name: Idempotency-Key, required: false, schema: {type: string, minLength: 8, maxLength: 128}, description: Required for apply; preserve the identical request for retries.}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/RetentionScheduleRequest'}
+      responses:
+        '200': {description: "Preview or committed replacement approval."}
+        '201': {description: "Committed first schedule approval."}
+        '400': {description: "Invalid or incomplete explicit authority; ambiguous and unknown fields are rejected."}
+        '403': {description: "Tenant administrator required."}
+        '404': {description: "No such authorized policy."}
+        '409': {description: "Changed schedule/policy/source revision or idempotency request."}
+        '503': {description: "Queue or database unavailable; configuration and journal roll back together."}
+  /api/v1/repositories/{repository}/retention-policies/{name}/schedule/history:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+      - {in: path, name: name, required: true, schema: {type: string}}
+    get:
+      operationId: listRetentionScheduleHistory
+      parameters:
+        - {in: query, name: after, schema: {type: integer, format: int64, minimum: 0, default: 0}}
+        - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 100, default: 100}}
+      responses:
+        '200': {description: "Immutable configuration items and more; continue from the last schedule revision."}
+        '400': {description: "Invalid or repeated pagination parameters."}
+        '403': {description: "Tenant administrator required."}
+        '404': {description: "No such authorized schedule."}
+  /api/v1/repositories/{repository}/retention-policies/{name}/schedule/runs:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+      - {in: path, name: name, required: true, schema: {type: string}}
+    get:
+      operationId: listScheduledRetentionRuns
+      description: Read scheduled runs with immutable approval and due-slot provenance. Contradictory or missing receipts fail inspection; mutable job progress cannot replace authority. Inspect each run through the common retention detail/items endpoints.
+      parameters:
+        - {in: query, name: after, schema: {type: integer, format: int64, minimum: 0, default: 0}}
+        - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 100, default: 100}}
+      responses:
+        '200': {description: "Immutable plan summaries and job states with more; continue from the last job sequence prefix."}
+        '400': {description: "Invalid pagination or contradictory immutable schedule evidence."}
+        '403': {description: "Tenant administrator required."}
+        '404': {description: "No such authorized schedule."}
   /api/v1/maintenance/retention-runs/{job}:
     parameters:
       - {in: path, name: job, required: true, schema: {type: string}}

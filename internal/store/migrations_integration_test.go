@@ -8,6 +8,7 @@ import (
 	crypt "ctlplne.dev/cratectl/internal/crypto"
 	"ctlplne.dev/cratectl/internal/testdb"
 	"errors"
+	"fmt"
 	"github.com/jackc/pgx/v5"
 	"net/url"
 	"testing"
@@ -217,7 +218,7 @@ func TestSchemaDriftFailsClosed(t *testing.T) {
 	cases := map[string]string{
 		"checksum":              `UPDATE cratectl_private.schema_migrations SET checksum=repeat('a',64) WHERE version=1`,
 		"gap":                   `DELETE FROM cratectl_private.schema_migrations WHERE version=1`,
-		"unknown version":       `INSERT INTO cratectl_private.schema_migrations(version,checksum)VALUES(8,repeat('a',64))`,
+		"unknown version":       fmt.Sprintf(`INSERT INTO cratectl_private.schema_migrations(version,checksum)VALUES(%d,repeat('a',64))`, len(currentMigrations())+1),
 		"RLS disabled":          `ALTER TABLE cratectl.artifacts DISABLE ROW LEVEL SECURITY`,
 		"RLS not forced":        `ALTER TABLE cratectl.repositories NO FORCE ROW LEVEL SECURITY`,
 		"extra policy":          `CREATE POLICY bypass ON cratectl.artifacts USING(true)`,

@@ -124,3 +124,7 @@ backup/restore remain committed requirements.
 
 The named clean source, artifact hashes, runtime records and limits are retained in
 [`retention-checkpoint.json`](../../evidence/2026-10-31/retention-checkpoint.json).
+
+A separate [scheduled-retention API](scheduled-retention.md) is implemented in
+local development. It explicitly authorizes future captures; scheduled console,
+dedicated native cadence/restart and clean qualification remain pending.

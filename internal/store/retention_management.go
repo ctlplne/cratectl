@@ -96,30 +96,48 @@ func (s *Store) RetentionRuns(ctx context.Context, i Identity, repo, name string
 		if _, e := retentionPolicy(ctx, tx, repo, name); e != nil {
 			return e
 		}
-		rows, e := tx.Query(ctx, `SELECT r.sequence,r.task,j.state,r.plan FROM cratectl.retention_runs r JOIN cratectl.jobs j ON(j.tenant,j.sequence,j.task)=(r.tenant,r.sequence,r.task) WHERE r.repository=$1 AND r.name=$2 AND r.sequence>$3 ORDER BY r.sequence LIMIT $4`, repo, name, after, limit+1)
-		if e != nil {
-			return e
-		}
-		defer rows.Close()
-		for rows.Next() {
-			var p RetentionRunSummary
-			var seq int64
-			var task string
-			var raw []byte
-			if e = rows.Scan(&seq, &task, &p.State, &raw); e != nil {
-				return e
-			}
-			if len(raw) > 16384 || json.Unmarshal(raw, &p.Plan) != nil {
-				return ErrRetentionInput
-			}
-			p.Job = (Job{Sequence: seq, Task: task}).ID()
-			out = append(out, p)
-		}
-		return rows.Err()
+		var e error
+		out, e = retentionRunSummaries(ctx, tx, i, repo, name, after, limit, false)
+		return e
 	})
 	more := len(out) > limit
 	if more {
 		out = out[:limit]
 	}
 	return out, more, e
+}
+
+func retentionRunSummaries(ctx context.Context, tx pgx.Tx, i Identity, repo, name string, after int64, limit int, scheduled bool) ([]RetentionRunSummary, error) {
+	out := []RetentionRunSummary{}
+	rows, e := tx.Query(ctx, `SELECT r.sequence,r.task,j.state FROM cratectl.retention_runs r JOIN cratectl.jobs j ON(j.tenant,j.sequence,j.task)=(r.tenant,r.sequence,r.task) WHERE r.repository=$1 AND r.name=$2 AND r.sequence>$3 AND(NOT $5::boolean OR EXISTS(SELECT 1 FROM cratectl.retention_schedule_runs sr WHERE(sr.tenant,sr.sequence,sr.task)=(r.tenant,r.sequence,r.task))) ORDER BY r.sequence LIMIT $4`, repo, name, after, limit+1, scheduled)
+	if e != nil {
+		return out, e
+	}
+	type reference struct {
+		sequence    int64
+		task, state string
+	}
+	refs := []reference{}
+	for rows.Next() {
+		var v reference
+		if e = rows.Scan(&v.sequence, &v.task, &v.state); e != nil {
+			rows.Close()
+			return out, e
+		}
+		refs = append(refs, v)
+	}
+	e = rows.Err()
+	rows.Close()
+	if e != nil {
+		return out, e
+	}
+	for _, v := range refs {
+		j := Job{Sequence: v.sequence, Task: v.task, Queue: "maintenance", Kind: "repository.retention"}
+		plan, _, e := retentionIntent(ctx, tx, i.Tenant, j)
+		if e != nil {
+			return out, e
+		}
+		out = append(out, RetentionRunSummary{Job: j.ID(), State: v.state, Plan: plan})
+	}
+	return out, nil
 }

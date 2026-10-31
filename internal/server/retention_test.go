@@ -36,6 +36,19 @@ func FuzzRetentionJSONBounded(f *testing.F) {
 	})
 }
 
+func FuzzRetentionScheduleJSONBounded(f *testing.F) {
+	for _, body := range []string{`{}`, `null`, `{"expected_revision":0,"expected_policy_revision":1,"expected_source_revision":0,"interval_seconds":60,"max_targets":100,"enabled":true,"authorize_future_retirements":true,"reason":"owned"}`, `{"enabled":true,"enabled":false}`} {
+		f.Add(body)
+	}
+	f.Fuzz(func(t *testing.T, body string) {
+		var input store.RetentionScheduleRequest
+		w := httptest.NewRecorder()
+		if _, ok := readRetentionBody(w, httptest.NewRequest("PUT", "/", strings.NewReader(body)), &input, "expected_revision", "expected_policy_revision", "expected_source_revision", "interval_seconds", "max_targets", "enabled", "authorize_future_retirements", "reason"); ok {
+			_ = input.Validate()
+		}
+	})
+}
+
 func TestRetentionMethodRejectionAdvertisesSupportedOperations(t *testing.T) {
 	for path, want := range map[string]string{"repositories/containers/retention-policies/monthly": "GET, PUT", "repositories/containers/retention-policies/monthly/runs": "GET, POST", "maintenance/retention-runs/1:retention-example": "GET"} {
 		w := httptest.NewRecorder()
