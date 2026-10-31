@@ -9,10 +9,10 @@ type State={state?:string;revision:number;deleted?:boolean;held?:boolean;digest?
 type Preview={current:State;desired?:string;strong_parents?:string[];tags?:string[];weak_subject_dependents?:string[];active_retrievals:number;active_uploads?:number;groups?:string[]};
 type Snapshot={input:Record<string,unknown>;preview:Preview};
 
-export function Lifecycle({repository,path,...p}:Common&{repository:string;path?:string}){
+export function Lifecycle({repository,path,initialAction,...p}:Common&{repository:string;path?:string;initialAction?:string}){
   const api=`/api/v1/repositories/${encodeURIComponent(repository)}/${path?'artifacts/lifecycle':'state'}`;
   const state=useResource<State>(p.client,api+(path?'?'+new URLSearchParams({path}):''),p.revision);
-  const id=useId(),[action,setAction]=useState(''),[reason,setReason]=useState(''),[until,setUntil]=useState(''),[snapshot,setSnapshot]=useState<Snapshot>(),[error,setError]=useState<ApiError>(),[busy,setBusy]=useState(false);
+  const id=useId(),[action,setAction]=useState(initialAction??''),[reason,setReason]=useState(''),[until,setUntil]=useState(''),[snapshot,setSnapshot]=useState<Snapshot>(),[error,setError]=useState<ApiError>(),[busy,setBusy]=useState(false);
   const live=useRef(true),controller=useRef(new AbortController());useEffect(()=>()=>{live.current=false;controller.current.abort()},[]);
   const current=state.data;
   const focused=useRef(false);

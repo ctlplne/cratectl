@@ -17,6 +17,7 @@ completion.
 
 Reviewed OCI [retirement and restore](docs/operator/retention.md), separately
 authorized [automatic retirement](docs/operator/scheduled-retention.md),
+[reference hold discovery and history](docs/operator/holds.md),
 [recurring integrity checks](docs/operator/recurring-integrity.md) and
 [exact-byte repair](docs/operator/byte-repair.md) have scoped development or
 qualification evidence. Retained retirement reclaims zero storage. These records

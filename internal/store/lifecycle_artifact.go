@@ -34,7 +34,22 @@ type ArtifactStatePreview struct {
 }
 
 func artifactLifecycleRecord(ctx context.Context, tx pgx.Tx, i Identity, repo, path string) (Artifact, error) {
-	r, e := repositoryInTx(ctx, tx, i, repo, "write")
+	return artifactLifecycleRecordMode(ctx, tx, i, repo, path, false)
+}
+func artifactLifecycleRecordRetained(ctx context.Context, tx pgx.Tx, i Identity, repo, path string) (Artifact, error) {
+	if i.Role != "admin" {
+		return Artifact{}, ErrDenied
+	}
+	return artifactLifecycleRecordMode(ctx, tx, i, repo, path, true)
+}
+func artifactLifecycleRecordMode(ctx context.Context, tx pgx.Tx, i Identity, repo, path string, retained bool) (Artifact, error) {
+	var r Repository
+	var e error
+	if retained {
+		r, e = repositoryRecordInTx(ctx, tx, i, repo, "write")
+	} else {
+		r, e = repositoryInTx(ctx, tx, i, repo, "write")
+	}
 	if e != nil {
 		return Artifact{}, e
 	}
@@ -60,7 +75,11 @@ func artifactStatePreview(ctx context.Context, tx pgx.Tx, i Identity, repo strin
 	if budget < 1 || budget > 1000000 || input.ExpectedRevision < 0 || !validLifecycleReason(input.Reason) {
 		return out, ErrConflict
 	}
-	a, e := artifactLifecycleRecord(ctx, tx, i, repo, input.Path)
+	record := artifactLifecycleRecord
+	if input.Action == "hold" || input.Action == "release_hold" {
+		record = artifactLifecycleRecordRetained
+	}
+	a, e := record(ctx, tx, i, repo, input.Path)
 	if e != nil {
 		return out, e
 	}
@@ -146,7 +165,11 @@ func artifactStatePreview(ctx context.Context, tx pgx.Tx, i Identity, repo strin
 func (s *Store) ArtifactState(ctx context.Context, i Identity, repo, path string) (ArtifactState, error) {
 	var state ArtifactState
 	e := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
-		a, e := artifactLifecycleRecord(ctx, tx, i, repo, path)
+		record := artifactLifecycleRecord
+		if i.Role == "admin" {
+			record = artifactLifecycleRecordRetained
+		}
+		a, e := record(ctx, tx, i, repo, path)
 		if e != nil {
 			return e
 		}
@@ -216,7 +239,11 @@ func authorizeArtifactLifecycle(ctx context.Context, tx pgx.Tx, i Identity, repo
 	if !i.CanWrite() || (input.Action == "hold" || input.Action == "release_hold") && i.Role != "admin" {
 		return ErrDenied
 	}
-	_, e := artifactLifecycleRecord(ctx, tx, i, repo, input.Path)
+	record := artifactLifecycleRecord
+	if input.Action == "hold" || input.Action == "release_hold" {
+		record = artifactLifecycleRecordRetained
+	}
+	_, e := record(ctx, tx, i, repo, input.Path)
 	return e
 }
 func (s *Store) ReplayArtifactLifecycle(ctx context.Context, i Identity, repo, key, fp string, input ArtifactStateRequest) (Result, bool, error) {

@@ -1,5 +1,35 @@
 # cratectl execution status
 
+Current development: tenant-wide reference-hold inventory, immutable original
+hold/release history and administrator recovery for suspended/removed OCI
+repositories are implemented across API, CLI and Storage → Reference holds.
+See `evidence/2026-10-31/hold-administration-development-preflight.json`,
+ADR 0028 and `docs/operator/holds.md`. The existing per-reference API still has
+one replaceable hold slot; independent cases and case-specific release remain open.
+
+Dirty-source development evidence passes all three PostgreSQL race packages twice
+(398 top-level passes, seven new hold tests twice, no skips/races), 52 actual
+schema-8 upgrade/CLI/ORAS assertions and eleven Chromium workflows/84 assertions/
+81 named automated A/AA states. Actual expiry uses elapsed time; original journal
+snapshots remain unchanged. Current authority, encrypted cursor scope, queue
+rollback, stale revisions and retained-repository serving fences pass. Unit/race/
+lint, console byte reproduction and API parse/reference checks pass. First failed
+fixtures and driver runs remain retained. Five older native upgrade harnesses now
+expect schema 9; their runtime replay belongs to the pending clean campaign.
+
+Migration 9 only adds lookup indexes. All receipts 1–8 remain frozen. The primary
+is still schema 8, with matching qualified production bytes restored; schema 9 is
+confined to isolated development fixtures. Exact clean-candidate qualification,
+older native regressions and production recovery remain pending. The qualified
+source below is unchanged. All 450 capabilities and 41 families remain unfinished;
+all broad readiness, security and packaging verdicts remain negative.
+
+A fresh read-only GitHub audit verifies the existing private replacement repository:
+all 47 published commits and all 60 current local commits have the owner as author
+and committer. The connector’s 404 was not repository deletion. No reset,
+recreation, push or remote mutation was issued. See
+`evidence/2026-10-31/remote-state-owner-identity-audit.json`.
+
 Latest scoped qualified source: `399f37a048d73fddd8f6b98b93669f5ba2c3fad5`, authored and committed
 only as `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`.
 The authoritative checkpoint is `evidence/2026-10-31/retention-schedule-checkpoint.json`.

@@ -13,6 +13,10 @@ import (
 // replicas and rotate it before 2^32 seals, the GCM random-nonce key-use limit.
 type CursorKey struct{ aead cipher.AEAD }
 
+// Individual endpoints can enforce smaller limits. Global hold positions need
+// one 63-byte repository, one separator and a 2,048-byte canonical path.
+const cursorPositionLimit = 2112
+
 func ParseCursorKey(secret string) (*CursorKey, error) {
 	b, e := base64.RawURLEncoding.Strict().DecodeString(secret)
 	if e != nil || len(b) != 32 {
@@ -30,7 +34,7 @@ func ParseCursorKey(secret string) (*CursorKey, error) {
 	return &CursorKey{aead}, nil
 }
 func (k *CursorKey) Seal(scope, position string, before bool) (string, error) {
-	if k == nil || len(position) == 0 || len(position) > 2048 || len(scope) > 8192 {
+	if k == nil || len(position) == 0 || len(position) > cursorPositionLimit || len(scope) > 8192 {
 		return "", errors.New("invalid pagination position")
 	}
 	data := append([]byte{0}, []byte(position)...)
@@ -49,7 +53,7 @@ func (k *CursorKey) Open(scope, token string) (string, bool, error) {
 		return "", false, invalid
 	}
 	data, e := k.aead.Open(nil, nil, b, []byte(scope))
-	if e != nil || len(data) < 2 || len(data) > 2049 || data[0] > 1 {
+	if e != nil || len(data) < 2 || len(data) > cursorPositionLimit+1 || data[0] > 1 {
 		return "", false, invalid
 	}
 	return string(data[1:]), data[0] == 1, nil

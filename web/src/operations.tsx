@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 import {RepairSource} from './repair';
 import {IntegritySchedules} from './integrity-schedules';
+import {Holds} from './holds';
 import {Retention,RetentionRun} from './retention';
 import {useState} from 'react';
 import type {Audit,Job,Page} from './api';
@@ -30,7 +31,7 @@ function JobsAllowed(p:Common&{queue:string;state:string;after:string;setQueue:(
 }
 export function Storage(p:Common){
   const [view,setView]=useState('inventory');
-  return <><Heading eyebrow="Bytes and recovery"title="Storage"description="Account for retained files, inspect referenced bytes and manage reviewed maintenance."/>{p.identity.role!=='admin'?<AdminOnly {...p}/>:<><nav className="tabs"aria-label="Storage views">{[['inventory','Filesystem inventories'],['sweep','Referenced integrity'],['schedules','Recurring integrity'],['retention','Retention'],['leases','Transfer leases']].map(([id,label])=><button key={id}aria-current={view===id?'page':undefined}onClick={()=>setView(id)}>{label}</button>)}</nav>{view==='inventory'?<Inventories {...p}/>:view==='sweep'?<SweepPreview {...p}/>:view==='schedules'?<IntegritySchedules {...p}/>:view==='retention'?<Retention {...p}/>:<LeasePreview {...p}/>}</>}</>;
+  return <><Heading eyebrow="Bytes and recovery"title="Storage"description="Account for retained files, inspect referenced bytes and manage reviewed maintenance."/>{p.identity.role!=='admin'?<AdminOnly {...p}/>:<><nav className="tabs"aria-label="Storage views">{[['inventory','Filesystem inventories'],['sweep','Referenced integrity'],['schedules','Recurring integrity'],['retention','Retention'],['holds','Reference holds'],['leases','Transfer leases']].map(([id,label])=><button key={id}aria-current={view===id?'page':undefined}onClick={()=>setView(id)}>{label}</button>)}</nav>{view==='inventory'?<Inventories {...p}/>:view==='sweep'?<SweepPreview {...p}/>:view==='schedules'?<IntegritySchedules {...p}/>:view==='retention'?<Retention {...p}/>:view==='holds'?<Holds {...p}/>:<LeasePreview {...p}/>}</>}</>;
 }
 function Inventories(p:Common){
   const [after,setAfter]=useState('');const data=useResource<Page<Job>>(p.client,`/api/v1/maintenance/storage-inventories?limit=100&after=${encodeURIComponent(after)}`,p.revision);

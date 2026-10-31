@@ -20655,11 +20655,11 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "internal/store/lifecycle.go and lifecycle_artifact.go; common OCI/lifecycle/retention protection; internal/server/lifecycle.go; web/src/lifecycle.tsx",
+      "implementation": "internal/store/hold_management.go and migration 9 lookup indexes; common canonical OCI lifecycle/journal/retention path; internal/server/hold_management.go; web/src/holds.tsx and lifecycle.tsx",
       "surfaces": {
-        "api": "Canonical OCI /repositories/{repository}/artifacts/lifecycle GET/PUT hold/release_hold with exact revision and digest",
+        "api": "Canonical OCI /repositories/{repository}/artifacts/lifecycle GET/PUT hold/release_hold with exact revision and digest; administrator GET /api/v1/holds and /repositories/{repository}/artifacts/lifecycle/history",
         "cli": "cratectl management CLI; stock ORAS observes enforced protection",
-        "ui": "Canonical OCI package Lifecycle: preview, hold/release and blocked destructive action"
+        "ui": "Canonical OCI Lifecycle plus Storage \u2192 Reference holds inventory, original journal history and current-revision retained-repository recovery"
       },
       "core": true,
       "dependencies": [],
@@ -20690,8 +20690,18 @@
         "evidence/2026-10-31/retention-schedule-checkpoint.json",
         "evidence/2026-10-31/retention-schedule-clean-postgres-race.txt"
       ],
-      "limits": "Qualified subset: administrator hold/release on individual canonical OCI references, exact revision/idempotency, current-role and tenant checks, native deletion/restore/tag/retention protection and console blockers. Timed hold_until exists in code; dedicated actual-time expiry qualification, centralized inventory/history/case/bulk administration, other formats, legal-retention workflows and physical GC remain required. This is no legal-compliance claim.",
-      "next_action": "Complete hold inventory/history and ordinary administrator recovery, actual-time expiry and concurrency/revocation journeys; extend formats and legal-retention/bulk scope without weakening current protection."
+      "limits": "Existing clean per-reference OCI protection remains at the recorded qualified candidate. Added inventory/history, actual expiry, retained-repository and revoked-actor recovery pass scoped dirty-source PostgreSQL/HTTP/CLI/ORAS/Chromium development checks. Exact clean schema-9 qualification and all older native replays remain pending. One replaceable hold slot; independent cases, case-specific release, bulk/legal retention, other formats, physical GC and production recovery remain required. No legal-compliance verdict.",
+      "next_action": "Qualify exact clean schema-9 production/race artifacts and all retained native/schema/browser regressions. Then complete independent cases, case-specific release, bulk/legal and other-format holds, safe GC and all remaining lifecycle scope.",
+      "development": {
+        "source_parent": "4d213aca140b4098bf7e9e3c78d74174664bba13",
+        "source_dirty": true,
+        "state": "implemented with scoped development checks; clean qualification pending",
+        "evidence": [
+          "evidence/2026-10-31/hold-administration-development-preflight.json",
+          "evidence/2026-10-31/console-4cd050a118.json",
+          "evidence/2026-10-31/lifecycle-538eddda94.json"
+        ]
+      }
     },
     {
       "id": "REPO.ARCHIVE",

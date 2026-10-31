@@ -58,3 +58,26 @@ func FuzzCursorRejectsMalformedInput(f *testing.F) {
 	f.Add("")
 	f.Fuzz(func(t *testing.T, v string) { _, _, _ = key.Open("owned-scope", v) })
 }
+
+func TestCursorBoundsSupportGlobalHoldPositions(t *testing.T) {
+	secret, _ := Token()
+	key, err := ParseCursorKey(secret)
+	if err != nil {
+		t.Fatal(err)
+	}
+	position := strings.Repeat("r", 63) + "\n" + strings.Repeat("p", 2048)
+	token, err := key.Seal("owned-hold-page", position, false)
+	if err != nil || len(token) > 3000 {
+		t.Fatal("bounded global position unavailable", err)
+	}
+	got, before, err := key.Open("owned-hold-page", token)
+	if err != nil || got != position || before {
+		t.Fatal("maximum position failed round trip", err)
+	}
+	if _, err = key.Seal("owned-hold-page", position+"x", false); err == nil {
+		t.Fatal("oversized position accepted")
+	}
+	if _, _, err = key.Open("other-tenant", token); err == nil {
+		t.Fatal("maximum position lost scope binding")
+	}
+}

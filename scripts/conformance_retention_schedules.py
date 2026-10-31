@@ -62,7 +62,7 @@ result = {
     'artifact_digests': {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in [OLD, NEW, CLI, ORAS]},
     'checks': checks, 'commands': commands, 'process_events': process_events,
     'private_logs': str(PRIVATE.relative_to(ROOT)),
-    'topology': 'Native macOS arm64, qualified schema-7 binary then schema-8 registry/worker, PostgreSQL 16.15 forced RLS and restricted runtime, stock ORAS 1.3.6 and cratectl CLI. Explicit HTTP loopback 38443. Runtime processes omit the owner DSN; native clients omit both database DSNs.',
+    'topology': 'Native macOS arm64, qualified schema-7 binary then schema-9 registry/worker, PostgreSQL 16.15 forced RLS and restricted runtime, stock ORAS 1.3.6 and cratectl CLI. Explicit HTTP loopback 38443. Runtime processes omit the owner DSN; native clients omit both database DSNs.',
     'limits': [
         'Canonical OCI manifest creation-age/newest/tag/hold/reference rules. No physical erasure or reclaimed storage; other formats/rules and production recovery remain required.',
         'Artifact creation age is an owned SQL fixture. Claim and second-outcome barriers are declared timing faults in the isolated database, not supported product hooks or metadata repair.',
@@ -172,7 +172,7 @@ def start(name, binary=NEW, worker=False, reject=False):
         except subprocess.TimeoutExpired:
             raise AssertionError('old runtime stayed admitted to the upgraded schema')
         text = (PRIVATE / (name + '.log')).read_text(errors='replace').lower()
-        check('actual old ' + name + ' rejects schema 8', code != 0 and 'schema' in text and 'flag provided but not defined' not in text)
+        check('actual old ' + name + ' rejects schema 9', code != 0 and 'schema' in text and 'flag provided but not defined' not in text)
         stop(name)
     elif not worker:
         def ready():
@@ -400,10 +400,10 @@ try:
                  'evaluated_at': old_plan['evaluated_at'], 'preview_digest': old_plan['preview_digest']}, method='POST')['job']
     stop('registry')
     planned = json.loads(run([NEW, 'migrate', '--plan']))
-    check('new migrator plans only immutable schema 8', planned['pending'] == [8] and planned['safety_valid'])
+    check('new migrator plans immutable schema steps 8 and 9', planned['pending'] == [8,9] and planned['safety_valid'])
     run([NEW, 'migrate'])
     after = json.loads(run([NEW, 'migrate', '--plan']))
-    check('controlled upgrade preserves all seven receipts and adds safe schedule tables', after['applied'][:7] == before['applied'] and len(after['applied']) == 8 and not after['pending'] and after['safety_valid'])
+    check('controlled upgrade preserves all seven receipts and adds safe schedule tables', after['applied'][:7] == before['applied'] and len(after['applied']) == 9 and not after['pending'] and after['safety_valid'])
     result['schema_upgrade'] = {'before': before, 'after': after}
     start('old-worker', OLD, worker=True, reject=True)
     start('old-registry', OLD, reject=True)

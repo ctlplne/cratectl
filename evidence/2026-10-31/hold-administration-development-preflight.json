@@ -1,0 +1,223 @@
+{
+  "recorded_at": "2026-10-31T07:23:48.973953+00:00",
+  "status": "scoped development checks passed; exact clean-candidate qualification pending",
+  "source_parent": "4d213aca140b4098bf7e9e3c78d74174664bba13",
+  "source_dirty": true,
+  "candidate": null,
+  "latest_qualified_source": "399f37a048d73fddd8f6b98b93669f5ba2c3fad5",
+  "identity": {
+    "author": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>",
+    "committer": "imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>"
+  },
+  "scope": "Discovery, immutable receipt history and administrator recovery for the existing per-reference canonical OCI hold. Complete REPO.HOLDS and all product scope remain unfinished.",
+  "implementation": [
+    "Admin-only tenant inventory of active, expired, released and all actual hold records; literal search, exact repository filter, encrypted forward/reverse live continuations.",
+    "Original transactional hold/release journal snapshots and full-event hashes; no synthesized baseline, release-on-expiry event or rewritten history.",
+    "Current administrators can inspect/place/release holds in suspended and removed repositories. Serving, native deletion and restore keep existing repository/policy fences.",
+    "Storage > Reference holds and immutable history dialogs use common current-revision preview/apply, idempotent retry and authority paths."
+  ],
+  "bounds": {
+    "rows_per_page": 100,
+    "search_utf8_bytes": 256,
+    "canonical_path_bytes": 2048,
+    "encrypted_global_position_bytes": 2112,
+    "existing_endpoint_position_bytes": 2048,
+    "database_statement_timeout_seconds": 30,
+    "database_lock_timeout_seconds": 5,
+    "metadata": "Configured management metadata byte budget; oversized first record explicitly fails; later byte-bound truncation returns continuation. History selects bounded state projection, not entire journal payload.",
+    "cursor_scope": [
+      "tenant",
+      "actor",
+      "role",
+      "current credential hash",
+      "endpoint",
+      "repository/path",
+      "filters"
+    ],
+    "traversal": "Live observation, not a multi-page snapshot; expiry and concurrent writes can change traversal."
+  },
+  "migration": {
+    "version": 9,
+    "checksum": "5794b2b9420d489ce0530c22174047b0a608a14d45d5ea1fb4c563585af0ab04",
+    "change": "Two indexes over current lifecycle records and existing journal; no new tenant tables or data rewrite. Frozen receipts 1\u20138 unchanged.",
+    "primary": "Retained at schema 8 with all eight safe receipts; matching qualified production binaries restored after every development fixture.",
+    "development": "Only isolated fixture databases use schema 9. Old runtimes reject schema 9. Controlled maintenance only; rolling compatibility and production backup/downgrade recovery unqualified."
+  },
+  "artifacts": {
+    "production_development_profile": ".cache/hold-administration-development/profiles/622f64b6ab9456f5",
+    "production_sha256": {
+      "cratectld": "622f64b6ab9456f508f673fd8e78059e66d8bc644af04e8272d430c293ec1f96",
+      "cratectl": "0b39f7df19c8aac67b2601b04a245a44a17399143abcc7b7af31f37756fa9364"
+    },
+    "race_sha256": {
+      "cratectld": "816311f7aae58d8c16604f714a8dae0232e4d1d7c1f33db579c72cb9dd64850e",
+      "cratectl": "35c52c63f3101ca45493145c040923eea00548a6ed8d6da12dc6313b1c351087"
+    },
+    "build_scope": "Dirty development source from the declared parent; these binaries do not claim to identify a new clean commit. Later validation-only migration checksum freeze and schema-count harness updates require the clean replay."
+  },
+  "checks": {
+    "unit_race_lint_console_reproduction": {
+      "status": "passed",
+      "command": "make test race lint console-check",
+      "private_log": ".private/hold-administration-development/unit-race-lint.log"
+    },
+    "frozen_migration_checksum_unit": {
+      "status": "passed",
+      "test": "TestAppliedMigrationDefinitionsStayImmutable",
+      "scope": "All nine immutable checksums; 1\u20138 retain their exact original values."
+    },
+    "postgres_race": {
+      "status": "passed",
+      "command": "go test -race -v -count=2 -tags=integration ./internal/store ./internal/server ./internal/conformance",
+      "top_level_passes": 398,
+      "packages": 3,
+      "repeats": 2,
+      "skips": 0,
+      "data_races": 0,
+      "new_hold_tests": 7,
+      "new_hold_test_passes": 14,
+      "private_log": ".private/hold-administration-development/postgres-race-replay.log"
+    },
+    "hold_assertion_scope": [
+      "real 3-second expiry with unchanged original receipt",
+      "revision-fenced concurrent release",
+      "saturated job-lane rollback leaves no lifecycle/history effect",
+      "exact replay before and after expiry",
+      "native deletion after expiry",
+      "forced tenant RLS and runtime journal immutability",
+      "credential/filter/endpoint/tenant cursor substitution and tamper rejection",
+      "actual administrator revocation",
+      "retained-repository hold recovery preserves native serving fence",
+      "row/byte/key bounds and literal Unicode search",
+      "declared schema-8 SQL fixture migration preserves receipts and complete prior event bytes/hash"
+    ],
+    "native_schema8_upgrade": {
+      "status": "passed",
+      "record": "evidence/2026-10-31/lifecycle-538eddda94.json",
+      "assertions": 52,
+      "scope": "Actual qualified old schema-8 binary places the hold; schema-9 inventory/history reads its original receipt and exact hash. CLI release/lost-response retry leaves one release. Stock ORAS consumes retained nontrivial package and independent dependency after upgrade. Existing deletion, repository, restore and policy cases retained."
+    },
+    "chromium": {
+      "status": "passed",
+      "record": "evidence/2026-10-31/console-4cd050a118.json",
+      "workflows": 11,
+      "assertions": 84,
+      "automated_accessibility_states": 81,
+      "new_hold_checks": 5,
+      "new_hold_accessibility_states": 10,
+      "browser_stats": {
+        "startTime": "2026-10-31T07:03:02.010Z",
+        "duration": 143998.114,
+        "expected": 11,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "scope": "Actual 6-second expiry, safely rendered hostile reason, retained-repository recovery, real original-actor revocation and independent current administrator recovery. Desktop/narrow screenshots retained and inspected; automated Axe checks do not establish full WCAG/assistive-technology qualification."
+    },
+    "openapi": {
+      "status": "passed",
+      "safe_yaml": true,
+      "paths": 48,
+      "responses_with_descriptions": 242,
+      "resolved_local_references": 64
+    },
+    "older_native_harnesses": {
+      "status": "updated and syntax checked; runtime replay pending",
+      "files": [
+        "scripts/conformance_schema.py",
+        "scripts/conformance_repairs.py",
+        "scripts/conformance_schedules.py",
+        "scripts/conformance_retention.py",
+        "scripts/conformance_retention_schedules.py"
+      ],
+      "scope": "Current schema-count/plan expectations advance to 9; frozen old binaries, old receipts and behavior assertions remain. Full clean production/race campaign still required."
+    },
+    "cursor_fuzz": {
+      "status": "passed",
+      "command": "go test ./internal/crypto -run ^$ -fuzz ^FuzzCursorRejectsMalformedInput$ -fuzztime=20s -parallel=2",
+      "seconds": 20,
+      "scope": "Malformed cursor decoding/cryptographic rejection under existing parser/token bounds; not a full security campaign.",
+      "private_log": ".private/hold-administration-development/cursor-fuzz.log",
+      "sha256": "dabcfca957cc6388a75359701c1f08388d8b5b12a3ce6241cbef15254053e508",
+      "executions": 1306882
+    }
+  },
+  "first_failures_and_replays": [
+    {
+      "failure": "Environment setup lacked a running owned PostgreSQL service; no product assertion inferred.",
+      "session": "93351",
+      "replay": "Owned native PG status verified with escalated authoritative probe; subsequent real PostgreSQL journeys ran."
+    },
+    {
+      "failure": "Existing hold could not be discovered: inventory GET returned 404.",
+      "private_log": ".private/hold-administration-development/inventory-first-failure.log",
+      "replay": "New inventory/history and retained-repository HTTP tests pass twice under race, plus actual CLI/ORAS and browser journeys."
+    },
+    {
+      "failure": "Two new paging fixtures attempted incompatible immutable OCI metadata/image coordinates.",
+      "private_logs": [
+        ".private/hold-administration-development/store-first-campaign.log",
+        ".private/hold-administration-development/store-fixture-replay.log"
+      ],
+      "repair": "Use distinct OCI index digests and the fixture helper\u2019s actual app image. Existing immutability assertions retained.",
+      "replay": ".private/hold-administration-development/store-migration-replay.log"
+    },
+    {
+      "failure": "Two targeted browser drivers used incompatible exact text/label locators.",
+      "records": [
+        "evidence/2026-10-31/console-bb7ceefae2.json",
+        "evidence/2026-10-31/console-a36e8c2b1c.json"
+      ],
+      "repair": "Assert reason in its containing table cell and select the existing control by combobox role/name. No timeout increase or removed assertion.",
+      "replay": "Targeted405b0cbeb9 and full4cd050a118 pass. Manual fixture shutdown records remain distinct from browser proof."
+    },
+    {
+      "failure": "Full development PostgreSQL fixture omitted test-b; two older tests failed the tenant foreign key twice.",
+      "private_log": ".private/hold-administration-development/postgres-race.log",
+      "repair": "Provision both test-a and test-b in the isolated schema-9 fixture, matching the project\u2019s development setup. No runtime code or test assertion weakened.",
+      "replay": ".private/hold-administration-development/postgres-race-replay.log"
+    }
+  ],
+  "private_log_digests": {
+    ".private/hold-administration-development/inventory-first-failure.log": "0b5b2ad906ec1557f350baff04ac645216da00d54d9333f2c0fc5e2efc3b6895",
+    ".private/hold-administration-development/inventory-first-replay.log": "34ad8f656a3620cf82e664c189ff35b106d32533d895c79b105dfe93a9bda4ff",
+    ".private/hold-administration-development/crypto-store-unit.log": "16d1d1db36c5a019bbc95579e1f77346578b2547816ed5d46cc300e88162896c",
+    ".private/hold-administration-development/store-first-campaign.log": "7629543e878ac788d3c8422e271b835ca92a035b0e32ab07150a702e754bec55",
+    ".private/hold-administration-development/store-fixture-replay.log": "f85aeef4b850988eaf117143752efed494ec3060b77626f3d261fc0d1baa9347",
+    ".private/hold-administration-development/store-migration-replay.log": "1e7cf06c379595d9a361999e4cc46387296da16e8cc795c31d87f34b45809acb",
+    ".private/hold-administration-development/http-scope-replay.log": "8975173e5c847bf24d1c2022b3f0b9b39166a003a3fb3d8dbd21a6decc8f1f85",
+    ".private/hold-administration-development/native-schema8-upgrade.log": "9c2cd7ef901ecc2c7a2d95c34dd05243ac8effa044444228465d641361b796d0",
+    ".private/hold-administration-development/unit-race-lint.log": "87bc269edc377b105fd0a8bd062c16d40579af3114cfc2015359c9bf5c33a32d",
+    ".private/hold-administration-development/postgres-race.log": "56c6fbaee0306b3ff4cf530e524ab6acf7921a785705ea31992d228e92cede6b",
+    ".private/hold-administration-development/postgres-race-replay.log": "8605a23f9074f135303682850b859727f33e113895f21efaac9d52ced69f5a6f"
+  },
+  "remaining": [
+    "Exact clean source qualification of schema 9 production/race artifacts and all older native/schema/client/browser journeys.",
+    "Independent simultaneous hold cases and case-specific release; bulk/legal retention; other formats and calendar/lifecycle rules.",
+    "Safe physical GC and release/replica/restore/concurrent-publication protections.",
+    "Provider/platform/identity/scanner/key/PKI, full accessibility, fault/clock/scale, production recovery and all later product stages."
+  ],
+  "release_readiness": {
+    "assisted_design_partner": false,
+    "ordinary_operator": false,
+    "enterprise": false,
+    "full_security_gate": false,
+    "full_packaging_gate": false
+  },
+  "source_secret_review": {
+    "status": "passed",
+    "checked_at": "2026-10-31T07:25:24.080178+00:00",
+    "files": 1366,
+    "known_private_value_entries": 8633,
+    "distinct_private_byte_values": 4681,
+    "exact_value_matches": 0,
+    "gitleaks_findings": 0,
+    "report": "evidence/2026-10-31/hold-administration-development-source-secrets.json",
+    "helper": ".cache/prepare_lifecycle_review.py",
+    "helper_sha256": "1e12d3c2c56980ff6db16dc811844d8dcad4e6d8862ca46add3c90cc001cf9f2",
+    "rules_sha256": "18190efe56496ecbd3b308f1881c3fdd6641a8a70118a3a96f7881057203662f",
+    "scope": "All tracked/nonignored source and evidence, including new hold development database/bootstrap credentials, retained native/client fixtures and private keys. Existing scanner rules unchanged. No credential values or raw private logs included."
+  },
+  "remote_identity_audit": "evidence/2026-10-31/remote-state-owner-identity-audit.json"
+}

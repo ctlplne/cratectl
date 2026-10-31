@@ -151,6 +151,42 @@ components:
       type: string
       pattern: '^[1-9][0-9]*:(event|integrity-[a-f0-9]{64}|reconcile-[a-f0-9]{64}|sweep-[a-f0-9]{64}|inventory-[a-f0-9]{64}|repair-[a-f0-9]{64})$'
       description: Tenant-local source sequence plus effect key; equal IDs may exist in different tenants.
+    HoldState:
+      type: object
+      required: [repository, path, digest, deleted, held, revision, actor, change_sequence]
+      properties:
+        repository: {type: string}
+        path: {type: string, maxLength: 2048}
+        digest: {type: string, pattern: '^[a-f0-9]{64}$'}
+        deleted: {type: boolean}
+        held: {type: boolean, description: Held at the observation or original receipt time}
+        revision: {type: integer, format: int64, minimum: 0}
+        hold_reason: {type: string, description: Present while a recorded hold reason remains}
+        hold_until: {type: string, format: date-time, description: Omitted for an indefinite hold or a released hold}
+        reason: {type: string, description: Reason of the latest lifecycle change or original receipt}
+        actor: {type: string}
+        changed_at: {type: string, format: date-time}
+        change_sequence: {type: integer, format: int64}
+    HoldRecord:
+      allOf:
+        - {$ref: '#/components/schemas/HoldState'}
+        - type: object
+          required: [status, repository_state, format, mode]
+          properties:
+            status: {type: string, enum: [active, expired, released]}
+            repository_state: {type: string, enum: [active, suspended, removed]}
+            format: {type: string}
+            mode: {type: string}
+    HoldChange:
+      type: object
+      required: [sequence, action, state, actor, recorded_at, event_hash]
+      properties:
+        sequence: {type: integer, format: int64, minimum: 1}
+        action: {type: string, enum: [hold, release_hold]}
+        state: {$ref: '#/components/schemas/HoldState'}
+        actor: {type: string}
+        recorded_at: {type: string, format: date-time}
+        event_hash: {type: string, pattern: '^[a-f0-9]{64}$', description: Identifies the full journal event; the filtered snapshot alone is not a complete audit-chain proof}
 paths:
   /api/v1/session:
     get:
@@ -1100,6 +1136,7 @@ paths:
       - {$ref: '#/components/parameters/Repository'}
     get:
       summary: Inspect retained OCI reference lifecycle as an authorized writer
+      description: Current tenant administrators can inspect references in suspended or removed repositories. Other writers retain the active-repository requirement. Inspection grants no native serving or destructive-operation bypass.
       parameters:
         - in: query
           name: path
@@ -1109,11 +1146,11 @@ paths:
       responses:
         '200': {description: 'Repository, path, digest, deleted, held, revision, hold reason/expiry, actor and journal change sequence. Untouched revision is 0.'}
         '403': {description: Current write role and grant required}
-        '404': {description: Reference or active repository not found}
+        '404': {description: Reference or authorized repository not found}
         '503': {description: Repository suspended or dependency unavailable}
     put:
       summary: Preview or apply retained OCI deletion, restore or administrator hold
-      description: Strong active manifest references block child deletion. Holds protect deletion/restore and native tag deletion. Restore verifies all retained CAS bytes and reparses manifests outside SQL, then rechecks exact graph identities and revision under the tenant write lock. It preserves security decisions and newer tag bindings. There is no physical byte reclamation. Proxy tombstones require explicit restore; refresh and group fallback cannot resurrect them. Native hosted digest/tag DELETE returns 202; native proxy/group writes remain read-only.
+      description: Strong active manifest references block child deletion. Holds protect deletion/restore and native tag deletion. Current administrators may place or release a hold in a suspended or removed repository; deletion and restore retain the active-repository requirement. Restore verifies all retained CAS bytes and reparses manifests outside SQL, then rechecks exact graph identities and revision under the tenant write lock. It preserves security decisions and newer tag bindings. There is no physical byte reclamation. Proxy tombstones require explicit restore; refresh and group fallback cannot resurrect them. Native hosted digest/tag DELETE returns 202; native proxy/group writes remain read-only.
       parameters:
         - in: header
           name: Idempotency-Key
@@ -1139,6 +1176,89 @@ paths:
         '200': {description: 'Current lifecycle, action, bounded strong parents, tag aliases, weak subject dependents, active retrieval count and retained_bytes=true. Dry-run reports blockers without changing state.'}
         '400': {description: Invalid JSON or missing explicit revision/key}
         '403': {description: Current writer/grant required; holds require administrator}
-        '404': {description: Canonical reference or active repository not found}
+        '404': {description: Canonical reference or required active repository not found}
         '409': {description: "Active hold, incoming reference, stale identity/revision or changed graph"}
         '503': {description: "Missing/corrupt bytes, metadata budget, durable queue, schema or dependency failure; no partial transition"}
+  /api/v1/holds:
+    get:
+      summary: Discover current tenant hold observations as an administrator
+      description: Lists active, expired or released per-reference OCI holds across the tenant, including suspended and removed repositories. Released records require an actual earlier hold/release receipt; unrelated native deletions are excluded. Status is computed at observed_at. Pages are live; expiry and concurrent changes can alter later pages. No bytes are erased or serving authority granted.
+      parameters:
+        - in: query
+          name: state
+          schema: {type: string, enum: [active, expired, released, all], default: active}
+        - in: query
+          name: repository
+          schema: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$'}
+          description: Optional exact repository filter
+        - in: query
+          name: q
+          schema: {type: string, maxLength: 256}
+          description: Literal Unicode simple-fold search across repository/path/digest and reasons; at most 256 UTF-8 bytes without controls
+        - in: query
+          name: limit
+          schema: {type: integer, minimum: 1, maximum: 100, default: 100}
+        - in: query
+          name: cursor
+          schema: {type: string, maxLength: 3000}
+          description: Returned encrypted continuation bound to tenant/actor/role/credential/endpoint and filters; it grants no authority
+      responses:
+        '200':
+          description: Bounded live hold page with current authority and one observation time
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items, limit, next, previous, scope, observed_at]
+                properties:
+                  items: {type: array, maxItems: 100, items: {$ref: '#/components/schemas/HoldRecord'}}
+                  limit: {type: integer}
+                  next: {type: string}
+                  previous: {type: string}
+                  scope: {type: string}
+                  observed_at: {type: string, format: date-time}
+        '400': {description: "Invalid, repeated or unknown filters; malformed or differently scoped cursor"}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current tenant administrator authority required}
+        '405': {description: Read this endpoint with GET}
+        '503': {description: "Page byte budget, schema or database dependency failure; no partial record returned"}
+  /api/v1/repositories/{repository}/artifacts/lifecycle/history:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+    get:
+      summary: Read original immutable hold and release journal snapshots
+      description: Current tenant administrator access is required on every page, including retained repositories. Reads actual earlier transactional receipts without inventing a baseline or expiry event. The held flag and hold_until describe the original snapshot. Event hashes identify full journal events; this filtered view is not a complete audit-chain export.
+      parameters:
+        - in: query
+          name: path
+          required: true
+          schema: {type: string, maxLength: 2048}
+          description: Canonical OCI manifest or blob digest path
+        - in: query
+          name: limit
+          schema: {type: integer, minimum: 1, maximum: 100, default: 100}
+        - in: query
+          name: cursor
+          schema: {type: string, maxLength: 3000}
+          description: Returned encrypted continuation bound to current credential and this exact repository/path endpoint
+      responses:
+        '200':
+          description: Bounded original hold/release receipts with encrypted forward/reverse continuations
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items, limit, next, previous, scope]
+                properties:
+                  items: {type: array, maxItems: 100, items: {$ref: '#/components/schemas/HoldChange'}}
+                  limit: {type: integer}
+                  next: {type: string}
+                  previous: {type: string}
+                  scope: {type: string}
+        '400': {description: "Invalid, repeated or unknown parameters; malformed or differently scoped cursor"}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current tenant administrator authority required}
+        '404': {description: No authorized retained repository or canonical reference}
+        '405': {description: Read this endpoint with GET}
+        '409': {description: Unsupported reference or inconsistent durable snapshot}
+        '503': {description: "Response byte budget, schema or database dependency failure; no partial record returned"}

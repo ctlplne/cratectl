@@ -45,6 +45,9 @@ var retentionSchema string
 
 //go:embed retention_schedules.sql
 var retentionScheduleSchema string
+
+//go:embed hold_management.sql
+var holdManagementSchema string
 var Name = regexp.MustCompile(`^[a-z][a-z0-9-]{0,62}$`)
 var ErrConflict = errors.New("conflict")
 var ErrDenied = errors.New("policy denied")
