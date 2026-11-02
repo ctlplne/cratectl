@@ -4,12 +4,27 @@
 
 import json
 from pathlib import Path
+import re
 
 def safe_focus_target(message):
     for label, value in [('Verified repair source file', 'verified_source'), ('Repair reason', 'repair_reason')]:
         if label in message:
             return value
     return 'unknown'
+
+
+def safe_axe_findings(proof):
+    states = {'exact byte repair form', 'byte repair impact preview', 'repair awaiting source', 'repair rejects incorrect source digest', 'repair verified with immutable observation'}
+    lines = []
+    for observation in proof.get('accessibility', [])[:10]:
+        if observation.get('state') not in states:
+            continue
+        for finding in observation.get('findings', [])[:20]:
+            rule, impact, nodes = finding.get('id', ''), finding.get('impact'), finding.get('nodes')
+            if not re.fullmatch('[a-z][a-z0-9-]{0,79}', rule) or impact not in ('minor', 'moderate', 'serious', 'critical', None) or type(nodes) is not int or not 0 <= nodes <= 10000:
+                continue
+            lines.append(f'{observation["state"]}: rule={rule} impact={impact} nodes={nodes}')
+    return lines
 
 
 def main():
@@ -26,6 +41,8 @@ def main():
         proof = json.loads(proof_path.read_text())
         if isinstance(proof.get('checks'), list):
             print(f'Repair workflow progress: {len(proof["checks"])} completed checks')
+        for finding in safe_axe_findings(proof):
+            print('Repair accessibility finding: ' + finding)
     stats = report.get('stats', {})
     print('Playwright counts: ' + ', '.join(f'{key}={int(stats.get(key, 0))}' for key in ('expected', 'unexpected', 'skipped', 'flaky')))
 

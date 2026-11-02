@@ -768,13 +768,14 @@
       "id": "DEFECT.0071",
       "summary": "Initial GitHub Linux x86 Chromium suite failed without retained private failure detail",
       "first_failure": "evidence/2026-11-02/github-ci-first-run.json",
-      "state": "reproduced in focused native x86 run; rendering-frame focus repair implemented locally, live replay pending",
+      "state": "open; rendering-frame replay passed focus then failed source-form Axe assertion",
       "repair": "Defer file-source initial focus by one rendering frame after replacing the focused mutation form; cancel pending focus on unmount. Keep the existing focus assertion and fail-closed independent browser runs.",
       "replay": "evidence/2026-11-02/github-ci-second-run.json",
-      "limits": "The focused campaign passed once then failed its second toBeFocused assertion. The proposed focus-order repair must still pass actual GitHub replay; no completed repair or full console stability claim yet.",
+      "limits": "9c0abc2 replay advanced past source focus but failed accessibility on its first journey. Exact rule IDs need safe live replay. Full repair workflow is not verified.",
       "recurrence": "evidence/2026-11-02/github-repair-focus-reproduction.json",
       "historical_green_candidate": "998c7f822d6ee882d2c1efc0ffe60a7d706ef7e0",
-      "repair_source_parent": "609be9b9c7eab70a9eb7d5a43c6775fdc01de615"
+      "repair_source_parent": "609be9b9c7eab70a9eb7d5a43c6775fdc01de615",
+      "latest_replay": "evidence/2026-11-02/github-repair-axe-reproduction.json"
     },
     {
       "id": "DEFECT.0072",

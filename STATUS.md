@@ -6,13 +6,17 @@ GitHub native qualification and moves historical controlled-upgrade journeys
 off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
-Current defect work: the focused x86 repair regression on `609be9b` passed
-its first fresh-database journey and failed the second at `toBeFocused`.
-The initial source-file focus is now deferred by one rendering frame after
-replacing the creation form; the focus assertion remains unchanged. Console
-reproduction, static checks and diagnostic privacy tests pass locally; actual
-GitHub replay is still required. See
-`evidence/2026-11-02/github-repair-focus-reproduction.json`.
+Current defect work: the focused x86 replay on `9c0abc2` advanced past
+source-file focus and failed the zero-violation Axe assertion on its first
+journey. The repair workflow remains failed. The diagnostic now retains only
+rule IDs, impacts and node counts, while the test still requires zero
+violations. Exact rule evidence requires its next GitHub replay. See
+`evidence/2026-11-02/github-repair-axe-reproduction.json`.
+
+Real PostgreSQL integration races now have native GitHub pass observations on
+ARM64 (`609be9b`) and x86-64 (`9c0abc2`). These are completed step results,
+not overall job/run passes; see the corresponding `github-database-race-*.json`
+evidence. A final matching candidate still needs the full gates.
 
 Current GitHub milestone: `1678ed59f9bd52df89cf82ff7e395761a15f028a`
 passed all nine main CI jobs and both controlled-upgrade jobs. The x86 console

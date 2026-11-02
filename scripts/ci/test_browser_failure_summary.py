@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: BUSL-1.1
 """Browser diagnostics expose known focus labels, never raw locator/error text."""
 import unittest
-from browser_failure_summary import safe_focus_target
+from browser_failure_summary import safe_axe_findings, safe_focus_target
 
 
 class SafeFocusTarget(unittest.TestCase):
@@ -14,6 +14,13 @@ class SafeFocusTarget(unittest.TestCase):
 
     def test_unknown_error_content_is_not_echoed(self):
         self.assertEqual(safe_focus_target('private-synthetic-value'), 'unknown')
+
+    def test_accessibility_diagnostics_keep_rule_counts_and_drop_dom_content(self):
+        proof = {'accessibility': [{'state': 'repair awaiting source', 'findings': [
+            {'id': 'label', 'impact': 'critical', 'nodes': 1, 'html': 'private-synthetic-value'},
+            {'id': 'private/value', 'impact': 'critical', 'nodes': 1},
+        ]}, {'state': 'private-synthetic-value', 'findings': [{'id': 'label', 'impact': 'critical', 'nodes': 1}]}]}
+        self.assertEqual(safe_axe_findings(proof), ['repair awaiting source: rule=label impact=critical nodes=1'])
 
 
 if __name__ == '__main__':

@@ -17,7 +17,13 @@ test('operator previews, resumes and completes exact byte repair without raw sto
   const body=page.waitForResponse(r=>issued.has(r.request())&&r.status()===200).then(r=>r.json());
   try{const [value]=await Promise.all([body,action()]);return value}finally{page.off('request',track)}
  }
- async function axe(state){const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();expect(result.violations).toEqual([]);accessibility.push({state,violations:0})}
+ async function axe(state){
+  const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();
+  accessibility.push({state,violations:result.violations.length,findings:result.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.length}))});
+  // Preserve the zero-violation gate while keeping failed reports useful
+  // without copying DOM snippets or credential-bearing attributes.
+  expect(result.violations.map(v=>v.id)).toEqual([]);
+ }
  const source=path.join(fixture.private,'repair-exact-source.bin'),wrong=path.join(fixture.private,'repair-wrong-source.bin');
  try{
   expect((await api('/api/v1/repositories',{method:'POST',data:{name,format:'generic'}})).status()).toBe(201);
