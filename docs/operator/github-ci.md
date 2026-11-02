@@ -2,7 +2,9 @@
 
 The public repository runs GitHub Actions on fresh Ubuntu 24.04 x86-64 and ARM64
 machines, plus a macOS ARM64 machine for build, unit, race, lint and console
-reproduction. Both Linux architectures also run real PostgreSQL integration and
+reproduction. A separate bounded fuzz job exercises every checked-in Go fuzz
+target on all three native architectures; this is a smoke budget, not a full
+fuzz campaign. Both Linux architectures also run real PostgreSQL integration and
 stock-client journeys. The registry listens only on the owned loopback port 38443; the
 disposable PostgreSQL service uses port 35432. The service is recreated for every
 job. CI does not connect to an operator or customer database.
@@ -28,8 +30,11 @@ ledgers retain the remaining scope.
 Pull requests run with a read-only GitHub token and no repository secrets. The
 ephemeral PostgreSQL service uses local trust authentication solely inside its
 GitHub-hosted runner. Generated credentials and all fixture data stay in ignored
-`.private/` and `.cache/`; the workflow does not upload them. The retained local
-macOS ARM qualification is separate from GitHub's Linux ARM64 and x86-64 results.
+`.private/` and `.cache/`; the workflow does not upload that raw state. The retained
+local macOS ARM qualification is separate from GitHub's Linux ARM64 and x86-64 results.
+Each security/native job uploads only a bounded CI summary of generated evidence
+fields for 30 days. Raw reports, browser traces and private command logs stay
+on the disposable runner.
 
 The [qualification placement plan](../qualification/github-actions-plan.md) lists
 the next drivers, required real services and native hosts, and the limits of each

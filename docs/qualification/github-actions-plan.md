@@ -20,8 +20,10 @@ CI is an independent, repeatable candidate check. It never migrates the retained
 local primary, reads customer data, imports `.private/` or `.cache/`, or promotes
 an artifact. Each run records its commit, architecture, tool and service versions,
 fixture topology, assertions, defects, and limits. Generated credentials and raw
-private logs remain on the disposable runner; only reviewed, bounded, redacted
-evidence may be uploaded. Required checks must fail closed if a dependency or
+private logs remain on the disposable runner; a field-allowlisted summary of
+generated evidence is retained as a GitHub artifact for 30 days. A reviewed subset
+may then be committed under `evidence/` with its exact candidate and limits.
+Required checks must fail closed if a dependency or
 fixture is missing. PR jobs have a read-only token and no secrets. Publication,
 signing identity, and release gates require their own explicit design and authority.
 
@@ -33,15 +35,19 @@ dispatch. It currently contains:
 | Gate | Actual runner or stand-in | Scope |
 | --- | --- | --- |
 | Source and unit | Ubuntu 24.04 x86-64 and ARM64; macOS 15 ARM64 | Go build, unit and race tests, vet, architecture and API checks, web build reproduction, npm dependency audit. |
+| Bounded Go fuzz | The same three native runner types | Every checked-in Go fuzz target gets five seconds on each architecture. This is a crash smoke check, not the full parser/security campaign. Awaiting its first GitHub run. |
 | Security slice | Ubuntu 24.04 x86-64 | `govulncheck` on Go source and two binaries; Gitleaks on current tracked bytes and reachable history; synthetic exception regression. |
 | Native integration | Ubuntu 24.04 x86-64 and ARM64, PostgreSQL 16.15 service with restricted runtime role | `make integration`, including real database tests and SQL timing. |
-| Native clients and operations | Same native Linux jobs, fresh registry on loopback | Generic, OCI/ORAS, Maven, npm, PyPI, current lifecycle, blank TLS install, jobs/leases, inventory/sweeps and cross-reference matters; Chromium console/Axe on x86-64. The added operational steps await a completed follow-up run. |
+| Native clients and operations | Same native Linux jobs, fresh registry on loopback | Generic, OCI/ORAS, Maven, npm, PyPI, current lifecycle, blank TLS install, jobs/leases, inventory/sweeps and cross-reference matters; Chromium console/Axe on x86-64. All six jobs passed on `998c7f8`. |
 
 The [first run](https://github.com/ctlplne/cratectl/actions/runs/41491829202)
 passed five of six jobs. The x86-64 browser step failed after its PostgreSQL and
 stock-client stages passed; see `evidence/2026-11-02/github-ci-first-run.json`.
-The revised workflow prints safe failure locations for the next run. No Linux
-browser result is verified yet.
+The [second run](https://github.com/ctlplne/cratectl/actions/runs/41495587980)
+passed all six jobs, including Chromium; see `evidence/2026-11-02/github-ci-second-run.json`.
+The initial browser failure remains an unresolved intermittent result because
+its private report was lost. The revised workflow prints safe failure locations
+if it recurs. The fuzz and CI evidence artifact revision awaits its first run.
 The `make security` and `make packaging` targets intentionally still fail: their
 full campaigns are incomplete. Dependabot proposes Go, npm and Actions updates;
 the CI matrix must validate each proposal.
@@ -59,7 +65,7 @@ needs a green run on the named runner and a linked, scope-limited evidence recor
 | Now | Secret-rule regression (`test_secret_rules.py`) | Security job's pinned native Gitleaks binary; synthetic fixtures only | Narrow exceptions detect credential-shaped counterexamples in both directory and Git modes. |
 | Next | Schema and retained-version upgrades (`conformance_schema.py`, `conformance_lifecycle.py`, `conformance_repairs.py`, `conformance_schedules.py`, `conformance_retention.py`, `conformance_retention_schedules.py`) | Rebuild each historical binary from the exact pinned reachable commit in an isolated checkout; verify `go version -m` revision and SHA-256. Never import ignored local binaries. Then use a disposable real PostgreSQL database per journey. | Controlled migration and recovery for named old/new pairs; no rolling-version, downgrade, backup/restore or primary-database claim. |
 | Next | Pinned external OCI retrieval (`conformance_public_oci.py`) | Separate scheduled/manual Linux job with approved immutable digest, HTTPS authorities and source document; hold network fixtures stable | One actual provider/digest path. Do not turn a changing public service into an unqualified PR gate. |
-| Next | Go fuzz and parser/property campaigns | Native x86-64 and ARM64 bounded `go test -fuzz` shards with fixed seed/corpus and budgets; retain minimized corpus only after review | Only exercised parser boundaries; failure/timeout and corpus identity recorded. |
+| Next | Deeper Go fuzz and parser/property campaigns | Extend the bounded native smoke job with reviewed corpora, longer scheduled budgets, differential/property tests and failure minimization; retain minimized corpus only after review | Only exercised parser boundaries; failure/timeout and corpus identity recorded. |
 | Next | Source/image/binary dependency and secret analysis | Pinned Trivy or equivalent with feed timestamp; `govulncheck`, npm audit and Gitleaks continue; scan built images when images exist | Distinguish source, binary, image and feed coverage. A clean source scan is not a clean image or malware verdict. |
 | When built | Docker/Podman OCI journeys and Compose/Helm/package/offline installer gates | GitHub Linux x86-64 and ARM64 with real engines and chart clients; validate shipped, pinned images and manifests. Network-isolated target for the actual offline bundle. | Actual package/install/upgrade/restore behavior; `make packaging` becomes green only when the full release packaging campaign exists. |
 | When built | S3, scanner, identity, replication, migration and failure modes | Disposable compatible services and real stock clients; enforce pinned versions, separate tenant state and fault boundaries | A stand-in proves its named integration only. Independent hosts or paid comparator licenses remain separate gates. |
@@ -77,6 +83,8 @@ needs a green run on the named runner and a linked, scope-limited evidence recor
    retained primary. The workflow now derives OS topology from the actual host.
 3. Validate the synthetic secret-rule fixtures in the pinned Gitleaks job. Do
    not upload fixture contents or private scanner logs.
+   Validate the bounded fuzz job on all three native runner types; a five-second
+   target budget is a smoke test, not full parser qualification.
 4. Rebuild historical binaries from pinned commits in CI, then port the upgrade
    drivers one at a time. A missing commit or mismatched build identity fails the
    job; it is not a skip. Keep the retained local primary outside this workflow.

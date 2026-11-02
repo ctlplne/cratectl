@@ -1,17 +1,19 @@
 # cratectl execution status
 
-GitHub CI work (2026-11-02): [first public run](https://github.com/ctlplne/cratectl/actions/runs/41491829202)
-on `866a0a9d8fef64338a3ce071169513367ddcd945` completed with five of six
-jobs passing. Security and source/unit/race/lint/console reproduction passed on
-native x86-64 Linux, ARM64 Linux and ARM64 macOS runners. Real PostgreSQL,
-stock-client compatibility and native lifecycle steps passed on both Linux
-architectures. The x86-64 Chromium console step failed after two driver
-assertions; its private Playwright report was not available in the public log,
-so no Linux browser result is verified. The follow-up CI revision adds safe
-failure locations and more real Linux operational journeys; these must complete
-before their results are claimed. See `docs/operator/github-ci.md` and
-`docs/qualification/github-actions-plan.md`. The broader product goal remains
-paused and all readiness verdicts remain negative.
+GitHub CI work (2026-11-02): [second public run](https://github.com/ctlplne/cratectl/actions/runs/41495587980)
+on `998c7f822d6ee882d2c1efc0ffe60a7d706ef7e0` passed all six jobs.
+Native x86-64 Linux, ARM64 Linux and ARM64 macOS passed source, unit, race,
+lint and console reproduction; the scoped security job passed its source/binary,
+history and synthetic secret-rule checks. Both Linux architectures passed fresh
+PostgreSQL integration, stock-client compatibility, lifecycle, blank TLS install,
+durable jobs/leases, inventory/sweeps and legal-hold matters. The x86-64 Chromium
+console also passed. The [first run](https://github.com/ctlplne/cratectl/actions/runs/41491829202)
+failed only at Chromium after its earlier steps passed; the private failure detail
+was not retained, so that intermittent result remains open. The next CI revision
+adds bounded fuzz and safe, short-lived evidence artifacts. See
+`docs/operator/github-ci.md`, `docs/qualification/github-actions-plan.md`, and
+`evidence/2026-11-02/github-ci-second-run.json`. The broader product goal
+remains paused and all readiness verdicts remain negative.
 
 Current bounded task completed; broader goal paused by owner. Clean source
 `5483878b211f9d30ebf4e72a9bc6ed20fc9d7040` passes 335 native lifecycle stock-client checks and 363

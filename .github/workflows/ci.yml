@@ -53,6 +53,30 @@ jobs:
       - name: npm dependency audit
         run: npm audit --prefix web --audit-level=high --ignore-scripts
 
+  fuzz:
+    name: Bounded native Go fuzz (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+          - arch: darwin-arm64
+            runner: macos-15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - name: Exercise every checked-in fuzz target on this native runner
+        run: python3 scripts/ci/fuzz_go.py
+
   security:
     name: Scoped source, binary and history scans
     runs-on: ubuntu-24.04
@@ -83,6 +107,16 @@ jobs:
           "$RUNNER_TEMP/gitleaks" git --no-banner --redact --config .gitleaks.toml .
       - name: Exercise narrow secret-rule exceptions with synthetic fixtures
         run: CRATECTL_GITLEAKS_BIN="$RUNNER_TEMP/gitleaks" python3 scripts/test_secret_rules.py
+      - name: Prepare bounded security evidence summary
+        if: always()
+        run: python3 scripts/ci/evidence_summary.py
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: ci-summary-security
+          path: .cache/ci-evidence-summary.json
+          if-no-files-found: error
+          retention-days: 30
 
   native:
     name: Real PostgreSQL and stock clients (${{ matrix.arch }})
@@ -166,3 +200,13 @@ jobs:
       - name: Safe Chromium failure locations
         if: failure() && matrix.arch == 'amd64'
         run: python3 scripts/ci/browser_failure_summary.py
+      - name: Prepare bounded native evidence summary
+        if: always()
+        run: python3 scripts/ci/evidence_summary.py
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: ci-summary-${{ matrix.arch }}
+          path: .cache/ci-evidence-summary.json
+          if-no-files-found: error
+          retention-days: 30
