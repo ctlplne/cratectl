@@ -112,6 +112,12 @@ at the first Podman login, with cause unknown (`DEFECT.0075`). The next native
 replay exports bounded fixed error-marker identifiers; raw command output
 remains private. See [the login failure](../../evidence/2026-11-02/oci-clients-1757c89-authentication-failure.json).
 Real native client publication and consumption remain unverified.
+The79b4d44 replay again stopped at Podman login on both architectures and
+matched no reviewed diagnostic markers. Its root cause is still unknown.
+Failure artifacts now add encrypted, bounded command/registry logs with a
+seven-day retention period. Only the public recipient certificate goes to
+GitHub; the decryption key stays in ignored local private state. No plaintext
+fallback is allowed. See [private diagnostic operation](../operator/ci-diagnostics.md).
 This gate adds required client evidence; it does not replace the accepted13job
 regression milestone or complete OCI/platform/readiness scope.
 

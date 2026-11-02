@@ -823,10 +823,11 @@
       "id": "DEFECT.0075",
       "summary": "Both native OCI client journeys fail at first Podman login without an exported diagnostic cause",
       "first_failure": "evidence/2026-11-02/oci-clients-1757c89-authentication-failure.json",
-      "state": "fixed-code diagnostics implemented; native replay required to identify cause",
+      "state": "both fixed-marker replays failed; encrypted diagnostics implemented but GitHub replay required",
       "candidate": "1757c89716220d4d0d54cc9dcec064b2cb9fb0ca",
-      "repair": "Recognize a bounded inventory of literal client error markers and export only reviewed fixed identifiers. Preserve raw client logs as private runner state. Diagnose the actual next native error before making a protocol or fixture change.",
-      "limits": "Login root cause is unknown; no image or Helm publication or consumption ran. Local diagnostic/privacy tests establish only export boundaries."
+      "repair": "Fixed marker inventory matched no actual error. Add standard OpenSSL CMS AES-256-GCM/RSA-OAEP encryption for bounded failed-command and registry logs, using a committed public certificate and local-only ignored private key. Local actual crypto/file-boundary/privacy tests pass; inspect the real next error before changing protocol or fixture behavior.",
+      "limits": "Login root cause is unknown; no image or Helm publication or consumption ran. Local diagnostic/privacy tests establish only export boundaries.",
+      "diagnostic_replay": "evidence/2026-11-02/oci-clients-79b4d44-diagnostic-failure.json"
     }
   ]
 }

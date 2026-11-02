@@ -21,7 +21,12 @@ error was unclassified; its cause remains unknown. Fixed-code diagnostics are
 implemented for the next native replay. No image or Helm publication or
 consumption ran. See `DEFECT.0074`, `DEFECT.0075` and
 `evidence/2026-11-02/oci-clients-1757c89-authentication-failure.json`.
-No native client journey is verified yet. Continue the full goal. See
+The79b4d44 diagnostic replay reproduced the same failure on both architectures;
+none of its fixed markers matched. The next replay adds bounded encrypted
+failure logs using a local-only private key, so the actual error can be inspected
+without publishing raw client output. Transport is locally tested, but its
+GitHub runtime and the login cause remain unverified. No native client journey
+is verified yet. Continue the full goal. See
 `evidence/2026-11-02/oci-clients-development-preflight.json`.
 
 Current repair milestone accepted on clean source

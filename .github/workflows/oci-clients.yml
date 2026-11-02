@@ -62,6 +62,18 @@ jobs:
         run: bash scripts/ci/bootstrap_oci_clients.sh
       - name: Publish and consume with native Docker, Podman and Helm
         run: python3 scripts/conformance_oci_clients.py --require-clean-build
+      - name: Encrypt bounded native failure logs for local diagnosis
+        if: failure()
+        run: python3 scripts/ci_native_diagnostics.py
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: encrypted-native-diagnostics-${{ matrix.arch }}
+          path: |
+            .cache/ci-native-diagnostics.cms
+            .cache/ci-native-diagnostics.json
+          if-no-files-found: error
+          retention-days: 7
       - name: Prepare bounded evidence summary
         if: always()
         run: python3 scripts/ci/evidence_summary.py
