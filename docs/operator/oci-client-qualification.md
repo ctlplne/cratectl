@@ -17,9 +17,12 @@ Docker and buildx use the disposable GitHub runner's engine and tools; their
 actual versions and Docker/Podman/Helm binary hashes are retained in the safe
 summary. Helm4.3.1 archives are checked against the hashes in its
 [official release](https://github.com/helm/helm/releases/tag/v4.3.1).
-Podman4.9.3 uses explicit Ubuntu24.04 package versions for each architecture;
-see the [Ubuntu package inventory](https://packages.ubuntu.com/noble/podman).
-An unavailable pinned dependency fails the gate and needs a reviewed refresh.
+Podman CLI4.9.3 is verified on each architecture. Its installed Ubuntu package
+revision/architecture and binary hash are recorded; the fixture does not force
+an older Debian revision over the runner's security updates. GitHub's official
+[x86 inventory](https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2404-Readme.md)
+and [ARM64 inventory](https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2404-Arm64-Readme.md)
+identify the CLI version. A missing or different CLI version fails the gate.
 No compatibility with an unexecuted version is inferred.
 
 The fixture builds scratch images with two owned text-file layers using only
@@ -52,7 +55,14 @@ Helm installation into Kubernetes or broad readiness is claimed.
 
 Raw credentials and command logs remain under ignored `.private/`. CI uploads
 only the reviewed summary for30days: counts, hashes, clean native build identity,
-reviewed version strings and client binary digests. Failed commands expose a
+reviewed versions/package revisions, client binary hashes, fixture hashes and
+verified immutable graph/member identities. Failed commands expose a
 fixed phase/label/category rather than raw private output. Preserve first
 failures and commit reviewed summaries with the exact candidate and limits.
 The existing main CI, focused browser and upgrade gates remain separate.
+
+The first native run failed on both architectures before any client journey.
+The original Podman Debian revision pins would have downgraded installed
+packages; APT refused. Both failed/empty summaries and the setup diagnostics are
+retained in [the first failure](../../evidence/2026-11-02/oci-clients-first-failure.json).
+The corrected setup and stronger subject evidence still require native replay.

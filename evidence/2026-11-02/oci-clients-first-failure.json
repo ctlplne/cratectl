@@ -1,0 +1,32 @@
+{
+  "candidate": "1207b298a089eda1e70c2352272b7cfaab06ff61",
+  "status": "failed",
+  "run": "https://github.com/ctlplne/cratectl/actions/runs/41530854689",
+  "failed_step": "Install checked Helm and pinned native Podman",
+  "architectures": [
+    "linux-amd64",
+    "linux-arm64"
+  ],
+  "safe_error": "E: Packages were downgraded and -y was used without --allow-downgrades.",
+  "diagnosis": "The explicit Ubuntu package revision pins are older than the Podman packages already installed on both GitHub runner images. APT refused the downgrade. The native-client driver never ran.",
+  "runner_images": {
+    "amd64": "20261025.353.1",
+    "arm64": "20261025.165.1"
+  },
+  "inventory_observation": "Exact published image-inventory tag URLs returned404 through web and GitHub API. Current official runner inventories identify Podman4.9.3 for both host types; installed Debian revision must be observed and retained in the new runner preflight.",
+  "safe_summaries": [
+    {
+      "path": "evidence/2026-11-02/oci-clients-1207b29-amd64-failed-summary.json",
+      "sha256": "4d49103cc713894573c55c619af971acfee19ff5b52add9aeb4e1ad891f89dff"
+    },
+    {
+      "path": "evidence/2026-11-02/oci-clients-1207b29-arm64-failed-summary.json",
+      "sha256": "965df17291f52a3fcb7a0e69ad28968cb41ac3004e7af4110d26b2c8327c17f4"
+    }
+  ],
+  "limits": [
+    "Zero native client reports were generated. The exporter failed closed instead of accepting an empty success. These are retained failed/empty summaries, not passes.",
+    "Helm archive download/checksum/extraction preceded the APT failure; no Docker/Podman/Helm publication or consumption case executed.",
+    "No native-client compatibility or broad readiness claim; full goal remains unfinished."
+  ]
+}

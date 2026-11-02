@@ -808,6 +808,15 @@
       "candidate": "6afbd4ad12cdb1d32aa43386a47822bc6e741fdf",
       "replay": "evidence/2026-11-02/github-browser-6afbd4a-checkpoint.json",
       "focused_replay": "evidence/2026-11-02/github-browser-6afbd4a-retention-summary.json"
+    },
+    {
+      "id": "DEFECT.0074",
+      "summary": "OCI client fixture pins older Podman Debian package revisions than the native GitHub images",
+      "first_failure": "evidence/2026-11-02/oci-clients-first-failure.json",
+      "state": "setup repair implemented but unverified",
+      "candidate": "1207b298a089eda1e70c2352272b7cfaab06ff61",
+      "repair": "Verify the bundled Podman CLI is4.9.3, record its installed Debian package revision/native architecture and binary hash, and install only the required runtime helper. Preserve the first refused downgrade and require real native replay; no forced downgrade or skipped client.",
+      "limits": "Both architectures failed during dependency installation; the native client journeys remain unverified."
     }
   ]
 }

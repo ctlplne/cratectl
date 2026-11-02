@@ -106,6 +106,48 @@ def summarize(root, environment):
             if status == 'passed' and set(digests) != {'docker', 'podman', 'helm'}:
                 raise SystemExit('Passed native client evidence requires every reviewed client binary digest')
             entry['client_binary_sha256'] = dict(sorted(digests.items()))
+            packages = report.get('client_packages', {})
+            if not isinstance(packages, dict) or not set(packages) <= {'podman'}:
+                raise SystemExit('Native client package evidence is outside the reviewed allowlist')
+            entry['client_packages'] = {}
+            for tool, package in packages.items():
+                revision = r'(?:[0-9]{1,2}:)?4\.9\.3\+ds1-[0-9]{1,3}(?:ubuntu[0-9]{1,3}(?:\.[0-9]{1,3}){0,3}|build[0-9]{1,3})'
+                if not isinstance(package, dict) or not isinstance(package.get('version'), str) or not re.fullmatch(revision, package['version']) or package.get('architecture') != native_arch:
+                    raise SystemExit('Native client package revision/platform is not reviewed')
+                entry['client_packages'][tool] = {key: package[key] for key in ('version', 'architecture')}
+            fixture_keys = {'application_v1', 'application_v2', 'dependency', 'fallback', 'other_tenant', 'foreign_platform', 'chart_dependency_1_0_0', 'chart_dependency_1_1_0', 'chart_application_1_0_0', 'chart_other_tenant_1_0_0'}
+            fixtures = report.get('fixture_sha256', {})
+            if not isinstance(fixtures, dict) or not set(fixtures) <= fixture_keys or any(not isinstance(v, str) or not re.fullmatch('[0-9a-f]{64}', v) for v in fixtures.values()):
+                raise SystemExit('Native client fixture identities are outside the reviewed allowlist')
+            entry['fixture_sha256'] = dict(sorted(fixtures.items()))
+            subjects = report.get('subjects', [])
+            if not isinstance(subjects, list) or len(subjects) > 32:
+                raise SystemExit('Native client subject inventory exceeds its bound')
+            entry['subjects'] = []
+            for subject in subjects:
+                if not isinstance(subject, dict) or subject.get('repository') not in ('hosted', 'origin', 'proxy', 'fallback', 'host-group', 'proxy-group') or subject.get('image') not in ('payload', 'cratectl-application', 'cratectl-dependency') or subject.get('reference') not in ('v1', 'v2', 'foreign', 'multi', 'podman', '1.0.0', '1.1.0'):
+                    raise SystemExit('Native client subject coordinate is not reviewed')
+                if any(not isinstance(subject.get(key), str) or not re.fullmatch('sha256:[0-9a-f]{64}', subject[key]) for key in ('digest', 'native_manifest_digest')):
+                    raise SystemExit('Native client subject digest is invalid')
+                members = subject.get('members', [])
+                if not isinstance(members, list) or not 1 < len(members) <= 16:
+                    raise SystemExit('Native client graph inventory is invalid')
+                for member in members:
+                    if not isinstance(member, dict) or not isinstance(member.get('digest'), str) or not re.fullmatch('sha256:[0-9a-f]{64}', member['digest']) or type(member.get('size')) is not int or not 0 <= member['size'] <= 8 << 20:
+                        raise SystemExit('Native client graph member identity is invalid')
+                observation = {key: subject[key] for key in ('repository', 'image', 'reference', 'digest', 'native_manifest_digest')}
+                observation['members'] = [{key: member[key] for key in ('digest', 'size')} for member in members]
+                entry['subjects'].append(observation)
+            if status == 'passed' and (set(packages) != {'podman'} or set(fixtures) != fixture_keys or not subjects):
+                raise SystemExit('Passed native client evidence requires complete package/fixture/subject identities')
+            phases = {'preflight', 'database', 'registry', 'authentication', 'image_publication', 'native_consumption', 'helm_dependencies', 'tenant_collision', 'policy_and_grants', 'retained_lifecycle', 'grant_revocation', 'restart', 'complete'}
+            if report.get('phase') not in phases or status == 'passed' and report['phase'] != 'complete':
+                raise SystemExit('Native client workflow phase is incomplete or unreviewed')
+            entry['phase'] = report['phase']
+            if 'command_failure_kind' in report:
+                if report['command_failure_kind'] not in ('tls_profile', 'authorization', 'connection', 'client_flag', 'manifest_missing', 'blob_missing', 'platform_selection', 'unclassified'):
+                    raise SystemExit('Native client error category is unreviewed')
+                entry['command_failure_kind'] = report['command_failure_kind']
         for key in ('baseline_version', 'expected_schema'):
             if key in report:
                 if type(report[key]) is not int or not 1 <= report[key] <= 1000:

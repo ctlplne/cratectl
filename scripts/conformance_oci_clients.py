@@ -56,12 +56,12 @@ candidate = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).str
 scope = ['cmd', 'internal', 'scripts', 'web', 'api', 'go.mod', 'go.sum', 'Makefile']
 result = {'candidate': candidate, 'run': RUN, 'status': 'running', 'phase': 'preflight', 'checks': checks, 'commands': commands,
           'source_dirty': bool(subprocess.check_output(['git', 'status', '--porcelain', '--', *scope]).strip()),
-          'artifact_digests': {}, 'build_identity': {}, 'client_versions': {}, 'client_binary_sha256': {},
+          'artifact_digests': {}, 'build_identity': {}, 'client_versions': {}, 'client_binary_sha256': {}, 'client_packages': {}, 'subjects': [],
           'topology': 'Native Linux Docker daemon, separate private Podman VFS store, Helm4, real restricted PostgreSQL on35432 and registry on38443; upstream is a separate tenant on the same real registry process.',
           'limits': ['Named stock-client hosted/proxy/group, layered/multi-architecture metadata, dependency, authorization/policy, tenant and restart journeys only; no full OCI or release readiness.',
                      'No image, application, package script or chart hook is started. Foreign-platform images use scratch and COPY only; no foreign CPU execution or emulator qualification.',
                      'One host, filesystem CAS and explicit loopback HTTP development profile; not production TLS, independent vendor upstream, independent-host HA, retention/GC, scale or all client failure modes.',
-                     'Docker and buildx come from the recorded GitHub runner image. Helm archive and Ubuntu Podman package versions are pinned. Other Docker/Podman/Helm versions, build tools, signatures and attachments remain required.']}
+                     'Docker and buildx come from the recorded GitHub runner image. Helm archive and Podman CLI4.9.3 are pinned; the installed Ubuntu security revision/architecture and client binary hashes are retained. Other client versions, build tools, signatures and attachments remain required.']}
 
 
 def private(name, body):
@@ -223,7 +223,7 @@ def graph(kind, tag, role='admin', image='payload'):
     status, raw, headers = http(path + 'manifests/' + tag, role=role, headers={'Accept': ACCEPT})
     check(kind + ' ' + image + ' ' + tag + ' root has exact immutable bytes', status == 200 and headers.get('Docker-Content-Digest') == 'sha256:' + hashlib.sha256(raw).hexdigest())
     root_digest, root = headers['Docker-Content-Digest'], json.loads(raw)
-    manifest = root
+    manifest, native_digest = root, root_digest
     if 'manifests' in root:
         candidates = [d for d in root['manifests'] if d.get('platform', {}).get('os') == 'linux' and d.get('platform', {}).get('architecture') == ARCH]
         check('multi-architecture index has exactly one native selection', len(candidates) == 1)
@@ -231,11 +231,14 @@ def graph(kind, tag, role='admin', image='payload'):
         status, raw, _ = http(path + 'manifests/' + descriptor['digest'], role=role, headers={'Accept': ACCEPT})
         check('selected native manifest matches declared index bytes', status == 200 and len(raw) == descriptor['size'] and 'sha256:' + hashlib.sha256(raw).hexdigest() == descriptor['digest'])
         manifest = json.loads(raw)
+        native_digest = descriptor['digest']
     descriptors = [manifest['config'], *manifest['layers']]
     check('native graph has bounded config and payload descriptors', 1 < len(descriptors) <= 16)
     for descriptor in descriptors:
         status, body, _ = http(path + 'blobs/' + descriptor['digest'], role=role)
         check('native graph member bytes match declared digest and length', status == 200 and len(body) == descriptor['size'] and 'sha256:' + hashlib.sha256(body).hexdigest() == descriptor['digest'])
+    result['subjects'].append({'repository': kind, 'image': image, 'reference': tag, 'digest': root_digest, 'native_manifest_digest': native_digest,
+                               'members': [{'digest': d['digest'], 'size': d['size']} for d in descriptors]})
     return {'digest': root_digest, 'manifest': manifest, 'index': root}
 
 
@@ -337,6 +340,7 @@ APP2 = ('owned native linux/' + str(ARCH) + ' application version2\n').encode() 
 FALLBACK = b'owned fallback must never replace denied primary\n'
 OTHER = b'owned independent tenant with the same coordinate\n'
 CHARTS = {}
+result['fixture_sha256'] = {name: hashlib.sha256(body).hexdigest() for name, body in [('application_v1', APP1), ('application_v2', APP2), ('dependency', DEPENDENCY), ('fallback', FALLBACK), ('other_tenant', OTHER), ('foreign_platform', b'owned alternate platform metadata fixture\n')]}
 try:
     phase('preflight')
     check('native Linux amd64 or arm64 client host', platform.system() == 'Linux' and ARCH in ['amd64', 'arm64'])
@@ -360,6 +364,10 @@ try:
     check('Docker engine is native Linux on this host', docker_version['Server']['Os'] == 'linux' and docker_version['Server']['Arch'] == ARCH)
     result['client_versions'].update(docker=docker_version['Client']['Version'], docker_engine=docker_version['Server']['Version'])
     result['client_versions']['podman'] = command(['podman', '--version'], 'observe Podman version').decode().strip().removeprefix('podman version ')
+    check('Podman CLI has the reviewed upstream version', result['client_versions']['podman'] == '4.9.3')
+    package = command(['dpkg-query', '--show', '--showformat=${Version}|${Architecture}', 'podman'], 'observe installed Podman package identity').decode().strip().split('|')
+    check('installed Podman package has this native architecture', len(package) == 2 and package[1] == ARCH)
+    result['client_packages']['podman'] = {'version': package[0], 'architecture': package[1]}
     result['client_versions']['helm'] = command([HELM, 'version', '--short'], 'observe Helm version').decode().strip().removeprefix('v')
     buildx = command(['docker', 'buildx', 'version'], 'observe buildx version').decode().split()
     result['client_versions']['buildx'] = next(v.removeprefix('v') for v in buildx if re.fullmatch(r'v[0-9]+\.[0-9]+\.[0-9]+(?:[-+][A-Za-z0-9.-]+)?', v))
@@ -454,9 +462,11 @@ try:
     for version in ['1.0.0', '1.1.0']:
         package, data = chart_package('cratectl-dependency', version, 'owned dependency ' + version)
         CHARTS[version] = data
+        result['fixture_sha256']['chart_dependency_' + version.replace('.', '_')] = hashlib.sha256(data).hexdigest()
         for kind, role in [('hosted', 'admin'), ('origin', 'origin')]:
             helm(role, ['push', package, 'oci://' + REGISTRY + '/' + REPOS[kind], '--plain-http'], 'Helm publishes dependency to ' + kind)
     parent, parent_bytes = chart_package('cratectl-application', '1.0.0', 'owned parent with dependency', 'host-group', '1.0.0')
+    result['fixture_sha256']['chart_application_1_0_0'] = hashlib.sha256(parent_bytes).hexdigest()
     for kind, role in [('hosted', 'admin'), ('origin', 'origin')]:
         helm(role, ['push', parent, 'oci://' + REGISTRY + '/' + REPOS[kind], '--plain-http'], 'Helm publishes parent to ' + kind)
     for kind in ['hosted', 'proxy', 'host-group', 'proxy-group']:
@@ -474,6 +484,7 @@ try:
         image_bytes(client, 'hosted', 'v1', OTHER, role='origin')
         image_bytes(client, 'hosted', 'v1', APP1)
     other_chart, other_chart_bytes = chart_package('cratectl-application', '1.0.0', 'owned independent tenant package')
+    result['fixture_sha256']['chart_other_tenant_1_0_0'] = hashlib.sha256(other_chart_bytes).hexdigest()
     helm('origin', ['push', other_chart, 'oci://' + REGISTRY + '/' + REPOS['hosted'], '--plain-http'], 'Helm publishes same coordinate in independent tenant')
     chart_bytes('hosted', 'cratectl-application', '1.0.0', other_chart_bytes, role='origin')
     chart_bytes('hosted', 'cratectl-application', '1.0.0', parent_bytes)

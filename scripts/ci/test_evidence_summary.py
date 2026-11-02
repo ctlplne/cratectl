@@ -80,13 +80,22 @@ class EvidenceSummary(unittest.TestCase):
     def test_client_versions_and_hashes_are_complete_and_do_not_export_arbitrary_text(self):
         versions = {'docker': '29.0.0+azure-1', 'docker_engine': '29.0.0', 'buildx': '0.29.1', 'podman': '4.9.3', 'helm': '4.3.1+gc0d08d0'}
         digests = {name: 'd' * 64 for name in ['docker', 'podman', 'helm']}
-        self.write('clients.json', {'candidate': 'a' * 40, 'status': 'passed', 'client_versions': versions, 'client_binary_sha256': digests, 'private_log': 'private-synthetic-value'})
+        fixtures = {key: 'e' * 64 for key in ['application_v1', 'application_v2', 'dependency', 'fallback', 'other_tenant', 'foreign_platform', 'chart_dependency_1_0_0', 'chart_dependency_1_1_0', 'chart_application_1_0_0', 'chart_other_tenant_1_0_0']}
+        subject = {'repository': 'hosted', 'image': 'payload', 'reference': 'multi', 'digest': 'sha256:' + 'f' * 64, 'native_manifest_digest': 'sha256:' + 'a' * 64, 'members': [{'digest': 'sha256:' + 'b' * 64, 'size': 12}, {'digest': 'sha256:' + 'c' * 64, 'size': 20}], 'private': 'private-synthetic-value'}
+        evidence = {'candidate': 'a' * 40, 'status': 'passed', 'phase': 'complete', 'client_versions': versions, 'client_binary_sha256': digests, 'client_packages': {'podman': {'version': '4.9.3+ds1-1ubuntu0.3', 'architecture': 'amd64', 'private': 'private-synthetic-value'}}, 'fixture_sha256': fixtures, 'subjects': [subject], 'private_log': 'private-synthetic-value'}
+        self.write('clients.json', evidence)
         record = summarize(self.root, self.environment)['records'][0]
         self.assertEqual(record['client_versions'], versions)
         self.assertEqual(record['client_binary_sha256'], digests)
+        self.assertEqual(record['subjects'][0]['digest'], subject['digest'])
+        self.assertEqual(record['fixture_sha256'], fixtures)
         self.assertNotIn('private-synthetic-value', json.dumps(record))
         for changed in [{**versions, 'helm': '4.3.1+private-synthetic-value'}, {'credential': 'private-synthetic-value'}, {name: version for name, version in versions.items() if name != 'podman'}]:
-            self.write('clients.json', {'candidate': 'a' * 40, 'status': 'passed', 'client_versions': changed, 'client_binary_sha256': digests})
+            self.write('clients.json', {**evidence, 'client_versions': changed})
+            with self.subTest(changed=changed), self.assertRaises(SystemExit):
+                summarize(self.root, self.environment)
+        for changed in [{'fixture_sha256': {}}, {'subjects': [{**subject, 'image': 'private-synthetic-value'}]}, {'phase': 'private-synthetic-value'}, {'client_packages': {'podman': {'version': '4.9.3+private-synthetic-value', 'architecture': 'amd64'}}}]:
+            self.write('clients.json', {**evidence, **changed})
             with self.subTest(changed=changed), self.assertRaises(SystemExit):
                 summarize(self.root, self.environment)
 

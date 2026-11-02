@@ -11,8 +11,12 @@ x86-64/ARM64 GitHub workflow are implemented but unverified. The fixture uses
 real restricted PostgreSQL, layered/multi-architecture opaque images and chart
 dependencies; no uploaded image or package script executes. Local filesystem
 boundary/privacy regressions and syntax checks are not native client proof.
-Run the new CI gate, retain its first failures, repair/replay actual defects,
-and continue the complete remaining goal. See
+The first native run failed before client execution because older Podman Debian
+revision pins would downgrade both runner packages. The setup now verifies the
+bundled4.9.3 CLI and retains its actual package revision/architecture and hash.
+Fixture and graph digests are also retained. Replay the corrected gate; no
+native client compatibility is verified yet. See `DEFECT.0074` and
+`evidence/2026-11-02/oci-clients-first-failure.json`. Continue the full goal. See
 `evidence/2026-11-02/oci-clients-development-preflight.json`.
 
 Current repair milestone accepted on clean source

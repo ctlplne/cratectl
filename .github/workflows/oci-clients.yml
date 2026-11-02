@@ -58,7 +58,7 @@ jobs:
           python-version: '3.14'
       - name: Prepare isolated PostgreSQL and exact native registry binaries
         run: bash scripts/ci/bootstrap_linux.sh
-      - name: Install checked Helm and pinned native Podman
+      - name: Verify bundled Podman and install checked Helm
         run: bash scripts/ci/bootstrap_oci_clients.sh
       - name: Publish and consume with native Docker, Podman and Helm
         run: python3 scripts/conformance_oci_clients.py --require-clean-build

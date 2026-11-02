@@ -101,6 +101,12 @@ workflows retain their default full tool set. The new driver and safe version/
 binary evidence are implemented but unverified. See
 [the development record](../../evidence/2026-11-02/oci-clients-development-preflight.json)
 and [operator qualification guide](../operator/oci-client-qualification.md).
+The first native run failed on both architectures during setup: its Podman
+Debian revision pins would downgrade newer installed packages. The corrected
+setup verifies bundled CLI4.9.3 and records the installed revision/architecture
+and binary hash. It also retains fixture and verified graph/member digests.
+See [the first failure](../../evidence/2026-11-02/oci-clients-first-failure.json)
+and `DEFECT.0074`; real native client replay remains required.
 This gate adds required client evidence; it does not replace the accepted13job
 regression milestone or complete OCI/platform/readiness scope.
 
