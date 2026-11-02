@@ -3,7 +3,7 @@ module ctlplne.dev/cratectl
 go 1.27.3
 
 require (
-	github.com/Masterminds/semver/v3 v3.4.0
+	github.com/Masterminds/semver/v3 v3.5.0
 	github.com/aquasecurity/go-pep440-version v0.0.1
 	github.com/jackc/pgx/v5 v5.11.0
 	golang.org/x/net v0.62.0
