@@ -6,6 +6,14 @@ GitHub native qualification and moves historical controlled-upgrade journeys
 off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
+Current defect work: the focused x86 repair regression on `609be9b` passed
+its first fresh-database journey and failed the second at `toBeFocused`.
+The initial source-file focus is now deferred by one rendering frame after
+replacing the creation form; the focus assertion remains unchanged. Console
+reproduction, static checks and diagnostic privacy tests pass locally; actual
+GitHub replay is still required. See
+`evidence/2026-11-02/github-repair-focus-reproduction.json`.
+
 Current GitHub milestone: `1678ed59f9bd52df89cf82ff7e395761a15f028a`
 passed all nine main CI jobs and both controlled-upgrade jobs. The x86 console
 passed all 14 workflows with zero skipped, flaky or unexpected results. Both

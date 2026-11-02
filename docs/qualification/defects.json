@@ -768,12 +768,13 @@
       "id": "DEFECT.0071",
       "summary": "Initial GitHub Linux x86 Chromium suite failed without retained private failure detail",
       "first_failure": "evidence/2026-11-02/github-ci-first-run.json",
-      "state": "open; recurrent Linux x86 repair-browser failure",
-      "repair": "Safe locations identify zzzz-repair.spec.mjs:31. Split request, focus and Axe assertions and classify safe matcher names before replay; no underlying repair is claimed yet.",
+      "state": "reproduced in focused native x86 run; rendering-frame focus repair implemented locally, live replay pending",
+      "repair": "Defer file-source initial focus by one rendering frame after replacing the focused mutation form; cancel pending focus on unmount. Keep the existing focus assertion and fail-closed independent browser runs.",
       "replay": "evidence/2026-11-02/github-ci-second-run.json",
-      "candidate": "998c7f822d6ee882d2c1efc0ffe60a7d706ef7e0",
-      "limits": "A later green run does not explain the first failure or prove absence of flakiness.",
-      "recurrence": "evidence/2026-11-02/github-ci-third-run.json"
+      "limits": "The focused campaign passed once then failed its second toBeFocused assertion. The proposed focus-order repair must still pass actual GitHub replay; no completed repair or full console stability claim yet.",
+      "recurrence": "evidence/2026-11-02/github-repair-focus-reproduction.json",
+      "historical_green_candidate": "998c7f822d6ee882d2c1efc0ffe60a7d706ef7e0",
+      "repair_source_parent": "609be9b9c7eab70a9eb7d5a43c6775fdc01de615"
     },
     {
       "id": "DEFECT.0072",

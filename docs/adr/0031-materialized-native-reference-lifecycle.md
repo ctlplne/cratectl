@@ -36,6 +36,10 @@ protections and all later committed scope remain required. A raw download is not
 proof of native package compatibility; stock-client journeys must demonstrate the
 metadata, deletion and restore behavior before qualification.
 
-Development uses isolated databases and candidate binary directories. The owned
-primary remains schema10 while its separate schema11 maintenance approval is
-pending. No primary migration or active-binary replacement follows from this work.
+Development uses isolated databases and candidate binary directories. At the
+original development checkpoint, the owned primary was schema10 with separate
+schema11 approval pending. The owner subsequently approved that maintenance,
+which completed with preserved receipts and durable data. The current primary
+is schema11 with matching qualified binaries; see
+`evidence/2026-10-31/native-lifecycle-primary-schema11.json`. Future maintenance
+still requires its own applicable authority and checks.

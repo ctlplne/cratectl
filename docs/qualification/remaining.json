@@ -527,12 +527,6 @@
     "qualified_isolated_schema": 11,
     "retained_primary_schema": 10
   },
-  "primary_maintenance_pending": {
-    "reason": "Automatic review requires explicit owner authority for durable primary migration",
-    "record": "evidence/2026-10-31/matter-full-primary-maintenance-proposal.json",
-    "current_schema": 10,
-    "proposed_schema": 11
-  },
   "retained_primary_native_checkpoint": {
     "candidate": "ed9ee5e8a6b38843a01ff9ccb9eb5ca7752255c0",
     "schema": 10,
@@ -567,8 +561,24 @@
     "pending_run": "https://github.com/ctlplne/cratectl/actions/runs/41500876100",
     "next": "Qualify pinned historical baseline rebuilds and controlled upgrades on native GitHub Linux; every broad readiness verdict stays negative.",
     "latest_checkpoint": "evidence/2026-11-02/github-ci-1678ed5-checkpoint.json",
-    "pending_state": "1678ed5 main and upgrades are green. Earlier repair-browser defect remains unexplained. PostgreSQL race and focused repair gates require first execution.",
-    "controlled_upgrades": "https://github.com/ctlplne/cratectl/actions/runs/41500875982"
+    "pending_state": "Focused repair reproduced a toBeFocused failure on the second 609be9b journey; the rendering-frame focus repair needs live replay. The ARM64 real PostgreSQL race step passed; x86 races remain required.",
+    "controlled_upgrades": "https://github.com/ctlplne/cratectl/actions/runs/41500875982",
+    "database_race_arm64": "evidence/2026-11-02/github-database-race-609be9b-arm64.json"
   },
-  "ci_controlled_upgrade_checkpoint": "evidence/2026-11-02/github-controlled-upgrades-checkpoint.json"
+  "ci_controlled_upgrade_checkpoint": "evidence/2026-11-02/github-controlled-upgrades-checkpoint.json",
+  "historical_primary_maintenance_request": {
+    "reason": "Automatic review requires explicit owner authority for durable primary migration",
+    "record": "evidence/2026-10-31/matter-full-primary-maintenance-proposal.json",
+    "current_schema": 11,
+    "proposed_schema": 11,
+    "state": "superseded by explicit owner approval; maintenance completed",
+    "completion": "evidence/2026-10-31/native-lifecycle-primary-schema11.json",
+    "former_schema": 10
+  },
+  "primary_maintenance_completed": {
+    "schema": 11,
+    "approval": "Explicit owner reply: Approve primary migration",
+    "evidence": "evidence/2026-10-31/native-lifecycle-primary-schema11.json",
+    "limits": "All ten original receipts and 39 existing durable table byte digests were preserved. This records the completed schema 10 to 11 maintenance only; future durable maintenance follows current authority and checks."
+  }
 }

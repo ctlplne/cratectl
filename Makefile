@@ -22,6 +22,7 @@ lint:
 	python3 scripts/check_openapi_descriptions.py
 	python3 scripts/test_qualification_contract.py
 	python3 scripts/ci/test_evidence_summary.py
+	python3 scripts/ci/test_browser_failure_summary.py
 console:
 	python3 scripts/build_console.py
 console-check:
