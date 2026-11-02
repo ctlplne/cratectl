@@ -1,5 +1,12 @@
 # cratectl execution status
 
+GitHub CI work (2026-11-02): public x86-64 and ARM64 Linux runners now have
+source, unit, race, lint, console reproduction, real PostgreSQL, stock-client,
+native lifecycle and scoped security workflows. The x86-64 runner also exercises
+the real Chromium console. See `docs/operator/github-ci.md`. These workflows
+must run on GitHub before their Linux results are called verified. The broader
+product goal remains paused and all readiness verdicts remain negative.
+
 Current bounded task completed; broader goal paused by owner. Clean source
 `5483878b211f9d30ebf4e72a9bc6ed20fc9d7040` passes 335 native lifecycle stock-client checks and 363
 existing compatibility assertions on each production/race build. Each build passes

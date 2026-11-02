@@ -8,7 +8,7 @@
 - GitHub: https://github.com/ctlplne/cratectl
 - Origin: https://github.com/ctlplne/cratectl.git
 - Branch: main
-- Visibility: Private until the owner explicitly changes it
+- Visibility: Public by owner direction on 2026-11-02; CI publication is authorized for this repository.
 - Status: Execution contract for the active build. Resume the existing implementation when instructed.
 
 ## Owner-directed history reset (2026-10-28)
@@ -23,7 +23,7 @@ See `evidence/2026-10-28/history-reset.json`.
 
 ## 0 Resume the existing repository
 
-The local repository and the private ctlplne/cratectl GitHub repository already exist. The local origin points to the URL above. Continue on main; do not initialize another repository, replace origin, create a branch, reset history, or overwrite in-progress work.
+The local repository and ctlplne/cratectl GitHub repository already exist. The owner authorized public visibility on 2026-11-02. The local origin points to the URL above. Continue on main; do not initialize another repository, replace origin, create a branch, reset history, or overwrite in-progress work.
 
 Read AGENTS.md, this goal, STATUS.md, and docs/qualification/remaining.json before continuing. Then inspect the actual Git status, current commit, capability and journey ledgers, active jobs and owned resources. The current checkout and reproducible evidence determine progress. Treat stale prose as a lead to reconcile, not as permission to repeat completed setup or invent a pass.
 
@@ -31,7 +31,7 @@ The recorded starting commit is fa727a9. The contract checkpoint observed during
 
 Preserve existing tracked changes, untracked implementation, evidence, ignored .private/ credentials and .cache/ state. Reuse the current matrices and close their gaps instead of regenerating the project or replacing the backlog. The immediate work is to complete the Stage 1 native-client journeys and tenant-scoped durable publication against real PostgreSQL, guided by the live remaining-work record. All later stages remain committed scope.
 
-The agent is authorized to make focused local commits on main. GitHub repository creation did not authorize pushes, public visibility, releases, package/image publication or additional remote configuration changes. The owner controls those actions. Local commits must remain possible without GitHub connectivity. If remote authentication fails, continue authorized local work and report the precise remote action that needs attention.
+The agent is authorized to make focused local commits on main. The owner authorized the 2026-11-02 CI push and public visibility change. Future pushes, releases, package/image publication and other remote configuration changes remain owner controlled. Local commits must remain possible without GitHub connectivity. If remote authentication fails, continue authorized local work and report the precise remote action that needs attention.
 
 ## 1 Mission and ambition
 

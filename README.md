@@ -5,6 +5,9 @@ active development. **This is an engineering foundation, not a qualified release
 The entire product destination is in [GOAL.md](GOAL.md). Progress and unfinished
 scope are in [STATUS.md](STATUS.md) and [the capability ledger](docs/qualification/parity.json).
 No parity, production readiness, scanning or high-availability claim is made.
+GitHub Actions runs [real Linux x86-64 and ARM64 CI](docs/operator/github-ci.md),
+with a macOS ARM64 source job. The owner-approved Additional Use Grant remains
+pending; see [GOAL.md](GOAL.md) before treating this source as a release.
 
 Implemented locally: PostgreSQL tenant isolation, immutable filesystem objects,
 transactional publication/events/outbox intent, tenant service tokens, manual
@@ -79,7 +82,7 @@ remain labelled unassessed. No absent scanner result is labelled clean.
 
 | Format | Endpoint | Current limits |
 | --- | --- | --- |
-| Generic | `/r/REPOSITORY/PATH` | PUT and authorized GET/HEAD, range, ETag; no lifecycle/export yet |
+| Generic | `/r/REPOSITORY/PATH` | PUT and authorized GET/HEAD, range, ETag; named single-reference lifecycle is qualified, while bulk retirement and complete export remain open |
 | Maven | `/r/REPOSITORY/COORDINATE` | hosted files, mutable native metadata, computed checksums; complete Gradle/Ivy/SBT, grouping and snapshot campaigns remain open |
 | npm | `/npm/REPOSITORY/` | publish/install scoped packages and dependencies, dist-tag edits and early proxy/group proof; 24 MiB publish document; full search, deprecation, signatures, provenance and lifecycle remain open |
 | PyPI | `/pypi/REPOSITORY/` for twine; `/pypi/REPOSITORY/simple/` for pip | streamed multipart files, HTML/JSON simple indexes, yanking, bounded archive identity checks and early proxy/group proof; full client/metadata/signature/lifecycle campaigns remain open |
