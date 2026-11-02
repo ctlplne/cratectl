@@ -63,4 +63,13 @@ for tenant in test-a test-b; do
   .cache/ci-build/cratectld provision --tenant "$tenant" --actor operator --role admin --token-file ".private/ci-$tenant.token"
 done
 .cache/ci-build/cratectld migrate --plan | python -c 'import json,sys; p=json.load(sys.stdin); assert p["binary_version"]==11 and p["safety_valid"] and len(p["applied"])==11 and not p["pending"]'
+uname -sm
+go version
+node --version
+npm --version
+python --version
+java -version
+.cache/apache-maven-3.10.0/bin/mvn -version
+.cache/bin/oras version
+.cache/postgresql-16.15-install/bin/psql --version
 printf 'Real PostgreSQL and stock-client tools are ready on this %s runner.\n' "$architecture"

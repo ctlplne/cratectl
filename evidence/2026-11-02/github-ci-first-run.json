@@ -1,0 +1,28 @@
+{
+  "candidate": "866a0a9d8fef64338a3ce071169513367ddcd945",
+  "repository": "https://github.com/ctlplne/cratectl",
+  "run": "https://github.com/ctlplne/cratectl/actions/runs/41491829202",
+  "conclusion": "failure",
+  "jobs": {
+    "security_scoped": "success",
+    "source_unit_amd64": "success",
+    "source_unit_arm64": "success",
+    "source_unit_darwin_arm64": "success",
+    "native_postgresql_clients_arm64": "success",
+    "native_postgresql_clients_amd64": "failure"
+  },
+  "amd64_native_completed_steps": [
+    "fresh PostgreSQL and checked stock-client bootstrap",
+    "real PostgreSQL integration and SQL timing",
+    "stock-client compatibility on the real registry",
+    "native lifecycle with curl, npm, pip, twine and Maven"
+  ],
+  "amd64_native_failed_step": "Chromium console workflows and accessibility",
+  "browser_failure_diagnostics": "The original driver retained Playwright details only in a private runner report. The public log reported a failed real-browser suite after two driver assertions. A later revision must emit safe test locations before this can be diagnosed or qualified.",
+  "limits": [
+    "Five successful jobs do not make the six-job workflow green.",
+    "The x86-64 Chromium console journey is unverified; its failure must be reproduced and repaired on a real x86-64 runner.",
+    "The first workflow does not include the added operational or secret-rule fixture steps.",
+    "These tests do not establish full security, packaging, release, legal or product readiness."
+  ]
+}

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
 """Blank native operator journey; TLS stays verified and no development tenants are seeded."""
-import argparse,datetime,hashlib,json,os,signal,ssl,subprocess,time,urllib.parse,urllib.request,urllib.error,uuid
+import argparse,datetime,hashlib,json,os,platform,signal,ssl,subprocess,time,urllib.parse,urllib.request,urllib.error,uuid
 from pathlib import Path
 from qualification_contract import candidate_binary_directory, candidate_artifact_names
 BIN = candidate_binary_directory()
@@ -19,7 +19,7 @@ def settings(name):
         if len(parts)==2 and parts[0]=='build' and '='in parts[1]:key,value=parts[1].split('=',1);out[key]=value
     return out
 scope=['cmd','internal','scripts','api','go.mod','go.sum','Makefile']
-result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope],text=True).strip()),'artifact_digests':{name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest()for name in candidate_artifact_names()},'build_identity':{name:settings(name)for name in candidate_artifact_names()},'checks':checks,'topology':'Native macOS process; new empty database in owned PostgreSQL 16.15 cluster; HTTPS on loopback 38443; stock npm and node; config-only runtime processes without owner/runtime DSN environment.','limits':['Database server and restricted login are supplied by the operator; no claim of blank-machine, Compose/Helm or offline-bundle qualification.','Generated local CA and certificate expire after 30 days; initial credentials default to 24 hours; production PKI and credential lifecycle remain required.','Single native host and filesystem; broader OS, outage/restore, production scale and full security qualification remain open.']}
+result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope],text=True).strip()),'artifact_digests':{name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest()for name in candidate_artifact_names()},'build_identity':{name:settings(name)for name in candidate_artifact_names()},'checks':checks,'topology':f'Native {platform.platform()} process; new empty database in owned PostgreSQL 16.15 cluster; HTTPS on loopback 38443; stock npm and node; config-only runtime processes without owner/runtime DSN environment.','limits':['Database server and restricted login are supplied by the operator; no claim of blank-machine, Compose/Helm or offline-bundle qualification.','Generated local CA and certificate expire after 30 days; initial credentials default to 24 hours; production PKI and credential lifecycle remain required.','Single native host and filesystem; broader OS, outage/restore, production scale and full security qualification remain open.']}
 result['build_source_matches_candidate']=all(v.get('vcs.revision')==result['candidate']and v.get('vcs.modified')=='false'for v in result['build_identity'].values())
 def check(label,condition):
     if not condition:raise AssertionError(label)

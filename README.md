@@ -6,7 +6,8 @@ The entire product destination is in [GOAL.md](GOAL.md). Progress and unfinished
 scope are in [STATUS.md](STATUS.md) and [the capability ledger](docs/qualification/parity.json).
 No parity, production readiness, scanning or high-availability claim is made.
 GitHub Actions runs [real Linux x86-64 and ARM64 CI](docs/operator/github-ci.md),
-with a macOS ARM64 source job. The owner-approved Additional Use Grant remains
+with a macOS ARM64 source job. The [CI qualification plan](docs/qualification/github-actions-plan.md)
+tracks additional work to move onto real runners and services. The owner-approved Additional Use Grant remains
 pending; see [GOAL.md](GOAL.md) before treating this source as a release.
 
 Implemented locally: PostgreSQL tenant isolation, immutable filesystem objects,

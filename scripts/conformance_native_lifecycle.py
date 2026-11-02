@@ -14,6 +14,7 @@ import hashlib
 import io
 import json
 import os
+import platform
 from pathlib import Path
 import shutil
 import socket
@@ -79,7 +80,7 @@ result = {
     'artifact_digests': {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in [SERVER, CLI]},
     'checks': checks, 'commands': commands, 'cases': cases, 'input_digests': {},
     'private_logs': str(PRIVATE.relative_to(ROOT)),
-    'topology': 'Native macOS registry, isolated PostgreSQL on35432, filesystem objects and stock curl/npm/pip/twine/Maven on loopback38443. Runtime omits owner DSN; clients omit both DSNs.',
+    'topology': f'Native {platform.platform()} registry, isolated PostgreSQL on35432, filesystem objects and stock curl/npm/pip/twine/Maven on loopback38443. Runtime omits owner DSN; clients omit both DSNs.',
     'limits': [
         'Named single-reference hosted/proxy/group workflows with owned dependency fixtures; no full format/legal/retention/GC or release readiness verdict.',
         'One host and explicit loopback HTTP development profile; production TLS, independent machines, other clients/providers/platforms and scale remain required.',

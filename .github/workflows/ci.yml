@@ -81,11 +81,13 @@ jobs:
           git archive HEAD | tar -x -C .cache/ci-source-snapshot
           "$RUNNER_TEMP/gitleaks" dir --no-banner --redact --config .gitleaks.toml .cache/ci-source-snapshot
           "$RUNNER_TEMP/gitleaks" git --no-banner --redact --config .gitleaks.toml .
+      - name: Exercise narrow secret-rule exceptions with synthetic fixtures
+        run: CRATECTL_GITLEAKS_BIN="$RUNNER_TEMP/gitleaks" python3 scripts/test_secret_rules.py
 
   native:
     name: Real PostgreSQL and stock clients (${{ matrix.arch }})
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 90
+    timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
@@ -144,8 +146,23 @@ jobs:
         run: python scripts/conformance.py all --require-clean-build
       - name: Native lifecycle with curl, npm, pip, twine and Maven
         run: python scripts/conformance_native_lifecycle.py --require-clean-build
+      - name: Blank database initialization and trusted TLS client journey
+        run: python scripts/conformance_installation.py --require-clean-build
+      - name: Durable jobs and interrupted upload leases
+        run: |
+          python scripts/conformance_jobs.py --require-clean-build
+          python scripts/conformance_leases.py --require-clean-build
+      - name: Filesystem inventory and integrity sweeps
+        run: |
+          python scripts/conformance_inventory.py --require-clean-build
+          python scripts/conformance_sweeps.py --require-clean-build
+      - name: Cross-reference legal-hold matters
+        run: python scripts/conformance_hold_matters.py --require-clean-build
       - name: Chromium console workflows and accessibility
         if: matrix.arch == 'amd64'
         run: |
           web/node_modules/.bin/playwright install --with-deps chromium
           python scripts/conformance_console.py --require-clean-build
+      - name: Safe Chromium failure locations
+        if: failure() && matrix.arch == 'amd64'
+        run: python3 scripts/ci/browser_failure_summary.py
