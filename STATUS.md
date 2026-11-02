@@ -6,6 +6,17 @@ GitHub native qualification and moves historical controlled-upgrade journeys
 off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
+Current GitHub milestone: `1678ed59f9bd52df89cf82ff7e395761a15f028a`
+passed all nine main CI jobs and both controlled-upgrade jobs. The x86 console
+passed all 14 workflows with zero skipped, flaky or unexpected results. Both
+Linux native summaries identify clean matching binaries; the security artifact
+retains all 324 passed cases. Each architecture also rebuilt ten historical
+servers and passed 15 controlled-upgrade reports. See
+`evidence/2026-11-02/github-ci-1678ed5-checkpoint.json`.
+The recurring earlier repair-browser failure remains open; this green run did
+not establish its cause. Explicit PostgreSQL integration races and five fresh
+x86 repair-browser replays are prepared locally and await GitHub execution.
+
 GitHub CI work (2026-11-02): candidate `7389def5abdcb9ada3c539820dda0e65b609d13f`
 passes Linux x86-64/ARM64 source, race, lint, all 23 bounded fuzz targets, scoped
 security and the complete ARM64 native PostgreSQL/client/operational job.

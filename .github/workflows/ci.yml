@@ -176,6 +176,8 @@ jobs:
         run: bash scripts/ci/bootstrap_linux.sh
       - name: Real PostgreSQL integration and timing
         run: make integration BINDIR=.cache/ci-build
+      - name: Real PostgreSQL integration with Go race detector
+        run: make integration-race
       - name: Stock client compatibility on real registry
         run: python scripts/conformance.py all --require-clean-build
       - name: Native lifecycle with curl, npm, pip, twine and Maven

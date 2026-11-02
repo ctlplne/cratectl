@@ -4,7 +4,7 @@
 import argparse,datetime,hashlib,json,os,subprocess,time,urllib.parse,urllib.request,uuid
 from pathlib import Path
 from qualification_contract import candidate_binary_directory, candidate_artifact_names
-parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');parser.add_argument('--serve',action='store_true');parser.add_argument('--binary-directory',type=Path,help='Owned candidate binary directory; defaults to bin without replacing active primary binaries');args=parser.parse_args()
+parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');parser.add_argument('--serve',action='store_true');parser.add_argument('--binary-directory',type=Path,help='Owned candidate binary directory; defaults to bin without replacing active primary binaries');parser.add_argument('--workflow',choices=['all','repair'],default='all',help='Run the complete console or only the real repair workflow for defect replay');args=parser.parse_args()
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT);RUN=uuid.uuid4().hex[:10];PRIVATE=ROOT/'.private/console-conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)
 BIN=candidate_binary_directory(args.binary_directory)
 ARTIFACTS=[str((BIN/name).relative_to(ROOT))for name in ['cratectld','cratectl']]
@@ -20,6 +20,8 @@ def settings(name):
 scope=['cmd','internal','scripts','web','api','go.mod','go.sum','Makefile']
 result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope],text=True).strip()),'artifact_digests':{n:hashlib.sha256((ROOT/n).read_bytes()).hexdigest()for n in ARTIFACTS},'build_identity':{n:settings(n)for n in ARTIFACTS},'checks':checks,'topology':'Real Chromium, native registry/worker and nonowner forced-RLS PostgreSQL. An empty owned database and two newly provisioned tenants; explicit loopback-only HTTP development profile on port 38443.','limits':['This browser run exercises the explicit loopback HTTP test profile. Normal native TLS trust remains separately qualified; browser CA deployment and network/production PKI are not established by this run.','Only tested views and named interactions are qualified. Full console, all WCAG behavior/assistive technologies/native browsers, production packaging and complete product scope remain open.','Management repository/artifact pages use current grants/policy, scoped encrypted scan cursors, bounded live traversal and server search. This is not a multi-page snapshot or full native-format index qualification.']}
 result['build_source_matches_candidate']=all(s.get('vcs.modified')=='false'and s.get('vcs.revision')==result['candidate']for s in result['build_identity'].values())
+result['workflow']=args.workflow
+if args.workflow=='repair':result['limits'].append('Only the repair browser workflow is selected for defect replay; the complete console remains a separate 14-workflow gate.')
 def check(label,value):
     if not value:raise AssertionError(label)
     checks.append(label)
@@ -105,34 +107,34 @@ try:
         while all(p.poll()is None for p in processes.values()):worker_control();time.sleep(.05)
         raise AssertionError('owned process exited during UI review')
     browser_env=dict(runtime_env,CRATECTL_CONSOLE_FIXTURE_JSON=str(fixture_path),PLAYWRIGHT_BROWSERS_PATH=str(ROOT/'.cache/playwright-browsers'),PLAYWRIGHT_JSON_OUTPUT_NAME=str(PRIVATE/'browser-results.json'))
-    command([ROOT/'web/node_modules/.bin/playwright','test','--config',ROOT/'web/playwright.config.mjs'],browser_env)
-    report=json.loads((PRIVATE/'browser-results.json').read_text());check('real-browser workflow suite passed without skips or flaky results',report['stats']['unexpected']==0 and report['stats']['skipped']==0 and report['stats']['flaky']==0 and report['stats']['expected']==14)
-    native=json.loads((PRIVATE/'native-lifecycle-browser-proof.json').read_text());result['native_lifecycle_browser']=native;checks.extend(native['checks'])
-    matters=json.loads((PRIVATE/'hold-matters-browser-proof.json').read_text());result['hold_matters_browser']=matters;checks.extend(matters['checks'])
-    cases=json.loads((PRIVATE/'hold-cases-browser-proof.json').read_text());result['hold_cases_browser']=cases;checks.extend(cases['checks'])
-    holds=json.loads((PRIVATE/'hold-browser-proof.json').read_text());result['hold_browser']=holds;checks.extend(holds['checks'])
-    retention_schedule=json.loads((PRIVATE/'retention-schedule-browser-proof.json').read_text());result['retention_schedule_browser']=retention_schedule;checks.extend(retention_schedule['checks'])
-    retention=json.loads((PRIVATE/'retention-browser-proof.json').read_text());result['retention_browser']=retention;checks.extend(retention['checks']);result['worker_controls']=worker_controls
-    schedule=json.loads((PRIVATE/'schedule-browser-proof.json').read_text());result['schedule_browser']=schedule;checks.extend(schedule['checks'])
-    repair=json.loads((PRIVATE/'repair-browser-proof.json').read_text());result['repair_browser']=repair;checks.extend(repair['checks'])
-    configuration=json.loads((PRIVATE/'source-configuration-browser-proof.json').read_text());result['source_configuration_browser']=configuration;checks.extend(configuration['checks'])
-    lifecycle=json.loads((PRIVATE/'lifecycle-browser-proof.json').read_text());result['lifecycle_browser']=lifecycle;checks.extend(lifecycle['checks'])
-    schema=json.loads((PRIVATE/'schema-browser-proof.json').read_text());result['schema_browser']=schema;checks.extend(schema['checks'])
-    paging=json.loads((PRIVATE/'pagination-browser-proof.json').read_text());result['pagination_browser']=paging;checks.extend(paging['checks']);proof=json.loads((PRIVATE/'browser-proof.json').read_text());result['browser_stats']=report['stats'];result['browser']=proof;checks.extend(proof['checks']);result['database']=database
-    runtime_config=json.loads(Path(receipt['runtime_config']).read_text());key_file=Path(runtime_config['pagination_key_file']);key_bytes=key_file.read_bytes()
-    check('pagination key is a private durable file outside the artifact root',key_file.stat().st_mode&0o077==0 and key_file.parent==install)
-    def list_request(cursor=''):
-        request=urllib.request.Request(base+'/api/v1/repositories?limit=1'+('&cursor='+urllib.parse.quote(cursor)if cursor else''),headers={'Authorization':'Bearer '+(PRIVATE/'other.token').read_text().strip()})
-        with urllib.request.urlopen(request,timeout=10)as response:return json.loads(response.read())
-    first=list_request();check('native management first page has a continuation beyond the page bound',bool(first['next'])and len(first['items'])==1)
-    stop('registry');start('registry',[BIN/'cratectld','serve','--config',receipt['runtime_config'],'--dev-loopback-http','--public-url',base])
-    for _ in range(150):
-        try:
-            with urllib.request.urlopen(base+'/health/ready',timeout=1)as response:
-                if response.status==200:break
-        except Exception:time.sleep(.05)
-    else:raise AssertionError('restarted registry readiness timeout')
-    second=list_request(first['next']);check('actual registry restart preserves key and accepts the earlier opaque cursor',key_file.read_bytes()==key_bytes and len(second['items'])==1 and second['items'][0]['name']!=first['items'][0]['name'])
+    selected=['zzzz-repair.spec.mjs']if args.workflow=='repair'else[]
+    command([ROOT/'web/node_modules/.bin/playwright','test','--config',ROOT/'web/playwright.config.mjs',*selected],browser_env)
+    report=json.loads((PRIVATE/'browser-results.json').read_text());check('selected real-browser workflows passed without skips or flaky results',report['stats']['unexpected']==0 and report['stats']['skipped']==0 and report['stats']['flaky']==0 and report['stats']['expected']==(1 if args.workflow=='repair' else 14))
+    proofs=[('repair_browser','repair-browser-proof.json')] if args.workflow=='repair' else [
+        ('native_lifecycle_browser','native-lifecycle-browser-proof.json'),('hold_matters_browser','hold-matters-browser-proof.json'),
+        ('hold_cases_browser','hold-cases-browser-proof.json'),('hold_browser','hold-browser-proof.json'),
+        ('retention_schedule_browser','retention-schedule-browser-proof.json'),('retention_browser','retention-browser-proof.json'),
+        ('schedule_browser','schedule-browser-proof.json'),('repair_browser','repair-browser-proof.json'),
+        ('source_configuration_browser','source-configuration-browser-proof.json'),('lifecycle_browser','lifecycle-browser-proof.json'),
+        ('schema_browser','schema-browser-proof.json'),('pagination_browser','pagination-browser-proof.json'),('browser','browser-proof.json')]
+    for key,filename in proofs:
+        proof=json.loads((PRIVATE/filename).read_text());result[key]=proof;checks.extend(proof['checks'])
+    result['browser_stats']=report['stats'];result['database']=database;result['worker_controls']=worker_controls
+    if args.workflow=='all':
+        runtime_config=json.loads(Path(receipt['runtime_config']).read_text());key_file=Path(runtime_config['pagination_key_file']);key_bytes=key_file.read_bytes()
+        check('pagination key is a private durable file outside the artifact root',key_file.stat().st_mode&0o077==0 and key_file.parent==install)
+        def list_request(cursor=''):
+            request=urllib.request.Request(base+'/api/v1/repositories?limit=1'+('&cursor='+urllib.parse.quote(cursor)if cursor else''),headers={'Authorization':'Bearer '+(PRIVATE/'other.token').read_text().strip()})
+            with urllib.request.urlopen(request,timeout=10)as response:return json.loads(response.read())
+        first=list_request();check('native management first page has a continuation beyond the page bound',bool(first['next'])and len(first['items'])==1)
+        stop('registry');start('registry',[BIN/'cratectld','serve','--config',receipt['runtime_config'],'--dev-loopback-http','--public-url',base])
+        for _ in range(150):
+            try:
+                with urllib.request.urlopen(base+'/health/ready',timeout=1)as response:
+                    if response.status==200:break
+            except Exception:time.sleep(.05)
+        else:raise AssertionError('restarted registry readiness timeout')
+        second=list_request(first['next']);check('actual registry restart preserves key and accepts the earlier opaque cursor',key_file.read_bytes()==key_bytes and len(second['items'])==1 and second['items'][0]['name']!=first['items'][0]['name'])
     result['status']='passed'
 except KeyboardInterrupt:
     result['status']='manual-review-stopped'if args.serve else'failed'

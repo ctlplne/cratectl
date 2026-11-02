@@ -779,10 +779,12 @@
       "id": "DEFECT.0072",
       "summary": "CI evidence exporter omitted a regenerated report when its same-date path was already tracked",
       "first_failure": "evidence/2026-11-02/github-ci-empty-security-summary.json",
-      "state": "repaired locally; live GitHub replay pending",
+      "state": "repaired and replayed on GitHub",
       "repair": "Collect both modified tracked and untracked reports, preserve the field allowlist, reject successful empty summaries, and regress the case with a real disposable Git index.",
       "candidate_parent": "7389def5abdcb9ada3c539820dda0e65b609d13f",
-      "limits": "The affected security tests passed, but their original artifact contained zero detailed result records. Native reports have unique paths; their actual artifacts are checked separately."
+      "limits": "The original artifact omitted its detailed results. The repaired native GitHub security job passed and its downloaded summary contains all324cases with source_dirty=false; raw private reports remain private.",
+      "candidate": "1678ed59f9bd52df89cf82ff7e395761a15f028a",
+      "replay": "evidence/2026-11-02/github-ci-1678ed5-security-summary.json"
     }
   ]
 }

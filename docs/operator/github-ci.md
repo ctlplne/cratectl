@@ -10,9 +10,10 @@ disposable PostgreSQL service uses port 35432. The service is recreated for ever
 job. CI does not connect to an operator or customer database.
 
 The native job installs checked ORAS 1.3.6 and Maven 3.10.0 archives, Python 3.14,
-Java 21, Node 26 and the exact Go version from `go.mod`. It runs the existing
-`make integration` gate, the generic/npm/PyPI/Maven/OCI compatibility driver, and
-the native lifecycle driver. It also runs fresh-database TLS installation, durable
+Java 21, Node 26 and the exact Go version from `go.mod`. It runs
+`make integration` and `make integration-race` against the disposable database,
+then generic/npm/PyPI/Maven/OCI compatibility and native lifecycle drivers.
+It also runs fresh-database TLS installation, durable
 job and lease recovery, filesystem inventory and integrity sweeps, and legal-hold
 matter journeys on both Linux architectures. On x86-64 it runs all Chromium console
 workflows and automated accessibility checks. These are real clients and a real registry;
@@ -46,5 +47,15 @@ It rebuilds the ten pinned historical sources from
 `docs/qualification/upgrade-baselines.json`, rejects dirty or cross-built
 artifacts, and runs legacy adoption, schema 2–10 lifecycle upgrades, repair,
 recurring integrity and retention upgrades against disposable PostgreSQL.
-Its first live run remains required before those Linux results are verified.
+Both native jobs passed on `1678ed5`; see
+`evidence/2026-11-02/github-controlled-upgrades-checkpoint.json` for the exact
+run, binary identities, assertions and limits.
 The retained local primary is outside this workflow.
+
+`Repair browser regression` is a separate native x86 GitHub workflow for the
+recurring repair-console defect. On relevant UI/driver changes or manual
+dispatch, it runs `--workflow repair` five times with independent fresh
+databases. Each selected run must pass its single workflow with zero skips or
+flaky results; the first failure stops the gate and prints safe locations.
+The default console gate still requires all 14 workflows. The targeted gate's
+first live execution remains pending.

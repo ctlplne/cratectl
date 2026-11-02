@@ -1,0 +1,87 @@
+name: Repair browser regression
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'web/src/repair.tsx'
+      - 'web/src/components.tsx'
+      - 'web/tests/zzzz-repair.spec.mjs'
+      - 'scripts/conformance_console.py'
+      - '.github/workflows/browser-repair.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: repair-browser-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  repair:
+    name: Real x86 Chromium repair replay
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      CRATECTL_CONFORMANCE_DATABASE_FILE: .private/ci-db.json
+      CRATECTL_DEV_DATABASE: native
+      CRATECTL_QUALIFICATION_BIN_DIR: .cache/ci-build
+      PLAYWRIGHT_BROWSERS_PATH: .cache/playwright-browsers
+      NPM_CONFIG_USERCONFIG: /dev/null
+    services:
+      cratectl-postgres:
+        image: postgres:16.15-alpine
+        env:
+          POSTGRES_USER: cratectl_owner
+          POSTGRES_DB: cratectl
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 35432:5432
+        options: >-
+          --health-cmd "pg_isready -U cratectl_owner -d cratectl"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '26'
+          package-manager-cache: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Prepare real database, registry and Chromium
+        run: |
+          npm ci --prefix web --ignore-scripts --no-audit --no-fund
+          bash scripts/ci/bootstrap_linux.sh
+          web/node_modules/.bin/playwright install --with-deps chromium
+      - name: Replay repair five times with independent fresh databases
+        run: |
+          for attempt in 1 2 3 4 5; do
+            echo "Repair replay $attempt of 5"
+            python3 scripts/conformance_console.py --workflow repair --require-clean-build
+          done
+      - name: Safe failure locations and matcher labels
+        if: failure()
+        run: python3 scripts/ci/browser_failure_summary.py
+      - name: Prepare bounded evidence summary
+        if: always()
+        run: python3 scripts/ci/evidence_summary.py
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: ci-summary-repair-browser
+          path: .cache/ci-evidence-summary.json
+          if-no-files-found: error
+          retention-days: 30

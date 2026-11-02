@@ -1,0 +1,30 @@
+{
+  "candidate": "1678ed59f9bd52df89cf82ff7e395761a15f028a",
+  "run": "https://github.com/ctlplne/cratectl/actions/runs/41500875982",
+  "status": "passed",
+  "runners": [
+    "ubuntu-24.04 native amd64",
+    "ubuntu-24.04-arm native arm64"
+  ],
+  "per_architecture": {
+    "historical_binaries_rebuilt": 10,
+    "passed_reports": 15,
+    "build_identity_checks": 10,
+    "runtime_assertions": 650
+  },
+  "scope": [
+    "Reachable exact source pins, clean native Go binary identities and SHA-256 digests",
+    "Legacy adoption with actual migration process interruption",
+    "Schema2through10 retained lifecycle upgrades to schema11",
+    "Repair, recurring integrity, retention and scheduled-retirement upgrades on real PostgreSQL with stock ORAS/npm/CLI"
+  ],
+  "summaries": [
+    "evidence/2026-11-02/github-upgrades-1678ed5-amd64-summary.json",
+    "evidence/2026-11-02/github-upgrades-1678ed5-arm64-summary.json"
+  ],
+  "limits": [
+    "Controlled one-host maintenance fixtures only; not rolling-version compatibility, downgrade, backup/restore, HA, independent hosts, scale or release readiness.",
+    "Each job used fresh disposable PostgreSQL and restricted runtime roles. No retained local primary or customer environment was accessed.",
+    "The separate main CI run still has a recurring x86 browser defect under investigation. This green campaign does not change that defect or broad readiness."
+  ]
+}

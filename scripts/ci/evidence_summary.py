@@ -25,7 +25,7 @@ def summarize(root, environment):
         'generated_at': datetime.datetime.now(datetime.timezone.utc).isoformat(),
         'records': [],
         'limits': [
-            'Only allowlisted counts, boolean build checks and raw-report digests are exported.',
+            'Only counts, boolean build checks, report hashes and pinned historical build identities are exported.',
             'Raw evidence, browser reports, private command logs and generated credentials remain on the disposable runner.',
             'This summary establishes only the named CI job stages, not release or product readiness.',
         ],
@@ -60,6 +60,13 @@ def summarize(root, environment):
         }
         if isinstance(report.get('browser_stats'), dict):
             entry['browser'] = {key: int(report['browser_stats'].get(key, 0)) for key in ('expected', 'unexpected', 'skipped', 'flaky')}
+        if report.get('workflow') in ('all', 'repair'):
+            entry['workflow'] = report['workflow']
+        for key in ('baseline_version', 'expected_schema'):
+            if key in report:
+                if type(report[key]) is not int or not 1 <= report[key] <= 1000:
+                    raise SystemExit('Schema evidence must be a bounded positive integer')
+                entry[key] = report[key]
         if 'baselines' in report:
             if not isinstance(report['baselines'], list) or len(report['baselines']) > 10:
                 raise SystemExit('Historical build evidence exceeds its inventory bound')

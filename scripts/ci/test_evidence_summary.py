@@ -30,10 +30,11 @@ class EvidenceSummary(unittest.TestCase):
         path = self.write('rules.json', {'candidate': 'b' * 40})
         subprocess.run(['git', 'add', 'evidence/rules.json'], cwd=self.root, check=True)
         self.write('rules.json', {'source_parent': 'a' * 40, 'passed': True, 'results': [{}, {}], 'credential': 'private-synthetic-value'})
-        self.write('native.json', {'candidate': 'a' * 40, 'status': 'failed', 'checks': ['one'], 'failure': 'private-synthetic-value'})
+        self.write('native.json', {'candidate': 'a' * 40, 'status': 'failed', 'workflow': 'repair', 'checks': ['one'], 'failure': 'private-synthetic-value'})
         report = summarize(self.root, self.environment)
         self.assertEqual([(r['report'], r['status']) for r in report['records']], [('native.json', 'failed'), ('rules.json', 'passed')])
         self.assertEqual(report['records'][1]['cases'], 2)
+        self.assertEqual(report['records'][0]['workflow'], 'repair')
         self.assertNotIn('private-synthetic-value', json.dumps(report))
         self.assertTrue(all('credential' not in record for record in report['records']))
 
@@ -48,9 +49,10 @@ class EvidenceSummary(unittest.TestCase):
         self.assertEqual(summarize(self.root, self.environment)['records'], [])
 
     def test_historical_identity_is_retained_without_arbitrary_fields(self):
-        self.write('baseline.json', {'candidate': 'a' * 40, 'status': 'passed', 'baselines': [{'schema': 2, 'source': 'b' * 40, 'binary_sha256': 'c' * 64, 'private_log': 'private-synthetic-value'}]})
+        self.write('baseline.json', {'candidate': 'a' * 40, 'status': 'passed', 'baseline_version': 2, 'expected_schema': 11, 'baselines': [{'schema': 2, 'source': 'b' * 40, 'binary_sha256': 'c' * 64, 'private_log': 'private-synthetic-value'}]})
         record = summarize(self.root, self.environment)['records'][0]
         self.assertEqual(record['baselines'][0]['source'], 'b' * 40)
+        self.assertEqual((record['baseline_version'], record['expected_schema']), (2, 11))
         self.assertNotIn('private-synthetic-value', json.dumps(record))
 
 

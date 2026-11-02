@@ -35,10 +35,11 @@ dispatch. It currently contains:
 | Gate | Actual runner or stand-in | Scope |
 | --- | --- | --- |
 | Source and unit | Ubuntu 24.04 x86-64 and ARM64; macOS 15 ARM64 | Go build, unit and race tests, vet, architecture and API checks, web build reproduction, npm dependency audit. |
-| Bounded Go fuzz | The same three native runner types | All 23 targets passed five-second budgets on native Linux x86-64 and ARM64 for `7389def`; macOS was still queued. This is a crash smoke check, not the full parser/security campaign. |
+| Bounded Go fuzz | The same three native runner types | All 23 targets passed five-second budgets on native Linux x86-64, Linux ARM64 and macOS ARM64 for `7389def`. That overall run failed at the separate browser gate. This is a crash smoke check, not the full parser/security campaign. |
 | Security slice | Ubuntu 24.04 x86-64 | `govulncheck` on Go source and two binaries; Gitleaks on current tracked bytes and reachable history; synthetic exception regression. |
-| Native integration | Ubuntu 24.04 x86-64 and ARM64, PostgreSQL 16.15 service with restricted runtime role | `make integration`, including real database tests and SQL timing. |
+| Native integration | Ubuntu 24.04 x86-64 and ARM64, PostgreSQL 16.15 service with restricted runtime role | `make integration`, including real database tests and SQL timing. The added `make integration-race` gate awaits its first GitHub run. |
 | Native clients and operations | Same native Linux jobs, fresh registry on loopback | Generic, OCI/ORAS, Maven, npm, PyPI, current lifecycle, blank TLS install, jobs/leases, inventory/sweeps and cross-reference matters; Chromium console/Axe on x86-64. All six jobs passed on `998c7f8`. |
+| Focused repair-browser regression | Separate Ubuntu 24.04 x86-64 runner with real PostgreSQL and Chromium | Five independent fresh-database repair journeys, stopping at the first failure. Implemented for the recurring defect; first execution pending. Full console still requires its separate 14 workflows. |
 
 The [first run](https://github.com/ctlplne/cratectl/actions/runs/41491829202)
 passed five of six jobs. The x86-64 browser step failed after its PostgreSQL and
@@ -52,6 +53,10 @@ jobs remained queued at observation. The security summary also omitted a
 regenerated tracked report; the exporter now includes modified tracked reports
 and rejects empty successful summaries. Both defects require live replay. See
 `evidence/2026-11-02/github-ci-third-run.json` and `DEFECT.0071`/`DEFECT.0072`.
+The `1678ed5` replay passed all nine main jobs and both controlled-upgrade jobs;
+see `evidence/2026-11-02/github-ci-1678ed5-checkpoint.json`. The security artifact
+contains all 324 passed cases. The earlier browser failures remain unexplained,
+so the separate fresh-database repair replay is still required.
 The `make security` and `make packaging` targets intentionally still fail: their
 full campaigns are incomplete. Dependabot proposes Go, npm and Actions updates;
 the CI matrix must validate each proposal.
@@ -67,7 +72,7 @@ needs a green run on the named runner and a linked, scope-limited evidence recor
 | Now | Jobs, upload leases, inventory, integrity sweeps (`conformance_jobs.py`, `conformance_leases.py`, `conformance_inventory.py`, `conformance_sweeps.py`) | Native Linux x86-64 and ARM64, real processes, fresh PostgreSQL and filesystem | Process death, durable retry, held transfer and exact bytes; one host and filesystem only. |
 | Now | Cross-reference hold matters (`conformance_hold_matters.py`) | Same native Linux runners, stock ORAS, isolated database and actual timing faults | Current schema and named legal-hold cases; broader policy and physical GC remain open. |
 | Now | Secret-rule regression (`test_secret_rules.py`) | Security job's pinned native Gitleaks binary; synthetic fixtures only | Narrow exceptions detect credential-shaped counterexamples in both directory and Git modes. |
-| Wired; first run pending | Schema and retained-version upgrades (`conformance_schema.py`, `conformance_lifecycle.py`, `conformance_repairs.py`, `conformance_schedules.py`, `conformance_retention.py`, `conformance_retention_schedules.py`) | `upgrade-qualification.yml` rebuilds each source in `upgrade-baselines.json` in a detached worktree; verifies reachable commit, clean source, native architecture and SHA-256; then runs disposable real PostgreSQL journeys on x86-64 and ARM64. | Controlled migration and recovery for named old/new pairs; no rolling-version, downgrade, backup/restore or primary-database claim. |
+| Passed in named scope | Schema and retained-version upgrades (`conformance_schema.py`, `conformance_lifecycle.py`, `conformance_repairs.py`, `conformance_schedules.py`, `conformance_retention.py`, `conformance_retention_schedules.py`) | `upgrade-qualification.yml` rebuilt all ten sources in `upgrade-baselines.json` and passed 15 reports on each native Linux architecture for `1678ed5`; see `github-controlled-upgrades-checkpoint.json`. | Controlled migration and recovery for named old/new pairs; no rolling-version, downgrade, backup/restore or primary-database claim. |
 | Next | Pinned external OCI retrieval (`conformance_public_oci.py`) | Separate scheduled/manual Linux job with approved immutable digest, HTTPS authorities and source document; hold network fixtures stable | One actual provider/digest path. Do not turn a changing public service into an unqualified PR gate. |
 | Next | Deeper Go fuzz and parser/property campaigns | Extend the bounded native smoke job with reviewed corpora, longer scheduled budgets, differential/property tests and failure minimization; retain minimized corpus only after review | Only exercised parser boundaries; failure/timeout and corpus identity recorded. |
 | Next | Source/image/binary dependency and secret analysis | Pinned Trivy or equivalent with feed timestamp; `govulncheck`, npm audit and Gitleaks continue; scan built images when images exist | Distinguish source, binary, image and feed coverage. A clean source scan is not a clean image or malware verdict. |
@@ -84,13 +89,16 @@ needs a green run on the named runner and a linked, scope-limited evidence recor
    matcher names and precise source locations. Replay the actual journey on
    GitHub; later green runs alone do not explain an earlier failure.
 2. Validate the evidence exporter repair against the actual same-date tracked
-   security report. Inspect its uploaded summary for all 324 cases.
-3. Complete the queued macOS source/fuzz gates on an available native runner.
-   The five-second target budget is a smoke test, not full parser qualification.
+   security report. The `1678ed5` GitHub artifact now contains all 324 passed
+   cases; see `github-ci-1678ed5-security-summary.json`.
+3. Keep the now-passing macOS source/fuzz gates in the native matrix. The
+   five-second target budget is a smoke test, not full parser qualification.
 4. Run `Controlled upgrade qualification` on both Linux architectures. It rebuilds
    the ten pinned historical sources and exercises legacy adoption, schema 2–10
    lifecycle upgrades, repair, recurring integrity and retirement. Missing or
    dirty sources, wrong native architecture and mismatched identities fail.
+   This campaign passed on `1678ed5`; continue its regression gate as schema
+   and lifecycle behavior change.
 5. Add OS and integration matrices when the corresponding implementation and
    fixtures exist. Put long/fault/paid/external campaigns on explicit scheduled
    or manual workflows and document their cadence, cost, and inputs.
