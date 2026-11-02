@@ -34,6 +34,11 @@ file descriptors that reject symlink components, hardlinks, special files and
 changing or oversized observations. Containers and Docker image references are
 removed by exact fixture names; Podman uses a separate private VFS store. The
 workflow never changes Docker daemon configuration or prunes global state.
+Podman4 limits the runroot path to50characters. The fixture allocates a new
+mode0700 `/tmp/cratectl-podman-*` directory below that limit for each run. It
+checks the exact allocated path/device/inode before privileged removal. The
+graph store remains under the run's private workspace; this temporary runtime
+directory contains no retained registry or primary data.
 
 The driver requires native publication and consumption of layered images,
 multi-architecture selection, exact upstream graph bytes, concurrent first proxy
@@ -53,13 +58,24 @@ client, other build tools, signatures/attachments, complete lifecycle/GC,
 platforms, scale and all remaining goal scope stay required. No image execution,
 Helm installation into Kubernetes or broad readiness is claimed.
 
-Raw credentials and command logs remain under ignored `.private/`. CI uploads
-only the reviewed summary for30days: counts, hashes, clean native build identity,
+Raw credentials and command logs remain private. CI uploads
+the reviewed summary for30days: counts, hashes, clean native build identity,
 reviewed versions/package revisions, client binary hashes, fixture hashes and
 verified immutable graph/member identities. Failed commands expose a
 fixed phase/label/category rather than raw private output. Preserve first
 failures and commit reviewed summaries with the exact candidate and limits.
 The existing main CI, focused browser and upgrade gates remain separate.
+Failed jobs can also publish bounded encrypted command/registry diagnostics
+for seven days. Only the public recipient certificate is present on GitHub;
+the decryption key stays in ignored local private state. See
+[private diagnostic operation](ci-diagnostics.md). There is no plaintext fallback.
+
+The actual270f7ca artifacts from both architectures decrypted successfully and
+showed the50character runroot failure before registry login. Its source,
+metadata hashes, safe error and limits are retained in
+[the runroot failure](../../evidence/2026-11-02/oci-clients-270f7ca-runroot-failure.json).
+The short-path repair passes local filesystem regressions but still requires
+native client replay. Earlier unknown-cause failure records are preserved.
 
 The first native run failed on both architectures before any client journey.
 The original Podman Debian revision pins would have downgraded installed

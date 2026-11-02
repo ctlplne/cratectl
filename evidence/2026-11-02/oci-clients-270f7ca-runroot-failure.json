@@ -1,0 +1,40 @@
+{
+  "candidate": "270f7ca924844caee98491be5d224d322bf6a9a8",
+  "status": "failed",
+  "run": "https://github.com/ctlplne/cratectl/actions/runs/41545824472",
+  "phase": "authentication",
+  "failed_command": "Podman login admin",
+  "exit": 125,
+  "safe_error": "Error: the specified runroot is longer than 50 characters",
+  "diagnosis": "The fixture derived Podman4.9.3 runroot from the long GitHub workspace path. Both native clients refuse that runroot before registry login. This actual replay identifies a fixture path failure, not a registry authentication defect.",
+  "transport_verification": "Both GitHub Linux architectures encrypted with OpenSSL3.0.13. Candidate/run/platform and ciphertext/recipient hashes were checked, then local OpenSSL4.0.3 authenticated/decrypted the envelopes; decoded command bytes match their retained hashes.",
+  "artifacts": [
+    {
+      "architecture": "amd64",
+      "safe_summary": "evidence/2026-11-02/oci-clients-270f7ca-amd64-failed-summary.json",
+      "safe_summary_sha256": "6f50d62e6a0b160587fbff9dc7744fe07614fa3d202b1f2b50ed8268b52f07a9",
+      "encrypted_metadata": "evidence/2026-11-02/oci-clients-270f7ca-amd64-encrypted-metadata.json",
+      "encrypted_metadata_sha256": "d02bbbd564eb27ad4cbea3e264ddcbaa4b25c0cbafe2ed30f0e7bb193e2e45f4",
+      "locally_decrypted_payload_sha256": "77e90e3da43cc139b8ad6a322439f717ef86433e88d39e0bbc88fc2d2d6ca07e",
+      "failed_command_output_sha256": "5663db1ee88273c494f2c1eba50219ef072caa751c106c4da5fed5e3ec6b335a"
+    },
+    {
+      "architecture": "arm64",
+      "safe_summary": "evidence/2026-11-02/oci-clients-270f7ca-arm64-failed-summary.json",
+      "safe_summary_sha256": "21aa988f994c226265f0dd3b8405469764a4d5155dcf29d5ec0e4ae53175e4c0",
+      "encrypted_metadata": "evidence/2026-11-02/oci-clients-270f7ca-arm64-encrypted-metadata.json",
+      "encrypted_metadata_sha256": "1c5b903ad9eb2640b85442ce54b9bd90e178190c79196d7fd49fdaf03c42b14b",
+      "locally_decrypted_payload_sha256": "c20240acc78a7155a5f4165749c797a9551d0d6329ebc6a87a3db0b013320fcf",
+      "failed_command_output_sha256": "5663db1ee88273c494f2c1eba50219ef072caa751c106c4da5fed5e3ec6b335a"
+    }
+  ],
+  "repair_state": "implemented but unverified",
+  "repair": "Allocate an atomic mode0700 project-named /tmp/cratectl-podman-* directory with at most50bytes; keep the private VFS graph store in the workspace. Bind privileged cleanup to the allocated path/device/inode. Real filesystem regressions cover short unique paths, restrictive modes and replacement/symlink rejection.",
+  "source_parent_of_repair": "dce49f5f95ed98051adad99d751ed0937c8b5286",
+  "limits": [
+    "Both client drivers stopped after29checks; no image or Helm publication or consumption ran. The repaired runroot still requires real native replay.",
+    "The earlier1757/79b private errors were not exported; their original unknown-cause records remain unchanged. This record identifies the error actually observed on270f7ca.",
+    "Encrypted diagnostics protect confidentiality and integrity of transferred ciphertext, not signer identity or test truth. The run/artifact/source observations and retained byte identities establish this named result only.",
+    "All450capabilities and full readiness scope remain unfinished."
+  ]
+}

@@ -6,28 +6,26 @@ GitHub native qualification and moves historical controlled-upgrade journeys
 off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
-Current product work: Docker/Podman/Helm OCI client journeys and a native Linux
-x86-64/ARM64 GitHub workflow are implemented but unverified. The fixture uses
-real restricted PostgreSQL, layered/multi-architecture opaque images and chart
-dependencies; no uploaded image or package script executes. Local filesystem
-boundary/privacy regressions and syntax checks are not native client proof.
-The first native run failed before client execution because older Podman Debian
-revision pins would downgrade both runner packages. The setup now verifies the
-bundled4.9.3 CLI and retains its actual package revision/architecture and hash.
-Fixture and graph digests are also retained. The corrected setup passed on
-both native runners at1757c89, observing Podman4.9.3+ds1-1ubuntu0.2. Both drivers
-then failed at the first Podman login after29 setup checks. The private client
-error was unclassified; its cause remains unknown. Fixed-code diagnostics are
-implemented for the next native replay. No image or Helm publication or
-consumption ran. See `DEFECT.0074`, `DEFECT.0075` and
-`evidence/2026-11-02/oci-clients-1757c89-authentication-failure.json`.
-The79b4d44 diagnostic replay reproduced the same failure on both architectures;
-none of its fixed markers matched. The next replay adds bounded encrypted
-failure logs using a local-only private key, so the actual error can be inspected
-without publishing raw client output. Transport is locally tested, but its
-GitHub runtime and the login cause remain unverified. No native client journey
-is verified yet. Continue the full goal. See
-`evidence/2026-11-02/oci-clients-development-preflight.json`.
+Current product work: Docker/Podman/Helm OCI client journeys and native Linux
+x86-64/ARM64 GitHub qualification are implemented but unverified. The fixture
+uses real restricted PostgreSQL, opaque layered/multi-architecture images and
+chart dependencies; no uploaded image or package script executes.
+
+The initial Podman package downgrade was repaired and replayed. Both270f7ca
+native failures were then recovered through encrypted artifacts: Podman4.9.3
+rejects the workspace-derived runroot because it exceeds50characters. This
+is a fixture path failure before registry authentication. The new repair
+allocates a unique mode0700 `/tmp/cratectl-podman-*` directory below50bytes,
+keeps the private VFS graph store in the workspace and binds privileged cleanup
+to the allocated path/device/inode. Real filesystem regressions pass; actual
+native replay of the repair remains required.
+
+GitHub OpenSSL3.0.13 encryption and local4.0.3 decryption were observed on both
+architectures with matching source/run/platform and byte identities. Earlier
+unknown private errors retain their original limits. No image or Helm
+publication or consumption ran. See `DEFECT.0074`, `DEFECT.0075` and
+`evidence/2026-11-02/oci-clients-270f7ca-runroot-failure.json`.
+No native client journey or broad readiness is verified. Continue the full goal.
 
 While the GitHub native-client replay waits for runners, NuGet version identity
 work has begun in `internal/nuget`. Local ARM regression/fuzz checks cover the

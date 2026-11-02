@@ -27,6 +27,9 @@ class NativeDiagnostics(unittest.TestCase):
                 safe_client_diagnostics(raw)
         self.assertLessEqual(len(CODES), 40)
 
+    def test_observed_podman4_runroot_failure_has_a_fixed_code(self):
+        self.assertEqual(safe_client_diagnostics(b'Error: the specified runroot is longer than 50 characters\n'), ['runtime_path_limit'])
+
 
 if __name__ == '__main__':
     unittest.main()

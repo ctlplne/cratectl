@@ -32,6 +32,7 @@ MARKERS = {
     'storage_mount': (b'mount_program', b'error creating overlay mount'),
     'storage_database': (b'database configuration mismatch', b'database static dir', b'database storage'),
     'runtime_missing': (b'no valid executable', b'default oci runtime', b'oci runtime not found'),
+    'runtime_path_limit': (b'specified runroot is longer than 50 characters',),
     'runtime_setup': (b'oci runtime error', b'cannot re-exec process'),
     'user_namespace': (b'cannot clone:', b'creating user namespace', b'newuidmap', b'newgidmap'),
     'network_setup': (b'netavark', b'cni network', b'network backend'),

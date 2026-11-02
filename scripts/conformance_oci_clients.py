@@ -25,7 +25,7 @@ import urllib.parse
 import urllib.request
 import uuid
 
-from oci_client_contract import read_owned_file
+from oci_client_contract import new_podman_runroot, read_owned_file, validate_podman_runroot
 from ci.native_client_diagnostics import safe_client_diagnostics
 from qualification_contract import CURRENT_SCHEMA, candidate_binary_directory, validate_historical_build
 
@@ -50,6 +50,7 @@ REPOS = {kind: 'cratectl-client-' + RUN + '-' + kind for kind in ['hosted', 'ori
 checks, commands, tokens, auth, created, images = [], [], {}, {}, [], set()
 env, runtime = dict(os.environ), {}
 process, server_log = None, None
+PODMAN_RUNROOT = None
 LOCK = threading.RLock()
 HTTP = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 ACCEPT = ', '.join(['application/vnd.oci.image.index.v1+json', 'application/vnd.oci.image.manifest.v1+json', 'application/vnd.docker.distribution.manifest.list.v2+json', 'application/vnd.docker.distribution.manifest.v2+json'])
@@ -196,7 +197,9 @@ def docker(role, arguments, label, **options):
 
 
 def podman(role, arguments, label, **options):
-    return command(['sudo', '-n', 'podman', '--root', PRIVATE / 'podman-root', '--runroot', PRIVATE / 'podman-run',
+    if PODMAN_RUNROOT is None:
+        raise AssertionError('owned Podman runtime directory is not initialized')
+    return command(['sudo', '-n', 'podman', '--root', PRIVATE / 'podman-root', '--runroot', PODMAN_RUNROOT[0],
                     '--storage-driver', 'vfs', '--events-backend', 'file', *arguments], label,
                    extra={'REGISTRY_AUTH_FILE': str(auth[role]['podman'])}, **options)
 
@@ -347,6 +350,8 @@ result['fixture_sha256'] = {name: hashlib.sha256(body).hexdigest() for name, bod
 try:
     phase('preflight')
     check('native Linux amd64 or arm64 client host', platform.system() == 'Linux' and ARCH in ['amd64', 'arm64'])
+    PODMAN_RUNROOT = new_podman_runroot(RUN)
+    check('owned Podman runtime path fits the native 50-byte limit', len(os.fsencode(PODMAN_RUNROOT[0])) <= 50)
     with socket.socket() as probe:
         check('owned registry port38443 is free', probe.connect_ex(('127.0.0.1', 38443)) != 0)
     check('selected native binaries stay inside this workspace', all(p.is_file() and not p.is_symlink() and p.resolve().is_relative_to(ROOT) for p in [SERVER, CLI]))
@@ -561,6 +566,14 @@ finally:
             docker('admin', ['image', 'rm', reference], 'cleanup owned image reference', ok=None)
         except BaseException:
             result.setdefault('cleanup_failures', []).append('owned Docker image reference')
+    if PODMAN_RUNROOT is not None:
+        try:
+            validate_podman_runroot(*PODMAN_RUNROOT)
+            command(['sudo', '-n', 'rm', '--recursive', '--force', '--', PODMAN_RUNROOT[0]], 'remove exact owned Podman runtime directory')
+        except BaseException:
+            result.setdefault('cleanup_failures', []).append('owned Podman runtime directory')
+            result['status'] = 'failed'
+            print('FAIL: exact owned Podman runtime directory cleanup', flush=True)
     stop()
     checkpoint()
     folder = ROOT / 'evidence' / datetime.datetime.now(datetime.timezone.utc).date().isoformat()

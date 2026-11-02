@@ -6,7 +6,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from oci_client_contract import read_owned_file
+from oci_client_contract import new_podman_runroot, read_owned_file, validate_podman_runroot
 
 
 class NativeClientFiles(unittest.TestCase):
@@ -47,6 +47,27 @@ class NativeClientFiles(unittest.TestCase):
             read_owned_file(self.root, fifo, 4096)
         with self.assertRaises(ValueError):
             read_owned_file(self.root, self.root, 4096)
+
+    def test_podman_runroot_is_short_private_unique_and_bound_to_its_inode(self):
+        old = self.root / 'oci-client-conformance' / ('a' * 10) / 'podman-run'
+        self.assertGreater(len(os.fsencode(old)), 50)
+        first, identity = new_podman_runroot('a' * 10)
+        second, second_identity = new_podman_runroot('a' * 10)
+        self.addCleanup(lambda: first.unlink() if first.is_symlink() else first.rmdir())
+        self.addCleanup(second.rmdir)
+        self.assertNotEqual(first, second)
+        self.assertLessEqual(len(os.fsencode(first)), 50)
+        self.assertEqual(first.stat().st_mode & 0o777, 0o700)
+        validate_podman_runroot(first, identity)
+        validate_podman_runroot(second, second_identity)
+        with self.assertRaises(ValueError):
+            validate_podman_runroot(first, second_identity)
+        first.rmdir()
+        first.symlink_to(self.root, target_is_directory=True)
+        with self.assertRaises(ValueError):
+            validate_podman_runroot(first, identity)
+        with self.assertRaises(ValueError):
+            new_podman_runroot('../private')
 
 
 if __name__ == '__main__':

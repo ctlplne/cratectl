@@ -3,6 +3,30 @@
 import os
 from pathlib import Path
 import stat
+import re
+import tempfile
+
+
+def new_podman_runroot(run):
+    """Allocate one private project directory below Podman4's 50-byte limit."""
+    if not re.fullmatch('[0-9a-f]{10}', run):
+        raise ValueError('Podman runtime directory requires an owned run identity')
+    path = Path(tempfile.mkdtemp(prefix='cratectl-podman-' + run + '-', dir='/tmp'))
+    if len(os.fsencode(path)) > 50:
+        path.rmdir()
+        raise ValueError('Podman runtime directory exceeds the native path budget')
+    info = path.lstat()
+    return path, (info.st_dev, info.st_ino)
+
+
+def validate_podman_runroot(path, identity):
+    """Bind privileged cleanup to the exact directory allocated by this run."""
+    path = Path(path)
+    if path.parent != Path('/tmp') or not re.fullmatch(r'cratectl-podman-[0-9a-f]{10}-[a-z0-9_]{8}', path.name) or len(os.fsencode(path)) > 50:
+        raise ValueError('Podman runtime cleanup target is not an owned directory')
+    info = path.lstat()
+    if not stat.S_ISDIR(info.st_mode) or (info.st_dev, info.st_ino) != identity:
+        raise ValueError('Podman runtime cleanup target changed identity')
 
 
 def read_owned_file(root, path, limit):

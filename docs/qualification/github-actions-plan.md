@@ -92,7 +92,7 @@ or a capacity guarantee. Native Windows needs private-file ACL implementation
 and actual CLI/client tests; lack of a runner is no longer its external input.
 Do not replace an ARM test with Intel or a cross-build to obtain a green result.
 
-## New client gate awaiting execution
+## Native OCI client gate
 
 `oci-clients.yml` adds two native Linux jobs for Docker/Podman/Helm, using a
 fresh restricted PostgreSQL database and the actual registry. The shared
@@ -118,6 +118,11 @@ Failure artifacts now add encrypted, bounded command/registry logs with a
 seven-day retention period. Only the public recipient certificate goes to
 GitHub; the decryption key stays in ignored local private state. No plaintext
 fallback is allowed. See [private diagnostic operation](../operator/ci-diagnostics.md).
+The270f7ca artifacts encrypted with actual GitHub OpenSSL3.0.13 and decrypted
+locally with4.0.3 on both architectures. Both errors identify Podman4's50character
+runroot limit before registry authentication. The repair uses a short uniquely
+owned temporary runroot with inode-bound cleanup; its real native replay is
+still required. See [the observed error](../../evidence/2026-11-02/oci-clients-270f7ca-runroot-failure.json).
 This gate adds required client evidence; it does not replace the accepted13job
 regression milestone or complete OCI/platform/readiness scope.
 
