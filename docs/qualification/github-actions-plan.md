@@ -1,140 +1,124 @@
 # GitHub Actions qualification plan
 
-Updated: 2026-11-02. Owner: `imfeelingtheagi`. Source of scope: `GOAL.md`,
-`docs/qualification/remaining.json`, and the capability and journey ledgers.
-This plan tracks where qualification should run; it does not mark an unfinished
-capability complete. The owner resumed the complete product goal on 2026-11-02.
+Updated: 2026-11-02. Owner: `imfeelingtheagi`. Scope remains the complete
+`GOAL.md`, capability/journey ledgers and `remaining.json`. This plan places
+qualification on suitable hosts; it does not complete an unfinished capability.
+The repository is public by explicit owner direction. CI and repair pushes are
+authorized; releases, publication and customer changes retain their own authority.
 
-## Placement rule
+## Accepted checkpoint and its limits
 
-Run each test where its claim can actually be observed. Use native GitHub-hosted
-Linux x86-64 and ARM64, macOS ARM64, and Windows runners for OS behavior. Use
-disposable PostgreSQL and actual stock clients for state and protocol journeys.
-Use real compatible object stores, identity providers, scanners, registries and
-network topologies when those capabilities are implemented. A container on one
-runner is a useful service stand-in, but does not prove independent-host HA,
-native Windows/macOS behavior, production PKI, or a customer's environment.
-Cross-compilation proves only compilation. A skipped test is never a pass.
+Clean source `6afbd4ad12cdb1d32aa43386a47822bc6e741fdf` passes the owner-directed
+milestone: all nine main jobs, both native upgrade jobs, five independent repair
+journeys and five independent retention journeys. The full x86 console passes
+all 14 workflows with zero unexpected, skipped or flaky results. Both Linux
+PostgreSQL race gates pass. Runtime summaries retain actual binary SHA-256 and
+clean embedded source/OS/architecture identities. Each architecture rebuilt ten
+pinned historical servers and passed 15 upgrade reports. The security summary
+contains all 324 synthetic rule cases.
 
-CI is an independent, repeatable candidate check. It never migrates the retained
-local primary, reads customer data, imports `.private/` or `.cache/`, or promotes
-an artifact. Each run records its commit, architecture, tool and service versions,
-fixture topology, assertions, defects, and limits. Generated credentials and raw
-private logs remain on the disposable runner; a field-allowlisted summary of
-generated evidence is retained as a GitHub artifact for 30 days. A reviewed subset
-may then be committed under `evidence/` with its exact candidate and limits.
-Required checks must fail closed if a dependency or
-fixture is missing. PR jobs have a read-only token and no secrets. Publication,
-signing identity, and release gates require their own explicit design and authority.
+The [checkpoint](../../evidence/2026-11-02/github-browser-6afbd4a-checkpoint.json)
+contains exact run URLs, seven safe summaries, hashes and scope limits. Acceptance
+uses main run `41521729264`. The earlier same-source main run passed eight jobs
+but its macOS fuzz job never acquired a runner; it is rejected and retained in
+[the capacity record](../../evidence/2026-11-02/github-ci-6afbd4a-capacity-failure.json).
+Cancellation is never converted into a pass.
 
-## Current implementation
+`DEFECT.0071` and `DEFECT.0073` are repaired and replayed in this named scope.
+Browser response bodies could become unavailable after the console consumed
+them. Repair now uses displayed durable identity; retention identifies exactly
+one newly admitted run through the independent API client after checking the
+browser POST/status and hidden dialog. All recovery, focus, authority, exact-byte
+and zero-Axe assertions remain required. Earlier diagnostic labels incorrectly
+matched source snippets; the correction and original failures remain retained.
+The first unavailable private failure's precise cause is not retroactively claimed.
 
-`.github/workflows/ci.yml` runs on pushes to `main`, pull requests, and manual
-dispatch. It currently contains:
+This checkpoint is not full security, packaging, release, native Windows,
+independent-host, scale, full accessibility or product readiness. All 450
+capabilities / 41 families remain unfinished. `make security` and `make packaging`
+still fail with their unfinished-campaign explanations.
 
-| Gate | Actual runner or stand-in | Scope |
+## Placement and evidence rules
+
+Use an actual native host for OS/architecture claims, real PostgreSQL for state,
+and stock clients for package outcomes. Compatible disposable services prove
+only their named integration. Cross-compilation proves compilation. Several
+containers on one host do not prove independent-host HA. Skips are not passes.
+
+CI never reads the retained local primary, imports local `.private/` or `.cache/`,
+or promotes artifacts. Registry and PostgreSQL fixtures use project-owned
+loopback ports 38443 and 35432. Runtime SQL roles are nonsuperuser, nonowner and
+without BYPASSRLS. Credentials are generated and masked inside disposable runners.
+PR tokens are read-only and have no repository secrets. Package install scripts
+remain disabled; package/model contents are never executed by the registry.
+
+Only the field-allowlisted summary is uploaded for 30 days. Raw browser reports,
+traces, command output, credentials and private fixture state remain private on
+the runner. Export both modified tracked and newly generated reports; a successful
+empty summary fails. Validate candidate/run ID, clean build, native platform,
+reviewed artifact path and SHA-256 before accepting evidence. Commit the reviewed
+summary and its hash under `evidence/` before artifact expiry. Evidence commits
+reference the tested source; they do not claim their own commit already passed.
+
+Freeze a coherent candidate until all required gates finish. Collect terminal
+job outcomes and actual summaries; never combine different source commits.
+Retain first failures. Diagnose error headers, phases and safe rule counts rather
+than source frames or guessed matcher labels. Retry a diagnosed infrastructure
+failure on unchanged bytes while preserving the rejected run. An observation
+timeout alone does not justify restarting a live job.
+
+## Running gates and cadence
+
+| Gate | Actual host or service | Trigger and required result |
 | --- | --- | --- |
-| Source and unit | Ubuntu 24.04 x86-64 and ARM64; macOS 15 ARM64 | Go build, unit and race tests, vet, architecture and API checks, web build reproduction, npm dependency audit. |
-| Bounded Go fuzz | The same three native runner types | All 23 targets passed five-second budgets on native Linux x86-64, Linux ARM64 and macOS ARM64 for `7389def`. That overall run failed at the separate browser gate. This is a crash smoke check, not the full parser/security campaign. |
-| Security slice | Ubuntu 24.04 x86-64 | `govulncheck` on Go source and two binaries; Gitleaks on current tracked bytes and reachable history; synthetic exception regression. |
-| Native integration | Ubuntu 24.04 x86-64 and ARM64, PostgreSQL 16.15 service with restricted runtime role | `make integration`, including real database tests and SQL timing. The added `make integration-race` gate awaits its first GitHub run. |
-| Native clients and operations | Same native Linux jobs, fresh registry on loopback | Generic, OCI/ORAS, Maven, npm, PyPI, current lifecycle, blank TLS install, jobs/leases, inventory/sweeps and cross-reference matters; Chromium console/Axe on x86-64. All six jobs passed on `998c7f8`. |
-| Focused repair-browser regression | Separate Ubuntu 24.04 x86-64 runner with real PostgreSQL and Chromium | Campaigns failed; early focus/Axe labels were unreliable because source snippets were classified. The corrected harness avoids Chromium response-body reads across navigation and records error headers/phases. Live replay remains required. Full console still requires 14 workflows. |
+| Source/unit, three jobs | Ubuntu 24.04 x86-64 and ARM64; macOS 15 ARM64 | Every main push, PR and manual main CI. Build, unit, race, vet, architecture/API checks, console reproduction and npm audit. |
+| Bounded fuzz, three jobs | Same three native host types | Same main CI. All 23 checked-in targets, five seconds each, bounded process/target count. Crash smoke only; full parser/security campaign remains open. |
+| Scoped security, one job | Ubuntu x86-64 | Same main CI. Pinned govulncheck source/two binaries, Gitleaks current snapshot/full reachable history and 324 synthetic rule cases. Feed/image/full-security coverage remains separate. |
+| Native integration/clients, two jobs | Native Linux x86-64 and ARM64; fresh PostgreSQL16.15, registry and filesystem | Same main CI. Integration and PostgreSQL race tests, generic/ORAS/Maven/npm/PyPI compatibility, native lifecycle, blank trusted-TLS install, jobs/leases, inventory/sweeps and matters. x86 additionally requires full14workflow Chromium/Axe. ARM browser is not claimed. |
+| Focused browser, one job per selected campaign | Native x86 Linux, real fresh PostgreSQL/registry/Chromium | Relevant UI/driver pushes default to repair; manual choice repair or retention. Exactly five fresh databases and complete journeys; stop at first failure, no retries or skips. Separate concurrency groups prevent one selection cancelling the other. |
+| Controlled upgrades, two jobs | Native Linux x86-64 and ARM64 with fresh PostgreSQL | Relevant source/schema/driver pushes, manual and Mondays08:17UTC. Rebuild ten reviewed immutable source pins; verify actual native identities and bytes; require15reports per architecture covering legacy adoption, schemas2–10, repair, integrity and retirement. Not rolling upgrade, downgrade or backup/restore proof. |
 
-The [first run](https://github.com/ctlplne/cratectl/actions/runs/41491829202)
-passed five of six jobs. The x86-64 browser step failed after its PostgreSQL and
-stock-client stages passed; see `evidence/2026-11-02/github-ci-first-run.json`.
-The [second run](https://github.com/ctlplne/cratectl/actions/runs/41495587980)
-passed all six jobs, including Chromium; see `evidence/2026-11-02/github-ci-second-run.json`.
-The [third run](https://github.com/ctlplne/cratectl/actions/runs/41498257132)
-passed both Linux fuzz gates and the complete ARM64 native job. Its x86 Chromium
-job failed again, identifying the repair creation/source transition. Both macOS
-jobs remained queued at observation. The security summary also omitted a
-regenerated tracked report; the exporter now includes modified tracked reports
-and rejects empty successful summaries. Both defects require live replay. See
-`evidence/2026-11-02/github-ci-third-run.json` and `DEFECT.0071`/`DEFECT.0072`.
-The `1678ed5` replay passed all nine main jobs and both controlled-upgrade jobs;
-see `evidence/2026-11-02/github-ci-1678ed5-checkpoint.json`. The security artifact
-contains all 324 passed cases. The earlier browser failures remain unexplained,
-so the separate fresh-database repair replay is still required.
-The `make security` and `make packaging` targets intentionally still fail: their
-full campaigns are incomplete. Dependabot proposes Go, npm and Actions updates;
-the CI matrix must validate each proposal.
+At each acceptance checkpoint, dispatch both focused selections and any required
+manual campaigns on the same frozen source as main/upgrades. `ci.yml` retains
+nine jobs; focused repair, focused retention and upgrades add four more. All 13
+must finish successfully for the current regression milestone. Job success alone
+cannot replace the report inventory, browser counts or binary identity checks.
 
-The later `20a71c1` candidate is not accepted. Its five independent repair
-journeys, both upgrade jobs and eight of nine main jobs passed, including both
-native PostgreSQL race steps. The full x86 suite passed repair and failed
-retention approval's Chromium response-body read (13 expected, one unexpected,
-zero skips/flaky results). Preserve
-`evidence/2026-11-02/github-ci-20a71c1-failure.json` and `DEFECT.0073`.
-The retention harness retains browser POST/status and modal-close assertions,
-then identifies its newly admitted durable run through the independent API
-client. The focused workflow now also supports five fresh retention journeys
-on manual dispatch, without cancelling repair replays. Both focused campaigns,
-all main jobs and both upgrades must pass on one exact next candidate before
-further functionality. The added retention replay is a regression gate, not a
-replacement for the complete 14-workflow console.
+GitHub publishes standard `macos-26` ARM64 and Windows x64/ARM64 runner targets
+alongside the current matrix; see the [official runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)
+and [placement review](../../evidence/2026-11-02/github-runner-placement-review.json).
+Published labels are available testing options, not executed cratectl evidence
+or a capacity guarantee. Native Windows needs private-file ACL implementation
+and actual CLI/client tests; lack of a runner is no longer its external input.
+Do not replace an ARM test with Intel or a cross-build to obtain a green result.
 
-## Additional work to move off this Mac
+## Remaining offload inventory and execution order
 
-Priority means sequencing, not permission to omit a goal requirement. Each row
-needs a green run on the named runner and a linked, scope-limited evidence record.
+The accepted milestone unblocks the complete product build. Extend real CI
+journeys as their corresponding implementation lands; do not spend the entire
+build polishing CI while required customer outcomes remain missing.
 
-| Priority | Work and existing driver | CI environment and prerequisite | Acceptance boundary |
-| --- | --- | --- | --- |
-| Now | Blank native TLS install (`conformance_installation.py`) | Native Linux with fresh PostgreSQL, stock npm and generated local CA; use isolated database | Fresh install, trusted TLS, lock interruption and first publish/deny; not production PKI or packaged install. |
-| Now | Jobs, upload leases, inventory, integrity sweeps (`conformance_jobs.py`, `conformance_leases.py`, `conformance_inventory.py`, `conformance_sweeps.py`) | Native Linux x86-64 and ARM64, real processes, fresh PostgreSQL and filesystem | Process death, durable retry, held transfer and exact bytes; one host and filesystem only. |
-| Now | Cross-reference hold matters (`conformance_hold_matters.py`) | Same native Linux runners, stock ORAS, isolated database and actual timing faults | Current schema and named legal-hold cases; broader policy and physical GC remain open. |
-| Now | Secret-rule regression (`test_secret_rules.py`) | Security job's pinned native Gitleaks binary; synthetic fixtures only | Narrow exceptions detect credential-shaped counterexamples in both directory and Git modes. |
-| Passed in named scope | Schema and retained-version upgrades (`conformance_schema.py`, `conformance_lifecycle.py`, `conformance_repairs.py`, `conformance_schedules.py`, `conformance_retention.py`, `conformance_retention_schedules.py`) | `upgrade-qualification.yml` rebuilt all ten sources in `upgrade-baselines.json` and passed 15 reports on each native Linux architecture for `1678ed5`; see `github-controlled-upgrades-checkpoint.json`. | Controlled migration and recovery for named old/new pairs; no rolling-version, downgrade, backup/restore or primary-database claim. |
-| Next | Pinned external OCI retrieval (`conformance_public_oci.py`) | Separate scheduled/manual Linux job with approved immutable digest, HTTPS authorities and source document; hold network fixtures stable | One actual provider/digest path. Do not turn a changing public service into an unqualified PR gate. |
-| Next | Deeper Go fuzz and parser/property campaigns | Extend the bounded native smoke job with reviewed corpora, longer scheduled budgets, differential/property tests and failure minimization; retain minimized corpus only after review | Only exercised parser boundaries; failure/timeout and corpus identity recorded. |
-| Next | Source/image/binary dependency and secret analysis | Pinned Trivy or equivalent with feed timestamp; `govulncheck`, npm audit and Gitleaks continue; scan built images when images exist | Distinguish source, binary, image and feed coverage. A clean source scan is not a clean image or malware verdict. |
-| When built | Docker/Podman OCI journeys and Compose/Helm/package/offline installer gates | GitHub Linux x86-64 and ARM64 with real engines and chart clients; validate shipped, pinned images and manifests. Network-isolated target for the actual offline bundle. | Actual package/install/upgrade/restore behavior; `make packaging` becomes green only when the full release packaging campaign exists. |
-| When built | S3, scanner, identity, replication, migration and failure modes | Disposable compatible services and real stock clients; enforce pinned versions, separate tenant state and fault boundaries | A stand-in proves its named integration only. Independent hosts or paid comparator licenses remain separate gates. |
-| When built | Native Windows CLI, private-file ACLs and package clients; macOS native client/browser work | GitHub Windows and macOS runners with stock OS tools, real services and OS-specific assertions | Linux containers and cross-builds cannot substitute for these native results. |
-| When built | SBOM, signatures, provenance, offline verification, release and supply-chain evidence | Build once per target architecture, hash artifacts, generate/verify SPDX and CycloneDX, sign and independently verify with scoped identity; no automatic publish | Signed statement integrity and reproducible artifact identity, not unobserved external effects or legal release approval. |
-| Later | Standard/large profile, multi-host HA, restore, 24-hour soak and cost | Dedicated, sized independent hosts and real database/object-store/network topology; scheduled/manual campaigns with budgets and retained raw measurements | GitHub's ordinary shared runner is not the specified 8-vCPU/32-GiB standard profile or independent-host large profile. Label smaller smoke runs accordingly. |
-| External | Licensed Nexus/JFrog hands-on comparison, customer PKI/IdP/upgrade, owner-approved Additional Use Grant | Licensed benchmark systems or explicit owner/customer environment | Keep these blocked inputs visible; CI cannot create authority or evidence it does not possess. |
+| Priority / work | GitHub environment and input | Evidence boundary |
+| --- | --- | --- |
+| Next product journeys: remaining Stage1 clients, other-format lifecycle and repository breadth | Actual Linux architectures and stock Docker/Podman/Helm, JVM clients and later ecosystem clients as implemented; real restricted PostgreSQL and exact package graphs | Publish/install with dependencies, policy/auth denial, current metadata, interruption/restart, deletion/restore. ORAS alone does not qualify every OCI client; raw download does not qualify another format. |
+| Pinned public OCI retrieval (`conformance_public_oci.py`) | Separate manual/scheduled Linux campaign; reviewed immutable digest and official HTTPS registry/realm/delivery authorities | One real provider/digest path. Never execute the image; keep a changing external service separate from deterministic PR gates. |
+| Longer parser/property/differential campaigns | Native scheduled/manual jobs, reviewed corpora, explicit time/concurrency/memory budgets and minimized failure review | Persist target inventory, seed/corpus identity, versions, results and limits. The five-second smoke is not full coverage; raw generated corpus is not automatically safe to publish. |
+| Complete dependency/image/artifact analysis | Pinned Trivy or equivalent with feed provenance/age; source and binary tools continue; scan shipped images when built | Separate source, binary, image, reachability and feed coverage. Missing intelligence never means clean. Full security gate stays negative until its complete campaign exists. |
+| Packaging, Compose/Helm and disconnected bundle | Real Docker/Podman/cluster/chart clients on both Linux architectures; shipped pinned artifacts and actual network-isolated target | Fresh install, persistent data, readiness, upgrade/recovery, trust and actual offline contents. Rendering or download links are not an installed/offline result. |
+| S3, IdP, scanner and other service adapters | Disposable real compatible services with pinned versions, isolated tenants, fault boundaries and explicit limits | Named adapter outcomes only; stand-ins do not qualify every vendor, customer PKI or production topology. |
+| Native Windows and additional macOS journeys | Published native runners, platform-specific private-file/ACL behavior, actual CLI/package clients and real supported services | Cross-builds and Linux containers do not replace native execution. Keep unsupported server/runtime cases explicit. |
+| Release evidence, SBOM, signatures and offline verification | Build once per target, hash exact bytes, generate/verify SPDX/CycloneDX/provenance and scoped trust material | No automatic publication. Signing identity and legal/distribution authority remain explicit. Signatures prove signed statement integrity, not an unobserved external effect. |
+| Migration, replication, backup/restore, federation and fault recovery | Real compatible source/destination services, bounded datasets and controlled process/network/storage faults | Complete metadata/identity/policy/byte inventories and recovery receipts. One-host smoke is separate from independent-host HA and customer cutover. |
+| Standard/large profiles,24hsoak and operating cost | Sized independent hosts, real PostgreSQL/object-store/network topology, scheduled/manual resource budgets and raw measurements | Ordinary shared runners do not establish the specified8vCPU/32GiB profile, independent-host HA or24hqualification. Retain unfavorable observations. |
+| Licensed paid comparisons and customer acceptance | Authorized licensed Nexus/JFrog systems and explicit customer/owner environment | External license, access and authority remain real inputs; CI cannot manufacture them. Continue independent implementation while these are unavailable. |
 
-## Execution order and design checks
+For every new format, backend, schema, platform or release surface, update the
+workflow, placement plan and capability/journey evidence together. Identify the
+real client/service/host, credentials/data exposed, reproducible fixture, safe
+failure diagnosis, runtime/cost budget and exact unfinished acceptance rows.
+Add scheduled/manual long campaigns with an explicit cadence and owner-approved
+infrastructure; never hide an unimplemented gate behind a successful skip.
 
-The immediate owner-directed acceptance requires one exact final commit: all
-five independent repair journeys, every main CI job (including both PostgreSQL
-race gates and the complete 14-workflow console), and both controlled-upgrade
-jobs must finish successfully. Queued, cancelled, skipped, partial or
-different-commit observations do not satisfy it. Retain current binary SHA-256
-and clean embedded source/platform identity in nonempty safe summaries. Reconcile
-`DEFECT.0071` and current pointers, record the accepted commit and workflow URLs,
-then continue the entire unfinished `GOAL.md` scope. No further functionality
-precedes that milestone.
-
-1. Diagnose and repair the recurring x86 repair-browser failure using safe
-   matcher names and precise source locations. Replay the actual journey on
-   GitHub; later green runs alone do not explain an earlier failure.
-2. Validate the evidence exporter repair against the actual same-date tracked
-   security report. The `1678ed5` GitHub artifact now contains all 324 passed
-   cases; see `github-ci-1678ed5-security-summary.json`.
-3. Keep the now-passing macOS source/fuzz gates in the native matrix. The
-   five-second target budget is a smoke test, not full parser qualification.
-4. Run `Controlled upgrade qualification` on both Linux architectures. It rebuilds
-   the ten pinned historical sources and exercises legacy adoption, schema 2–10
-   lifecycle upgrades, repair, recurring integrity and retirement. Missing or
-   dirty sources, wrong native architecture and mismatched identities fail.
-   This campaign passed on `1678ed5`; continue its regression gate as schema
-   and lifecycle behavior change.
-5. Add OS and integration matrices when the corresponding implementation and
-   fixtures exist. Put long/fault/paid/external campaigns on explicit scheduled
-   or manual workflows and document their cadence, cost, and inputs.
-6. Add release artifact generation and independent verification only after
-   packaging, license text, trust and approval requirements are resolved. No CI
-   success alone changes readiness or publishes a release.
-7. Once the matrix is stable, make its required PR checks enforceable on `main`
-   under a separate owner-authorized repository settings change. Avoid making
-   unfinished `make security` or `make packaging` appear green through skips.
-
-Review on each new format, backend, platform, schema, or release surface: which
-real client/service/host proves it; what data and credentials the runner sees;
-whether the fixture is reproducible; whether a failure can be diagnosed from
-safe retained evidence; and which `remaining.json` capability or journey still
-needs evidence. Update this plan, CI workflow and ledgers together.
+Once stable, required PR checks can be enforced under a separate authorized
+repository-settings change. Repository protection, release publication and
+customer maintenance are not consequences of a green CI run.

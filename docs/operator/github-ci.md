@@ -49,9 +49,10 @@ It rebuilds the ten pinned historical sources from
 `docs/qualification/upgrade-baselines.json`, rejects dirty or cross-built
 artifacts, and runs legacy adoption, schema 2–10 lifecycle upgrades, repair,
 recurring integrity and retention upgrades against disposable PostgreSQL.
-Both native jobs passed on `1678ed5`; see
-`evidence/2026-11-02/github-controlled-upgrades-checkpoint.json` for the exact
-run, binary identities, assertions and limits.
+Both native jobs passed on clean `6afbd4a`; the
+[accepted checkpoint](../../evidence/2026-11-02/github-browser-6afbd4a-checkpoint.json)
+retains all15reports and ten historical binary identities per architecture.
+The earlier1678ed5record remains historical evidence.
 The retained local primary is outside this workflow.
 
 `Focused browser regression` is a separate native x86 GitHub workflow for
@@ -61,19 +62,22 @@ databases. Each selected run must pass its single workflow with zero skips or
 flaky results; the first failure stops the gate and prints safe locations.
 The default console gate still requires all 14 workflows. Early diagnostic
 labels were unreliable because source snippets were searched as error text.
-The corrected diagnostic reads headers and explicit phases; the browser harness
-now reads displayed repair IDs and job rows instead of navigation-sensitive
-Chromium response bodies. See
-`evidence/2026-11-02/github-repair-diagnostic-correction.json`. Live replay remains
-required; the unsupported product focus change was reverted.
+The corrected diagnostic reads headers and explicit phases; repair reads
+displayed job identity instead of a navigation-sensitive Chromium response body.
+Retention approval verifies its browser POST/status and closed dialog, then
+identifies exactly one newly admitted run through the independent API client.
+Existing focus, cancellation, revocation, recovery, byte and zero-Axe assertions
+remain required. Manual dispatch with `workflow=retention` replays the complete
+retention journey five times in separate fresh databases. Separate concurrency
+groups prevent it cancelling repair replays. Failed runs retain bounded browser
+counts as well as safe locations.
 
-The `20a71c1` full run passed repair but failed retention approval while reading
-a Chromium response body after the dialog closed. See
-`evidence/2026-11-02/github-ci-20a71c1-failure.json`. Retention now verifies the
-browser POST/status and dialog closure, then identifies exactly one newly
-admitted run through the independent API client. The existing cancellation,
-revocation, recovery, byte and zero-Axe assertions remain required. Manual
-dispatch with `workflow=retention` replays that complete journey five times on
-independent fresh databases. It has a separate concurrency group so it cannot
-cancel the repair campaign. Both focused campaigns and full main/upgrades must
-pass on one exact next candidate. Failed runs retain bounded browser counts too.
+Clean `6afbd4a` passes both five-journey campaigns, all nine main jobs and both
+upgrade jobs on that exact source. The full x86 suite passes all14workflows
+with zero unexpected, skipped or flaky results. Safe summaries retain exact
+native binary hashes and embedded clean source/platform identity. See the
+[accepted checkpoint](../../evidence/2026-11-02/github-browser-6afbd4a-checkpoint.json).
+The earlier20a retention failure and corrected diagnostic interpretations remain
+retained. The first6af main run was rejected when macOS fuzz never acquired a
+hosted runner; acceptance uses the fresh complete main run41521729264, not that
+cancelled job. No workflow touched the retained local primary or active binaries.

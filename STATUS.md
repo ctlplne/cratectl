@@ -6,46 +6,40 @@ GitHub native qualification and moves historical controlled-upgrade journeys
 off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
-Current repair milestone remains unaccepted. On clean `20a71c1`, all five
-focused repair journeys, both controlled-upgrade jobs and eight of nine main
-CI jobs passed. Both native PostgreSQL race steps passed. The full x86 console
-passed repair but failed retention approval's browser response-body read:
-13 expected, one unexpected, zero skips/flaky results. See
-`evidence/2026-11-02/github-ci-20a71c1-failure.json` and `DEFECT.0073`.
-The retention harness now identifies its newly admitted durable run independently,
-while preserving POST status, modal closure and every downstream assertion.
-Five fresh repair and retention replays plus full main/upgrades on one exact
-next candidate remain required before further functionality.
+Current repair milestone accepted on clean source
+`6afbd4ad12cdb1d32aa43386a47822bc6e741fdf`: all five independent focused
+repair journeys, all five independent retention journeys, all nine main CI jobs,
+and both controlled-upgrade jobs pass on that same exact commit. Both native Linux PostgreSQL race gates pass; the
+complete x86 Chromium suite passes all 14 workflows with zero skipped, flaky
+or unexpected results. Every runtime summary retains SHA-256 and clean embedded
+source/platform identities for the actual server and CLI. Each architecture
+also rebuilt ten pinned historical servers and passed all 15 upgrade reports.
+The security artifact retains all 324 synthetic rule cases. Exact workflow URLs,
+safe summaries and hashes are in
+`evidence/2026-11-02/github-browser-6afbd4a-checkpoint.json`.
 
-Real PostgreSQL integration races now have native GitHub pass observations on
-ARM64 (`609be9b`) and x86-64 (`9c0abc2`). These are completed step results,
-not overall job/run passes; see the corresponding `github-database-race-*.json`
-evidence. A final matching candidate still needs the full gates.
+`DEFECT.0071` and `DEFECT.0073` are repaired and replayed in this named scope. A retained clean
+report showed Chromium response-body retrieval failing across navigation; the
+harness now reads displayed repair IDs and job rows after fresh HTTP status.
+Retention approval uses the same independent durable-receipt approach.
+Earlier focus/Axe classifications searched source snippets and were invalid;
+the correction and every original failure remain retained. The unsupported
+product focus change was reverted. The initial unavailable private failure's
+precise cause is not retroactively asserted.
 
-Current GitHub milestone: `1678ed59f9bd52df89cf82ff7e395761a15f028a`
-passed all nine main CI jobs and both controlled-upgrade jobs. The x86 console
-passed all 14 workflows with zero skipped, flaky or unexpected results. Both
-Linux native summaries identify clean matching binaries; the security artifact
-retains all 324 passed cases. Each architecture also rebuilt ten historical
-servers and passed 15 controlled-upgrade reports. See
-`evidence/2026-11-02/github-ci-1678ed5-checkpoint.json`.
-The recurring earlier repair-browser failure remains open; this green run did
-not establish its cause. Explicit PostgreSQL integration races and five fresh
-x86 repair-browser replays are prepared locally and await GitHub execution.
+The earlier same-source main run was rejected because its macOS fuzz job never
+acquired a runner. Its eight passing jobs and capacity annotations remain in
+`evidence/2026-11-02/github-ci-6afbd4a-capacity-failure.json`. Acceptance uses
+the fresh complete main run41521729264, not the cancelled job.
 
-GitHub CI work (2026-11-02): candidate `7389def5abdcb9ada3c539820dda0e65b609d13f`
-passes Linux x86-64/ARM64 source, race, lint, all 23 bounded fuzz targets, scoped
-security and the complete ARM64 native PostgreSQL/client/operational job.
-Its x86-64 browser job failed one of 14 workflows at the repair creation/source
-transition (`web/tests/zzzz-repair.spec.mjs:31`); both macOS jobs remained queued.
-The preceding `998c7f8` run passed all six jobs. The recurring browser defect
-remains open. Inspection also found the security summary omitted an overwritten
-tracked report; the exporter is repaired locally with real Git-index regressions.
-The new historical upgrade workflow, exporter repair and browser diagnostic
-refinement require live GitHub execution. See
-`evidence/2026-11-02/github-ci-third-run.json` and
-`docs/qualification/github-actions-plan.md`. The complete goal is active;
-all broad readiness verdicts remain negative.
+The earlier `1678ed5`, `609be9b`, `9c0abc2` and `ed1d0dc` observations retain
+their original scopes; they are not mixed into this acceptance. Continue the
+entire unfinished goal. Full security, packaging, release, independent-host,
+scale, remaining formats and all other open requirements remain unqualified.
+The retained primary11, qualified548 binaries, credentials and data are untouched;
+local registry/PostgreSQL stayed stopped throughout the GitHub campaign.
+
+Earlier observations below are historical checkpoints with their original scope.
 
 Current bounded task completed; broader goal paused by owner. Clean source
 `5483878b211f9d30ebf4e72a9bc6ed20fc9d7040` passes 335 native lifecycle stock-client checks and 363

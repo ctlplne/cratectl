@@ -1,0 +1,41 @@
+{
+  "candidate": "6afbd4ad12cdb1d32aa43386a47822bc6e741fdf",
+  "accepted": false,
+  "recorded_at": "2026-11-02T20:42:53.489666+00:00",
+  "run": "https://github.com/ctlplne/cratectl/actions/runs/41518222167",
+  "jobs_passed": 8,
+  "jobs_cancelled": 1,
+  "cancelled_job": {
+    "id": 125527166077,
+    "name": "Bounded native Go fuzz (darwin-arm64)",
+    "runner_id": 0,
+    "runner_name": "",
+    "steps": [],
+    "conclusion": "cancelled",
+    "completed_at": "2026-11-02T20:35:25Z",
+    "annotation": "The job was not acquired by Runner of type hosted even after multiple attempts",
+    "capacity_notice": "Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times."
+  },
+  "browser": {
+    "expected": 14,
+    "unexpected": 0,
+    "skipped": 0,
+    "flaky": 0
+  },
+  "safe_summaries": {
+    "evidence/2026-11-02/github-ci-6afbd4a-capacity-amd64-summary.json": {
+      "sha256": "5074625c3a06e1d2aaae68b8f11b15aa9f4df5c585aa9f1ccf15d88e2f563f57"
+    },
+    "evidence/2026-11-02/github-ci-6afbd4a-capacity-arm64-summary.json": {
+      "sha256": "3b0ed0eae233b47815b30c6dd7da4f4593da9b35cf02f65914a13b9b79abc319"
+    },
+    "evidence/2026-11-02/github-ci-6afbd4a-capacity-security-summary.json": {
+      "sha256": "cbcfff400e71f208f99a81c0e308baf85852dab15c531eac4a0405611a8fb206"
+    }
+  },
+  "limits": [
+    "Cancelled means not passed; this main run cannot satisfy exact-candidate acceptance.",
+    "Both native integration jobs and all14x86 browser workflows passed with verified clean source/binary identity. This is not a substitute for the cancelled macOS fuzz job.",
+    "The diagnosed failure is hosted-runner acquisition, not a test failure. A fresh complete main CI run will use the same unchanged candidate, preserving this run and its artifacts."
+  ]
+}

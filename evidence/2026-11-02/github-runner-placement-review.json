@@ -1,0 +1,24 @@
+{
+  "observed_at": "2026-11-02T20:48:17.680530+00:00",
+  "source": "https://docs.github.com/en/actions/reference/runners/github-hosted-runners",
+  "facts": {
+    "standard_public_macos_arm64_labels": [
+      "macos-15",
+      "macos-26"
+    ],
+    "standard_public_windows_x64_label": "windows-2025",
+    "standard_public_windows_arm64_label": "windows-11-arm"
+  },
+  "limits": [
+    "Published labels establish available CI targets, not actual cratectl compatibility or available capacity at a particular time.",
+    "macos-26 is an ARM64 fallback candidate only; no workflow label was changed while main41521729264 is live.",
+    "Native Windows qualification still needs private-file ACL implementation and real platform tests; retain QUAL.WINDOWS as unfinished. The published Windows environment means it should not be described as missing hardware in remaining-work records.",
+    "The current accepted source used macos-15. This review does not replace any executed gate."
+  ],
+  "reconcile_after_acceptance": [
+    "Add official runner reference and distinguish published targets from executed evidence.",
+    "Move stale QUAL.WINDOWS native-runtime external input to available CI target with unfinished implementation/testing; do not remove its capability or acceptance scope.",
+    "Retain diagnosed macOS capacity failure and explicit no-pass/no-skip semantics; never replace native ARM with cross-build or Intel proof."
+  ],
+  "state": "published CI targets; execution not claimed"
+}

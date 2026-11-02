@@ -174,12 +174,14 @@ accessibility states perbuild, actual old2–10 native upgrades and31native matt
 recovery assertions perbuild. See [the scoped checkpoint](../../evidence/2026-10-31/matter-full-checkpoint.json).
 This does not qualify other formats, broader legal policy or production recovery.
 
-The project primary and active binaries remain schema10. Automatic approval
-review rejected a durable primary10to11 migration without explicit owner authority;
-no primary migration ran. The [maintenance proposal](../../evidence/2026-10-31/matter-full-primary-maintenance-proposal.json)
-records the completed checks and remaining controlled steps. Use isolated schema11
-candidate deployments while primary maintenance is pending. Full release and
-legal-compliance qualification remain open.
+The owner subsequently approved the controlled primary10to11 migration. It
+completed with all ten earlier receipts and all 39 existing durable table byte
+digests preserved, followed by a no-op replay. The primary is now schema11 with
+matching qualified binaries from `5483878b211f9d30ebf4e72a9bc6ed20fc9d7040`;
+see [the completed maintenance record](../../evidence/2026-10-31/native-lifecycle-primary-schema11.json).
+The earlier automatic-review rejection and proposal remain historical records.
+Future durable maintenance follows its applicable authority and checks. Full
+release and legal-compliance qualification remain open.
 
 The native fault journey runs with `python3 scripts/conformance_hold_matters.py
 --require-clean-build` using the configured owned test PostgreSQL environment.
