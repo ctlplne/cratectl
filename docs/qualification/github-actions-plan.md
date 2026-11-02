@@ -106,7 +106,12 @@ Debian revision pins would downgrade newer installed packages. The corrected
 setup verifies bundled CLI4.9.3 and records the installed revision/architecture
 and binary hash. It also retains fixture and verified graph/member digests.
 See [the first failure](../../evidence/2026-11-02/oci-clients-first-failure.json)
-and `DEFECT.0074`; real native client replay remains required.
+and `DEFECT.0074`. The1757c89 setup replay passed both installations and
+recorded the actual4.9.3+ds1-1ubuntu0.2 packages. Both journeys then failed
+at the first Podman login, with cause unknown (`DEFECT.0075`). The next native
+replay exports bounded fixed error-marker identifiers; raw command output
+remains private. See [the login failure](../../evidence/2026-11-02/oci-clients-1757c89-authentication-failure.json).
+Real native client publication and consumption remain unverified.
 This gate adds required client evidence; it does not replace the accepted13job
 regression milestone or complete OCI/platform/readiness scope.
 

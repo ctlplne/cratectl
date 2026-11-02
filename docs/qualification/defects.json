@@ -813,10 +813,20 @@
       "id": "DEFECT.0074",
       "summary": "OCI client fixture pins older Podman Debian package revisions than the native GitHub images",
       "first_failure": "evidence/2026-11-02/oci-clients-first-failure.json",
-      "state": "setup repair implemented but unverified",
+      "state": "setup repair replayed; complete native client journeys remain unverified",
       "candidate": "1207b298a089eda1e70c2352272b7cfaab06ff61",
       "repair": "Verify the bundled Podman CLI is4.9.3, record its installed Debian package revision/native architecture and binary hash, and install only the required runtime helper. Preserve the first refused downgrade and require real native replay; no forced downgrade or skipped client.",
-      "limits": "Both architectures failed during dependency installation; the native client journeys remain unverified."
+      "limits": "Both1757c89 installation steps passed and both actual native Podman4.9.3+ds1-1ubuntu0.2 packages were recorded. Both complete drivers failed later at Podman login (DEFECT.0075); no client-journey pass.",
+      "replay": "evidence/2026-11-02/oci-clients-1757c89-authentication-failure.json"
+    },
+    {
+      "id": "DEFECT.0075",
+      "summary": "Both native OCI client journeys fail at first Podman login without an exported diagnostic cause",
+      "first_failure": "evidence/2026-11-02/oci-clients-1757c89-authentication-failure.json",
+      "state": "fixed-code diagnostics implemented; native replay required to identify cause",
+      "candidate": "1757c89716220d4d0d54cc9dcec064b2cb9fb0ca",
+      "repair": "Recognize a bounded inventory of literal client error markers and export only reviewed fixed identifiers. Preserve raw client logs as private runner state. Diagnose the actual next native error before making a protocol or fixture change.",
+      "limits": "Login root cause is unknown; no image or Helm publication or consumption ran. Local diagnostic/privacy tests establish only export boundaries."
     }
   ]
 }

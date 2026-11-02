@@ -1,0 +1,41 @@
+{
+  "candidate": "1757c89716220d4d0d54cc9dcec064b2cb9fb0ca",
+  "status": "failed",
+  "run": "https://github.com/ctlplne/cratectl/actions/runs/41533657696",
+  "architectures": [
+    "linux-amd64",
+    "linux-arm64"
+  ],
+  "failed_step": "Publish and consume with native Docker, Podman and Helm",
+  "phase": "authentication",
+  "failed_command": "Podman login admin",
+  "checks_per_architecture": 29,
+  "observed_error_category": "unclassified",
+  "observations": [
+    "Both client installation steps passed. Both actual Podman packages are4.9.3+ds1-1ubuntu0.2 with the matching native architecture.",
+    "Both native Docker engines and clean exact registry binaries were observed. Each fixture migrated a new PostgreSQL database through schema11 and checked its runtime role and forced tenant RLS.",
+    "The driver stops at the first Podman login. Docker admin login returned success before it. No image or Helm publication or consumption ran."
+  ],
+  "root_cause": "Unknown: raw client output remained private on the disposable runners; fixed error markers must be added before the next native replay. Do not infer a protocol or fixture cause.",
+  "safe_summaries": [
+    {
+      "path": "evidence/2026-11-02/oci-clients-1757c89-amd64-failed-summary.json",
+      "sha256": "bfffacffd4136a318fef7a9404cb8de6cbb13684095786e98b0b43b665013b40"
+    },
+    {
+      "path": "evidence/2026-11-02/oci-clients-1757c89-arm64-failed-summary.json",
+      "sha256": "f86f7bde9182a983e46b328a01b30be03d0987982ed1129c138852f290b6fc8a"
+    }
+  ],
+  "other_terminal_runs": {
+    "main_9_jobs": 41533657713,
+    "focused_repair": 41533657743,
+    "focused_retention": 41533827034,
+    "controlled_upgrades_2_jobs": 41533657693
+  },
+  "limits": [
+    "The other four runs report terminal success on the same source; their artifacts have not been reaccepted as a new complete milestone in this record.",
+    "Neither native client journey passed. The previous6af accepted milestone remains separate; no readiness or package compatibility claim.",
+    "The setup correction for DEFECT.0074 was replayed through successful installation and native version/package observations only. DEFECT.0075 tracks the actual login failure."
+  ]
+}

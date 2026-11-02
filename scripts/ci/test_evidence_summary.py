@@ -53,6 +53,17 @@ class EvidenceSummary(unittest.TestCase):
         (self.root / 'evidence/escaped.json').symlink_to(outside)
         self.assertEqual(summarize(self.root, self.environment)['records'], [])
 
+    def test_native_failure_diagnostics_never_accept_arbitrary_output(self):
+        report = {'candidate': 'a' * 40, 'status': 'failed', 'phase': 'authentication', 'client_versions': {}, 'command_diagnostics': ['registry_ping', 'permission_denied'], 'failure': 'private-synthetic-value'}
+        self.write('clients.json', report)
+        record = summarize(self.root, self.environment)['records'][0]
+        self.assertEqual(record['command_diagnostics'], ['permission_denied', 'registry_ping'])
+        self.assertNotIn('private-synthetic-value', json.dumps(record))
+        for codes in [['private-synthetic-value'], ['registry_ping', 'registry_ping'], 'private-synthetic-value', [{'secret': 'private-synthetic-value'}]]:
+            self.write('clients.json', {**report, 'command_diagnostics': codes})
+            with self.subTest(codes=codes), self.assertRaises(SystemExit):
+                summarize(self.root, self.environment)
+
     def test_historical_identity_is_retained_without_arbitrary_fields(self):
         self.write('baseline.json', {'candidate': 'a' * 40, 'status': 'passed', 'baseline_version': 2, 'expected_schema': 11, 'baselines': [{'schema': 2, 'source': 'b' * 40, 'binary_sha256': 'c' * 64, 'private_log': 'private-synthetic-value'}]})
         record = summarize(self.root, self.environment)['records'][0]

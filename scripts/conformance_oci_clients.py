@@ -26,6 +26,7 @@ import urllib.request
 import uuid
 
 from oci_client_contract import read_owned_file
+from ci.native_client_diagnostics import safe_client_diagnostics
 from qualification_contract import CURRENT_SCHEMA, candidate_binary_directory, validate_historical_build
 
 parser = argparse.ArgumentParser(description=__doc__)
@@ -117,6 +118,8 @@ def command(argv, label, *, stdin=None, extra=None, owner=False, ok=True, timeou
             category = next((kind for marker, kind in [(b'http response to https', 'tls_profile'), (b'unauthorized:', 'authorization'), (b'authentication required', 'authorization'), (b'requested access to the resource is denied', 'authorization'), (b'connection refused', 'connection'), (b'unknown flag:', 'client_flag'), (b'manifest unknown', 'manifest_missing'), (b'blob unknown', 'blob_missing'), (b'no matching manifest', 'platform_selection')] if marker in lower), 'unclassified')
             with LOCK:
                 result['command_failure_kind'] = category
+                result['command_diagnostics'] = safe_client_diagnostics(raw)
+            print('Native client error markers: ' + ','.join(result['command_diagnostics']), flush=True)
             raise AssertionError('native client command failed: ' + label + '; category=' + category)
         return raw
     finally:

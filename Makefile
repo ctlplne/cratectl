@@ -23,6 +23,7 @@ lint:
 	python3 scripts/test_qualification_contract.py
 	python3 scripts/ci/test_evidence_summary.py
 	python3 scripts/ci/test_browser_failure_summary.py
+	python3 scripts/ci/test_native_client_diagnostics.py
 	python3 scripts/test_oci_client_contract.py
 console:
 	python3 scripts/build_console.py

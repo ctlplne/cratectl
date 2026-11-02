@@ -10,6 +10,8 @@ from pathlib import Path
 import re
 import subprocess
 
+from native_client_diagnostics import CODES as NATIVE_CLIENT_DIAGNOSTIC_CODES
+
 
 def summarize(root, environment):
     paths = subprocess.check_output(['git', 'ls-files', '--others', '--modified', '--exclude-standard', '-z', '--', 'evidence'], cwd=root).split(b'\0')
@@ -148,6 +150,11 @@ def summarize(root, environment):
                 if report['command_failure_kind'] not in ('tls_profile', 'authorization', 'connection', 'client_flag', 'manifest_missing', 'blob_missing', 'platform_selection', 'unclassified'):
                     raise SystemExit('Native client error category is unreviewed')
                 entry['command_failure_kind'] = report['command_failure_kind']
+            if 'command_diagnostics' in report:
+                codes = report['command_diagnostics']
+                if not isinstance(codes, list) or len(codes) > len(NATIVE_CLIENT_DIAGNOSTIC_CODES) or any(not isinstance(code, str) or code not in NATIVE_CLIENT_DIAGNOSTIC_CODES for code in codes) or len(set(codes)) != len(codes):
+                    raise SystemExit('Native client diagnostic codes are outside the reviewed allowlist')
+                entry['command_diagnostics'] = sorted(codes)
         for key in ('baseline_version', 'expected_schema'):
             if key in report:
                 if type(report[key]) is not int or not 1 <= report[key] <= 1000:

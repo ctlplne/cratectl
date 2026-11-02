@@ -14,9 +14,14 @@ boundary/privacy regressions and syntax checks are not native client proof.
 The first native run failed before client execution because older Podman Debian
 revision pins would downgrade both runner packages. The setup now verifies the
 bundled4.9.3 CLI and retains its actual package revision/architecture and hash.
-Fixture and graph digests are also retained. Replay the corrected gate; no
-native client compatibility is verified yet. See `DEFECT.0074` and
-`evidence/2026-11-02/oci-clients-first-failure.json`. Continue the full goal. See
+Fixture and graph digests are also retained. The corrected setup passed on
+both native runners at1757c89, observing Podman4.9.3+ds1-1ubuntu0.2. Both drivers
+then failed at the first Podman login after29 setup checks. The private client
+error was unclassified; its cause remains unknown. Fixed-code diagnostics are
+implemented for the next native replay. No image or Helm publication or
+consumption ran. See `DEFECT.0074`, `DEFECT.0075` and
+`evidence/2026-11-02/oci-clients-1757c89-authentication-failure.json`.
+No native client journey is verified yet. Continue the full goal. See
 `evidence/2026-11-02/oci-clients-development-preflight.json`.
 
 Current repair milestone accepted on clean source
