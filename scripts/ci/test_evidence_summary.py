@@ -77,6 +77,19 @@ class EvidenceSummary(unittest.TestCase):
         with self.assertRaises(SystemExit):
             summarize(self.root, self.environment)
 
+    def test_client_versions_and_hashes_are_complete_and_do_not_export_arbitrary_text(self):
+        versions = {'docker': '29.0.0+azure-1', 'docker_engine': '29.0.0', 'buildx': '0.29.1', 'podman': '4.9.3', 'helm': '4.3.1+gc0d08d0'}
+        digests = {name: 'd' * 64 for name in ['docker', 'podman', 'helm']}
+        self.write('clients.json', {'candidate': 'a' * 40, 'status': 'passed', 'client_versions': versions, 'client_binary_sha256': digests, 'private_log': 'private-synthetic-value'})
+        record = summarize(self.root, self.environment)['records'][0]
+        self.assertEqual(record['client_versions'], versions)
+        self.assertEqual(record['client_binary_sha256'], digests)
+        self.assertNotIn('private-synthetic-value', json.dumps(record))
+        for changed in [{**versions, 'helm': '4.3.1+private-synthetic-value'}, {'credential': 'private-synthetic-value'}, {name: version for name, version in versions.items() if name != 'podman'}]:
+            self.write('clients.json', {'candidate': 'a' * 40, 'status': 'passed', 'client_versions': changed, 'client_binary_sha256': digests})
+            with self.subTest(changed=changed), self.assertRaises(SystemExit):
+                summarize(self.root, self.environment)
+
 
 if __name__ == '__main__':
     unittest.main()

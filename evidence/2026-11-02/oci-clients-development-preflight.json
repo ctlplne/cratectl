@@ -1,0 +1,33 @@
+{
+  "candidate_parent": "bdad78cb074440914c06ba625875d7f684b137f3",
+  "state": "implemented but unverified",
+  "observation": "Required Docker/Podman/Helm OCI stock-client journeys have no earlier native execution evidence in the current matrix; ORAS and direct HTTP evidence remain their own scopes.",
+  "driver": "scripts/conformance_oci_clients.py",
+  "workflow": ".github/workflows/oci-clients.yml",
+  "local_validation": {
+    "host": "Darwin arm64",
+    "filesystem_boundary_tests": 3,
+    "evidence_exporter_tests": 5,
+    "native_client_runtime_claimed": false
+  },
+  "primary_sources": [
+    "https://github.com/helm/helm/releases/tag/v4.3.1",
+    "https://helm.sh/docs/helm/helm_dependency_build/",
+    "https://helm.sh/docs/helm/helm_registry_login/",
+    "https://docs.docker.com/reference/cli/docker/image/push/",
+    "https://docs.docker.com/reference/cli/docker/container/create/",
+    "https://docs.podman.io/en/v4.9.3/markdown/podman-create.1.html",
+    "https://packages.ubuntu.com/noble/podman"
+  ],
+  "limits": [
+    "Native Linux x86-64 and ARM64 runtime qualification remains required; local POSIX tests and syntax checks do not establish Docker/Podman/Helm compatibility.",
+    "No local registry/PostgreSQL/Docker service was started, and retained primary11 and qualified548binaries were not changed.",
+    "All450capabilities/41families, all later stages and every broad readiness verdict remain unfinished."
+  ],
+  "baseline_main_run": {
+    "source": "bdad78cb074440914c06ba625875d7f684b137f3",
+    "url": "https://github.com/ctlplne/cratectl/actions/runs/41524722453",
+    "conclusion": "success",
+    "limits": "Baseline source only; the new native-client driver was not in that commit and has no runtime claim."
+  }
+}

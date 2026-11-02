@@ -91,6 +91,21 @@ def summarize(root, environment):
             entry['browser'] = {key: int(report['browser_stats'].get(key, 0)) for key in ('expected', 'unexpected', 'skipped', 'flaky')}
         if report.get('workflow') in ('all', 'repair', 'retention'):
             entry['workflow'] = report['workflow']
+        if 'client_versions' in report:
+            allowed = {'docker', 'docker_engine', 'buildx', 'podman', 'helm'}
+            versions = report['client_versions']
+            pattern = r'[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,4}(?:\+g[0-9a-f]{7,40}|\+azure-[0-9]{1,3}|-desktop\.[0-9]{1,3})?'
+            if not isinstance(versions, dict) or not set(versions) <= allowed or any(not isinstance(v, str) or not re.fullmatch(pattern, v) for v in versions.values()):
+                raise SystemExit('Native client version evidence is outside the reviewed allowlist')
+            if status == 'passed' and set(versions) != allowed:
+                raise SystemExit('Passed native client evidence requires every client and engine version')
+            entry['client_versions'] = dict(sorted(versions.items()))
+            digests = report.get('client_binary_sha256', {})
+            if not isinstance(digests, dict) or not set(digests) <= {'docker', 'podman', 'helm'} or any(not isinstance(v, str) or not re.fullmatch('[0-9a-f]{64}', v) for v in digests.values()):
+                raise SystemExit('Native client binary digest evidence is outside the reviewed allowlist')
+            if status == 'passed' and set(digests) != {'docker', 'podman', 'helm'}:
+                raise SystemExit('Passed native client evidence requires every reviewed client binary digest')
+            entry['client_binary_sha256'] = dict(sorted(digests.items()))
         for key in ('baseline_version', 'expected_schema'):
             if key in report:
                 if type(report[key]) is not int or not 1 <= report[key] <= 1000:

@@ -92,6 +92,18 @@ or a capacity guarantee. Native Windows needs private-file ACL implementation
 and actual CLI/client tests; lack of a runner is no longer its external input.
 Do not replace an ARM test with Intel or a cross-build to obtain a green result.
 
+## New client gate awaiting execution
+
+`oci-clients.yml` adds two native Linux jobs for Docker/Podman/Helm, using a
+fresh restricted PostgreSQL database and the actual registry. The shared
+bootstrap has an explicit OCI-only mode; the existing main/browser/upgrade
+workflows retain their default full tool set. The new driver and safe version/
+binary evidence are implemented but unverified. See
+[the development record](../../evidence/2026-11-02/oci-clients-development-preflight.json)
+and [operator qualification guide](../operator/oci-client-qualification.md).
+This gate adds required client evidence; it does not replace the accepted13job
+regression milestone or complete OCI/platform/readiness scope.
+
 ## Remaining offload inventory and execution order
 
 The accepted milestone unblocks the complete product build. Extend real CI

@@ -1,0 +1,74 @@
+name: Native OCI clients
+
+on:
+  push:
+    branches: [main]
+    paths: ['cmd/**', 'internal/**', 'scripts/**', 'go.mod', 'go.sum', 'Makefile', '.github/workflows/oci-clients.yml']
+  pull_request:
+    paths: ['cmd/**', 'internal/**', 'scripts/**', 'go.mod', 'go.sum', 'Makefile', '.github/workflows/oci-clients.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: oci-clients-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  clients:
+    name: Docker, Podman and Helm (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    env:
+      CRATECTL_CI_CLIENT_SET: oci
+      CRATECTL_CONFORMANCE_DATABASE_FILE: .private/ci-db.json
+      CRATECTL_DEV_DATABASE: native
+      CRATECTL_QUALIFICATION_BIN_DIR: .cache/ci-build
+    services:
+      cratectl-postgres:
+        image: postgres:16.15-alpine
+        env:
+          POSTGRES_USER: cratectl_owner
+          POSTGRES_DB: cratectl
+          POSTGRES_HOST_AUTH_METHOD: trust
+        options: >-
+          --publish 127.0.0.1:35432:5432
+          --health-cmd "pg_isready -U cratectl_owner -d cratectl"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - name: Prepare isolated PostgreSQL and exact native registry binaries
+        run: bash scripts/ci/bootstrap_linux.sh
+      - name: Install checked Helm and pinned native Podman
+        run: bash scripts/ci/bootstrap_oci_clients.sh
+      - name: Publish and consume with native Docker, Podman and Helm
+        run: python3 scripts/conformance_oci_clients.py --require-clean-build
+      - name: Prepare bounded evidence summary
+        if: always()
+        run: python3 scripts/ci/evidence_summary.py
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: ci-summary-oci-clients-${{ matrix.arch }}
+          path: .cache/ci-evidence-summary.json
+          if-no-files-found: error
+          retention-days: 30

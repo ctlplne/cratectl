@@ -6,6 +6,15 @@ GitHub native qualification and moves historical controlled-upgrade journeys
 off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
+Current product work: Docker/Podman/Helm OCI client journeys and a native Linux
+x86-64/ARM64 GitHub workflow are implemented but unverified. The fixture uses
+real restricted PostgreSQL, layered/multi-architecture opaque images and chart
+dependencies; no uploaded image or package script executes. Local filesystem
+boundary/privacy regressions and syntax checks are not native client proof.
+Run the new CI gate, retain its first failures, repair/replay actual defects,
+and continue the complete remaining goal. See
+`evidence/2026-11-02/oci-clients-development-preflight.json`.
+
 Current repair milestone accepted on clean source
 `6afbd4ad12cdb1d32aa43386a47822bc6e741fdf`: all five independent focused
 repair journeys, all five independent retention journeys, all nine main CI jobs,
