@@ -1,0 +1,31 @@
+{
+  "source_parent": "270f7ca924844caee98491be5d224d322bf6a9a8",
+  "state": "implemented but unverified",
+  "scope": "NuGet version identity foundation only; no repository adapter or native feed/client proof",
+  "implementation_sha256": {
+    "internal/nuget/version.go": "4eafb3ccf56ece3381f734b5ac975d2ff94c18134cbc7cad0ad84ab47f0d987c",
+    "internal/nuget/version_test.go": "df4918270d1b5796fb8ce3738ed364f19f34dcac1ce8f168bdb7ffc6f3c2418c",
+    "scripts/nuget_version_contract.py": "0bf3bdf49bbd4ad483d499bcf6f5be7317b1ed5720b397caa9722c09b8af165f",
+    "scripts/fixtures/nuget-versions/main.go": "52c97025be7e3a8b21034b0d253e3b54dfa1f7c6350a3cd0ba98e33b0026c16f",
+    "scripts/fixtures/nuget-versions/Oracle.csproj": "be936556f90faa9eef423b6440f6b637e603f8b12cd9c3ad5a5345d5a75583e0",
+    "scripts/fixtures/nuget-versions/Program.cs": "82c3c8b34958d46198a760ff3e65eb8e38747a7f6ac78c95ef10617b93eb78b7",
+    "scripts/fixtures/nuget-versions/NuGet.Config": "2bb9088a3f7b10dbae0929b18e295922f72bb558e0616fcf0cf06557c7d13e2b",
+    ".github/workflows/nuget-contract.yml": "adfbe5f87868c1b5d9caaaab230f3b98d8e206dde5b9c9b18dbb48e230e06794"
+  },
+  "local_host": {
+    "os": "Darwin",
+    "machine": "arm64"
+  },
+  "local_checks": {
+    "focused_go_race": "passed",
+    "new_fuzz_target": "passed;5seconds;622087executions;0failures",
+    "workflow_lint": "passed",
+    "python_ast": "passed",
+    "synthetic_differential_corpus": 1129
+  },
+  "native_differential": "not executed; requires actual GitHub Linux amd64/arm64 SDK processes and NuGet.Versioning DLL; no skips count as a pass",
+  "limits": [
+    "Local tests establish only bounded Go normalization examples/properties. Managed reference fixture compilation and exact native library agreement remain unverified.",
+    "Hosted/proxy/group feeds, archives/nuspec/symbols, dependency/search semantics, all stock clients and platforms, policy/tenant/lifecycle/migration and release readiness remain unfinished."
+  ]
+}

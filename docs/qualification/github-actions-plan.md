@@ -121,6 +121,21 @@ fallback is allowed. See [private diagnostic operation](../operator/ci-diagnosti
 This gate adds required client evidence; it does not replace the accepted13job
 regression milestone or complete OCI/platform/readiness scope.
 
+## NuGet library contract
+
+`nuget-contract.yml` moves the new Go/NuGet.Versioning differential contract
+to actual Linux x86-64 and ARM64 runners. It compares deterministic synthetic
+version strings with the runner SDK's installed reference library, records
+the actual SDK/library and byte identities, verifies both native process
+architectures and requires clean exact Go source. Its owned C# fixture clears
+remote package sources and has no package references. The new Go parser also
+joins the existing native fuzz inventory.
+
+This is version-identity foundation work. Its initial GitHub execution is
+unverified. It supplies no NuGet feed/client, archive, symbols, tenant/policy,
+dependency-resolution, migration or readiness proof. Continue the whole NuGet
+and remaining-format journeys after the adapter and storage work lands.
+
 ## Remaining offload inventory and execution order
 
 The accepted milestone unblocks the complete product build. Extend real CI

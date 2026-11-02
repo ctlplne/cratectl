@@ -1,0 +1,49 @@
+name: Native NuGet version contract
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['internal/nuget/**', 'scripts/fixtures/nuget-versions/**', 'scripts/nuget_version_contract.py', '.github/workflows/nuget-contract.yml']
+  pull_request:
+    paths: ['internal/nuget/**', 'scripts/fixtures/nuget-versions/**', 'scripts/nuget_version_contract.py', '.github/workflows/nuget-contract.yml']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nuget-contract-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  version:
+    name: Actual NuGet.Versioning versus Go (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - name: Compare actual native libraries without remote package restore
+        run: python3 scripts/nuget_version_contract.py
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: ci-summary-nuget-version-${{ matrix.arch }}
+          path: .cache/nuget-version-summary.json
+          if-no-files-found: error
+          retention-days: 30

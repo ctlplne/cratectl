@@ -29,6 +29,14 @@ GitHub runtime and the login cause remain unverified. No native client journey
 is verified yet. Continue the full goal. See
 `evidence/2026-11-02/oci-clients-development-preflight.json`.
 
+While the GitHub native-client replay waits for runners, NuGet version identity
+work has begun in `internal/nuget`. Local ARM regression/fuzz checks cover the
+bounded normalization contract. A new native Linux x86-64/ARM64 workflow compares
+it with the SDK's actual NuGet.Versioning library without remote package
+restore. The managed fixture and differential run remain unverified; no NuGet
+feed, archive, publication, installation or customer journey is implemented.
+See `docs/adr/0032-nuget-version-identity.md` and the development evidence.
+
 Current repair milestone accepted on clean source
 `6afbd4ad12cdb1d32aa43386a47822bc6e741fdf`: all five independent focused
 repair journeys, all five independent retention journeys, all nine main CI jobs,

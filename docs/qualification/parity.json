@@ -2482,7 +2482,7 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "internal/nuget/version.go: version identity foundation only; no feed/store adapter",
       "surfaces": {
         "api": null,
         "cli": null,
@@ -2517,11 +2517,13 @@
         "upstream outage",
         "delete/restore"
       ],
-      "state": "planned",
+      "state": "implementing",
       "candidate": null,
-      "evidence": [],
-      "limits": "No implementation or native-client proof yet.",
-      "next_action": "Implement nuget hosted and execute the complete stock-client journey."
+      "evidence": [
+        "evidence/2026-11-02/nuget-version-development.json"
+      ],
+      "limits": "Only bounded version-key parsing and local unit/race/fuzz properties. Native NuGet.Versioning differential workflow is implemented but unverified. No feed or stock-client journey is implemented or verified.",
+      "next_action": "Run exact native library comparisons, then implement archive/nuspec identity, tenant-scoped durable feed publication and complete dotnet/NuGet/Chocolatey/PowerShell and all required journeys."
     },
     {
       "id": "FMT.NUGET.PROXY",
