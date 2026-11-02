@@ -34,13 +34,7 @@ export function RepairSource({id,...p}:Common&{id:string}){
   const terminal=['succeeded','failed','cancelled','uncertain'].includes(data.data?.state??'');
   useEffect(()=>()=>{live.current=false;controller.current.abort()},[]);
   useEffect(()=>{if(!data.data||terminal)return;const timer=setInterval(()=>{data.refresh();observations.refresh()},1000);return()=>clearInterval(timer)},[data.data?.state,terminal,p.client.id,id]);
-  useEffect(()=>{
-    if(!target||target.source_ready)return;
-    // The asynchronous form replaces the focused mutation button. Let the
-    // dialog's native focus fixup and surrounding effects finish first.
-    const frame=requestAnimationFrame(()=>document.getElementById(input)?.focus());
-    return()=>cancelAnimationFrame(frame);
-  },[!!target,input]);
+  useEffect(()=>{if(target&&!target.source_ready)document.getElementById(input)?.focus()},[!!target,input]);
   useEffect(()=>{if(terminal)observations.refresh()},[terminal]);
   async function upload(e:FormEvent){e.preventDefault();if(!file||!target)return;setError(undefined);setBusy(true);try{
     if(file.size!==target.target.size)throw new ApiError(400,'source_size_mismatch','Choose a source file with the exact recorded byte length.');

@@ -1,0 +1,25 @@
+{
+  "candidate": "f059ce38391bf907f89ec3be2238ca07672f674c",
+  "run": "https://github.com/ctlplne/cratectl/actions/runs/41508991253",
+  "status": "failed",
+  "artifact": "evidence/2026-11-02/github-repair-f059ce3-first-replay-summary.json",
+  "diagnostic_correction": "The first diagnostic classified the entire error message, including embedded source frames. Its focus/Axe matcher labels were not reliable failure headers. Earlier focus/Axe inferences are withdrawn; original observations remain retained. The corrected classifier reads only the error header.",
+  "retained_first_failure": {
+    "candidate": "403d72b61696e7469e107a035ac94769803a4788",
+    "record": "evidence/2026-10-31/console-abba1c4459.json",
+    "private_report_reference": ".private/console-conformance/abba1c4459/browser-results.json",
+    "safe_header_class": "response_body",
+    "safe_header": "response.json: Protocol error (Network.getResponseBody): No data found for resource with given identifier"
+  },
+  "proposed_repair": [
+    "Do not read Chromium response bodies across repair view navigation. Observe status, read the durable job ID and pagination rows from the rendered console.",
+    "Track failure phases explicitly and classify only error headers, not embedded source snippets.",
+    "Revert the unsupported rendering-frame product focus change; the console source and embedded bytes match 609be9b again."
+  ],
+  "repair_state": "implemented locally but requires actual GitHub replay",
+  "limits": [
+    "The current focused campaign failed; no repair or accessibility pass is inferred from the defective old classifier.",
+    "The clean historical response-body failure is real evidence; whether the new harness resolves all current failures requires fresh real x86 journeys.",
+    "Original failures and source commits remain intact; no history rewrite or raw private report publication."
+  ]
+}

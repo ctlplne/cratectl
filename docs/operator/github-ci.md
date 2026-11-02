@@ -57,7 +57,10 @@ recurring repair-console defect. On relevant UI/driver changes or manual
 dispatch, it runs `--workflow repair` five times with independent fresh
 databases. Each selected run must pass its single workflow with zero skips or
 flaky results; the first failure stops the gate and prints safe locations.
-The default console gate still requires all 14 workflows. The first targeted
-campaign reproduced the focus failure on its second run; see
-`evidence/2026-11-02/github-repair-focus-reproduction.json`. The proposed
-rendering-frame focus repair requires live replay.
+The default console gate still requires all 14 workflows. Early diagnostic
+labels were unreliable because source snippets were searched as error text.
+The corrected diagnostic reads headers and explicit phases; the browser harness
+now reads displayed repair IDs and job rows instead of navigation-sensitive
+Chromium response bodies. See
+`evidence/2026-11-02/github-repair-diagnostic-correction.json`. Live replay remains
+required; the unsupported product focus change was reverted.

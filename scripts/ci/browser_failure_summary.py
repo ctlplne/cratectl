@@ -13,6 +13,23 @@ def safe_focus_target(message):
     return 'unknown'
 
 
+def safe_error_kind(message):
+    # Source frames embedded later in the message can mention unrelated
+    # matchers. Classify only the actual error header.
+    lines = re.sub(r'\x1b\[[0-9;]*m', '', message).splitlines()
+    header = next((line for line in lines if line.strip()), '')
+    if 'response.json' in header or 'Network.getResponseBody' in header:
+        return 'response_body'
+    if 'locator.click' in header and 'strict mode violation' in header:
+        return 'locator_ambiguous'
+    for marker, kind in [('toBeFocused', 'assert_focus'), ('toBeVisible', 'assert_visible'), ('toEqual', 'assert_equal'), ('toBe(', 'assert_value'), ('page.waitForResponse', 'response_wait'), ('locator.click', 'click')]:
+        if marker in header:
+            return kind
+    if 'timeout' in header.lower():
+        return 'timeout'
+    return 'unclassified'
+
+
 def safe_axe_findings(proof):
     states = {'exact byte repair form', 'byte repair impact preview', 'repair awaiting source', 'repair rejects incorrect source digest', 'repair verified with immutable observation'}
     lines = []
@@ -39,6 +56,8 @@ def main():
     proof_path = report_path.parent / 'repair-browser-proof.json'
     if proof_path.is_file() and proof_path.stat().st_size <= 1 << 20:
         proof = json.loads(proof_path.read_text())
+        if proof.get('phase') in ('fixture', 'connect', 'open_repair', 'create_operation', 'source_focus', 'source_accessibility', 'navigate_jobs', 'resume_source', 'wrong_source', 'exact_source', 'credential_checks', 'complete'):
+            print('Repair failure phase: ' + proof['phase'])
         if isinstance(proof.get('checks'), list):
             print(f'Repair workflow progress: {len(proof["checks"])} completed checks')
         for finding in safe_axe_findings(proof):
@@ -72,9 +91,9 @@ def main():
                         if location:
                             print(f'  error location: {Path(str(location.get("file", "unknown"))).name}:{int(location.get("line", 0))}:{int(location.get("column", 0))}')
                         message = str(error.get('message', ''))
-                        kinds = ('toBeFocused', 'toBeVisible', 'toEqual', 'toBe', 'page.waitForResponse', 'locator.click', 'TimeoutError')
-                        print('  error kind: ' + next((kind for kind in kinds if kind in message), 'unclassified'))
-                        if 'toBeFocused' in message:
+                    kind = safe_error_kind(message)
+                    print('  error kind: ' + kind)
+                    if kind == 'assert_focus':
                             print('  focus target: ' + safe_focus_target(message))
     if shown > 20:
         print(f'{shown - 20} more nonpassing tests omitted.')

@@ -10,12 +10,14 @@ test('operator previews, resumes and completes exact byte repair without raw sto
  const token=(await fs.readFile(fixture.repair_admin_token,'utf8')).trim(),name='repair-ui-'+fixture.run,body='owned browser byte recovery fixture',digest=createHash('sha256').update(body).digest('hex'),checks=[],accessibility=[];
  const api=(url,options={})=>request.fetch(fixture.base_url+url,{...options,headers:{Authorization:'Bearer '+token,'Idempotency-Key':'browser-repair-'+crypto.randomUUID(),...options.headers}});
  async function jobsAfter(action){
-  const issued=new Set(),track=r=>{if(r.url().startsWith(fixture.base_url+'/api/v1/jobs?')&&r.method()==='GET')issued.add(r)};
-  page.on('request',track);
-  // Start consuming the new response body on the response event. A response
-  // object from the preceding document may lose its body during navigation.
-  const body=page.waitForResponse(r=>issued.has(r.request())&&r.status()===200).then(r=>r.json());
-  try{const [value]=await Promise.all([body,action()]);return value}finally{page.off('request',track)}
+  const issued=page.waitForRequest(r=>r.url().startsWith(fixture.base_url+'/api/v1/jobs?')&&r.method()==='GET');
+  const [outgoing]=await Promise.all([issued,action()]);
+  const response=await outgoing.response();expect(response).not.toBeNull();expect(response.status()).toBe(200);
+  await expect(page.getByRole('heading',{name:'Jobs',exact:true})).toBeVisible();
+  await expect(page.getByText('Loading current data…',{exact:true})).toHaveCount(0);
+  // Drive pagination from the rendered rows. CDP response bodies can be
+  // discarded across navigation even after the UI consumed them successfully.
+  return page.getByRole('row').allTextContents();
  }
  async function axe(state){
   const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();
@@ -24,25 +26,27 @@ test('operator previews, resumes and completes exact byte repair without raw sto
   // without copying DOM snippets or credential-bearing attributes.
   expect(result.violations.map(v=>v.id)).toEqual([]);
  }
- const source=path.join(fixture.private,'repair-exact-source.bin'),wrong=path.join(fixture.private,'repair-wrong-source.bin');
+ const source=path.join(fixture.private,'repair-exact-source.bin'),wrong=path.join(fixture.private,'repair-wrong-source.bin');let phase='fixture';
  try{
   expect((await api('/api/v1/repositories',{method:'POST',data:{name,format:'generic'}})).status()).toBe(201);
   expect((await api('/r/'+name+'/file',{method:'PUT',data:body,headers:{'Content-Type':'application/octet-stream'}})).status()).toBe(201);
   const session=await(await api('/api/v1/session')).json();const object=path.join(fixture.private,'installation','objects',session.tenant,'sha256',digest.slice(0,2),digest);
   await fs.writeFile(source,body,{mode:0o600});await fs.writeFile(wrong,'X'.repeat(Buffer.byteLength(body)),{mode:0o600});await fs.writeFile(object,'X'.repeat(Buffer.byteLength(body)));expect((await api('/r/'+name+'/file')).status()).toBe(503);
-  await page.goto(fixture.base_url+'/console/');await page.getByLabel('Credential file').setInputFiles(fixture.repair_admin_token);await page.waitForFunction(()=>document.querySelector('#credential')?.value.length>=32);await page.getByRole('button',{name:'Connect to installation',exact:true}).click();
+  phase='connect';await page.goto(fixture.base_url+'/console/');await page.getByLabel('Credential file').setInputFiles(fixture.repair_admin_token);await page.waitForFunction(()=>document.querySelector('#credential')?.value.length>=32);await page.getByRole('button',{name:'Connect to installation',exact:true}).click();
   await page.getByRole('link',{name:'Repositories',exact:true}).click();await page.getByRole('searchbox',{name:'Search repositories',exact:true}).fill(name);await page.getByRole('button',{name:'Search',exact:true}).click();await page.getByRole('link',{name,exact:true}).click();
-  await page.getByRole('row').filter({hasText:digest}).getByRole('button',{name:'Repair bytes',exact:true}).click();await expect(page.getByLabel('Repair reason',{exact:true})).toBeFocused();await axe('exact byte repair form');
+  phase='open_repair';await page.getByRole('row').filter({hasText:digest}).getByRole('button',{name:'Repair bytes',exact:true}).click();await expect(page.getByLabel('Repair reason',{exact:true})).toBeFocused();await axe('exact byte repair form');
   await page.getByLabel('Repair reason',{exact:true}).fill('Recover owned corrupt bytes');await page.getByLabel('Source of the recovery copy',{exact:true}).fill('Independent owned browser fixture copy');await page.getByRole('button',{name:'Preview byte repair',exact:true}).click();await expect(page.getByText(/Repair preview:/)).toBeVisible();await axe('byte repair impact preview');expect((await api('/r/'+name+'/file')).status()).toBe(503);checks.push('repair preview reports shared scope and leaves corrupt bytes unavailable');
-  const response=page.waitForResponse(r=>r.url().endsWith('/artifacts/repairs')&&r.request().method()==='POST'&&r.status()===202).then(r=>r.json());
+  phase='create_operation';const response=page.waitForResponse(r=>r.url().endsWith('/artifacts/repairs')&&r.request().method()==='POST'&&r.status()===202);
   await page.getByRole('button',{name:'Create repair operation',exact:true}).click();
-  const result=await response;
+  await response;phase='source_focus';
   await expect(page.getByLabel('Verified repair source file',{exact:true})).toBeFocused();
-  await axe('repair awaiting source');
-  await page.keyboard.press('Escape');let jobs=await jobsAfter(()=>page.getByRole('link',{name:'Jobs',exact:true}).click());await expect(page.getByRole('heading',{name:'Jobs',exact:true})).toBeVisible();let row=page.getByRole('row').filter({hasText:result.job});for(let n=0;n<10&&!jobs.items.some(j=>`${j.sequence}:${j.task}`===result.job);n++)jobs=await jobsAfter(()=>page.getByRole('navigation',{name:'Job pages',exact:true}).getByRole('button',{name:'Next page',exact:true}).click());
-  await row.getByRole('button',{name:'Inspect job',exact:true}).click();await page.getByRole('button',{name:'Supply repair source',exact:true}).click();await expect(page.getByLabel('Verified repair source file',{exact:true})).toBeVisible();checks.push('waiting repair can be resumed through its durable job after closing the original dialog');
-  await page.getByLabel('Verified repair source file',{exact:true}).setInputFiles(wrong);await page.getByRole('button',{name:'Submit repair source',exact:true}).click();await expect(page.getByText('Retry with the declared length and digest of the exact uploaded bytes.',{exact:true})).toBeVisible();await axe('repair rejects incorrect source digest');expect((await api('/r/'+name+'/file')).status()).toBe(503);
-  await page.getByLabel('Verified repair source file',{exact:true}).setInputFiles(source);await page.getByRole('button',{name:'Submit repair source',exact:true}).click();await expect(page.getByText('Exact bytes verified; the immutable observation is recorded.',{exact:true})).toBeVisible({timeout:30000});await expect(page.getByText('SHA-256 verified',{exact:true})).toBeVisible();await axe('repair verified with immutable observation');const recovered=await api('/r/'+name+'/file');expect(recovered.status()).toBe(200);expect(await recovered.text()).toBe(body);checks.push('browser supplies exact source bytes; real worker verifies and repairs the corrupt shared object');
-  expect(await page.content()).not.toContain(token);expect(await page.evaluate(()=>localStorage.length+sessionStorage.length)).toBe(0);checks.push('repair keeps credentials out of the DOM and persistent browser storage');
- }finally{await fs.writeFile(path.join(fixture.private,'repair-browser-proof.json'),JSON.stringify({checks,accessibility,browser:browser.version(),scope:'Named local-file byte repair, wrong-source recovery, durable job resume and real worker verification in Chromium. Full storage/backups/platform/assistive technology qualification remains open.'},null,2))}
+  phase='source_accessibility';await axe('repair awaiting source');
+  const result={job:(await page.getByRole('dialog').getByText('Repair operation',{exact:true}).locator('..').locator('code').innerText()).trim()};
+  expect(result.job).toMatch(/^[1-9][0-9]*:repair-[a-f0-9]{64}$/);
+  phase='navigate_jobs';await page.keyboard.press('Escape');let jobs=await jobsAfter(()=>page.getByRole('link',{name:'Jobs',exact:true}).click());let row=page.getByRole('row').filter({hasText:result.job});for(let n=0;n<10&&!jobs.some(text=>text.includes(result.job));n++)jobs=await jobsAfter(()=>page.getByRole('navigation',{name:'Job pages',exact:true}).getByRole('button',{name:'Next page',exact:true}).click());
+  phase='resume_source';await row.getByRole('button',{name:'Inspect job',exact:true}).click();await page.getByRole('button',{name:'Supply repair source',exact:true}).click();await expect(page.getByLabel('Verified repair source file',{exact:true})).toBeVisible();checks.push('waiting repair can be resumed through its durable job after closing the original dialog');
+  phase='wrong_source';await page.getByLabel('Verified repair source file',{exact:true}).setInputFiles(wrong);await page.getByRole('button',{name:'Submit repair source',exact:true}).click();await expect(page.getByText('Retry with the declared length and digest of the exact uploaded bytes.',{exact:true})).toBeVisible();await axe('repair rejects incorrect source digest');expect((await api('/r/'+name+'/file')).status()).toBe(503);
+  phase='exact_source';await page.getByLabel('Verified repair source file',{exact:true}).setInputFiles(source);await page.getByRole('button',{name:'Submit repair source',exact:true}).click();await expect(page.getByText('Exact bytes verified; the immutable observation is recorded.',{exact:true})).toBeVisible({timeout:30000});await expect(page.getByText('SHA-256 verified',{exact:true})).toBeVisible();await axe('repair verified with immutable observation');const recovered=await api('/r/'+name+'/file');expect(recovered.status()).toBe(200);expect(await recovered.text()).toBe(body);checks.push('browser supplies exact source bytes; real worker verifies and repairs the corrupt shared object');
+  phase='credential_checks';expect(await page.content()).not.toContain(token);expect(await page.evaluate(()=>localStorage.length+sessionStorage.length)).toBe(0);checks.push('repair keeps credentials out of the DOM and persistent browser storage');phase='complete';
+ }finally{await fs.writeFile(path.join(fixture.private,'repair-browser-proof.json'),JSON.stringify({phase,checks,accessibility,browser:browser.version(),scope:'Named local-file byte repair, wrong-source recovery, durable job resume and real worker verification in Chromium. Full storage/backups/platform/assistive technology qualification remains open.'},null,2))}
 });

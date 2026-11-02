@@ -39,7 +39,7 @@ dispatch. It currently contains:
 | Security slice | Ubuntu 24.04 x86-64 | `govulncheck` on Go source and two binaries; Gitleaks on current tracked bytes and reachable history; synthetic exception regression. |
 | Native integration | Ubuntu 24.04 x86-64 and ARM64, PostgreSQL 16.15 service with restricted runtime role | `make integration`, including real database tests and SQL timing. The added `make integration-race` gate awaits its first GitHub run. |
 | Native clients and operations | Same native Linux jobs, fresh registry on loopback | Generic, OCI/ORAS, Maven, npm, PyPI, current lifecycle, blank TLS install, jobs/leases, inventory/sweeps and cross-reference matters; Chromium console/Axe on x86-64. All six jobs passed on `998c7f8`. |
-| Focused repair-browser regression | Separate Ubuntu 24.04 x86-64 runner with real PostgreSQL and Chromium | `609be9b` failed focus on replay 2. `9c0abc2` advanced past focus then failed source-form Axe on replay 1. The zero-violation gate remains required; safe rule-ID diagnostics are the next replay. Full console still requires its separate 14 workflows. |
+| Focused repair-browser regression | Separate Ubuntu 24.04 x86-64 runner with real PostgreSQL and Chromium | Campaigns failed; early focus/Axe labels were unreliable because source snippets were classified. The corrected harness avoids Chromium response-body reads across navigation and records error headers/phases. Live replay remains required. Full console still requires 14 workflows. |
 
 The [first run](https://github.com/ctlplne/cratectl/actions/runs/41491829202)
 passed five of six jobs. The x86-64 browser step failed after its PostgreSQL and

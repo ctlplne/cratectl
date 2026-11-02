@@ -6,12 +6,14 @@ GitHub native qualification and moves historical controlled-upgrade journeys
 off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
-Current defect work: the focused x86 replay on `9c0abc2` advanced past
-source-file focus and failed the zero-violation Axe assertion on its first
-journey. The repair workflow remains failed. The diagnostic now retains only
-rule IDs, impacts and node counts, while the test still requires zero
-violations. Exact rule evidence requires its next GitHub replay. See
-`evidence/2026-11-02/github-repair-axe-reproduction.json`.
+Current defect work: the original diagnostic searched embedded source frames
+and misclassified some browser errors as focus/Axe failures. The corrected
+classifier reads only the error header and records explicit phases. A retained
+clean report proves Chromium response-body retrieval failed across navigation;
+the test now reads the repair identity and job rows from the rendered UI instead.
+The unsupported product focus timing change is reverted. All assertions and the
+zero-violation gate remain. Live GitHub replay is required; see
+`evidence/2026-11-02/github-repair-diagnostic-correction.json`.
 
 Real PostgreSQL integration races now have native GitHub pass observations on
 ARM64 (`609be9b`) and x86-64 (`9c0abc2`). These are completed step results,

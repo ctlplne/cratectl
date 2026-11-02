@@ -2,10 +2,16 @@
 # SPDX-License-Identifier: BUSL-1.1
 """Browser diagnostics expose known focus labels, never raw locator/error text."""
 import unittest
-from browser_failure_summary import safe_axe_findings, safe_focus_target
+from browser_failure_summary import safe_axe_findings, safe_error_kind, safe_focus_target
 
 
 class SafeFocusTarget(unittest.TestCase):
+    def test_error_header_wins_over_unrelated_matchers_in_source_frames(self):
+        message = 'Error: response.json: Protocol error (Network.getResponseBody): No data found\n  31 | expect(field).toBeFocused(); expect(violations).toEqual([])'
+        self.assertEqual(safe_error_kind(message), 'response_body')
+        self.assertEqual(safe_error_kind('Error: locator.click: Error: strict mode violation\nexpect(x).toBeFocused()'), 'locator_ambiguous')
+        self.assertEqual(safe_error_kind('Error: expect(locator).toBeFocused() failed'), 'assert_focus')
+
     def test_known_focus_labels_produce_only_fixed_identifiers(self):
         for label, expected in [('Repair reason', 'repair_reason'), ('Verified repair source file', 'verified_source')]:
             private_message = f'Error: expect(locator).toBeFocused() failed; getByLabel({label!r}); private-synthetic-value'
