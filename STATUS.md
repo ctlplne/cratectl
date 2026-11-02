@@ -1,19 +1,24 @@
 # cratectl execution status
 
-GitHub CI work (2026-11-02): [second public run](https://github.com/ctlplne/cratectl/actions/runs/41495587980)
-on `998c7f822d6ee882d2c1efc0ffe60a7d706ef7e0` passed all six jobs.
-Native x86-64 Linux, ARM64 Linux and ARM64 macOS passed source, unit, race,
-lint and console reproduction; the scoped security job passed its source/binary,
-history and synthetic secret-rule checks. Both Linux architectures passed fresh
-PostgreSQL integration, stock-client compatibility, lifecycle, blank TLS install,
-durable jobs/leases, inventory/sweeps and legal-hold matters. The x86-64 Chromium
-console also passed. The [first run](https://github.com/ctlplne/cratectl/actions/runs/41491829202)
-failed only at Chromium after its earlier steps passed; the private failure detail
-was not retained, so that intermittent result remains open. The next CI revision
-adds bounded fuzz and safe, short-lived evidence artifacts. See
-`docs/operator/github-ci.md`, `docs/qualification/github-actions-plan.md`, and
-`evidence/2026-11-02/github-ci-second-run.json`. The broader product goal
-remains paused and all readiness verdicts remain negative.
+Owner resumed the complete `GOAL.md` scope on 2026-11-02 and reaffirmed that
+both author and committer must be `imfeelingtheagi`. The current work finishes
+GitHub native qualification and moves historical controlled-upgrade journeys
+off this Mac, then continues the unfinished product scope. The earlier pause
+records below are historical. All broad readiness verdicts remain negative.
+
+GitHub CI work (2026-11-02): candidate `7389def5abdcb9ada3c539820dda0e65b609d13f`
+passes Linux x86-64/ARM64 source, race, lint, all 23 bounded fuzz targets, scoped
+security and the complete ARM64 native PostgreSQL/client/operational job.
+Its x86-64 browser job failed one of 14 workflows at the repair creation/source
+transition (`web/tests/zzzz-repair.spec.mjs:31`); both macOS jobs remained queued.
+The preceding `998c7f8` run passed all six jobs. The recurring browser defect
+remains open. Inspection also found the security summary omitted an overwritten
+tracked report; the exporter is repaired locally with real Git-index regressions.
+The new historical upgrade workflow, exporter repair and browser diagnostic
+refinement require live GitHub execution. See
+`evidence/2026-11-02/github-ci-third-run.json` and
+`docs/qualification/github-actions-plan.md`. The complete goal is active;
+all broad readiness verdicts remain negative.
 
 Current bounded task completed; broader goal paused by owner. Clean source
 `5483878b211f9d30ebf4e72a9bc6ed20fc9d7040` passes 335 native lifecycle stock-client checks and 363

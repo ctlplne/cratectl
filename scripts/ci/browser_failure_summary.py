@@ -39,6 +39,9 @@ for suite in report.get('suites', []):
                 for error in result.get('errors', [])[:3]:
                     location = error.get('location') or {}
                     if location:
-                        print(f'  error location: {Path(str(location.get("file", "unknown"))).name}:{int(location.get("line", 0))}')
+                        print(f'  error location: {Path(str(location.get("file", "unknown"))).name}:{int(location.get("line", 0))}:{int(location.get("column", 0))}')
+                    message = str(error.get('message', ''))
+                    kinds = ('toBeFocused', 'toBeVisible', 'toEqual', 'toBe', 'page.waitForResponse', 'locator.click', 'TimeoutError')
+                    print('  error kind: ' + next((kind for kind in kinds if kind in message), 'unclassified'))
 if shown > 20:
     print(f'{shown - 20} more nonpassing tests omitted.')

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
 """Real legacy-binary adoption, process interruption and preserved npm consumption."""
-import argparse,datetime,hashlib,json,os,subprocess,time,urllib.parse,urllib.request,uuid
+import argparse,datetime,hashlib,json,os,platform,subprocess,time,urllib.parse,urllib.request,uuid
 from pathlib import Path
 from qualification_contract import candidate_binary_directory, candidate_artifact_names
 BIN = candidate_binary_directory()
@@ -22,7 +22,7 @@ def identity(binary):
     return settings
 candidate=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
 scope=['cmd','internal','scripts','web','api','go.mod','go.sum','Makefile']
-result={'run':RUN,'candidate':candidate,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope]).strip()),'artifact_digests':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()for p in [OLD,NEW,BIN/'cratectl']},'build_identity':{str(p.relative_to(ROOT)):identity(p)for p in [OLD,NEW,BIN/'cratectl']},'checks':checks,'topology':'Native macOS legacy/current registry CLI processes, actual SIGKILL during uncommitted DDL, real PostgreSQL 16.15 restricted runtime, stock npm; explicit loopback HTTP fixture.','limits':['Legacy adoption is a controlled maintenance operation with registry and workers stopped. Pre-gate binaries do not cooperate with new transaction admission.','The fault is an owned database event trigger and advisory barrier; no production pause hook is compiled into the runtime.','This is not rolling/zero-downtime adoption, whole-transfer draining, expand/contract compatibility, HA, downgrade, backup/restore or independent-host qualification.']}
+result={'run':RUN,'candidate':candidate,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope]).strip()),'artifact_digests':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()for p in [OLD,NEW,BIN/'cratectl']},'build_identity':{str(p.relative_to(ROOT)):identity(p)for p in [OLD,NEW,BIN/'cratectl']},'checks':checks,'topology':f'Native {platform.platform()} legacy/current registry CLI processes, actual SIGKILL during uncommitted DDL, real PostgreSQL 16.15 restricted runtime, stock npm; explicit loopback HTTP fixture.','limits':['Legacy adoption is a controlled maintenance operation with registry and workers stopped. Pre-gate binaries do not cooperate with new transaction admission.','The fault is an owned database event trigger and advisory barrier; no production pause hook is compiled into the runtime.','This is not rolling/zero-downtime adoption, whole-transfer draining, expand/contract compatibility, HA, downgrade, backup/restore or independent-host qualification.']}
 result['build_source_matches_candidate']=all(result['build_identity'][str(p.relative_to(ROOT))].get('vcs.revision')==candidate and result['build_identity'][str(p.relative_to(ROOT))].get('vcs.modified')=='false'for p in [NEW,BIN/'cratectl'])
 result['expected_schema'] = CURRENT_SCHEMA
 def check(label,condition):

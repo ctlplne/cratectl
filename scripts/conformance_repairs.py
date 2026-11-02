@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
 """Owned schema-4 upgrade, stock ORAS recovery and streaming repair CLI proof."""
-import argparse,datetime,hashlib,json,os,subprocess,time,urllib.error,urllib.parse,urllib.request,uuid
+import argparse,datetime,hashlib,json,os,platform,subprocess,time,urllib.error,urllib.parse,urllib.request,uuid
 from pathlib import Path
 from qualification_contract import candidate_binary_directory, candidate_artifact_names
 BIN = candidate_binary_directory()
@@ -16,7 +16,7 @@ def identity(binary):
   if len(fields)==2 and fields[0]=='build'and '='in fields[1]:key,value=fields[1].split('=',1);out[key]=value
  return out
 candidate=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip();scope=['cmd','internal','scripts','web','api','go.mod','go.sum','Makefile']
-result={'run':RUN,'candidate':candidate,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope]).strip()),'checks':checks,'commands':commands,'artifact_digests':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()for p in [OLD,NEW,BIN/'cratectl',ORAS]},'build_identity':{str(p.relative_to(ROOT)):identity(p)for p in [OLD,NEW,BIN/'cratectl']},'topology':'Native macOS arm64, real PostgreSQL 16.15 with nonowner forced RLS, owned registry/worker, stock ORAS and streaming cratectl CLI; explicit HTTP loopback.','limits':['Exact local-byte repair retains corrupt/staged data and preserves policy/lifecycle. No erasure, reclaimed space or security approval is claimed.','Named raw/OCI outcomes only; all format/client, legacy metadata repair, S3, scale, backup/restore and other-platform requirements remain open.','Maintenance upgrade with all old processes stopped; rolling versions and transfer draining remain unqualified.']}
+result={'run':RUN,'candidate':candidate,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope]).strip()),'checks':checks,'commands':commands,'artifact_digests':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()for p in [OLD,NEW,BIN/'cratectl',ORAS]},'build_identity':{str(p.relative_to(ROOT)):identity(p)for p in [OLD,NEW,BIN/'cratectl']},'topology':f'Native {platform.platform()}, real PostgreSQL 16.15 with nonowner forced RLS, owned registry/worker, stock ORAS and streaming cratectl CLI; explicit HTTP loopback.','limits':['Exact local-byte repair retains corrupt/staged data and preserves policy/lifecycle. No erasure, reclaimed space or security approval is claimed.','Named raw/OCI outcomes only; all format/client, legacy metadata repair, S3, scale, backup/restore and other-platform requirements remain open.','Maintenance upgrade with all old processes stopped; rolling versions and transfer draining remain unqualified.']}
 result['expected_schema'] = CURRENT_SCHEMA
 result['build_source_matches_candidate']=all(result['build_identity'][str(p.relative_to(ROOT))].get('vcs.revision')==candidate and result['build_identity'][str(p.relative_to(ROOT))].get('vcs.modified')=='false'for p in [NEW,BIN/'cratectl'])
 def check(label,condition):

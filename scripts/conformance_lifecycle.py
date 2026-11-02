@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
 """Owned schema2–10 upgrades and stock ORAS retained deletion/recovery, on real PostgreSQL."""
-import argparse,datetime,hashlib,json,os,subprocess,time,urllib.error,urllib.parse,urllib.request,uuid
+import argparse,datetime,hashlib,json,os,platform,subprocess,time,urllib.error,urllib.parse,urllib.request,uuid
 from pathlib import Path
 from qualification_contract import candidate_binary_directory, candidate_artifact_names
 
 parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');parser.add_argument('--binary-directory',type=Path,help='Owned candidate binaries; defaults to bin');parser.add_argument('--baseline-version',type=int,choices=[2,3,4,5,6,7,8,9,10],default=2);args=parser.parse_args()
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT);RUN=uuid.uuid4().hex[:10]
 PRIVATE=ROOT/'.private/lifecycle-conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)
-BASELINES={2:('.cache/maven-final-production/cratectld','10ea6499d874018178b43ee38a9070e81e5a0686'),3:('.cache/lifecycle-final-production/cratectld','bea2472271bd15993bcae9b8ea12a102b2608abe'),4:('.cache/source-final-production/cratectld','06156af19b9759035e96d63cf7a8bf52903235f7'),5:('.cache/repair-final-production/cratectld','1fe1b8ab9ef91f75fd9a586693d9983b5c5324d6'),6:('.cache/schedule-final-production/cratectld','b19d1ae393320a2adc051f61db24693fec62591a'),7:('.cache/retention-final-production/cratectld','6cac8851da675dcaf531d6f8ed2aa26c927a243b'),8:('.cache/retention-schedule-final-399f37a048d7-production/cratectld','399f37a048d73fddd8f6b98b93669f5ba2c3fad5'),9:('.cache/hold-final-ab28ee966077-production/cratectld','ab28ee966077f7e96a9d96a8898eb389200e30e4'),10:('.cache/case-full-ed9ee5e8a6b3-production/cratectld','ed9ee5e8a6b38843a01ff9ccb9eb5ca7752255c0')}
+BASELINES={row['schema']:(row['binary'],row['source']) for row in json.loads((ROOT/'docs/qualification/upgrade-baselines.json').read_text())['baselines'] if row['schema'] is not None}
 from qualification_contract import CURRENT_SCHEMA
 BIN=candidate_binary_directory(args.binary_directory)
 BASE='http://127.0.0.1:38443';OLD=ROOT/BASELINES[args.baseline_version][0];NEW=BIN/'cratectld';ORAS=ROOT/'.cache/bin/oras'
@@ -20,7 +20,7 @@ def identity(binary):
         if len(parts)==2 and parts[0]=='build' and '='in parts[1]:key,value=parts[1].split('=',1);values[key]=value
     return values
 scope=['cmd','internal','scripts','web','api','go.mod','go.sum','Makefile'];candidate=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
-result={'run':RUN,'candidate':candidate,'baseline_version':args.baseline_version,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope]).strip()),'checks':checks,'commands':commands,'artifact_digests':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()for p in [OLD,NEW,BIN/'cratectl',ORAS]},'build_identity':{str(p.relative_to(ROOT)):identity(p)for p in [OLD,NEW,BIN/'cratectl']},'topology':f'Native macOS arm64, retained clean schema-{args.baseline_version} binary then schema-{CURRENT_SCHEMA} binary, real PostgreSQL 16.15 nonowner forced RLS, stock ORAS; explicit HTTP loopback on 38443.','limits':['Logical retirement retains CAS bytes and all references; no physical erasure or reclaimed storage is claimed.','Source URL/configuration changes, recursive groups, retention/GC, scale, rolling upgrade, backup/restore and other clients/platforms remain required.','This campaign uses controlled maintenance with the registry stopped during migration; it does not establish compatible rolling versions.']}
+result={'run':RUN,'candidate':candidate,'baseline_version':args.baseline_version,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope]).strip()),'checks':checks,'commands':commands,'artifact_digests':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()for p in [OLD,NEW,BIN/'cratectl',ORAS]},'build_identity':{str(p.relative_to(ROOT)):identity(p)for p in [OLD,NEW,BIN/'cratectl']},'topology':f'Native {platform.platform()}, retained clean schema-{args.baseline_version} binary then schema-{CURRENT_SCHEMA} binary, real PostgreSQL 16.15 nonowner forced RLS, stock ORAS; explicit HTTP loopback on 38443.','limits':['Logical retirement retains CAS bytes and all references; no physical erasure or reclaimed storage is claimed.','Source URL/configuration changes, recursive groups, retention/GC, scale, rolling upgrade, backup/restore and other clients/platforms remain required.','This campaign uses controlled maintenance with the registry stopped during migration; it does not establish compatible rolling versions.']}
 result['build_source_matches_candidate']=all(result['build_identity'][str(p.relative_to(ROOT))].get('vcs.revision')==candidate and result['build_identity'][str(p.relative_to(ROOT))].get('vcs.modified')=='false'for p in [NEW,BIN/'cratectl'])
 def check(label,value):
     if not value:raise AssertionError(label)

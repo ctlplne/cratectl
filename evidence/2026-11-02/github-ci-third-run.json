@@ -1,0 +1,39 @@
+{
+  "candidate": "7389def5abdcb9ada3c539820dda0e65b609d13f",
+  "run": "https://github.com/ctlplne/cratectl/actions/runs/41498257132",
+  "observed_state": "not green; Linux x86 browser job failed, both macOS jobs still queued at observation",
+  "passed": [
+    "Linux x86-64 and ARM64 source/unit/race/lint",
+    "Linux x86-64 and ARM64 bounded fuzz:23 targets at five seconds each",
+    "scoped security including324synthetic directory/history cases",
+    "Linux ARM64 real PostgreSQL, stock clients and all operational journeys"
+  ],
+  "x86_browser": {
+    "expected": 13,
+    "unexpected": 1,
+    "skipped": 0,
+    "flaky": 0,
+    "safe_location": "web/tests/zzzz-repair.spec.mjs:31",
+    "state": "recurrent failure; request, focus and Axe assertions share the original line; split diagnostic locations before replay"
+  },
+  "security_summary_defect": "evidence/2026-11-02/github-ci-empty-security-summary.json",
+  "native_summaries": [
+    "evidence/2026-11-02/github-ci-7389def-arm64-summary.json",
+    "evidence/2026-11-02/github-ci-7389def-amd64-summary.json"
+  ],
+  "local_followup_checks": [
+    "make lint including three artifact-identity and three real-Git-index evidence regressions",
+    "actionlint1.7.12 both workflows",
+    "all ten pinned historical commits reachable; read-only --check created no worktree or binary"
+  ],
+  "next": [
+    "Run repaired evidence exporter and more precise browser diagnostics on native GitHub runners",
+    "Run new controlled-upgrade workflow; historical binaries must be rebuilt and identity checked there"
+  ],
+  "limits": [
+    "No green overall run is claimed. Both queued macOS gates and recurring x86 browser failure remain unverified.",
+    "The security fixture passed but its original artifact omitted the overwritten tracked report; fixed locally, live replay remains required.",
+    "Historical rebuild and Linux controlled-upgrade execution are implemented but unverified until GitHub runs.",
+    "Full security, packaging, native Windows, multi-host/scale and every other remaining GOAL.md requirement remain open."
+  ]
+}

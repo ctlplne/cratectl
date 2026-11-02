@@ -1,0 +1,104 @@
+name: Controlled upgrade qualification
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cmd/**'
+      - 'internal/**'
+      - 'scripts/**'
+      - 'go.mod'
+      - 'go.sum'
+      - 'docs/qualification/upgrade-baselines.json'
+      - '.github/workflows/upgrade-qualification.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '17 8 * * 1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: upgrades-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  upgrades:
+    name: Real PostgreSQL controlled upgrades (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    env:
+      CRATECTL_CONFORMANCE_DATABASE_FILE: .private/ci-db.json
+      CRATECTL_DEV_DATABASE: native
+      CRATECTL_QUALIFICATION_BIN_DIR: .cache/ci-build
+      NPM_CONFIG_USERCONFIG: /dev/null
+    services:
+      cratectl-postgres:
+        image: postgres:16.15-alpine
+        env:
+          POSTGRES_USER: cratectl_owner
+          POSTGRES_DB: cratectl
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 35432:5432
+        options: >-
+          --health-cmd "pg_isready -U cratectl_owner -d cratectl"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '26'
+          package-manager-cache: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Prepare disposable native tools and database
+        run: bash scripts/ci/bootstrap_linux.sh
+      - name: Rebuild and verify every pinned historical native server
+        run: python3 scripts/ci/build_upgrade_baselines.py
+      - name: Legacy adoption with actual migration process interruption
+        run: python3 scripts/conformance_schema.py --require-clean-build
+      - name: Retained lifecycle through every schema 2–10 upgrade
+        run: |
+          for baseline in 2 3 4 5 6 7 8 9 10; do
+            python3 scripts/conformance_lifecycle.py --baseline-version "$baseline" --require-clean-build
+          done
+      - name: Repair and recurring integrity upgrades
+        run: |
+          python3 scripts/conformance_repairs.py --require-clean-build
+          python3 scripts/conformance_schedules.py --require-clean-build
+      - name: Retention and scheduled-retirement upgrades
+        run: |
+          python3 scripts/conformance_retention.py --require-clean-build
+          python3 scripts/conformance_retention_schedules.py --require-clean-build
+      - name: Prepare bounded upgrade evidence summary
+        if: always()
+        run: python3 scripts/ci/evidence_summary.py
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: ci-summary-upgrades-${{ matrix.arch }}
+          path: .cache/ci-evidence-summary.json
+          if-no-files-found: error
+          retention-days: 30

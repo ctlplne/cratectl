@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
 """Owned schema-6 upgrade and stock-client retained retirement/recovery."""
-import argparse,datetime,hashlib,json,os,socket,subprocess,time,urllib.error,urllib.parse,urllib.request,uuid
+import argparse,datetime,hashlib,json,os,platform,socket,subprocess,time,urllib.error,urllib.parse,urllib.request,uuid
 from pathlib import Path
 from qualification_contract import candidate_binary_directory, candidate_artifact_names
 BIN = candidate_binary_directory()
@@ -19,7 +19,7 @@ def identity(binary):
         if len(parts)==2 and parts[0]=='build'and '='in parts[1]:key,value=parts[1].split('=',1);out[key]=value
     return out
 scope=['cmd','internal','scripts','web','api','go.mod','go.sum','Makefile'];candidate=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
-result={'run':RUN,'candidate':candidate,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope]).strip()),'checks':checks,'commands':commands,'build_identity':{str(p.relative_to(ROOT)):identity(p)for p in [OLD,NEW,CLI]},'artifact_digests':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()for p in [OLD,NEW,CLI,ORAS]},'topology':f'Native macOS arm64, retained qualified schema-6 binary then schema-{CURRENT_SCHEMA} registry/worker, PostgreSQL 16.15 forced RLS and restricted runtime; stock ORAS and management CLI. Explicit HTTP loopback 38443. Registry/worker environments omit the owner DSN.','limits':['Named canonical OCI manifest age/newest/tag/hold/reference retirement only. No physical erasure, last-access selection, automatic scheduling or reclaimed storage.','Hosted/proxy/group native consumption, current authority and exact retained-byte restore within this owned fixture. Other rules/formats, providers/platforms, fault/clock/scale and production recovery remain required.','Controlled maintenance stops old processes before migration; rolling compatibility and consistent backup/restore remain open.']}
+result={'run':RUN,'candidate':candidate,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope]).strip()),'checks':checks,'commands':commands,'build_identity':{str(p.relative_to(ROOT)):identity(p)for p in [OLD,NEW,CLI]},'artifact_digests':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()for p in [OLD,NEW,CLI,ORAS]},'topology':f'Native {platform.platform()}, retained qualified schema-6 binary then schema-{CURRENT_SCHEMA} registry/worker, PostgreSQL 16.15 forced RLS and restricted runtime; stock ORAS and management CLI. Explicit HTTP loopback 38443. Registry/worker environments omit the owner DSN.','limits':['Named canonical OCI manifest age/newest/tag/hold/reference retirement only. No physical erasure, last-access selection, automatic scheduling or reclaimed storage.','Hosted/proxy/group native consumption, current authority and exact retained-byte restore within this owned fixture. Other rules/formats, providers/platforms, fault/clock/scale and production recovery remain required.','Controlled maintenance stops old processes before migration; rolling compatibility and consistent backup/restore remain open.']}
 result['build_source_matches_candidate']=all(result['build_identity'][str(p.relative_to(ROOT))].get('vcs.revision')==candidate and result['build_identity'][str(p.relative_to(ROOT))].get('vcs.modified')=='false'for p in [NEW,CLI])
 result['expected_schema'] = CURRENT_SCHEMA
 def check(label,condition):

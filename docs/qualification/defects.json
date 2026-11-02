@@ -763,6 +763,26 @@
       "repair": "Reuse canonical digest validator and limit the historical exception to the exact expression, path and detector. Hard-assert fixture and scan outcomes inside the commit command. Preserve original history/report; no push or live credential exposure.",
       "replay": "evidence/2026-10-31/native-lifecycle-secret-rule-review.json",
       "limits": "324 offline source/history rule fixtures and named native lifecycle replay; full security readiness remains false."
+    },
+    {
+      "id": "DEFECT.0071",
+      "summary": "Initial GitHub Linux x86 Chromium suite failed without retained private failure detail",
+      "first_failure": "evidence/2026-11-02/github-ci-first-run.json",
+      "state": "open; recurrent Linux x86 repair-browser failure",
+      "repair": "Safe locations identify zzzz-repair.spec.mjs:31. Split request, focus and Axe assertions and classify safe matcher names before replay; no underlying repair is claimed yet.",
+      "replay": "evidence/2026-11-02/github-ci-second-run.json",
+      "candidate": "998c7f822d6ee882d2c1efc0ffe60a7d706ef7e0",
+      "limits": "A later green run does not explain the first failure or prove absence of flakiness.",
+      "recurrence": "evidence/2026-11-02/github-ci-third-run.json"
+    },
+    {
+      "id": "DEFECT.0072",
+      "summary": "CI evidence exporter omitted a regenerated report when its same-date path was already tracked",
+      "first_failure": "evidence/2026-11-02/github-ci-empty-security-summary.json",
+      "state": "repaired locally; live GitHub replay pending",
+      "repair": "Collect both modified tracked and untracked reports, preserve the field allowlist, reject successful empty summaries, and regress the case with a real disposable Git index.",
+      "candidate_parent": "7389def5abdcb9ada3c539820dda0e65b609d13f",
+      "limits": "The affected security tests passed, but their original artifact contained zero detailed result records. Native reports have unique paths; their actual artifacts are checked separately."
     }
   ]
 }

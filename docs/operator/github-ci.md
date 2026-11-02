@@ -39,3 +39,12 @@ on the disposable runner.
 The [qualification placement plan](../qualification/github-actions-plan.md) lists
 the next drivers, required real services and native hosts, and the limits of each
 CI result. It is updated with the capability and journey ledgers as work grows.
+
+`Controlled upgrade qualification` uses separate native Linux x86-64 and ARM64
+runners on relevant `main` pushes, manual dispatch and Mondays at 08:17 UTC.
+It rebuilds the ten pinned historical sources from
+`docs/qualification/upgrade-baselines.json`, rejects dirty or cross-built
+artifacts, and runs legacy adoption, schema 2–10 lifecycle upgrades, repair,
+recurring integrity and retention upgrades against disposable PostgreSQL.
+Its first live run remains required before those Linux results are verified.
+The retained local primary is outside this workflow.
