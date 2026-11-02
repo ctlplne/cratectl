@@ -34,7 +34,9 @@ GitHub-hosted runner. Generated credentials and all fixture data stay in ignored
 `.private/` and `.cache/`; the workflow does not upload that raw state. The retained
 local macOS ARM qualification is separate from GitHub's Linux ARM64 and x86-64 results.
 Each security/native job uploads only a bounded CI summary of generated evidence
-fields for 30 days. Raw reports, browser traces and private command logs stay
+fields for 30 days. Native binary records include reviewed paths, SHA-256 and
+clean embedded Git/OS/architecture identity; unknown paths or mismatched builds
+fail the exporter. Raw reports, browser traces and private command logs stay
 on the disposable runner.
 
 The [qualification placement plan](../qualification/github-actions-plan.md) lists

@@ -6,14 +6,13 @@ GitHub native qualification and moves historical controlled-upgrade journeys
 off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
-Current defect work: the original diagnostic searched embedded source frames
-and misclassified some browser errors as focus/Axe failures. The corrected
-classifier reads only the error header and records explicit phases. A retained
-clean report proves Chromium response-body retrieval failed across navigation;
-the test now reads the repair identity and job rows from the rendered UI instead.
-The unsupported product focus timing change is reverted. All assertions and the
-zero-violation gate remain. Live GitHub replay is required; see
-`evidence/2026-11-02/github-repair-diagnostic-correction.json`.
+Current repair milestone: all five independent focused browser journeys passed
+on `ed1d0dc`, with zero skipped, unexpected or flaky results and clean matching
+builds. The harness now reads rendered repair/job identity and the error
+classifier uses headers. The milestone is not accepted yet: current binary
+hashes and embedded source/platform identity are being added to safe artifacts,
+and every main/focused/upgrade gate must pass on that same final candidate.
+See `evidence/2026-11-02/github-repair-ed1d0dc-focused-checkpoint.json`.
 
 Real PostgreSQL integration races now have native GitHub pass observations on
 ARM64 (`609be9b`) and x86-64 (`9c0abc2`). These are completed step results,

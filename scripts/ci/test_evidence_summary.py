@@ -55,6 +55,23 @@ class EvidenceSummary(unittest.TestCase):
         self.assertEqual((record['baseline_version'], record['expected_schema']), (2, 11))
         self.assertNotIn('private-synthetic-value', json.dumps(record))
 
+    def test_current_binary_hash_and_embedded_identity_are_retained_without_extra_fields(self):
+        name = '.cache/ci-build/cratectld'
+        identity = {'vcs.revision': 'a' * 40, 'vcs.modified': 'false', 'GOOS': 'linux', 'GOARCH': 'amd64', 'private': 'private-synthetic-value'}
+        path = self.write('native.json', {'candidate': 'a' * 40, 'status': 'passed', 'artifact_digests': {name: 'c' * 64}, 'build_identity': {name: identity}})
+        artifact = summarize(self.root, self.environment)['records'][0]['artifacts'][0]
+        self.assertEqual((artifact['path'], artifact['sha256']), (name, 'c' * 64))
+        self.assertEqual(artifact['build']['vcs.revision'], 'a' * 40)
+        self.assertNotIn('private-synthetic-value', json.dumps(artifact))
+        for changed in [{'vcs.modified': 'true'}, {'GOARCH': 'arm64'}, {'vcs.revision': 'b' * 40}]:
+            self.write('native.json', {'candidate': 'a' * 40, 'artifact_digests': {name: 'c' * 64}, 'build_identity': {name: {**identity, **changed}}})
+            with self.subTest(changed=changed), self.assertRaises(SystemExit):
+                summarize(self.root, self.environment)
+        path.unlink()
+        self.write('unknown.json', {'candidate': 'a' * 40, 'artifact_digests': {'.private/credential': 'c' * 64}})
+        with self.assertRaises(SystemExit):
+            summarize(self.root, self.environment)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -17,6 +17,17 @@ def summarize(root, environment):
         raise SystemExit('Too many generated evidence files for a bounded CI summary')
 
     candidate = environment.get('GITHUB_SHA', '')
+    if not re.fullmatch('[0-9a-f]{40}', candidate):
+        raise SystemExit('CI evidence requires an exact candidate commit')
+    native_os = {'Linux': 'linux', 'macOS': 'darwin', 'Windows': 'windows'}.get(environment.get('RUNNER_OS'))
+    native_arch = {'X64': 'amd64', 'ARM64': 'arm64'}.get(environment.get('RUNNER_ARCH'))
+    if native_os is None or native_arch is None:
+        raise SystemExit('CI evidence requires a reviewed native runner platform')
+    artifact_sources = {'.cache/ci-build/cratectld': candidate, '.cache/ci-build/cratectl': candidate, '.cache/bin/oras': None}
+    manifest = root / 'docs/qualification/upgrade-baselines.json'
+    if manifest.is_file():
+        for baseline in json.loads(manifest.read_text())['baselines']:
+            artifact_sources[baseline['binary']] = baseline['source']
     summary = {
         'candidate': candidate,
         'run_id': environment.get('GITHUB_RUN_ID', ''),
@@ -25,7 +36,7 @@ def summarize(root, environment):
         'generated_at': datetime.datetime.now(datetime.timezone.utc).isoformat(),
         'records': [],
         'limits': [
-            'Only counts, boolean build checks, report hashes and pinned historical build identities are exported.',
+            'Only counts, report hashes, reviewed binary digests and clean embedded source/platform identities are exported.',
             'Raw evidence, browser reports, private command logs and generated credentials remain on the disposable runner.',
             'This summary establishes only the named CI job stages, not release or product readiness.',
         ],
@@ -58,6 +69,24 @@ def summarize(root, environment):
             'source_dirty': report.get('source_dirty') if isinstance(report.get('source_dirty'), bool) else None,
             'build_source_matches_candidate': report.get('build_source_matches_candidate') if isinstance(report.get('build_source_matches_candidate'), bool) else None,
         }
+        if 'artifact_digests' in report:
+            if not isinstance(report['artifact_digests'], dict) or len(report['artifact_digests']) > 16:
+                raise SystemExit('Artifact identity evidence exceeds its inventory bound')
+            entry['artifacts'] = []
+            for name, digest in sorted(report['artifact_digests'].items()):
+                if name not in artifact_sources or not isinstance(digest, str) or not re.fullmatch('[0-9a-f]{64}', digest):
+                    raise SystemExit('Artifact identity is outside the reviewed path/digest allowlist')
+                artifact = {'path': name, 'sha256': digest}
+                expected_source = artifact_sources[name]
+                if expected_source:
+                    identity = report.get('build_identity', {}).get(name, {})
+                    settings = identity.get('settings', identity)
+                    if settings.get('vcs.revision') != expected_source or settings.get('vcs.modified') != 'false' or settings.get('GOOS') not in ('linux', 'darwin', 'windows') or settings.get('GOARCH') not in ('amd64', 'arm64'):
+                        raise SystemExit('Artifact embedded source identity is not the expected clean native build')
+                    if settings['GOOS'] != native_os or settings['GOARCH'] != native_arch:
+                        raise SystemExit('Artifact platform identity does not match the native runner')
+                    artifact['build'] = {key: settings[key] for key in ('vcs.revision', 'vcs.modified', 'GOOS', 'GOARCH')}
+                entry['artifacts'].append(artifact)
         if isinstance(report.get('browser_stats'), dict):
             entry['browser'] = {key: int(report['browser_stats'].get(key, 0)) for key in ('expected', 'unexpected', 'skipped', 'flaky')}
         if report.get('workflow') in ('all', 'repair'):

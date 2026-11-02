@@ -85,6 +85,16 @@ needs a green run on the named runner and a linked, scope-limited evidence recor
 
 ## Execution order and design checks
 
+The immediate owner-directed acceptance requires one exact final commit: all
+five independent repair journeys, every main CI job (including both PostgreSQL
+race gates and the complete 14-workflow console), and both controlled-upgrade
+jobs must finish successfully. Queued, cancelled, skipped, partial or
+different-commit observations do not satisfy it. Retain current binary SHA-256
+and clean embedded source/platform identity in nonempty safe summaries. Reconcile
+`DEFECT.0071` and current pointers, record the accepted commit and workflow URLs,
+then continue the entire unfinished `GOAL.md` scope. No further functionality
+precedes that milestone.
+
 1. Diagnose and repair the recurring x86 repair-browser failure using safe
    matcher names and precise source locations. Replay the actual journey on
    GitHub; later green runs alone do not explain an earlier failure.
