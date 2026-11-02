@@ -768,7 +768,7 @@
       "id": "DEFECT.0071",
       "summary": "Initial GitHub Linux x86 Chromium suite failed without retained private failure detail",
       "first_failure": "evidence/2026-11-02/github-ci-first-run.json",
-      "state": "focused five-journey replay passed on ed1d0dc; awaiting all required gates and binary identity evidence on final same commit",
+      "state": "five focused repairs and full-run repair pass on20a71c1; milestone still pending because retention failed",
       "repair": "Observe fresh HTTP status but read durable repair identity and job rows from the rendered UI; avoid navigation-sensitive Chromium response.json handles. Revert unsupported product focus change. Classify error headers only and record explicit phases.",
       "replay": "evidence/2026-11-02/github-ci-second-run.json",
       "limits": "Earlier focus/Axe classifications were not reliable because source snippets were searched. A retained clean 403d report proves a response-body retrieval failure. The new harness must still pass live replay; no completed defect repair is claimed.",
@@ -776,7 +776,8 @@
       "historical_green_candidate": "998c7f822d6ee882d2c1efc0ffe60a7d706ef7e0",
       "repair_source_parent": "ed1d0dc323c3728723166ca1cf9bb86978f3096e",
       "latest_replay": "evidence/2026-11-02/github-repair-diagnostic-correction.json",
-      "focused_replay": "evidence/2026-11-02/github-repair-ed1d0dc-focused-checkpoint.json"
+      "focused_replay": "evidence/2026-11-02/github-repair-ed1d0dc-focused-checkpoint.json",
+      "latest_full_replay": "evidence/2026-11-02/github-ci-20a71c1-failure.json"
     },
     {
       "id": "DEFECT.0072",
@@ -788,6 +789,15 @@
       "limits": "The original artifact omitted its detailed results. The repaired native GitHub security job passed and its downloaded summary contains all324cases with source_dirty=false; raw private reports remain private.",
       "candidate": "1678ed59f9bd52df89cf82ff7e395761a15f028a",
       "replay": "evidence/2026-11-02/github-ci-1678ed5-security-summary.json"
+    },
+    {
+      "id": "DEFECT.0073",
+      "summary": "Full GitHub Chromium suite loses retention approval response body after the console closes its modal",
+      "first_failure": "evidence/2026-11-02/github-ci-20a71c1-failure.json",
+      "state": "harness repair implemented but unverified",
+      "repair": "Retain the browser POST/status and modal-close assertions, identify exactly one new durable policy-run receipt with the independent API client, and keep every downstream cancellation/revocation/recovery/zero-Axe assertion. Add five independent fresh retention replays alongside the five repair replays.",
+      "candidate_parent": "20a71c1c3e4ae83d70adb14332a53b9df7cc8bdb",
+      "limits": "The actual full run passed repair but failed retention. No acceptance or broad readiness is claimed until focused repair, focused retention, all main jobs and both upgrades pass on the same next candidate."
     }
   ]
 }

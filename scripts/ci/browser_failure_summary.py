@@ -57,7 +57,7 @@ def main():
     if proof_path.is_file() and proof_path.stat().st_size <= 1 << 20:
         proof = json.loads(proof_path.read_text())
         if proof.get('phase') in ('fixture', 'connect', 'open_repair', 'create_operation', 'source_focus', 'source_accessibility', 'navigate_jobs', 'resume_source', 'wrong_source', 'exact_source', 'credential_checks', 'complete'):
-            print('Repair failure phase: ' + proof['phase'])
+            print('Repair workflow phase: ' + proof['phase'])
         if isinstance(proof.get('checks'), list):
             print(f'Repair workflow progress: {len(proof["checks"])} completed checks')
         for finding in safe_axe_findings(proof):

@@ -4,7 +4,7 @@
 import argparse,datetime,hashlib,json,os,subprocess,time,urllib.parse,urllib.request,uuid
 from pathlib import Path
 from qualification_contract import candidate_binary_directory, candidate_artifact_names
-parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');parser.add_argument('--serve',action='store_true');parser.add_argument('--binary-directory',type=Path,help='Owned candidate binary directory; defaults to bin without replacing active primary binaries');parser.add_argument('--workflow',choices=['all','repair'],default='all',help='Run the complete console or only the real repair workflow for defect replay');args=parser.parse_args()
+parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');parser.add_argument('--serve',action='store_true');parser.add_argument('--binary-directory',type=Path,help='Owned candidate binary directory; defaults to bin without replacing active primary binaries');parser.add_argument('--workflow',choices=['all','repair','retention'],default='all',help='Run the complete console or a real repair/retention workflow for defect replay');args=parser.parse_args()
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT);RUN=uuid.uuid4().hex[:10];PRIVATE=ROOT/'.private/console-conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)
 BIN=candidate_binary_directory(args.binary_directory)
 ARTIFACTS=[str((BIN/name).relative_to(ROOT))for name in ['cratectld','cratectl']]
@@ -21,7 +21,7 @@ scope=['cmd','internal','scripts','web','api','go.mod','go.sum','Makefile']
 result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope],text=True).strip()),'artifact_digests':{n:hashlib.sha256((ROOT/n).read_bytes()).hexdigest()for n in ARTIFACTS},'build_identity':{n:settings(n)for n in ARTIFACTS},'checks':checks,'topology':'Real Chromium, native registry/worker and nonowner forced-RLS PostgreSQL. An empty owned database and two newly provisioned tenants; explicit loopback-only HTTP development profile on port 38443.','limits':['This browser run exercises the explicit loopback HTTP test profile. Normal native TLS trust remains separately qualified; browser CA deployment and network/production PKI are not established by this run.','Only tested views and named interactions are qualified. Full console, all WCAG behavior/assistive technologies/native browsers, production packaging and complete product scope remain open.','Management repository/artifact pages use current grants/policy, scoped encrypted scan cursors, bounded live traversal and server search. This is not a multi-page snapshot or full native-format index qualification.']}
 result['build_source_matches_candidate']=all(s.get('vcs.modified')=='false'and s.get('vcs.revision')==result['candidate']for s in result['build_identity'].values())
 result['workflow']=args.workflow
-if args.workflow=='repair':result['limits'].append('Only the repair browser workflow is selected for defect replay; the complete console remains a separate 14-workflow gate.')
+if args.workflow!='all':result['limits'].append('Only the '+args.workflow+' browser workflow is selected for defect replay; the complete console remains a separate 14-workflow gate.')
 def check(label,value):
     if not value:raise AssertionError(label)
     checks.append(label)
@@ -107,10 +107,10 @@ try:
         while all(p.poll()is None for p in processes.values()):worker_control();time.sleep(.05)
         raise AssertionError('owned process exited during UI review')
     browser_env=dict(runtime_env,CRATECTL_CONSOLE_FIXTURE_JSON=str(fixture_path),PLAYWRIGHT_BROWSERS_PATH=str(ROOT/'.cache/playwright-browsers'),PLAYWRIGHT_JSON_OUTPUT_NAME=str(PRIVATE/'browser-results.json'))
-    selected=['zzzz-repair.spec.mjs']if args.workflow=='repair'else[]
+    selected={'repair':['zzzz-repair.spec.mjs'],'retention':['zzzzzz-retention.spec.mjs']}.get(args.workflow,[])
     command([ROOT/'web/node_modules/.bin/playwright','test','--config',ROOT/'web/playwright.config.mjs',*selected],browser_env)
-    report=json.loads((PRIVATE/'browser-results.json').read_text());check('selected real-browser workflows passed without skips or flaky results',report['stats']['unexpected']==0 and report['stats']['skipped']==0 and report['stats']['flaky']==0 and report['stats']['expected']==(1 if args.workflow=='repair' else 14))
-    proofs=[('repair_browser','repair-browser-proof.json')] if args.workflow=='repair' else [
+    report=json.loads((PRIVATE/'browser-results.json').read_text());result['browser_stats']=report['stats'];check('selected real-browser workflows passed without skips or flaky results',report['stats']['unexpected']==0 and report['stats']['skipped']==0 and report['stats']['flaky']==0 and report['stats']['expected']==(14 if args.workflow=='all' else 1))
+    proofs=[(args.workflow+'_browser',args.workflow+'-browser-proof.json')] if args.workflow!='all' else [
         ('native_lifecycle_browser','native-lifecycle-browser-proof.json'),('hold_matters_browser','hold-matters-browser-proof.json'),
         ('hold_cases_browser','hold-cases-browser-proof.json'),('hold_browser','hold-browser-proof.json'),
         ('retention_schedule_browser','retention-schedule-browser-proof.json'),('retention_browser','retention-browser-proof.json'),
@@ -141,6 +141,14 @@ except KeyboardInterrupt:
 except BaseException as e:result['status']='failed';result['failure']=type(e).__name__+': '+str(e)
 finally:
     for name in list(processes):stop(name)
+    # Keep counts from a failed browser process too. Its nonzero exit prevents
+    # the success-path report reader above from running.
+    browser_report=PRIVATE/'browser-results.json'
+    if browser_report.is_file()and browser_report.stat().st_size<=16<<20:
+        try:
+            browser_data=json.loads(browser_report.read_text());stats=browser_data.get('stats',{})if isinstance(browser_data,dict)else{}
+            if isinstance(stats,dict)and all(type(stats.get(key))is int and 0<=stats[key]<=10000 for key in ['expected','unexpected','skipped','flaky']):result['browser_stats']={key:stats[key]for key in ['expected','unexpected','skipped','flaky']}
+        except(ValueError,OSError):pass
     target=ROOT/'evidence'/datetime.datetime.now(datetime.timezone.utc).date().isoformat();target.mkdir(parents=True,exist_ok=True);path=target/('console-'+RUN+'.json');path.write_text(json.dumps(result,indent=2)+'\n')
     print(result['status'].upper()+': '+str(len(checks))+' assertions; real operator console; '+str(path))
 if result['status']=='failed':raise SystemExit(result.get('failure','browser workflow failed'))

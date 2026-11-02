@@ -6,13 +6,16 @@ GitHub native qualification and moves historical controlled-upgrade journeys
 off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
-Current repair milestone: all five independent focused browser journeys passed
-on `ed1d0dc`, with zero skipped, unexpected or flaky results and clean matching
-builds. The harness now reads rendered repair/job identity and the error
-classifier uses headers. The milestone is not accepted yet: current binary
-hashes and embedded source/platform identity are being added to safe artifacts,
-and every main/focused/upgrade gate must pass on that same final candidate.
-See `evidence/2026-11-02/github-repair-ed1d0dc-focused-checkpoint.json`.
+Current repair milestone remains unaccepted. On clean `20a71c1`, all five
+focused repair journeys, both controlled-upgrade jobs and eight of nine main
+CI jobs passed. Both native PostgreSQL race steps passed. The full x86 console
+passed repair but failed retention approval's browser response-body read:
+13 expected, one unexpected, zero skips/flaky results. See
+`evidence/2026-11-02/github-ci-20a71c1-failure.json` and `DEFECT.0073`.
+The retention harness now identifies its newly admitted durable run independently,
+while preserving POST status, modal closure and every downstream assertion.
+Five fresh repair and retention replays plus full main/upgrades on one exact
+next candidate remain required before further functionality.
 
 Real PostgreSQL integration races now have native GitHub pass observations on
 ARM64 (`609be9b`) and x86-64 (`9c0abc2`). These are completed step results,

@@ -37,6 +37,11 @@ class EvidenceSummary(unittest.TestCase):
         self.assertEqual(report['records'][0]['workflow'], 'repair')
         self.assertNotIn('private-synthetic-value', json.dumps(report))
         self.assertTrue(all('credential' not in record for record in report['records']))
+        self.write('native.json', {'candidate': 'a' * 40, 'status': 'failed', 'workflow': 'retention', 'browser_stats': {'expected': 0, 'unexpected': 1, 'skipped': 0, 'flaky': 0}, 'failure': 'private-synthetic-value'})
+        failed = summarize(self.root, self.environment)['records'][0]
+        self.assertEqual(failed['workflow'], 'retention')
+        self.assertEqual(failed['browser'], {'expected': 0, 'unexpected': 1, 'skipped': 0, 'flaky': 0})
+        self.assertNotIn('private-synthetic-value', json.dumps(failed))
 
     def test_stale_candidate_and_external_symlink_do_not_become_evidence(self):
         path = self.write('stale.json', {'candidate': 'b' * 40})

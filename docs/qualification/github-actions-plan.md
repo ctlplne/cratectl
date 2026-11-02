@@ -61,6 +61,20 @@ The `make security` and `make packaging` targets intentionally still fail: their
 full campaigns are incomplete. Dependabot proposes Go, npm and Actions updates;
 the CI matrix must validate each proposal.
 
+The later `20a71c1` candidate is not accepted. Its five independent repair
+journeys, both upgrade jobs and eight of nine main jobs passed, including both
+native PostgreSQL race steps. The full x86 suite passed repair and failed
+retention approval's Chromium response-body read (13 expected, one unexpected,
+zero skips/flaky results). Preserve
+`evidence/2026-11-02/github-ci-20a71c1-failure.json` and `DEFECT.0073`.
+The retention harness retains browser POST/status and modal-close assertions,
+then identifies its newly admitted durable run through the independent API
+client. The focused workflow now also supports five fresh retention journeys
+on manual dispatch, without cancelling repair replays. Both focused campaigns,
+all main jobs and both upgrades must pass on one exact next candidate before
+further functionality. The added retention replay is a regression gate, not a
+replacement for the complete 14-workflow console.
+
 ## Additional work to move off this Mac
 
 Priority means sequencing, not permission to omit a goal requirement. Each row

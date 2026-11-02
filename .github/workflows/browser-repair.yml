@@ -1,13 +1,20 @@
-name: Repair browser regression
+name: Focused browser regression
 
 on:
   workflow_dispatch:
+    inputs:
+      workflow:
+        description: Independent browser journey to replay five times
+        type: choice
+        default: repair
+        options: [repair, retention]
   push:
     branches: [main]
     paths:
       - 'web/src/repair.tsx'
       - 'web/src/components.tsx'
       - 'web/tests/zzzz-repair.spec.mjs'
+      - 'web/tests/zzzzzz-retention.spec.mjs'
       - 'scripts/conformance_console.py'
       - 'scripts/ci/browser_failure_summary.py'
       - 'scripts/ci/evidence_summary.py'
@@ -17,12 +24,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: repair-browser-${{ github.ref }}
+  group: browser-replay-${{ github.ref }}-${{ inputs.workflow || 'repair' }}
   cancel-in-progress: true
 
 jobs:
   repair:
-    name: Real x86 Chromium repair replay
+    name: Real x86 Chromium ${{ inputs.workflow || 'repair' }} replay
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     env:
@@ -31,6 +38,7 @@ jobs:
       CRATECTL_QUALIFICATION_BIN_DIR: .cache/ci-build
       PLAYWRIGHT_BROWSERS_PATH: .cache/playwright-browsers
       NPM_CONFIG_USERCONFIG: /dev/null
+      CRATECTL_BROWSER_WORKFLOW: ${{ inputs.workflow || 'repair' }}
     services:
       cratectl-postgres:
         image: postgres:16.15-alpine
@@ -68,11 +76,11 @@ jobs:
           npm ci --prefix web --ignore-scripts --no-audit --no-fund
           bash scripts/ci/bootstrap_linux.sh
           web/node_modules/.bin/playwright install --with-deps chromium
-      - name: Replay repair five times with independent fresh databases
+      - name: Replay selected journey five times with independent fresh databases
         run: |
           for attempt in 1 2 3 4 5; do
-            echo "Repair replay $attempt of 5"
-            python3 scripts/conformance_console.py --workflow repair --require-clean-build
+            echo "$CRATECTL_BROWSER_WORKFLOW replay $attempt of 5"
+            python3 scripts/conformance_console.py --workflow "$CRATECTL_BROWSER_WORKFLOW" --require-clean-build
           done
       - name: Safe failure locations and matcher labels
         if: failure()
@@ -83,7 +91,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: ci-summary-repair-browser
+          name: ci-summary-${{ inputs.workflow || 'repair' }}-browser
           path: .cache/ci-evidence-summary.json
           if-no-files-found: error
           retention-days: 30

@@ -89,7 +89,7 @@ def summarize(root, environment):
                 entry['artifacts'].append(artifact)
         if isinstance(report.get('browser_stats'), dict):
             entry['browser'] = {key: int(report['browser_stats'].get(key, 0)) for key in ('expected', 'unexpected', 'skipped', 'flaky')}
-        if report.get('workflow') in ('all', 'repair'):
+        if report.get('workflow') in ('all', 'repair', 'retention'):
             entry['workflow'] = report['workflow']
         for key in ('baseline_version', 'expected_schema'):
             if key in report:

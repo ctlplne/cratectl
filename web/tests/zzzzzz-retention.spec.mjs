@@ -33,7 +33,18 @@ test('operator reviews retention targets, confirms lost admission and recovers p
     await openPolicy();await modal().getByRole('button',{name:'Preview retirement',exact:true}).click();await page.getByLabel('Retirement run reason',{exact:true}).fill(reason);await page.getByRole('button',{name:'Preview retirement targets',exact:true}).click();await expect(page.getByText(/Retirement preview:/)).toBeVisible();
   }
   async function approve(){
-    await page.getByRole('checkbox',{name:/I reviewed all/}).check();const response=page.waitForResponse(r=>new URL(r.url()).pathname===endpoint+'/runs'&&r.request().method()==='POST'&&r.status()===202);await page.getByRole('button',{name:'Approve retirement run',exact:true}).click();const result=await(await response).json();await expect(modal()).toBeHidden();return result.job;
+    const before=new Set((await runs()).map(run=>run.job));
+    await page.getByRole('checkbox',{name:/I reviewed all/}).check();
+    const response=page.waitForResponse(r=>new URL(r.url()).pathname===endpoint+'/runs'&&r.request().method()==='POST'&&r.status()===202);
+    await page.getByRole('button',{name:'Approve retirement run',exact:true}).click();await response;
+    await expect(modal()).toBeHidden();
+    // The console has consumed its response and closed the dialog. Chromium
+    // can discard that body's CDP handle; identify the new durable receipt
+    // through the independent API client instead of reading it a second time.
+    let admitted=[];
+    await expect.poll(async()=>{admitted=(await runs()).filter(run=>!before.has(run.job));return admitted.length}).toBe(1);
+    expect(admitted[0].job).toMatch(/^[1-9][0-9]*:retention-[a-f0-9]{64}$/);
+    return admitted[0].job;
   }
   async function openRun(id){
     await openPolicy();const run=modal().locator('section.message').filter({has:page.getByRole('heading',{name:'Retirement run '+id,exact:true})});await run.getByRole('button',{name:'Inspect retirement run',exact:true}).click();await expect(page.getByRole('button',{name:'Refresh retirement run',exact:true})).toBeVisible();
