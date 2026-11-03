@@ -350,3 +350,20 @@ silently omit old packages lacking a new projection. Test actual native SDK
 consumption and search on both Linux architectures, including fresh pinned
 restores after unlist/relist and current policy/grant revocation. Full format,
 other clients/platforms and every original requirement remain required.
+
+The entiree7c0419campaign now passes15jobs: main9/OCI2/upgrades2/library2.
+Both actual native PostgreSQL/race and2x436stock-client campaigns, full15x86
+Chromium0bad,2x214OCI,2x15upgrade reports and all library contracts pass on that
+exact source. Nine safe summaries are retained in [the checkpoint](../../evidence/2026-11-03/github-e7c0419-checkpoint.json).
+
+The next actual SDK campaign adds49owned valid Nuspec documents and Go-projected
+dependency XML. Two actual SDK readers compare original/projected framework
+interpretation, IDs, range min/max/build metadata/inclusivity/floating state and
+asset flags. Packaging/Frameworks versions and hashes, original/projection corpus
+hashes and bounded mismatch evidence are retained. This verifies declaration
+selection and semantic transport, not an invented Go framework alias table. Go
+rejects malformed nonempty active ranges; the SDK default reader can widen them
+toAll, so the valid owned corpus does not claim those Go rejections are native.
+Shared literal-attribute normalization must preserve references, text/CDATA and
+original bytes. All earlier contracts and native source/unit/race/fuzz remain
+mandatory; managed compilation and actual49document matching are unverified.

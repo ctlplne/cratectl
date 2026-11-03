@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
-"""Compare Go IDs, versions/ranges, Nuspec scalars and archives with SDK libraries.
+"""Compare Go IDs, versions/ranges, Nuspec metadata and archives with SDK libraries.
 
 This is a native library contract test, not package-feed or stock-client proof.
 The owned C# fixture has no package references and clears package sources.
@@ -137,6 +137,43 @@ def range_cases():
     return [json.dumps(pair, separators=(',', ':')) for pair in dict.fromkeys(pairs)]
 
 
+def dependency_cases():
+    # Only owned, valid metadata reaches this semantic round-trip. Invalid
+    # nonempty ranges are rejected by Go admission, while the SDK's default
+    # reader is lenient; its acceptance must not be misreported as rejection.
+    values = nuspec_cases()
+    bodies = [
+        '', '<dependencies/>',
+        '<dependencies><dependency id="Owned.A" version="[1,2)"/><dependency id="Owned.Any"/><dependency id="Owned.Empty" version=""/></dependencies>',
+        '<dependencies><dependency id="ignored/invalid" version="invalid"/><group targetFramework="net10.0"><dependency id="Owned.A" version="1.2*" include="runtime,Build,runtime" exclude="analyzers"/></group><group targetFramework="netstandard2.0"/></dependencies>',
+        '<dependencies><dependency id="ignored/invalid" version="invalid"/><group/></dependencies>',
+        '<dependencies><dependency id="ignored/invalid"/></dependencies><dependencies><group><dependency id="Owned.A" version="[1]"/></group></dependencies>',
+        '<dependencies><dependency id="Owned.A" version="1"/></dependencies><dependencies><dependency id="Owned.B" version="[2,3)"/></dependencies>',
+        '<dependencies><group targetFramework="net10.0"/><group targetFramework="net10.0"><dependency id="Owned.A" version="1.0+owned"/></group></dependencies>',
+        '<dependencies><group><dependency id="Owned.A" version="1" include="build,runtime"/><dependency id="owned.a" version="1.0.0" include="RUNTIME,BUILD"/><dependency id="Owned.A" version="2"/></group></dependencies>',
+        '<Dependencies><dependency id="ignored/invalid"/></Dependencies><dependencies><Group><dependency id="ignored/invalid"/></Group><dependency id="Owned.A" version="1"/></dependencies>',
+        '<dependencies xmlns="urn:foreign"><dependency id="ignored/invalid"/></dependencies><dependencies><x:dependency xmlns:x="urn:foreign" id="ignored/invalid"/><dependency id="Owned.A" version="1"/></dependencies>',
+        '<dependencies><group><wrapper><dependency id="ignored/invalid"/></wrapper><dependency id="Owned.A" version="[1.0-alpha+owned,2.0+other)"><ignored/></dependency></group></dependencies>',
+        '<description><![CDATA[<dependency id="ignored/invalid" include="a\tb"/>]]></description><!-- <group targetFramework="a\tb"/> --><dependencies><dependency id="Owned.A" version="1"/></dependencies>',
+        '<dependencies><group targetFramework="net10.0"><dependency id="Owned.A" version="1" include="a\tb\r\nc&#x9;d" exclude="x\ny"/></group></dependencies>',
+        '<dependencies><group targetFramework="net10.0"><dependency id="_Owned.Ünicode" version="[1.0--0,1.0-0]" include="Build,compile,, contentFiles" exclude="a&#xD;b,a&#xA;b"/></group></dependencies>',
+    ]
+    frameworks = ['net10.0', 'net8.0', 'netstandard2.0', '.NETStandard2.0', '.NETFramework4.7.2',
+                  '.NETCoreApp3.1', 'portable-net45+win8+wp8', 'win8', 'wp8', 'uap10.0', 'monotouch',
+                  'monoandroid10.0', 'tizen6.0', 'xamarinios10.0', 'net8.0-windows10.0.19041.0',
+                  'net9.0-android35.0', 'any', 'agnostic', 'native', 'unsupported', ' ']
+    for framework in frameworks:
+        bodies.append('<dependencies><group targetFramework="' + framework + '"><dependency id="Owned.A" version="[1.0.0.1,2)"/></group></dependencies>')
+    for body in bodies:
+        raw = ('<package><metadata><id>Owned.Metadata</id><version>1.0+owned</version>' + body + '</metadata></package>').encode()
+        values.append(base64.b64encode(raw).decode('ascii'))
+    prefixed = '<p:package xmlns:p="urn:owned"><p:metadata xmlns="urn:dependencies"><p:id>Owned.Metadata</p:id><p:version>1</p:version><dependencies><group targetFramework="net10.0"><dependency id="Owned.A" version="1"/></group></dependencies></p:metadata></p:package>'
+    outside = '<package><files><dependencies><dependency id="ignored/invalid"/></dependencies></files><metadata><id>Owned.Metadata</id><version>1</version></metadata></package>'
+    for raw in [prefixed, outside]:
+        values.append(base64.b64encode(raw.encode()).decode('ascii'))
+    return values
+
+
 def main():
     os.chdir(ROOT)
     os.umask(0o077)
@@ -148,7 +185,7 @@ def main():
     candidate = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
     dirty = bool(subprocess.check_output(['git', 'status', '--porcelain', '--untracked-files=all']).strip())
     arch = {'x86_64': 'amd64', 'aarch64': 'arm64'}.get(platform.machine())
-    report = {'candidate': candidate, 'run_id': os.environ.get('GITHUB_RUN_ID'), 'status': 'failed', 'phase': 'preflight', 'source_dirty': dirty, 'checks': [], 'limits': ['Native transport-profile ID/flat-key, version-key/precedence, bounded version-range interval/floating observations, Nuspec identity/supported scalar accessor and owned ZIP archive identity/manifest-byte contracts only. Range projections use lowercase version keys; interval membership and floating preference are compared separately. ID reference acceptance and transport-profile exclusions are reported separately. An ordering tie is not permission to merge coordinate identities. Scalar text is untrusted and does not qualify typed dependency/framework/license APIs. No durable publication, full package/signature, ZIP64/split/exotic archive, feed, complete dependency resolution, publish/consume, tenant, policy, symbol, Chocolatey/PowerShell or release-readiness qualification.']}
+    report = {'candidate': candidate, 'run_id': os.environ.get('GITHUB_RUN_ID'), 'status': 'failed', 'phase': 'preflight', 'source_dirty': dirty, 'checks': [], 'limits': ['Native transport-profile ID/flat-key, version-key/precedence, bounded range interval/floating observations, Nuspec identity/scalar and owned dependency-projection semantic round-trips, and owned ZIP archive identity/manifest-byte contracts only. Dependency comparison uses actual SDK readers for original and Go-projected documents; this proves selected declarations preserve SDK meaning, not a Go framework alias implementation. The owned dependency corpus is valid; Go rejects invalid nonempty active ranges rather than inheriting the SDK default reader leniency. Range projections use lowercase keys; interval and preference are separate. ID reference acceptance/transport exclusions are separate. Ordering ties do not merge coordinate identities. Text is untrusted; no license/security approval, full graph resolution, feed/client, symbols/signatures/proxy/group/platform or readiness verdict.']}
     environment = dict(os.environ, DOTNET_CLI_TELEMETRY_OPTOUT='1', DOTNET_SKIP_FIRST_TIME_EXPERIENCE='1', DOTNET_NOLOGO='1', DOTNET_GENERATE_ASPNET_CERTIFICATE='false', DOTNET_CLI_HOME=str(work / 'dotnet-home'), NUGET_PACKAGES=str(work / 'packages'), MSBuildEnableWorkloadResolver='false', GOTOOLCHAIN='local', GOCACHE=str(ROOT / '.cache/go-build'), GOMODCACHE=str(ROOT / '.cache/go-mod'))
     number = 0
 
@@ -279,6 +316,22 @@ def main():
         report.update(range_cases=len(ranges), range_fixture_sha256=hashlib.sha256(encoded).hexdigest(), range_mismatch_indexes=errors,
                       range_mismatches=[{'index': index, 'input': json.loads(ranges[index]), 'go': actual['rows'][index], 'reference': expected['rows'][index]} for index in errors[:32]])
         check('all owned dependency bounds and floating preference observations match actual SDK', not errors)
+        report['phase'] = 'nuspec_dependencies'
+        documents = dependency_cases()
+        encoded = json.dumps(documents).encode()
+        check('owned dependency document corpus stays within input and case budgets', len(encoded) <= 2 << 20 and len(documents) <= 4096)
+        actual = json.loads(command([work / 'go-oracle', '--dependencies'], 'project bounded owned dependency declarations with Go', encoded))
+        check('dependency projection uses this clean native source', actual['os'] == 'linux' and actual['architecture'] == arch and actual['build'] == native['build'] and len(actual['rows']) == len(documents))
+        pairs = [json.dumps([original, row['projection']], separators=(',', ':')) for original, row in zip(documents, actual['rows'])]
+        projected = json.dumps(pairs).encode()
+        check('owned original/projected documents stay within reference input budget', len(projected) <= 2 << 20)
+        expected = json.loads(command([dotnet, work / 'managed/Oracle.dll', 'dependencies'], 'compare original and Go-projected dependency meaning with actual SDK', projected))
+        check('dependency reference uses the actual native packaging library', expected['os'] == 'linux' and expected['architecture'] == {'amd64': 'x64', 'arm64': 'arm64'}[arch] and expected['version'] == report['packaging_library_version'] and len(expected['rows']) == len(documents))
+        errors = [index for index, (a, b) in enumerate(zip(actual['rows'], expected['rows'])) if not a['valid'] or not b['original']['valid'] or b['original'] != b['projected']]
+        report.update(dependency_cases=len(documents), dependency_fixture_sha256=hashlib.sha256(encoded).hexdigest(), dependency_projection_fixture_sha256=hashlib.sha256(projected).hexdigest(),
+                      framework_library_version=expected['framework_version'], framework_library_sha256=hashlib.sha256((work / 'managed/NuGet.Frameworks.dll').read_bytes()).hexdigest(), dependency_mismatch_indexes=errors,
+                      dependency_mismatches=[{'index': index, 'go_valid': actual['rows'][index]['valid'], 'reference': expected['rows'][index]} for index in errors[:32]])
+        check('all owned dependency projections preserve actual SDK framework/range/asset meaning', not errors)
         report.update(status='passed', phase='complete')
     except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
         report['failure_type'] = type(error).__name__

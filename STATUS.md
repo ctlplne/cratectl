@@ -6,7 +6,29 @@ GitHub native qualification and moves historical controlled-upgrade journeys
 off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
-Current 13-job listing milestone accepted on clean source
+Current 15-job milestone accepted on clean source
+`e7c0419b792b9a3a5bb0310aef2f621a2967db99`: main 9, OCI 2, controlled
+upgrades 2 and actual SDK libraries 2 all pass. Both native PostgreSQL/race and
+broader stock-client campaigns pass, with 436 client checks per architecture.
+Full x86 Chromium passes all 15 workflows with zero skipped/flaky/unexpected
+results. Both OCI campaigns pass 214 checks; both upgrade campaigns rebuild ten
+pinned historical servers and pass 15 reports. Both actual SDKs match all 892
+range observations and every earlier mandatory library contract. Nine safe
+summaries retain exact source, binaries, libraries, SDK and fixture identities.
+No new focused browser campaign is included. See
+`evidence/2026-11-03/github-e7c0419-checkpoint.json`.
+
+Typed dependency declaration selection and shared XML attribute normalization
+are implemented for complete metadata work. Local build/unit/race/lint and five
+bounded fuzz campaigns pass. The owned SDK oracle now compares 49 original
+documents with Go-projected dependency XML, including framework interpretation,
+range floors/build metadata and asset flags. Actual managed compilation/native
+semantic comparison remains unverified. Go's explicit admission guard rejects
+malformed nonempty active ranges; the lenient SDK default can treat them as All.
+The valid owned corpus does not misattribute that difference to SDK rejection.
+See ADR0041 and `evidence/2026-11-03/nuget-dependencies-development.json`.
+
+Earlier 13-job listing milestone accepted on clean source
 `83ca29010c1cc00c52fcadbf95f0e69acb9912c4`: main 9, OCI 2 and controlled
 upgrades 2 all pass. Both actual native PostgreSQL/race gates pass the new listing
 regression, including restricted grants/revocation, API-key separation, holds,

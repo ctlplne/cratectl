@@ -77,6 +77,10 @@ func main() {
 	if err != nil || len(raw) > 2<<20 || json.Unmarshal(raw, &values) != nil || len(values) > caseLimit {
 		panic("owned version oracle input is invalid")
 	}
+	if len(os.Args) == 2 && os.Args[1] == "--dependencies" {
+		emit(dependencyProjections(values))
+		return
+	}
 	if len(os.Args) == 2 && os.Args[1] == "--range" {
 		rows := make([]rangeRow, 0, len(values))
 		for _, value := range values {

@@ -1,0 +1,110 @@
+{
+  "source_parent": "8c99fdfba521a340ade436bfa60d95367a80c1dc",
+  "source_dirty": true,
+  "state": "implemented but unverified against actual native SDK dependency projection/attribute semantics",
+  "behavior": "Bounded streaming case/namespace/scope-sensitive dependencies, group precedence over legacy flat items, raw framework/range/asset declarations and separate validated ID/range projections. Missing/empty ranges mean All; malformed active nonempty ranges/IDs fail closed. Literal XML attribute whitespace normalizes before namespace resolution while character references, text/CDATA/comments and original bytes remain distinct.",
+  "limits": {
+    "source_bytes": 1048576,
+    "groups": 2048,
+    "items": 8192,
+    "attribute_bytes": 4096,
+    "selected_text_bytes": 1048576,
+    "xml_depth": 32,
+    "xml_tokens": 32768,
+    "attributes_per_element": 128
+  },
+  "local_checks": {
+    "build": "make build BINDIR=.cache/nuget-dependencies-build passed",
+    "unit": "make test passed",
+    "race": "make race passed",
+    "lint": "make lint passed",
+    "integration": "Server/store integration-tagged compile only; no local PostgreSQL execution",
+    "syntax": "Python compile and NuGet workflow actionlint passed",
+    "fuzz": {
+      "requested_seconds_each": 5,
+      "FuzzNuspecDependencies": {
+        "executions": 126232,
+        "elapsed_seconds": 6.467
+      },
+      "FuzzNuspecXMLAttributeNormalization": {
+        "executions": 277330,
+        "elapsed_seconds": 5.269
+      },
+      "FuzzNuspecIdentity": {
+        "executions": 52884,
+        "elapsed_seconds": 6.22
+      },
+      "FuzzNuspecProperties": {
+        "executions": 26115,
+        "elapsed_seconds": 6.218
+      },
+      "FuzzArchiveIdentity": {
+        "executions": 288046,
+        "elapsed_seconds": 6.21
+      }
+    },
+    "go_observation": {
+      "source_parent": "8c99fdfba521a340ade436bfa60d95367a80c1dc",
+      "source_dirty": true,
+      "cases": 49,
+      "input_bytes": 19156,
+      "fixture_sha256": "adef84c2ca3ba139dbcff95fcff9fad9919874f8a1a6a625d13b230b5f4788c1",
+      "projected_input_bytes": 34407,
+      "projection_fixture_sha256": "24b5510efaca41909ad9be957f999d501b9043afc516bb3e7bd8fc17dae662bb",
+      "go_valid_cases": 49,
+      "go_os": "darwin",
+      "go_architecture": "arm64",
+      "go_build": {
+        "vcs.modified": "true",
+        "vcs.revision": "8c99fdfba521a340ade436bfa60d95367a80c1dc"
+      },
+      "go_helper_sha256": "aee986f21f0e6f23f58683a8755bbe11f84a0665f7c78f593346cd564a69cb86",
+      "limits": "Owned local Go projection data-shape observation only; actual SDK original/projected semantic comparison is unverified."
+    },
+    "managed": "C# compilation and actual SDK semantic comparison not executed locally; delegated to native GitHub Linux AMD64/ARM64."
+  },
+  "native_plan": "49 owned valid original Nuspec documents versus Go-projected XML, interpreted independently by actual SDK GetDependencyGroups for framework, range/min/max/build metadata/inclusivity/floating and asset-flag meaning. Record Packaging/Frameworks versions and SHA, clean native Go identity, both fixture hashes, all mismatch indexes and32owned examples. Keep all earlier1129version/11Nuspec/4archive/63516ID/3025precedence/23scalar/892range contracts mandatory.",
+  "admission_caution": "The SDK default dependency reader can treat invalid nonempty ranges as All. Go rejects them. This is an explicit admission guard, not an SDK rejection claim; the49document semantic corpus is valid and excludes malformed range declarations.",
+  "files": [
+    {
+      "path": "internal/nuget/nuspec.go",
+      "sha256": "fdff2d0f7c1d280faf28dab91e645bbbac4cb902cae70f416fcfdfb3adf2aab9"
+    },
+    {
+      "path": "internal/nuget/dependencies.go",
+      "sha256": "777f2ca5f47368c7d6a169443981fde8be5c6ed751e9ca84074b58900b9f6a54"
+    },
+    {
+      "path": "internal/nuget/dependencies_test.go",
+      "sha256": "a2bb6b20a2aef251cda8257605e3c6412b335cdd5516965d6ba3607d4b6b901b"
+    },
+    {
+      "path": "internal/nuget/xml_attributes.go",
+      "sha256": "4464c34fe2464c9ac1994e6244c65f9ccdccded201859a60a57c4d8c18ca3ee7"
+    },
+    {
+      "path": "internal/nuget/xml_attributes_test.go",
+      "sha256": "5f4d19fbff3fa484b3cea135ad4e96091b7a4602a25f73e35c4d84cdf89176b1"
+    },
+    {
+      "path": "scripts/fixtures/nuget-versions/main.go",
+      "sha256": "5f9206b825ec7447fc1746e0cd4f0e0ec4315cd7b6a229b8d83c8d13b4410369"
+    },
+    {
+      "path": "scripts/fixtures/nuget-versions/dependencies.go",
+      "sha256": "071880de43e830220478de3331f96c11e06328795948c2253c6d8c34f46db050"
+    },
+    {
+      "path": "scripts/fixtures/nuget-versions/Program.cs",
+      "sha256": "cdbf0e77ffbc6e39c9b1fc1f108605cf562df4b6655d2ebbf18c9117b18108db"
+    },
+    {
+      "path": "scripts/nuget_version_contract.py",
+      "sha256": "30e6d536969f943a977c2e7a1cb9fb0a180932ef8159a1399afba000273a6e1d"
+    }
+  ],
+  "scope_limits": [
+    "Selected dependency declaration semantics only. No Go framework canonicalization/alias implementation, full graph resolution, typed license/complete metadata, durable projection/backfill, registration/search/nativeTLS/platform/client/format/readiness verdict.",
+    "No new endpoint/resource, schema migration, primary switch, persistent local service, sibling/customer change or scope removal. All450capabilities/41families remain required."
+  ]
+}

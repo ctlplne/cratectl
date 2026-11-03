@@ -9,6 +9,39 @@ using NuGet.Packaging;
 
 class Program
 {
+    static object DependencyObservation(string value)
+    {
+        try
+        {
+            using var stream = new System.IO.MemoryStream(Convert.FromBase64String(value));
+            var reader = new NuspecReader(stream);
+            _ = reader.GetId();
+            _ = reader.GetVersion();
+            object groups = reader.GetDependencyGroups().Select(group => new {
+                framework = group.TargetFramework.GetShortFolderName(),
+                framework_name = group.TargetFramework.ToString(),
+                packages = group.Packages.Select(package => new {
+                    id = package.Id,
+                    range = package.VersionRange.ToNormalizedString().ToLowerInvariant(),
+                    min = package.VersionRange.MinVersion?.ToNormalizedString().ToLowerInvariant() ?? "",
+                    max = package.VersionRange.MaxVersion?.ToNormalizedString().ToLowerInvariant() ?? "",
+                    min_metadata = package.VersionRange.MinVersion?.Metadata ?? "",
+                    max_metadata = package.VersionRange.MaxVersion?.Metadata ?? "",
+                    include_min = package.VersionRange.IsMinInclusive,
+                    include_max = package.VersionRange.IsMaxInclusive,
+                    floating = package.VersionRange.IsFloating,
+                    include = package.Include.Select(flag => flag.ToLowerInvariant()).ToArray(),
+                    exclude = package.Exclude.Select(flag => flag.ToLowerInvariant()).ToArray()
+                }).ToArray()
+            }).ToArray();
+            return new { valid = true, groups };
+        }
+        catch (Exception)
+        {
+            return new { valid = false, groups = (object)Array.Empty<object>() };
+        }
+    }
+
     static void Main(string[] args)
     {
         using var input = Console.OpenStandardInput();
@@ -23,6 +56,22 @@ class Program
         var values = JsonSerializer.Deserialize<string[]>(memory.ToArray());
         int caseLimit = args.Length == 1 && args[0] == "id" ? 65536 : 4096;
         if (values == null || values.Length > caseLimit) throw new Exception("owned case count");
+        if (args.Length == 1 && args[0] == "dependencies")
+        {
+            var observations = values.Select(value => {
+                var pair = JsonSerializer.Deserialize<string[]>(value);
+                if (pair == null || pair.Length != 2) throw new Exception("owned dependency pair");
+                return new { original = DependencyObservation(pair[0]), projected = DependencyObservation(pair[1]) };
+            }).ToArray();
+            Console.WriteLine(JsonSerializer.Serialize(new {
+                os = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "linux" : "other",
+                architecture = RuntimeInformation.ProcessArchitecture.ToString().ToLowerInvariant(),
+                version = typeof(NuspecReader).Assembly.GetName().Version.ToString(),
+                framework_version = typeof(NuGet.Frameworks.NuGetFramework).Assembly.GetName().Version.ToString(),
+                rows = observations
+            }));
+            return;
+        }
         if (args.Length == 1 && args[0] == "range")
         {
             var observations = values.Select(value => {

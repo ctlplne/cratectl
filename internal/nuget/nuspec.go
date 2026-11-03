@@ -112,6 +112,10 @@ func nuspecDecoder(raw []byte) ([]byte, string, *xml.Decoder, error) {
 	if err != nil {
 		return nil, "", nil, err
 	}
+	decoded, err = normalizeXMLAttributes(decoded)
+	if err != nil {
+		return nil, "", nil, err
+	}
 	decoder := xml.NewDecoder(bytes.NewReader(decoded))
 	decoder.CharsetReader = func(label string, input io.Reader) (io.Reader, error) {
 		label = strings.ToLower(label)
