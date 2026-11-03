@@ -14,6 +14,7 @@ import uuid
 import xml.etree.ElementTree as XML
 import zipfile
 from pathlib import Path
+from urllib.parse import urlencode
 
 
 def hosted(h):
@@ -121,11 +122,40 @@ def hosted(h):
         check('NuGet native conditional ' + url.rsplit('/', 1)[-1], req(url, 'reader', headers={'If-None-Match': etag})[0] == 304)
     restore('consumer-one', '1.0.0')
     restore('consumer-two', '2.0.0')
+
+    def unlist(token='admin', denied=False):
+        run([dotnet, 'nuget', 'delete', 'Cratectl.Proof.Application', '1.0.0', '--source', source, '--api-key', h.tokens[token], '--non-interactive'], work, extra, expect_failure=denied)
+
+    def listing_state(expected):
+        reference = '/api/v1/repositories/dotnet/artifacts/reference?' + urlencode({'path': 'nuget-packages/cratectl.proof.application/1.0.0.nupkg'})
+        code, raw, _ = req(reference)
+        item = json.loads(raw) if code == 200 else {}
+        check('NuGet durable native listing state ' + str(expected), code == 200 and item.get('metadata', {}).get('listed', True) is expected and item.get('digest') == app1_digest)
+
+    unlist(token='reader', denied=True)
+    listing_state(True)
+    unlist()
+    unlist()  # A retry must succeed while retaining the immutable version.
+    listing_state(False)
+    check('NuGet unlisting retains the complete flat index', json.loads(req(flat + 'index.json', 'reader')[1])['versions'] == ['1.0.0', '2.0.0'])
+    restore('unlisted-pinned-consumer', '1.0.0')
+    check('NuGet unlisting retains original package and manifest bytes', req(package_url, 'reader')[1] == packages['application_1'][2] and req(manifest_url, 'reader')[1] == packages['application_1'][3])
+    h.stop()
+    h.start()
+    listing_state(False)
+    restore('unlisted-restarted-pinned-consumer', '1.0.0')
+    listing_endpoint = '/nuget/dotnet/api/v2/package/Cratectl.Proof.Application/1.0.0'
+    key_headers = {'X-NuGet-ApiKey': h.tokens['admin']}
+    check('NuGet native POST relists the version', req(listing_endpoint, method='POST', headers=key_headers)[0] == 200)
+    check('NuGet native POST relist retries succeed', req(listing_endpoint, method='POST', headers=key_headers)[0] == 200)
+    listing_state(True)
+    restore('relisted-pinned-consumer', '1.0.0')
     check('NuGet other tenant initially cannot see matching repository coordinate', req(package_url, 'other')[0] == 404)
     other, _ = package('other_application_1', 'Cratectl.Proof.Application', '1.0.0', True, True)
     push(other, token='other')
     check('NuGet colliding tenant coordinates retain distinct exact bytes', req(package_url, 'other')[1] == packages['other_application_1'][2] and req(package_url, 'reader')[1] == packages['application_1'][2])
     decide('Cratectl.Proof.Application', '1.0.0', app1_digest, 'denied')
+    check('NuGet relisting never overrides current content denial', req(listing_endpoint, method='POST', headers=key_headers)[0] == 200 and req(package_url, 'reader')[0] == 403)
     restore('denied-consumer', '1.0.0', True)
     check('NuGet denial covers direct content and manifest', req(package_url, 'reader')[0] == 403 and req(manifest_url, 'reader')[0] == 403)
     decide('Cratectl.Proof.Application', '1.0.0', app1_digest, 'allowed')

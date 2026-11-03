@@ -27,12 +27,23 @@ adds 23 owned documents, covering first/empty/duplicate fields, ASCII case,
 foreign scalar namespaces, child elements and XML whitespace/encoding behavior.
 Both first native SDK comparisons on b727f33 found one whitespace-only character
 reference mismatch (DEFECT.0084); their exact reports are retained. The local
-repair passes build/unit/race/lint and 139,055 fuzz executions. Native repair
-replay is unverified. This accessor does not implement
+repair passes build/unit/race/lint and 139,055 fuzz executions. Both actual native
+SDKs now match all 23 original documents on clean ed5c02e, with no mismatch and
+the unchanged fixture hash. All earlier mandatory library contracts pass too.
+See `evidence/2026-11-03/nuget-ed5c02e-checkpoint.json`. This accessor does not implement
 typed dependencies/frameworks/ranges/licenses or registration/search/unlisting.
 See ADR0038 and `evidence/2026-11-03/nuget-properties-development.json`.
 The original failure is retained in
 `evidence/2026-11-03/nuget-b727f33-property-whitespace-failure.json`.
+
+Native NuGet unlist/relist mutations and durable listing state are implemented
+but unverified against actual PostgreSQL/race and stock dotnet. Unlisting keeps
+flat indexes and pinned package/Nuspec downloads; relisting preserves current
+policy and cannot resurrect retirement. Current grants, revocation and holds
+apply under the common tenant write fence. The listing update, event and outbox
+share one transaction. New regressions and stock-client journeys run on GitHub;
+registration/search discovery projections remain required. See ADR0039 and
+`evidence/2026-11-03/nuget-listing-development.json`.
 
 Earlier operator/browser milestone accepted on clean source
 `9e6d98069d7cc624bf6339e241990de8ee063695`: all 13 jobs pass (main 9, OCI 2,

@@ -935,10 +935,11 @@
       "id": "DEFECT.0084",
       "summary": "NuGet scalar reader preserves a whitespace-only character reference that actual SDK ignores",
       "first_failure": "evidence/2026-11-03/nuget-b727f33-property-whitespace-failure.json",
-      "state": "repaired locally; native SDK replay unverified",
+      "state": "repaired and replayed against the original23document corpus on both actual native SDK architectures",
       "repair": "Discard whitespace-only XML text regardless of character references, preserving CDATA, xml:space and text nodes containing non-whitespace. Keep the original23document oracle unchanged and add local regressions. Native repair replay remains unverified.",
       "limits": "Owned scalar accessor contract only. No package-feed, complete dependency/registration/search/unlisting, client, security or readiness qualification.",
-      "latest_candidate": "b727f3367dcb8f257ce49d300009dbaf16e2abd6"
+      "latest_candidate": "ed5c02e2a37912fc066350e9895d41d538dad229",
+      "replay": "evidence/2026-11-03/nuget-ed5c02e-checkpoint.json"
     }
   ]
 }

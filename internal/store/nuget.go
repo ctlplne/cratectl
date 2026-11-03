@@ -27,7 +27,12 @@ type NuGetPackage struct {
 	Nuspec       []byte `json:"nuspec"`
 	NuspecSHA256 string `json:"nuspec_sha256"`
 	Validated    bool   `json:"archive_validated"`
+	Listed       *bool  `json:"listed,omitempty"`
 }
+
+// Existing immutable packages predate listing state and are listed by default.
+// Listing affects discovery only; authorization, policy and byte checks still apply.
+func (m NuGetPackage) IsListed() bool { return m.Listed == nil || *m.Listed }
 
 func NuGetPath(id, version string) string {
 	return "nuget-packages/" + id + "/" + version + ".nupkg"

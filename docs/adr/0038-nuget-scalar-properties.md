@@ -33,6 +33,9 @@ SDK, so a later nonempty duplicate wins. The reader now distinguishes these text
 nodes from CDATA and `xml:space="preserve"`; it preserves surrounding whitespace
 when the same text node also contains a non-whitespace character. The original
 23-document corpus is retained unchanged for native replay (DEFECT.0084).
+Both actual native Linux SDK comparisons now pass that unchanged corpus on
+ed5c02e, alongside every earlier mandatory library contract. Exact identities
+and limits are retained in `evidence/2026-11-03/nuget-ed5c02e-checkpoint.json`.
 
 The owned SDK oracle adds 23 source documents and compares every supported value
 against actual `GetMetadataValue`, with source/library/helper/fixture identities

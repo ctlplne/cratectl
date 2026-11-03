@@ -38,3 +38,20 @@ func TestNuGetManifestBindingFailsClosed(t *testing.T) {
 		}
 	}
 }
+
+func TestNuGetListingDefaultsAndRejectsInvalidState(t *testing.T) {
+	var m NuGetPackage
+	if !m.IsListed() {
+		t.Fatal("existing package became unlisted")
+	}
+	for _, listed := range []bool{false, true} {
+		if e := json.Unmarshal([]byte(`{"listed":`+map[bool]string{true: "true", false: "false"}[listed]+`}`), &m); e != nil || m.IsListed() != listed {
+			t.Fatal("listing boolean changed", e)
+		}
+	}
+	for _, bad := range []string{`{"listed":"false"}`, `{"listed":0}`, `{"listed":{}}`} {
+		if json.Unmarshal([]byte(bad), &m) == nil {
+			t.Fatal("nonboolean listing accepted")
+		}
+	}
+}

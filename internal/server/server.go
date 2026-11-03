@@ -162,7 +162,7 @@ func respondErr(w http.ResponseWriter, e error) {
 	case errors.Is(e, store.ErrRepositoryRemoved):
 		fail(w, 404, "repository_removed", "The repository and its bytes are retained. A tenant administrator can inspect its state and explicitly restore it.")
 	case errors.Is(e, store.ErrHeld):
-		fail(w, 409, "artifact_held", "Inspect the current hold. An administrator must release it or wait for its recorded expiry before changing deletion state.")
+		fail(w, 409, "artifact_held", "Inspect the current hold. An administrator must release it or wait for its recorded expiry before changing discovery or deletion state.")
 	case errors.Is(e, store.ErrReferenced):
 		fail(w, 409, "artifact_referenced", "Preview the active incoming manifest references and retire their parents before deleting this child.")
 	case errors.Is(e, store.ErrLifecycleRevision):

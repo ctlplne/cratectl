@@ -77,6 +77,13 @@ func TestNuGetCredentialIsScopedAndUnambiguous(t *testing.T) {
 		{"PUT", "/api/v1/repositories", []string{apiKey}, bearer, false},
 		{"PUT", "/npm/owned/api/v2/package", []string{apiKey}, bearer, false},
 		{"POST", "/nuget/owned/api/v2/package", []string{apiKey}, bearer, false},
+		{"DELETE", "/nuget/owned/api/v2/package/Owned.Package/1.0", []string{apiKey}, apiKey, false},
+		{"POST", "/nuget/owned/api/v2/package/Owned.Package/1.0/", []string{apiKey}, apiKey, false},
+		{"DELETE", "/nuget/owned/api/v2/package/Owned.Package/1.0", nil, "", true},
+		{"POST", "/nuget/owned/api/v2/package/Owned.Package/1.0", []string{apiKey, apiKey}, "", true},
+		{"DELETE", "/npm/owned/api/v2/package/Owned.Package/1.0", []string{apiKey}, bearer, false},
+		{"DELETE", "/nuget/owned/api/v2/package/Owned.Package/1.0/extra", []string{apiKey}, bearer, false},
+		{"GET", "/nuget/owned/api/v2/package/Owned.Package/1.0", []string{apiKey}, bearer, false},
 	} {
 		r := httptest.NewRequest(tc.method, tc.path, nil)
 		r.Header.Set("Authorization", "Bearer "+bearer)
@@ -86,6 +93,24 @@ func TestNuGetCredentialIsScopedAndUnambiguous(t *testing.T) {
 		got, e := requestCredential(r)
 		if got != tc.want || (e != nil) != tc.bad {
 			t.Fatal("credential scope or ambiguity changed", tc.method, tc.path)
+		}
+	}
+}
+
+func TestNuGetListingHTTPBoundary(t *testing.T) {
+	s := New(nil, nil, "https://registry.example")
+	for _, tc := range []struct {
+		method, body string
+		want         int
+	}{
+		{"GET", "", 405}, {"PUT", "", 405},
+		{"DELETE", "unexpected", 400}, {"POST", "unexpected", 400},
+	} {
+		r := httptest.NewRequest(tc.method, "/nuget/owned/api/v2/package/Owned.Package/1.0", strings.NewReader(tc.body))
+		w := httptest.NewRecorder()
+		s.nuget(w, r, store.Identity{}, store.Repository{Name: "owned", Mode: "hosted"}, "api/v2/package/Owned.Package/1.0")
+		if w.Code != tc.want {
+			t.Fatal("listing method/body boundary", tc.method, w.Code)
 		}
 	}
 }

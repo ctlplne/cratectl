@@ -293,3 +293,19 @@ was retained by Go and discarded by the SDK. Both original reports are retained
 in [the failure record](../../evidence/2026-11-03/nuget-b727f33-property-whitespace-failure.json).
 The repair keeps all23documents unchanged and adds local regression cases; a
 fresh native comparison is required before scalar compatibility is accepted.
+
+Both actual ed5c02e native SDK jobs now pass the unchanged23document scalar
+corpus and every earlier mandatory library contract. Exact clean helper/library/
+fixture identities are retained in [the scoped library checkpoint](../../evidence/2026-11-03/nuget-ed5c02e-checkpoint.json).
+Other workflow families are separately tracked; this library record is not an
+all-job acceptance.
+
+The next runtime campaign adds native NuGet unlist/relist. Both real PostgreSQL
+integration/race gates must execute the new non-skipping listing regression,
+including restricted grants, revoked API keys, holds, concurrent changes,
+tombstones and atomic event/outbox rollback. Both stock dotnet campaigns must
+run real delete/retry/reader-denial and fresh pinned dependency restores while
+unlisted, verify durable state across actual registry restart, then native HTTP
+POST relist and current-denial enforcement. Local unit/race stand-ins and tagged
+compilation do not count as database/client passes. Registration/search hiding
+remains required product work and must be covered when those resources exist.

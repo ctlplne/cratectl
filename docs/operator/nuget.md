@@ -41,7 +41,7 @@ dotnet nuget push PACKAGE.nupkg --source https://REGISTRY/nuget/REPOSITORY/index
   --api-key "$CRATECTL_WRITER_TOKEN" --skip-duplicate
 ```
 
-The API key is authoritative for native push, even when the client's source
+The API key is authoritative for native push and unlist/relist, even when the client's source
 configuration also supplies Basic credentials. It is ignored on read and
 management routes. Duplicate coordinates return 409; publishing cannot restore
 a retired reference. A repository requiring review hides unassessed versions
@@ -51,7 +51,25 @@ them. An archive passing inspection remains unassessed for security purposes.
 Materialized references use `nuget-packages/ID_KEY/VERSION_KEY.nupkg`. Inspect
 the exact digest in the package inventory before common hold/delete/restore
 operations. Restore checks retained bytes and preserves the current security
-decision. Native NuGet delete/unlist/relist remains unfinished.
+decision.
+
+Native unlist/relist is implemented but awaits actual PostgreSQL/race and stock
+client qualification. `dotnet nuget delete` records the version as unlisted:
+
+```sh
+dotnet nuget delete PACKAGE_ID VERSION --non-interactive \
+  --source https://REGISTRY/nuget/REPOSITORY/index.json --api-key "$CRATECTL_WRITER_TOKEN"
+```
+
+The flat version index, original package and original Nuspec remain available to
+authorized pinned consumers. Current review/policy decisions still govern reads.
+The native relist operation is an empty authenticated `POST` to
+`/nuget/REPOSITORY/api/v2/package/PACKAGE_ID/VERSION`. Repeated unlist/relist requests
+succeed. An active hold blocks a listing transition; a retired reference must go
+through the common verified restore operation. Relisting cannot resurrect it.
+Registration/search remain unfinished; their discovery projections must exclude
+unlisted versions while the administrative inventory continues to expose retained
+state to authorized operators.
 
 Operator budgets are `--nuget-upload-bytes` (64 MiB default, maximum 1 GiB),
 `--nuget-expanded-bytes` (256 MiB default, maximum 1 TiB), and
@@ -69,6 +87,7 @@ release readiness from the presence of these endpoints.
 
 Version-precedence work now adds stable numeric core/release ordering and a
 cancellation-aware sort, beneath the existing caller limits and a 100,000-key /
-64 MiB hard safety ceiling. The new comparator and 1/2/10 PostgreSQL regression
-are implemented but unverified against actual native SDK/database execution.
+64 MiB hard safety ceiling. The comparator and 1/2/10 PostgreSQL regression pass
+on both native Linux architectures at
+[189a6ae](../../evidence/2026-11-03/nuget-189a6ae-checkpoint.json).
 Stored version keys and package bytes are unchanged.

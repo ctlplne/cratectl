@@ -1,0 +1,57 @@
+{
+  "source_parent": "ed5c02e2a37912fc066350e9895d41d538dad229",
+  "source_dirty": true,
+  "state": "implemented but unverified against actual native PostgreSQL/race and stock clients",
+  "behavior": "Native API-key DELETE unlists, POST relists. Optional backward-compatible listed boolean in forced-RLS artifact metadata. Flat index and pinned byte serving retain unlisted versions under current authorization/review/policy. A retired reference cannot be resurrected. Listing transitions honor holds and current grants/credential revocation under the common tenant write fence. Only listing metadata changes; immutable bytes/bindings, time and policy remain. Event/outbox share the transaction.",
+  "local_checks": {
+    "build": "make build BINDIR=.cache/nuget-listing-build passed",
+    "unit": "make test passed",
+    "race": "make race passed",
+    "lint": "make lint passed",
+    "postgresql": "Integration-tagged server/store compile only; no local runtime PostgreSQL execution",
+    "python": "conformance_nuget_hosted.py compilation passed"
+  },
+  "environment_observation": "The first unrestricted unit attempt was blocked by the sandbox while an existing OCI httptest tried a temporary loopback listener. Authorized unit/race rerun with loopback access passed. No product defect is inferred. No persistent local PostgreSQL, registry or sibling service was started.",
+  "native_plan": [
+    "Actual PostgreSQL/race TestNuGetListingIsDurableAndPreservesConsumption on Linux AMD64 and ARM64: old default, bytes/policy/time preservation, idempotence, restricted grants/revocation, API-key identity separation, holds, concurrent updates, tenant isolation, tombstones, journal/outbox and full-queue rollback.",
+    "Actual dotnet SDK delete with reader rejection and duplicate retry; fresh isolated dependency restores while unlisted, including actual registry restart; management reference witnesses durable listing and same digest; native HTTP POST relist/retry, fresh restore and current-denial enforcement. Keep existing stock-client and browser regressions."
+  ],
+  "files": [
+    {
+      "path": "internal/store/nuget.go",
+      "sha256": "914d7c4f0c094282e089d8d3c60680df6351227e138b460ff41b39b3e17cd813"
+    },
+    {
+      "path": "internal/store/nuget_listing.go",
+      "sha256": "818e7166965091e32b9904c66b950286992c093056753be6105c8f8f8817d597"
+    },
+    {
+      "path": "internal/store/nuget_test.go",
+      "sha256": "b88e34f4fbdc019ab995654c28487ce0f82921d381ead724e97b091fe63b9c37"
+    },
+    {
+      "path": "internal/server/nuget.go",
+      "sha256": "d4a1a26484d9e5e4ff0005718428b9f70c465d804dcc938d20520bd126627aa7"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "d3b66a2be39b9d78965434e6db8c8a3fc48893a28d903e6929e3bedc5edcf969"
+    },
+    {
+      "path": "internal/server/nuget_test.go",
+      "sha256": "e29f229f8ad4f452d626f9addbf0be1b2abef3aa0b66ab4725ba7b01db62f360"
+    },
+    {
+      "path": "internal/server/nuget_integration_test.go",
+      "sha256": "0aabf312e8cea1c01a8e5f303eb464f22afbcf65334bc910a4377eab17f5a3ea"
+    },
+    {
+      "path": "scripts/conformance_nuget_hosted.py",
+      "sha256": "75732f01edc431dc10271c870ea531a6999aa1dbaad6c27b84f5568347c1d96e"
+    }
+  ],
+  "scope_limits": [
+    "Listing mutation/state only. Registration/search discovery projections, complete typed metadata/framework/range/license, native CLI/client/platform/trust/lifecycle and full format scope remain required.",
+    "No schema migration, primary binary switch, release/customer/sibling change or scope removal. All450capabilities/41families remain committed; readiness stays negative."
+  ]
+}

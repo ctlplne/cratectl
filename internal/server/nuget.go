@@ -19,11 +19,28 @@ import (
 
 const nugetPublishEndpoint = "api/v2/package"
 
+func nugetListingCoordinate(p string) (string, string, bool) {
+	prefix := nugetPublishEndpoint + "/"
+	if !strings.HasPrefix(p, prefix) {
+		return "", "", false
+	}
+	parts := strings.Split(strings.TrimSuffix(strings.TrimPrefix(p, prefix), "/"), "/")
+	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
+		return "", "", false
+	}
+	return parts[0], parts[1], true
+}
+
 // requestCredential selects one identity. X-NuGet-ApiKey is authoritative only
-// for native publication; an HTTP Basic/Bearer identity is never merged into it.
+// for native publication/listing; Basic/Bearer identities are never merged into it.
 func requestCredential(r *http.Request) (string, error) {
 	parts := strings.SplitN(strings.TrimPrefix(r.URL.Path, "/"), "/", 3)
-	if r.Method == "PUT" && len(parts) == 3 && parts[0] == "nuget" && store.Name.MatchString(parts[1]) && strings.TrimSuffix(parts[2], "/") == nugetPublishEndpoint {
+	useKey := false
+	if len(parts) == 3 && parts[0] == "nuget" && store.Name.MatchString(parts[1]) {
+		_, _, listing := nugetListingCoordinate(parts[2])
+		useKey = r.Method == "PUT" && strings.TrimSuffix(parts[2], "/") == nugetPublishEndpoint || (r.Method == "DELETE" || r.Method == "POST") && listing
+	}
+	if useKey {
 		values := r.Header.Values("X-NuGet-ApiKey")
 		if len(values) != 1 || len(values[0]) < 32 || len(values[0]) > 256 || strings.TrimSpace(values[0]) != values[0] || strings.ContainsAny(values[0], ",\r\n\x00") {
 			return "", store.ErrUnauthenticated
@@ -45,10 +62,33 @@ func (s *Server) nuget(w http.ResponseWriter, r *http.Request, i store.Identity,
 	if strings.TrimSuffix(p, "/") == nugetPublishEndpoint {
 		if r.Method != "PUT" {
 			w.Header().Set("Allow", "PUT")
-			fail(w, 405, "method_not_allowed", "Publish a package with NuGet push. Native delete and relist remain unfinished; use reviewed artifact lifecycle operations.")
+			fail(w, 405, "method_not_allowed", "Publish with NuGet push. Unlist or relist using the package ID and version endpoint.")
 			return
 		}
 		s.nugetPush(w, r, i, repo)
+		return
+	}
+	if id, version, ok := nugetListingCoordinate(p); ok {
+		if r.Method != "DELETE" && r.Method != "POST" {
+			w.Header().Set("Allow", "DELETE, POST")
+			fail(w, 405, "method_not_allowed", "Use DELETE to unlist this version or POST to relist it. Unlisting retains package bytes for pinned consumers.")
+			return
+		}
+		ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
+		defer cancel()
+		if _, e := io.Copy(io.Discard, http.MaxBytesReader(w, r.Body, 0)); e != nil {
+			fail(w, 400, "invalid_nuget_listing", "Send the package ID and version in the URL with an empty request body.")
+			return
+		}
+		if e := s.DB.SetNuGetListing(ctx, i, repo.Name, id, version, r.Method == "POST"); e != nil {
+			respondErr(w, e)
+			return
+		}
+		if r.Method == "DELETE" {
+			w.WriteHeader(204)
+		} else {
+			w.WriteHeader(200)
+		}
 		return
 	}
 	if r.Method != "GET" && r.Method != "HEAD" {
