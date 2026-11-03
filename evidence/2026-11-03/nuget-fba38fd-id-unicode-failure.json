@@ -1,0 +1,43 @@
+{
+  "candidate": "fba38fdde6c591fd9a79e4baa181bb2a0a730355",
+  "status": "failed",
+  "run": "https://github.com/ctlplne/cratectl/actions/runs/41566453812",
+  "phase": "id_compare",
+  "sdk_version": "10.0.403",
+  "nuget_packaging": "7.9.0.0",
+  "reference_runtime": ".NET 10.0.14",
+  "go_unicode_version": "17.0.0",
+  "cases_per_architecture": 63516,
+  "mismatches_per_architecture": 40,
+  "artifacts": [
+    {
+      "architecture": "amd64",
+      "path": "evidence/2026-11-03/nuget-fba38fd-amd64-failed-summary.json",
+      "sha256": "d2d4709c610a8931a6a4f05271d280c1844c59e9494bd1fc59ed46e829b70d99"
+    },
+    {
+      "architecture": "arm64",
+      "path": "evidence/2026-11-03/nuget-fba38fd-arm64-failed-summary.json",
+      "sha256": "3ae29e1e2c8bb64a7e871769fde4f859e6b6bb25b3634e174d02574e0a9c242e"
+    }
+  ],
+  "observations": [
+    "Both native architectures compiled and executed the actual SDK. All1129versions/11Nuspec/4archives agree; ID comparison fails.",
+    "Retained examples include Go-accepted characters rejected by SDK validation and differing lowercase mappings. Only the first32actual examples were retained, along with all40indexes and complete canonical reference-row hash.",
+    "SDK accepted50429cases; the unchanged explicit control-character profile rejects one SDK-accepted input at index63496. It is executed and reported separately, never a skipped case or attributed SDK rejection."
+  ],
+  "repair": "Freeze word and simple lowercase data in a named profile derived from hash-pinned official Unicode16.0.0/15.1.0 data; retain the explicit dotted-I rule. Do not use host Go Unicode tables for durable ID-key semantics.",
+  "repair_state": "implemented; new clean native replay required",
+  "local_repaired_observation": {
+    "profile": "legacy-word-u16.0.0-invariant-lower-u15.1.0-v1",
+    "cases": 63516,
+    "fixture_sha256": "44248bbc9bf9d395a4708616d9752d888dfba0d0510af1de7be94daecfff6188",
+    "local_rows_sha256": "0b8da52e85d0fa68a2c99b710e76df1ad80c85f2d7607c42c9ffd3f83fbd9735",
+    "source_dirty": true
+  },
+  "first_regression": "evidence/2026-11-03/nuget-id-unicode-first-regression.txt",
+  "limits": [
+    "Matching the local repaired complete-row hash proves equality to the retained SDK profile output for this owned corpus; it is not a new native run or a complete Unicode/client/publication verdict.",
+    "The chosen Unicode data versions are an implementation profile, not an assertion of SDK internal database versions. Other runtimes/platforms, aliases, durable publication and feeds remain open."
+  ]
+}

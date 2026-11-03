@@ -44,7 +44,7 @@ func emit(rows any) {
 			}
 		}
 	}
-	if json.NewEncoder(os.Stdout).Encode(map[string]any{"os": runtime.GOOS, "architecture": runtime.GOARCH, "build": identity, "go_unicode_version": unicode.Version, "rows": rows}) != nil {
+	if json.NewEncoder(os.Stdout).Encode(map[string]any{"os": runtime.GOOS, "architecture": runtime.GOARCH, "build": identity, "go_unicode_version": unicode.Version, "id_profile": nuget.IDKeyProfile, "rows": rows}) != nil {
 		panic("owned version oracle output failed")
 	}
 }

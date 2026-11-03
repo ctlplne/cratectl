@@ -182,10 +182,11 @@ def main():
         projected = [{'valid': row['valid'], 'key': row['key']} for row in expected['rows']]
         report.update(id_cases=len(identifiers), id_fixture_sha256=hashlib.sha256(encoded).hexdigest(), id_go_unicode_version=actual['go_unicode_version'], id_reference_runtime=expected['runtime'], id_reference_accepted=sum(row['reference_valid'] for row in expected['rows']), id_transport_rejected_reference_accepted_indexes=[index for index, row in enumerate(expected['rows']) if row['transport_rejected']])
         report['id_go_rows_sha256'] = hashlib.sha256(json.dumps(actual['rows'], sort_keys=True, separators=(',', ':'), ensure_ascii=True).encode()).hexdigest()
+        report['id_go_profile'] = actual['id_profile']
         report['id_reference_profile_rows_sha256'] = hashlib.sha256(json.dumps(projected, sort_keys=True, separators=(',', ':'), ensure_ascii=True).encode()).hexdigest()
         errors = [index for index, (a, b) in enumerate(zip(actual['rows'], projected)) if a != b]
         report['id_mismatch_indexes'] = errors
-        report['id_mismatches'] = [{'index': index, 'input': identifiers[index], 'go': actual['rows'][index], 'reference': expected['rows'][index]} for index in errors[:32]]
+        report['id_mismatches'] = [{'index': index, 'input': identifiers[index], 'go': actual['rows'][index], 'reference': expected['rows'][index]} for index in errors[:64]]
         check('all owned ID validity and invariant lookup keys agree within the explicit transport profile', not errors)
         report.update(status='passed', phase='complete')
     except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:

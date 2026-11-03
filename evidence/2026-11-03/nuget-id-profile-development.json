@@ -1,0 +1,65 @@
+{
+  "source_parent": "fba38fdde6c591fd9a79e4baa181bb2a0a730355",
+  "source_dirty": true,
+  "state": "repaired locally; clean native SDK replay required",
+  "profile": "legacy-word-u16.0.0-invariant-lower-u15.1.0-v1",
+  "source_files": [
+    {
+      "path": "internal/nuget/id.go",
+      "sha256": "fb3bf0ed7a1a80d55f0ffc46b3250ce1a6ff881a35216ff85c2754d6dba18dc6"
+    },
+    {
+      "path": "internal/nuget/id_unicode_profile.go",
+      "sha256": "be7e00824d2ab00feaa6d1c3368402df692cbc9a8a506c4fa05b10df3905f845"
+    },
+    {
+      "path": "internal/nuget/id_test.go",
+      "sha256": "eb7073f41162890477199883bd99d4b2e0f62eaa10149b3499fbedaee948e4c1"
+    },
+    {
+      "path": "scripts/generate_nuget_id_profile.py",
+      "sha256": "762927f6c6fca555b7ae5e4c2ac2ee500e8d6d24e2583264e3c01c3942b5e59a"
+    },
+    {
+      "path": "scripts/fixtures/nuget-versions/main.go",
+      "sha256": "326dcfa6a8691f6e8c58ddb06dca4d189849d9715d5a9a5a7dc03055af4c5d2c"
+    },
+    {
+      "path": "scripts/nuget_version_contract.py",
+      "sha256": "8f9ca47c516dc7ecc3e8e4b573a8cfff436facd14b1cb7f2dc67c3ea56f42e6f"
+    }
+  ],
+  "data_sources": [
+    {
+      "version": "16.0.0",
+      "purpose": "word categories",
+      "url": "https://www.unicode.org/Public/16.0.0/ucd/UnicodeData.txt",
+      "sha256": "ff58e5823bd095166564a006e47d111130813dcf8bf234ef79fa51a870edb48f"
+    },
+    {
+      "version": "15.1.0",
+      "purpose": "simple lowercase mappings",
+      "url": "https://www.unicode.org/Public/15.1.0/ucd/UnicodeData.txt",
+      "sha256": "2fc713e6a31a87c4850a37fe2caffa4218180fadb5de86b43a143ddb4581fb86"
+    }
+  ],
+  "license": "third_party/licenses/Unicode-3.0.txt",
+  "original_failure": "evidence/2026-11-03/nuget-fba38fd-id-unicode-failure.json",
+  "regression": "evidence/2026-11-03/nuget-id-unicode-first-regression.txt",
+  "cases": 63516,
+  "fixture_sha256": "44248bbc9bf9d395a4708616d9752d888dfba0d0510af1de7be94daecfff6188",
+  "local_repaired_rows_sha256": "0b8da52e85d0fa68a2c99b710e76df1ad80c85f2d7607c42c9ffd3f83fbd9735",
+  "both_retained_sdk_profile_rows_sha256": "0b8da52e85d0fa68a2c99b710e76df1ad80c85f2d7607c42c9ffd3f83fbd9735",
+  "local_validation": [
+    "Focused NuGet race suite and first-failure regression passed after repair.",
+    "All63516repaired local helper rows match the complete canonical SDK output hash from both original native architectures.",
+    "Offline generator --check matches exact hash-pinned source data; no network or SDK consulted during generation.",
+    "FuzzIDKey passed256438executions in5seconds after freezing the profile.",
+    "Standard build/unit/race/lint, workflow syntax and generator --check passed."
+  ],
+  "limits": [
+    "No new clean native run has executed this repaired source. Preserve the original failed contract and its40mismatches per architecture.",
+    "Data-version choices are an implementation profile matching observed outputs, not an assertion of SDK internal Unicode versions.",
+    "No new durable package publication, full identity alias semantics, feed/client or other-platform qualification. Full450goal remains active."
+  ]
+}

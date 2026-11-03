@@ -34,11 +34,16 @@ and 333,402 local fuzz executions pass; native fuzz jobs pass too.
 See ADR 0034 and `evidence/2026-11-03/nuget-archive-development.json`. No archive
 publication, feed, dependency/client or full-format qualification is claimed.
 
-New ID lookup-key work is implemented but unverified against the actual SDK.
+ID lookup-key work is implemented but not yet native-qualified.
 It keeps raw manifest text separate, bounds the legacy grammar and preserves
 the invariant dotted-I distinction without trimming or Unicode normalization.
 The native library workflow adds 63,516 owned validation/casing cases and reports
 SDK acceptance separately from explicit control-character transport guards.
+Both actual fba38fd SDK jobs fail40cases: host Go17 Unicode data disagrees with
+the SDK's validation/casing. A frozen hash-pinned Unicode-derived profile now
+matches the complete retained reference-row hash locally on all63,516cases.
+Clean native replay is required (`DEFECT.0082`); all original failures remain in
+`evidence/2026-11-03/nuget-fba38fd-id-unicode-failure.json`.
 See ADR0035 and `evidence/2026-11-03/nuget-id-development.json`. Durable NuGet
 publication, feeds, clients and all remaining format outcomes stay required.
 

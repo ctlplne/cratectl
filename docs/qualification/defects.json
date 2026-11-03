@@ -909,6 +909,15 @@
       "limits": "Fixed success marker and private-log hashes retained from main, OCI, upgrades, repair and retention on native Linux; all17jobs pass in the same-source campaign. Original runtime mappings were not observed; no exposure/incident or broad security verdict asserted.",
       "replay": "evidence/2026-11-03/ci-service-bindings-6854e80-replay.json",
       "latest_candidate": "6854e80fc1e3cf049b3ffc0fe68d90e4dc8bf9a2"
+    },
+    {
+      "id": "DEFECT.0082",
+      "summary": "NuGet ID keys depend on host Go Unicode data and disagree with actual SDK validation/casing",
+      "first_failure": "evidence/2026-11-03/nuget-fba38fd-id-unicode-failure.json",
+      "candidate": "fba38fdde6c591fd9a79e4baa181bb2a0a730355",
+      "state": "frozen profile repair implemented; local full-row hash matches both retained SDK outputs; clean native replay required",
+      "repair": "Hash-pinned Unicode-derived word/case tables and named profile, independent of host Go upgrades. Preserve original63516inputs, explicit transport profile and all mismatch checks. Retain Unicode license/notice and offline reproducible generator.",
+      "limits": "Both original native jobs fail40IDcases; no failed whole library contract is called passed. Full-row hash equality is local development evidence for the same corpus, not a fresh native/client/feed result."
     }
   ]
 }

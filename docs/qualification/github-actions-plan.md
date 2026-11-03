@@ -219,3 +219,9 @@ explicit transport exclusions retain the SDK's separate acceptance result.
 This new managed/native comparison remains unverified. Complete durable NuGet
 feed and stock-client journeys follow this coordinate work; the library gate
 does not replace them. See [the ID contract](../adr/0035-nuget-id-lookup-keys.md).
+
+The first actual fba38fd ID comparison compiled and executed on both native
+architectures, then failed40cases. The repair freezes named Unicode-derived
+word/case tables rather than inheriting Go17 data. The local complete-row hash
+matches both retained SDK outputs on the unchanged63,516case corpus. A fresh
+clean native replay remains required; preserve [the original failures](../../evidence/2026-11-03/nuget-fba38fd-id-unicode-failure.json).

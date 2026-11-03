@@ -24,6 +24,20 @@ and [PackageIdValidator API](https://source.dot.net/NuGet.Packaging/PackageCreat
 The actual installed SDK remains the execution reference. No native matching
 claim is made until the new differential campaign passes.
 
+The first actual fba38fd campaign compiled and ran on both Linux architectures.
+SDK10.0.403 / NuGet.Packaging7.9.0.0 / .NET10.0.14 disagreed with Go17 on 40
+cases per architecture. The repair freezes a named profile from hash-pinned
+Unicode16 word data and15.1 simple lowercase data, plus the explicit dotted-I
+rule. These are implementation data versions, not a claim about SDK internals.
+Host Go upgrades must not silently change existing keys. Source hashes,
+offline generation and the Unicode data license are documented in
+[the Unicode notice](../../third_party/UNICODE.md).
+
+The repaired local helper's complete result-row hash equals both original SDK
+reference hashes for all63,516cases. Clean native replay remains required.
+The [original failures and limits](../../evidence/2026-11-03/nuget-fba38fd-id-unicode-failure.json)
+remain retained; no fixture was dropped or expected result rewritten.
+
 The owned fixture enumerates all 63,488 non-surrogate BMP values inside a package
 name and adds 28 whole-ID casing, size, grammar, transport and supplementary
 cases. All 63,516 cases execute; the encoded input stays below 2 MiB. Only the ID
