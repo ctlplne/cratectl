@@ -7,7 +7,7 @@ on:
         description: Independent browser journey to replay five times
         type: choice
         default: repair
-        options: [repair, retention]
+        options: [repair, retention, nuget]
   push:
     branches: [main]
     paths:
@@ -15,6 +15,7 @@ on:
       - 'web/src/components.tsx'
       - 'web/tests/zzzz-repair.spec.mjs'
       - 'web/tests/zzzzzz-retention.spec.mjs'
+      - 'web/tests/zzzzzzzzzzzz-nuget.spec.mjs'
       - 'scripts/conformance_console.py'
       - 'scripts/ci/browser_failure_summary.py'
       - 'scripts/ci/evidence_summary.py'

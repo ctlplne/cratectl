@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
 """Owned real-database/browser journey. --serve holds a fixture for manual UI review."""
-import argparse,datetime,hashlib,json,os,subprocess,time,urllib.parse,urllib.request,uuid
+import argparse,datetime,hashlib,io,json,os,subprocess,time,urllib.parse,urllib.request,uuid,zipfile
 from pathlib import Path
 from qualification_contract import candidate_binary_directory, candidate_artifact_names
-parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');parser.add_argument('--serve',action='store_true');parser.add_argument('--binary-directory',type=Path,help='Owned candidate binary directory; defaults to bin without replacing active primary binaries');parser.add_argument('--workflow',choices=['all','repair','retention'],default='all',help='Run the complete console or a real repair/retention workflow for defect replay');args=parser.parse_args()
+parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');parser.add_argument('--serve',action='store_true');parser.add_argument('--binary-directory',type=Path,help='Owned candidate binary directory; defaults to bin without replacing active primary binaries');parser.add_argument('--workflow',choices=['all','repair','retention','nuget'],default='all',help='Run the complete console or a selected real database/browser journey');args=parser.parse_args()
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT);RUN=uuid.uuid4().hex[:10];PRIVATE=ROOT/'.private/console-conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)
 BIN=candidate_binary_directory(args.binary_directory)
 ARTIFACTS=[str((BIN/name).relative_to(ROOT))for name in ['cratectld','cratectl']]
@@ -21,7 +21,7 @@ scope=['cmd','internal','scripts','web','api','go.mod','go.sum','Makefile']
 result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope],text=True).strip()),'artifact_digests':{n:hashlib.sha256((ROOT/n).read_bytes()).hexdigest()for n in ARTIFACTS},'build_identity':{n:settings(n)for n in ARTIFACTS},'checks':checks,'topology':'Real Chromium, native registry/worker and nonowner forced-RLS PostgreSQL. An empty owned database and two newly provisioned tenants; explicit loopback-only HTTP development profile on port 38443.','limits':['This browser run exercises the explicit loopback HTTP test profile. Normal native TLS trust remains separately qualified; browser CA deployment and network/production PKI are not established by this run.','Only tested views and named interactions are qualified. Full console, all WCAG behavior/assistive technologies/native browsers, production packaging and complete product scope remain open.','Management repository/artifact pages use current grants/policy, scoped encrypted scan cursors, bounded live traversal and server search. This is not a multi-page snapshot or full native-format index qualification.']}
 result['build_source_matches_candidate']=all(s.get('vcs.modified')=='false'and s.get('vcs.revision')==result['candidate']for s in result['build_identity'].values())
 result['workflow']=args.workflow
-if args.workflow!='all':result['limits'].append('Only the '+args.workflow+' browser workflow is selected for defect replay; the complete console remains a separate 14-workflow gate.')
+if args.workflow!='all':result['limits'].append('Only the '+args.workflow+' browser workflow is selected; the complete console remains a separate 15-workflow gate.')
 def check(label,value):
     if not value:raise AssertionError(label)
     checks.append(label)
@@ -77,7 +77,7 @@ try:
     initial=dict(env,CRATECTL_OWNER_DSN=database_dsn(env['CRATECTL_OWNER_DSN']),CRATECTL_DSN=database_dsn(env['CRATECTL_DSN']))
     owner_config=private('database.json',{'owner':initial['CRATECTL_OWNER_DSN'],'runtime':initial['CRATECTL_DSN']})
     receipt=json.loads(command([BIN/'cratectld','init','--directory',PRIVATE/'installation','--tenant','console-a'],initial))
-    for identity,tenant,role in [('reader','console-a','reader'),('writer','console-a','writer'),('repair-admin','console-a','admin'),('schedule-admin','console-a','admin'),('schedule-recovery','console-a','admin'),('retention-admin','console-a','admin'),('retention-recovery','console-a','admin'),('retention-auto-admin','console-a','admin'),('retention-auto-recovery','console-a','admin'),('hold-admin','console-a','admin'),('hold-recovery','console-a','admin'),('case-admin','console-a','admin'),('case-recovery','console-a','admin'),('matter-admin','console-a','admin'),('matter-approver','console-a','admin'),('matter-recovery','console-a','admin'),('native-admin','console-a','admin'),('native-reader','console-a','reader'),('native-writer','console-a','writer'),('other','console-b','admin')]:
+    for identity,tenant,role in [('reader','console-a','reader'),('writer','console-a','writer'),('repair-admin','console-a','admin'),('schedule-admin','console-a','admin'),('schedule-recovery','console-a','admin'),('retention-admin','console-a','admin'),('retention-recovery','console-a','admin'),('retention-auto-admin','console-a','admin'),('retention-auto-recovery','console-a','admin'),('hold-admin','console-a','admin'),('hold-recovery','console-a','admin'),('case-admin','console-a','admin'),('case-recovery','console-a','admin'),('matter-admin','console-a','admin'),('matter-approver','console-a','admin'),('matter-recovery','console-a','admin'),('native-admin','console-a','admin'),('native-reader','console-a','reader'),('native-writer','console-a','writer'),('nuget-admin','console-a','admin'),('nuget-reader','console-a','reader'),('other','console-b','admin')]:
         command([BIN/'cratectld','provision','--tenant',tenant,'--actor',identity,'--role',role,'--token-file',PRIVATE/(identity+'.token')],initial)
     install=PRIVATE/'installation'
     fixture={'run':RUN,'base_url':base,'root':str(ROOT),'binary_directory':str(BIN),'private':str(PRIVATE),'owner_config':str(owner_config),'admin_token':str(install/'admin.token'),'worker_token':str(install/'worker.token'),'reader_token':str(PRIVATE/'reader.token'),'writer_token':str(PRIVATE/'writer.token'),'other_token':str(PRIVATE/'other.token'),'repair_admin_token':str(PRIVATE/'repair-admin.token'),'schedule_admin_token':str(PRIVATE/'schedule-admin.token'),'schedule_recovery_token':str(PRIVATE/'schedule-recovery.token')}
@@ -87,6 +87,12 @@ try:
     fixture.update(case_admin_token=str(PRIVATE/'case-admin.token'),case_recovery_token=str(PRIVATE/'case-recovery.token'))
     fixture.update(matter_admin_token=str(PRIVATE/'matter-admin.token'),matter_approver_token=str(PRIVATE/'matter-approver.token'),matter_recovery_token=str(PRIVATE/'matter-recovery.token'))
     fixture.update(native_admin_token=str(PRIVATE/'native-admin.token'),native_reader_token=str(PRIVATE/'native-reader.token'),native_writer_token=str(PRIVATE/'native-writer.token'))
+    nuspec=b'<package><metadata><id>Cratectl.Console.Proof</id><version>1.0.0</version><authors>cratectl fixture</authors><description>Owned inert NuGet browser package</description></metadata></package>'
+    nupkg=io.BytesIO()
+    with zipfile.ZipFile(nupkg,'w',compression=zipfile.ZIP_DEFLATED,allowZip64=False)as archive:
+        for name,value in [('Cratectl.Console.Proof.nuspec',nuspec),('content/owned.txt',b'Owned inert NuGet browser payload.\n')]:
+            info=zipfile.ZipInfo(name,(2026,1,1,0,0,0));info.compress_type=zipfile.ZIP_DEFLATED;info.external_attr=0o100644<<16;archive.writestr(info,value)
+    fixture.update(nuget_admin_token=str(PRIVATE/'nuget-admin.token'),nuget_reader_token=str(PRIVATE/'nuget-reader.token'),nuget_package=str(private('nuget-owned.nupkg',nupkg.getvalue())),nuget_nuspec=str(private('nuget-owned.nuspec',nuspec)))
     fixture_path=private('browser-fixture.json',fixture)
     token=(install/'admin.token').read_text().strip()
     private('npmrc',f'registry={base}/npm/web-packages/\n//127.0.0.1:38443/npm/web-packages/:_authToken={token}\n'.encode())
@@ -107,11 +113,11 @@ try:
         while all(p.poll()is None for p in processes.values()):worker_control();time.sleep(.05)
         raise AssertionError('owned process exited during UI review')
     browser_env=dict(runtime_env,CRATECTL_CONSOLE_FIXTURE_JSON=str(fixture_path),PLAYWRIGHT_BROWSERS_PATH=str(ROOT/'.cache/playwright-browsers'),PLAYWRIGHT_JSON_OUTPUT_NAME=str(PRIVATE/'browser-results.json'))
-    selected={'repair':['zzzz-repair.spec.mjs'],'retention':['zzzzzz-retention.spec.mjs']}.get(args.workflow,[])
+    selected={'repair':['zzzz-repair.spec.mjs'],'retention':['zzzzzz-retention.spec.mjs'],'nuget':['zzzzzzzzzzzz-nuget.spec.mjs']}.get(args.workflow,[])
     command([ROOT/'web/node_modules/.bin/playwright','test','--config',ROOT/'web/playwright.config.mjs',*selected],browser_env)
-    report=json.loads((PRIVATE/'browser-results.json').read_text());result['browser_stats']=report['stats'];check('selected real-browser workflows passed without skips or flaky results',report['stats']['unexpected']==0 and report['stats']['skipped']==0 and report['stats']['flaky']==0 and report['stats']['expected']==(14 if args.workflow=='all' else 1))
+    report=json.loads((PRIVATE/'browser-results.json').read_text());result['browser_stats']=report['stats'];check('selected real-browser workflows passed without skips or flaky results',report['stats']['unexpected']==0 and report['stats']['skipped']==0 and report['stats']['flaky']==0 and report['stats']['expected']==(15 if args.workflow=='all' else 1))
     proofs=[(args.workflow+'_browser',args.workflow+'-browser-proof.json')] if args.workflow!='all' else [
-        ('native_lifecycle_browser','native-lifecycle-browser-proof.json'),('hold_matters_browser','hold-matters-browser-proof.json'),
+        ('nuget_browser','nuget-browser-proof.json'),('native_lifecycle_browser','native-lifecycle-browser-proof.json'),('hold_matters_browser','hold-matters-browser-proof.json'),
         ('hold_cases_browser','hold-cases-browser-proof.json'),('hold_browser','hold-browser-proof.json'),
         ('retention_schedule_browser','retention-schedule-browser-proof.json'),('retention_browser','retention-browser-proof.json'),
         ('schedule_browser','schedule-browser-proof.json'),('repair_browser','repair-browser-proof.json'),

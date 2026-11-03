@@ -1,0 +1,49 @@
+// SPDX-License-Identifier: BUSL-1.1
+import {test,expect} from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+
+test('NuGet operator creates a restricted feed, reviews exact bytes and restores a held reference',async({page,browser,request})=>{
+  const fixture=JSON.parse(await fs.readFile(process.env.CRATECTL_CONSOLE_FIXTURE_JSON,'utf8'));
+  const admin=(await fs.readFile(fixture.nuget_admin_token,'utf8')).trim();
+  const reader=(await fs.readFile(fixture.nuget_reader_token,'utf8')).trim();
+  const name='nuget-browser-'+fixture.run,id='cratectl.console.proof',version='1.0.0';
+  const archive=await fs.readFile(fixture.nuget_package),nuspec=await fs.readFile(fixture.nuget_nuspec);
+  const digest=createHash('sha256').update(archive).digest('hex');
+  const reference='nuget-packages/'+id+'/'+version+'.nupkg';
+  const feed='/nuget/'+name+'/',flat=feed+'flat/'+id+'/',packageURL=flat+version+'/'+id+'.'+version+'.nupkg',nuspecURL=flat+version+'/'+id+'.nuspec';
+  const checks=[],accessibility=[],errors=[];
+  let phase='connect';
+  const api=(url,options={},token=admin)=>request.fetch(fixture.base_url+url,{...options,headers:{Authorization:'Bearer '+token,'Idempotency-Key':'nuget-browser-'+crypto.randomUUID(),...options.headers}});
+  const modal=()=>page.getByRole('dialog');
+  const artifactRow=()=>page.getByRole('row').filter({has:page.getByRole('button',{name:'Inspect',exact:true})}).filter({hasText:reference});
+  async function axe(state){const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();expect(result.violations).toEqual([]);accessibility.push({state,violations:0})}
+  async function repositories(){await page.getByRole('link',{name:'Repositories',exact:true}).click();await page.getByRole('searchbox',{name:'Search repositories',exact:true}).fill(name);await page.getByRole('button',{name:'Search',exact:true}).click()}
+  async function grant(read){await repositories();const row=page.getByRole('row').filter({has:page.getByRole('link',{name,exact:true})});await row.getByRole('button',{name:'Settings',exact:true}).click();await page.getByLabel('Actor name',{exact:true}).fill('nuget-reader');await page.getByLabel('Read',{exact:true}).setChecked(read);await page.getByRole('button',{name:'Save actor grant',exact:true}).click();await expect(modal()).toHaveCount(0)}
+  async function packages(){await repositories();await page.getByRole('link',{name,exact:true}).click();await expect(artifactRow()).toBeVisible()}
+  async function lifecycle(action,apply=true){await artifactRow().getByRole('button',{name:'Lifecycle',exact:true}).click();await expect(page.getByText(/Current state:/)).toBeVisible();await page.getByLabel('Action',{exact:true}).selectOption(action);await page.getByLabel('Reason',{exact:true}).fill('Owned NuGet browser lifecycle proof');await page.getByRole('button',{name:'Preview impact',exact:true}).click();await expect(page.getByText(/Previewed revision/)).toBeVisible();if(apply){await page.getByRole('button',{name:'Apply '+action.replaceAll('_',' '),exact:true}).click();await expect(modal()).toHaveCount(0)}}
+  page.on('pageerror',error=>errors.push(error.message));
+  try{
+    await page.goto(fixture.base_url+'/console/');await page.getByLabel('Credential file').setInputFiles(fixture.nuget_admin_token);await page.waitForFunction(()=>document.querySelector('#credential')?.value.length>=32);await page.getByRole('button',{name:'Connect to installation',exact:true}).click();await expect(page.getByRole('heading',{name:'Repositories',exact:true})).toBeVisible();
+    phase='create_repository';
+    await page.getByRole('button',{name:'＋ Create repository',exact:true}).click();await page.getByLabel('Repository name',{exact:true}).fill(name);await page.getByLabel('Mode',{exact:true}).selectOption('proxy');await page.getByLabel('Format',{exact:true}).selectOption('nuget');await expect(page.getByLabel('Mode',{exact:true})).toHaveValue('hosted');expect(await page.getByLabel('Mode',{exact:true}).locator('option').evaluateAll(options=>options.map(option=>option.value))).toEqual(['hosted']);await page.getByLabel('Access',{exact:true}).selectOption('restricted');await axe('NuGet hosted repository creation');await modal().getByRole('button',{name:'Create repository',exact:true}).click();await expect(modal()).toHaveCount(0);checks.push('console creates only the implemented NuGet hosted mode with explicit restricted access and review');
+    phase='client_configuration';
+    await page.getByRole('button',{name:'Configure new repository',exact:true}).click();await expect(modal()).toContainText(fixture.base_url+feed+'index.json');await expect(modal()).toContainText('%CRATECTL_READER_TOKEN%');await expect(modal()).toContainText('--api-key "$CRATECTL_WRITER_TOKEN"');expect(await modal().textContent()).not.toContain(admin);expect(await modal().textContent()).not.toContain(reader);await axe('NuGet private client configuration');await page.getByRole('button',{name:'Close dialog',exact:true}).click();checks.push('NuGet configuration uses the exact service index and private credential placeholders');
+    phase='publication_and_grants';
+    const publication=await api(feed+'api/v2/package',{method:'PUT',headers:{'X-NuGet-ApiKey':admin},multipart:{ignored:{name:'../../ignored.nupkg',mimeType:'application/octet-stream',buffer:archive}}});expect(publication.status()).toBe(201);
+    expect((await api(feed+'index.json',{},reader)).status()).toBe(403);await grant(true);expect((await api(flat+'index.json',{},reader)).status()).toBe(404);expect((await api(packageURL,{},reader)).status()).toBe(403);expect((await api(nuspecURL,{},reader)).status()).toBe(403);checks.push('fresh native metadata and both byte paths obey restricted grants and required review');
+    phase='exact_review';
+    await packages();await expect(artifactRow().getByText('Unassessed',{exact:true})).toBeVisible();await artifactRow().getByRole('button',{name:'Allow',exact:true}).click();await expect(modal()).toContainText(reference);await expect(modal()).toContainText(digest);await axe('NuGet exact-digest review');await page.getByRole('button',{name:'Allow exact digest',exact:true}).click();await expect(artifactRow().getByText('Manually allowed',{exact:true})).toBeVisible();
+    const index=await api(flat+'index.json',{},reader);expect(index.status()).toBe(200);expect((await index.json()).versions).toEqual([version]);for(const [url,expected] of [[packageURL,archive],[nuspecURL,nuspec]]){const response=await api(url,{},reader);expect(response.status()).toBe(200);expect(await response.body()).toEqual(expected)}checks.push('console approval permits exact immutable nupkg and original Nuspec bytes under a current complete version index');
+    phase='policy_denial';
+    await artifactRow().getByRole('button',{name:'Deny',exact:true}).click();await page.getByRole('button',{name:'Deny exact digest',exact:true}).click();await expect(artifactRow().getByText('denied',{exact:true})).toBeVisible();expect((await api(packageURL,{},reader)).status()).toBe(403);expect((await api(nuspecURL,{},reader)).status()).toBe(403);expect((await api(flat+'index.json',{},reader)).status()).toBe(404);await artifactRow().getByRole('button',{name:'Allow',exact:true}).click();await page.getByRole('button',{name:'Allow exact digest',exact:true}).click();await expect(artifactRow().getByText('Manually allowed',{exact:true})).toBeVisible();checks.push('fresh native reads honor the console denial and later exact approval');
+    phase='retained_lifecycle';
+    await lifecycle('hold');await lifecycle('delete',false);await expect(page.getByText('This operation is blocked by an active hold or incoming manifest reference. Inspect the lifecycle record and parent references before trying again.')).toBeVisible();await expect(page.getByRole('button',{name:'Apply delete',exact:true})).toHaveCount(0);await axe('held NuGet reference blocks deletion');await page.keyboard.press('Escape');await lifecycle('release_hold');await lifecycle('delete');await expect(artifactRow().getByText('deleted',{exact:true})).toBeVisible();for(const url of [packageURL,nuspecURL,flat+'index.json'])expect((await api(url,{},reader)).status()).toBe(404);await lifecycle('restore');const restored=await api(packageURL,{},reader);expect(restored.status()).toBe(200);expect(await restored.body()).toEqual(archive);await axe('restored NuGet reference');checks.push('NuGet hold blocks deletion and reviewed retained restore recovers the exact permitted package');
+    phase='grant_revocation';
+    await grant(false);for(const url of [feed+'index.json',flat+'index.json',packageURL,nuspecURL])expect((await api(url,{},reader)).status()).toBe(403);checks.push('revoking the restricted NuGet reader grant blocks service metadata, versions, package and Nuspec');
+    expect(errors).toEqual([]);expect(await page.content()).not.toContain(admin);expect(await page.content()).not.toContain(reader);expect(await page.evaluate(()=>localStorage.length+sessionStorage.length)).toBe(0);checks.push('NuGet operator journey exposes no active credential in DOM or persistent browser storage');
+    phase='complete';
+  }finally{await fs.writeFile(path.join(fixture.private,'nuget-browser-proof.json'),JSON.stringify({phase,checks,accessibility,browser:browser.version(),package_sha256:digest,nuspec_sha256:createHash('sha256').update(nuspec).digest('hex'),scope:'One real PostgreSQL/Chromium hosted NuGet operator journey and direct native protocol byte observations. Stock dotnet push/restore is a separate journey. No proxy/group, native unlisting/search/symbol, other browser/platform, production TLS or full-format/readiness claim.'},null,2))}
+});

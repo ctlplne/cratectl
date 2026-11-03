@@ -42,6 +42,11 @@ class EvidenceSummary(unittest.TestCase):
         self.assertEqual(failed['workflow'], 'retention')
         self.assertEqual(failed['browser'], {'expected': 0, 'unexpected': 1, 'skipped': 0, 'flaky': 0})
         self.assertNotIn('private-synthetic-value', json.dumps(failed))
+        self.write('native.json', {'candidate': 'a' * 40, 'status': 'passed', 'workflow': 'nuget', 'browser_stats': {'expected': 1, 'unexpected': 0, 'skipped': 0, 'flaky': 0}, 'private_output': 'private-synthetic-value'})
+        nuget = summarize(self.root, self.environment)['records'][0]
+        self.assertEqual(nuget['workflow'], 'nuget')
+        self.assertEqual(nuget['browser'], {'expected': 1, 'unexpected': 0, 'skipped': 0, 'flaky': 0})
+        self.assertNotIn('private-synthetic-value', json.dumps(nuget))
 
     def test_stale_candidate_and_external_symlink_do_not_become_evidence(self):
         path = self.write('stale.json', {'candidate': 'b' * 40})

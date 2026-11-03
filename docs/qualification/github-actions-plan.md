@@ -234,6 +234,24 @@ and a real registry restart. Owned fixtures contain no scripts/build targets or
 executable assemblies. Real PostgreSQL integration/race adds common publication,
 concurrent coordinates, grants/revocation, bounded complete indexes and reference
 restore. Safe summaries retain only bounded SDK identity and four fixture hashes,
-beside exact native server/CLI source and binary hashes. These new journeys are
-implemented but unverified; existing library results do not qualify them.
+beside exact native server/CLI source and binary hashes. Both actual native dfc9381 jobs pass the new PostgreSQL/race and stock dotnet
+journeys; SDK10.0.403 and exact source/client/fixture identities are retained.
+The existing library results keep their own distinct scope.
 See [the adapter decision](../adr/0036-hosted-nuget-publication.md).
+
+The next console candidate adds a dedicated NuGet operator workflow, increasing
+the complete browser gate from 14 to 15 tests. It exercises restricted hosted
+creation, private client templates, original package/manifest bytes, exact-digest
+review, holds/delete/restore, grant revocation and named accessibility states on
+real PostgreSQL and Chromium. Focused `nuget` selection can repeat the journey
+five times with fresh databases on GitHub x86. Syntax/discovery passes locally;
+no new browser execution is claimed. Existing 14-test results retain their source
+and scope. See [development evidence](../../evidence/2026-11-03/nuget-browser-development.json).
+
+The dfc9381 hosted checkpoint accepts 14 exact-source jobs: main9, OCI2,
+upgrades2 and five-fresh repair1. It does not include a new library or fresh
+retention run. Both actual SDK10.0.403 client campaigns pass 406 total checks
+including new hosted NuGet. All eight safe summaries and native identities are
+retained in [the checkpoint](../../evidence/2026-11-03/github-dfc9381-checkpoint.json).
+No NuGet-specific Chromium result is present on that source; the next candidate
+adds it to the 15-workflow console and explicit focused five-fresh replay.

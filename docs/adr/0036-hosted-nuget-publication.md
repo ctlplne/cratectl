@@ -2,8 +2,10 @@
 
 NuGet publication uses the common tenant identity, repository grants, immutable
 blob store, policy decisions, journal and durable work queues. No new database
-table or migration is needed. The hosted adapter is implementation work; actual
-PostgreSQL and stock-client qualification must identify a clean candidate.
+table or migration is needed. The hosted adapter has named native PostgreSQL/race and stock dotnet proof on
+[dfc9381](../../evidence/2026-11-03/nuget-dfc9381-checkpoint.json). This covers the
+owned hosted fixtures on both Linux architectures. NuGet-specific Chromium,
+production TLS, complete format semantics and other clients/platforms stay open.
 
 The V3 service index is `/nuget/REPOSITORY/index.json`. Its absolute resource
 URLs come from the configured public URL. They never inherit the request Host.
@@ -63,6 +65,10 @@ denial and an actual registry process restart. Packages contain no build targets
 scripts or executable assemblies. PostgreSQL integration/race tests also cover
 concurrent first writers, revocation, complete index limits and reference restore.
 Local compilation or unit stand-ins do not qualify these actual journeys.
+Both native dfc9381 jobs run them successfully with SDK10.0.403; exact source,
+client/binary/four-fixture digests are retained in the named checkpoint. A separate
+NuGet operator browser test is now added to the forthcoming 15-workflow console;
+its local discovery executes zero tests and is not a browser pass.
 
 Protocol references:
 

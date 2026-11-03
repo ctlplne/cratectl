@@ -925,9 +925,11 @@
       "id": "DEFECT.0083",
       "summary": "Truncated NuGet multipart upload is classified as service failure instead of invalid request",
       "first_failure": "evidence/2026-11-03/nuget-hosted-truncated-first-failure.json",
-      "state": "repaired and replayed locally; native integration pending",
+      "state": "repaired and native unit/race regressions replayed; broader interrupted-client faults remain open",
       "repair": "Map io.ErrUnexpectedEOF during first-part staging to400 and MaxBytesError to413, preserving storage failure/cancellation handling. Retain incomplete/body/epilogue/byte/part regressions; no invalid reference is published.",
-      "limits": "Local darwin-arm64 unit replay only. Native PostgreSQL and stock-client qualification pending."
+      "limits": "The original local malformed-body regressions pass in the actual native source/unit/race gates, and new hosted PG/client journeys pass. Stock malformed/slow/interrupted network campaigns remain unfinished; no broader fault/readiness claim.",
+      "latest_candidate": "dfc938112a3df8a0855f951122f88c02212a033c",
+      "replay": "evidence/2026-11-03/nuget-dfc9381-checkpoint.json"
     }
   ]
 }

@@ -1,9 +1,12 @@
 # Hosted NuGet development path
 
 Hosted NuGet push, version indexes and package/Nuspec retrieval are implemented.
-Actual PostgreSQL and stock dotnet acceptance for this adapter is pending. The
-earlier native library checkpoint proves coordinate/archive fixture contracts;
-it does not prove this feed or the complete NuGet family.
+Actual native Linux PostgreSQL/race and stock dotnet journeys pass on clean
+[dfc9381](../../evidence/2026-11-03/nuget-dfc9381-checkpoint.json), using SDK10.0.403
+and owned inert package/dependency fixtures. These runtime journeys use an
+explicit isolated loopback HTTP test profile. The complete NuGet family, native
+production TLS/client platforms and the new NuGet-specific Chromium workflow
+remain unqualified. The earlier library checkpoint retains its separate scope.
 
 Create a hosted `nuget` repository through the repository API or console. The
 feed URL is `https://REGISTRY/nuget/REPOSITORY/index.json`. Use a reader service

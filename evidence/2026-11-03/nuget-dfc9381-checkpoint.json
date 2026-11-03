@@ -1,0 +1,96 @@
+{
+  "candidate": "dfc938112a3df8a0855f951122f88c02212a033c",
+  "status": "passed for named hosted native journeys",
+  "run": "https://github.com/ctlplne/cratectl/actions/runs/41570602457",
+  "native_jobs": [
+    125702325050,
+    125702325249
+  ],
+  "clients": [
+    {
+      "architecture": "amd64",
+      "report": "conformance-31865ff7dc.json",
+      "sdk_version": "10.0.403",
+      "dotnet_sha256": "db40da462b13ec4c07df7a75c4b0395223d360b8dc9a477d9e31fb71759b05f4",
+      "fixture_sha256": {
+        "application_1": "deb3f2efc1fb1bdd3944ca34499287ad7cac8461e7d6c61d9d502e398ae08de8",
+        "application_2": "55bac5fa4c83e0e9dd50f343d1de35770dfc4e87cc9d041b71f0473dbb27418a",
+        "dependency": "ee97266a05db79b45d4292215581a11ecc68b9fc6c96c950484a8816ef918e78",
+        "other_application_1": "ad17745bcfe0770cf22a69829e7fe4ae97502cdd0587af67cd23b35bac531b43"
+      },
+      "artifacts": [
+        {
+          "build": {
+            "GOARCH": "amd64",
+            "GOOS": "linux",
+            "vcs.modified": "false",
+            "vcs.revision": "dfc938112a3df8a0855f951122f88c02212a033c"
+          },
+          "path": ".cache/ci-build/cratectl",
+          "sha256": "7af58d6de24fa0aaa54eecb70287fa541822855bd8ead0da8e3b6904a9e2cf92"
+        },
+        {
+          "build": {
+            "GOARCH": "amd64",
+            "GOOS": "linux",
+            "vcs.modified": "false",
+            "vcs.revision": "dfc938112a3df8a0855f951122f88c02212a033c"
+          },
+          "path": ".cache/ci-build/cratectld",
+          "sha256": "dd4518b391d5ec31b3717a56f162a022d6f1f61fe3fc1841cceb95d11d561f08"
+        }
+      ],
+      "safe_summary": "evidence/2026-11-03/github-dfc9381-native-amd64-summary.json"
+    },
+    {
+      "architecture": "arm64",
+      "report": "conformance-2624694561.json",
+      "sdk_version": "10.0.403",
+      "dotnet_sha256": "6fa90e11dffeac91fbbfa7059365706ff105cac1092b67089893bdb702a06b04",
+      "fixture_sha256": {
+        "application_1": "deb3f2efc1fb1bdd3944ca34499287ad7cac8461e7d6c61d9d502e398ae08de8",
+        "application_2": "55bac5fa4c83e0e9dd50f343d1de35770dfc4e87cc9d041b71f0473dbb27418a",
+        "dependency": "ee97266a05db79b45d4292215581a11ecc68b9fc6c96c950484a8816ef918e78",
+        "other_application_1": "ad17745bcfe0770cf22a69829e7fe4ae97502cdd0587af67cd23b35bac531b43"
+      },
+      "artifacts": [
+        {
+          "build": {
+            "GOARCH": "arm64",
+            "GOOS": "linux",
+            "vcs.modified": "false",
+            "vcs.revision": "dfc938112a3df8a0855f951122f88c02212a033c"
+          },
+          "path": ".cache/ci-build/cratectl",
+          "sha256": "04f364aba1b0d0b1b55f5128b7d451611c77793889da80c50ac8c038527edccb"
+        },
+        {
+          "build": {
+            "GOARCH": "arm64",
+            "GOOS": "linux",
+            "vcs.modified": "false",
+            "vcs.revision": "dfc938112a3df8a0855f951122f88c02212a033c"
+          },
+          "path": ".cache/ci-build/cratectld",
+          "sha256": "9a2298861209ec329eb9fc8dd1c6cfea1c7696bb973c083a5f67b618b0898bf6"
+        }
+      ],
+      "safe_summary": "evidence/2026-11-03/github-dfc9381-native-arm64-summary.json"
+    }
+  ],
+  "database_regressions": [
+    "TestNuGetHostedPublicationPolicyBytesAndLifecycle",
+    "TestNuGetConcurrentCoordinatesAndCompleteIndexBudget"
+  ],
+  "database_execution": "Both native jobs passed make integration and make integration-race; these newly added non-skipping integration tests execute against real forced-RLS PostgreSQL using the nonsuperuser/nonowner runtime. No local database compilation is counted as runtime proof.",
+  "observed_scope": [
+    "Both native Linux PostgreSQL integration and race gates pass. New hosted NuGet tests cover common publication, quarantine/current denial, original package/manifest bytes, range/conditional/HEAD, duplicate/concurrent coordinates, revocation/tenant collisions, complete index budget failure and materialized delete/verified restore.",
+    "Both native SDK10.0.403 stock-client campaigns pass406checks each, including new NuGet pushes, dependency restores with fresh caches, exact inert package/payload/manifest bytes, duplicate/reader rejection, tenant collision/current denial and actual registry restart. This is part of the larger named client campaign, not406NuGet-onlychecks."
+  ],
+  "library_checkpoint": "evidence/2026-11-03/nuget-b259472-checkpoint.json",
+  "limits": [
+    "Hosted NuGet fixtures are owned inert ZIP32 packages without scripts/build targets/assemblies; no full metadata/signature/identity-alias/native lifecycle/search/symbol, proxy/group, other clients/platforms, production NuGet TLS or full-format/readiness claim.",
+    "The forthcoming15workflow console adds an unverified NuGet-specific journey; discovery/skips are not execution passes.",
+    "Primary11/qualified548 active binaries, data and credentials remain unchanged; runtime qualification here is on isolated GitHub runners. All450capabilities/41families remain active and broad readiness stays negative."
+  ]
+}

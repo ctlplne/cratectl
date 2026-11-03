@@ -6,7 +6,20 @@ GitHub native qualification and moves historical controlled-upgrade journeys
 off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
-Current native milestone accepted on clean source
+Current hosted NuGet milestone accepted on clean source
+`dfc938112a3df8a0855f951122f88c02212a033c`: all 14 jobs pass on that source
+(main 9, OCI 2, controlled upgrades 2 and focused repair 1). Both real PostgreSQL
+integration/race gates and stock SDK10.0.403 campaigns pass. Each broader client
+campaign has 406 checks, including NuGet push, fresh-cache dependency restores,
+exact package/manifest/payload bytes, duplicate/reader rejection, tenant collisions,
+current policy and actual registry restart. Exact native binary, client and four
+fixture hashes are retained. Existing 14-workflow x86 Chromium passes with zero
+unexpected/skipped/flaky results. The new NuGet-specific browser journey below
+has not run. See `evidence/2026-11-03/github-dfc9381-checkpoint.json` and
+`evidence/2026-11-03/nuget-dfc9381-checkpoint.json`. No fresh retention or library
+run is included in this 14-job campaign; their distinct checkpoints stay separate.
+
+Earlier 17-job native milestone accepted on clean source
 `6854e80fc1e3cf049b3ffc0fe68d90e4dc8bf9a2`:17 GitHub jobs pass on that exact
 source. Both Docker/Podman/Helm journeys complete 214 checks, including exact
 layered/multiarch bytes, hosted/proxy/group images and chart dependencies,
@@ -32,7 +45,8 @@ CRCs and accounts for complete compressed members without extracting or running
 payloads. The checksum remains inside `internal/crypto`. Local regressions/race
 and 333,402 local fuzz executions pass; native fuzz jobs pass too.
 See ADR 0034 and `evidence/2026-11-03/nuget-archive-development.json`. No archive
-publication, feed, dependency/client or full-format qualification is claimed.
+publication, feed, dependency/client or full-format qualification is claimed by that
+library checkpoint; the hosted result above is separately scoped.
 
 ID lookup keys are qualified for the named owned transport profile on clean
 `b25947219e66552c6b48c10bb3e570a8c76af3ad`: both actual native Linux SDK jobs
@@ -47,12 +61,15 @@ Hosted NuGet development now adds API-key push, bounded immutable archive/manife
 binding, flat version/package/Nuspec reads and common materialized-reference
 lifecycle. The console offers hosted creation and private client templates.
 Two actual PostgreSQL regressions and a stock dotnet push/dependency-restore
-journey are added to the native GitHub campaign. These new database/client/UI
-outcomes are implemented but unverified. Local malformed-upload coverage found
+journey are added to the native GitHub campaign. Native PostgreSQL/race and stock-client steps now pass on both architectures
+at dfc9381; exact reports and native binary/SDK/fixture hashes are retained.
+A dedicated NuGet Chromium
+operator journey is added but remains unverified. Local malformed-upload coverage found
 and repaired a truncated-body 503/400 error (DEFECT.0083). See ADR0036 and
 `evidence/2026-11-03/nuget-hosted-development.json`. Full NuGet metadata,
 signatures, symbols, native lifecycle, proxy/group, search, other clients/platforms
-and all remaining goal requirements stay open.
+and all remaining goal requirements stay open. The new console gate contains
+15 workflows; historical 14-workflow checkpoints retain their original scope.
 
 The original 51-check byte-observation failure and 174-check grant-fixture failure
 remain retained. The tar observer and explicit restricted fixture access replay

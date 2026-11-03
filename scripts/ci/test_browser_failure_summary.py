@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: BUSL-1.1
 """Browser diagnostics expose known focus labels, never raw locator/error text."""
 import unittest
-from browser_failure_summary import safe_axe_findings, safe_error_kind, safe_focus_target
+from browser_failure_summary import safe_axe_findings, safe_error_kind, safe_focus_target, safe_nuget_progress
 
 
 class SafeFocusTarget(unittest.TestCase):
@@ -27,6 +27,12 @@ class SafeFocusTarget(unittest.TestCase):
             {'id': 'private/value', 'impact': 'critical', 'nodes': 1},
         ]}, {'state': 'private-synthetic-value', 'findings': [{'id': 'label', 'impact': 'critical', 'nodes': 1}]}]}
         self.assertEqual(safe_axe_findings(proof), ['repair awaiting source: rule=label impact=critical nodes=1'])
+
+    def test_nuget_progress_exports_fixed_phase_and_count_only(self):
+        proof = {'phase': 'exact_review', 'checks': ['private-synthetic-value'], 'private_error': 'private-synthetic-value'}
+        self.assertEqual(safe_nuget_progress(proof), ['NuGet workflow phase: exact_review', 'NuGet workflow progress: 1 completed checks'])
+        self.assertNotIn('private-synthetic-value', '\n'.join(safe_nuget_progress(proof)))
+        self.assertEqual(safe_nuget_progress({'phase': 'private-synthetic-value', 'checks': ['secret'] * 33}), [])
 
 
 if __name__ == '__main__':

@@ -44,6 +44,16 @@ def safe_axe_findings(proof):
     return lines
 
 
+def safe_nuget_progress(proof):
+    phases = {'connect', 'create_repository', 'client_configuration', 'publication_and_grants', 'exact_review', 'policy_denial', 'retained_lifecycle', 'grant_revocation', 'complete'}
+    lines = []
+    if proof.get('phase') in phases:
+        lines.append('NuGet workflow phase: ' + proof['phase'])
+    if isinstance(proof.get('checks'), list) and len(proof['checks']) <= 32:
+        lines.append(f'NuGet workflow progress: {len(proof["checks"])} completed checks')
+    return lines
+
+
 def main():
     root = Path(__file__).resolve().parents[2]
     reports = list((root / '.private/console-conformance').glob('*/browser-results.json'))
@@ -62,6 +72,10 @@ def main():
             print(f'Repair workflow progress: {len(proof["checks"])} completed checks')
         for finding in safe_axe_findings(proof):
             print('Repair accessibility finding: ' + finding)
+    nuget_path = report_path.parent / 'nuget-browser-proof.json'
+    if nuget_path.is_file() and nuget_path.stat().st_size <= 1 << 20:
+        for line in safe_nuget_progress(json.loads(nuget_path.read_text())):
+            print(line)
     stats = report.get('stats', {})
     print('Playwright counts: ' + ', '.join(f'{key}={int(stats.get(key, 0))}' for key in ('expected', 'unexpected', 'skipped', 'flaky')))
 

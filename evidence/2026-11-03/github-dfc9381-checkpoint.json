@@ -1,0 +1,160 @@
+{
+  "candidate": "dfc938112a3df8a0855f951122f88c02212a033c",
+  "status": "passed",
+  "job_count": 14,
+  "jobs": [
+    {
+      "id": 125702325050,
+      "name": "Real PostgreSQL and stock clients (arm64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41570602457
+    },
+    {
+      "id": 125702325092,
+      "name": "Scoped source, binary and history scans",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41570602457
+    },
+    {
+      "id": 125702325154,
+      "name": "Source and unit (amd64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41570602457
+    },
+    {
+      "id": 125702325162,
+      "name": "Bounded native Go fuzz (amd64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41570602457
+    },
+    {
+      "id": 125702325181,
+      "name": "Bounded native Go fuzz (arm64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41570602457
+    },
+    {
+      "id": 125702325190,
+      "name": "Bounded native Go fuzz (darwin-arm64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41570602457
+    },
+    {
+      "id": 125702325249,
+      "name": "Real PostgreSQL and stock clients (amd64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41570602457
+    },
+    {
+      "id": 125702325321,
+      "name": "Source and unit (arm64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41570602457
+    },
+    {
+      "id": 125702325533,
+      "name": "Source and unit (darwin-arm64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41570602457
+    },
+    {
+      "id": 125702326358,
+      "name": "Docker, Podman and Helm (amd64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41570602612
+    },
+    {
+      "id": 125702326853,
+      "name": "Docker, Podman and Helm (arm64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41570602612
+    },
+    {
+      "id": 125702325005,
+      "name": "Real PostgreSQL controlled upgrades (arm64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41570602410
+    },
+    {
+      "id": 125702325419,
+      "name": "Real PostgreSQL controlled upgrades (amd64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41570602410
+    },
+    {
+      "id": 125702325570,
+      "name": "Real x86 Chromium repair replay",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41570602589
+    }
+  ],
+  "artifacts": [
+    {
+      "scope": "native-amd64",
+      "path": "evidence/2026-11-03/github-dfc9381-native-amd64-summary.json",
+      "sha256": "6d6512da5934a8bf9a44937e2871f9681e07194fdaea60a6e6f53660b30d1b05"
+    },
+    {
+      "scope": "native-arm64",
+      "path": "evidence/2026-11-03/github-dfc9381-native-arm64-summary.json",
+      "sha256": "12304f89a0c953e0db253400248455c1a9718e15d8d83101d315dc1a3a03ba6d"
+    },
+    {
+      "scope": "security",
+      "path": "evidence/2026-11-03/github-dfc9381-security-summary.json",
+      "sha256": "12f8471e4e953d37748f2984dfd3c76993db8aceca86f1116d1dbfdde12199e9"
+    },
+    {
+      "scope": "oci-amd64",
+      "path": "evidence/2026-11-03/github-dfc9381-oci-amd64-summary.json",
+      "sha256": "92d670365933770a355af5b6a8ea11601f7559048efa7ed9c59e6d41d0588de1"
+    },
+    {
+      "scope": "oci-arm64",
+      "path": "evidence/2026-11-03/github-dfc9381-oci-arm64-summary.json",
+      "sha256": "7c62a7879cdbea07c6f88dcd49ed28137eacffadf615716248d4a35f4d26e743"
+    },
+    {
+      "scope": "upgrades-amd64",
+      "path": "evidence/2026-11-03/github-dfc9381-upgrades-amd64-summary.json",
+      "sha256": "2a1c752eef07b7334efc87547c612b83bcf65cd04f94846b9946a080a9e4e057"
+    },
+    {
+      "scope": "upgrades-arm64",
+      "path": "evidence/2026-11-03/github-dfc9381-upgrades-arm64-summary.json",
+      "sha256": "0f4b43beeb285012485dcd0eeb87e4ec7a34623b1d0dbc5e43a3dc00ce0a5991"
+    },
+    {
+      "scope": "repair",
+      "path": "evidence/2026-11-03/github-dfc9381-repair-summary.json",
+      "sha256": "eea039e7aae34e932269a9ab09a3d60941b82c8f92deb3416f59c73d38d3bd7d"
+    }
+  ],
+  "observed_scope": [
+    "All9mainCIjobs,2OCIclientjobs,2controlled-upgradejobs and1focusedrepairjob terminalsuccess on this exact source.",
+    "Both native Linux PostgreSQL integration and race gates pass. New hosted NuGet tests cover common publication, quarantine/current denial, original package/manifest bytes, range/conditional/HEAD, duplicate/concurrent coordinates, revocation/tenant collisions, complete index budget failure and materialized delete/verified restore.",
+    "Both native SDK10.0.403 stock-client campaigns pass406checks each, including new NuGet pushes, dependency restores with fresh caches, exact inert package/payload/manifest bytes, duplicate/reader rejection, tenant collision/current denial and actual registry restart. This is part of the larger named client campaign, not406NuGet-onlychecks.",
+    "Existing14workflow x86Chromium suite passes with0unexpected/skipped/flaky; five independent fresh repair journeys pass. The new NuGet-specific browser test is not in this source.",
+    "Both OCIcampaigns pass214checks; each controlled-upgrade campaign rebuilds10pinned historical binaries and passes15reports. Current runtime reports retain exact clean native source/binary identities; historical inventory separately retains its10 source/schema/checks and binary digests. Source/unit/race/fuzz gates pass on LinuxAMD64/ARM64 and macOSARM64; scoped security retains324syntheticcases."
+  ],
+  "limits": [
+    "Named14job milestone only. No fresh retention run or new library comparison was dispatched for this source. Last17job milestone remains6854e80; the distinct library profile checkpoint remainsb259472.",
+    "Hosted NuGet fixtures are owned inert ZIP32 packages without scripts/build targets/assemblies; no full metadata/signature/identity-alias/native lifecycle/search/symbol, proxy/group, other clients/platforms, production NuGet TLS or full-format/readiness claim.",
+    "The forthcoming15workflow console adds an unverified NuGet-specific journey; discovery/skips are not execution passes.",
+    "Primary11/qualified548 active binaries, data and credentials remain unchanged; runtime qualification here is on isolated GitHub runners. All450capabilities/41families remain active and broad readiness stays negative."
+  ]
+}
