@@ -21,6 +21,11 @@ type row struct {
 	Key   string `json:"key"`
 }
 
+type comparisonRow struct {
+	Valid bool `json:"valid"`
+	Order int  `json:"order"`
+}
+
 type nuspecRow struct {
 	Valid      bool   `json:"valid"`
 	ID         string `json:"id"`
@@ -58,6 +63,20 @@ func main() {
 	}
 	if err != nil || len(raw) > 2<<20 || json.Unmarshal(raw, &values) != nil || len(values) > caseLimit {
 		panic("owned version oracle input is invalid")
+	}
+	if len(os.Args) == 2 && os.Args[1] == "--compare" {
+		rows := make([]comparisonRow, 0, len(values))
+		for _, value := range values {
+			var pair []string
+			if json.Unmarshal([]byte(value), &pair) != nil || len(pair) != 2 {
+				rows = append(rows, comparisonRow{})
+				continue
+			}
+			order, e := nuget.CompareVersions(pair[0], pair[1])
+			rows = append(rows, comparisonRow{Valid: e == nil, Order: order})
+		}
+		emit(rows)
+		return
 	}
 	if len(os.Args) == 2 && os.Args[1] == "--id" {
 		rows := make([]row, 0, len(values))

@@ -23,6 +23,24 @@ class Program
         var values = JsonSerializer.Deserialize<string[]>(memory.ToArray());
         int caseLimit = args.Length == 1 && args[0] == "id" ? 65536 : 4096;
         if (values == null || values.Length > caseLimit) throw new Exception("owned case count");
+        if (args.Length == 1 && args[0] == "compare")
+        {
+            var comparisons = values.Select(value => {
+                var pair = JsonSerializer.Deserialize<string[]>(value);
+                if (pair == null || pair.Length != 2) throw new Exception("owned pair shape");
+                var leftOK = NuGetVersion.TryParse(pair[0], out var left);
+                var rightOK = NuGetVersion.TryParse(pair[1], out var right);
+                bool valid = leftOK && rightOK;
+                return new { valid, order = valid ? Math.Sign(VersionComparer.VersionRelease.Compare(left, right)) : 0 };
+            }).ToArray();
+            Console.WriteLine(JsonSerializer.Serialize(new {
+                os = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "linux" : "other",
+                architecture = RuntimeInformation.ProcessArchitecture.ToString().ToLowerInvariant(),
+                version = typeof(VersionComparer).Assembly.GetName().Version.ToString(),
+                rows = comparisons
+            }));
+            return;
+        }
         if (args.Length == 1 && args[0] == "id")
         {
             var identities = values.Select(value => {

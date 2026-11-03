@@ -191,10 +191,20 @@ func TestNuGetConcurrentCoordinatesAndCompleteIndexBudget(t *testing.T) {
 	if created != 1 || conflicts != 3 {
 		t.Fatal("native first writer was not unique", created, conflicts)
 	}
+	data, _ = nugetNupkgFixture(t, "Owned.Package", "10.0")
+	body, contentType = nugetMultipart(t, data, 0)
+	if w := nugetHTTP(t, s, token, "PUT", "/nuget/owned/api/v2/package", body, contentType); w.Code != 201 {
+		t.Fatal("tenth version", w.Code, w.Body.String())
+	}
 	data, _ = nugetNupkgFixture(t, "Owned.Package", "2.0")
 	body, contentType = nugetMultipart(t, data, 0)
 	if w := nugetHTTP(t, s, token, "PUT", "/nuget/owned/api/v2/package", body, contentType); w.Code != 201 {
 		t.Fatal("second version", w.Code, w.Body.String())
+	}
+	index := nugetHTTP(t, s, token, "GET", "/nuget/owned/flat/owned.package/index.json", nil, "")
+	var view struct{ Versions []string }
+	if index.Code != 200 || json.Unmarshal(index.Body.Bytes(), &view) != nil || strings.Join(view.Versions, ",") != "1.0.0,2.0.0,10.0.0" {
+		t.Fatal("version index used text ordering", index.Code, index.Body.String())
 	}
 	s.NativeVersionLimit = 1
 	if w := nugetHTTP(t, s, token, "GET", "/nuget/owned/flat/owned.package/index.json", nil, ""); w.Code != 503 {
@@ -203,7 +213,7 @@ func TestNuGetConcurrentCoordinatesAndCompleteIndexBudget(t *testing.T) {
 	var count int
 	if e := s.DB.Tx(context.Background(), admin, false, func(tx pgx.Tx) error {
 		return tx.QueryRow(context.Background(), `SELECT count(*) FROM cratectl.events WHERE payload::jsonb->>'kind'='nuget.package.published'`).Scan(&count)
-	}); e != nil || count != 2 {
+	}); e != nil || count != 3 {
 		t.Fatal("failed/conflicting publication created journal effects", count, e)
 	}
 }

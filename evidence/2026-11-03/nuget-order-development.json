@@ -1,0 +1,71 @@
+{
+  "source_parent": "9e6d98069d7cc624bf6339e241990de8ee063695",
+  "source_dirty": true,
+  "state": "implemented but unverified against actual SDK and updated native PostgreSQL index regression",
+  "implementation": "Bounded version precedence, stable canonical-key sorting with cancellation/no-partial-output; native hosted index sorts numerically through shared contract without changing stored identities or original bytes. SDK signed Int32 label handling and overflow textual fallback are source-guided, pending actual runtime comparison. Ordering ties never merge keys.",
+  "safety": {
+    "entries": 100000,
+    "aggregate_key_bytes": 67108864,
+    "per_version_bytes": 1024,
+    "caller_budgets": "Existing native index count/bytes may be tighter; SQL projects bounded keys, not all manifests. Cancellation checked through merges, input never mutated."
+  },
+  "local_checks": {
+    "build": "make build BINDIR=.cache/nuget-order-build passed; active bin untouched",
+    "unit": "make test passed",
+    "race": "make race passed",
+    "lint": "make lint passed",
+    "fuzz": "Latest FuzzVersionOrdering512024executions/5seconds passed, including transitivity/antisymmetry, ascending merge and preserved key multiplicity. Earlier comparison-only campaign258954executions also passed.",
+    "integration": "Integration-tagged server/store compile only; no local PostgreSQL execution",
+    "helper": {
+      "fixture_sha256": "51e13817f90d392ca21f849dc31b4c6d65080b816aae12664c8c1965408391f3",
+      "cases": 3025,
+      "go_build_identity": {
+        "vcs.modified": "true",
+        "vcs.revision": "9e6d98069d7cc624bf6339e241990de8ee063695"
+      },
+      "os": "darwin",
+      "architecture": "arm64",
+      "valid_pairs": 2209,
+      "row_sha256": "dd286e437d2eeaf38a9dae2c6ac46fdcd081ec0e6dd9f11ecf42e88868f68d7b",
+      "limits": "Local Go helper shape/budgets only; actual SDK comparison required."
+    },
+    "python": "3025owned comparison pairs,227645bytes,fixtureSHA51e13817f90d392ca21f849dc31b4c6d65080b816aae12664c8c1965408391f3. Managed compilation/actualcomparison not executed locally."
+  },
+  "first_development_failure": "evidence/2026-11-03/nuget-order-cancellation-fixture-first-failure.json",
+  "fixture_correction": "Drive real cancellation at every actually observed context checkpoint; never infer cancellation from an unreachable trigger. Local regressions pass; this is not a product security defect claim.",
+  "native_plan": "Both actual native Linux SDK library jobs add VersionComparer.VersionRelease comparisons for3025pairs, retaining all earlier1129version/11Nuspec/4archive/63516ID cases and failures. Updated real PostgreSQL/race fixture checks1,2,10numeric order, threeunique publications and no journal effects from conflicts. Actual matching remains unverified.",
+  "files": [
+    {
+      "path": "internal/nuget/order.go",
+      "sha256": "0e37c33488447bd2a336bc5dac64bb87a3b73ab58f8a33d82f30780cb126eb77"
+    },
+    {
+      "path": "internal/nuget/order_test.go",
+      "sha256": "d4688a1a4d43f7513f24cb743cdfc9048843d0384ce4175e38dca3f264dba6dd"
+    },
+    {
+      "path": "internal/store/nuget.go",
+      "sha256": "30d17766f6f1d8ccc80b9cd801cfa28ba5c83ca38a6841945263fd691582efa3"
+    },
+    {
+      "path": "internal/server/nuget_integration_test.go",
+      "sha256": "f4a55732d6925013706cec26cebf84427b883b867490b64c838e42aebca76fb2"
+    },
+    {
+      "path": "scripts/fixtures/nuget-versions/Program.cs",
+      "sha256": "4a7577069656fb30f3c46c030c281d3c289bfd5e437cda8267c84664335269d6"
+    },
+    {
+      "path": "scripts/fixtures/nuget-versions/main.go",
+      "sha256": "d3bfdfd68b8349af0e175916cdc3944b56fe6d06c66a239dfd8b6d49fe8ece09"
+    },
+    {
+      "path": "scripts/nuget_version_contract.py",
+      "sha256": "16df76d94b1acf38da503d6f04572c315667d49b3c4c81a03c6242e55405d43a"
+    }
+  ],
+  "limits": [
+    "No native SDK/database matching or full metadata/registration/search/range, unlisting/signature/symbol/proxy/group/nativeTLS/platform/format/readiness verdict from local checks.",
+    "No schema migration, primary binary switch, persistent local service or sibling/customer change. Full450capabilities/41families remain active."
+  ]
+}

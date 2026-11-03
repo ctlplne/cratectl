@@ -255,3 +255,19 @@ including new hosted NuGet. All eight safe summaries and native identities are
 retained in [the checkpoint](../../evidence/2026-11-03/github-dfc9381-checkpoint.json).
 No NuGet-specific Chromium result is present on that source; the next candidate
 adds it to the 15-workflow console and explicit focused five-fresh replay.
+
+The 9e6d980 candidate completes all 13 selected jobs: main9, OCI2, focused
+repair1 and focused NuGet1. Its full 15-workflow Chromium suite passes with zero
+unexpected/skipped/flaky results; five fresh NuGet and five fresh repair runs
+pass too. Both native PostgreSQL/race and SDK10.0.403 stock-client campaigns pass.
+Seven safe summaries and exact native identities are retained in
+[the checkpoint](../../evidence/2026-11-03/github-9e6d980-checkpoint.json). Earlier
+upgrade, retention and library observations keep their distinct candidate scope.
+
+The next library campaign adds 3,025 owned version-order pairs against actual
+NuGet.Versioning.VersionRelease on both native Linux architectures. It keeps all
+existing version/ID/Nuspec/archive contracts. The updated PostgreSQL test checks
+1/2/10 numeric index order and native publication/event semantics. Local
+unit/race/fuzz/budget/cancellation checks pass; actual SDK and updated database
+results remain unverified. This prepares complete registration/search metadata;
+it does not replace those required product journeys.

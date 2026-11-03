@@ -96,6 +96,7 @@ func (s *Store) NuGetVersions(ctx context.Context, i Identity, repo, id string, 
 	if e != nil || key != id || limit <= 0 || limit > 100000 || maxBytes <= 0 {
 		return nil, ErrMetadataLimit
 	}
+	maxBytes = min(maxBytes, int64(nuget.MaxOrderedVersionBytes))
 	e = s.Tx(ctx, i, false, func(tx pgx.Tx) error {
 		r, e := repositoryInTx(ctx, tx, i, repo, "read")
 		if e != nil {
@@ -126,5 +127,8 @@ func (s *Store) NuGetVersions(ctx context.Context, i Identity, repo, id string, 
 		}
 		return rows.Err()
 	})
-	return versions, e
+	if e != nil {
+		return nil, e
+	}
+	return nuget.SortVersionKeys(ctx, versions)
 }

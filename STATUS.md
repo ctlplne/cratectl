@@ -6,7 +6,26 @@ GitHub native qualification and moves historical controlled-upgrade journeys
 off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
-Current hosted NuGet milestone accepted on clean source
+Current operator/browser milestone accepted on clean source
+`9e6d98069d7cc624bf6339e241990de8ee063695`: all 13 jobs pass (main 9, OCI 2,
+focused repair 1 and focused NuGet 1). The full x86 Chromium suite now passes
+all 15 workflows with zero unexpected/skipped/flaky results. Five independent
+fresh NuGet operator journeys and five fresh repair journeys pass. Both actual
+PostgreSQL integration/race and SDK10.0.403 stock-client campaigns pass; each
+broader client campaign has 406 checks. Seven safe summaries retain exact clean
+native source, binaries, SDK and fixture identity. No new library, upgrade or
+fresh retention campaign is folded into this source. See
+`evidence/2026-11-03/github-9e6d980-checkpoint.json` and
+`evidence/2026-11-03/nuget-browser-9e6d980-checkpoint.json`.
+
+Version precedence and cancellation-aware bounded sorting are implemented for
+upcoming metadata/search and hosted indexes. Local build/unit/race/lint and
+512,024 latest fuzz executions pass; 3,025 owned SDK comparison pairs are added.
+Actual native comparison and the updated PostgreSQL 1/2/10-order regression are
+unverified. Ordering ties never merge coordinate identities. See ADR0037 and
+`evidence/2026-11-03/nuget-order-development.json`.
+
+Earlier hosted NuGet milestone accepted on clean source
 `dfc938112a3df8a0855f951122f88c02212a033c`: all 14 jobs pass on that source
 (main 9, OCI 2, controlled upgrades 2 and focused repair 1). Both real PostgreSQL
 integration/race gates and stock SDK10.0.403 campaigns pass. Each broader client
@@ -14,8 +33,8 @@ campaign has 406 checks, including NuGet push, fresh-cache dependency restores,
 exact package/manifest/payload bytes, duplicate/reader rejection, tenant collisions,
 current policy and actual registry restart. Exact native binary, client and four
 fixture hashes are retained. Existing 14-workflow x86 Chromium passes with zero
-unexpected/skipped/flaky results. The new NuGet-specific browser journey below
-has not run. See `evidence/2026-11-03/github-dfc9381-checkpoint.json` and
+unexpected/skipped/flaky results. The NuGet-specific browser journey was added on the later 9e6d980 source;
+this earlier checkpoint retains its original 14-workflow scope. See `evidence/2026-11-03/github-dfc9381-checkpoint.json` and
 `evidence/2026-11-03/nuget-dfc9381-checkpoint.json`. No fresh retention or library
 run is included in this 14-job campaign; their distinct checkpoints stay separate.
 
@@ -63,13 +82,13 @@ lifecycle. The console offers hosted creation and private client templates.
 Two actual PostgreSQL regressions and a stock dotnet push/dependency-restore
 journey are added to the native GitHub campaign. Native PostgreSQL/race and stock-client steps now pass on both architectures
 at dfc9381; exact reports and native binary/SDK/fixture hashes are retained.
-A dedicated NuGet Chromium
-operator journey is added but remains unverified. Local malformed-upload coverage found
+The dedicated NuGet Chromium operator journey now passes on 9e6d980
+in the complete 15-workflow suite and five independent fresh repetitions. Local malformed-upload coverage found
 and repaired a truncated-body 503/400 error (DEFECT.0083). See ADR0036 and
 `evidence/2026-11-03/nuget-hosted-development.json`. Full NuGet metadata,
 signatures, symbols, native lifecycle, proxy/group, search, other clients/platforms
-and all remaining goal requirements stay open. The new console gate contains
-15 workflows; historical 14-workflow checkpoints retain their original scope.
+and all remaining goal requirements stay open. The console gate contains 15 workflows; historical 14-workflow checkpoints
+retain their original scope.
 
 The original 51-check byte-observation failure and 174-check grant-fixture failure
 remain retained. The tar observer and explicit restricted fixture access replay

@@ -1,0 +1,17 @@
+{
+  "source_parent": "9e6d98069d7cc624bf6339e241990de8ee063695",
+  "source_dirty": true,
+  "scope": "Local darwin-arm64 comparison/sort development only; no actual SDK result",
+  "observation": "TestVersionSortIsStableBoundedAndDoesNotPublishPartialResults requested cancellation when the context was checked for the20th time, but that point was never reached: it returned the complete correctly sorted list with nil error. This was an unreachable test-fixture trigger, not observed partial results after cancellation.",
+  "next": "Drive cancellation at every actually observed context checkpoint and require no output/mutation after each real cancellation. Do not claim a product cancellation defect from an untriggered fixture.",
+  "files": [
+    {
+      "path": "internal/nuget/order.go",
+      "sha256": "0e37c33488447bd2a336bc5dac64bb87a3b73ab58f8a33d82f30780cb126eb77"
+    },
+    {
+      "path": "internal/nuget/order_test.go",
+      "sha256": "46b0a471028df69ca0c90e1f52243d8354053028158f7bfb769a58bdb49f3611"
+    }
+  ]
+}

@@ -5,8 +5,11 @@ Actual native Linux PostgreSQL/race and stock dotnet journeys pass on clean
 [dfc9381](../../evidence/2026-11-03/nuget-dfc9381-checkpoint.json), using SDK10.0.403
 and owned inert package/dependency fixtures. These runtime journeys use an
 explicit isolated loopback HTTP test profile. The complete NuGet family, native
-production TLS/client platforms and the new NuGet-specific Chromium workflow
-remain unqualified. The earlier library checkpoint retains its separate scope.
+production TLS and other client platforms remain unqualified. The named NuGet
+Chromium operator flow passes on
+[9e6d980](../../evidence/2026-11-03/nuget-browser-9e6d980-checkpoint.json), including
+five fresh repetitions; other browsers and complete accessibility remain open.
+The earlier library checkpoint retains its separate scope.
 
 Create a hosted `nuget` repository through the repository API or console. The
 feed URL is `https://REGISTRY/nuget/REPOSITORY/index.json`. Use a reader service
@@ -63,3 +66,9 @@ profile are admitted. Proxy/group, registration/search, symbols, full signature
 and dependency metadata handling, Unicode identity aliases and other clients
 and native platforms remain required work. Do not infer full format support or
 release readiness from the presence of these endpoints.
+
+Version-precedence work now adds stable numeric core/release ordering and a
+cancellation-aware sort, beneath the existing caller limits and a 100,000-key /
+64 MiB hard safety ceiling. The new comparator and 1/2/10 PostgreSQL regression
+are implemented but unverified against actual native SDK/database execution.
+Stored version keys and package bytes are unchanged.

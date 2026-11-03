@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
-"""Compare Go ID, version, Nuspec and archive identity with actual SDK libraries.
+"""Compare Go ID, version identity/precedence, Nuspec and archive contracts with SDK libraries.
 
 This is a native library contract test, not package-feed or stock-client proof.
 The owned C# fixture has no package references and clears package sources.
@@ -81,6 +81,18 @@ def id_cases():
     return list(dict.fromkeys(values))
 
 
+def comparison_cases():
+    values = ['0', '0.0.0', '1', '01.00.0', '1.0.0.0', '1.0.0.1', '1.0.0.2', '2', '9', '10',
+              '2147483647', '2147483647.2147483647.2147483647.2147483647']
+    values += ['1.0.0-' + label for label in ['0', '1', '2', '10', '2147483647', '2147483648', '10000000000',
+               '-1', '-0', '-00', '-01', '-2147483648', '-2147483649', '-', 'alpha', 'ALPHA', 'alpha.0',
+               'alpha.1', 'alpha.2', 'alpha.10', 'alpha10', 'alpha2', 'rc.2', 'rc.10', 'rc.2147483648',
+               'rc.10000000000', 'a-b', 'a.0.b', 'a.' + '1' * 128, 'a' * 970]]
+    values += ['1.0.0+owned', '1.0.0+OTHER', '1.0.0-ALPHA+owned', '1 . 0 . 0', '', 'v1', '2147483648',
+               '1.2.3.4.5', '1.0.0-01', '1.0.0-alpha..1', '1.0.0-a_1', '1.0.0+', '1.0.0-a+meta.7']
+    return [json.dumps(pair, separators=(',', ':')) for pair in itertools.product(values, repeat=2)]
+
+
 def main():
     os.chdir(ROOT)
     os.umask(0o077)
@@ -92,7 +104,7 @@ def main():
     candidate = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
     dirty = bool(subprocess.check_output(['git', 'status', '--porcelain', '--untracked-files=all']).strip())
     arch = {'x86_64': 'amd64', 'aarch64': 'arm64'}.get(platform.machine())
-    report = {'candidate': candidate, 'run_id': os.environ.get('GITHUB_RUN_ID'), 'status': 'failed', 'phase': 'preflight', 'source_dirty': dirty, 'checks': [], 'limits': ['Native transport-profile ID/flat-key, version-key, Nuspec identity and owned ZIP archive identity/manifest-byte contracts only. ID reference acceptance and transport-profile exclusions are reported separately. No durable publication, full package/signature, ZIP64/split/exotic archive, feed, dependency-resolution, publish/consume, tenant, policy, symbol, Chocolatey/PowerShell or release-readiness qualification.']}
+    report = {'candidate': candidate, 'run_id': os.environ.get('GITHUB_RUN_ID'), 'status': 'failed', 'phase': 'preflight', 'source_dirty': dirty, 'checks': [], 'limits': ['Native transport-profile ID/flat-key, version-key/precedence, Nuspec identity and owned ZIP archive identity/manifest-byte contracts only. ID reference acceptance and transport-profile exclusions are reported separately. An ordering tie is not permission to merge coordinate identities. No durable publication, full package/signature, ZIP64/split/exotic archive, feed, dependency-resolution, publish/consume, tenant, policy, symbol, Chocolatey/PowerShell or release-readiness qualification.']}
     environment = dict(os.environ, DOTNET_CLI_TELEMETRY_OPTOUT='1', DOTNET_SKIP_FIRST_TIME_EXPERIENCE='1', DOTNET_NOLOGO='1', DOTNET_GENERATE_ASPNET_CERTIFICATE='false', DOTNET_CLI_HOME=str(work / 'dotnet-home'), NUGET_PACKAGES=str(work / 'packages'), MSBuildEnableWorkloadResolver='false', GOTOOLCHAIN='local', GOCACHE=str(ROOT / '.cache/go-build'), GOMODCACHE=str(ROOT / '.cache/go-mod'))
     number = 0
 
@@ -188,6 +200,18 @@ def main():
         report['id_mismatch_indexes'] = errors
         report['id_mismatches'] = [{'index': index, 'input': identifiers[index], 'go': actual['rows'][index], 'reference': expected['rows'][index]} for index in errors[:64]]
         check('all owned ID validity and invariant lookup keys agree within the explicit transport profile', not errors)
+        report['phase'] = 'version_comparison'
+        pairs = comparison_cases()
+        encoded = json.dumps(pairs).encode()
+        check('owned comparison corpus stays within input and case budgets', len(encoded) <= 2 << 20 and len(pairs) <= 4096)
+        actual = json.loads(command([work / 'go-oracle', '--compare'], 'compare owned versions with Go', encoded))
+        expected = json.loads(command([dotnet, work / 'managed/Oracle.dll', 'compare'], 'compare owned versions with actual NuGet.Versioning', encoded))
+        check('comparison references use this clean native source', actual['os'] == expected['os'] == 'linux' and actual['architecture'] == arch and expected['architecture'] == {'amd64': 'x64', 'arm64': 'arm64'}[arch] and actual['build'] == native['build'])
+        check('comparison library and case count are observed', expected['version'] == report['nuget_library_version'] and len(actual['rows']) == len(expected['rows']) == len(pairs))
+        errors = [index for index, (a, b) in enumerate(zip(actual['rows'], expected['rows'])) if a != b]
+        report.update(comparison_cases=len(pairs), comparison_fixture_sha256=hashlib.sha256(encoded).hexdigest(), comparison_mismatch_indexes=errors,
+                      comparison_mismatches=[{'index': index, 'input': json.loads(pairs[index]), 'go': actual['rows'][index], 'reference': expected['rows'][index]} for index in errors[:64]])
+        check('all owned version precedence and invalid-input results agree with the actual SDK', not errors)
         report.update(status='passed', phase='complete')
     except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
         report['failure_type'] = type(error).__name__
