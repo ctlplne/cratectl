@@ -342,6 +342,20 @@ func parseOCIPath(p string) (image, operation, ref string) {
 	return "", "", ""
 }
 
+func ociAcceptsMediaFields(fields []string, media string) bool {
+	if len(fields) > 64 {
+		return false
+	}
+	total := max(0, len(fields)-1)
+	for _, field := range fields {
+		if len(field) > 8192-total {
+			return false
+		}
+		total += len(field)
+	}
+	return ociAcceptsMedia(strings.Join(fields, ","), media)
+}
+
 func ociAcceptsMedia(accept, media string) bool {
 	if accept == "" {
 		return true

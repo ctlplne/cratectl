@@ -4,6 +4,7 @@ package server
 import (
 	"encoding/base64"
 	"encoding/json"
+	"net/http"
 	"strings"
 	"testing"
 
@@ -124,6 +125,51 @@ func TestOCIPathAndAccept(t *testing.T) {
 			t.Fatalf("Accept %q", test.accept)
 		}
 	}
+}
+
+func TestOCIAcceptFieldLines(t *testing.T) {
+	for _, test := range []struct {
+		name   string
+		fields []string
+		allow  bool
+	}{
+		{"absent", nil, true},
+		{"Docker then OCI", []string{"application/vnd.docker.distribution.manifest.v2+json", testOCIImage}, true},
+		{"OCI then Docker", []string{testOCIImage, "application/vnd.docker.distribution.manifest.v2+json"}, true},
+		{"exclude after wildcard", []string{"*/*", testOCIImage + ";q=0"}, false},
+		{"exclude before wildcard", []string{testOCIImage + ";q=0", "*/*"}, false},
+		{"positive before excluded wildcard", []string{testOCIImage + ";q=0.2", "*/*;q=0"}, true},
+		{"unaccepted types", []string{testOCIIndex, "text/plain"}, false},
+		{"too many lines", append([]string{testOCIImage}, make([]string, 64)...), false},
+		{"combined byte limit", []string{testOCIImage, strings.Repeat(" ", 8192)}, false},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			header := http.Header{}
+			for _, value := range test.fields {
+				header.Add("Accept", value)
+			}
+			if actual := ociAcceptsMediaFields(header.Values("Accept"), testOCIImage); actual != test.allow {
+				t.Fatalf("multiple Accept fields: allowed=%v; want %v", actual, test.allow)
+			}
+		})
+	}
+}
+
+func FuzzOCIAcceptFieldLines(f *testing.F) {
+	f.Add("application/vnd.docker.distribution.manifest.v2+json", testOCIImage)
+	f.Add("*/*", testOCIImage+";q=0")
+	f.Add(testOCIImage+";q=0.2", "application/*;q=0")
+	f.Add("", "")
+	f.Fuzz(func(t *testing.T, first, second string) {
+		forward := ociAcceptsMediaFields([]string{first, second}, testOCIImage)
+		reverse := ociAcceptsMediaFields([]string{second, first}, testOCIImage)
+		if forward != reverse {
+			t.Fatal("field order changed accepted representations")
+		}
+		if len(first)+len(second)+1 > 8192 && forward {
+			t.Fatal("oversized field list bypassed the byte budget")
+		}
+	})
 }
 
 func FuzzOCIManifest(f *testing.F) {

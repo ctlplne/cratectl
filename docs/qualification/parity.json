@@ -2520,10 +2520,11 @@
       "state": "implementing",
       "candidate": null,
       "evidence": [
-        "evidence/2026-11-02/nuget-version-development.json"
+        "evidence/2026-11-02/nuget-version-development.json",
+        "evidence/2026-11-02/nuget-version-f499369-checkpoint.json"
       ],
-      "limits": "Only bounded version-key parsing and local unit/race/fuzz properties. Native NuGet.Versioning differential workflow is implemented but unverified. No feed or stock-client journey is implemented or verified.",
-      "next_action": "Run exact native library comparisons, then implement archive/nuspec identity, tenant-scoped durable feed publication and complete dotnet/NuGet/Chocolatey/PowerShell and all required journeys."
+      "limits": "Only the version-key library contract is qualified:1129actual NuGet.Versioning comparisons per native Linux architecture on f499369. No feed, archive or stock-client journey is implemented or verified.",
+      "next_action": "Complete archive/nuspec identity and tenant-scoped durable feed operations, then all required client/mode/policy/lifecycle/platform journeys."
     },
     {
       "id": "FMT.NUGET.PROXY",

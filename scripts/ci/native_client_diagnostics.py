@@ -25,6 +25,7 @@ MARKERS = {
     'registry_auth_scheme': (b'unsupported auth', b'unsupported authentication', b'no supported www-authenticate'),
     'registry_token': (b'unable to retrieve auth token',),
     'manifest_missing': (b'manifest unknown',),
+    'manifest_lookup': (b'no such manifest:',),
     'blob_missing': (b'blob unknown',),
     'platform_missing': (b'no matching manifest', b'no image found in manifest list'),
     'client_flag': (b'unknown flag:', b'unknown shorthand flag:'),

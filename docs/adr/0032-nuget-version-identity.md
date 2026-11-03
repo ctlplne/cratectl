@@ -32,9 +32,10 @@ compares both acceptance and exact normalized identities. The run records
 the SDK/library version, library/helper/fixture hashes, native process
 architecture, clean embedded Go source identity, case count and mismatch
 indexes. Package sources are cleared and the fixture has no package
-references. No uploaded package or project is built or executed. The initial
-managed fixture and its GitHub execution remain unverified until that run
-actually completes.
+references. No uploaded package or project is built or executed. On f499369,
+all1,129synthetic cases agree with actual SDK10.0.403 / NuGet.Versioning7.9.0.0
+on each native Linux architecture. See [the exact checkpoint](../../evidence/2026-11-02/nuget-version-f499369-checkpoint.json).
+This verifies the named library contract only.
 
 This foundation adds no repository route or durable state. NuGet hosted/proxy/
 group adapters, archive/nuspec identity binding, symbols, dependency/search

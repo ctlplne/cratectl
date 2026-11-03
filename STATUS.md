@@ -6,34 +6,31 @@ GitHub native qualification and moves historical controlled-upgrade journeys
 off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
-Current product work: Docker/Podman/Helm OCI client journeys and native Linux
-x86-64/ARM64 GitHub qualification are implemented but unverified. The fixture
-uses real restricted PostgreSQL, opaque layered/multi-architecture images and
-chart dependencies; no uploaded image or package script executes.
+Current product work: Docker/Podman/Helm OCI journeys remain unverified. The
+short Podman runroot repair has replayed through every client login on both
+native Linux architectures at f499369. The next failure is Docker's generic
+manifest lookup error during multi-architecture publication; no complete image
+or Helm journey has passed.
 
-The initial Podman package downgrade was repaired and replayed. Both270f7ca
-native failures were then recovered through encrypted artifacts: Podman4.9.3
-rejects the workspace-derived runroot because it exceeds50characters. This
-is a fixture path failure before registry authentication. The new repair
-allocates a unique mode0700 `/tmp/cratectl-podman-*` directory below50bytes,
-keeps the private VFS graph store in the workspace and binds privileged cleanup
-to the allocated path/device/inode. Real filesystem regressions pass; actual
-native replay of the repair remains required.
+A separate serving defect was reproduced: only the first Accept field was
+read, dropping later acceptable types and later exact exclusions. All Accept
+fields are now combined under64-line/8192-byte bounds with unchanged policy
+and specificity rules. Local race regressions and the new header fuzz target
+pass; a new real PostgreSQL/CAS GET/HEAD/exclusion/policy test is compiled but
+awaits actual GitHub execution. The causal link to Docker's generic error
+remains unproven until replay. Manifest debug logs remain private/encrypted.
+See `DEFECT.0076` and `evidence/2026-11-02/oci-clients-f499369-manifest-failure.json`.
+The earlier runroot and unknown diagnostic failures remain retained.
 
-GitHub OpenSSL3.0.13 encryption and local4.0.3 decryption were observed on both
-architectures with matching source/run/platform and byte identities. Earlier
-unknown private errors retain their original limits. No image or Helm
-publication or consumption ran. See `DEFECT.0074`, `DEFECT.0075` and
-`evidence/2026-11-02/oci-clients-270f7ca-runroot-failure.json`.
-No native client journey or broad readiness is verified. Continue the full goal.
-
-While the GitHub native-client replay waits for runners, NuGet version identity
-work has begun in `internal/nuget`. Local ARM regression/fuzz checks cover the
-bounded normalization contract. A new native Linux x86-64/ARM64 workflow compares
-it with the SDK's actual NuGet.Versioning library without remote package
-restore. The managed fixture and differential run remain unverified; no NuGet
-feed, archive, publication, installation or customer journey is implemented.
-See `docs/adr/0032-nuget-version-identity.md` and the development evidence.
+NuGet version identity is qualified only as a library contract at f499369:
+all1,129synthetic cases agree with actual SDK10.0.403 / NuGet.Versioning7.9.0.0
+on each native Linux architecture. Source, fixture/helper/library hashes,
+versions and limits are retained in
+`evidence/2026-11-02/nuget-version-f499369-checkpoint.json`.
+No NuGet feed, archive, dependency resolution, stock-client or customer journey
+is implemented or verified. Continue all450capabilities and every later stage;
+broad readiness stays negative. The retained local primary/data/binaries and
+private decryption key are untouched.
 
 Current repair milestone accepted on clean source
 `6afbd4ad12cdb1d32aa43386a47822bc6e741fdf`: all five independent focused

@@ -121,8 +121,8 @@ fallback is allowed. See [private diagnostic operation](../operator/ci-diagnosti
 The270f7ca artifacts encrypted with actual GitHub OpenSSL3.0.13 and decrypted
 locally with4.0.3 on both architectures. Both errors identify Podman4's50character
 runroot limit before registry authentication. The repair uses a short uniquely
-owned temporary runroot with inode-bound cleanup; its real native replay is
-still required. See [the observed error](../../evidence/2026-11-02/oci-clients-270f7ca-runroot-failure.json).
+owned temporary runroot with inode-bound cleanup. The f499369 replay passed
+all native client logins, then failed at Docker manifest lookup. See [the observed error](../../evidence/2026-11-02/oci-clients-270f7ca-runroot-failure.json).
 This gate adds required client evidence; it does not replace the accepted13job
 regression milestone or complete OCI/platform/readiness scope.
 
@@ -136,8 +136,10 @@ architectures and requires clean exact Go source. Its owned C# fixture clears
 remote package sources and has no package references. The new Go parser also
 joins the existing native fuzz inventory.
 
-This is version-identity foundation work. Its initial GitHub execution is
-unverified. It supplies no NuGet feed/client, archive, symbols, tenant/policy,
+This version-identity contract passed all1,129synthetic comparisons on each
+native Linux architecture at f499369, using SDK10.0.403 / NuGet.Versioning7.9.0.0.
+See [the exact checkpoint](../../evidence/2026-11-02/nuget-version-f499369-checkpoint.json).
+It supplies no NuGet feed/client, archive, symbols, tenant/policy,
 dependency-resolution, migration or readiness proof. Continue the whole NuGet
 and remaining-format journeys after the adapter and storage work lands.
 

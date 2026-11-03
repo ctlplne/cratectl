@@ -1,0 +1,53 @@
+{
+  "candidate": "f4993696dce668b5a9c070a0afe6062235647973",
+  "status": "failed",
+  "run": "https://github.com/ctlplne/cratectl/actions/runs/41548060952",
+  "phase": "image_publication",
+  "failed_command": "Docker creates native multi-architecture index",
+  "exit": 1,
+  "safe_error": "no such manifest: <owned-hosted-repository>/payload:v1",
+  "checks_per_architecture": 30,
+  "artifacts": [
+    {
+      "architecture": "amd64",
+      "safe_summary": "evidence/2026-11-02/oci-clients-f499369-amd64-failed-summary.json",
+      "safe_summary_sha256": "5dd8965f47c5a7383ae4102be21ffee9786111ce30665d3b11eedc2f32958439",
+      "encrypted_metadata": "evidence/2026-11-02/oci-clients-f499369-amd64-encrypted-metadata.json",
+      "encrypted_metadata_sha256": "2fca80c17e5219d72d3ce8b40698990e45fb8b6c1333652174448830d24b2894",
+      "failed_command_output_sha256": "3ca817ed0999ceb381bb20bbc1f828ceb957cf1ab87b18053592341170726980"
+    },
+    {
+      "architecture": "arm64",
+      "safe_summary": "evidence/2026-11-02/oci-clients-f499369-arm64-failed-summary.json",
+      "safe_summary_sha256": "4c164d61a0779fae0751de68769843d3aa54b0d1d9d93adc1b408a82aa529332",
+      "encrypted_metadata": "evidence/2026-11-02/oci-clients-f499369-arm64-encrypted-metadata.json",
+      "encrypted_metadata_sha256": "af1a38b930586ba07967f15f5c398852e1fe51a5a2b8a3ccc965f716d7aeac7d",
+      "failed_command_output_sha256": "b0311081e6e85273b824b59c5e837d274af57ac3232f39e267befd580d8e62c4"
+    }
+  ],
+  "observations": [
+    "Both native drivers passed the short runroot preflight and every Docker/Podman/Helm login, then reached image publication. This replays the runroot repair through authentication only.",
+    "The ordered image build/push commands returned success before Docker manifest creation. Their complete served graph bytes were not independently observed before this failure.",
+    "Exact Docker CLI28.0.4 source supports OCI single manifests and can collapse underlying transport responses to a generic lookup failure. Debug output must remain private."
+  ],
+  "investigation": {
+    "state": "actual multi-field Accept defect reproduced locally; causal link to the generic Docker failure awaits native replay",
+    "server_defect": "The serving path reads Header.Get(\"Accept\"), which retains only the first field. A later acceptable OCI type is lost; a later exact q=0 exclusion can also be ignored.",
+    "client_reference": "https://github.com/distribution/distribution/blob/v2.8.3/registry/client/repository.go",
+    "docker_reference": "https://github.com/docker/cli/blob/v28.0.4/cli/registry/client/fetcher.go",
+    "first_regression": "evidence/2026-11-02/oci-accept-multifield-first-regression.txt"
+  },
+  "repair_state": "implemented but unverified against native clients",
+  "repair": "Combine all Accept field lines under64-line/8192-byte bounds, preserve specificity/quality rules and common policy guards, add actual PostgreSQL/CAS HTTP integration coverage and retain private Docker manifest debug logs.",
+  "local_checks": {
+    "race_header_regressions": "passed",
+    "new_header_fuzz": "passed;5second budget;51303executions;0failures",
+    "integration_test": "compiled only; not executed locally; actual GitHub PostgreSQL required",
+    "full_unit_suite": "passed with authorized loopback access; initial sandbox attempt denied an existing disposable HTTP listener bind",
+    "lint": "passed"
+  },
+  "limits": [
+    "No native multi-architecture publication or consumption completed. Full OCI and all broader requirements remain unfinished.",
+    "The original f499369 lookup message does not establish an HTTP status or root cause. Do not label it a proven406 until the native replay or actual diagnostic observation establishes that."
+  ]
+}

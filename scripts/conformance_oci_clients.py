@@ -193,7 +193,10 @@ def start():
 
 
 def docker(role, arguments, label, **options):
-    return command(['docker', '--host', 'unix:///var/run/docker.sock', '--config', auth[role]['docker'], *arguments], label, **options)
+    # Docker's manifest client collapses several transport errors into a
+    # generic lookup failure. Debug detail stays in encrypted private logs.
+    debug = ['--debug'] if arguments and arguments[0] == 'manifest' else []
+    return command(['docker', *debug, '--host', 'unix:///var/run/docker.sock', '--config', auth[role]['docker'], *arguments], label, **options)
 
 
 def podman(role, arguments, label, **options):

@@ -1,0 +1,39 @@
+{
+  "candidate": "f4993696dce668b5a9c070a0afe6062235647973",
+  "status": "passed",
+  "scope": "Native version-key library contract only; no NuGet repository/client journey",
+  "run": "https://github.com/ctlplne/cratectl/actions/runs/41548060942",
+  "architectures": [
+    "linux-amd64",
+    "linux-arm64"
+  ],
+  "synthetic_cases_per_architecture": 1129,
+  "mismatches": 0,
+  "sdk_version": "10.0.403",
+  "nuget_library_version": "7.9.0.0",
+  "fixture_sha256": "379042d92524f2a08bf44dc076c482766111f7c9d30db757be6225c2129c857e",
+  "artifacts": [
+    {
+      "architecture": "amd64",
+      "path": "evidence/2026-11-02/nuget-version-f499369-amd64-summary.json",
+      "sha256": "78ca6b859ad5032969102e2146d176f96145071a591922f831e2913ef3cddba6",
+      "go_oracle_sha256": "3f16012f42585b2d8e457345ad27f8a837114176a26ace0b9672512a26476b35",
+      "reference_library_sha256": "a79ff434115abee32fcc72e3ef401b89d763b3c0ac416a3a135703e90c0389cc"
+    },
+    {
+      "architecture": "arm64",
+      "path": "evidence/2026-11-02/nuget-version-f499369-arm64-summary.json",
+      "sha256": "a23f01e12ae1fabaec36c53bd8cce384935d5968d83f79f6035bc4882b334acb",
+      "go_oracle_sha256": "ba8c4847c495cb58cab14e6443e3ac494b1b838d0bec4827fc553d5e1817f078",
+      "reference_library_sha256": "f8587a1a311b929d822fc8fdca2d7c409aa9769d1ab9c250b90b9353e34f5ee7"
+    }
+  ],
+  "observations": [
+    "Both clean native Go helpers agree with the actual SDK NuGet.Versioning library on acceptance and exact normalized keys for all1129synthetic cases.",
+    "Each process native Linux architecture and the embedded clean Go source identity were asserted during execution. The summary retains helper/library hashes and actual SDK/library versions."
+  ],
+  "limits": [
+    "Library version-identity contract only. The SDK fixture has no package references and clears external package sources. No uploaded package or project executes.",
+    "No feed/archive/nuspec/dependency/search/symbol, dotnet/NuGet/Chocolatey/PowerShell client, tenant/policy/lifecycle/migration, other-platform or release-readiness qualification. All450capability scope stays unfinished."
+  ]
+}

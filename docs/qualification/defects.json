@@ -823,11 +823,21 @@
       "id": "DEFECT.0075",
       "summary": "Native OCI fixture exceeds Podman4 runroot length limit at first login",
       "first_failure": "evidence/2026-11-02/oci-clients-1757c89-authentication-failure.json",
-      "state": "270f7ca actual cause identified; short owned runroot repair implemented but unverified",
+      "state": "short runroot replayed through native authentication on both architectures",
       "candidate": "1757c89716220d4d0d54cc9dcec064b2cb9fb0ca",
       "repair": "Both decrypted270f7ca native failures report the50-character runroot limit before registry login. Allocate a unique mode0700 /tmp/cratectl-podman-* directory below50bytes; preserve the workspace private VFS graph store and bind privileged cleanup to the allocated path/device/inode. Require real native replay.",
-      "limits": "Actual270f7ca error is retained; earlier private errors remain unknown in their original records. Local filesystem regression passes; no image/Helm publication or consumption ran and no native journey is verified.",
-      "diagnostic_replay": "evidence/2026-11-02/oci-clients-270f7ca-runroot-failure.json"
+      "limits": "Both f499369 drivers passed the short-path preflight and every native client login. They failed later at Docker manifest lookup (DEFECT.0076); no complete native client journey is verified.",
+      "diagnostic_replay": "evidence/2026-11-02/oci-clients-270f7ca-runroot-failure.json",
+      "replay": "evidence/2026-11-02/oci-clients-f499369-manifest-failure.json"
+    },
+    {
+      "id": "DEFECT.0076",
+      "summary": "OCI serving ignores later Accept field lines; native Docker manifest lookup also fails generically",
+      "first_failure": "evidence/2026-11-02/oci-clients-f499369-manifest-failure.json",
+      "state": "multi-field defect reproduced and repaired locally; actual PostgreSQL/native replay required",
+      "candidate": "f4993696dce668b5a9c070a0afe6062235647973",
+      "repair": "Read every Accept field under64-line/8192-byte bounds; preserve quality/specificity and digest policy. Add multi-field regression, fuzz and real PostgreSQL/CAS GET/HEAD/exclusion/policy tests. Keep Docker manifest debug output private and retain the original generic failure.",
+      "limits": "Local header failure is reproduced. The native generic no-such-manifest message does not prove its underlying status or cause; actual native replay remains required."
     }
   ]
 }

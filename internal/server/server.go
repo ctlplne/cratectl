@@ -652,7 +652,7 @@ func (s *Server) serveResolvedArtifact(w http.ResponseWriter, r *http.Request, i
 	}
 	if resolved.source.Format == "oci" {
 		_, operation, _ := parseOCIPath(a.Path)
-		if operation == "manifests" && !ociAcceptsMedia(r.Header.Get("Accept"), a.MediaType) {
+		if operation == "manifests" && !ociAcceptsMediaFields(r.Header.Values("Accept"), a.MediaType) {
 			fail(w, 406, "MANIFEST_UNSUPPORTED", "Accept the stored OCI/Docker manifest media type; digest-addressed bytes are served unchanged.")
 			return
 		}

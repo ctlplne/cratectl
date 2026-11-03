@@ -74,8 +74,14 @@ The actual270f7ca artifacts from both architectures decrypted successfully and
 showed the50character runroot failure before registry login. Its source,
 metadata hashes, safe error and limits are retained in
 [the runroot failure](../../evidence/2026-11-02/oci-clients-270f7ca-runroot-failure.json).
-The short-path repair passes local filesystem regressions but still requires
-native client replay. Earlier unknown-cause failure records are preserved.
+The short-path repair then replayed through all client logins on both native
+architectures at f499369. Docker manifest creation failed later with a generic
+lookup error; its cause remains unconfirmed. A separately reproduced multi-field
+Accept serving defect is repaired locally and has new real PostgreSQL/CAS
+coverage awaiting GitHub execution. Manifest debug output stays encrypted.
+See [that failure](../../evidence/2026-11-02/oci-clients-f499369-manifest-failure.json).
+Earlier unknown-cause failure records are preserved; no complete client journey
+is verified.
 
 The first native run failed on both architectures before any client journey.
 The original Podman Debian revision pins would have downgraded installed
