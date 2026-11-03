@@ -53,8 +53,10 @@ the exact digest in the package inventory before common hold/delete/restore
 operations. Restore checks retained bytes and preserves the current security
 decision.
 
-Native unlist/relist is implemented but awaits actual PostgreSQL/race and stock
-client qualification. `dotnet nuget delete` records the version as unlisted:
+Native unlist/relist has named actual PostgreSQL/race and stock-dotnet proof on
+[83ca290](../../evidence/2026-11-03/nuget-83ca290-checkpoint.json), using the same
+owned inert packages and isolated loopback HTTP profile. `dotnet nuget delete`
+records the version as unlisted:
 
 ```sh
 dotnet nuget delete PACKAGE_ID VERSION --non-interactive \

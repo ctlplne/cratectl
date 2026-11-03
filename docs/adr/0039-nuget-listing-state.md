@@ -34,7 +34,12 @@ restricted grants and revocation, concurrent mutations, holds, tombstones,
 tenant collisions, handler recreation and atomic outbox rollback. The stock
 dotnet journey adds real `nuget delete`, reader rejection, retries, fresh-cache
 pinned dependency restore, raw native POST relist and current-denial enforcement.
-Those database/client results are unverified until run on native GitHub runners.
+Both actual native Linux PostgreSQL/race gates and stock SDK10.0.403 campaigns
+now pass on 83ca290. Each broader client campaign has 436 checks, including
+listing/digest witnesses and pinned dependency restore across actual registry
+restart. Exact source, native binaries, SDK and fixture hashes are retained in
+`evidence/2026-11-03/nuget-83ca290-checkpoint.json`. This is distinct from complete
+discovery and lifecycle qualification.
 
 This implements the native mutation and durable listing state. Registration and
 search remain required; their future discovery projections must omit unlisted

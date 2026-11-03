@@ -1,0 +1,75 @@
+{
+  "source_parent": "83ca29010c1cc00c52fcadbf95f0e69acb9912c4",
+  "source_dirty": true,
+  "state": "implemented but unverified against actual native SDK range parsing/membership/floating preference",
+  "behavior": "Bounded opaque dependency intervals with independent floating preference. Exact/minimum/open/closed/half-open ranges, all stable/prerelease/revision floating families and source-characterized legacy edge behavior. Invalid input produces no partial usable range; zero value fails closed. Projections use qualified lowercase keys, ignore build metadata for comparisons and do not merge tied wire identities.",
+  "limits": {
+    "input_bytes": 4096,
+    "version_bound_bytes": 1024,
+    "oracle_case_limit": 4096,
+    "oracle_input_bytes": 2097152
+  },
+  "local_checks": {
+    "build": "make build BINDIR=.cache/nuget-ranges-build passed",
+    "unit": "make test passed",
+    "race": "make race passed",
+    "lint": "make lint passed",
+    "fuzz": {
+      "target": "FuzzNuGetVersionRange",
+      "executions": 42435,
+      "requested_seconds": 5,
+      "elapsed_seconds": 6.246,
+      "status": "passed"
+    },
+    "syntax": "Python compilation and NuGet workflow actionlint passed",
+    "helper_observation": {
+      "source_parent": "83ca29010c1cc00c52fcadbf95f0e69acb9912c4",
+      "source_dirty": true,
+      "cases": 892,
+      "fixture_bytes": 30955,
+      "fixture_sha256": "fbfc974827b37cb97545862daec343e3018f3c1dbf44f2a2ce949db544450794",
+      "go_os": "darwin",
+      "go_architecture": "arm64",
+      "go_build": {
+        "vcs.modified": "true",
+        "vcs.revision": "83ca29010c1cc00c52fcadbf95f0e69acb9912c4"
+      },
+      "go_valid_ranges": 544,
+      "go_valid_candidates_with_valid_range": 499,
+      "limits": "Local owned Go data-shape observation only. No actual SDK matching or managed compilation executed locally."
+    },
+    "managed": "Actual C# compilation and SDK differential execution delegated to native GitHub AMD64/ARM64 runners; unverified."
+  },
+  "native_plan": "892 owned range/candidate tuples compare validity, lowercase normalized range, min/max keys and inclusivity, floating behavior/string, candidate validity, interval Satisfies and independent Float.Satisfies. Existing1129version/11Nuspec/4archive/63516ID/3025precedence/23scalar cases stay mandatory. Retain all mismatch indexes and up to32owned examples.",
+  "semantic_cautions": [
+    "A floating prefix is not an implicit interval upper bound. Full dependency resolution must combine interval, preference and client prerelease rules.",
+    "A normalized formatter is not always a lossless substitute for raw/parsed declarations: source-admitted1.2* has minimum1.20.0 but floating string1.*. Preserve original text and parsed floor separately.",
+    "Empty open intervals, half-open equal-bound rejection and whitespace-only missing bounds follow the source-characterized SDK target; actual native matching remains unverified."
+  ],
+  "files": [
+    {
+      "path": "internal/nuget/range.go",
+      "sha256": "490ff88ff89703a3a710d197dd38dd826db0dadeb2a0eb7770047cef49bb13e7"
+    },
+    {
+      "path": "internal/nuget/range_test.go",
+      "sha256": "d410f31cb46dd888e4adaec4fda275a3964f5a8770044cfcac81418eb6eceea4"
+    },
+    {
+      "path": "scripts/fixtures/nuget-versions/main.go",
+      "sha256": "aab1605f7c69efd4fd3d561a3542762d55815fc09ad7379c143f1375ac1bd580"
+    },
+    {
+      "path": "scripts/fixtures/nuget-versions/Program.cs",
+      "sha256": "c59b57ef7db5fc3a49c9fd412801ca0385a2705b698155c7f55f320f2e3e508f"
+    },
+    {
+      "path": "scripts/nuget_version_contract.py",
+      "sha256": "46cabaf6cb8469f61d47e4315747f140c3453f04fbccb1094f8aa97f311a3b0b"
+    }
+  ],
+  "scope_limits": [
+    "Range library foundation only. No typed Nuspec dependency/framework/license metadata, registration/search/unlisted/SemVer discovery, complete graph resolution or full format qualification.",
+    "No new endpoint or advertised resource, schema migration, primary binary/service change, customer/sibling change or scope removal. All450capabilities/41families remain required; readiness remains negative."
+  ]
+}

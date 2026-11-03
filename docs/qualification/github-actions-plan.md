@@ -309,3 +309,21 @@ unlisted, verify durable state across actual registry restart, then native HTTP
 POST relist and current-denial enforcement. Local unit/race stand-ins and tagged
 compilation do not count as database/client passes. Registration/search hiding
 remains required product work and must be covered when those resources exist.
+
+The83ca290runtime campaign now passes all13selected jobs: main9/OCI2/upgrades2.
+Both actual PostgreSQL/race gates pass the new listing regression; both broader
+stock-client campaigns pass436checks, including real dotnet unlist/retry and
+fresh pinned restore across actual registry restart with durable listing/digest
+witnesses. Full x86Chromium15workflows pass0unexpected/skipped/flaky. Seven safe
+summaries and exact identities are retained in [the checkpoint](../../evidence/2026-11-03/github-83ca290-checkpoint.json).
+No new library or fresh focused browser campaign is included.
+
+The next actual SDK library campaign adds892owned dependency-range/candidate
+observations, comparing validity, lowercase normalized projections, min/max and
+inclusivity, floating behavior/text, candidate validity, interval membership and
+independent floating preference. Existing1129versions/11Nuspec/4archives/63516IDs/
+3025precedence pairs/23scalar documents stay mandatory. Input remains bounded to
+4096cases/2MiB; failures retain all mismatch indexes and32owned examples. Local
+build/unit/race/lint/fuzz and Go data-shape checks pass; C#compilation and actual
+native matching remain unverified. This is a prerequisite for complete typed
+metadata and registration/search, which remain required product work.

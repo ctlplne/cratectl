@@ -31,6 +31,14 @@ type propertyRow struct {
 	Values map[string]string `json:"values"`
 }
 
+type rangeRow struct {
+	Valid          bool                    `json:"valid"`
+	Info           *nuget.VersionRangeInfo `json:"info"`
+	VersionValid   bool                    `json:"version_valid"`
+	Satisfies      bool                    `json:"satisfies"`
+	FloatSatisfies bool                    `json:"float_satisfies"`
+}
+
 type nuspecRow struct {
 	Valid      bool   `json:"valid"`
 	ID         string `json:"id"`
@@ -68,6 +76,28 @@ func main() {
 	}
 	if err != nil || len(raw) > 2<<20 || json.Unmarshal(raw, &values) != nil || len(values) > caseLimit {
 		panic("owned version oracle input is invalid")
+	}
+	if len(os.Args) == 2 && os.Args[1] == "--range" {
+		rows := make([]rangeRow, 0, len(values))
+		for _, value := range values {
+			var pair []string
+			if json.Unmarshal([]byte(value), &pair) != nil || len(pair) != 2 {
+				rows = append(rows, rangeRow{})
+				continue
+			}
+			r, e := nuget.ParseVersionRange(pair[0])
+			if e != nil {
+				rows = append(rows, rangeRow{})
+				continue
+			}
+			info := r.Info()
+			_, e = nuget.VersionKey(pair[1])
+			satisfies, _ := r.Satisfies(pair[1])
+			floating, _ := r.FloatSatisfies(pair[1])
+			rows = append(rows, rangeRow{true, &info, e == nil, satisfies, floating})
+		}
+		emit(rows)
+		return
 	}
 	if len(os.Args) == 2 && os.Args[1] == "--compare" {
 		rows := make([]comparisonRow, 0, len(values))

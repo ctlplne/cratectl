@@ -6,7 +6,31 @@ GitHub native qualification and moves historical controlled-upgrade journeys
 off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
-Current 15-job milestone accepted on clean source
+Current 13-job listing milestone accepted on clean source
+`83ca29010c1cc00c52fcadbf95f0e69acb9912c4`: main 9, OCI 2 and controlled
+upgrades 2 all pass. Both actual native PostgreSQL/race gates pass the new listing
+regression, including restricted grants/revocation, API-key separation, holds,
+concurrent changes, tenant/tombstone isolation and atomic outbox rollback. Both
+broader stock-client campaigns pass 436 checks, including real dotnet delete and
+retry, pinned dependency restore while unlisted, actual registry restart with a
+durable listing/digest witness, HTTP POST relist and current-denial enforcement.
+Full x86 Chromium passes all 15 workflows with zero skipped/flaky/unexpected
+results. Both OCI campaigns pass 214 checks; each upgrade campaign rebuilds ten
+pinned historical servers and passes 15 reports. Seven safe summaries retain
+exact source, binaries, SDK and fixture identities. No library or fresh focused
+repair/NuGet/retention job is included. See
+`evidence/2026-11-03/github-83ca290-checkpoint.json` and
+`evidence/2026-11-03/nuget-83ca290-checkpoint.json`.
+
+Bounded dependency intervals and independent floating preferences are implemented
+for complete metadata work. Local build/unit/race/lint and 42,435 fuzz executions
+pass. The oracle adds 892 owned range/candidate observations, preserving all
+earlier mandatory contracts. Actual managed compilation/native SDK matching is
+unverified. Typed dependency/framework/license metadata, registration/search and
+full dependency resolution remain required. See ADR0040 and
+`evidence/2026-11-03/nuget-ranges-development.json`.
+
+Earlier 15-job milestone accepted on clean source
 `189a6ae33cd118201bd11121765ced68214688b2`: main 9, OCI 2, controlled
 upgrades 2 and NuGet libraries 2 all pass on GitHub Actions. Both actual native
 Linux SDK references match all 3,025 version-precedence pairs and all earlier
@@ -36,8 +60,8 @@ See ADR0038 and `evidence/2026-11-03/nuget-properties-development.json`.
 The original failure is retained in
 `evidence/2026-11-03/nuget-b727f33-property-whitespace-failure.json`.
 
-Native NuGet unlist/relist mutations and durable listing state are implemented
-but unverified against actual PostgreSQL/race and stock dotnet. Unlisting keeps
+Native NuGet unlist/relist mutations and durable listing state now have the named
+actual PostgreSQL/race and stock-dotnet proof on 83ca290 above. Unlisting keeps
 flat indexes and pinned package/Nuspec downloads; relisting preserves current
 policy and cannot resurrect retirement. Current grants, revocation and holds
 apply under the common tenant write fence. The listing update, event and outbox

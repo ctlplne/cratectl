@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
-"""Compare Go ID, version, Nuspec identity/scalars and archive contracts with SDK libraries.
+"""Compare Go IDs, versions/ranges, Nuspec scalars and archives with SDK libraries.
 
 This is a native library contract test, not package-feed or stock-client proof.
 The owned C# fixture has no package references and clears package sources.
@@ -115,6 +115,28 @@ def property_cases():
     return values
 
 
+def range_cases():
+    # Intervals and preferred floating subsets are independent SDK operations.
+    values = ['', ' ', '*', '*-*', '1', '1.2', '01.02.0', '1.2.3.4', '1.0+owned',
+              '1.*', '1.2.*', '1.2.3.*', '1.2.3-*', '1.2.3-rc.*', '1.2.3-ALPHA*',
+              '1.*-*', '1.2.*-*', '1.2.3.*-*', '*-rc*', '1.*-rc.*', '1.0.0-alpha-*',
+              '1.0.0--*', '1.0.0-alpha--*', '1*', '1.2*', '1.2.3*', '1*-*',
+              '**', '1.*.0', '1.*+owned', '1.0-*+owned', '1.0-01*', '1.0-a_1*',
+              '1.0.0-' + 'a' * 500 + '*', '\u00851.2.*\u0085', 'v1', '2147483648']
+    bounds = ['', ' ', '1', '2', '1.0-alpha', '1.0.0.1', '1.0+owned', '1.*', '1.0-0', '1.0--0', 'v1']
+    for left, right in itertools.product(bounds, repeat=2):
+        for opening, closing in [('[', ']'), ('[', ')'), ('(', ']'), ('(', ')')]:
+            values.append(opening + left + ',' + right + closing)
+    values += ['[1]', '(1)', '[1)', '(1]', '[]', '[ ]', '[1,2,3]', '[ 1.*,2]', '[1.* ,2]', '[1.*-*,2)', '[1.2.3-rc.*,2)']
+    values = list(dict.fromkeys(values))
+    candidates = ['0', '1.0-alpha', '1.0-0', '1.0--0', '1', '1.2.3', '1.2.3-rc.2', '1.2.3.4', '1.20', '2', 'v1']
+    # Each interval is tested against a deterministic candidate and critical
+    # float families get the entire candidate set without exceeding4096rows.
+    pairs = [(value, candidates[index % len(candidates)]) for index, value in enumerate(values)]
+    pairs += list(itertools.product(values[:36], candidates))
+    return [json.dumps(pair, separators=(',', ':')) for pair in dict.fromkeys(pairs)]
+
+
 def main():
     os.chdir(ROOT)
     os.umask(0o077)
@@ -126,7 +148,7 @@ def main():
     candidate = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
     dirty = bool(subprocess.check_output(['git', 'status', '--porcelain', '--untracked-files=all']).strip())
     arch = {'x86_64': 'amd64', 'aarch64': 'arm64'}.get(platform.machine())
-    report = {'candidate': candidate, 'run_id': os.environ.get('GITHUB_RUN_ID'), 'status': 'failed', 'phase': 'preflight', 'source_dirty': dirty, 'checks': [], 'limits': ['Native transport-profile ID/flat-key, version-key/precedence, Nuspec identity/supported scalar accessor and owned ZIP archive identity/manifest-byte contracts only. ID reference acceptance and transport-profile exclusions are reported separately. An ordering tie is not permission to merge coordinate identities. Scalar text is untrusted and does not qualify typed dependency/framework/range/license APIs. No durable publication, full package/signature, ZIP64/split/exotic archive, feed, dependency-resolution, publish/consume, tenant, policy, symbol, Chocolatey/PowerShell or release-readiness qualification.']}
+    report = {'candidate': candidate, 'run_id': os.environ.get('GITHUB_RUN_ID'), 'status': 'failed', 'phase': 'preflight', 'source_dirty': dirty, 'checks': [], 'limits': ['Native transport-profile ID/flat-key, version-key/precedence, bounded version-range interval/floating observations, Nuspec identity/supported scalar accessor and owned ZIP archive identity/manifest-byte contracts only. Range projections use lowercase version keys; interval membership and floating preference are compared separately. ID reference acceptance and transport-profile exclusions are reported separately. An ordering tie is not permission to merge coordinate identities. Scalar text is untrusted and does not qualify typed dependency/framework/license APIs. No durable publication, full package/signature, ZIP64/split/exotic archive, feed, complete dependency resolution, publish/consume, tenant, policy, symbol, Chocolatey/PowerShell or release-readiness qualification.']}
     environment = dict(os.environ, DOTNET_CLI_TELEMETRY_OPTOUT='1', DOTNET_SKIP_FIRST_TIME_EXPERIENCE='1', DOTNET_NOLOGO='1', DOTNET_GENERATE_ASPNET_CERTIFICATE='false', DOTNET_CLI_HOME=str(work / 'dotnet-home'), NUGET_PACKAGES=str(work / 'packages'), MSBuildEnableWorkloadResolver='false', GOTOOLCHAIN='local', GOCACHE=str(ROOT / '.cache/go-build'), GOMODCACHE=str(ROOT / '.cache/go-mod'))
     number = 0
 
@@ -245,6 +267,18 @@ def main():
         report.update(property_cases=len(properties), property_fixture_sha256=hashlib.sha256(encoded).hexdigest(), property_mismatch_indexes=errors,
                       property_mismatches=[{'index': index, 'go': actual['rows'][index], 'reference': expected['rows'][index]} for index in errors[:32]])
         check('all supported scalar properties match actual SDK GetMetadataValue', not errors)
+        report['phase'] = 'version_ranges'
+        ranges = range_cases()
+        encoded = json.dumps(ranges).encode()
+        check('owned dependency range corpus stays within input and case budgets', len(encoded) <= 2 << 20 and len(ranges) <= 4096)
+        actual = json.loads(command([work / 'go-oracle', '--range'], 'read bounded dependency range and membership with Go', encoded))
+        expected = json.loads(command([dotnet, work / 'managed/Oracle.dll', 'range'], 'read actual SDK dependency range and floating preference', encoded))
+        check('range references use this clean native source', actual['os'] == expected['os'] == 'linux' and actual['architecture'] == arch and expected['architecture'] == {'amd64': 'x64', 'arm64': 'arm64'}[arch] and actual['build'] == native['build'])
+        check('range reference library and case count are observed', expected['version'] == report['nuget_library_version'] and len(actual['rows']) == len(expected['rows']) == len(ranges))
+        errors = [index for index, (a, b) in enumerate(zip(actual['rows'], expected['rows'])) if a != b]
+        report.update(range_cases=len(ranges), range_fixture_sha256=hashlib.sha256(encoded).hexdigest(), range_mismatch_indexes=errors,
+                      range_mismatches=[{'index': index, 'input': json.loads(ranges[index]), 'go': actual['rows'][index], 'reference': expected['rows'][index]} for index in errors[:32]])
+        check('all owned dependency bounds and floating preference observations match actual SDK', not errors)
         report.update(status='passed', phase='complete')
     except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
         report['failure_type'] = type(error).__name__

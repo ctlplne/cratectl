@@ -23,6 +23,40 @@ class Program
         var values = JsonSerializer.Deserialize<string[]>(memory.ToArray());
         int caseLimit = args.Length == 1 && args[0] == "id" ? 65536 : 4096;
         if (values == null || values.Length > caseLimit) throw new Exception("owned case count");
+        if (args.Length == 1 && args[0] == "range")
+        {
+            var observations = values.Select(value => {
+                try
+                {
+                    var pair = JsonSerializer.Deserialize<string[]>(value);
+                    if (pair == null || pair.Length != 2 || !VersionRange.TryParse(pair[0], out var range)) throw new FormatException("owned range");
+                    var versionValid = NuGetVersion.TryParse(pair[1], out var version);
+                    object info = new {
+                        normalized = range.ToNormalizedString().ToLowerInvariant(),
+                        min = range.MinVersion?.ToNormalizedString().ToLowerInvariant() ?? "",
+                        max = range.MaxVersion?.ToNormalizedString().ToLowerInvariant() ?? "",
+                        include_min = range.IsMinInclusive, include_max = range.IsMaxInclusive,
+                        floating = range.IsFloating,
+                        float_behavior = range.Float?.FloatBehavior.ToString() ?? "None",
+                        float_string = range.Float?.ToString().ToLowerInvariant() ?? ""
+                    };
+                    return new { valid = true, info, version_valid = versionValid,
+                        satisfies = versionValid && range.Satisfies(version),
+                        float_satisfies = versionValid && (range.Float?.Satisfies(version) ?? false) };
+                }
+                catch (Exception)
+                {
+                    return new { valid = false, info = (object)null, version_valid = false, satisfies = false, float_satisfies = false };
+                }
+            }).ToArray();
+            Console.WriteLine(JsonSerializer.Serialize(new {
+                os = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "linux" : "other",
+                architecture = RuntimeInformation.ProcessArchitecture.ToString().ToLowerInvariant(),
+                version = typeof(VersionRange).Assembly.GetName().Version.ToString(),
+                rows = observations
+            }));
+            return;
+        }
         if (args.Length == 1 && args[0] == "compare")
         {
             var comparisons = values.Select(value => {
