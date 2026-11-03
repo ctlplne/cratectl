@@ -1,0 +1,48 @@
+{
+  "candidate": "7ea5ee734eb0ce056c0d7c999852ee65697016e8",
+  "status": "partial; whole candidate unqualified",
+  "run_id": 41644366640,
+  "url": "https://github.com/ctlplne/cratectl/actions/runs/41644366640",
+  "jobs": [
+    {
+      "run_id": 41644366640,
+      "id": 125945694966,
+      "name": "Real Gradle publication and resolution (arm64)",
+      "status": "completed",
+      "conclusion": "failure",
+      "failed_steps": [
+        "Run actions/setup-java@v5",
+        "Prepare bounded native evidence summary"
+      ]
+    },
+    {
+      "run_id": 41644366640,
+      "id": 125945695231,
+      "name": "Real Gradle publication and resolution (amd64)",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    }
+  ],
+  "summaries": [
+    {
+      "path": "evidence/2026-11-03/gradle-7ea5ee7-amd64-summary.json",
+      "sha256": "0f7fa89fc960e7cfcd78efdf1ba80da96d8b9a6820f4d87fb54ec3418caab6ce"
+    },
+    {
+      "path": "evidence/2026-11-03/gradle-7ea5ee7-arm64-summary.json",
+      "sha256": "b118ce6330eb6fddbfbca869f6c68ec8fa46eb5dda89c46b0a9df2db2ba998f5"
+    }
+  ],
+  "observations": {
+    "amd64": "Native Gradle9.8.2/JDK21.0.13+9-LTS completes123checks, all8ordered stages and24publisher fixture hashes with exact clean native source/binary identity.",
+    "arm64": "Java setup and summary-preparation steps report failure. The uploaded summary has no records; no ARM Gradle journey or compatibility pass is claimed. Exact setup cause was not investigated before the owner requested halt."
+  },
+  "limits": [
+    "This is a partial JVM checkpoint; other current-source workflows were still live at the last observation and are not accepted here.",
+    "The24fixture hashes identify publisher-generated JAR/POM/module files. Native consumers compare exact JAR payloads and transitive semantics; independent raw POM/module HTTP byte comparisons remain required.",
+    "No ARM Gradle proof, complete Maven/Gradle/Ivy/SBT, broader platform/format/release/readiness verdict or goal completion.",
+    "Owner requested pause and graceful halt. No repair, rerun, cancellation, new dispatch or evidence-only push is performed.",
+    "All450capabilities/41families and every GOAL.md stage remain committed. No primary/sibling/customer changes."
+  ]
+}

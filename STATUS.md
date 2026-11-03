@@ -1,5 +1,15 @@
 # cratectl execution status
 
+Owner requested pause and graceful halt on 2026-11-03. Implementation through
+`7ea5ee734eb0ce056c0d7c999852ee65697016e8` is committed and pushed. The native
+x86 Gradle profile passes 123 checks; ARM fails during Java setup before any
+Gradle journey. The cause remains uninvestigated. Other source campaigns were
+still live at the last observation. Exact results and limits are retained in
+`evidence/2026-11-03/gradle-7ea5ee7-partial-checkpoint.json`. The halt records are
+committed locally without pushing or cancelling existing GitHub runs. Resume
+only at the owner's direction. All 450 capabilities / 41 families remain in
+scope; the goal is incomplete and all broad readiness verdicts remain negative.
+
 Owner resumed the complete `GOAL.md` scope on 2026-11-02 and reaffirmed that
 both author and committer must be `imfeelingtheagi`. The current work finishes
 GitHub native qualification and moves historical controlled-upgrade journeys
