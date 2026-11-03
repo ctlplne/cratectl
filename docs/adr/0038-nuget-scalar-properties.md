@@ -27,7 +27,12 @@ need separate characterization. Local fixtures cover these, first/empty/duplicat
 fields, ASCII case aliases, foreign scalar namespaces, ignored child elements,
 exact text across native encodings, cancellation and byte limits. Malformed
 `xml:space` is rejected. The source-guided behavior is not called SDK-compatible
-until its actual native comparison passes.
+until its actual native comparison passes. The first actual SDK run on b727f33
+found one mismatch: a whitespace-only character reference is discarded by the
+SDK, so a later nonempty duplicate wins. The reader now distinguishes these text
+nodes from CDATA and `xml:space="preserve"`; it preserves surrounding whitespace
+when the same text node also contains a non-whitespace character. The original
+23-document corpus is retained unchanged for native replay (DEFECT.0084).
 
 The owned SDK oracle adds 23 source documents and compares every supported value
 against actual `GetMetadataValue`, with source/library/helper/fixture identities

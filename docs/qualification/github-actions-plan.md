@@ -286,3 +286,10 @@ mismatch evidence. Local Go tests and fuzzing pass; managed compilation and
 native scalar matching remain unverified. The reader never fetches URLs, opens
 declared paths, executes content or converts text into security authority.
 Complete typed metadata, registration/search and native unlisting remain required.
+
+The first b727f33 scalar campaign compiles and runs the actual managed fixture on
+both architectures, but fails case16: whitespace-only character-reference text
+was retained by Go and discarded by the SDK. Both original reports are retained
+in [the failure record](../../evidence/2026-11-03/nuget-b727f33-property-whitespace-failure.json).
+The repair keeps all23documents unchanged and adds local regression cases; a
+fresh native comparison is required before scalar compatibility is accepted.

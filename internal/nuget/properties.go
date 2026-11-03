@@ -123,7 +123,9 @@ func ParseNuspecProperties(ctx context.Context, raw []byte) (NuspecProperties, e
 				continue
 			}
 			original := decoded[before:decoder.InputOffset()]
-			explicit := bytes.HasPrefix(original, []byte("<![CDATA[")) || bytes.ContainsRune(original, '&') || preserve[len(preserve)-1]
+			// XmlReader ignores a whitespace-only text node even when it came
+			// from character references. CDATA and xml:space remain explicit.
+			explicit := bytes.HasPrefix(original, []byte("<![CDATA[")) || preserve[len(preserve)-1]
 			if !explicit && xmlWhitespace(value) {
 				continue
 			}

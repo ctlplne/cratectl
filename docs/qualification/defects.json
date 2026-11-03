@@ -930,6 +930,15 @@
       "limits": "The original local malformed-body regressions pass in the actual native source/unit/race gates, and new hosted PG/client journeys pass. Stock malformed/slow/interrupted network campaigns remain unfinished; no broader fault/readiness claim.",
       "latest_candidate": "dfc938112a3df8a0855f951122f88c02212a033c",
       "replay": "evidence/2026-11-03/nuget-dfc9381-checkpoint.json"
+    },
+    {
+      "id": "DEFECT.0084",
+      "summary": "NuGet scalar reader preserves a whitespace-only character reference that actual SDK ignores",
+      "first_failure": "evidence/2026-11-03/nuget-b727f33-property-whitespace-failure.json",
+      "state": "repaired locally; native SDK replay unverified",
+      "repair": "Discard whitespace-only XML text regardless of character references, preserving CDATA, xml:space and text nodes containing non-whitespace. Keep the original23document oracle unchanged and add local regressions. Native repair replay remains unverified.",
+      "limits": "Owned scalar accessor contract only. No package-feed, complete dependency/registration/search/unlisting, client, security or readiness qualification.",
+      "latest_candidate": "b727f3367dcb8f257ce49d300009dbaf16e2abd6"
     }
   ]
 }

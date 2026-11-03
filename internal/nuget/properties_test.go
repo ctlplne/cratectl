@@ -30,7 +30,11 @@ func TestNuspecPropertiesWhitespaceAndBounds(t *testing.T) {
 	for _, tc := range []struct{ fields, title string }{
 		{`<title>   </title><title>next</title>`, "next"},
 		{`<title><![CDATA[   ]]></title><title>next</title>`, "   "},
-		{`<title>&#32;</title><title>next</title>`, " "},
+		{`<title>&#32;</title><title>next</title>`, "next"},
+		{`<title>&#x9;&#xA;&#xD; </title><title>next</title>`, "next"},
+		{`<title>&#32;value&#32;</title>`, " value "},
+		{`<title>&#xA0;</title>`, "\u00a0"},
+		{`<title xml:space="preserve">&#32;</title>`, " "},
 		{`<title xml:space="preserve">   </title><title>next</title>`, "   "},
 		{`<title xml:space="default">  value  </title>`, "  value  "},
 	} {

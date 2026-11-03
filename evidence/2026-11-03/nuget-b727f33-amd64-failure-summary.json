@@ -1,0 +1,103 @@
+{
+  "candidate": "b727f3367dcb8f257ce49d300009dbaf16e2abd6",
+  "run_id": "41579777193",
+  "status": "failed",
+  "phase": "nuspec_properties",
+  "source_dirty": false,
+  "checks": [
+    "clean exact source on native GitHub Linux",
+    "actual dotnet SDK is installed",
+    "dotnet SDK version has a bounded public identity",
+    "both reference processes use the actual native Linux architecture",
+    "Go contract embeds this clean source",
+    "reference library has a bounded public version",
+    "both libraries produced one result per synthetic case",
+    "all synthetic version identities agree with actual NuGet.Versioning",
+    "Nuspec reference processes use this clean native source",
+    "Nuspec reference library and case count are observed",
+    "all owned Nuspec identities agree with actual SDK reader",
+    "archive reference processes use this clean native source",
+    "archive reference library and case count are observed",
+    "all owned archive identities and exact Nuspec bytes agree with actual SDK reader",
+    "owned identifier corpus stays within the input and case budgets",
+    "ID reference processes use this clean native source",
+    "ID reference library and case count are observed",
+    "all owned ID validity and invariant lookup keys agree within the explicit transport profile",
+    "owned comparison corpus stays within input and case budgets",
+    "comparison references use this clean native source",
+    "comparison library and case count are observed",
+    "all owned version precedence and invalid-input results agree with the actual SDK",
+    "property references use this clean native source",
+    "property reference library and case count are observed"
+  ],
+  "limits": [
+    "Native transport-profile ID/flat-key, version-key/precedence, Nuspec identity/supported scalar accessor and owned ZIP archive identity/manifest-byte contracts only. ID reference acceptance and transport-profile exclusions are reported separately. An ordering tie is not permission to merge coordinate identities. Scalar text is untrusted and does not qualify typed dependency/framework/range/license APIs. No durable publication, full package/signature, ZIP64/split/exotic archive, feed, dependency-resolution, publish/consume, tenant, policy, symbol, Chocolatey/PowerShell or release-readiness qualification."
+  ],
+  "sdk_version": "10.0.403",
+  "runner_os": "Linux",
+  "runner_arch": "amd64",
+  "go_build_identity": {
+    "vcs.modified": "false",
+    "vcs.revision": "b727f3367dcb8f257ce49d300009dbaf16e2abd6"
+  },
+  "cases": 1129,
+  "fixture_sha256": "379042d92524f2a08bf44dc076c482766111f7c9d30db757be6225c2129c857e",
+  "nuget_library_version": "7.9.0.0",
+  "library_sha256": "a79ff434115abee32fcc72e3ef401b89d763b3c0ac416a3a135703e90c0389cc",
+  "go_oracle_sha256": "e11b97c1616d6dbea251f574c49a3583e22f26bfbd1e85cde781983c34322cfe",
+  "mismatch_indexes": [],
+  "nuspec_cases": 11,
+  "nuspec_fixture_sha256": "b9e765c9bb2ba56afcc0ce127441bae4e5511c01926a1530006260804433b84b",
+  "packaging_library_version": "7.9.0.0",
+  "packaging_library_sha256": "f5d19c06e26dd7ebe050a4a5c4520a3932c3bb52326cdddc93aa0645fe707635",
+  "nuspec_mismatch_indexes": [],
+  "nuspec_mismatches": [],
+  "archive_cases": 4,
+  "archive_fixture_sha256": "ece212e07ff1bfb15e78302089c2b6bfa4dae5d1675e755e801308bc56afe35d",
+  "archive_mismatch_indexes": [],
+  "archive_mismatches": [],
+  "id_cases": 63516,
+  "id_fixture_sha256": "44248bbc9bf9d395a4708616d9752d888dfba0d0510af1de7be94daecfff6188",
+  "id_go_unicode_version": "17.0.0",
+  "id_reference_runtime": ".NET 10.0.14",
+  "id_reference_accepted": 50429,
+  "id_transport_rejected_reference_accepted_indexes": [
+    63496
+  ],
+  "id_go_rows_sha256": "0b8da52e85d0fa68a2c99b710e76df1ad80c85f2d7607c42c9ffd3f83fbd9735",
+  "id_go_profile": "legacy-word-u16.0.0-invariant-lower-u15.1.0-v1",
+  "id_reference_profile_rows_sha256": "0b8da52e85d0fa68a2c99b710e76df1ad80c85f2d7607c42c9ffd3f83fbd9735",
+  "id_mismatch_indexes": [],
+  "id_mismatches": [],
+  "comparison_cases": 3025,
+  "comparison_fixture_sha256": "51e13817f90d392ca21f849dc31b4c6d65080b816aae12664c8c1965408391f3",
+  "comparison_mismatch_indexes": [],
+  "comparison_mismatches": [],
+  "property_cases": 23,
+  "property_fixture_sha256": "ad61a6a41af262b9594261f0ce086ec810826dabdc87e2aa5abe62e7ea8bbfce",
+  "property_mismatch_indexes": [
+    16
+  ],
+  "property_mismatches": [
+    {
+      "index": 16,
+      "go": {
+        "valid": true,
+        "values": {
+          "id": "Cratectl.Properties",
+          "title": " ",
+          "version": "1.0+owned"
+        }
+      },
+      "reference": {
+        "valid": true,
+        "values": {
+          "id": "Cratectl.Properties",
+          "version": "1.0+owned",
+          "title": "next"
+        }
+      }
+    }
+  ],
+  "failure_type": "ValueError"
+}

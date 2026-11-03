@@ -1,0 +1,33 @@
+{
+  "candidate": "b727f3367dcb8f257ce49d300009dbaf16e2abd6",
+  "status": "failed",
+  "run": "https://github.com/ctlplne/cratectl/actions/runs/41579777193",
+  "jobs": {
+    "amd64": 125731631491,
+    "arm64": 125731631736
+  },
+  "phase": "nuspec_properties",
+  "sdk": "10.0.403",
+  "packaging": "7.9.0.0",
+  "cases_per_architecture": 23,
+  "mismatch_indexes_per_architecture": [
+    16
+  ],
+  "fixture_sha256": "ad61a6a41af262b9594261f0ce086ec810826dabdc87e2aa5abe62e7ea8bbfce",
+  "observed": "Both actual native references discard the whitespace-only character-reference text node in <title>&#32;</title>; the later <title>next</title> becomes the first nonempty scalar. Go incorrectly retained the space. All earlier mandatory contracts passed before this scalar phase failed.",
+  "repair": "Discard whitespace-only XML text regardless of character references, preserving CDATA, xml:space and text nodes containing non-whitespace. Keep the original23document oracle unchanged and add local regressions. Native repair replay remains unverified.",
+  "artifacts": [
+    {
+      "path": "evidence/2026-11-03/nuget-b727f33-amd64-failure-summary.json",
+      "sha256": "570c22e06d5be5d354c08d56ac108aac773cd6e593efbff8537222a67bc229d8"
+    },
+    {
+      "path": "evidence/2026-11-03/nuget-b727f33-arm64-failure-summary.json",
+      "sha256": "db1afcdb9fa34847321cb465ff323be877b35469f897646002c7a058a52a52e9"
+    }
+  ],
+  "limits": [
+    "Owned scalar accessor contract only. No package-feed, complete dependency/registration/search/unlisting, client, security or readiness qualification.",
+    "No original mismatch or unsupported behavior is silently excluded. Full GOAL.md remains active."
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "source_parent": "b727f3367dcb8f257ce49d300009dbaf16e2abd6",
+  "source_dirty": true,
+  "state": "repaired locally; actual native SDK replay unverified",
+  "defect": "DEFECT.0084",
+  "first_failure": "evidence/2026-11-03/nuget-b727f33-property-whitespace-failure.json",
+  "change": "Ignore whitespace-only character-reference text nodes; retain CDATA, xml:space preservation, non-whitespace text and original whitespace around it. The original23document SDK corpus is unchanged.",
+  "local_checks": {
+    "build": "make build BINDIR=.cache/nuget-properties-repair-build passed",
+    "unit": "make test passed",
+    "race": "make race passed",
+    "lint": "make lint passed",
+    "fuzz": {
+      "target": "FuzzNuspecProperties",
+      "executions": 139055,
+      "requested_seconds": 5,
+      "elapsed_seconds": 6.265,
+      "status": "passed"
+    }
+  },
+  "files": [
+    {
+      "path": "internal/nuget/properties.go",
+      "sha256": "e8517b8124f4a842181e90430ab4b2457e5a12d7d0f897e0c6f9c3987577ab86"
+    },
+    {
+      "path": "internal/nuget/properties_test.go",
+      "sha256": "0d5ac19a0b9377751b22c070e851be5eccbefbe63d7d858a56d1a03a2f8c963c"
+    }
+  ],
+  "limits": [
+    "No local actual SDK/PostgreSQL execution; native repair matching remains unverified.",
+    "Scalar accessor only. All full metadata/dependency/framework/range/registration/search/unlisting and other GOAL.md requirements remain required."
+  ]
+}
