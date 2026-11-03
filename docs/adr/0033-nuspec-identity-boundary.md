@@ -1,7 +1,8 @@
 # Bounded NuGet manifest identity
 
 `ParseNuspecIdentity` reads an ID and version from immutable `.nuspec` bytes.
-It preserves the ID's spelling and raw version, and derives only the version
+It preserves exact ID and raw-version text, including surrounding whitespace,
+and derives only the version
 key through the shared NuGet normalization contract. ID storage-key mapping,
 full manifest validation and repository publication are separate work.
 
@@ -10,7 +11,8 @@ signature. It rejects invalid UTF-8, odd UTF-16 lengths, unpaired surrogates and
 contradictory encoding declarations. It does not replace invalid code units.
 Raw input is limited to 1 MiB, XML depth to 32, tokens to 32,768 and attributes
 per element to 128. ID text and version text are separately bounded. IDs retain
-the legacy Unicode word-character form and a 100 UTF-16-unit limit; no Unicode
+the legacy Unicode word-character form and a 100 UTF-16-unit limit on the trimmed
+validation projection. Declared ID text remains bounded to400bytes; no Unicode
 case fold is silently used as a repository key.
 
 Identity must occur exactly once in `package/metadata/id` and
@@ -25,8 +27,14 @@ workflow now also compares 11 owned UTF-8/UTF-16, namespace, legacy-ID, entity,
 CDATA and whitespace documents with the actual `NuGet.Packaging.NuspecReader`.
 The owned fixture references installed SDK assemblies, has no package
 references and clears remote package sources. Neither package contents nor
-package scripts execute. SDK compilation and these new comparisons remain
-unverified until the actual GitHub jobs finish.
+package scripts execute. On25115ae, both actual native SDK10.0.403 jobs compiled
+the reference and compared NuGet.Packaging7.9.0.0. Ten documents matched; the
+whitespace fixture exposed Go stripping ID text that the reader preserves.
+The repair preserves declared text and has a failing-first local regression,
+passing race/fuzz tests and pending native replay. See
+[the original comparison](../../evidence/2026-11-03/nuget-25115ae-nuspec-whitespace-failure.json).
+Do not pass raw reader text directly to a repository key or claim complete
+package validation from an identity-reader comparison.
 
 The API follows the [NuGet manifest reference](https://learn.microsoft.com/en-us/nuget/reference/nuspec)
 and the public [NuspecReader API](https://github.com/NuGet/NuGet.Client/blob/dev/src/NuGet.Core/NuGet.Packaging/NuspecReader.cs).

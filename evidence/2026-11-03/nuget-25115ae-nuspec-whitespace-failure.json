@@ -1,0 +1,44 @@
+{
+  "candidate": "25115aeb116a9704cd30a95fbe1eabc1580c130c",
+  "status": "failed",
+  "run": "https://github.com/ctlplne/cratectl/actions/runs/41555486441",
+  "phase": "nuspec_compare",
+  "sdk_version": "10.0.403",
+  "nuget_versioning": "7.9.0.0",
+  "nuget_packaging": "7.9.0.0",
+  "version_cases_per_architecture": 1129,
+  "version_mismatches": 0,
+  "nuspec_cases_per_architecture": 11,
+  "nuspec_mismatch_indexes": [
+    10
+  ],
+  "observed_mismatch": {
+    "go_id": "Cratectl.Trimmed",
+    "sdk_id": "  Cratectl.Trimmed  ",
+    "version_key_both": "1.0.0"
+  },
+  "artifacts": [
+    {
+      "architecture": "amd64",
+      "path": "evidence/2026-11-03/nuget-25115ae-amd64-failed-summary.json",
+      "sha256": "28fa2ea64a1b1a7dcb8fdb2586935cab1abb2c460e298c57ac2c8d4cc76e7cef"
+    },
+    {
+      "architecture": "arm64",
+      "path": "evidence/2026-11-03/nuget-25115ae-arm64-failed-summary.json",
+      "sha256": "2d03c2af979f2e3e3830e8dc4a79b64caafa14574715f7fe5cefc0015ca25aba"
+    }
+  ],
+  "first_regression": "evidence/2026-11-03/nuspec-whitespace-first-regression.txt",
+  "repair": "Preserve exact ID/raw-version XML text, validate only the trimmed ID projection and normalize only through VersionKey. Storage-key mapping remains separate.",
+  "local_validation": [
+    "Focused NuGet race suite passed.",
+    "FuzzNuspecIdentity passed101438executions in5seconds.",
+    "Full unit and lint suites passed."
+  ],
+  "repair_state": "implemented; actual SDK native replay required",
+  "limits": [
+    "Managed reference compilation succeeded on both architectures; the complete comparison failed.",
+    "This reader contract does not qualify archive, feed, dependency resolution, stock package clients or release readiness."
+  ]
+}

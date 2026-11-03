@@ -22,8 +22,9 @@ const maxNuspecDepth = 32
 var ErrNuspec = errors.New("invalid, ambiguous or oversized NuGet manifest identity")
 var nuspecEncoding = regexp.MustCompile(`(?i)(?:^|\s)encoding\s*=\s*['"]([^'"]+)['"]`)
 
-// NuspecIdentity preserves the declared ID and version. VersionKey alone is
-// normalized; ID key normalization and full package validation are separate.
+// NuspecIdentity preserves declared ID/version text, including whitespace.
+// VersionKey alone is normalized. ID key mapping and full package validation
+// are separate: the reader's text must never silently become a storage key.
 type NuspecIdentity struct {
 	ID         string `json:"id"`
 	RawVersion string `json:"raw_version"`
@@ -184,9 +185,9 @@ func ParseNuspecIdentity(ctx context.Context, raw []byte) (NuspecIdentity, error
 		case xml.EndElement:
 			if active != "" && len(stack) == 3 {
 				if active == "id" {
-					identity.ID = strings.TrimSpace(text.String())
+					identity.ID = text.String()
 				} else {
-					identity.RawVersion = strings.TrimSpace(text.String())
+					identity.RawVersion = text.String()
 				}
 				active = ""
 			}
@@ -224,7 +225,7 @@ func ParseNuspecIdentity(ctx context.Context, raw []byte) (NuspecIdentity, error
 			}
 		}
 	}
-	if !root || !metadata || len(stack) != 0 || !seen["id"] || !seen["version"] || !validNuspecID(identity.ID) {
+	if !root || !metadata || len(stack) != 0 || !seen["id"] || !seen["version"] || !validNuspecID(strings.TrimSpace(identity.ID)) {
 		return NuspecIdentity{}, ErrNuspec
 	}
 	identity.VersionKey, err = VersionKey(identity.RawVersion)

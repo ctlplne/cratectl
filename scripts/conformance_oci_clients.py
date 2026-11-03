@@ -227,7 +227,9 @@ def helm(role, arguments, label, **options):
 
 def repo(kind, role='admin', **settings):
     check('create ' + kind + ' repository for ' + role,
-          http('/api/v1/repositories', 'POST', {'name': REPOS[kind], 'format': 'oci', **settings}, role)[0] == 201)
+          http('/api/v1/repositories', 'POST', {'name': REPOS[kind], 'format': 'oci', 'access': 'restricted', **settings}, role)[0] == 201)
+    check('stored ' + kind + ' repository requires explicit grants',
+          value('/api/v1/repositories/' + REPOS[kind], role)['access'] == 'restricted')
 
 
 def grant(kind, actor, read=True, write=False):
@@ -296,7 +298,8 @@ def build_image(tag, body, architecture=ARCH, kind='hosted', role='writer'):
 def image_bytes(client, kind, tag, expected, role='reader', ok=True, expected_status=403):
     target = ref(kind, tag)
     if not ok:
-        check('independent image denial control has the required HTTP status', http('/v2/' + REPOS[kind] + '/payload/manifests/' + tag, role=role, headers={'Accept': ACCEPT})[0] == expected_status)
+        observed_status = http('/v2/' + REPOS[kind] + '/payload/manifests/' + tag, role=role, headers={'Accept': ACCEPT})[0]
+        check('independent image denial control: expected HTTP ' + str(expected_status) + ', observed ' + str(observed_status), observed_status == expected_status)
     if client == 'docker':
         docker(role, ['image', 'pull', target], 'Docker pull ' + kind + ' ' + tag, ok=ok)
         if not ok:
@@ -350,7 +353,8 @@ def chart_bytes(kind, name, version, expected, role='reader', ok=True, expected_
     destination = PRIVATE / ('helm-pull-' + uuid.uuid4().hex[:8])
     destination.mkdir()
     if not ok:
-        check('independent chart denial control has the required HTTP status', http('/v2/' + REPOS[kind] + '/' + name + '/manifests/' + version, role=role, headers={'Accept': ACCEPT})[0] == expected_status)
+        observed_status = http('/v2/' + REPOS[kind] + '/' + name + '/manifests/' + version, role=role, headers={'Accept': ACCEPT})[0]
+        check('independent chart denial control: expected HTTP ' + str(expected_status) + ', observed ' + str(observed_status), observed_status == expected_status)
     helm(role, ['pull', 'oci://' + REGISTRY + '/' + REPOS[kind] + '/' + name, '--version', version, '--plain-http', '--destination', destination], 'Helm pull ' + kind + ' ' + name, ok=ok)
     if ok:
         check('Helm ' + kind + ' retains exact chart package bytes', read_owned_file(PRIVATE, destination / (name + '-' + version + '.tgz'), 4 << 20) == expected)

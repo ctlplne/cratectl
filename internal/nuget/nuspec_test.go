@@ -84,6 +84,14 @@ func TestNuspecRejectsAmbiguousAndUnboundedIdentity(t *testing.T) {
 	}
 }
 
+func TestNuspecPreservesSDKDeclaredWhitespace(t *testing.T) {
+	raw := []byte(`<package><metadata><id>  Cratectl.Trimmed  </id><version> 1.00.0 </version></metadata></package>`)
+	identity, err := ParseNuspecIdentity(context.Background(), raw)
+	if err != nil || identity.ID != "  Cratectl.Trimmed  " || identity.RawVersion != " 1.00.0 " || identity.VersionKey != "1.0.0" {
+		t.Fatal("SDK-declared text was rewritten", identity, err)
+	}
+}
+
 func FuzzNuspecIdentity(f *testing.F) {
 	f.Add([]byte(nuspecFixture))
 	f.Add(nuspecUTF16(strings.Replace(nuspecFixture, "utf-8", "utf-16", 1), binary.BigEndian, true))
@@ -96,7 +104,7 @@ func FuzzNuspecIdentity(f *testing.F) {
 			}
 			return
 		}
-		if !validNuspecID(identity.ID) {
+		if !validNuspecID(strings.TrimSpace(identity.ID)) {
 			t.Fatal("accepted identity has unsafe ID")
 		}
 		key, err := VersionKey(identity.RawVersion)

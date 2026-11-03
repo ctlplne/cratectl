@@ -1,0 +1,38 @@
+{
+  "candidate": "25115aeb116a9704cd30a95fbe1eabc1580c130c",
+  "status": "failed",
+  "run": "https://github.com/ctlplne/cratectl/actions/runs/41555486247",
+  "phase": "grant_revocation",
+  "checks_per_architecture": 174,
+  "safe_error": "AssertionError: independent image denial control has the required HTTP status",
+  "observed_progress": [
+    "Both native Docker/Podman cp tar streams preserve exact fixture bytes, replaying DEFECT.0077.",
+    "The completed prefix includes actual hosted/proxy/group image and Helm dependency journeys, tenant/policy and hold/delete/restore controls.",
+    "The last selected command is a successful Helm pull retained as observation_only; it is not a failed Helm command."
+  ],
+  "artifacts": [
+    {
+      "architecture": "amd64",
+      "safe_summary": "evidence/2026-11-03/oci-clients-25115ae-amd64-failed-summary.json",
+      "safe_summary_sha256": "936ec653fb797284b0665d8573f693bf1012c3fbbfeb8991581d9575e2918e6e",
+      "encrypted_metadata": "evidence/2026-11-03/oci-clients-25115ae-amd64-encrypted-metadata.json",
+      "encrypted_metadata_sha256": "8484eb52227d3905b97ea8f099ce7cb676011e8ed983217824dd028ac88a6414"
+    },
+    {
+      "architecture": "arm64",
+      "safe_summary": "evidence/2026-11-03/oci-clients-25115ae-arm64-failed-summary.json",
+      "safe_summary_sha256": "e9556cb64d5ef1e6e2794b7b37b491efb5df2aee6b1fa922810204022f97e2a8",
+      "encrypted_metadata": "evidence/2026-11-03/oci-clients-25115ae-arm64-encrypted-metadata.json",
+      "encrypted_metadata_sha256": "6f05e25e44f45980915954f529c95deda707da38dea4d888342c821aec2b6672"
+    }
+  ],
+  "diagnosis": "The fixture omitted repository access. Creation defaults to tenant access, whose read path intentionally does not require a per-repository grant. The grant-revocation negative control therefore did not establish the intended restricted fixture.",
+  "diagnosis_limits": "The original assertion did not retain the observed HTTP status. Do not retroactively assign one or count this failure as a product authorization defect.",
+  "repair": "Create every fixture repository with explicit restricted access, verify the stored detail before grants, and retain expected/observed numeric statuses in image/chart denial assertions.",
+  "repair_state": "implemented; native replay required",
+  "limits": [
+    "No complete OCI client journey passed. Token revocation and restart remain unverified.",
+    "Actual packaged file UID/mode/errno of the older b4b4431 failure remain unavailable.",
+    "All450capabilities and negative broad readiness verdicts remain."
+  ]
+}

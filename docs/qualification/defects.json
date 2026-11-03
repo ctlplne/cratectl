@@ -845,19 +845,39 @@
       "id": "DEFECT.0077",
       "summary": "Native file observation fails after sudo Podman copies a stopped-container file",
       "first_failure": "evidence/2026-11-03/oci-clients-b4b4431-observation-failure.json",
-      "state": "bounded tar-stream observation implemented; native replay required",
+      "state": "repaired and replayed through174checks on both native architectures; whole client journey still failed",
       "candidate": "b4b44316f73c1e9c710fe0b0ff3da66dfc9f0f53",
       "repair": "Observe native cp stdout without extracting files, preserving packaged UID/mode. Bound physical tar headers/metadata and one regular file; reject links, paths, duplicates, sparse and oversized data. Keep binary stdout separate from stderr; retain encrypted last observations for post-command assertions.",
-      "limits": "Original stat UID/mode/errno unavailable. Root-owned0600 behavior is source-based explanation; no complete client journey pass."
+      "limits": "Exact native Docker/Podman stopped-container bytes pass on25115ae. Original b4b4431 file UID/mode/errno remain unavailable. Grant fixture failure prevents complete client acceptance.",
+      "replay": "evidence/2026-11-03/oci-clients-25115ae-grant-fixture-failure.json"
     },
     {
       "id": "DEFECT.0078",
       "summary": "macOS source lint cannot generate the real CMS recipient fixture with its default openssl",
       "first_failure": "evidence/2026-11-03/github-ci-b4b4431-partial-checkpoint.json",
-      "state": "native OpenSSL3 selection/preflight implemented; actual macOS replay required",
+      "state": "repaired and replayed in actual native macOS source job",
       "candidate": "b4b44316f73c1e9c710fe0b0ff3da66dfc9f0f53",
       "repair": "Select and print Homebrew native openssl@3 before tests; fail clearly on unsupported CLI family/version. Preserve actual encryption/tamper/wrong-key tests without skips.",
-      "limits": "The original default CLI version/stderr were unavailable; no precise old family/version diagnosis asserted. Whole b4b4431 main remains failed."
+      "limits": "Actual selected OpenSSL3.5.9 and mandatory CMS tests pass on25115ae. Original default CLI version remains unavailable. Whole main run was still in progress at the scoped checkpoint; no broad platform/readiness claim.",
+      "replay": "evidence/2026-11-03/github-25115ae-macos-source-replay.json"
+    },
+    {
+      "id": "DEFECT.0079",
+      "summary": "OCI client grant-revocation fixture creates tenant-wide repositories instead of restricted ones",
+      "first_failure": "evidence/2026-11-03/oci-clients-25115ae-grant-fixture-failure.json",
+      "candidate": "25115aeb116a9704cd30a95fbe1eabc1580c130c",
+      "state": "fixture repair implemented; native replay required",
+      "repair": "Explicit restricted access for every fixture repository; read back actual stored access before grants. Preserve all negative expectations and retain expected/observed numeric statuses.",
+      "limits": "Both actual clients fail after174checks. The original observed HTTP status was not retained; no retroactive product authorization defect or complete journey pass."
+    },
+    {
+      "id": "DEFECT.0080",
+      "summary": "Bounded Nuspec identity reader strips declared ID whitespace preserved by actual NuGet.Packaging",
+      "first_failure": "evidence/2026-11-03/nuget-25115ae-nuspec-whitespace-failure.json",
+      "candidate": "25115aeb116a9704cd30a95fbe1eabc1580c130c",
+      "state": "exact-text repair and local regression/race/fuzz pass; actual SDK replay required",
+      "repair": "Preserve exact declared ID/raw-version text, validate only trimmed ID shape and normalize only VersionKey. Keep storage-key mapping separate.",
+      "limits": "Both SDK10.0.403/Packaging7.9.0.0 native comparisons fail at document10; all1129version cases agree. No archive/feed/stock-client/full-format claim."
     }
   ]
 }

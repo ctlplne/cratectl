@@ -6,30 +6,33 @@ GitHub native qualification and moves historical controlled-upgrade journeys
 off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
-Current product work: b4b4431 passes both real PostgreSQL integration/race
-jobs and native Docker multi-architecture publication after the Accept repair.
-Its x86 console passes all14workflows with no unexpected, skipped or flaky
-results. Main CI is still failed:8jobs pass and the macOS CMS fixture cannot
-generate its recipient with the default openssl. No precise old CLI version
-was retained. Native Homebrew OpenSSL3 selection and a family/version preflight
-are implemented but await actual macOS replay (`DEFECT.0078`).
+Current product work:25115ae replays native stopped-container byte observation
+on both GitHub Linux architectures (`DEFECT.0077`). Both OCI drivers progress
+through174checks, including hosted/proxy/group images and Helm dependencies,
+tenant/policy and held delete/restore, then fail at grant revocation. The fixture
+omitted restricted access; tenant-wide access does not require individual read
+grants. Explicit restricted access plus stored-detail readback is implemented;
+native replay remains required (`DEFECT.0079`). The old observed HTTP status was
+not retained; new denial assertions retain expected/observed numeric statuses.
+See `evidence/2026-11-03/oci-clients-25115ae-grant-fixture-failure.json`.
 
-Both OCI drivers then fail after51checks while opening a file copied from a
-stopped Podman container. Actual UID/mode/errno were not retained. The repair
-uses native cp tar stdout, validates one exact bounded regular file without
-host extraction or permission/ownership changes and separates binary output
-from stderr. Links, paths, duplicates, sparse metadata, malformed lengths and
-oversized input are rejected. Post-command assertions retain an encrypted
-bounded error and last observation. Local real-tar/privacy regressions pass;
-full native client replay remains required (`DEFECT.0077`). See
-`evidence/2026-11-03/oci-clients-b4b4431-observation-failure.json` and
-`evidence/2026-11-03/github-ci-b4b4431-partial-checkpoint.json`.
+The25115ae native macOS source job passes with actual Homebrew OpenSSL3.5.9,
+including the real CMS roundtrip/tamper/wrong-key regressions (`DEFECT.0078`).
+See `evidence/2026-11-03/github-25115ae-macos-source-replay.json`. Whole main CI
+remains in progress at that checkpoint; both controlled-upgrade jobs report
+terminal success, without new aggregate artifact acceptance. Earlier b4b4431
+failures and diagnosis limits remain retained.
 
 NuGet's earlier version-only contract remains qualified on f499369:1,129cases
 agree with actual SDK10.0.403 / NuGet.Versioning7.9.0.0 per native architecture.
-Bounded Nuspec identity extraction is now implemented for UTF8/UTF16 with strict
-ambiguity/resource checks, local race tests and136,641fuzz executions. The
-extended11document actual SDK reader comparison is implemented but unverified.
+Bounded Nuspec identity extraction is implemented for UTF8/UTF16 with strict
+ambiguity/resource checks. Both actual25115ae SDK references compile and agree
+on all1,129versions, but the11document comparison fails at one whitespace case:
+Go strips surrounding ID whitespace that NuGet.Packaging7.9.0.0 preserves.
+The exact-text repair has a failing-first regression, passing local race tests
+and101,438additional fuzz executions; native replay remains required
+(`DEFECT.0080`). Full unit/lint pass. See
+`evidence/2026-11-03/nuget-25115ae-nuspec-whitespace-failure.json`.
 See `docs/adr/0033-nuspec-identity-boundary.md` and
 `evidence/2026-11-03/nuspec-identity-development.json`.
 No NuGet feed/archive/dependency/client journey is implemented. All450capability
