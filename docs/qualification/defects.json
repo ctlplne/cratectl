@@ -915,9 +915,19 @@
       "summary": "NuGet ID keys depend on host Go Unicode data and disagree with actual SDK validation/casing",
       "first_failure": "evidence/2026-11-03/nuget-fba38fd-id-unicode-failure.json",
       "candidate": "fba38fdde6c591fd9a79e4baa181bb2a0a730355",
-      "state": "frozen profile repair implemented; local full-row hash matches both retained SDK outputs; clean native replay required",
+      "state": "repaired and replayed against actual native SDK on both Linux architectures",
       "repair": "Hash-pinned Unicode-derived word/case tables and named profile, independent of host Go upgrades. Preserve original63516inputs, explicit transport profile and all mismatch checks. Retain Unicode license/notice and offline reproducible generator.",
-      "limits": "Both original native jobs fail40IDcases; no failed whole library contract is called passed. Full-row hash equality is local development evidence for the same corpus, not a fresh native/client/feed result."
+      "limits": "Both original jobs failed40IDcases; originals and unchanged63516inputs retained. Repaired b259472jobs pass all63516 with explicit separate control transport guard. No full feed/client/format/readiness claim.",
+      "replay": "evidence/2026-11-03/nuget-b259472-checkpoint.json",
+      "latest_candidate": "b25947219e66552c6b48c10bb3e570a8c76af3ad"
+    },
+    {
+      "id": "DEFECT.0083",
+      "summary": "Truncated NuGet multipart upload is classified as service failure instead of invalid request",
+      "first_failure": "evidence/2026-11-03/nuget-hosted-truncated-first-failure.json",
+      "state": "repaired and replayed locally; native integration pending",
+      "repair": "Map io.ErrUnexpectedEOF during first-part staging to400 and MaxBytesError to413, preserving storage failure/cancellation handling. Retain incomplete/body/epilogue/byte/part regressions; no invalid reference is published.",
+      "limits": "Local darwin-arm64 unit replay only. Native PostgreSQL and stock-client qualification pending."
     }
   ]
 }

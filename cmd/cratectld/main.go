@@ -158,6 +158,9 @@ func run() error {
 		pythonExpanded := f.Int64("python-expanded-bytes", 256<<20, "maximum expanded Python archive bytes")
 		pythonFiles := f.Int("python-file-budget", 10000, "maximum Python archive entries")
 		pythonMetadata := f.Int64("python-metadata-bytes", 1<<20, "maximum embedded Python core metadata bytes")
+		nugetUpload := f.Int64("nuget-upload-bytes", 64<<20, "maximum NuGet package bytes, up to 1 GiB; multipart overhead has a separate 1 MiB allowance")
+		nugetExpanded := f.Int64("nuget-expanded-bytes", 256<<20, "maximum expanded NuGet ZIP32 bytes, up to 1 TiB")
+		nugetFiles := f.Int("nuget-file-budget", 10000, "maximum NuGet ZIP32 entries, up to 16384")
 		ociGraphBytes := f.Int64("oci-graph-bytes", 4<<30, "maximum aggregate bytes staged by one OCI graph/catalog retrieval")
 		ociPages := f.Int("oci-catalog-pages", 32, "maximum pages in one complete OCI upstream discovery walk")
 		ociPageSize := f.Int("oci-page-size", 1000, "default and maximum entries in an OCI discovery response page")
@@ -276,6 +279,10 @@ func run() error {
 			return errors.New("Python upload/archive budgets must be positive and core metadata must fit expanded bytes")
 		}
 		h.PythonUploadBytes, h.PythonExpandedBytes, h.PythonFileLimit, h.PythonMetadataBytes = *pythonUpload, *pythonExpanded, *pythonFiles, *pythonMetadata
+		if *nugetUpload <= 0 || *nugetUpload > 1<<30 || *nugetExpanded <= 0 || *nugetExpanded > 1<<40 || *nugetFiles <= 0 || *nugetFiles > 16384 {
+			return errors.New("NuGet package/expanded/file budgets must be positive and within 1 GiB/1 TiB/16384")
+		}
+		h.NuGetUploadBytes, h.NuGetExpandedBytes, h.NuGetFileLimit = *nugetUpload, *nugetExpanded, *nugetFiles
 		if *ociGraphBytes <= 0 || *ociGraphBytes >= 1<<62 {
 			return errors.New("OCI graph byte budget must be positive and below 2^62")
 		}

@@ -1,0 +1,139 @@
+# SPDX-License-Identifier: BUSL-1.1
+"""Owned inert NuGet fixtures exercised by the real conformance harness.
+
+The registry never executes payloads. Restore evaluates only the installed SDK's
+project rules; these packages contain no build targets, scripts or assemblies.
+"""
+
+import hashlib
+import io
+import json
+import re
+import shutil
+import uuid
+import xml.etree.ElementTree as XML
+import zipfile
+from pathlib import Path
+
+
+def hosted(h):
+    check, req, run = h.check, h.req, h.run
+    dotnet = shutil.which('dotnet')
+    check('actual dotnet SDK is available for hosted NuGet', dotnet is not None)
+    sdk = run([dotnet, '--version']).strip()
+    check('actual dotnet SDK has a bounded version identity', re.fullmatch(r'10\.[0-9]{1,3}\.[0-9]{1,4}', sdk) is not None)
+    h.result['nuget_sdk_version'] = sdk
+    with Path(dotnet).resolve().open('rb') as binary:
+        h.result['nuget_dotnet_sha256'] = hashlib.file_digest(binary, 'sha256').hexdigest()
+    h.result['nuget_fixture_sha256'] = {}
+    work = h.PRIVATE / 'nuget'
+    work.mkdir(mode=0o700)
+    source = h.BASE + '/nuget/dotnet/index.json'
+    h.repository('dotnet', 'nuget', review=True)
+    h.repository('dotnet', 'nuget', 'other')
+    config = work / 'NuGet.Config'
+    document = XML.Element('configuration')
+    sources = XML.SubElement(document, 'packageSources')
+    XML.SubElement(sources, 'clear')
+    XML.SubElement(sources, 'add', key='cratectl', value=source, allowInsecureConnections='true')
+    credentials = XML.SubElement(XML.SubElement(document, 'packageSourceCredentials'), 'cratectl')
+    XML.SubElement(credentials, 'add', key='Username', value='token')
+    XML.SubElement(credentials, 'add', key='ClearTextPassword', value=h.tokens['reader'])
+    XML.ElementTree(document).write(config, encoding='utf-8', xml_declaration=True)
+    config.chmod(0o600)
+    extra = {'DOTNET_CLI_HOME': str(work / 'home'), 'DOTNET_CLI_TELEMETRY_OPTOUT': '1', 'DOTNET_SKIP_FIRST_TIME_EXPERIENCE': '1', 'NUGET_HTTP_CACHE_PATH': str(work / 'http-cache'), 'NUGET_PACKAGES': str(work / 'packages'), 'NUGET_AUDIT_MODE': 'direct'}
+    packages = {}
+
+    def package(label, name, version, dependency=False, other=False):
+        dependency_xml = '<dependencies><group targetFramework="net10.0"><dependency id="Cratectl.Proof.Dependency" version="[1.0.0]" /></group></dependencies>' if dependency else ''
+        nuspec = ('<?xml version="1.0" encoding="utf-8"?><package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd"><metadata><id>' + name + '</id><version>' + version + '</version><authors>cratectl owned fixture</authors><description>Inert native restore fixture</description>' + dependency_xml + '</metadata></package>').encode()
+        payload = ('Owned fixture ' + label + (' tenant B' if other else ' tenant A') + '\n').encode()
+        stream = io.BytesIO()
+        with zipfile.ZipFile(stream, 'w', compression=zipfile.ZIP_DEFLATED, allowZip64=False) as archive:
+            for path, value in [(name + '.nuspec', nuspec), ('lib/net10.0/_._', b''), ('content/owned.txt', payload)]:
+                info = zipfile.ZipInfo(path, (2026, 1, 1, 0, 0, 0))
+                info.compress_type = zipfile.ZIP_DEFLATED
+                info.external_attr = 0o100644 << 16
+                archive.writestr(info, value)
+        data = stream.getvalue()
+        path = work / (label + '.nupkg')
+        path.write_bytes(data)
+        digest = hashlib.sha256(data).hexdigest()
+        h.result['nuget_fixture_sha256'][label] = digest
+        packages[label] = (name, version, data, nuspec, payload)
+        return path, digest
+
+    def push(path, token='admin', duplicate=False, denied=False):
+        args = [dotnet, 'nuget', 'push', path, '--source', source, '--api-key', h.tokens[token], '--no-symbols']
+        if duplicate:
+            args.append('--skip-duplicate')
+        run(args, work, extra, expect_failure=denied)
+
+    def decide(name, version, digest, decision):
+        path = 'nuget-packages/' + name.lower() + '/' + version + '.nupkg'
+        code, _, _ = req('/api/v1/repositories/dotnet/decisions', method='PUT', data={'path': path, 'digest': digest, 'decision': decision}, key=uuid.uuid4().hex)
+        check('NuGet exact-digest decision ' + name + ' ' + version + ' ' + decision, code == 200)
+        return path
+
+    def restore(label, version, expect_failure=False):
+        consumer = work / label
+        consumer.mkdir(mode=0o700)
+        project = consumer / 'Owned.csproj'
+        project.write_text('<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0</TargetFramework><NuGetAudit>false</NuGetAudit><EnableDefaultCompileItems>false</EnableDefaultCompileItems></PropertyGroup><ItemGroup><PackageReference Include="Cratectl.Proof.Application" Version="[' + version + ']" /></ItemGroup></Project>')
+        # Fresh package and HTTP caches ensure every attempt exercises the server.
+        package_root = consumer / 'packages'
+        run([dotnet, 'restore', project, '--configfile', config, '--packages', package_root, '--no-http-cache', '--force', '--verbosity', 'minimal'], consumer, {**extra, 'NUGET_HTTP_CACHE_PATH': str(consumer / 'http-cache')}, expect_failure=expect_failure)
+        if expect_failure:
+            return
+        assets = json.loads((consumer / 'obj/project.assets.json').read_text())
+        check('stock dotnet resolves app and transitive dependency ' + label, 'Cratectl.Proof.Application/' + version in assets['libraries'] and 'Cratectl.Proof.Dependency/1.0.0' in assets['libraries'])
+        for fixture in ['dependency', 'application_' + version[0]]:
+            name, actual_version, data, nuspec, payload = packages[fixture]
+            folder = package_root / name.lower() / actual_version
+            nupkg = folder / (name.lower() + '.' + actual_version + '.nupkg')
+            check('stock dotnet retains exact nupkg ' + label + ' ' + fixture, nupkg.read_bytes() == data)
+            check('stock dotnet extracts exact inert payload ' + label + ' ' + fixture, (folder / 'content/owned.txt').read_bytes() == payload)
+            check('stock dotnet dependency nuspec is original ' + label + ' ' + fixture, (folder / (name.lower() + '.nuspec')).read_bytes() == nuspec)
+
+    dep, dep_digest = package('dependency', 'Cratectl.Proof.Dependency', '1.0.0')
+    app1, app1_digest = package('application_1', 'Cratectl.Proof.Application', '1.0.0', True)
+    app2, app2_digest = package('application_2', 'Cratectl.Proof.Application', '2.0.0', True)
+    for path in [dep, app1, app2]:
+        push(path)
+    push(app1, duplicate=True)
+    push(app1, token='reader', denied=True)
+    flat = '/nuget/dotnet/flat/cratectl.proof.application/'
+    package_url = flat + '1.0.0/cratectl.proof.application.1.0.0.nupkg'
+    manifest_url = flat + '1.0.0/cratectl.proof.application.nuspec'
+    check('NuGet unreviewed index does not expose versions', req(flat + 'index.json', 'reader')[0] == 404)
+    check('NuGet unreviewed package and manifest are blocked', req(package_url, 'reader')[0] == 403 and req(manifest_url, 'reader')[0] == 403)
+    restore('unreviewed-consumer', '1.0.0', True)
+    for label, digest in [('dependency', dep_digest), ('application_1', app1_digest), ('application_2', app2_digest)]:
+        name, version = packages[label][:2]
+        decide(name, version, digest, 'allowed')
+    check('NuGet normalized complete version list', json.loads(req(flat + 'index.json', 'reader')[1])['versions'] == ['1.0.0', '2.0.0'])
+    for url, expected in [(package_url, packages['application_1'][2]), (manifest_url, packages['application_1'][3])]:
+        code, data, headers = req(url, 'reader')
+        check('NuGet native exact content ' + url.rsplit('/', 1)[-1], code == 200 and data == expected)
+        etag = headers['Etag']
+        code, data, _ = req(url, 'reader', headers={'Range': 'bytes=1-7'})
+        check('NuGet native range ' + url.rsplit('/', 1)[-1], code == 206 and data == expected[1:8])
+        check('NuGet native conditional ' + url.rsplit('/', 1)[-1], req(url, 'reader', headers={'If-None-Match': etag})[0] == 304)
+    restore('consumer-one', '1.0.0')
+    restore('consumer-two', '2.0.0')
+    check('NuGet other tenant initially cannot see matching repository coordinate', req(package_url, 'other')[0] == 404)
+    other, _ = package('other_application_1', 'Cratectl.Proof.Application', '1.0.0', True, True)
+    push(other, token='other')
+    check('NuGet colliding tenant coordinates retain distinct exact bytes', req(package_url, 'other')[1] == packages['other_application_1'][2] and req(package_url, 'reader')[1] == packages['application_1'][2])
+    decide('Cratectl.Proof.Application', '1.0.0', app1_digest, 'denied')
+    restore('denied-consumer', '1.0.0', True)
+    check('NuGet denial covers direct content and manifest', req(package_url, 'reader')[0] == 403 and req(manifest_url, 'reader')[0] == 403)
+    decide('Cratectl.Proof.Application', '1.0.0', app1_digest, 'allowed')
+    h.stop()
+    h.start()
+    restore('restarted-consumer', '1.0.0')
+    check('NuGet exact content survives actual registry restart', req(package_url, 'reader')[1] == packages['application_1'][2])
+
+
+if __name__ == '__main__':
+    raise SystemExit('Run scripts/conformance.py nuget --require-clean-build (or all); this module reuses the owned registry/database lifecycle.')

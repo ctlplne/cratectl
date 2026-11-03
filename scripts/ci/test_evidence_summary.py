@@ -53,6 +53,19 @@ class EvidenceSummary(unittest.TestCase):
         (self.root / 'evidence/escaped.json').symlink_to(outside)
         self.assertEqual(summarize(self.root, self.environment)['records'], [])
 
+    def test_nuget_sdk_and_fixture_evidence_is_bounded_and_complete(self):
+        fixtures = {key: 'b' * 64 for key in ('dependency', 'application_1', 'application_2', 'other_application_1')}
+        data = {'candidate': 'a' * 40, 'status': 'passed', 'nuget_sdk_version': '10.0.403', 'nuget_dotnet_sha256': 'c' * 64, 'nuget_fixture_sha256': fixtures, 'private_output': 'private-synthetic-value'}
+        self.write('nuget.json', data)
+        record = summarize(self.root, self.environment)['records'][0]
+        self.assertEqual(record['nuget_sdk_version'], '10.0.403')
+        self.assertEqual(record['nuget_fixture_sha256'], fixtures)
+        self.assertNotIn('private-synthetic-value', json.dumps(record))
+        for change in [{'nuget_sdk_version': 'private-synthetic-value'}, {'nuget_dotnet_sha256': 'private-synthetic-value'}, {'nuget_fixture_sha256': {'dependency': 'b' * 64}}, {'nuget_fixture_sha256': {**fixtures, 'credential': 'b' * 64}}]:
+            self.write('nuget.json', {**data, **change})
+            with self.assertRaises(SystemExit):
+                summarize(self.root, self.environment)
+
     def test_native_failure_diagnostics_never_accept_arbitrary_output(self):
         report = {'candidate': 'a' * 40, 'status': 'failed', 'phase': 'authentication', 'client_versions': {}, 'command_diagnostics': ['registry_ping', 'permission_denied'], 'failure': 'private-synthetic-value'}
         self.write('clients.json', report)

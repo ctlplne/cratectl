@@ -58,6 +58,9 @@ type Server struct {
 	PythonExpandedBytes          int64
 	PythonFileLimit              int
 	PythonMetadataBytes          int64
+	NuGetUploadBytes             int64
+	NuGetExpandedBytes           int64
+	NuGetFileLimit               int
 	OCIGraphBytes                int64
 	OCIDeliveryRedirects         int
 	OCIDeliveryLimits            upstream.RegistryDeliveryLimits
@@ -80,6 +83,7 @@ func New(db *store.Store, b *blob.Local, public string) *Server {
 	s.ManagementMetadataBytes = 8 << 20
 	s.NPMPublishBytes, s.NPMExpandedBytes, s.NPMFileLimit, s.NPMPackageJSONBytes = 24<<20, 64<<20, 10000, 1<<20
 	s.PythonUploadBytes, s.PythonExpandedBytes, s.PythonFileLimit, s.PythonMetadataBytes = 64<<20, 256<<20, 10000, 1<<20
+	s.NuGetUploadBytes, s.NuGetExpandedBytes, s.NuGetFileLimit = 64<<20, 256<<20, 10000
 	s.OCIGraphBytes = 4 << 30
 	s.OCIDeliveryRedirects = 5
 	s.OCICatalogPages = 32
@@ -91,7 +95,7 @@ func New(db *store.Store, b *blob.Local, public string) *Server {
 	s.InventoryLimits = store.InventoryLimits{MaxEntries: 1000000, DirectoryEntries: 1000000}
 	s.UploadLimit, s.UploadPartLimit, s.UploadMetadataBytes, s.UploadLease, s.UploadTTL = 32, 4096, 1<<20, 30*time.Second, 30*time.Minute
 	s.OCIDeliveryLimits = upstream.DefaultRegistryDeliveryLimits()
-	for _, a := range []adapter{{"generic", s.raw}, {"maven", s.raw}, {"npm", s.npm}, {"pypi", s.pypi}, {"oci", s.oci}} {
+	for _, a := range []adapter{{"generic", s.raw}, {"maven", s.raw}, {"npm", s.npm}, {"pypi", s.pypi}, {"oci", s.oci}, {"nuget", s.nuget}} {
 		s.adapters[a.Format()] = a
 	}
 	secret, keyError := crypt.Token()
@@ -200,6 +204,8 @@ func respondErr(w http.ResponseWriter, e error) {
 		fail(w, 409, "oci_manifest_unvalidated", "Re-publish the exact retained manifests through a writer, children before parents, to validate their structure and descriptors; existing digest decisions remain in force.")
 	case errors.Is(e, store.ErrPythonUnvalidated):
 		fail(w, 409, "python_metadata_unvalidated", "Re-upload the exact retained distribution through a writer to validate its archive identity; do not approve unverified metadata.")
+	case errors.Is(e, store.ErrNuGetUnvalidated):
+		fail(w, 409, "nuget_metadata_unvalidated", "Stop consuming this reference and inspect its retained package and validated manifest binding. Approving a digest does not repair inconsistent metadata.")
 	case errors.Is(e, store.ErrMetadataLimit):
 		fail(w, 503, "metadata_budget_exceeded", "Ask the operator to inspect native index or graph size and its metadata budget; no partial result was returned.")
 	case errors.Is(e, store.ErrBusy):
@@ -267,11 +273,11 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		fail(w, 503, "transfer_saturated", "Retry after the admission queue has capacity.")
 		return
 	}
-	token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
-	if _, p, ok := r.BasicAuth(); ok {
-		token = p
+	token, e := requestCredential(r)
+	var i store.Identity
+	if e == nil {
+		i, e = s.DB.Authenticate(r.Context(), token)
 	}
-	i, e := s.DB.Authenticate(r.Context(), token)
 	if e != nil {
 		if !errors.Is(e, pgx.ErrNoRows) && !errors.Is(e, store.ErrNotFound) && !errors.Is(e, store.ErrUnauthenticated) {
 			respondErr(w, e)
@@ -304,7 +310,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if len(parts) == 3 {
 		p = parts[2]
 	}
-	prefix := map[string]string{"generic": "r", "maven": "r", "npm": "npm", "pypi": "pypi", "oci": "v2"}[repo.Format]
+	prefix := map[string]string{"generic": "r", "maven": "r", "npm": "npm", "pypi": "pypi", "oci": "v2", "nuget": "nuget"}[repo.Format]
 	a := s.adapters[repo.Format]
 	if a == nil || parts[0] != prefix {
 		fail(w, 404, "format_mismatch", "Use the native endpoint for this repository format.")
@@ -376,7 +382,7 @@ func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Iden
 			return
 		}
 		formats := []string{}
-		for _, name := range []string{"generic", "maven", "npm", "pypi", "oci"} {
+		for _, name := range []string{"generic", "maven", "npm", "pypi", "oci", "nuget"} {
 			if s.adapters[name] != nil {
 				formats = append(formats, name)
 			}

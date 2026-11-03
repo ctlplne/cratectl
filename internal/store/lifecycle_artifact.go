@@ -90,6 +90,8 @@ func materializedLifecycleReference(r Repository, a Artifact) bool {
 		return a.MediaType != NPMCatalogMedia && !strings.HasPrefix(a.Path, "npm-catalog/")
 	case "pypi":
 		return a.MediaType != PythonCatalogMedia && !strings.HasPrefix(a.Path, "pypi-catalog/")
+	case "nuget":
+		return strings.HasPrefix(a.Path, "nuget-packages/") && strings.HasSuffix(a.Path, ".nupkg")
 	}
 	return false
 }

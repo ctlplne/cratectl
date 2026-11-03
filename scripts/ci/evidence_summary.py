@@ -155,6 +155,22 @@ def summarize(root, environment):
                 if not isinstance(codes, list) or len(codes) > len(NATIVE_CLIENT_DIAGNOSTIC_CODES) or any(not isinstance(code, str) or code not in NATIVE_CLIENT_DIAGNOSTIC_CODES for code in codes) or len(set(codes)) != len(codes):
                     raise SystemExit('Native client diagnostic codes are outside the reviewed allowlist')
                 entry['command_diagnostics'] = sorted(codes)
+        if 'nuget_sdk_version' in report:
+            version = report['nuget_sdk_version']
+            fixtures = report.get('nuget_fixture_sha256', {})
+            binary = report.get('nuget_dotnet_sha256')
+            allowed = {'dependency', 'application_1', 'application_2', 'other_application_1'}
+            if not isinstance(version, str) or not re.fullmatch(r'10\.[0-9]{1,3}\.[0-9]{1,4}', version):
+                raise SystemExit('NuGet client SDK version is outside the reviewed profile')
+            if not isinstance(binary, str) or not re.fullmatch('[0-9a-f]{64}', binary):
+                raise SystemExit('NuGet client binary digest is outside the reviewed profile')
+            if not isinstance(fixtures, dict) or not set(fixtures) <= allowed or any(not isinstance(v, str) or not re.fullmatch('[0-9a-f]{64}', v) for v in fixtures.values()):
+                raise SystemExit('NuGet client fixture digests are outside the reviewed profile')
+            if status == 'passed' and set(fixtures) != allowed:
+                raise SystemExit('Passed NuGet client evidence requires all four owned fixtures')
+            entry['nuget_sdk_version'] = version
+            entry['nuget_dotnet_sha256'] = binary
+            entry['nuget_fixture_sha256'] = dict(sorted(fixtures.items()))
         for key in ('baseline_version', 'expected_schema'):
             if key in report:
                 if type(report[key]) is not int or not 1 <= report[key] <= 1000:

@@ -67,7 +67,7 @@ func TestConsoleSessionUsesCurrentCredentialAndDoesNotExposeSecrets(t *testing.T
 		Formats             []string
 		PublicURL           string `json:"public_url"`
 	}
-	if json.Unmarshal(w.Body.Bytes(), &body) != nil || body.Tenant != tenant || body.Actor != "operator" || body.Role != "admin" || strings.Join(body.Formats, ",") != "generic,maven,npm,pypi" || body.PublicURL != "https://localhost:38443" {
+	if json.Unmarshal(w.Body.Bytes(), &body) != nil || body.Tenant != tenant || body.Actor != "operator" || body.Role != "admin" || strings.Join(body.Formats, ",") != "generic,maven,npm,pypi,nuget" || body.PublicURL != "https://localhost:38443" {
 		t.Fatal("session identity or supported-adapter scope incorrect")
 	}
 	if strings.Contains(w.Body.String(), admin) || strings.Contains(w.Body.String(), crypt.Digest([]byte(admin))) || w.Header().Get("Set-Cookie") != "" {

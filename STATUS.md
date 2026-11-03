@@ -34,18 +34,25 @@ and 333,402 local fuzz executions pass; native fuzz jobs pass too.
 See ADR 0034 and `evidence/2026-11-03/nuget-archive-development.json`. No archive
 publication, feed, dependency/client or full-format qualification is claimed.
 
-ID lookup-key work is implemented but not yet native-qualified.
-It keeps raw manifest text separate, bounds the legacy grammar and preserves
-the invariant dotted-I distinction without trimming or Unicode normalization.
-The native library workflow adds 63,516 owned validation/casing cases and reports
-SDK acceptance separately from explicit control-character transport guards.
-Both actual fba38fd SDK jobs fail40cases: host Go17 Unicode data disagrees with
-the SDK's validation/casing. A frozen hash-pinned Unicode-derived profile now
-matches the complete retained reference-row hash locally on all63,516cases.
-Clean native replay is required (`DEFECT.0082`); all original failures remain in
-`evidence/2026-11-03/nuget-fba38fd-id-unicode-failure.json`.
-See ADR0035 and `evidence/2026-11-03/nuget-id-development.json`. Durable NuGet
-publication, feeds, clients and all remaining format outcomes stay required.
+ID lookup keys are qualified for the named owned transport profile on clean
+`b25947219e66552c6b48c10bb3e570a8c76af3ad`: both actual native Linux SDK jobs
+agree on all 63,516 cases. The frozen Unicode-derived profile preserves keys
+across Go upgrades. One SDK-accepted trailing-LF case is explicitly rejected by
+the transport profile; it is neither an SDK rejection nor a skipped test.
+The original 40 mismatches per architecture remain retained (DEFECT.0082).
+All 1,129 versions, 11 Nuspec documents and four owned archive cases pass too.
+See `evidence/2026-11-03/nuget-b259472-checkpoint.json`.
+
+Hosted NuGet development now adds API-key push, bounded immutable archive/manifest
+binding, flat version/package/Nuspec reads and common materialized-reference
+lifecycle. The console offers hosted creation and private client templates.
+Two actual PostgreSQL regressions and a stock dotnet push/dependency-restore
+journey are added to the native GitHub campaign. These new database/client/UI
+outcomes are implemented but unverified. Local malformed-upload coverage found
+and repaired a truncated-body 503/400 error (DEFECT.0083). See ADR0036 and
+`evidence/2026-11-03/nuget-hosted-development.json`. Full NuGet metadata,
+signatures, symbols, native lifecycle, proxy/group, search, other clients/platforms
+and all remaining goal requirements stay open.
 
 The original 51-check byte-observation failure and 174-check grant-fixture failure
 remain retained. The tar observer and explicit restricted fixture access replay

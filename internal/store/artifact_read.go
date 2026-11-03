@@ -158,6 +158,11 @@ func (s *Store) artifact(ctx context.Context, i Identity, repo, path string, int
 				return ErrPythonUnvalidated
 			}
 		}
+		if e == nil && r.Format == "nuget" {
+			if _, e = ValidateNuGetArtifact(ctx, a); e != nil {
+				return e
+			}
+		}
 		if e == nil && len(snapshots) > 0 {
 			e = checkNativeRetirementPrecedence(ctx, tx, i, r, a, snapshots[0].Groups)
 		}

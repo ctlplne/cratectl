@@ -21,8 +21,8 @@ are behavioral references, not copied code.
 
 This follows the [flat-container ID key contract](https://learn.microsoft.com/en-us/nuget/api/package-base-address-resource)
 and [PackageIdValidator API](https://source.dot.net/NuGet.Packaging/PackageCreation/Utility/PackageIdValidator.cs.html).
-The actual installed SDK remains the execution reference. No native matching
-claim is made until the new differential campaign passes.
+The actual installed SDK remains the execution reference. The named b259472
+differential campaign now passes on both native Linux architectures.
 
 The first actual fba38fd campaign compiled and ran on both Linux architectures.
 SDK10.0.403 / NuGet.Packaging7.9.0.0 / .NET10.0.14 disagreed with Go17 on 40
@@ -34,7 +34,8 @@ offline generation and the Unicode data license are documented in
 [the Unicode notice](../../third_party/UNICODE.md).
 
 The repaired local helper's complete result-row hash equals both original SDK
-reference hashes for all63,516cases. Clean native replay remains required.
+reference hashes for all63,516cases. Clean b259472 native replay then passed
+the same complete corpus on both architectures.
 The [original failures and limits](../../evidence/2026-11-03/nuget-fba38fd-id-unicode-failure.json)
 remain retained; no fixture was dropped or expected result rewritten.
 
@@ -53,8 +54,10 @@ as SDK rejection or skipped tests. No generated package, project script or
 model executes.
 
 Local tests cover stable keys, invalid/no-partial results, boundaries and distinct
-invariant/normalization cases. Native SDK compilation and the new ID comparison
-remain unverified. See [development evidence](../../evidence/2026-11-03/nuget-id-development.json).
+invariant/normalization cases. Actual SDK10.0.403 / .NET10.0.14 / libraries7.9.0.0
+compile and match on both native Linux architectures. See the
+[named checkpoint](../../evidence/2026-11-03/nuget-b259472-checkpoint.json); this
+qualifies the owned transport-profile corpus, with its separate control guard.
 
 This is a wire-key foundation, not a durable package publication or identity-alias
 implementation. Common-store byte/policy/idempotency/journal binding, complete

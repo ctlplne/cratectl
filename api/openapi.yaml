@@ -722,7 +722,7 @@ paths:
               required: [name, format]
               properties:
                 name: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$'}
-                format: {type: string, enum: [generic, maven, npm, pypi, oci]}
+                format: {type: string, enum: [generic, maven, npm, pypi, oci, nuget]}
                 require_review: {type: boolean, default: false}
                 mode: {type: string, enum: [hosted, proxy, group], default: hosted}
                 access: {type: string, enum: [tenant, restricted], default: tenant}
@@ -1630,7 +1630,7 @@ paths:
           name: path
           required: true
           schema: {type: string, maxLength: 2048}
-          description: Exact materialized generic/Maven/npm/PyPI package path, or canonical OCI image/manifests/sha256:HEX or image/blobs/sha256:HEX path. Mutable catalogs and Maven maven-metadata.xml are excluded.
+          description: Exact materialized generic/Maven/npm/PyPI/NuGet package path, or canonical OCI image/manifests/sha256:HEX or image/blobs/sha256:HEX path. Mutable catalogs and Maven maven-metadata.xml are excluded.
       responses:
         '200': {description: 'Repository, path, digest, deleted, held, revision, hold reason/expiry, actor and journal change sequence. Untouched revision is 0.'}
         '403': {description: Current write role and grant required}
@@ -1670,7 +1670,7 @@ paths:
   /api/v1/holds:
     get:
       summary: Discover current tenant hold observations as an administrator
-      description: Lists active, expired or released per-reference holds for canonical OCI and materialized generic/Maven/npm/PyPI content across the tenant, including suspended and removed repositories. Released records require an actual earlier hold/release receipt for the current digest; unrelated native deletions are excluded. Status is computed at observed_at. Pages are live; expiry and concurrent changes can alter later pages. No bytes are erased or serving authority granted.
+      description: Lists active, expired or released per-reference holds for canonical OCI and materialized generic/Maven/npm/PyPI/NuGet content across the tenant, including suspended and removed repositories. Released records require an actual earlier hold/release receipt for the current digest; unrelated native deletions are excluded. Status is computed at observed_at. Pages are live; expiry and concurrent changes can alter later pages. No bytes are erased or serving authority granted.
       parameters:
         - in: query
           name: state

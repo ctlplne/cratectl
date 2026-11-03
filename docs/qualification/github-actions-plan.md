@@ -216,12 +216,24 @@ The NuGet library workflow is further extended with63,516owned ID cases,
 covering all non-surrogate BMP values plus whole-ID edge cases. The actual SDK
 validator and invariant casing are compared with the bounded Go wire-key path;
 explicit transport exclusions retain the SDK's separate acceptance result.
-This new managed/native comparison remains unverified. Complete durable NuGet
-feed and stock-client journeys follow this coordinate work; the library gate
+The b259472 managed/native comparison passes on both Linux architectures.
+Complete durable NuGet feed and stock-client journeys follow this coordinate work; the library gate
 does not replace them. See [the ID contract](../adr/0035-nuget-id-lookup-keys.md).
 
 The first actual fba38fd ID comparison compiled and executed on both native
 architectures, then failed40cases. The repair freezes named Unicode-derived
 word/case tables rather than inheriting Go17 data. The local complete-row hash
-matches both retained SDK outputs on the unchanged63,516case corpus. A fresh
-clean native replay remains required; preserve [the original failures](../../evidence/2026-11-03/nuget-fba38fd-id-unicode-failure.json).
+matches both retained SDK outputs on the unchanged63,516case corpus. The fresh
+clean b259472 native replay also passes both architectures; preserve [the original failures](../../evidence/2026-11-03/nuget-fba38fd-id-unicode-failure.json).
+
+Hosted NuGet implementation now extends the existing native `conformance.py all`
+campaign with actual SDK dotnet push and dependency restore, not local x86
+emulation. Two application versions and a dependency use fresh consumer caches,
+exact package/payload/manifest comparisons, same-coordinate tenants, policy denial
+and a real registry restart. Owned fixtures contain no scripts/build targets or
+executable assemblies. Real PostgreSQL integration/race adds common publication,
+concurrent coordinates, grants/revocation, bounded complete indexes and reference
+restore. Safe summaries retain only bounded SDK identity and four fixture hashes,
+beside exact native server/CLI source and binary hashes. These new journeys are
+implemented but unverified; existing library results do not qualify them.
+See [the adapter decision](../adr/0036-hosted-nuget-publication.md).

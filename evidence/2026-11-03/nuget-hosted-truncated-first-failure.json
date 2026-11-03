@@ -1,0 +1,12 @@
+{
+  "source_parent": "b25947219e66552c6b48c10bb3e570a8c76af3ad",
+  "source_dirty": true,
+  "scope": "Local unit test on darwin-arm64; no native PostgreSQL or stock-client claim",
+  "command": "GOCACHE=$PWD/.cache/go-build GOMODCACHE=$PWD/.cache/go-mod GOTOOLCHAIN=local $PWD/.cache/go/bin/go test ./internal/store ./internal/server -run TestNuGet -count=1",
+  "observation": "TestNuGetMalformedPublicationCannotCommit failed: incomplete or oversized multipart publication accepted 503 400. Truncated closing boundary caused io.ErrUnexpectedEOF from staged streaming to use the default 503 path. No reference was committed; nil database was never used.",
+  "inputs_sha256": {
+    "internal/server/nuget.go": "3018a3b8a2d7f9e40a59b709281f41da6ce2ff0705bfbeb9815da315a4d261ca",
+    "internal/server/nuget_test.go": "60964fcc654adc7a651f55e01425280adcc57f8c1181c63cc6e7973264e66468"
+  },
+  "next": "Map malformed transport to 400 while retaining 413 for byte ceilings and preserving storage failure/cancellation paths. Replay the same truncated and oversized multipart regressions."
+}
