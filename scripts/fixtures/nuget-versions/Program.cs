@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BUSL-1.1
-// Only our synthetic version strings reach this SDK-owned reference library.
+// Only owned synthetic versions, manifests and archive bytes reach the SDK.
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -22,6 +22,32 @@ class Program
         }
         var values = JsonSerializer.Deserialize<string[]>(memory.ToArray());
         if (values == null || values.Length > 4096) throw new Exception("owned case count");
+        if (args.Length == 1 && args[0] == "archive")
+        {
+            var identities = values.Select(value => {
+                try
+                {
+                    using var stream = new System.IO.MemoryStream(Convert.FromBase64String(value));
+                    using var reader = new PackageArchiveReader(stream);
+                    var identity = reader.GetIdentity();
+                    using var nuspec = reader.GetNuspec();
+                    using var output = new System.IO.MemoryStream();
+                    nuspec.CopyTo(output);
+                    return new { valid = true, id = identity.Id, version_key = identity.Version.ToNormalizedString().ToLowerInvariant(), nuspec_path = reader.GetNuspecFile(), nuspec = Convert.ToBase64String(output.ToArray()) };
+                }
+                catch (Exception)
+                {
+                    return new { valid = false, id = "", version_key = "", nuspec_path = "", nuspec = "" };
+                }
+            }).ToArray();
+            Console.WriteLine(JsonSerializer.Serialize(new {
+                os = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "linux" : "other",
+                architecture = RuntimeInformation.ProcessArchitecture.ToString().ToLowerInvariant(),
+                version = typeof(PackageArchiveReader).Assembly.GetName().Version.ToString(),
+                rows = identities
+            }));
+            return;
+        }
         if (args.Length == 1 && args[0] == "nuspec")
         {
             var identities = values.Select(value => {

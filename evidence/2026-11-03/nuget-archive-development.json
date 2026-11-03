@@ -1,0 +1,59 @@
+{
+  "source_parent": "9f6fa79566a308c7295ba2f7d43d4745cce95165",
+  "source_dirty": true,
+  "state": "implemented but unverified against actual native SDK",
+  "scope": "Bounded ZIP32 package identity and exact Nuspec bytes only; no feed or publication path",
+  "source_files": [
+    {
+      "path": "internal/nuget/archive.go",
+      "sha256": "59a1240631647982331d7fb943006c75c0bdd955a22bd114b429f0bb9b064b4f"
+    },
+    {
+      "path": "internal/nuget/archive_test.go",
+      "sha256": "82e5b38fd631c4374ae95e4f3926eb1f809a5b8d31b7142511bcfae696cd558f"
+    },
+    {
+      "path": "internal/crypto/crypto.go",
+      "sha256": "911b628b5f23016e93d87f7ea5c61e697ae92777388c2db1e5d6e51e9aef7eac"
+    },
+    {
+      "path": "internal/crypto/zip_checksum_test.go",
+      "sha256": "e2c7e079435531271cb627bfe8bfc6bfc47fc6e762093e4ce59f9b1f7b4563f8"
+    },
+    {
+      "path": "scripts/nuget_version_contract.py",
+      "sha256": "e9f2e05fa75e65f85443591201bb852035229d5b0c600f493a8df830ae2fdfef"
+    },
+    {
+      "path": "scripts/fixtures/nuget-versions/Program.cs",
+      "sha256": "0752d95587da23a0b4c5a6328963fb91e9055011762e20428b40b465a93afb93"
+    },
+    {
+      "path": "scripts/fixtures/nuget-versions/main.go",
+      "sha256": "2835b6d5f1da523e623d422077e248f833028f1ff0713705796b8254455e0993"
+    }
+  ],
+  "local_validation": [
+    "Full unit/race and lint suites passed; final parser/crypto race suite passed after descriptor and checksum changes.",
+    "FuzzArchiveIdentity passed333402executions in5seconds on local darwin-arm64.",
+    "Four deterministic owned stored/deflated ZIP fixtures pass Python structural/CRC sanity; actual SDK comparison pending.",
+    "Final standard build/unit/race/lint, tidy-diff and actionlint passed. The actual owned Go helper accepts all4positive archive fixtures with exact original manifest bytes on darwin-arm64; source is dirty development, not clean native SDK qualification."
+  ],
+  "retained_first_failures": {
+    "draft_trailing_bytes": "evidence/2026-11-03/nupkg-trailing-draft-first-regression.txt",
+    "architecture": "evidence/2026-11-03/nupkg-architecture-first-failure.json"
+  },
+  "repairs": [
+    "Count physical directory records before standard ZIP allocation, not only EOCD counts.",
+    "Bind local/central headers and descriptors to complete contiguous spans; consume each compressed member exactly.",
+    "Reject unsafe/ambiguous path/text/extra/type observations, resource overflow and partial identity.",
+    "Move compatibility CRC32 to internal/crypto without changing architecture rules."
+  ],
+  "native_next": "Existing actual Linux AMD64/ARM64 SDK workflow now requires1129version cases,11Nuspec documents and4archives with exact identity/path/manifest bytes; no native new-archive pass claimed yet.",
+  "limits": [
+    "ReaderAt must be immutable caller-staged bytes. Common-store digest/policy/idempotency/journal/outbox publication binding remains separate required work.",
+    "ZIP64/split/exotic/legacy layouts, full manifest/dependency/symbol/signature semantics, feeds and stock-client journeys remain open.",
+    "The first trailing-data failure was an isolated scratch draft, not an existing published product source; no precise first-draft source hash was retained. Final integrated code/tests are retained and require clean native replay.",
+    "No local primary, active qualified binaries, Docker/customer or sibling service was changed. All450scope/readiness limits remain."
+  ]
+}

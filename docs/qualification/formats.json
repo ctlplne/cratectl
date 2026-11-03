@@ -182,12 +182,17 @@
       "jfrog_modes": "per-format documentation review required",
       "native_limitations": "Mode-specific limits must be established before claiming coverage.",
       "state": "implementing",
-      "implementation_foundation": "VersionKey and bounded Nuspec identity contracts qualified against actual SDK libraries on e2208e7; no archive/feed/client support.",
+      "implementation_foundation": "VersionKey/Nuspec library contracts qualified on e2208e7; bounded ZIP32 identity implemented with actual SDK comparison pending; no feed/client support.",
       "library_contract": {
         "candidate": "e2208e78d45a6eba1d11df71f885205f9a7ca5e2",
         "checkpoint": "evidence/2026-11-03/nuget-e2208e7-checkpoint.json",
         "state": "verified version/Nuspec identity only",
         "limits": "No archive, feed, ID storage-key, stock-client, dependency, tenant/policy/lifecycle or readiness qualification."
+      },
+      "archive_identity_development": {
+        "record": "evidence/2026-11-03/nuget-archive-development.json",
+        "state": "implemented but unverified against actual native SDK",
+        "limits": "Bounded ZIP32 identity only. No common-store publication/ID key mapping/full package semantics/feed/client qualification."
       }
     },
     {

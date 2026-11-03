@@ -3,6 +3,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
@@ -23,6 +24,14 @@ type nuspecRow struct {
 	Valid      bool   `json:"valid"`
 	ID         string `json:"id"`
 	VersionKey string `json:"version_key"`
+}
+
+type archiveRow struct {
+	Valid      bool   `json:"valid"`
+	ID         string `json:"id"`
+	VersionKey string `json:"version_key"`
+	NuspecPath string `json:"nuspec_path"`
+	Nuspec     string `json:"nuspec"`
 }
 
 func emit(rows any) {
@@ -55,6 +64,20 @@ func main() {
 			}
 			identity, err := nuget.ParseNuspecIdentity(context.Background(), data)
 			rows = append(rows, nuspecRow{Valid: err == nil, ID: identity.ID, VersionKey: identity.VersionKey})
+		}
+		emit(rows)
+		return
+	}
+	if len(os.Args) == 2 && os.Args[1] == "--archive" {
+		rows := make([]archiveRow, 0, len(values))
+		for _, value := range values {
+			data, err := base64.StdEncoding.DecodeString(value)
+			if err != nil {
+				rows = append(rows, archiveRow{})
+				continue
+			}
+			identity, err := nuget.InspectArchive(context.Background(), bytes.NewReader(data), int64(len(data)), nuget.ArchiveLimits{CompressedBytes: 2 << 20, ExpandedBytes: 4 << 20, DirectoryBytes: 128 << 10, Files: 64})
+			rows = append(rows, archiveRow{Valid: err == nil, ID: identity.Identity.ID, VersionKey: identity.Identity.VersionKey, NuspecPath: identity.NuspecPath, Nuspec: base64.StdEncoding.EncodeToString(identity.Nuspec)})
 		}
 		emit(rows)
 		return

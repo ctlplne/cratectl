@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
-"""Compare Go version/Nuspec identity with the actual SDK NuGet libraries.
+"""Compare Go version, Nuspec and archive identity with actual SDK libraries.
 
 This is a native library contract test, not package-feed or stock-client proof.
 The owned C# fixture has no package references and clears package sources.
@@ -10,6 +10,7 @@ import datetime
 import base64
 import hashlib
 import itertools
+import io
 import json
 import os
 from pathlib import Path
@@ -18,6 +19,7 @@ import re
 import shutil
 import subprocess
 import uuid
+import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -46,6 +48,28 @@ def nuspec_cases():
     return [base64.b64encode(value).decode('ascii') for value in values]
 
 
+def archive_cases():
+    values = []
+    documents = nuspec_cases()
+    for compression in [zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED]:
+        for index in [0, 3]:
+            output = io.BytesIO()
+            manifest = 'Cratectl.Manifest.nuspec' if compression == zipfile.ZIP_STORED else 'Declared.NUSPEC'
+            with zipfile.ZipFile(output, 'w', compression=compression) as archive:
+                files = [(manifest, base64.b64decode(documents[index])),
+                         ('[Content_Types].xml', b'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="nuspec" ContentType="application/octet" /></Types>'),
+                         ('_rels/.rels', ('<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Type="http://schemas.microsoft.com/packaging/2010/07/manifest" Target="/' + manifest + '" Id="owned" /></Relationships>').encode()),
+                         ('lib/net10.0/_._', b''),
+                         ('content/\u00fc.txt', b'owned opaque UTF8 path payload\n')]
+                for name, body in files:
+                    info = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
+                    info.compress_type = compression
+                    info.external_attr = 0o100600 << 16
+                    archive.writestr(info, body)
+            values.append(base64.b64encode(output.getvalue()).decode('ascii'))
+    return values
+
+
 def main():
     os.chdir(ROOT)
     os.umask(0o077)
@@ -57,7 +81,7 @@ def main():
     candidate = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
     dirty = bool(subprocess.check_output(['git', 'status', '--porcelain', '--untracked-files=all']).strip())
     arch = {'x86_64': 'amd64', 'aarch64': 'arm64'}.get(platform.machine())
-    report = {'candidate': candidate, 'run_id': os.environ.get('GITHUB_RUN_ID'), 'status': 'failed', 'phase': 'preflight', 'source_dirty': dirty, 'checks': [], 'limits': ['Native NuGet.Versioning/Go version-key and NuspecReader identity contracts only. No archive, feed, dependency-resolution, publish/consume, tenant, policy, symbol, Chocolatey/PowerShell or release-readiness qualification.']}
+    report = {'candidate': candidate, 'run_id': os.environ.get('GITHUB_RUN_ID'), 'status': 'failed', 'phase': 'preflight', 'source_dirty': dirty, 'checks': [], 'limits': ['Native version-key, Nuspec identity and owned ZIP archive identity/manifest-byte contracts only. No full package/signature, ZIP64/split/exotic archive, feed, dependency-resolution, publish/consume, tenant, policy, symbol, Chocolatey/PowerShell or release-readiness qualification.']}
     environment = dict(os.environ, DOTNET_CLI_TELEMETRY_OPTOUT='1', DOTNET_SKIP_FIRST_TIME_EXPERIENCE='1', DOTNET_NOLOGO='1', DOTNET_GENERATE_ASPNET_CERTIFICATE='false', DOTNET_CLI_HOME=str(work / 'dotnet-home'), NUGET_PACKAGES=str(work / 'packages'), MSBuildEnableWorkloadResolver='false', GOTOOLCHAIN='local', GOCACHE=str(ROOT / '.cache/go-build'), GOMODCACHE=str(ROOT / '.cache/go-mod'))
     number = 0
 
@@ -123,6 +147,18 @@ def main():
         # mismatches so a failed reference comparison remains diagnosable.
         report['nuspec_mismatches'] = [{'index': index, 'go': actual['rows'][index], 'reference': expected['rows'][index]} for index in errors[:16]]
         check('all owned Nuspec identities agree with actual SDK reader', not errors)
+        report['phase'] = 'archive_compare'
+        packages = archive_cases()
+        encoded = json.dumps(packages).encode()
+        actual = json.loads(command([work / 'go-oracle', '--archive'], 'inspect owned package archives with Go', encoded))
+        expected = json.loads(command([dotnet, work / 'managed/Oracle.dll', 'archive'], 'read owned archives with actual NuGet.Packaging', encoded))
+        check('archive reference processes use this clean native source', actual['os'] == expected['os'] == 'linux' and actual['architecture'] == arch and expected['architecture'] == {'amd64': 'x64', 'arm64': 'arm64'}[arch] and actual['build'] == native['build'])
+        check('archive reference library and case count are observed', expected['version'] == report['packaging_library_version'] and len(actual['rows']) == len(expected['rows']) == len(packages))
+        report.update(archive_cases=len(packages), archive_fixture_sha256=hashlib.sha256(encoded).hexdigest())
+        errors = [index for index, (a, b) in enumerate(zip(actual['rows'], expected['rows'])) if a != b or not a['valid']]
+        report['archive_mismatch_indexes'] = errors
+        report['archive_mismatches'] = [{'index': index, 'go': actual['rows'][index], 'reference': expected['rows'][index]} for index in errors[:16]]
+        check('all owned archive identities and exact Nuspec bytes agree with actual SDK reader', not errors)
         report.update(status='passed', phase='complete')
     except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
         report['failure_type'] = type(error).__name__

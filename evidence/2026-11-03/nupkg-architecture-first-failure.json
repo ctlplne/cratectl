@@ -1,0 +1,20 @@
+{
+  "source_parent": "9f6fa79566a308c7295ba2f7d43d4745cce95165",
+  "source_dirty": true,
+  "state": "failed development lint before first archive commit",
+  "observed_errors": [
+    "internal/nuget/archive_test.go: crypto outside boundary",
+    "internal/nuget/archive.go: crypto outside boundary"
+  ],
+  "source_files": [
+    {
+      "path": "internal/nuget/archive.go",
+      "sha256": "573600b1244f568e996d1958ba86e9c4683ca2b6c4153996a3fc6b081f4fbb84"
+    },
+    {
+      "path": "internal/nuget/archive_test.go",
+      "sha256": "0f5b512b8b8c042fb910d26cea74b69356b23ef05e7fedfa4cddc33e6daebf90"
+    }
+  ],
+  "repair": "Route ZIP compatibility CRC32 through internal/crypto; preserve architecture rule."
+}

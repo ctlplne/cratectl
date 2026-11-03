@@ -195,6 +195,13 @@ all1,129versions and11Nuspec documents per native Linux architecture. This
 replays the raw-ID-whitespace repair. See [the library checkpoint](../../evidence/2026-11-03/nuget-e2208e7-checkpoint.json).
 Archive/feed/client and full NuGet behavior remain required.
 
+The NuGet workflow now also compares four owned stored/deflated ZIP32 archives
+with actual `PackageArchiveReader`: identity, selected Nuspec path and exact
+UTF8/UTF16 manifest bytes. Local bounded archive/race/fuzz checks pass; managed
+compilation and this new native comparison remain unverified. Malformed archive
+regressions run against production Go code without exposing the SDK to generated
+hostile packages. No uploaded content executes. See [the archive boundary](../adr/0034-bounded-nuget-archives.md).
+
 All four database workflows now explicitly bind127.0.0.1:35432. Bootstrap
 receives the exact owned service container ID and checks Docker's actual port
 map before setup. It fails outside a GitHub-hosted runner. Local contract and
