@@ -195,9 +195,11 @@ all1,129versions and11Nuspec documents per native Linux architecture. This
 replays the raw-ID-whitespace repair. See [the library checkpoint](../../evidence/2026-11-03/nuget-e2208e7-checkpoint.json).
 Archive/feed/client and full NuGet behavior remain required.
 
-The OCI database service explicitly binds loopback. Three auxiliary workflows
-still inherit the port bind address; correct them to127.0.0.1 and inspect each
-actual owned service mapping before bootstrap. This configuration observation
-is not an observed exposure or incident. Continue product implementation and
+All four database workflows now explicitly bind127.0.0.1:35432. Bootstrap
+receives the exact owned service container ID and checks Docker's actual port
+map before setup. It fails outside a GitHub-hosted runner. Local contract and
+workflow syntax checks pass; actual updated GitHub replay remains required.
+The old three omitted bind addresses remain a configuration observation,
+not an observed exposure or incident. Continue product implementation and
 the remaining offload inventory above; all450capabilities and negative broad
 readiness verdicts remain.

@@ -898,6 +898,15 @@
       "limits": "Actual SDK10.0.403 Versioning/Packaging7.9.0.0 agree with Go on1129versions and11Nuspec documents per architecture. Original mismatch retained. No archive/feed/full-format or stock-client journey qualified.",
       "replay": "evidence/2026-11-03/nuget-e2208e7-checkpoint.json",
       "latest_candidate": "e2208e78d45a6eba1d11df71f885205f9a7ca5e2"
+    },
+    {
+      "id": "DEFECT.0081",
+      "summary": "Three native CI PostgreSQL port mappings omit an explicit loopback bind address",
+      "first_failure": "evidence/2026-11-03/ci-service-bindings-development.json",
+      "state": "explicit bindings and actual mapping preflight implemented; native replay required",
+      "candidate": "e2208e78d45a6eba1d11df71f885205f9a7ca5e2",
+      "repair": "All four native database workflows pass their exact service container identity; bootstrap inspects only that container port map and requires exactly127.0.0.1:35432 before setup. Fail outside GitHub-hosted context.",
+      "limits": "Old runtime port mappings were not observed; no exposure/incident assertion. Local contract/syntax checks pass; actual updated GitHub replay required."
     }
   ]
 }

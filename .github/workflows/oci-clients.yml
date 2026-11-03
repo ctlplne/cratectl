@@ -57,6 +57,8 @@ jobs:
         with:
           python-version: '3.14'
       - name: Prepare isolated PostgreSQL and exact native registry binaries
+        env:
+          CRATECTL_CI_POSTGRES_CONTAINER_ID: ${{ job.services['cratectl-postgres'].id }}
         run: bash scripts/ci/bootstrap_linux.sh
       - name: Verify bundled Podman and install checked Helm
         run: bash scripts/ci/bootstrap_oci_clients.sh

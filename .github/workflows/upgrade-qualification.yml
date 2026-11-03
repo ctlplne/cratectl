@@ -47,9 +47,8 @@ jobs:
           POSTGRES_USER: cratectl_owner
           POSTGRES_DB: cratectl
           POSTGRES_HOST_AUTH_METHOD: trust
-        ports:
-          - 35432:5432
         options: >-
+          --publish 127.0.0.1:35432:5432
           --health-cmd "pg_isready -U cratectl_owner -d cratectl"
           --health-interval 5s
           --health-timeout 5s
@@ -74,6 +73,8 @@ jobs:
           distribution: temurin
           java-version: '21'
       - name: Prepare disposable native tools and database
+        env:
+          CRATECTL_CI_POSTGRES_CONTAINER_ID: ${{ job.services['cratectl-postgres'].id }}
         run: bash scripts/ci/bootstrap_linux.sh
       - name: Rebuild and verify every pinned historical native server
         run: python3 scripts/ci/build_upgrade_baselines.py

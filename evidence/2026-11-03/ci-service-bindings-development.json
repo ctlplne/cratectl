@@ -1,0 +1,32 @@
+{
+  "source_parent": "091ebcce34cc069e38054fb78ac21e08f4175dad",
+  "source_dirty": true,
+  "state": "implemented but unverified on actual GitHub runner",
+  "first_configuration_candidate": "e2208e78d45a6eba1d11df71f885205f9a7ca5e2",
+  "observations": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "old_sha256": "cf292de7b4b7138f3733f0b8df32ff24bb909053dace081f21f81c709f07af9d",
+      "finding": "published port has no explicit loopback bind address"
+    },
+    {
+      "path": ".github/workflows/browser-repair.yml",
+      "old_sha256": "6e2039112e960621a9dfa13076e3627bfb89a405328a13d50a1ae998d1cd1ed6",
+      "finding": "published port has no explicit loopback bind address"
+    },
+    {
+      "path": ".github/workflows/upgrade-qualification.yml",
+      "old_sha256": "e1160ffef27f0d989ccf7a3926c3a899ed97995aba1a7b8dc1056fac719e4a74",
+      "finding": "published port has no explicit loopback bind address"
+    }
+  ],
+  "repair": "Explicit127.0.0.1:35432 Docker publish in all four native database workflows; pass exact service container ID, inspect its actual ports and reject broader/different mappings before setup. Require GitHub-hosted context before mutations.",
+  "local_validation": [
+    "3meaningful port-map/entrypoint contract tests passed, including wildcard IPv4/IPv6, wrong port, duplicate/extra bindings, malformed/oversized input.",
+    "bash syntax and actionlint all workflows passed."
+  ],
+  "limits": [
+    "No old actual Docker port map was retained; no exposure or incident is asserted.",
+    "Updated native bootstrap and Docker observations require actual GitHub replay. No local Docker/database/customer service was modified."
+  ]
+}

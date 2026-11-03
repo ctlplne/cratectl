@@ -2,10 +2,21 @@
 # SPDX-License-Identifier: BUSL-1.1
 set -euo pipefail
 
+if test "${GITHUB_ACTIONS:-}" != true || test "${RUNNER_ENVIRONMENT:-}" != github-hosted; then
+  echo 'This bootstrap requires an isolated GitHub-hosted runner.' >&2
+  exit 1
+fi
+: "${CRATECTL_CI_POSTGRES_CONTAINER_ID:?Pass the owned workflow service container ID}"
+if [[ ! "$CRATECTL_CI_POSTGRES_CONTAINER_ID" =~ ^[a-f0-9]{64}$ ]]; then
+  echo 'The CI PostgreSQL service container identity is invalid.' >&2
+  exit 1
+fi
+
 # Run only in an isolated GitHub-hosted Linux runner. The fixed paths are the
 # existing native qualification tools' paths; all downloaded bytes are checked.
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$root"
+docker inspect --type container --format '{{json .NetworkSettings.Ports}}' "$CRATECTL_CI_POSTGRES_CONTAINER_ID" | python3 scripts/ci/check_postgres_binding.py
 client_set="${CRATECTL_CI_CLIENT_SET:-all}"
 case "$client_set" in all|oci) ;; *) echo 'Unknown CI client set' >&2; exit 1 ;; esac
 architecture="$(dpkg --print-architecture)"

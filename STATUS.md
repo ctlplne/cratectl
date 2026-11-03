@@ -32,8 +32,8 @@ record retains its observed OpenSSL3.5.9. No missing original HTTP status, file
 UID/mode/errno or old CLI version is retroactively invented.
 
 Continue archive/immutable-byte binding, ID key mapping, tenant-scoped NuGet
-feeds and all unfinished product outcomes. Three auxiliary CI PostgreSQL service
-definitions still need explicit loopback binding and actual mapping preflight.
+feeds and all unfinished product outcomes. All four CI PostgreSQL services now explicitly bind loopback and check the
+actual owned Docker mapping before setup; native replay remains required.
 All450capabilities/41families remain; broad readiness stays negative. Primary11,
 qualified548binaries, retained data and local-only private key are preserved.
 

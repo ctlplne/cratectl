@@ -6,7 +6,10 @@ reproduction. A separate bounded fuzz job exercises every checked-in Go fuzz
 target on all three native architectures; this is a smoke budget, not a full
 fuzz campaign. Both Linux architectures also run real PostgreSQL integration and
 stock-client journeys. The registry listens only on the owned loopback port 38443; the
-disposable PostgreSQL service uses port 35432. The service is recreated for every
+disposable PostgreSQL service binds127.0.0.1:35432. Bootstrap receives the exact
+owned service container ID and checks Docker's actual port map before setup;
+wildcard, additional or different bindings fail. It requires a GitHub-hosted
+runner context. These updated runtime checks require native replay. The service is recreated for every
 job. CI does not connect to an operator or customer database.
 
 The native job installs checked ORAS 1.3.6 and Maven 3.10.0 archives, Python 3.14,
