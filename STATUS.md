@@ -15,7 +15,8 @@ passes15reports. Both SDKs match49original/projected dependency observations
 and all earlier mandatory contracts. Seven unchanged safe runtime/security
 summaries plus the two SDK summaries retain exact identities in
 `evidence/2026-11-03/github-17ded1c-checkpoint.json`. This source predates the
-new registration/search/rebuild code on15d7828, whose GitHub jobs are active.
+new registration/search/rebuild code on 15d7828, whose first campaign failed
+the stock search checks recorded below.
 
 Earlier 15-job milestone accepted on clean source
 `e7c0419b792b9a3a5bb0310aef2f621a2967db99`: main 9, OCI 2, controlled
@@ -40,6 +41,23 @@ lint and 263,180 ordering-fuzz executions pass; tagged integration compiles only
 See ADR0042 and `evidence/2026-11-03/nuget-discovery-development.json`. No new
 database/managed/client pass is claimed yet. All450capabilities/41families remain;
 78are implementing and372planned. Broader NuGet/format/release verdicts stay open.
+
+The first discovery campaign, `15d7828`, finished with 14 of 16 jobs passing.
+Both required stock-client jobs failed the new native search assertion. Both
+real PostgreSQL integration/race stages passed; both actual SDK library jobs
+matched the expanded 27 scalar and 3,025 semantic/byte-order observations plus
+all earlier contracts.
+These partial results do not qualify the whole candidate. Both failed summaries
+are retained in `evidence/2026-11-03/nuget-15d7828-search-failure.json`
+(DEFECT.0085); the separate library-only checkpoint is
+`evidence/2026-11-03/nuget-15d7828-checkpoint.json`.
+The local repair advertises the actual SDK's beta search alias alongside the
+base/RC aliases and requires the installed SDK to resolve a search endpoint.
+The next campaign adds 44 owned original-Nuspec-versus-HTTP metadata cases,
+including frameworks, floating ranges, duplicates, UTF16 and license acceptance,
+before/after actual registry restart. Local Go admits all 44 inert archives and
+declarations; managed/client replay remains unverified. See
+`evidence/2026-11-03/nuget-search-repair-development.json`.
 
 Typed dependency declaration selection and shared XML attribute normalization
 are implemented for complete metadata work. Local build/unit/race/lint and five

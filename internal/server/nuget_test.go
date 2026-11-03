@@ -131,16 +131,32 @@ func TestNuGetDiscoveryUsesConfiguredAuthority(t *testing.T) {
 			continue
 		}
 		var document struct {
-			Version   string              `json:"version"`
-			Resources []map[string]string `json:"resources"`
+			Version   string `json:"version"`
+			Resources []struct {
+				ID    string          `json:"@id"`
+				Types json.RawMessage `json:"@type"`
+			} `json:"resources"`
 		}
 		if json.Unmarshal(w.Body.Bytes(), &document) != nil || document.Version != "3.0.0" || len(document.Resources) != 4 {
 			t.Fatal("discovery resources")
 		}
 		for _, resource := range document.Resources {
-			if !strings.HasPrefix(resource["@id"], "https://registry.example/base/nuget/owned/") {
+			if !strings.HasPrefix(resource.ID, "https://registry.example/base/nuget/owned/") {
 				t.Fatal("request Host influenced discovery")
 			}
+		}
+		foundSearch := false
+		for _, resource := range document.Resources {
+			if strings.HasSuffix(resource.ID, "/query") {
+				var types []string
+				if json.Unmarshal(resource.Types, &types) != nil {
+					t.Fatal("search aliases must share one resource")
+				}
+				foundSearch = len(types) == 3 && types[0] == "SearchQueryService" && types[1] == "SearchQueryService/3.0.0-beta" && types[2] == "SearchQueryService/3.0.0-rc"
+			}
+		}
+		if !foundSearch {
+			t.Fatal("search discovery lacks the actual SDK-supported resource type")
 		}
 	}
 	s.PublicURL = "https://registry.example/?credential=unsafe"

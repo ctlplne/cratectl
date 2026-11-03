@@ -17,6 +17,7 @@ import xml.etree.ElementTree as XML
 import zipfile
 from pathlib import Path
 from urllib.parse import urlencode
+from nuget_feed_cases import cases as metadata_cases, archive as metadata_archive, difference_paths
 
 
 def hosted(h):
@@ -57,6 +58,7 @@ def hosted(h):
     def metadata(listed=True):
         result = json.loads(run([dotnet, probe / 'out/Probe.dll', config, 'Cratectl.Proof.Application'], probe, extra))
         check('actual SDK metadata probe uses the runner architecture', result['architecture'] == {'x86_64': 'x64', 'aarch64': 'arm64', 'arm64': 'arm64'}[platform.machine()])
+        check('actual SDK resolves the advertised native search resource', result['search_endpoint_count'] == 1)
         rows = {row['version']: row for row in result['rows']}
         check('actual SDK registration retains both application versions', set(rows) == {'1.0.0', '2.0.0'})
         check('actual SDK registration reads durable listing state ' + str(listed), rows['1.0.0']['listed'] is listed and rows['2.0.0']['listed'] is True)
@@ -205,6 +207,51 @@ def hosted(h):
     h.start()
     restore('restarted-consumer', '1.0.0')
     check('NuGet exact content survives actual registry restart', req(package_url, 'reader')[1] == packages['application_1'][2])
+
+    # Compare actual public SDK Nuspec meaning with that same SDK's HTTP
+    # registration reader. This covers production rendering, routing and gzip;
+    # it does not infer JSON interoperability from re-encoded XML alone.
+    h.repository('dotnet-metadata', 'nuget')
+    corpus = metadata_cases()
+    for case in corpus:
+        case['archive_sha256'] = hashlib.sha256(metadata_archive(case)).hexdigest()
+    encoded = json.dumps(corpus, sort_keys=True, separators=(',', ':')).encode()
+    check('owned NuGet HTTP metadata corpus stays bounded', len(corpus) <= 64 and len(encoded) <= 2 << 20)
+    corpus_file = work / 'metadata-corpus.json'
+    corpus_file.write_bytes(encoded)
+    corpus_file.chmod(0o600)
+    config_corpus = work / 'NuGet.Metadata.Config'
+    document_corpus = XML.parse(config)
+    document_corpus.find('./packageSources/add').set('value', h.BASE + '/nuget/dotnet-metadata/index.json')
+    document_corpus.write(config_corpus, encoding='utf-8', xml_declaration=True)
+    config_corpus.chmod(0o600)
+    for case in corpus:
+        package = metadata_archive(case)
+        check('owned NuGet archive matches the retained fixture identity ' + case['label'], hashlib.sha256(package).hexdigest() == case['archive_sha256'])
+        boundary = 'cratectl-' + hashlib.sha256(package).hexdigest()
+        check('owned NuGet multipart boundary is distinct ' + case['label'], boundary.encode() not in package)
+        body = ('--' + boundary + '\r\nContent-Disposition: form-data; name="package"; filename="owned.nupkg"\r\nContent-Type: application/octet-stream\r\n\r\n').encode() + package + ('\r\n--' + boundary + '--\r\n').encode()
+        code, _, _ = req('/nuget/dotnet-metadata/api/v2/package', method='PUT', data=body, headers={'Content-Type': 'multipart/form-data; boundary=' + boundary, 'X-NuGet-ApiKey': h.tokens['admin']})
+        check('publish owned NuGet HTTP metadata case ' + case['label'], code == 201)
+
+    def compare_metadata_corpus(phase):
+        output = run([dotnet, probe / 'out/Probe.dll', config_corpus, '--corpus', corpus_file], probe, extra)
+        observed = json.loads(output)
+        rows = observed['rows']
+        mismatch = [row['index'] for row in rows if not row['valid'] or not row['matches']]
+        h.result['nuget_metadata_contract'] = {'cases': len(corpus), 'fixture_sha256': hashlib.sha256(encoded).hexdigest(), 'observations_sha256': hashlib.sha256(output.encode()).hexdigest(), 'mismatch_indexes': mismatch, 'phase': phase}
+        # Only owned synthetic metadata appears here; the safe exporter retains
+        # hashes/counts/indexes instead of arbitrary messages or client output.
+        h.result['nuget_metadata_mismatches'] = [row for row in rows if not row['valid'] or not row['matches']][:16]
+        h.result['nuget_metadata_diagnostics'] = [{'index': row['index'], 'failed': not row['valid'], 'paths': difference_paths(row.get('original', {}), row.get('http', {}))[:64]} for row in h.result['nuget_metadata_mismatches']]
+        check('actual SDK HTTP corpus uses the exact native library and architecture ' + phase, observed['library_version'] == h.result['nuget_protocol_library_version'] and observed['architecture'] == {'x86_64': 'x64', 'aarch64': 'arm64', 'arm64': 'arm64'}[platform.machine()])
+        check('actual SDK HTTP corpus returns every owned case ' + phase, [row['index'] for row in rows] == list(range(len(corpus))))
+        check('actual SDK HTTP framework/range/preference/list semantics match original Nuspec ' + phase, not mismatch)
+
+    compare_metadata_corpus('published')
+    h.stop()
+    h.start()
+    compare_metadata_corpus('restarted')
 
 
 if __name__ == '__main__':

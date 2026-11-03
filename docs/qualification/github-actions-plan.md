@@ -393,3 +393,28 @@ Local ARM unit/race/lint and bounded fuzz checks remain supporting checks only;
 new database/managed/client claims await their clean-source GitHub jobs. See
 [ADR0042](../adr/0042-nuget-discovery-catalog.md). Broader format, platform,
 production trust, failure and scale gates remain required.
+
+The first discovery source15d7828 passes14of16jobs but fails both actual
+stock-client search assertions (DEFECT.0085). Both native PostgreSQL integration
+and race stages pass; both actual SDK library jobs match all27scalar and
+3,025semantic/byte-key ordering cases plus every prior contract. Preserve
+[the exact failed campaign](../../evidence/2026-11-03/nuget-15d7828-search-failure.json)
+and [separate library proof](../../evidence/2026-11-03/nuget-15d7828-checkpoint.json).
+The official client's search-type table requires a beta alias that the original
+RC-only index omitted. The repair retains base/RC aliases, adds the recognized
+beta type and requires actual SDK service-index resolution before stock search.
+Its native replay is still unverified.
+
+The extended owned HTTP probe compares44original Nuspec documents read by the
+installed Packaging/Frameworks libraries against the same SDK's real HTTP
+registration reader. It covers group precedence, duplicate items/groups,
+floating floors/preferences, build metadata,21framework declarations, original
+UTF16 and license-acceptance values, then repeats after actual process restart.
+The standalone `*` case compares interval bounds only because the registration
+protocol prohibits that spelling and uses an equivalent nonfloating interval.
+All other floating preferences remain part of equality. No package is installed
+or executed by this corpus; broader stock restores stay mandatory. Safe exports
+retain the bounded corpus/observation hashes and mismatch indexes without
+arbitrary client output. Every case must remain visible after a failure; the
+corpus is never reduced to make the gate pass. New native semantics remain
+unverified until both actual GitHub architectures execute them.

@@ -91,7 +91,7 @@ per-version download counts use zero because cumulative downloads are not yet
 tracked. It does not claim publisher ownership or security approval.
 
 The service index advertises gzip `RegistrationsBaseUrl/3.6.0`, containing
-SemVer 2 versions, and `SearchQueryService/3.0.0-rc`. Registration pages retain
+SemVer 2 versions, and `SearchQueryService/3.0.0-beta` (with the base and RC aliases). Registration pages retain
 declared framework/dependency data with numeric version ordering. Legacy
 registration hives and package-type search remain unfinished.
 

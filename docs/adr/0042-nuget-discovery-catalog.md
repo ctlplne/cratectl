@@ -15,7 +15,7 @@ The actual SDK oracle independently compares both semantic and byte-key order
 against the existing 3,025 owned pairs. This extension is unverified until the
 new clean-source native jobs run.
 
-`SearchQueryService/3.0.0-rc` performs literal case-insensitive substring matching
+`SearchQueryService/3.0.0-beta` (with the base and RC aliases) performs literal case-insensitive substring matching
 on the latest eligible version's ID, title, description and tags. Stable and
 SemVer 1 versions are the defaults; clients can opt into prereleases and
 SemVer 2. Search excludes unlisted and currently ineligible versions before

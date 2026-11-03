@@ -181,6 +181,34 @@ def summarize(root, environment):
                 if not isinstance(value, str) or not re.fullmatch(r'[0-9]{1,5}(?:\.[0-9]{1,5}){3}', value):
                     raise SystemExit('NuGet protocol library version is outside the reviewed profile')
                 entry['nuget_protocol_library_version'] = value
+            if 'nuget_metadata_contract' in report:
+                value = report['nuget_metadata_contract']
+                if not isinstance(value, dict) or set(value) != {'cases', 'fixture_sha256', 'observations_sha256', 'mismatch_indexes', 'phase'}:
+                    raise SystemExit('NuGet HTTP metadata evidence fields are outside the reviewed profile')
+                n = value['cases']
+                if type(n) is not int or not 1 <= n <= 64 or value['phase'] not in ('published', 'restarted'):
+                    raise SystemExit('NuGet HTTP metadata evidence exceeds its bounded corpus')
+                if any(not isinstance(value[k], str) or not re.fullmatch('[0-9a-f]{64}', value[k]) for k in ('fixture_sha256', 'observations_sha256')):
+                    raise SystemExit('NuGet HTTP metadata evidence must retain SHA256 identities')
+                indexes = value['mismatch_indexes']
+                if not isinstance(indexes, list) or any(type(i) is not int or i < 0 or i >= n for i in indexes) or len(set(indexes)) != len(indexes):
+                    raise SystemExit('NuGet HTTP metadata mismatch indexes are outside the corpus')
+                if status == 'passed' and (indexes or value['phase'] != 'restarted'):
+                    raise SystemExit('Passed NuGet HTTP metadata evidence requires a complete restarted replay')
+                entry['nuget_metadata_contract'] = value
+                if 'nuget_metadata_diagnostics' in report:
+                    diagnostics = report['nuget_metadata_diagnostics']
+                    if not isinstance(diagnostics, list) or len(diagnostics) > 16:
+                        raise SystemExit('NuGet HTTP diagnostic cases exceed their bound')
+                    seen = set()
+                    pattern = r'(?:groups(?:\[[0-9]{1,4}\])?(?:\.(?:framework|framework_name|packages(?:\[[0-9]{1,4}\])?(?:\.(?:id|min|max|min_metadata|max_metadata|include_min|include_max|floating|preference))?))?|license_acceptance)(?:\._(?:length|type))?'
+                    for item in diagnostics:
+                        if not isinstance(item, dict) or set(item) != {'index', 'failed', 'paths'} or type(item['index']) is not int or item['index'] not in indexes or item['index'] in seen or type(item['failed']) is not bool:
+                            raise SystemExit('NuGet HTTP diagnostic identity is outside the failed corpus')
+                        seen.add(item['index'])
+                        if not isinstance(item['paths'], list) or len(item['paths']) > 64 or any(not isinstance(p, str) or len(p) > 128 or not re.fullmatch(pattern, p) for p in item['paths']):
+                            raise SystemExit('NuGet HTTP diagnostic paths must use the fixed metadata schema')
+                    entry['nuget_metadata_diagnostics'] = diagnostics
         for key in ('baseline_version', 'expected_schema'):
             if key in report:
                 if type(report[key]) is not int or not 1 <= report[key] <= 1000:

@@ -85,6 +85,28 @@ class EvidenceSummary(unittest.TestCase):
             with self.subTest(codes=codes), self.assertRaises(SystemExit):
                 summarize(self.root, self.environment)
 
+    def test_nuget_http_metadata_evidence_never_exports_arbitrary_client_output(self):
+        fixtures = {key: 'b' * 64 for key in ('dependency', 'application_1', 'application_2', 'other_application_1')}
+        contract = {'cases':44, 'fixture_sha256':'d'*64, 'observations_sha256':'e'*64, 'mismatch_indexes':[], 'phase':'restarted'}
+        report = {'candidate':'a'*40, 'status':'passed', 'nuget_sdk_version':'10.0.403', 'nuget_dotnet_sha256':'c'*64, 'nuget_fixture_sha256':fixtures, 'nuget_metadata_contract':contract, 'nuget_metadata_mismatches':['private-synthetic-value']}
+        self.write('native.json',report)
+        safe=summarize(self.root,self.environment)['records'][0]
+        self.assertEqual(safe['nuget_metadata_contract'],contract)
+        self.assertNotIn('private-synthetic-value',json.dumps(safe))
+        for change in [{'cases':65},{'cases':True},{'phase':'private-synthetic-value'},{'phase':'published'},{'fixture_sha256':'private-synthetic-value'},{'observations_sha256':'private-synthetic-value'},{'mismatch_indexes':[1]},{'mismatch_indexes':[44]},{'mismatch_indexes':[True]},{'output':'private-synthetic-value'}]:
+            with self.subTest(change=change),self.assertRaises(SystemExit):
+                self.write('native.json',{**report,'nuget_metadata_contract':{**contract,**change}})
+                summarize(self.root,self.environment)
+        self.write('native.json',{**report,'status':'failed','nuget_metadata_contract':{**contract,'phase':'published','mismatch_indexes':[1]}})
+        self.assertEqual(summarize(self.root,self.environment)['records'][0]['nuget_metadata_contract']['mismatch_indexes'],[1])
+        failed={**report,'status':'failed','nuget_metadata_contract':{**contract,'phase':'published','mismatch_indexes':[1]},'nuget_metadata_diagnostics':[{'index':1,'failed':False,'paths':['groups[0].framework','groups[0].packages._length','groups[0].packages[1].min_metadata']}]}
+        self.write('native.json',failed)
+        self.assertEqual(summarize(self.root,self.environment)['records'][0]['nuget_metadata_diagnostics'],failed['nuget_metadata_diagnostics'])
+        for diagnostics in [[{'index':2,'failed':True,'paths':[]}],[{'index':True,'failed':True,'paths':[]}],[{'index':1,'failed':False,'paths':['private-synthetic-value']}],[{'index':1,'failed':False,'paths':[],'value':'private-synthetic-value'}]]:
+            with self.subTest(diagnostics=diagnostics),self.assertRaises(SystemExit):
+                self.write('native.json',{**failed,'nuget_metadata_diagnostics':diagnostics})
+                summarize(self.root,self.environment)
+
     def test_historical_identity_is_retained_without_arbitrary_fields(self):
         self.write('baseline.json', {'candidate': 'a' * 40, 'status': 'passed', 'baseline_version': 2, 'expected_schema': 11, 'baselines': [{'schema': 2, 'source': 'b' * 40, 'binary_sha256': 'c' * 64, 'private_log': 'private-synthetic-value'}]})
         record = summarize(self.root, self.environment)['records'][0]

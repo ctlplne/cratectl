@@ -109,7 +109,12 @@ func (s *Server) nuget(w http.ResponseWriter, r *http.Request, i store.Identity,
 			s.nugetRegistration(w, r, i, repo, p, root)
 			return
 		}
-		s.nugetJSON(w, r, map[string]any{"version": "3.0.0", "resources": []map[string]string{{"@id": root + "flat/", "@type": "PackageBaseAddress/3.0.0"}, {"@id": root + nugetPublishEndpoint, "@type": "PackagePublish/2.0.0"}, {"@id": root + "registration/", "@type": "RegistrationsBaseUrl/3.6.0"}, {"@id": root + "query", "@type": "SearchQueryService/3.0.0-rc"}}})
+		s.nugetJSON(w, r, map[string]any{"version": "3.0.0", "resources": []map[string]any{
+			{"@id": root + "flat/", "@type": "PackageBaseAddress/3.0.0"},
+			{"@id": root + nugetPublishEndpoint, "@type": "PackagePublish/2.0.0"},
+			{"@id": root + "registration/", "@type": "RegistrationsBaseUrl/3.6.0"},
+			{"@id": root + "query", "@type": []string{"SearchQueryService", "SearchQueryService/3.0.0-beta", "SearchQueryService/3.0.0-rc"}},
+		}})
 		return
 	}
 	if !strings.HasPrefix(p, "flat/") {

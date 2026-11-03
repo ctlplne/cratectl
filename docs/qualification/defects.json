@@ -940,6 +940,15 @@
       "limits": "Owned scalar accessor contract only. No package-feed, complete dependency/registration/search/unlisting, client, security or readiness qualification.",
       "latest_candidate": "ed5c02e2a37912fc066350e9895d41d538dad229",
       "replay": "evidence/2026-11-03/nuget-ed5c02e-checkpoint.json"
+    },
+    {
+      "id": "DEFECT.0085",
+      "summary": "Stock dotnet search cannot discover the RC-only NuGet query resource",
+      "first_failure": "evidence/2026-11-03/nuget-15d7828-search-failure.json",
+      "state": "local alias repair implemented; actual native stock-client replay unverified",
+      "repair": "Expose the SDK-recognized3.0.0-beta search alias while retaining base/RC aliases on the same resource. Require actual SDK service-index endpoint resolution, preserve the original search expectations and extend actual HTTP metadata semantics with44owned cases.",
+      "limits": "Both original actual client jobs fail after398broader checks. PostgreSQL integration/race and separate expanded library contracts pass. Official client source supports the alias diagnosis; no passing native search repair, full metadata/client/format or readiness verdict is claimed.",
+      "latest_candidate": "15d78288b666d99698b49f1da0cfd5a75e0b70bf"
     }
   ]
 }
