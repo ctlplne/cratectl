@@ -8,6 +8,7 @@ import tempfile
 import unittest
 
 from evidence_summary import summarize
+from test_gradle_evidence import complete_contract
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -57,6 +58,15 @@ class EvidenceSummary(unittest.TestCase):
         outside.write_text(json.dumps({'candidate': 'a' * 40, 'credential': 'private-synthetic-value'}))
         (self.root / 'evidence/escaped.json').symlink_to(outside)
         self.assertEqual(summarize(self.root, self.environment)['records'], [])
+
+    def test_gradle_export_keeps_exact_safe_fields_and_rejects_partial_pass(self):
+        report={'candidate':'a'*40,'status':'passed','gradle_contract':complete_contract(),'commands':[{'output':'private-synthetic-value'}],'failure':'private-synthetic-value'}
+        self.write('gradle.json',report)
+        record=summarize(self.root,self.environment)['records'][0]
+        self.assertEqual(record['gradle_contract'],complete_contract())
+        self.assertNotIn('private-synthetic-value',json.dumps(record))
+        self.write('gradle.json',{**report,'gradle_contract':{**complete_contract(),'phase':'snapshots'}})
+        with self.assertRaises(SystemExit):summarize(self.root,self.environment)
 
     def test_nuget_sdk_and_fixture_evidence_is_bounded_and_complete(self):
         fixtures = {key: 'b' * 64 for key in ('dependency', 'application_1', 'application_2', 'other_application_1')}

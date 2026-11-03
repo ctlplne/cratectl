@@ -1,0 +1,122 @@
+{
+  "source_parent": "09e641c455fa6bb9bafc6ef8f456701851bea357",
+  "source_dirty": true,
+  "state": "implemented but unverified by native Gradle",
+  "placement": "Actual GitHub native Linux amd64/arm64, real isolated PostgreSQL and registry. Local ARM only small Python stand-ins/build/syntax; no local Gradle distribution, JVM campaign or persistent services.",
+  "profile": "conformance.py gradle --require-clean-build; separate from baseline-format all and existing stock Maven evidence.",
+  "requirements": [
+    "Scoped nonadministrator writer publishes resource-only JAR/POM/Gradle module data; reader publication denied.",
+    "Fresh module and Maven-only transitive resolution, review and colliding tenant identities.",
+    "Checksum-validated proxy/group and dynamic range resolution, current cached-content denial and registry restart.",
+    "Two distinct native snapshot publications, revoked writer and reader rejection, other tenant retained access.",
+    "All8ordered stages and24fixture hashes required for a passing bounded safe summary.",
+    "Pinned official Gradle9.8.2distribution SHA and Temurin21.0.13+9 native release/binary identities."
+  ],
+  "checks": {
+    "build": {
+      "command": "make build BINDIR=.cache/gradle-profile-build",
+      "status": "passed"
+    },
+    "lint": {
+      "command": "make lint",
+      "status": "passed"
+    },
+    "python": {
+      "commands": [
+        "python3 -m py_compile scripts/conformance_gradle.py scripts/conformance.py scripts/ci/gradle_evidence.py",
+        "python3 scripts/test_bounded_client.py",
+        "python3 scripts/test_conformance_profile.py",
+        "python3 scripts/ci/test_gradle_evidence.py",
+        "python3 scripts/ci/test_evidence_summary.py"
+      ],
+      "status": "passed",
+      "limits": "Only Python/helper stand-ins and privacy/partial-pass contracts; no managed-client or PostgreSQL proof."
+    },
+    "workflow_shell": {
+      "commands": [
+        ".cache/actionlint-1.7.12/actionlint -color",
+        "bash -n scripts/ci/bootstrap_linux.sh",
+        "bash -n scripts/ci/install_gradle.sh"
+      ],
+      "status": "passed"
+    }
+  },
+  "process_bounds": {
+    "seconds": 120,
+    "private_output_bytes": 8388608,
+    "returned_tail_bytes": 65536,
+    "gradle_workers": 2,
+    "owned_process_group_cleanup": "SIGTERM then SIGKILL; stand-in child ignoring termination cannot survive. Timeout leaves remote mutation unconfirmed."
+  },
+  "sources": [
+    {
+      "path": "scripts/conformance.py",
+      "sha256": "df5eabe2506930e859b03abcacfa9226b189d3761bd39757fde8a5fa3aebd380"
+    },
+    {
+      "path": "scripts/conformance_gradle.py",
+      "sha256": "54eed1ac8527cd3141860fbd6c7c74a4eccac9d77509b506f3e225f5e45bc3bf"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "c62db2a42577c53574e457f5c3c8ba06c9158d48faaab08b0e9cddcee75e47ee"
+    },
+    {
+      "path": "scripts/test_bounded_client.py",
+      "sha256": "9f3c305d8568496ab6e9d4a0a7be69aa8ec23f5dd2d19d6dfd4541bb3dc98685"
+    },
+    {
+      "path": "scripts/test_conformance_profile.py",
+      "sha256": "39d0d06cf84cc2f410177f78c33a8b7a7f042f3c68bc04de07a31615b6e15372"
+    },
+    {
+      "path": "scripts/fixtures/gradle-client/settings.gradle",
+      "sha256": "73e808978f41692ff5c216f7ee0e12a29b53e09b795472be2f33ac3f54a20ac8"
+    },
+    {
+      "path": "scripts/fixtures/gradle-client/build.gradle",
+      "sha256": "a04e6524d0cc1d6798736d7f71fec58e4370ce58a21aa65877078921f9c39c85"
+    },
+    {
+      "path": "scripts/ci/bootstrap_linux.sh",
+      "sha256": "fbf18a58444ea697a6a6ec3d3163a33c05ad2ac9067accf352d8039d176b994f"
+    },
+    {
+      "path": "scripts/ci/install_gradle.sh",
+      "sha256": "9d18e78bb265b38dba1a776fe1b2ec8815d9e936897567891635c85230cc46c9"
+    },
+    {
+      "path": "scripts/ci/gradle_evidence.py",
+      "sha256": "5555b77d58011cd09a7b99dc36d57616023d21699eb2813739dda1b130069d8e"
+    },
+    {
+      "path": "scripts/ci/test_gradle_evidence.py",
+      "sha256": "f3c92d82456b66531c57f14dc30f06fd9b4760aac19c657f7b71500c61957049"
+    },
+    {
+      "path": "scripts/ci/evidence_summary.py",
+      "sha256": "e72aea726704df3042410d114283a435e3f848ec61059c9fe505b0e8a2f7541d"
+    },
+    {
+      "path": "scripts/ci/test_evidence_summary.py",
+      "sha256": "99a5f96ec0bfaf3cddbfdca1cb36de5df433e4bc4304d114de497b6bbbab2d09"
+    },
+    {
+      "path": ".github/workflows/jvm-clients.yml",
+      "sha256": "b5625d7a3f603bfd5b136bf1c6ee8de35600fb9e7aa68789f686fdaded5f1ee2"
+    },
+    {
+      "path": "docs/qualification/jvm-clients.json",
+      "sha256": "0183b0986d2ef803ccd898264b1a8908d8858dcd3f966985fc67353d0361c10a"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "5b6e458dfcf1a4c957af5c9c01244e5d526e9f8fdf72390ce3a66820b2cbdf10"
+    }
+  ],
+  "limits": [
+    "No native Gradle pass yet; preserve all failures and require full profile on both actual architectures.",
+    "Ivy/SBT, other clients/JDK/platforms, production TLS, broader variant/plugin/build, interruption/lifecycle/migration/scale and all450capability/41family requirements remain open.",
+    "Core/backend/schema are unchanged. No primary migration/binary switch, sibling/customer change, uploaded code execution or release publication."
+  ]
+}

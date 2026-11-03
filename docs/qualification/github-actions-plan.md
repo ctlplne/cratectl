@@ -443,7 +443,7 @@ only the requested journey. `fail-fast: false` preserves the other jobs' results
 if one fails; no `continue-on-error` converts a failure into acceptance. Each
 matrix entry uploads a separately named bounded safe summary. This follows
 [GitHub's matrix and failure-handling contract](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/run-job-variations).
-The matrix expansion is implemented locally and awaits its first native run.
+The matrix expansion and all five repetitions per journey pass on `09e641c`; see the exact checkpoint below.
 
 The NuGet operator test now exercises two real retained packages through
 single-package rebuild batches. It deliberately discards the browser's first
@@ -464,3 +464,45 @@ library comparison runs when its code/fixture surfaces change, and otherwise
 its earlier exact-source evidence remains separate. Derive each candidate's
 expected job set from the actual triggered/authorized workflows; never relabel
 an absent or skipped lane as passing.
+
+## Native JVM client expansion
+
+A separate `jvm-clients.yml` lane now places Gradle 9.8.2 and Temurin
+21.0.13+9 publication/consumption on actual Linux x86 and ARM runners. The
+Gradle distribution is pinned by the official SHA-256 in `jvm-clients.json`;
+bootstrap downloads it only in an isolated GitHub-hosted runner. This Mac runs
+small Python stand-ins and syntax/build checks. No local Gradle distribution,
+JVM client campaign or PostgreSQL service is installed or started for this work.
+The JVM lane avoids unrelated npm, dotnet and OCI tooling installation.
+
+The real client must publish resource-only JAR/POM/module data with a scoped
+writer, resolve exact transitive bytes through Gradle and Maven metadata, obey
+review and tenant boundaries, traverse proxy/groups and dynamic ranges, recover
+from current cached-content denial and actual registry restart, observe two
+snapshot publications, and reject revoked writer/reader credentials. Every
+consumer has a fresh client cache and one declared cratectl source. Uploaded
+packages contain no build scripts, classes or plugins; only owned fixture build
+rules and bundled Gradle plugins run. All eight ordered stages and all 24
+fixture hashes are mandatory for a passing safe summary. The profile and lane
+are implemented but await their first native results.
+
+Owned client process groups have time/output limits and are stopped even if a
+descendant ignores termination. A timed-out publication is unconfirmed. Safe
+CI export retains fixed diagnostic codes and exact Gradle/JDK/fixture hashes;
+it rejects arbitrary client output and a success-shaped partial profile. A
+local stand-in regression checks cancellation of an owned child that ignores
+SIGTERM, output limits and nonzero exits. Separate regressions reject unknown
+conformance profiles/flags before any database access.
+
+Ivy and SBT remain independent required clients, alongside full variant/build,
+TLS, native platform, lifecycle, migration, fault and scale coverage. Their
+absence is recorded rather than inferred from Maven or Gradle results.
+
+The prior `09e641c` campaign now passes all 16 actually observed jobs: main 9,
+OCI 2, upgrades 2 and focused browser 3. Each focused entry passes five fresh
+real PostgreSQL/Chromium repetitions; full x86 Chromium passes all 15 workflows.
+Ten unchanged summaries retain exact identities in
+[the checkpoint](../../evidence/2026-11-03/github-09e641c-checkpoint.json).
+The OCI run was initially unobserved and later confirmed through the same
+exact-commit listing; it was not restarted. Earlier library evidence remains
+on its own exact `080c312` source. This milestone predates the new JVM profile.

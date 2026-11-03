@@ -1,10 +1,14 @@
 # SPDX-License-Identifier: BUSL-1.1
 """Real local service + PostgreSQL + stock clients; all credentials stay private."""
-import base64,csv,datetime,hashlib,io,json,os,platform,shutil,subprocess,sys,tarfile,time,urllib.error,urllib.parse,urllib.request,uuid,zipfile
+import argparse,base64,csv,datetime,hashlib,io,json,os,platform,shutil,subprocess,sys,tarfile,time,urllib.error,urllib.parse,urllib.request,uuid,zipfile
 from concurrent.futures import ThreadPoolExecutor
 import xml.etree.ElementTree as XML
 from pathlib import Path
 from qualification_contract import candidate_binary_directory, candidate_artifact_names
+parser=argparse.ArgumentParser(description='Baseline format campaign or an explicitly selected extended stock-client profile.')
+parser.add_argument('profile',nargs='?',default='all',choices=['all','generic','npm','npmproxy','pypi','pypiproxy','oci','ociproxy','maven','proxy','sourceconfig','nuget','gradle'])
+parser.add_argument('--require-clean-build',action='store_true')
+args=parser.parse_args()
 BIN = candidate_binary_directory()
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT)
 BASE='http://127.0.0.1:38443';RUN=uuid.uuid4().hex[:10]
@@ -50,7 +54,7 @@ def repository(name,fmt,token='admin',review=False,**options):
 
 def start():
  global proc,logfile
- credentials=PRIVATE/'upstreams.json';credentials.write_text(json.dumps({tenants['admin']+'/oci-up':{'value':tokens['origin'],'allowed_url':BASE+'/v2/up-oci/'},tenants['admin']+'/fixture':{'value':tokens['origin'],'allowed_url':BASE+'/r/source/'},tenants['admin']+'/self':{'value':tokens['reader'],'allowed_url':BASE+'/r/java/'},tenants['admin']+'/bad-fixture':{'value':tokens['origin'],'allowed_url':BASE+'/r/bad-source/'},tenants['admin']+'/npm-fixture':{'value':tokens['origin'],'allowed_url':BASE+'/npm/up-npm/'},tenants['admin']+'/python-up':{'value':tokens['origin'],'allowed_url':BASE+'/pypi/up-python/'},tenants['admin']+'/npm-meta':{'value':tokens['npm-meta-origin'],'allowed_url':BASE+'/r/npm-meta/'},tenants['admin']+'/npm-files':{'value':tokens['npm-files-origin'],'allowed_url':BASE+'/r/npm-files/'}}));credentials.chmod(0o600)
+ credentials=PRIVATE/'upstreams.json';credentials.write_text(json.dumps({tenants['admin']+'/oci-up':{'value':tokens['origin'],'allowed_url':BASE+'/v2/up-oci/'},tenants['admin']+'/fixture':{'value':tokens['origin'],'allowed_url':BASE+'/r/source/'},tenants['admin']+'/self':{'value':tokens['reader'],'allowed_url':BASE+'/r/java/'},tenants['admin']+'/gradle-self':{'value':tokens['reader'],'allowed_url':BASE+'/r/gradle-hosted/'},tenants['admin']+'/bad-fixture':{'value':tokens['origin'],'allowed_url':BASE+'/r/bad-source/'},tenants['admin']+'/npm-fixture':{'value':tokens['origin'],'allowed_url':BASE+'/npm/up-npm/'},tenants['admin']+'/python-up':{'value':tokens['origin'],'allowed_url':BASE+'/pypi/up-python/'},tenants['admin']+'/npm-meta':{'value':tokens['npm-meta-origin'],'allowed_url':BASE+'/r/npm-meta/'},tenants['admin']+'/npm-files':{'value':tokens['npm-files-origin'],'allowed_url':BASE+'/r/npm-files/'}}));credentials.chmod(0o600)
  if 'config-a' in tokens:
   bindings=json.loads(credentials.read_text())
   for side in ['a','b']:
@@ -817,17 +821,21 @@ def build_identity(name):
    key,value=parts[1].split('=',1);settings[key]=value
  return {'go_version':output.splitlines()[0].split()[-1],'settings':settings}
 
+def gradle():
+ from conformance_gradle import hosted
+ hosted(sys.modules[__name__])
+
 def nuget():
  from conformance_nuget_hosted import hosted
  hosted(sys.modules[__name__])
 
-source_scope=['cmd','internal','scripts','api','go.mod','go.sum','Makefile']
+source_scope=['cmd','internal','scripts','api','go.mod','go.sum','Makefile','docs/qualification/jvm-clients.json']
 result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':source_scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*source_scope],text=True).strip()),'artifact_digests':{name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in candidate_artifact_names()},'build_identity':{name:build_identity(name) for name in candidate_artifact_names()},'host':platform.platform(),'database_profile':database_profile,'topology':f'native {platform.platform()} server, PostgreSQL 16.15 {database_profile}, filesystem bytes, HTTP loopback only','checks':checks,'commands':commands,'limitations':['Not full format conformance or parity.','Proxy/group proof covers generic, Maven and early npm journeys; no complete mode, migration, HA, scale or scanner qualification.','Client fixture code executes only in the explicitly owned test consumer.','No claim of a separate-machine install.']}
 result['build_source_matches_candidate']=all(meta['settings'].get('vcs.revision')==result['candidate'] and meta['settings'].get('vcs.modified')=='false' for meta in result['build_identity'].values())
 tenants={}
 try:
- mode=sys.argv[1] if len(sys.argv)>1 else 'all'
- if '--require-clean-build' in sys.argv[2:]:
+ mode=args.profile
+ if args.require_clean_build:
   check('qualification source is clean',not result['source_dirty'])
   check('qualification binaries embed exact clean source commit',result['build_source_matches_candidate'])
  for label,role in [('admin','admin'),('reader','reader'),('other','admin'),('origin','reader'),('npm-meta-origin','reader'),('npm-files-origin','reader')]+([('config-a','reader'),('config-b','reader')]if mode in ['all','sourceconfig']else[]):
@@ -835,7 +843,8 @@ try:
   run([BIN/'cratectld','provision','--tenant',tenant,'--actor',label,'--role',role,'--token-file',token_file]);tokens[label]=token_file.read_text().strip()
  for label,lifetime in [('expired','1ms'),('revocable','1h')]:
   token_file=PRIVATE/(label+'.token');run([BIN/'cratectld','provision','--tenant',tenants['admin'],'--actor',label,'--role','reader','--expires-in',lifetime,'--token-file',token_file]);tokens[label]=token_file.read_text().strip()
- start();mode=sys.argv[1] if len(sys.argv)>1 else 'all'
+ start()
+ if mode=='gradle':gradle() # Extended stock-client profile; baseline all retains its existing format contract.
  for name,fn in [('generic',generic),('npm',npm),('npmproxy',npmproxy),('pypi',pypi),('pypiproxy',pypiproxy),('oci',oci),('ociproxy',ociproxy),('maven',maven),('proxy',proxy),('sourceconfig',sourceconfig),('nuget',nuget)]:
   if mode in ('all',name):fn()
  result['status']='passed';print(f'PASS: {len(checks)} assertions; native mode {mode}')

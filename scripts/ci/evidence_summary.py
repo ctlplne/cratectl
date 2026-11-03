@@ -11,6 +11,7 @@ import re
 import subprocess
 
 from native_client_diagnostics import CODES as NATIVE_CLIENT_DIAGNOSTIC_CODES
+from gradle_evidence import safe_gradle_contract
 
 
 def summarize(root, environment):
@@ -209,6 +210,11 @@ def summarize(root, environment):
                         if not isinstance(item['paths'], list) or len(item['paths']) > 64 or any(not isinstance(p, str) or len(p) > 128 or not re.fullmatch(pattern, p) for p in item['paths']):
                             raise SystemExit('NuGet HTTP diagnostic paths must use the fixed metadata schema')
                     entry['nuget_metadata_diagnostics'] = diagnostics
+        if 'gradle_contract' in report:
+            try:
+                entry['gradle_contract'] = safe_gradle_contract(report['gradle_contract'], status)
+            except ValueError as error:
+                raise SystemExit(str(error)) from error
         for key in ('baseline_version', 'expected_schema'):
             if key in report:
                 if type(report[key]) is not int or not 1 <= report[key] <= 1000:

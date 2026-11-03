@@ -105,7 +105,9 @@ end, then **Check again from beginning** to include earlier concurrent publishes
 Closing between confirmed batches preserves completed work. If a response is
 lost, use **Retry same request**; save its displayed request identity and body
 before closing without confirmation. The console keeps no durable browser copy.
-This new console maintenance journey awaits its native GitHub browser replay.
+This console maintenance journey passes in the full native suite and five fresh
+GitHub PostgreSQL/Chromium repetitions on
+[09e641c](../../evidence/2026-11-03/github-09e641c-checkpoint.json).
 
 An administrator previews a batch by POSTing this JSON to
 `/api/v1/repositories/REPOSITORY/nuget/reindex` with their normal Bearer credential:

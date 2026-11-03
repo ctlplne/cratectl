@@ -1,0 +1,63 @@
+// SPDX-License-Identifier: BUSL-1.1
+// Owned client fixture only. Uploaded packages contain resources, no classes,
+// build scripts or plugins. No resolved package code is loaded or executed.
+import org.gradle.authentication.http.BasicAuthentication
+
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+group = 'dev.cratectl.gradleproof'
+version = providers.gradleProperty('publicationVersion').getOrElse('1.0.0')
+def registry = providers.gradleProperty('repositoryURL').get()
+def secret = file(providers.gradleProperty('credentialFile').get()).getText('UTF-8').trim()
+def metadata = providers.gradleProperty('metadataMode').getOrElse('default')
+
+repositories {
+    maven {
+        url = uri(registry)
+        allowInsecureProtocol = true // Isolated, explicit loopback-only test profile.
+        credentials { username = 'token'; password = secret }
+        authentication { basic(BasicAuthentication) }
+        if (metadata == 'module') {
+            metadataSources { gradleMetadata() }
+        } else if (metadata == 'pom') {
+            metadataSources { mavenPom(); ignoreGradleMetadataRedirection() }
+        }
+    }
+}
+
+dependencies {
+    if (providers.gradleProperty('publishDependency').getOrElse('false') == 'true') {
+        api 'dev.cratectl.gradleproof:gradle-dep:1.0.0'
+    }
+    if (providers.gradleProperty('consumeVersion').isPresent()) {
+        implementation "dev.cratectl.gradleproof:gradle-app:${providers.gradleProperty('consumeVersion').get()}"
+    }
+}
+
+tasks.withType(AbstractArchiveTask).configureEach {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) { from components.java }
+    }
+    repositories {
+        maven {
+            name = 'cratectl'
+            url = uri(providers.gradleProperty('publicationURL').getOrElse(registry))
+            allowInsecureProtocol = true
+            credentials { username = 'token'; password = secret }
+            authentication { basic(BasicAuthentication) }
+        }
+    }
+}
+
+tasks.register('resolveProof', Sync) {
+    from configurations.runtimeClasspath
+    into layout.buildDirectory.dir('proof')
+}

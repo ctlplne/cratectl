@@ -6,7 +6,31 @@ GitHub native qualification and moves historical controlled-upgrade journeys
 off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
-Latest completed 15-job milestone accepted on clean source
+Latest named milestone accepted on clean source
+`09e641c455fa6bb9bafc6ef8f456701851bea357`: all 16 observed jobs pass (main 9,
+OCI 2, upgrades 2 and focused browser 3). Both native PostgreSQL/race and broader
+645-check client campaigns pass, including 56 actual SDK HTTP metadata cases
+before/after restart. Full x86 Chromium passes all 15 workflows with zero bad
+results. Repair, retention and NuGet each pass five additional fresh real
+database/browser repetitions. The NuGet maintenance proof includes two-package
+batch cursors, a lost response after commit, identical-body/key original-receipt
+replay, exact retained bytes, explicit repeat traversal and reader denial.
+Both OCI campaigns pass 214 checks; both upgrade campaigns rebuild 10 pinned
+servers and pass 15 reports. Ten safe summaries retain exact identities in
+`evidence/2026-11-03/github-09e641c-checkpoint.json`. Earlier SDK library evidence
+remains on its separate exact `080c312` source. No Gradle result is included.
+
+The new Gradle/JDK profile and native Linux x86/ARM workflow are implemented but
+unverified. Real scoped-writer publication, module/POM transitive resolution,
+review/tenant boundaries, proxy/group/range resolution, current policy, restart,
+two snapshots and credential revocation must all pass with 24 fixture digests.
+Client time/output/process-group bounds and safe diagnostic/stage export have
+local stand-in regressions. Unknown conformance profiles/flags now fail before
+database access. Local build/lint, Python and workflow/shell syntax checks pass;
+no Gradle distribution/client or persistent database runs on this Mac. See
+`evidence/2026-11-03/gradle-client-development.json`.
+
+Earlier completed 15-job milestone accepted on clean source
 `080c3123d9fb58032cb01754b535638f8d7a9884`: main9, OCI2, upgrades2 and actual
 SDK libraries2 all pass. Both native PostgreSQL/race and broader645check client
 campaigns pass, including stock search and56actual SDK HTTP metadata cases
@@ -19,14 +43,14 @@ summaries retain exact identities in
 `evidence/2026-11-03/github-080c312-checkpoint.json`. This source predates the new
 console maintenance flow described below.
 
-Administrator console discovery rebuild is implemented but unverified: bounded
+Administrator console discovery rebuild now has the named `09e641c` proof: bounded
 preview, exact retry identity, confirmed batch receipts/cursors and explicit
 repeat from the beginning. The new real PostgreSQL/Chromium regression loses
 one response after commit and requires an original-result replay with identical
 body/key, retained bytes and reader denial. Push-triggered focused qualification
 now selects repair/retention/NuGet, five fresh database repetitions each, instead
 of implicitly testing repair alone. Local build/unit/race/lint, reproducible
-assets and workflow/syntax checks pass. Native browser/matrix replay is pending.
+assets and workflow/syntax checks pass. The native browser/matrix replay passes on `09e641c` above.
 See `evidence/2026-11-03/nuget-catalog-console-development.json`.
 
 Earlier completed 15-job milestone accepted on clean source

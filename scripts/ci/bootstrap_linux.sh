@@ -18,16 +18,18 @@ root="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$root"
 docker inspect --type container --format '{{json .NetworkSettings.Ports}}' "$CRATECTL_CI_POSTGRES_CONTAINER_ID" | python3 scripts/ci/check_postgres_binding.py
 client_set="${CRATECTL_CI_CLIENT_SET:-all}"
-case "$client_set" in all|oci) ;; *) echo 'Unknown CI client set' >&2; exit 1 ;; esac
+case "$client_set" in all|oci|jvm) ;; *) echo 'Unknown CI client set' >&2; exit 1 ;; esac
 architecture="$(dpkg --print-architecture)"
 umask 077
 mkdir -p .cache/go/bin .cache/clients/bin .cache/bin .private
 chmod 700 .private
 ln -s "$(command -v go)" .cache/go/bin/go
 ln -s "$(command -v python)" .cache/clients/bin/python
-if test "$client_set" = all; then
+if test "$client_set" = all || test "$client_set" = jvm; then
   mkdir -p .cache/jdk-21.0.13+9/Contents
   ln -s "$JAVA_HOME" .cache/jdk-21.0.13+9/Contents/Home
+fi
+if test "$client_set" = all; then
 
   case "$architecture" in
     amd64) oras_sha=66fb0ad7206f3f6fa77ed5b552049d364ccf4b50b1684554f731f76302b52ca0 ;;

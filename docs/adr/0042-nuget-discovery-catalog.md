@@ -119,5 +119,6 @@ result. No token or operation is persisted in browser storage. Operators save
 an unconfirmed request identity/body before closing, and use normal CLI/API
 replay later. A preview does not freeze the inventory; apply reads current
 state. Completed batches remain independently durable, and traversal repeats
-from the beginning to catch concurrent earlier insertions. The new UI and its
-real commit/response-loss/replay browser test await native GitHub execution.
+from the beginning to catch concurrent earlier insertions. The UI and its real commit/response-loss/replay test pass in the full suite
+and five fresh GitHub PostgreSQL/Chromium repetitions on `09e641c`; see
+`evidence/2026-11-03/github-09e641c-checkpoint.json`.

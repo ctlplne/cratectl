@@ -27,6 +27,9 @@ lint:
 	python3 scripts/ci/test_postgres_binding.py
 	python3 scripts/test_oci_client_contract.py
 	python3 scripts/test_nuget_feed_cases.py
+	python3 scripts/test_bounded_client.py
+	python3 scripts/test_conformance_profile.py
+	python3 scripts/ci/test_gradle_evidence.py
 	python3 scripts/test_ci_native_diagnostics.py
 console:
 	python3 scripts/build_console.py

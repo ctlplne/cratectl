@@ -73,6 +73,10 @@ metadata signatures, nonunique snapshots, recursive groups, complete lifecycle,
 large-directory/multi-host performance, migration or release readiness. These
 remain required in the format and qualification ledgers.
 
+The separate [Gradle client profile](gradle.md) now implements native publication,
+module/POM resolution and recovery cases for GitHub execution. Its first native
+result is pending; the existing Maven evidence remains separate.
+
 Protocol references: [Apache metadata](https://maven.apache.org/repositories/metadata.html),
 [metadata model](https://maven.apache.org/ref/3-LATEST/maven-repository-metadata/repository-metadata.html)
 and [layout](https://maven.apache.org/repositories/layout.html).
