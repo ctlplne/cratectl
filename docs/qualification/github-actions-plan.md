@@ -307,8 +307,8 @@ tombstones and atomic event/outbox rollback. Both stock dotnet campaigns must
 run real delete/retry/reader-denial and fresh pinned dependency restores while
 unlisted, verify durable state across actual registry restart, then native HTTP
 POST relist and current-denial enforcement. Local unit/race stand-ins and tagged
-compilation do not count as database/client passes. Registration/search hiding
-remains required product work and must be covered when those resources exist.
+compilation do not count as database/client passes. Search exclusion and retained registration metadata with listed:false
+remain required product work and must be covered when those resources exist.
 
 The83ca290runtime campaign now passes all13selected jobs: main9/OCI2/upgrades2.
 Both actual PostgreSQL/race gates pass the new listing regression; both broader
@@ -327,3 +327,26 @@ independent floating preference. Existing1129versions/11Nuspec/4archives/63516ID
 build/unit/race/lint/fuzz and Go data-shape checks pass; C#compilation and actual
 native matching remain unverified. This is a prerequisite for complete typed
 metadata and registration/search, which remain required product work.
+
+Both actual e7c0419 native SDK jobs now pass all892range/candidate observations
+and every earlier mandatory contract. Exact identities are retained in [the
+scoped library checkpoint](../../evidence/2026-11-03/nuget-e7c0419-checkpoint.json).
+Other e7c0419 workflow families are separately tracked.
+
+Plan correction: search omits unlisted versions; registration retains permitted
+version/dependency metadata with listed:false, and flat pinned consumption
+continues. Earlier wording that implied both resources should hide them was
+incorrect. The [registration specification](https://learn.microsoft.com/en-us/nuget/api/registration-base-url-resource)
+and [search specification](https://learn.microsoft.com/en-us/nuget/api/search-query-service-resource)
+define the separate behavior. No implemented registration/search resource or
+accepted runtime result depended on the incorrect wording.
+
+The next native feed journeys must cover typed dependency/framework groups,
+original range declarations and their parsed floors, deterministic bounded
+projections for old and newly published packages, registration listing flags,
+search exclusion/pagination/current authorization, SemVer resource profiles and
+required gzip transport. Do not load every raw manifest to answer search or
+silently omit old packages lacking a new projection. Test actual native SDK
+consumption and search on both Linux architectures, including fresh pinned
+restores after unlist/relist and current policy/grant revocation. Full format,
+other clients/platforms and every original requirement remain required.

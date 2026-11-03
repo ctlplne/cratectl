@@ -41,9 +41,10 @@ restart. Exact source, native binaries, SDK and fixture hashes are retained in
 `evidence/2026-11-03/nuget-83ca290-checkpoint.json`. This is distinct from complete
 discovery and lifecycle qualification.
 
-This implements the native mutation and durable listing state. Registration and
-search remain required; their future discovery projections must omit unlisted
-versions. Administrative inventory must still expose retained state to authorized
+This implements the native mutation and durable listing state. Search must omit
+unlisted versions. Registration must retain their permitted version/dependency
+metadata with `listed: false`, so pinned consumers can still resolve dependencies.
+Both resources remain required. Administrative inventory must expose retained state to authorized
 operators. This change does not claim complete discovery, metadata, lifecycle,
 signature, symbol, proxy/group, TLS, platform, format or release readiness. All
 original GOAL.md scope remains required.
@@ -53,3 +54,4 @@ References:
 - [NuGet push/delete/relist resource](https://learn.microsoft.com/en-us/nuget/api/package-publish-resource)
 - [Stock dotnet delete command](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-delete)
 - [Search excludes unlisted packages](https://learn.microsoft.com/en-us/nuget/api/search-query-service-resource)
+- [Registration retains listing state and package metadata](https://learn.microsoft.com/en-us/nuget/api/registration-base-url-resource)

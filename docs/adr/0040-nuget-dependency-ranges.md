@@ -35,7 +35,10 @@ floating-subset membership. It preserves all earlier version/ID/order/scalar/
 Nuspec/archive contracts. Its corpus stays within the existing 4,096-case and
 2 MiB input ceilings, with bounded first-mismatch examples. Unit regressions,
 race checks and 42,435 local fuzz executions pass; actual managed compilation
-and native comparison remain unverified.
+and native comparison were initially unverified. Both actual native Linux SDKs
+now match all 892 owned range/candidate observations on e7c0419, alongside every
+earlier mandatory library contract. Exact source/library/helper/fixture identities
+and limits are in `evidence/2026-11-03/nuget-e7c0419-checkpoint.json`.
 
 Typed Nuspec dependency/framework groups and license semantics, complete
 registration/search with unlisted and SemVer filters, native lifecycle discovery,

@@ -69,8 +69,9 @@ The native relist operation is an empty authenticated `POST` to
 `/nuget/REPOSITORY/api/v2/package/PACKAGE_ID/VERSION`. Repeated unlist/relist requests
 succeed. An active hold blocks a listing transition; a retired reference must go
 through the common verified restore operation. Relisting cannot resurrect it.
-Registration/search remain unfinished; their discovery projections must exclude
-unlisted versions while the administrative inventory continues to expose retained
+Registration/search remain unfinished. Search must omit unlisted versions;
+registration must retain their permitted dependency metadata with `listed: false`
+for pinned consumers. The administrative inventory continues to expose retained
 state to authorized operators.
 
 Operator budgets are `--nuget-upload-bytes` (64 MiB default, maximum 1 GiB),

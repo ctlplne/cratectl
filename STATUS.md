@@ -25,8 +25,9 @@ repair/NuGet/retention job is included. See
 Bounded dependency intervals and independent floating preferences are implemented
 for complete metadata work. Local build/unit/race/lint and 42,435 fuzz executions
 pass. The oracle adds 892 owned range/candidate observations, preserving all
-earlier mandatory contracts. Actual managed compilation/native SDK matching is
-unverified. Typed dependency/framework/license metadata, registration/search and
+earlier mandatory contracts. Both actual native Linux SDKs now match all 892
+observations on clean e7c0419, with no mismatches. See
+`evidence/2026-11-03/nuget-e7c0419-checkpoint.json`. Typed dependency/framework/license metadata, registration/search and
 full dependency resolution remain required. See ADR0040 and
 `evidence/2026-11-03/nuget-ranges-development.json`.
 
