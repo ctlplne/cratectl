@@ -367,3 +367,12 @@ toAll, so the valid owned corpus does not claim those Go rejections are native.
 Shared literal-attribute normalization must preserve references, text/CDATA and
 original bytes. All earlier contracts and native source/unit/race/fuzz remain
 mandatory; managed compilation and actual49document matching are unverified.
+
+Both actual17ded1cSDK jobs compile and pass all49original/projected Nuspec
+semantic comparisons and all earlier mandatory contracts. Original/projection
+fixture hashes and native source/helper/Packaging/Frameworks identities are
+retained in [the scoped library checkpoint](../../evidence/2026-11-03/nuget-17ded1c-checkpoint.json).
+Other current workflow families remain separately tracked. This does not prove
+that simply copying the raw dependency list into registration JSON preserves
+client semantics: JSON feed interpretation, duplicate handling, complete typed
+metadata and actual client discovery/resolution must be tested separately.

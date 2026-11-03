@@ -46,7 +46,10 @@ Go reader implements SDK framework canonicalization or duplicate-set rules.
 The 49 owned valid documents include UTF8/UTF16, namespace/case/scope changes,
 legacy/group precedence, empty/duplicate groups and dependencies, raw floating
 floors, build metadata, framework forms and literal/reference attribute whitespace.
-Managed compilation and native comparison remain unverified for this source.
+Both actual native Linux SDK jobs now compile and match all 49 semantic
+round-trips on clean 17ded1c, alongside every earlier mandatory contract. Exact
+source/helper/library/fixture identities and scope limits are retained in
+`evidence/2026-11-03/nuget-17ded1c-checkpoint.json`.
 
 Local build/unit/race/lint checks pass, along with bounded fuzz campaigns for
 dependencies, attribute normalization and the existing identity/scalar/archive

@@ -22,8 +22,11 @@ Typed dependency declaration selection and shared XML attribute normalization
 are implemented for complete metadata work. Local build/unit/race/lint and five
 bounded fuzz campaigns pass. The owned SDK oracle now compares 49 original
 documents with Go-projected dependency XML, including framework interpretation,
-range floors/build metadata and asset flags. Actual managed compilation/native
-semantic comparison remains unverified. Go's explicit admission guard rejects
+range floors/build metadata and asset flags. Both actual native SDK jobs now
+match all 49 original/projected semantic observations on clean 17ded1c, with no
+mismatch and unchanged original/projection fixture hashes. Exact Packaging and
+Frameworks versions/hashes are retained in
+`evidence/2026-11-03/nuget-17ded1c-checkpoint.json`. Go's explicit admission guard rejects
 malformed nonempty active ranges; the lenient SDK default can treat them as All.
 The valid owned corpus does not misattribute that difference to SDK rejection.
 See ADR0041 and `evidence/2026-11-03/nuget-dependencies-development.json`.
