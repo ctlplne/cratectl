@@ -1524,6 +1524,51 @@ paths:
         '413': {description: Source exceeds the configured object limit}
         '415': {description: Use application/octet-stream}
         '503': {description: "Bounded upload lane, storage identity/layout, schema or database unavailable"}
+  /api/v1/repositories/{repository}/nuget/reindex:
+    post:
+      summary: Preview or rebuild a bounded hosted NuGet discovery catalog batch
+      description: Administrator only. Derives discovery metadata from retained validated manifests. Preview writes nothing. Applied batches preserve bytes and listing and commit their event and retry receipt atomically. Follow after_path while more is true; repeat from the beginning for concurrent earlier insertions. A failed batch has no partial changes.
+      parameters:
+        - {$ref: '#/components/parameters/Repository'}
+        - in: header
+          name: Idempotency-Key
+          required: false
+          description: Required for an applied batch; reuse only with the identical request.
+          schema: {type: string, minLength: 8, maxLength: 128}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [limit, reason]
+              properties:
+                after_path: {type: string, maxLength: 2048, default: ''}
+                limit: {type: integer, minimum: 1, maximum: 1000}
+                dry_run: {type: boolean, default: false}
+                reason: {type: string, minLength: 1, maxLength: 1024, description: At most 1024 UTF8 bytes without control characters}
+      responses:
+        '200':
+          description: Complete bounded preview or committed batch receipt
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  repository: {type: string}
+                  after_path: {type: string}
+                  more: {type: boolean}
+                  examined: {type: integer}
+                  changed: {type: integer}
+                  dry_run: {type: boolean}
+                  retained_bytes: {type: boolean}
+                  reason: {type: string}
+        '400': {description: Invalid batch or missing retry key}
+        '401': {description: Missing or revoked credential}
+        '403': {description: Administrator authority required}
+        '409': {description: Retry conflict or inconsistent retained package}
+        '503': {description: Metadata budget or durable queue exhausted; batch rolled back}
   /api/v1/repositories/{repository}/configuration:
     parameters:
       - {$ref: '#/components/parameters/Repository'}

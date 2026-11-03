@@ -206,6 +206,8 @@ func respondErr(w http.ResponseWriter, e error) {
 		fail(w, 409, "python_metadata_unvalidated", "Re-upload the exact retained distribution through a writer to validate its archive identity; do not approve unverified metadata.")
 	case errors.Is(e, store.ErrNuGetUnvalidated):
 		fail(w, 409, "nuget_metadata_unvalidated", "Stop consuming this reference and inspect its retained package and validated manifest binding. Approving a digest does not repair inconsistent metadata.")
+	case errors.Is(e, store.ErrNuGetCatalogRequired):
+		fail(w, 503, "nuget_catalog_rebuild_required", "Ask an administrator to preview and rebuild bounded batches at /api/v1/repositories/REPOSITORY/nuget/reindex, then retry discovery.")
 	case errors.Is(e, store.ErrMetadataLimit):
 		fail(w, 503, "metadata_budget_exceeded", "Ask the operator to inspect native index or graph size and its metadata budget; no partial result was returned.")
 	case errors.Is(e, store.ErrBusy):
@@ -350,6 +352,9 @@ func readJSON(w http.ResponseWriter, r *http.Request, v any, limit int64) bool {
 }
 func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Identity) {
 	p := strings.TrimPrefix(r.URL.Path, "/api/v1/")
+	if s.nugetCatalogManagement(w, r, i, p) {
+		return
+	}
 	if s.holdMatterManagement(w, r, i, p) {
 		return
 	}

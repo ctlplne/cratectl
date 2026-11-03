@@ -114,7 +114,8 @@ class Program
                 var leftOK = NuGetVersion.TryParse(pair[0], out var left);
                 var rightOK = NuGetVersion.TryParse(pair[1], out var right);
                 bool valid = leftOK && rightOK;
-                return new { valid, order = valid ? Math.Sign(VersionComparer.VersionRelease.Compare(left, right)) : 0 };
+                int order = valid ? Math.Sign(VersionComparer.VersionRelease.Compare(left, right)) : 0;
+                return new { valid, order, sort_order = order };
             }).ToArray();
             Console.WriteLine(JsonSerializer.Serialize(new {
                 os = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "linux" : "other",
@@ -126,7 +127,7 @@ class Program
         }
         if (args.Length == 1 && args[0] == "properties")
         {
-            var names = new[] { "id", "version", "authors", "owners", "description", "title", "summary", "tags", "projecturl", "iconurl", "licenseurl", "language", "copyright", "releasenotes", "license", "readme", "icon" };
+            var names = new[] { "id", "version", "authors", "owners", "description", "title", "summary", "tags", "projecturl", "iconurl", "licenseurl", "language", "copyright", "releasenotes", "license", "readme", "icon", "requirelicenseacceptance" };
             var properties = values.Select(value => {
                 try
                 {

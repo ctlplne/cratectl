@@ -33,7 +33,7 @@ func (s *Store) SetNuGetListing(ctx context.Context, i Identity, repo, id, versi
 		}
 		a := Artifact{Repository: repo, Path: path}
 		// Bound the returned metadata in SQL, including inconsistent records.
-		e = tx.QueryRow(ctx, `SELECT left(digest,65),size,left(media_type,129),CASE WHEN octet_length(metadata::text)<=$3 THEN metadata ELSE '{}'::jsonb END FROM cratectl.artifacts WHERE repository=$1 AND path=$2`, repo, path, 2*nuget.MaxNuspecBytes+8192).Scan(&a.Digest, &a.Size, &a.MediaType, &a.Metadata)
+		e = tx.QueryRow(ctx, `SELECT left(digest,65),size,left(media_type,129),CASE WHEN octet_length(metadata::text)<=$3 THEN metadata ELSE '{}'::jsonb END FROM cratectl.artifacts WHERE repository=$1 AND path=$2`, repo, path, MaxNuGetMetadataBytes).Scan(&a.Digest, &a.Size, &a.MediaType, &a.Metadata)
 		if errors.Is(e, pgx.ErrNoRows) {
 			return nil, 0, ErrNotFound
 		}

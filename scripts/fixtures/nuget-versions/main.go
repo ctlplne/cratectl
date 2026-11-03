@@ -11,6 +11,7 @@ import (
 	"os"
 	"runtime"
 	"runtime/debug"
+	"strings"
 	"unicode"
 
 	"ctlplne.dev/cratectl/internal/nuget"
@@ -22,8 +23,9 @@ type row struct {
 }
 
 type comparisonRow struct {
-	Valid bool `json:"valid"`
-	Order int  `json:"order"`
+	Valid     bool `json:"valid"`
+	Order     int  `json:"order"`
+	SortOrder int  `json:"sort_order"`
 }
 
 type propertyRow struct {
@@ -112,7 +114,13 @@ func main() {
 				continue
 			}
 			order, e := nuget.CompareVersions(pair[0], pair[1])
-			rows = append(rows, comparisonRow{Valid: e == nil, Order: order})
+			left, le := nuget.VersionOrderKey(pair[0])
+			right, re := nuget.VersionOrderKey(pair[1])
+			sorted := 0
+			if le == nil && re == nil {
+				sorted = strings.Compare(left, right)
+			}
+			rows = append(rows, comparisonRow{Valid: e == nil, Order: order, SortOrder: sorted})
 		}
 		emit(rows)
 		return

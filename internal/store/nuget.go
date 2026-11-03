@@ -15,19 +15,22 @@ import (
 
 var ErrNuGetUnvalidated = errors.New("NuGet archive identity is missing or inconsistent")
 
+const MaxNuGetMetadataBytes = 4*nuget.MaxNuspecBytes + 32768
+
 // NuGetPackage binds the original manifest bytes to one immutable parent nupkg.
 // Validated denotes bounded archive inspection, not signature or scan approval.
 type NuGetPackage struct {
-	ID           string `json:"id"`
-	IDKey        string `json:"id_key"`
-	IDProfile    string `json:"id_profile"`
-	RawVersion   string `json:"raw_version"`
-	VersionKey   string `json:"version_key"`
-	NuspecPath   string `json:"nuspec_path"`
-	Nuspec       []byte `json:"nuspec"`
-	NuspecSHA256 string `json:"nuspec_sha256"`
-	Validated    bool   `json:"archive_validated"`
-	Listed       *bool  `json:"listed,omitempty"`
+	ID           string         `json:"id"`
+	IDKey        string         `json:"id_key"`
+	IDProfile    string         `json:"id_profile"`
+	RawVersion   string         `json:"raw_version"`
+	VersionKey   string         `json:"version_key"`
+	NuspecPath   string         `json:"nuspec_path"`
+	Nuspec       []byte         `json:"nuspec"`
+	NuspecSHA256 string         `json:"nuspec_sha256"`
+	Validated    bool           `json:"archive_validated"`
+	Listed       *bool          `json:"listed,omitempty"`
+	Catalog      *nuget.Catalog `json:"catalog,omitempty"`
 }
 
 // Existing immutable packages predate listing state and are listed by default.
@@ -42,7 +45,7 @@ func NuGetPath(id, version string) string {
 // It does not replace the intake caller's inspection of the durable parent.
 func ValidateNuGetArtifact(ctx context.Context, a Artifact) (NuGetPackage, error) {
 	var m NuGetPackage
-	if len(a.Metadata) > 2*nuget.MaxNuspecBytes+8192 || json.Unmarshal(a.Metadata, &m) != nil || !m.Validated || m.IDProfile != nuget.IDKeyProfile || len(m.Nuspec) == 0 || len(m.Nuspec) > nuget.MaxNuspecBytes {
+	if len(a.Metadata) > MaxNuGetMetadataBytes || json.Unmarshal(a.Metadata, &m) != nil || !m.Validated || m.IDProfile != nuget.IDKeyProfile || len(m.Nuspec) == 0 || len(m.Nuspec) > nuget.MaxNuspecBytes {
 		return m, ErrNuGetUnvalidated
 	}
 	id, e := nuget.IDKey(m.ID)
@@ -61,10 +64,21 @@ func ValidateNuGetArtifact(ctx context.Context, a Artifact) (NuGetPackage, error
 }
 
 func (s *Store) PublishNuGet(ctx context.Context, i Identity, repo string, a Artifact) error {
-	if _, e := ValidateNuGetArtifact(ctx, a); e != nil {
+	m, e := ValidateNuGetArtifact(ctx, a)
+	if e != nil {
 		return e
 	}
-	_, e := s.MutateRepository(ctx, i, repo, "", "", "nuget.package.published", func(tx pgx.Tx) (any, int, error) {
+	catalog, e := nuget.BuildCatalog(ctx, m.Nuspec)
+	if e != nil {
+		return e
+	}
+	catalog.SourceSHA = m.NuspecSHA256
+	m.Catalog = &catalog
+	a.Metadata, e = json.Marshal(m)
+	if e != nil || len(a.Metadata) > MaxNuGetMetadataBytes-8192 {
+		return ErrMetadataLimit
+	}
+	_, e = s.MutateRepository(ctx, i, repo, "", "", "nuget.package.published", func(tx pgx.Tx) (any, int, error) {
 		r, e := repositoryInTx(ctx, tx, i, repo, "write")
 		if e != nil {
 			return nil, 0, e

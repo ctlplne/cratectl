@@ -69,10 +69,51 @@ The native relist operation is an empty authenticated `POST` to
 `/nuget/REPOSITORY/api/v2/package/PACKAGE_ID/VERSION`. Repeated unlist/relist requests
 succeed. An active hold blocks a listing transition; a retired reference must go
 through the common verified restore operation. Relisting cannot resurrect it.
-Registration/search remain unfinished. Search must omit unlisted versions;
-registration must retain their permitted dependency metadata with `listed: false`
-for pinned consumers. The administrative inventory continues to expose retained
-state to authorized operators.
+Modern registration/search are implemented but await their new actual GitHub
+PostgreSQL and stock-client qualification. Search omits unlisted versions;
+registration retains permitted dependency metadata with `listed: false` for
+pinned consumers. The administrative inventory exposes retained state to
+authorized operators.
+
+Discover packages with the ordinary client:
+
+```sh
+dotnet package search PACKAGE_TERM --configfile /private/path/NuGet.Config \
+  --source https://REGISTRY/nuget/REPOSITORY/index.json --format json
+```
+
+Search matches a literal case-insensitive substring in the latest eligible
+version's ID, title, description and tags. It defaults to stable SemVer 1
+versions; `--prerelease` includes prereleases and modern clients opt into SemVer 2.
+The native query endpoint accepts `q`, `skip`, `take`, `prerelease` and
+`semVerLevel`. It reports total package-ID matches before pagination. Required
+per-version download counts use zero because cumulative downloads are not yet
+tracked. It does not claim publisher ownership or security approval.
+
+The service index advertises gzip `RegistrationsBaseUrl/3.6.0`, containing
+SemVer 2 versions, and `SearchQueryService/3.0.0-rc`. Registration pages retain
+declared framework/dependency data with numeric version ordering. Legacy
+registration hives and package-type search remain unfinished.
+
+Older packages may return `nuget_catalog_rebuild_required` during search. An
+administrator previews a batch by POSTing this JSON to
+`/api/v1/repositories/REPOSITORY/nuget/reindex` with their normal Bearer credential:
+
+```json
+{"limit":100,"after_path":"","dry_run":true,"reason":"Rebuild discovery from retained validated manifests"}
+```
+
+Inspect `examined`, `changed`, `after_path` and `more`. Apply the same batch with
+`dry_run:false` and a new 8–128 character `Idempotency-Key`. Retry an applied
+batch with the same key and request bytes. Use the returned `after_path` with a
+new key for the next batch while `more` is true. Repeat from the beginning to
+include packages inserted before an earlier cursor. Reduce `limit` if the
+metadata byte budget is exceeded. A failure rolls back the whole batch; a full
+event queue requires worker/queue recovery before retry. A malformed retained
+manifest requires inspection of that immutable package. Rebuilding changes only
+derived discovery metadata; it preserves bytes, listing, creation time and
+current security decisions. Stopping between batches leaves completed receipts
+durable. No schema migration or automatic primary rebuild is required.
 
 Operator budgets are `--nuget-upload-bytes` (64 MiB default, maximum 1 GiB),
 `--nuget-expanded-bytes` (256 MiB default, maximum 1 TiB), and
@@ -83,7 +124,7 @@ Complete indexes use the native version and metadata budgets. An over-budget
 index fails with 503 rather than omitting versions.
 
 Only hosted ZIP32/store/deflate packages within the documented ID transport
-profile are admitted. Proxy/group, registration/search, symbols, full signature
+profile are admitted. Proxy/group, legacy registration, richer search, symbols, full signature
 and dependency metadata handling, Unicode identity aliases and other clients
 and native platforms remain required work. Do not infer full format support or
 release readiness from the presence of these endpoints.

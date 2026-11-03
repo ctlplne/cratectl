@@ -171,6 +171,16 @@ def summarize(root, environment):
             entry['nuget_sdk_version'] = version
             entry['nuget_dotnet_sha256'] = binary
             entry['nuget_fixture_sha256'] = dict(sorted(fixtures.items()))
+            for name in ('nuget_protocol_probe_sha256', 'nuget_protocol_library_sha256'):
+                if name in report:
+                    if not isinstance(report[name], str) or not re.fullmatch('[0-9a-f]{64}', report[name]):
+                        raise SystemExit('NuGet protocol identity must be a SHA256 digest')
+                    entry[name] = report[name]
+            if 'nuget_protocol_library_version' in report:
+                value = report['nuget_protocol_library_version']
+                if not isinstance(value, str) or not re.fullmatch(r'[0-9]{1,5}(?:\.[0-9]{1,5}){3}', value):
+                    raise SystemExit('NuGet protocol library version is outside the reviewed profile')
+                entry['nuget_protocol_library_version'] = value
         for key in ('baseline_version', 'expected_schema'):
             if key in report:
                 if type(report[key]) is not int or not 1 <= report[key] <= 1000:

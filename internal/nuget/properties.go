@@ -19,6 +19,7 @@ var nuspecPropertyNames = map[string]bool{
 	"description": true, "title": true, "summary": true, "tags": true,
 	"projecturl": true, "iconurl": true, "licenseurl": true, "language": true,
 	"copyright": true, "releasenotes": true, "license": true, "readme": true, "icon": true,
+	"requirelicenseacceptance": true,
 }
 
 type NuspecProperties struct {

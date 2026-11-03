@@ -8,7 +8,6 @@ import (
 	"errors"
 	"io"
 	"net/http"
-	"net/url"
 	"strings"
 	"time"
 
@@ -96,14 +95,21 @@ func (s *Server) nuget(w http.ResponseWriter, r *http.Request, i store.Identity,
 		fail(w, 405, "method_not_allowed", "Read NuGet metadata and package content with GET or HEAD.")
 		return
 	}
-	if p == "index.json" {
-		base, e := url.Parse(s.PublicURL)
-		if e != nil || base.Host == "" || (base.Scheme != "https" && base.Scheme != "http") || base.User != nil || base.RawQuery != "" || base.Fragment != "" {
+	if p == "index.json" || p == "query" || strings.HasPrefix(p, "registration/") {
+		root, e := s.nugetRoot(repo.Name)
+		if e != nil {
 			fail(w, 503, "public_url_required", "Configure the server's public HTTP(S) URL before using NuGet discovery.")
 			return
 		}
-		root := s.PublicURL + "/nuget/" + repo.Name + "/"
-		s.nugetJSON(w, r, map[string]any{"version": "3.0.0", "resources": []map[string]string{{"@id": root + "flat/", "@type": "PackageBaseAddress/3.0.0"}, {"@id": root + nugetPublishEndpoint, "@type": "PackagePublish/2.0.0"}}})
+		if p == "query" {
+			s.nugetSearch(w, r, i, repo, root)
+			return
+		}
+		if strings.HasPrefix(p, "registration/") {
+			s.nugetRegistration(w, r, i, repo, p, root)
+			return
+		}
+		s.nugetJSON(w, r, map[string]any{"version": "3.0.0", "resources": []map[string]string{{"@id": root + "flat/", "@type": "PackageBaseAddress/3.0.0"}, {"@id": root + nugetPublishEndpoint, "@type": "PackagePublish/2.0.0"}, {"@id": root + "registration/", "@type": "RegistrationsBaseUrl/3.6.0"}, {"@id": root + "query", "@type": "SearchQueryService/3.0.0-rc"}}})
 		return
 	}
 	if !strings.HasPrefix(p, "flat/") {
@@ -258,6 +264,10 @@ func (s *Server) nugetPush(w http.ResponseWriter, r *http.Request, i store.Ident
 	id, e := nuget.IDKey(inspected.Identity.ID)
 	if e != nil {
 		fail(w, 400, "invalid_nuget_id", "Use a package ID within the documented invariant transport profile.")
+		return
+	}
+	if _, e = nuget.BuildCatalog(ctx, inspected.Nuspec); e != nil {
+		fail(w, 400, "invalid_nuget_metadata", "Use bounded manifest properties and valid active dependency IDs and ranges. An invalid range cannot be treated as unrestricted.")
 		return
 	}
 	m := store.NuGetPackage{ID: inspected.Identity.ID, IDKey: id, IDProfile: nuget.IDKeyProfile, RawVersion: inspected.Identity.RawVersion, VersionKey: inspected.Identity.VersionKey, NuspecPath: inspected.NuspecPath, Nuspec: inspected.Nuspec, NuspecSHA256: crypt.Digest(inspected.Nuspec), Validated: true}

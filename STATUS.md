@@ -18,6 +18,18 @@ summaries retain exact source, binaries, libraries, SDK and fixture identities.
 No new focused browser campaign is included. See
 `evidence/2026-11-03/github-e7c0419-checkpoint.json`.
 
+Modern hosted NuGet discovery is implemented but unverified against its new
+GitHub runtime/client campaign: gzip SemVer2 registration with dependency
+metadata and unlisted leaves; paginated search with numeric latest-version,
+stable/prerelease/SemVer filtering; and bounded administrator catalog rebuild
+preview, retry receipts and atomic event/outbox changes. New PostgreSQL/race
+regressions, actual stock dotnet search and installed SDK HTTP metadata calls
+are added to the existing native Linux ARM64/x86 jobs. Local ARM build/unit/race/
+lint and 263,180 ordering-fuzz executions pass; tagged integration compiles only.
+See ADR0042 and `evidence/2026-11-03/nuget-discovery-development.json`. No new
+database/managed/client pass is claimed yet. All450capabilities/41families remain;
+78are implementing and372planned. Broader NuGet/format/release verdicts stay open.
+
 Typed dependency declaration selection and shared XML attribute normalization
 are implemented for complete metadata work. Local build/unit/race/lint and five
 bounded fuzz campaigns pass. The owned SDK oracle now compares 49 original

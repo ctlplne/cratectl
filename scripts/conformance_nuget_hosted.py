@@ -6,8 +6,10 @@ project rules; these packages contain no build targets, scripts or assemblies.
 """
 
 import hashlib
+import gzip
 import io
 import json
+import platform
 import re
 import shutil
 import uuid
@@ -43,6 +45,34 @@ def hosted(h):
     XML.ElementTree(document).write(config, encoding='utf-8', xml_declaration=True)
     config.chmod(0o600)
     extra = {'DOTNET_CLI_HOME': str(work / 'home'), 'DOTNET_CLI_TELEMETRY_OPTOUT': '1', 'DOTNET_SKIP_FIRST_TIME_EXPERIENCE': '1', 'NUGET_HTTP_CACHE_PATH': str(work / 'http-cache'), 'NUGET_PACKAGES': str(work / 'packages'), 'NUGET_AUDIT_MODE': 'direct'}
+    probe = work / 'probe'
+    probe.mkdir(mode=0o700)
+    fixture_root = Path(__file__).resolve().parent / 'fixtures/nuget-feed'
+    for filename in ['Program.cs', 'Probe.csproj']:
+        shutil.copy2(fixture_root / filename, probe / filename)
+    run([dotnet, 'build', probe / 'Probe.csproj', '--configfile', config, '--output', probe / 'out', '--verbosity', 'quiet'], probe, extra)
+    h.result['nuget_protocol_probe_sha256'] = hashlib.sha256((probe / 'out/Probe.dll').read_bytes()).hexdigest()
+    h.result['nuget_protocol_library_sha256'] = hashlib.sha256((probe / 'out/NuGet.Protocol.dll').read_bytes()).hexdigest()
+
+    def metadata(listed=True):
+        result = json.loads(run([dotnet, probe / 'out/Probe.dll', config, 'Cratectl.Proof.Application'], probe, extra))
+        check('actual SDK metadata probe uses the runner architecture', result['architecture'] == {'x86_64': 'x64', 'aarch64': 'arm64', 'arm64': 'arm64'}[platform.machine()])
+        rows = {row['version']: row for row in result['rows']}
+        check('actual SDK registration retains both application versions', set(rows) == {'1.0.0', '2.0.0'})
+        check('actual SDK registration reads durable listing state ' + str(listed), rows['1.0.0']['listed'] is listed and rows['2.0.0']['listed'] is True)
+        check('actual SDK registration resolves target framework and exact dependency interval', all(row['groups'] == [{'framework': 'net10.0', 'packages': [{'id': 'Cratectl.Proof.Dependency', 'min': '1.0.0', 'max': '1.0.0', 'include_min': True, 'include_max': True}]}] for row in rows.values()))
+        check('actual SDK protocol library has a bounded observed identity', re.fullmatch(r'[0-9]{1,5}(?:\.[0-9]{1,5}){3}', result['library_version']) is not None)
+        h.result['nuget_protocol_library_version'] = result['library_version']
+
+    def search():
+        result = json.loads(run([dotnet, 'package', 'search', 'Cratectl.Proof.Application', '--configfile', config, '--source', source, '--format', 'json', '--take', '20'], work, extra))
+        rows = [row for group in result.get('searchResult', []) for row in group.get('packages', [])]
+        check('stock dotnet package search uses native feed discovery', not result.get('problems') and len(rows) == 1 and rows[0]['id'] == 'Cratectl.Proof.Application' and rows[0]['latestVersion'] == '2.0.0')
+
+    def registration():
+        code, data, headers = req('/nuget/dotnet/registration/cratectl.proof.application/index.json', 'reader')
+        check('NuGet registration has the required compressed representation', code == 200 and headers.get('Content-Encoding') == 'gzip')
+        return json.loads(gzip.decompress(data))
     packages = {}
 
     def package(label, name, version, dependency=False, other=False):
@@ -122,6 +152,9 @@ def hosted(h):
         check('NuGet native conditional ' + url.rsplit('/', 1)[-1], req(url, 'reader', headers={'If-None-Match': etag})[0] == 304)
     restore('consumer-one', '1.0.0')
     restore('consumer-two', '2.0.0')
+    metadata()
+    search()
+    check('NuGet registration pages advertise complete numeric bounds', registration()['items'][0]['lower'] == '1.0.0' and registration()['items'][0]['upper'] == '2.0.0')
 
     def unlist(token='admin', denied=False):
         run([dotnet, 'nuget', 'delete', 'Cratectl.Proof.Application', '1.0.0', '--source', source, '--api-key', h.tokens[token], '--non-interactive'], work, extra, expect_failure=denied)
@@ -137,18 +170,25 @@ def hosted(h):
     unlist()
     unlist()  # A retry must succeed while retaining the immutable version.
     listing_state(False)
+    metadata(False)
+    search()
+    code, raw, _ = req('/nuget/dotnet/query?q=Cratectl.Proof.Application', 'reader')
+    check('NuGet search removes unlisted versions while retaining the latest listed one', code == 200 and [row['version'] for row in json.loads(raw)['data'][0]['versions']] == ['2.0.0'])
     check('NuGet unlisting retains the complete flat index', json.loads(req(flat + 'index.json', 'reader')[1])['versions'] == ['1.0.0', '2.0.0'])
     restore('unlisted-pinned-consumer', '1.0.0')
     check('NuGet unlisting retains original package and manifest bytes', req(package_url, 'reader')[1] == packages['application_1'][2] and req(manifest_url, 'reader')[1] == packages['application_1'][3])
     h.stop()
     h.start()
     listing_state(False)
+    metadata(False)
+    search()
     restore('unlisted-restarted-pinned-consumer', '1.0.0')
     listing_endpoint = '/nuget/dotnet/api/v2/package/Cratectl.Proof.Application/1.0.0'
     key_headers = {'X-NuGet-ApiKey': h.tokens['admin']}
     check('NuGet native POST relists the version', req(listing_endpoint, method='POST', headers=key_headers)[0] == 200)
     check('NuGet native POST relist retries succeed', req(listing_endpoint, method='POST', headers=key_headers)[0] == 200)
     listing_state(True)
+    metadata()
     restore('relisted-pinned-consumer', '1.0.0')
     check('NuGet other tenant initially cannot see matching repository coordinate', req(package_url, 'other')[0] == 404)
     other, _ = package('other_application_1', 'Cratectl.Proof.Application', '1.0.0', True, True)
@@ -158,6 +198,8 @@ def hosted(h):
     check('NuGet relisting never overrides current content denial', req(listing_endpoint, method='POST', headers=key_headers)[0] == 200 and req(package_url, 'reader')[0] == 403)
     restore('denied-consumer', '1.0.0', True)
     check('NuGet denial covers direct content and manifest', req(package_url, 'reader')[0] == 403 and req(manifest_url, 'reader')[0] == 403)
+    code, raw, _ = req('/nuget/dotnet/query?q=Cratectl.Proof.Application', 'reader')
+    check('NuGet current denial removes registration and search metadata', req('/nuget/dotnet/registration/cratectl.proof.application/1.0.0/catalog.json', 'reader')[0] == 403 and code == 200 and [row['version'] for row in json.loads(raw)['data'][0]['versions']] == ['2.0.0'])
     decide('Cratectl.Proof.Application', '1.0.0', app1_digest, 'allowed')
     h.stop()
     h.start()

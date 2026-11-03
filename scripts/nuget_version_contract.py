@@ -108,6 +108,10 @@ def property_cases():
         '<tags>alpha beta</tags><projectUrl>https://example.invalid/never-fetched</projectUrl><iconUrl>https://example.invalid/no-image</iconUrl><licenseUrl>https://example.invalid/no-license</licenseUrl>',
         '<license type="expression">MIT OR Apache-2.0</license><readme>docs/README.md</readme><icon>content/icon.png</icon><language> en-US </language><copyright>Owned fixture</copyright><releaseNotes>Original text</releaseNotes><owners>Untrusted declared owner</owners>',
         '<title xml:space="invalid">value</title>',
+        '<requireLicenseAcceptance>TrUe</requireLicenseAcceptance>',
+        '<requireLicenseAcceptance> true </requireLicenseAcceptance>',
+        '<RequireLicenseAcceptance></RequireLicenseAcceptance><x:requireLicenseAcceptance xmlns:x="urn:foreign">true</x:requireLicenseAcceptance>',
+        '<requireLicenseAcceptance>1</requireLicenseAcceptance><requireLicenseAcceptance>true</requireLicenseAcceptance>',
     ]
     for body in fields:
         xml = '<package><metadata><id>Cratectl.Properties</id><version>1.0+owned</version>' + body + '</metadata></package>'

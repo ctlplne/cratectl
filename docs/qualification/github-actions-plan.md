@@ -376,3 +376,20 @@ Other current workflow families remain separately tracked. This does not prove
 that simply copying the raw dependency list into registration JSON preserves
 client semantics: JSON feed interpretation, duplicate handling, complete typed
 metadata and actual client discovery/resolution must be tested separately.
+
+The next hosted discovery slice adds real registration and search HTTP routes,
+plus bounded administrator catalog rebuild batches. Actual Linux ARM64/x86
+PostgreSQL and integration-race jobs exercise visibility, numeric ordering,
+SemVer/prerelease filtering, old projection failures, rebuild preview/retry and
+full-outbox rollback. Existing stock-dotnet conformance also invokes native
+`dotnet package search` and an owned probe using the installed SDK's
+`PackageMetadataResource` against the real registry, including unlisted state
+and framework/dependency intervals before and after restart. No package payload
+executes; no remote package dependency is needed to compile the probe. Safe
+exports retain its binary and Protocol DLL hashes/version. The library workflow
+also checks the byte sorting key against all3,025actual SDK precedence pairs and
+adds four license-acceptance scalar cases, bringing that corpus to27documents.
+Local ARM unit/race/lint and bounded fuzz checks remain supporting checks only;
+new database/managed/client claims await their clean-source GitHub jobs. See
+[ADR0042](../adr/0042-nuget-discovery-catalog.md). Broader format, platform,
+production trust, failure and scale gates remain required.

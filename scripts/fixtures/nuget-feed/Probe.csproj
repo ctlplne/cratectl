@@ -1,0 +1,15 @@
+<!-- SPDX-License-Identifier: BUSL-1.1 -->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <NuGetAudit>false</NuGetAudit>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Reference Include="$(MSBuildToolsPath)/NuGet.Protocol.dll;$(MSBuildToolsPath)/NuGet.Common.dll;$(MSBuildToolsPath)/NuGet.Configuration.dll;$(MSBuildToolsPath)/NuGet.Versioning.dll;$(MSBuildToolsPath)/NuGet.Packaging.dll;$(MSBuildToolsPath)/NuGet.Frameworks.dll;$(MSBuildToolsPath)/Newtonsoft.Json.dll">
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+</Project>

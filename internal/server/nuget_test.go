@@ -134,7 +134,7 @@ func TestNuGetDiscoveryUsesConfiguredAuthority(t *testing.T) {
 			Version   string              `json:"version"`
 			Resources []map[string]string `json:"resources"`
 		}
-		if json.Unmarshal(w.Body.Bytes(), &document) != nil || document.Version != "3.0.0" || len(document.Resources) != 2 {
+		if json.Unmarshal(w.Body.Bytes(), &document) != nil || document.Version != "3.0.0" || len(document.Resources) != 4 {
 			t.Fatal("discovery resources")
 		}
 		for _, resource := range document.Resources {

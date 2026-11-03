@@ -117,6 +117,11 @@ func FuzzVersionOrdering(f *testing.F) {
 		if e != nil || ab != -ba {
 			t.Fatal("antisymmetry")
 		}
+		ka, ea := VersionOrderKey(a)
+		kb, eb := VersionOrderKey(b)
+		if ea != nil || eb != nil || strings.Compare(ka, kb) != ab {
+			t.Fatal("catalog byte ordering differs from semantic ordering")
+		}
 		bc, e := CompareVersions(b, c)
 		if e != nil {
 			return
