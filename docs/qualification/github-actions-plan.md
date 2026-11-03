@@ -264,10 +264,25 @@ Seven safe summaries and exact native identities are retained in
 [the checkpoint](../../evidence/2026-11-03/github-9e6d980-checkpoint.json). Earlier
 upgrade, retention and library observations keep their distinct candidate scope.
 
-The next library campaign adds 3,025 owned version-order pairs against actual
+The 189a6ae library campaign adds 3,025 owned version-order pairs against actual
 NuGet.Versioning.VersionRelease on both native Linux architectures. It keeps all
 existing version/ID/Nuspec/archive contracts. The updated PostgreSQL test checks
 1/2/10 numeric index order and native publication/event semantics. Local
-unit/race/fuzz/budget/cancellation checks pass; actual SDK and updated database
-results remain unverified. This prepares complete registration/search metadata;
+unit/race/fuzz/budget/cancellation checks pass; both actual SDK and updated database
+results now pass on that clean source. This prepares complete registration/search metadata;
 it does not replace those required product journeys.
+
+The exact 189a6ae source passes 15 jobs: main9, OCI2, controlled-upgrade2 and
+library2. Full x86 Chromium passes 15 workflows with zero unexpected/skipped/flaky
+results; both real PostgreSQL/race and stock-client campaigns pass. Nine safe
+summaries retain exact identities in [the checkpoint](../../evidence/2026-11-03/github-189a6ae-checkpoint.json).
+No fresh focused browser campaign is included; the five-fresh NuGet/repair
+observations remain on 9e6d980.
+
+The next library campaign compares 23 owned Nuspec documents against the actual
+SDK's `GetMetadataValue` for 17 supported scalar names on both native Linux
+architectures. It retains all earlier mandatory contracts and adds bounded
+mismatch evidence. Local Go tests and fuzzing pass; managed compilation and
+native scalar matching remain unverified. The reader never fetches URLs, opens
+declared paths, executes content or converts text into security authority.
+Complete typed metadata, registration/search and native unlisting remain required.

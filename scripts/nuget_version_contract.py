@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
-"""Compare Go ID, version identity/precedence, Nuspec and archive contracts with SDK libraries.
+"""Compare Go ID, version, Nuspec identity/scalars and archive contracts with SDK libraries.
 
 This is a native library contract test, not package-feed or stock-client proof.
 The owned C# fixture has no package references and clears package sources.
@@ -93,6 +93,28 @@ def comparison_cases():
     return [json.dumps(pair, separators=(',', ':')) for pair in itertools.product(values, repeat=2)]
 
 
+def property_cases():
+    values = nuspec_cases()
+    fields = [
+        '<authors></authors><AUTHORS>  Alice &amp; Bob  </AUTHORS><authors>later</authors>',
+        '<description><b>not a scalar leaf</b></description><Description><![CDATA[<img src=x onerror=unused()>]]></Description>',
+        '<x:summary xmlns:x="urn:foreign">foreign scalar</x:summary><SUMMARY>later</SUMMARY>',
+        '<title>   </title><title>next</title>',
+        '<title><![CDATA[   ]]></title><title>next</title>',
+        '<title>&#32;</title><title>next</title>',
+        '<title xml:space="preserve">   </title><title>next</title>',
+        '<title xml:space="default">  value  </title>',
+        '<title>before<!-- inert comment -->  </title><summary> <!-- comment -->after</summary>',
+        '<tags>alpha beta</tags><projectUrl>https://example.invalid/never-fetched</projectUrl><iconUrl>https://example.invalid/no-image</iconUrl><licenseUrl>https://example.invalid/no-license</licenseUrl>',
+        '<license type="expression">MIT OR Apache-2.0</license><readme>docs/README.md</readme><icon>content/icon.png</icon><language> en-US </language><copyright>Owned fixture</copyright><releaseNotes>Original text</releaseNotes><owners>Untrusted declared owner</owners>',
+        '<title xml:space="invalid">value</title>',
+    ]
+    for body in fields:
+        xml = '<package><metadata><id>Cratectl.Properties</id><version>1.0+owned</version>' + body + '</metadata></package>'
+        values.append(base64.b64encode(xml.encode()).decode('ascii'))
+    return values
+
+
 def main():
     os.chdir(ROOT)
     os.umask(0o077)
@@ -104,7 +126,7 @@ def main():
     candidate = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
     dirty = bool(subprocess.check_output(['git', 'status', '--porcelain', '--untracked-files=all']).strip())
     arch = {'x86_64': 'amd64', 'aarch64': 'arm64'}.get(platform.machine())
-    report = {'candidate': candidate, 'run_id': os.environ.get('GITHUB_RUN_ID'), 'status': 'failed', 'phase': 'preflight', 'source_dirty': dirty, 'checks': [], 'limits': ['Native transport-profile ID/flat-key, version-key/precedence, Nuspec identity and owned ZIP archive identity/manifest-byte contracts only. ID reference acceptance and transport-profile exclusions are reported separately. An ordering tie is not permission to merge coordinate identities. No durable publication, full package/signature, ZIP64/split/exotic archive, feed, dependency-resolution, publish/consume, tenant, policy, symbol, Chocolatey/PowerShell or release-readiness qualification.']}
+    report = {'candidate': candidate, 'run_id': os.environ.get('GITHUB_RUN_ID'), 'status': 'failed', 'phase': 'preflight', 'source_dirty': dirty, 'checks': [], 'limits': ['Native transport-profile ID/flat-key, version-key/precedence, Nuspec identity/supported scalar accessor and owned ZIP archive identity/manifest-byte contracts only. ID reference acceptance and transport-profile exclusions are reported separately. An ordering tie is not permission to merge coordinate identities. Scalar text is untrusted and does not qualify typed dependency/framework/range/license APIs. No durable publication, full package/signature, ZIP64/split/exotic archive, feed, dependency-resolution, publish/consume, tenant, policy, symbol, Chocolatey/PowerShell or release-readiness qualification.']}
     environment = dict(os.environ, DOTNET_CLI_TELEMETRY_OPTOUT='1', DOTNET_SKIP_FIRST_TIME_EXPERIENCE='1', DOTNET_NOLOGO='1', DOTNET_GENERATE_ASPNET_CERTIFICATE='false', DOTNET_CLI_HOME=str(work / 'dotnet-home'), NUGET_PACKAGES=str(work / 'packages'), MSBuildEnableWorkloadResolver='false', GOTOOLCHAIN='local', GOCACHE=str(ROOT / '.cache/go-build'), GOMODCACHE=str(ROOT / '.cache/go-mod'))
     number = 0
 
@@ -212,6 +234,17 @@ def main():
         report.update(comparison_cases=len(pairs), comparison_fixture_sha256=hashlib.sha256(encoded).hexdigest(), comparison_mismatch_indexes=errors,
                       comparison_mismatches=[{'index': index, 'input': json.loads(pairs[index]), 'go': actual['rows'][index], 'reference': expected['rows'][index]} for index in errors[:64]])
         check('all owned version precedence and invalid-input results agree with the actual SDK', not errors)
+        report['phase'] = 'nuspec_properties'
+        properties = property_cases()
+        encoded = json.dumps(properties).encode()
+        actual = json.loads(command([work / 'go-oracle', '--properties'], 'read owned scalar metadata with Go', encoded))
+        expected = json.loads(command([dotnet, work / 'managed/Oracle.dll', 'properties'], 'read owned scalar metadata with actual SDK GetMetadataValue', encoded))
+        check('property references use this clean native source', actual['os'] == expected['os'] == 'linux' and actual['architecture'] == arch and expected['architecture'] == {'amd64': 'x64', 'arm64': 'arm64'}[arch] and actual['build'] == native['build'])
+        check('property reference library and case count are observed', expected['version'] == report['packaging_library_version'] and len(actual['rows']) == len(expected['rows']) == len(properties))
+        errors = [index for index, (a, b) in enumerate(zip(actual['rows'], expected['rows'])) if a != b]
+        report.update(property_cases=len(properties), property_fixture_sha256=hashlib.sha256(encoded).hexdigest(), property_mismatch_indexes=errors,
+                      property_mismatches=[{'index': index, 'go': actual['rows'][index], 'reference': expected['rows'][index]} for index in errors[:32]])
+        check('all supported scalar properties match actual SDK GetMetadataValue', not errors)
         report.update(status='passed', phase='complete')
     except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
         report['failure_type'] = type(error).__name__

@@ -1,0 +1,69 @@
+{
+  "source_parent": "189a6ae33cd118201bd11121765ced68214688b2",
+  "source_dirty": true,
+  "state": "implemented but unverified against actual native SDK scalar reader",
+  "implementation": "Bounded streaming supported scalar Nuspec properties after full identity/XML admission. Preserves declared nonempty text, first case-insensitive supported leaf, character/CDATA/xml:space distinctions and foreign scalar namespaces. Shared bounded XML decoder; no partial results on invalid/cancelled input; no URL/path resolution, content execution or metadata-derived authority.",
+  "limits": {
+    "source_bytes": 1048576,
+    "field_bytes": 65536,
+    "supported_properties": 17,
+    "depth": 32,
+    "tokens": 32768,
+    "attributes_per_element": 128
+  },
+  "local_checks": {
+    "build": "make build BINDIR=.cache/nuget-properties-build passed",
+    "unit": "make test passed",
+    "race": "make race passed",
+    "lint": "make lint passed",
+    "fuzz": "FuzzNuspecProperties: 456,139 executions with a 5s requested budget (6.252s elapsed) passed",
+    "integration": "Integration-tagged server/store compile only; no local PostgreSQL runtime",
+    "helper": {
+      "source_parent": "189a6ae33cd118201bd11121765ced68214688b2",
+      "source_dirty": true,
+      "cases": 23,
+      "fixture_sha256": "ad61a6a41af262b9594261f0ce086ec810826dabdc87e2aa5abe62e7ea8bbfce",
+      "os": "darwin",
+      "architecture": "arm64",
+      "go_build_identity": {
+        "vcs.modified": "true",
+        "vcs.revision": "189a6ae33cd118201bd11121765ced68214688b2"
+      },
+      "valid_cases": 22,
+      "limits": "Local Go shape/owned-data observation, not actual SDK matching."
+    },
+    "managed": "23 owned documents / 10,676 bytes, fixture SHA-256 ad61a6a41af262b9594261f0ce086ec810826dabdc87e2aa5abe62e7ea8bbfce. C# compilation and actual SDK matching not executed locally."
+  },
+  "first_local_compile_failure": "The first shared decoder extraction omitted the encoding hint needed by identity declaration checks: nuspec.go230 undefined:hint. The helper now returns decodedbytes/hint/decoder; the original identity suite and all local checks pass. The failed intermediate source hash was not captured; this is a corrected local compile issue, not a runtime/SDK security claim.",
+  "native_plan": "Compare actual NuspecReader.GetMetadataValue for 17 named scalar fields over 23 owned documents on both native Linux architectures; keep all earlier 1129 version / 11 Nuspec / 4 archive / 63516 ID / 3025 order cases mandatory. Retain all mismatch indexes and up to 32 owned examples.",
+  "files": [
+    {
+      "path": "internal/nuget/nuspec.go",
+      "sha256": "2f2db5c19d6b1d74afb9c6de87d3019004f8104b79ffc6a5aab5222cf6a3af97"
+    },
+    {
+      "path": "internal/nuget/properties.go",
+      "sha256": "d79a6ca04f8e2364f35a215a7dce00ca28cff4e316fb7dd0901d7abaf2438619"
+    },
+    {
+      "path": "internal/nuget/properties_test.go",
+      "sha256": "d1b0712d4ba20109872e8265dce9c7f1f077d7df1afc2692e54d753f817733b1"
+    },
+    {
+      "path": "scripts/fixtures/nuget-versions/main.go",
+      "sha256": "e426af541ea5f3c6d4e7118f32e11830a6637733417b49d9fd4d5547d21182bc"
+    },
+    {
+      "path": "scripts/fixtures/nuget-versions/Program.cs",
+      "sha256": "89f239e33047dbad32bb5ba3788d473dd12a90edd11e99dfe4378a781875fe9c"
+    },
+    {
+      "path": "scripts/nuget_version_contract.py",
+      "sha256": "1990e08cb5da43238eeeecc80ac5293328bf60d27ac026d781314da08916fd36"
+    }
+  ],
+  "scope_limits": [
+    "Scalar accessor only; not typed dependency/framework/range/license semantics, registration/search/unlisting/signatures/symbol/proxy-group/nativeTLS/platform/fullformat/readiness. Those full requirements remain active.",
+    "No new endpoint/resource advertised, schema migration, primarybinary switch, persistentlocalservice, sibling/customer change. All450capabilities/41families remain committed."
+  ]
+}

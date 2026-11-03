@@ -26,6 +26,11 @@ type comparisonRow struct {
 	Order int  `json:"order"`
 }
 
+type propertyRow struct {
+	Valid  bool              `json:"valid"`
+	Values map[string]string `json:"values"`
+}
+
 type nuspecRow struct {
 	Valid      bool   `json:"valid"`
 	ID         string `json:"id"`
@@ -74,6 +79,23 @@ func main() {
 			}
 			order, e := nuget.CompareVersions(pair[0], pair[1])
 			rows = append(rows, comparisonRow{Valid: e == nil, Order: order})
+		}
+		emit(rows)
+		return
+	}
+	if len(os.Args) == 2 && os.Args[1] == "--properties" {
+		rows := make([]propertyRow, 0, len(values))
+		for _, value := range values {
+			data, e := base64.StdEncoding.DecodeString(value)
+			if e != nil {
+				rows = append(rows, propertyRow{Values: map[string]string{}})
+				continue
+			}
+			properties, e := nuget.ParseNuspecProperties(context.Background(), data)
+			if e != nil {
+				properties.Values = map[string]string{}
+			}
+			rows = append(rows, propertyRow{Valid: e == nil, Values: properties.Values})
 		}
 		emit(rows)
 		return

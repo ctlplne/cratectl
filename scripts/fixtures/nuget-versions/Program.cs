@@ -41,6 +41,34 @@ class Program
             }));
             return;
         }
+        if (args.Length == 1 && args[0] == "properties")
+        {
+            var names = new[] { "id", "version", "authors", "owners", "description", "title", "summary", "tags", "projecturl", "iconurl", "licenseurl", "language", "copyright", "releasenotes", "license", "readme", "icon" };
+            var properties = values.Select(value => {
+                try
+                {
+                    using var stream = new System.IO.MemoryStream(Convert.FromBase64String(value));
+                    var reader = new NuspecReader(stream);
+                    _ = reader.GetId();
+                    _ = reader.GetVersion();
+                    var fields = names.Select(name => new { name, value = reader.GetMetadataValue(name) })
+                        .Where(field => !string.IsNullOrEmpty(field.value))
+                        .ToDictionary(field => field.name, field => field.value);
+                    return new { valid = true, values = fields };
+                }
+                catch (Exception)
+                {
+                    return new { valid = false, values = new System.Collections.Generic.Dictionary<string, string>() };
+                }
+            }).ToArray();
+            Console.WriteLine(JsonSerializer.Serialize(new {
+                os = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "linux" : "other",
+                architecture = RuntimeInformation.ProcessArchitecture.ToString().ToLowerInvariant(),
+                version = typeof(NuspecReader).Assembly.GetName().Version.ToString(),
+                rows = properties
+            }));
+            return;
+        }
         if (args.Length == 1 && args[0] == "id")
         {
             var identities = values.Select(value => {

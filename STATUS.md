@@ -6,7 +6,30 @@ GitHub native qualification and moves historical controlled-upgrade journeys
 off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
-Current operator/browser milestone accepted on clean source
+Current 15-job milestone accepted on clean source
+`189a6ae33cd118201bd11121765ced68214688b2`: main 9, OCI 2, controlled
+upgrades 2 and NuGet libraries 2 all pass on GitHub Actions. Both actual native
+Linux SDK references match all 3,025 version-precedence pairs and all earlier
+1,129 version, 11 Nuspec, four archive and 63,516 ID cases. The updated real
+PostgreSQL/race numeric 1/2/10 index and publication-journal regression passes
+on both architectures. Each broader stock-client campaign passes 406 checks;
+each OCI campaign passes 214 checks. Full x86 Chromium passes all 15 workflows
+with zero unexpected/skipped/flaky results. Each upgrade campaign rebuilds ten
+pinned historical servers and passes 15 reports. Nine safe summaries retain
+exact source, native build, SDK/library and fixture identities. No fresh focused
+repair, NuGet or retention campaign is included in this source. See
+`evidence/2026-11-03/github-189a6ae-checkpoint.json` and
+`evidence/2026-11-03/nuget-189a6ae-checkpoint.json`.
+
+Bounded Nuspec scalar properties are implemented for metadata-feed work.
+Local build/unit/race/lint and 456,139 fuzz executions pass. The SDK oracle
+adds 23 owned documents, covering first/empty/duplicate fields, ASCII case,
+foreign scalar namespaces, child elements and XML whitespace/encoding behavior.
+Actual native SDK comparison is unverified. This accessor does not implement
+typed dependencies/frameworks/ranges/licenses or registration/search/unlisting.
+See ADR0038 and `evidence/2026-11-03/nuget-properties-development.json`.
+
+Earlier operator/browser milestone accepted on clean source
 `9e6d98069d7cc624bf6339e241990de8ee063695`: all 13 jobs pass (main 9, OCI 2,
 focused repair 1 and focused NuGet 1). The full x86 Chromium suite now passes
 all 15 workflows with zero unexpected/skipped/flaky results. Five independent
@@ -21,8 +44,8 @@ fresh retention campaign is folded into this source. See
 Version precedence and cancellation-aware bounded sorting are implemented for
 upcoming metadata/search and hosted indexes. Local build/unit/race/lint and
 512,024 latest fuzz executions pass; 3,025 owned SDK comparison pairs are added.
-Actual native comparison and the updated PostgreSQL 1/2/10-order regression are
-unverified. Ordering ties never merge coordinate identities. See ADR0037 and
+Actual native comparison and the updated PostgreSQL 1/2/10-order regression now
+pass on 189a6ae above. Ordering ties never merge coordinate identities. See ADR0037 and
 `evidence/2026-11-03/nuget-order-development.json`.
 
 Earlier hosted NuGet milestone accepted on clean source

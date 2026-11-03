@@ -107,17 +107,10 @@ func validNuspecID(value string) bool {
 	return word
 }
 
-// ParseNuspecIdentity reads only one unambiguous package/metadata/id+version.
-// It never resolves external entities, extracts files, executes a package,
-// normalizes an ID into a storage key, or declares the full package valid.
-func ParseNuspecIdentity(ctx context.Context, raw []byte) (NuspecIdentity, error) {
-	var identity NuspecIdentity
-	if err := ctx.Err(); err != nil {
-		return identity, err
-	}
+func nuspecDecoder(raw []byte) ([]byte, string, *xml.Decoder, error) {
 	decoded, hint, err := decodeNuspec(raw)
 	if err != nil {
-		return identity, err
+		return nil, "", nil, err
 	}
 	decoder := xml.NewDecoder(bytes.NewReader(decoded))
 	decoder.CharsetReader = func(label string, input io.Reader) (io.Reader, error) {
@@ -126,6 +119,21 @@ func ParseNuspecIdentity(ctx context.Context, raw []byte) (NuspecIdentity, error
 			return input, nil // Already decoded after validating every code unit.
 		}
 		return nil, ErrNuspec
+	}
+	return decoded, hint, decoder, nil
+}
+
+// ParseNuspecIdentity reads only one unambiguous package/metadata/id+version.
+// It never resolves external entities, extracts files, executes a package,
+// normalizes an ID into a storage key, or declares the full package valid.
+func ParseNuspecIdentity(ctx context.Context, raw []byte) (NuspecIdentity, error) {
+	var identity NuspecIdentity
+	if err := ctx.Err(); err != nil {
+		return identity, err
+	}
+	_, hint, decoder, err := nuspecDecoder(raw)
+	if err != nil {
+		return identity, err
 	}
 	var stack []xml.Name
 	var namespace, active string
