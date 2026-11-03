@@ -431,3 +431,36 @@ gate keeps all original44cases with the exact original hash and adds12Unicode,
 asset-flag and range-equivalence cases. Native56case restart equality and the
 new casing profile remain unverified; local unit/fuzz results cannot replace
 those actual SDK outcomes.
+
+## Focused operator replay placement
+
+Shared console controls and the console driver affect repair, retention and
+NuGet recovery. A push touching these selected surfaces now expands the focused
+browser workflow to three independent native x86 jobs: `repair`, `retention`
+and `nuget`. Each job repeats its selected journey five times using a fresh
+real PostgreSQL database each time. A manually dispatched run still selects
+only the requested journey. `fail-fast: false` preserves the other jobs' results
+if one fails; no `continue-on-error` converts a failure into acceptance. Each
+matrix entry uploads a separately named bounded safe summary. This follows
+[GitHub's matrix and failure-handling contract](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/run-job-variations).
+The matrix expansion is implemented locally and awaits its first native run.
+
+The NuGet operator test now exercises two real retained packages through
+single-package rebuild batches. It deliberately discards the browser's first
+response after the real server commits, then requires identical request bytes
+and key, the original replayed result, a later cursor with a new key, unchanged
+package/Nuspec bytes, explicit repeat-from-start and reader denial. Preview,
+unknown-outcome, confirmed-replay and next-batch states retain their Axe checks.
+The browser transport fault is a stand-in for response loss; PostgreSQL,
+authorization, transaction commit and replay are real. No local database or
+browser campaign is needed for this new native claim. Local checks cover build,
+types, deterministic embedded assets, unit/race stand-ins and workflow syntax.
+
+Preserve the distinction between the accepted `080c312` 15-job campaign and
+this later console/workflow change. Its nine unchanged safe summaries qualify
+56 metadata cases before/after restart and all earlier native gates; they do
+not qualify the new console. Path filters remain deliberate: the actual SDK
+library comparison runs when its code/fixture surfaces change, and otherwise
+its earlier exact-source evidence remains separate. Derive each candidate's
+expected job set from the actual triggered/authorized workflows; never relabel
+an absent or skipped lane as passing.

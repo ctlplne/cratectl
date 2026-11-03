@@ -7,6 +7,29 @@ off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
 Latest completed 15-job milestone accepted on clean source
+`080c3123d9fb58032cb01754b535638f8d7a9884`: main9, OCI2, upgrades2 and actual
+SDK libraries2 all pass. Both native PostgreSQL/race and broader645check client
+campaigns pass, including stock search and56actual SDK HTTP metadata cases
+before/after actual registry restart. Original44fixture bytes are unchanged;
+DEFECT.0085/0086 are replayed in this named scope. Full x86 Chromium passes all
+15workflows with0bad results. Both OCI campaigns pass214checks; each upgrade
+campaign rebuilds10pinned servers and passes15reports. Both SDKs also match
+63,516dependency ordinal ID keys and all earlier mandatory contracts. Nine safe
+summaries retain exact identities in
+`evidence/2026-11-03/github-080c312-checkpoint.json`. This source predates the new
+console maintenance flow described below.
+
+Administrator console discovery rebuild is implemented but unverified: bounded
+preview, exact retry identity, confirmed batch receipts/cursors and explicit
+repeat from the beginning. The new real PostgreSQL/Chromium regression loses
+one response after commit and requires an original-result replay with identical
+body/key, retained bytes and reader denial. Push-triggered focused qualification
+now selects repair/retention/NuGet, five fresh database repetitions each, instead
+of implicitly testing repair alone. Local build/unit/race/lint, reproducible
+assets and workflow/syntax checks pass. Native browser/matrix replay is pending.
+See `evidence/2026-11-03/nuget-catalog-console-development.json`.
+
+Earlier completed 15-job milestone accepted on clean source
 `17ded1c7eeb4cba2322bd99b4598606eb6b25c21`: main9, OCI2, upgrades2 and actual
 SDK libraries2 all pass. Both actual PostgreSQL/race and broader436check client
 campaigns pass; full x86 Chromium passes15workflows with0bad results. Both OCI
@@ -30,16 +53,16 @@ summaries retain exact source, binaries, libraries, SDK and fixture identities.
 No new focused browser campaign is included. See
 `evidence/2026-11-03/github-e7c0419-checkpoint.json`.
 
-Modern hosted NuGet discovery is implemented but unverified against its new
-GitHub runtime/client campaign: gzip SemVer2 registration with dependency
+Modern hosted NuGet discovery has named runtime/client proof on `080c312`:
+gzip SemVer2 registration with dependency
 metadata and unlisted leaves; paginated search with numeric latest-version,
 stable/prerelease/SemVer filtering; and bounded administrator catalog rebuild
 preview, retry receipts and atomic event/outbox changes. New PostgreSQL/race
 regressions, actual stock dotnet search and installed SDK HTTP metadata calls
 are added to the existing native Linux ARM64/x86 jobs. Local ARM build/unit/race/
 lint and 263,180 ordering-fuzz executions pass; tagged integration compiles only.
-See ADR0042 and `evidence/2026-11-03/nuget-discovery-development.json`. No new
-database/managed/client pass is claimed yet. All450capabilities/41families remain;
+See ADR0042 and `evidence/2026-11-03/nuget-discovery-development.json`. Only the named bounded modern hosted scope is qualified.
+All 450 capabilities / 41 families remain;
 78are implementing and372planned. Broader NuGet/format/release verdicts stay open.
 
 The first discovery campaign, `15d7828`, finished with 14 of 16 jobs passing.
@@ -70,16 +93,14 @@ The local repair adds a bounded first-declaration dependency-set projection,
 separate frozen ordinal ID comparison and catalog profile v2 with explicit
 rebuild for old derived projections. Local build/unit/race/lint pass, including
 23,030dependency-fuzz executions. The next native gates compare63,516ordinal
-ID keys and56HTTP metadata cases, preserving the original44case hash. Their
-actual SDK/HTTP results remain unverified. See
+ID keys and56HTTP metadata cases, preserving the original44case hash. Those actual SDK/HTTP outcomes now pass on080c312above; broader combinations remain required. See
 `evidence/2026-11-03/nuget-dependency-set-development.json`.
 
 Both actual native SDK jobs on `080c312` now match all 63,516 dependency ordinal
 ID-key observations, with zero mismatches and every earlier mandatory contract
 passing. Exact source, helper, SDK/library and fixture identities are retained in
 `evidence/2026-11-03/nuget-080c312-checkpoint.json`. This covers the admitted BMP
-ID profile; supplementary asset flags and the 56-case HTTP/restart repair still
-require their separate native outcomes.
+ID profile; supplementary asset flags have only their named cases within the separately accepted56-case HTTP/restart proof above.
 
 Typed dependency declaration selection and shared XML attribute normalization
 are implemented for complete metadata work. Local build/unit/race/lint and five

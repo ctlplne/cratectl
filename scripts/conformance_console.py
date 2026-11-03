@@ -93,6 +93,13 @@ try:
         for name,value in [('Cratectl.Console.Proof.nuspec',nuspec),('content/owned.txt',b'Owned inert NuGet browser payload.\n')]:
             info=zipfile.ZipInfo(name,(2026,1,1,0,0,0));info.compress_type=zipfile.ZIP_DEFLATED;info.external_attr=0o100644<<16;archive.writestr(info,value)
     fixture.update(nuget_admin_token=str(PRIVATE/'nuget-admin.token'),nuget_reader_token=str(PRIVATE/'nuget-reader.token'),nuget_package=str(private('nuget-owned.nupkg',nupkg.getvalue())),nuget_nuspec=str(private('nuget-owned.nuspec',nuspec)))
+    # A second owned package exercises real catalog batch cursors in the browser.
+    second_nuspec=nuspec.replace(b'Cratectl.Console.Proof',b'Cratectl.Console.Second')
+    second_nupkg=io.BytesIO()
+    with zipfile.ZipFile(second_nupkg,'w',compression=zipfile.ZIP_DEFLATED,allowZip64=False)as archive:
+        for name,value in [('Cratectl.Console.Second.nuspec',second_nuspec),('content/owned.txt',b'Owned inert NuGet browser payload.\n')]:
+            info=zipfile.ZipInfo(name,(2026,1,1,0,0,0));info.compress_type=zipfile.ZIP_DEFLATED;info.external_attr=0o100644<<16;archive.writestr(info,value)
+    fixture.update(nuget_second_package=str(private('nuget-second.nupkg',second_nupkg.getvalue())))
     fixture_path=private('browser-fixture.json',fixture)
     token=(install/'admin.token').read_text().strip()
     private('npmrc',f'registry={base}/npm/web-packages/\n//127.0.0.1:38443/npm/web-packages/:_authToken={token}\n'.encode())

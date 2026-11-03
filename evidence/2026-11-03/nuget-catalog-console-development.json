@@ -1,0 +1,91 @@
+{
+  "source_parent": "b19448f3335e2598ae380c8539262bdce9086599",
+  "source_dirty": true,
+  "state": "implemented but unverified by native browser",
+  "implementation": "Administrator NuGet discovery rebuild: bounded read-only preview, independent atomic batches, retained bytes/policy, exact retry identity, confirmed resume paths, repeat traversal and explicit receipt handling. Shared MutationForm can retain its original request until confirmation.",
+  "checks": {
+    "build": {
+      "command": "make build BINDIR=.cache/nuget-catalog-console-build",
+      "status": "passed"
+    },
+    "unit": {
+      "command": "make test",
+      "status": "passed",
+      "scope": "Local ARM temporary stand-ins; no PostgreSQL integration claim."
+    },
+    "race": {
+      "command": "make race",
+      "status": "passed",
+      "scope": "Local ARM temporary stand-ins; no PostgreSQL race claim."
+    },
+    "lint": {
+      "command": "make lint",
+      "status": "passed"
+    },
+    "console_reproduction": {
+      "command": "python3 scripts/build_console.py --check",
+      "status": "passed"
+    },
+    "syntax": {
+      "commands": [
+        "node --check web/tests/zzzzzzzzzzzz-nuget.spec.mjs",
+        "python3 -m py_compile scripts/conformance_console.py",
+        ".cache/actionlint-1.7.12/actionlint -color"
+      ],
+      "status": "passed"
+    }
+  },
+  "native_plan": {
+    "placement": "Actual GitHub native x86 Chromium and real disposable PostgreSQL; no local persistent services.",
+    "cases": [
+      "Two owned inert packages and one-package cursors; manifests/payloads only.",
+      "Real server commits then one browser response is intentionally lost; identical request/key must return original replay receipt.",
+      "Next batch uses returned path and new key; repeat starts at beginning.",
+      "Reader UI and direct API deny rebuild; original package/Nuspec bytes remain exact.",
+      "All previous lifecycle, policy, grant, no-credential and Axe checks remain required."
+    ],
+    "focused_push_matrix": [
+      "repair",
+      "retention",
+      "nuget"
+    ],
+    "independent_databases_per_matrix_entry": 5,
+    "state": "not yet run"
+  },
+  "sources": [
+    {
+      "path": "web/src/nuget-catalog.tsx",
+      "sha256": "43052c97990cff9b4f46821e4b56eb09eeb41f1f6577de4996db4621a5e9d3ec"
+    },
+    {
+      "path": "web/src/components.tsx",
+      "sha256": "bd8c6840c087721e2f756e601165c0b1b42b7a14e9ae5f21564daece0cb0ad45"
+    },
+    {
+      "path": "web/src/repositories.tsx",
+      "sha256": "dc459e191d09312a0baacee7b54ce41c2e44c8363ee6df1ee0dba805004d629a"
+    },
+    {
+      "path": "web/tests/zzzzzzzzzzzz-nuget.spec.mjs",
+      "sha256": "c51f32e28cfb94d6e2664674702543b08057acdaa8a925108d398e2f1faa15a7"
+    },
+    {
+      "path": "scripts/conformance_console.py",
+      "sha256": "6998c5dfe1a0824605ddc09d4542965d09f2397711e29af007629aa8fe0bc50a"
+    },
+    {
+      "path": ".github/workflows/browser-repair.yml",
+      "sha256": "12d05b448c0052c6f7c2e80ce08b8b6d0c2f0a4e1e80fd3a18ab741626927d36"
+    },
+    {
+      "path": "web/build-manifest.json",
+      "sha256": "747937611dee685f838e83659c5eab8c90d0b3a668306bdb5aaba33365541e59"
+    }
+  ],
+  "limits": [
+    "No new browser, PostgreSQL, Windows, format or readiness pass is claimed.",
+    "Accepted080c312native proof predates these source changes.",
+    "No primary/schema/binary switch, sibling/customer change, package execution or release publication.",
+    "All450capabilities/41families and every GOAL.md stage remain required."
+  ]
+}

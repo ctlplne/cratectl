@@ -96,12 +96,35 @@ declared framework/dependency data with numeric version ordering. Legacy
 registration hives and package-type search remain unfinished.
 
 Older packages may return `nuget_catalog_rebuild_required` during search. An
-administrator previews a batch by POSTing this JSON to
+administrator can open **Repositories → Rebuild discovery** for a hosted NuGet
+repository. Enter a reason and batch size, then select **Preview batch**. Review
+the examined/changed counts before **Rebuild this batch**. Each batch is atomic;
+the preview is an observation and apply reads current state again. Confirmed
+receipts expose the exact resume path. Use **Continue to next batch** until the
+end, then **Check again from beginning** to include earlier concurrent publishes.
+Closing between confirmed batches preserves completed work. If a response is
+lost, use **Retry same request**; save its displayed request identity and body
+before closing without confirmation. The console keeps no durable browser copy.
+This new console maintenance journey awaits its native GitHub browser replay.
+
+An administrator previews a batch by POSTing this JSON to
 `/api/v1/repositories/REPOSITORY/nuget/reindex` with their normal Bearer credential:
 
 ```json
 {"limit":100,"after_path":"","dry_run":true,"reason":"Rebuild discovery from retained validated manifests"}
 ```
+
+Save that JSON privately and use the normal management CLI:
+
+```sh
+cratectl --config /private/path/admin-client.json --method POST \
+  --path /api/v1/repositories/REPOSITORY/nuget/reindex \
+  --body-file /private/path/nuget-preview.json
+```
+
+For apply, save `dry_run:false` in a separate private request file and add
+`--idempotency-key YOUR_UNIQUE_BATCH_KEY`. Retain that exact file and key until
+the batch is confirmed; every next batch needs its own key.
 
 Inspect `examined`, `changed`, `after_path` and `more`. Apply the same batch with
 `dry_run:false` and a new 8–128 character `Idempotency-Key`. Retry an applied

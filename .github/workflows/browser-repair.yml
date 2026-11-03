@@ -13,6 +13,8 @@ on:
     paths:
       - 'web/src/repair.tsx'
       - 'web/src/components.tsx'
+      - 'web/src/repositories.tsx'
+      - 'web/src/nuget-catalog.tsx'
       - 'web/tests/zzzz-repair.spec.mjs'
       - 'web/tests/zzzzzz-retention.spec.mjs'
       - 'web/tests/zzzzzzzzzzzz-nuget.spec.mjs'
@@ -25,21 +27,25 @@ permissions:
   contents: read
 
 concurrency:
-  group: browser-replay-${{ github.ref }}-${{ inputs.workflow || 'repair' }}
+  group: browser-replay-${{ github.ref }}-${{ inputs.workflow || 'all' }}
   cancel-in-progress: true
 
 jobs:
   repair:
-    name: Real x86 Chromium ${{ inputs.workflow || 'repair' }} replay
+    name: Real x86 Chromium ${{ matrix.workflow }} replay
     runs-on: ubuntu-24.04
     timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        workflow: ${{ fromJSON(github.event_name == 'workflow_dispatch' && format('["{0}"]', inputs.workflow) || '["repair","retention","nuget"]') }}
     env:
       CRATECTL_CONFORMANCE_DATABASE_FILE: .private/ci-db.json
       CRATECTL_DEV_DATABASE: native
       CRATECTL_QUALIFICATION_BIN_DIR: .cache/ci-build
       PLAYWRIGHT_BROWSERS_PATH: .cache/playwright-browsers
       NPM_CONFIG_USERCONFIG: /dev/null
-      CRATECTL_BROWSER_WORKFLOW: ${{ inputs.workflow || 'repair' }}
+      CRATECTL_BROWSER_WORKFLOW: ${{ matrix.workflow }}
     services:
       cratectl-postgres:
         image: postgres:16.15-alpine
@@ -93,7 +99,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: ci-summary-${{ inputs.workflow || 'repair' }}-browser
+          name: ci-summary-${{ matrix.workflow }}-browser
           path: .cache/ci-evidence-summary.json
           if-no-files-found: error
           retention-days: 30

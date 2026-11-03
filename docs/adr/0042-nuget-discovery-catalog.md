@@ -102,3 +102,22 @@ there is no PostgreSQL schema change or automatic primary maintenance. The
 next HTTP corpus retains all44original cases and their unchanged input hash,
 adding12Unicode/asset-flag/range-equivalence cases. A local pass does not qualify
 native dependency semantics; every original failure and case stays retained.
+
+Qualification update: both actual native Linux architectures pass all56owned
+HTTP metadata cases before and after registry restart on `080c312`, retaining
+the original44case hash. Both63,516ordinal key comparisons pass too. The exact
+15-job checkpoint is `evidence/2026-11-03/github-080c312-checkpoint.json`.
+Earlier unverified wording describes the pre-replay development state. These
+named cases do not qualify every framework, Unicode flag, client or format.
+
+The later administrator console exposes the same synchronous bounded API.
+Operators preview one batch, apply it, retain its confirmed receipt/path and
+explicitly continue. An attempted batch keeps its original request bytes and
+key until confirmation; changing the batch is disabled after the first attempt.
+A lost response remains an unknown outcome until replay confirms the original
+result. No token or operation is persisted in browser storage. Operators save
+an unconfirmed request identity/body before closing, and use normal CLI/API
+replay later. A preview does not freeze the inventory; apply reads current
+state. Completed batches remain independently durable, and traversal repeats
+from the beginning to catch concurrent earlier insertions. The new UI and its
+real commit/response-loss/replay browser test await native GitHub execution.
