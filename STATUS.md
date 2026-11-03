@@ -6,7 +6,18 @@ GitHub native qualification and moves historical controlled-upgrade journeys
 off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
-Current 15-job milestone accepted on clean source
+Latest completed 15-job milestone accepted on clean source
+`17ded1c7eeb4cba2322bd99b4598606eb6b25c21`: main9, OCI2, upgrades2 and actual
+SDK libraries2 all pass. Both actual PostgreSQL/race and broader436check client
+campaigns pass; full x86 Chromium passes15workflows with0bad results. Both OCI
+campaigns pass214checks; each upgrade campaign rebuilds10pinned servers and
+passes15reports. Both SDKs match49original/projected dependency observations
+and all earlier mandatory contracts. Seven unchanged safe runtime/security
+summaries plus the two SDK summaries retain exact identities in
+`evidence/2026-11-03/github-17ded1c-checkpoint.json`. This source predates the
+new registration/search/rebuild code on15d7828, whose GitHub jobs are active.
+
+Earlier 15-job milestone accepted on clean source
 `e7c0419b792b9a3a5bb0310aef2f621a2967db99`: main 9, OCI 2, controlled
 upgrades 2 and actual SDK libraries 2 all pass. Both native PostgreSQL/race and
 broader stock-client campaigns pass, with 436 client checks per architecture.
