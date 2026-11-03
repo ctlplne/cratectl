@@ -43,6 +43,15 @@ jobs:
           python-version: '3.14'
       - name: Install console dependencies without package scripts
         run: npm ci --prefix web --ignore-scripts --no-audit --no-fund
+      - name: Select native OpenSSL 3 for encrypted diagnostic tests
+        if: runner.os == 'macOS'
+        run: |
+          if ! brew list --versions openssl@3 >/dev/null 2>&1; then
+            brew install openssl@3
+          fi
+          cratectl_ci_openssl_bin="$(brew --prefix openssl@3)/bin"
+          "$cratectl_ci_openssl_bin/openssl" version
+          printf '%s\n' "$cratectl_ci_openssl_bin" >> "$GITHUB_PATH"
       - name: Build, unit, race and lint
         run: |
           make build BINDIR=.cache/ci-build

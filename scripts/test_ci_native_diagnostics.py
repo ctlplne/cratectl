@@ -3,6 +3,7 @@
 """Real CMS round trips, authentication failures and owned-file collection."""
 import base64
 import json
+import re
 from pathlib import Path
 import subprocess
 import tempfile
@@ -16,6 +17,11 @@ ROOT = Path(__file__).resolve().parents[1]
 class EncryptedNativeDiagnostics(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        observed = subprocess.run(['openssl', 'version'], capture_output=True, text=True, timeout=10)
+        version = re.match(r'(OpenSSL|LibreSSL) ([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,4})\b', observed.stdout)
+        if observed.returncode or version is None or version[1] != 'OpenSSL' or int(version[2].split('.')[0]) < 3:
+            public = (version[1] + ' ' + version[2]) if version else 'unrecognized CLI'
+            raise AssertionError('CMS fixtures require native OpenSSL3or later; observed ' + public)
         cls.temporary = tempfile.TemporaryDirectory(prefix='cratectl-cms-', dir=ROOT / '.cache')
         cls.folder = Path(cls.temporary.name)
         cls.key, cls.cert = cls.folder / 'recipient.key', cls.folder / 'recipient.pem'
@@ -66,6 +72,13 @@ class EncryptedNativeDiagnostics(unittest.TestCase):
             self.assertEqual(len(commands), 1)
             self.assertEqual(base64.b64decode(commands[0]['output_base64']), log.read_bytes())
             self.assertNotIn('private-synthetic-credential-value', payload.decode())
+            progress.write_text(json.dumps({**report, 'commands': [{**command, 'exit': 0}], 'last_observation': {**command, 'exit': 0}, 'failure': 'owned post-command assertion'}))
+            observed, count = collect(root, 'a' * 40)
+            failure = json.loads(observed)['failures'][0]
+            self.assertTrue(failure['commands'][0]['observation_only'])
+            self.assertEqual(failure['commands'][0]['exit'], 0)
+            self.assertEqual(failure['error'], 'owned post-command assertion')
+            progress.write_text(json.dumps(report))
             log.unlink()
             log.symlink_to(folder / 'admin.token')
             with self.assertRaises(ValueError):

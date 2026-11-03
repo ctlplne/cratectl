@@ -44,10 +44,17 @@ def collect(root, candidate):
         if not isinstance(commands, list) or len(commands) > 1024:
             raise ValueError('native diagnostic command inventory exceeds its bound')
         failure = {'run': run, 'phase': report.get('phase'), 'commands': []}
-        for command in commands:
-            # Expected authorization failures do not need private export.
-            if command.get('expected_success') is not True or command.get('exit') == 0:
-                continue
+        error = report.get('failure', '')
+        if not isinstance(error, str) or len(error) > 8192:
+            raise ValueError('native diagnostic error exceeds its byte budget')
+        failure['error'] = error
+        selected = [command for command in commands if command.get('expected_success') is True and command.get('exit') != 0]
+        observation_only = not selected
+        if observation_only and isinstance(report.get('last_observation'), dict):
+            selected = [report['last_observation']]
+        for command in selected:
+            # On a post-command assertion, preserve only the last observation
+            # and mark its exit separately from an actual command failure.
             log = command.get('private_log', '')
             prefix = '.private/oci-client-conformance/' + run + '/'
             if not isinstance(log, str) or not re.fullmatch(re.escape(prefix) + r'command-[0-9a-f]{32}\.log', log):
@@ -56,7 +63,7 @@ def collect(root, candidate):
                 raise ValueError('native diagnostic log inventory exceeds its byte budget')
             raw = read_owned_file(private_root, root / log, min(MAX_LOG, remaining))
             remaining -= len(raw)
-            failure['commands'].append({'label': command.get('label'), 'exit': command.get('exit'), 'sha256': hashlib.sha256(raw).hexdigest(), 'output_base64': base64.b64encode(raw).decode('ascii')})
+            failure['commands'].append({'label': command.get('label'), 'exit': command.get('exit'), 'observation_only': observation_only, 'sha256': hashlib.sha256(raw).hexdigest(), 'output_base64': base64.b64encode(raw).decode('ascii')})
             if len(failure['commands']) > 2:
                 raise ValueError('native diagnostic failed-command count exceeds its bound')
         registry = path.parent / 'registry.log'

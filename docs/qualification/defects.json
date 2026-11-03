@@ -834,10 +834,30 @@
       "id": "DEFECT.0076",
       "summary": "OCI serving ignores later Accept field lines; native Docker manifest lookup also fails generically",
       "first_failure": "evidence/2026-11-02/oci-clients-f499369-manifest-failure.json",
-      "state": "multi-field defect reproduced and repaired locally; actual PostgreSQL/native replay required",
+      "state": "repaired and replayed in real PostgreSQL/race and native multi-architecture publication prefix",
       "candidate": "f4993696dce668b5a9c070a0afe6062235647973",
       "repair": "Read every Accept field under64-line/8192-byte bounds; preserve quality/specificity and digest policy. Add multi-field regression, fuzz and real PostgreSQL/CAS GET/HEAD/exclusion/policy tests. Keep Docker manifest debug output private and retain the original generic failure.",
-      "limits": "Local header failure is reproduced. The native generic no-such-manifest message does not prove its underlying status or cause; actual native replay remains required."
+      "limits": "Both real PostgreSQL integration/race jobs and native Docker multi-architecture publication pass on b4b4431. Original generic f499369 status remains unproven. Native client journey fails later at file observation; whole main CI fails at macOS CMS setup.",
+      "replay": "evidence/2026-11-03/github-ci-b4b4431-partial-checkpoint.json",
+      "native_replay": "evidence/2026-11-03/oci-clients-b4b4431-observation-failure.json"
+    },
+    {
+      "id": "DEFECT.0077",
+      "summary": "Native file observation fails after sudo Podman copies a stopped-container file",
+      "first_failure": "evidence/2026-11-03/oci-clients-b4b4431-observation-failure.json",
+      "state": "bounded tar-stream observation implemented; native replay required",
+      "candidate": "b4b44316f73c1e9c710fe0b0ff3da66dfc9f0f53",
+      "repair": "Observe native cp stdout without extracting files, preserving packaged UID/mode. Bound physical tar headers/metadata and one regular file; reject links, paths, duplicates, sparse and oversized data. Keep binary stdout separate from stderr; retain encrypted last observations for post-command assertions.",
+      "limits": "Original stat UID/mode/errno unavailable. Root-owned0600 behavior is source-based explanation; no complete client journey pass."
+    },
+    {
+      "id": "DEFECT.0078",
+      "summary": "macOS source lint cannot generate the real CMS recipient fixture with its default openssl",
+      "first_failure": "evidence/2026-11-03/github-ci-b4b4431-partial-checkpoint.json",
+      "state": "native OpenSSL3 selection/preflight implemented; actual macOS replay required",
+      "candidate": "b4b44316f73c1e9c710fe0b0ff3da66dfc9f0f53",
+      "repair": "Select and print Homebrew native openssl@3 before tests; fail clearly on unsupported CLI family/version. Preserve actual encryption/tamper/wrong-key tests without skips.",
+      "limits": "The original default CLI version/stderr were unavailable; no precise old family/version diagnosis asserted. Whole b4b4431 main remains failed."
     }
   ]
 }

@@ -25,7 +25,7 @@ import urllib.parse
 import urllib.request
 import uuid
 
-from oci_client_contract import new_podman_runroot, read_owned_file, validate_podman_runroot
+from oci_client_contract import new_podman_runroot, read_owned_file, read_owned_tar_file, validate_podman_runroot
 from ci.native_client_diagnostics import safe_client_diagnostics
 from qualification_contract import CURRENT_SCHEMA, candidate_binary_directory, validate_historical_build
 
@@ -93,35 +93,47 @@ def check(label, condition):
     print('PASS: ' + label, flush=True)
 
 
-def command(argv, label, *, stdin=None, extra=None, owner=False, ok=True, timeout=180):
+def command(argv, label, *, stdin=None, extra=None, owner=False, ok=True, timeout=180, binary_stdout=False):
     command_env = dict(env)
     if not owner:
         for key in ['CRATECTL_OWNER_DSN', 'CRATECTL_DSN', 'GITHUB_TOKEN', 'GH_TOKEN', 'DOCKER_HOST', 'DOCKER_CONTEXT', 'DOCKER_TLS_VERIFY', 'DOCKER_CERT_PATH']:
             command_env.pop(key, None)
     command_env.update(extra or {})
     path = private('command-' + uuid.uuid4().hex + '.log', b'')
+    stderr_path = private('command-' + uuid.uuid4().hex + '.log', b'') if binary_stdout else None
     entry = {'label': label, 'binary': Path(str(argv[0])).name, 'expected_success': ok, 'private_log': str(path.relative_to(ROOT))}
     with LOCK:
         commands.append(entry)
     started = time.monotonic()
     try:
         with path.open('ab') as output:
-            completed = subprocess.run([str(v) for v in argv], input=stdin, env=command_env, cwd=PRIVATE,
-                                       stdout=output, stderr=subprocess.STDOUT, timeout=timeout)
+            if stderr_path is not None:
+                with stderr_path.open('ab') as error_output:
+                    completed = subprocess.run([str(v) for v in argv], input=stdin, env=command_env, cwd=PRIVATE,
+                                               stdout=output, stderr=error_output, timeout=timeout)
+            else:
+                completed = subprocess.run([str(v) for v in argv], input=stdin, env=command_env, cwd=PRIVATE,
+                                           stdout=output, stderr=subprocess.STDOUT, timeout=timeout)
         with LOCK:
             entry['exit'] = completed.returncode
-        if path.stat().st_size > 8 << 20:
+        if path.stat().st_size + (stderr_path.stat().st_size if stderr_path is not None else 0) > 8 << 20:
             raise AssertionError('native client command exceeded its observation budget: ' + label)
         raw = read_owned_file(PRIVATE, path, 8 << 20)
         if ok is not None and (completed.returncode == 0) != ok:
             # Keep raw output private. Only fixed categories may reach CI logs.
-            lower = raw.lower()
+            diagnostic = read_owned_file(PRIVATE, stderr_path, 8 << 20) if stderr_path is not None else raw
+            if stderr_path is not None:
+                entry['private_log'] = str(stderr_path.relative_to(ROOT))
+            lower = diagnostic.lower()
             category = next((kind for marker, kind in [(b'http response to https', 'tls_profile'), (b'unauthorized:', 'authorization'), (b'authentication required', 'authorization'), (b'requested access to the resource is denied', 'authorization'), (b'connection refused', 'connection'), (b'unknown flag:', 'client_flag'), (b'manifest unknown', 'manifest_missing'), (b'blob unknown', 'blob_missing'), (b'no matching manifest', 'platform_selection')] if marker in lower), 'unclassified')
             with LOCK:
                 result['command_failure_kind'] = category
-                result['command_diagnostics'] = safe_client_diagnostics(raw)
+                result['command_diagnostics'] = safe_client_diagnostics(diagnostic)
             print('Native client error markers: ' + ','.join(result['command_diagnostics']), flush=True)
             raise AssertionError('native client command failed: ' + label + '; category=' + category)
+        with LOCK:
+            if result['status'] == 'running':
+                result['last_observation'] = dict(entry)
         return raw
     finally:
         with LOCK:
@@ -308,9 +320,10 @@ def image_bytes(client, kind, tag, expected, role='reader', ok=True, expected_st
     state = json.loads(call(role, ['inspect', '--format', '{{json .State}}', name], 'inspect never-started ' + client + ' state'))
     check(client + ' package observation never starts its image', state['Running'] is False and state['Status'] in ['created', 'configured'])
     for filename, body in [('cratectl-app.txt', expected), ('cratectl-dependency.txt', DEPENDENCY)]:
-        destination = PRIVATE / ('copy-' + uuid.uuid4().hex)
-        call(role, ['cp', name + ':/' + filename, destination], client + ' copies installed fixture bytes')
-        check(client + ' ' + kind + ' ' + tag + ' exact installed ' + filename, read_owned_file(PRIVATE, destination, 1 << 20) == body)
+        # Both engines support a tar stream on stdout. Preserve the packaged
+        # UID/mode while avoiding a root-owned0600 host file after sudo Podman.
+        copied = call(role, ['cp', name + ':/' + filename, '-'], client + ' streams installed fixture bytes', binary_stdout=True)
+        check(client + ' ' + kind + ' ' + tag + ' exact installed ' + filename, read_owned_tar_file(copied, filename, 1 << 20) == body)
     call(role, ['rm', name], 'remove owned stopped ' + client + ' container')
     with LOCK:
         created.remove((client, role, name))

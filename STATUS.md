@@ -6,31 +6,35 @@ GitHub native qualification and moves historical controlled-upgrade journeys
 off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
-Current product work: Docker/Podman/Helm OCI journeys remain unverified. The
-short Podman runroot repair has replayed through every client login on both
-native Linux architectures at f499369. The next failure is Docker's generic
-manifest lookup error during multi-architecture publication; no complete image
-or Helm journey has passed.
+Current product work: b4b4431 passes both real PostgreSQL integration/race
+jobs and native Docker multi-architecture publication after the Accept repair.
+Its x86 console passes all14workflows with no unexpected, skipped or flaky
+results. Main CI is still failed:8jobs pass and the macOS CMS fixture cannot
+generate its recipient with the default openssl. No precise old CLI version
+was retained. Native Homebrew OpenSSL3 selection and a family/version preflight
+are implemented but await actual macOS replay (`DEFECT.0078`).
 
-A separate serving defect was reproduced: only the first Accept field was
-read, dropping later acceptable types and later exact exclusions. All Accept
-fields are now combined under64-line/8192-byte bounds with unchanged policy
-and specificity rules. Local race regressions and the new header fuzz target
-pass; a new real PostgreSQL/CAS GET/HEAD/exclusion/policy test is compiled but
-awaits actual GitHub execution. The causal link to Docker's generic error
-remains unproven until replay. Manifest debug logs remain private/encrypted.
-See `DEFECT.0076` and `evidence/2026-11-02/oci-clients-f499369-manifest-failure.json`.
-The earlier runroot and unknown diagnostic failures remain retained.
+Both OCI drivers then fail after51checks while opening a file copied from a
+stopped Podman container. Actual UID/mode/errno were not retained. The repair
+uses native cp tar stdout, validates one exact bounded regular file without
+host extraction or permission/ownership changes and separates binary output
+from stderr. Links, paths, duplicates, sparse metadata, malformed lengths and
+oversized input are rejected. Post-command assertions retain an encrypted
+bounded error and last observation. Local real-tar/privacy regressions pass;
+full native client replay remains required (`DEFECT.0077`). See
+`evidence/2026-11-03/oci-clients-b4b4431-observation-failure.json` and
+`evidence/2026-11-03/github-ci-b4b4431-partial-checkpoint.json`.
 
-NuGet version identity is qualified only as a library contract at f499369:
-all1,129synthetic cases agree with actual SDK10.0.403 / NuGet.Versioning7.9.0.0
-on each native Linux architecture. Source, fixture/helper/library hashes,
-versions and limits are retained in
-`evidence/2026-11-02/nuget-version-f499369-checkpoint.json`.
-No NuGet feed, archive, dependency resolution, stock-client or customer journey
-is implemented or verified. Continue all450capabilities and every later stage;
-broad readiness stays negative. The retained local primary/data/binaries and
-private decryption key are untouched.
+NuGet's earlier version-only contract remains qualified on f499369:1,129cases
+agree with actual SDK10.0.403 / NuGet.Versioning7.9.0.0 per native architecture.
+Bounded Nuspec identity extraction is now implemented for UTF8/UTF16 with strict
+ambiguity/resource checks, local race tests and136,641fuzz executions. The
+extended11document actual SDK reader comparison is implemented but unverified.
+See `docs/adr/0033-nuspec-identity-boundary.md` and
+`evidence/2026-11-03/nuspec-identity-development.json`.
+No NuGet feed/archive/dependency/client journey is implemented. All450capability
+requirements remain; broad readiness stays negative. Primary11, qualified548
+binaries, retained data and the local-only private decryption key are preserved.
 
 Current repair milestone accepted on clean source
 `6afbd4ad12cdb1d32aa43386a47822bc6e741fdf`: all five independent focused

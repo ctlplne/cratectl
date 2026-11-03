@@ -1,0 +1,37 @@
+{
+  "candidate": "b4b44316f73c1e9c710fe0b0ff3da66dfc9f0f53",
+  "status": "failed",
+  "run": "https://github.com/ctlplne/cratectl/actions/runs/41550418004",
+  "phase": "native_consumption",
+  "checks_per_architecture": 51,
+  "safe_error": "ValueError: native client observation could not be opened safely",
+  "observed_progress": [
+    "Both native clients publish hosted and separate-tenant multi-architecture graphs with exact root/config/layer observations before reaching consumption.",
+    "Docker consumes its native image and copies both exact fixture files. Podman selects the correct native owned image and confirms its stopped container. The following file observation fails after a successful copy command.",
+    "The original encrypted report selected failed commands only; this is a post-command assertion/read failure, so those command lists are empty. The fixed failure line is retained from the private GitHub step log."
+  ],
+  "artifacts": [
+    {
+      "architecture": "amd64",
+      "safe_summary": "evidence/2026-11-03/oci-clients-b4b4431-amd64-failed-summary.json",
+      "sha256": "ab5807e82685531fa2f33bb0a21ee3724bdf1f0c54dc98d294423bf56a9a0228",
+      "encrypted_metadata": "evidence/2026-11-03/oci-clients-b4b4431-amd64-encrypted-metadata.json",
+      "encrypted_metadata_sha256": "e83a2e1aa780726bffe3deecddbd7dce64a535609d5b70296b05e4639c618951"
+    },
+    {
+      "architecture": "arm64",
+      "safe_summary": "evidence/2026-11-03/oci-clients-b4b4431-arm64-failed-summary.json",
+      "sha256": "ec7933d359376fe0248bbcaea6c1cf79085f8cb17293445c2e5ad45cac96a7d4",
+      "encrypted_metadata": "evidence/2026-11-03/oci-clients-b4b4431-arm64-encrypted-metadata.json",
+      "encrypted_metadata_sha256": "cd1e362176568b4bef79a5b5a4775fc6d75a2f9ddc901a353d9ac1a23d3f961e"
+    }
+  ],
+  "diagnosis_limits": "Actual copied-file UID/mode/errno were not retained. Sudo Podman can preserve a root-owned0600 file from this fixture; treat that as a source-based explanation, not a directly observed stat result.",
+  "repair": "Use native Docker/Podman cp-to-stdout tar streams, separate binary stdout and stderr, validate one exact bounded regular file without host extraction or ownership/mode changes. Encrypted assertion diagnostics also retain the bounded error and last observation with its actual exit code.",
+  "repair_state": "implemented but unverified against native clients",
+  "local_regressions": "Real PAX/regular tar fixtures preserve UID0/mode0600, exact binary bytes and reject links, paths, duplicates, sparse maps, malformed sizes, truncation, metadata/header-count budgets and trailing data.",
+  "limits": [
+    "No complete Docker/Podman/Helm journey passed. Helm, later policy/tenant/lifecycle/restart cases remain unverified.",
+    "Do not count the successful publication prefix or the failed whole run as complete compatibility. Full450capability scope stays active."
+  ]
+}

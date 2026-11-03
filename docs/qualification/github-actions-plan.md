@@ -173,3 +173,24 @@ infrastructure; never hide an unimplemented gate behind a successful skip.
 Once stable, required PR checks can be enforced under a separate authorized
 repository-settings change. Repository protection, release publication and
 customer maintenance are not consequences of a green CI run.
+
+## Current native qualification repairs
+
+The b4b4431 main run passed eight jobs, including both actual PostgreSQL/race
+jobs and the full14workflow x86 console; its macOS source lint failed during
+real CMS fixture generation. Keep that whole run failed. The source workflow
+now selects and prints native Homebrew OpenSSL3 on macOS, and unsupported CLI
+families/versions fail explicitly. Actual macOS replay is still required.
+
+Both native OCI jobs published their multi-architecture graphs and then failed
+during a stopped-container file observation. The next replay streams the
+clients' tar stdout into a bounded one-file observer without host extraction or
+mode/ownership changes. Binary stdout and stderr are separate. Encrypted
+diagnostics retain a bounded error and the last command observation when the
+failure occurs after a command returns. Complete client compatibility remains
+unverified. See [the observed failures](../../evidence/2026-11-03/oci-clients-b4b4431-observation-failure.json).
+
+The same native NuGet library workflow is extended with11owned Nuspec documents
+read by the actual SDK NuGet.Packaging library. Local parser race/fuzz and Go
+fixture checks pass; new managed compilation and native identity comparisons
+remain unverified. No new feed, archive or customer-journey claim is made.

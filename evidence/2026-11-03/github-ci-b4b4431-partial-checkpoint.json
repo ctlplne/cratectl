@@ -1,0 +1,40 @@
+{
+  "candidate": "b4b44316f73c1e9c710fe0b0ff3da66dfc9f0f53",
+  "whole_run_status": "failed",
+  "run": "https://github.com/ctlplne/cratectl/actions/runs/41550418177",
+  "successful_jobs": 8,
+  "failed_jobs": 1,
+  "failed_job": "Source and unit (darwin-arm64)",
+  "failed_step": "Build, unit, race and lint",
+  "safe_error": "AssertionError: real OpenSSL recipient fixture could not be generated",
+  "private_log_sha256": "33d59a5c76b4a76ec98f62cea0a7538b7ffb064d5590e1e8864d240ddf853275",
+  "observed_passes": [
+    "Both actual PostgreSQL native jobs and their integration race steps pass, including the new multi-Accept GET/HEAD/exclusion/policy test.",
+    "Both native current-source PostgreSQL/client artifacts are retained and checked. The x86 full console has14expected,0unexpected,0skipped,0flaky.",
+    "Both Linux source/unit jobs, all3native Go fuzz jobs and scoped security job pass."
+  ],
+  "native_artifacts": [
+    {
+      "architecture": "amd64",
+      "path": "evidence/2026-11-03/github-b4b4431-native-amd64-summary.json",
+      "sha256": "a117acb0f0a7671bd4b46701ffc58c248d43c921ca3c2047b4b8e85b48f72fce"
+    },
+    {
+      "architecture": "arm64",
+      "path": "evidence/2026-11-03/github-b4b4431-native-arm64-summary.json",
+      "sha256": "5319513b7049007bff18d4d8fbd0857a2c47cf2ae6c33fa40b23e1dbca96f33d"
+    }
+  ],
+  "controlled_upgrades": {
+    "run": "https://github.com/ctlplne/cratectl/actions/runs/41550418146",
+    "terminal_status": "success",
+    "limits": "Both jobs report terminal success; upgrade artifacts were not reaccepted as a new whole milestone in this record."
+  },
+  "diagnosis_limits": "The old default macOS openssl family/version and stderr were not retained; no precise old CLI version is asserted.",
+  "repair": "Select and print native Homebrew openssl@3 before source tests. Add a fixed family/version preflight to actual CMS fixtures. Real roundtrip/tamper/wrong-key tests remain mandatory.",
+  "repair_state": "implemented but unverified on GitHub macOS",
+  "limits": [
+    "Whole main run is failed, not green. No broad readiness or complete15job milestone.",
+    "The real PostgreSQL and native publication prefix replay the multi-field Accept repair in named scope; no retroactive406 claim for the older generic Docker error."
+  ]
+}

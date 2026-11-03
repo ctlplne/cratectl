@@ -2,11 +2,13 @@
 # SPDX-License-Identifier: BUSL-1.1
 """Exercise native filesystem boundaries with real files, links and FIFOs."""
 import os
+import io
 from pathlib import Path
 import tempfile
 import unittest
+import tarfile
 
-from oci_client_contract import new_podman_runroot, read_owned_file, validate_podman_runroot
+from oci_client_contract import new_podman_runroot, read_owned_file, read_owned_tar_file, validate_podman_runroot
 
 
 class NativeClientFiles(unittest.TestCase):
@@ -68,6 +70,46 @@ class NativeClientFiles(unittest.TestCase):
             validate_podman_runroot(first, identity)
         with self.assertRaises(ValueError):
             new_podman_runroot('../private')
+
+
+class NativeClientTar(unittest.TestCase):
+    def archive(self, entries, pax=None):
+        output = io.BytesIO()
+        with tarfile.open(fileobj=output, mode='w:', format=tarfile.PAX_FORMAT) as archive:
+            for name, kind, body in entries:
+                entry = tarfile.TarInfo(name)
+                entry.type, entry.uid, entry.gid, entry.mode = kind, 0, 0, 0o600
+                entry.size = len(body) if kind == tarfile.REGTYPE else 0
+                entry.linkname = 'private-outside' if kind in (tarfile.SYMTYPE, tarfile.LNKTYPE) else ''
+                entry.pax_headers = pax or {}
+                archive.addfile(entry, io.BytesIO(body) if entry.size else None)
+        return output.getvalue()
+
+    def test_root_owned_private_mode_and_pax_are_observed_without_extraction(self):
+        body = bytes(range(256)) * 4096
+        for pax in (None, {'mtime': '1730000000.123456789', 'SCHILY.xattr.user.cratectl': 'owned'}):
+            raw = self.archive([('cratectl-app.txt', tarfile.REGTYPE, body)], pax)
+            self.assertEqual(read_owned_tar_file(raw, 'cratectl-app.txt', len(body)), body)
+            with self.assertRaises(ValueError):
+                read_owned_tar_file(raw, 'cratectl-app.txt', len(body) - 1)
+
+    def test_links_duplicates_paths_truncation_and_trailing_archives_are_rejected(self):
+        regular = ('cratectl-app.txt', tarfile.REGTYPE, b'owned')
+        valid = self.archive([regular])
+        cases = [self.archive([regular, regular]), self.archive([]), valid[:512], valid + b'hidden',
+                 self.archive([('/cratectl-app.txt', tarfile.REGTYPE, b'owned')]),
+                 self.archive([('../cratectl-app.txt', tarfile.REGTYPE, b'owned')])]
+        for kind in (tarfile.SYMTYPE, tarfile.LNKTYPE, tarfile.DIRTYPE, tarfile.FIFOTYPE):
+            cases.append(self.archive([('cratectl-app.txt', kind, b'')]))
+        forged = bytearray(valid)
+        forged[124:136] = b'77777777777\0'
+        cases.append(bytes(forged))
+        cases.append(self.archive([regular], {'GNU.sparse.size': '999999999999'}))
+        cases.append(self.archive([regular], {'owned.metadata': 'a' * 65536}))
+        cases.append(self.archive([regular] * 17))
+        for raw in cases:
+            with self.subTest(length=len(raw)), self.assertRaises(ValueError):
+                read_owned_tar_file(raw, 'cratectl-app.txt', 4096)
 
 
 if __name__ == '__main__':

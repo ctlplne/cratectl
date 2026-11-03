@@ -29,9 +29,14 @@ The fixture builds scratch images with two owned text-file layers using only
 COPY instructions. Foreign-platform fixture bytes also use COPY only. It never
 starts an image, entrypoint, package script or chart hook. Docker and Podman
 create named stopped containers solely to copy installed filesystem bytes and
-verify the native platform selection. The copied files are read through bounded
-file descriptors that reject symlink components, hardlinks, special files and
-changing or oversized observations. Containers and Docker image references are
+verify the native platform selection. Both clients copy the selected file as a
+tar stream. The observer does not extract it onto the host: it accepts one exact
+regular file and rejects links, paths, duplicates, sparse metadata, malformed
+lengths and oversized input. This preserves the packaged UID and mode,
+including root-owned 0600 files, without privileged ownership or permission
+changes. Binary stdout is kept separate from client stderr. Other owned files
+use bounded descriptors that reject symlink components, hardlinks, special
+files and changing observations. Containers and Docker image references are
 removed by exact fixture names; Podman uses a separate private VFS store. The
 workflow never changes Docker daemon configuration or prunes global state.
 Podman4 limits the runroot path to50characters. The fixture allocates a new

@@ -1,10 +1,72 @@
 # SPDX-License-Identifier: BUSL-1.1
 """Bounded observations of files returned by native package clients."""
 import os
+import io
 from pathlib import Path
 import stat
 import re
 import tempfile
+import tarfile
+
+
+def read_owned_tar_file(raw, name, limit):
+    """Observe one regular client-copied file without extracting its archive."""
+    if not isinstance(raw, bytes) or len(raw) > 8 << 20 or type(limit) is not int or not 0 < limit <= 4 << 20 or not isinstance(name, str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]{0,199}', name):
+        raise ValueError('native tar observation requires bounded owned input')
+    # Preflight physical headers before tarfile processes PAX/GNU metadata.
+    # Forged lengths cannot drive unbounded reads, offsets or sparse maps.
+    offset, headers, metadata = 0, 0, 0
+    ended = False
+    while offset + 512 <= len(raw):
+        block = raw[offset:offset + 512]
+        if not any(block):
+            if len(raw) - offset < 1024 or any(raw[offset:]):
+                raise ValueError('native tar observation has ambiguous trailing bytes')
+            ended = True
+            break
+        headers += 1
+        if headers > 16 or block[156:157] not in (b'0', b'\0', b'x', b'g', b'L'):
+            raise ValueError('native tar observation contains extra or special entries')
+        field = block[124:136]
+        if field[0] & 0x80:
+            if field[0] & 0x40:
+                raise ValueError('native tar observation has an invalid size')
+            size = int.from_bytes(bytes([field[0] & 0x7f]) + field[1:], 'big')
+        else:
+            field = field.rstrip(b'\0 ').lstrip(b' \0')
+            if field and not re.fullmatch(rb'[0-7]{1,12}', field):
+                raise ValueError('native tar observation has an invalid size')
+            size = int(field or b'0', 8)
+        following = offset + 512 + ((size + 511) // 512) * 512
+        if following > len(raw):
+            raise ValueError('native tar observation is truncated')
+        if block[156:157] in (b'x', b'g', b'L'):
+            metadata += size
+            if metadata > 65536 or b'GNU.sparse.' in raw[offset + 512:offset + 512 + size]:
+                raise ValueError('native tar observation has unsupported metadata')
+        elif size > limit:
+            raise ValueError('native tar observation exceeds its file byte budget')
+        offset = following
+    if not ended:
+        raise ValueError('native tar observation has no complete end marker')
+    try:
+        with tarfile.open(fileobj=io.BytesIO(raw), mode='r:') as archive:
+            members = archive.getmembers()
+            if len(members) != 1:
+                raise ValueError('native tar observation must contain exactly one file')
+            member = members[0]
+            if member.name != name or member.type not in (tarfile.REGTYPE, tarfile.AREGTYPE) or member.linkname or member.sparse is not None or not 0 <= member.size <= limit:
+                raise ValueError('native tar observation is not the exact owned regular file')
+            source = archive.extractfile(member)
+            if source is None:
+                raise ValueError('native tar observation has no file bytes')
+            with source:
+                body = source.read(limit + 1)
+            if len(body) != member.size or len(body) > limit:
+                raise ValueError('native tar observation has mismatched file length')
+            return body
+    except (tarfile.TarError, OSError, OverflowError):
+        raise ValueError('native tar observation could not be parsed safely') from None
 
 
 def new_podman_runroot(run):
