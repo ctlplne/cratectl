@@ -46,6 +46,22 @@ func TestNuGetRegistrationPreservesDeclaredRangesAndListing(t *testing.T) {
 	}
 }
 
+func TestNuGetRegistrationRemovesOnlyEquivalentDependencies(t *testing.T) {
+	raw := []byte(`<package><metadata><id>Owned.Package</id><version>1</version><dependencies><group><dependency id="Owned.A" version="1"/><dependency id="owned.a" version="1.0.0"/><dependency id="Owned.A" version="2"/></group><group/></dependencies></metadata></package>`)
+	m := store.NuGetPackage{ID: "Owned.Package", IDKey: "owned.package", IDProfile: nuget.IDKeyProfile, RawVersion: "1", VersionKey: "1.0.0", NuspecPath: "Owned.Package.nuspec", Nuspec: raw, NuspecSHA256: crypt.Digest(raw), Validated: true}
+	metadata, _ := json.Marshal(m)
+	a := store.Artifact{Path: store.NuGetPath(m.IDKey, m.VersionKey), Digest: strings.Repeat("a", 64), Size: 123, MediaType: "application/octet-stream", Metadata: metadata}
+	_, catalog, _, e := registrationEntry(context.Background(), "https://registry.example/nuget/owned/", a)
+	if e != nil {
+		t.Fatal(e)
+	}
+	groups := catalog["dependencyGroups"].([]map[string]any)
+	deps := groups[0]["dependencies"].([]map[string]string)
+	if len(groups) != 2 || len(deps) != 2 || deps[0]["id"] != "Owned.A" || deps[0]["range"] != "1" || deps[1]["range"] != "2" {
+		t.Fatal("first declaration, dependency set or empty group changed", groups)
+	}
+}
+
 func TestNuGetRegistrationGzipRepresentationHTTP(t *testing.T) {
 	s := New(nil, nil, "https://registry.example")
 	value := map[string]any{"count": 0, "items": []any{}}

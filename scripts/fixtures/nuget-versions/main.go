@@ -64,7 +64,7 @@ func emit(rows any) {
 			}
 		}
 	}
-	if json.NewEncoder(os.Stdout).Encode(map[string]any{"os": runtime.GOOS, "architecture": runtime.GOARCH, "build": identity, "go_unicode_version": unicode.Version, "id_profile": nuget.IDKeyProfile, "rows": rows}) != nil {
+	if json.NewEncoder(os.Stdout).Encode(map[string]any{"os": runtime.GOOS, "architecture": runtime.GOARCH, "build": identity, "go_unicode_version": unicode.Version, "id_profile": nuget.IDKeyProfile, "dependency_case_profile": nuget.DependencyCaseProfile, "rows": rows}) != nil {
 		panic("owned version oracle output failed")
 	}
 }
@@ -73,7 +73,7 @@ func main() {
 	raw, err := io.ReadAll(io.LimitReader(os.Stdin, (2<<20)+1))
 	var values []string
 	caseLimit := 4096
-	if len(os.Args) == 2 && os.Args[1] == "--id" {
+	if len(os.Args) == 2 && (os.Args[1] == "--id" || os.Args[1] == "--ordinal") {
 		caseLimit = 65536
 	}
 	if err != nil || len(raw) > 2<<20 || json.Unmarshal(raw, &values) != nil || len(values) > caseLimit {
@@ -81,6 +81,15 @@ func main() {
 	}
 	if len(os.Args) == 2 && os.Args[1] == "--dependencies" {
 		emit(dependencyProjections(values))
+		return
+	}
+	if len(os.Args) == 2 && os.Args[1] == "--ordinal" {
+		rows := make([]row, 0, len(values))
+		for _, value := range values {
+			key, e := nuget.DependencyIDKey(value)
+			rows = append(rows, row{Valid: e == nil, Key: key})
+		}
+		emit(rows)
 		return
 	}
 	if len(os.Args) == 2 && os.Args[1] == "--range" {

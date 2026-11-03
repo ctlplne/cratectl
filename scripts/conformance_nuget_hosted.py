@@ -212,9 +212,11 @@ def hosted(h):
     # registration reader. This covers production rendering, routing and gzip;
     # it does not infer JSON interoperability from re-encoded XML alone.
     h.repository('dotnet-metadata', 'nuget')
-    corpus = metadata_cases()
+    corpus = metadata_cases(extended=True)
     for case in corpus:
         case['archive_sha256'] = hashlib.sha256(metadata_archive(case)).hexdigest()
+    original = json.dumps(corpus[:44], sort_keys=True, separators=(',', ':')).encode()
+    check('all original44HTTP metadata fixtures remain byte-identical', hashlib.sha256(original).hexdigest() == '911a48eef175c1075cebc742c47b9a615459a157e71d326d062b4a80780c9bca')
     encoded = json.dumps(corpus, sort_keys=True, separators=(',', ':')).encode()
     check('owned NuGet HTTP metadata corpus stays bounded', len(corpus) <= 64 and len(encoded) <= 2 << 20)
     corpus_file = work / 'metadata-corpus.json'

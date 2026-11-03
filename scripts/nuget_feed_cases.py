@@ -9,7 +9,7 @@ import io
 import zipfile
 
 
-def cases():
+def cases(extended=False):
     bodies = [
         ('none', ''), ('empty', '<dependencies/>'),
         ('legacy', '<dependencies><dependency id="Owned.A" version="[1,2)"/><dependency id="Owned.Any"/><dependency id="Owned.Empty" version=""/></dependencies>'),
@@ -49,6 +49,27 @@ def cases():
         xml = '<?xml version="1.0" encoding="utf-16"?><package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd"><metadata><id>' + identity + '</id><version>1.0.0+Owned</version><authors>cratectl owned fixture</authors><description>Inert original UTF16 bytes</description><dependencies><group targetFramework="net10.0"><dependency id="Owned.A" version="[1,2)"/></group></dependencies></metadata></package>'
         raw = (b'\xff\xfe' if encoding.endswith('le') else b'\xfe\xff') + xml.encode(encoding)
         output.append({'index': index, 'label': encoding, 'id': identity, 'nuspec': base64.b64encode(raw).decode('ascii'), 'omit_float_comparison': False})
+    if extended:
+        extra = [
+            ('flags-order-case', 'Owned.A', 'owned.a', '1', '1.0.0', 'runtime,Build,runtime', 'BUILD,RUNTIME'),
+            ('flags-empty-token', 'Owned.A', 'Owned.A', '1', '1', '', ' '),
+            ('flags-supplementary', 'Owned.A', 'Owned.A', '1', '1', '\U00010d70', '\U00010d50'),
+            ('id-micro-sign', 'Owned.µ', 'Owned.Μ', '1', '1', '', ''),
+            ('id-kelvin-sign', 'Owned.K', 'Owned.K', '1', '1', '', ''),
+            ('id-long-s', 'Owned.ſ', 'Owned.S', '1', '1', '', ''),
+            ('id-dotless-i', 'Owned.ı', 'Owned.I', '1', '1', '', ''),
+            ('id-ascii-i', 'Owned.I', 'owned.i', '1', '1', '', ''),
+            ('range-build-metadata', 'Owned.A', 'Owned.A', '1.0+First', '1.0+Second', '', ''),
+            ('range-floating-interval', 'Owned.A', 'Owned.A', '1.*', '[1.0.0, )', '', ''),
+            ('flags-greek-sigma', 'Owned.A', 'Owned.A', '1', '1', 'Σ', 'ς'),
+            ('flags-distinct', 'Owned.A', 'Owned.A', '1', '1', 'build', 'runtime'),
+        ]
+        for label, left, right, lo, hi, include_left, include_right in extra:
+            index = len(output)
+            identity = 'Cratectl.Metadata.Case' + str(index)
+            body = '<dependencies><group><dependency id="' + left + '" version="' + lo + '" include="' + include_left + '"/><dependency id="' + right + '" version="' + hi + '" include="' + include_right + '"/></group></dependencies>'
+            raw = ('<package><metadata><id>' + identity + '</id><version>1.0.0+Owned</version><authors>cratectl owned fixture</authors><description>Inert dependency set comparison</description>' + body + '</metadata></package>').encode()
+            output.append({'index': index, 'label': label, 'id': identity, 'nuspec': base64.b64encode(raw).decode('ascii'), 'omit_float_comparison': False})
     return output
 
 

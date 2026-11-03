@@ -173,6 +173,15 @@ func TestNuGetDiscoveryUsesCurrentCatalogPolicyAndGrants(t *testing.T) {
 	}
 	// An earlier package missing its projection fails discovery explicitly.
 	if e = s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
+		_, e := tx.Exec(ctx, `UPDATE cratectl.artifacts SET metadata=jsonb_set(metadata,'{catalog,profile}','"nuspec-catalog-v1"'::jsonb,true) WHERE repository='owned' AND path=$1`, paths["1.0.0"])
+		return e
+	}); e != nil {
+		t.Fatal(e)
+	}
+	if w := read(token, "/nuget/owned/query"); w.Code != 503 || !strings.Contains(w.Body.String(), "nuget_catalog_rebuild_required") {
+		t.Fatal("obsolete projection silently reused", w.Code, w.Body.String())
+	}
+	if e = s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
 		_, e := tx.Exec(ctx, `UPDATE cratectl.artifacts SET metadata=metadata-'catalog' WHERE repository='owned' AND path=$1`, paths["1.0.0"])
 		return e
 	}); e != nil {

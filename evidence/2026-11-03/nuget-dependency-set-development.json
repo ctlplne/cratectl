@@ -1,0 +1,136 @@
+{
+  "source_parent": "f63bc9ff610fce249d5b7f64df33b8107408c97a",
+  "source_dirty": true,
+  "state": "dependency-set repair and new native comparison gates implemented; actual SDK/HTTP replay unverified",
+  "original_failure": "evidence/2026-11-03/nuget-f63bc9f-metadata-failure.json",
+  "behavior": "Project first equivalent dependency declarations per group, retaining raw bytes/fields and distinct version-key/range/asset/framework semantics. Use frozen ordinal comparison separate from flat identity. Advance derived catalog profile to v2 with existing explicit bounded rebuild; no PostgreSQL schema change.",
+  "local_checks": {
+    "build": "make build BINDIR=.cache/nuget-unique-build passed",
+    "unit": "make test passed",
+    "race": "make race passed; final nuget race replay passed",
+    "lint": "make lint passed",
+    "integration": "Server/store integration compile only; no local PostgreSQL execution",
+    "fuzz": {
+      "target": "FuzzNuspecDependencies",
+      "requested_seconds": 5,
+      "elapsed_seconds": 6.443,
+      "executions": 23030,
+      "status": "passed",
+      "new_invariants": "bounded valid declarations form an idempotent dependency set without partial output"
+    },
+    "generator": "Hash-pinned Unicode15.1 invariant/BMP and Unicode16 supplementary tables regenerated and checked offline",
+    "go_ordinal_observation": "All63516original ID inputs produce bounded Go comparison-key rows;50428admitted. Actual runtime equality remains unverified.",
+    "syntax": "Python compile and main/NuGet actionlint passed; actual managed compilation/execution remains on GitHub"
+  },
+  "http_corpus": {
+    "cases": 56,
+    "fixture_sha256": "dfb0cda92ab9ab13314cd74cb162b3f336dd79c64d729d068fc3dfba406f1b9d",
+    "input_bytes": 38588,
+    "original_cases": 44,
+    "original_fixture_sha256": "911a48eef175c1075cebc742c47b9a615459a157e71d326d062b4a80780c9bca",
+    "original_cases_changed": false,
+    "new_cases": 12,
+    "native_result": "unverified"
+  },
+  "native_plan": "Both actual Linux architectures must match all63516dependency ordinal keys through independent public runtime casing/ordinal APIs and all56original-Nuspec-versus-HTTP framework/range/preference/dependency-set/license cases before/after restart. Keep all original44bytes and case7, retain safe mismatch indexes/paths, and preserve every earlier mandatory library/client/database/browser campaign.",
+  "scope_limits": [
+    "Equality of dependency ranges differs from numeric version ordering. Raw selected declarations remain available; no coordinate ordering tie is merged. Asset flags are compared for uniqueness but not invented as registration protocol fields.",
+    "Frozen dependency casing profile is a named implementation contract requiring actual native matching; this is not host-independent/full-platform qualification.",
+    "Catalog v1requires explicit bounded rebuild for v2; flat/pinned bytes, listing, current policy and immutable original manifests remain intact. No automatic primary change.",
+    "No new passing SDK/HTTP/full-client/format/license/security/production TLS/platform/scale/readiness verdict. All450capabilities/41families and later stages remain required."
+  ],
+  "files": [
+    {
+      "path": "STATUS.md",
+      "sha256": "0d92db2ef14c73a11e0fac2c8b69d370bd22db3b24b84d1f388e097cb3209587"
+    },
+    {
+      "path": "docs/adr/0042-nuget-discovery-catalog.md",
+      "sha256": "884bbf9a8db18184ed5f26b62ff1c047249852fb2d83133486158b187a99917a"
+    },
+    {
+      "path": "docs/operator/nuget.md",
+      "sha256": "59ce752e0adba126c12104254de1a59b1d8ac41756b8a76369d0435c2bc2896b"
+    },
+    {
+      "path": "docs/qualification/defects.json",
+      "sha256": "e1043700c8635311e41afd231330e4980c81ac7e28ec9c2eead7e377850a297a"
+    },
+    {
+      "path": "docs/qualification/github-actions-plan.md",
+      "sha256": "0955e5dc276140093edab6fb7b8eb2686fc6ce2aac6330f88cfdb78716361720"
+    },
+    {
+      "path": "docs/qualification/journeys.json",
+      "sha256": "c6c65f4de54182eb33ccdc86624838c89400887bfc3cde073f65dc2e50121509"
+    },
+    {
+      "path": "docs/qualification/parity.json",
+      "sha256": "af3134b4820b8c08356fecf6af9554156e42a8af6127a2e7fb244e5a802a0c25"
+    },
+    {
+      "path": "docs/qualification/remaining.json",
+      "sha256": "df331f014b21e62fe156027e72da2a5efd6b4693d0d8f96dbd13d4d97da6b978"
+    },
+    {
+      "path": "internal/nuget/catalog.go",
+      "sha256": "0b64987533f76e3f73edc58846067bbbd919d5aebf6d1327a4ad6bf13b36c987"
+    },
+    {
+      "path": "internal/nuget/dependencies_test.go",
+      "sha256": "27c0463e98e7d808a33d8d20101b3f2072264d96eee7aeefd5fccc01569cacde"
+    },
+    {
+      "path": "internal/nuget/dependency_case_profile.go",
+      "sha256": "eee2d58e37cdcd8ce735e63902dc993959dc6224367f0176e1cf61724f13acc5"
+    },
+    {
+      "path": "internal/nuget/dependency_unique.go",
+      "sha256": "80aefdb6635ef468c27905bdbfa0a6299ff97147e9b1a93221d2fda73062ca68"
+    },
+    {
+      "path": "internal/nuget/dependency_unique_test.go",
+      "sha256": "95172f29bf46375dd02766d6cf0f8fa7873a16d0d514f6d358bbc5c6048af0a8"
+    },
+    {
+      "path": "internal/server/nuget_discovery.go",
+      "sha256": "cd212a752fb6e3fe61c2e5e5db4e46391b57fba38e1678edaad8b7f1e6415beb"
+    },
+    {
+      "path": "internal/server/nuget_discovery_integration_test.go",
+      "sha256": "86a0bf9a982717ebfbd7db5bafc8207ab98e5535528157594a1d70641efea63d"
+    },
+    {
+      "path": "internal/server/nuget_discovery_test.go",
+      "sha256": "98fad1e7c4e7eccfad56869ca22618d81b9d0236d46d5fdcd930c18c511fceaf"
+    },
+    {
+      "path": "scripts/conformance_nuget_hosted.py",
+      "sha256": "858140c1152a74c3dbb3fc0569f10befc0b5eda01fe4e0580652912eb7aa521e"
+    },
+    {
+      "path": "scripts/fixtures/nuget-versions/Program.cs",
+      "sha256": "d9079f574e8b0d654675ebf61814a8a0f74d26c04e6017de80db97158cbe6637"
+    },
+    {
+      "path": "scripts/fixtures/nuget-versions/main.go",
+      "sha256": "9670dab0a98c2a0e4addeb275b4ffa4e3d469b56066057194f8f683f7cefe0dd"
+    },
+    {
+      "path": "scripts/generate_nuget_ordinal_profile.py",
+      "sha256": "7e96778a4fba9c54508492f067d7cc40636bee1e73459fe3fb4f5d88f895d070"
+    },
+    {
+      "path": "scripts/nuget_feed_cases.py",
+      "sha256": "e8ae81214d23974d888f68a551f0d64c4be1ec487540caad8b4b6bfdb06055a7"
+    },
+    {
+      "path": "scripts/nuget_version_contract.py",
+      "sha256": "fcc1faba31efb4bcd3e2646cde0fe22ec20720d25bd33e3978c3dc33f3ad9931"
+    },
+    {
+      "path": "scripts/test_nuget_feed_cases.py",
+      "sha256": "50281d33ee61ddfd6862383f67147802de60e1bc644911c3de6399a2550f604a"
+    }
+  ]
+}

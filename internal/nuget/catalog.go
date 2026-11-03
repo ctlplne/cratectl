@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-const CatalogProfile = "nuspec-catalog-v1"
+const CatalogProfile = "nuspec-catalog-v2"
 
 // Catalog is a rebuildable discovery projection. SourceSHA binds it to the
 // retained manifest; it never supplies authorization or a security decision.
@@ -62,6 +62,10 @@ func BuildCatalog(ctx context.Context, raw []byte) (Catalog, error) {
 		return Catalog{}, e
 	}
 	d, e := ParseNuspecDependencies(ctx, raw)
+	if e != nil {
+		return Catalog{}, e
+	}
+	d, e = UniqueNuspecDependencies(ctx, d)
 	if e != nil {
 		return Catalog{}, e
 	}

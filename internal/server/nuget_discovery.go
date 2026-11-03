@@ -57,6 +57,10 @@ func registrationEntry(ctx context.Context, root string, a store.Artifact) (stri
 	if e != nil {
 		return "", nil, nil, e
 	}
+	d, e = nuget.UniqueNuspecDependencies(ctx, d)
+	if e != nil {
+		return "", nil, nil, e
+	}
 	base := nugetRegistrationURL(root, m.IDKey)
 	leaf := base + url.PathEscape(m.VersionKey) + ".json"
 	content := root + "flat/" + url.PathEscape(m.IDKey) + "/" + url.PathEscape(m.VersionKey) + "/" + url.PathEscape(m.IDKey+"."+m.VersionKey+".nupkg")

@@ -115,6 +115,12 @@ derived discovery metadata; it preserves bytes, listing, creation time and
 current security decisions. Stopping between batches leaves completed receipts
 durable. No schema migration or automatic primary rebuild is required.
 
+The dependency-set repair advances the derived catalog profile from v1 to v2.
+Older projections must use the same explicit rebuild procedure above. Pinned
+package bytes remain intact; the change does not approve an artifact or change
+its current review/security decision. The new dependency projection still
+requires native GitHub replay before a broader compatibility claim.
+
 Operator budgets are `--nuget-upload-bytes` (64 MiB default, maximum 1 GiB),
 `--nuget-expanded-bytes` (256 MiB default, maximum 1 TiB), and
 `--nuget-file-budget` (10,000 default, maximum 16,384). The global object-store

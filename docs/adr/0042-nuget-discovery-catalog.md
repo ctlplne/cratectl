@@ -1,6 +1,6 @@
 # 0042: Bounded NuGet discovery from retained manifests
 
-Hosted publication derives a compact `nuspec-catalog-v1` inside the existing
+Hosted publication derives a compact `nuspec-catalog-v2` inside the existing
 artifact metadata. It records selected scalar properties, full version,
 prerelease/SemVer 2 eligibility and a version ordering key. Its source SHA256
 binds it to the retained original Nuspec. The projection supplies discovery
@@ -77,3 +77,28 @@ Primary specifications reviewed 2026-11-03:
 - https://learn.microsoft.com/en-us/nuget/api/search-query-service-resource
 - https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-package-search
 - https://github.com/NuGet/NuGet.Client/tree/dev/src/NuGet.Core/NuGet.Protocol
+
+The first actual HTTP corpus on f63bc9f found one dependency-set mismatch in
+both architectures (DEFECT.0086). The SDK's Nuspec reader removes equivalent
+items; emitting raw declarations in registration retained a duplicate. The new
+projection retains the first equivalent declaration and preserves distinct
+ranges, asset-flag sets, empty groups and framework groups. Default SDK range
+equality compares normalized bounds and inclusivity, ignoring build metadata
+and floating preference; the first declaration still supplies its original
+wire range. Version-coordinate ordering ties remain separate identities.
+
+Dependency identity uses ordinal comparison rather than flat-container keys.
+For example micro sign/Greek mu compare alike while Kelvin sign/ASCII K retain
+distinct dependency identities. Generated casing tables use pinned Unicode
+15.1 invariant/BMP data and Unicode16 supplementary ordinal data, including the
+runtime's dotless-i/long-s exceptions. No host Go Unicode tables determine
+dependency identity. The next native library gate compares all63,516original
+ID cases through actual public runtime invariant/ordinal APIs. Native matching
+of this new profile remains unverified.
+
+Catalog profile v2 ensures old derived v1 projections require the existing
+explicit bounded rebuild. Raw manifests, bytes, listing and policy stay intact;
+there is no PostgreSQL schema change or automatic primary maintenance. The
+next HTTP corpus retains all44original cases and their unchanged input hash,
+adding12Unicode/asset-flag/range-equivalence cases. A local pass does not qualify
+native dependency semantics; every original failure and case stays retained.

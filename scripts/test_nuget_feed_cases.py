@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: BUSL-1.1
 """Keep the actual SDK HTTP corpus deterministic, complete and inert."""
 import base64
+import hashlib
 import io
 import json
 import unittest
@@ -11,6 +12,14 @@ from nuget_feed_cases import archive, cases, difference_paths
 
 
 class OwnedNuGetHTTPFixtures(unittest.TestCase):
+    def test_extended_corpus_preserves_all_original_cases_and_fixture_identity(self):
+        original=cases();extended=cases(extended=True)
+        self.assertEqual(len(extended),56)
+        self.assertEqual(extended[:44],original)
+        for case in original:case['archive_sha256']=hashlib.sha256(archive(case)).hexdigest()
+        self.assertEqual(hashlib.sha256(json.dumps(original,sort_keys=True,separators=(',',':')).encode()).hexdigest(),'911a48eef175c1075cebc742c47b9a615459a157e71d326d062b4a80780c9bca')
+        self.assertEqual([c['index'] for c in extended],list(range(56)))
+
     def test_diagnostics_identify_nested_differences_without_values(self):
         left = {'groups': [{'framework':'net10.0','packages':[{'id':'Owned.A','min':'private-synthetic-original'}]}], 'license_acceptance':True}
         right = {'groups': [{'framework':'unsupported','packages':[{'id':'Owned.A','min':'private-synthetic-http'},{'id':'Owned.B'}]}], 'license_acceptance':False}

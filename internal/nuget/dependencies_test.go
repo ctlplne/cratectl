@@ -125,6 +125,14 @@ func FuzzNuspecDependencies(f *testing.F) {
 		if len(got.Groups) > MaxNuspecDependencyGroups {
 			t.Fatal("group budget escaped")
 		}
+		unique, e := UniqueNuspecDependencies(context.Background(), got)
+		if e != nil {
+			t.Fatal("valid selected declarations cannot form a bounded set", e)
+		}
+		again, e := UniqueNuspecDependencies(context.Background(), unique)
+		if e != nil || !reflect.DeepEqual(unique, again) {
+			t.Fatal("dependency set is not idempotent", e)
+		}
 		count := 0
 		for _, group := range got.Groups {
 			count += len(group.Dependencies)

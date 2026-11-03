@@ -285,6 +285,15 @@ def main():
         report['id_mismatch_indexes'] = errors
         report['id_mismatches'] = [{'index': index, 'input': identifiers[index], 'go': actual['rows'][index], 'reference': expected['rows'][index]} for index in errors[:64]]
         check('all owned ID validity and invariant lookup keys agree within the explicit transport profile', not errors)
+        report['phase'] = 'dependency_ordinal_keys'
+        actual = json.loads(command([work / 'go-oracle', '--ordinal'], 'derive frozen dependency ordinal keys with Go', encoded))
+        expected = json.loads(command([dotnet, work / 'managed/Oracle.dll', 'ordinal'], 'derive dependency keys through actual runtime invariant/ordinal APIs', encoded))
+        check('ordinal references use exact clean native source and installed packaging library', actual['build'] == native['build'] and actual['os'] == expected['os'] == 'linux' and actual['architecture'] == arch and expected['architecture'] == {'amd64':'x64','arm64':'arm64'}[arch] and expected['version'] == report['packaging_library_version'])
+        check('ordinal references retain every original ID case', len(actual['rows']) == len(expected['rows']) == len(identifiers))
+        errors = [index for index, (a,b) in enumerate(zip(actual['rows'],expected['rows'])) if a != b]
+        report.update(ordinal_cases=len(identifiers), ordinal_profile=actual['dependency_case_profile'], ordinal_fixture_sha256=hashlib.sha256(encoded).hexdigest(), ordinal_mismatch_indexes=errors,
+                      ordinal_mismatches=[{'index':index,'go':actual['rows'][index],'reference':expected['rows'][index]} for index in errors[:32]])
+        check('all dependency ordinal keys agree with actual runtime APIs', not errors)
         report['phase'] = 'version_comparison'
         pairs = comparison_cases()
         encoded = json.dumps(pairs).encode()

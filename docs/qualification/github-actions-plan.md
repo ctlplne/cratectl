@@ -418,3 +418,16 @@ retain the bounded corpus/observation hashes and mismatch indexes without
 arbitrary client output. Every case must remain visible after a failure; the
 corpus is never reduced to make the gate pass. New native semantics remain
 unverified until both actual GitHub architectures execute them.
+
+Actual f63bc9f SDK discovery and stock search now pass on both architectures,
+closing the scoped alias defect. The broader client campaign fails the new
+HTTP equality gate at the same duplicate-items case7of44on both architectures;
+all43other cases match. Keep
+[the original failure](../../evidence/2026-11-03/nuget-f63bc9f-metadata-failure.json).
+The next repair projects dependency sets before registration/catalog work and
+requires an explicit v1-to-v2 derived catalog rebuild for earlier packages.
+The library gate adds63,516actual runtime ordinal-key comparisons. The HTTP
+gate keeps all original44cases with the exact original hash and adds12Unicode,
+asset-flag and range-equivalence cases. Native56case restart equality and the
+new casing profile remain unverified; local unit/fuzz results cannot replace
+those actual SDK outcomes.

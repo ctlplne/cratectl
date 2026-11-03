@@ -59,6 +59,21 @@ before/after actual registry restart. Local Go admits all 44 inert archives and
 declarations; managed/client replay remains unverified. See
 `evidence/2026-11-03/nuget-search-repair-development.json`.
 
+The alias repair passes actual SDK discovery and stock search on both native
+architectures at `f63bc9f`. The campaign still fails both full client jobs:
+case7of44in the new HTTP corpus retains an equivalent dependency that the SDK's
+Nuspec reader removes (DEFECT.0086). Both failed summaries and safe diagnostic
+paths are retained in `evidence/2026-11-03/nuget-f63bc9f-metadata-failure.json`.
+Each broader campaign completes604checks before that failure; this is not a
+passing conformance count. No new corpus restart result is claimed.
+The local repair adds a bounded first-declaration dependency-set projection,
+separate frozen ordinal ID comparison and catalog profile v2 with explicit
+rebuild for old derived projections. Local build/unit/race/lint pass, including
+23,030dependency-fuzz executions. The next native gates compare63,516ordinal
+ID keys and56HTTP metadata cases, preserving the original44case hash. Their
+actual SDK/HTTP results remain unverified. See
+`evidence/2026-11-03/nuget-dependency-set-development.json`.
+
 Typed dependency declaration selection and shared XML attribute normalization
 are implemented for complete metadata work. Local build/unit/race/lint and five
 bounded fuzz campaigns pass. The owned SDK oracle now compares 49 original

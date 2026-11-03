@@ -54,8 +54,31 @@ class Program
             memory.Write(buffer, 0, count);
         }
         var values = JsonSerializer.Deserialize<string[]>(memory.ToArray());
-        int caseLimit = args.Length == 1 && args[0] == "id" ? 65536 : 4096;
+        int caseLimit = args.Length == 1 && (args[0] == "id" || args[0] == "ordinal") ? 65536 : 4096;
         if (values == null || values.Length > caseLimit) throw new Exception("owned case count");
+        if (args.Length == 1 && args[0] == "ordinal")
+        {
+            var observations = values.Select(value => {
+                bool valid;
+                try { PackageIdValidator.ValidatePackageId(value); valid = !value.Any(c => char.IsControl(c)); }
+                catch (ArgumentException) { valid = false; }
+                // Every admitted ID is BMP. Ask public runtime APIs whether
+                // each invariant uppercase mapping remains ordinal-equivalent.
+                string key = valid ? string.Concat(value.Select(c => {
+                    string original = c.ToString();
+                    string upper = original.ToUpperInvariant();
+                    return StringComparer.OrdinalIgnoreCase.Equals(original, upper) ? upper : original;
+                })) : "";
+                return new { valid, key };
+            }).ToArray();
+            Console.WriteLine(JsonSerializer.Serialize(new {
+                os = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "linux" : "other",
+                architecture = RuntimeInformation.ProcessArchitecture.ToString().ToLowerInvariant(),
+                version = typeof(PackageIdValidator).Assembly.GetName().Version.ToString(),
+                rows = observations
+            }));
+            return;
+        }
         if (args.Length == 1 && args[0] == "dependencies")
         {
             var observations = values.Select(value => {
