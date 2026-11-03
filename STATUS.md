@@ -74,6 +74,13 @@ ID keys and56HTTP metadata cases, preserving the original44case hash. Their
 actual SDK/HTTP results remain unverified. See
 `evidence/2026-11-03/nuget-dependency-set-development.json`.
 
+Both actual native SDK jobs on `080c312` now match all 63,516 dependency ordinal
+ID-key observations, with zero mismatches and every earlier mandatory contract
+passing. Exact source, helper, SDK/library and fixture identities are retained in
+`evidence/2026-11-03/nuget-080c312-checkpoint.json`. This covers the admitted BMP
+ID profile; supplementary asset flags and the 56-case HTTP/restart repair still
+require their separate native outcomes.
+
 Typed dependency declaration selection and shared XML attribute normalization
 are implemented for complete metadata work. Local build/unit/race/lint and five
 bounded fuzz campaigns pass. The owned SDK oracle now compares 49 original
