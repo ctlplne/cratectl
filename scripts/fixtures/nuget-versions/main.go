@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BUSL-1.1
-// This owned test executable compares the Go contract with NuGet.Versioning.
+// This owned test executable compares Go contracts with installed SDK libraries.
 package main
 
 import (
@@ -11,6 +11,7 @@ import (
 	"os"
 	"runtime"
 	"runtime/debug"
+	"unicode"
 
 	"ctlplne.dev/cratectl/internal/nuget"
 )
@@ -43,7 +44,7 @@ func emit(rows any) {
 			}
 		}
 	}
-	if json.NewEncoder(os.Stdout).Encode(map[string]any{"os": runtime.GOOS, "architecture": runtime.GOARCH, "build": identity, "rows": rows}) != nil {
+	if json.NewEncoder(os.Stdout).Encode(map[string]any{"os": runtime.GOOS, "architecture": runtime.GOARCH, "build": identity, "go_unicode_version": unicode.Version, "rows": rows}) != nil {
 		panic("owned version oracle output failed")
 	}
 }
@@ -51,8 +52,21 @@ func emit(rows any) {
 func main() {
 	raw, err := io.ReadAll(io.LimitReader(os.Stdin, (2<<20)+1))
 	var values []string
-	if err != nil || len(raw) > 2<<20 || json.Unmarshal(raw, &values) != nil || len(values) > 4096 {
+	caseLimit := 4096
+	if len(os.Args) == 2 && os.Args[1] == "--id" {
+		caseLimit = 65536
+	}
+	if err != nil || len(raw) > 2<<20 || json.Unmarshal(raw, &values) != nil || len(values) > caseLimit {
 		panic("owned version oracle input is invalid")
+	}
+	if len(os.Args) == 2 && os.Args[1] == "--id" {
+		rows := make([]row, 0, len(values))
+		for _, value := range values {
+			key, err := nuget.IDKey(value)
+			rows = append(rows, row{Valid: err == nil, Key: key})
+		}
+		emit(rows)
+		return
 	}
 	if len(os.Args) == 2 && os.Args[1] == "--nuspec" {
 		rows := make([]nuspecRow, 0, len(values))

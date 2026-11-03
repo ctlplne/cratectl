@@ -1,0 +1,50 @@
+{
+  "source_parent": "ad8a24983922d7d4cb90d896a03f8cfe45bcd761",
+  "source_dirty": true,
+  "state": "implemented but unverified against actual SDK",
+  "scope": "Bounded legacy-ID validation and invariant flat-container wire key only",
+  "source_files": [
+    {
+      "path": "internal/nuget/id.go",
+      "sha256": "dae3e85289813075789172667469ce1d0d1aba5fb4ad946a7f37dc91ee0212ac"
+    },
+    {
+      "path": "internal/nuget/id_test.go",
+      "sha256": "a8c228c1631859af181a6fab879265c3e40a3e8f0291c664292bba6f56c7e441"
+    },
+    {
+      "path": "scripts/fixtures/nuget-versions/main.go",
+      "sha256": "e3943e771d37bb4b989589438dcc2249478b8c8e3937c4453b01aee92b33f765"
+    },
+    {
+      "path": "scripts/fixtures/nuget-versions/Program.cs",
+      "sha256": "48c71537a9c95b7c5da7b0d67985e7faf5afa4ce97e59110d0fe7afa24923783"
+    },
+    {
+      "path": "scripts/nuget_version_contract.py",
+      "sha256": "20275a77f7460cad984b05f32811c4f8ccd5dfc0c6461e57d2cd2a53a4325889"
+    }
+  ],
+  "owned_id_cases": 63516,
+  "encoded_input_bytes": 1526240,
+  "fixture_sha256": "44248bbc9bf9d395a4708616d9752d888dfba0d0510af1de7be94daecfff6188",
+  "go_unicode_version": "17.0.0",
+  "local_validation": [
+    "Focused NuGet race suite passed.",
+    "FuzzIDKey passed300123executions in5seconds.",
+    "Owned Go helper executed all63516cases on dirtydarwin-arm64; no SDK match inferred.",
+    "Final standard build/unit/race/lint, module tidy-diff, Python syntax/fixture budgets and all-workflow actionlint passed."
+  ],
+  "native_next": "Actual native Linux SDK validation/ToLowerInvariant comparison of all63516cases, retaining SDK acceptance separately from explicit control-character transport exclusions. Native source/architecture, SDK/library/helper/fixture and result-row hashes must be retained.",
+  "observations": [
+    "IDKey never trims raw manifest text, performs Unicode normalization or uses a locale.",
+    "Invariant dotted/dotless I, composed/decomposed identities, unsafe paths/control text and size/no-partial-key boundaries have regression coverage.",
+    "Only ID fixture mode expands to65536cases; all other modes keep4096 and all modes keep2MiBinput bounds."
+  ],
+  "limits": [
+    "Actual new managed compilation and ID comparison have not run. Do not call the ID contract verified.",
+    "Wire-key foundation only. Durable package identity/aliases, common-store publication, full metadata/archive/signatures, feeds and native client/dependency/tenant/policy/lifecycle/platform journeys remain required.",
+    "Legacy validation and invariant-casing sources are behavioral references; no vendor code was copied. The optional newer ASCII-restricted validator is not substituted for legacy Unicode support.",
+    "All450capabilities/41families and negative broad readiness verdicts remain. Local primary11/qualified548binaries and private state were preserved."
+  ]
+}

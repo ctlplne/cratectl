@@ -211,3 +211,11 @@ The old three omitted bind addresses remain a configuration observation,
 not an observed exposure or incident. Continue product implementation and
 the remaining offload inventory above; all450capabilities and negative broad
 readiness verdicts remain.
+
+The NuGet library workflow is further extended with63,516owned ID cases,
+covering all non-surrogate BMP values plus whole-ID edge cases. The actual SDK
+validator and invariant casing are compared with the bounded Go wire-key path;
+explicit transport exclusions retain the SDK's separate acceptance result.
+This new managed/native comparison remains unverified. Complete durable NuGet
+feed and stock-client journeys follow this coordinate work; the library gate
+does not replace them. See [the ID contract](../adr/0035-nuget-id-lookup-keys.md).

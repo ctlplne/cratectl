@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
-"""Compare Go version, Nuspec and archive identity with actual SDK libraries.
+"""Compare Go ID, version, Nuspec and archive identity with actual SDK libraries.
 
 This is a native library contract test, not package-feed or stock-client proof.
 The owned C# fixture has no package references and clears package sources.
@@ -70,6 +70,17 @@ def archive_cases():
     return values
 
 
+def id_cases():
+    # Cover every non-surrogate BMP scalar inside the legacy word grammar,
+    # plus whole-coordinate limits, transport guards and supplementary cases.
+    values = ['Cratectl.' + chr(code) + '.Case' for code in range(0x10000) if not 0xd800 <= code <= 0xdfff]
+    values += ['', '_', 'Cratectl.Library', 'Cratectl.İD', 'Cratectl.ID', 'Cratectl.ıD', 'Cratectl.É', 'Cratectl.E\u0301',
+               'Cratectl\n', 'Cratectl\r', 'Cratectl\x00', ' Cratectl', 'Cratectl ', 'Cratectl..Other', '.Cratectl', 'Cratectl-', 'Cratectl/Other', 'Cratectl%2eOther',
+               'A' * 100, 'A' * 101, 'Ü' * 100, 'Ü' * 101, '𐐀' * 50, '𐐀' * 51,
+               'Cratectl.𐐀', 'Cratectl.𐐨', 'Cratectl.𞤀', 'Cratectl.𞤢']
+    return list(dict.fromkeys(values))
+
+
 def main():
     os.chdir(ROOT)
     os.umask(0o077)
@@ -81,7 +92,7 @@ def main():
     candidate = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
     dirty = bool(subprocess.check_output(['git', 'status', '--porcelain', '--untracked-files=all']).strip())
     arch = {'x86_64': 'amd64', 'aarch64': 'arm64'}.get(platform.machine())
-    report = {'candidate': candidate, 'run_id': os.environ.get('GITHUB_RUN_ID'), 'status': 'failed', 'phase': 'preflight', 'source_dirty': dirty, 'checks': [], 'limits': ['Native version-key, Nuspec identity and owned ZIP archive identity/manifest-byte contracts only. No full package/signature, ZIP64/split/exotic archive, feed, dependency-resolution, publish/consume, tenant, policy, symbol, Chocolatey/PowerShell or release-readiness qualification.']}
+    report = {'candidate': candidate, 'run_id': os.environ.get('GITHUB_RUN_ID'), 'status': 'failed', 'phase': 'preflight', 'source_dirty': dirty, 'checks': [], 'limits': ['Native transport-profile ID/flat-key, version-key, Nuspec identity and owned ZIP archive identity/manifest-byte contracts only. ID reference acceptance and transport-profile exclusions are reported separately. No durable publication, full package/signature, ZIP64/split/exotic archive, feed, dependency-resolution, publish/consume, tenant, policy, symbol, Chocolatey/PowerShell or release-readiness qualification.']}
     environment = dict(os.environ, DOTNET_CLI_TELEMETRY_OPTOUT='1', DOTNET_SKIP_FIRST_TIME_EXPERIENCE='1', DOTNET_NOLOGO='1', DOTNET_GENERATE_ASPNET_CERTIFICATE='false', DOTNET_CLI_HOME=str(work / 'dotnet-home'), NUGET_PACKAGES=str(work / 'packages'), MSBuildEnableWorkloadResolver='false', GOTOOLCHAIN='local', GOCACHE=str(ROOT / '.cache/go-build'), GOMODCACHE=str(ROOT / '.cache/go-mod'))
     number = 0
 
@@ -159,6 +170,23 @@ def main():
         report['archive_mismatch_indexes'] = errors
         report['archive_mismatches'] = [{'index': index, 'go': actual['rows'][index], 'reference': expected['rows'][index]} for index in errors[:16]]
         check('all owned archive identities and exact Nuspec bytes agree with actual SDK reader', not errors)
+        report['phase'] = 'id_compare'
+        identifiers = id_cases()
+        encoded = json.dumps(identifiers).encode()
+        check('owned identifier corpus stays within the input and case budgets', len(encoded) <= 2 << 20 and len(identifiers) <= 65536)
+        report.update(id_cases=len(identifiers), id_fixture_sha256=hashlib.sha256(encoded).hexdigest())
+        actual = json.loads(command([work / 'go-oracle', '--id'], 'derive owned NuGet ID keys with Go', encoded))
+        expected = json.loads(command([dotnet, work / 'managed/Oracle.dll', 'id'], 'validate IDs and derive invariant keys with actual SDK', encoded))
+        check('ID reference processes use this clean native source', actual['os'] == expected['os'] == 'linux' and actual['architecture'] == arch and expected['architecture'] == {'amd64': 'x64', 'arm64': 'arm64'}[arch] and actual['build'] == native['build'])
+        check('ID reference library and case count are observed', expected['version'] == report['packaging_library_version'] and len(actual['rows']) == len(expected['rows']) == len(identifiers))
+        projected = [{'valid': row['valid'], 'key': row['key']} for row in expected['rows']]
+        report.update(id_cases=len(identifiers), id_fixture_sha256=hashlib.sha256(encoded).hexdigest(), id_go_unicode_version=actual['go_unicode_version'], id_reference_runtime=expected['runtime'], id_reference_accepted=sum(row['reference_valid'] for row in expected['rows']), id_transport_rejected_reference_accepted_indexes=[index for index, row in enumerate(expected['rows']) if row['transport_rejected']])
+        report['id_go_rows_sha256'] = hashlib.sha256(json.dumps(actual['rows'], sort_keys=True, separators=(',', ':'), ensure_ascii=True).encode()).hexdigest()
+        report['id_reference_profile_rows_sha256'] = hashlib.sha256(json.dumps(projected, sort_keys=True, separators=(',', ':'), ensure_ascii=True).encode()).hexdigest()
+        errors = [index for index, (a, b) in enumerate(zip(actual['rows'], projected)) if a != b]
+        report['id_mismatch_indexes'] = errors
+        report['id_mismatches'] = [{'index': index, 'input': identifiers[index], 'go': actual['rows'][index], 'reference': expected['rows'][index]} for index in errors[:32]]
+        check('all owned ID validity and invariant lookup keys agree within the explicit transport profile', not errors)
         report.update(status='passed', phase='complete')
     except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
         report['failure_type'] = type(error).__name__

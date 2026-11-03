@@ -34,6 +34,14 @@ and 333,402 local fuzz executions pass; native fuzz jobs pass too.
 See ADR 0034 and `evidence/2026-11-03/nuget-archive-development.json`. No archive
 publication, feed, dependency/client or full-format qualification is claimed.
 
+New ID lookup-key work is implemented but unverified against the actual SDK.
+It keeps raw manifest text separate, bounds the legacy grammar and preserves
+the invariant dotted-I distinction without trimming or Unicode normalization.
+The native library workflow adds 63,516 owned validation/casing cases and reports
+SDK acceptance separately from explicit control-character transport guards.
+See ADR0035 and `evidence/2026-11-03/nuget-id-development.json`. Durable NuGet
+publication, feeds, clients and all remaining format outcomes stay required.
+
 The original 51-check byte-observation failure and 174-check grant-fixture failure
 remain retained. The tar observer and explicit restricted fixture access replay
 through complete named client journeys (`DEFECT.0077`/`0079`). The macOS source

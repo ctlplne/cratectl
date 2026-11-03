@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BUSL-1.1
-// Only owned synthetic versions, manifests and archive bytes reach the SDK.
+// Only owned synthetic IDs, versions, manifests and archive bytes reach the SDK.
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -21,7 +21,29 @@ class Program
             memory.Write(buffer, 0, count);
         }
         var values = JsonSerializer.Deserialize<string[]>(memory.ToArray());
-        if (values == null || values.Length > 4096) throw new Exception("owned case count");
+        int caseLimit = args.Length == 1 && args[0] == "id" ? 65536 : 4096;
+        if (values == null || values.Length > caseLimit) throw new Exception("owned case count");
+        if (args.Length == 1 && args[0] == "id")
+        {
+            var identities = values.Select(value => {
+                bool referenceValid;
+                try { PackageIdValidator.ValidatePackageId(value); referenceValid = true; }
+                catch (ArgumentException) { referenceValid = false; }
+                // The repository's transport profile rejects control characters;
+                // report SDK acceptance separately rather than attributing it.
+                bool transportRejected = referenceValid && value.Any(c => char.IsControl(c));
+                bool valid = referenceValid && !transportRejected;
+                return new { valid, key = valid ? value.ToLowerInvariant() : "", reference_valid = referenceValid, transport_rejected = transportRejected };
+            }).ToArray();
+            Console.WriteLine(JsonSerializer.Serialize(new {
+                os = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "linux" : "other",
+                architecture = RuntimeInformation.ProcessArchitecture.ToString().ToLowerInvariant(),
+                version = typeof(PackageIdValidator).Assembly.GetName().Version.ToString(),
+                runtime = RuntimeInformation.FrameworkDescription,
+                rows = identities
+            }));
+            return;
+        }
         if (args.Length == 1 && args[0] == "archive")
         {
             var identities = values.Select(value => {
