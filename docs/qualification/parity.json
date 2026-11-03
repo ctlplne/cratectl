@@ -2482,7 +2482,7 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "internal/nuget/version.go: version identity foundation only; no feed/store adapter",
+      "implementation": "internal/nuget: version-key foundation qualified on f499369; bounded Nuspec identity and actual SDK comparison implemented but unverified; no feed/store adapter",
       "surfaces": {
         "api": null,
         "cli": null,
@@ -2521,10 +2521,11 @@
       "candidate": null,
       "evidence": [
         "evidence/2026-11-02/nuget-version-development.json",
-        "evidence/2026-11-02/nuget-version-f499369-checkpoint.json"
+        "evidence/2026-11-02/nuget-version-f499369-checkpoint.json",
+        "evidence/2026-11-03/nuspec-identity-development.json"
       ],
       "limits": "Only the version-key library contract is qualified:1129actual NuGet.Versioning comparisons per native Linux architecture on f499369. No feed, archive or stock-client journey is implemented or verified.",
-      "next_action": "Complete archive/nuspec identity and tenant-scoped durable feed operations, then all required client/mode/policy/lifecycle/platform journeys."
+      "next_action": "Run native Nuspec SDK comparisons; complete archive/immutable-byte binding, ID key mapping and tenant-scoped durable feed operations, then all required client/mode/policy/lifecycle/platform journeys."
     },
     {
       "id": "FMT.NUGET.PROXY",

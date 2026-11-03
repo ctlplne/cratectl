@@ -1,0 +1,28 @@
+{
+  "source_parent": "b4b44316f73c1e9c710fe0b0ff3da66dfc9f0f53",
+  "state": "implemented but unverified",
+  "scope": "bounded Nuspec identity only, additive to earlier version-key contract",
+  "local_host": {
+    "os": "Darwin",
+    "machine": "arm64"
+  },
+  "implementation_sha256": {
+    "internal/nuget/nuspec.go": "99d8b22c3389a47d02baf8490eac8887fb8f4c6305380a4912fdfe77c1bac1ed",
+    "internal/nuget/nuspec_test.go": "a47431abc77d0729fa3e3a6eab625b550dfcccabdf41c759edad7d47b17415e0",
+    "scripts/fixtures/nuget-versions/main.go": "8e316b78b8d613da02538e23acfa7e58a2fc628450381f2cdff46cebe9f605ad",
+    "scripts/fixtures/nuget-versions/Program.cs": "119b45f2b45939493e782d98ec06159ac57a93e0b6c3bbb62f99136b6346f499",
+    "scripts/fixtures/nuget-versions/Oracle.csproj": "00d4b87dd2465596e95ac69edece09fc225fa69e2c6ee2c1c820afc04644979c",
+    "scripts/nuget_version_contract.py": "cc87b82d73388d2930ca1da89af5a0b68a5eb2bf4c3f0f62811ac85e1758735c",
+    ".github/workflows/nuget-contract.yml": "ef71515f0f625bebd38c320c1bb392999f6fccc25b76e5089282418cf2a9e55f"
+  },
+  "local_checks": {
+    "focused_race": "passed",
+    "fuzz": "passed;5secondbudget;136641executions;0failures",
+    "owned_go_metadata_cases": 11,
+    "managed_fixture": "not compiled or executed locally; actual native GitHub SDK comparison required"
+  },
+  "limits": [
+    "Identity only. No ID storage-key mapping, archive, full manifest/dependency/symbol validation, feed, client, tenant/policy/lifecycle or readiness claim.",
+    "UTF8/UTF16 boundary/ambiguity checks are local; SDK comparison is implemented but unverified. All remaining formats and450capabilities remain required."
+  ]
+}

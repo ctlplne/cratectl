@@ -5,10 +5,11 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using NuGet.Versioning;
+using NuGet.Packaging;
 
 class Program
 {
-    static void Main()
+    static void Main(string[] args)
     {
         using var input = Console.OpenStandardInput();
         using var memory = new System.IO.MemoryStream();
@@ -21,6 +22,28 @@ class Program
         }
         var values = JsonSerializer.Deserialize<string[]>(memory.ToArray());
         if (values == null || values.Length > 4096) throw new Exception("owned case count");
+        if (args.Length == 1 && args[0] == "nuspec")
+        {
+            var identities = values.Select(value => {
+                try
+                {
+                    using var stream = new System.IO.MemoryStream(Convert.FromBase64String(value));
+                    var reader = new NuspecReader(stream);
+                    return new { valid = true, id = reader.GetId(), version_key = reader.GetVersion().ToNormalizedString().ToLowerInvariant() };
+                }
+                catch (Exception)
+                {
+                    return new { valid = false, id = "", version_key = "" };
+                }
+            }).ToArray();
+            Console.WriteLine(JsonSerializer.Serialize(new {
+                os = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "linux" : "other",
+                architecture = RuntimeInformation.ProcessArchitecture.ToString().ToLowerInvariant(),
+                version = typeof(NuspecReader).Assembly.GetName().Version.ToString(),
+                rows = identities
+            }));
+            return;
+        }
         var rows = values.Select(value => {
             bool valid = NuGetVersion.TryParse(value, out var parsed);
             return new { valid, key = valid ? parsed.ToNormalizedString().ToLowerInvariant() : "" };

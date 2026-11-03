@@ -1,4 +1,4 @@
-name: Native NuGet version contract
+name: Native NuGet library contracts
 
 on:
   workflow_dispatch:
@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   version:
-    name: Actual NuGet.Versioning versus Go (${{ matrix.arch }})
+    name: Actual NuGet libraries versus Go (${{ matrix.arch }})
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 20
     strategy:

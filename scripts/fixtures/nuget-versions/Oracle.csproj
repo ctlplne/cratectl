@@ -12,5 +12,21 @@
       <HintPath>$(MSBuildToolsPath)/NuGet.Versioning.dll</HintPath>
       <Private>true</Private>
     </Reference>
+    <Reference Include="NuGet.Packaging">
+      <HintPath>$(MSBuildToolsPath)/NuGet.Packaging.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="NuGet.Frameworks">
+      <HintPath>$(MSBuildToolsPath)/NuGet.Frameworks.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="NuGet.Common">
+      <HintPath>$(MSBuildToolsPath)/NuGet.Common.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="NuGet.Packaging.Core" Condition="Exists('$(MSBuildToolsPath)/NuGet.Packaging.Core.dll')">
+      <HintPath>$(MSBuildToolsPath)/NuGet.Packaging.Core.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
   </ItemGroup>
 </Project>
