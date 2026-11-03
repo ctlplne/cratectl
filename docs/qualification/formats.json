@@ -12,7 +12,12 @@
         "WASM OCI"
       ],
       "client_versions": {
-        "ORAS": "1.3.6"
+        "ORAS": "1.3.6",
+        "Docker CLI": "28.0.4",
+        "Docker Engine": "28.0.4",
+        "Buildx": "0.38.1",
+        "Podman": "4.9.3",
+        "Helm": "4.3.1+gc0d08d0"
       },
       "source_ids": [
         "jfrog-formats",
@@ -45,9 +50,21 @@
         "evidence/2026-10-31/schedule-checkpoint.json",
         "evidence/2026-10-31/retention-checkpoint.json",
         "evidence/2026-10-31/retention-schedule-checkpoint.json",
-        "evidence/2026-10-31/hold-checkpoint.json"
+        "evidence/2026-10-31/hold-checkpoint.json",
+        "evidence/2026-11-03/github-e2208e7-checkpoint.json"
       ],
-      "hold_scope": "Qualified subset: tenant-administrator inventory of active/expired/released canonical OCI holds, scoped encrypted live paging/search, original immutable hold/release snapshots, actual-time expiry and retained-repository/current-administrator recovery. Exact clean production/race artifacts, native old-schema8 receipt/CLI/ORAS, seven old upgrade baselines and eleven Chromium workflows pass within the checkpoint scope. One replaceable per-reference hold slot remains; independent cases/case-specific release, bulk/legal retention, other formats, safe physical GC and production recovery remain required. No legal-compliance or broad readiness verdict."
+      "hold_scope": "Qualified subset: tenant-administrator inventory of active/expired/released canonical OCI holds, scoped encrypted live paging/search, original immutable hold/release snapshots, actual-time expiry and retained-repository/current-administrator recovery. Exact clean production/race artifacts, native old-schema8 receipt/CLI/ORAS, seven old upgrade baselines and eleven Chromium workflows pass within the checkpoint scope. One replaceable per-reference hold slot remains; independent cases/case-specific release, bulk/legal retention, other formats, safe physical GC and production recovery remain required. No legal-compliance or broad readiness verdict.",
+      "scoped_native_clients": {
+        "candidate": "e2208e78d45a6eba1d11df71f885205f9a7ca5e2",
+        "checkpoint": "evidence/2026-11-03/github-e2208e7-checkpoint.json",
+        "state": "verified for named native client journeys",
+        "checks_per_architecture": 214,
+        "architectures": [
+          "linux-amd64",
+          "linux-arm64"
+        ],
+        "limits": "Loopback HTTP; upstream is a separate tenant in one process. Foreign-platform metadata only; no foreign execution, independent provider/multi-host, production trust, other build tools, complete lifecycle/GC, platform, scale or broad readiness inference."
+      }
     },
     {
       "id": "maven",
@@ -165,7 +182,13 @@
       "jfrog_modes": "per-format documentation review required",
       "native_limitations": "Mode-specific limits must be established before claiming coverage.",
       "state": "implementing",
-      "implementation_foundation": "VersionKey native library contract qualified on f499369 only; bounded Nuspec identity and SDK comparison implemented but unverified; no feed/client support"
+      "implementation_foundation": "VersionKey and bounded Nuspec identity contracts qualified against actual SDK libraries on e2208e7; no archive/feed/client support.",
+      "library_contract": {
+        "candidate": "e2208e78d45a6eba1d11df71f885205f9a7ca5e2",
+        "checkpoint": "evidence/2026-11-03/nuget-e2208e7-checkpoint.json",
+        "state": "verified version/Nuspec identity only",
+        "limits": "No archive, feed, ID storage-key, stock-client, dependency, tenant/policy/lifecycle or readiness qualification."
+      }
     },
     {
       "id": "go",

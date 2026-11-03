@@ -174,35 +174,30 @@ Once stable, required PR checks can be enforced under a separate authorized
 repository-settings change. Repository protection, release publication and
 customer maintenance are not consequences of a green CI run.
 
-## Current native qualification repairs
+## Current native qualification checkpoint
 
-The b4b4431 main run passed eight jobs, including both actual PostgreSQL/race
-jobs and the full14workflow x86 console; its macOS source lint failed during
-real CMS fixture generation. Keep that whole run failed. The source workflow
-now selects and prints native Homebrew OpenSSL3 on macOS, and unsupported CLI
-families/versions fail explicitly. The25115ae macOS source job passes with
-actual OpenSSL3.5.9, including the mandatory CMS regressions. See
-[the scoped replay](../../evidence/2026-11-03/github-25115ae-macos-source-replay.json).
+All17jobs pass on clean e2208e7: main9, controlled-upgrades2, nativeOCI2,
+repair1with5fresh journeys, retention1with5fresh journeys and NuGet2.
+Both real PostgreSQL race gates pass. All14x86Chromium workflows have zero
+unexpected, skipped or flaky results. Every runtime binary embeds the clean
+exact native source, and both upgrade campaigns rebuild10pinned old servers
+and pass15reports. See [the accepted milestone](../../evidence/2026-11-03/github-e2208e7-checkpoint.json).
 
-Both native OCI jobs published their multi-architecture graphs and then failed
-during a stopped-container file observation. The next replay streams the
-clients' tar stdout into a bounded one-file observer without host extraction or
-mode/ownership changes. Binary stdout and stderr are separate. Encrypted
-diagnostics retain a bounded error and the last command observation when the
-failure occurs after a command returns. Complete client compatibility remains
-unverified. Both25115ae native jobs replay the byte observer and reach174checks,
-then fail at grant revocation: fixture repositories defaulted to tenant-wide
-access. The repair explicitly creates restricted repositories and reads back
-their stored access before grants. Every denial expectation remains; assertion
-errors now retain the expected and observed numeric status. See
-[the original51check failure](../../evidence/2026-11-03/oci-clients-b4b4431-observation-failure.json)
-and [the174check fixture failure](../../evidence/2026-11-03/oci-clients-25115ae-grant-fixture-failure.json).
+Both native Docker/Podman/Helm journeys complete214checks, including exact
+layered/multiarch bytes and chart dependencies across hosted/proxy/group,
+tenant/policy/lifecycle and grant/token revocation/restart. The earlier tar
+observation and tenant-access fixture failures remain retained with their
+original diagnosis limits. No missing old status or file attributes are
+retroactively inferred. Native macOS source/CMS regressions pass too.
 
-The same native NuGet library workflow is extended with11owned Nuspec documents
-read by the actual SDK NuGet.Packaging library. Local parser race/fuzz and Go
-fixture checks pass. Both native25115ae managed references compile and compare
-actual NuGet.Packaging7.9.0.0; one of11documents exposes stripped ID whitespace.
-Preserving exact reader text fixes the local regression; native replay remains
-required. All1,129version identities agree on both architectures. See
-[the original differential failure](../../evidence/2026-11-03/nuget-25115ae-nuspec-whitespace-failure.json).
-No feed, archive or customer-journey claim is made.
+Both actual SDK10.0.403 Versioning/Packaging7.9.0.0 references agree with Go on
+all1,129versions and11Nuspec documents per native Linux architecture. This
+replays the raw-ID-whitespace repair. See [the library checkpoint](../../evidence/2026-11-03/nuget-e2208e7-checkpoint.json).
+Archive/feed/client and full NuGet behavior remain required.
+
+The OCI database service explicitly binds loopback. Three auxiliary workflows
+still inherit the port bind address; correct them to127.0.0.1 and inspect each
+actual owned service mapping before bootstrap. This configuration observation
+is not an observed exposure or incident. Continue product implementation and
+the remaining offload inventory above; all450capabilities and negative broad
+readiness verdicts remain.

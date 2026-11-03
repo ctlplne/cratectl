@@ -31,8 +31,11 @@ package scripts execute. On25115ae, both actual native SDK10.0.403 jobs compiled
 the reference and compared NuGet.Packaging7.9.0.0. Ten documents matched; the
 whitespace fixture exposed Go stripping ID text that the reader preserves.
 The repair preserves declared text and has a failing-first local regression,
-passing race/fuzz tests and pending native replay. See
+passing race/fuzz tests and actual native replay on e2208e7. All11documents agree
+with the SDK reader on both Linux architectures. See
 [the original comparison](../../evidence/2026-11-03/nuget-25115ae-nuspec-whitespace-failure.json).
+The [accepted library checkpoint](../../evidence/2026-11-03/nuget-e2208e7-checkpoint.json)
+retains exact source, fixture/helper/library hashes and versions.
 Do not pass raw reader text directly to a repository key or claim complete
 package validation from an identity-reader comparison.
 

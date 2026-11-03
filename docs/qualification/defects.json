@@ -813,71 +813,91 @@
       "id": "DEFECT.0074",
       "summary": "OCI client fixture pins older Podman Debian package revisions than the native GitHub images",
       "first_failure": "evidence/2026-11-02/oci-clients-first-failure.json",
-      "state": "setup repair replayed; complete native client journeys remain unverified",
+      "state": "repaired and replayed in the named exact-source native milestone",
       "candidate": "1207b298a089eda1e70c2352272b7cfaab06ff61",
       "repair": "Verify the bundled Podman CLI is4.9.3, record its installed Debian package revision/native architecture and binary hash, and install only the required runtime helper. Preserve the first refused downgrade and require real native replay; no forced downgrade or skipped client.",
       "limits": "Both1757c89 installation steps passed and both actual native Podman4.9.3+ds1-1ubuntu0.2 packages were recorded. Both complete drivers failed later at Podman login (DEFECT.0075); no client-journey pass.",
-      "replay": "evidence/2026-11-02/oci-clients-1757c89-authentication-failure.json"
+      "replay": "evidence/2026-11-02/oci-clients-1757c89-authentication-failure.json",
+      "latest_replay": "evidence/2026-11-03/github-e2208e7-checkpoint.json",
+      "latest_candidate": "e2208e78d45a6eba1d11df71f885205f9a7ca5e2",
+      "latest_scope": "Both native Docker/Podman/Helm journeys214checks, both real PostgreSQL/race jobs, full14x86console, five fresh repair and five retention journeys, native source/fuzz/security and both controlled-upgrade campaigns pass. Full product/format/platform/readiness scope remains open; original diagnosis limits are preserved."
     },
     {
       "id": "DEFECT.0075",
       "summary": "Native OCI fixture exceeds Podman4 runroot length limit at first login",
       "first_failure": "evidence/2026-11-02/oci-clients-1757c89-authentication-failure.json",
-      "state": "short runroot replayed through native authentication on both architectures",
+      "state": "repaired and replayed in the named exact-source native milestone",
       "candidate": "1757c89716220d4d0d54cc9dcec064b2cb9fb0ca",
       "repair": "Both decrypted270f7ca native failures report the50-character runroot limit before registry login. Allocate a unique mode0700 /tmp/cratectl-podman-* directory below50bytes; preserve the workspace private VFS graph store and bind privileged cleanup to the allocated path/device/inode. Require real native replay.",
       "limits": "Both f499369 drivers passed the short-path preflight and every native client login. They failed later at Docker manifest lookup (DEFECT.0076); no complete native client journey is verified.",
       "diagnostic_replay": "evidence/2026-11-02/oci-clients-270f7ca-runroot-failure.json",
-      "replay": "evidence/2026-11-02/oci-clients-f499369-manifest-failure.json"
+      "replay": "evidence/2026-11-02/oci-clients-f499369-manifest-failure.json",
+      "latest_replay": "evidence/2026-11-03/github-e2208e7-checkpoint.json",
+      "latest_candidate": "e2208e78d45a6eba1d11df71f885205f9a7ca5e2",
+      "latest_scope": "Both native Docker/Podman/Helm journeys214checks, both real PostgreSQL/race jobs, full14x86console, five fresh repair and five retention journeys, native source/fuzz/security and both controlled-upgrade campaigns pass. Full product/format/platform/readiness scope remains open; original diagnosis limits are preserved."
     },
     {
       "id": "DEFECT.0076",
       "summary": "OCI serving ignores later Accept field lines; native Docker manifest lookup also fails generically",
       "first_failure": "evidence/2026-11-02/oci-clients-f499369-manifest-failure.json",
-      "state": "repaired and replayed in real PostgreSQL/race and native multi-architecture publication prefix",
+      "state": "repaired and replayed in the named exact-source native milestone",
       "candidate": "f4993696dce668b5a9c070a0afe6062235647973",
       "repair": "Read every Accept field under64-line/8192-byte bounds; preserve quality/specificity and digest policy. Add multi-field regression, fuzz and real PostgreSQL/CAS GET/HEAD/exclusion/policy tests. Keep Docker manifest debug output private and retain the original generic failure.",
       "limits": "Both real PostgreSQL integration/race jobs and native Docker multi-architecture publication pass on b4b4431. Original generic f499369 status remains unproven. Native client journey fails later at file observation; whole main CI fails at macOS CMS setup.",
       "replay": "evidence/2026-11-03/github-ci-b4b4431-partial-checkpoint.json",
-      "native_replay": "evidence/2026-11-03/oci-clients-b4b4431-observation-failure.json"
+      "native_replay": "evidence/2026-11-03/oci-clients-b4b4431-observation-failure.json",
+      "latest_replay": "evidence/2026-11-03/github-e2208e7-checkpoint.json",
+      "latest_candidate": "e2208e78d45a6eba1d11df71f885205f9a7ca5e2",
+      "latest_scope": "Both native Docker/Podman/Helm journeys214checks, both real PostgreSQL/race jobs, full14x86console, five fresh repair and five retention journeys, native source/fuzz/security and both controlled-upgrade campaigns pass. Full product/format/platform/readiness scope remains open; original diagnosis limits are preserved."
     },
     {
       "id": "DEFECT.0077",
       "summary": "Native file observation fails after sudo Podman copies a stopped-container file",
       "first_failure": "evidence/2026-11-03/oci-clients-b4b4431-observation-failure.json",
-      "state": "repaired and replayed through174checks on both native architectures; whole client journey still failed",
+      "state": "repaired and replayed in the named exact-source native milestone",
       "candidate": "b4b44316f73c1e9c710fe0b0ff3da66dfc9f0f53",
       "repair": "Observe native cp stdout without extracting files, preserving packaged UID/mode. Bound physical tar headers/metadata and one regular file; reject links, paths, duplicates, sparse and oversized data. Keep binary stdout separate from stderr; retain encrypted last observations for post-command assertions.",
       "limits": "Exact native Docker/Podman stopped-container bytes pass on25115ae. Original b4b4431 file UID/mode/errno remain unavailable. Grant fixture failure prevents complete client acceptance.",
-      "replay": "evidence/2026-11-03/oci-clients-25115ae-grant-fixture-failure.json"
+      "replay": "evidence/2026-11-03/oci-clients-25115ae-grant-fixture-failure.json",
+      "latest_replay": "evidence/2026-11-03/github-e2208e7-checkpoint.json",
+      "latest_candidate": "e2208e78d45a6eba1d11df71f885205f9a7ca5e2",
+      "latest_scope": "Both native Docker/Podman/Helm journeys214checks, both real PostgreSQL/race jobs, full14x86console, five fresh repair and five retention journeys, native source/fuzz/security and both controlled-upgrade campaigns pass. Full product/format/platform/readiness scope remains open; original diagnosis limits are preserved."
     },
     {
       "id": "DEFECT.0078",
       "summary": "macOS source lint cannot generate the real CMS recipient fixture with its default openssl",
       "first_failure": "evidence/2026-11-03/github-ci-b4b4431-partial-checkpoint.json",
-      "state": "repaired and replayed in actual native macOS source job",
+      "state": "repaired and replayed in the named exact-source native milestone",
       "candidate": "b4b44316f73c1e9c710fe0b0ff3da66dfc9f0f53",
       "repair": "Select and print Homebrew native openssl@3 before tests; fail clearly on unsupported CLI family/version. Preserve actual encryption/tamper/wrong-key tests without skips.",
       "limits": "Actual selected OpenSSL3.5.9 and mandatory CMS tests pass on25115ae. Original default CLI version remains unavailable. Whole main run was still in progress at the scoped checkpoint; no broad platform/readiness claim.",
-      "replay": "evidence/2026-11-03/github-25115ae-macos-source-replay.json"
+      "replay": "evidence/2026-11-03/github-25115ae-macos-source-replay.json",
+      "latest_replay": "evidence/2026-11-03/github-e2208e7-checkpoint.json",
+      "latest_candidate": "e2208e78d45a6eba1d11df71f885205f9a7ca5e2",
+      "latest_scope": "Both native Docker/Podman/Helm journeys214checks, both real PostgreSQL/race jobs, full14x86console, five fresh repair and five retention journeys, native source/fuzz/security and both controlled-upgrade campaigns pass. Full product/format/platform/readiness scope remains open; original diagnosis limits are preserved."
     },
     {
       "id": "DEFECT.0079",
       "summary": "OCI client grant-revocation fixture creates tenant-wide repositories instead of restricted ones",
       "first_failure": "evidence/2026-11-03/oci-clients-25115ae-grant-fixture-failure.json",
       "candidate": "25115aeb116a9704cd30a95fbe1eabc1580c130c",
-      "state": "fixture repair implemented; native replay required",
+      "state": "repaired and replayed in the named exact-source native milestone",
       "repair": "Explicit restricted access for every fixture repository; read back actual stored access before grants. Preserve all negative expectations and retain expected/observed numeric statuses.",
-      "limits": "Both actual clients fail after174checks. The original observed HTTP status was not retained; no retroactive product authorization defect or complete journey pass."
+      "limits": "Both actual clients fail after174checks. The original observed HTTP status was not retained; no retroactive product authorization defect or complete journey pass.",
+      "latest_replay": "evidence/2026-11-03/github-e2208e7-checkpoint.json",
+      "latest_candidate": "e2208e78d45a6eba1d11df71f885205f9a7ca5e2",
+      "latest_scope": "Both native Docker/Podman/Helm journeys214checks, both real PostgreSQL/race jobs, full14x86console, five fresh repair and five retention journeys, native source/fuzz/security and both controlled-upgrade campaigns pass. Full product/format/platform/readiness scope remains open; original diagnosis limits are preserved."
     },
     {
       "id": "DEFECT.0080",
       "summary": "Bounded Nuspec identity reader strips declared ID whitespace preserved by actual NuGet.Packaging",
       "first_failure": "evidence/2026-11-03/nuget-25115ae-nuspec-whitespace-failure.json",
       "candidate": "25115aeb116a9704cd30a95fbe1eabc1580c130c",
-      "state": "exact-text repair and local regression/race/fuzz pass; actual SDK replay required",
+      "state": "repaired and replayed against actual SDK libraries on both native Linux architectures",
       "repair": "Preserve exact declared ID/raw-version text, validate only trimmed ID shape and normalize only VersionKey. Keep storage-key mapping separate.",
-      "limits": "Both SDK10.0.403/Packaging7.9.0.0 native comparisons fail at document10; all1129version cases agree. No archive/feed/stock-client/full-format claim."
+      "limits": "Actual SDK10.0.403 Versioning/Packaging7.9.0.0 agree with Go on1129versions and11Nuspec documents per architecture. Original mismatch retained. No archive/feed/full-format or stock-client journey qualified.",
+      "replay": "evidence/2026-11-03/nuget-e2208e7-checkpoint.json",
+      "latest_candidate": "e2208e78d45a6eba1d11df71f885205f9a7ca5e2"
     }
   ]
 }

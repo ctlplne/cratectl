@@ -6,40 +6,38 @@ GitHub native qualification and moves historical controlled-upgrade journeys
 off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
-Current product work:25115ae replays native stopped-container byte observation
-on both GitHub Linux architectures (`DEFECT.0077`). Both OCI drivers progress
-through174checks, including hosted/proxy/group images and Helm dependencies,
-tenant/policy and held delete/restore, then fail at grant revocation. The fixture
-omitted restricted access; tenant-wide access does not require individual read
-grants. Explicit restricted access plus stored-detail readback is implemented;
-native replay remains required (`DEFECT.0079`). The old observed HTTP status was
-not retained; new denial assertions retain expected/observed numeric statuses.
-See `evidence/2026-11-03/oci-clients-25115ae-grant-fixture-failure.json`.
+Current native milestone accepted on clean source
+`e2208e78d45a6eba1d11df71f885205f9a7ca5e2`:17GitHub jobs pass on that exact
+source. Both Docker/Podman/Helm journeys complete214checks, including exact
+layered/multiarch bytes, hosted/proxy/group images and chart dependencies,
+tenant/policy and held delete/restore, grant/token revocation and restart.
+Both actual PostgreSQL race gates, all14x86Chromium workflows, five fresh repair
+and five fresh retention journeys, and both controlled-upgrade campaigns pass.
+Every current runtime binary embeds clean matching native source; each upgrade
+campaign rebuilds10pinned historical servers and passes15reports. Security
+retains324synthetic rule cases. See
+`evidence/2026-11-03/github-e2208e7-checkpoint.json`.
 
-The25115ae native macOS source job passes with actual Homebrew OpenSSL3.5.9,
-including the real CMS roundtrip/tamper/wrong-key regressions (`DEFECT.0078`).
-See `evidence/2026-11-03/github-25115ae-macos-source-replay.json`. Whole main CI
-remains in progress at that checkpoint; both controlled-upgrade jobs report
-terminal success, without new aggregate artifact acceptance. Earlier b4b4431
-failures and diagnosis limits remain retained.
+Both native NuGet jobs compare actual SDK10.0.403 / Versioning7.9.0.0 /
+Packaging7.9.0.0:all1,129versions and11Nuspec documents agree per architecture,
+including exact declared whitespace (`DEFECT.0080`). This is only a library
+contract; archive inspection and durable feed/client journeys remain required.
+See `evidence/2026-11-03/nuget-e2208e7-checkpoint.json`.
 
-NuGet's earlier version-only contract remains qualified on f499369:1,129cases
-agree with actual SDK10.0.403 / NuGet.Versioning7.9.0.0 per native architecture.
-Bounded Nuspec identity extraction is implemented for UTF8/UTF16 with strict
-ambiguity/resource checks. Both actual25115ae SDK references compile and agree
-on all1,129versions, but the11document comparison fails at one whitespace case:
-Go strips surrounding ID whitespace that NuGet.Packaging7.9.0.0 preserves.
-The exact-text repair has a failing-first regression, passing local race tests
-and101,438additional fuzz executions; native replay remains required
-(`DEFECT.0080`). Full unit/lint pass. See
-`evidence/2026-11-03/nuget-25115ae-nuspec-whitespace-failure.json`.
-See `docs/adr/0033-nuspec-identity-boundary.md` and
-`evidence/2026-11-03/nuspec-identity-development.json`.
-No NuGet feed/archive/dependency/client journey is implemented. All450capability
-requirements remain; broad readiness stays negative. Primary11, qualified548
-binaries, retained data and the local-only private decryption key are preserved.
+The original51check byte-observation failure and174check grant-fixture failure
+remain retained. The tar observer and explicit restricted fixture access replay
+through complete named client journeys (`DEFECT.0077`/`0079`). The macOS source
+job and its mandatory CMS tests also pass (`DEFECT.0078`); the earlier25115ae
+record retains its observed OpenSSL3.5.9. No missing original HTTP status, file
+UID/mode/errno or old CLI version is retroactively invented.
 
-Current repair milestone accepted on clean source
+Continue archive/immutable-byte binding, ID key mapping, tenant-scoped NuGet
+feeds and all unfinished product outcomes. Three auxiliary CI PostgreSQL service
+definitions still need explicit loopback binding and actual mapping preflight.
+All450capabilities/41families remain; broad readiness stays negative. Primary11,
+qualified548binaries, retained data and local-only private key are preserved.
+
+Historical repair milestone accepted on clean source
 `6afbd4ad12cdb1d32aa43386a47822bc6e741fdf`: all five independent focused
 repair journeys, all five independent retention journeys, all nine main CI jobs,
 and both controlled-upgrade jobs pass on that same exact commit. Both native Linux PostgreSQL race gates pass; the

@@ -1,8 +1,9 @@
 # Native OCI client qualification
 
-State: implemented but unverified. The new GitHub `Native OCI clients` workflow
-must run successfully on native Linux x86-64 and ARM64 before a client result is
-claimed. Existing ORAS evidence does not qualify Docker, Podman or Helm.
+State: verified for the named214check journeys on native Linux x86-64 and ARM64
+at e2208e7. Both GitHub jobs pass with clean matching binaries. See
+[the exact checkpoint](../../evidence/2026-11-03/github-e2208e7-checkpoint.json).
+Other clients, providers, trust profiles and remaining OCI scope stay open.
 
 The workflow starts an isolated PostgreSQL service on loopback35432, builds
 candidate registry/CLI binaries in `.cache/ci-build`, then runs
@@ -82,14 +83,16 @@ metadata hashes, safe error and limits are retained in
 The short-path repair then replayed through all client logins on both native
 architectures at f499369. Docker manifest creation failed later with a generic
 lookup error; its cause remains unconfirmed. A separately reproduced multi-field
-Accept serving defect is repaired locally and has new real PostgreSQL/CAS
-coverage awaiting GitHub execution. Manifest debug output stays encrypted.
+Accept serving defect is repaired and replayed in both real PostgreSQL/race
+jobs and the complete named native client journeys. Manifest debug output stays encrypted.
 See [that failure](../../evidence/2026-11-02/oci-clients-f499369-manifest-failure.json).
-Earlier unknown-cause failure records are preserved; no complete client journey
-is verified.
+Earlier unknown-cause failure records are preserved. Later tar observation and
+restricted-access fixture repairs replay through the complete named journeys;
+their original UID/mode/errno and HTTP-status diagnosis limits remain.
 
 The first native run failed on both architectures before any client journey.
 The original Podman Debian revision pins would have downgraded installed
 packages; APT refused. Both failed/empty summaries and the setup diagnostics are
 retained in [the first failure](../../evidence/2026-11-02/oci-clients-first-failure.json).
-The corrected setup and stronger subject evidence still require native replay.
+The corrected setup and subject evidence replay on both native architectures
+within the accepted214check checkpoint; wider compatibility remains required.

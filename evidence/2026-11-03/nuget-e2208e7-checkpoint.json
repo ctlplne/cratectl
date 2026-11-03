@@ -1,0 +1,33 @@
+{
+  "candidate": "e2208e78d45a6eba1d11df71f885205f9a7ca5e2",
+  "status": "passed",
+  "scope": "Native version-key and bounded Nuspec reader identity contracts only",
+  "run": "https://github.com/ctlplne/cratectl/actions/runs/41557461723",
+  "architectures": [
+    "linux-amd64",
+    "linux-arm64"
+  ],
+  "sdk_version": "10.0.403",
+  "nuget_versioning": "7.9.0.0",
+  "nuget_packaging": "7.9.0.0",
+  "version_cases_per_architecture": 1129,
+  "nuspec_cases_per_architecture": 11,
+  "mismatches": 0,
+  "artifacts": [
+    {
+      "architecture": "amd64",
+      "path": "evidence/2026-11-03/nuget-e2208e7-amd64-summary.json",
+      "sha256": "19deb081b00b09ccd9cd60255c7dc21e72206eea67adb38f2547f1b73de045b1"
+    },
+    {
+      "architecture": "arm64",
+      "path": "evidence/2026-11-03/nuget-e2208e7-arm64-summary.json",
+      "sha256": "b689ebc7b6fdb307a562adcaffa89b522ce4095e604b3164d61557ba99a48906"
+    }
+  ],
+  "repair_replayed": "DEFECT.0080 preserves actual SDK-declared ID whitespace; earlier failed comparison and first local regression remain committed.",
+  "limits": [
+    "Library contracts only; no NuGet archive, feed, ID storage-key, dependencies, stock-client, tenant/policy/lifecycle or release qualification.",
+    "Owned managed fixture has no PackageReferences and clears remote package sources. No uploaded project/package script executes."
+  ]
+}
