@@ -7,7 +7,7 @@ off this Mac, then continues the unfinished product scope. The earlier pause
 records below are historical. All broad readiness verdicts remain negative.
 
 Current native milestone accepted on clean source
-`e2208e78d45a6eba1d11df71f885205f9a7ca5e2`:17 GitHub jobs pass on that exact
+`6854e80fc1e3cf049b3ffc0fe68d90e4dc8bf9a2`:17 GitHub jobs pass on that exact
 source. Both Docker/Podman/Helm journeys complete 214 checks, including exact
 layered/multiarch bytes, hosted/proxy/group images and chart dependencies,
 tenant/policy and held delete/restore, grant/token revocation and restart.
@@ -16,20 +16,21 @@ and five fresh retention journeys, and both controlled-upgrade campaigns pass.
 Every current runtime binary embeds clean matching native source; each upgrade
 campaign rebuilds 10 pinned historical servers and passes 15 reports. Security
 retains 324 synthetic rule cases. See
-`evidence/2026-11-03/github-e2208e7-checkpoint.json`.
+`evidence/2026-11-03/github-6854e80-checkpoint.json`.
 
 Both native NuGet jobs compare actual SDK10.0.403 / Versioning7.9.0.0 /
-Packaging7.9.0.0:all 1,129 versions and 11 Nuspec documents agree per architecture,
-including exact declared whitespace (`DEFECT.0080`). This is only a library
-contract; archive inspection and durable feed/client journeys remain required.
-See `evidence/2026-11-03/nuget-e2208e7-checkpoint.json`.
+Packaging7.9.0.0:all 1,129 versions, 11 Nuspec documents and four archive cases
+agree per architecture, including exact declared whitespace, selected manifest
+path and original UTF8/UTF16 bytes. This is a library/owned ZIP32 contract;
+complete archive semantics and durable feed/client journeys remain required.
+See `evidence/2026-11-03/nuget-6854e80-checkpoint.json`.
 
-New product work: bounded NuGet ZIP32 identity inspection is implemented but
-unverified against the actual SDK. It preflights physical directory/local spans,
+Bounded NuGet ZIP32 identity inspection now matches actual SDK library reads
+for the four owned fixtures. It preflights physical directory/local spans,
 rejects unsafe/ambiguous paths and special files, bounds expansion, verifies all
 CRCs and accounts for complete compressed members without extracting or running
 payloads. The checksum remains inside `internal/crypto`. Local regressions/race
-and 333,402 fuzz executions pass; four owned archive SDK comparisons are added.
+and 333,402 local fuzz executions pass; native fuzz jobs pass too.
 See ADR 0034 and `evidence/2026-11-03/nuget-archive-development.json`. No archive
 publication, feed, dependency/client or full-format qualification is claimed.
 
@@ -42,7 +43,9 @@ UID/mode/errno or old CLI version is retroactively invented.
 
 Continue archive/immutable-byte binding, ID key mapping, tenant-scoped NuGet
 feeds and all unfinished product outcomes. All four CI PostgreSQL services now explicitly bind loopback and check the
-actual owned Docker mapping before setup; native replay remains required.
+actual owned Docker mapping before setup. All four workflow families and both
+browser modes replay the mandatory preflight (`DEFECT.0081`); fixed markers and
+private-log hashes are retained in `evidence/2026-11-03/ci-service-bindings-6854e80-replay.json`.
 All 450 capabilities / 41 families remain; broad readiness stays negative. Primary11,
 qualified 548 binaries, retained data and local-only private key are preserved.
 

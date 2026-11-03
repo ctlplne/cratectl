@@ -176,12 +176,12 @@ customer maintenance are not consequences of a green CI run.
 
 ## Current native qualification checkpoint
 
-All17jobs pass on clean e2208e7: main9, controlled-upgrades2, nativeOCI2,
+All17jobs pass on clean 6854e80: main9, controlled-upgrades2, nativeOCI2,
 repair1with5fresh journeys, retention1with5fresh journeys and NuGet2.
 Both real PostgreSQL race gates pass. All14x86Chromium workflows have zero
 unexpected, skipped or flaky results. Every runtime binary embeds the clean
 exact native source, and both upgrade campaigns rebuild10pinned old servers
-and pass15reports. See [the accepted milestone](../../evidence/2026-11-03/github-e2208e7-checkpoint.json).
+and pass15reports. See [the accepted milestone](../../evidence/2026-11-03/github-6854e80-checkpoint.json).
 
 Both native Docker/Podman/Helm journeys complete214checks, including exact
 layered/multiarch bytes and chart dependencies across hosted/proxy/group,
@@ -191,21 +191,22 @@ original diagnosis limits. No missing old status or file attributes are
 retroactively inferred. Native macOS source/CMS regressions pass too.
 
 Both actual SDK10.0.403 Versioning/Packaging7.9.0.0 references agree with Go on
-all1,129versions and11Nuspec documents per native Linux architecture. This
-replays the raw-ID-whitespace repair. See [the library checkpoint](../../evidence/2026-11-03/nuget-e2208e7-checkpoint.json).
+all1,129versions,11Nuspec documents and4owned ZIP32 archive cases per native Linux architecture. This
+replays the raw-ID-whitespace repair. See [the library checkpoint](../../evidence/2026-11-03/nuget-6854e80-checkpoint.json).
 Archive/feed/client and full NuGet behavior remain required.
 
 The NuGet workflow now also compares four owned stored/deflated ZIP32 archives
 with actual `PackageArchiveReader`: identity, selected Nuspec path and exact
 UTF8/UTF16 manifest bytes. Local bounded archive/race/fuzz checks pass; managed
-compilation and this new native comparison remain unverified. Malformed archive
+compilation and all four archive comparisons pass on both actual native architectures. Malformed archive
 regressions run against production Go code without exposing the SDK to generated
 hostile packages. No uploaded content executes. See [the archive boundary](../adr/0034-bounded-nuget-archives.md).
 
 All four database workflows now explicitly bind127.0.0.1:35432. Bootstrap
 receives the exact owned service container ID and checks Docker's actual port
-map before setup. It fails outside a GitHub-hosted runner. Local contract and
-workflow syntax checks pass; actual updated GitHub replay remains required.
+map before setup. It fails outside a GitHub-hosted runner. Local contract/workflow checks and the actual mandatory preflight pass across
+main/OCI/upgrades/browser campaigns on6854e80. Fixed markers and private-log
+hashes are retained in [the binding replay](../../evidence/2026-11-03/ci-service-bindings-6854e80-replay.json).
 The old three omitted bind addresses remain a configuration observation,
 not an observed exposure or incident. Continue product implementation and
 the remaining offload inventory above; all450capabilities and negative broad

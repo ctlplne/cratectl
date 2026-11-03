@@ -903,10 +903,12 @@
       "id": "DEFECT.0081",
       "summary": "Three native CI PostgreSQL port mappings omit an explicit loopback bind address",
       "first_failure": "evidence/2026-11-03/ci-service-bindings-development.json",
-      "state": "explicit bindings and actual mapping preflight implemented; native replay required",
+      "state": "repaired and replayed in actual owned GitHub database services",
       "candidate": "e2208e78d45a6eba1d11df71f885205f9a7ca5e2",
       "repair": "All four native database workflows pass their exact service container identity; bootstrap inspects only that container port map and requires exactly127.0.0.1:35432 before setup. Fail outside GitHub-hosted context.",
-      "limits": "Old runtime port mappings were not observed; no exposure/incident assertion. Local contract/syntax checks pass; actual updated GitHub replay required."
+      "limits": "Fixed success marker and private-log hashes retained from main, OCI, upgrades, repair and retention on native Linux; all17jobs pass in the same-source campaign. Original runtime mappings were not observed; no exposure/incident or broad security verdict asserted.",
+      "replay": "evidence/2026-11-03/ci-service-bindings-6854e80-replay.json",
+      "latest_candidate": "6854e80fc1e3cf049b3ffc0fe68d90e4dc8bf9a2"
     }
   ]
 }

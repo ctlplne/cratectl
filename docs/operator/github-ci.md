@@ -9,7 +9,9 @@ stock-client journeys. The registry listens only on the owned loopback port 3844
 disposable PostgreSQL service binds127.0.0.1:35432. Bootstrap receives the exact
 owned service container ID and checks Docker's actual port map before setup;
 wildcard, additional or different bindings fail. It requires a GitHub-hosted
-runner context. These updated runtime checks require native replay. The service is recreated for every
+runner context. The mandatory check passes in the6854e80 main/OCI/upgrade/browser
+campaigns; [fixed markers and log hashes](../../evidence/2026-11-03/ci-service-bindings-6854e80-replay.json)
+retain the exact scope. The service is recreated for every
 job. CI does not connect to an operator or customer database.
 
 The native job installs checked ORAS 1.3.6 and Maven 3.10.0 archives, Python 3.14,

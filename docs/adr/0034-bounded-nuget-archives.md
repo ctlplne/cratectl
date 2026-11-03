@@ -47,7 +47,9 @@ Local tests do not qualify a package client or the complete archive format.
 The native SDK workflow adds four owned ZIPs to the existing version/Nuspec
 contract. Actual `NuGet.Packaging.PackageArchiveReader` must agree on identity,
 selected Nuspec path and exact manifest bytes for stored/deflated UTF8/UTF16
-fixtures. Compilation and comparison remain unverified until GitHub runs them.
+fixtures. Both native Linux jobs pass on6854e80 with SDK10.0.403 and
+NuGet.Packaging7.9.0.0; all four cases agree on identity/path/exact bytes. See
+[the exact checkpoint](../../evidence/2026-11-03/nuget-6854e80-checkpoint.json).
 The fixture has no package references or remote package sources. Payloads remain
 opaque; neither this fixture nor the server executes uploaded content.
 

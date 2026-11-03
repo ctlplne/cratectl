@@ -1,0 +1,46 @@
+{
+  "candidate": "6854e80fc1e3cf049b3ffc0fe68d90e4dc8bf9a2",
+  "status": "passed for named owned GitHub service preflight",
+  "observations": [
+    {
+      "job_id": 125672536011,
+      "workflow_family": "main",
+      "native_architecture": "arm64",
+      "observed_marker": "PASS: actual CI PostgreSQL service exposes only 127.0.0.1:35432",
+      "private_job_log_sha256": "507e97283a54275cc8c9fa2d4993e4a88d8506ccc204d434da985c9e0315ae29"
+    },
+    {
+      "job_id": 125672535434,
+      "workflow_family": "oci",
+      "native_architecture": "amd64",
+      "observed_marker": "PASS: actual CI PostgreSQL service exposes only 127.0.0.1:35432",
+      "private_job_log_sha256": "d1dbd8a24d8496284a974c44cbe01059490f0f66fa492880206e090f325b3894"
+    },
+    {
+      "job_id": 125672535574,
+      "workflow_family": "upgrades",
+      "native_architecture": "arm64",
+      "observed_marker": "PASS: actual CI PostgreSQL service exposes only 127.0.0.1:35432",
+      "private_job_log_sha256": "9d9c9596b554b601f0cbdba58ffddf1d3ffda8e9b7bc7f9136bb5193311ab9c2"
+    },
+    {
+      "job_id": 125672535805,
+      "workflow_family": "repair",
+      "native_architecture": "amd64",
+      "observed_marker": "PASS: actual CI PostgreSQL service exposes only 127.0.0.1:35432",
+      "private_job_log_sha256": "58894c274fbe41ec7181d8fe49ecac350acde8431e107b54c43b781e13ab4c8e"
+    },
+    {
+      "job_id": 125672546206,
+      "workflow_family": "retention",
+      "native_architecture": "amd64",
+      "observed_marker": "PASS: actual CI PostgreSQL service exposes only 127.0.0.1:35432",
+      "private_job_log_sha256": "2f084836b4bfaddb7eab1ef21a2c6530bb22a9a0b63c750e9894a3d44d7dd8b2"
+    }
+  ],
+  "mechanism": "The mandatory bootstrap inspected its exact service container ID and accepted only5432/tcp mapped to127.0.0.1:35432. It ran before setup under a GitHub-hosted context. Unit tests reject wildcard/extra/different bindings and malformed/oversized input.",
+  "limits": [
+    "Original e2208e7 omitted bind addresses remain a configuration observation, not an observed exposure or incident.",
+    "Only fixed preflight success markers and private-log hashes are public; raw job logs remain private. This is not a general network-isolation or product security verdict."
+  ]
+}
