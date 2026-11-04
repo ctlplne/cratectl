@@ -85,3 +85,25 @@ Official contracts: [publication and credentials](https://www.scala-sbt.org/2.x/
 [dependency/resolver behavior](https://www.scala-sbt.org/2.x/docs/en/reference/sbt-update.html),
 [1.x command sequences](https://www.scala-sbt.org/1.x/docs/Running.html), and
 [2.x API/command migration](https://www.scala-sbt.org/2.x/docs/en/changes/migrating-from-sbt-1.x.html).
+
+
+The new `maven-snapshots-v2` journey is implemented but unverified until both
+SBT series pass on both actual Linux architectures. It retains every original
+release case and adds eight ordered snapshot cases through the common Maven
+store: default immutability, explicit hosted replacement policy, current digest
+review, fresh exact transitive resolution, holds, policy disablement, restart and
+revocation. A hosted repository must explicitly select `redeploy_nonunique` to
+replace literal base-version snapshot bytes; restricted writers/readers need
+current grants, and changed reviewed bytes need a new decision. Blobs remain
+immutable. The group reader must receive the exact current snapshot and release
+dependency without a public package fallback.
+
+Each command starts with a fresh project cache copied only from the frozen
+bounded official tool seed. This profile does not qualify a retained SBT cache,
+classifiers, parent/BOM/richer conflict cases, compiled Scala, interruption,
+outage, lifecycle or migration. A revoked publisher can fail while reading its
+dependencies before attempting PUT; the journey also checks an independent
+same-credential exact POM PUT returns401 and no version references remain. It
+does not infer the sole native request failure location from an error message.
+See the [development record](../../evidence/2026-11-04/sbt-snapshots-development.json)
+and SBT's [publication contract](https://www.scala-sbt.org/1.x/docs/Publishing.html).

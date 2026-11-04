@@ -6,11 +6,12 @@ import platform
 import re
 import shutil
 import urllib.error
+import urllib.parse
 import urllib.request
 import zipfile
 
 from bounded_client import run_owned_client
-from ci.sbt_evidence import FIXTURES
+from ci.sbt_evidence import FIXTURES, SNAPSHOT_FIXTURES, SNAPSHOT_CASES
 from sbt_fixture import GROUP,TOOL_REPOSITORY,build_definition,checked_task,check_runtime_config,configure_runtime,copy_seed,invocation,meta_definition,require_resolver_observation,seed_manifest
 
 GROUP_PATH=GROUP.replace('.','/')
@@ -28,14 +29,14 @@ def hosted(h,series):
     release_bytes=(jdk/'release').read_bytes();check('SBT Java metadata stays bounded',len(release_bytes)<=65536)
     release={k:v.strip('"') for line in release_bytes.decode().splitlines() if '=' in line for k,v in [line.split('=',1)]}
     check('SBT uses the actual pinned native Linux Java',platform.system()=='Linux' and release.get('JAVA_RUNTIME_VERSION') in ['21.0.13+9','21.0.13+9-LTS'] and release.get('OS_NAME')=='Linux' and release.get('OS_ARCH')=={'x86_64':'x86_64','aarch64':'aarch64'}[platform.machine()])
-    contract={'profile':'maven-release-v1','series':series,'version':pin['version'],'runtime_version':None,
+    contract={'profile':'maven-snapshots-v2','series':series,'version':pin['version'],'runtime_version':None,
               'java_version':release['JAVA_RUNTIME_VERSION'],'distribution_sha256':digest,
               'launcher_sha256':hashlib.sha256(launcher.read_bytes()).hexdigest(),
               'java_launcher_sha256':hashlib.sha256((jdk/'bin/java').read_bytes()).hexdigest(),
               'java_release_sha256':hashlib.sha256(release_bytes).hexdigest(),
               'fixture_source_sha256':hashlib.sha256((h.ROOT/'scripts/sbt_fixture.py').read_bytes()).hexdigest(),
               'bootstrap_cache':None,'bootstrap_boot':None,'fixture_sha256':{},'reference_sha256':{},'wire_sha256':{},
-              'completed':[],'phase':'bootstrap','diagnostics':[]}
+              'completed':[],'snapshot_cases_completed':[],'phase':'bootstrap','diagnostics':[]}
     h.result['sbt_contract']=contract
     work=h.PRIVATE/series;work.mkdir(mode=0o700)
     seed=work/'tool-seed';seed.mkdir(mode=0o700)
@@ -196,18 +197,79 @@ def hosted(h,series):
     contract['completed'].append('proxy_group');contract['phase']='policy'
     decision('sbt-proxy','sbt-app','2.0.0','denied');consume('denied-group','2.0.0',repo='sbt-group')
     decision('sbt-proxy','sbt-app','2.0.0','allowed');h.stop();h.start();consume('restarted-group','2.0.0',['application_2','dependency'],repo='sbt-group')
-    contract['completed'].append('policy_and_restart');contract['phase']='revocation'
+    contract['completed'].append('policy_and_restart');contract['phase']='snapshots'
+    h.repository('sbt-snapshot-immutable','maven')
+    h.repository('sbt-snapshots','maven',review=True,access='restricted',settings={'maven_snapshot_policy':'redeploy_nonunique'})
+    for actor,write in [('reader',False),('sbt-writer',True)]:
+        check('grant only intended SBT snapshot actor '+actor,req('/api/v1/repositories/sbt-snapshots/grants',method='PUT',data={'actor':actor,'read':True,'write':write},key=h.uuid.uuid4().hex)[0]==200)
+    h.repository('sbt-snapshot-group','maven',mode='group',settings={'members':['sbt-snapshots','sbt-proxy']})
+    snapshot_version='1.1-SNAPSHOT';snapshot_dependency=('sbt-dep','1.0.0')
+    publish('default_snapshot','sbt-app',snapshot_version,repo='sbt-snapshot-immutable',read_repo='sbt-group')
+    wire('default_snapshot')
+    immutable=project('immutable-snapshot-replacement')
+    command(immutable,'publish','sbt-app',snapshot_version,snapshot_dependency,'sbt-writer','sbt-group',fail=True,publication_repo='sbt-snapshot-immutable')
+    wire('default_snapshot');contract['snapshot_cases_completed'].append('default_immutable')
+    publish('snapshot_first','sbt-app',snapshot_version,repo='sbt-snapshots',read_repo='sbt-group')
+    decision('sbt-snapshots','sbt-app',snapshot_version,'allowed');wire('snapshot_first')
+    consume('snapshot-first',snapshot_version,['snapshot_first','dependency'],repo='sbt-snapshot-group')
+    publish('snapshot_second','sbt-app',snapshot_version,repo='sbt-snapshots',read_repo='sbt-group')
+    first_snapshot=published['snapshot_first'];second_snapshot=published['snapshot_second']
+    check('native SBT repeat publication changes actual snapshot JAR',first_snapshot['contents']['jar']!=second_snapshot['contents']['jar'])
+    contract['snapshot_cases_completed'].append('opt_in_redeploy')
+    for ext in ['jar','pom']:
+        changed=first_snapshot['contents'][ext]!=second_snapshot['contents'][ext]
+        check('current SBT snapshot review follows exact changed bytes '+ext,req('/r/sbt-snapshots/'+second_snapshot['paths'][ext],'reader')[0]==(403 if changed else 200))
+    blocked=project('snapshot-unassessed-consumer')
+    command(blocked,'verifyOwned',dependency=('sbt-app',snapshot_version),repo='sbt-snapshot-group',fail=True)
+    check('unassessed SBT snapshot has no complete proof set',not list((blocked/'proof').glob('*.jar')))
+    check('same-credential HTTP explains changed SBT snapshot denial',req('/r/sbt-snapshot-group/'+second_snapshot['paths']['jar'],'reader')[0]==403)
+    contract['snapshot_cases_completed'].append('review_reset')
+    decision('sbt-snapshots','sbt-app',snapshot_version,'allowed');wire('snapshot_second')
+    consume('snapshot-second',snapshot_version,['snapshot_second','dependency'],repo='sbt-snapshot-group')
+    contract['snapshot_cases_completed'].append('fresh_resolution')
+
+    def snapshot_hold(action):
+        for ext in ['jar','pom']:
+            path=second_snapshot['paths'][ext];route='/api/v1/repositories/sbt-snapshots/artifacts/lifecycle'
+            code,body,_=req(route+'?path='+urllib.parse.quote(path,safe=''));state=json.loads(body)
+            check('read current exact SBT snapshot lifecycle '+ext,code==200 and state['digest']==hashlib.sha256(second_snapshot['contents'][ext]).hexdigest())
+            check('apply SBT snapshot preservation '+action+ext,req(route,method='PUT',data={'path':path,'digest':state['digest'],'expected_revision':state['revision'],'action':action,'reason':'Owned native SBT snapshot preservation proof'},key=h.uuid.uuid4().hex)[0]==200)
+
+    snapshot_hold('hold');held=project('held-snapshot-replacement')
+    command(held,'publish','sbt-app',snapshot_version,snapshot_dependency,'sbt-writer','sbt-group',fail=True,publication_repo='sbt-snapshots')
+    wire('snapshot_second');snapshot_hold('release_hold');contract['snapshot_cases_completed'].append('held_replacement')
+    code,body,_=req('/api/v1/repositories/sbt-snapshots/configuration');configuration=json.loads(body)
+    check('read current hosted SBT snapshot policy revision',code==200 and configuration['source_revision']==0)
+    settings=configuration['settings'];settings['maven_snapshot_policy']='immutable'
+    check('disable SBT snapshot replacement with current revision',req('/api/v1/repositories/sbt-snapshots/configuration',method='PUT',data={'expected_revision':0,'settings':settings,'reason':'Stop further native SBT snapshot replacement'},key=h.uuid.uuid4().hex)[0]==200)
+    command(held,'publish','sbt-app',snapshot_version,snapshot_dependency,'sbt-writer','sbt-group',fail=True,publication_repo='sbt-snapshots')
+    wire('snapshot_second');consume('snapshot-disabled-policy',snapshot_version,['snapshot_second','dependency'],repo='sbt-snapshot-group')
+    contract['snapshot_cases_completed'].append('disable_policy')
+    h.stop();h.start();consume('snapshot-restart',snapshot_version,['snapshot_second','dependency'],repo='sbt-snapshot-group')
+    contract['snapshot_cases_completed'].append('restart');contract['phase']='revocation'
+    revoked_snapshot=project('revoked-snapshot-publication')
+    command(revoked_snapshot,'packageBin;makePom','sbt-app','9.0-SNAPSHOT',snapshot_dependency,'sbt-writer','sbt-group')
     revoked_publisher=project('revoked-writer-publication')
     command(revoked_publisher,'packageBin;makePom','sbt-app','5.0.0',('sbt-dep','1.0.0'),'sbt-writer')
     h.run([h.BIN/'cratectld','revoke','--token-file',writer])
+    command(revoked_snapshot,'publish','sbt-app','9.0-SNAPSHOT',snapshot_dependency,'sbt-writer','sbt-snapshot-group',fail=True,publication_repo='sbt-snapshots')
+    revoked_snapshot_path=GROUP_PATH+'/sbt-app/9.0-SNAPSHOT/'
+    check('revoked SBT writer cannot PUT its exact generated fresh snapshot POM',req('/r/sbt-snapshots/'+revoked_snapshot_path+'sbt-app-9.0-SNAPSHOT.pom','sbt-writer','PUT',(revoked_snapshot/'publication/sbt-app-9.0-SNAPSHOT.pom').read_bytes(),headers={'Content-Type':'application/xml'})[0]==401)
+    check('revoked SBT snapshot attempt retains no partial version',not any(r['path'].startswith(revoked_snapshot_path)for r in inventory('sbt-snapshots')))
     command(revoked_publisher,'publish','sbt-app','5.0.0',('sbt-dep','1.0.0'),'sbt-writer',fail=True)
     revoked_path=GROUP_PATH+'/sbt-app/5.0.0/sbt-app-5.0.0.pom'
     revoked_pom=(revoked_publisher/'publication/sbt-app-5.0.0.pom').read_bytes()
     check('revoked writer cannot PUT exact fresh SBT POM',req('/r/sbt-hosted/'+revoked_path,'sbt-writer','PUT',revoked_pom,headers={'Content-Type':'application/xml'})[0]==401)
     check('revoked writer native publication retains no partial version',not any(r['path'].startswith(GROUP_PATH+'/sbt-app/5.0.0/') for r in inventory('sbt-hosted')))
     h.run([h.BIN/'cratectld','revoke','--token-file',h.PRIVATE/'reader.token']);consume('revoked-reader','1.0.0',denied_status=401);wire('application_1',denied_status=401)
+    consume('revoked-snapshot-reader',snapshot_version,repo='sbt-snapshot-group',denied_status=401)
+    contract['snapshot_cases_completed'].append('revocation')
+    check('every native SBT snapshot case completed',contract['snapshot_cases_completed']==SNAPSHOT_CASES)
+    contract['completed'].append('snapshots')
     consume('other-tenant-after-revocation','1.0.0',['other_application_1','other_dependency'],'other')
     contract['completed'].append('revocation')
     expected={n+'_'+e for n in FIXTURES for e in ['jar','pom']}
-    check('all twelve SBT representations have independent byte binding',set(contract['fixture_sha256'])==expected and contract['fixture_sha256']==contract['reference_sha256']==contract['wire_sha256'])
+    check('all twelve SBT representations have independent byte binding',expected<=set(contract['fixture_sha256']) and all(contract['fixture_sha256'][key]==contract['reference_sha256'].get(key)==contract['wire_sha256'].get(key)for key in expected))
+    expected|={n+'_'+e for n in SNAPSHOT_FIXTURES for e in ['jar','pom']}
+    check('all eighteen SBT release and snapshot representations have independent byte binding',len(expected)==18 and set(contract['fixture_sha256'])==expected and contract['fixture_sha256']==contract['reference_sha256']==contract['wire_sha256'])
     contract['phase']='complete'

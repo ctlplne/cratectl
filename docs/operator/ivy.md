@@ -149,3 +149,12 @@ and [resolver attributes](https://ant.apache.org/ivy/history/2.6.0/settings/reso
 This profile does not revoke bytes already on a developer machine or qualify
 warm proxy snapshots, offline/outage behavior, timestamped Ivy publication or
 all remaining JVM/lifecycle requirements.
+
+
+The retained-cache extension now passes on both native Linux architectures at
+`0edd1a4`:666checks, ten stages, all34originalpublisher/reference/HTTPbindings
+and six exact cached originalPOM/JARhashes. Distinct actual POM/JAR publications,
+first-before-update observations and the same cache/module markers survive
+update and registry restart. See the [named checkpoint](../../evidence/2026-11-04/ivy-cache-0edd1a4-checkpoint.json).
+The earlier implementation-only notes above are historical. Warm proxy snapshot,
+offline/fault and all broader JVM/lifecycle outcomes remain required.

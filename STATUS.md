@@ -4,92 +4,57 @@ The full goal is active. All 450 capabilities / 41 families and every later
 stage remain committed. Broad readiness, full security and packaging remain
 negative. Both commit identities remain exactly `imfeelingtheagi` on main.
 
-Exact `636dea9` has 25 successful jobs out of 26. The macOS ARM source job
-never acquired a runner; GitHub reports capacity constraints. It is unexecuted,
-not passing. All three native fuzz jobs, both Linux source jobs and scoped
-security checks pass. Latest fully accepted whole observed campaign remains
-`708214f`. See `evidence/2026-11-04/github-636dea9-checkpoint.json` for all job
-identities, cancellation annotations and 20 accepted safe summaries.
+Exact `1974d94` passes all 23 jobs actually selected: main nine, JVM eight,
+OCI two, controlled upgrades two and native NuGet libraries two. All 17 safe
+summaries bind exact clean source/native binaries, actual tools and artifact
+identities. Both native Linux baseline campaigns pass 663 checks, including
+all four Maven retained-cache stages/six byte bindings, real PostgreSQL
+integration/timing/race and the five snapshot receipt/concurrency regressions.
+Full x86 Chromium passes 119 checks/all 15 workflows with zero unexpected,
+skipped or flaky results. All three native source and fuzz jobs pass, including
+macOS ARM. See `evidence/2026-11-04/github-1974d94-checkpoint.json`.
+This is the latest fully accepted whole observed campaign; focused browser
+repetitions were not selected on this source and remain separate earlier proof.
 
-Both Linux architectures pass real PostgreSQL integration/timing and integration
-with the race detector. The five snapshot tests include immutable publication
-receipts surviving later opt-in and another writer, queue rollback, tenant
-isolation and concurrent restricted-writer journal/lifecycle/receipt chains.
-The common database fixture fails on missing database configuration; these are
-full unfiltered integration suites, without a skip path. This supplies native
-proof for the receipt repair previously compiled only on this Mac.
+That exact JVM campaign retains Ivy 654/nine stages/34 byte bindings per host,
+Gradle 199/eight/24 and four SBT release profiles 161/seven/12. OCI passes 214
+checks per host; both upgrade jobs rebuild ten historical pins and pass 15
+reports. SDK 10.0.403 feed/56 HTTP metadata cases and both native 37-assertion
+library contracts pass with zero mismatches; actual library runtimes are
+10.0.14 and DLL versions/hashes remain recorded. Original x86 SDK 10.0.402
+observations at `636dea9` are preserved under that source.
 
-Both native baseline campaigns pass all 647 checks, including the deterministic
-joined-key probe and 56 actual SDK HTTP metadata cases before/after restart.
-The x86 full Chromium suite passes 119 checks across all 15 workflows, with
-zero unexpected, skipped or flaky results. This includes the new hosted Maven
-snapshot policy controls. The three focused browser journeys each pass five
-additional fresh-database repetitions. The original `9b00f7e` timeout remains
-retained with its cause unresolved; a later pass cannot recover missing original
-diagnostics. Owner-encrypted browser failure collection was not exercised here.
+The later Ivy cache extension is verified on both native Linux hosts at exact
+`0edd1a4`: 666 checks, ten stages, all original metadata/snapshot/SHA-2 cases
+and 34 publisher/reference/HTTP bindings plus six original cached POM/JAR
+hashes. One changing consumer retains cache/module identity across initial,
+updated snapshots and actual registry restart. Both actual POMs and JARs change;
+first observations remain retained before replacement. See
+`evidence/2026-11-04/ivy-cache-0edd1a4-checkpoint.json`. Whole `0edd1a4` campaign
+acceptance remains separate; no warm proxy/offline/fault/full JVM claim.
 
-All eight JVM profiles pass on exact `636dea9`: Ivy 654 checks/nine stages/
-eight snapshot cases/34 publisher-reference-HTTP bindings per architecture;
-Gradle 199/eight stages/24 bindings; each of four SBT profiles 161/seven stages/
-12 bindings. Docker/Podman/Helm pass 214 checks on both hosts, and each controlled
-upgrade job rebuilds ten historical pins and passes 15 reports. See
-`evidence/2026-11-04/jvm-636dea9-checkpoint.json`. These named profiles do not
-establish broader JVM, lifecycle, migration, scale or release qualification.
+The next SBT snapshot profile is implemented but unverified. All original
+release commands/cases and twelve byte bindings remain; eight snapshot cases
+add default immutability, explicit replacement policy, current review, exact
+fresh resolution, holds, policy disablement, restart and revocation. It requires
+eight stages, 18 publisher/reference/HTTP bindings and an expected 269 checks
+on each of the four actual series/architecture jobs. Five contract, 16 exporter
+and six unchanged fixture tests plus full lint pass locally. No JVM/SDK or
+PostgreSQL ran locally. See
+`evidence/2026-11-04/sbt-snapshots-development.json`.
 
-Both native NuGet library jobs pass their original 37 assertions and unchanged
-corpora with zero mismatches. Actual tools differ: x86 SDK 10.0.402/runtime
-10.0.13; ARM SDK 10.0.403/runtime 10.0.14. Both use NuGet libraries 7.9.0.0;
-exact DLL hashes remain separate. See
-`evidence/2026-11-04/nuget-636dea9-checkpoint.json`. These are library comparisons,
-separate from the SDK 10.0.403 HTTP baseline on both hosts.
+The original `c030aa0` missing-import Maven failure is preserved: both hosts
+stopped after 231 checks before warm client identity. Its repair now has both
+native 663-check passes at `1974d94`. Earlier browser timeouts, dotnet 401,
+bootstrap failures and runner-capacity cancellations remain retained. Later
+passes cannot recover missing original diagnostics or prove the unknown
+original timeout/401 causes. Skipped/unexecuted jobs never count as passes.
 
-The next candidate pins SDK 10.0.403 through `global.json`, disables SDK
-roll-forward and prereleases, and installs that selection in both native feed
-and library workflows. Actual SDK equality is mandatory before either journey.
-Actual runtime and library identities still need observation; the SDK pin does
-not promise a runtime patch. Four contract tests, actual-fixture Maven version
-stand-ins and full lint pass locally. No SDK/JVM or PostgreSQL ran locally.
-Native replay remains required. See
-`evidence/2026-11-04/sdk-pin-maven-identity-repair-development.json`.
-
-Both actual `1974d94` library jobs now pass all 37 original assertions using
-SDK 10.0.403 and runtime 10.0.14, with unchanged corpora and zero mismatches.
-Exact native library/source/tool hashes are retained in
-`evidence/2026-11-04/nuget-1974d94-checkpoint.json`. Feed/Maven/whole-campaign
-acceptance is still separate; do not replace the earlier mixed-SDK observations.
-
-The retained-cache Maven fixture on `c030aa0` fails on both actual Linux hosts
-before client identity: the new version parser omitted its `re` import. Each
-failed report retains 231 earlier assertions and no completed warm-cache stage.
-Fixed traceback identities and original safe artifacts are retained in
-`evidence/2026-11-04/maven-warm-c030aa0-first-failure.json`. The import is repaired;
-a stand-in loads the actual imports/function and checks plain/ANSI version
-observations plus wrong/malformed rejection before any deployment or database.
-The native warm profile remains unverified: require all original 647 checks
-plus 16 new checks (663 total), all four stages and six exact publisher/reference/
-HTTP/retained-cache bindings. No case, timeout, retry or acceptance is weakened.
-Warm proxy/group/Ivy/SBT, interruption, offline and broader JVM remain open.
-
-CI queues jobs independently by profile/platform, preserving running main jobs
-and every command/case/budget. Main cross-run independence has direct native
-observation; other scheduling groups still require their own observation.
-Pending cancellations and all earlier failures remain retained. No primary,
-customer, release or sibling change is implied by a passing CI profile.
-
-Exact `1974d94` now supplies native ARM proof for all 663 baseline checks,
-including four warm Maven stages and six exact publisher/reference/HTTP/cache
-bindings. Original lifecycle reports and real PG/race pass on that same clean
-source. X86 and whole-campaign acceptance are still pending. See
-`evidence/2026-11-04/maven-warm-1974d94-arm64-checkpoint.json`.
-
-The next Ivy profile, `maven-snapshot-cache-v4`, is implemented but unverified.
-It retains all original cases/34 wire bindings and adds a changing consumer with
-one cache across first/updated snapshots and registry restart. Actual JARs and
-original POMs must match six retained cache hashes; both publications change
-metadata as well as bytes. Ten stages and 666 checks are expected. Seven fixture,
-ten safe-contract and 15 exporter tests plus full lint pass locally. No Ivy/JVM
-or database ran locally; both native GitHub hosts must qualify the behavior.
-See `evidence/2026-11-04/ivy-warm-cache-development.json`.
+CI queues independently by profile/platform and preserves running main jobs,
+every original command and client/job budget. Actual source-specific run
+handles remain in durable records; no blind restart or duplicate dispatch.
+All broader formats, faults, source/grant races, lifecycle/GC, migration,
+production platforms, scale and later goal stages remain required.
 
 No primary, selected binary, data, credential, sibling or customer change.
 Earlier notes below are historical and do not override this current state.

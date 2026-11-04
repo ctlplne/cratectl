@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: BUSL-1.1
 import copy
 import unittest
-from sbt_evidence import FIXTURES,IDENTITIES,STAGES,safe_sbt_contract
+from sbt_evidence import FIXTURES,IDENTITIES,STAGES,SNAPSHOT_FIXTURES,SNAPSHOT_CASES,SNAPSHOT_STAGES,safe_sbt_contract
 
 
 def complete_contract(series='sbt2'):
@@ -17,6 +17,31 @@ def complete_contract(series='sbt2'):
 
 
 class SbtEvidence(unittest.TestCase):
+    def test_snapshots_preserve_release_cases_and_require_all_new_native_bytes(self):
+        for series in ['sbt1','sbt2']:
+            value=snapshot_contract(series);self.assertEqual(safe_sbt_contract(value,'passed'),value)
+            self.assertEqual(len(value['wire_sha256']),18)
+            self.assertEqual([s for s in value['completed']if s!='snapshots'],STAGES)
+            for change in [{'completed':STAGES},{'snapshot_cases_completed':SNAPSHOT_CASES[:-1]},
+                           {'snapshot_cases_completed':SNAPSHOT_CASES[::-1]},{'profile':'maven-release-v1'},
+                           {'snapshot_cases_completed':['private-synthetic-value']}]:
+                with self.subTest(series=series,change=change),self.assertRaises(ValueError):safe_sbt_contract({**value,**change},'passed')
+            for key in ['dependency_jar','default_snapshot_pom','snapshot_first_jar','snapshot_second_pom']:
+                for field in ['fixture_sha256','reference_sha256','wire_sha256']:
+                    bad=copy.deepcopy(value);bad[field].pop(key)
+                    with self.subTest(series=series,key=key,field=field),self.assertRaises(ValueError):safe_sbt_contract(bad,'passed')
+            bad=copy.deepcopy(value)
+            for field in ['fixture_sha256','reference_sha256','wire_sha256']:bad[field]['snapshot_second_jar']=bad[field]['snapshot_first_jar']
+            with self.subTest(series=series),self.assertRaises(ValueError):safe_sbt_contract(bad,'passed')
+
+    def test_partial_snapshot_failure_keeps_observations_without_premature_completion(self):
+        value={**snapshot_contract(),'completed':SNAPSHOT_STAGES[:6],'phase':'snapshots','snapshot_cases_completed':SNAPSHOT_CASES[:2]}
+        self.assertEqual(safe_sbt_contract(value,'failed'),value)
+        with self.assertRaises(ValueError):safe_sbt_contract(value,'passed')
+        for change in [{'completed':SNAPSHOT_STAGES[:5]},{'completed':SNAPSHOT_STAGES[:7]},
+                       {'snapshot_cases_completed':SNAPSHOT_CASES[:1]*2}]:
+            with self.subTest(change=change),self.assertRaises(ValueError):safe_sbt_contract({**value,**change},'failed')
+
     def test_series_require_actual_runtime_all_stages_and_independent_wire_bytes(self):
         for series in ['sbt1','sbt2']:
             value=complete_contract(series);self.assertEqual(safe_sbt_contract(value,'passed'),value)
@@ -37,6 +62,7 @@ class SbtEvidence(unittest.TestCase):
     def test_private_fields_unknown_codes_wrong_series_and_cache_bounds_fail_closed(self):
         value=complete_contract()
         changes=[{'private':'private-synthetic-value'},{'series':'private-synthetic-value'},{'version':'1.13.0'},
+                 {'profile':None},{'profile':[]},{'profile':{}},
                  {'diagnostics':[{}]},{'diagnostics':['private-synthetic-value']},{'diagnostics':['http_403']*2},
                  {'completed':STAGES[::-1]},{'wire_sha256':{'dependency_jar':'0'*64}},
                  {'bootstrap_boot':{'files':0,'bytes':0,'sha256':'a'*64}},
@@ -46,6 +72,13 @@ class SbtEvidence(unittest.TestCase):
         changes += [{name:'private-synthetic-value'} for name in IDENTITIES]
         for change in changes:
             with self.subTest(change=change),self.assertRaises(ValueError):safe_sbt_contract({**value,**change},'failed')
+
+
+def snapshot_contract(series='sbt2'):
+    value=complete_contract(series)
+    fixtures={**value['fixture_sha256'],**{n+'_'+e:('d'if n=='snapshot_first'else'e')*64 for n in SNAPSHOT_FIXTURES for e in ['jar','pom']}}
+    return {**value,'profile':'maven-snapshots-v2','completed':list(SNAPSHOT_STAGES),'snapshot_cases_completed':list(SNAPSHOT_CASES),
+            'fixture_sha256':fixtures,'reference_sha256':dict(fixtures),'wire_sha256':dict(fixtures)}
 
 
 if __name__=='__main__':unittest.main()
