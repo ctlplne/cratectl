@@ -476,6 +476,9 @@ func (s *Store) replaceNativeReference(ctx context.Context, i Identity, repo str
 				if e = InsertArtifacts(ctx, tx, i, repo, []Artifact{a}); e != nil {
 					return nil, 0, e
 				}
+				if e = insertMavenChecksumReceipts(ctx, tx, i, repo, a, checksums); e != nil {
+					return nil, 0, e
+				}
 				return []Artifact{a}, 201, nil
 			}
 		}

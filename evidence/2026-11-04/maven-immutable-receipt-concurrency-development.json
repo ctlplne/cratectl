@@ -1,0 +1,74 @@
+{
+  "observed_at": "2026-11-04T18:39:38.686360+00:00",
+  "source_parent": "6a45037eb87f0660bae0d7e2d7095da8a259f689",
+  "source_dirty": true,
+  "state": "Gap identified by source inspection; repair and meaningful PG regressions implemented, not yet run against real PostgreSQL",
+  "discovery": {
+    "path": "internal/store/store.go",
+    "parent_sha256": "9066d5f7a22cc4afdaacb918172e3bb0eb31fd0299958ed20a0e232b7ed32083",
+    "mechanism": "The snapshot immutable-policy branch successfully calls InsertArtifacts and returns before insertMavenChecksumReceipts, while opt-in replacement records receipts. After later admin opt-in and another publisher replaces the reference, the original actor has no receipt for its previously accepted digest. This is a source-derived finding, not an observed native first failure."
+  },
+  "repair": "Insert checksum receipts before the immutable-policy branch returns, inside the existing accepted reference/integrity/journal/outbox transaction. Keep default immutability, current authorization, holds, decisions, actor binding and derived GET bytes unchanged. No schema migration or historical ownership inference.",
+  "sources": [
+    {
+      "path": "internal/store/store.go",
+      "sha256": "70ababa44640eb9351ced5ad4574d4be47f3859de6eca846fecfcec60d34c534"
+    },
+    {
+      "path": "internal/server/maven_snapshot_integration_test.go",
+      "sha256": "d482c4ed7819157b0997c00b9329941bc94ee60b28d54a6636fbb90310ff3786"
+    }
+  ],
+  "regressions": [
+    {
+      "test": "TestMavenImmutableSnapshotReceiptSurvivesLaterPolicyOptInAndAnotherPublisher",
+      "requires": "Actual PostgreSQL. Default immutable upload, later admin opt-in, distinct writer replacement, original publisher delayed sidecar accepted, other publisher historical sidecar denied, current bytes/checksum unchanged."
+    },
+    {
+      "test": "TestMavenNonuniqueSnapshotQueueFailureRollsBackReferenceReceiptsAndLifecycle",
+      "requires": "Existing opt-in queue-failure case retained; new immutable first-publication branch must also roll back reference, checksum receipts, event and job counts on full outbox."
+    },
+    {
+      "test": "TestMavenNonuniqueSnapshotConcurrentWritersKeepOneJournalChainAndTheirOwnReceipts",
+      "requires": "Actual PostgreSQL and Go race. Two distinct restricted writers start together, both accepted; current reference equals one complete body; lifecycle advances2to4 and exactly two publisher-bound journal replacements form one chain; both immutable bodies and own delayed receipts survive, cross-actor historical receipt denied, old hold receipts unchanged."
+    }
+  ],
+  "checks": {
+    "unit": "Affected full server/store Go unit suites pass using owned stand-ins where needed. These exclude integration-tagged database tests.",
+    "lint": "make lint passes.",
+    "build": "make build BINDIR=.cache/maven-snapshot-receipt-build passes; selected bin untouched.",
+    "integration": "Regular and race integration-tag builds pass with -run ^$; no integration test executed locally. No local PostgreSQL cluster started.",
+    "logs": [
+      {
+        "path": ".cache/maven-snapshot-receipt-unit.log",
+        "sha256": "c2953c8ce46b4020abe597d074a3dff4d54cf016e35932cbf4e192acd3964f41"
+      },
+      {
+        "path": ".cache/maven-snapshot-receipt-lint.log",
+        "sha256": "af708a5c6c9278f267e53073f093e26cb75146f8b7143bb53e691fe2cdfde2d9"
+      },
+      {
+        "path": ".cache/maven-snapshot-receipt-concurrency-compile.log",
+        "sha256": "66b95b8536c9e2b2e0089608ff8cd90827613c9ee4b52416fba137bb06cfc25b"
+      },
+      {
+        "path": ".cache/maven-snapshot-receipt-concurrency-race-compile.log",
+        "sha256": "5f5b1348d165e87cddaf13baf7520d47d13ad397e651df3e7b0666abebecb253"
+      },
+      {
+        "path": ".cache/maven-snapshot-receipt-build.log",
+        "sha256": "4e8e0d2f839752434e55f0506962272a87853dd374a575ac34e93b37daae4d97"
+      }
+    ]
+  },
+  "native_required": [
+    "Run all five snapshot PG tests and all earlier integration/race cases on both native GitHub Linux architectures. Skips never pass.",
+    "Retain all647baseline checks/56SDKHTTPfixtures, all15expandedChromiumworkflows (119checks), Ivyv3/Gradle/SBT native cases and relevant OCI/upgrades workflow outcomes on actual selected source.",
+    "Enumerate actual full-SHA run inventory; internal core/test changes should select main9/JVM8/OCI2/upgrades2 (21expected), with no implied focused/library replay when not selected."
+  ],
+  "historical_limits": [
+    "Older uploads without recorded publisher receipts are not automatically backfilled or assigned an owner. An accepted same-byte publication under the new binary can record current publisher proof before an explicit policy transition.",
+    "Existing9bIvy/PG proofs remain valid for their exact named cases; they did not exercise this immutable-to-opt-in delayed-receipt transition.",
+    "Source inspection identifies the missing call; no pre-repair native failure or post-repair PG pass is claimed. All450capabilities/41families/laterstages remain required; broad readiness/fullsecurity/packaging false. No primary/sibling/customer/release/delegation changes."
+  ]
+}

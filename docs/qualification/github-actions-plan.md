@@ -57,6 +57,17 @@ main9; enumerate actual runs, and retain existing1e9/0efa workflow handles for
 their separate source-bound qualification. No new JVM/OCI/upgrade/focused pass
 is implied by a path filter that does not select those workflows.
 
+The next core candidate records immutable snapshot publisher receipts before
+returning, so a later policy opt-in does not lose the original writer's delayed
+checksum proof. Source inspection found this gap; no pre-fix native failure is
+claimed. Five snapshot PostgreSQL tests now include that transition, default
+first-upload queue rollback and two restricted concurrent writers' exact journal/
+lifecycle/receipt chain. Normal and race builds compile them locally without
+running a database. Both native GitHub architectures must execute the real tests,
+retain every previous case and complete the full x86 browser journey. This core
+change selects21expected jobs (main9/JVM8/OCI2/upgrades2); actual source-bound
+inventory remains required. See the [record](../../evidence/2026-11-04/maven-immutable-receipt-concurrency-development.json).
+
 The following campaign notes predate this9b00f7e observation.
 
 Owner resumed the full goal on 2026-11-04. The latest fully accepted whole

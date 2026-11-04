@@ -28,6 +28,13 @@ already bound to those exact bytes in this repository remain applicable.
 Five actor/repository/path/checksum receipts commit with the accepted reference,
 integrity intent and journal/outbox. They permit a delayed sidecar from its actual
 publisher without making that historical checksum the current GET representation.
+The immutable-policy path must record these receipts too: an administrator can
+enable replacement later, after the original upload was accepted. That missing
+insert was found by source inspection after the9b00f7e checkpoint and repaired;
+the new transition/concurrency/rollback database regressions still require native
+qualification. See the [development record](../../evidence/2026-11-04/maven-immutable-receipt-concurrency-development.json).
+Missing older receipts are never reconstructed as historical publisher proof.
+An accepted same-byte retry can record current proof before a planned transition.
 A full queue rolls the entire database mutation back. Staged unreferenced bytes
 do not acquire a serving reference. Physical garbage collection remains separate
 unfinished work; this change performs none.

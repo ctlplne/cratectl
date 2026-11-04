@@ -63,6 +63,17 @@ click changes; modal submit and every assertion remain. Full x86 replay is still
 required. See
 `evidence/2026-11-04/maven-snapshot-locator-repair-development.json`.
 
+Source inspection found that the immutable snapshot path returned before saving
+publisher checksum receipts. A later explicit opt-in and another writer could
+therefore reject the original publisher's delayed checksum. The missing insert
+is added inside the existing transaction; historical owners are never inferred.
+New PG regressions cover that transition, immutable-branch outbox rollback and
+two concurrent restricted writers' journal/lifecycle/receipt chain. All five
+snapshot database tests compile normally and with race; none ran locally.
+Affected unit suites, full lint and build pass. Native PG/race and client replay
+remain required; see
+`evidence/2026-11-04/maven-immutable-receipt-concurrency-development.json`.
+
 No primary, selected binary, data, credential, sibling or customer change.
 Earlier notes below are historical and do not override this current state.
 
