@@ -36,12 +36,14 @@ proof. See `evidence/2026-11-04/sbt-snapshots-0cff4b8-checkpoint.json`.
 Whole `0cff4b8` acceptance remains open: 19 jobs pass while macOS source and
 fuzz are still queued in the latest observation. They never count as passes.
 
-Bounded ORAS/Helm setup and pinned public archive caching are implemented at
-`f91f19a` but native integration remains unverified. Ten local stand-in/kernel/
-deadline/privacy tests and full lint pass. Original qualification commands and
-budgets remain. All 21 selected jobs are queued/pending in the latest observation;
-no native download, cache-save/hit or speedup claim. See
-`evidence/2026-11-04/native-tool-archive-cache-development.json`.
+At exact `f91f19a`, both native OCI campaigns now have accepted 214-check
+passes. Their fixed Helm cache keys miss, the bounded helper downloads and
+verifies the pinned archive, and the action saves it after successful native
+qualification. Full logs stay private; safe summaries and fixed marker/log
+hashes are retained in
+`evidence/2026-11-04/helm-cache-f91f19a-checkpoint.json`.
+Cache hits, ORAS integration and whole `f91f19a` acceptance remain separate;
+no speedup claim. The newer Go campaigns retain their own source identities.
 
 All original failures and cancellations remain retained. The original missing
 Maven import now has both native replays. Later passes cannot establish unknown

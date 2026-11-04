@@ -67,7 +67,10 @@ permissions, cases and concurrency remain. The reviewed
 [cache action](https://github.com/actions/cache/blob/55cc8345863c7cc4c66a329aec7e433d2d1c52a9/action.yml)
 saves only after job success. Whole ignored directories, private credentials,
 databases, extracted tools and consumer caches are outside these paths.
-Native miss/save/hit and boundedinstallation still require actual evidence;
+At exact f91, both actual native OCI214 journeys pass and fixed Helm keys
+show miss, bounded pinned download and post-success save. See the
+[named checkpoint](../../evidence/2026-11-04/helm-cache-f91f19a-checkpoint.json).
+Matching cache-hit, ORAS and whole-campaign acceptance remain separate;
 no timing benefit is inferred. The f91 revision selects21actual jobs, currently queued/pending. Enumerate the
 actual full SHA and retain placement/step evidence before native acceptance.
 Other JVM/tool-cache opportunities remain separate required placement reviews.
