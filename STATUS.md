@@ -51,6 +51,14 @@ No duplicate dispatch. No real JVM/SDK/PostgreSQL campaign ran locally.
 All broader formats, faults, source/grant races, lifecycle/GC, migration,
 production platforms, scale and later goal stages remain required.
 
+Go module identity/ZIP validation now has a local foundation: canonical native
+paths/versions, exact root go.mod identity, bounded shared ZIP inspection and
+implicit-directory collision checks. Five Go test methods, two shared callback
+tests, unchanged NuGet archive regressions, affected package race and full lint
+pass. Two new fuzz targets will run on native CI. No Go endpoint or native
+client/database claim yet. See
+`evidence/2026-11-04/go-module-parser-development.json`.
+
 No primary, selected binary, data, credential, sibling or customer change.
 Earlier notes below are historical and do not override this current state.
 

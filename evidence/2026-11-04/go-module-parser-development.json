@@ -1,0 +1,61 @@
+{
+  "source_parent": "dc039ca8b27e1849c194fef5b1c123d512528dae",
+  "source_dirty": true,
+  "observed_at": "2026-11-04T21:49:47.582427+00:00",
+  "status": "implemented parser foundation; local unit/race and lint passed; native adapter journey not implemented or qualified",
+  "files": {
+    "go.mod": "d95076e34dc46e8ed9ae897c856cd26c4ff0878c6113ab1b02d5d035973dbec3",
+    "go.sum": "d153b9c093264e31cb38ab3edf5b84bd9f9fbca82f63b97d2d9c004164ab2676",
+    "internal/gomodule/module.go": "f7e750513f346716f261491af281f235967508b6e0547e031b6b69543d3dece7",
+    "internal/gomodule/module_test.go": "472d3cf7353c72e16c922776c6ff95cca5e9360b0e5fd6cb438ef2340b523a57",
+    "internal/ziparchive/archive.go": "d58195a9079343fc869beff07677f9004f8d20ce9c356d2682a67d1a8f1add84",
+    "internal/ziparchive/archive_test.go": "33eb2de51e5410238adcc9c1642e0cae708574bea84feb6bad4f57c5cf137bee",
+    "internal/nuget/archive.go": "fe5e9f97a66be60571ba642d45e9f3d833ede4cde2e13c971974cd9076c09108"
+  },
+  "dependency": {
+    "module": "golang.org/x/mod",
+    "version": "v0.42.0",
+    "license": "BSD-3-Clause",
+    "sum": "h1:ICeL3t2L30ljSPHHxDnR4fqVcBt/zR2zJAb9juavmQg=",
+    "go_mod_sum": "h1:u5fzIrRInkL8MaO1cbRkUHT64v303YIT5KEqpNr7jRs=",
+    "verification": "Cached official ZIP verified against normal Go checksum database; sandbox attempt could not fetch a missing checksum tree tile, then authorized network verification succeeded. No checksum bypass."
+  },
+  "validation": {
+    "go_module_test_methods": 5,
+    "shared_callback_test_methods": 2,
+    "new_fuzz_targets": [
+      "FuzzNativeRequest",
+      "FuzzModuleArchive"
+    ],
+    "unchanged_nuget_archive_tests_sha256": "82e5b38fd631c4374ae95e4f3926eb1f809a5b8d31b7142511bcfae696cd558f",
+    "race_packages": [
+      "internal/gomodule",
+      "internal/ziparchive",
+      "internal/nuget"
+    ],
+    "official_zip_differential": "Three owned accepted ZIP fixtures agree with the pinned official x/mod ZIP checker; stricter admission and metadata checks are explicitly separate. No stock Go install or build claim.",
+    "all_unit": "make test first encountered sandbox bind EPERM in the existing OCI loopback stand-in. The unchanged command passed with authorized loopback access. Both logs retained; no assertion or test was disabled."
+  },
+  "logs": {
+    ".cache/shared-zip-nuget-unit.log": "5dee85f7af84415d750b4a2bcd4340fcfa63b9abd7bd48d317efdce350dcc4db",
+    ".cache/shared-zip-nuget-unit-replay.log": "979d8b8047d3701c8719835d98399e11da13b8dcb41cf035c686eb6ee13e45ba",
+    ".cache/go-module-unit-first.log": "f68cb8067e9588298c059c7c2e0973b7cde9414add4158280c819e34e430b387",
+    ".cache/go-module-zip-race.log": "a10b6318bf20ac1fa9c423e4a53761a9d86b2b3b5409b50d9cef3ff1e580deed",
+    ".cache/go-module-zip-lint.log": "ee058c7a1af099910d51d5cecb2bed53d21b94c4286ba90baf128049c936d848",
+    ".cache/go-module-tidy.log": "5e59cf84f4e2cf7546ef01767e430344abc7de12a841d1c33363cdf3849c0d76",
+    ".cache/go-module-tidy-verified.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/go-module-all-unit.log": "f5f1210f3afa51d1bb030bb745225721f4c40a6a61f10ea16839f416b94d7aa3",
+    ".cache/go-module-all-unit-replay.log": "9cad66556138e9b7dd3307da78afd7a8da75e5eb574eae5105201cfa19895532"
+  },
+  "first_local_regression": {
+    "test": "TestArchiveRejectsAmbiguousAndUnsafeEntries/Unicode_extension_alias",
+    "result": "The refactor omitted the exact ASCII extension-length guard and accepted the Unicode long-s alias. Restored that guard without editing or weakening the existing test. Original failed log hash and unchanged replay are retained.",
+    "native_failure": false
+  },
+  "limits": [
+    "No Go endpoint, publisher, proxy/group/discovery adapter, database mutation or stock-client qualification is provided by this parser slice. All format capabilities remain open.",
+    "Root go.mod required; maximum module/version lengths512/128, root go.mod1MiB, and caller-supplied bounded ZIP budgets. ZIP64/split/link/alternate-name and legacy-without-go.mod cases need explicit implementation and qualification.",
+    "Go publication must stage/sync three immutable objects before one common tenant mutation transaction; policy, discovery, races, recovery, proxy/group and lifecycle proofs remain required.",
+    "All 450 capabilities/41 families and later stages remain committed. Full security/packaging/readiness are false. No primary, customer, sibling or release change."
+  ]
+}
