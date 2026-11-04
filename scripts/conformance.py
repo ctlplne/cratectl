@@ -572,11 +572,24 @@ def ociproxy():
  check('OCI cached tenant coordinates remain isolated',req('/v2/oci-proxy/proof/manifests/v1','other')[0]==404)
 
 def maven():
+ pin=json.loads((ROOT/'docs/qualification/jvm-clients.json').read_text())['maven']
+ warm={'profile':'unique-snapshot-warm-v1','version':None,'distribution_sha512':None,'completed':[],
+       'cache_reused':False,'publisher_sha256':{},'reference_sha256':{},'wire_sha256':{},'local_sha256':{}}
+ result['maven_cache_contract']=warm
+ archive=ROOT/'.cache/apache-maven-3.10.0-bin.tar.gz'
+ if not archive.exists():archive=ROOT/'.cache/maven.tar.gz' # Existing owned native cache; same immutable pin.
+ check('Maven warm-cache profile uses a bounded pinned distribution',archive.is_file() and not archive.is_symlink() and archive.stat().st_size<=32<<20)
+ with archive.open('rb')as f:warm['distribution_sha512']=hashlib.file_digest(f,'sha512').hexdigest()
+ check('Maven warm-cache distribution matches its reviewed pin',warm['distribution_sha512']==pin['sha512'])
  repository('java','maven');work=PRIVATE/'maven';work.mkdir();(work/'cache').mkdir()
  settings=work/'settings.xml';settings.write_text('<settings><servers><server><id>cratectl</id><username>token</username><password>'+tokens['admin']+'</password></server></servers></settings>');settings.chmod(0o600)
  def mvn(args):
   return run([ROOT/'.cache/apache-maven-3.10.0/bin/mvn','-B','-s',settings,'-Dmaven.repo.local='+str(work/'cache')]+args,work,{'JAVA_HOME':str(ROOT/'.cache/jdk-21.0.13+9/Contents/Home')})
- commands.append({'version':mvn(['--version'])})
+ observed_version=mvn(['--version']);commands.append({'version':observed_version})
+ observed=re.search(r'^Apache Maven (\d{1,2}\.\d{1,3}\.\d{1,3})(?:\s|$)',re.sub(r'\x1b\[[0-9;]*m','',observed_version),re.M)
+ warm['version']=observed[1]if observed else None
+ check('actual Maven warm-cache client version matches its reviewed pin',warm['version']==pin['version'])
+ warm['completed'].append('client_identity')
  def deploy(name,version,dependency,repo='java',marker=None,local_cache=None):
   filename=name+'-'+version
   with zipfile.ZipFile(work/(filename+'.jar'),'w') as jar:jar.writestr('META-INF/MANIFEST.MF','Manifest-Version: 1.0\n');jar.writestr('fixture.txt',marker or filename)
@@ -615,10 +628,57 @@ def maven():
  check('Maven merged metadata supports conditional and range requests',req('/r/java-group/'+metadata_path,'reader',headers={'If-None-Match':next(v for k,v in headers.items()if k.lower()=='etag')})[0]==304 and req('/r/java-group/'+metadata_path,'reader',headers={'Range':'bytes=0-15'})[:2]==(206,body[:16]))
  def consumer_cache(label):
   target=work/label;shutil.copytree(work/'cache',target);shutil.rmtree(target/'dev/cratectl/proof',ignore_errors=True);return target
- def consume(artifact,label,transitive=True,endpoint='java-group'):
-  target=consumer_cache(label)
+ def consume(artifact,label,transitive=True,endpoint='java-group',local_cache=None):
+  target=consumer_cache(label)if local_cache is None else local_cache
   mvn(['-U','-s',str(reader_settings),'org.apache.maven.plugins:maven-dependency-plugin:3.8.1:get','-Dmaven.repo.local='+str(target),'-Dartifact='+artifact,'-DremoteRepositories=cratectl::default::'+BASE+'/r/'+endpoint+'/','-Dtransitive='+str(transitive).lower()])
   return target/'dev/cratectl/proof'/artifact.split(':')[1]
+ def owned_bytes(path):
+  if not path.is_file() or path.is_symlink() or path.stat().st_size>1<<20:raise AssertionError('owned Maven fixture is missing, linked or too large: '+path.name)
+  return path.read_bytes()
+ def bind_warm(name,path,publisher):
+  digest=hashlib.sha256(publisher).hexdigest();warm['publisher_sha256'][name]=digest
+  code,body,_=req('/api/v1/repositories/java/artifacts/reference?'+urllib.parse.urlencode({'path':path}))
+  reference=json.loads(body)if code==200 else{}
+  url=BASE+'/r/java/'+path
+  with urllib.request.urlopen(urllib.request.Request(url,headers={'Authorization':'Bearer '+tokens['reader']}),timeout=15)as response:
+   wire=response.read((1<<20)+1);status=response.status;final_url=response.geturl()
+  check('warm Maven publisher, durable reference and bounded HTTP bytes agree '+name,
+        code==200 and reference.get('digest')==digest and reference.get('size')==len(publisher)
+        and status==200 and final_url==url and wire==publisher)
+  warm['reference_sha256'][name]=reference['digest'];warm['wire_sha256'][name]=hashlib.sha256(wire).hexdigest()
+ warm_revisions={}
+ def bind_warm_snapshot(label):
+  code,body,_=req('/r/java/dev/cratectl/proof/proof-app/1.1-SNAPSHOT/maven-metadata.xml','reader')
+  if code!=200:raise AssertionError('owned Maven warm snapshot discovery failed')
+  values={(e.findtext('extension'),e.findtext('classifier')or''):e.findtext('value') for e in maven_xml(body).findall('./versioning/snapshotVersions/snapshotVersion')}
+  warm_revisions[label]={}
+  for ext in ['jar','pom']:
+   value=values.get((ext,''))
+   if not isinstance(value,str)or not re.fullmatch(r'1\.1-\d{8}\.\d{6}-[1-9]\d{0,8}',value):raise AssertionError('owned Maven warm snapshot has no bounded unique revision')
+   warm_revisions[label][ext]=value
+   bind_warm(label+'_'+ext,'dev/cratectl/proof/proof-app/1.1-SNAPSHOT/proof-app-'+value+'.'+ext,owned_bytes(work/('proof-app-1.1-SNAPSHOT.'+ext)))
+ warm_cache=consumer_cache('retained-snapshot-cache')
+ check('Maven warm-cache consumer begins without owned project coordinates',not(warm_cache/'dev/cratectl/proof').exists())
+ warm_identity=(warm_cache.stat().st_dev,warm_cache.stat().st_ino)
+ warm_marker=warm_cache/'cratectl-owned-cache-proof';warm_marker.write_bytes(b'owned cache remains in place\n')
+ warm_target=consume('dev.cratectl.proof:proof-app:1.1-SNAPSHOT','warm-initial',endpoint='java',local_cache=warm_cache)
+ bind_warm_snapshot('first')
+ for ext in ['jar','pom']:bind_warm('dependency_'+ext,'dev/cratectl/proof/proof-dep/1.0.0/proof-dep-1.0.0.'+ext,owned_bytes(work/('proof-dep-1.0.0.'+ext)))
+ def warm_local(expected_label):
+  actual={expected_label+'_'+ext:hashlib.sha256(owned_bytes(warm_target/'1.1-SNAPSHOT'/('proof-app-1.1-SNAPSHOT.'+ext))).hexdigest()for ext in ['jar','pom']}
+  timestamped={expected_label+'_'+ext:hashlib.sha256(owned_bytes(warm_target/'1.1-SNAPSHOT'/('proof-app-'+warm_revisions[expected_label][ext]+'.'+ext))).hexdigest()for ext in ['jar','pom']}
+  actual.update({'dependency_'+ext:hashlib.sha256(owned_bytes(warm_cache/'dev/cratectl/proof/proof-dep/1.0.0'/('proof-dep-1.0.0.'+ext))).hexdigest()for ext in ['jar','pom']})
+  check('Maven retained timestamped/local snapshot and dependency match exact published bytes '+expected_label,all(digest==warm['publisher_sha256'][name]for name,digest in actual.items())and all(digest==actual[name]for name,digest in timestamped.items()))
+  warm['local_sha256'].update(actual)
+ warm_local('first');warm['completed'].append('initial_resolution')
+ warm_module=warm_target/'1.1-SNAPSHOT';warm_module_identity=(warm_module.stat().st_dev,warm_module.stat().st_ino)
+ warm_module_marker=warm_module/'cratectl-owned-module-proof';warm_module_marker.write_bytes(b'owned snapshot cache remains in place\n')
+ def retained_cache_intact(target):
+  return(target==warm_target
+         and(warm_cache.stat().st_dev,warm_cache.stat().st_ino)==warm_identity
+         and(warm_module.stat().st_dev,warm_module.stat().st_ino)==warm_module_identity
+         and owned_bytes(warm_marker)==b'owned cache remains in place\n'
+         and owned_bytes(warm_module_marker)==b'owned snapshot cache remains in place\n')
  target=consume('dev.cratectl.proof:proof-app:[1.0.0,4.0.0)','range-consumer')
  check('stock Maven resolves a version range spanning group members',(target/'3.0.0/proof-app-3.0.0.jar').read_bytes()==(work/'proof-app-3.0.0.jar').read_bytes())
  upstream=maven_xml(req('/r/java/'+metadata_path,'reader')[1]);proxied=maven_xml(req('/r/java-remote/'+metadata_path,'reader')[1])
@@ -635,6 +695,13 @@ def maven():
  snapshot_path='dev/cratectl/proof/proof-app/1.1-SNAPSHOT/maven-metadata.xml'
  old_snapshot=req('/r/java-remote/'+snapshot_path,'reader')[1]
  deploy('proof-app','1.1-SNAPSHOT',True,marker='second unique snapshot publication')
+ bind_warm_snapshot('second')
+ check('warm Maven update changes the actual snapshot JAR',warm['publisher_sha256']['first_jar']!=warm['publisher_sha256']['second_jar'])
+ old_local_present=hashlib.sha256(owned_bytes(warm_module/'proof-app-1.1-SNAPSHOT.jar')).hexdigest()==warm['publisher_sha256']['first_jar']
+ refreshed=consume('dev.cratectl.proof:proof-app:1.1-SNAPSHOT','warm-update',endpoint='java',local_cache=warm_cache)
+ warm['cache_reused']=old_local_present and retained_cache_intact(refreshed)
+ check('Maven snapshot update reuses the same retained cache without clearing it',warm['cache_reused'])
+ warm_local('second');warm['completed'].append('updated_resolution')
  sources=work/'snapshot-sources.jar'
  with zipfile.ZipFile(sources,'w')as jar:jar.writestr('fixture-source.txt','owned classifier fixture')
  mvn(['org.apache.maven.plugins:maven-deploy-plugin:3.1.4:deploy-file','-Dfile='+str(sources),'-DgroupId=dev.cratectl.proof','-DartifactId=proof-app','-Dversion=1.1-SNAPSHOT','-Dpackaging=jar','-Dclassifier=sources','-DgeneratePom=false','-DrepositoryId=cratectl','-Durl='+BASE+'/r/java/'])
@@ -647,6 +714,9 @@ def maven():
  target=consume('dev.cratectl.proof:proof-app:1.1-SNAPSHOT:jar:sources','classifier-consumer',False)
  check('stock Maven resolves the independent snapshot sources classifier',any(p.read_bytes()==sources.read_bytes()for p in (target/'1.1-SNAPSHOT').glob('*sources.jar')))
  stop();start();check('Maven native merged snapshot discovery survives restart',entries==snapshot_entries(req('/r/java-group/'+snapshot_path,'reader')[1]))
+ restarted=consume('dev.cratectl.proof:proof-app:1.1-SNAPSHOT','warm-restart',endpoint='java',local_cache=warm_cache)
+ check('Maven restart keeps its existing local cache identity',retained_cache_intact(restarted))
+ warm_local('second');warm['completed'].append('restart')
  parent=work/'proof-parent-1.0.0.pom';parent.write_text('<project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion><groupId>dev.cratectl.proof</groupId><artifactId>proof-parent</artifactId><version>1.0.0</version><packaging>pom</packaging><properties><proof.dep.version>1.0.0</proof.dep.version></properties></project>')
  mvn(['org.apache.maven.plugins:maven-deploy-plugin:3.1.4:deploy-file','-Dfile='+str(parent),'-DpomFile='+str(parent),'-Dpackaging=pom','-DrepositoryId=cratectl','-Durl='+BASE+'/r/java-local/'])
  mvn(['org.apache.maven.plugins:maven-install-plugin:3.1.4:install-file','-Dfile='+str(parent),'-DpomFile='+str(parent),'-Dpackaging=pom'])

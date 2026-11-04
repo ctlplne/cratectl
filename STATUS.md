@@ -88,6 +88,16 @@ across five workflows/seven job definitions. All26union cases, commands, budgets
 and running-main preservation remain. Their native scheduling observation is
 pending; see `evidence/2026-11-04/ci-family-independent-lanes-development.json`.
 
+The native Maven hosted warm-cache journey is implemented but unverified.
+It keeps one reader cache across initial/updated unique snapshots and registry
+restart, checking both timestamped files and current aliases, the transitive
+dependency, cache/module identity and six publisher/reference/HTTP/local bindings.
+All original647baseline checks remain plus16new (663expected). Four safe-contract
+and14exporter regressions pass. First local lint hit an existing cleanup EPERM;
+the unchanged scoped test and full lint replay pass, with original failure kept.
+No JVM or database ran locally. See
+`evidence/2026-11-04/maven-warm-cache-development.json`.
+
 No primary, selected binary, data, credential, sibling or customer change.
 Earlier notes below are historical and do not override this current state.
 

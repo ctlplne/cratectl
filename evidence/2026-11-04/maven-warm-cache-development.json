@@ -1,0 +1,98 @@
+{
+  "observed_at": "2026-11-04T19:18:01.418611+00:00",
+  "source_parent": "636dea9452c116bbbe91d6013a2d6b03de1ef9e6",
+  "source_dirty": true,
+  "state": "Native Maven hosted warm-cache fixture implemented but unverified; local evidence contracts and lint pass after retained permission failure",
+  "profile": "unique-snapshot-warm-v1",
+  "stages": [
+    "client_identity",
+    "initial_resolution",
+    "updated_resolution",
+    "restart"
+  ],
+  "client": {
+    "version": "3.10.0",
+    "runtime": "Observed version must match committed pin; official archive SHA512 verified again with32MiB bound. Existing owned legacy archive filename is accepted only for the same immutable pin when the new filename is absent.",
+    "pin": "docs/qualification/jvm-clients.json:maven",
+    "process": "Original120second/8MiB owned command bound retained. No local Maven/JVM or PostgreSQL campaign ran."
+  },
+  "mechanism": [
+    "Clone the existing owned tool cache once, remove owned package coordinates before the first native consumer and assert absence. Original fresh-cache consumers remain unchanged.",
+    "Use stock Maven dependency:get -U through the hosted endpoint with the same private reader settings and cache across initial unique snapshot, changed unique snapshot and actual registry restart.",
+    "Bind first and second JAR/POM plus transitive dependency JAR/POM to publisher, common durable reference, bounded independent HTTP and exact local canonical/timestamped files. First observations are retained before the update.",
+    "Confirm original JAR remains immediately before native refresh. Cache/root and snapshot-directory device/inode plus two owned marker files must survive refresh and restart; never clear or replace the cache between attempts.",
+    "Safe contract requires all four native stages, all six representations in all four hash maps, changed JAR bytes and actual cache reuse. Unknown/private fields, missing stages, stale bytes and unbounded identities fail. Only reviewed fields are exported."
+  ],
+  "source_files": [
+    {
+      "path": "Makefile",
+      "sha256": "a997aacab34e0fe33f14ebd3375629c23c5b499a9da96e634cdd1ae410657345"
+    },
+    {
+      "path": "scripts/conformance.py",
+      "sha256": "dd5708b5facc978da5e169ab9b3be569cf593f638fba86eaee161338fe0e45d5"
+    },
+    {
+      "path": "scripts/ci/maven_evidence.py",
+      "sha256": "4da661aa52ba1113bc91e103ca79e5d1fe22f1454da44f2b9e98b48040c77fc1"
+    },
+    {
+      "path": "scripts/ci/test_maven_evidence.py",
+      "sha256": "d364cd906059755c7fecf5d3902e9e88515e6371abb790cd811e25619eea6611"
+    },
+    {
+      "path": "scripts/ci/evidence_summary.py",
+      "sha256": "b60161e87a64d2d515dafb809e6bc122f2572b5162edac59773aaafed7daf361"
+    },
+    {
+      "path": "scripts/ci/test_evidence_summary.py",
+      "sha256": "bf35b02724a1fa60f2394d1c1c9d0fb072ae8775cfa3ab5e084921c79861713b"
+    }
+  ],
+  "local_checks": [
+    {
+      "path": ".cache/maven-warm-cache-lint.log",
+      "sha256": "9732c29aa5b8da24dc3e51e3fddf7054d20d1bb3a6f522b2890a4fa4e00ae5c3",
+      "result": "failed first local lint attempt: existing process-group cleanup EPERM; not counted as a pass"
+    },
+    {
+      "path": ".cache/maven-warm-owned-cleanup-replay.log",
+      "sha256": "c4221cab7eee30535a8d39a0cd00024d55d7cba6209cb22c3988b26c1bb8f0f2",
+      "result": "unchanged scoped-permission cleanup test passes"
+    },
+    {
+      "path": ".cache/maven-warm-cache-lint-replay.log",
+      "sha256": "677395fd1939ec0771d685a161d5a027d4d6e07bf34fcf28e08525303277e371",
+      "result": "full make lint passes with explicit owned-process permission"
+    },
+    {
+      "path": ".cache/maven-warm-evidence-final.log",
+      "sha256": "feabb4add9e2ca3374e538560634d1ec97dc4f4ce89aab12f3d726e36ea9b2f6",
+      "result": "four safe Maven cache contract regressions pass"
+    },
+    {
+      "path": ".cache/maven-warm-exporter-final.log",
+      "sha256": "ec57050f8f32a1d3f1d287435631b4699817ac0e3f9eaf9e63bea4c2fc24dc55",
+      "result": "fourteen exporter regressions pass, including private-field rejection and the new warm-cache gate"
+    }
+  ],
+  "first_local_failure": "evidence/2026-11-04/maven-warm-local-cleanup-first-failure.txt",
+  "syntax": "Python compile and git diff --check pass. Exact same existing process cleanup test and helper were replayed; neither was relaxed or skipped. Original EPERM cause is not established by the successful replay.",
+  "native_required": [
+    "Both actual native Linux GitHub jobs must pass all663baseline checks: original647retained plus16new assertions, including all56actual SDKHTTPfixtures before/after restart.",
+    "Maven safe contract must complete all4stages and all6publisher/reference/wire/local bindings with cache_reused=true and actual pinned version/distribution identity.",
+    "All5snapshot PG tests/race, full119check15workflowChromium and relevant original JVM/OCI/upgrades/focused jobs remain required. Expected next push selects main9/JVM8/OCI2/upgrades2/focused3=24jobs; actual full-SHA inventory required. Existing636library2 runs remain separate source-bound observations and need their own pass artifacts."
+  ],
+  "sources": [
+    "https://maven.apache.org/ref/3.10.0/maven-embedder/cli.html",
+    "https://maven.apache.org/repositories/local.html",
+    "https://maven.apache.org/repositories/remote.html",
+    "https://maven.apache.org/resolver/local-repository.html"
+  ],
+  "limits": [
+    "Hosted Maven unique snapshot cache only. The original fresh proxy/group/range/classifier/parent/concurrent-release cases remain, but new warm proxy/group freshness, offline fallback, native Ivy/SBT warm cache, timestamp edge races and broader fault/lifecycle/TLS/platform outcomes are not qualified.",
+    "This tests updated snapshot fetches through a configured hosted endpoint. Client-owned previously downloaded bytes cannot be revoked by the registry; no such claim is made.",
+    "No pre-repair or post-repair native warm-cache execution is claimed from local schema/stand-in checks. No product/runtime/schema behavior changes in this commit.",
+    "All450capabilities/41families/laterstages remain required; broad readiness/fullsecurity/packaging false. No primary/selectedbinary/customer/sibling/credential or release changes."
+  ]
+}

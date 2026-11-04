@@ -46,6 +46,14 @@ implementation does not yet establish every warm-cache, concurrent publisher or
 interrupted multi-file publication outcome. Immutable objects and earlier
 preservation receipts stay retained; no physical collection happens here.
 
+Maven's local cache belongs to the consumer. Its [`-U` option](https://maven.apache.org/ref/3.10.0/maven-embedder/cli.html)
+checks for updated snapshots; a registry restart does not clear that local cache.
+The new hosted unique-snapshot journey retains one cache through update and
+restart and checks exact JAR/POM/dependency bytes, but its native replay remains
+pending. See the [qualification record](../../evidence/2026-11-04/maven-warm-cache-development.json).
+This does not qualify warm proxy/group freshness or native Ivy/SBT caches.
+Revoking a credential cannot remove bytes already downloaded to a client.
+
 Native `maven-metadata.xml` responses describe current discovery rather than a
 literal copy of one client's upload. The submitted XML remains an immutable CAS
 object behind its journaled reference. Artifact-level hosted discovery also

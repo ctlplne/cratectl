@@ -11,11 +11,23 @@ from evidence_summary import summarize
 from test_gradle_evidence import complete_contract
 from test_ivy_evidence import complete_contract as complete_ivy_contract, metadata_contract, snapshot_contract
 from test_sbt_evidence import complete_contract as complete_sbt_contract
+from test_maven_evidence import complete_contract as complete_maven_cache_contract
 
 ROOT = Path(__file__).resolve().parents[2]
 
 
 class EvidenceSummary(unittest.TestCase):
+    def test_maven_warm_cache_requires_exact_safe_before_after_bytes(self):
+        contract=complete_maven_cache_contract()
+        report={'candidate':'a'*40,'status':'passed','maven_cache_contract':contract,
+                'commands':[{'output':'private-synthetic-value'}],'failure':'private-synthetic-value'}
+        self.write('maven-cache.json',report)
+        exported=summarize(self.root,self.environment)['records'][0]
+        self.assertEqual(exported['maven_cache_contract'],contract)
+        self.assertNotIn('private-synthetic-value',json.dumps(exported))
+        self.write('maven-cache.json',{**report,'maven_cache_contract':{**contract,'cache_reused':False}})
+        with self.assertRaises(SystemExit):summarize(self.root,self.environment)
+
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory(prefix='cratectl-ci-evidence-', dir=ROOT / '.cache')
         self.addCleanup(self.temporary.cleanup)

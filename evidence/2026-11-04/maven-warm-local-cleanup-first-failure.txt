@@ -1,0 +1,6 @@
+Source parent: 636dea9452c116bbbe91d6013a2d6b03de1ef9e6; uncommitted warm-cache qualification changes.
+Local native ARM macOS stand-in gate: make lint.
+Existing BoundedClient.test_successful_parent_exit_stops_children_holding_output_open failed.
+Selected fixed diagnostic: os.killpg(process.pid, signal.SIGKILL) -> PermissionError: [Errno 1] Operation not permitted.
+No helper/test case was removed or relaxed. An unchanged scoped-permission replay of that test and then full make lint pass separately.
+Full original log SHA256: 9732c29aa5b8da24dc3e51e3fddf7054d20d1bb3a6f522b2890a4fa4e00ae5c3

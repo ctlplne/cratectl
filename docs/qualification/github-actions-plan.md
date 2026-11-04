@@ -68,6 +68,18 @@ retain every previous case and complete the full x86 browser journey. The core-o
 The subsequent scheduling revision changes all workflow paths and selects all26
 union cases; actual source-bound inventory remains required. See the [record](../../evidence/2026-11-04/maven-immutable-receipt-concurrency-development.json).
 
+The next fixture revision adds a retained-cache native Maven hosted journey:
+initial unique snapshot, changed snapshot with -U, and actual registry restart.
+It preserves all647baseline checks and adds16 (663expected), requiring six
+publisher/reference/HTTP/local byte bindings and unchanged cache/module identity.
+Four safe-contract and14exporter regressions pass locally. The original local
+process-cleanup EPERM is retained; unchanged scoped cleanup and full lint replay
+pass. No native JVM/database ran on this Mac. New native replay remains required;
+see the [development record](../../evidence/2026-11-04/maven-warm-cache-development.json).
+This selects24expected jobs; the SDK library pair on636dea9 is still observed
+separately and needs its own pass artifacts. Warm proxy/group/Ivy/SBT, offline behavior and all
+broader goal requirements remain open.
+
 The following campaign notes predate this9b00f7e observation.
 
 Owner resumed the full goal on 2026-11-04. The latest fully accepted whole
