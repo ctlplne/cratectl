@@ -79,6 +79,16 @@ Go upload route, before publication. Seven checks/one identity stage only.
 See `evidence/2026-11-04/go-module-d183be6-cli-first-failure.json`.
 No native hosted/group Go journey pass is inferred.
 
+Later exact `f9599d7` fails both native group tests at an inconsistent413
+expectation: the shared complete-index budget refusal returns503. Original
+private job hashes and safe empty summaries are retained. The fixture now
+requires that refusal/error and no partial result for row/byte budgets across
+GET/HEAD list/latest. No server mapping changed. The CLI now narrowly validates
+canonical ZIP uploads and timestamp; its actual configured-TLS regression,
+21 invalid combinations, affected unit/race/vet and four-function compilation
+pass locally. Both repairs still require native replay. See
+`evidence/2026-11-04/go-module-cli-group-repair-development.json`.
+
 Four stock-Go1.27.3 file-proxy stand-ins pass on this ARM Mac with exact cached
 bytes/info. They prove fixture compatibility without HTTP/TLS/registry/PG.
 All three source hosts repeat them through `make lint`. Go command limits retain

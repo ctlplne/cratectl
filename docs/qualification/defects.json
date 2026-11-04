@@ -1119,9 +1119,19 @@
       "id": "DEFECT.0102",
       "summary": "CLI management-path guard rejects the advertised Go module upload route",
       "first_failure": "evidence/2026-11-04/go-module-d183be6-cli-first-failure.json",
-      "state": "Observed on both native Linux hosts; focused repair pending",
+      "state": "Focused repair implemented; local stand-ins/unit/race/compile pass, native replay unverified",
       "repair": "Allow only canonical Go ZIP publication with explicit PUT/upload-file/stable module time; preserve management-path restrictions and standard client TLS/auth/redirect/response bounds.",
-      "limits": "Native command failed before publication after7fixture checks. No stock Go download/hosted/group qualification inferred."
+      "limits": "Native command failed before publication after7fixture checks. No stock Go download/hosted/group qualification inferred.",
+      "development": "evidence/2026-11-04/go-module-cli-group-repair-development.json"
+    },
+    {
+      "id": "DEFECT.0103",
+      "summary": "Go group fixture expects413 instead of the shared503 complete-index budget refusal",
+      "first_failure": "evidence/2026-11-04/go-module-f9599d7-group-budget-first-failure.json",
+      "state": "Focused repair implemented; local stand-ins/unit/race/compile pass, native replay unverified",
+      "repair": "Keep the existing503 metadata_budget_exceeded mapping. Strengthen both row/byte budget assertions across GET/HEAD list/latest and prevent partial successful output.",
+      "limits": "Original fixture label incorrectly implies truncation; the observed503 is a refusal. No passing normal/race/group/client campaign.",
+      "development": "evidence/2026-11-04/go-module-cli-group-repair-development.json"
     }
   ]
 }

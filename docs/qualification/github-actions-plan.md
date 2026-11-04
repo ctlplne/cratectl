@@ -115,7 +115,10 @@ integration now has both d183 native failed-job proofs: one authenticated CMS
 record per host decrypts locally; raw streams stay private. Both PG normal/race
 steps pass before an independent CLI-path failure. The stock Go registry journey
 and later group function remain unverified. A failure before a report exists
-still requires separate job observations. See the
+still requires separate job observations. The later f959 group fixture fails
+only at its incorrect413 budget expectation; its original503 refusal is retained.
+Canonical CLI upload and strengthened shared503 row/byte/list/latest checks
+are implemented locally but require native replay. See the
 [fixture/diagnostic record](../../evidence/2026-11-04/go-module-fixture-diagnostics-development.json).
 
 The full workflow union is now29jobs across seven workflows, including one

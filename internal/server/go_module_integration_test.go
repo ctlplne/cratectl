@@ -466,11 +466,23 @@ func TestGoModuleGroupsPreservePrecedenceReviewOwnersAndSourceGrants(t *testing.
 	if w := goHTTP(t, s, token, "PUT", endpoint, first); w.Code != 405 {
 		t.Fatal("group became publishable", w.Code)
 	}
-	s.NativeVersionLimit = 1
-	if w := goHTTP(t, s, token, "GET", "/go/combined/"+listPath, nil); w.Code != 413 {
-		t.Fatal("group emitted a truncated index", w.Code)
+	originalBytes := s.NativeMetadataBytes
+	for _, budget := range []struct {
+		name     string
+		versions int
+		bytes    int64
+	}{{"rows", 1, originalBytes}, {"metadata bytes", 10000, 1}} {
+		s.NativeVersionLimit, s.NativeMetadataBytes = budget.versions, budget.bytes
+		for _, operation := range []string{listPath, strings.Replace(listPath, "/@v/list", "/@latest", 1)} {
+			for _, method := range []string{"GET", "HEAD"} {
+				w := goHTTP(t, s, token, method, "/go/combined/"+operation, nil)
+				if w.Code != 503 || w.Header().Get("Content-Type") != "text/plain; charset=utf-8" || !strings.HasPrefix(w.Body.String(), "metadata_budget_exceeded:") || strings.Contains(w.Body.String(), "v1.1.0") {
+					t.Fatal("group did not refuse a complete over-budget index", budget.name, operation, method, w.Code, w.Body.String())
+				}
+			}
+		}
 	}
-	s.NativeVersionLimit = 10000
+	s.NativeVersionLimit, s.NativeMetadataBytes = 10000, originalBytes
 	for _, a := range firstRefs {
 		decide("first", a, "allowed")
 	}

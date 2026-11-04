@@ -11,11 +11,13 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 
 	"ctlplne.dev/cratectl/internal/configfile"
 	crypt "ctlplne.dev/cratectl/internal/crypto"
+	"ctlplne.dev/cratectl/internal/gomodule"
 )
 
 func run() error {
@@ -64,8 +66,8 @@ func run() error {
 			*caFile = c.CAFile
 		}
 	}
-	if !strings.HasPrefix(*p, "/api/v1/") {
-		return errors.New("management path must start /api/v1/")
+	if e := validateClientPath(*p, *method, *upload, *moduleTime); e != nil {
+		return e
 	}
 	u, e := url.Parse(*base)
 	if e != nil || u.Host == "" || u.User != nil || u.RawQuery != "" || u.Fragment != "" || strings.Trim(u.Path, "/") != "" || (u.Scheme != "https" && u.Scheme != "http") {
@@ -145,6 +147,31 @@ func run() error {
 	fmt.Println()
 	if resp.StatusCode >= 300 {
 		return fmt.Errorf("management request returned HTTP %d", resp.StatusCode)
+	}
+	return nil
+}
+
+var repositoryName = regexp.MustCompile(`^[a-z][a-z0-9-]{0,62}$`)
+
+func validateClientPath(p, method, upload, moduleTime string) error {
+	if moduleTime == "" {
+		if strings.HasPrefix(p, "/api/v1/") {
+			return nil
+		}
+		return errors.New("management path must start /api/v1/; Go publication also requires --go-module-time")
+	}
+	invalid := errors.New("Go publication requires PUT, upload-file, a canonical /go/REPOSITORY/MODULE/@v/VERSION.zip path and a matching RFC3339 instant")
+	relative, ok := strings.CutPrefix(p, "/go/")
+	repository, coordinate, found := strings.Cut(relative, "/")
+	if !ok || !found || !repositoryName.MatchString(repository) || method != "PUT" || upload == "" {
+		return invalid
+	}
+	request, e := gomodule.ParseRequest(coordinate)
+	if e != nil || request.Operation != "zip" {
+		return invalid
+	}
+	if _, e := gomodule.VersionInfo(request.Coordinate, moduleTime); e != nil {
+		return invalid
 	}
 	return nil
 }

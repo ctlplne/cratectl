@@ -1,0 +1,73 @@
+{
+  "source_parent": "e627c788467d2492b34622c7c9315ab39448b63b",
+  "source_dirty": true,
+  "observed_at": "2026-11-04T23:15:45.030101+00:00",
+  "state": "implemented but unverified natively",
+  "files": [
+    {
+      "path": "cmd/cratectl/main.go",
+      "sha256": "4cceabb7ddfdc2c563be00cb293ae490b9e80b0a85aa6e0af34dfa84ad0c5ebe"
+    },
+    {
+      "path": "cmd/cratectl/main_test.go",
+      "sha256": "0a0c83803568e1460360610426eb32174d2ec8c18c9eb81a93275e90a24bc6e0"
+    },
+    {
+      "path": "internal/server/go_module_integration_test.go",
+      "sha256": "abf2166c74b1a3671ab580bbb51dcc292cb9743c4847e1660efcf86133be9422"
+    }
+  ],
+  "defects": [
+    "DEFECT.0102",
+    "DEFECT.0103"
+  ],
+  "first_failures": [
+    "evidence/2026-11-04/go-module-d183be6-cli-first-failure.json",
+    "evidence/2026-11-04/go-module-f9599d7-group-budget-first-failure.json"
+  ],
+  "cli_repair": "Use the same canonical Go parser/version-time validator before opening upload credentials/bytes or making requests. Only PUT with upload-file, canonical repository/module/version ZIP and matching stable RFC3339 instant can use the new protocol route. Other requests retain management prefix restriction. Standard configured TLS, private token, exact streaming bytes/length, retry header, redirect refusal and bounded response handling remain.",
+  "local_cli_regression": "Actual run() against an owned configured TLS stand-in failed first at the unchanged management guard; after repair it sends one exact PUT with configured trust/token, stable module time, idempotency key and inert binary upload bytes and prints the complete201receipt. Twenty-one invalid path/method/time combinations reject, including traversal/URL aliases/query/fragment/major/pseudo mismatch; valid pseudo and ordinary management remain. No package content is executed.",
+  "group_fixture_repair": "The shared ErrMetadataLimit/503 handler remains unchanged. Require exact plaintext metadata_budget_exceeded and no partial version output on all eight combinations of row/byte budget, GET/HEAD and list/latest. Restore original budgets before subsequent corruption/partial-version assertions. Original403/405/409 and all other group checks remain.",
+  "validation": [
+    "Affected CLI/module/store/server unit and race packages pass. CLI/server vet and architecture boundary pass.",
+    "Integration package compiles with -tags=integration -run ^$: zero PostgreSQL functions execute locally. Four real-PG functions normal/race and complete9stage/24wire/16cache hosted-group profile still require both actual GitHub architectures."
+  ],
+  "logs": [
+    {
+      "path": ".cache/go-cli-path-first-regression.log",
+      "sha256": "c63a5843510dfc77e76c108cde44111b8cbe143baafdf200c977157e7b9aa564"
+    },
+    {
+      "path": ".cache/go-cli-path-repair-unit.log",
+      "sha256": "2e98dbd31c096af965dd45ace0076523709f1d7e73e9da5ccaedc06f0cdec900"
+    },
+    {
+      "path": ".cache/go-cli-path-repair-race.log",
+      "sha256": "7f980380774e895a89e0bedbc2ace146583ac0bf96701b82d69a783f8d52a17c"
+    },
+    {
+      "path": ".cache/go-cli-path-repair-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/go-cli-group-repair-unit.log",
+      "sha256": "c2c27f0f877f19814da2aa675cbc7f9f754d35cd2e2231038fb21a4589853491"
+    },
+    {
+      "path": ".cache/go-cli-group-repair-race.log",
+      "sha256": "b674e8e656a0c5d41f86efef566331238eeca40708fd145d0f6bc0a73a19afdb"
+    },
+    {
+      "path": ".cache/go-cli-group-repair-integration-compile.log",
+      "sha256": "f52448f98b552a72ebb1ba18b89760e5c45a9f0b764dad93e20d5a9b20773958"
+    },
+    {
+      "path": ".cache/go-cli-group-repair-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "limits": [
+    "Owned local TLS/file stand-ins are not a registry-backed PostgreSQL or stock Go client pass. Both original native failures retained without assertion removals or server privilege changes.",
+    "All450capabilities/41families/laterstages remain committed; readiness/fullsecurity/packaging false. No primary/customer/sibling/release change."
+  ]
+}

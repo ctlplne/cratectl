@@ -1,0 +1,81 @@
+{
+  "candidate": "f9599d7306beb9af81e2a38a25ae98bd52096a38",
+  "observed_at": "2026-11-04T23:14:09.642309+00:00",
+  "run_id": 41928823361,
+  "url": "https://github.com/ctlplne/cratectl/actions/runs/41928823361",
+  "status": "failed; group database fixture expects the wrong status for complete-index resource exhaustion",
+  "jobs": [
+    {
+      "architecture": "amd64",
+      "job_id": 126920192127,
+      "job_url": "https://github.com/ctlplne/cratectl/actions/runs/41928823361/job/126920192127",
+      "steps": {
+        "Set up job": "success",
+        "Initialize containers": "success",
+        "Run actions/checkout@v7": "success",
+        "Run actions/setup-go@v7": "success",
+        "Run actions/setup-python@v7": "success",
+        "Prepare owned PostgreSQL and native binaries": "success",
+        "Real PostgreSQL Go module regressions": "failure",
+        "Real PostgreSQL Go module regressions with race detector": "skipped",
+        "Trusted TLS stock Go transitive downloads and policy recovery": "skipped",
+        "Encrypt bounded Go failure observations for owner diagnosis": "success",
+        "Run actions/upload-artifact@v7": "success",
+        "Prepare bounded native evidence summary": "failure",
+        "Post Run actions/setup-python@v7": "skipped",
+        "Post Run actions/setup-go@v7": "skipped",
+        "Post Run actions/checkout@v7": "success",
+        "Stop containers": "success",
+        "Complete job": "success"
+      },
+      "failed_test": "TestGoModuleGroupsPreservePrecedenceReviewOwnersAndSourceGrants",
+      "fixed_marker": "group emitted a truncated index 503",
+      "private_job_log": ".private/ci-diagnostics/go-group-first-failures/f9599d7-amd64.txt",
+      "private_job_log_sha256": "e21ab39a9f93aa7678a2da4e7b0df88cc132c6345093cd2372130c2f642dd380",
+      "private_job_log_bytes": 53754,
+      "safe_summary": "evidence/2026-11-04/go-module-f9599d7-amd64-empty-summary.json",
+      "safe_summary_sha256": "1f6c523292f1bb30f9f0c2f2dd0be89000a477929195c328a1a75612587cea28",
+      "github_artifact_id": 13370988826,
+      "github_artifact_digest": "sha256:813030ed13d09e8426db4813d7ed55e02a53089aa75ab3e8940a721b6f272ff5"
+    },
+    {
+      "architecture": "arm64",
+      "job_id": 126920192561,
+      "job_url": "https://github.com/ctlplne/cratectl/actions/runs/41928823361/job/126920192561",
+      "steps": {
+        "Set up job": "success",
+        "Initialize containers": "success",
+        "Run actions/checkout@v7": "success",
+        "Run actions/setup-go@v7": "success",
+        "Run actions/setup-python@v7": "success",
+        "Prepare owned PostgreSQL and native binaries": "success",
+        "Real PostgreSQL Go module regressions": "failure",
+        "Real PostgreSQL Go module regressions with race detector": "skipped",
+        "Trusted TLS stock Go transitive downloads and policy recovery": "skipped",
+        "Encrypt bounded Go failure observations for owner diagnosis": "success",
+        "Run actions/upload-artifact@v7": "success",
+        "Prepare bounded native evidence summary": "failure",
+        "Post Run actions/setup-python@v7": "skipped",
+        "Post Run actions/setup-go@v7": "skipped",
+        "Post Run actions/checkout@v7": "success",
+        "Stop containers": "success",
+        "Complete job": "success"
+      },
+      "failed_test": "TestGoModuleGroupsPreservePrecedenceReviewOwnersAndSourceGrants",
+      "fixed_marker": "group emitted a truncated index 503",
+      "private_job_log": ".private/ci-diagnostics/go-group-first-failures/f9599d7-arm64.txt",
+      "private_job_log_sha256": "a82c43d98778eaaf1a6dc1c57cacf0c37449ff09ecd7af60936898ca49f77d6a",
+      "private_job_log_bytes": 53727,
+      "safe_summary": "evidence/2026-11-04/go-module-f9599d7-arm64-empty-summary.json",
+      "safe_summary_sha256": "06e792c632a773b713e02590585288834512c01ba43b761ed84f85eeb9cd7c62",
+      "github_artifact_id": 13370258521,
+      "github_artifact_digest": "sha256:2148acefac150ab4b1eda1380bd2f781b87b6e5decd99673db7103560a330a03"
+    }
+  ],
+  "cause": "The new group fixture expects413 after reducing NativeVersionLimit to1. GoModuleVersions returns the existing ErrMetadataLimit, whose common HTTP mapping is503 metadata_budget_exceeded across native formats. The actual503 is a refusal, not an observed truncated success. This is an inconsistent fixture expectation; no product truncation is established.",
+  "repair_required": "Retain fail-closed behavior and shared503 mapping. Require the fixed metadata-budget error/plaintext and absence of a partial successful version list; exercise GET/HEAD list/latest for both row and metadata-byte exhaustion, then restore budgets before subsequent corruption cases.",
+  "limits": [
+    "Normal database suite fails; race/client steps are skipped and safe summaries correctly contain zero registry reports. No full group or client pass.",
+    "All450capabilities/41families/laterstages remain required; readiness/fullsecurity/packaging false. Primary/customer/sibling/release unchanged."
+  ]
+}

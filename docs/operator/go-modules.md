@@ -22,6 +22,10 @@ cratectl --config /private/path/writer.json --method PUT \
   --upload-file MODULE.zip --go-module-time COMMIT_TIME_RFC3339
 ```
 
+The CLI validates a canonical Go ZIP route, PUT, upload-file and matching
+timestamp before sending the request. This focused route repair has local
+configured-TLS stand-in proof; native replay remains required.
+
 Use a stable RFC3339 version creation time. A pseudo-version must carry that
 same timestamp. Retain it on retries. Identical retries return the original
 receipt; changing ZIP or info bytes at an existing version returns conflict.
