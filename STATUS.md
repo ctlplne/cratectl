@@ -150,9 +150,11 @@ execution, so runtime=false remains unverified. An unselected/canceled job
 never counts as a pass. The five-minute selector now keys concurrency by exact
 source as well as branch, preventing documentation pushes from replacing a
 queued source planner. This refinement has six tests/semantic YAML proof,
-but requires actual execution. See
+and now has actual successful source-true execution atfdff445 with all8heavy
+jobs placed. Native execution and docs-false/security proof remain open. See
 `evidence/2026-11-04/ci-selection-63ad692-placement-checkpoint.json` and
-`evidence/2026-11-04/ci-selection-source-key-development.json`.
+`evidence/2026-11-04/ci-selection-source-key-development.json` and
+`evidence/2026-11-04/ci-selection-fdff445-placement-checkpoint.json`.
 
 Gitleaks now uses the same bounded32MiB public-archive fetch path, retaining
 its exact8.30.1version/SHA256 pin and all original scans/324rule fixtures.

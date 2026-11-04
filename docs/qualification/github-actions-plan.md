@@ -179,7 +179,9 @@ The five-minute selection job now isolates its pending slot by exact source SHA
 as well as branch. A documentation push therefore cannot replace a source
 planner before it schedules runtime jobs. The e627 canceled selector remains
 unexecuted, with no false runtime=false pass. Six real-Git tests and YAML semantic
-preservation pass; actual source-key/docs-only execution still requires proof.
+preservation pass. Exactfdff now executes this source-specific selector
+successfully, reproduces the exact count/hash and places all8heavy jobs. Their
+execution and legitimate docs-only false/security proof still require evidence.
 Heavy-job and independent security concurrency remain unchanged. See the
 [source-key development record](../../evidence/2026-11-04/ci-selection-source-key-development.json).
 
