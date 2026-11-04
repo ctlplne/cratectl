@@ -1,0 +1,118 @@
+{
+  "candidate": "802bb519c10eb49f46fce407fd33fd4088ad0182",
+  "observed_at": "2026-11-04T23:44:23.140693+00:00",
+  "run_id": 41932830451,
+  "url": "https://github.com/ctlplne/cratectl/actions/runs/41932830451",
+  "status": "partial; four PG functions normal/race and actual CLI upload pass both hosts, stock Go download fails401",
+  "jobs": [
+    {
+      "architecture": "amd64",
+      "job_id": 126933783481,
+      "job_url": "https://github.com/ctlplne/cratectl/actions/runs/41932830451/job/126933783481",
+      "steps": {
+        "Set up job": "success",
+        "Initialize containers": "success",
+        "Run actions/checkout@v7": "success",
+        "Run actions/setup-go@v7": "success",
+        "Run actions/setup-python@v7": "success",
+        "Prepare owned PostgreSQL and native binaries": "success",
+        "Real PostgreSQL Go module regressions": "success",
+        "Real PostgreSQL Go module regressions with race detector": "success",
+        "Trusted TLS stock Go transitive downloads and policy recovery": "failure",
+        "Encrypt bounded Go failure observations for owner diagnosis": "success",
+        "Run actions/upload-artifact@v7": "success",
+        "Prepare bounded native evidence summary": "success",
+        "Post Run actions/setup-python@v7": "skipped",
+        "Post Run actions/setup-go@v7": "skipped",
+        "Post Run actions/checkout@v7": "success",
+        "Stop containers": "success",
+        "Complete job": "success"
+      },
+      "retained": [
+        {
+          "path": "evidence/2026-11-04/go-module-802bb51-amd64-failed-summary.json",
+          "sha256": "c767b6f5a1640603f19962f6dac769ad638ecbe934ff13847aeb8d355f0ecbfb",
+          "github_artifact_id": 13372768404,
+          "github_artifact_digest": "sha256:169e5b201fadb95f81103477176a2d11cf39460d8f6de22d1ead5a89bd0346f9"
+        },
+        {
+          "path": "evidence/2026-11-04/go-module-802bb51-amd64-diagnostic-metadata.json",
+          "sha256": "250c2078d75360d3dc2200d5b0731ffdcfe7829fbf67ac21c1fc0a48d8b54208",
+          "github_artifact_id": 13372838106,
+          "github_artifact_digest": "sha256:4c3fda4965c98700a47da11127999d16b9a12e27581d7ea39452af1940148538"
+        }
+      ],
+      "authenticated_private_payload": ".private/ci-diagnostics/go-802bb51-amd64.json",
+      "authenticated_private_payload_sha256": "88a08747e48ef984f01e3dfebfe5191d5cbdee89ddce9bc39ef676a03cd79fe9",
+      "failed_go_exit": 1,
+      "private_go_output_sha256": "d345440227a60723423a00756593ef91baf500d483e05f4c50bc872be5badeac",
+      "private_go_output_bytes": 575,
+      "fixed_marker": "401 Unauthorized"
+    },
+    {
+      "architecture": "arm64",
+      "job_id": 126933783026,
+      "job_url": "https://github.com/ctlplne/cratectl/actions/runs/41932830451/job/126933783026",
+      "steps": {
+        "Set up job": "success",
+        "Initialize containers": "success",
+        "Run actions/checkout@v7": "success",
+        "Run actions/setup-go@v7": "success",
+        "Run actions/setup-python@v7": "success",
+        "Prepare owned PostgreSQL and native binaries": "success",
+        "Real PostgreSQL Go module regressions": "success",
+        "Real PostgreSQL Go module regressions with race detector": "success",
+        "Trusted TLS stock Go transitive downloads and policy recovery": "failure",
+        "Encrypt bounded Go failure observations for owner diagnosis": "success",
+        "Run actions/upload-artifact@v7": "success",
+        "Prepare bounded native evidence summary": "success",
+        "Post Run actions/setup-python@v7": "skipped",
+        "Post Run actions/setup-go@v7": "skipped",
+        "Post Run actions/checkout@v7": "success",
+        "Stop containers": "success",
+        "Complete job": "success"
+      },
+      "retained": [
+        {
+          "path": "evidence/2026-11-04/go-module-802bb51-arm64-failed-summary.json",
+          "sha256": "8329795b153c3e8200835536da03c1ecc7eec5978bee724ba75289e12a5c2a9e",
+          "github_artifact_id": 13373620937,
+          "github_artifact_digest": "sha256:c3ffac8de17aa6564ad0bf741870827da7ab84e6c5188ed5e3ee54f009757039"
+        },
+        {
+          "path": "evidence/2026-11-04/go-module-802bb51-arm64-diagnostic-metadata.json",
+          "sha256": "7823bc7588b8855ae3722cc63f1706f8f5334f20121a8206d2d59d2deff65019",
+          "github_artifact_id": 13372528441,
+          "github_artifact_digest": "sha256:75e9c8f5ea478bb98e6ed31ab3154b32b6a23c050095a10a15d1a9d22156c3cc"
+        }
+      ],
+      "authenticated_private_payload": ".private/ci-diagnostics/go-802bb51-arm64.json",
+      "authenticated_private_payload_sha256": "923f332109e846e80dda2c0533de4e01a52c41a85ab307e5d228a5fe600d3517",
+      "failed_go_exit": 1,
+      "private_go_output_sha256": "d345440227a60723423a00756593ef91baf500d483e05f4c50bc872be5badeac",
+      "private_go_output_bytes": 575,
+      "fixed_marker": "401 Unauthorized"
+    }
+  ],
+  "native_scope": "All four original server PostgreSQL functions now pass normally and with race on both native Linux hosts, including the strengthened group row/byte GET/HEAD list/latest budget refusals and partial bundle test. Fixture reaches40checks/three identity-installation-publication stages and9matching producer/reference/HTTP bindings. Actual configured-TLS CLI bundle upload passes. No stock Go cache bytes are accepted.",
+  "cause_evidence": "Both actual Go commands fail401 with identical575byte output hashes after all direct HTTP bundle approval/bindings. Fixture NETRC stores machine localhost while GOPROXY uses localhost:38443. Pinned Go auth source caches the literal machine and loads exact URL authority/path prefixes; these authorities do not match. An actual-Go trusted-TLS stand-in reproduces the positive-consumer failure before repair; native authority-corrected replay still required.",
+  "authentication_limits": "Earlier expected client failures cannot qualify policy denial when authentication itself fails. The complete native stock-client policy/group/restart/revocation stages remain unverified; no later pass inferred.",
+  "local_first_regression": {
+    "path": ".cache/go-netrc-port-first-regression.log",
+    "sha256": "c4308f22330ba7a7a543f2cb530f8f4fa71c1d7a4c6fb25bb15b749241349f53"
+  },
+  "pinned_go_source": [
+    {
+      "path": ".cache/go/src/cmd/go/internal/auth/auth.go",
+      "sha256": "85673f283cdf91071e6107a90954f05a9efddd8e3b064e15ebc6b2b801baf42d"
+    },
+    {
+      "path": ".cache/go/src/cmd/go/internal/auth/netrc.go",
+      "sha256": "304822a8473a3f5c00e26c4c3b18f7cddd65bd86935f7f7be7b148fbd85ad00e"
+    }
+  ],
+  "limits": [
+    "Owner-CMS records authenticate/decrypt locally; raw streams remain private. Public retained summaries/hashes contain no credential values.",
+    "All450capabilities/41families/laterstages remain committed; readiness/fullsecurity/packaging false. No primary/customer/sibling/release change."
+  ]
+}

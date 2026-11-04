@@ -70,3 +70,12 @@ identity. These validators have unit/race and short owned-input fuzz proof; they
 are not connected to proxy routes. Atomic multi-object retrieval/cache receipts,
 source/grant/lease fences, checksum authority and full native journeys remain
 required before enabling Go proxy mode. Legacy module synthesis is separate.
+
+The internal retrieval completion extension now accepts an already inspected and
+staged three-object bundle under one canonical ZIP lease. Reference/cache-root
+receipts, integrity jobs and ready event/outbox share the common transaction,
+with current read authority, source epoch and live generation checked first.
+All three representations remain immutable in this initial intake profile.
+Three PostgreSQL regressions compile but have not executed; ordinary proxy
+creation stays rejected. A complete network/cache/serving implementation must
+use this foundation and prove its behavior with native clients before exposure.

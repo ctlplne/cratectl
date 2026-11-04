@@ -184,6 +184,7 @@ type RetrievalResult struct {
 	NPMSources                 []NPMSource
 	NativeCatalog              *NativeCatalogPublication
 	OCI                        *OCIPublication
+	GoModule                   *GoModulePublication
 }
 
 func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retrieval, result RetrievalResult) error {
@@ -205,6 +206,11 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 		}
 		if !valid {
 			return ErrLeaseLost
+		}
+		if result.GoModule != nil || repo.Format == "go" && (result.Status == 200 || result.Status == 304) && result.Failure == "" {
+			if e = validateGoModuleRetrieval(repo, lease, result); e != nil {
+				return e
+			}
 		}
 		if e = notDeletedInTx(ctx, tx, lease.Repository, lease.Path); e != nil {
 			return e
@@ -244,6 +250,11 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 					}
 				}
 				if e = completeOCIPublication(ctx, tx, i, repo, lease, *result.OCI, result.Object.Digest, result.Object.Size, result.FreshSeconds, result.StaleSeconds, sequence); e != nil {
+					return e
+				}
+			}
+			if result.GoModule != nil {
+				if e = completeGoModulePublication(ctx, tx, i, repo, lease, result, sequence); e != nil {
 					return e
 				}
 			}
@@ -340,6 +351,9 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 		if result.OCI != nil {
 			data["graph_members"] = len(result.OCI.Objects)
 			data["native_tags"] = len(result.OCI.Tags)
+		}
+		if result.GoModule != nil {
+			data["go_module_representations"] = len(result.GoModule.Objects)
 		}
 		if replacement != nil {
 			data["reference_replacement"] = replacement

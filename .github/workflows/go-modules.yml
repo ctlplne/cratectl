@@ -60,9 +60,9 @@ jobs:
           CRATECTL_CI_POSTGRES_CONTAINER_ID: ${{ job.services['cratectl-postgres'].id }}
         run: bash scripts/ci/bootstrap_linux.sh
       - name: Real PostgreSQL Go module regressions
-        run: go test -count=1 -tags=integration -run '^TestGoModule' ./internal/server
+        run: go test -count=1 -tags=integration -run '^TestGoModule' ./internal/server ./internal/store
       - name: Real PostgreSQL Go module regressions with race detector
-        run: go test -race -count=1 -tags=integration -run '^TestGoModule' ./internal/server
+        run: go test -race -count=1 -tags=integration -run '^TestGoModule' ./internal/server ./internal/store
       - name: Trusted TLS stock Go transitive downloads and policy recovery
         run: python3 scripts/conformance_go.py --require-clean-build
       - name: Encrypt bounded Go failure observations for owner diagnosis

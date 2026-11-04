@@ -19,12 +19,14 @@ type OCIAdmission struct {
 	Generation       int64
 	Stale            bool
 }
-type OCIMemberCache struct {
+type NativeMemberCache struct {
 	ETag, Modified             string
 	FreshSeconds, StaleSeconds int
 }
 
-func refreshOCIMember(ctx context.Context, tx pgx.Tx, i Identity, lease Retrieval, a Artifact, c OCIMemberCache, sequence int64) error {
+type OCIMemberCache = NativeMemberCache
+
+func refreshNativeMember(ctx context.Context, tx pgx.Tx, i Identity, lease Retrieval, a Artifact, c NativeMemberCache, sequence int64) error {
 	if a.Path == lease.Path {
 		return nil
 	}

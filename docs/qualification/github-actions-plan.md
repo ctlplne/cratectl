@@ -136,6 +136,24 @@ Canonical CLI upload and strengthened shared503 row/byte/list/latest checks
 are implemented locally but require native replay. See the
 [fixture/diagnostic record](../../evidence/2026-11-04/go-module-fixture-diagnostics-development.json).
 
+Exact802 now passes all4original server PG functions normally/race and actual
+CLI TLS upload on both hosts, then fails401 after40checks/3stages/9wire because
+its NETRC machine omitted the port. Original authenticated failures remain.
+Current authority/console repair passes actual ARM Go against an owned trusted
+TLS/auth stand-in: hostname-only denial, exact authority success,2modules and
+4cached bindings. Full lint/console reproduction pass; complete registry
+9stage/24wire/16cache proof remains required. The new stand-in runs through
+make lint on all3source hosts without reducing any native registry case.
+
+The internal atomic Go intake extension shares common lease/source/authority
+and reference/integrity/event/outbox transaction paths. Three new PG functions
+compile only; both Go normal/race commands now include store and server for
+7PGfunctions, retaining all4server functions and every original client stage.
+Public proxy mode remains rejected until full network/checksum/cache/serving
+integration and actual native proof. No schema or runtime privilege change.
+See the [intake](../../evidence/2026-11-04/go-module-atomic-intake-development.json)
+and [auth repair](../../evidence/2026-11-04/go-netrc-authority-repair-development.json) records.
+
 Upstream info/mod/ZIP validators now have local bounded-input unit/race/vet
 and five-second ARM fuzz-smoke proof. The new target joins the existing GitHub
 fuzz inventory automatically; no test budget or original target is removed.

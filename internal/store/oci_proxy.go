@@ -98,7 +98,7 @@ func completeOCIPublication(ctx context.Context, tx pgx.Tx, i Identity, repo Rep
 		if !ok {
 			c = OCIMemberCache{FreshSeconds: fresh, StaleSeconds: stale}
 		}
-		if e := refreshOCIMember(ctx, tx, i, lease, a, c, sequence); e != nil {
+		if e := refreshNativeMember(ctx, tx, i, lease, a, c, sequence); e != nil {
 			return e
 		}
 	}

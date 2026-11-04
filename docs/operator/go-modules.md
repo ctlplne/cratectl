@@ -40,7 +40,10 @@ Go's uppercase convention: `example.org/Owned/app` becomes
 major-version suffix. Branch aliases and revision queries remain unsupported.
 
 Save credentials in a private NETRC file readable only by its owner. Bind its
-machine name to the registry hostname, without scheme, port or path. NETRC binds
+machine name to the registry authority, including an explicitly configured port,
+without a scheme or path. For `https://localhost:38443`, use
+`machine localhost:38443`. The pinned Go client matches that authority exactly;
+a hostname-only entry does not authorize this port. NETRC binds
 a whole host; use a custom GOAUTH helper if credentials must be scoped to URL
 prefixes. Keep credentials out of GOPROXY URLs and shell command arguments.
 Trust the operator CA and use normal HTTPS verification:

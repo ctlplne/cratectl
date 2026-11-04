@@ -56,7 +56,7 @@ export function ClientConfiguration({repository:r,publicURL}:{repository:Reposit
   if(r.format==='npm')snippet=`registry=${endpoint}\n//${authority}/npm/${r.name}/:_authToken=\${CRATECTL_TOKEN}\nstrict-ssl=true\ncafile=/private/path/ca.crt\n`;
   else if(r.format==='pypi')snippet=`# pip: use a private NETRC file for authentication\nexport NETRC=/private/path/tenant.netrc\nexport PIP_CERT=/private/path/ca.crt\nexport PIP_INDEX_URL=${endpoint}simple/\npip install PACKAGE\n\n# twine: supply TWINE_USERNAME=token and TWINE_PASSWORD privately\nexport TWINE_REPOSITORY_URL=${endpoint}\nexport REQUESTS_CA_BUNDLE=/private/path/ca.crt\ntwine upload dist/*`;
   else if(r.format==='oci')snippet=`oras login ${authority} --ca-file /private/path/ca.crt --registry-config /private/path/registry.json --username token --password-stdin < /private/path/tenant.token\noras pull ${authority}/${r.name}/IMAGE:TAG --ca-file /private/path/ca.crt --registry-config /private/path/registry.json`;
-  else if(r.format==='go')snippet=`# Use a private NETRC with machine ${new URL(base).hostname}, login token and your reader token.
+  else if(r.format==='go')snippet=`# Use a private NETRC with machine ${new URL(base).host}, login token and your reader token.
 export NETRC=/private/path/tenant.netrc
 export SSL_CERT_FILE=/private/path/ca.crt
 export GOAUTH=netrc

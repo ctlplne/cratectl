@@ -31,6 +31,7 @@ class GoModuleProfile(unittest.TestCase):
      self.assertTrue(ok);self.assertEqual(argv[1:],['mod','download','-json','all'])
      for key,value in {'GOENV':'off','GOWORK':'off','GOTOOLCHAIN':'local','GOAUTH':'netrc','GOINSECURE':'','GOPROXY':'https://localhost:38443/go/owned/','GONOPROXY':'none','GONOSUMDB':'go.cratectl.invalid','GOSUMDB':'sum.golang.org','GOVCS':'*:off'}.items():self.assertEqual(runenv[key],value)
      self.assertEqual(Path(runenv['NETRC']).stat().st_mode&0o077,0)
+     self.assertTrue(Path(runenv['NETRC']).read_text().startswith('machine localhost:38443 login token password '))
      cache=Path(runenv['GOMODCACHE']);cache.mkdir();records=[]
      for label,f in ns['fixtures'].items():
       r={'Path':f['module'],'Version':f['version'],'Sum':'h1:'+'a'*43+'=','GoModSum':'h1:'+'b'*43+'='}

@@ -1,0 +1,96 @@
+{
+  "source_parent": "290f0554d64b8167093c1df1c97f211b9c20a662",
+  "source_dirty": true,
+  "observed_at": "2026-11-04T23:49:57.027779+00:00",
+  "state": "internal transaction foundation implemented; native proof unverified; public proxy mode rejected",
+  "files": [
+    {
+      "path": "internal/store/go_module_retrieval.go",
+      "sha256": "7f0164760258a4a755144f82bde3446011e0f8992ebee03e04a8fd74d97214ec"
+    },
+    {
+      "path": "internal/store/go_module_retrieval_test.go",
+      "sha256": "35aafa371cf91f01a465e1d1beae08f7d70db7680ca5903113190879f21ab602"
+    },
+    {
+      "path": "internal/store/go_module_retrieval_integration_test.go",
+      "sha256": "6d0205110a190e79a4a644143b3a378d474032dadc24fe087307f6d40166ca66"
+    },
+    {
+      "path": "internal/store/retrieval.go",
+      "sha256": "5b96dd35c1339db05b9ec49a25f8a6e1991563617d25111014078759fae81000"
+    },
+    {
+      "path": "internal/store/oci_cache.go",
+      "sha256": "de9000591b1e2cd6863649bd0d8acad2b43a712a3e986e21f07baf44d53f27c6"
+    },
+    {
+      "path": "internal/store/oci_proxy.go",
+      "sha256": "f7beca505df59f94d170c962fd41d49c60b14124f5ed0db44c0c8caba886043b"
+    },
+    {
+      "path": ".github/workflows/go-modules.yml",
+      "sha256": "f35b89224c58d1bd9a74e97e9636e578626aaf91a6c8164e40d4358b81a0b3d3"
+    }
+  ],
+  "mechanism": [
+    "Extend the common CompleteRetrieval transaction with one validated Go ZIP/mod/info publication. Current tenant/read authority, source revision and exact live lease are checked before intake. Root ZIP bytes/size/media/metadata must bind the complete canonical bundle; mixed native publication types, bare304, partial or unbound objects and unsafe budgets/validators reject.",
+    "All three immutable references and sibling validation-root/generation receipts are inserted in that common transaction; all three integrity intents and the final ready event/outbox share it. Current digest review remains unassessed until separately approved. Changed version bytes conflict, including across source epochs, and tombstones remain enforced.",
+    "Reuse the existing native-member cache bookkeeping helper by name/type alias; its OCI body/behavior remains unchanged. Public Go proxy creation and HTTP proxy reads remain rejected. Upstream transfer/checksum/source/cache/serving integration must still be implemented."
+  ],
+  "local_validation": [
+    "22binding/shape variants exercise exact root, whole bundle, mode/repository, staged root identity, safe budgets/headers and rejection of mixed publications. Affected store/server unit/race/vet and full lint pass.",
+    "Seven real-PG integration functions compile only: all4existing server functions plus3new internal-intake functions (atomic three refs/cache receipts/integrity/event/current policy/immutable conflict; full-outbox rollback including sibling receipts; stale lease/source/changed read grant/colliding tenant). Zero PG functions execute locally.",
+    "The new tests create an explicitly unsupported lab-only Go proxy row through ordinary tenant-scoped runtime SQL inside a fresh owned database; this is not public proxy API admission. No runtime owner/BYPASSRLS grant or schema change.",
+    "Go workflow now runs the same normal/race filter on both server and store packages, retaining every original fixture stage/check/time budget. Actual normal/race/client and unchanged OCI cache semantics require native replay."
+  ],
+  "logs": [
+    {
+      "path": ".cache/go-bundle-retrieval-first-unit.log",
+      "sha256": "794cc70a7436af065702d49077c8d3e78069a332446ec07cbfabaa7e2c37aec5"
+    },
+    {
+      "path": ".cache/go-bundle-retrieval-unit-replay.log",
+      "sha256": "8d43eb3e4d6f340103b26614285c3e03c1b36d77e94abea51c46b9929b1b6c46"
+    },
+    {
+      "path": ".cache/go-bundle-retrieval-final-unit.log",
+      "sha256": "2079ca8dd9e59d4db2833b3657374e1505a8ea25200907f540f790cea6d3bb57"
+    },
+    {
+      "path": ".cache/go-bundle-retrieval-final-race.log",
+      "sha256": "41c93d3bec3d0a52650b96fde35cbc18a4c9deae6842fb7348c912e9f737aa3d"
+    },
+    {
+      "path": ".cache/go-bundle-retrieval-final-integration-compile.log",
+      "sha256": "45b55bf4bab12b7687d624dd4d7136edc860f4b53c029d4655b5c551d250e408"
+    },
+    {
+      "path": ".cache/go-bundle-retrieval-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/go-bundle-retrieval-architecture.log",
+      "sha256": "304484513d28c8fcf6a7c9cd5fec70d681f129835aa641ca81348b1cf72e66a8"
+    },
+    {
+      "path": ".cache/go-bundle-netrc-final-lint.log",
+      "sha256": "185acbd264887fc89979b9f5677b1f54dedd9d2a4480160d89b8c612ceeaa22f"
+    },
+    {
+      "path": ".cache/go-bundle-oci-preservation.log",
+      "sha256": "20183eeaa9a5c7dca310408f8ecb00df03d2a12b1aba5eb8d8a2be2eb10f1310"
+    },
+    {
+      "path": ".cache/go-bundle-workflow-preservation.log",
+      "sha256": "fe473dd5d28f6f7da4844325bfb92c8c529bca1159f2f1c8abf6b836a0ca6fdb"
+    }
+  ],
+  "first_local_limit": "Initial unchanged HTTP stand-in replay was prevented by sandbox bind permission, then passed with the same tests under approved loopback permissions. This is not a native or product failure.",
+  "limits": [
+    "No public Go proxy, group-over-proxy, cache freshness/stale/current source-serving admission or real transaction pass. This store extension alone cannot establish upstream governance.",
+    "The initial bundle profile keeps info immutable too; broader mutable upstream info/legacy synthesis/aliases/checksum/offline behavior remains required.",
+    "All450capabilities/41families/laterstages retained; readiness/fullsecurity/packaging false. No primary/customer/sibling/release mutation."
+  ],
+  "validation_scope_preservation": "Exact source comparison proves shared OCI member-cache helper body unchanged; only common name/type alias and one call site changed. YAML comparison proves Go workflow only adds store to the two existing normal/race commands, with all budgets/permissions/stages intact."
+}

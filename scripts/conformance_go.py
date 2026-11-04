@@ -122,7 +122,7 @@ def bind(label,who='admin',repo='owned'):
 def consume(label,dep='dependency',who='reader',ok=True,repo='owned'):
  f=fixtures[label];consumer=PRIVATE/('consumer-'+uuid.uuid4().hex);consumer.mkdir()
  (consumer/'go.mod').write_text('module go.cratectl.invalid/consumer\n\ngo 1.26.0\nrequire '+MODULE+' '+f['version']+'\n')
- netrc=private(consumer.name+'/netrc',('machine localhost login token password '+tokens[who]+'\n').encode())
+ netrc=private(consumer.name+'/netrc',('machine '+urllib.parse.urlsplit(BASE).netloc+' login token password '+tokens[who]+'\n').encode())
  client_env=dict(public_env,GOENV='off',GOWORK='off',GOFLAGS='',GOTOOLCHAIN='local',GOTELEMETRY='off',GOINSECURE='',GOPROXY=BASE+'/go/'+repo+'/',GOPRIVATE='go.cratectl.invalid',GONOPROXY='none',GONOSUMDB='go.cratectl.invalid',GOSUMDB='sum.golang.org',GOVCS='*:off',GOAUTH='netrc',NETRC=str(netrc),SSL_CERT_FILE=str(INSTALL/'ca.crt'),GOMODCACHE=str(consumer/'module-cache'),GOPATH=str(consumer/'gopath'),GOCACHE=str(consumer/'build-cache'))
  output=command([GO,'mod','download','-json','all'],runenv=client_env,cwd=consumer,ok=ok)
  check(label+': stock Go fresh-cache '+('download' if ok else 'blocked'),True)

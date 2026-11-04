@@ -101,6 +101,31 @@ All450capabilities/41families and later stages remain committed. Go proxy,
 legacy/alias/warm-cache/lifecycle/fault/migration/scale/platform/browser and all
 other unfinished requirements remain open. Broad readiness stays false.
 
+Exact802bb51 now passes all four existing server PostgreSQL functions normally
+and with race on both native hosts, including group budget/partial-bundle cases.
+Actual CLI TLS publication passes; the fixture reaches40checks/three stages and
+9matching producer/reference/HTTP bindings, then stock Go fails401 with no cache
+bytes. The NETRC machine omitted the nondefault port. Authenticated original
+failures are retained; earlier expected Go failures cannot qualify policy when
+authentication itself fails. See
+`evidence/2026-11-04/go-module-802bb51-netrc-first-failure.json`.
+
+The corrected authority and console guidance now pass the actual Go consumer
+against an owned TLS/auth stand-in: hostname-only denies, exact host:port allows
+2transitive modules/6authorized requests/4cache bindings with normal TLS. Full
+lint and console build/reproduction pass; native registry replay still needs
+all9stages/24wire/16cache. No local registry/PostgreSQL campaign. See
+`evidence/2026-11-04/go-netrc-authority-repair-development.json`.
+
+Internal Go proxy intake now joins complete immutable three-reference bundles,
+sibling cache receipts, integrity intents and ready event/outbox in the common
+current-authority/source/live-lease transaction. Unit/race/vet/full lint pass.
+Three new real-PG functions compile only; the native workflow now runs both
+server/store packages for seven PG functions normally/with race. Proxy creation
+and reads remain rejected until network/checksum/cache/serving integration and
+full native proof are complete. See
+`evidence/2026-11-04/go-module-atomic-intake-development.json`.
+
 Go upstream-representation validators now bind bounded optional-time/future-field
 info metadata to exact coordinates and require independent mod bytes to equal
 the validated ZIP root. Unit/race/vet and a short local ARM fuzz smoke pass.
