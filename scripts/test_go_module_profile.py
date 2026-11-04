@@ -47,6 +47,20 @@ class GoModuleProfile(unittest.TestCase):
      ns['consume']('application_1');self.assertEqual(set(ns['contract']['cached_sha256']),{'application_1_zip','application_1_mod','dependency_zip','dependency_mod'})
  def test_expected_native_failure_cannot_pass_with_zero_exit(self):
   with tempfile.TemporaryDirectory(prefix='cratectl-go-command-')as directory:
-   ns=helpers();ns['PRIVATE']=Path(directory);ns['run_owned_client']=lambda *a,**k:(0,'owned command success')
-   with self.assertRaises(AssertionError):ns['command'](['/owned/go'],ok=False)
+   ns=helpers();ns['PRIVATE']=Path(directory);ns['ROOT']=Path(directory)
+   for code in [0,-9,2]:
+    ns['run_owned_client']=lambda *a,**k:(code,'owned command stand-in')
+    with self.assertRaises(AssertionError):ns['command'](['/owned/go'],ok=False)
+ def test_deadline_stream_is_preserved_in_a_private_owned_log(self):
+  with tempfile.TemporaryDirectory(prefix='cratectl-go-stream-')as directory:
+   ns=helpers();root=Path(directory);ns.update(PRIVATE=root,ROOT=root)
+   def fail(*args,**kwargs):
+    kwargs['output_sink'].write(b'owned partial stream before deadline')
+    raise RuntimeError('owned deadline stand-in')
+   ns['run_owned_client']=fail
+   with self.assertRaises(RuntimeError):ns['command'](['/owned/go'])
+   record=ns['commands'][-1];self.assertIsNone(record['exit'])
+   p=root/record['private_log'];self.assertEqual(p.read_bytes(),b'owned partial stream before deadline')
+   self.assertEqual(p.stat().st_mode&0o777,0o600)
+   self.assertNotIn('partial stream',json.dumps(record))
 if __name__=='__main__':unittest.main()

@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 import unittest
 
-from ci_native_diagnostics import collect, collect_jvm, collect_console, seal, unseal, write_new
+from ci_native_diagnostics import collect, collect_jvm, collect_console, collect_go_modules, seal, unseal, write_new
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -38,6 +38,28 @@ class EncryptedNativeDiagnostics(unittest.TestCase):
             report['status']='failed';path.write_text(json.dumps(report))
             (folder/'commands.log').unlink();(folder/'commands.log').symlink_to(folder/'admin.token')
             with self.assertRaises(ValueError):collect_console(root,'a'*40)
+
+    def test_go_timeout_streams_are_encrypted_and_credentials_excluded(self):
+        with tempfile.TemporaryDirectory(prefix='cratectl-go-cms-',dir=self.folder)as temp:
+            root=Path(temp);subprocess.run(['git','init','-q','-b','main',str(root)],check=True)
+            evidence=root/'evidence/2026-11-04';evidence.mkdir(parents=True)
+            folder=root/'.private/go-module-conformance'/('4'*10);folder.mkdir(parents=True)
+            log=folder/('command-'+'5'*32+'.log');log.write_bytes(b'owned Go partial output before deadline')
+            (folder/'server.log').write_bytes(b'owned server observation')
+            (folder/'reader.token').write_bytes(b'private-synthetic-credential-value')
+            (folder/'netrc').write_bytes(b'private-synthetic-credential-value')
+            report={'candidate':'a'*40,'run':'4'*10,'status':'failed','failure':'owned deadline','go_module_contract':{'profile':'hosted-module-v1'},'commands':[{'exit':None,'expected_failure':False,'private_log':str(log.relative_to(root))}],'credential':'private-synthetic-credential-value'}
+            path=evidence/('go-module-'+'4'*10+'.json');path.write_text(json.dumps(report))
+            failures=collect_go_modules(root,'a'*40);self.assertEqual(len(failures),1)
+            self.assertIsNone(failures[0]['commands'][0]['exit']);self.assertFalse(failures[0]['commands'][0]['observation_only'])
+            self.assertEqual(base64.b64decode(failures[0]['commands'][0]['output_base64']),log.read_bytes())
+            encoded=json.dumps(failures).encode();self.assertNotIn(b'private-synthetic-credential-value',encoded)
+            self.assertEqual(unseal(seal(encoded,self.cert),self.key,self.cert),encoded)
+            report['commands'][0]['exit']=0;report['last_observation']=dict(report['commands'][0]);report['commands'].append({'exit':0,'expected_failure':False,'private_log':'must-not-select-cleanup.log'});path.write_text(json.dumps(report));self.assertTrue(collect_go_modules(root,'a'*40)[0]['commands'][0]['observation_only'])
+            with self.assertRaises(ValueError):collect_go_modules(root,'b'*40)
+            log.unlink();log.symlink_to(folder/'reader.token')
+            with self.assertRaises(ValueError):collect_go_modules(root,'a'*40)
+            report['status']='passed';path.write_text(json.dumps(report));self.assertEqual(collect_go_modules(root,'a'*40),[])
 
     @classmethod
     def setUpClass(cls):

@@ -70,6 +70,17 @@ but awaits native replay. See
 legacy/alias/warm-cache/lifecycle/fault/migration/scale/platform and browser
 operator journeys remain required. Broad readiness stays false.
 
+The Go PostgreSQL fixture now compares against its provisioning-event baseline
+and uses only the fresh fixture database owner for deliberate reference damage.
+Runtime privileges stay restricted. Four stock-Go1.27.3 file-proxy stand-ins pass
+on this ARM Mac with exact cached ZIP/mod and info identity; they prove fixture
+compatibility, not HTTP/TLS/registry/database behavior. `make lint` assigns the
+same stand-ins to all three native CI source hosts. Go command deadlines retain
+private partial streams, and failed jobs seal selected logs to the unchanged
+owner-held CMS recipient. Four helper and seven CMS tests/full lint pass; actual
+native Go/PG/registry/encrypted-failure integration still requires review. See
+`evidence/2026-11-04/go-module-fixture-diagnostics-development.json`.
+
 No primary, selected binary, data, credential, sibling or customer change.
 Earlier notes below are historical and do not override this current state.
 

@@ -91,6 +91,20 @@ commands and budgets remain intact. Hosted Go proxy/group, broad version/legacy/
 warm-cache/lifecycle/fault/migration/scale/TLS-provider/platform and browser
 operator outcomes remain separate committed work.
 
+Go fixture development now also runs stock Go against four owned file-proxy
+stand-ins in `make lint`: exact transitive modules, cached ZIP/mod bytes and info
+version/time. Native ARM local execution passes. All three existing source hosts
+repeat it, so native x86 stays on GitHub. This does not qualify HTTP/TLS/registry/
+PostgreSQL. The Go database fixture compares the original journal baseline and
+uses the fresh fixture owner for deliberate damage without runtime DELETE grants.
+
+Go failures retain per-command mode0600 streams through deadline/output limits.
+The workflow seals selected failures/last pre-cleanup observations and registry
+logs using the existing owner-held CMS recipient, with no NETRC/config/token
+collection or plaintext fallback. Seven CMS tests and four helper tests pass;
+actual native failed-job upload/decryption remains unverified. See the
+[development record](../../evidence/2026-11-04/go-module-fixture-diagnostics-development.json).
+
 The following campaign notes are historical.
 
 Owner resumed the full goal on 2026-11-04. The latest fully accepted whole

@@ -65,6 +65,18 @@ jobs:
         run: go test -race -count=1 -tags=integration -run '^TestGoModule' ./internal/server
       - name: Trusted TLS stock Go transitive downloads and policy recovery
         run: python3 scripts/conformance_go.py --require-clean-build
+      - name: Encrypt bounded Go failure observations for owner diagnosis
+        if: failure()
+        run: python3 scripts/ci_native_diagnostics.py
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: encrypted-go-diagnostics-${{ matrix.arch }}
+          path: |
+            .cache/ci-native-diagnostics.cms
+            .cache/ci-native-diagnostics.json
+          if-no-files-found: error
+          retention-days: 7
       - name: Prepare bounded native evidence summary
         if: always()
         run: python3 scripts/ci/evidence_summary.py

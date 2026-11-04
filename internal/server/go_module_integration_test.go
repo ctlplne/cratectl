@@ -67,8 +67,12 @@ func goInventory(t *testing.T, s *Server, i store.Identity, repo string) []store
 	return as
 }
 func TestGoModuleAtomicPublicationReviewDiscoveryAndImmutableReplay(t *testing.T) {
-	s, _, token, admin := schemaServer(t)
+	s, database, token, admin := schemaServer(t)
 	ctx := context.Background()
+	baselineEvents, e := s.DB.Events(ctx, admin, 0)
+	if e != nil {
+		t.Fatal(e)
+	}
 	mavenRepositories(t, s, admin, store.Repository{Name: "owned", Format: "go", Access: "restricted", RequireReview: true})
 	c := gomodule.Coordinate{Module: "go.cratectl.invalid/Owned/app", Version: "v1.0.0"}
 	data, mod := goPublicationFixture(t, c, "first exact owned bytes")
@@ -146,7 +150,7 @@ func TestGoModuleAtomicPublicationReviewDiscoveryAndImmutableReplay(t *testing.T
 		t.Fatal("changed info accepted", w.Code)
 	}
 	events, e := s.DB.Events(ctx, admin, 0)
-	if e != nil || len(events) != 1 {
+	if e != nil || len(events) != len(baselineEvents)+1 {
 		t.Fatal("replay/conflict added an event", len(events), e)
 	}
 	restarted := New(s.DB, s.Blobs, s.PublicURL)
@@ -171,12 +175,19 @@ func TestGoModuleAtomicPublicationReviewDiscoveryAndImmutableReplay(t *testing.T
 	for _, a := range as {
 		approve(a, "allowed")
 	}
-	if e = s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
-		_, e := tx.Exec(ctx, `DELETE FROM cratectl.artifacts WHERE repository='owned' AND path=$1`, c.Prefix()+".info")
-		return e
-	}); e != nil {
+
+	// This deliberate corruption uses only the owner of this fresh fixture DB.
+	// Runtime retains SELECT/INSERT/UPDATE and receives no DELETE/BYPASSRLS grant.
+	owner, e := pgx.Connect(ctx, database.OwnerDSN)
+	if e != nil {
 		t.Fatal(e)
 	}
+	_, e = owner.Exec(ctx, `DELETE FROM cratectl.artifacts WHERE tenant=$1 AND repository='owned' AND path=$2`, admin.Tenant, c.Prefix()+".info")
+	owner.Close(ctx)
+	if e != nil {
+		t.Fatal(e)
+	}
+
 	for _, p := range []string{endpoint + ".zip", endpoint + ".info", list, latest} {
 		if w := goHTTP(t, restarted, token, "GET", p, nil); w.Code != 409 {
 			t.Fatal("partial version permitted fallback", p, w.Code)
@@ -188,6 +199,10 @@ func TestGoModuleOutboxRollbackAndConcurrentImmutablePublication(t *testing.T) {
 	s, _, token, admin := schemaServer(t)
 	ctx := context.Background()
 	mavenRepositories(t, s, admin, store.Repository{Name: "owned", Format: "go"})
+	baselineEvents, e := s.DB.Events(ctx, admin, 0)
+	if e != nil {
+		t.Fatal(e)
+	}
 	c := gomodule.Coordinate{Module: "go.cratectl.invalid/app", Version: "v1.0.0"}
 	first, _ := goPublicationFixture(t, c, "first")
 	second, _ := goPublicationFixture(t, c, "second")
@@ -236,7 +251,7 @@ func TestGoModuleOutboxRollbackAndConcurrentImmutablePublication(t *testing.T) {
 		t.Fatal("partial outbox rollback")
 	}
 	events, e := s.DB.Events(ctx, admin, 0)
-	if e != nil || len(events) != 1 {
+	if e != nil || len(events) != len(baselineEvents)+1 {
 		t.Fatal("event committed on failed publication", len(events), e)
 	}
 	if e = s.DB.Tx(ctx, admin, false, func(tx pgx.Tx) error {

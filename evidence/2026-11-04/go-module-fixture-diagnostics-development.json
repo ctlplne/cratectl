@@ -1,0 +1,143 @@
+{
+  "source_parent": "aaa134f0416f863da07d7778c6f485f80582f8cd",
+  "source_dirty": true,
+  "observed_at": "2026-11-04T22:32:39.018121+00:00",
+  "status": "implemented fixture/diagnostic repair; local scoped checks passed; native PostgreSQL/registry replay pending",
+  "files": [
+    {
+      "path": "internal/server/go_module_integration_test.go",
+      "sha256": "168b9cee05162b51f5899fa577fb7239c2eae141d37d5c95d22041894216c147"
+    },
+    {
+      "path": "scripts/test_go_file_proxy.py",
+      "sha256": "d638f3fbcb707395c39c62800e0659d2242b03a0e2b311dfca63e8aaba4294fd"
+    },
+    {
+      "path": "scripts/conformance_go.py",
+      "sha256": "a8decf641f1ab812c7463195bbc262268c6f47aab661b3318a88055d0aeca0d8"
+    },
+    {
+      "path": "scripts/test_go_module_profile.py",
+      "sha256": "6ffca3f7f8993f5dfd27a49d8f69411fdfcca56658d8e6e11ed25ffb75fa515f"
+    },
+    {
+      "path": "scripts/ci_native_diagnostics.py",
+      "sha256": "5e5446f3c5d02bf87ca864ba2a6c593a829408153c9508b46d74360fe253c1ca"
+    },
+    {
+      "path": "scripts/test_ci_native_diagnostics.py",
+      "sha256": "94cfd09907a97ab884a1ae253f61636b01637fa2c5fc4b70cf77cdeaf7f90564"
+    },
+    {
+      "path": ".github/workflows/go-modules.yml",
+      "sha256": "80392faa97c15688bdf6c3e9801accc5d573450fce3c28d858a1f067d8d3de4f"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "37e7b03f6b7a1f63d63a188c0c3fa9466d0f5ba55d410eab76b4f0b8ed2f88fd"
+    }
+  ],
+  "fixture_repairs": [
+    "Store.Provision records an identity event before publication. Capture the actual fixture journal baseline and require exactly one new publication event; immutable conflict and identical replay cannot add another.",
+    "Runtime deliberately lacks DELETE. Only the owner connection for the fresh testdb database performs the deliberate partial-reference fault. No runtime permissions or production data are changed."
+  ],
+  "file_proxy_standin": {
+    "status": "passed; native stock-Go against owned file-proxy stand-ins only",
+    "go": "go version go1.27.3 darwin/arm64",
+    "go_binary_sha256": "aa355b078a81158d418079a3f8c776719eb99cc6f527e39ffa3250c66566aafb",
+    "fixture_source_sha256": "a8decf641f1ab812c7463195bbc262268c6f47aab661b3318a88055d0aeca0d8",
+    "results": [
+      {
+        "standin_namespace": "a",
+        "application": "application_1",
+        "modules": 2,
+        "cached_zip_mod_bytes_match": true,
+        "info_version_time_match": true,
+        "publisher_sha256": {
+          "application_zip": "9398f0b6d43118c49a42f9cd120e475b455090642fa5d1301ea0170f2a7e5d50",
+          "application_mod": "6fc27d44743a70bc8fa25db102d9ec7ce0d6974560d0e93c63a5acac43241647",
+          "application_info": "aec02e6713545a44df5a75e3bd8af96542635b0adfa9f7e204ff99dff8feefaa",
+          "dependency_zip": "a243c0453cb68f684cb8c1c58f499ffe5c8bb446a55ce4c3ecab7be98e5cca4d",
+          "dependency_mod": "fe5ff7cabd5fcce393363330340e0174e76cec1ff263134da33287e144e00faa",
+          "dependency_info": "aec02e6713545a44df5a75e3bd8af96542635b0adfa9f7e204ff99dff8feefaa"
+        }
+      },
+      {
+        "standin_namespace": "a",
+        "application": "application_2",
+        "modules": 2,
+        "cached_zip_mod_bytes_match": true,
+        "info_version_time_match": true,
+        "publisher_sha256": {
+          "application_zip": "14e939243c3169bb23b59eb810cf74ea51ab0c4bf2cff3896a01e92c8b67361f",
+          "application_mod": "6fc27d44743a70bc8fa25db102d9ec7ce0d6974560d0e93c63a5acac43241647",
+          "application_info": "323a8a7217eab1d516ec6de2319de773f3675d658e13ec3a002b3696dd729222",
+          "dependency_zip": "a243c0453cb68f684cb8c1c58f499ffe5c8bb446a55ce4c3ecab7be98e5cca4d",
+          "dependency_mod": "fe5ff7cabd5fcce393363330340e0174e76cec1ff263134da33287e144e00faa",
+          "dependency_info": "aec02e6713545a44df5a75e3bd8af96542635b0adfa9f7e204ff99dff8feefaa"
+        }
+      },
+      {
+        "standin_namespace": "b",
+        "application": "application_1",
+        "modules": 2,
+        "cached_zip_mod_bytes_match": true,
+        "info_version_time_match": true,
+        "publisher_sha256": {
+          "application_zip": "0b0838167c3ade3130ca6a84c087fed39f73f611f6196df130be3eb1746e8c6e",
+          "application_mod": "6fc27d44743a70bc8fa25db102d9ec7ce0d6974560d0e93c63a5acac43241647",
+          "application_info": "aec02e6713545a44df5a75e3bd8af96542635b0adfa9f7e204ff99dff8feefaa",
+          "dependency_zip": "b04b981927f17d7df9f52cbefeffb9a6f87c327f2aa1d924e187f9c6b8e163b5",
+          "dependency_mod": "fe5ff7cabd5fcce393363330340e0174e76cec1ff263134da33287e144e00faa",
+          "dependency_info": "aec02e6713545a44df5a75e3bd8af96542635b0adfa9f7e204ff99dff8feefaa"
+        }
+      },
+      {
+        "standin_namespace": "b",
+        "application": "application_2",
+        "modules": 2,
+        "cached_zip_mod_bytes_match": true,
+        "info_version_time_match": true,
+        "publisher_sha256": {
+          "application_zip": "97e072fd807247956f6cc540d99876af13a337b45734d2857c1b8a3a8b60e643",
+          "application_mod": "6fc27d44743a70bc8fa25db102d9ec7ce0d6974560d0e93c63a5acac43241647",
+          "application_info": "323a8a7217eab1d516ec6de2319de773f3675d658e13ec3a002b3696dd729222",
+          "dependency_zip": "b04b981927f17d7df9f52cbefeffb9a6f87c327f2aa1d924e187f9c6b8e163b5",
+          "dependency_mod": "fe5ff7cabd5fcce393363330340e0174e76cec1ff263134da33287e144e00faa",
+          "dependency_info": "aec02e6713545a44df5a75e3bd8af96542635b0adfa9f7e204ff99dff8feefaa"
+        }
+      }
+    ],
+    "limits": [
+      "No HTTP, TLS, database, registry publication, policy, restart or revocation proof. Actual native GitHub jobs remain mandatory.",
+      "Only inert owned module fixture bytes were downloaded/extracted; no package code was compiled or executed."
+    ]
+  },
+  "diagnostics": {
+    "streams": "Every Go command opens a new mode0600 owned log and streams at most8MiB while the existing120second deadline applies. Limits preserve a partial stream with unknown exit; expected Go denial requires normal exit1.",
+    "selection": "An actual failed/abnormal command or last pre-cleanup observation is selected by its exact generated run/source path. NETRC/token/runtime/client-config files are excluded.",
+    "encryption": "Reuse the unchanged owner-held CMS AES256GCM/RSA-OAEP-SHA256 recipient; no private key visits CI and no plaintext fallback. Seven real CMS/owned-collection tests pass, including partial stream, authenticated round trip, wrong-source/symlink rejection and credential exclusion.",
+    "workflow": "On failed Go jobs, upload ciphertext and fixed metadata for7days. Reports absent before campaign startup remain absent; no fabricated diagnostic record.",
+    "native_state": "New collector integration has not run on a native failed GitHub Go job yet."
+  },
+  "local_validation": {
+    "profile_helper_tests": 4,
+    "cms_test_methods": 7,
+    "full_lint": "passed",
+    "postgresql": "All three integration functions compile; none executed locally.",
+    "standin_execution": "Stock Go1.27.3 on native darwin/arm64 downloads only generated file:// proxy fixtures, two namespaces and two application versions, two transitive modules per attempt; exact ZIP/mod and info version/time match. No HTTP/TLS/DB/registry publication/policy/restart/revocation claim.",
+    "source_placement": "The file-proxy test is registered in make lint, so all three existing native GitHub source jobs repeat it. x86 execution remains assigned to GitHub."
+  },
+  "logs": {
+    ".cache/go-module-event-fixture-compile.log": "4bf468566929eb1f33b9e864f36b60eb22556baf61499c75e407c33398f37a03",
+    ".cache/go-file-proxy-qualified-standin.log": "9a638b3bf599ade2d020a38d6f4e321a5949b6d0ec43b7b9b47e30978eb6c48b",
+    ".cache/go-module-private-command-final.log": "23edcc150c2943a9873c3b6bf59612522386c96a26fd0ab7f549545336b4a753",
+    ".cache/go-module-private-cms-final.log": "0e9ff24c543f86df1da08b18d1edf418484e60010a341991ed7179941435e0c6",
+    ".cache/go-module-fixture-cms-lint.log": "f945a0665ca7b25aca81b1954a55b6c498be82b56d5ec60851deae4422929f1c",
+    ".cache/go-module-fixture-cms-pg-compile.log": "df2d9156bbeb239f37be88a2c8b5ad922491e66ca5f42b26de1bcc99e767598f"
+  },
+  "limits": [
+    "No native PostgreSQL or registry-backed stock Go result accepted. Real-PG normal/race and trusted TLS hosted profiles remain required on both Linux architectures.",
+    "All450capabilities/41families/laterstages remain committed. Broad readiness/security/packaging false; no primary/customer/sibling/selected-binary/release mutation."
+  ]
+}

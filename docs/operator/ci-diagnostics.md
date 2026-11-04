@@ -59,3 +59,15 @@ Protect the private key as retained local state. To rotate recipients, create
 a new local private key and public certificate, test both directions with the
 actual OpenSSL versions, commit only the public certificate, and retain old
 keys while their diagnostic artifacts are needed.
+
+
+The hosted Go workflow also seals failed command streams and registry output.
+Each command writes a new private mode0600 log while it runs, bounded to8MiB
+and120seconds. A timeout keeps its partial stream with unknown exit status;
+normal expected Go denials require exit1. A later cleanup command cannot replace
+the selected failure/last observation. Only exact generated run/candidate paths
+are collected. NETRC, token and runtime/client configuration files are excluded.
+Raw logs have no plaintext upload fallback. The owner-held recipient and all CMS
+size/authentication limits remain unchanged. PostgreSQL-step/bootstrap failures
+before a Go campaign report still require their separate job observations; a
+missing private record is never reconstructed as an encrypted diagnostic pass.

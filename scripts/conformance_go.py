@@ -25,11 +25,16 @@ def private(name,data):
  p.write_bytes(data if isinstance(data,bytes)else json.dumps(data).encode());p.chmod(0o600);return p
 
 def command(argv,runenv=public_env,cwd=ROOT,ok=True):
- code,output=run_owned_client([str(a)for a in argv],cwd,runenv,timeout=120,output_limit=8<<20,capture_limit=8<<20)
+ log=PRIVATE/('command-'+uuid.uuid4().hex+'.log')
+ record={'tool':Path(str(argv[0])).name,'exit':None,'expected_failure':False,'private_log':str(log.relative_to(ROOT))}
+ commands.append(record)
+ with os.fdopen(os.open(log,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600),'wb')as sink:
+  code,output=run_owned_client([str(a)for a in argv],cwd,runenv,timeout=120,output_limit=8<<20,capture_limit=8<<20,output_sink=sink)
+ record['exit']=code;record['expected_failure']=not ok and code==1
  for value in tokens.values():output=output.replace(value,'[REDACTED]')
- with (PRIVATE/'commands.log').open('a')as log:log.write(output+'\n')
- commands.append({'tool':Path(str(argv[0])).name,'exit':code,'expected_failure':not ok})
- if (code==0)!=ok:raise AssertionError('bounded native command returned unexpected status: '+Path(str(argv[0])).name)
+ if (code==0)!=ok or not ok and code!=1:
+  record['assertion_failed']=True
+  raise AssertionError('bounded native command returned unexpected status: '+Path(str(argv[0])).name)
  return output
 
 def settings(name):
@@ -172,8 +177,8 @@ try:
  check('revoked reader exact metadata denied',http('/go/owned/'+escaped(MODULE)+'/@v/v1.1.0.info','reader')[0]==401)
  contract['completed'].append(STAGES[7]);check('every exact publisher/reference/wire identity retained',set(contract['publisher_sha256'])==FIXTURES and contract['publisher_sha256']==contract['reference_sha256']==contract['wire_sha256']);check('every exact stock cache identity retained',set(contract['cached_sha256'])==CACHED_FIXTURES and all(v==contract['wire_sha256'][k]for k,v in contract['cached_sha256'].items()))
  result['status']='passed';print('PASS: native Go hosted/TLS journey,',len(checks),'checks')
-except BaseException:
- result['status']='failed';print('FAIL: native Go hosted/TLS journey; bounded details remain private');raise
+except BaseException as error:
+ result['failure']=str(error)[:8192];result['last_observation']=commands[-1]if commands else None;result['status']='failed';print('FAIL: native Go hosted/TLS journey; bounded details remain private');raise
 finally:
  stop()
  if database_created:

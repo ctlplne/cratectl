@@ -186,6 +186,47 @@ def collect_console(root, candidate):
     return failures
 
 
+def collect_go_modules(root,candidate):
+    """Select failed Go command streams; never read NETRC, token or config files."""
+    if not re.fullmatch('[0-9a-f]{40}',candidate):raise ValueError('Go diagnostics require an exact candidate')
+    generated=subprocess.check_output(['git','ls-files','--others','--modified','--exclude-standard','-z','--','evidence'],cwd=root).split(b'\0')
+    if len(generated)>201:raise ValueError('Go diagnostic report inventory exceeds its bound')
+    failures=[];remaining=16<<20
+    for raw_path in generated:
+        if not raw_path:continue
+        path=raw_path.decode('utf-8');match=re.fullmatch(r'evidence/\d{4}-\d{2}-\d{2}/go-module-([0-9a-f]{10})\.json',path)
+        if not match:continue
+        report=json.loads(read_owned_file(root/'evidence',root/path,4<<20))
+        if not isinstance(report,dict)or report.get('candidate')!=candidate:raise ValueError('Go diagnostic report source does not match')
+        if report.get('status')!='failed':continue
+        run=match[1];contract=report.get('go_module_contract')
+        if report.get('run')!=run or len(failures)>=4 or not isinstance(contract,dict)or contract.get('profile')!='hosted-module-v1':raise ValueError('Go diagnostic run/profile inventory is invalid')
+        commands=report.get('commands');error=report.get('failure','')
+        if not isinstance(commands,list)or len(commands)>1024 or any(not isinstance(c,dict)for c in commands)or not isinstance(error,str)or len(error)>8192:raise ValueError('Go diagnostic command/error inventory exceeds its bound')
+        selected=[c for c in commands if c.get('assertion_failed')is True or c.get('exit')is None or c.get('expected_failure')is not True and c.get('exit')!=0]
+        observation_only=not selected
+        if observation_only:
+            last=report.get('last_observation')
+            selected=[last]if isinstance(last,dict)else commands[-1:]
+        if len(selected)>2:raise ValueError('Go diagnostic failed-command inventory exceeds its bound')
+        failure={'run':run,'client':'go','error':error,'commands':[]}
+        for command in selected:
+            code=command.get('exit');log=command.get('private_log')
+            prefix='.private/go-module-conformance/'+run+'/'
+            if code is not None and(type(code)is not int or not -255<=code<=255):raise ValueError('Go diagnostic exit exceeds its bound')
+            if not isinstance(log,str)or not re.fullmatch(re.escape(prefix)+r'command-[0-9a-f]{32}\.log',log):raise ValueError('Go diagnostic log is not an owned command')
+            if remaining<=0:raise ValueError('Go diagnostic log inventory exceeds its byte budget')
+            raw=read_owned_file(root/'.private',root/log,min(MAX_LOG,remaining));remaining-=len(raw)
+            failure['commands'].append({'exit':code,'observation_only':observation_only,'sha256':hashlib.sha256(raw).hexdigest(),'output_base64':base64.b64encode(raw).decode('ascii')})
+        registry=root/'.private/go-module-conformance'/run/'server.log'
+        if registry.exists()or registry.is_symlink():
+            if remaining<=0:raise ValueError('Go diagnostic server inventory exceeds its byte budget')
+            raw=read_owned_file(root/'.private',registry,min(MAX_LOG,remaining));remaining-=len(raw)
+            failure['registry_log']={'sha256':hashlib.sha256(raw).hexdigest(),'output_base64':base64.b64encode(raw).decode('ascii')}
+        failures.append(failure)
+    return failures
+
+
 def seal(payload, certificate, openssl='openssl'):
     if not isinstance(payload, bytes) or len(payload) > MAX_PAYLOAD:
         raise ValueError('native diagnostic plaintext exceeds its byte budget')
@@ -261,6 +302,9 @@ def main():
     console=collect_console(root,candidate)
     decoded['failures'].extend(console)
     count+=len(console)
+    go=collect_go_modules(root,candidate)
+    decoded['failures'].extend(go)
+    count+=len(go)
     decoded.update(run_id=run_id, runner_os='Linux', runner_arch=arch)
     payload = json.dumps(decoded, separators=(',', ':')).encode()
     if len(payload) > MAX_PAYLOAD:
