@@ -77,6 +77,19 @@ Other downloads/caches, including Gitleaks' security curl, remain separate revie
 and qualification work. These cache paths select only public compressed
 archives, and restored bytes are reverified before use.
 
+The scoped security job now uses this bounded fetcher for the exact existing
+Gitleaks8.30.1Linux-x64 archive/SHA256 pin and a new single-public-archive cache.
+The official release API reports8,230,402bytes and the same SHA256. Cap32MiB,
+15/180/195second budgets and all failure/cache defenses remain. Runtime version
+8.30.1 is required after the restricted extraction. All original source/binary/
+current-tree/full-history/324synthetic-rule checks remain independent of runtime
+selection and execute on cache hits. Eleven fetch tests/full lint plus YAML/shell
+and semantic workflow preservation pass. Actual cold/save/exact-key restore and
+security execution remain unverified. This helper revision refreshes ORAS/Helm
+cache keys; earlier named proof remains specific to f91/5b. No timing or complete
+security claim. See the [development record](../../evidence/2026-11-04/gitleaks-bounded-download-development.json)
+and [official release](https://github.com/gitleaks/gitleaks/releases/tag/v8.30.1).
+
 Go hosted/group-v2 is implemented but unverified. Its two native Linux jobs
 require four real PostgreSQL functions normally and with race, then an owned
 trusted-TLS installation, CLI publication and stock Go transitive downloads.

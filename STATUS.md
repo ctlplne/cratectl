@@ -43,7 +43,7 @@ fresh downloads. Both original OCI214 and controlled-upgrade10pin/15report
 campaigns pass on both sources. See
 `evidence/2026-11-04/native-tool-archive-cache-checkpoint.json`.
 No timing/speedup, whole-candidate or complete tool-hardening claim. Gitleaks'
-security-workflow curl still requires separate bounded installer review.
+security-workflow hardening is described below and remains natively unverified.
 
 All original failures and cancellations remain retained. The original missing
 Maven import now has both native replays. Later passes cannot establish unknown
@@ -107,6 +107,16 @@ semantic preservation checks pass. Every original command/matrix/budget remains.
 Actual GitHub source/docs selection and skip placement remain unverified; an
 unselected job never counts as a pass. See
 `evidence/2026-11-04/ci-selection-development.json`.
+
+Gitleaks now uses the same bounded32MiB public-archive fetch path, retaining
+its exact8.30.1version/SHA256 pin and all original scans/324rule fixtures.
+A single-archive immutable-action cache is reverified on every use; runtime
+version is checked after extraction. Official release API size/digest agrees
+with the existing pin. Eleven fetch boundary tests/full lint and semantic
+workflow preservation pass. Actual native cold/save/restore/security proof
+remains unverified. Helper changes create fresh ORAS/Helm keys; their prior
+f91/5b proof remains specific to those sources. See
+`evidence/2026-11-04/gitleaks-bounded-download-development.json`.
 
 No primary, selected binary, data, credential, sibling or customer change.
 Earlier notes below are historical and do not override this current state.

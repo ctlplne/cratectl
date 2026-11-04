@@ -70,8 +70,8 @@ else:
     def assert_no_partial(self):
         self.assertEqual(list((self.root/'.cache').glob('*.part')), [])
 
-    def test_both_sources_are_bounded_pinned_and_published_without_executing_payload(self):
-        for archive,url in [(ORAS,ORAS_URL),('helm-v4.3.1-linux-arm64.tar.gz','https://get.helm.sh/helm-v4.3.1-linux-arm64.tar.gz')]:
+    def test_approved_sources_are_bounded_pinned_and_published_without_executing_payload(self):
+        for archive,url in [(ORAS,ORAS_URL),('helm-v4.3.1-linux-arm64.tar.gz','https://get.helm.sh/helm-v4.3.1-linux-arm64.tar.gz'),('gitleaks_8.30.1_linux_x64.tar.gz','https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz')]:
             result=self.run_fetch(archive=archive,url=url)
             self.assertEqual(result.returncode,0,result.stderr)
             self.assertIn('(downloaded)',result.stdout)
@@ -83,6 +83,19 @@ else:
                               ('--connect-timeout','15'),('--max-time','180'),('--max-filesize','4096')]:
                 self.assertEqual(request[request.index(key)+1],value)
         self.assert_no_partial()
+
+    def test_gitleaks_source_version_architecture_and_cap_cannot_expand_implicitly(self):
+        archive='gitleaks_8.30.1_linux_x64.tar.gz'
+        url='https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/'+archive
+        for name,source,maximum in [
+            (archive,url,str((32<<20)+1024)),
+            (archive.replace('x64','arm64'),url.replace('x64','arm64'),'4096'),
+            (archive.replace('8.30.1','8.30.2'),url.replace('8.30.1','8.30.2'),'4096'),
+            (archive,url.replace('/gitleaks/gitleaks/','/other/gitleaks/'),'4096'),
+        ]:
+            with self.subTest(source=source,maximum=maximum):
+                self.assertNotEqual(self.run_fetch(archive=name,url=source,maximum=maximum).returncode,0)
+        self.assertEqual(self.requests(),[])
 
     def test_matching_cache_is_reverified_without_another_network_attempt(self):
         self.assertEqual(self.run_fetch().returncode,0)

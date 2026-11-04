@@ -1,0 +1,74 @@
+{
+  "source_parent": "ce2199814df31732e7fc1ce492800aa541d577cb",
+  "source_dirty": true,
+  "observed_at": "2026-11-04T23:19:23.976269+00:00",
+  "state": "implemented but unverified on GitHub",
+  "discovery": "Source inspection: the scoped security job downloads its pinned Gitleaks archive using an unbounded curl invocation. No native first failure or exploit is claimed.",
+  "files": [
+    {
+      "path": "scripts/ci/fetch_archive.py",
+      "sha256": "387cebb9d4d967c634d56e3962a79416b55029a42db0b64a8a9e9987a3506dbd"
+    },
+    {
+      "path": "scripts/ci/test_fetch_archive.py",
+      "sha256": "15dcab19a3d36ae9ab2f133bfeeb025b8c956bb06f83a5fd2901c121b8c4a93c"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "d2bd3beea4fa510d527195251d2660bf6ccfaa952da81be7eb8b55d1203301f0"
+    }
+  ],
+  "upstream_release": "https://github.com/gitleaks/gitleaks/releases/tag/v8.30.1",
+  "upstream_release_assets": [
+    {
+      "browser_download_url": "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_checksums.txt",
+      "digest": "sha256:061476c21adaf5441516f96f185c1a4706a83cd6329b9b38762271b3d4a52fae",
+      "name": "gitleaks_8.30.1_checksums.txt",
+      "size": 999
+    },
+    {
+      "browser_download_url": "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz",
+      "digest": "sha256:551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb",
+      "name": "gitleaks_8.30.1_linux_x64.tar.gz",
+      "size": 8230402
+    }
+  ],
+  "upstream_limits": "Official release API asset digest/size independently queried; no local x86 tool installation or claim of independently hashing the remote compressed bytes. Existing workflow version/checksum pin remains identical.",
+  "mechanism": "Extend the existing owned bounded fetcher only for the exact Gitleaks8.30.1 Linux x64 asset. Retain32MiB child kernel cap,15second connect/180second transfer/195second outer limit,5HTTPS redirects, bounded private output, regular-file/symlink/FIFO defenses and atomic verified cache publication. Extract only the previously named gitleaks binary and require its runtime version8.30.1.",
+  "cache": "One public compressed archive only, immutable cache action55cc8345863c7cc4c66a329aec7e433d2d1c52a9, OS/architecture/helper/workflow key without prefix restore,5minute step and2minute segment bound. All pin/version/current-tree/full-history/324synthetic-rule checks still execute on a hit. No private/config/database/extracted tool or consumer state.",
+  "validation": [
+    "All11fetch contract tests pass; ten original boundary behaviors retained with the original ORAS/Helm cases and new exact Gitleaks source/version/architecture/cap rejection. Owned curl/file-limit/deadline stand-ins only; no downloaded payload executes.",
+    "Six real-Git selection tests and full lint pass. YAML/shell syntax pass; semantic comparison proves all other jobs and original security commands, policies and synthetic fixture step are unchanged."
+  ],
+  "logs": [
+    {
+      "path": ".cache/gitleaks-bounded-fetch-contract.log",
+      "sha256": "fd2614df9e1b446b13be4f9002c3413e5869f1ccc73c7db52188cb34ba53d4e0"
+    },
+    {
+      "path": ".cache/gitleaks-selection-contract.log",
+      "sha256": "2a621d54be1043914df3d613356bc08546eb791d1b9dd21718cad33d53ca74ad"
+    },
+    {
+      "path": ".cache/gitleaks-workflow-syntax.log",
+      "sha256": "8e231a6b7acb6c54f8f3595eb6736613e69132602a14e824c373c2fbee35a23b"
+    },
+    {
+      "path": ".cache/gitleaks-workflow-preservation.log",
+      "sha256": "2eda0d9e82cdb0e938675bc2ea79744ff5d16d0ccb062632991ee452f4ab2310"
+    },
+    {
+      "path": ".cache/gitleaks-bounded-fetch-lint.log",
+      "sha256": "eadf943e086e51212668e4c62a99e47a8bc6db8a65d340625d6329707c0561a2"
+    }
+  ],
+  "native_required": [
+    "Actual scoped security job must show bounded verified fetch, pinned runtime identity and original complete scans/324fixture cases with nonempty safe evidence.",
+    "Cold miss/save and later exact-key restore/revalidation need actual native records before cache qualification; no timing or speedup claim.",
+    "This helper edit intentionally changes existing ORAS/Helm source cache keys; prior named f91/5b qualification remains bound to its actual unchanged bytes. Fresh-key native runs must still execute all original client gates."
+  ],
+  "limits": [
+    "Gitleaks bounded installation and cache integration are unverified until actual GitHub evidence; skipped/canceled/queued/unselected jobs never count as passes.",
+    "Scoped security remains independent of runtime selection. Fullsecurity/packaging/readiness false; all450capabilities/41families/laterstages retained. No primary/customer/sibling/release mutation."
+  ]
+}

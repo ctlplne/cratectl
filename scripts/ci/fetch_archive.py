@@ -29,7 +29,8 @@ def validate(name, url, digest, maximum):
         raise ValueError('Tool archive URL must be exact credential-free HTTPS')
     oras = parsed.hostname == 'github.com' and re.fullmatch(r'/oras-project/oras/releases/download/v([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,4})/oras_\1_linux_(amd64|arm64)\.tar\.gz', parsed.path)
     helm = parsed.hostname == 'get.helm.sh' and re.fullmatch(r'/helm-v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,4}-linux-(amd64|arm64)\.tar\.gz', parsed.path)
-    if not (oras or helm) or oras and maximum > 32 << 20:
+    gitleaks = parsed.hostname == 'github.com' and parsed.path == '/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz'
+    if not (oras or helm or gitleaks) or (oras or gitleaks) and maximum > 32 << 20:
         raise ValueError('Tool archive source or byte budget is not approved')
 
 

@@ -146,12 +146,21 @@ jobs:
           "$(go env GOPATH)/bin/govulncheck" ./...
           "$(go env GOPATH)/bin/govulncheck" -mode=binary .cache/ci-security/cratectld
           "$(go env GOPATH)/bin/govulncheck" -mode=binary .cache/ci-security/cratectl
+      - name: Cache pinned public Gitleaks archive
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        timeout-minutes: 5
+        env:
+          SEGMENT_DOWNLOAD_TIMEOUT_MINS: '2'
+        with:
+          path: .cache/gitleaks_8.30.1_linux_x64.tar.gz
+          key: cratectl-tool-gitleaks-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/ci/fetch_archive.py', '.github/workflows/ci.yml') }}
       - name: Scan current tree and complete reachable history for secrets
         run: |
           archive=gitleaks_8.30.1_linux_x64.tar.gz
-          curl --fail --location --silent --show-error --output "$RUNNER_TEMP/$archive" "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/$archive"
-          printf '%s  %s\n' '551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb' "$RUNNER_TEMP/$archive" | sha256sum --check --status
-          tar -xzf "$RUNNER_TEMP/$archive" -C "$RUNNER_TEMP" gitleaks
+          python3 scripts/ci/fetch_archive.py --archive "$archive" --url "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/$archive" --sha256 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb --max-bytes 33554432
+          printf '%s  %s\n' '551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb' ".cache/$archive" | sha256sum --check --status
+          tar -xzf ".cache/$archive" -C "$RUNNER_TEMP" gitleaks
+          test "$("$RUNNER_TEMP/gitleaks" version)" = 8.30.1
           mkdir -p .cache/ci-source-snapshot
           git archive HEAD | tar -x -C .cache/ci-source-snapshot
           "$RUNNER_TEMP/gitleaks" dir --no-banner --redact --config .gitleaks.toml .cache/ci-source-snapshot
