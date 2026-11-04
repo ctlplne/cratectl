@@ -115,13 +115,26 @@ integration remains unverified; a failure before a report exists still requires
 separate job observations. See the
 [fixture/diagnostic record](../../evidence/2026-11-04/go-module-fixture-diagnostics-development.json).
 
-The workflow union is28jobs across seven workflows. Enumerate actual paths and
-full-SHA selections for every source. NuGet library selection includes shared ZIP
-inspection and module dependency pins. Native private clients use ordinary TLS,
-private NETRC/cache directories and one explicit source without VCS/direct/public
-package fallback. Fixture GONOSUMDB policy is explicit; public checksum mirroring
-and offline behavior remain separate. Existing formats, commands, cases and
-budgets remain intact.
+The full workflow union is now29jobs across seven workflows, including one
+new bounded main-CI selection job. It compares exact base/head Git changes and
+records a fixed reason/count/hash. Runtime inputs, known pins/instructions,
+unknown files, uncertain diffs and manual dispatch select all original source/
+fuzz/native lanes. Only documentation/evidence-only changes can leave those
+lanes unselected; independent scoped source/binary/history/secret scans always
+remain. Every prior command, matrix, budget, permission and concurrency value
+is preserved. Six real-Git/stand-in tests, full lint and semantic YAML comparison
+pass. Actual GitHub source-true and legitimate docs-false execution remain
+unverified. See the [selection development record](../../evidence/2026-11-04/ci-selection-development.json).
+
+Enumerate actual full-SHA jobs and the uploaded selection record before campaign
+acceptance. GitHub's [job conditions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idif)
+and [dependency outputs](https://docs.github.com/en/actions/reference/workflows-and-actions/contexts#needs-context)
+control placement; a green workflow with unselected lanes does not qualify those
+lanes. No skipped or absent job becomes a pass. A selector failure is a failed
+prerequisite, not successful avoidance of testing. No dummy qualification commit
+or blind retry. Native private clients retain normal TLS, one explicit source,
+private NETRC/caches, and explicit fixture checksum policy. Public checksum
+mirroring, other platforms/providers and all remaining product gates stay open.
 
 The following campaign notes are historical.
 
@@ -172,6 +185,7 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 
 | Workflow / jobs | Actual environment | Required work and current limits |
 | --- | --- | --- |
+| `ci.yml`: selection / 1 | Native Linux amd64; bounded exact Git history | Five-minute placement job; emits reason/count/hash. Not a product test pass. Security remains independent; native selection still needs actual execution proof. |
 | `ci.yml`: source / 3 | Ubuntu 24.04 amd64 and arm64; macOS 15 arm64 | Build, Go unit/race/vet, architecture/API and Python contracts, console reproduction and npm audit. 30-minute job budget. Source checks do not qualify a full macOS server/package journey. |
 | `ci.yml`: fuzz / 3 | Same three native hosts | Every checked-in Go fuzz target, bounded five-second smoke per target; 25-minute job. Retain target inventory and failures. This is not a long parser campaign. |
 | `ci.yml`: scoped security / 1 | Ubuntu x86 | Pinned source/binary analysis, full reachable Git history secret scan and synthetic rule regressions. 30-minute job. Current324-case named proof is separate from full security/feed/image coverage. |

@@ -10,7 +10,37 @@ permissions:
   contents: read
 
 jobs:
+  changes:
+    name: Select runtime qualification inputs
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    concurrency:
+      group: cratectl-ci-selection-${{ github.ref }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    outputs:
+      runtime: ${{ steps.select.outputs.runtime }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - name: Select from exact bounded Git changes
+        id: select
+        run: python3 scripts/ci/select_changes.py
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: ci-selection
+          path: .cache/ci-selection.json
+          if-no-files-found: error
+          retention-days: 30
+
   source:
+    needs: changes
+    if: ${{ needs.changes.outputs.runtime == 'true' }}
     concurrency:
       group: cratectl-ci-source-${{ github.ref }}-${{ matrix.arch }}
       # Preserve running main jobs; queue independently by job and platform.
@@ -64,6 +94,8 @@ jobs:
         run: npm audit --prefix web --audit-level=high --ignore-scripts
 
   fuzz:
+    needs: changes
+    if: ${{ needs.changes.outputs.runtime == 'true' }}
     concurrency:
       group: cratectl-ci-fuzz-${{ github.ref }}-${{ matrix.arch }}
       # Preserve running main jobs; queue independently by job and platform.
@@ -138,6 +170,8 @@ jobs:
           retention-days: 30
 
   native:
+    needs: changes
+    if: ${{ needs.changes.outputs.runtime == 'true' }}
     concurrency:
       group: cratectl-ci-native-${{ github.ref }}-${{ matrix.arch }}
       # Preserve running main jobs; queue independently by job and platform.

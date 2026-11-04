@@ -84,6 +84,15 @@ All450capabilities/41families and later stages remain committed. Go proxy,
 legacy/alias/warm-cache/lifecycle/fault/migration/scale/platform/browser and all
 other unfinished requirements remain open. Broad readiness stays false.
 
+Main CI now has bounded runtime-input selection, implemented but unverified.
+Documentation/evidence-only commits retain independent scoped source/binary/
+history/secret scans. Runtime/pin/instruction/unknown changes and manual dispatch
+select all original native lanes. Six real-Git/stand-in tests, full lint and YAML
+semantic preservation checks pass. Every original command/matrix/budget remains.
+Actual GitHub source/docs selection and skip placement remain unverified; an
+unselected job never counts as a pass. See
+`evidence/2026-11-04/ci-selection-development.json`.
+
 No primary, selected binary, data, credential, sibling or customer change.
 Earlier notes below are historical and do not override this current state.
 
