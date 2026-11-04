@@ -11,10 +11,12 @@ permissions:
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # Preserve started qualification evidence on main; supersede PR work.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   source:
+    timeout-minutes: 30
     name: Source and unit (${{ matrix.arch }})
     runs-on: ${{ matrix.runner }}
     strategy:
@@ -87,6 +89,7 @@ jobs:
         run: python3 scripts/ci/fuzz_go.py
 
   security:
+    timeout-minutes: 30
     name: Scoped source, binary and history scans
     runs-on: ubuntu-24.04
     steps:

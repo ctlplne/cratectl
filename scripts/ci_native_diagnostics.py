@@ -80,6 +80,73 @@ def collect(root, candidate):
     return encoded, len(payload['failures'])
 
 
+def collect_jvm(root, candidate):
+    """Select only generated JVM failures and bounded command observations.
+
+    These records are encrypted by main(), never exported as public summaries.
+    Credential/config fields and successful command history are not collected.
+    """
+    if not re.fullmatch('[0-9a-f]{40}', candidate):
+        raise ValueError('JVM diagnostics require an exact candidate')
+    generated = subprocess.check_output(['git','ls-files','--others','--modified','--exclude-standard','-z','--','evidence'],cwd=root).split(b'\0')
+    if len(generated) > 201:
+        raise ValueError('JVM generated report inventory exceeds its bound')
+    failures = []
+    remaining = 16 << 20
+    for raw_path in generated:
+        if not raw_path:
+            continue
+        path = raw_path.decode('utf-8')
+        match = re.fullmatch(r'evidence/\d{4}-\d{2}-\d{2}/conformance-([0-9a-f]{10})\.json',path)
+        if not match:
+            continue
+        report = json.loads(read_owned_file(root/'evidence',root/path,4 << 20))
+        if not isinstance(report,dict):
+            raise ValueError('JVM diagnostic report must be an object')
+        if report.get('candidate') != candidate:
+            raise ValueError('JVM diagnostic report source does not match')
+        if report.get('status') != 'failed':
+            continue
+        clients = [client for client in ('gradle','ivy') if isinstance(report.get(client+'_contract'),dict)]
+        if not clients:
+            continue
+        if len(clients) != 1 or report.get('run') != match[1] or len(failures) >= 4:
+            raise ValueError('JVM diagnostic run/client inventory is invalid')
+        client, run = clients[0], match[1]
+        commands = report.get('commands')
+        if not isinstance(commands,list) or len(commands)>1024 or any(not isinstance(c,dict) for c in commands):
+            raise ValueError('JVM diagnostic command inventory exceeds its bound')
+        selected = [c for c in commands if c.get('expected_failure') is not True and type(c.get('exit')) is int and c['exit'] != 0]
+        observation_only = not selected
+        if observation_only:
+            selected = commands[-1:]
+        if len(selected)>2:
+            raise ValueError('JVM failed command inventory exceeds its bound')
+        error = report.get('failure','')
+        if not isinstance(error,str) or len(error)>8192:
+            raise ValueError('JVM diagnostic error exceeds its bound')
+        failure = {'run':run,'client':client,'error':error,'commands':[]}
+        for command in selected:
+            output = command.get('output',''); code = command.get('exit')
+            if not isinstance(output,str) or len(output)>12000 or type(code) is not int or not -255<=code<=255:
+                raise ValueError('JVM diagnostic observation exceeds its bound')
+            encoded = output.encode('utf-8')
+            remaining -= len(encoded)
+            if remaining<0:
+                raise ValueError('JVM diagnostic output inventory exceeds its bound')
+            failure['commands'].append({'exit':code,'observation_only':observation_only,
+                                        'sha256':hashlib.sha256(encoded).hexdigest(),'output_base64':base64.b64encode(encoded).decode('ascii')})
+        registry = root/'.private/conformance'/run/'server.log'
+        if registry.exists() or registry.is_symlink():
+            if remaining<=0:
+                raise ValueError('JVM diagnostic registry inventory exceeds its bound')
+            raw = read_owned_file(root/'.private',registry,min(MAX_LOG,remaining))
+            remaining -= len(raw)
+            failure['registry_log'] = {'sha256':hashlib.sha256(raw).hexdigest(),'output_base64':base64.b64encode(raw).decode('ascii')}
+        failures.append(failure)
+    return failures
+
+
 def seal(payload, certificate, openssl='openssl'):
     if not isinstance(payload, bytes) or len(payload) > MAX_PAYLOAD:
         raise ValueError('native diagnostic plaintext exceeds its byte budget')
@@ -149,6 +216,9 @@ def main():
         raise ValueError('native diagnostics require a reviewed GitHub Linux run identity')
     payload, count = collect(root, candidate)
     decoded = json.loads(payload)
+    jvm = collect_jvm(root, candidate)
+    decoded['failures'].extend(jvm)
+    count += len(jvm)
     decoded.update(run_id=run_id, runner_os='Linux', runner_arch=arch)
     payload = json.dumps(decoded, separators=(',', ':')).encode()
     if len(payload) > MAX_PAYLOAD:

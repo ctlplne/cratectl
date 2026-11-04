@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 import unittest
 
-from ci_native_diagnostics import collect, seal, unseal, write_new
+from ci_native_diagnostics import collect, collect_jvm, seal, unseal, write_new
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -102,6 +102,50 @@ class EncryptedNativeDiagnostics(unittest.TestCase):
             parent.symlink_to(self.folder, target_is_directory=True)
             with self.assertRaises(OSError):
                 write_new(Path(temp), parent / 'must-not-exist', b'replacement')
+
+    def test_jvm_collection_uses_generated_failed_observations_and_excludes_credentials(self):
+        with tempfile.TemporaryDirectory(prefix='cratectl-jvm-cms-',dir=self.folder) as temp:
+            root=Path(temp);subprocess.run(['git','init','-q','-b','main',str(root)],check=True)
+            evidence=root/'evidence/2026-11-04';evidence.mkdir(parents=True)
+            private=root/'.private/conformance'/('1'*10);private.mkdir(parents=True)
+            (private/'reader.token').write_text('private-synthetic-credential-value')
+            (private/'server.log').write_text('owned registry observation')
+            report={'candidate':'a'*40,'run':'1'*10,'status':'failed','ivy_contract':{},'failure':'owned post-command assertion',
+                    'credential':'private-synthetic-credential-value','commands':[{'exit':0,'output':'earlier unused observation'},
+                    {'exit':1,'expected_failure':True,'output':'expected policy denial'}, {'exit':0,'output':'Apache Ant(TM) version 1.10.14'}]}
+            path=evidence/('conformance-'+'1'*10+'.json');path.write_text(json.dumps(report))
+            tracked=evidence/('conformance-'+'2'*10+'.json');tracked.write_text(json.dumps({**report,'candidate':'b'*40}))
+            subprocess.run(['git','add',str(tracked.relative_to(root))],cwd=root,check=True)
+            failures=collect_jvm(root,'a'*40);self.assertEqual(len(failures),1)
+            commands=failures[0]['commands'];self.assertEqual(len(commands),1)
+            self.assertTrue(commands[0]['observation_only'])
+            self.assertEqual(base64.b64decode(commands[0]['output_base64']),b'Apache Ant(TM) version 1.10.14')
+            self.assertNotIn('private-synthetic-credential-value',json.dumps(failures))
+            self.assertNotIn('earlier unused observation',json.dumps(failures))
+            report['commands'].append({'exit':1,'expected_failure':False,'output':'owned actual failure'})
+            path.write_text(json.dumps(report));observed=collect_jvm(root,'a'*40)[0]['commands']
+            self.assertFalse(observed[0]['observation_only'])
+            self.assertEqual(base64.b64decode(observed[0]['output_base64']),b'owned actual failure')
+            # Only ciphertext may leave the runner; authenticated local decode
+            # retains the same exact selected output without credential fields.
+            payload=json.dumps(collect_jvm(root,'a'*40)).encode()
+            self.assertEqual(unseal(seal(payload,self.cert),self.key,self.cert),payload)
+            with self.assertRaises(ValueError):collect_jvm(root,'b'*40)
+            path.unlink();path.symlink_to(private/'reader.token')
+            with self.assertRaises(ValueError):collect_jvm(root,'a'*40)
+
+    def test_jvm_collection_rejects_unbounded_or_malformed_generated_reports(self):
+        with tempfile.TemporaryDirectory(prefix='cratectl-jvm-cms-bounds-',dir=self.folder) as temp:
+            root=Path(temp);subprocess.run(['git','init','-q','-b','main',str(root)],check=True)
+            evidence=root/'evidence/2026-11-04';evidence.mkdir(parents=True)
+            path=evidence/('conformance-'+'1'*10+'.json')
+            report={'candidate':'a'*40,'run':'1'*10,'status':'failed','gradle_contract':{},'commands':[{'exit':1,'output':'owned failure'}]}
+            changes=[[],{**report,'run':'../wrong'},{**report,'commands':[{'exit':1,'output':'x'*12001}]},
+                     {**report,'commands':[{'exit':1,'output':'failure'}]*3},{**report,'commands':[{}]*1025},
+                     {**report,'ivy_contract':{}},{**report,'failure':'x'*8193}]
+            for change in changes:
+                path.write_text(json.dumps(change))
+                with self.subTest(change_type=type(change).__name__),self.assertRaises(ValueError):collect_jvm(root,'a'*40)
 
 
 if __name__ == '__main__':

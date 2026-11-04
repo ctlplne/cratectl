@@ -970,6 +970,15 @@
       "limits": "BothnativeGradleprofilespass199checks/all8stages/all24publisher-reference-HTTPdigests. OriginalARMfailurepreserved; wholeMaven/Ivy/SBT/platform/TLS/fault/lifecycle/scalequalificationremainsopen.",
       "latest_candidate": "9985847d685b2685cbf3c1f334d804e80eee02c1",
       "replay": "evidence/2026-11-04/gradle-9985847-checkpoint.json"
+    },
+    {
+      "id": "DEFECT.0088",
+      "summary": "Native Ivy qualification rejects Ant runtime identity despite the pinned distribution download",
+      "first_failure": "evidence/2026-11-04/ivy-600466d-identity-failure.json",
+      "state": "launcher binding repair implemented; native replay unverified",
+      "repair": "Invoke the pinned Java executable and Ant bootstrap JAR directly, with explicit ant.home, isolated classpath and sanitized Java/Ant injection variables. Keep the exact runtime-version assertion; bind the bootstrap digest and observed runtime version. Retain a read-only legacy-launcher observation without requiring a particular host version.",
+      "limits": "Both original Ivy jobs stop after eight checks, before any completed stage or publication. Host launcher selection is inferred from official script/inventory; actual legacy version must be observed on replay. No Ivy compatibility or broad readiness claim.",
+      "latest_candidate": "600466dc2fb0ca26269c62283958957e5785a3d3"
     }
   ]
 }

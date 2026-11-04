@@ -1,6 +1,10 @@
 # Ant and Ivy client qualification
 
-The Ant/Ivy profile is implemented but has no native compatibility result yet.
+The first native Ant/Ivy profile fails its Ant runtime identity assertion on
+both Linux architectures at `600466d`, before any publication. The
+[original failure](../../evidence/2026-11-04/ivy-600466d-identity-failure.json)
+is retained. The launcher repair is implemented but awaits native replay;
+there is no Ivy compatibility pass yet.
 It targets Apache Ant 1.10.18, Ivy 2.6.0 and the pinned Java 21 runtime on
 actual Linux x86 and ARM GitHub runners, using real PostgreSQL and the common
 Maven repository endpoint. The [JVM plan](../qualification/jvm-client-plan.json)
@@ -53,3 +57,24 @@ Official contracts: [Maven-compatible consumption](https://ant.apache.org/ivy/hi
 [POM conversion](https://ant.apache.org/ivy/history/2.6.0/use/makepom.html),
 [publication task](https://ant.apache.org/ivy/history/2.6.0/use/publish.html)
 and [credential scope](https://ant.apache.org/ivy/history/2.6.0/settings/credentials.html).
+
+
+The qualification launcher uses the explicit pinned Java executable and Ant
+bootstrap JAR, with an explicit Ant home, no user library and no inherited
+classpath. It removes Java/Ant options that could replace the runtime or inject
+classes. The downloaded Ant shell can select libraries through system
+configuration or an inherited Ant home; a hash of a downloaded JAR alone does
+not prove which library that shell loaded. Safe evidence binds the bootstrap
+hash and the actual observed Ant version. A separate read-only legacy version
+observation diagnoses the old path without treating a host-provided version
+as the qualified client. The same exact pinned version assertion remains
+mandatory, alongside every original release-profile case.
+
+
+On a failed native job, the bounded command observation and owned registry log
+can be sealed to the existing owner-held diagnostic recipient. Only CMS
+ciphertext and fixed metadata are uploaded, with seven-day retention; no
+credential/config file or plaintext fallback is included. Decryption and
+inspection stay in private local state. Safe public summaries still contain
+only the reviewed counts, stages, versions and hashes. This keeps detailed
+client errors available without publishing raw runner logs.

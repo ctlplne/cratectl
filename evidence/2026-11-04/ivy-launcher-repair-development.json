@@ -1,0 +1,83 @@
+{
+  "source_parent": "600466dc2fb0ca26269c62283958957e5785a3d3",
+  "source_dirty": true,
+  "observed_at": "2026-11-04T03:11:04.664892+00:00",
+  "status": "implemented but native replay unverified",
+  "original_failure": "evidence/2026-11-04/ivy-600466d-identity-failure.json",
+  "changes": [
+    "Use the pinned Java executable and Ant bootstrap JAR with explicit ant.home; disable user libraries and inherited classpath.",
+    "Remove Ant/Java launcher and class-injection environment options. Record the bootstrap digest and actual Ant runtime; passed evidence requires equality with the original exact pin.",
+    "Retain a read-only legacy-launcher version observation for diagnosis; it never substitutes for the pinned runtime or requires a particular future host image.",
+    "Keep every original stage, publication, dependency, tenant, grant, policy, range, restart and revocation expectation.",
+    "Preserve started main-branch qualification runs across repair pushes while keeping one active run per existing workflow group; PR work may still be superseded. Pending/default queue behavior remains explicit.",
+    "Extend the existing owner-recipient CMS diagnostic path to bounded generated Gradle/Ivy failures. Exclude credential/config fields; select failed commands or a final assertion observation and an owned bounded registry log. Only ciphertext/fixed metadata may be uploaded for seven days.",
+    "Set explicit30-minute budgets for native source/unit and scoped security jobs; preserve existing per-workflow concurrency bounds."
+  ],
+  "checks": {
+    "make_lint": "passed",
+    "fixture_regressions": "3 passed, including a real Python executable stand-in under conflicting Ant/Java home, command, classpath and agent options",
+    "safe_evidence_regressions": "4 passed; exporter integration10 passed; mismatched/missing runtime cannot pass",
+    "syntax": "Python compile and git diff --check passed",
+    "build": "Go source unchanged; native CI builds its exact new candidate. No new local JVM/runtime/PostgreSQL campaign.",
+    "workflow_syntax": "All workflow files pass actionlint1.7.12.",
+    "encrypted_diagnostics": "5 passed: real authenticated CMS roundtrip/tamper/wrong-key cases; generated JVM failure selection, credential-field exclusion, symlink/source/inventory/output bounds; private output ownership."
+  },
+  "lint_log_sha256": "d3a944eaa28ff9cca34cf2ad191f3d7fdeef9c22acb383cc55252c51c819bd99",
+  "files": [
+    {
+      "path": "scripts/conformance_ivy.py",
+      "sha256": "87af88871a8a6ea248304471b737d5d999f77b3b7aab4c92a39206dc2f2b3736"
+    },
+    {
+      "path": "scripts/ci/ivy_evidence.py",
+      "sha256": "6b7dfc10885e5a4ca4d3cbf936ce429fd6430cc5799312fd3e26b4fc996abacc"
+    },
+    {
+      "path": "scripts/ci/test_ivy_evidence.py",
+      "sha256": "69c680d63cf1255a9d4598ec8e002b04e2ab074977a5450c560e8672db4630ec"
+    },
+    {
+      "path": "scripts/test_ivy_fixture.py",
+      "sha256": "4f386363ee4a32126b5eda47a5092f3e452d175f2c9003265dd98575de4b0c8d"
+    },
+    {
+      "path": ".github/workflows/browser-repair.yml",
+      "sha256": "f75678734e3bc41b424a36f808d9bffd29535258de93b9ecd69d5767c1a1a727"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "24844925dd6e0c62b6170083ab6fd6d43ce32f7db35bef8c393aa3a4ffbc0979"
+    },
+    {
+      "path": ".github/workflows/jvm-clients.yml",
+      "sha256": "274628f07886a281dbe4c3fb67abef10052a64abbc2f6ac284ab73face269b48"
+    },
+    {
+      "path": ".github/workflows/nuget-contract.yml",
+      "sha256": "71abd9b4cb5900ed32eb83e2da99ba0d1970c9701f651778d091f6c0bb6ac1f3"
+    },
+    {
+      "path": ".github/workflows/oci-clients.yml",
+      "sha256": "e60e0208a653807c7100e657617b6551c29035ba1a7833e71d5946b942dedb74"
+    },
+    {
+      "path": ".github/workflows/upgrade-qualification.yml",
+      "sha256": "ef5490e0d9bb1a7a03cb61ddf65ef4ca48975c2840d38b9048a63ee14b225a54"
+    },
+    {
+      "path": "scripts/ci_native_diagnostics.py",
+      "sha256": "d41a15f08982996aacc3c6eff5dc68d353c6a5ad26f13c07ed128161342e5fb2"
+    },
+    {
+      "path": "scripts/test_ci_native_diagnostics.py",
+      "sha256": "d02bbe891e7aba38fb16e74c8d24f0fc84f6c451e7afa97cfeb14e0c94d69021"
+    }
+  ],
+  "limits": [
+    "Original Ant version mismatch is observed; exact legacy runtime and launcher-selection diagnosis require native replay.",
+    "The initial release profile remains unqualified; all broader Ivy/SBT and full GOAL requirements remain open.",
+    "No primary, sibling/customer or release/package publication changes; all broad readiness remains false."
+  ],
+  "plan": "docs/qualification/github-actions-plan.md",
+  "history": "docs/qualification/github-actions-history.md"
+}

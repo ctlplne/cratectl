@@ -1,0 +1,629 @@
+# Historical GitHub Actions qualification notes
+
+Preserved on 2026-11-04 when the execution plan was consolidated. These are
+observations at their named sources, including superseded unverified states.
+Use [the current plan](github-actions-plan.md) and exact evidence records for
+current placement and acceptance; this history does not qualify a newer source.
+
+# GitHub Actions qualification plan
+
+Updated: 2026-11-02. Owner: `imfeelingtheagi`. Scope remains the complete
+`GOAL.md`, capability/journey ledgers and `remaining.json`. This plan places
+qualification on suitable hosts; it does not complete an unfinished capability.
+The repository is public by explicit owner direction. CI and repair pushes are
+authorized; releases, publication and customer changes retain their own authority.
+
+Main-branch qualification runs finish across repair pushes. Each workflow's
+existing concurrency group allows one active run and, by default, one pending
+new tip; newer pending tips may replace older pending tips. Pull-request work
+can still be superseded. A canceled or never-started pending campaign provides
+no pass evidence. This preserves started fault/recovery and client results
+while bounding concurrent runs per workflow. See
+[GitHub's concurrency contract](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency).
+
+## Accepted checkpoint and its limits
+
+Clean source `6afbd4ad12cdb1d32aa43386a47822bc6e741fdf` passes the owner-directed
+milestone: all nine main jobs, both native upgrade jobs, five independent repair
+journeys and five independent retention journeys. The full x86 console passes
+all 14 workflows with zero unexpected, skipped or flaky results. Both Linux
+PostgreSQL race gates pass. Runtime summaries retain actual binary SHA-256 and
+clean embedded source/OS/architecture identities. Each architecture rebuilt ten
+pinned historical servers and passed 15 upgrade reports. The security summary
+contains all 324 synthetic rule cases.
+
+The [checkpoint](../../evidence/2026-11-02/github-browser-6afbd4a-checkpoint.json)
+contains exact run URLs, seven safe summaries, hashes and scope limits. Acceptance
+uses main run `41521729264`. The earlier same-source main run passed eight jobs
+but its macOS fuzz job never acquired a runner; it is rejected and retained in
+[the capacity record](../../evidence/2026-11-02/github-ci-6afbd4a-capacity-failure.json).
+Cancellation is never converted into a pass.
+
+`DEFECT.0071` and `DEFECT.0073` are repaired and replayed in this named scope.
+Browser response bodies could become unavailable after the console consumed
+them. Repair now uses displayed durable identity; retention identifies exactly
+one newly admitted run through the independent API client after checking the
+browser POST/status and hidden dialog. All recovery, focus, authority, exact-byte
+and zero-Axe assertions remain required. Earlier diagnostic labels incorrectly
+matched source snippets; the correction and original failures remain retained.
+The first unavailable private failure's precise cause is not retroactively claimed.
+
+This checkpoint is not full security, packaging, release, native Windows,
+independent-host, scale, full accessibility or product readiness. All 450
+capabilities / 41 families remain unfinished. `make security` and `make packaging`
+still fail with their unfinished-campaign explanations.
+
+## Placement and evidence rules
+
+Use an actual native host for OS/architecture claims, real PostgreSQL for state,
+and stock clients for package outcomes. Compatible disposable services prove
+only their named integration. Cross-compilation proves compilation. Several
+containers on one host do not prove independent-host HA. Skips are not passes.
+
+CI never reads the retained local primary, imports local `.private/` or `.cache/`,
+or promotes artifacts. Registry and PostgreSQL fixtures use project-owned
+loopback ports 38443 and 35432. Runtime SQL roles are nonsuperuser, nonowner and
+without BYPASSRLS. Credentials are generated and masked inside disposable runners.
+PR tokens are read-only and have no repository secrets. Package install scripts
+remain disabled; package/model contents are never executed by the registry.
+
+Only the field-allowlisted summary is uploaded for 30 days. Raw browser reports,
+traces, command output, credentials and private fixture state remain private on
+the runner. Export both modified tracked and newly generated reports; a successful
+empty summary fails. Validate candidate/run ID, clean build, native platform,
+reviewed artifact path and SHA-256 before accepting evidence. Commit the reviewed
+summary and its hash under `evidence/` before artifact expiry. Evidence commits
+reference the tested source; they do not claim their own commit already passed.
+
+Freeze a coherent candidate until all required gates finish. Collect terminal
+job outcomes and actual summaries; never combine different source commits.
+Retain first failures. Diagnose error headers, phases and safe rule counts rather
+than source frames or guessed matcher labels. Retry a diagnosed infrastructure
+failure on unchanged bytes while preserving the rejected run. An observation
+timeout alone does not justify restarting a live job.
+
+## Running gates and cadence
+
+| Gate | Actual host or service | Trigger and required result |
+| --- | --- | --- |
+| Source/unit, three jobs | Ubuntu 24.04 x86-64 and ARM64; macOS 15 ARM64 | Every main push, PR and manual main CI. Build, unit, race, vet, architecture/API checks, console reproduction and npm audit. |
+| Bounded fuzz, three jobs | Same three native host types | Same main CI. All 23 checked-in targets, five seconds each, bounded process/target count. Crash smoke only; full parser/security campaign remains open. |
+| Scoped security, one job | Ubuntu x86-64 | Same main CI. Pinned govulncheck source/two binaries, Gitleaks current snapshot/full reachable history and 324 synthetic rule cases. Feed/image/full-security coverage remains separate. |
+| Native integration/clients, two jobs | Native Linux x86-64 and ARM64; fresh PostgreSQL16.15, registry and filesystem | Same main CI. Integration and PostgreSQL race tests, generic/ORAS/Maven/npm/PyPI compatibility, native lifecycle, blank trusted-TLS install, jobs/leases, inventory/sweeps and matters. x86 additionally requires full14workflow Chromium/Axe. ARM browser is not claimed. |
+| Focused browser, one job per selected campaign | Native x86 Linux, real fresh PostgreSQL/registry/Chromium | Relevant UI/driver pushes default to repair; manual choice repair or retention. Exactly five fresh databases and complete journeys; stop at first failure, no retries or skips. Separate concurrency groups prevent one selection cancelling the other. |
+| Controlled upgrades, two jobs | Native Linux x86-64 and ARM64 with fresh PostgreSQL | Relevant source/schema/driver pushes, manual and Mondays08:17UTC. Rebuild ten reviewed immutable source pins; verify actual native identities and bytes; require15reports per architecture covering legacy adoption, schemas2–10, repair, integrity and retirement. Not rolling upgrade, downgrade or backup/restore proof. |
+
+At each acceptance checkpoint, dispatch both focused selections and any required
+manual campaigns on the same frozen source as main/upgrades. `ci.yml` retains
+nine jobs; focused repair, focused retention and upgrades add four more. All 13
+must finish successfully for the current regression milestone. Job success alone
+cannot replace the report inventory, browser counts or binary identity checks.
+
+GitHub publishes standard `macos-26` ARM64 and Windows x64/ARM64 runner targets
+alongside the current matrix; see the [official runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)
+and [placement review](../../evidence/2026-11-02/github-runner-placement-review.json).
+Published labels are available testing options, not executed cratectl evidence
+or a capacity guarantee. Native Windows needs private-file ACL implementation
+and actual CLI/client tests; lack of a runner is no longer its external input.
+Do not replace an ARM test with Intel or a cross-build to obtain a green result.
+
+## Native OCI client gate
+
+`oci-clients.yml` adds two native Linux jobs for Docker/Podman/Helm, using a
+fresh restricted PostgreSQL database and the actual registry. The shared
+bootstrap has an explicit OCI-only mode; the existing main/browser/upgrade
+workflows retain their default full tool set. The new driver and safe version/
+binary evidence are implemented but unverified. See
+[the development record](../../evidence/2026-11-02/oci-clients-development-preflight.json)
+and [operator qualification guide](../operator/oci-client-qualification.md).
+The first native run failed on both architectures during setup: its Podman
+Debian revision pins would downgrade newer installed packages. The corrected
+setup verifies bundled CLI4.9.3 and records the installed revision/architecture
+and binary hash. It also retains fixture and verified graph/member digests.
+See [the first failure](../../evidence/2026-11-02/oci-clients-first-failure.json)
+and `DEFECT.0074`. The1757c89 setup replay passed both installations and
+recorded the actual4.9.3+ds1-1ubuntu0.2 packages. Both journeys then failed
+at the first Podman login, with cause unknown (`DEFECT.0075`). The next native
+replay exports bounded fixed error-marker identifiers; raw command output
+remains private. See [the login failure](../../evidence/2026-11-02/oci-clients-1757c89-authentication-failure.json).
+Real native client publication and consumption remain unverified.
+The79b4d44 replay again stopped at Podman login on both architectures and
+matched no reviewed diagnostic markers. Its root cause is still unknown.
+Failure artifacts now add encrypted, bounded command/registry logs with a
+seven-day retention period. Only the public recipient certificate goes to
+GitHub; the decryption key stays in ignored local private state. No plaintext
+fallback is allowed. See [private diagnostic operation](../operator/ci-diagnostics.md).
+The270f7ca artifacts encrypted with actual GitHub OpenSSL3.0.13 and decrypted
+locally with4.0.3 on both architectures. Both errors identify Podman4's50character
+runroot limit before registry authentication. The repair uses a short uniquely
+owned temporary runroot with inode-bound cleanup. The f499369 replay passed
+all native client logins, then failed at Docker manifest lookup. See [the observed error](../../evidence/2026-11-02/oci-clients-270f7ca-runroot-failure.json).
+This gate adds required client evidence; it does not replace the accepted13job
+regression milestone or complete OCI/platform/readiness scope.
+
+## NuGet library contract
+
+`nuget-contract.yml` moves the new Go/NuGet.Versioning differential contract
+to actual Linux x86-64 and ARM64 runners. It compares deterministic synthetic
+version strings with the runner SDK's installed reference library, records
+the actual SDK/library and byte identities, verifies both native process
+architectures and requires clean exact Go source. Its owned C# fixture clears
+remote package sources and has no package references. The new Go parser also
+joins the existing native fuzz inventory.
+
+This version-identity contract passed all1,129synthetic comparisons on each
+native Linux architecture at f499369, using SDK10.0.403 / NuGet.Versioning7.9.0.0.
+See [the exact checkpoint](../../evidence/2026-11-02/nuget-version-f499369-checkpoint.json).
+It supplies no NuGet feed/client, archive, symbols, tenant/policy,
+dependency-resolution, migration or readiness proof. Continue the whole NuGet
+and remaining-format journeys after the adapter and storage work lands.
+
+## Remaining offload inventory and execution order
+
+The accepted milestone unblocks the complete product build. Extend real CI
+journeys as their corresponding implementation lands; do not spend the entire
+build polishing CI while required customer outcomes remain missing.
+
+| Priority / work | GitHub environment and input | Evidence boundary |
+| --- | --- | --- |
+| Next product journeys: remaining Stage1 clients, other-format lifecycle and repository breadth | Actual Linux architectures and stock Docker/Podman/Helm, JVM clients and later ecosystem clients as implemented; real restricted PostgreSQL and exact package graphs | Publish/install with dependencies, policy/auth denial, current metadata, interruption/restart, deletion/restore. ORAS alone does not qualify every OCI client; raw download does not qualify another format. |
+| Pinned public OCI retrieval (`conformance_public_oci.py`) | Separate manual/scheduled Linux campaign; reviewed immutable digest and official HTTPS registry/realm/delivery authorities | One real provider/digest path. Never execute the image; keep a changing external service separate from deterministic PR gates. |
+| Longer parser/property/differential campaigns | Native scheduled/manual jobs, reviewed corpora, explicit time/concurrency/memory budgets and minimized failure review | Persist target inventory, seed/corpus identity, versions, results and limits. The five-second smoke is not full coverage; raw generated corpus is not automatically safe to publish. |
+| Complete dependency/image/artifact analysis | Pinned Trivy or equivalent with feed provenance/age; source and binary tools continue; scan shipped images when built | Separate source, binary, image, reachability and feed coverage. Missing intelligence never means clean. Full security gate stays negative until its complete campaign exists. |
+| Packaging, Compose/Helm and disconnected bundle | Real Docker/Podman/cluster/chart clients on both Linux architectures; shipped pinned artifacts and actual network-isolated target | Fresh install, persistent data, readiness, upgrade/recovery, trust and actual offline contents. Rendering or download links are not an installed/offline result. |
+| S3, IdP, scanner and other service adapters | Disposable real compatible services with pinned versions, isolated tenants, fault boundaries and explicit limits | Named adapter outcomes only; stand-ins do not qualify every vendor, customer PKI or production topology. |
+| Native Windows and additional macOS journeys | Published native runners, platform-specific private-file/ACL behavior, actual CLI/package clients and real supported services | Cross-builds and Linux containers do not replace native execution. Keep unsupported server/runtime cases explicit. |
+| Release evidence, SBOM, signatures and offline verification | Build once per target, hash exact bytes, generate/verify SPDX/CycloneDX/provenance and scoped trust material | No automatic publication. Signing identity and legal/distribution authority remain explicit. Signatures prove signed statement integrity, not an unobserved external effect. |
+| Migration, replication, backup/restore, federation and fault recovery | Real compatible source/destination services, bounded datasets and controlled process/network/storage faults | Complete metadata/identity/policy/byte inventories and recovery receipts. One-host smoke is separate from independent-host HA and customer cutover. |
+| Standard/large profiles,24hsoak and operating cost | Sized independent hosts, real PostgreSQL/object-store/network topology, scheduled/manual resource budgets and raw measurements | Ordinary shared runners do not establish the specified8vCPU/32GiB profile, independent-host HA or24hqualification. Retain unfavorable observations. |
+| Licensed paid comparisons and customer acceptance | Authorized licensed Nexus/JFrog systems and explicit customer/owner environment | External license, access and authority remain real inputs; CI cannot manufacture them. Continue independent implementation while these are unavailable. |
+
+For every new format, backend, schema, platform or release surface, update the
+workflow, placement plan and capability/journey evidence together. Identify the
+real client/service/host, credentials/data exposed, reproducible fixture, safe
+failure diagnosis, runtime/cost budget and exact unfinished acceptance rows.
+Add scheduled/manual long campaigns with an explicit cadence and owner-approved
+infrastructure; never hide an unimplemented gate behind a successful skip.
+
+Once stable, required PR checks can be enforced under a separate authorized
+repository-settings change. Repository protection, release publication and
+customer maintenance are not consequences of a green CI run.
+
+## Current native qualification checkpoint
+
+All17jobs pass on clean 6854e80: main9, controlled-upgrades2, nativeOCI2,
+repair1with5fresh journeys, retention1with5fresh journeys and NuGet2.
+Both real PostgreSQL race gates pass. All14x86Chromium workflows have zero
+unexpected, skipped or flaky results. Every runtime binary embeds the clean
+exact native source, and both upgrade campaigns rebuild10pinned old servers
+and pass15reports. See [the accepted milestone](../../evidence/2026-11-03/github-6854e80-checkpoint.json).
+
+Both native Docker/Podman/Helm journeys complete214checks, including exact
+layered/multiarch bytes and chart dependencies across hosted/proxy/group,
+tenant/policy/lifecycle and grant/token revocation/restart. The earlier tar
+observation and tenant-access fixture failures remain retained with their
+original diagnosis limits. No missing old status or file attributes are
+retroactively inferred. Native macOS source/CMS regressions pass too.
+
+Both actual SDK10.0.403 Versioning/Packaging7.9.0.0 references agree with Go on
+all1,129versions,11Nuspec documents and4owned ZIP32 archive cases per native Linux architecture. This
+replays the raw-ID-whitespace repair. See [the library checkpoint](../../evidence/2026-11-03/nuget-6854e80-checkpoint.json).
+Archive/feed/client and full NuGet behavior remain required.
+
+The NuGet workflow now also compares four owned stored/deflated ZIP32 archives
+with actual `PackageArchiveReader`: identity, selected Nuspec path and exact
+UTF8/UTF16 manifest bytes. Local bounded archive/race/fuzz checks pass; managed
+compilation and all four archive comparisons pass on both actual native architectures. Malformed archive
+regressions run against production Go code without exposing the SDK to generated
+hostile packages. No uploaded content executes. See [the archive boundary](../adr/0034-bounded-nuget-archives.md).
+
+All four database workflows now explicitly bind127.0.0.1:35432. Bootstrap
+receives the exact owned service container ID and checks Docker's actual port
+map before setup. It fails outside a GitHub-hosted runner. Local contract/workflow checks and the actual mandatory preflight pass across
+main/OCI/upgrades/browser campaigns on6854e80. Fixed markers and private-log
+hashes are retained in [the binding replay](../../evidence/2026-11-03/ci-service-bindings-6854e80-replay.json).
+The old three omitted bind addresses remain a configuration observation,
+not an observed exposure or incident. Continue product implementation and
+the remaining offload inventory above; all450capabilities and negative broad
+readiness verdicts remain.
+
+The NuGet library workflow is further extended with63,516owned ID cases,
+covering all non-surrogate BMP values plus whole-ID edge cases. The actual SDK
+validator and invariant casing are compared with the bounded Go wire-key path;
+explicit transport exclusions retain the SDK's separate acceptance result.
+The b259472 managed/native comparison passes on both Linux architectures.
+Complete durable NuGet feed and stock-client journeys follow this coordinate work; the library gate
+does not replace them. See [the ID contract](../adr/0035-nuget-id-lookup-keys.md).
+
+The first actual fba38fd ID comparison compiled and executed on both native
+architectures, then failed40cases. The repair freezes named Unicode-derived
+word/case tables rather than inheriting Go17 data. The local complete-row hash
+matches both retained SDK outputs on the unchanged63,516case corpus. The fresh
+clean b259472 native replay also passes both architectures; preserve [the original failures](../../evidence/2026-11-03/nuget-fba38fd-id-unicode-failure.json).
+
+Hosted NuGet implementation now extends the existing native `conformance.py all`
+campaign with actual SDK dotnet push and dependency restore, not local x86
+emulation. Two application versions and a dependency use fresh consumer caches,
+exact package/payload/manifest comparisons, same-coordinate tenants, policy denial
+and a real registry restart. Owned fixtures contain no scripts/build targets or
+executable assemblies. Real PostgreSQL integration/race adds common publication,
+concurrent coordinates, grants/revocation, bounded complete indexes and reference
+restore. Safe summaries retain only bounded SDK identity and four fixture hashes,
+beside exact native server/CLI source and binary hashes. Both actual native dfc9381 jobs pass the new PostgreSQL/race and stock dotnet
+journeys; SDK10.0.403 and exact source/client/fixture identities are retained.
+The existing library results keep their own distinct scope.
+See [the adapter decision](../adr/0036-hosted-nuget-publication.md).
+
+The next console candidate adds a dedicated NuGet operator workflow, increasing
+the complete browser gate from 14 to 15 tests. It exercises restricted hosted
+creation, private client templates, original package/manifest bytes, exact-digest
+review, holds/delete/restore, grant revocation and named accessibility states on
+real PostgreSQL and Chromium. Focused `nuget` selection can repeat the journey
+five times with fresh databases on GitHub x86. Syntax/discovery passes locally;
+no new browser execution is claimed. Existing 14-test results retain their source
+and scope. See [development evidence](../../evidence/2026-11-03/nuget-browser-development.json).
+
+The dfc9381 hosted checkpoint accepts 14 exact-source jobs: main9, OCI2,
+upgrades2 and five-fresh repair1. It does not include a new library or fresh
+retention run. Both actual SDK10.0.403 client campaigns pass 406 total checks
+including new hosted NuGet. All eight safe summaries and native identities are
+retained in [the checkpoint](../../evidence/2026-11-03/github-dfc9381-checkpoint.json).
+No NuGet-specific Chromium result is present on that source; the next candidate
+adds it to the 15-workflow console and explicit focused five-fresh replay.
+
+The 9e6d980 candidate completes all 13 selected jobs: main9, OCI2, focused
+repair1 and focused NuGet1. Its full 15-workflow Chromium suite passes with zero
+unexpected/skipped/flaky results; five fresh NuGet and five fresh repair runs
+pass too. Both native PostgreSQL/race and SDK10.0.403 stock-client campaigns pass.
+Seven safe summaries and exact native identities are retained in
+[the checkpoint](../../evidence/2026-11-03/github-9e6d980-checkpoint.json). Earlier
+upgrade, retention and library observations keep their distinct candidate scope.
+
+The 189a6ae library campaign adds 3,025 owned version-order pairs against actual
+NuGet.Versioning.VersionRelease on both native Linux architectures. It keeps all
+existing version/ID/Nuspec/archive contracts. The updated PostgreSQL test checks
+1/2/10 numeric index order and native publication/event semantics. Local
+unit/race/fuzz/budget/cancellation checks pass; both actual SDK and updated database
+results now pass on that clean source. This prepares complete registration/search metadata;
+it does not replace those required product journeys.
+
+The exact 189a6ae source passes 15 jobs: main9, OCI2, controlled-upgrade2 and
+library2. Full x86 Chromium passes 15 workflows with zero unexpected/skipped/flaky
+results; both real PostgreSQL/race and stock-client campaigns pass. Nine safe
+summaries retain exact identities in [the checkpoint](../../evidence/2026-11-03/github-189a6ae-checkpoint.json).
+No fresh focused browser campaign is included; the five-fresh NuGet/repair
+observations remain on 9e6d980.
+
+The next library campaign compares 23 owned Nuspec documents against the actual
+SDK's `GetMetadataValue` for 17 supported scalar names on both native Linux
+architectures. It retains all earlier mandatory contracts and adds bounded
+mismatch evidence. Local Go tests and fuzzing pass; managed compilation and
+native scalar matching remain unverified. The reader never fetches URLs, opens
+declared paths, executes content or converts text into security authority.
+Complete typed metadata, registration/search and native unlisting remain required.
+
+The first b727f33 scalar campaign compiles and runs the actual managed fixture on
+both architectures, but fails case16: whitespace-only character-reference text
+was retained by Go and discarded by the SDK. Both original reports are retained
+in [the failure record](../../evidence/2026-11-03/nuget-b727f33-property-whitespace-failure.json).
+The repair keeps all23documents unchanged and adds local regression cases; a
+fresh native comparison is required before scalar compatibility is accepted.
+
+Both actual ed5c02e native SDK jobs now pass the unchanged23document scalar
+corpus and every earlier mandatory library contract. Exact clean helper/library/
+fixture identities are retained in [the scoped library checkpoint](../../evidence/2026-11-03/nuget-ed5c02e-checkpoint.json).
+Other workflow families are separately tracked; this library record is not an
+all-job acceptance.
+
+The next runtime campaign adds native NuGet unlist/relist. Both real PostgreSQL
+integration/race gates must execute the new non-skipping listing regression,
+including restricted grants, revoked API keys, holds, concurrent changes,
+tombstones and atomic event/outbox rollback. Both stock dotnet campaigns must
+run real delete/retry/reader-denial and fresh pinned dependency restores while
+unlisted, verify durable state across actual registry restart, then native HTTP
+POST relist and current-denial enforcement. Local unit/race stand-ins and tagged
+compilation do not count as database/client passes. Search exclusion and retained registration metadata with listed:false
+remain required product work and must be covered when those resources exist.
+
+The83ca290runtime campaign now passes all13selected jobs: main9/OCI2/upgrades2.
+Both actual PostgreSQL/race gates pass the new listing regression; both broader
+stock-client campaigns pass436checks, including real dotnet unlist/retry and
+fresh pinned restore across actual registry restart with durable listing/digest
+witnesses. Full x86Chromium15workflows pass0unexpected/skipped/flaky. Seven safe
+summaries and exact identities are retained in [the checkpoint](../../evidence/2026-11-03/github-83ca290-checkpoint.json).
+No new library or fresh focused browser campaign is included.
+
+The next actual SDK library campaign adds892owned dependency-range/candidate
+observations, comparing validity, lowercase normalized projections, min/max and
+inclusivity, floating behavior/text, candidate validity, interval membership and
+independent floating preference. Existing1129versions/11Nuspec/4archives/63516IDs/
+3025precedence pairs/23scalar documents stay mandatory. Input remains bounded to
+4096cases/2MiB; failures retain all mismatch indexes and32owned examples. Local
+build/unit/race/lint/fuzz and Go data-shape checks pass; C#compilation and actual
+native matching remain unverified. This is a prerequisite for complete typed
+metadata and registration/search, which remain required product work.
+
+Both actual e7c0419 native SDK jobs now pass all892range/candidate observations
+and every earlier mandatory contract. Exact identities are retained in [the
+scoped library checkpoint](../../evidence/2026-11-03/nuget-e7c0419-checkpoint.json).
+Other e7c0419 workflow families are separately tracked.
+
+Plan correction: search omits unlisted versions; registration retains permitted
+version/dependency metadata with listed:false, and flat pinned consumption
+continues. Earlier wording that implied both resources should hide them was
+incorrect. The [registration specification](https://learn.microsoft.com/en-us/nuget/api/registration-base-url-resource)
+and [search specification](https://learn.microsoft.com/en-us/nuget/api/search-query-service-resource)
+define the separate behavior. No implemented registration/search resource or
+accepted runtime result depended on the incorrect wording.
+
+The next native feed journeys must cover typed dependency/framework groups,
+original range declarations and their parsed floors, deterministic bounded
+projections for old and newly published packages, registration listing flags,
+search exclusion/pagination/current authorization, SemVer resource profiles and
+required gzip transport. Do not load every raw manifest to answer search or
+silently omit old packages lacking a new projection. Test actual native SDK
+consumption and search on both Linux architectures, including fresh pinned
+restores after unlist/relist and current policy/grant revocation. Full format,
+other clients/platforms and every original requirement remain required.
+
+The entiree7c0419campaign now passes15jobs: main9/OCI2/upgrades2/library2.
+Both actual native PostgreSQL/race and2x436stock-client campaigns, full15x86
+Chromium0bad,2x214OCI,2x15upgrade reports and all library contracts pass on that
+exact source. Nine safe summaries are retained in [the checkpoint](../../evidence/2026-11-03/github-e7c0419-checkpoint.json).
+
+The next actual SDK campaign adds49owned valid Nuspec documents and Go-projected
+dependency XML. Two actual SDK readers compare original/projected framework
+interpretation, IDs, range min/max/build metadata/inclusivity/floating state and
+asset flags. Packaging/Frameworks versions and hashes, original/projection corpus
+hashes and bounded mismatch evidence are retained. This verifies declaration
+selection and semantic transport, not an invented Go framework alias table. Go
+rejects malformed nonempty active ranges; the SDK default reader can widen them
+toAll, so the valid owned corpus does not claim those Go rejections are native.
+Shared literal-attribute normalization must preserve references, text/CDATA and
+original bytes. All earlier contracts and native source/unit/race/fuzz remain
+mandatory; managed compilation and actual49document matching are unverified.
+
+Both actual17ded1cSDK jobs compile and pass all49original/projected Nuspec
+semantic comparisons and all earlier mandatory contracts. Original/projection
+fixture hashes and native source/helper/Packaging/Frameworks identities are
+retained in [the scoped library checkpoint](../../evidence/2026-11-03/nuget-17ded1c-checkpoint.json).
+Other current workflow families remain separately tracked. This does not prove
+that simply copying the raw dependency list into registration JSON preserves
+client semantics: JSON feed interpretation, duplicate handling, complete typed
+metadata and actual client discovery/resolution must be tested separately.
+
+The next hosted discovery slice adds real registration and search HTTP routes,
+plus bounded administrator catalog rebuild batches. Actual Linux ARM64/x86
+PostgreSQL and integration-race jobs exercise visibility, numeric ordering,
+SemVer/prerelease filtering, old projection failures, rebuild preview/retry and
+full-outbox rollback. Existing stock-dotnet conformance also invokes native
+`dotnet package search` and an owned probe using the installed SDK's
+`PackageMetadataResource` against the real registry, including unlisted state
+and framework/dependency intervals before and after restart. No package payload
+executes; no remote package dependency is needed to compile the probe. Safe
+exports retain its binary and Protocol DLL hashes/version. The library workflow
+also checks the byte sorting key against all3,025actual SDK precedence pairs and
+adds four license-acceptance scalar cases, bringing that corpus to27documents.
+Local ARM unit/race/lint and bounded fuzz checks remain supporting checks only;
+new database/managed/client claims await their clean-source GitHub jobs. See
+[ADR0042](../adr/0042-nuget-discovery-catalog.md). Broader format, platform,
+production trust, failure and scale gates remain required.
+
+The first discovery source15d7828 passes14of16jobs but fails both actual
+stock-client search assertions (DEFECT.0085). Both native PostgreSQL integration
+and race stages pass; both actual SDK library jobs match all27scalar and
+3,025semantic/byte-key ordering cases plus every prior contract. Preserve
+[the exact failed campaign](../../evidence/2026-11-03/nuget-15d7828-search-failure.json)
+and [separate library proof](../../evidence/2026-11-03/nuget-15d7828-checkpoint.json).
+The official client's search-type table requires a beta alias that the original
+RC-only index omitted. The repair retains base/RC aliases, adds the recognized
+beta type and requires actual SDK service-index resolution before stock search.
+Its native replay is still unverified.
+
+The extended owned HTTP probe compares44original Nuspec documents read by the
+installed Packaging/Frameworks libraries against the same SDK's real HTTP
+registration reader. It covers group precedence, duplicate items/groups,
+floating floors/preferences, build metadata,21framework declarations, original
+UTF16 and license-acceptance values, then repeats after actual process restart.
+The standalone `*` case compares interval bounds only because the registration
+protocol prohibits that spelling and uses an equivalent nonfloating interval.
+All other floating preferences remain part of equality. No package is installed
+or executed by this corpus; broader stock restores stay mandatory. Safe exports
+retain the bounded corpus/observation hashes and mismatch indexes without
+arbitrary client output. Every case must remain visible after a failure; the
+corpus is never reduced to make the gate pass. New native semantics remain
+unverified until both actual GitHub architectures execute them.
+
+Actual f63bc9f SDK discovery and stock search now pass on both architectures,
+closing the scoped alias defect. The broader client campaign fails the new
+HTTP equality gate at the same duplicate-items case7of44on both architectures;
+all43other cases match. Keep
+[the original failure](../../evidence/2026-11-03/nuget-f63bc9f-metadata-failure.json).
+The next repair projects dependency sets before registration/catalog work and
+requires an explicit v1-to-v2 derived catalog rebuild for earlier packages.
+The library gate adds63,516actual runtime ordinal-key comparisons. The HTTP
+gate keeps all original44cases with the exact original hash and adds12Unicode,
+asset-flag and range-equivalence cases. Native56case restart equality and the
+new casing profile remain unverified; local unit/fuzz results cannot replace
+those actual SDK outcomes.
+
+## Focused operator replay placement
+
+Shared console controls and the console driver affect repair, retention and
+NuGet recovery. A push touching these selected surfaces now expands the focused
+browser workflow to three independent native x86 jobs: `repair`, `retention`
+and `nuget`. Each job repeats its selected journey five times using a fresh
+real PostgreSQL database each time. A manually dispatched run still selects
+only the requested journey. `fail-fast: false` preserves the other jobs' results
+if one fails; no `continue-on-error` converts a failure into acceptance. Each
+matrix entry uploads a separately named bounded safe summary. This follows
+[GitHub's matrix and failure-handling contract](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/run-job-variations).
+The matrix expansion and all five repetitions per journey pass on `09e641c`; see the exact checkpoint below.
+
+The NuGet operator test now exercises two real retained packages through
+single-package rebuild batches. It deliberately discards the browser's first
+response after the real server commits, then requires identical request bytes
+and key, the original replayed result, a later cursor with a new key, unchanged
+package/Nuspec bytes, explicit repeat-from-start and reader denial. Preview,
+unknown-outcome, confirmed-replay and next-batch states retain their Axe checks.
+The browser transport fault is a stand-in for response loss; PostgreSQL,
+authorization, transaction commit and replay are real. No local database or
+browser campaign is needed for this new native claim. Local checks cover build,
+types, deterministic embedded assets, unit/race stand-ins and workflow syntax.
+
+Preserve the distinction between the accepted `080c312` 15-job campaign and
+this later console/workflow change. Its nine unchanged safe summaries qualify
+56 metadata cases before/after restart and all earlier native gates; they do
+not qualify the new console. Path filters remain deliberate: the actual SDK
+library comparison runs when its code/fixture surfaces change, and otherwise
+its earlier exact-source evidence remains separate. Derive each candidate's
+expected job set from the actual triggered/authorized workflows; never relabel
+an absent or skipped lane as passing.
+
+## Native JVM client expansion
+
+A separate `jvm-clients.yml` lane now places Gradle 9.8.2 and Temurin
+21.0.13+9 publication/consumption on actual Linux x86 and ARM runners. The
+Gradle distribution is pinned by the official SHA-256 in `jvm-clients.json`;
+bootstrap downloads it only in an isolated GitHub-hosted runner. This Mac runs
+small Python stand-ins and syntax/build checks. No local Gradle distribution,
+JVM client campaign or PostgreSQL service is installed or started for this work.
+The JVM lane avoids unrelated npm, dotnet and OCI tooling installation.
+
+The real client must publish resource-only JAR/POM/module data with a scoped
+writer, resolve exact transitive bytes through Gradle and Maven metadata, obey
+review and tenant boundaries, traverse proxy/groups and dynamic ranges, recover
+from current cached-content denial and actual registry restart, observe two
+snapshot publications, and reject revoked writer/reader credentials. Every
+consumer has a fresh client cache and one declared cratectl source. Uploaded
+packages contain no build scripts, classes or plugins; only owned fixture build
+rules and bundled Gradle plugins run. All eight ordered stages and all 24
+fixture hashes are mandatory for a passing safe summary. The first profile
+passes 123 checks on x86 at `7ea5ee7`; ARM stops at Java setup. The exact
+[18-job checkpoint](../../evidence/2026-11-03/github-7ea5ee7-checkpoint.json)
+retains 17 successes and the original failure. No ARM client pass is inferred.
+
+Owned client process groups have time/output limits. Cleanup stops children
+that remain in the group, including a child that ignores termination. A timed-out publication is unconfirmed. Safe
+CI export retains fixed diagnostic codes and exact Gradle/JDK/fixture hashes;
+it rejects arbitrary client output and a success-shaped partial profile. A
+local stand-in regression checks cancellation of an owned child that ignores
+SIGTERM, output limits and nonzero exits. Separate regressions reject unknown
+conformance profiles/flags before any database access.
+
+Ivy and SBT remain independent required clients, alongside full variant/build,
+TLS, native platform, lifecycle, migration, fault and scale coverage. Their
+absence is recorded rather than inferred from Maven or Gradle results.
+
+The prior `09e641c` campaign now passes all 16 actually observed jobs: main 9,
+OCI 2, upgrades 2 and focused browser 3. Each focused entry passes five fresh
+real PostgreSQL/Chromium repetitions; full x86 Chromium passes all 15 workflows.
+Ten unchanged summaries retain exact identities in
+[the checkpoint](../../evidence/2026-11-03/github-09e641c-checkpoint.json).
+The OCI run was initially unobserved and later confirmed through the same
+exact-commit listing; it was not restarted. Earlier library evidence remains
+on its own exact `080c312` source. This milestone predates the new JVM profile.
+
+
+The ARM setup failure is an exact build-metadata mismatch: setup-java v5
+compares `21.0.13+9` against the advertised `21.0.13+9.0.LTS`. The repair
+requests the complete advertised selector on both native runners and retains
+the independent exact `JAVA_RUNTIME_VERSION` check before client work. See
+the [v5 selector](https://github.com/actions/setup-java/blob/v5/src/util.ts)
+and [Temurin installer](https://github.com/actions/setup-java/blob/v5/src/distributions/temurin/installer.ts).
+A new successful run must identify its own source and binary bytes; a retry
+cannot rewrite the original failure.
+
+The `publication-wire-v2` evidence closes a separate coverage gap. The prior
+24 hashes identify publisher-generated output; native consumers compare exact
+JAR bytes but do not independently read back raw POM/module bytes. Every new
+publication must match retained paths, digests and sizes, then independently
+read all three representations over HTTP. Snapshot references must share the
+JAR timestamp/build, and publishing the next snapshot must preserve the old
+files. Tenant B uses its own inventory. Safe exports require all 24 publisher,
+reference and wire digests to agree; an old summary cannot satisfy this profile.
+The original eight stages and client expectations remain mandatory.
+
+Next JVM offload work remains Ivy/SBT on actual native hosts, richer variants,
+classifiers/parents, TLS/private trust, interrupted publication and recovery.
+Use small local stand-ins for mapping/privacy failures and GitHub-hosted real
+PostgreSQL/clients for protocol proof. Preserve original failing cases and
+partial evidence; do not rerun unrelated completed campaigns merely because
+a prior observation expired. Full format/platform/lifecycle/security, storage,
+packaging, independent-host scale and every later GOAL stage remain required.
+
+
+Both actual native Gradle jobs now pass on clean `9985847`: 199 checks each,
+all eight original stages and 24 matching publisher/reference/HTTP digests per
+architecture. The original ARM setup defect is replayed and the first snapshot
+is read back again after the second publication. See the
+[exact JVM checkpoint](../../evidence/2026-11-04/gradle-9985847-checkpoint.json).
+This accepts the named profile only; current main/upgrade results are separate.
+
+The [durable JVM client plan](jvm-client-plan.json) records the next independent
+Ant/Ivy and SBT work, reviewed official versions/checksums, required cases and
+placement. Ivy's `ibiblio` resolver consumes Maven POMs but cannot publish;
+normal Maven-compatible publication uses its HTTP URL resolver with generated
+POMs. A fresh native Ant/Ivy profile must exercise both paths, real dependency
+bytes and the existing policy/tenant/recovery invariants. SBT needs separate
+2.x and supported 1.x coverage, controlled tool bootstrap and fresh project
+artifact caches; a warmed tool cache must not supply the owned test artifacts.
+These are planned implementations, not client passes.
+
+POSIX cleanup currently covers the owned process group, including a tested
+child that ignores SIGTERM. A process explicitly detaching into a new session
+is outside that guarantee. Qualify client fork settings and native runner
+containment before claiming a bound on every detached descendant. Neither a
+successful client run nor the job timeout proves that stronger property.
+
+
+The initial Ant/Ivy `maven-release-v1` implementation now adds two independent
+native jobs to `jvm-clients.yml`. It installs only hash-verified official Ant
+1.10.18 and Ivy 2.6.0 distributions on the runner. It uses real restricted
+PostgreSQL, a scoped writer, the native URL publisher, generated POMs and fresh
+ibiblio consumers. All seven stages and twelve publisher/reference/HTTP byte
+bindings are mandatory. Publication, review, tenant collisions, two releases,
+proxy/groups/range, cached policy, restart and credential revocation must run
+on both architectures; local fixture/evidence checks cannot qualify them.
+The [development record](../../evidence/2026-11-04/ivy-client-development.json)
+is explicitly unverified for native client behavior. No local Ant/Ivy runtime
+was downloaded or executed. Snapshots, classifiers, parent POMs, richer Ivy
+semantics and every later requirement remain open; SBT has a separate plan.
+
+
+Executable tool pins live in `jvm-clients.json`; narrative status and remaining
+cases live in `jvm-client-plan.json`. Native jobs watch the executable pins and
+client/workflow code. A prose or checkpoint update alone must not cancel and
+restart an otherwise unchanged client campaign. Each future pin change still
+requires official metadata review, exact digest checks and native replay.
+
+
+The complete observed `9985847` campaign now passes all 15 jobs: main 9,
+Gradle 2, OCI 2 and controlled upgrades 2. Its nine unchanged safe summaries
+validate both native PostgreSQL/race and 645 broader-client checks, all 56
+NuGet HTTP/restart cases, 199 Gradle and 214 OCI checks per architecture,
+15 full x86 Chromium workflows with no unexpected/skipped/flaky tests, and
+15 upgrade reports over ten historical pins on each architecture. See the
+[whole observed campaign](../../evidence/2026-11-04/github-9985847-checkpoint.json).
+No focused jobs or Ant/Ivy jobs ran on that source. The next Ant/Ivy campaign
+must qualify its own source; earlier passes cannot supply that missing proof.
+
+
+The first Ant/Ivy campaign at `600466d` fails the exact Ant runtime identity
+assertion on both architectures after eight checks, before any completed
+stage or publication. Both Gradle lanes still pass 199 checks. Keep the
+[original failures and four unchanged summaries](../../evidence/2026-11-04/ivy-600466d-identity-failure.json).
+The official Ant shell loads configuration and may inherit a different Ant
+home before selecting its libraries; the runner inventory contains a different
+Ant version. The original safe report did not include that actual banner, so
+this launcher-selection diagnosis is an inference pending a read-only native
+legacy-version observation.
+
+The repair executes the pinned Java and official Ant bootstrap JAR directly,
+with explicit Ant home, no user library or inherited classpath, and sanitized
+Java/Ant injection options. A Python stand-in with conflicting host paths and
+options proves the selected executable, bootstrap and environment contract.
+The native replay must retain the exact version assertion, record the actual
+runtime and bootstrap hash, and complete every original case. The legacy
+version is an observation only: future runner images need not preserve an old
+host version. No package/client expectation is removed to pass the gate.

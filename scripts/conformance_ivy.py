@@ -17,6 +17,17 @@ GROUP = 'dev.cratectl.ivyproof'
 GROUP_PATH = GROUP.replace('.', '/')
 
 
+def ant_invocation(ant_home, ivy, jdk, environment):
+    """Invoke the official bootstrap JAR without host shell/config substitution."""
+    clean = {k:v for k,v in environment.items() if k not in {
+        'ANT_ARGS','ANT_OPTS','JAVACMD','JAVA_OPTS','JAVA_TOOL_OPTIONS',
+        'JDK_JAVA_OPTIONS','_JAVA_OPTIONS','CLASSPATH','CLASSPATH_OVERRIDE'}}
+    clean.update(ANT_HOME=str(ant_home), JAVA_HOME=str(jdk))
+    return [jdk / 'bin/java', '-Xmx512m', '-XX:MaxMetaspaceSize=384m', '-XX:ActiveProcessorCount=2',
+            '-Dant.home=' + str(ant_home), '-classpath', ant_home / 'lib/ant-launcher.jar',
+            'org.apache.tools.ant.launch.Launcher', '-nouserlib', '-noclasspath', '-lib', ivy, '-noinput'], clean
+
+
 def descriptor(artifact, version, dependency=None, publish=True):
     root = XML.Element('ivy-module', version='2.0')
     XML.SubElement(root, 'info', organisation=GROUP, module=artifact, revision=version, status='release')
@@ -58,6 +69,9 @@ def hosted(h):
                 'java_release_sha256': hashlib.sha256(release_bytes).hexdigest(),
                 'ivy_launcher_sha256': hashlib.sha256(ivy.read_bytes()).hexdigest(),
                 'ant_launcher_sha256': hashlib.sha256(ant.read_bytes()).hexdigest(),
+                'ant_bootstrap_sha256': hashlib.sha256((ant.parent.parent / 'lib/ant-launcher.jar').read_bytes()).hexdigest(),
+                'ant_runtime_version': None,
+                'ant_legacy_runtime_version': None,
                 'ant_library_sha256': hashlib.sha256((ant.parent.parent / 'lib/ant.jar').read_bytes()).hexdigest(),
                 'fixture_source_sha256': hashlib.sha256(b''.join((source / n).read_bytes() for n in ['build.xml', 'ivysettings.xml'])).hexdigest(),
                 'fixture_sha256': {}, 'reference_sha256': {}, 'wire_sha256': {}, 'completed': [], 'phase': 'client_identity', 'diagnostics': []}
@@ -71,8 +85,8 @@ def hosted(h):
         return directory
 
     def command(directory, target, token='reader', repo='ivy-hosted', read_repo=None, extra=(), fail=False):
-        environment = dict(h.env, JAVA_HOME=str(jdk), ANT_OPTS='-Xmx512m -XX:MaxMetaspaceSize=384m')
-        argv = [ant, '-noinput', '-lib', ivy, '-DivyCache=' + str(directory / 'cache'),
+        argv, environment = ant_invocation(ant.parent.parent, ivy, jdk, h.env)
+        argv += ['-DivyCache=' + str(directory / 'cache'),
                 '-Divy.default.ivy.user.dir=' + str(directory / 'ivy-home'),
                 '-DcredentialFile=' + str(h.PRIVATE / (token + '.token')),
                 '-DrepositoryURL=' + h.BASE + '/r/' + (read_repo or repo) + '/',
@@ -86,8 +100,22 @@ def hosted(h):
         return output
 
     identity = project('identity')
-    check('actual Ant version matches the pinned client', ('Apache Ant(TM) version ' + pin['ant_version']) in command(identity, '-version'))
-    code, output = run_owned_client([jdk / 'bin/java', '-Xmx256m', '-jar', ivy, '-version'], identity, dict(h.env))
+    # Read-only replay of the original launcher selection. A future runner may
+    # ship the same Ant version, so this observation never substitutes for the
+    # pinned bootstrap assertion below or forces a particular host version.
+    legacy_environment = dict(h.env, JAVA_HOME=str(jdk), ANT_OPTS='-Xmx512m -XX:MaxMetaspaceSize=384m')
+    legacy_code, legacy_output = run_owned_client([ant, '-noinput', '-lib', ivy, '-version'], identity, legacy_environment)
+    legacy_observed = re.search(r'^Apache Ant\(TM\) version (\d{1,2}\.\d{1,3}\.\d{1,3})(?:\s|$)', legacy_output, re.M)
+    if legacy_code == 0 and legacy_observed:
+        contract['ant_legacy_runtime_version'] = legacy_observed.group(1)
+    ant_version = command(identity, '-version')
+    observed = re.search(r'^Apache Ant\(TM\) version (\d{1,2}\.\d{1,3}\.\d{1,3})(?:\s|$)', ant_version, re.M)
+    contract['ant_runtime_version'] = observed.group(1) if observed else None
+    if contract['ant_runtime_version'] != pin['ant_version']:
+        contract['diagnostics'] = ['ant_identity']
+    check('actual Ant version matches the pinned client', contract['ant_runtime_version'] == pin['ant_version'])
+    _, java_environment = ant_invocation(ant.parent.parent, ivy, jdk, h.env)
+    code, output = run_owned_client([jdk / 'bin/java', '-Xmx256m', '-jar', ivy, '-version'], identity, java_environment)
     check('actual Ivy version matches the pinned client', code == 0 and ('Apache Ivy ' + pin['version']) in output)
     contract['completed'].append('client_identity')
     h.repository('ivy-hosted', 'maven', review=True, access='restricted')

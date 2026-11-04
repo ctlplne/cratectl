@@ -3,9 +3,9 @@ name: Native JVM clients
 on:
   push:
     branches: [main]
-    paths: ['cmd/**', 'internal/**', 'go.mod', 'go.sum', 'Makefile', 'scripts/conformance.py', 'scripts/conformance_gradle.py', 'scripts/conformance_ivy.py', 'scripts/fixtures/ivy-client/**', 'scripts/bounded_client.py', 'scripts/fixtures/gradle-client/**', 'scripts/ci/**', 'docs/qualification/jvm-clients.json', '.github/workflows/jvm-clients.yml']
+    paths: ['cmd/**', 'internal/**', 'go.mod', 'go.sum', 'Makefile', 'scripts/conformance.py', 'scripts/conformance_gradle.py', 'scripts/conformance_ivy.py', 'scripts/fixtures/ivy-client/**', 'scripts/bounded_client.py', 'scripts/ci_native_diagnostics.py', 'scripts/oci_client_contract.py', 'scripts/fixtures/gradle-client/**', 'scripts/ci/**', 'docs/qualification/jvm-clients.json', '.github/workflows/jvm-clients.yml']
   pull_request:
-    paths: ['cmd/**', 'internal/**', 'go.mod', 'go.sum', 'Makefile', 'scripts/conformance.py', 'scripts/conformance_gradle.py', 'scripts/conformance_ivy.py', 'scripts/fixtures/ivy-client/**', 'scripts/bounded_client.py', 'scripts/fixtures/gradle-client/**', 'scripts/ci/**', 'docs/qualification/jvm-clients.json', '.github/workflows/jvm-clients.yml']
+    paths: ['cmd/**', 'internal/**', 'go.mod', 'go.sum', 'Makefile', 'scripts/conformance.py', 'scripts/conformance_gradle.py', 'scripts/conformance_ivy.py', 'scripts/fixtures/ivy-client/**', 'scripts/bounded_client.py', 'scripts/ci_native_diagnostics.py', 'scripts/oci_client_contract.py', 'scripts/fixtures/gradle-client/**', 'scripts/ci/**', 'docs/qualification/jvm-clients.json', '.github/workflows/jvm-clients.yml']
   workflow_dispatch:
 
 permissions:
@@ -13,7 +13,8 @@ permissions:
 
 concurrency:
   group: jvm-clients-${{ github.ref }}
-  cancel-in-progress: true
+  # Preserve started qualification evidence on main; supersede PR work.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   gradle:
@@ -70,6 +71,18 @@ jobs:
           bash scripts/ci/install_gradle.sh
       - name: Stock Gradle publication, module/POM resolution, policy and recovery
         run: python3 scripts/conformance.py gradle --require-clean-build
+      - name: Encrypt bounded JVM failure observations for owner diagnosis
+        if: failure()
+        run: python3 scripts/ci_native_diagnostics.py
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: encrypted-jvm-diagnostics-${{ github.job }}-${{ matrix.arch }}
+          path: |
+            .cache/ci-native-diagnostics.cms
+            .cache/ci-native-diagnostics.json
+          if-no-files-found: error
+          retention-days: 7
       - name: Prepare bounded native evidence summary
         if: always()
         run: python3 scripts/ci/evidence_summary.py
@@ -135,6 +148,18 @@ jobs:
           bash scripts/ci/install_ivy.sh
       - name: Stock Ivy publication, transitive resolution, policy and recovery
         run: python3 scripts/conformance.py ivy --require-clean-build
+      - name: Encrypt bounded JVM failure observations for owner diagnosis
+        if: failure()
+        run: python3 scripts/ci_native_diagnostics.py
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: encrypted-jvm-diagnostics-${{ github.job }}-${{ matrix.arch }}
+          path: |
+            .cache/ci-native-diagnostics.cms
+            .cache/ci-native-diagnostics.json
+          if-no-files-found: error
+          retention-days: 7
       - name: Prepare bounded native evidence summary
         if: always()
         run: python3 scripts/ci/evidence_summary.py

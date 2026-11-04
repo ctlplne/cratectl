@@ -28,7 +28,8 @@ permissions:
 
 concurrency:
   group: browser-replay-${{ github.ref }}-${{ inputs.workflow || 'all' }}
-  cancel-in-progress: true
+  # Preserve started qualification evidence on main; supersede PR work.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   repair:

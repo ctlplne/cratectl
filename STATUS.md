@@ -13,15 +13,21 @@ Nine unchanged safe summaries and the exact scopes are accepted in
 checks per architecture, full x86 Chromium passes 15 workflows with no bad or
 skipped tests, and both upgrade lanes pass 15 reports over ten historical pins.
 
-The next independent Ant/Ivy and SBT workflows are specified in
-`docs/qualification/jvm-client-plan.json`, with reviewed client versions,
-official Ant/Ivy distribution checksums, actual native-host placement and
-required cases. The Ant/Ivy release profile is now implemented with local build/lint and
-configuration/privacy regressions passing; native results remain unverified.
-See `evidence/2026-11-04/ivy-client-development.json`. SBT and the remaining
-mandatory Ivy cases are still open.
-The complete 450 capabilities / 41 families and every later GOAL stage remain
-committed; all broad readiness verdicts remain negative.
+The first Ant/Ivy release campaign at `600466d` fails its exact Ant runtime
+identity assertion on both architectures after eight checks, before a complete
+stage or publication. The original failures and both current-source Gradle
+199-check passes are retained in
+`evidence/2026-11-04/ivy-600466d-identity-failure.json`. The repair uses pinned
+Java and the Ant bootstrap JAR directly, preventing host shell configuration
+or an inherited Ant home/classpath from selecting a different runtime. Local
+conflicting-environment and evidence regressions pass; native replay remains
+unverified. See `evidence/2026-11-04/ivy-launcher-repair-development.json`.
+
+All original seven Ivy stages and twelve byte representations remain mandatory.
+The broader Ivy and SBT plan stays in `docs/qualification/jvm-client-plan.json`.
+All 450 capabilities / 41 families and every later GOAL stage remain committed;
+all broad readiness verdicts remain negative. The latest accepted full observed
+campaign remains the separate `9985847` checkpoint above.
 
 Owner resumed the complete `GOAL.md` scope on 2026-11-02 and reaffirmed that
 both author and committer must be `imfeelingtheagi`. The current work finishes
