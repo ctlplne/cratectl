@@ -17,6 +17,26 @@ import (
 
 var errMavenMetadata = errors.New("invalid Maven metadata or coordinate binding")
 
+func splitMavenChecksumPath(p string) (string, string) {
+	extension := path.Ext(p)
+	algorithm := ""
+	switch extension {
+	case ".sha1":
+		algorithm = "sha1"
+	case ".md5":
+		algorithm = "md5"
+	case ".sha256", ".SHA-256":
+		algorithm = "sha256"
+	case ".sha512", ".SHA-512":
+		algorithm = "sha512"
+	case ".sha384", ".SHA-384":
+		algorithm = "sha384"
+	default:
+		return p, ""
+	}
+	return strings.TrimSuffix(p, extension), algorithm
+}
+
 type mavenMetadata struct {
 	XMLName    xml.Name         `xml:"metadata"`
 	Model      string           `xml:"modelVersion,attr,omitempty"`

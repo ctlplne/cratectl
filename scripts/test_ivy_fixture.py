@@ -55,9 +55,12 @@ class IvyFixture(unittest.TestCase):
         self.assertEqual(publish.get('publishivy'),'false')
         self.assertEqual(publish.get('haltonmissing'),'true')
         self.assertEqual(root.find('.//ivy:makepom',ns).get('artifactPackaging'),'jar')
+        self.assertEqual(root.find("property[@name='checksumAlgorithms']").get('value'),'SHA-256,sha1,md5')
         settings = XML.parse(ROOT/'scripts/fixtures/ivy-client/ivysettings.xml').getroot()
         self.assertEqual(settings.find('credentials').get('passwd'),'${registry.password}')
         self.assertEqual(settings.find('resolvers/ibiblio').get('root'),'${repositoryURL}')
+        for resolver in settings.find('resolvers'):
+            self.assertEqual(resolver.get('checksums'),'${checksumAlgorithms}')
         self.assertTrue(settings.find('resolvers/url/artifact').get('pattern').startswith('${publicationURL}'))
         self.assertEqual(len(settings.findall('resolvers/ibiblio')),1)
 

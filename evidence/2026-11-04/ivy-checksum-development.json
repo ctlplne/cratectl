@@ -1,0 +1,107 @@
+{
+  "source_parent": "419861c46a9052a98647aa834dde06e00e25840f",
+  "source_dirty": true,
+  "observed_at": "2026-11-04T03:51:01.847578+00:00",
+  "status": "implemented; native PostgreSQL/client replay unverified",
+  "native_failure": "evidence/2026-11-04/ivy-419861c-publication-failure.json",
+  "initial_local_regression": {
+    "status": "failed before repair",
+    "cases": [
+      "TestMavenChecksumAliasesBindTheExactParent rejects documented Ivy aliases/sha384",
+      "TestCompatibilitySHA384Vector finds unsupported algorithm"
+    ],
+    "log_sha256": "aba2b39b398488474c931e5c4ce9029e1a2df20b7a6f01efe54c3a016c25a758",
+    "scope": "Pure-parser refactoring preserves original four lowercase suffixes before the failing assertions. This does not claim an observed customer/API exploit."
+  },
+  "changes": [
+    "Use documented Ivy SHA-256 spelling; retain SHA-1/MD5. Add fresh SHA-384/SHA-512 native consumers and direct checksum HTTP denial/revocation checks.",
+    "Canonicalize only documented suffixes through the existing parent-derived checksum authorization/policy/tenant path; leave unrelated artifact paths unchanged.",
+    "Add SHA-384 in internal/crypto and transactional metadata checksum receipts alongside the existing algorithms; SHA-256 remains blob identity.",
+    "Retain legacy opaque sidecar bytes/inventory while checksum URLs derive from current parent; no separate newly published checksum object.",
+    "Require all original7stages/12publisher-reference-wireidentities and the3ordered native SHA-2 consumer observations in safe passing evidence."
+  ],
+  "checks": {
+    "make_build": "passed; .cache/ivy-checksum-build",
+    "make_test": "passed on native local ARM with owned stand-ins",
+    "make_race": "passed on native local ARM with owned stand-ins",
+    "make_lint": "passed",
+    "focused_regressions": "Parser/unknown-path/fuzz seeds and standard SHA-384 abc streaming vector pass; fixture3/evidence4/exporter10 tests pass",
+    "integration": "Compiled only with -tags=integration -run ^$; no local PostgreSQL run and no integration pass claimed. Native GitHub must run new parent policy/review/grant/tenant/conditional/legacy-sidecar and delayed/atomic receipt cases. Metadata aliases also hash the exact synthesized response and recheck policy on conditional reads; failed metadata publication must leave no SHA-384 receipt."
+  },
+  "check_logs": [
+    {
+      "path": ".cache/ivy-checksum-build.log",
+      "sha256": "0ebdd6fc66ac356fc36549332e7c34fe8edd5af1b4b478190129ed6a3a9100cd"
+    },
+    {
+      "path": ".cache/ivy-checksum-test.log",
+      "sha256": "6984fb12763ee6c60f1dd8ed2bc785b898d1b65e3ebf4265196da3f8a00a824d"
+    },
+    {
+      "path": ".cache/ivy-checksum-race.log",
+      "sha256": "4a22f9f16d166b95e55f100e2915cea3079c453457322cdac9b658e3e9abb83a"
+    },
+    {
+      "path": ".cache/ivy-checksum-final-lint.log",
+      "sha256": "a4202f85676f1ea70f834d8c8c1831a7f5d8d7672763611613e108d3bd4404a2"
+    }
+  ],
+  "files": [
+    {
+      "path": "internal/crypto/crypto.go",
+      "sha256": "8aca7dc7f1061dc6638cde791640ab298096f37a838a8d8f830dd5b1a2528d51"
+    },
+    {
+      "path": "internal/crypto/compatibility_hash_test.go",
+      "sha256": "49ddcc0cd8d29385371d111b7be3e2e7523fe3d585fb8dbe1a668e12534c55be"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "676b190706ed4e18f4d23fb386186c147d16cddf7fe423887195955e9325558d"
+    },
+    {
+      "path": "internal/server/maven_metadata.go",
+      "sha256": "77a73679176517ed6cf35f3106585de3e8746ecd1b6dbff3d814e1ca3dac8c4f"
+    },
+    {
+      "path": "internal/server/maven_checksum_test.go",
+      "sha256": "87b90e7000c63abcc04dff007ebcd94a712fd79f024944a5c7ba834599372b08"
+    },
+    {
+      "path": "internal/server/maven_checksum_integration_test.go",
+      "sha256": "d1703be4c3fada45e7aedefd73d0e4d2fe52a6d40b33203feb08571b6941e4e1"
+    },
+    {
+      "path": "internal/server/maven_integration_test.go",
+      "sha256": "3811b9115fc752ecbce67aa834c9b53f6d1731f90c8531877bc1ccb34b3685e8"
+    },
+    {
+      "path": "scripts/conformance_ivy.py",
+      "sha256": "5dacf7c8b34494ff9d1940ab422e5fe9b0d1af765c73d1d7e0de6182e3cdcaf1"
+    },
+    {
+      "path": "scripts/ci/ivy_evidence.py",
+      "sha256": "fca56722f4c26cb562c6d8af4d66adcfc63ebf1e532f9094403f674e5653e32a"
+    },
+    {
+      "path": "scripts/ci/test_ivy_evidence.py",
+      "sha256": "b743037a78a7ac9b545072cddb51298b6bea71c6f16e8a4aa13d0f19f9ca14d0"
+    },
+    {
+      "path": "scripts/test_ivy_fixture.py",
+      "sha256": "6b3316d896daa82ccebbcd020ac45d26ad46720863479cd93af2329cd2cb1cd0"
+    },
+    {
+      "path": "scripts/fixtures/ivy-client/build.xml",
+      "sha256": "c2d991b366abe0373687e15249b4ee7eac0150d2c735e9d0158ee9466f59b126"
+    },
+    {
+      "path": "scripts/fixtures/ivy-client/ivysettings.xml",
+      "sha256": "7032a02c457941f89c68968b9cc5f3d44535df867a23a305678965e6b337ffc7"
+    }
+  ],
+  "limits": [
+    "No complete Ivy release profile, native checksum/API replay, broader Ivy/SBT/client/platform/TLS/fault/lifecycle/migration/scale or full GOAL pass.",
+    "No schema migration, primary service/data/binary switch, sibling/customer or release/package publication change. All450capabilities/41families and later stages remain committed; broad readiness false."
+  ]
+}

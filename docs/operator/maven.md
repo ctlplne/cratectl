@@ -48,12 +48,12 @@ reading and combining stored bytes. A changed snapshot is retried at most three
 times. A group can require stronger review. Review-required discovery includes
 only known approved POMs/mappings; an uncached upstream catalog entry is not an
 approval. Every actual package request still checks its exact digest policy.
-Current metadata ETags and SHA-256/SHA-512/SHA-1/MD5 sidecars describe the exact
+Current metadata ETags and SHA-256/SHA-384/SHA-512/SHA-1/MD5 sidecars describe the exact
 synthesized response; policy checks also precede conditional/HEAD/range replies.
 SHA-1/MD5 exist only for Maven compatibility, not as the security identity.
 
 Metadata checksum uploads validate bytes that this actor actually published to
-this repository/path. Four durable checksum receipts commit with the metadata
+this repository/path. Five durable checksum receipts commit with the metadata
 reference, event and job intent in the existing forced-RLS mutation table. This
 allows a delayed publisher sidecar after another publisher replaces the pointer.
 It does not change the current download checksum. Unknown checksums and receipts
@@ -74,9 +74,27 @@ large-directory/multi-host performance, migration or release readiness. These
 remain required in the format and qualification ledgers.
 
 The separate [Gradle client profile](gradle.md) now implements native publication,
-module/POM resolution and recovery cases for GitHub execution. Its first native
-result is pending; the existing Maven evidence remains separate.
+module/POM resolution and recovery cases for GitHub execution. Its named v2 profile passes on both native Linux architectures; the existing
+Maven evidence remains separate. The [Ant/Ivy profile](ivy.md) has passed its
+repaired client identity gate, but publication and the remaining stages still
+need native replay after checksum configuration/service changes.
 
 Protocol references: [Apache metadata](https://maven.apache.org/repositories/metadata.html),
 [metadata model](https://maven.apache.org/ref/3-LATEST/maven-repository-metadata/repository-metadata.html)
 and [layout](https://maven.apache.org/repositories/layout.html).
+
+
+Ivy names its stronger algorithms `SHA-256`, `SHA-384` and `SHA-512` and uses
+those exact suffixes in checksum URLs. Maven repositories normalize these to
+the same parent-derived checksum path as `.sha256`, `.sha384` and `.sha512`.
+GET/HEAD, conditional responses, publisher checksum validation and metadata
+receipts use current parent permissions, policy and tenant scope. A checksum
+PUT validates the parent bytes; it does not create a separately approved object.
+SHA-384 is a compatibility checksum; SHA-256 remains the immutable blob identity.
+
+An older opaque reference under one of those checksum names remains in storage
+and inventory for deliberate operator reconciliation. The native checksum URL
+now derives from the current parent, even if that old sidecar has its own
+allowed decision. No old bytes are deleted by this change. The new alias,
+legacy-sidecar and SHA-384 receipt regressions are implemented but await real
+PostgreSQL/native-client qualification on the next source.

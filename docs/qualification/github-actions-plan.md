@@ -23,15 +23,23 @@ reports over ten historical pins per architecture. No focused or Ant/Ivy job
 ran on that source. Independent focused and library evidence stays bound to
 its own earlier sources; see [the history](github-actions-history.md).
 
-The first `600466d` Ant/Ivy jobs fail the Ant identity assertion on both native
-architectures after eight checks, before a completed stage or publication.
-Both Gradle jobs still pass 199 checks. Keep the
-[original failures and summaries](../../evidence/2026-11-04/ivy-600466d-identity-failure.json).
-The repair binds the explicit Java executable, Ant bootstrap JAR/home,
-isolated classpath and actual runtime version. The original exact version and
-every client case remain mandatory. Native replay is unverified; it must
-observe the legacy launcher version before confirming the launcher-selection
-diagnosis. A downloaded library hash alone does not prove that a shell loaded it.
+The `600466d` campaign finishes 18 of 20 jobs successfully; both first Ant/Ivy
+identity assertions fail. Keep the
+[complete observed checkpoint](../../evidence/2026-11-04/github-600466d-checkpoint.json).
+On `419861c`, both native jobs confirm legacy Ant 1.10.14 and the repaired
+pinned bootstrap/runtime 1.10.18. First publication then fails the fixture's
+unsupported `sha256` algorithm spelling. The
+[exact JVM failures](../../evidence/2026-11-04/ivy-419861c-publication-failure.json)
+retain four unchanged summaries and two authenticated diagnostic metadata
+files; raw content stays private. No complete native Ivy pass is established.
+
+The repair uses documented `SHA-256`, adds parent-derived server support for
+Ivy's `.SHA-256`/`.SHA-384`/`.SHA-512` spellings, and keeps every original case.
+It adds fresh native consumers for each stronger algorithm and direct checksum
+policy/revocation observations. Real PostgreSQL regressions must prove current
+review, conditional policy/grants, tenant collisions, old opaque sidecars and
+actor/repository-scoped atomic metadata receipts. Local source/stand-in checks
+pass; the new API/client behavior still needs native qualification.
 
 All broad readiness verdicts, complete security and packaging remain negative.
 `make security` and `make packaging` continue to fail with their unfinished
@@ -47,7 +55,7 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 | `ci.yml`: scoped security / 1 | Ubuntu x86 | Pinned source/binary analysis, full reachable Git history secret scan and synthetic rule regressions. 30-minute job. Current324-case named proof is separate from full security/feed/image coverage. |
 | `ci.yml`: PostgreSQL and stock clients / 2 | Both native Linux architectures; real PostgreSQL16.15 | Integration/race, bounded timing, durable jobs/leases, integrity and baseline client/recovery journeys; 120-minute job. Full Chromium suite only on x86. ARM browser placement is skipped and never counted as passing. |
 | `jvm-clients.yml`: Gradle / 2 | Both native Linux architectures; real PostgreSQL | Gradle9.8.2, exact JDK21 build, eight stages and24 publisher/reference/raw-HTTP digests. 60-minute job. Named v2 profile passes; broader JVM remains open. |
-| `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0, exact JDK, seven stages and12 JAR/POM byte bindings. 60-minute job. Identity repair and all client behavior require native replay. |
+| `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0, exact JDK, seven stages,12 JAR/POM byte bindings and three SHA-2 consumer observations. 60-minute job. Identity repair passes; publication/checksum/API behavior still needs native replay. |
 | `nuget-contract.yml`: libraries / 2 | Both native Linux architectures and actual SDK10.0.403 libraries | Dense version, archive, casing, dependency and framework differential contracts; 20-minute job. Does not replace actual NuGet HTTP/restore/restart proof. |
 | `oci-clients.yml`: native clients / 2 | Both native Linux architectures; Docker, Podman, Helm, real PostgreSQL | Actual publication/consumption and policy/tenant/recovery cases with inert owned data; 45-minute job. Do not execute the uploaded image. External-provider interoperability is separate. |
 | `browser-repair.yml`: focused / 3 on relevant pushes | Native x86 Chromium; five fresh PostgreSQL databases per selected journey | Repair, retention and NuGet each repeat five complete journeys; 45-minute job. Manual dispatch selects one. Stop on failure; no retries/skips count as acceptance. |

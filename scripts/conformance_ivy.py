@@ -75,6 +75,7 @@ def hosted(h):
                 'ant_library_sha256': hashlib.sha256((ant.parent.parent / 'lib/ant.jar').read_bytes()).hexdigest(),
                 'fixture_source_sha256': hashlib.sha256(b''.join((source / n).read_bytes() for n in ['build.xml', 'ivysettings.xml'])).hexdigest(),
                 'fixture_sha256': {}, 'reference_sha256': {}, 'wire_sha256': {}, 'completed': [], 'phase': 'client_identity', 'diagnostics': []}
+    contract['checksum_clients_completed'] = []
     h.result['ivy_contract'] = contract
     work = h.PRIVATE / 'ivy'; work.mkdir(mode=0o700)
 
@@ -84,9 +85,10 @@ def hosted(h):
             shutil.copy2(source / name, directory / name)
         return directory
 
-    def command(directory, target, token='reader', repo='ivy-hosted', read_repo=None, extra=(), fail=False):
+    def command(directory, target, token='reader', repo='ivy-hosted', read_repo=None, extra=(), fail=False, checksum_algorithms='SHA-256,sha1,md5'):
         argv, environment = ant_invocation(ant.parent.parent, ivy, jdk, h.env)
         argv += ['-DivyCache=' + str(directory / 'cache'),
+                '-DchecksumAlgorithms=' + checksum_algorithms,
                 '-Divy.default.ivy.user.dir=' + str(directory / 'ivy-home'),
                 '-DcredentialFile=' + str(h.PRIVATE / (token + '.token')),
                 '-DrepositoryURL=' + h.BASE + '/r/' + (read_repo or repo) + '/',
@@ -95,7 +97,7 @@ def hosted(h):
         for value in h.tokens.values(): output = output.replace(value, '[REDACTED]')
         h.commands.append({'argv': [str(a).replace(str(h.PRIVATE), 'PRIVATE') for a in argv], 'exit': code, 'output': output[-12000:], 'expected_failure': fail})
         if not fail and code:
-            contract['diagnostics'] = sorted(k for k, pattern in {'http_401': r'\b401\b', 'http_403': r'\b403\b', 'http_404': r'\b404\b', 'resolution': r'unresolved dependency|not found|impossible to resolve', 'publication': r'publish failed|impossible to publish|PUT', 'fixture': r'failed to create task|doesn.t support|problem.*settings'}.items() if re.search(pattern, output, re.I))
+            contract['diagnostics'] = sorted(k for k, pattern in {'http_401': r'\b401\b', 'http_403': r'\b403\b', 'http_404': r'\b404\b', 'resolution': r'unresolved dependency|not found|impossible to resolve', 'publication': r'publish failed|impossible to publish|PUT', 'fixture': r'failed to create task|doesn.t support|problem.*settings', 'checksum_algorithm': r'Unknown checksum algorithm'}.items() if re.search(pattern, output, re.I))
         check('stock Ant/Ivy ' + ('rejects ' if fail else 'completes ') + directory.name, (code != 0) if fail else (code == 0))
         return output
 
@@ -160,9 +162,13 @@ def hosted(h):
         for row in rows:
             check('current common policy governs Ivy reference', req('/api/v1/repositories/' + repo + '/decisions', method='PUT', data={'path':row['path'],'digest':row['digest'],'decision':value}, key=h.uuid.uuid4().hex)[0] == 200)
 
-    def wire(label, token='reader', denied=False):
+    def wire(label, token='reader', denied=False, denied_status=403):
         row = published[label]
-        for ext, path in row['paths'].items():
+        representations = [(ext,path,row['contents'][ext],True) for ext,path in row['paths'].items()]
+        for ext,path in row['paths'].items():
+            for suffix, function in [('SHA-256',hashlib.sha256),('SHA-384',hashlib.sha384),('SHA-512',hashlib.sha512)]:
+                representations.append((ext+'_'+suffix,path+'.'+suffix,function(row['contents'][ext]).hexdigest().encode(),False))
+        for ext, path, expected, payload in representations:
             url = h.BASE + '/r/' + row['repo'] + '/' + path
             request = urllib.request.Request(url, headers={'Authorization':'Bearer ' + h.tokens[token]})
             try:
@@ -173,13 +179,13 @@ def hosted(h):
                 body = response.read((1 << 20) + 1); code = response.code
                 check('Ivy readback stays on its exact owned URL and within budget', response.geturl() == url and len(body) <= 1 << 20)
             check('raw Ivy bytes enforce review ' + label + ext if denied else 'raw Ivy HTTP bytes match publisher/reference ' + label + ext,
-                  code == 403 if denied else code == 200 and body == row['contents'][ext])
-            if not denied: contract['wire_sha256'][label + '_' + ext] = hashlib.sha256(body).hexdigest()
+                  code == denied_status if denied else code == 200 and body == expected)
+            if not denied and payload: contract['wire_sha256'][label + '_' + ext] = hashlib.sha256(body).hexdigest()
 
-    def consume(label, version, expected=None, token='reader', repo='ivy-hosted', denied_status=403):
+    def consume(label, version, expected=None, token='reader', repo='ivy-hosted', denied_status=403, checksum_algorithms='SHA-256,sha1,md5'):
         directory = project('consume-' + label)
         (directory / 'ivy.xml').write_bytes(descriptor('consumer', '1.0.0', ('ivy-app',version), publish=False))
-        output = command(directory, 'consume', token, repo, fail=expected is None)
+        output = command(directory, 'consume', token, repo, fail=expected is None, checksum_algorithms=checksum_algorithms)
         files = sorted((directory / 'proof').glob('*.jar'))
         if expected is None:
             check('denied stock Ivy resolution has no artifact set ' + label, not files)
@@ -202,6 +208,11 @@ def hosted(h):
     for label in ['dependency','application_1','application_2']: wire(label)
     for label in ['other_dependency','other_application_1']: wire(label,'other')
     consume('hosted','1.0.0',['application_1','dependency'])
+    contract['checksum_clients_completed'].append('SHA-256')
+    consume('hosted-sha384','1.0.0',['application_1','dependency'],checksum_algorithms='SHA-384')
+    contract['checksum_clients_completed'].append('SHA-384')
+    consume('hosted-sha512','1.0.0',['application_1','dependency'],checksum_algorithms='SHA-512')
+    contract['checksum_clients_completed'].append('SHA-512')
     consume('hosted-update','2.0.0',['application_2','dependency'])
     consume('tenant-collision','1.0.0',['other_application_1','other_dependency'],'other')
     contract['completed'].append('review_and_tenants')
@@ -230,6 +241,7 @@ def hosted(h):
     check('revoked Ivy credential cannot PUT its exact generated POM', req('/r/ivy-hosted/' + app['paths']['pom'],'ivy-writer','PUT',app['contents']['pom'],headers={'Content-Type':'application/xml'})[0] == 401)
     h.run([h.BIN/'cratectld','revoke','--token-file',h.PRIVATE/'reader.token'])
     consume('revoked-reader','1.0.0',denied_status=401)
+    wire('application_1',denied=True,denied_status=401)
     consume('other-tenant-after-revocation','1.0.0',['other_application_1','other_dependency'],'other')
     contract['completed'].append('revocation')
     check('all twelve Ivy representations have independent byte binding', set(contract['fixture_sha256']) == {n+'_'+ext for n in FIXTURES for ext in ['jar','pom']} and contract['fixture_sha256'] == contract['reference_sha256'] == contract['wire_sha256'])

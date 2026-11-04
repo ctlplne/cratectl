@@ -975,10 +975,29 @@
       "id": "DEFECT.0088",
       "summary": "Native Ivy qualification rejects Ant runtime identity despite the pinned distribution download",
       "first_failure": "evidence/2026-11-04/ivy-600466d-identity-failure.json",
-      "state": "launcher binding repair implemented; native replay unverified",
+      "state": "repaired and replayed on both native Linux architectures at419861c",
       "repair": "Invoke the pinned Java executable and Ant bootstrap JAR directly, with explicit ant.home, isolated classpath and sanitized Java/Ant injection variables. Keep the exact runtime-version assertion; bind the bootstrap digest and observed runtime version. Retain a read-only legacy-launcher observation without requiring a particular host version.",
-      "limits": "Both original Ivy jobs stop after eight checks, before any completed stage or publication. Host launcher selection is inferred from official script/inventory; actual legacy version must be observed on replay. No Ivy compatibility or broad readiness claim.",
-      "latest_candidate": "600466dc2fb0ca26269c62283958957e5785a3d3"
+      "limits": "Both actual jobs observe legacy1.10.14 and pinned1.10.18 on the same native runner. Only the client_identity stage completes; a separate checksum configuration failure prevents any publication. No full Ivy pass.",
+      "latest_candidate": "419861c46a9052a98647aa834dde06e00e25840f",
+      "replay": "evidence/2026-11-04/ivy-419861c-publication-failure.json"
+    },
+    {
+      "id": "DEFECT.0089",
+      "summary": "Owned Ivy resolver uses unsupported sha256 algorithm spelling and aborts first publication",
+      "first_failure": "evidence/2026-11-04/ivy-419861c-publication-failure.json",
+      "state": "configuration repair implemented; native replay unverified",
+      "repair": "Use documented SHA-256. Preserve SHA-1/MD5 and all original cases; add actual SHA-384/SHA-512 consumers and exact derived checksum HTTP observations.",
+      "limits": "Both native jobs fail after14checks/oneidentitystage. No publication/consumption compatibility pass.",
+      "latest_candidate": "419861c46a9052a98647aa834dde06e00e25840f"
+    },
+    {
+      "id": "DEFECT.0090",
+      "summary": "Maven parser does not bind documented Ivy SHA-2 suffixes to the parent artifact",
+      "first_failure": "evidence/2026-11-04/ivy-checksum-development.json",
+      "state": "implemented; local regressions pass, native PostgreSQL/API replay unverified",
+      "repair": "Canonicalize documented SHA-256/384/512 aliases through the existing parent policy/grant/tenant and checksum-receipt path; add SHA-384 only inside internal/crypto. Preserve legacy opaque references while serving current parent-derived data.",
+      "limits": "Initial pure-parser regressions rejected aliases and the SHA-384 vector was unsupported. Actual API legacy-sidecar/review/grant/tenant/conditional/receipt tests are compiled but have not run on the new source. No observed customer breach, primary change or native pass is claimed.",
+      "latest_candidate": null
     }
   ]
 }

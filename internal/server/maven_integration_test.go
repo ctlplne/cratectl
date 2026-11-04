@@ -5,6 +5,7 @@ package server
 
 import (
 	"context"
+	"encoding/hex"
 	"encoding/xml"
 	"errors"
 	"net/http"
@@ -103,6 +104,20 @@ func TestMavenMetadataUnionCurrentPolicyAndNativeHTTP(t *testing.T) {
 	if w = mavenHTTP(t, s, token, "GET", "/r/combined/"+p+".sha256", ""); w.Code != 200 || w.Body.String() != crypt.Digest([]byte(body)) {
 		t.Fatal("merged checksum", w.Code, w.Body.String())
 	}
+	aliases := map[string]string{"SHA-256": "sha256", "SHA-384": "sha384", "sha384": "sha384", "SHA-512": "sha512"}
+	aliasETags := map[string]string{}
+	for suffix, algorithm := range aliases {
+		h := crypt.CompatibilityHash(algorithm)
+		_, _ = h.Write([]byte(body))
+		check := mavenHTTP(t, s, token, "GET", "/r/combined/"+p+"."+suffix, "")
+		if check.Code != 200 || check.Body.String() != hex.EncodeToString(h.Sum(nil)) {
+			t.Fatal("metadata alias does not hash exact synthesized bytes", suffix, check.Code)
+		}
+		aliasETags[suffix] = check.Header().Get("ETag")
+		if check = mavenHTTP(t, s, token, "HEAD", "/r/combined/"+p+"."+suffix, ""); check.Code != 200 || check.Body.Len() != 0 {
+			t.Fatal("metadata checksum alias HEAD differs", suffix, check.Code)
+		}
+	}
 	// A stale client replacement must not erase a newer immutable POM/version.
 	mavenPut(t, s, token, "first", dir+"3.0/tool-3.0.pom", "3-pom")
 	mavenPut(t, s, token, "first", p, `<metadata><groupId>org.example</groupId><artifactId>tool</artifactId><versioning><versions><version>1.0</version></versions></versioning></metadata>`)
@@ -117,6 +132,14 @@ func TestMavenMetadataUnionCurrentPolicyAndNativeHTTP(t *testing.T) {
 	md = mavenReadModel(t, w)
 	if strings.Join(md.Versioning.Versions, ",") != "3.0" || w.Header().Get("ETag") == etag {
 		t.Fatal("policy-stale metadata", w.Body.String())
+	}
+	for suffix, algorithm := range aliases {
+		h := crypt.CompatibilityHash(algorithm)
+		_, _ = h.Write(w.Body.Bytes())
+		check := mavenHTTP(t, s, token, "GET", "/r/combined/"+p+"."+suffix, "", "If-None-Match", aliasETags[suffix])
+		if check.Code != 200 || check.Body.String() != hex.EncodeToString(h.Sum(nil)) {
+			t.Fatal("conditional metadata checksum ignored current policy", suffix, check.Code)
+		}
 	}
 	if w = mavenHTTP(t, s, token, "GET", "/r/combined/"+dir+"1.0/tool-1.0.pom", ""); w.Code != 403 {
 		t.Fatal("denied collision fell through", w.Code)
@@ -326,6 +349,20 @@ func TestMavenChecksumPublicationReceiptsAreScopedAndAtomic(t *testing.T) {
 	if w := mavenHTTP(t, s, token, "PUT", "/r/first/"+p+".sha256", strings.Repeat("0", 64)); w.Code != 400 {
 		t.Fatal("unknown checksum accepted", w.Code)
 	}
+	for suffix, algorithm := range map[string]string{"SHA-256": "sha256", "SHA-512": "sha512", "SHA-384": "sha384", "sha384": "sha384"} {
+		h := crypt.CompatibilityHash(algorithm)
+		_, _ = h.Write([]byte(one))
+		sum := hex.EncodeToString(h.Sum(nil))
+		if w := mavenHTTP(t, s, token, "PUT", "/r/first/"+p+"."+suffix, sum); w.Code != 201 {
+			t.Fatal("native alias rejected accepted historical publication", suffix, w.Code)
+		}
+		if w := mavenHTTP(t, s, token, "PUT", "/r/second/"+p+"."+suffix, sum); w.Code != 400 {
+			t.Fatal("alias receipt crossed repository", suffix, w.Code)
+		}
+		if w := mavenHTTP(t, s, writer, "PUT", "/r/first/"+p+"."+suffix, sum); w.Code != 400 {
+			t.Fatal("alias receipt crossed actor", suffix, w.Code)
+		}
+	}
 	owner, e := pgx.Connect(ctx, d.OwnerDSN)
 	if e != nil {
 		t.Fatal(e)
@@ -356,5 +393,10 @@ func TestMavenChecksumPublicationReceiptsAreScopedAndAtomic(t *testing.T) {
 	}
 	if e = s.DB.MavenChecksumReceipt(ctx, i, "first", p, "sha256", crypt.Digest([]byte(three))); !errors.Is(e, store.ErrNotFound) {
 		t.Fatal("failed publication acquired receipt", e)
+	}
+	h := crypt.CompatibilityHash("sha384")
+	_, _ = h.Write([]byte(three))
+	if e = s.DB.MavenChecksumReceipt(ctx, i, "first", p, "sha384", hex.EncodeToString(h.Sum(nil))); !errors.Is(e, store.ErrNotFound) {
+		t.Fatal("failed publication acquired SHA-384 receipt", e)
 	}
 }

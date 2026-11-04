@@ -2,6 +2,7 @@
 <!-- SPDX-License-Identifier: BUSL-1.1 -->
 <!-- Owned test build only. Resolved packages are inert and never executed. -->
 <project name="cratectl-ivy-proof" xmlns:ivy="antlib:org.apache.ivy.ant">
+  <property name="checksumAlgorithms" value="SHA-256,sha1,md5"/>
   <target name="configure">
     <loadfile property="registry.password" srcFile="${credentialFile}">
       <filterchain><striplinebreaks/></filterchain>

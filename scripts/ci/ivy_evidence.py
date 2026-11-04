@@ -5,13 +5,14 @@ import re
 FIXTURES = ('dependency','application_1','application_2','other_dependency','other_application_1','local_application_3')
 STAGES = ['client_identity','publication','review_and_tenants','reader_publication_denied','proxy_group','policy_and_restart','revocation']
 PHASES = {'client_identity','publication','review','proxy_group','policy','revocation','complete'}
-DIAGNOSTICS = {'http_401','http_403','http_404','resolution','publication','fixture','ant_identity'}
+DIAGNOSTICS = {'http_401','http_403','http_404','resolution','publication','fixture','ant_identity','checksum_algorithm'}
 IDENTITIES = ['java_launcher_sha256','java_release_sha256','ivy_launcher_sha256','ant_launcher_sha256','ant_bootstrap_sha256','ant_library_sha256','fixture_source_sha256']
+CHECKSUM_CLIENTS = ['SHA-256','SHA-384','SHA-512']
 
 
 def safe_ivy_contract(value, status):
     fields = {'profile','version','ant_version','ant_runtime_version','ant_legacy_runtime_version','java_version','ivy_distribution_sha512','ant_distribution_sha512',*IDENTITIES,
-              'fixture_sha256','reference_sha256','wire_sha256','completed','phase','diagnostics'}
+              'fixture_sha256','reference_sha256','wire_sha256','completed','checksum_clients_completed','phase','diagnostics'}
     if not isinstance(value,dict) or set(value) != fields:
         raise ValueError('Ivy fields are outside the reviewed profile')
     if value['profile'] != 'maven-release-v1':
@@ -36,6 +37,13 @@ def safe_ivy_contract(value, status):
     completed = value['completed']; diagnostics = value['diagnostics']
     if not isinstance(completed,list) or completed != STAGES[:len(completed)] or len(completed)>len(STAGES):
         raise ValueError('Ivy stages must be the ordered mandatory prefix')
+    checksum_clients = value['checksum_clients_completed']
+    if not isinstance(checksum_clients,list) or len(checksum_clients)>len(CHECKSUM_CLIENTS) or checksum_clients != CHECKSUM_CLIENTS[:len(checksum_clients)]:
+        raise ValueError('Ivy checksum clients must be the ordered mandatory prefix')
+    if status == 'passed' and checksum_clients != CHECKSUM_CLIENTS:
+        raise ValueError('Passed Ivy evidence requires each native SHA-2 client resolution')
+    if (len(completed)<2 and checksum_clients) or (len(completed)>=3 and checksum_clients != CHECKSUM_CLIENTS):
+        raise ValueError('Ivy checksum-client observations disagree with completed review stages')
     if not isinstance(value['phase'],str) or value['phase'] not in PHASES:
         raise ValueError('Ivy phase must use the fixed vocabulary')
     if not isinstance(diagnostics,list) or len(diagnostics)>len(DIAGNOSTICS) or any(not isinstance(c,str) or c not in DIAGNOSTICS for c in diagnostics) or len(set(diagnostics))!=len(diagnostics):

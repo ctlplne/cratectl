@@ -5,8 +5,8 @@
   <credentials host="127.0.0.1" realm="cratectl" username="token" passwd="${registry.password}"/>
   <caches defaultCacheDir="${ivyCache}"/>
   <resolvers>
-    <ibiblio name="cratectl-reader" m2compatible="true" usepoms="true" root="${repositoryURL}"/>
-    <url name="cratectl-publisher" m2compatible="true" checksums="sha256,sha1,md5">
+    <ibiblio name="cratectl-reader" m2compatible="true" usepoms="true" checksums="${checksumAlgorithms}" root="${repositoryURL}"/>
+    <url name="cratectl-publisher" m2compatible="true" checksums="${checksumAlgorithms}">
       <artifact pattern="${publicationURL}[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
     </url>
   </resolvers>

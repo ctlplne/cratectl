@@ -1,10 +1,13 @@
 # Ant and Ivy client qualification
 
-The first native Ant/Ivy profile fails its Ant runtime identity assertion on
-both Linux architectures at `600466d`, before any publication. The
-[original failure](../../evidence/2026-11-04/ivy-600466d-identity-failure.json)
-is retained. The launcher repair is implemented but awaits native replay;
-there is no Ivy compatibility pass yet.
+Both native Linux jobs at `419861c` pass the repaired Ant identity gate:
+the explicit bootstrap runs Ant 1.10.18 while the legacy shell selects 1.10.14.
+The first publication then fails because the fixture names an algorithm
+`sha256`; Ivy requires `SHA-256`. The
+[exact failures](../../evidence/2026-11-04/ivy-419861c-publication-failure.json)
+retain both original summaries and authenticated diagnostic metadata. The
+configuration and server alias repairs below are implemented but unverified
+on a native candidate. There is no complete Ivy compatibility pass yet.
 It targets Apache Ant 1.10.18, Ivy 2.6.0 and the pinned Java 21 runtime on
 actual Linux x86 and ARM GitHub runners, using real PostgreSQL and the common
 Maven repository endpoint. The [JVM plan](../qualification/jvm-client-plan.json)
@@ -78,3 +81,13 @@ credential/config file or plaintext fallback is included. Decryption and
 inspection stay in private local state. Safe public summaries still contain
 only the reviewed counts, stages, versions and hashes. This keeps detailed
 client errors available without publishing raw runner logs.
+
+
+The fixture now uses Ivy's documented `SHA-256` name. Its exact `.SHA-256`,
+`.SHA-384` and `.SHA-512` URLs must return checksums of the authorized parent
+JAR/POM; all three remain denied before review and after reader revocation.
+Fresh native consumers separately select each stronger algorithm and compare
+the complete exact transitive JAR set. Safe evidence requires the three client
+observations in order, in addition to the original seven stages and twelve
+publisher/reference/HTTP identities. SHA-1/MD5 compatibility checks remain;
+no checksum or original client case is removed to obtain a pass.

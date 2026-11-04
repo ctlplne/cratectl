@@ -690,14 +690,7 @@ func (s *Server) raw(w http.ResponseWriter, r *http.Request, i store.Identity, r
 		return
 	}
 	if repo.Format == "maven" {
-		metadataPath, metadataAlgorithm := p, ""
-		for _, algorithm := range []string{"sha1", "sha256", "sha512", "md5"} {
-			if strings.HasSuffix(p, "."+algorithm) {
-				metadataPath = strings.TrimSuffix(p, "."+algorithm)
-				metadataAlgorithm = algorithm
-				break
-			}
-		}
+		metadataPath, metadataAlgorithm := splitMavenChecksumPath(p)
 		if path.Base(metadataPath) == "maven-metadata.xml" && (r.Method == "GET" || r.Method == "HEAD") {
 			s.serveMavenMetadata(w, r, i, repo, metadataPath, metadataAlgorithm)
 			return
@@ -717,83 +710,81 @@ func (s *Server) raw(w http.ResponseWriter, r *http.Request, i store.Identity, r
 				return
 			}
 			mavenChecksums = map[string]string{}
-			for _, algorithm := range []string{"sha256", "sha512", "sha1", "md5"} {
+			for _, algorithm := range []string{"sha256", "sha512", "sha384", "sha1", "md5"} {
 				hash := crypt.CompatibilityHash(algorithm)
 				_, _ = hash.Write(data)
 				mavenChecksums[algorithm] = hex.EncodeToString(hash.Sum(nil))
 			}
 			r.Body = io.NopCloser(bytes.NewReader(data))
 		}
-		for _, algorithm := range []string{"sha1", "sha256", "sha512", "md5"} {
-			if strings.HasSuffix(p, "."+algorithm) {
-				parent := strings.TrimSuffix(p, "."+algorithm)
-				var a store.Artifact
-				var resolved resolvedArtifact
-				var e error
-				if r.Method == "PUT" {
-					a, e = s.DB.ArtifactForPublication(r.Context(), i, repo.Name, parent)
-				} else {
-					resolved, e = s.resolve(r.Context(), i, repo, parent, forceRefresh(r))
-					a = resolved.artifact
-				}
-				if e != nil {
-					respondErr(w, e)
-					return
-				}
-				if r.Method == "PUT" && path.Base(parent) == "maven-metadata.xml" {
-					data, err := io.ReadAll(http.MaxBytesReader(w, r.Body, 1024))
-					if err != nil {
-						fail(w, 400, "checksum_mismatch", "Use a checksum of the exact accepted metadata publication.")
-						return
-					}
-					err = s.DB.MavenChecksumReceipt(r.Context(), i, repo.Name, parent, algorithm, strings.ToLower(strings.TrimSpace(string(data))))
-					if err == nil {
-						w.WriteHeader(201)
-						return
-					}
-					if !errors.Is(err, store.ErrNotFound) {
-						respondErr(w, err)
-						return
-					}
-					r.Body = io.NopCloser(bytes.NewReader(data))
-				}
-				file, e := s.Blobs.OpenVerified(r.Context(), i.Tenant, a.Digest, a.Size)
-				if e != nil {
-					respondErr(w, e)
-					return
-				}
-				defer file.Close()
-				h := crypt.CompatibilityHash(algorithm)
-				if _, e = io.Copy(h, file); e != nil {
-					respondErr(w, e)
-					return
-				}
-				checksum := hex.EncodeToString(h.Sum(nil))
-				if r.Method == "GET" || r.Method == "HEAD" {
-					if _, e = s.guardResolved(r.Context(), i, resolved); e != nil {
-						respondErr(w, e)
-						return
-					}
-					if resolved.cache != "" {
-						w.Header().Set("X-Cratectl-Cache", resolved.cache)
-					}
-					w.Header().Set("Content-Type", "text/plain")
-					w.Header().Set("ETag", `"sha256:`+a.Digest+`-`+algorithm+`"`)
-					http.ServeContent(w, r, path.Base(p), a.Created, strings.NewReader(checksum))
-					return
-				}
-				if r.Method != "PUT" {
-					fail(w, 405, "method_not_allowed", "Publish checksum files with PUT.")
-					return
-				}
-				data, e := io.ReadAll(http.MaxBytesReader(w, r.Body, 1024))
-				if e != nil || strings.TrimSpace(string(data)) != checksum {
-					fail(w, 400, "checksum_mismatch", "The checksum must match the exact published parent bytes.")
-					return
-				}
-				w.WriteHeader(201)
+		if algorithm := metadataAlgorithm; algorithm != "" {
+			parent := metadataPath
+			var a store.Artifact
+			var resolved resolvedArtifact
+			var e error
+			if r.Method == "PUT" {
+				a, e = s.DB.ArtifactForPublication(r.Context(), i, repo.Name, parent)
+			} else {
+				resolved, e = s.resolve(r.Context(), i, repo, parent, forceRefresh(r))
+				a = resolved.artifact
+			}
+			if e != nil {
+				respondErr(w, e)
 				return
 			}
+			if r.Method == "PUT" && path.Base(parent) == "maven-metadata.xml" {
+				data, err := io.ReadAll(http.MaxBytesReader(w, r.Body, 1024))
+				if err != nil {
+					fail(w, 400, "checksum_mismatch", "Use a checksum of the exact accepted metadata publication.")
+					return
+				}
+				err = s.DB.MavenChecksumReceipt(r.Context(), i, repo.Name, parent, algorithm, strings.ToLower(strings.TrimSpace(string(data))))
+				if err == nil {
+					w.WriteHeader(201)
+					return
+				}
+				if !errors.Is(err, store.ErrNotFound) {
+					respondErr(w, err)
+					return
+				}
+				r.Body = io.NopCloser(bytes.NewReader(data))
+			}
+			file, e := s.Blobs.OpenVerified(r.Context(), i.Tenant, a.Digest, a.Size)
+			if e != nil {
+				respondErr(w, e)
+				return
+			}
+			defer file.Close()
+			h := crypt.CompatibilityHash(algorithm)
+			if _, e = io.Copy(h, file); e != nil {
+				respondErr(w, e)
+				return
+			}
+			checksum := hex.EncodeToString(h.Sum(nil))
+			if r.Method == "GET" || r.Method == "HEAD" {
+				if _, e = s.guardResolved(r.Context(), i, resolved); e != nil {
+					respondErr(w, e)
+					return
+				}
+				if resolved.cache != "" {
+					w.Header().Set("X-Cratectl-Cache", resolved.cache)
+				}
+				w.Header().Set("Content-Type", "text/plain")
+				w.Header().Set("ETag", `"sha256:`+a.Digest+`-`+algorithm+`"`)
+				http.ServeContent(w, r, path.Base(p), a.Created, strings.NewReader(checksum))
+				return
+			}
+			if r.Method != "PUT" {
+				fail(w, 405, "method_not_allowed", "Publish checksum files with PUT.")
+				return
+			}
+			data, e := io.ReadAll(http.MaxBytesReader(w, r.Body, 1024))
+			if e != nil || strings.TrimSpace(string(data)) != checksum {
+				fail(w, 400, "checksum_mismatch", "The checksum must match the exact published parent bytes.")
+				return
+			}
+			w.WriteHeader(201)
+			return
 		}
 	}
 

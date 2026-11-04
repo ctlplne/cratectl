@@ -13,21 +13,23 @@ Nine unchanged safe summaries and the exact scopes are accepted in
 checks per architecture, full x86 Chromium passes 15 workflows with no bad or
 skipped tests, and both upgrade lanes pass 15 reports over ten historical pins.
 
-The first Ant/Ivy release campaign at `600466d` fails its exact Ant runtime
-identity assertion on both architectures after eight checks, before a complete
-stage or publication. The original failures and both current-source Gradle
-199-check passes are retained in
-`evidence/2026-11-04/ivy-600466d-identity-failure.json`. The repair uses pinned
-Java and the Ant bootstrap JAR directly, preventing host shell configuration
-or an inherited Ant home/classpath from selecting a different runtime. Local
-conflicting-environment and evidence regressions pass; native replay remains
-unverified. See `evidence/2026-11-04/ivy-launcher-repair-development.json`.
+The complete `600466d` campaign has18 successes and2 original Ivy identity
+failures; all 20 jobs finish normally. Its 14 unchanged summaries are accepted as
+that precise partial scope in `evidence/2026-11-04/github-600466d-checkpoint.json`.
+Both actual `419861c` jobs then replay the identity repair: legacy Ant 1.10.14,
+pinned bootstrap/runtime 1.10.18, one completed identity stage. The first
+publication fails Ivy's unsupported `sha256` algorithm spelling. Exact evidence
+and authenticated diagnostic metadata are retained in
+`evidence/2026-11-04/ivy-419861c-publication-failure.json`.
 
-All original seven Ivy stages and twelve byte representations remain mandatory.
-The broader Ivy and SBT plan stays in `docs/qualification/jvm-client-plan.json`.
-All 450 capabilities / 41 families and every later GOAL stage remain committed;
-all broad readiness verdicts remain negative. The latest accepted full observed
-campaign remains the separate `9985847` checkpoint above.
+The next repair uses documented `SHA-256`, binds Ivy SHA-2 checksum URLs to the
+current parent policy/grant/tenant and adds SHA-384 through internal/crypto.
+It preserves all original cases and adds native SHA-384/SHA-512 consumers,
+checksum denial/revocation and legacy-sidecar/conditional/receipt regressions.
+Build, unit, race and lint pass locally; real PostgreSQL/API and stock-client
+replay on the new source remain unverified. See
+`evidence/2026-11-04/ivy-checksum-development.json`. All 450 capabilities / 41 families
+and every later GOAL stage remain committed; broad readiness is negative.
 
 Owner resumed the complete `GOAL.md` scope on 2026-11-02 and reaffirmed that
 both author and committer must be `imfeelingtheagi`. The current work finishes
@@ -393,7 +395,7 @@ dirty new test drivers. Commit the drivers, then qualify matching clean producti
 race artifacts. Preserve both original fixture failures and scope limits in
 `evidence/2026-10-31/native-lifecycle-client-development-checkpoint.json`.
 Primary10 and active ed9 bytes remain unchanged; no primary maintenance ran.
-All450capabilities/41families and every later stage remain committed and unfinished.
+All 450 capabilities / 41 families and every later stage remain committed and unfinished.
 
 Latest follow-up: native catalog descriptors use the existing canonical digest
 validator. A public hexadecimal alphabet in the earlier expression triggered
@@ -429,7 +431,7 @@ its dedicated stock-client, clean new-feature and browser/A/AA journeys pass.
 The 224development store/server race passes and baseline client compatibility
 are separate evidence. Primary10, all ten receipts and active ed9 bytes remain
 unchanged; owned services stopped after zero other clients. No push or sibling
-changes occurred. Continue all450capabilities/41families and every later stage.
+changes occurred. Continue all 450 capabilities / 41 families and every later stage.
 
 Current development: materialized generic/Maven/npm/PyPI single-reference
 lifecycle is implemented but unverified. Holds/tombstones, current revision and
@@ -479,7 +481,7 @@ paths without replacing active bin. The concrete proposal is
 `evidence/2026-10-31/matter-full-primary-maintenance-proposal.json`.
 Continue independent work in isolated11 databases while that decision is pending.
 Never restore9/8 or run a schema11 server against the retained primary10.
-All450capabilities/41families, broader legal/format/GC and every later requirement
+All 450 capabilities / 41 families, broader legal/format/GC and every later requirement
 remain committed and unfinished. No push/publication/remote, Docker/sibling or
 customer changes occurred.
 
@@ -514,7 +516,7 @@ table are unchanged. Step10 is frozen; active bin matches the clean schema10
 production artifacts. Never restore schema9/8 binaries onto this primary.
 Owned services are stopped and private data, credentials and exact artifacts
 remain. No push/publication/remote or Docker/sibling changes occurred.
-All450capabilities/41families, cross-reference/bulk/legal and other-format work,
+All 450 capabilities / 41 families, cross-reference/bulk/legal and other-format work,
 physicalGC and every later stage remain unfinished; every broad verdict is negative.
 
 Scoped clean independent-case source: `9b73cfd2b6e05032044272cb50e0879a3c03fdf0`. Both author
@@ -547,7 +549,7 @@ controlled primary10 maintenance above. Its observations retain their exact
 source and isolated schema10 scope. Owned registry/workers/native
 PostgreSQL are stopped with zero client sessions before stop. All data, private
 state and exact binaries remain. No push/publication/remote mutation or
-Docker/sibling changes occurred. All450capabilities/41families, bulk/legal and
+Docker/sibling changes occurred. All 450 capabilities / 41 families, bulk/legal and
 other-format work, physical GC and every later stage remain unfinished; full
 security/packaging and every broad readiness verdict remain negative.
 
