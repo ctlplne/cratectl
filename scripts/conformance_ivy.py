@@ -6,12 +6,13 @@ import platform
 import re
 import shutil
 import urllib.error
+import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as XML
 import zipfile
 
 from bounded_client import run_owned_client
-from ci.ivy_evidence import FIXTURES, METADATA_CASES, METADATA_REPRESENTATIONS
+from ci.ivy_evidence import FIXTURES, METADATA_CASES, METADATA_REPRESENTATIONS, SNAPSHOT_CASES, SNAPSHOT_FIXTURES
 from ivy_metadata_fixture import MODULES, consumer_descriptor, filename, pom, publisher_descriptor
 
 GROUP = 'dev.cratectl.ivyproof'
@@ -64,7 +65,7 @@ def hosted(h):
     check('Ivy uses the exact native pinned Java runtime', release.get('JAVA_RUNTIME_VERSION') in ('21.0.13+9', '21.0.13+9-LTS') and
           platform.system() == 'Linux' and release.get('OS_NAME') == 'Linux' and release.get('OS_ARCH') == {'x86_64': 'x86_64', 'aarch64': 'aarch64'}[platform.machine()])
     source = h.ROOT / 'scripts/fixtures/ivy-client'
-    contract = {'profile':'maven-metadata-v2', 'version': pin['version'], 'ant_version': pin['ant_version'], **archives,
+    contract = {'profile':'maven-snapshots-v3', 'version': pin['version'], 'ant_version': pin['ant_version'], **archives,
                 'java_version': release['JAVA_RUNTIME_VERSION'],
                 'java_launcher_sha256': hashlib.sha256((jdk / 'bin/java').read_bytes()).hexdigest(),
                 'java_release_sha256': hashlib.sha256(release_bytes).hexdigest(),
@@ -79,6 +80,7 @@ def hosted(h):
                 'fixture_sha256': {}, 'reference_sha256': {}, 'wire_sha256': {}, 'completed': [], 'phase': 'client_identity', 'diagnostics': []}
     contract['checksum_clients_completed'] = []
     contract['metadata_cases_completed'] = []
+    contract['snapshot_cases_completed'] = []
     h.result['ivy_contract'] = contract
     work = h.PRIVATE / 'ivy'; work.mkdir(mode=0o700)
 
@@ -331,16 +333,92 @@ def hosted(h):
     contract['metadata_cases_completed'].append('metadata_restart')
     check('every native metadata case completed',contract['metadata_cases_completed']==METADATA_CASES)
     contract['completed'].append('metadata')
+    contract['phase'] = 'snapshots'
+    h.repository('ivy-snapshot-immutable','maven')
+    h.repository('ivy-snapshots','maven',review=True,access='restricted',settings={'maven_snapshot_policy':'redeploy_nonunique'})
+    for actor,write in [('reader',False),('ivy-writer',True)]:
+        check('grant only intended native snapshot actor '+actor,req('/api/v1/repositories/ivy-snapshots/grants',method='PUT',data={'actor':actor,'read':True,'write':write},key=h.uuid.uuid4().hex)[0]==200)
+    h.repository('ivy-snapshot-group','maven',mode='group',settings={'members':['ivy-snapshots','ivy-proxy']})
+    snapshot_version='1.1-SNAPSHOT'
+    publish('default_snapshot','ivy-app',snapshot_version,repo='ivy-snapshot-immutable',read_repo='ivy-group')
+    wire('default_snapshot')
+
+    def snapshot_publisher(label,version=snapshot_version):
+        directory=project(label);resources=directory/'resources';resources.mkdir();(resources/'owned.txt').write_text(label)
+        (directory/'ivy.xml').write_bytes(descriptor('ivy-app',version,('ivy-dep','1.0.0')))
+        return directory,['-DartifactName=ivy-app','-DpublicationVersion='+version]
+
+    rejected_snapshot,rejected_snapshot_extra=snapshot_publisher('immutable-snapshot-replacement')
+    command(rejected_snapshot,'publish','ivy-writer','ivy-snapshot-immutable','ivy-group',rejected_snapshot_extra,fail=True)
+    wire('default_snapshot')
+    contract['snapshot_cases_completed'].append('default_immutable')
+    publish('snapshot_first','ivy-app',snapshot_version,repo='ivy-snapshots',read_repo='ivy-group')
+    decision('ivy-snapshots','ivy-app',snapshot_version,'allowed');wire('snapshot_first')
+    consume('snapshot-first',snapshot_version,['snapshot_first','dependency'],repo='ivy-snapshot-group')
+    publish('snapshot_second','ivy-app',snapshot_version,repo='ivy-snapshots',read_repo='ivy-group')
+    first_snapshot=published['snapshot_first'];second_snapshot=published['snapshot_second']
+    check('native repeat publication changes actual snapshot JAR bytes',first_snapshot['contents']['jar']!=second_snapshot['contents']['jar'])
+    contract['snapshot_cases_completed'].append('opt_in_redeploy')
+    for ext in ['jar','pom']:
+        changed=first_snapshot['contents'][ext]!=second_snapshot['contents'][ext]
+        check('current review follows each exact changed snapshot representation '+ext,
+              req('/r/ivy-snapshots/'+second_snapshot['paths'][ext],'reader')[0]==(403 if changed else 200))
+    blocked,unused=snapshot_publisher('snapshot-unassessed-consumer')
+    (blocked/'ivy.xml').write_bytes(descriptor('consumer','1.0.0',('ivy-app',snapshot_version),publish=False))
+    command(blocked,'consume',repo='ivy-snapshot-group',fail=True)
+    check('unassessed native snapshot consumer has no complete artifact set',not list((blocked/'proof').glob('*.jar')))
+    check('same-credential HTTP explains native snapshot review denial',req('/r/ivy-snapshot-group/'+second_snapshot['paths']['jar'],'reader')[0]==403)
+    contract['snapshot_cases_completed'].append('review_reset')
+    decision('ivy-snapshots','ivy-app',snapshot_version,'allowed');wire('snapshot_second')
+    consume('snapshot-second',snapshot_version,['snapshot_second','dependency'],repo='ivy-snapshot-group')
+    contract['snapshot_cases_completed'].append('fresh_resolution')
+    lifecycle='/api/v1/repositories/ivy-snapshots/artifacts/lifecycle'
+
+    def snapshot_hold(action):
+        for ext in ['jar','pom']:
+            path=second_snapshot['paths'][ext]
+            code,body,_=req(lifecycle+'?path='+urllib.parse.quote(path,safe=''))
+            state=json.loads(body);check('read current exact snapshot lifecycle '+ext,code==200 and state['digest']==hashlib.sha256(second_snapshot['contents'][ext]).hexdigest())
+            check('apply native snapshot preservation '+action+ext,req(lifecycle,method='PUT',data={'path':path,'digest':state['digest'],'expected_revision':state['revision'],'action':action,'reason':'Owned native snapshot preservation proof'},key=h.uuid.uuid4().hex)[0]==200)
+
+    snapshot_hold('hold')
+    held_snapshot,held_extra=snapshot_publisher('held-snapshot-replacement')
+    command(held_snapshot,'publish','ivy-writer','ivy-snapshots','ivy-group',held_extra,fail=True)
+    wire('snapshot_second');snapshot_hold('release_hold')
+    contract['snapshot_cases_completed'].append('held_replacement')
+    code,body,_=req('/api/v1/repositories/ivy-snapshots/configuration');configuration=json.loads(body)
+    check('native snapshot policy reads current hosted revision',code==200 and configuration['source_revision']==0)
+    settings=configuration['settings'];settings['maven_snapshot_policy']='immutable'
+    check('disable native snapshot replacement with revision checked policy',req('/api/v1/repositories/ivy-snapshots/configuration',method='PUT',data={'expected_revision':0,'settings':settings,'reason':'Stop further nonunique snapshot replacement'},key=h.uuid.uuid4().hex)[0]==200)
+    command(held_snapshot,'publish','ivy-writer','ivy-snapshots','ivy-group',held_extra,fail=True)
+    wire('snapshot_second');consume('snapshot-disabled-policy',snapshot_version,['snapshot_second','dependency'],repo='ivy-snapshot-group')
+    contract['snapshot_cases_completed'].append('disable_policy')
+    h.stop();h.start();consume('snapshot-restart',snapshot_version,['snapshot_second','dependency'],repo='ivy-snapshot-group')
+    contract['snapshot_cases_completed'].append('restart')
+    revoked_snapshot,revoked_snapshot_extra=snapshot_publisher('revoked-fresh-snapshot','9.0-SNAPSHOT')
+    command(revoked_snapshot,'prepare','ivy-writer','ivy-snapshots','ivy-group',revoked_snapshot_extra)
+    # The prepared POM keeps its real dependency graph. The publisher descriptor
+    # describes only these owned outputs, so revocation is tested at native PUT
+    # rather than being satisfied by an earlier dependency-read failure.
+    (revoked_snapshot/'ivy.xml').write_bytes(publisher_descriptor('ivy-app','9.0-SNAPSHOT',('jar','pom')))
     contract['phase'] = 'revocation'
     h.run([h.BIN/'cratectld','revoke','--token-file',writer])
+    command(revoked_snapshot,'publish-prepared','ivy-writer','ivy-snapshots','ivy-group',revoked_snapshot_extra,fail=True)
+    revoked_snapshot_path=GROUP_PATH+'/ivy-app/9.0-SNAPSHOT/'
+    check('revoked native snapshot writer cannot PUT its exact prepared fresh POM',req('/r/ivy-snapshots/'+revoked_snapshot_path+'ivy-app-9.0-SNAPSHOT.pom','ivy-writer','PUT',(revoked_snapshot/'build/ivy-app-9.0-SNAPSHOT.pom').read_bytes(),headers={'Content-Type':'application/xml'})[0]==401)
+    check('revoked native snapshot publication retains no partial version',not any(r['path'].startswith(revoked_snapshot_path) for r in inventory('ivy-snapshots')))
     rejected = command(publisher,'publish','ivy-writer',extra=extra,fail=True)
     check('revoked Ivy credential cannot PUT its exact generated POM', req('/r/ivy-hosted/' + app['paths']['pom'],'ivy-writer','PUT',app['contents']['pom'],headers={'Content-Type':'application/xml'})[0] == 401)
     h.run([h.BIN/'cratectld','revoke','--token-file',h.PRIVATE/'reader.token'])
     consume('revoked-reader','1.0.0',denied_status=401)
     wire('application_1',denied=True,denied_status=401)
     metadata_consume('revoked-metadata',denied_path=published['metadata_app']['paths']['pom'],denied_status=401)
+    consume('revoked-snapshot-reader',snapshot_version,repo='ivy-snapshot-group',denied_status=401)
+    contract['snapshot_cases_completed'].append('revocation')
+    check('every native snapshot case completed',contract['snapshot_cases_completed']==SNAPSHOT_CASES)
+    contract['completed'].append('snapshots')
     consume('other-tenant-after-revocation','1.0.0',['other_application_1','other_dependency'],'other')
     contract['completed'].append('revocation')
-    expected_bindings = {n+'_'+ext for n in FIXTURES for ext in ['jar','pom']} | {n+'_'+ext for n,extensions in METADATA_REPRESENTATIONS.items() for ext in extensions}
-    check('all twenty-eight Ivy representations have independent byte binding', len(expected_bindings)==28 and set(contract['fixture_sha256']) == expected_bindings and contract['fixture_sha256'] == contract['reference_sha256'] == contract['wire_sha256'])
+    expected_bindings = {n+'_'+ext for n in FIXTURES+SNAPSHOT_FIXTURES for ext in ['jar','pom']} | {n+'_'+ext for n,extensions in METADATA_REPRESENTATIONS.items() for ext in extensions}
+    check('all thirty-four Ivy representations have independent byte binding', len(expected_bindings)==34 and set(contract['fixture_sha256']) == expected_bindings and contract['fixture_sha256'] == contract['reference_sha256'] == contract['wire_sha256'])
     contract['phase']='complete'

@@ -3,7 +3,7 @@
 import copy
 import unittest
 
-from ivy_evidence import CHECKSUM_CLIENTS, FIXTURES, IDENTITIES, STAGES, METADATA_CASES, METADATA_STAGES, METADATA_REPRESENTATIONS, safe_ivy_contract
+from ivy_evidence import CHECKSUM_CLIENTS, FIXTURES, IDENTITIES, STAGES, METADATA_CASES, METADATA_STAGES, METADATA_REPRESENTATIONS, SNAPSHOT_FIXTURES, SNAPSHOT_CASES, SNAPSHOT_STAGES, safe_ivy_contract
 
 
 def complete_contract():
@@ -23,7 +23,37 @@ def metadata_contract():
             'reference_sha256':dict(fixtures),'wire_sha256':dict(fixtures)}
 
 
+def snapshot_contract():
+    value=metadata_contract();fixtures={**value['fixture_sha256'],**{name+'_'+ext:('d' if name=='snapshot_first' else 'e')*64 for name in SNAPSHOT_FIXTURES for ext in ['jar','pom']}}
+    return {**value,'profile':'maven-snapshots-v3','completed':list(SNAPSHOT_STAGES),
+            'snapshot_cases_completed':list(SNAPSHOT_CASES),'fixture_sha256':fixtures,
+            'reference_sha256':dict(fixtures),'wire_sha256':dict(fixtures)}
+
+
 class IvyEvidence(unittest.TestCase):
+    def test_snapshot_profile_retains_original_graph_and_requires_changed_native_bytes(self):
+        value=snapshot_contract();self.assertEqual(safe_ivy_contract(value,'passed'),value)
+        self.assertEqual(len(value['wire_sha256']),34)
+        self.assertEqual([s for s in value['completed'] if s!='snapshots'],METADATA_STAGES)
+        for change in [{'completed':METADATA_STAGES},{'snapshot_cases_completed':SNAPSHOT_CASES[:-1]},
+                       {'snapshot_cases_completed':SNAPSHOT_CASES[::-1]},{'profile':'maven-metadata-v2'},
+                       {'snapshot_cases_completed':['private-synthetic-value']}]:
+            with self.subTest(change=change),self.assertRaises(ValueError):safe_ivy_contract({**value,**change},'passed')
+        for name in ['default_snapshot_jar','snapshot_first_pom','snapshot_second_jar','metadata_app_tests_jar','dependency_jar']:
+            for field in ['fixture_sha256','reference_sha256','wire_sha256']:
+                bad=copy.deepcopy(value);bad[field].pop(name)
+                with self.subTest(name=name,field=field),self.assertRaises(ValueError):safe_ivy_contract(bad,'passed')
+        bad=copy.deepcopy(value)
+        for field in ['fixture_sha256','reference_sha256','wire_sha256']:bad[field]['snapshot_second_jar']=bad[field]['snapshot_first_jar']
+        with self.assertRaises(ValueError):safe_ivy_contract(bad,'passed')
+
+    def test_partial_snapshot_cases_cannot_skip_metadata_or_claim_early_completion(self):
+        value={**snapshot_contract(),'completed':SNAPSHOT_STAGES[:7],'snapshot_cases_completed':SNAPSHOT_CASES[:2],'phase':'snapshots'}
+        self.assertEqual(safe_ivy_contract(value,'failed'),value)
+        for change in [{'completed':SNAPSHOT_STAGES[:6]},{'completed':SNAPSHOT_STAGES[:8]},
+                       {'snapshot_cases_completed':SNAPSHOT_CASES[:2]*2}]:
+            with self.subTest(change=change),self.assertRaises(ValueError):safe_ivy_contract({**value,**change},'failed')
+
     def test_metadata_profile_preserves_all_release_cases_and_requires_exact_graph_bytes(self):
         value=metadata_contract()
         self.assertEqual(safe_ivy_contract(value,'passed'),value)

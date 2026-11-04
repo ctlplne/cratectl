@@ -31,31 +31,25 @@ also replay on [72b98be](../../evidence/2026-11-04/jvm-72b98be-checkpoint.json),
 including the bounded process/input/output helper; full baseline replay remains
 separate. Original Ant/checksum failures and each exact source remain retained.
 
-Four new SBT jobs cover 1.13.0 and 2.0.11 on both native Linux architectures.
-All four first runs on `7667eb3` fail during build loading after successful
-tool bootstrap; retain the [original failures](../../evidence/2026-11-04/sbt-7667eb3-build-resolution-failure.json).
-All four follow-up `30229dc` jobs verify root resolver separation, then fail
-because SBT's managed Scala compiler/doc/repl modules still enter the package
-graph. Preserve the [follow-up failure](../../evidence/2026-11-04/sbt-30229dc-tool-graph-failure.json).
-The resource-only root fixture now uses the Java-only managed Scala mode and
-requires effective dependencies to equal its explicitly declared owned modules;
-normal tool bootstrap and actual native packaging stay intact. Replay is pending.
-Stock clients publish
-owned resource-only JARs/POMs; seven mandatory stages and twelve independent
-publisher/reference/HTTP identities cover review, grants, tenants, dependency
-bytes, proxy/group/range, current policy, restart and revocation. Read and write
-URLs differ explicitly. Fresh denied versions must leave no partial reference.
-Tool bootstrap is separate from fresh project resolution, with bounded cache
-inventories that reject fixture coordinates. Launcher/metaproject dependencies
-use the explicit official tool source; the root package project must report
-exactly its sole cratectl resolver through both `externalResolvers` and
-`csrResolvers`. A global repository override must not route build compiler
-dependencies into the package repository. Require the native resolver observation
-even before an expected denial, so a build-loading error cannot count as a
-permission pass. See the
-[development record](../../evidence/2026-11-04/sbt-client-development.json).
-Snapshots, richer metadata, interruptions, lifecycle, migration, scale, SBT and
-all other GOAL combinations beyond these named cases remain open.
+All four SBT profiles now pass on exact `d4056d9`: versions 1.13.0 and
+2.0.11 on each native Linux architecture, 161 checks/seven stages/twelve byte
+bindings each. [All eight JVM jobs](../../evidence/2026-11-04/jvm-d4056d9-checkpoint.json)
+pass their named scope. The [SBT checkpoint](../../evidence/2026-11-04/sbt-d4056d9-checkpoint.json)
+preserves both original failures and their repair. Official tool/metaproject
+sources stay separate from the sole package source. The resource-only project
+uses Java-only mode and verifies both resolver tasks and its effective dependency
+graph before every command, including expected denials. No fallback or case was
+removed. Compiled Scala application workflows and broader SBT scope remain open.
+
+The next candidate adds hosted Maven nonunique snapshot policy/discovery and
+Ivy `maven-snapshots-v3`, preserving every earlier release/metadata case. It
+requires nine stages/eight snapshot cases/34 producer-reference-HTTP identities,
+real PostgreSQL integration/race and expanded Chromium source administration.
+Local checks pass; native replay remains unverified. First-snapshot hashes are
+observed before replacement. Read the [development record](../../evidence/2026-11-04/maven-nonunique-snapshot-development.json)
+for exact tests, source hashes, bounds and remaining warm-cache/fault/lifecycle
+work. This change selects main9/JVM8/OCI2/upgrades2/focused3 (24 expected jobs);
+no NuGet library path changed. Enumerate the actual full-SHA runs after push.
 
 All broad readiness verdicts, complete security and packaging remain negative.
 `make security` and `make packaging` continue to fail with their unfinished
@@ -71,8 +65,8 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 | `ci.yml`: scoped security / 1 | Ubuntu x86 | Pinned source/binary analysis, full reachable Git history secret scan and synthetic rule regressions. 30-minute job. Current324-case named proof is separate from full security/feed/image coverage. |
 | `ci.yml`: PostgreSQL and stock clients / 2 | Both native Linux architectures; real PostgreSQL16.15 | Integration/race, bounded timing, durable jobs/leases, integrity and baseline client/recovery journeys; 120-minute job. Full Chromium suite only on x86. ARM browser placement is skipped and never counted as passing. |
 | `jvm-clients.yml`: Gradle / 2 | Both native Linux architectures; real PostgreSQL | Gradle9.8.2, exact JDK21 build, eight stages and24 publisher/reference/raw-HTTP digests. 60-minute job. Named v2 profile passes; broader JVM remains open. |
-| `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0, exact JDK, Initial release profile passes228checks/sevenstages/12bytebindings/threeSHA2consumers. Named metadata profile passes494checks/8stages/8cases/28bytebindings on42f9366. 60-minute job. Broader Ivy remains open. |
-| `jvm-clients.yml`: SBT / 4 | SBT 1.13.0 and 2.0.11, each on native Linux amd64/arm64; real PostgreSQL | Separate series/version cases, exact JDK, tool-only boot cache, fresh project caches, seven stages/twelve byte bindings. Five-minute cold bootstrap, two-minute project commands, 60-minute job. Implemented but native replay unverified. |
+| `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0, exact JDK, Initial release profile passes228checks/sevenstages/12bytebindings/threeSHA2consumers. Named metadata-v2 passes494checks/8stages/8cases/28bytebindings. New snapshot-v3 requires9stages/8snapshot cases/34bytebindings; native replay pending. 60-minute job. Broader Ivy remains open. |
+| `jvm-clients.yml`: SBT / 4 | SBT 1.13.0 and 2.0.11, each on native Linux amd64/arm64; real PostgreSQL | Separate series/version cases, exact JDK, tool-only boot cache, fresh project caches, seven stages/twelve byte bindings. Five-minute cold bootstrap, two-minute project commands, 60-minute job. Named release profile passes161checks on each of the four cases atd4056d9; broader SBT remains open. |
 | `nuget-contract.yml`: libraries / 2 | Both native Linux architectures and actual SDK10.0.403 libraries | Dense version, archive, casing, dependency and framework differential contracts; 20-minute job. Does not replace actual NuGet HTTP/restore/restart proof. |
 | `oci-clients.yml`: native clients / 2 | Both native Linux architectures; Docker, Podman, Helm, real PostgreSQL | Actual publication/consumption and policy/tenant/recovery cases with inert owned data; 45-minute job. Do not execute the uploaded image. External-provider interoperability is separate. |
 | `browser-repair.yml`: focused / 3 on relevant pushes | Native x86 Chromium; five fresh PostgreSQL databases per selected journey | Repair, retention and NuGet each repeat five complete journeys; 45-minute job. Manual dispatch selects one. Stop on failure; no retries/skips count as acceptance. |
@@ -81,8 +75,8 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 The union is 26 jobs when every relevant workflow triggers. A normal push can
 trigger fewer jobs because paths differ. Always enumerate actual runs for the
 full source SHA; never assume 26, treat a missing lane as passing, or substitute
-an old run. The repair touches every workflow, so its native NuGet library
-lanes also need observation. No duplicate dispatch merely to recover visibility.
+an old run. Library jobs run only when their own paths select; a workflow omitted by its
+path filter is not evidence for that source. No duplicate dispatch merely to recover visibility.
 
 Workflow files define exact triggers, permissions, matrices and commands. Use
 read-only tokens, checkout without persisted credentials, fail-fast=false for

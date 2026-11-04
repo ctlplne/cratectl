@@ -1,74 +1,49 @@
 # cratectl execution status
 
-Owner resumed the complete goal on 2026-11-04. The previous halt commit
-`5db051e` remains intact. All 450 capabilities / 41 families and every later
-GOAL stage remain committed; broad readiness, full security and packaging
-remain negative. Work and commits stay on main with both owner identities.
+The full goal is active. All 450 capabilities / 41 families and every later
+stage remain committed. Broad readiness, full security and packaging remain
+negative. Work and both commit identities stay on main as `imfeelingtheagi`.
 
-The exact `42f9366` campaign is now accepted for its partial scope: 15 of
-17 jobs pass; macOS source and fuzz are canceled before acquiring a runner.
-GitHub's annotations identify hosted runner acquisition failure and macOS ARM
-capacity constraints, with no assigned runner or executed test step. Keep the
-original cancellations in
-`evidence/2026-11-04/github-42f9366-macos-capacity-cancellation.json`.
-The main run fails overall; canceled tests never count as passes. Eleven safe
-summaries and exact run/job identities are retained in
-`evidence/2026-11-04/github-42f9366-checkpoint.json`. Both native Linux
-PostgreSQL/race and 645-client/56-SDK-HTTP-restart campaigns, full x86 Chromium
-15 with zero bad/skipped results, OCI 214, upgrades 15 reports/ten historical
-pins per architecture and scoped security 324 fixtures pass. The latest fully
-accepted whole observed campaign remains `708214f` with all 17 jobs passing.
+All eight native JVM jobs pass on exact `d4056d9`. SBT 1.13.0 and 2.0.11 each
+pass 161 checks on Linux amd64 and arm64, all seven stages and twelve exact
+publisher/reference/HTTP byte identities. Gradle passes 199/eight stages/24
+identities; Ivy metadata-v2 passes 494/eight stages/eight metadata cases/28
+identities and three SHA-2 consumers per architecture. See
+`evidence/2026-11-04/jvm-d4056d9-checkpoint.json` and the separate SBT checkpoint.
+Both original SBT failures are preserved and replayed; no client case was removed.
+This accepts those eight jobs, not the unfinished whole campaign.
 
-The expanded Ivy metadata profile passes 494 checks per native architecture,
-all eight stages/eight cases, 28 exact publisher/reference/HTTP identities and
-all three SHA-2 consumers. Gradle passes 199 checks/eight stages/24 identities
-per architecture. All four JVM profiles also replay on exact `72b98be`, which
-includes the bounded stdin/output/process harness. That separate JVM proof is
-`evidence/2026-11-04/jvm-72b98be-checkpoint.json`. The baseline ORAS stdin,
-SDK JSON and PostgreSQL/browser campaign also passes on that source. Its exact
-partial campaign accepts 16 of 17 jobs and eleven safe summaries; native macOS
-source/unit passes, while macOS fuzz never acquires a runner. See
-`evidence/2026-11-04/github-72b98be-checkpoint.json`.
+The latest accepted fully passing whole observed campaign remains `708214f`
+(17 jobs). Partial `72b98be` accepts 16 of 17 jobs; only macOS fuzz never acquired
+a runner, while native macOS source/unit passes. Partial `7667eb3` accepts 18 of
+24 jobs with four original SBT failures and two unexecuted macOS capacity
+cancellations. Exact summaries, annotations and job identities remain in their
+committed checkpoints. Re-poll the recorded `30229dc`/`d4056d9` handles for
+remaining workflow outcomes; an observation timeout is not a stopped job.
 
-The complete observed `7667eb3` campaign accepts 18 of 24 jobs with eighteen
-safe summaries: all four SBT jobs fail, and both macOS jobs are canceled before
-runner acquisition. All other named Linux/native/browser/upgrade/scoped scan
-cases pass, including five fresh focused repetitions per browser journey.
-See `evidence/2026-11-04/github-7667eb3-checkpoint.json`. These partial outcomes
-do not replace the latest fully passing `708214f` campaign.
+Maven nonunique snapshot policy/discovery and Ivy snapshots-v3 are implemented
+but unverified on native clients and PostgreSQL. The default remains immutable;
+only explicit hosted Maven opt-in permits literal base-version replacement.
+Publication rechecks current policy/grants, holds and tombstones in the common
+transaction. Changed bytes have current digest policy, old/new journal identity
+and atomic checksum/event/integrity receipts. No schema migration is introduced.
+The operator console exposes creation and revision-controlled preview/apply.
+Local unit/race, compile-only integration, build, lint and console checks pass;
+actual PostgreSQL/race, stock Ivy and Chromium replay remain required. The
+original missing-discovery regression is retained. See
+`evidence/2026-11-04/maven-nonunique-snapshot-development.json`.
 
-All four first SBT jobs on `7667eb3` fail after 14 checks: the pinned runtimes
-and tool bootstrap succeed, but the global repository override sends the build
-compiler's Scala dependencies to cratectl before the root project loads.
-The original summaries and authenticated diagnostic metadata are retained in
-`evidence/2026-11-04/sbt-7667eb3-build-resolution-failure.json`.
-The repair separates official tool/metaproject sources from the sole cratectl
-package source, disables plugin resolver inheritance and checks both effective
-and configured package resolvers before every native command, including expected
-denials. All four `30229dc` jobs load the root project and verify those resolvers,
-then fail because SBT automatically adds its Scala compiler/doc/repl dependencies
-to the root package graph even with `autoScalaLibrary=false`. Preserve
-`evidence/2026-11-04/sbt-30229dc-tool-graph-failure.json`. The next repair uses
-SBT's Java-only `managedScalaInstance=false` mode for owned resource-only package
-projects and checks that effective dependencies equal their declared owned
-modules. Standard tool bootstrap and real packaging/publication tasks remain.
-Local regression/lint passes; the complete native release profile remains
-unverified. Commits/pushes retain both exact owner identities.
-Four independent Linux x86/ARM jobs use pinned distributions and
-Java, separate tool bootstrap and fresh project caches, owned resource-only
-JARs and seven mandatory stages/twelve exact byte bindings. Scope includes
-scoped writer/reader, review, tenant collisions, proxy/group/range, current
-policy, registry restart and revocation. Fresh denied versions must retain no
-partial references. Local fixture/cache/API/evidence/privacy tests and lint
-pass; no SBT distribution or real JVM/database campaign runs on this Mac. See
-`evidence/2026-11-04/sbt-client-development.json`. Snapshots, richer metadata,
-interruption/upstream outage, lifecycle, migration, scale, production trust,
-independent hosts and every remaining format/client/stage requirement stay open.
+The Ivy v3 profile retains every earlier release and metadata case, then requires
+eight snapshot cases, nine stages and 34 byte bindings. It uses fresh consumers,
+checks default and opted-in publication, review, both representation holds,
+policy disablement, restart and fresh writer/reader revocation. First snapshot
+hashes are observed before replacement. Earlier metadata-v2 and SBT release
+passes do not qualify this new scope. Warm-cache/concurrent/fault/lifecycle,
+remaining JVM clients and every other goal requirement remain open.
 
-The prior halt record `evidence/2026-11-04/owner-halt-708214f.json` remains an
-immutable observation; the current owner resume supersedes its pause. No primary,
-selected binary, data, credential, sibling or customer change. Earlier notes
-below are historical and do not override this current state.
+No primary, selected binary, retained data, credential, sibling or customer
+change. The prior halt is historical and superseded by the owner's resume.
+Earlier notes below are historical and do not override this current state.
 
 Owner resumed the complete `GOAL.md` scope on 2026-11-02 and reaffirmed that
 both author and committer must be `imfeelingtheagi`. The current work finishes

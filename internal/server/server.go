@@ -140,7 +140,7 @@ func respondErr(w http.ResponseWriter, e error) {
 	case errors.Is(e, store.ErrConfigurationRevision):
 		fail(w, 409, "configuration_changed", "Read current repository configuration, preview its impact, and apply that exact expected_revision with a new idempotency key.")
 	case errors.Is(e, store.ErrConfigurationInput):
-		fail(w, 400, "invalid_configuration", "Supply complete valid proxy/group settings, a nonnegative expected_revision and a nonempty reason of at most 1024 UTF-8 bytes without controls. Repository name, mode and format are immutable.")
+		fail(w, 400, "invalid_configuration", "Supply complete valid proxy/group or hosted Maven settings, a nonnegative expected_revision and a nonempty reason of at most 1024 UTF-8 bytes without controls. Repository name, mode and format are immutable.")
 	case errors.Is(e, store.ErrScheduleRevision):
 		fail(w, 409, "schedule_changed", "Read the current schedule, preview a replacement at its exact revision, then apply with a new idempotency key.")
 	case errors.Is(e, store.ErrScheduleEvidence):
@@ -732,10 +732,10 @@ func (s *Server) raw(w http.ResponseWriter, r *http.Request, i store.Identity, r
 				respondErr(w, e)
 				return
 			}
-			if r.Method == "PUT" && path.Base(parent) == "maven-metadata.xml" {
+			if r.Method == "PUT" && (path.Base(parent) == "maven-metadata.xml" || store.MavenNonuniqueSnapshotPath(parent)) {
 				data, err := io.ReadAll(http.MaxBytesReader(w, r.Body, 1024))
 				if err != nil {
-					fail(w, 400, "checksum_mismatch", "Use a checksum of the exact accepted metadata publication.")
+					fail(w, 400, "checksum_mismatch", "Use a checksum of the exact accepted Maven publication.")
 					return
 				}
 				err = s.DB.MavenChecksumReceipt(r.Context(), i, repo.Name, parent, algorithm, strings.ToLower(strings.TrimSpace(string(data))))
@@ -805,6 +805,8 @@ func (s *Server) raw(w http.ResponseWriter, r *http.Request, i store.Identity, r
 	if repo.Format == "maven" && path.Base(p) == "maven-metadata.xml" {
 		a.MediaType = "application/xml"
 		e = s.DB.ReplaceMavenMetadata(r.Context(), i, repo.Name, a, mavenChecksums)
+	} else if repo.Format == "maven" && store.MavenNonuniqueSnapshotPath(p) {
+		e = s.publishMavenSnapshot(r.Context(), i, repo.Name, a)
 	} else {
 		e = s.DB.Publish(r.Context(), i, repo.Name, []store.Artifact{a})
 	}

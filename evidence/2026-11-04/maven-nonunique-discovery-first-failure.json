@@ -1,0 +1,15 @@
+{
+  "observed_at": "2026-11-04T17:40:36.989687+00:00",
+  "source_parent": "d4056d92c5b23ed414109bff36c2d0e237a9b33b",
+  "source_dirty": true,
+  "production_source_sha256": {
+    "internal/server/maven_read.go": "9b30870a13f8a242e9e0ef787188e5fab2c919d5b595da94c4788307b449b6f8",
+    "internal/server/maven_metadata.go": "77a73679176517ed6cf35f3106585de3e8746ecd1b6dbff3d814e1ca3dac8c4f"
+  },
+  "observation": "A new focused Go regression against the unchanged parent renderer fails because an already stored literal nonunique snapshot POM is absent from artifact-level discovery. No database or stock client ran locally.",
+  "command": "go test ./internal/server -run '^TestMavenNonuniqueSnapshotDiscoveryUsesCurrentReferences$' -count=1",
+  "exit": 1,
+  "log": "evidence/2026-11-04/maven-nonunique-discovery-first-failure.txt",
+  "log_sha256": "26400617faa2835573efff5f16e56c04def1e705e8da0a7c643fe149629c4948",
+  "limits": "Local model/renderer regression only; real PostgreSQL, native client and current grant/policy/lifecycle behavior need separate exact-source qualification."
+}

@@ -60,9 +60,10 @@ func configurationPreview(ctx context.Context, tx pgx.Tx, i Identity, repo strin
 	if r.SourceRevision != input.ExpectedRevision {
 		return out, nil, ErrConfigurationRevision
 	}
-	if r.Mode != "proxy" && r.Mode != "group" {
+	if r.Mode != "proxy" && r.Mode != "group" && !(r.Mode == "hosted" && r.Format == "maven") {
 		return out, nil, ErrConfigurationInput
 	}
+	out.RefreshRequired = r.Mode != "hosted"
 	proposed := r
 	proposed.SourceRevision = 0
 	proposed.Settings = *input.Settings

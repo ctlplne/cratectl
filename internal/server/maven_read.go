@@ -117,7 +117,7 @@ func renderMavenMetadata(view store.MavenView, documents []mavenDocument, p stri
 				version := parts[0]
 				pom := parts[1] == md.Artifact+"-"+version+".pom"
 				if strings.HasSuffix(version, "-SNAPSHOT") {
-					entry, ok := snapshotFilename(md.Artifact, version, parts[1])
+					entry, ok := referenceSnapshotFilename(md.Artifact, version, a)
 					pom = ok && entry.Extension == "pom" && entry.Classifier == ""
 					if pom {
 						if old, seen := knownSnapshots[version]; seen && !mavenSnapshotNewer(entry, old) {
@@ -199,7 +199,7 @@ func renderMavenMetadata(view store.MavenView, documents []mavenDocument, p stri
 					if path.Dir(a.Path) != dir {
 						continue
 					}
-					entry, ok := snapshotFilename(md.Artifact, md.Version, path.Base(a.Path))
+					entry, ok := referenceSnapshotFilename(md.Artifact, md.Version, a)
 					if ok {
 						entries = append(entries, entry)
 					}
@@ -300,6 +300,9 @@ func renderMavenMetadata(view store.MavenView, documents []mavenDocument, p stri
 		})
 		if newest.Value != "" {
 			out.Versioning.Updated = newest.Updated
+			if newest.Value == out.Version {
+				out.Versioning.Snapshot = &mavenSnapshot{Local: true}
+			}
 			tail := strings.TrimPrefix(newest.Value, strings.TrimSuffix(out.Version, "SNAPSHOT"))
 			if len(tail) > 16 && tail[15] == '-' {
 				n, _ := strconv.Atoi(tail[16:])

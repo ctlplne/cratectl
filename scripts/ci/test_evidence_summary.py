@@ -9,7 +9,7 @@ import unittest
 
 from evidence_summary import summarize
 from test_gradle_evidence import complete_contract
-from test_ivy_evidence import complete_contract as complete_ivy_contract, metadata_contract
+from test_ivy_evidence import complete_contract as complete_ivy_contract, metadata_contract, snapshot_contract
 from test_sbt_evidence import complete_contract as complete_sbt_contract
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -77,6 +77,17 @@ class EvidenceSummary(unittest.TestCase):
         self.assertEqual(record['ivy_contract'],complete_ivy_contract())
         self.assertNotIn('private-synthetic-value',json.dumps(record))
         self.write('ivy.json',{**report,'ivy_contract':{**complete_ivy_contract(),'wire_sha256':{}}})
+        with self.assertRaises(SystemExit):summarize(self.root,self.environment)
+
+    def test_ivy_snapshot_export_requires_all_original_and_new_bytes_without_private_output(self):
+        contract=snapshot_contract()
+        report={'candidate':'a'*40,'status':'passed','ivy_contract':contract,'commands':[{'output':'private-synthetic-value'}]}
+        self.write('ivy-snapshot.json',report)
+        record=summarize(self.root,self.environment)['records'][0]
+        self.assertEqual(record['ivy_contract'],contract)
+        self.assertEqual(len(record['ivy_contract']['wire_sha256']),34)
+        self.assertNotIn('private-synthetic-value',json.dumps(record))
+        self.write('ivy-snapshot.json',{**report,'ivy_contract':{**contract,'snapshot_cases_completed':contract['snapshot_cases_completed'][:-1]}})
         with self.assertRaises(SystemExit):summarize(self.root,self.environment)
 
     def test_ivy_metadata_export_requires_parent_and_classified_wire_bytes(self):

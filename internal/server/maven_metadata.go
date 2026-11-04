@@ -277,3 +277,14 @@ func snapshotFilename(artifact, base, filename string) (mavenSnapshotVersion, bo
 	v.Updated = strings.ReplaceAll(tail[:15], ".", "")
 	return v, true
 }
+
+func referenceSnapshotFilename(artifact, base string, a store.Artifact) (mavenSnapshotVersion, bool) {
+	if v, ok := snapshotFilename(artifact, base, path.Base(a.Path)); ok {
+		return v, true
+	}
+	classifier, extension, ok := store.MavenNonuniqueSnapshotFile(artifact, base, path.Base(a.Path))
+	if !ok {
+		return mavenSnapshotVersion{}, false
+	}
+	return mavenSnapshotVersion{Classifier: classifier, Extension: extension, Value: base, Updated: a.Created.UTC().Format("20060102150405")}, true
+}

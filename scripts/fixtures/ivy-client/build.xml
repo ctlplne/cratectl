@@ -9,7 +9,7 @@
     </loadfile>
     <ivy:settings file="ivysettings.xml"/>
   </target>
-  <target name="publish" depends="configure">
+  <target name="prepare" depends="configure">
     <mkdir dir="build"/>
     <jar destfile="build/${artifactName}-${publicationVersion}.jar" basedir="resources"/>
     <ivy:resolve file="ivy.xml" conf="default"/>
@@ -17,6 +17,8 @@
                  artifactName="${artifactName}" artifactPackaging="jar" conf="default">
       <mapping conf="default" scope="compile"/>
     </ivy:makepom>
+  </target>
+  <target name="publish" depends="prepare">
     <ivy:publish resolver="cratectl-publisher" pubrevision="${publicationVersion}"
                  publishivy="false" overwrite="true" haltonmissing="true"
                  artifactspattern="build/[artifact]-[revision](-[classifier]).[ext]"/>

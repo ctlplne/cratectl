@@ -449,10 +449,18 @@ func (s *Store) ReplaceMetadata(ctx context.Context, i Identity, repo string, a 
 }
 
 func (s *Store) replaceMetadata(ctx context.Context, i Identity, repo string, a Artifact, checksums map[string]string) error {
+	return s.replaceNativeReference(ctx, i, repo, a, checksums, false)
+}
+
+func (s *Store) replaceNativeReference(ctx context.Context, i Identity, repo string, a Artifact, checksums map[string]string, snapshot bool) error {
 	if !i.CanWrite() {
 		return ErrDenied
 	}
-	_, e := s.Mutate(ctx, i, "", "", "metadata.replaced", func(tx pgx.Tx) (any, int, error) {
+	kind := "metadata.replaced"
+	if snapshot {
+		kind = "maven.snapshot.published"
+	}
+	_, e := s.Mutate(ctx, i, "", "", kind, func(tx pgx.Tx) (any, int, error) {
 		r, e := repositoryInTx(ctx, tx, i, repo, "write")
 		if e != nil {
 			return nil, 0, e
@@ -460,7 +468,18 @@ func (s *Store) replaceMetadata(ctx context.Context, i Identity, repo string, a 
 		if r.Mode != "hosted" {
 			return nil, 0, ErrDenied
 		}
-		if len(checksums) > 0 && (r.Format != "maven" || !strings.HasSuffix(a.Path, "/maven-metadata.xml")) {
+		if snapshot {
+			if r.Format != "maven" || !MavenNonuniqueSnapshotPath(a.Path) {
+				return nil, 0, ErrConflict
+			}
+			if r.Settings.MavenSnapshotPolicy != MavenSnapshotRedeployNonunique {
+				if e = InsertArtifacts(ctx, tx, i, repo, []Artifact{a}); e != nil {
+					return nil, 0, e
+				}
+				return []Artifact{a}, 201, nil
+			}
+		}
+		if len(checksums) > 0 && (r.Format != "maven" || !snapshot && !strings.HasSuffix(a.Path, "/maven-metadata.xml")) {
 			return nil, 0, ErrConflict
 		}
 		var old string

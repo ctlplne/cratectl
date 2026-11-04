@@ -772,6 +772,7 @@ paths:
                           authentication: {type: string, enum: [bearer, basic], default: bearer}
                           allow_signed_query: {type: boolean, default: false, description: OCI only. Permit bounded ephemeral signed query strings; ordinary durable npm/PyPI download URLs still reject queries.}
                     python_index_format: {type: string, enum: [auto, html, json], default: auto, description: PyPI proxy content negotiation preference.}
+                    maven_snapshot_policy: {type: string, enum: [immutable, redeploy_nonunique], default: immutable, description: Hosted Maven only. Explicit opt-in permits replacement of literal base-version SNAPSHOT filenames. Releases and timestamped snapshots stay immutable; current holds and review still govern changed bytes.}
                     members: {type: array, minItems: 1, maxItems: 32, uniqueItems: true, items: {type: string}}
                     namespace_owners: {type: object, maxProperties: 128, additionalProperties: {type: string}}
       responses:
@@ -1579,8 +1580,8 @@ paths:
         '403': {description: Administrator required}
         '404': {description: No authorized retained repository}
     put:
-      summary: Preview or replace complete proxy/group source settings
-      description: Every apply increments source_revision, including identical settings and historical rollback. Old source caches, validators and download locators require revalidation. Pending writers are fenced atomically with immutable history, journal, outbox and idempotency receipt. Preview checks local credential/destination bindings without contacting the upstream. A replay returns its original response without changing current settings. The request body is limited to 64 KiB.
+      summary: Preview or replace proxy/group sources or a hosted Maven snapshot policy
+      description: Every apply increments source_revision, including identical settings and historical rollback. Old source caches, validators and download locators require revalidation. Pending writers are fenced atomically with immutable history, journal, outbox and idempotency receipt. Preview checks local credential/destination bindings without contacting the upstream. A replay returns its original response without changing current settings. Hosted Maven policy changes use the same revision/history/idempotency transaction with refresh_required=false; publication checks the current policy under its write lock. The request body is limited to 64 KiB.
       parameters:
         - in: header
           name: Idempotency-Key
@@ -1596,7 +1597,7 @@ paths:
               required: [expected_revision, settings, reason]
               properties:
                 expected_revision: {type: integer, format: int64, minimum: 0}
-                settings: {type: object, description: Complete source settings in the repository creation settings format; omitted fields are removed.}
+                settings: {type: object, description: Complete repository settings in the creation format; omitted fields are removed. Hosted Maven admits maven_snapshot_policy through this same revision-controlled workflow.}
                 reason: {type: string, minLength: 1, maxLength: 1024, description: Nonempty bounded UTF-8 reason without controls; byte limit is 1024.}
                 dry_run: {type: boolean, default: false}
       responses:

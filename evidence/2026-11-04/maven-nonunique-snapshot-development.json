@@ -1,0 +1,191 @@
+{
+  "observed_at": "2026-11-04T17:42:02.253659+00:00",
+  "source_parent": "d4056d92c5b23ed414109bff36c2d0e237a9b33b",
+  "source_dirty": true,
+  "state": "Implemented with local unit/race/build/lint and compile-only database checks; native PostgreSQL/Ivy/Chromium replay pending.",
+  "first_failure": "evidence/2026-11-04/maven-nonunique-discovery-first-failure.json",
+  "source_sha256": [
+    {
+      "path": "internal/store/maven_snapshot.go",
+      "sha256": "8aee8ea69d8724ee6385692d7b16d3a7cd6f138d0b36ee457fa18a2888f9dbdc"
+    },
+    {
+      "path": "internal/store/maven_snapshot_test.go",
+      "sha256": "67787cb3a2dc84849dd96f1474ae8a4c5ee36453a500fc3d2cea7d9bb4d7b2b1"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "192a5436fe28b1bf00102caa3e11d8085403f3b8cc5ca93b7b52f731a51e70e9"
+    },
+    {
+      "path": "internal/store/store.go",
+      "sha256": "9066d5f7a22cc4afdaacb918172e3bb0eb31fd0299958ed20a0e232b7ed32083"
+    },
+    {
+      "path": "internal/store/source_configuration.go",
+      "sha256": "4244a8f59ae2e1e48a1687f27675721c5a134a15758304822a105cba21a3965d"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "3e8787f23e6b52d0d973d95887558f0ba664e47e4d41cc6671559197265bfeee"
+    },
+    {
+      "path": "internal/server/maven_publication.go",
+      "sha256": "381e88e8202216db56dfcd169732eda909afa1c626cfbd828b2823c12507a3e6"
+    },
+    {
+      "path": "internal/server/maven_metadata.go",
+      "sha256": "3e1003d1b4cdff9630ac93c357eeb1c2ae6cb8bd3b797da033e34134f7f21fc7"
+    },
+    {
+      "path": "internal/server/maven_read.go",
+      "sha256": "5c6622060cf6e34fe80f831c072e22a3755f0b3bc48f726aeb8d9720672d1196"
+    },
+    {
+      "path": "internal/server/maven_metadata_test.go",
+      "sha256": "03a8e622c650629f144316805b25a701865c03d764fc52943f660f9af5c82a56"
+    },
+    {
+      "path": "internal/server/maven_snapshot_integration_test.go",
+      "sha256": "bcad2a9a22409eb3e209705aeea6eaebb1fd6e9edbdfe53752446601569a4cc8"
+    },
+    {
+      "path": "scripts/conformance_ivy.py",
+      "sha256": "d8bcc7fc2dcc053c22df3a4e1a1d327777c091d0982881ce2c461a0ff1ee9404"
+    },
+    {
+      "path": "scripts/fixtures/ivy-client/build.xml",
+      "sha256": "6340888006ff2328707bdfbe54438035bf0a9af9362be80a63435561be4bc16d"
+    },
+    {
+      "path": "scripts/fixtures/ivy-client/ivysettings.xml",
+      "sha256": "371b221363bce8f9a52b297027debf5ed197ea743f56213dbd9c712fba02036c"
+    },
+    {
+      "path": "scripts/ivy_metadata_fixture.py",
+      "sha256": "5343f00d06ea735f85faf6061ceedaf00941f8a2655bd67ac5570c7099ac6029"
+    },
+    {
+      "path": "scripts/ci/ivy_evidence.py",
+      "sha256": "51e7da361c3f206f74b9f3d4a2cedd3843cd798d5a5a4b887c944e3051449881"
+    },
+    {
+      "path": "scripts/ci/test_ivy_evidence.py",
+      "sha256": "93789af1845b097d0a91b91bc6c95f3add7a9117ffdb0aad36753e99fc41fa8b"
+    },
+    {
+      "path": "scripts/ci/test_evidence_summary.py",
+      "sha256": "2e193454392150913a555d08638e12c6e73bbfbb5f93402fee9047d72f8891e5"
+    },
+    {
+      "path": "scripts/test_ivy_fixture.py",
+      "sha256": "8b63ee20bd21bc5cbae03cbdc249610dc0932dbe730cd1c1602c89194aa8d0ae"
+    },
+    {
+      "path": "api/openapi.yaml",
+      "sha256": "538512957ba534e0384ccf04c9db28562ed91fe002cf9c3c04ffbab6c9ba478e"
+    },
+    {
+      "path": "web/src/configuration.tsx",
+      "sha256": "07a7fdb8f18d77b844d71d09a81298bd6c9b4d64058d40de630ea3e829ef2a49"
+    },
+    {
+      "path": "web/src/repositories.tsx",
+      "sha256": "5280ea20bf50d86dee7c9576ef2b2d95711adf6f165e89fdd0191193341e9a93"
+    },
+    {
+      "path": "web/tests/zzz-source-configuration.spec.mjs",
+      "sha256": "b59c96cf80bdb755fe83899728c0dfcdcb816a71d69a36e6650867c5ecb57bba"
+    },
+    {
+      "path": "web/build-manifest.json",
+      "sha256": "4c39b298b86e0be9ff8f8a87e858ec2aa7fb0acad1ab78f5919b30ee468db418"
+    }
+  ],
+  "implementation": {
+    "publication": "Explicit hosted Maven maven_snapshot_policy=redeploy_nonunique only; default/immutable rejects changed coordinates. Literal base-version paths validated, releases and timestamped snapshots immutable. Staged synced immutable bytes precede the common tenant-locked mutation that rereads grants, repository state and current policy.",
+    "protection": "Common hold/tombstone/current-revision checks; same-byte retry preserves held identity. Changed bytes reset reference approval and use current repository/digest decisions. Old/new journal/lifecycle snapshots and immutable hold receipts retained. Queue failure rolls reference, integrity/event jobs and checksum receipts back together.",
+    "checksums": "One bounded-memory verified-file pass generates five fixed compatibility hashes. Accepted publisher/tenant/repository/path/checksum receipts commit with the reference. A delayed historical sidecar does not replace current GET checksum.",
+    "settings": "Creation and administrator revision-controlled preview/apply/history/idempotency support hosted Maven, refresh_required=false. Publication never trusts stale intake-time opt-in. No schema migration or primary maintenance.",
+    "discovery": "Current base-version POMs and extension/classifier/localCopy mappings, existing source precedence, current review and bounded read admission. New unit regressions include denied first-source collisions.",
+    "operator": "Hosted Maven creation/policy controls with preview/apply and disablement; existing Chromium source workflow extends from five to seven named checks. CLI/API share the same configuration request. Embedded assets regenerate and reproduce exactly."
+  },
+  "bounds": {
+    "path_bytes": 2048,
+    "coordinate_component_bytes": 256,
+    "filename_bytes": 1027,
+    "configuration_json_bytes": 65536,
+    "checksum_body_bytes": 1024,
+    "checksum_algorithms": 5,
+    "new_native_snapshot_representations": 6,
+    "unchanged_job_minutes": {
+      "jvm": 60,
+      "native_postgresql": 120,
+      "browser": 45
+    }
+  },
+  "local_validation": {
+    "build": "passed into .cache/maven-snapshot-build; selected primary binaries unchanged",
+    "affected_unit": "passed using temporary owned HTTP stand-ins with required loopback permission",
+    "focused_race": "passed for Maven and repository guards",
+    "integration": "compiled only with -tags=integration -run ^$; no local PostgreSQL tests executed",
+    "lint": "passed including strict evidence/privacy/owned-process suites",
+    "evidence_tests": {
+      "ivy": 8,
+      "safe_exporter": 13,
+      "ivy_fixture": 5
+    },
+    "console": "TypeScript/Vite build and byte-identical reproduction passed; real browser pending",
+    "syntax": "Python, browser JavaScript and OpenAPI/diff checks passed",
+    "logs_sha256": {
+      ".cache/maven-snapshot-final-build.log": "ef2896d5dfbf20d0bd1d7349c96280178f04c59bd5b3163666a54f796a0b525d",
+      ".cache/maven-snapshot-final-unit-loopback.log": "9292d5cafed813c45fac70b9e2cd9b604133077ad78cd9679b16375c86773981",
+      ".cache/maven-snapshot-final-focused-race.log": "8d7a8d5cc9eb2276ed07d49ea49954d5202d42c1e48affda1b83b942a3ba9ea2",
+      ".cache/maven-snapshot-final-integration-compile.log": "2179f8436ff347ce26e373fb7d80e649ac8096b5d6ee799269f7c1659079022b",
+      ".cache/maven-snapshot-final-lint.log": "d36924180ef0b347cdf4989fabab3f7a0dcb9311b5400ef599a9bf057f35194d",
+      ".cache/maven-snapshot-final-exporter.log": "acfdd704dd991ca848f7f0edcec58127d596811a62ffc3bebfa8a644f14944d8",
+      ".cache/maven-snapshot-final-ivy-evidence.log": "60bb849356ffbc091f601e17fc6ae0b2eb5e26d734d433da020c6e775efbf97f",
+      ".cache/maven-snapshot-final-ivy-fixture.log": "5a0df550367bcff1da3a511cddb8f3e051f7e2c36fce0b03d796bf71a803248d",
+      ".cache/maven-snapshot-console-reproduction.log": "a7b1d97ef8a9fb244dfa43667e52239253411b60e9ba080591d7c1e4f2f15830"
+    },
+    "initial_sandbox_denial": {
+      "log": ".cache/maven-nonunique-unit.log",
+      "sha256": "a744085abdf4d5e740b71d6df2843670fb0e27223657dff604f2f1a99e5d0548",
+      "observation": "An existing temporary HTTP stand-in could not bind loopback in the sandbox. The unchanged affected suite passed with scoped permission; no test was removed or skipped."
+    },
+    "staged_scan_format_repair": "The unchanged scanner classified the source map entry for the public API specification hash as generic-api-key. Verified it against that exact file, then separated path and sha256 fields. No credential value or scanner rule changed; original redacted scan retained in ignored local state."
+  },
+  "native_required": {
+    "ivy_profile": "maven-snapshots-v3",
+    "stages": 9,
+    "metadata_cases": 8,
+    "snapshot_cases": [
+      "default_immutable",
+      "opt_in_redeploy",
+      "review_reset",
+      "fresh_resolution",
+      "held_replacement",
+      "disable_policy",
+      "restart",
+      "revocation"
+    ],
+    "byte_bindings": 34,
+    "historical_byte_timing": "First-snapshot publisher/reference/HTTP identities are observed before replacement. Every original release/metadata/SHA2/tenant/review/grant/proxy/group/range/policy/restart/revocation case remains.",
+    "postgresql": "Actual nonowner forced-RLS PostgreSQL integration and race for holds/revision/history, current policy after staging, changed-byte review, publisher-bound receipts, tombstones, queue rollback and cross-tenant setting/receipt collisions.",
+    "chromium": "Actual x86 full fifteen-workflow suite; expanded source administration creation/default immutability/preview/apply/disable. Expected total assertions119 if all cases pass, never an observed pass yet.",
+    "placement": "Native Linux amd64/arm64 GitHub jobs. Expected24 jobs across main/JVM/OCI/upgrades/focused; NuGet library paths unchanged. Enumerate actual full-SHA runs."
+  },
+  "primary_sources": [
+    "https://maven.apache.org/repositories/layout.html",
+    "https://maven.apache.org/repositories/remote.html",
+    "https://maven.apache.org/ref/3.9.1/maven-repository-metadata/apidocs/org/apache/maven/artifact/repository/metadata/Snapshot.html",
+    "https://ant.apache.org/ivy/history/2.6.0/use/publish.html",
+    "https://ant.apache.org/ivy/history/2.6.0/resolver/url.html"
+  ],
+  "limits": [
+    "Native PostgreSQL, stock Ivy v3 and browser behavior remain unverified until exact-source artifacts are accepted. Earlier d405SBT/Ivy-v2/Gradle passes do not qualify this new scope.",
+    "Nonunique snapshots use moving coordinate bytes; fresh caches only. Full warm-cache/concurrent/interrupted multi-file publication, upstream outage, timestamped Ivy/SBT snapshots and wider lifecycle/migration/scale/TLS/platform requirements remain open.",
+    "Single-reference holds and tombstones remain distinct from multi-file package lifecycle; no physical GC or old-byte reclamation.",
+    "All450capabilities/41families and every later goal stage retained. Broad readiness/fullsecurity/packaging false; no primary/customer/sibling/release change."
+  ]
+}

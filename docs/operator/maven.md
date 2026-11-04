@@ -23,7 +23,26 @@ overwritten with different bytes. Maven's unique snapshots use timestamped
 filenames under a `-SNAPSHOT` version directory; repeat publication creates a new
 timestamp/build. Current metadata maps each extension/classifier pair separately,
 so a later `sources` publication does not replace the ordinary JAR or POM mapping.
-Nonunique snapshot redeployment policy remains unfinished.
+Nonunique snapshot policy and discovery are implemented; native replay is pending.
+In a hosted Maven repository, **Snapshot policy** controls literal filenames such
+as `tool-1.0-SNAPSHOT.jar`. The default **Keep existing bytes** rejects a changed
+publication. **Allow base-version snapshot replacement** enables only these
+literal snapshot paths. A hold still prevents replacement, and changed bytes
+need their own current exact-digest decision when review is required. Releases
+and timestamped snapshots keep their existing bytes.
+
+Create with `settings: {"maven_snapshot_policy":"redeploy_nonunique"}` or use
+the [configuration workflow](source-configuration.md) to preview and apply a
+change at the current revision. Set `immutable` to stop further replacement;
+the current snapshot remains. Configuration changes are administrator-only and
+retain before/after history. A writer's upload rechecks the current policy after
+staging, so an old opt-in cannot authorize a later replacement.
+
+Literal snapshots have generated extension/classifier mappings and `localCopy`
+metadata. Use independent client caches when checking before/after bytes. This
+implementation does not yet establish every warm-cache, concurrent publisher or
+interrupted multi-file publication outcome. Immutable objects and earlier
+preservation receipts stay retained; no physical collection happens here.
 
 Native `maven-metadata.xml` responses describe current discovery rather than a
 literal copy of one client's upload. The submitted XML remains an immutable CAS
@@ -52,7 +71,7 @@ Current metadata ETags and SHA-256/SHA-384/SHA-512/SHA-1/MD5 sidecars describe t
 synthesized response; policy checks also precede conditional/HEAD/range replies.
 SHA-1/MD5 exist only for Maven compatibility, not as the security identity.
 
-Metadata checksum uploads validate bytes that this actor actually published to
+Metadata and replaceable snapshot checksum uploads validate bytes that this actor actually published to
 this repository/path. Five durable checksum receipts commit with the metadata
 reference, event and job intent in the existing forced-RLS mutation table. This
 allows a delayed publisher sidecar after another publisher replaces the pointer.

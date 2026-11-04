@@ -1,4 +1,4 @@
-# Change a proxy or group source
+# Change repository sources or a Maven snapshot policy
 
 Use **Repositories → Sources** as a tenant administrator. Read the current source
 revision, edit the complete proposed settings, give a reason and preview. Preview
@@ -18,7 +18,26 @@ The management API has the same workflow:
   separate response-byte budget applies. Receipts retain before/after settings,
   revision, actor, reason, timestamp and journal sequence.
 
-Change settings only for proxy/group repositories. Names, formats, modes, access
+Hosted Maven repositories also admit `maven_snapshot_policy` through this same
+preview/apply/history workflow. Choose `immutable` (the default) or explicit
+`redeploy_nonunique`. A hosted policy preview sets `refresh_required=false`;
+future uploads check the current policy. Existing bytes remain, and current
+holds and review still govern replacement. The console provides **Snapshot
+policy** beside the hosted Maven repository. The CLI can use the same API:
+
+```sh
+cratectl --config /private/path/client.json --method PUT \
+  --path /api/v1/repositories/snapshots/configuration \
+  --body-file /private/path/snapshot-policy.json \
+  --idempotency-key snapshot-policy-change-001
+```
+
+Read the current configuration first. The JSON contains `expected_revision`,
+complete `settings`, a nonempty `reason` and `dry_run:true` for preview; apply
+the reviewed settings with `dry_run:false` and a new mutation key. A retry of
+the same apply must keep identical bytes and its original key.
+
+Source changes apply to proxy/group repositories. Names, formats, modes, access
 policies and review policies use their existing workflows. Provide every desired
 source field, including download authorities, OCI token authority, Python index
 format and group namespace ownership. Values omitted from the replacement are

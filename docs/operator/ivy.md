@@ -112,3 +112,16 @@ Fixture design follows Apache's [Maven publication contract](https://cwiki.apach
 [artifact selection](https://ant.apache.org/ivy/history/2.6.0/ivyfile/dependency-artifact.html)
 and [conflict managers](https://ant.apache.org/ivy/history/2.6.0/ivyfile/conflict.html).
 Only the owned build files execute; resolved packages remain inert.
+
+
+The new `maven-snapshots-v3` journey is implemented but unverified. It retains all
+release and metadata-v2 cases, adds eight ordered snapshot cases, and requires
+nine stages and 34 producer/reference/HTTP bindings. Literal snapshot publication
+uses stock Ivy; fresh consumers resolve the actual dependency graph through a
+group. It covers default immutability, explicit opt-in, changed-byte review,
+holds on both representations, policy disablement, restart and revocation.
+A fresh revoked-writer publication is prepared before revocation and its native
+PUT must fail without leaving any partial version. First-snapshot hashes are
+observed before replacement. See the [policy design](../adr/0043-maven-nonunique-snapshot-policy.md).
+Warm-cache/concurrent publication, timestamped Ivy snapshots, interruption,
+upstream outage, broader lifecycle and all remaining JVM scope stay required.

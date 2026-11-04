@@ -63,6 +63,84 @@ func TestMavenSnapshotBindingAndNumericCounter(t *testing.T) {
 	}
 }
 
+func TestMavenNonuniqueSnapshotDiscoveryUsesCurrentReferences(t *testing.T) {
+	when := time.Date(2026, 11, 4, 17, 0, 0, 0, time.UTC)
+	repo := store.Repository{Name: "snapshots", Format: "maven", Mode: "hosted"}
+	member := store.MavenMember{Repository: repo}
+	for _, suffix := range []string{".pom", ".jar", "-sources.jar"} {
+		member.Artifacts = append(member.Artifacts, store.Artifact{Repository: repo.Name, Path: "org/example/tool/1.0-SNAPSHOT/tool-1.0-SNAPSHOT" + suffix, Decision: "allowed", Created: when})
+	}
+	view := store.MavenView{Group: repo, Members: []store.MavenMember{member}}
+	for _, version := range []string{"", "1.0-SNAPSHOT"} {
+		model := mavenMetadata{Group: "org.example", Artifact: "tool", Version: version}
+		p := "org/example/tool/"
+		if version != "" {
+			p += version + "/"
+		}
+		data, e := renderMavenMetadata(view, []mavenDocument{{model, member}}, p+"maven-metadata.xml", 100, 1<<20)
+		if e != nil {
+			t.Fatal("stored nonunique snapshot is absent from native discovery", version, e)
+		}
+		var result mavenMetadata
+		if e = xml.Unmarshal(data, &result); e != nil {
+			t.Fatal(e)
+		}
+		v := result.Versioning
+		if version == "" {
+			if strings.Join(v.Versions, ",") != "1.0-SNAPSHOT" || v.Latest != "1.0-SNAPSHOT" || v.Release != "" {
+				t.Fatal("artifact discovery lost base-version POM", string(data))
+			}
+		} else {
+			if v.Snapshot == nil || !v.Snapshot.Local || v.Snapshot.Timestamp != "" || v.Snapshot.Build != 0 || len(v.Snapshots) != 3 {
+				t.Fatal("nonunique snapshot mapping differs", string(data))
+			}
+			for _, entry := range v.Snapshots {
+				if entry.Value != version || entry.Updated != "20261104170000" {
+					t.Fatal("mapping does not identify current base-version bytes", entry)
+				}
+			}
+		}
+	}
+}
+
+func TestMavenNonuniqueSnapshotsDoNotFallThroughBlockedFirstSource(t *testing.T) {
+	first := store.Repository{Name: "first", Format: "maven", Mode: "hosted"}
+	second := store.Repository{Name: "second", Format: "maven", Mode: "hosted"}
+	group := store.Repository{Name: "group", Format: "maven", Mode: "group", Settings: store.RepositorySettings{Members: []string{"first", "second"}}}
+	when := time.Date(2026, 11, 4, 17, 0, 0, 0, time.UTC)
+	for _, version := range []string{"", "1.0-SNAPSHOT"} {
+		members := []store.MavenMember{}
+		for _, r := range []store.Repository{first, second} {
+			member := store.MavenMember{Repository: r}
+			for _, ext := range []string{"pom", "jar"} {
+				decision := "allowed"
+				if r.Name == "first" && (ext == "jar" || version == "") {
+					decision = "denied"
+				}
+				member.Artifacts = append(member.Artifacts, store.Artifact{Repository: r.Name, Path: "org/example/tool/1.0-SNAPSHOT/tool-1.0-SNAPSHOT." + ext, Decision: decision, Created: when})
+			}
+			members = append(members, member)
+			when = when.Add(time.Minute)
+		}
+		model := mavenMetadata{Group: "org.example", Artifact: "tool", Version: version}
+		p := "org/example/tool/"
+		if version != "" {
+			p += version + "/"
+		}
+		data, e := renderMavenMetadata(store.MavenView{Group: group, Members: members}, []mavenDocument{{model, members[0]}, {model, members[1]}}, p+"maven-metadata.xml", 100, 1<<20)
+		if version == "" {
+			if !errors.Is(e, store.ErrNotFound) {
+				t.Fatal("lower-source POM replaced denied first version", string(data), e)
+			}
+			continue
+		}
+		var result mavenMetadata
+		if e != nil || xml.Unmarshal(data, &result) != nil || len(result.Versioning.Snapshots) != 1 || result.Versioning.Snapshots[0].Extension != "pom" {
+			t.Fatal("lower-source JAR replaced denied first snapshot", string(data), e)
+		}
+	}
+}
+
 func TestMavenMergePolicyOwnershipAndStableBytes(t *testing.T) {
 	p := "org/example/tool/maven-metadata.xml"
 	now := time.Date(2026, 10, 29, 12, 0, 0, 0, time.UTC)

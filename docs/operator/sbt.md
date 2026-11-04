@@ -1,10 +1,10 @@
 # SBT client qualification
 
-Independent SBT 1.13.0 and 2.0.11 profiles are implemented for actual Linux
-x86 and ARM GitHub runners. All four initial runs failed while loading the build
-definition; the follow-up run reaches the root project but still includes tool
-dependencies in its package graph. The next repair awaits native replay. An Ivy or Gradle
-pass does not qualify either SBT version. The [JVM plan](../qualification/jvm-client-plan.json)
+SBT 1.13.0 and 2.0.11 each pass on both native Linux architectures at
+`d4056d9`: 161 checks, all seven release-profile stages and twelve exact
+publisher/reference/HTTP identities. The [SBT checkpoint](../../evidence/2026-11-04/sbt-d4056d9-checkpoint.json)
+retains actual client/bootstrap/source identities and both original failures.
+An Ivy or Gradle pass does not qualify either SBT version. The [JVM plan](../qualification/jvm-client-plan.json)
 and [runtime pins](../qualification/jvm-clients.json) retain exact versions,
 official distribution digests and unfinished work.
 
@@ -49,7 +49,11 @@ compiler/doc/repl modules in the package graph. The owned resource-only package
 fixture now uses `managedScalaInstance := false`, SBT's Java-only mode, and checks
 that effective dependencies equal the declared owned modules. The separately
 bootstrapped build compiler keeps its normal settings. Native packaging and
-publication tasks remain required; this repair is not yet a native pass.
+publication tasks remain required; all four repaired native release profiles now pass.
+
+A Scala source project needs its approved compiler/library dependencies through
+the configured governed source, such as a proxy/group. The Java-only resource
+fixture does not qualify a compiled Scala application or supply its toolchain.
 
 Stock SBT publishes owned resource-only JARs and generated POMs. Fresh
 consumers copy resolved bytes for independent comparison; uploaded classes,
@@ -62,8 +66,8 @@ revocation. Each SBT series and architecture must pass independently.
 
 SBT 2 uses virtual file references and cached tasks. Its owned fixture converts
 through the file converter and marks the proof-copy task uncached; SBT 1 uses
-its File API. Their command sequences remain separate. These are fixture
-implementation details, not evidence that either native client has run.
+its File API. Their command sequences remain separate. These version-specific fixture rules are bound to the exact native checkpoint.
+The initial release proof does not qualify every SBT workflow.
 
 Run `python3 scripts/conformance.py sbt1 --require-clean-build` or `sbt2` only
 in an owned isolated environment with explicit database configuration and exact

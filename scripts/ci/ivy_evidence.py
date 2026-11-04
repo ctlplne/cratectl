@@ -17,16 +17,22 @@ METADATA_REPRESENTATIONS = {
     'optional_dependency': ('jar','pom'), 'test_dependency': ('jar','pom'),
     'metadata_app': ('jar','pom','tests_jar'),
 }
+SNAPSHOT_FIXTURES = ('default_snapshot','snapshot_first','snapshot_second')
+SNAPSHOT_STAGES = METADATA_STAGES[:-1] + ['snapshots'] + METADATA_STAGES[-1:]
+SNAPSHOT_CASES = ['default_immutable','opt_in_redeploy','review_reset','fresh_resolution',
+                  'held_replacement','disable_policy','restart','revocation']
 
 
 def safe_ivy_contract(value, status):
     fields = {'profile','version','ant_version','ant_runtime_version','ant_legacy_runtime_version','java_version','ivy_distribution_sha512','ant_distribution_sha512',*IDENTITIES,
               'fixture_sha256','reference_sha256','wire_sha256','completed','checksum_clients_completed','phase','diagnostics'}
-    metadata = isinstance(value,dict) and value.get('profile') == 'maven-metadata-v2'
+    snapshot = isinstance(value,dict) and value.get('profile') == 'maven-snapshots-v3'
+    metadata = isinstance(value,dict) and value.get('profile') in {'maven-metadata-v2','maven-snapshots-v3'}
     if metadata: fields.add('metadata_cases_completed')
+    if snapshot: fields.add('snapshot_cases_completed')
     if not isinstance(value,dict) or set(value) != fields:
         raise ValueError('Ivy fields are outside the reviewed profile')
-    if value['profile'] not in {'maven-release-v1','maven-metadata-v2'}:
+    if value['profile'] not in {'maven-release-v1','maven-metadata-v2','maven-snapshots-v3'}:
         raise ValueError('Ivy profile must identify its exact release workflow')
     for field in ['version','ant_version']:
         if not isinstance(value[field],str) or not re.fullmatch(r'\d{1,2}\.\d{1,3}\.\d{1,3}',value[field]):
@@ -46,7 +52,7 @@ def safe_ivy_contract(value, status):
         if not isinstance(value[field],str) or not re.fullmatch('[0-9a-f]{'+str(size)+'}',value[field]):
             raise ValueError('Ivy tool identity must be a bounded digest')
     completed = value['completed']; diagnostics = value['diagnostics']
-    stages = METADATA_STAGES if metadata else STAGES
+    stages = SNAPSHOT_STAGES if snapshot else METADATA_STAGES if metadata else STAGES
     if not isinstance(completed,list) or completed != stages[:len(completed)] or len(completed)>len(stages):
         raise ValueError('Ivy stages must be the ordered mandatory prefix')
     checksum_clients = value['checksum_clients_completed']
@@ -64,16 +70,29 @@ def safe_ivy_contract(value, status):
             raise ValueError('Passed Ivy metadata evidence requires every native metadata case')
         if len(completed)<6 and cases:
             raise ValueError('Metadata observations cannot precede the original policy/restart stages')
-    if not isinstance(value['phase'],str) or value['phase'] not in (PHASES | {'metadata'} if metadata else PHASES):
+    if snapshot:
+        cases = value['snapshot_cases_completed']
+        if not isinstance(cases,list) or len(cases)>len(SNAPSHOT_CASES) or cases!=SNAPSHOT_CASES[:len(cases)]:
+            raise ValueError('Ivy snapshot cases must be the mandatory ordered prefix')
+        if (status=='passed' or 'snapshots' in completed) and cases!=SNAPSHOT_CASES:
+            raise ValueError('Passed Ivy snapshot evidence requires every native case')
+        if len(completed)<7 and cases:
+            raise ValueError('Snapshot observations cannot precede the original metadata cases')
+    if not isinstance(value['phase'],str) or value['phase'] not in (PHASES | {'metadata','snapshots'} if snapshot else PHASES | {'metadata'} if metadata else PHASES):
         raise ValueError('Ivy phase must use the fixed vocabulary')
     if not isinstance(diagnostics,list) or len(diagnostics)>len(DIAGNOSTICS) or any(not isinstance(c,str) or c not in DIAGNOSTICS for c in diagnostics) or len(set(diagnostics))!=len(diagnostics):
         raise ValueError('Ivy diagnostics must use the fixed vocabulary')
     allowed = {name+'_'+ext for name in FIXTURES for ext in ['jar','pom']}
     if metadata:
         allowed |= {name+'_'+ext for name,extensions in METADATA_REPRESENTATIONS.items() for ext in extensions}
+    if snapshot:
+        allowed |= {name+'_'+ext for name in SNAPSHOT_FIXTURES for ext in ['jar','pom']}
     fixtures = value['fixture_sha256']
     if not isinstance(fixtures,dict) or not set(fixtures)<=allowed or any(not isinstance(v,str) or not re.fullmatch('[0-9a-f]{64}',v) for v in fixtures.values()):
         raise ValueError('Ivy fixture identity is outside the owned set')
+    if snapshot and 'opt_in_redeploy' in value['snapshot_cases_completed']:
+        if not {'snapshot_first_jar','snapshot_second_jar'}<=set(fixtures) or fixtures['snapshot_first_jar']==fixtures['snapshot_second_jar']:
+            raise ValueError('Native snapshot redeployment must change the actual JAR bytes')
     for field in ['reference_sha256','wire_sha256']:
         observed = value[field]
         if not isinstance(observed,dict) or not set(observed)<=set(fixtures) or any(v!=fixtures[k] for k,v in observed.items()):
