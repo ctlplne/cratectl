@@ -11,13 +11,12 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: jvm-clients-${{ github.ref }}
-  # Preserve started qualification evidence on main; supersede PR work.
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-
 jobs:
   gradle:
+    concurrency:
+      group: cratectl-jvm-gradle-${{ github.ref }}-${{ matrix.arch }}
+      # Preserve running main jobs; queue each native profile independently.
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     name: Real Gradle publication and resolution (${{ matrix.arch }})
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 60
@@ -95,6 +94,10 @@ jobs:
           retention-days: 30
 
   ivy:
+    concurrency:
+      group: cratectl-jvm-ivy-${{ github.ref }}-${{ matrix.arch }}
+      # Preserve running main jobs; queue each native profile independently.
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     name: Real Ant and Ivy publication and resolution (${{ matrix.arch }})
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 60
@@ -172,6 +175,10 @@ jobs:
           retention-days: 30
 
   sbt:
+    concurrency:
+      group: cratectl-jvm-sbt-${{ github.ref }}-${{ matrix.series }}-${{ matrix.arch }}
+      # Preserve running main jobs; queue each native profile independently.
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     name: Real SBT publication and resolution (${{ matrix.series }} ${{ matrix.arch }})
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 60

@@ -18,13 +18,12 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: upgrades-${{ github.ref }}
-  # Preserve started qualification evidence on main; supersede PR work.
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-
 jobs:
   upgrades:
+    concurrency:
+      group: cratectl-upgrades-${{ github.ref }}-${{ matrix.arch }}
+      # Preserve running main jobs; queue each native profile independently.
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     name: Real PostgreSQL controlled upgrades (${{ matrix.arch }})
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 120

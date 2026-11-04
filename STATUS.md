@@ -34,6 +34,12 @@ fails before native tests. See `evidence/2026-11-04/baseline-d4056d9-failures.js
 The original key/request was not exported; a leading-hyphen parsing cause remains
 a hypothesis. No server authentication or token-generation rule changes.
 
+The exact1e9fdd0x86 safe artifact now accepts the new pinned installer, real
+PG/race and all647baseline checks, including the deterministic joined-key
+probe and all56SDKHTTPrestart cases. Its full browser step fails separately;
+no full-job acceptance or original401root-cause claim. ARMartifact still pending.
+See `evidence/2026-11-04/baseline-1e9fdd0-amd64-checkpoint.json`.
+
 Maven bootstrap now uses a reviewed immutable checksum, bounded HTTPS transfers
 and one approved Apache archive fallback; a digest mismatch stops immediately.
 Five local stand-in boundary tests and full lint pass. NuGet push/delete keys and
@@ -43,8 +49,10 @@ reproduce exactly. See
 `evidence/2026-11-04/ci-bootstrap-key-hardening-development.json`.
 
 CI uses independent job/platform concurrency groups, preserving existing cases,
-commands and budgets. Native cross-run independence still needs direct observation;
-progress inside one run alone does not establish that scheduling improvement.
+commands and budgets. Main cross-run independence is observed: newer0efa Linux source completes and
+security runs while older1e9macOS remains unassigned. Seven pending0efacases
+were canceled before execution and never count as passes. See
+`evidence/2026-11-04/ci-independent-lanes-native-observation.json`.
 Earlier failures, partial campaigns and runner cancellations remain retained.
 New browser failure support reuses the bounded owned process-group runner,
 retains private output on timeout and encrypts only selected failed command/report/
@@ -73,6 +81,12 @@ snapshot database tests compile normally and with race; none ran locally.
 Affected unit suites, full lint and build pass. Native PG/race and client replay
 remain required; see
 `evidence/2026-11-04/maven-immutable-receipt-concurrency-development.json`.
+
+Remaining JVM/OCI/upgrade/focused-browser/library workflows now also queue by
+job/profile/platform. Semantic YAML comparison proves only concurrency changed
+across five workflows/seven job definitions. All26union cases, commands, budgets
+and running-main preservation remain. Their native scheduling observation is
+pending; see `evidence/2026-11-04/ci-family-independent-lanes-development.json`.
 
 No primary, selected binary, data, credential, sibling or customer change.
 Earlier notes below are historical and do not override this current state.

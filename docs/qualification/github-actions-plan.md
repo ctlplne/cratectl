@@ -64,9 +64,9 @@ claimed. Five snapshot PostgreSQL tests now include that transition, default
 first-upload queue rollback and two restricted concurrent writers' exact journal/
 lifecycle/receipt chain. Normal and race builds compile them locally without
 running a database. Both native GitHub architectures must execute the real tests,
-retain every previous case and complete the full x86 browser journey. This core
-change selects21expected jobs (main9/JVM8/OCI2/upgrades2); actual source-bound
-inventory remains required. See the [record](../../evidence/2026-11-04/maven-immutable-receipt-concurrency-development.json).
+retain every previous case and complete the full x86 browser journey. The core-only3b28da5push selected21expected jobs (main9/JVM8/OCI2/upgrades2).
+The subsequent scheduling revision changes all workflow paths and selects all26
+union cases; actual source-bound inventory remains required. See the [record](../../evidence/2026-11-04/maven-immutable-receipt-concurrency-development.json).
 
 The following campaign notes predate this9b00f7e observation.
 
@@ -146,7 +146,12 @@ hold unrelated Linux lanes behind one workflow-wide mutex. Running main jobs
 remain preserved; PR work can supersede the same lane. GitHub's default single
 pending slot still applies within each lane, so retain any superseded pending
 job as unexecuted. Every job, matrix case, command and timeout is unchanged.
-Native scheduling observation remains pending; runner capacity is separate.
+Main cross-run independence is now observed: newer0efa Linux source completes
+and its security job progresses while older1e9macOS is still unassigned. Seven
+newer pending cases were canceled before execution and never count as passes.
+See the [native observation](../../evidence/2026-11-04/ci-independent-lanes-native-observation.json).
+This proves the observed scheduling separation, not a timing improvement,
+every queue cause or a whole-candidate pass. Runner capacity remains separate.
 See the [development record](../../evidence/2026-11-04/ci-independent-lanes-development.json)
 and GitHub's [job concurrency contract](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency).
 
@@ -163,11 +168,18 @@ and GitHub's [job concurrency contract](https://docs.github.com/en/actions/how-t
   `jvm-client-plan.json`. Prose/checkpoint edits alone must not restart a client
   lane. Keep owned package payloads inert; run only owned fixture build rules
   and reviewed tool binaries, never uploaded package scripts/classes/models.
-- Preserve started main-branch runs across repair pushes. Existing per-workflow
-  groups allow one active run and the default one pending tip. A newer pending
+- Preserve started main-branch jobs across repair pushes. All six project
+  workflows now use job/profile/platform groups, including SBT series and
+  focused browser journey. Each group has the default one pending tip. A newer pending
   tip can replace an older pending tip; PR work may still be superseded.
   Pending cancellation supplies no evidence. See
   [GitHub's concurrency contract](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency).
+  Semantic comparison of the five newly changed workflows proves only concurrency
+  differs: all triggers, cases, commands, permissions, budgets and failure handling
+  stay equal. Main scheduling has native evidence; the other groups still need
+  their own observation. See the [development record](../../evidence/2026-11-04/ci-family-independent-lanes-development.json).
+  Editing all five paths selects all26union cases; enumerate the actual source
+  inventory, including the two actual NuGet library jobs.
 - The owned JVM command helper has a two-minute deadline,8MiB output failure
   threshold and64KiB captured tail. The baseline-helper revision on `72b98be`
   routes `conformance.run` through the same path, drains output through a

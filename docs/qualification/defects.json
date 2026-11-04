@@ -1041,17 +1041,19 @@
       "id": "DEFECT.0094",
       "summary": "Intermittent native dotnet first push reports a missing API key despite an explicit fixture argument",
       "first_failure": "evidence/2026-11-04/baseline-d4056d9-failures.json",
-      "state": "Original cause unresolved; fixture argument hardening and deterministic native parser regression implemented but unverified.",
+      "state": "Joined-key actual SDK probe and full647baseline pass on native x86 at1e9fdd0; original intermittent401cause unresolved. ARM/artifact/fullbrowser qualification separate.",
       "repair": "Pass push/delete opaque keys as --api-key=value, preserving valid leading-hyphen keys. Require actual SDK synthetic leading-hyphen invalid-key probe to reach real HTTP401 without missing-key warning and leave no reference. No token generation or server authentication change.",
-      "limits": "The original key/request was deliberately not exported. Leading-hyphen parsing is a hypothesis; later random-key successes do not establish the original cause. All original native cases remain required."
+      "limits": "The original key/request was deliberately not exported. Leading-hyphen parsing is a hypothesis; later random-key successes do not establish the original cause. All original native cases remain required.",
+      "partial_replay": "evidence/2026-11-04/baseline-1e9fdd0-amd64-checkpoint.json"
     },
     {
       "id": "DEFECT.0095",
       "summary": "Native baseline tool bootstrap has no bounded Maven transfer or immutable reviewed checksum pin",
       "first_failure": "evidence/2026-11-04/baseline-d4056d9-failures.json",
-      "state": "Bounded pinned installer passes five local stand-in regressions; native GitHub replay pending.",
+      "state": "Exact pinned bounded installer and native647baseline pass on x86 at1e9fdd0. Five local boundary regressions pass; actual fallback path not claimed exercised. ARMartifact pending.",
       "repair": "Review official Maven3.10.0SHA512 from both approved Apache sources. Bound HTTPS protocol/redirect, connect time15s, total180s and32MiB per source. Only transport/HTTP failure permits archive fallback; checksum mismatch fails without fallback. Never retry qualification or fall back package sources.",
-      "limits": "Original ARM connection timeout prevented all native tests. Stand-in tests qualify installer boundaries only, not remote availability or real PostgreSQL/client behavior."
+      "limits": "Original ARM connection timeout prevented all native tests. Stand-in tests qualify installer boundaries only, not remote availability or real PostgreSQL/client behavior.",
+      "partial_replay": "evidence/2026-11-04/baseline-1e9fdd0-amd64-checkpoint.json"
     },
     {
       "id": "DEFECT.0096",

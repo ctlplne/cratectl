@@ -1,0 +1,86 @@
+{
+  "observed_at": "2026-11-04T18:50:03.093025+00:00",
+  "source_parent": "3b28da57f79c6ade85c2b12ede3665f976a25751",
+  "source_dirty": true,
+  "state": "Independent profile/platform groups implemented across remaining5workflows; local semantic comparison passes; native family observation pending",
+  "main_native_observation": "evidence/2026-11-04/ci-independent-lanes-native-observation.json",
+  "changes": [
+    {
+      "workflow": ".github/workflows/browser-repair.yml",
+      "job_definitions": [
+        "repair"
+      ],
+      "groups": [
+        "cratectl-browser-${{ github.ref }}-${{ matrix.workflow }}"
+      ],
+      "all_other_yaml_data_equal": true,
+      "before_sha256": "bc6299950fc61abe526cad89191a152bdf0a498de70f10d29876f69d89ca17a6",
+      "after_sha256": "1da5173baa9b77bca3c22eb679cc785c05083f7b865bec0160096ee941326576"
+    },
+    {
+      "workflow": ".github/workflows/jvm-clients.yml",
+      "job_definitions": [
+        "gradle",
+        "ivy",
+        "sbt"
+      ],
+      "groups": [
+        "cratectl-jvm-gradle-${{ github.ref }}-${{ matrix.arch }}",
+        "cratectl-jvm-ivy-${{ github.ref }}-${{ matrix.arch }}",
+        "cratectl-jvm-sbt-${{ github.ref }}-${{ matrix.series }}-${{ matrix.arch }}"
+      ],
+      "all_other_yaml_data_equal": true,
+      "before_sha256": "0fd753a6b9eb224b093aad8f1502cd2612508a4c4f734a6c0c95742e0616f6ac",
+      "after_sha256": "f79295babb92e8634f26ded4fbe195757a0df322fa1a30c12c2b09f45fe4ea57"
+    },
+    {
+      "workflow": ".github/workflows/nuget-contract.yml",
+      "job_definitions": [
+        "version"
+      ],
+      "groups": [
+        "cratectl-nuget-libraries-${{ github.ref }}-${{ matrix.arch }}"
+      ],
+      "all_other_yaml_data_equal": true,
+      "before_sha256": "71abd9b4cb5900ed32eb83e2da99ba0d1970c9701f651778d091f6c0bb6ac1f3",
+      "after_sha256": "9c0269a08861397c8746855b21cb392cffb71536b7a605201117e18e1def9934"
+    },
+    {
+      "workflow": ".github/workflows/oci-clients.yml",
+      "job_definitions": [
+        "clients"
+      ],
+      "groups": [
+        "cratectl-oci-${{ github.ref }}-${{ matrix.arch }}"
+      ],
+      "all_other_yaml_data_equal": true,
+      "before_sha256": "e60e0208a653807c7100e657617b6551c29035ba1a7833e71d5946b942dedb74",
+      "after_sha256": "0cd8c6fa91d866aa829b574c6ebef25c6d42ebf27e9b4e4afbf6972aec2e24b4"
+    },
+    {
+      "workflow": ".github/workflows/upgrade-qualification.yml",
+      "job_definitions": [
+        "upgrades"
+      ],
+      "groups": [
+        "cratectl-upgrades-${{ github.ref }}-${{ matrix.arch }}"
+      ],
+      "all_other_yaml_data_equal": true,
+      "before_sha256": "ef5490e0d9bb1a7a03cb61ddf65ef4ca48975c2840d38b9048a63ee14b225a54",
+      "after_sha256": "596bc618a8794d4ae720a4df19920288569b613255ed8e456cb953f1e3c78c32"
+    }
+  ],
+  "validation": "Ruby YAML parses all5before/after workflows. Remove original whole-workflow concurrency and new job concurrency fields, then require all remaining YAML data exactly equal. Seven job definitions, every trigger, matrix case, step, action, command, permission, timeout and failure behavior preserved. No source or test case changes.",
+  "policy": [
+    "No whole-workflow concurrency remains in the six project qualification workflows. Keys distinguish ref, job/client class and native architecture; SBT also distinguishes series, focused browser distinguishes selected journey.",
+    "Running main jobs keep cancel-in-progress=false; PR work can supersede the same job/profile. Default one pending tip can coalesce; a canceled/unexecuted case never passes.",
+    "New independent groups do not cancel earlier running workflow definitions. Retain every existing1e9/0efa/6a/3bhandle and exact source before interpreting a replacement. No manual cancel/restart/duplicate dispatch."
+  ],
+  "expected_inventory": "Editing all5workflowpaths selects all6projectworkflows: main9/JVM8/OCI2/upgrades2/focused3/NuGetlibraries2=26expected jobs; enumerateactualfullSHA runs and do not infer missing lanes as passes.",
+  "limits": [
+    "Main cross-run native independence is observed separately on0efa vs1e9, including seven unexecuted cancellations; it is not a whole-campaign or performance pass.",
+    "Other5workflow scheduling remains implemented but unverified until actual candidate job/runner identities are observed. Global GitHub quotas/capacity and every queue cause are separate.",
+    "All product/case/test/runtime work is unchanged in this commit. The five new snapshot PG tests, native647baseline, full119check15workflowChromium and all other source-bound qualification still need execution.",
+    "All450capabilities/41families/laterstages remain required; broad readiness/fullsecurity/packaging false. No primary/sibling/customer/release/delegation changes."
+  ]
+}
