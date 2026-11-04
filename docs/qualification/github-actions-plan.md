@@ -13,50 +13,33 @@ outside this CI authority. No autonomous delegation.
 
 ## Current qualification state
 
-Exact `1974d94` passes all 23 actually selected jobs: main9/JVM8/OCI2/
-upgrades2/library2. Its 17 safe summaries bind exact clean source/native binaries,
-actual tools, fixture bytes and artifact IDs/digests. Both native Linux hosts
-pass real PostgreSQL integration/timing/race, all five snapshot receipt/policy/
-tenant/queue/concurrency regressions and all 663 baseline checks. Maven retains
-one cache through initial/updated unique snapshots and registry restart, with
-four mandatory stages/six publisher-reference-HTTP-cache bindings. Full x86
-Chromium passes 119 checks/all15workflows with zero bad/skipped/flaky results.
-All three native source/unit/race/lint and fuzz jobs pass, including macOS ARM.
-See the [whole observed checkpoint](../../evidence/2026-11-04/github-1974d94-checkpoint.json).
-The focused repetition workflow was not selected; its earlier results remain
-separate. Whole observed success does not qualify the full product goal.
+Exact `0edd1a4` passes all 21 actually selected jobs: main9/JVM8/OCI2/
+upgrades2. All 15 accepted safe summaries bind exact source/native binaries,
+actual tools, fixture bytes and artifact identities. Both baselines pass663,
+real PostgreSQL normal/race/five snapshot regressions and four Maven warm-cache
+stages/six bindings. Full x86 Chromium passes119/all15workflows without skipped,
+flaky or unexpected results. All three native source and fuzz jobs pass,
+including macOS ARM. See the [whole observed checkpoint](../../evidence/2026-11-04/github-0edd1a4-checkpoint.json).
+Library/focused-browser workflows were not selected on this source; earlier
+[1974 library proof](../../evidence/2026-11-04/nuget-1974d94-checkpoint.json)
+remains separate with both actual SDK10.0.403/runtime10.0.14 contracts passing
+all37original assertions. Whole observed success does not qualify the full goal.
 
-That source also passes Ivy654/nine stages/34bindings on both hosts, Gradle199/
-eight/24 and four SBT release profiles161/seven/12, plus OCI214perhost and two
-controlled-upgrade jobs with ten historical pins/15reports each. Both exact
-SDK10.0.403 library jobs pass their original37assertions/unchanged corpora with
-zero mismatches; actual runtime10.0.14 and NuGet7.9.0.0DLLhashes remain separate.
-The feed baseline also uses actualSDK10.0.403 and passes56HTTPcases before/
-after restart. `global.json` disables SDK roll-forward/prereleases; runtime
-patches remain observations. Preserve the older636x86SDK10.0.402 result under
-its actual source. See [library proof](../../evidence/2026-11-04/nuget-1974d94-checkpoint.json)
-and the official [SDK selection](https://learn.microsoft.com/en-us/dotnet/core/tools/global-json)
-and [setup action](https://github.com/actions/setup-dotnet) contracts.
+The accepted JVM campaign includes Ivy666/cache-v4/ten stages/34wire plus six
+retained-cache bindings per host, Gradle199/eight/24 and four SBT release
+profiles161/seven/12. Both OCI214 and both upgrade10pins/15reports pass.
+Ivy retains the same changing consumer/cache/module through initial/update/
+restart, exact changed POM/JAR bytes and the first observations before overwrite.
+Warm proxy snapshot/offline/fault and broader lifecycle requirements remain open.
 
-The later `maven-snapshot-cache-v4` Ivy extension passes on both actual Linux
-hosts at `0edd1a4`:666checks/10stages/34originalwirebindings plus6cachehashes.
-Distinct POM and JAR publications, ordered first/update/restart observations and
-same cache/module markers are mandatory. First identities survive cache update.
-See the [named checkpoint](../../evidence/2026-11-04/ivy-cache-0edd1a4-checkpoint.json).
-Whole0eddacceptance remains separate; warm proxy snapshot/offline/fault and
-broader JVM/lifecycle requirements remain open.
-
-The next SBT revision preserves all original161release-case assertions and adds
-eight ordered snapshot cases: default immutability, opt-in replacement, current
-review, fresh exact resolution, holds, policy disablement, restart and revocation.
-It requires8stages/18publisher-reference-HTTPbindings and an expected269checks
-on each of four native series/architecture jobs. All commands still start from
-fresh frozen tool-only caches; this is not SBTwarm-cache proof. Five contract,
-16exporter and six unchanged fixture tests plus full lint pass locally. No local
-JVM/PG runs. See the [development record](../../evidence/2026-11-04/sbt-snapshots-development.json).
-New native acceptance is required. Expected path selection is main9/JVM8/OCI2/
-upgrades2 (21jobs); enumerate actual full-SHA runs. Existing0edd/1974handles
-remain separate; no duplicate dispatch or canceled started main job.
+At later exact `0cff4b8`, SBT snapshot-v2 passes all four series/architecture jobs:
+SBT1.13.0 and2.0.11 each pass269checks/eight stages/eight snapshot cases/18bindings
+on native Linux x86 and ARM. Every original release case remains. These commands
+use fresh project caches copied from frozen tool-only seeds; warm project caches
+are unqualified. See the [named checkpoint](../../evidence/2026-11-04/sbt-snapshots-0cff4b8-checkpoint.json).
+The whole campaign is incomplete:19jobs pass and two macOS jobs remain queued.
+No duplicate dispatch, retry or skipped-job acceptance. All actual JVM/SDK/
+PostgreSQL campaigns run on GitHub; local tests use small owned stand-ins.
 
 All original first failures/capacity cancellations remain retained. The c030
 Maven fixture's missing re import now has both663native replays. Original9b
@@ -85,8 +68,8 @@ permissions, cases and concurrency remain. The reviewed
 saves only after job success. Whole ignored directories, private credentials,
 databases, extracted tools and consumer caches are outside these paths.
 Native miss/save/hit and boundedinstallation still require actual evidence;
-no timing benefit is inferred. Existing0cffSBTjobs were last observed unassigned and are
-not passes. The new revision selects21expected jobs; enumerate actual full SHA.
+no timing benefit is inferred. The f91 revision selects21actual jobs, currently queued/pending. Enumerate the
+actual full SHA and retain placement/step evidence before native acceptance.
 Other JVM/tool-cache opportunities remain separate required placement reviews.
 
 The following campaign notes are historical.
@@ -144,7 +127,7 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 | `ci.yml`: PostgreSQL and stock clients / 2 | Both native Linux architectures; real PostgreSQL16.15 | Integration/race, bounded timing, durable jobs/leases, integrity and baseline client/recovery journeys; 120-minute job. Full Chromium suite only on x86. ARM browser placement is skipped and never counted as passing. |
 | `jvm-clients.yml`: Gradle / 2 | Both native Linux architectures; real PostgreSQL | Gradle9.8.2, exact JDK21 build, eight stages and24 publisher/reference/raw-HTTP digests. 60-minute job. Named v2 profile passes; broader JVM remains open. |
 | `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0 and exact JDK. Cache-v4 passes666checks/10stages/34wire+6cachebindings on both hosts at0edd, retaining all release/metadata/snapshot/SHA-2 cases. 60-minute job. Broader Ivy remains open. |
-| `jvm-clients.yml`: SBT / 4 | SBT1.13.0 and2.0.11, each on native Linux amd64/arm64; real PostgreSQL | Release profiles161checks/7stages/12bindings pass all4cases at1974. New snapshot-v2 requires expected269checks/8stages/8snapshotcases/18bindings; unverified. Frozen tool-only boot cache/fresh project caches. Five-minute bootstrap, two-minute commands, 60-minute job. |
+| `jvm-clients.yml`: SBT / 4 | SBT1.13.0 and2.0.11, each on native Linux amd64/arm64; real PostgreSQL | Snapshot-v2 passes269checks/8stages/8snapshotcases/18bindings on all4cases at0cff, retaining every release case. Frozen tool-only boot cache/fresh project caches. Five-minute bootstrap, two-minute commands, 60-minute job. |
 | `nuget-contract.yml`: libraries / 2 | Both native Linux architectures; exact SDK10.0.403 selection | Original37assertions/unchanged dense corpora pass both at1974, actual runtime10.0.14 and separate DLLhashes. 20-minute job. Does not replace actual NuGet HTTP/restore/restart proof. |
 | `oci-clients.yml`: native clients / 2 | Both native Linux architectures; Docker, Podman, Helm, real PostgreSQL | Actual publication/consumption and policy/tenant/recovery cases with inert owned data; 45-minute job. Do not execute the uploaded image. External-provider interoperability is separate. |
 | `browser-repair.yml`: focused / 3 on relevant pushes | Native x86 Chromium; five fresh PostgreSQL databases per selected journey | Repair, retention and NuGet each repeat five complete journeys; 45-minute job. Manual dispatch selects one. Stop on failure; no retries/skips count as acceptance. |

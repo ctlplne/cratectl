@@ -87,8 +87,10 @@ Official contracts: [publication and credentials](https://www.scala-sbt.org/2.x/
 [2.x API/command migration](https://www.scala-sbt.org/2.x/docs/en/changes/migrating-from-sbt-1.x.html).
 
 
-The new `maven-snapshots-v2` journey is implemented but unverified until both
-SBT series pass on both actual Linux architectures. It retains every original
+The `maven-snapshots-v2` journey passes at exact `0cff4b8` on SBT1.13.0 and
+SBT2.0.11, each on both actual Linux architectures: 269 checks, eight stages,
+eight snapshot cases and 18 publisher/reference/HTTP byte bindings. See the
+[native checkpoint](../../evidence/2026-11-04/sbt-snapshots-0cff4b8-checkpoint.json). It retains every original
 release case and adds eight ordered snapshot cases through the common Maven
 store: default immutability, explicit hosted replacement policy, current digest
 review, fresh exact transitive resolution, holds, policy disablement, restart and

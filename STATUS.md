@@ -4,67 +4,52 @@ The full goal is active. All 450 capabilities / 41 families and every later
 stage remain committed. Broad readiness, full security and packaging remain
 negative. Both commit identities remain exactly `imfeelingtheagi` on main.
 
-Exact `1974d94` passes all 23 jobs actually selected: main nine, JVM eight,
-OCI two, controlled upgrades two and native NuGet libraries two. All 17 safe
-summaries bind exact clean source/native binaries, actual tools and artifact
-identities. Both native Linux baseline campaigns pass 663 checks, including
-all four Maven retained-cache stages/six byte bindings, real PostgreSQL
-integration/timing/race and the five snapshot receipt/concurrency regressions.
-Full x86 Chromium passes 119 checks/all 15 workflows with zero unexpected,
-skipped or flaky results. All three native source and fuzz jobs pass, including
-macOS ARM. See `evidence/2026-11-04/github-1974d94-checkpoint.json`.
-This is the latest fully accepted whole observed campaign; focused browser
-repetitions were not selected on this source and remain separate earlier proof.
+Exact `0edd1a4` passes all 21 jobs actually selected: main nine, JVM eight,
+OCI two and controlled upgrades two. All 15 accepted safe summaries bind exact
+clean source/native binaries, actual tools, fixture bytes and artifact identities.
+Both native Linux baselines pass 663 checks, four Maven retained-cache stages
+and six byte bindings, real PostgreSQL integration/timing/race and all five
+snapshot receipt/concurrency regressions. Full x86 Chromium passes 119 checks
+and all 15 workflows with zero unexpected, skipped or flaky results. All three
+native source and fuzz jobs pass, including macOS ARM. See
+`evidence/2026-11-04/github-0edd1a4-checkpoint.json`.
 
-That exact JVM campaign retains Ivy 654/nine stages/34 byte bindings per host,
-Gradle 199/eight/24 and four SBT release profiles 161/seven/12. OCI passes 214
-checks per host; both upgrade jobs rebuild ten historical pins and pass 15
-reports. SDK 10.0.403 feed/56 HTTP metadata cases and both native 37-assertion
-library contracts pass with zero mismatches; actual library runtimes are
-10.0.14 and DLL versions/hashes remain recorded. Original x86 SDK 10.0.402
-observations at `636dea9` are preserved under that source.
+That JVM campaign includes Ivy cache-v4: 666 checks, ten stages, all original
+metadata/snapshot/SHA-2 cases and 34 publisher/reference/HTTP bindings plus six
+original cached POM/JAR hashes per host. One changing consumer retains its cache
+and module identity through initial/update/restart; first observations survive
+replacement. Gradle passes 199 checks/eight stages/24 bindings on both hosts.
+SBT release profiles pass 161/seven/12 on each of four series/architecture jobs.
+OCI passes 214 checks per host; both upgrade jobs rebuild ten historical pins
+and pass 15 reports. Library and focused-browser jobs were not selected at
+this source. Earlier exact `1974d94` library proof remains separate: both actual
+SDK10.0.403/runtime10.0.14 contracts pass all 37 original assertions with zero
+mismatches. See `evidence/2026-11-04/nuget-1974d94-checkpoint.json`.
 
-The later Ivy cache extension is verified on both native Linux hosts at exact
-`0edd1a4`: 666 checks, ten stages, all original metadata/snapshot/SHA-2 cases
-and 34 publisher/reference/HTTP bindings plus six original cached POM/JAR
-hashes. One changing consumer retains cache/module identity across initial,
-updated snapshots and actual registry restart. Both actual POMs and JARs change;
-first observations remain retained before replacement. See
-`evidence/2026-11-04/ivy-cache-0edd1a4-checkpoint.json`. Whole `0edd1a4` campaign
-acceptance remains separate; no warm proxy/offline/fault/full JVM claim.
+The later SBT snapshot-v2 profile is now verified at exact `0cff4b8` on both
+SBT1.13.0 and SBT2.0.11, each on actual Linux x86 and ARM GitHub runners. All
+four pass 269 checks, eight stages, eight snapshot cases and 18 exact byte
+bindings. Original release cases remain intact. Default immutability, explicit
+replacement policy, current review, fresh resolution, holds, policy disablement,
+restart and revocation pass. These are fresh project caches, not warm-cache
+proof. See `evidence/2026-11-04/sbt-snapshots-0cff4b8-checkpoint.json`.
+Whole `0cff4b8` acceptance remains open: 19 jobs pass while macOS source and
+fuzz are still queued in the latest observation. They never count as passes.
 
-The next SBT snapshot profile is implemented but unverified. All original
-release commands/cases and twelve byte bindings remain; eight snapshot cases
-add default immutability, explicit replacement policy, current review, exact
-fresh resolution, holds, policy disablement, restart and revocation. It requires
-eight stages, 18 publisher/reference/HTTP bindings and an expected 269 checks
-on each of the four actual series/architecture jobs. Five contract, 16 exporter
-and six unchanged fixture tests plus full lint pass locally. No JVM/SDK or
-PostgreSQL ran locally. See
-`evidence/2026-11-04/sbt-snapshots-development.json`.
+Bounded ORAS/Helm setup and pinned public archive caching are implemented at
+`f91f19a` but native integration remains unverified. Ten local stand-in/kernel/
+deadline/privacy tests and full lint pass. Original qualification commands and
+budgets remain. All 21 selected jobs are queued/pending in the latest observation;
+no native download, cache-save/hit or speedup claim. See
+`evidence/2026-11-04/native-tool-archive-cache-development.json`.
 
-The original `c030aa0` missing-import Maven failure is preserved: both hosts
-stopped after 231 checks before warm client identity. Its repair now has both
-native 663-check passes at `1974d94`. Earlier browser timeouts, dotnet 401,
-bootstrap failures and runner-capacity cancellations remain retained. Later
-passes cannot recover missing original diagnostics or prove the unknown
-original timeout/401 causes. Skipped/unexecuted jobs never count as passes.
-
-CI queues independently by profile/platform and preserves running main jobs,
-every original command and client/job budget. Actual source-specific run
-handles remain in durable records; no blind restart or duplicate dispatch.
+All original failures and cancellations remain retained. The original missing
+Maven import now has both native replays. Later passes cannot establish unknown
+original browser timeout/dotnet401 causes or recover missing private diagnostics.
+CI queues independently by profile/platform and preserves running main jobs.
+No duplicate dispatch. No real JVM/SDK/PostgreSQL campaign ran locally.
 All broader formats, faults, source/grant races, lifecycle/GC, migration,
 production platforms, scale and later goal stages remain required.
-
-The next CI revision bounds ORAS/Helm setup and caches their pinned public
-archives on GitHub. It rechecks every restored archive, enforces 32/64MiB child
-file limits, 15/180/195-second connect/transfer/process bounds and atomic verified
-publication. Ten local stand-in/kernel/deadline/privacy tests and full lint pass.
-Three cache steps use an immutable reviewed action commit, OS/architecture/source
-keys and explicit transfer budgets. Every original qualification command remains.
-Native cold-fetch/cache integration is unverified; no cache-hit or speedup claim.
-See `evidence/2026-11-04/native-tool-archive-cache-development.json`.
-Existing `0cff4b8` SBT jobs were last observed unassigned and never count as passing.
 
 No primary, selected binary, data, credential, sibling or customer change.
 Earlier notes below are historical and do not override this current state.
