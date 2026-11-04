@@ -59,7 +59,9 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: '21.0.13+9'
+          # Temurin's API advertises this OpenJDK build with its LTS suffix.
+          # The client profile independently checks JAVA_RUNTIME_VERSION.
+          java-version: '21.0.13+9.0.LTS'
       - name: Prepare native registry, PostgreSQL and pinned Gradle
         env:
           CRATECTL_CI_POSTGRES_CONTAINER_ID: ${{ job.services['cratectl-postgres'].id }}

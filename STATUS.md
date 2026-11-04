@@ -1,14 +1,21 @@
 # cratectl execution status
 
-Owner requested pause and graceful halt on 2026-11-03. Implementation through
-`7ea5ee734eb0ce056c0d7c999852ee65697016e8` is committed and pushed. The native
-x86 Gradle profile passes 123 checks; ARM fails during Java setup before any
-Gradle journey. The cause remains uninvestigated. Other source campaigns were
-still live at the last observation. Exact results and limits are retained in
-`evidence/2026-11-03/gradle-7ea5ee7-partial-checkpoint.json`. The halt records are
-committed locally without pushing or cancelling existing GitHub runs. Resume
-only at the owner's direction. All 450 capabilities / 41 families remain in
-scope; the goal is incomplete and all broad readiness verdicts remain negative.
+Owner resumed the full goal after the 2026-11-03 graceful halt. Current work
+repairs the native ARM Gradle setup failure and strengthens publication evidence.
+The completed `7ea5ee7` campaign has 17 passing jobs out of 18: all 16 earlier
+source/PostgreSQL/client/browser/OCI/upgrade jobs pass, and x86 Gradle passes
+123 checks. ARM Gradle never starts: setup-java v5 requests `21.0.13+9` while
+the upstream advertises `21.0.13+9.0.LTS`. The exact original failure and all
+12 safe summaries are retained in
+`evidence/2026-11-03/github-7ea5ee7-checkpoint.json`. Whole-candidate acceptance
+remains false. The owner halt commit is preserved in main history.
+
+The repair requests the advertised Java build while keeping the independent
+exact runtime check. The new `publication-wire-v2` profile requires all 24
+publisher outputs to match retained paths/digests/sizes and independent HTTP
+readback, including tenant B and two distinct snapshot builds. It preserves
+the original eight stages and cases. New native results remain unverified.
+All 450 capabilities / 41 families remain in scope; broad readiness is false.
 
 Owner resumed the complete `GOAL.md` scope on 2026-11-02 and reaffirmed that
 both author and committer must be `imfeelingtheagi`. The current work finishes

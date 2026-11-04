@@ -12,10 +12,12 @@ DIAGNOSTICS = {'http_401', 'http_403', 'http_404', 'fixture_compilation', 'varia
 
 
 def safe_gradle_contract(value, status):
-    fields = {'version', 'distribution_sha256', 'launcher_sha256', 'fixture_source_sha256',
-              'fixture_sha256', 'completed', 'phase', 'diagnostics', 'java_version', 'java_launcher_sha256', 'java_release_sha256'}
+    fields = {'profile', 'version', 'distribution_sha256', 'launcher_sha256', 'fixture_source_sha256',
+              'fixture_sha256', 'reference_sha256', 'wire_sha256', 'completed', 'phase', 'diagnostics', 'java_version', 'java_launcher_sha256', 'java_release_sha256'}
     if not isinstance(value, dict) or set(value) != fields:
         raise ValueError('Gradle evidence fields are outside the reviewed profile')
+    if value['profile'] != 'publication-wire-v2':
+        raise ValueError('Gradle evidence must identify the publication/readback profile')
     if not isinstance(value['version'], str) or not re.fullmatch(r'9\.\d{1,3}\.\d{1,3}', value['version']):
         raise ValueError('Gradle version is outside the pinned profile')
     if not isinstance(value['java_version'], str) or not re.fullmatch(r'21\.\d{1,3}\.\d{1,3}\+\d{1,3}(?:-LTS)?', value['java_version']):
@@ -35,6 +37,12 @@ def safe_gradle_contract(value, status):
     allowed = {name + '_' + ext for name in FIXTURES for ext in ['jar', 'pom', 'module']}
     if not isinstance(fixtures, dict) or not set(fixtures) <= allowed or any(not isinstance(v, str) or not re.fullmatch('[0-9a-f]{64}', v) for v in fixtures.values()):
         raise ValueError('Gradle fixture identities are outside the bounded owned set')
+    for name in ['reference_sha256', 'wire_sha256']:
+        observed = value[name]
+        if not isinstance(observed, dict) or not set(observed) <= set(fixtures) or any(v != fixtures[k] for k, v in observed.items()):
+            raise ValueError('Gradle retained/wire identities must match the owned publisher bytes')
+        if status == 'passed' and set(observed) != allowed:
+            raise ValueError('Passed Gradle evidence requires every retained and raw HTTP representation')
     if status == 'passed' and (value['phase'] != 'complete' or completed != STAGES or set(fixtures) != allowed or diagnostics):
         raise ValueError('Passed Gradle evidence requires every fixture and mandatory stage')
-    return {**value, 'fixture_sha256': dict(sorted(fixtures.items())), 'diagnostics': sorted(diagnostics)}
+    return {**value, **{name: dict(sorted(value[name].items())) for name in ['fixture_sha256', 'reference_sha256', 'wire_sha256']}, 'diagnostics': sorted(diagnostics)}

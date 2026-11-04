@@ -483,8 +483,10 @@ snapshot publications, and reject revoked writer/reader credentials. Every
 consumer has a fresh client cache and one declared cratectl source. Uploaded
 packages contain no build scripts, classes or plugins; only owned fixture build
 rules and bundled Gradle plugins run. All eight ordered stages and all 24
-fixture hashes are mandatory for a passing safe summary. The profile and lane
-are implemented but await their first native results.
+fixture hashes are mandatory for a passing safe summary. The first profile
+passes 123 checks on x86 at `7ea5ee7`; ARM stops at Java setup. The exact
+[18-job checkpoint](../../evidence/2026-11-03/github-7ea5ee7-checkpoint.json)
+retains 17 successes and the original failure. No ARM client pass is inferred.
 
 Owned client process groups have time/output limits and are stopped even if a
 descendant ignores termination. A timed-out publication is unconfirmed. Safe
@@ -506,3 +508,31 @@ Ten unchanged summaries retain exact identities in
 The OCI run was initially unobserved and later confirmed through the same
 exact-commit listing; it was not restarted. Earlier library evidence remains
 on its own exact `080c312` source. This milestone predates the new JVM profile.
+
+
+The ARM setup failure is an exact build-metadata mismatch: setup-java v5
+compares `21.0.13+9` against the advertised `21.0.13+9.0.LTS`. The repair
+requests the complete advertised selector on both native runners and retains
+the independent exact `JAVA_RUNTIME_VERSION` check before client work. See
+the [v5 selector](https://github.com/actions/setup-java/blob/v5/src/util.ts)
+and [Temurin installer](https://github.com/actions/setup-java/blob/v5/src/distributions/temurin/installer.ts).
+A new successful run must identify its own source and binary bytes; a retry
+cannot rewrite the original failure.
+
+The `publication-wire-v2` evidence closes a separate coverage gap. The prior
+24 hashes identify publisher-generated output; native consumers compare exact
+JAR bytes but do not independently read back raw POM/module bytes. Every new
+publication must match retained paths, digests and sizes, then independently
+read all three representations over HTTP. Snapshot references must share the
+JAR timestamp/build, and publishing the next snapshot must preserve the old
+files. Tenant B uses its own inventory. Safe exports require all 24 publisher,
+reference and wire digests to agree; an old summary cannot satisfy this profile.
+The original eight stages and client expectations remain mandatory.
+
+Next JVM offload work remains Ivy/SBT on actual native hosts, richer variants,
+classifiers/parents, TLS/private trust, interrupted publication and recovery.
+Use small local stand-ins for mapping/privacy failures and GitHub-hosted real
+PostgreSQL/clients for protocol proof. Preserve original failing cases and
+partial evidence; do not rerun unrelated completed campaigns merely because
+a prior observation expired. Full format/platform/lifecycle/security, storage,
+packaging, independent-host scale and every later GOAL stage remain required.

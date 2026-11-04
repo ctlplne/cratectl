@@ -6,8 +6,10 @@ describes Maven dependencies; Gradle Module Metadata describes Gradle variants
 and dependencies. Both metadata files and the exact JAR remain governed by the
 common repository authorization, digest decisions and storage path.
 
-The new Gradle 9.8.2/JDK 21 qualification profile is implemented but has not yet
-run on GitHub. Existing stock Maven results do not qualify this client. Use the
+The first Gradle 9.8.2/JDK 21 profile passes 123 checks on native Linux x86
+at `7ea5ee7`. ARM stops during Java setup before any client journey. The
+[exact checkpoint](../../evidence/2026-11-03/github-7ea5ee7-checkpoint.json) retains
+that failure. The strengthened profile below awaits native replay. Use the
 [Maven guide](maven.md) for the currently named Maven scope and limits.
 
 Configure a normal Gradle Maven repository with a reader credential supplied by
@@ -55,8 +57,13 @@ Client commands have a two-minute deadline, an 8 MiB private output limit, two
 Gradle workers and an owned process group that is stopped on completion or
 failure. A timeout leaves a publication outcome unconfirmed. Raw client output,
 credentials and private paths stay on the disposable runner. Safe summaries
-contain reviewed stage codes, exact source/tool hashes and the 24 owned
-JAR/POM/module fixture digests. Partial stages cannot produce a passing summary.
+contain reviewed stage codes, exact source/tool hashes and all 24 owned
+JAR/POM/module digests. The `publication-wire-v2` profile separately binds each
+publisher file to the retained path, digest and size, then compares raw HTTP
+bytes. Snapshot metadata must use the same timestamp/build as its JAR; a
+second snapshot must preserve the first timestamped publication. Tenant B uses
+its own inventory and credentials. Partial stages or missing readbacks cannot
+produce a passing summary. The original x86 result predates these checks.
 
 Ivy and SBT, other Gradle/JDK/platform versions, richer variant/plugin/build
 graphs, production TLS, interruptions, every lifecycle/migration/scale case and

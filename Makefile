@@ -30,6 +30,7 @@ lint:
 	python3 scripts/test_bounded_client.py
 	python3 scripts/test_conformance_profile.py
 	python3 scripts/ci/test_gradle_evidence.py
+	python3 scripts/test_gradle_publication.py
 	python3 scripts/test_ci_native_diagnostics.py
 console:
 	python3 scripts/build_console.py

@@ -1,0 +1,58 @@
+{
+  "source_parent": "2aef6b7997a37bcc5f1c1d6d5d6b5daeb8fd031b",
+  "source_dirty": true,
+  "status": "implemented but native replay unverified",
+  "previous_failure": "evidence/2026-11-03/github-7ea5ee7-checkpoint.json",
+  "changes": [
+    "Request the exact advertised Temurin API selector21.0.13+9.0.LTS; retain independent runtime/native identity checks.",
+    "Bind every publisher JAR/POM/module to its exact retained coordinate/digest/size and independently read the raw HTTP bytes. Preserve all8stages/all24fixtures.",
+    "Snapshot metadata shares the unique JAR timestamp/build; publishing the second snapshot preserves the first. TenantB inventory uses its own credential.",
+    "Safe publication-wire-v2 evidence requires all24publisher/reference/wire digests and rejects missing or substituted observations."
+  ],
+  "checks": {
+    "make_build": {
+      "status": "passed",
+      "output": ".cache/gradle-wire-v2-build",
+      "log_sha256": "116cb5842df613c891039d9d387ffe3a290ea41014e84ae75f515be8ce200b2d"
+    },
+    "make_lint": {
+      "status": "passed",
+      "log_sha256": "8eabcb3fbb49604166798b4af997678f89bb0ca87a6627e21afee2f8a9ed1ac5"
+    },
+    "mapping_regressions": "3passed: exact releases/digests/sizes, timestamped metadata substitution, mutable alias/coordinate/ambiguous build/budget rejection",
+    "safe_evidence_regressions": "4passed; exporter integration9passed",
+    "syntax": "Python compile and actionlint1.7.12 passed"
+  },
+  "files": [
+    {
+      "path": ".github/workflows/jvm-clients.yml",
+      "sha256": "6446ec34a9ad8466b97e8cdf061980838f55b063c461a8320217b4e41aee0c73"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "26473da9ae8cb8ead640684f7062f08688ec50bd4339a190171f3a1267e36d62"
+    },
+    {
+      "path": "scripts/conformance_gradle.py",
+      "sha256": "8535a28bc6e15bfa754b34d402ab45b7736a30f91c127fd3a7b9d2b3bc55d33e"
+    },
+    {
+      "path": "scripts/ci/gradle_evidence.py",
+      "sha256": "2d743e9dd4aa7b07391c346c818053092d49c7c1a6bba649cf560682468d5c13"
+    },
+    {
+      "path": "scripts/ci/test_gradle_evidence.py",
+      "sha256": "9fbf7b108259839b1c1bc1461cbeaf7e280d3556ab1f18df160c34a86b3cf2c2"
+    },
+    {
+      "path": "scripts/test_gradle_publication.py",
+      "sha256": "608ed38ba145fa436ae70fa119497308d7e3befb5f2b277deff9075c985cb394"
+    }
+  ],
+  "limits": [
+    "Local ARM source checks and Python stand-ins only; no local Gradle/JVM/PostgreSQL integration was run.",
+    "Native real PostgreSQL and Gradle campaigns must run on GitHub for both architectures. No native-v2 result is claimed.",
+    "All450capabilities/41families and later GOAL stages remain committed; all broad readiness false.",
+    "No primary binary/database, sibling/customer, release or package publication changes."
+  ]
+}
