@@ -1,0 +1,45 @@
+{
+  "observed_at": "2026-11-04T15:14:30.496869+00:00",
+  "source_parent": "42f93663f0c047713c48bc76f4df4e4f21c26252",
+  "source_dirty": true,
+  "state": "implemented; local owned-process stand-ins pass; native baseline/JVM replay unverified",
+  "source_sha256": {
+    "scripts/bounded_client.py": "2415e6cb50fca6785af97ea07797046d823dd89ade01e522f97475c06a0120b8",
+    "scripts/conformance.py": "fe29c48242391fafdc1ea79b505faa588cf20e08922a45bb7546c4e38bd5fec9",
+    "scripts/test_bounded_client.py": "1075b1a5e1668dcba02f6e62660fa8b8420920509c38969713ff63cef5220a61"
+  },
+  "change": [
+    "Replace baseline conformance.run unbounded subprocess output capture with the owned-client deadline/process-group path.",
+    "Drain merged output through a nonblocking kernel pipe; reject bytes beyond8MiB without unlimited disk spooling. Memory retains only requested bounded result plus one64KiBread chunk.",
+    "JVM consumers keep64KiBcapture; baseline commands explicitly capture up to8MiBso complete larger structured JSON survives. Public observations remain redacted12Kcharacters.",
+    "Private unlinked mode0600input file supplies at most1MiBUTF8text; absent input isEOF and does not deadlock against full output.",
+    "Terminate remaining owned-group processes on success,error,timeout and excess output. Explicitly detached sessions remain outside the guarantee."
+  ],
+  "local_validation": {
+    "make_lint": "passed with required owned-process cleanup permission",
+    "log": ".cache/baseline-client-bounds-lint.log",
+    "sha256": "be8db89f6bb08161d45768da30473ec87556f7e9cd19cecde26d224d794ce50d",
+    "bounded_client_tests": 7,
+    "specific_regressions": [
+      "complete200KJSON",
+      "default64KiBtail/nonzeroexit",
+      "exactprivateUTF8stdin/EOF/mode0600",
+      "input/capturelimitsrejectbeforespawn",
+      "outputbudgetfailure",
+      "deadlinekillsSIGTERMignoringchild",
+      "successfulparentkillschildholdingoutputpipe"
+    ],
+    "first_sandbox_attempt": {
+      "log": ".cache/baseline-client-bounds-first-sandbox-failure.log",
+      "sha256": "5b9e92f1e32c89ddc2d2a183e6c0ae8e272d28efab812bf6532cfc7147429341",
+      "result": "Sandbox denied SIGKILL of owned test group after parent exit. Full unchanged test replay passed with process cleanup permission; no skip or relaxed assertion."
+    }
+  },
+  "native_qualification": "Await actual baseline clients,ORASstdincredentials,SDKHTTPJSON,Maven and JVM profiles on a later exactsource. Queued42f9366jobs predate this revision and cannot qualify it.",
+  "limits": [
+    "Baselineconformance.run and owned JVM helper only; direct library/build probes,HTTP response helpers and other orchestration still require independent bounds review.",
+    "POSIXonly; Windows, detached-session/cgroup containment remain open. Timeout never proves remote rollback.",
+    "No local real JVM/PostgreSQL campaign, primary/data/selectedbinary/customer/sibling change or release/package/image publication.",
+    "All450capabilities/41families and laterGOALstages retained; broad readiness,fullsecurity,packaging false."
+  ]
+}

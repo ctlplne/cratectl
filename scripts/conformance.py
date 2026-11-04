@@ -5,6 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 import xml.etree.ElementTree as XML
 from pathlib import Path
 from qualification_contract import candidate_binary_directory, candidate_artifact_names
+from bounded_client import run_owned_client
 parser=argparse.ArgumentParser(description='Baseline format campaign or an explicitly selected extended stock-client profile.')
 parser.add_argument('profile',nargs='?',default='all',choices=['all','generic','npm','npmproxy','pypi','pypiproxy','oci','ociproxy','maven','proxy','sourceconfig','nuget','gradle','ivy'])
 parser.add_argument('--require-clean-build',action='store_true')
@@ -21,16 +22,17 @@ tokens={};checks=[];commands=[];proc=None;logfile=None
 
 def run(args,cwd=ROOT,extra=None,input_text=None,expect_failure=False):
  e=dict(env);e.update(extra or {})
- result=subprocess.run([str(a) for a in args],cwd=cwd,env=e,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,timeout=120,input=input_text)
- output=result.stdout
+ # Baseline clients can emit structured results larger than a diagnostic tail.
+ # Retain their complete bounded result while keeping public observations small.
+ code,output=run_owned_client(args,cwd,e,input_text=input_text,capture_limit=8<<20)
  for token in tokens.values():output=output.replace(token,'[REDACTED]')
  public_args=[str(a).replace(str(PRIVATE),'PRIVATE') for a in args]
  for token in tokens.values():public_args=[arg.replace(token,'[REDACTED]') for arg in public_args]
- commands.append({'argv':public_args,'exit':result.returncode,'output':output[-12000:]})
- if result.returncode and not expect_failure:raise AssertionError(f'{args[0]} exited {result.returncode}: {output[-3000:]}')
+ commands.append({'argv':public_args,'exit':code,'output':output[-12000:]})
+ if code and not expect_failure:raise AssertionError(f'{args[0]} exited {code}: {output[-3000:]}')
  if expect_failure:
   commands[-1]['expected_failure']=True
-  if result.returncode==0:raise AssertionError(f'{args[0]} unexpectedly succeeded')
+  if code==0:raise AssertionError(f'{args[0]} unexpectedly succeeded')
  return output
 
 def req(p,token='admin',method='GET',data=None,key=None,headers=None):

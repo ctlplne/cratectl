@@ -34,6 +34,13 @@ This new profile is implemented but native replay is unverified. See
 `evidence/2026-11-04/ivy-metadata-development.json`. Snapshots, interruptions,
 lifecycle, SBT and every remaining client/format/stage requirement remain open.
 
+Candidate `42f9366` is committed/pushed with both owner identities; its17native
+GitHub jobs are queued at the latest verified observation. No metadata-v2pass
+is claimed. A separate local harness revision now bounds baseline command input/
+output and process groups while preserving complete bounded JSON. Its seven
+owned-process regressions and lint pass; actual baseline/JVM replay remains
+unverified. See `evidence/2026-11-04/baseline-client-bounds-development.json`.
+
 The prior halt record `evidence/2026-11-04/owner-halt-708214f.json` remains an
 immutable observation; the current owner resume supersedes its pause. No primary,
 selected binary, data, credential, sibling or customer change. Earlier notes

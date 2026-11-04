@@ -90,12 +90,19 @@ implicitly authorized by this plan.
   tip can replace an older pending tip; PR work may still be superseded.
   Pending cancellation supplies no evidence. See
   [GitHub's concurrency contract](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency).
-- The owned JVM command helper has a two-minute deadline,8MiB private output limit and64KiB
-  captured tail. Gradle uses two workers; the direct Ant JVM declares512MiB
+- The owned JVM command helper has a two-minute deadline,8MiB output failure
+  threshold and64KiB captured tail. The next local baseline-helper revision
+  routes `conformance.run` through the same path, drains output through a
+  nonblocking pipe, bounds private UTF8 input to1MiB and preserves complete
+  structured results up to8MiB. Local stand-ins pass; actual baseline/JVM
+  replay is still required on that revision. See the
+  [development record](../../evidence/2026-11-04/baseline-client-bounds-development.json).
+  Gradle uses two workers; the direct Ant JVM declares512MiB
   heap/384MiB metaspace and two processors. Owned process-group cleanup covers
   children remaining in that group. Explicitly detached sessions remain an
-  open containment limit. Legacy non-JVM command/probe output and fork bounds
-  still require review. Timeouts leave remote mutation outcomes unconfirmed.
+  open containment limit. Other direct library/build probes, HTTP response
+  helpers and orchestration output/fork bounds still require review. Timeouts
+  leave remote mutation outcomes unconfirmed.
 - Bind source SHA, clean state, embedded binary revision/OS/architecture,
   actual tool and fixture bytes, mandatory stages and independent HTTP effects.
   A publisher-generated hash alone is not wire proof. Historical upgrade
