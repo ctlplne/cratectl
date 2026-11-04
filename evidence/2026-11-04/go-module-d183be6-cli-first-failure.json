@@ -1,0 +1,105 @@
+{
+  "candidate": "d183be64eb284503bc66fc465b069f56ab85f8ae",
+  "observed_at": "2026-11-04T23:10:24.705277+00:00",
+  "status": "partial; both PostgreSQL normal/race steps pass, stock journey fails before publication",
+  "run_id": 41926323462,
+  "url": "https://github.com/ctlplne/cratectl/actions/runs/41926323462",
+  "jobs": [
+    {
+      "architecture": "amd64",
+      "job_id": 126911555256,
+      "job_url": "https://github.com/ctlplne/cratectl/actions/runs/41926323462/job/126911555256",
+      "conclusion": "failure",
+      "steps": {
+        "Set up job": "success",
+        "Initialize containers": "success",
+        "Run actions/checkout@v7": "success",
+        "Run actions/setup-go@v7": "success",
+        "Run actions/setup-python@v7": "success",
+        "Prepare owned PostgreSQL and native binaries": "success",
+        "Real PostgreSQL Go module regressions": "success",
+        "Real PostgreSQL Go module regressions with race detector": "success",
+        "Trusted TLS stock Go transitive downloads and policy recovery": "failure",
+        "Encrypt bounded Go failure observations for owner diagnosis": "success",
+        "Run actions/upload-artifact@v7": "success",
+        "Prepare bounded native evidence summary": "success",
+        "Post Run actions/setup-python@v7": "skipped",
+        "Post Run actions/setup-go@v7": "skipped",
+        "Post Run actions/checkout@v7": "success",
+        "Stop containers": "success",
+        "Complete job": "success"
+      },
+      "retained": [
+        {
+          "path": "evidence/2026-11-04/go-module-d183be6-amd64-failed-summary.json",
+          "sha256": "c762715b566dd7c1822d3549840218df6912864daa71400ead48b31b1eb57c7a",
+          "github_artifact_id": 13371410804,
+          "github_artifact_digest": "sha256:8af7c66edc3aa1cd1045111203dfe94c1acd3c07ff279b1a9a64297abae0d9c6"
+        },
+        {
+          "path": "evidence/2026-11-04/go-module-d183be6-amd64-diagnostic-metadata.json",
+          "sha256": "3ab82a91e82eae8a5b2dc1336e7d0e7558fc91b49f3ef769c421559e5bf5b02d",
+          "github_artifact_id": 13370128319,
+          "github_artifact_digest": "sha256:970a14664d6944a172613ae5eaf75ddf10a1e2ff812a3c2ed14c47a38dca6c93"
+        }
+      ],
+      "authenticated_private_payload": ".private/ci-diagnostics/go-d183-amd64.json",
+      "authenticated_private_payload_sha256": "d82edb60c9c48acfe53bed334912c9e4619459a5294d98bc3ac01acca350a679",
+      "failed_command_exit": 1,
+      "failed_command_output_sha256": "e64a1c6a869420af7ad0484fc44d70456972813828240af33903f5b0c186ba9f",
+      "fixed_marker": "management path must start /api/v1/"
+    },
+    {
+      "architecture": "arm64",
+      "job_id": 126911554919,
+      "job_url": "https://github.com/ctlplne/cratectl/actions/runs/41926323462/job/126911554919",
+      "conclusion": "failure",
+      "steps": {
+        "Set up job": "success",
+        "Initialize containers": "success",
+        "Run actions/checkout@v7": "success",
+        "Run actions/setup-go@v7": "success",
+        "Run actions/setup-python@v7": "success",
+        "Prepare owned PostgreSQL and native binaries": "success",
+        "Real PostgreSQL Go module regressions": "success",
+        "Real PostgreSQL Go module regressions with race detector": "success",
+        "Trusted TLS stock Go transitive downloads and policy recovery": "failure",
+        "Encrypt bounded Go failure observations for owner diagnosis": "success",
+        "Run actions/upload-artifact@v7": "success",
+        "Prepare bounded native evidence summary": "success",
+        "Post Run actions/setup-python@v7": "skipped",
+        "Post Run actions/setup-go@v7": "skipped",
+        "Post Run actions/checkout@v7": "success",
+        "Stop containers": "success",
+        "Complete job": "success"
+      },
+      "retained": [
+        {
+          "path": "evidence/2026-11-04/go-module-d183be6-arm64-failed-summary.json",
+          "sha256": "3bf935481d6bb8498c9746cceab09c6c19503d5d2724d16d5487e0b3d21993eb",
+          "github_artifact_id": 13371110909,
+          "github_artifact_digest": "sha256:c530b114c15222749823217d2597719e448096eaefb5c3ecfb61bdbf02262577"
+        },
+        {
+          "path": "evidence/2026-11-04/go-module-d183be6-arm64-diagnostic-metadata.json",
+          "sha256": "247a95082c12841396cee8cb8d102c69f8b77c213a27c42a708ba597588c8063",
+          "github_artifact_id": 13371260649,
+          "github_artifact_digest": "sha256:37e6bf59d21ba87155a0c8d80c7554ad4f902948c661d484c24ae66005383f1e"
+        }
+      ],
+      "authenticated_private_payload": ".private/ci-diagnostics/go-d183-arm64.json",
+      "authenticated_private_payload_sha256": "015458985e78bb425432ee32539552d266c1e1ec861139de86491414159cad93",
+      "failed_command_exit": 1,
+      "failed_command_output_sha256": "e64a1c6a869420af7ad0484fc44d70456972813828240af33903f5b0c186ba9f",
+      "fixed_marker": "management path must start /api/v1/"
+    }
+  ],
+  "native_database_scope": "Three exact-source TestGoModule functions cover atomic three-object publication/replay/current review/discovery/partial-version denial, concurrent immutable publication/outbox rollback and current grants/colliding tenants. Both normal/race steps pass; later fourth group function is not present at this source.",
+  "cause": "CLI go-module-time/upload-file flags exist but the unconditional management-path guard rejects /go/... before making the request. The actual native CLI exited1 with the same fixed error on both architectures. This is a product CLI defect, not a Go proxy/server or TLS diagnosis.",
+  "diagnostic_qualification": "Both failed jobs produce one authenticated CMS record bound to exact source/run/platform. Ciphertext hashes match public metadata; local owner-key decryption authenticated successfully. Only fixed nonsecret command marker and hashes are retained publicly.",
+  "limits": [
+    "Seven fixture checks/one identity stage only. No native registry-backed Go client download, complete hosted/group journey, group database function or whole-candidate pass.",
+    "Prior event-baseline/fresh-owner fixture repair now has both named normal/race step replays. No runtime privileges were expanded.",
+    "All450capabilities/41families/laterstages remain committed; readiness/fullsecurity/packaging false. No primary/customer/sibling/release change."
+  ]
+}

@@ -111,8 +111,11 @@ Go commands retain mode0600 streams through deadline/output limits. The workflow
 seals selected failures or the last pre-cleanup observation and registry logs to
 the unchanged owner-held CMS recipient; NETRC/config/token files are excluded.
 Seven real CMS and four helper tests pass. Actual failed-job upload/decryption
-integration remains unverified; a failure before a report exists still requires
-separate job observations. See the
+integration now has both d183 native failed-job proofs: one authenticated CMS
+record per host decrypts locally; raw streams stay private. Both PG normal/race
+steps pass before an independent CLI-path failure. The stock Go registry journey
+and later group function remain unverified. A failure before a report exists
+still requires separate job observations. See the
 [fixture/diagnostic record](../../evidence/2026-11-04/go-module-fixture-diagnostics-development.json).
 
 The full workflow union is now29jobs across seven workflows, including one

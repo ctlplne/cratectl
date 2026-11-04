@@ -72,14 +72,19 @@ the fixture expected one total event after provisioning had already recorded one
 The exporter correctly rejects zero generated registry records; race/client
 steps never ran. Both original safe empty summaries and fixed private log hashes
 are retained in `evidence/2026-11-04/go-module-e62ac69-first-failure.json`.
-The `d183be6` baseline/owner-fixture correction still needs native replay.
-No native hosted/group Go pass is inferred from current local checks.
+The `d183be6` baseline/owner-fixture correction now passes both native PostgreSQL
+normal/race steps (three functions; the later group function is separate).
+Both jobs fail later when the CLI management-path guard rejects its advertised
+Go upload route, before publication. Seven checks/one identity stage only.
+See `evidence/2026-11-04/go-module-d183be6-cli-first-failure.json`.
+No native hosted/group Go journey pass is inferred.
 
 Four stock-Go1.27.3 file-proxy stand-ins pass on this ARM Mac with exact cached
 bytes/info. They prove fixture compatibility without HTTP/TLS/registry/PG.
 All three source hosts repeat them through `make lint`. Go command limits retain
 private partial streams and seal failures to the unchanged owner-held recipient;
-actual native failed-job encryption integration remains unverified.
+both d183 native failures now produce authenticated encrypted records that
+decrypt locally with the owner-held key. Raw streams remain private.
 All450capabilities/41families and later stages remain committed. Go proxy,
 legacy/alias/warm-cache/lifecycle/fault/migration/scale/platform/browser and all
 other unfinished requirements remain open. Broad readiness stays false.

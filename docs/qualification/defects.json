@@ -1109,10 +1109,19 @@
       "id": "DEFECT.0101",
       "summary": "Go PostgreSQL fixtures assumed an empty journal and runtime deletion authority",
       "discovery": "evidence/2026-11-04/go-module-fixture-diagnostics-development.json",
-      "state": "Original e62 native failure observed on both Linux hosts: two event-baseline assertions counted provisioning. Repaired in d183; native replay pending. Runtime owner-only deletion fixture repair remains unverified until that source runs.",
+      "state": "Named fixture repair replayed successfully by both native PostgreSQL normal/race steps at d183be6. Stock client journey fails later at independent CLI path guard.",
       "repair": "Compare with the actual journal baseline and inject the partial-reference fault only through the fresh test database owner. Preserve publication atomicity/replay assertions and runtime privileges.",
-      "limits": "Integration compilation only; no observed native first failure or database pass claimed.",
-      "native_first_failure": "evidence/2026-11-04/go-module-e62ac69-first-failure.json"
+      "limits": "Three exact-source database functions only; fourth group test and complete stock-client journey remain unverified. Original e62 failures retained.",
+      "native_first_failure": "evidence/2026-11-04/go-module-e62ac69-first-failure.json",
+      "replay": "evidence/2026-11-04/go-module-d183be6-cli-first-failure.json"
+    },
+    {
+      "id": "DEFECT.0102",
+      "summary": "CLI management-path guard rejects the advertised Go module upload route",
+      "first_failure": "evidence/2026-11-04/go-module-d183be6-cli-first-failure.json",
+      "state": "Observed on both native Linux hosts; focused repair pending",
+      "repair": "Allow only canonical Go ZIP publication with explicit PUT/upload-file/stable module time; preserve management-path restrictions and standard client TLS/auth/redirect/response bounds.",
+      "limits": "Native command failed before publication after7fixture checks. No stock Go download/hosted/group qualification inferred."
     }
   ]
 }
