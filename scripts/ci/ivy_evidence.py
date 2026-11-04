@@ -21,18 +21,24 @@ SNAPSHOT_FIXTURES = ('default_snapshot','snapshot_first','snapshot_second')
 SNAPSHOT_STAGES = METADATA_STAGES[:-1] + ['snapshots'] + METADATA_STAGES[-1:]
 SNAPSHOT_CASES = ['default_immutable','opt_in_redeploy','review_reset','fresh_resolution',
                   'held_replacement','disable_policy','restart','revocation']
+CACHE_STAGES = ['initial_resolution','updated_resolution','restart']
+CACHE_PROFILE_STAGES = SNAPSHOT_STAGES[:-2] + ['warm_cache'] + SNAPSHOT_STAGES[-2:]
+CACHE_FIRST = {'snapshot_first_jar','snapshot_first_pom','dependency_jar','dependency_pom'}
+CACHE_REPRESENTATIONS = CACHE_FIRST | {'snapshot_second_jar','snapshot_second_pom'}
 
 
 def safe_ivy_contract(value, status):
     fields = {'profile','version','ant_version','ant_runtime_version','ant_legacy_runtime_version','java_version','ivy_distribution_sha512','ant_distribution_sha512',*IDENTITIES,
               'fixture_sha256','reference_sha256','wire_sha256','completed','checksum_clients_completed','phase','diagnostics'}
-    snapshot = isinstance(value,dict) and value.get('profile') == 'maven-snapshots-v3'
-    metadata = isinstance(value,dict) and value.get('profile') in {'maven-metadata-v2','maven-snapshots-v3'}
+    cache = isinstance(value,dict) and value.get('profile') == 'maven-snapshot-cache-v4'
+    snapshot = isinstance(value,dict) and value.get('profile') in {'maven-snapshots-v3','maven-snapshot-cache-v4'}
+    metadata = isinstance(value,dict) and value.get('profile') in {'maven-metadata-v2','maven-snapshots-v3','maven-snapshot-cache-v4'}
     if metadata: fields.add('metadata_cases_completed')
     if snapshot: fields.add('snapshot_cases_completed')
+    if cache: fields |= {'cache_completed','cache_reused','cache_sha256'}
     if not isinstance(value,dict) or set(value) != fields:
         raise ValueError('Ivy fields are outside the reviewed profile')
-    if value['profile'] not in {'maven-release-v1','maven-metadata-v2','maven-snapshots-v3'}:
+    if value['profile'] not in {'maven-release-v1','maven-metadata-v2','maven-snapshots-v3','maven-snapshot-cache-v4'}:
         raise ValueError('Ivy profile must identify its exact release workflow')
     for field in ['version','ant_version']:
         if not isinstance(value[field],str) or not re.fullmatch(r'\d{1,2}\.\d{1,3}\.\d{1,3}',value[field]):
@@ -52,7 +58,7 @@ def safe_ivy_contract(value, status):
         if not isinstance(value[field],str) or not re.fullmatch('[0-9a-f]{'+str(size)+'}',value[field]):
             raise ValueError('Ivy tool identity must be a bounded digest')
     completed = value['completed']; diagnostics = value['diagnostics']
-    stages = SNAPSHOT_STAGES if snapshot else METADATA_STAGES if metadata else STAGES
+    stages = CACHE_PROFILE_STAGES if cache else SNAPSHOT_STAGES if snapshot else METADATA_STAGES if metadata else STAGES
     if not isinstance(completed,list) or completed != stages[:len(completed)] or len(completed)>len(stages):
         raise ValueError('Ivy stages must be the ordered mandatory prefix')
     checksum_clients = value['checksum_clients_completed']
@@ -99,6 +105,28 @@ def safe_ivy_contract(value, status):
             raise ValueError('Ivy retained/HTTP bytes must match the publisher')
         if status=='passed' and set(observed)!=allowed:
             raise ValueError('Passed Ivy evidence requires every retained/HTTP representation')
+    if cache:
+        progress = value['cache_completed']; local = value['cache_sha256']
+        if not isinstance(progress,list) or len(progress)>len(CACHE_STAGES) or progress!=CACHE_STAGES[:len(progress)]:
+            raise ValueError('Ivy retained-cache stages must be the mandatory ordered prefix')
+        if type(value['cache_reused']) is not bool:
+            raise ValueError('Ivy retained-cache reuse must be a boolean observation')
+        if not isinstance(local,dict) or not set(local)<=CACHE_REPRESENTATIONS or any(k not in fixtures or v!=fixtures[k] for k,v in local.items()):
+            raise ValueError('Ivy cached original POMs and JARs must match the publisher')
+        if len(completed)<7 and (progress or local or value['cache_reused']):
+            raise ValueError('Ivy retained-cache observations cannot precede metadata completion')
+        if progress and not CACHE_FIRST<=set(local):
+            raise ValueError('Initial Ivy retained-cache resolution requires complete snapshot and dependency bytes')
+        if not progress and value['cache_reused']:
+            raise ValueError('Ivy cache reuse cannot precede initial resolution')
+        if len(progress)>=2:
+            if set(local)!=CACHE_REPRESENTATIONS or not value['cache_reused']:
+                raise ValueError('Ivy warm update requires complete before/after bytes and retained cache')
+            if fixtures['snapshot_first_jar']==fixtures['snapshot_second_jar'] or fixtures['snapshot_first_pom']==fixtures['snapshot_second_pom']:
+                raise ValueError('Ivy changing resolution requires distinct actual JAR and POM publications')
+        if (status=='passed' or 'warm_cache' in completed) and progress!=CACHE_STAGES:
+            raise ValueError('Passed Ivy cache evidence requires initial, updated and restarted native resolution')
     if status=='passed' and (value['phase']!='complete' or completed!=stages or set(fixtures)!=allowed or diagnostics):
         raise ValueError('Passed Ivy evidence requires all fixtures and stages')
-    return {**value,**{k:dict(sorted(value[k].items())) for k in ['fixture_sha256','reference_sha256','wire_sha256']},'diagnostics':sorted(diagnostics)}
+    maps = ['fixture_sha256','reference_sha256','wire_sha256'] + (['cache_sha256'] if cache else [])
+    return {**value,**{k:dict(sorted(value[k].items())) for k in maps},'diagnostics':sorted(diagnostics)}

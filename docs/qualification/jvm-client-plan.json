@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-04T18:18:49.431630+00:00",
+  "updated_at": "2026-11-04T20:01:11.709329+00:00",
   "scope": "Complete JVM client requirement in GOAL.md, within all 450 capabilities and 41 families; this plan removes no other work.",
   "qualified_gradle": {
     "version": "9.8.2",
@@ -109,6 +109,18 @@
       "candidate": "9b00f7ebec3cd6ce4eedda8794f3993f75d37c84",
       "checkpoint": "evidence/2026-11-04/jvm-9b00f7e-checkpoint.json",
       "checks_per_host": 654
+    },
+    "cache_profile": {
+      "profile": "maven-snapshot-cache-v4",
+      "state": "implemented but unverified",
+      "development": "evidence/2026-11-04/ivy-warm-cache-development.json",
+      "native_required": "Both actual Linux hosts;10stages/666checks/34wirebindings/6cachebindings and all original cases.",
+      "cache_stages": [
+        "initial_resolution",
+        "updated_resolution",
+        "restart"
+      ],
+      "limits": "One retained group consumer with direct hosted nonunique snapshot and existing proxied dependency. Warm proxy snapshot/offline/fault/other JVM/lifecycle scope remains required."
     }
   },
   "sbt": {
@@ -157,7 +169,7 @@
   },
   "owner_state": "Active; explicitly resumed by owner on2026-11-04.",
   "maven_warm_cache": {
-    "state": "implemented but unverified; c030native first failure missingre beforeclient_identity; repair/actualfixture stand-in localpassed, both-host native replay required",
+    "state": "Named hosted unique snapshot profile verified on nativeARM1974d94; x86/wholecampaign pending. Originalc030missingre failures retained.",
     "profile": "unique-snapshot-warm-v1",
     "development": "evidence/2026-11-04/maven-warm-cache-development.json",
     "stages": [
@@ -177,6 +189,7 @@
     "native_required": "Both actual Linux architectures; pinned Maven3.10.0, initial/updated/restarted exact snapshots and transitive bytes in the same retained cache.",
     "limits": "Existing cold proxy/group/native Ivy/SBT cases retained; no warm proxy/group/offline/policy-revocation-of-local-bytes or broader JVM parity claim.",
     "latest_failure": "evidence/2026-11-04/maven-warm-c030aa0-first-failure.json",
-    "identity_repair_development": "evidence/2026-11-04/sdk-pin-maven-identity-repair-development.json"
+    "identity_repair_development": "evidence/2026-11-04/sdk-pin-maven-identity-repair-development.json",
+    "arm64_checkpoint": "evidence/2026-11-04/maven-warm-1974d94-arm64-checkpoint.json"
   }
 }

@@ -9,7 +9,7 @@ import unittest
 
 from evidence_summary import summarize
 from test_gradle_evidence import complete_contract
-from test_ivy_evidence import complete_contract as complete_ivy_contract, metadata_contract, snapshot_contract
+from test_ivy_evidence import complete_contract as complete_ivy_contract, metadata_contract, snapshot_contract, cache_contract
 from test_sbt_evidence import complete_contract as complete_sbt_contract
 from test_maven_evidence import complete_contract as complete_maven_cache_contract
 
@@ -100,6 +100,17 @@ class EvidenceSummary(unittest.TestCase):
         self.assertEqual(len(record['ivy_contract']['wire_sha256']),34)
         self.assertNotIn('private-synthetic-value',json.dumps(record))
         self.write('ivy-snapshot.json',{**report,'ivy_contract':{**contract,'snapshot_cases_completed':contract['snapshot_cases_completed'][:-1]}})
+        with self.assertRaises(SystemExit):summarize(self.root,self.environment)
+
+    def test_ivy_warm_cache_export_requires_every_retained_byte_without_private_output(self):
+        contract=cache_contract()
+        report={'candidate':'a'*40,'status':'passed','ivy_contract':contract,'commands':[{'output':'private-synthetic-value'}]}
+        self.write('ivy-cache.json',report)
+        record=summarize(self.root,self.environment)['records'][0]
+        self.assertEqual(record['ivy_contract'],contract)
+        self.assertNotIn('private-synthetic-value',json.dumps(record))
+        stale={**contract['cache_sha256'],'snapshot_second_jar':contract['cache_sha256']['snapshot_first_jar']}
+        self.write('ivy-cache.json',{**report,'ivy_contract':{**contract,'cache_sha256':stale}})
         with self.assertRaises(SystemExit):summarize(self.root,self.environment)
 
     def test_ivy_metadata_export_requires_parent_and_classified_wire_bytes(self):

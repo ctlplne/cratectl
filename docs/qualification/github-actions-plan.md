@@ -72,6 +72,27 @@ exercised by that success. The c030 baseline failure produces no collector
 record because its current profiles cover OCI/extended JVM/browser only; raw
 job logs remain private and only fixed reviewed traceback identities are public.
 
+Exact `1974d94` native ARM has now passed all 663 baseline checks, all four
+Maven retained-cache stages/six byte bindings and the existing native journeys,
+with real PostgreSQL integration/race. This is [ARM-only proof](../../evidence/2026-11-04/maven-warm-1974d94-arm64-checkpoint.json);
+x86 and whole-campaign acceptance remain separate. Both native library jobs
+also pass the original 37 assertions on actual SDK 10.0.403/runtime 10.0.14,
+with exact [tool/artifact identities](../../evidence/2026-11-04/nuget-1974d94-checkpoint.json).
+No older mixed-SDK result is relabeled, and no local client execution is claimed.
+
+The next Ivy extension retains all original release/metadata/snapshot cases and
+34 byte bindings, then requires one changing consumer cache across initial,
+updated and restarted resolution. Its original cached POMs and JARs must match
+six observed hashes; both native publications change their POMs. The new
+`maven-snapshot-cache-v4` profile requires ten stages and 666 checks on each
+actual Linux host, preserving all client/job budgets. Seven fixture, ten contract
+and 15 exporter tests plus full lint pass locally. This is implemented but
+unverified; see the [development record](../../evidence/2026-11-04/ivy-warm-cache-development.json).
+Expected path selection is main9/JVM8/OCI2/upgrades2 (21 jobs); verify actual
+runs for the full commit. Existing `1974d94` runs remain separate evidence and
+must not be restarted or relabeled. Warm proxy snapshot, offline/fault and all
+broader client/lifecycle requirements stay open.
+
 The following campaign notes are historical.
 
 Owner resumed the full goal on 2026-11-04. The latest fully accepted whole

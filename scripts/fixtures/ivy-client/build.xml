@@ -34,4 +34,8 @@
     <ivy:resolve file="ivy.xml" conf="default"/>
     <ivy:retrieve pattern="proof/[artifact]-[revision](-[classifier]).[ext]" conf="default" type="jar"/>
   </target>
+  <target name="consume-changing" depends="configure">
+    <ivy:resolve file="ivy.xml" conf="default" refresh="true"/>
+    <ivy:retrieve pattern="proof/[artifact]-[revision](-[classifier]).[ext]" conf="default" type="jar" overwriteMode="always"/>
+  </target>
 </project>

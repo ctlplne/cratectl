@@ -12,7 +12,7 @@ import xml.etree.ElementTree as XML
 import zipfile
 
 from bounded_client import run_owned_client
-from ci.ivy_evidence import FIXTURES, METADATA_CASES, METADATA_REPRESENTATIONS, SNAPSHOT_CASES, SNAPSHOT_FIXTURES
+from ci.ivy_evidence import FIXTURES, METADATA_CASES, METADATA_REPRESENTATIONS, SNAPSHOT_CASES, SNAPSHOT_FIXTURES, CACHE_STAGES
 from ivy_metadata_fixture import MODULES, consumer_descriptor, filename, pom, publisher_descriptor
 
 GROUP = 'dev.cratectl.ivyproof'
@@ -30,9 +30,44 @@ def ant_invocation(ant_home, ivy, jdk, environment):
             'org.apache.tools.ant.launch.Launcher', '-nouserlib', '-noclasspath', '-lib', ivy, '-noinput'], clean
 
 
-def descriptor(artifact, version, dependency=None, publish=True):
+def changing_settings(data):
+    """Change only the owned retained-cache consumer's snapshot read policy."""
+    root = XML.fromstring(data)
+    readers = root.findall('resolvers/ibiblio')
+    if len(readers) != 1:
+        raise ValueError('Retained-cache proof requires one explicit Maven reader')
+    readers[0].set('checkmodified', 'true')
+    readers[0].set('changingPattern', '.*-SNAPSHOT')
+    readers[0].set('changingMatcher', 'regexp')
+    return XML.tostring(root, encoding='utf-8', xml_declaration=True)
+
+
+def cached_snapshot_bytes(cache):
+    """Read the bounded original POMs and JARs from the actual Ivy cache."""
+    paths = {'app_jar':'ivy-app/jars/ivy-app-1.1-SNAPSHOT.jar',
+             'app_pom':'ivy-app/ivy-1.1-SNAPSHOT.xml.original',
+             'dependency_jar':'ivy-dep/jars/ivy-dep-1.0.0.jar',
+             'dependency_pom':'ivy-dep/ivy-1.0.0.xml.original'}
+    result = {}
+    for name, relative in paths.items():
+        path = cache / GROUP / relative
+        if any(p.is_symlink() for p in [path, cache, *path.parents[:len(path.relative_to(cache).parts)-1]]):
+            raise ValueError('Ivy cache proof cannot follow linked paths')
+        if not path.is_file():
+            raise ValueError('Ivy cache representation must be a regular file')
+        with path.open('rb') as source:
+            data = source.read((1 << 20) + 1)
+        if len(data) > 1 << 20:
+            raise ValueError('Ivy cache representation exceeds the owned fixture budget')
+        result[name] = data
+    return result
+
+
+def descriptor(artifact, version, dependency=None, publish=True, description=None, changing=False):
     root = XML.Element('ivy-module', version='2.0')
-    XML.SubElement(root, 'info', organisation=GROUP, module=artifact, revision=version, status='release')
+    info = XML.SubElement(root, 'info', organisation=GROUP, module=artifact, revision=version, status='release')
+    if description is not None:
+        XML.SubElement(info, 'description').text = description
     configurations = XML.SubElement(root, 'configurations')
     XML.SubElement(configurations, 'conf', name='default', visibility='public')
     if publish:
@@ -41,7 +76,9 @@ def descriptor(artifact, version, dependency=None, publish=True):
             XML.SubElement(publications, 'artifact', name=artifact, type=ext, ext=ext, conf='default')
     if dependency:
         dependencies = XML.SubElement(root, 'dependencies')
-        XML.SubElement(dependencies, 'dependency', org=GROUP, name=dependency[0], rev=dependency[1], conf='default->default')
+        item = XML.SubElement(dependencies, 'dependency', org=GROUP, name=dependency[0], rev=dependency[1], conf='default->default')
+        if changing:
+            item.set('changing', 'true')
     return XML.tostring(root, encoding='utf-8', xml_declaration=True)
 
 
@@ -65,7 +102,7 @@ def hosted(h):
     check('Ivy uses the exact native pinned Java runtime', release.get('JAVA_RUNTIME_VERSION') in ('21.0.13+9', '21.0.13+9-LTS') and
           platform.system() == 'Linux' and release.get('OS_NAME') == 'Linux' and release.get('OS_ARCH') == {'x86_64': 'x86_64', 'aarch64': 'aarch64'}[platform.machine()])
     source = h.ROOT / 'scripts/fixtures/ivy-client'
-    contract = {'profile':'maven-snapshots-v3', 'version': pin['version'], 'ant_version': pin['ant_version'], **archives,
+    contract = {'profile':'maven-snapshot-cache-v4', 'version': pin['version'], 'ant_version': pin['ant_version'], **archives,
                 'java_version': release['JAVA_RUNTIME_VERSION'],
                 'java_launcher_sha256': hashlib.sha256((jdk / 'bin/java').read_bytes()).hexdigest(),
                 'java_release_sha256': hashlib.sha256(release_bytes).hexdigest(),
@@ -81,6 +118,9 @@ def hosted(h):
     contract['checksum_clients_completed'] = []
     contract['metadata_cases_completed'] = []
     contract['snapshot_cases_completed'] = []
+    contract['cache_completed'] = []
+    contract['cache_reused'] = False
+    contract['cache_sha256'] = {}
     h.result['ivy_contract'] = contract
     work = h.PRIVATE / 'ivy'; work.mkdir(mode=0o700)
 
@@ -144,7 +184,8 @@ def hosted(h):
         directory = project('publish-' + label)
         resources = directory / 'resources'; resources.mkdir()
         (resources / 'owned.txt').write_text(label)
-        (directory / 'ivy.xml').write_bytes(descriptor(artifact, version, ('ivy-dep','1.0.0') if artifact == 'ivy-app' else None))
+        (directory / 'ivy.xml').write_bytes(descriptor(artifact, version, ('ivy-dep','1.0.0') if artifact == 'ivy-app' else None,
+                                                    description=label if label in ['snapshot_first','snapshot_second'] else None))
         extra = ['-DartifactName=' + artifact, '-DpublicationVersion=' + version]
         command(directory, 'publish', token, repo, read_repo, extra)
         contents = {ext:(directory / ('build/' + artifact + '-' + version + '.' + ext)).read_bytes() for ext in ['jar','pom']}
@@ -355,9 +396,42 @@ def hosted(h):
     publish('snapshot_first','ivy-app',snapshot_version,repo='ivy-snapshots',read_repo='ivy-group')
     decision('ivy-snapshots','ivy-app',snapshot_version,'allowed');wire('snapshot_first')
     consume('snapshot-first',snapshot_version,['snapshot_first','dependency'],repo='ivy-snapshot-group')
+    warm = project('consume-retained-snapshot')
+    (warm/'ivysettings.xml').write_bytes(changing_settings((warm/'ivysettings.xml').read_bytes()))
+    (warm/'ivy.xml').write_bytes(descriptor('consumer','1.0.0',('ivy-app',snapshot_version),publish=False,changing=True))
+    cache = warm/'cache';cache.mkdir()
+    check('retained Ivy cache begins without project coordinates',not(cache/GROUP).exists())
+    cache_identity=(cache.stat().st_dev,cache.stat().st_ino)
+    marker=cache/'cratectl-owned-cache-proof';marker.write_bytes(b'owned cache remains in place\n')
+
+    def warm_bytes(label):
+        local=cached_snapshot_bytes(cache)
+        expected={'app_'+ext:published[label]['contents'][ext] for ext in ['jar','pom']}
+        expected.update({'dependency_'+ext:published['dependency']['contents'][ext]for ext in ['jar','pom']})
+        proof={p.name:p.read_bytes() for p in (warm/'proof').glob('*.jar')}
+        check('retained Ivy cache, original POMs and retrieved dependency bytes match '+label,
+              local==expected and proof=={'ivy-app-1.1-SNAPSHOT.jar':expected['app_jar'],'ivy-dep-1.0.0.jar':expected['dependency_jar']})
+        for name,data in local.items():
+            key=label+'_'+name.removeprefix('app_') if name.startswith('app_') else name
+            contract['cache_sha256'][key]=hashlib.sha256(data).hexdigest()
+
+    command(warm,'consume-changing',repo='ivy-snapshot-group')
+    warm_bytes('snapshot_first');contract['cache_completed'].append('initial_resolution')
+    module=cache/GROUP/'ivy-app';module_identity=(module.stat().st_dev,module.stat().st_ino)
+    module_marker=module/'cratectl-owned-module-proof';module_marker.write_bytes(b'owned snapshot module remains in place\n')
+
+    def same_cache():
+        return ((cache.stat().st_dev,cache.stat().st_ino)==cache_identity
+                and (module.stat().st_dev,module.stat().st_ino)==module_identity
+                and marker.read_bytes()==b'owned cache remains in place\n'
+                and module_marker.read_bytes()==b'owned snapshot module remains in place\n')
+
     publish('snapshot_second','ivy-app',snapshot_version,repo='ivy-snapshots',read_repo='ivy-group')
     first_snapshot=published['snapshot_first'];second_snapshot=published['snapshot_second']
     check('native repeat publication changes actual snapshot JAR bytes',first_snapshot['contents']['jar']!=second_snapshot['contents']['jar'])
+    check('native changing snapshot POMs identify distinct actual publications',
+          first_snapshot['contents']['pom']!=second_snapshot['contents']['pom']
+          and b'snapshot_first' in first_snapshot['contents']['pom'] and b'snapshot_second' in second_snapshot['contents']['pom'])
     contract['snapshot_cases_completed'].append('opt_in_redeploy')
     for ext in ['jar','pom']:
         changed=first_snapshot['contents'][ext]!=second_snapshot['contents'][ext]
@@ -372,6 +446,11 @@ def hosted(h):
     decision('ivy-snapshots','ivy-app',snapshot_version,'allowed');wire('snapshot_second')
     consume('snapshot-second',snapshot_version,['snapshot_second','dependency'],repo='ivy-snapshot-group')
     contract['snapshot_cases_completed'].append('fresh_resolution')
+    check('Ivy refresh starts with the original snapshot still cached',cached_snapshot_bytes(cache)['app_jar']==first_snapshot['contents']['jar'])
+    command(warm,'consume-changing',repo='ivy-snapshot-group')
+    contract['cache_reused']=same_cache()
+    check('Ivy changing snapshot refresh retains the same cache and module',contract['cache_reused'])
+    warm_bytes('snapshot_second');contract['cache_completed'].append('updated_resolution')
     lifecycle='/api/v1/repositories/ivy-snapshots/artifacts/lifecycle'
 
     def snapshot_hold(action):
@@ -394,6 +473,11 @@ def hosted(h):
     wire('snapshot_second');consume('snapshot-disabled-policy',snapshot_version,['snapshot_second','dependency'],repo='ivy-snapshot-group')
     contract['snapshot_cases_completed'].append('disable_policy')
     h.stop();h.start();consume('snapshot-restart',snapshot_version,['snapshot_second','dependency'],repo='ivy-snapshot-group')
+    command(warm,'consume-changing',repo='ivy-snapshot-group')
+    check('Ivy restart retains the existing snapshot cache',same_cache())
+    warm_bytes('snapshot_second');contract['cache_completed'].append('restart')
+    check('every native Ivy retained-cache stage completed',contract['cache_completed']==CACHE_STAGES)
+    contract['completed'].append('warm_cache')
     contract['snapshot_cases_completed'].append('restart')
     revoked_snapshot,revoked_snapshot_extra=snapshot_publisher('revoked-fresh-snapshot','9.0-SNAPSHOT')
     command(revoked_snapshot,'prepare','ivy-writer','ivy-snapshots','ivy-group',revoked_snapshot_extra)

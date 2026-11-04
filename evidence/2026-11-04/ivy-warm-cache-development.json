@@ -1,0 +1,103 @@
+{
+  "source_parent": "1974d94236ada0c7167ee582c393cd0063eb64c0",
+  "source_dirty": true,
+  "observed_at": "2026-11-04T20:01:11.705993+00:00",
+  "state": "implemented but unverified; native Ivy retained-cache snapshot profile",
+  "profile": "maven-snapshot-cache-v4",
+  "source_files": [
+    {
+      "path": "scripts/conformance_ivy.py",
+      "sha256": "85a0b929487fb16de7f2d88de91bb4627316b370c9e85741a0387bcc4c5821b4"
+    },
+    {
+      "path": "scripts/test_ivy_fixture.py",
+      "sha256": "799440f430c1ebc7913b4ec771b24e930a3278c5c9ed4b7891e97384d77fc418"
+    },
+    {
+      "path": "scripts/fixtures/ivy-client/build.xml",
+      "sha256": "f9f8a6099451f42f88bc8a9fbb30016e9cec28f0ca60e3b7dc02d772aa37e772"
+    },
+    {
+      "path": "scripts/ci/ivy_evidence.py",
+      "sha256": "63a4a6044e270eed69a75d4766d3f2b3bf1dea2df6c11bd09207de0f30a7be90"
+    },
+    {
+      "path": "scripts/ci/test_ivy_evidence.py",
+      "sha256": "8c44df016d46fda69f42dfdc714227261421a5ae7896dd21174b95144151d7b9"
+    },
+    {
+      "path": "scripts/ci/test_evidence_summary.py",
+      "sha256": "28725c4839ec4261b3782f6bffc02d3c3426af6f15cd79afed6b2b48b65db88e"
+    }
+  ],
+  "mechanism": [
+    "Keep every previous release/metadata/snapshot/tenant/policy/hold/revocation case, nine original stages,34publisher-reference-HTTP bindings and three SHA2 consumers. Add mandatory warm_cache stage and initial/updated/restarted cache progress.",
+    "One explicit owned group read source. Only the retained consumer settings enable checkmodified=true/changingPattern=.*-SNAPSHOT/changingMatcher=regexp. Its dependency declares changing=true. Separate consume-changing Ant target resolves with refresh=true and retrieves overwriteMode=always, without clearing cache.",
+    "Make first/second actual native snapshot POM descriptions distinct as well as JAR resources; unchanged metadata cannot satisfy a changing-client refresh claim. Verify actual generated POMbytes/labels before accepting redeployment.",
+    "Read original raw POMs and JARs from actual Ivy filesystem cache, bounded1MiB each, regularfiles and no linked cache/module/leaf. Compare with exact publisher/reference/independent HTTP identities; retain first identities before cache update.",
+    "Require same cache and snapshot-module device/inode plus owned markers across update and actual registry restart. Verify original firstJAR stillcached immediately before update. All34existing wire bindings plus6exact cache hashes must be present."
+  ],
+  "native_acceptance": {
+    "placement": "Both existing Ant1.10.18/Ivy2.6.0 native Linux GitHub jobs, actual pinnedJDK and restricted realPG. No localJVM/database.",
+    "stages": 10,
+    "cache_stages": [
+      "initial_resolution",
+      "updated_resolution",
+      "restart"
+    ],
+    "wire_bindings": 34,
+    "cache_bindings": 6,
+    "expected_checks": 666,
+    "count_derivation": "Original654 plus12: six direct new checks, three actual cache byte/proof checks, three successful native Ant commands. No originalcheckcall removed.",
+    "budgets": "Existing two-minute command/8MiB output/512MiB heap/384MiBmetaspace/two processors and60minute job; zero retries/no continue-on-error."
+  },
+  "local_validation": {
+    "fixture": "7testmethods pass, including actual bytes/read-update, originalPOMs, oversized/nonregular/leaf+modulelinks, reader-only changing config and inert target invariants.",
+    "contract": "10testmethods pass across all4profile revisions. Reject stale/missing/private cachefields, missing original graph/cases, incorrect stages/reuse, unchanged POM/JAR and premature completion.",
+    "exporter": "15testmethods pass; cache proof exported without private command content; stale local JAR rejected.",
+    "lint": "Fullmake lint passes, including existing Go vet/architecture/API/console and all Python suites.",
+    "preservation": "All old check/coldconsumer/policy/wire/hold calls and default descriptor bytes remain. Existing Ant task semantics exactly preserved after removing the new target.",
+    "logs": [
+      {
+        "path": ".cache/ivy-warm-cache-fixture-unit.log",
+        "sha256": "f1cebebf1e239f3684342233cbf3e209ae56891b7c129813a2e690a18982daa8"
+      },
+      {
+        "path": ".cache/ivy-warm-cache-contract-unit.log",
+        "sha256": "40e6a3053d86436d6aa245501343227a2e81436f4f14da71a21257468605aff6"
+      },
+      {
+        "path": ".cache/ivy-warm-cache-export-unit.log",
+        "sha256": "a40eaacff4f9c92a02974808670850b830cb308b295f740f667e8e322745b179"
+      },
+      {
+        "path": ".cache/ivy-warm-cache-lint.log",
+        "sha256": "e488f09dc242530cbaadfdf9f1a4725a1f9523a1b6218e08966a74fcd3e2dc64"
+      },
+      {
+        "path": ".cache/ivy-warm-cache-preservation.log",
+        "sha256": "5fa3c505a59d718aea12ad82db3e2243c12f4832a8907b843b0f9bbb39730bcf"
+      }
+    ]
+  },
+  "prior_native": "evidence/2026-11-04/jvm-636dea9-checkpoint.json",
+  "sources": [
+    "https://ant.apache.org/ivy/history/2.6.0/concept.html",
+    "https://ant.apache.org/ivy/history/2.6.0/settings/resolvers.html",
+    "https://ant.apache.org/ivy/history/2.6.0/use/resolve.html",
+    "https://github.com/apache/ant-ivy/blob/master/src/java/org/apache/ivy/core/cache/DefaultRepositoryCacheManager.java"
+  ],
+  "source_observation": {
+    "repository": "apache/ant-ivy",
+    "path": "src/java/org/apache/ivy/core/cache/DefaultRepositoryCacheManager.java",
+    "blob_sha": "234810a6176865eb7e8089e981efc8428e8a6c4d",
+    "limits": "Read-only primary-source layout guidance, not a claim that master is the pinned client. Exact native2.6.0 cache behavior still must pass."
+  },
+  "limits": [
+    "Developmentstandins/sourcecontracts only. No newIvywarm-cache/666check/nativeclient pass before both exact-source GitHub jobs and artifact review.",
+    "Group includes direct hosted snapshot source plus existing checksum proxy for the release dependency. This is not a warm proxy snapshot, outage/offline/TTL/revocation-of-already-downloaded-bytes or complete JVM claim.",
+    "Native POMconversion/cache path/timestamp handling remain actual-client assertions; failure stays evidence, not a reason to delete checks or clear cache.",
+    "No workload publication/package scripts or model deserialization. Only owned bundled Ant/Ivy tasks execute; packages are resource-only.",
+    "All450capabilities/41families/laterstages and broad readiness/fullsecurity/packaging remain unfinished. No primary/sibling/customer/release change."
+  ]
+}

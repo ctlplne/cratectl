@@ -3,7 +3,7 @@
 import copy
 import unittest
 
-from ivy_evidence import CHECKSUM_CLIENTS, FIXTURES, IDENTITIES, STAGES, METADATA_CASES, METADATA_STAGES, METADATA_REPRESENTATIONS, SNAPSHOT_FIXTURES, SNAPSHOT_CASES, SNAPSHOT_STAGES, safe_ivy_contract
+from ivy_evidence import CHECKSUM_CLIENTS, FIXTURES, IDENTITIES, STAGES, METADATA_CASES, METADATA_STAGES, METADATA_REPRESENTATIONS, SNAPSHOT_FIXTURES, SNAPSHOT_CASES, SNAPSHOT_STAGES, CACHE_STAGES, CACHE_PROFILE_STAGES, CACHE_REPRESENTATIONS, safe_ivy_contract
 
 
 def complete_contract():
@@ -30,7 +30,43 @@ def snapshot_contract():
             'reference_sha256':dict(fixtures),'wire_sha256':dict(fixtures)}
 
 
+def cache_contract():
+    value=snapshot_contract()
+    return {**value,'profile':'maven-snapshot-cache-v4','completed':list(CACHE_PROFILE_STAGES),
+            'cache_completed':list(CACHE_STAGES),'cache_reused':True,
+            'cache_sha256':{k:value['fixture_sha256'][k]for k in CACHE_REPRESENTATIONS}}
+
+
 class IvyEvidence(unittest.TestCase):
+    def test_retained_cache_requires_all_original_cases_and_both_changed_publications(self):
+        value=cache_contract();self.assertEqual(safe_ivy_contract(value,'passed'),value)
+        self.assertEqual([s for s in value['completed']if s!='warm_cache'],SNAPSHOT_STAGES)
+        self.assertEqual(len(value['wire_sha256']),34)
+        for change in [{'cache_reused':False},{'cache_reused':1},{'cache_completed':CACHE_STAGES[:-1]},
+                       {'cache_completed':CACHE_STAGES[::-1]},{'completed':SNAPSHOT_STAGES},
+                       {'cache_sha256':{'private-path':'f'*64}},{'private_output':'never export'}]:
+            with self.subTest(change=change),self.assertRaises(ValueError):safe_ivy_contract({**value,**change},'passed')
+        for key in CACHE_REPRESENTATIONS:
+            bad=copy.deepcopy(value);bad['cache_sha256'].pop(key)
+            with self.subTest(missing=key),self.assertRaises(ValueError):safe_ivy_contract(bad,'passed')
+            bad=copy.deepcopy(value);bad['cache_sha256'][key]='0'*64
+            with self.subTest(stale=key),self.assertRaises(ValueError):safe_ivy_contract(bad,'passed')
+        for ext in ['jar','pom']:
+            bad=copy.deepcopy(value)
+            for field in ['fixture_sha256','reference_sha256','wire_sha256','cache_sha256']:
+                bad[field]['snapshot_second_'+ext]=bad[field]['snapshot_first_'+ext]
+            with self.subTest(unchanged=ext),self.assertRaises(ValueError):safe_ivy_contract(bad,'passed')
+
+    def test_failed_cache_progress_retains_only_observed_stages_without_a_pass(self):
+        value={**cache_contract(),'completed':CACHE_PROFILE_STAGES[:7],'phase':'snapshots',
+               'cache_completed':CACHE_STAGES[:1],'cache_reused':False,
+               'cache_sha256':{k:v for k,v in cache_contract()['cache_sha256'].items()if not k.startswith('snapshot_second')}}
+        self.assertEqual(safe_ivy_contract(value,'failed'),value)
+        with self.assertRaises(ValueError):safe_ivy_contract(value,'passed')
+        for change in [{'completed':CACHE_PROFILE_STAGES[:6]},{'completed':CACHE_PROFILE_STAGES[:8]},
+                       {'cache_completed':[],'cache_reused':True}]:
+            with self.subTest(change=change),self.assertRaises(ValueError):safe_ivy_contract({**value,**change},'failed')
+
     def test_snapshot_profile_retains_original_graph_and_requires_changed_native_bytes(self):
         value=snapshot_contract();self.assertEqual(safe_ivy_contract(value,'passed'),value)
         self.assertEqual(len(value['wire_sha256']),34)

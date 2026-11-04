@@ -126,3 +126,26 @@ PUT must fail without leaving any partial version. First-snapshot hashes are
 observed before replacement. See the [policy design](../adr/0043-maven-nonunique-snapshot-policy.md).
 Warm-cache/concurrent publication, timestamped Ivy snapshots, interruption,
 upstream outage, broader lifecycle and all remaining JVM scope stay required.
+
+
+The next `maven-snapshot-cache-v4` extension is implemented but unverified.
+Unlike the fresh consumers above, its owned consumer retains one cache across
+initial resolution, a changed nonunique snapshot and registry restart. Both
+POM metadata and JAR bytes change. It explicitly enables `checkmodified` and
+marks snapshot dependencies as changing; a separate target resolves with
+`refresh=true` and retrieves updated bytes with `overwriteMode=always`. No cache
+is cleared. Actual original cached POMs and JARs must match the current exact
+publisher/reference/HTTP bytes, preserving the first observation before update.
+The profile retains every old case/34 wire bindings and requires six cache
+hashes, ten stages and 666 checks on both native Linux hosts. Local stand-ins
+do not establish native Ivy behavior. See the
+[development record](../../evidence/2026-11-04/ivy-warm-cache-development.json).
+
+Ivy normally treats a cached revision as immutable. For changing revisions it
+uses descriptor/publication changes when deciding whether artifacts need a
+refresh. A JAR-only overwrite with unchanged metadata cannot qualify this
+journey. See [cache and change management](https://ant.apache.org/ivy/history/2.6.0/concept.html)
+and [resolver attributes](https://ant.apache.org/ivy/history/2.6.0/settings/resolvers.html).
+This profile does not revoke bytes already on a developer machine or qualify
+warm proxy snapshots, offline/outage behavior, timestamped Ivy publication or
+all remaining JVM/lifecycle requirements.

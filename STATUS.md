@@ -52,6 +52,12 @@ stand-ins and full lint pass locally. No SDK/JVM or PostgreSQL ran locally.
 Native replay remains required. See
 `evidence/2026-11-04/sdk-pin-maven-identity-repair-development.json`.
 
+Both actual `1974d94` library jobs now pass all 37 original assertions using
+SDK 10.0.403 and runtime 10.0.14, with unchanged corpora and zero mismatches.
+Exact native library/source/tool hashes are retained in
+`evidence/2026-11-04/nuget-1974d94-checkpoint.json`. Feed/Maven/whole-campaign
+acceptance is still separate; do not replace the earlier mixed-SDK observations.
+
 The retained-cache Maven fixture on `c030aa0` fails on both actual Linux hosts
 before client identity: the new version parser omitted its `re` import. Each
 failed report retains 231 earlier assertions and no completed warm-cache stage.
@@ -69,6 +75,21 @@ and every command/case/budget. Main cross-run independence has direct native
 observation; other scheduling groups still require their own observation.
 Pending cancellations and all earlier failures remain retained. No primary,
 customer, release or sibling change is implied by a passing CI profile.
+
+Exact `1974d94` now supplies native ARM proof for all 663 baseline checks,
+including four warm Maven stages and six exact publisher/reference/HTTP/cache
+bindings. Original lifecycle reports and real PG/race pass on that same clean
+source. X86 and whole-campaign acceptance are still pending. See
+`evidence/2026-11-04/maven-warm-1974d94-arm64-checkpoint.json`.
+
+The next Ivy profile, `maven-snapshot-cache-v4`, is implemented but unverified.
+It retains all original cases/34 wire bindings and adds a changing consumer with
+one cache across first/updated snapshots and registry restart. Actual JARs and
+original POMs must match six retained cache hashes; both publications change
+metadata as well as bytes. Ten stages and 666 checks are expected. Seven fixture,
+ten safe-contract and 15 exporter tests plus full lint pass locally. No Ivy/JVM
+or database ran locally; both native GitHub hosts must qualify the behavior.
+See `evidence/2026-11-04/ivy-warm-cache-development.json`.
 
 No primary, selected binary, data, credential, sibling or customer change.
 Earlier notes below are historical and do not override this current state.
