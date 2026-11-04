@@ -36,14 +36,14 @@ proof. See `evidence/2026-11-04/sbt-snapshots-0cff4b8-checkpoint.json`.
 Whole `0cff4b8` acceptance remains open: 19 jobs pass while macOS source and
 fuzz are still queued in the latest observation. They never count as passes.
 
-At exact `f91f19a`, both native OCI campaigns now have accepted 214-check
-passes. Their fixed Helm cache keys miss, the bounded helper downloads and
-verifies the pinned archive, and the action saves it after successful native
-qualification. Full logs stay private; safe summaries and fixed marker/log
-hashes are retained in
-`evidence/2026-11-04/helm-cache-f91f19a-checkpoint.json`.
-Cache hits, ORAS integration and whole `f91f19a` acceptance remain separate;
-no speedup claim. The newer Go campaigns retain their own source identities.
+ORAS/Helm bounded archive caches now have named native miss/save/hit proof.
+Both architectures fetch/verify and save their exact public archive keys at
+`f91f19a`; later `5b04d3e` restores the same keys and revalidates the pins without
+fresh downloads. Both original OCI214 and controlled-upgrade10pin/15report
+campaigns pass on both sources. See
+`evidence/2026-11-04/native-tool-archive-cache-checkpoint.json`.
+No timing/speedup, whole-candidate or complete tool-hardening claim. Gitleaks'
+security-workflow curl still requires separate bounded installer review.
 
 All original failures and cancellations remain retained. The original missing
 Maven import now has both native replays. Later passes cannot establish unknown

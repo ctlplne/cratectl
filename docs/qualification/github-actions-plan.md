@@ -67,13 +67,15 @@ permissions, cases and concurrency remain. The reviewed
 [cache action](https://github.com/actions/cache/blob/55cc8345863c7cc4c66a329aec7e433d2d1c52a9/action.yml)
 saves only after job success. Whole ignored directories, private credentials,
 databases, extracted tools and consumer caches are outside these paths.
-At exact f91, both actual native OCI214 journeys pass and fixed Helm keys
-show miss, bounded pinned download and post-success save. See the
-[named checkpoint](../../evidence/2026-11-04/helm-cache-f91f19a-checkpoint.json).
-Matching cache-hit, ORAS and whole-campaign acceptance remain separate;
-no timing benefit is inferred. The f91 revision selects21actual jobs, currently queued/pending. Enumerate the
-actual full SHA and retain placement/step evidence before native acceptance.
-Other JVM/tool-cache opportunities remain separate required placement reviews.
+Named native proof now covers both ORAS and Helm on both architectures:
+f91 misses, bounded verified downloads and post-success saves; later5b restores
+the exact same platform/source keys and revalidates the pins without a fresh
+download. All original OCI214 and controlled-upgrade10pin/15report campaigns
+pass on both sources. See the [scoped checkpoint](../../evidence/2026-11-04/native-tool-archive-cache-checkpoint.json).
+Installer/helper/workflow bytes match. No timing/speedup or whole-candidate claim.
+Other downloads/caches, including Gitleaks' security curl, remain separate review
+and qualification work. These cache paths select only public compressed
+archives, and restored bytes are reverified before use.
 
 Go hosted/group-v2 is implemented but unverified. Its two native Linux jobs
 require four real PostgreSQL functions normally and with race, then an owned

@@ -1,0 +1,30 @@
+{
+  "observed_at": "2026-11-04T22:57:36.823931+00:00",
+  "status": "passed for named ORAS/Helm cold-save and matching restored-cache integration",
+  "cold_candidate": "f91f19abf5a34c906954a966f6f0868c5bd87202",
+  "restored_candidate": "5b04d3e1af5e54009a85058fe5fc1353c4f2cdfb",
+  "records": [
+    {
+      "path": "evidence/2026-11-04/helm-cache-f91f19a-checkpoint.json",
+      "sha256": "0123ee24100f6f5f5d9314fc6a14e4fc52a22149522c44a67f84c02bc8899c88"
+    },
+    {
+      "path": "evidence/2026-11-04/helm-cache-5b04d3e-checkpoint.json",
+      "sha256": "de7777b0286d851c45c53f4a5f32f43d67e296c82bd8d2228d476b130439853b"
+    },
+    {
+      "path": "evidence/2026-11-04/oras-cache-f91f19a-checkpoint.json",
+      "sha256": "b554ef142c92da11561c3d87cedcb268175650ef519c4da037e772cddab24a33"
+    },
+    {
+      "path": "evidence/2026-11-04/oras-cache-5b04d3e-checkpoint.json",
+      "sha256": "9eb760de325e647082702c0c5b48b5f57d456e69479526a5f0737ebac5922f2a"
+    }
+  ],
+  "qualification": "Both tools on both native Linux architectures have exact configured platform/source key misses, bounded checked downloads and successful post-job saves at f91. Later5b restores the same keys, rechecks the pinned archives and reports cache-hit without fresh download. Both complete OCI214 campaigns and both controlled-upgrade10pin/15report campaigns pass on each source. Installer/helper/workflow bytes match across the two sources.",
+  "limits": [
+    "Only these two public compressed tool archives and named jobs are qualified. No timing/speedup, whole-candidate, complete tool-download hardening, Go or full product claim.",
+    "Gitleaks security-workflow curl still requires its own bounded installer review. SDK/action caches, other client/bootstrap caches, faults and provider/platform scope remain separate.",
+    "All450capabilities/41families/laterstages remain committed. Fullsecurity/packaging/readiness false. No primary/customer/sibling/release mutation."
+  ]
+}
