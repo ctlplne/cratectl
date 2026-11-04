@@ -51,8 +51,8 @@ func (s *Server) goModule(w http.ResponseWriter, r *http.Request, i store.Identi
 		fail(w, 400, "invalid_go_module", "Use canonical escaped Go module paths, versions and native info/mod/zip/list/latest operations without query parameters.")
 		return
 	}
-	if repo.Mode != "hosted" {
-		fail(w, 405, "go_mode_unimplemented", "This Go adapter currently admits hosted repositories. Proxy/group journeys remain required.")
+	if repo.Mode != "hosted" && repo.Mode != "group" {
+		fail(w, 405, "go_mode_unimplemented", "This Go adapter admits hosted repositories and groups over hosted sources. Proxy retrieval remains unimplemented.")
 		return
 	}
 	if r.Method == "PUT" && request.Operation == "zip" {

@@ -1,8 +1,8 @@
 # Go module identity and atomic publication
 
-The hosted adapter is implemented but unverified. It registers native Go reads
+Hosted and group adapters are implemented but unverified. They register native Go reads
 and atomic bundle publication; local tests do not establish stock-client
-compatibility. Both native hosted journeys and all proxy/group work remain required.
+compatibility. Both native hosted/group journeys and all proxy-retrieval work remain required.
 
 Use the official `golang.org/x/mod` module/path/version and go.mod parsers,
 pinned to v0.42.0 with normal Go checksum verification. Its BSD-3-Clause license
@@ -46,3 +46,17 @@ References observed 2026-11-04: the official [module protocol and authentication
 reference](https://go.dev/ref/mod), [module identity library](https://pkg.go.dev/golang.org/x/mod/module)
 and [module ZIP constraints](https://pkg.go.dev/golang.org/x/mod/zip). The reviewed
 v0.42.0 source/checksum identities are retained in the development record.
+
+
+The group extension reuses common source resolution and final source/group
+revision admission. Native discovery queries hosted members in one repeatable-read
+transaction with shared row/metadata budgets. First-source blocked coordinates
+remain in the merge, preventing lower-source substitution. Stronger group review
+covers the complete bundle. Namespace-owner selection uses escaped Go module
+prefixes for both discovery and direct byte paths. Only hosted members are
+implemented; native proxy intake remains rejected. No new schema or runtime
+privilege is needed. The native v2 profile retains every v1 case and adds ordered
+sources, stronger review, namespace pinning, source-grant denial, group read-only
+publication and restart/revocation through the group. It requires nine stages,
+24 publisher/reference/HTTP bindings and16 exact stock ZIP/mod cache bindings.
+These are required observations, not a native pass claim.

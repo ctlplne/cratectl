@@ -200,7 +200,7 @@ def collect_go_modules(root,candidate):
         if not isinstance(report,dict)or report.get('candidate')!=candidate:raise ValueError('Go diagnostic report source does not match')
         if report.get('status')!='failed':continue
         run=match[1];contract=report.get('go_module_contract')
-        if report.get('run')!=run or len(failures)>=4 or not isinstance(contract,dict)or contract.get('profile')!='hosted-module-v1':raise ValueError('Go diagnostic run/profile inventory is invalid')
+        if report.get('run')!=run or len(failures)>=4 or not isinstance(contract,dict)or contract.get('profile')not in ('hosted-module-v1','hosted-group-module-v2'):raise ValueError('Go diagnostic run/profile inventory is invalid')
         commands=report.get('commands');error=report.get('failure','')
         if not isinstance(commands,list)or len(commands)>1024 or any(not isinstance(c,dict)for c in commands)or not isinstance(error,str)or len(error)>8192:raise ValueError('Go diagnostic command/error inventory exceeds its bound')
         selected=[c for c in commands if c.get('assertion_failed')is True or c.get('exit')is None or c.get('expected_failure')is not True and c.get('exit')!=0]

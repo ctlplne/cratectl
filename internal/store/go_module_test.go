@@ -55,3 +55,51 @@ func TestGoBundleRequiresAllExactRepresentations(t *testing.T) {
 		})
 	}
 }
+
+func TestGoGroupSelectionRetainsBlockedFirstSourceCoordinates(t *testing.T) {
+	mod := "go.cratectl.invalid/Owned/app"
+	for _, reason := range []string{"denied", "unassessed", "deleted"} {
+		first := goArtifactFixture()
+		for index := range first {
+			first[index].Decision = "allowed"
+		}
+		first[0].Decision = reason
+		if reason == "deleted" {
+			first[0].Decision = "allowed"
+			first[0].Deleted = true
+		}
+		candidates, e := goModuleVersionCandidates(first, mod, true)
+		if e != nil || candidates["v1.0.0"] {
+			t.Fatal("blocked version lost", reason, candidates, e)
+		}
+		selected := map[string]bool{}
+		mergeGoModuleVersions(selected, candidates)
+		mergeGoModuleVersions(selected, map[string]bool{"v1.0.0": true, "v1.1.0": true})
+		if selected["v1.0.0"] || !selected["v1.1.0"] {
+			t.Fatal("lower source bypassed first authority", selected)
+		}
+	}
+	first := goArtifactFixture()
+	if candidates, e := goModuleVersionCandidates(first, mod, false); e != nil || !candidates["v1.0.0"] {
+		t.Fatal("source's unassessed admission", e)
+	}
+	if candidates, e := goModuleVersionCandidates(first, mod, true); e != nil || candidates["v1.0.0"] {
+		t.Fatal("group weakened review", e)
+	}
+	if _, e := goModuleVersionCandidates(first[:2], mod, false); !errors.Is(e, ErrGoModuleUnvalidated) {
+		t.Fatal("partial source became absence", e)
+	}
+	if _, e := goModuleVersionCandidates(first, "go.cratectl.invalid/other", false); !errors.Is(e, ErrGoModuleUnvalidated) {
+		t.Fatal("wrong namespace admitted", e)
+	}
+}
+func TestGoRepositoryModesAdmitHostedGroupsAndRejectProxies(t *testing.T) {
+	group := Repository{Name: "group", Format: "go", Mode: "group", Settings: RepositorySettings{Members: []string{"owned"}, NamespaceOwners: map[string]string{"go.cratectl.invalid/!owned/": "owned"}}}
+	if e := ValidateRepository(&group); e != nil {
+		t.Fatal("Go hosted group rejected", e)
+	}
+	proxy := Repository{Name: "proxy", Format: "go", Mode: "proxy"}
+	if e := ValidateRepository(&proxy); e == nil {
+		t.Fatal("unimplemented Go proxy admitted")
+	}
+}

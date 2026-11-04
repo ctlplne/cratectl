@@ -351,3 +351,142 @@ func TestGoModuleCurrentGrantsRevocationAndTenantCollision(t *testing.T) {
 		t.Fatal("other tenant affected", w.Code)
 	}
 }
+
+func TestGoModuleGroupsPreservePrecedenceReviewOwnersAndSourceGrants(t *testing.T) {
+	s, d, token, admin := schemaServer(t)
+	ctx := context.Background()
+	c := gomodule.Coordinate{Module: "go.cratectl.invalid/Owned/app", Version: "v1.0.0"}
+	escapedPrefix := strings.Split(c.Prefix(), "/@v/")[0] + "/"
+	mavenRepositories(t, s, admin,
+		store.Repository{Name: "first", Format: "go", Access: "restricted"},
+		store.Repository{Name: "second", Format: "go", Access: "restricted"},
+		store.Repository{Name: "combined", Format: "go", Access: "restricted", Mode: "group", Settings: store.RepositorySettings{Members: []string{"first", "second"}}},
+		store.Repository{Name: "reviewed", Format: "go", Access: "restricted", Mode: "group", RequireReview: true, Settings: store.RepositorySettings{Members: []string{"first", "second"}}},
+		store.Repository{Name: "pinned", Format: "go", Mode: "group", Settings: store.RepositorySettings{Members: []string{"first", "second"}, NamespaceOwners: map[string]string{escapedPrefix: "first"}}})
+	first, _ := goPublicationFixture(t, c, "first source bytes")
+	lower, _ := goPublicationFixture(t, c, "lower priority different bytes")
+	for repo, data := range map[string][]byte{"first": first, "second": lower} {
+		if w := goHTTP(t, s, token, "PUT", "/go/"+repo+"/"+c.Prefix()+".zip", data); w.Code != 201 {
+			t.Fatal(repo, w.Code, w.Body.String())
+		}
+	}
+	next := c
+	next.Version = "v1.1.0"
+	newer, _ := goPublicationFixture(t, next, "lower source new version")
+	if w := goHTTP(t, s, token, "PUT", "/go/second/"+next.Prefix()+".zip", newer); w.Code != 201 {
+		t.Fatal(w.Code, w.Body.String())
+	}
+	get := func(repo string, c gomodule.Coordinate, kind string) *httptest.ResponseRecorder {
+		return goHTTP(t, s, token, "GET", "/go/"+repo+"/"+c.Prefix()+"."+kind, nil)
+	}
+	listPath := strings.Split(c.Prefix(), "/@v/")[0] + "/@v/list"
+	if w := get("combined", c, "zip"); w.Code != 200 || !bytes.Equal(w.Body.Bytes(), first) || w.Header().Get("X-Cratectl-Repository") != "first" {
+		t.Fatal("first source precedence", w.Code)
+	}
+	if w := get("combined", next, "zip"); w.Code != 200 || !bytes.Equal(w.Body.Bytes(), newer) || w.Header().Get("X-Cratectl-Repository") != "second" {
+		t.Fatal("new lower source version", w.Code)
+	}
+	if w := goHTTP(t, s, token, "GET", "/go/combined/"+listPath, nil); w.Code != 200 || w.Body.String() != "v1.0.0\nv1.1.0\n" {
+		t.Fatal("complete group list", w.Code, w.Body.String())
+	}
+	if w := get("reviewed", c, "info"); w.Code != 403 {
+		t.Fatal("group weakened review", w.Code)
+	}
+	decide := func(repo string, a store.Artifact, value string) {
+		t.Helper()
+		if e := s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error { _, e := store.Decide(ctx, tx, admin, repo, a.Path, a.Digest, value); return e }); e != nil {
+			t.Fatal(e)
+		}
+	}
+	firstRefs := goInventory(t, s, admin, "first")
+	for _, a := range firstRefs {
+		if !strings.HasSuffix(a.Path, ".zip") {
+			decide("first", a, "allowed")
+		}
+	}
+	if w := get("reviewed", c, "info"); w.Code != 403 {
+		t.Fatal("approved metadata bypassed unreviewed ZIP", w.Code)
+	}
+	for _, a := range firstRefs {
+		decide("first", a, "allowed")
+	}
+	if w := get("reviewed", c, "zip"); w.Code != 200 || !bytes.Equal(w.Body.Bytes(), first) {
+		t.Fatal("reviewed exact first source", w.Code)
+	}
+	if w := goHTTP(t, s, token, "GET", "/go/reviewed/"+listPath, nil); w.Code != 200 || w.Body.String() != "v1.0.0\n" {
+		t.Fatal("unreviewed lower discovery", w.Code, w.Body.String())
+	}
+	if w := get("pinned", next, "zip"); w.Code != 404 {
+		t.Fatal("namespace owner fell through", w.Code)
+	}
+	if w := goHTTP(t, s, token, "GET", "/go/pinned/"+listPath, nil); w.Code != 200 || w.Body.String() != "v1.0.0\n" {
+		t.Fatal("namespace-owner discovery mismatch", w.Code, w.Body.String())
+	}
+	reader, e := crypt.Token()
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e = store.Provision(ctx, d.OwnerDSN, admin.Tenant, "group-reader", "reader", reader, time.Now().Add(time.Hour)); e != nil {
+		t.Fatal(e)
+	}
+	grant := func(repo string, read bool) {
+		t.Helper()
+		if e := s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
+			_, e := tx.Exec(ctx, `INSERT INTO cratectl.repository_grants(tenant,repository,actor,can_read,can_write)VALUES($1,$2,'group-reader',$3,false)ON CONFLICT(tenant,repository,actor) DO UPDATE SET can_read=$3`, admin.Tenant, repo, read)
+			return e
+		}); e != nil {
+			t.Fatal(e)
+		}
+	}
+	grant("combined", true)
+	grant("second", true)
+	endpoint := "/go/combined/" + c.Prefix() + ".zip"
+	if w := goHTTP(t, s, reader, "GET", endpoint, nil); w.Code != 403 {
+		t.Fatal("missing first grant fell through", w.Code)
+	}
+	grant("first", true)
+	if w := goHTTP(t, s, reader, "GET", endpoint, nil); w.Code != 200 || !bytes.Equal(w.Body.Bytes(), first) {
+		t.Fatal("granted group read", w.Code)
+	}
+	grant("second", false)
+	if w := goHTTP(t, s, reader, "GET", "/go/combined/"+listPath, nil); w.Code != 403 {
+		t.Fatal("discovery omitted an ungranted consulted source", w.Code)
+	}
+	for _, a := range firstRefs {
+		if strings.HasSuffix(a.Path, ".zip") {
+			decide("first", a, "denied")
+		}
+	}
+	if w := get("combined", c, "zip"); w.Code != 403 {
+		t.Fatal("denied first source fell through", w.Code)
+	}
+	if w := goHTTP(t, s, token, "GET", "/go/combined/"+listPath, nil); w.Code != 200 || w.Body.String() != "v1.1.0\n" {
+		t.Fatal("blocked first coordinate reappeared from lower source", w.Code, w.Body.String())
+	}
+	if w := goHTTP(t, s, token, "PUT", endpoint, first); w.Code != 405 {
+		t.Fatal("group became publishable", w.Code)
+	}
+	s.NativeVersionLimit = 1
+	if w := goHTTP(t, s, token, "GET", "/go/combined/"+listPath, nil); w.Code != 413 {
+		t.Fatal("group emitted a truncated index", w.Code)
+	}
+	s.NativeVersionLimit = 10000
+	for _, a := range firstRefs {
+		decide("first", a, "allowed")
+	}
+	owner, e := pgx.Connect(ctx, d.OwnerDSN)
+	if e != nil {
+		t.Fatal(e)
+	}
+	_, e = owner.Exec(ctx, `DELETE FROM cratectl.artifacts WHERE tenant=$1 AND repository='first' AND path=$2`, admin.Tenant, c.Prefix()+".info")
+	owner.Close(ctx)
+	if e != nil {
+		t.Fatal(e)
+	}
+	if w := get("combined", c, "zip"); w.Code != 409 {
+		t.Fatal("partial first source fell through", w.Code)
+	}
+	if w := goHTTP(t, s, token, "GET", "/go/combined/"+listPath, nil); w.Code != 409 {
+		t.Fatal("partial group discovery emitted data", w.Code)
+	}
+}

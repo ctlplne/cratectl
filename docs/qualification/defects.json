@@ -1108,9 +1108,10 @@
       "id": "DEFECT.0101",
       "summary": "Go PostgreSQL fixtures assumed an empty journal and runtime deletion authority",
       "discovery": "evidence/2026-11-04/go-module-fixture-diagnostics-development.json",
-      "state": "Found by source inspection before native qualification; fixture repaired, native replay pending",
+      "state": "Original e62 native failure observed on both Linux hosts: two event-baseline assertions counted provisioning. Repaired in d183; native replay pending. Runtime owner-only deletion fixture repair remains unverified until that source runs.",
       "repair": "Compare with the actual journal baseline and inject the partial-reference fault only through the fresh test database owner. Preserve publication atomicity/replay assertions and runtime privileges.",
-      "limits": "Integration compilation only; no observed native first failure or database pass claimed."
+      "limits": "Integration compilation only; no observed native first failure or database pass claimed.",
+      "native_first_failure": "evidence/2026-11-04/go-module-e62ac69-first-failure.json"
     }
   ]
 }

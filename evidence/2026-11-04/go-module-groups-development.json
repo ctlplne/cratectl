@@ -1,0 +1,132 @@
+{
+  "source_parent": "d183be64eb284503bc66fc465b069f56ab85f8ae",
+  "source_dirty": true,
+  "observed_at": "2026-11-04T22:49:15.534868+00:00",
+  "status": "implemented but unverified; local checks passed; native PostgreSQL and registry-backed stock Go replay pending",
+  "files": [
+    {
+      "path": "internal/server/go_module.go",
+      "sha256": "02f3abe146743e637fad99fcaa10b93ab7b3d9bd297ed3686f6f3cca42df4ea8"
+    },
+    {
+      "path": "internal/server/go_module_integration_test.go",
+      "sha256": "86416b6fb66486926e8fe67877e5f621c10fadb8044a3c9f677e7c0c8fe7ab55"
+    },
+    {
+      "path": "internal/store/go_module.go",
+      "sha256": "e39e598ecf80ac29d6ecac3f9e1a3fa8c1d143f68611a01f2b8175a7d854eb40"
+    },
+    {
+      "path": "internal/store/go_module_test.go",
+      "sha256": "3852a475a1a06822454604af18cc9048d3833c5059b78f70c0bbb18f909e1a22"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "e03a7b53a504398776388dc4182c31f4d05648f79e690aa9a423f93613624f3a"
+    },
+    {
+      "path": "scripts/conformance_go.py",
+      "sha256": "7f48e7eea03788be76e01a44cbfa783b97584fe51a57479a7876c6bd0e61bee9"
+    },
+    {
+      "path": "scripts/ci/go_module_evidence.py",
+      "sha256": "9277aca3a508c065cfbbbd6082e8afe0add240e2618ac5150353092cbead6852"
+    },
+    {
+      "path": "scripts/ci/test_go_module_evidence.py",
+      "sha256": "4b6fbd7830f8b23bf2f956d59ee0eee3285adc1cb261a0644e6df6137dd783da"
+    },
+    {
+      "path": "scripts/ci/test_evidence_summary.py",
+      "sha256": "fdf48bb3b9f5195ab42407c86b2879cbfc6124c90511d6ab14efeb6850aad2e3"
+    },
+    {
+      "path": "scripts/ci_native_diagnostics.py",
+      "sha256": "39501ace722eafb6661cec71494aacf6398a08c6f85fdebe0fd78598b24a3df2"
+    },
+    {
+      "path": ".github/workflows/go-modules.yml",
+      "sha256": "e3f9d4f170f48bbdd0d6ffec92d60bdef3482553bcf57185ab2f3847b1f5ab70"
+    },
+    {
+      "path": "web/src/repositories.tsx",
+      "sha256": "8a6e3a8687f1cae475fedef1b64f243c5509853995e3af4f76afd3949cbc1258"
+    },
+    {
+      "path": "web/build-manifest.json",
+      "sha256": "67a116bd5485a02a780c3ea8abdcc45de424d7c030b9f91f5770130d521af999"
+    }
+  ],
+  "mechanism": {
+    "serving": "Read-only Go groups use common ordered source resolution, current source/group authority and final revision/policy admission. The full ZIP/mod/info bundle must meet stronger group review. Only absence permits fallback; denial and partial versions stop it.",
+    "discovery": "One repeatable-read store transaction checks all consulted hosted sources with shared SQL-row/metadata budgets. Blocked first-source coordinates remain in the merge, preventing lower duplicate substitution. Canonical escaped namespace-owner prefixes govern metadata and direct bytes. Oversized or damaged views fail rather than returning partial indexes.",
+    "surfaces": [
+      "go group repository creation API/console",
+      "native info/mod/zip/list/latest via group",
+      "read-only group client configuration"
+    ],
+    "unsupported": [
+      "Go proxy retrieval",
+      "nested groups",
+      "full source/config/grant races",
+      "Go lifecycle/GC",
+      "aliases/legacy/rootless modules",
+      "broader warm-cache/fault/migration/scale/platform/browser operator outcomes"
+    ]
+  },
+  "validation": {
+    "all_unit": "passed",
+    "affected_store_server_race": "passed",
+    "full_lint": "passed",
+    "console": "TypeScript/build and byte-for-byte reproduction passed; informational chunk warning remains",
+    "integration_functions": 4,
+    "integration_execution": "compile only; none executed locally",
+    "evidence_contract_tests": 6,
+    "exporter_tests": 18,
+    "profile_helper_tests": 4,
+    "cms_tests": 7,
+    "file_proxy": "Native ARM stock Go against owned file-proxy stand-ins only; no registry/PG/TLS proof"
+  },
+  "native_required": {
+    "workflow": ".github/workflows/go-modules.yml",
+    "hosts": [
+      "GitHub Ubuntu24.04 amd64",
+      "GitHub Ubuntu24.04 arm64"
+    ],
+    "postgresql": "All four real PostgreSQL functions normally and with race; nonsuperuser/nonowner runtime unchanged",
+    "profile": "hosted-group-module-v2",
+    "mandatory_stages": 9,
+    "publisher_reference_http_bindings": 24,
+    "stock_cached_zip_mod_bindings": 16,
+    "original_cases": "All original hosted-v1 cases and identities retained; old v1 exporter remains supported separately.",
+    "new_cases": [
+      "first source exact bytes and lower-source new version",
+      "stronger group review over the full bundle",
+      "complete version union and latest",
+      "escaped namespace owner pin/no absent-member fallback",
+      "denied first coordinate cannot be supplied by lower duplicate",
+      "missing first-source grant cannot authorize fallback",
+      "group publication denied as read-only",
+      "actual process restart and reader revocation through group"
+    ],
+    "budgets": "Original45minute job/120second command/8MiB output preserved; no retries/skips/successful-empty evidence. Owner-encrypted diagnostics support both named profiles."
+  },
+  "original_native_failure": "evidence/2026-11-04/go-module-e62ac69-first-failure.json",
+  "logs": {
+    ".cache/go-group-all-unit.log": "de802d81e46d2d830b6e71726be4ded555e7ca12119e18f37c57a8b64502acd2",
+    ".cache/go-group-race.log": "4e9c4435d49e5d78f27c78755634a2943e4e1730c540b3b6d4bfcabd3ae31bff",
+    ".cache/go-group-lint.log": "f7d4d1c4a1b38cf49d5fec97bfa7a2b2846c079d4527d30831f9f7beade0590a",
+    ".cache/go-group-console-build.log": "bc0abb5d6c146d52f06b6b98cef35b407c1d9c736a0f2316efbc06dd0c72f973",
+    ".cache/go-group-console-repro.log": "02b83f3409ee4607ccbe74d83c5faae303a763d1b1509a2a93c8b90340e2c9b4",
+    ".cache/go-group-pg-final-compile.log": "56276be27a20f71575dafbf1472be8550323d5486febf927181d7c91f7925301",
+    ".cache/go-group-contract-unit.log": "62cfbeb2911bb226088bfb0918eb4b05008ea70b20bce854ee2ca8a564bd37a5",
+    ".cache/go-group-exporter-unit.log": "7277991071a23052a62ddc614ee85e2305c039776669d8468fea1a7964d109e7",
+    ".cache/go-group-profile-unit.log": "4e49d428251ebff22367dab58eb281dedd221fe6a7d96b1ae614ac76baf731af",
+    ".cache/go-group-diagnostics-unit.log": "3e636b97cb66a8c31be4a446156a7a1fc83c6075493df3ffe8bd21ff14fd8a54",
+    ".cache/go-group-file-proxy.log": "47aab65fda9b5738caa65ab92c8e4aabde399051810f85988724b2461c9584c3"
+  },
+  "limits": [
+    "No native hosted or group Go campaign accepted yet. The original e62 native fixture event-baseline failure is retained; its d183 repair still requires native replay. A local stand-in cannot replace real PostgreSQL/TLS/registry proof.",
+    "All450capabilities/41families/laterstages remain committed. Broad readiness/fullsecurity/packaging false. No primary/customer/sibling/selected-binary/release mutation."
+  ]
+}

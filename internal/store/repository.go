@@ -122,7 +122,7 @@ func ValidateRepository(r *Repository) error {
 	if policy := r.Settings.MavenSnapshotPolicy; policy != "" && (r.Format != "maven" || r.Mode != "hosted" || policy != "immutable" && policy != MavenSnapshotRedeployNonunique) {
 		return errors.New("Maven snapshot policy requires a hosted Maven repository and immutable or redeploy_nonunique")
 	}
-	if r.Mode != "hosted" && r.Format != "generic" && r.Format != "maven" && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" {
+	if r.Mode != "hosted" && r.Format != "generic" && r.Format != "maven" && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" && !(r.Format == "go" && r.Mode == "group") {
 		return errors.New("proxy/group native adapters not yet implemented for this format")
 	}
 	if r.Settings.OCITokenEndpoint != nil {

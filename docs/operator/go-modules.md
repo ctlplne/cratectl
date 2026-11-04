@@ -1,9 +1,9 @@
-# Hosted Go modules
+# Go modules
 
-The hosted adapter is implemented but unverified. Local unit/race, parser and
+The hosted and ordered-group adapters are implemented but unverified. Local unit/race, parser and
 stand-in checks pass; real PostgreSQL and stock Go execution are assigned to
 native x86 and ARM GitHub jobs. No full format or production claim follows.
-Proxy/group repositories, branch/revision queries, modules without root go.mod,
+Proxy retrieval, branch/revision queries, modules without root go.mod,
 warm caches, lifecycle, migration and broader fault/scale/platform cases remain
 required. See the [development record](../../evidence/2026-11-04/go-module-hosted-development.json).
 
@@ -66,6 +66,26 @@ discovery of that version. Inspect the exact digests in the administrative
 inventory before making decisions. Archive validation does not establish a clean
 security scan. A cached client copy remains under the client's control; server
 revocation governs new requests. Ordinary policy cannot erase downloaded files.
+
+Groups provide one read endpoint over existing hosted Go sources. Create a
+`go` repository in group mode with ordered `settings.members`. Publish through
+a hosted member, then point GOPROXY at the group. Readers need authority on the
+group and each consulted source. Discovery checks every source it consults; a
+missing source grant stops the complete index instead of silently omitting it.
+
+For a given version, the first source owns that coordinate. A denied, unreviewed,
+retired or incomplete first-source version cannot be replaced by a lower copy.
+Only a wholly absent coordinate permits normal ordered fallback. A group can
+require stronger review than its sources; all three ZIP/mod/info representations
+must meet that review before serving any sibling. Namespace owners in
+`settings.namespace_owners` pin an escaped native module prefix ending in `/`
+to one member, including when the pinned member lacks the requested version.
+Complete version discovery and latest selection apply the same first-source and
+review rules. Oversized views fail rather than returning truncated indexes.
+
+These group rules have local unit/race and four integration-test compilations;
+actual stock-client/PostgreSQL/browser and broader source/configuration races
+remain unverified. Proxy repositories and richer source recovery remain required.
 
 Defaults admit 64MiB compressed ZIP, 256MiB expanded bytes, 4MiB central directory,
 10,000 entries and 1MiB root go.mod. Operators can configure ZIP/expanded/directory/

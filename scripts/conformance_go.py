@@ -5,7 +5,7 @@ import argparse,datetime,hashlib,io,json,os,platform,re,ssl,subprocess,time,urll
 from pathlib import Path
 from bounded_client import run_owned_client
 from qualification_contract import candidate_binary_directory,candidate_artifact_names
-from ci.go_module_evidence import STAGES,FIXTURES,CACHED_FIXTURES
+from ci.go_module_evidence import GROUP_STAGES as STAGES,GROUP_FIXTURES as FIXTURES,GROUP_CACHED_FIXTURES as CACHED_FIXTURES
 
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT)
 parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');args=parser.parse_args()
@@ -14,7 +14,7 @@ PRIVATE=ROOT/'.private/go-module-conformance'/RUN;PRIVATE.mkdir(parents=True,mod
 INSTALL=PRIVATE/'installation';BASE='https://localhost:38443';INSTANT='2026-01-02T03:04:05Z';MODULE='go.cratectl.invalid/Owned/application';DEPENDENCY='go.cratectl.invalid/Owned/dependency'
 env=dict(os.environ);public_env={k:v for k,v in env.items()if k not in ['CRATECTL_OWNER_DSN','CRATECTL_DSN']}
 checks=[];commands=[];tokens={};process=None;server_log=None;database_created=False
-contract={'profile':'hosted-module-v1','version':None,'go_binary_sha256':hashlib.sha256(GO.read_bytes()).hexdigest(),'fixture_source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'completed':[],'publisher_sha256':{},'reference_sha256':{},'wire_sha256':{},'cached_sha256':{}}
+contract={'profile':'hosted-group-module-v2','version':None,'go_binary_sha256':hashlib.sha256(GO.read_bytes()).hexdigest(),'fixture_source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'completed':[],'publisher_sha256':{},'reference_sha256':{},'wire_sha256':{},'cached_sha256':{}}
 EVIDENCE=ROOT/'evidence'/datetime.datetime.now(datetime.timezone.utc).date().isoformat();EVIDENCE.mkdir(parents=True,exist_ok=True)
 def digest(b):return hashlib.sha256(b).hexdigest()
 def check(label,condition):
@@ -44,7 +44,7 @@ def settings(name):
   if len(parts)==2 and parts[0]=='build'and'='in parts[1]:k,v=parts[1].split('=',1);observed[k]=v
  return observed
 scope=['cmd','internal','scripts','api','web','go.mod','go.sum','Makefile']
-result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope],text=True).strip()),'artifact_digests':{name:digest((ROOT/name).read_bytes())for name in candidate_artifact_names()},'build_identity':{name:settings(name)for name in candidate_artifact_names()},'checks':checks,'commands':commands,'go_module_contract':contract,'topology':f'Native {platform.platform()}; owned fresh PostgreSQL database and nonsuperuser runtime; generated trusted loopback TLS on38443; private NETRC; fresh project/module caches; no VCS, public package fallback or package execution.','limits':['Hosted profile only. Proxy/group, warm caches, legacy modules without go.mod, broader version/query/race/fault/lifecycle/migration/scale/TLS-provider/platform outcomes remain required.','Owned dependency-bearing resource modules are downloaded/extracted by stock Go, never compiled or executed. This does not establish separate-host, full format or product readiness.','Fixture namespaces explicitly bypass the public checksum database using GONOSUMDB; Go still computes module sums. Public checksum-service mirroring and disconnected/public-module behavior remain separate.']}
+result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope],text=True).strip()),'artifact_digests':{name:digest((ROOT/name).read_bytes())for name in candidate_artifact_names()},'build_identity':{name:settings(name)for name in candidate_artifact_names()},'checks':checks,'commands':commands,'go_module_contract':contract,'topology':f'Native {platform.platform()}; owned fresh PostgreSQL database and nonsuperuser runtime; generated trusted loopback TLS on38443; private NETRC; fresh project/module caches; no VCS, public package fallback or package execution.','limits':['Hosted/group profile only. Proxy retrieval, warm caches, legacy modules without go.mod, broader version/query/race/fault/lifecycle/migration/scale/TLS-provider/platform outcomes remain required.','Owned dependency-bearing resource modules are downloaded/extracted by stock Go, never compiled or executed. This does not establish separate-host, full format or product readiness.','Fixture namespaces explicitly bypass the public checksum database using GONOSUMDB; Go still computes module sums. Public checksum-service mirroring and disconnected/public-module behavior remain separate.']}
 result['build_source_matches_candidate']=all(v.get('vcs.revision')==result['candidate']and v.get('vcs.modified')=='false'for v in result['build_identity'].values())
 def http(p,who='admin',method='GET',data=None,headers=None):
  h={'Authorization':'Bearer '+tokens[who]};h.update(headers or {})
@@ -92,35 +92,38 @@ fixtures={
  'application_2':fixture(MODULE,'v1.1.0','tenant-A-application-two',DEPENDENCY),
  'other_dependency':fixture(DEPENDENCY,'v1.0.0','tenant-B-dependency'),
  'other_application':fixture(MODULE,'v1.0.0','tenant-B-application',DEPENDENCY),
+ 'lower_dependency':fixture(DEPENDENCY,'v1.0.0','lower-priority-dependency'),
+ 'lower_application_1':fixture(MODULE,'v1.0.0','lower-priority-application-one',DEPENDENCY),
+ 'lower_application_3':fixture(MODULE,'v1.2.0','lower-priority-new-version',DEPENDENCY),
 }
-def publish(label,who='publisher',expected=201,replace=None):
- f=fixtures[label];code,body,_=http('/go/owned/'+escaped(f['module'])+'/@v/'+f['version']+'.zip',who,'PUT',replace or f['zip'],{'X-Cratectl-Module-Time':INSTANT})
+def publish(label,who='publisher',expected=201,replace=None,repo='owned'):
+ f=fixtures[label];code,body,_=http('/go/'+repo+'/'+escaped(f['module'])+'/@v/'+f['version']+'.zip',who,'PUT',replace or f['zip'],{'X-Cratectl-Module-Time':INSTANT})
  check(label+': publication status '+str(expected),code==expected)
  if expected==201:
   receipt=json.loads(body);check(label+': publication digest identity',receipt['representations_sha256']=={kind:digest(f[kind])for kind in ['zip','mod','info']})
   for kind in ['zip','mod','info']:contract['publisher_sha256'][label+'_'+kind]=digest(f[kind])
  return body
 
-def approve(who='admin',decision='allowed',only=None):
- code,body,_=http('/api/v1/repositories/owned/artifacts',who)
+def approve(who='admin',decision='allowed',only=None,repo='owned'):
+ code,body,_=http('/api/v1/repositories/'+repo+'/artifacts',who)
  check(who+': complete exact reference inventory',code==200)
  for a in json.loads(body)['items']:
   if only is not None and not a['path'].endswith(only):continue
-  check(who+': digest decision '+decision,http('/api/v1/repositories/owned/decisions',who,'PUT',{'path':a['path'],'digest':a['digest'],'decision':decision})[0]==200)
+  check(who+': digest decision '+decision,http('/api/v1/repositories/'+repo+'/decisions',who,'PUT',{'path':a['path'],'digest':a['digest'],'decision':decision})[0]==200)
 
-def bind(label,who='admin'):
- f=fixtures[label];code,body,_=http('/api/v1/repositories/owned/artifacts',who);check(label+': inventory for byte binding',code==200)
+def bind(label,who='admin',repo='owned'):
+ f=fixtures[label];code,body,_=http('/api/v1/repositories/'+repo+'/artifacts',who);check(label+': inventory for byte binding',code==200)
  refs={a['path']:a for a in json.loads(body)['items']}
  for kind in ['zip','mod','info']:
-  p=escaped(f['module'])+'/@v/'+f['version']+'.'+kind;a=refs[p];code,body,_=http('/go/owned/'+p,who)
+  p=escaped(f['module'])+'/@v/'+f['version']+'.'+kind;a=refs[p];code,body,_=http('/go/'+repo+'/'+p,who)
   check(label+' '+kind+': exact publisher/reference/HTTP bytes',code==200 and body==f[kind]and a['digest']==digest(body)and a['size']==len(body))
   contract['reference_sha256'][label+'_'+kind]=a['digest'];contract['wire_sha256'][label+'_'+kind]=digest(body)
 
-def consume(label,dep='dependency',who='reader',ok=True):
+def consume(label,dep='dependency',who='reader',ok=True,repo='owned'):
  f=fixtures[label];consumer=PRIVATE/('consumer-'+uuid.uuid4().hex);consumer.mkdir()
  (consumer/'go.mod').write_text('module go.cratectl.invalid/consumer\n\ngo 1.26.0\nrequire '+MODULE+' '+f['version']+'\n')
  netrc=private(consumer.name+'/netrc',('machine localhost login token password '+tokens[who]+'\n').encode())
- client_env=dict(public_env,GOENV='off',GOWORK='off',GOFLAGS='',GOTOOLCHAIN='local',GOTELEMETRY='off',GOINSECURE='',GOPROXY=BASE+'/go/owned/',GOPRIVATE='go.cratectl.invalid',GONOPROXY='none',GONOSUMDB='go.cratectl.invalid',GOSUMDB='sum.golang.org',GOVCS='*:off',GOAUTH='netrc',NETRC=str(netrc),SSL_CERT_FILE=str(INSTALL/'ca.crt'),GOMODCACHE=str(consumer/'module-cache'),GOPATH=str(consumer/'gopath'),GOCACHE=str(consumer/'build-cache'))
+ client_env=dict(public_env,GOENV='off',GOWORK='off',GOFLAGS='',GOTOOLCHAIN='local',GOTELEMETRY='off',GOINSECURE='',GOPROXY=BASE+'/go/'+repo+'/',GOPRIVATE='go.cratectl.invalid',GONOPROXY='none',GONOSUMDB='go.cratectl.invalid',GOSUMDB='sum.golang.org',GOVCS='*:off',GOAUTH='netrc',NETRC=str(netrc),SSL_CERT_FILE=str(INSTALL/'ca.crt'),GOMODCACHE=str(consumer/'module-cache'),GOPATH=str(consumer/'gopath'),GOCACHE=str(consumer/'build-cache'))
  output=command([GO,'mod','download','-json','all'],runenv=client_env,cwd=consumer,ok=ok)
  check(label+': stock Go fresh-cache '+('download' if ok else 'blocked'),True)
  if not ok:return
@@ -169,13 +172,42 @@ try:
  contract['completed'].append(STAGES[4])
  for label in ['other_dependency','other_application']:publish(label,who='other');bind(label,who='other')
  consume('other_application',dep='other_dependency',who='other');consume('application_1');contract['completed'].append(STAGES[5])
+ check('create lower hosted Go source',http('/api/v1/repositories',method='POST',data={'name':'secondary','format':'go','access':'restricted'})[0]==201)
+ for actor,write in [('publisher',True),('reader',False)]:check('secondary '+actor+' grant',http('/api/v1/repositories/secondary/grants',method='PUT',data={'actor':actor,'read':True,'write':write})[0]==200)
+ for label in ['lower_dependency','lower_application_1','lower_application_3']:publish(label,repo='secondary');bind(label,repo='secondary')
+ consume('lower_application_1',dep='lower_dependency',repo='secondary');consume('lower_application_3',dep='lower_dependency',repo='secondary')
+ for name,pinned in [('combined',False),('pinned',True)]:
+  settings={'members':['owned','secondary']}
+  if pinned:settings['namespace_owners']={escaped(MODULE)+'/':'owned'}
+  check(name+': create ordered Go group',http('/api/v1/repositories',method='POST',data={'name':name,'format':'go','mode':'group','access':'restricted','require_review':True,'settings':settings})[0]==201)
+  check(name+': reader grant',http('/api/v1/repositories/'+name+'/grants',method='PUT',data={'actor':'reader','read':True,'write':False})[0]==200)
+ consume('application_1',repo='combined')
+ code,body,headers=http('/go/combined/'+escaped(MODULE)+'/@v/v1.0.0.zip','reader');check('group selects exact first source',code==200 and body==fixtures['application_1']['zip']and headers.get('X-Cratectl-Repository')=='owned')
+ consume('lower_application_3',repo='combined',ok=False)
+ check('group stronger review hides lower unassessed version',http('/go/combined/'+escaped(MODULE)+'/@v/list','reader')[1]==b'v1.0.0\nv1.1.0\n')
+ approve(repo='secondary');consume('lower_application_3',repo='combined')
+ check('group discovers complete version union',http('/go/combined/'+escaped(MODULE)+'/@v/list','reader')[1]==b'v1.0.0\nv1.1.0\nv1.2.0\n')
+ check('group latest selects lower new version',json.loads(http('/go/combined/'+escaped(MODULE)+'/@latest','reader')[1])['Version']=='v1.2.0')
+ consume('lower_application_3',repo='pinned',ok=False)
+ check('namespace owner blocks absent version fallback',http('/go/pinned/'+escaped(MODULE)+'/@v/v1.2.0.zip','reader')[0]==404)
+ check('namespace owner discovery agrees',http('/go/pinned/'+escaped(MODULE)+'/@v/list','reader')[1]==b'v1.0.0\nv1.1.0\n')
+ approve(decision='denied',only='.zip');consume('application_1',repo='combined',ok=False)
+ check('denied first source stops lower duplicate fallback',http('/go/combined/'+escaped(MODULE)+'/@v/v1.0.0.zip','reader')[0]==403)
+ check('blocked first source versions stay out of discovery',http('/go/combined/'+escaped(MODULE)+'/@v/list','reader')[1]==b'v1.2.0\n')
+ approve(only='.zip')
+ check('remove first-source reader grant',http('/api/v1/repositories/owned/grants',method='PUT',data={'actor':'reader','read':False,'write':False})[0]==200)
+ consume('application_1',repo='combined',ok=False)
+ check('missing source grant prevents fallback',http('/go/combined/'+escaped(MODULE)+'/@v/v1.0.0.zip','reader')[0]==403)
+ check('restore first-source reader grant',http('/api/v1/repositories/owned/grants',method='PUT',data={'actor':'reader','read':True,'write':False})[0]==200)
+ check('group publication is read-only',http('/go/combined/'+escaped(MODULE)+'/@v/v1.0.0.zip',method='PUT',data=fixtures['application_1']['zip'],headers={'X-Cratectl-Module-Time':INSTANT})[0]==405)
+ contract['completed'].append(STAGES[6])
  approve(decision='denied',only='.zip');consume('application_2',ok=False)
  check('denied ZIP also blocks exact metadata',http('/go/owned/'+escaped(MODULE)+'/@v/v1.1.0.mod')[0]==403)
- approve(only='.zip');stop();start();consume('application_2');contract['completed'].append(STAGES[6])
+ approve(only='.zip');stop();start();consume('application_2');consume('lower_application_3',repo='combined');contract['completed'].append(STAGES[7])
  stop();command([BIN/'cratectld','revoke','--token-file',PRIVATE/'publisher.token'],initial_env);start();publish('application_1',expected=401)
- stop();command([BIN/'cratectld','revoke','--token-file',PRIVATE/'reader.token'],initial_env);start();consume('application_2',ok=False);consume('other_application',dep='other_dependency',who='other')
+ stop();command([BIN/'cratectld','revoke','--token-file',PRIVATE/'reader.token'],initial_env);start();consume('application_2',ok=False);consume('lower_application_3',repo='combined',ok=False);consume('other_application',dep='other_dependency',who='other')
  check('revoked reader exact metadata denied',http('/go/owned/'+escaped(MODULE)+'/@v/v1.1.0.info','reader')[0]==401)
- contract['completed'].append(STAGES[7]);check('every exact publisher/reference/wire identity retained',set(contract['publisher_sha256'])==FIXTURES and contract['publisher_sha256']==contract['reference_sha256']==contract['wire_sha256']);check('every exact stock cache identity retained',set(contract['cached_sha256'])==CACHED_FIXTURES and all(v==contract['wire_sha256'][k]for k,v in contract['cached_sha256'].items()))
+ contract['completed'].append(STAGES[8]);check('every exact publisher/reference/wire identity retained',set(contract['publisher_sha256'])==FIXTURES and contract['publisher_sha256']==contract['reference_sha256']==contract['wire_sha256']);check('every exact stock cache identity retained',set(contract['cached_sha256'])==CACHED_FIXTURES and all(v==contract['wire_sha256'][k]for k,v in contract['cached_sha256'].items()))
  result['status']='passed';print('PASS: native Go hosted/TLS journey,',len(checks),'checks')
 except BaseException as error:
  result['failure']=str(error)[:8192];result['last_observation']=commands[-1]if commands else None;result['status']='failed';print('FAIL: native Go hosted/TLS journey; bounded details remain private');raise

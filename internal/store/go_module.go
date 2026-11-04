@@ -133,9 +133,43 @@ func checkGoModuleBundle(ctx context.Context, tx pgx.Tx, repo string, a Artifact
 	return e
 }
 
-// GoModuleVersions returns a complete bounded current-policy view. It queries
-// references once, including blocked rows, so no N+1 query loop or silent partial
-// version index can make an unreviewed or incomplete bundle discoverable.
+// goModuleVersionCandidates retains blocked coordinates so a lower-priority
+// source cannot replace a denied, unreviewed or retired first-source version.
+func goModuleVersionCandidates(as []Artifact, mod string, review bool) (map[string]bool, error) {
+	bundles := map[string][]Artifact{}
+	blocked := map[string]bool{}
+	for _, a := range as {
+		m, e := ValidateGoModuleArtifact(a)
+		if e != nil {
+			return nil, e
+		}
+		if m.Module != mod {
+			return nil, ErrGoModuleUnvalidated
+		}
+		bundles[m.Version] = append(bundles[m.Version], a)
+		blocked[m.Version] = blocked[m.Version] || a.Deleted || a.Decision == "denied" || review && a.Decision != "allowed"
+	}
+	candidates := map[string]bool{}
+	for version, refs := range bundles {
+		if _, e := validateGoModuleBundle(refs); e != nil {
+			return nil, e
+		}
+		candidates[version] = !blocked[version]
+	}
+	return candidates, nil
+}
+
+func mergeGoModuleVersions(selected, candidates map[string]bool) {
+	for version, allowed := range candidates {
+		if _, exists := selected[version]; !exists {
+			selected[version] = allowed
+		}
+	}
+}
+
+// GoModuleVersions takes one repeatable-read authority/policy snapshot across
+// all consulted sources. SQL rows and metadata share one complete-view budget;
+// blocked first-source coordinates are retained during ordered group merging.
 func (s *Store) GoModuleVersions(ctx context.Context, i Identity, repo, mod string, limit int, budget int64) ([]string, error) {
 	escaped, e := module.EscapePath(mod)
 	if e != nil || len(mod) > gomodule.MaxModulePath || limit < 1 || limit > 10000 || budget < 1 || budget > 64<<20 {
@@ -143,52 +177,55 @@ func (s *Store) GoModuleVersions(ctx context.Context, i Identity, repo, mod stri
 	}
 	out := []string{}
 	e = s.Tx(ctx, i, false, func(tx pgx.Tx) error {
-		r, e := repositoryInTx(ctx, tx, i, repo, "read")
+		group, members, e := nativeRepositories(ctx, tx, i, repo, escaped, "go")
 		if e != nil {
 			return e
 		}
-		if r.Format != "go" || r.Mode != "hosted" {
+		if group.Mode != "hosted" && group.Mode != "group" {
 			return ErrConflict
 		}
-		rows, e := tx.Query(ctx, `SELECT a.repository,left(a.path,2049),left(a.digest,65),a.size,left(a.media_type,257),CASE WHEN octet_length(a.metadata::text)<=$4 THEN a.metadata ELSE NULL END,COALESCE(d.decision,a.decision),a.created_at,a.source_revision,COALESCE(nl.deleted,false) FROM cratectl.artifacts a `+decisionJoin+nativeLifecycleJoin+` WHERE a.repository=$1 AND starts_with(a.path,$2) ORDER BY a.path LIMIT $3`, repo, escaped+"/@v/", limit*3+1, MaxGoModuleMetadata)
-		if e != nil {
-			return e
-		}
-		defer rows.Close()
-		bundles := map[string][]Artifact{}
-		blocked := map[string]bool{}
-		count := 0
-		for rows.Next() {
-			count++
-			if count > limit*3 {
-				return ErrMetadataLimit
+		selected := map[string]bool{}
+		remaining := limit * 3
+		for _, source := range members {
+			if source.Mode != "hosted" {
+				return ErrConflict
 			}
-			var a Artifact
-			if e = scanNativeArtifact(rows, &a); e != nil {
-				return e
-			}
-			budget -= int64(len(a.Path) + len(a.Metadata) + len(a.MediaType) + 192)
-			if budget < 0 {
-				return ErrMetadataLimit
-			}
-			m, e := ValidateGoModuleArtifact(a)
+			rows, e := tx.Query(ctx, `SELECT a.repository,left(a.path,2049),left(a.digest,65),a.size,left(a.media_type,257),CASE WHEN octet_length(a.metadata::text)<=$4 THEN a.metadata ELSE NULL END,COALESCE(d.decision,a.decision),a.created_at,a.source_revision,COALESCE(nl.deleted,false) FROM cratectl.artifacts a `+decisionJoin+nativeLifecycleJoin+` WHERE a.repository=$1 AND starts_with(a.path,$2) ORDER BY a.path LIMIT $3`, source.Name, escaped+"/@v/", remaining+1, MaxGoModuleMetadata)
 			if e != nil {
 				return e
 			}
-			if m.Module != mod {
-				return ErrGoModuleUnvalidated
+			as := []Artifact{}
+			for rows.Next() {
+				remaining--
+				if remaining < 0 {
+					rows.Close()
+					return ErrMetadataLimit
+				}
+				var a Artifact
+				if e = scanNativeArtifact(rows, &a); e != nil {
+					rows.Close()
+					return e
+				}
+				budget -= int64(len(a.Path) + len(a.Metadata) + len(a.MediaType) + 192)
+				if budget < 0 {
+					rows.Close()
+					return ErrMetadataLimit
+				}
+				as = append(as, a)
 			}
-			bundles[m.Version] = append(bundles[m.Version], a)
-			blocked[m.Version] = blocked[m.Version] || a.Deleted || a.Decision == "denied" || r.RequireReview && a.Decision != "allowed"
-		}
-		if e = rows.Err(); e != nil {
-			return e
-		}
-		for version, as := range bundles {
-			if _, e = validateGoModuleBundle(as); e != nil {
+			e = rows.Err()
+			rows.Close()
+			if e != nil {
 				return e
 			}
-			if !blocked[version] {
+			candidates, e := goModuleVersionCandidates(as, mod, source.RequireReview || group.RequireReview)
+			if e != nil {
+				return e
+			}
+			mergeGoModuleVersions(selected, candidates)
+		}
+		for version, allowed := range selected {
+			if allowed {
 				out = append(out, version)
 			}
 		}

@@ -136,6 +136,17 @@ class EvidenceSummary(unittest.TestCase):
         self.write('go-module.json',{**report,'go_module_contract':{**contract,'completed':contract['completed'][:-1]}})
         with self.assertRaises(SystemExit):summarize(self.root,self.environment)
 
+    def test_go_group_export_preserves_all_original_and_group_identities(self):
+        from test_go_module_evidence import complete_group_contract
+        contract=complete_group_contract()
+        report={'candidate':'a'*40,'status':'passed','go_module_contract':contract,'commands':[{'output':'private-synthetic-value'}]}
+        self.write('go-group.json',report)
+        record=summarize(self.root,self.environment)['records'][0]
+        self.assertEqual(record['go_module_contract'],contract)
+        self.assertNotIn('private-synthetic-value',json.dumps(record))
+        self.write('go-group.json',{**report,'go_module_contract':{**contract,'completed':contract['completed'][:-1]}})
+        with self.assertRaises(SystemExit):summarize(self.root,self.environment)
+
     def test_sbt_export_keeps_bounded_bootstrap_identity_without_private_observations(self):
         contract=complete_sbt_contract()
         report={'candidate':'a'*40,'status':'passed','sbt_contract':contract,'commands':[{'output':'private-synthetic-value'}]}

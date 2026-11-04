@@ -53,33 +53,36 @@ No duplicate dispatch. No real JVM/SDK/PostgreSQL campaign ran locally.
 All broader formats, faults, source/grant races, lifecycle/GC, migration,
 production platforms, scale and later goal stages remain required.
 
-Hosted Go module publication/read/discovery is implemented but unverified.
-ZIP, exact root go.mod and stable version info are synced before one common
-transaction commits all references, integrity intent, journal/outbox and replay.
-Every read/discovery checks the complete bundle under current policy. CLI and
-hosted console setup are included. Local unit/race/full lint, profile stand-ins,
-strict evidence export and byte-for-byte console reproduction pass. Three new
-PostgreSQL test functions compile only; they did not run locally. A separate
-native Go workflow requires both Linux architectures, real PostgreSQL normal/
-race and trusted-TLS stock Go transitive downloads with no VCS/public fallback.
-A source-inspected partial-version fallback defect now returns409 rather than
-404 when any bundle reference remains; its extended PostgreSQL case compiles
-but awaits native replay. See
-`evidence/2026-11-04/go-module-partial-read-development.json` and
-`evidence/2026-11-04/go-module-hosted-development.json`. Go proxy/group,
-legacy/alias/warm-cache/lifecycle/fault/migration/scale/platform and browser
-operator journeys remain required. Broad readiness stays false.
+Go hosted and ordered-group adapters are implemented but unverified. Three
+immutable bundle references and replay commit through the common store. Group
+reads and complete bounded discovery preserve first-source ownership, stronger
+whole-bundle review, escaped namespace pins and current underlying grants.
+Denial or partial-version damage cannot authorize lower-source substitution.
+Groups are read-only; native proxy retrieval remains unimplemented.
 
-The Go PostgreSQL fixture now compares against its provisioning-event baseline
-and uses only the fresh fixture database owner for deliberate reference damage.
-Runtime privileges stay restricted. Four stock-Go1.27.3 file-proxy stand-ins pass
-on this ARM Mac with exact cached ZIP/mod and info identity; they prove fixture
-compatibility, not HTTP/TLS/registry/database behavior. `make lint` assigns the
-same stand-ins to all three native CI source hosts. Go command deadlines retain
-private partial streams, and failed jobs seal selected logs to the unchanged
-owner-held CMS recipient. Four helper and seven CMS tests/full lint pass; actual
-native Go/PG/registry/encrypted-failure integration still requires review. See
-`evidence/2026-11-04/go-module-fixture-diagnostics-development.json`.
+Local unit/race/full lint, six contract/eighteen exporter/four helper/seven CMS
+tests and console reproduction pass. Four PostgreSQL functions compile only.
+The native v2 workflow requires both actual Linux hosts, all four database
+functions normally/with race, trusted TLS stock Go and all original hosted cases:
+nine stages,24publisher/reference/HTTP bindings and16exact cached ZIP/mod
+bindings. See `evidence/2026-11-04/go-module-groups-development.json`.
+
+Original exact `e62ac69` fails both native Go jobs at two event-count assertions:
+the fixture expected one total event after provisioning had already recorded one.
+The exporter correctly rejects zero generated registry records; race/client
+steps never ran. Both original safe empty summaries and fixed private log hashes
+are retained in `evidence/2026-11-04/go-module-e62ac69-first-failure.json`.
+The `d183be6` baseline/owner-fixture correction still needs native replay.
+No native hosted/group Go pass is inferred from current local checks.
+
+Four stock-Go1.27.3 file-proxy stand-ins pass on this ARM Mac with exact cached
+bytes/info. They prove fixture compatibility without HTTP/TLS/registry/PG.
+All three source hosts repeat them through `make lint`. Go command limits retain
+private partial streams and seal failures to the unchanged owner-held recipient;
+actual native failed-job encryption integration remains unverified.
+All450capabilities/41families and later stages remain committed. Go proxy,
+legacy/alias/warm-cache/lifecycle/fault/migration/scale/platform/browser and all
+other unfinished requirements remain open. Broad readiness stays false.
 
 No primary, selected binary, data, credential, sibling or customer change.
 Earlier notes below are historical and do not override this current state.

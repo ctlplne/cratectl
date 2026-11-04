@@ -75,35 +75,51 @@ no timing benefit is inferred. The f91 revision selects21actual jobs, currently 
 actual full SHA and retain placement/step evidence before native acceptance.
 Other JVM/tool-cache opportunities remain separate required placement reviews.
 
-The Go hosted revision is implemented but unverified. Its new two-job native
-workflow runs all three new PostgreSQL regressions normally and with race, then
-an owned blank TLS installation and stock Go dependency downloads. Mandatory
-profile evidence is eight stages, 15 publisher/reference/HTTP bindings and ten
-exact client ZIP/mod cache bindings. Fresh NETRC/cache directories, explicit
-GONOSUMDB fixture scope, normal TLS verification, no VCS/direct/public package
-fallback, 120-second/8MiB commands and a45-minute job are required. No local
-PostgreSQL/Go-client or production claim. See the [development record](../../evidence/2026-11-04/go-module-hosted-development.json).
+Go hosted/group-v2 is implemented but unverified. Its two native Linux jobs
+require four real PostgreSQL functions normally and with race, then an owned
+trusted-TLS installation, CLI publication and stock Go transitive downloads.
+Every original hosted case remains. The profile requires nine ordered stages,
+24 publisher/reference/HTTP bindings and16exact cached ZIP/mod bindings.
+Groups preserve first-source ownership, stronger whole-bundle review, escaped
+namespace pins, source grants and terminal denial/partial-version behavior.
+The [group development record](../../evidence/2026-11-04/go-module-groups-development.json)
+records source hashes and local checks. Go proxy retrieval remains rejected;
+legacy/alias/warm-cache/lifecycle/fault/migration/scale/platform/browser outcomes
+remain separate committed work. Original45minute jobs and120second/8MiB
+commands remain; no retries, skipped-job acceptance or successful-empty export.
 
-The workflow union is now28jobs across seven workflows; enumerate actual path
-selection for every full SHA. NuGet's two library jobs now also select changes
-to shared ZIP inspection and module dependency pins. Existing profiles, cases,
-commands and budgets remain intact. Hosted Go proxy/group, broad version/legacy/
-warm-cache/lifecycle/fault/migration/scale/TLS-provider/platform and browser
-operator outcomes remain separate committed work.
+Original exact e62 fails both Go jobs at two event-baseline assertions: the
+fixture expected one total event after provisioning had already recorded one.
+The race and client steps did not execute. Both safe summaries contain zero
+records and the exporter correctly rejects them as empty. Actual job/artifact
+identities and fixed private-log hashes remain in the
+[first failure](../../evidence/2026-11-04/go-module-e62ac69-first-failure.json).
+The d183 repair compares with the actual journal baseline and confines deliberate
+reference damage to the fresh fixture DB owner. Runtime DELETE/BYPASSRLS grants
+remain absent. Repaired-source native replay is still required; no pass inferred.
 
-Go fixture development now also runs stock Go against four owned file-proxy
-stand-ins in `make lint`: exact transitive modules, cached ZIP/mod bytes and info
-version/time. Native ARM local execution passes. All three existing source hosts
-repeat it, so native x86 stays on GitHub. This does not qualify HTTP/TLS/registry/
-PostgreSQL. The Go database fixture compares the original journal baseline and
-uses the fresh fixture owner for deliberate damage without runtime DELETE grants.
+Four owned file-proxy stand-ins pass with actual Go1.27.3 on this ARM Mac:
+exact transitive modules, cached ZIP/mod bytes and info version/time. They run
+through `make lint` on all three native source hosts, assigning x86 execution
+to GitHub. This qualifies fixture compatibility, without HTTP/TLS/registry/PG.
+Local unit/race/lint/console reproduction and four database-test compilations
+pass; database and registry outcomes remain unverified.
 
-Go failures retain per-command mode0600 streams through deadline/output limits.
-The workflow seals selected failures/last pre-cleanup observations and registry
-logs using the existing owner-held CMS recipient, with no NETRC/config/token
-collection or plaintext fallback. Seven CMS tests and four helper tests pass;
-actual native failed-job upload/decryption remains unverified. See the
-[development record](../../evidence/2026-11-04/go-module-fixture-diagnostics-development.json).
+Go commands retain mode0600 streams through deadline/output limits. The workflow
+seals selected failures or the last pre-cleanup observation and registry logs to
+the unchanged owner-held CMS recipient; NETRC/config/token files are excluded.
+Seven real CMS and four helper tests pass. Actual failed-job upload/decryption
+integration remains unverified; a failure before a report exists still requires
+separate job observations. See the
+[fixture/diagnostic record](../../evidence/2026-11-04/go-module-fixture-diagnostics-development.json).
+
+The workflow union is28jobs across seven workflows. Enumerate actual paths and
+full-SHA selections for every source. NuGet library selection includes shared ZIP
+inspection and module dependency pins. Native private clients use ordinary TLS,
+private NETRC/cache directories and one explicit source without VCS/direct/public
+package fallback. Fixture GONOSUMDB policy is explicit; public checksum mirroring
+and offline behavior remain separate. Existing formats, commands, cases and
+budgets remain intact.
 
 The following campaign notes are historical.
 
@@ -161,7 +177,7 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 | `jvm-clients.yml`: Gradle / 2 | Both native Linux architectures; real PostgreSQL | Gradle9.8.2, exact JDK21 build, eight stages and24 publisher/reference/raw-HTTP digests. 60-minute job. Named v2 profile passes; broader JVM remains open. |
 | `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0 and exact JDK. Cache-v4 passes666checks/10stages/34wire+6cachebindings on both hosts at0edd, retaining all release/metadata/snapshot/SHA-2 cases. 60-minute job. Broader Ivy remains open. |
 | `jvm-clients.yml`: SBT / 4 | SBT1.13.0 and2.0.11, each on native Linux amd64/arm64; real PostgreSQL | Snapshot-v2 passes269checks/8stages/8snapshotcases/18bindings on all4cases at0cff, retaining every release case. Frozen tool-only boot cache/fresh project caches. Five-minute bootstrap, two-minute commands, 60-minute job. |
-| `go-modules.yml`: hosted / 2 | Native Linux amd64/arm64; pinned Go, real PostgreSQL16.15, trusted loopback TLS | Three database regressions normal/race; CLI publication, stock transitive downloads and current-policy/tenant/restart/revocation cases. Implemented but unverified. 45-minute job. |
+| `go-modules.yml`: hosted / 2 | Native Linux amd64/arm64; pinned Go, real PostgreSQL16.15, trusted loopback TLS | Four database regressions normal/race; CLI publication, stock hosted/group transitive downloads and current-policy/source/tenant/restart/revocation cases. Implemented but unverified. 45-minute job. |
 | `nuget-contract.yml`: libraries / 2 | Both native Linux architectures; exact SDK10.0.403 selection | Original37assertions/unchanged dense corpora pass both at1974, actual runtime10.0.14 and separate DLLhashes. 20-minute job. Does not replace actual NuGet HTTP/restore/restart proof. |
 | `oci-clients.yml`: native clients / 2 | Both native Linux architectures; Docker, Podman, Helm, real PostgreSQL | Actual publication/consumption and policy/tenant/recovery cases with inert owned data; 45-minute job. Do not execute the uploaded image. External-provider interoperability is separate. |
 | `browser-repair.yml`: focused / 3 on relevant pushes | Native x86 Chromium; five fresh PostgreSQL databases per selected journey | Repair, retention and NuGet each repeat five complete journeys; 45-minute job. Manual dispatch selects one. Stop on failure; no retries/skips count as acceptance. |
