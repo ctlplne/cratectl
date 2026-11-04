@@ -1,0 +1,108 @@
+{
+  "observed_at": "2026-11-04T16:03:14.271929+00:00",
+  "source_parent": "72b98beeee69b45300d353d48d108f79c9036f6c",
+  "source_dirty": true,
+  "state": "implemented; local fixture/cache/evidence/privacy checks pass; all four native SBT jobs unverified",
+  "source_sha256": {
+    "scripts/conformance_sbt.py": "6da7981cd817bf110ee6bc456a471165fff6f8f1fa85a1e5cadae46c18135128",
+    "scripts/sbt_fixture.py": "8784e6c664270b5fee8f15eb85cfab7764b01fad77fec4f063cfa5dfc0def395",
+    "scripts/ci/install_sbt.sh": "f3d3cf3d81175d8f944ad7eae1dcc378aaee4cef8badf15fd5667c5ba4cdf863",
+    "scripts/ci/sbt_evidence.py": "57cb90becc3d42712e999b7a9e694c1234741ae87c093cc034dab3513993ab5c",
+    "scripts/test_sbt_fixture.py": "66cc6562833e7d667065359cfd5be9019f56ffa5eeab26dcabd4be90d98a222d",
+    "scripts/ci/test_sbt_evidence.py": "4b3eafadfc6ca85308652bfb2d34d94ac8a158c5d4bca54d76b9dae00cc46fb7",
+    "scripts/conformance.py": "c8b06ae1a98372329efb12a48f1546a38fffcfff5cf92e7727cbc7e3ea261fbe",
+    "scripts/bounded_client.py": "2415e6cb50fca6785af97ea07797046d823dd89ade01e522f97475c06a0120b8",
+    "scripts/ci/evidence_summary.py": "f06d3b423b485c1772572e12aab52543a17358cf026b814bd899ee098dec10f5",
+    "scripts/ci/test_evidence_summary.py": "9d8f24f739da3c01fb4de4b3ede1676bd372c7a4b4360327b5a99184950d3ed8",
+    "scripts/ci_native_diagnostics.py": "1d2d116bca091f411c50337debd3601abe052620eef5f511d0fd1e516c89d468",
+    "scripts/test_ci_native_diagnostics.py": "a9776a30946d4b8e1d8b8acd0c8294ae798be7a21db86083c8cbb1c050b57cc5",
+    "docs/qualification/jvm-clients.json": "23c9bc3b13ab8b2c25d28b3f5b4a6bfa9da95c639a2ae11305fa7d8822fe4796",
+    ".github/workflows/jvm-clients.yml": "0fd753a6b9eb224b093aad8f1502cd2612508a4c4f734a6c0c95742e0616f6ac",
+    "Makefile": "35ff354a4c463141b64776cd79dd8277b6ff27c5ab46fb43c724524cae4dfb56"
+  },
+  "client_versions": {
+    "sbt1": "1.13.0",
+    "sbt2": "2.0.11",
+    "java": "21.0.13+9[-LTS]"
+  },
+  "runtime_pins": "docs/qualification/jvm-clients.json",
+  "release_metadata": "Official GitHub release asset digests match the separately obtained checksum files; universal archives are56,497,099bytes/57,688,400bytes and below64MiB. No SBT archive or real JVM client is installed/run on this Mac.",
+  "placement": {
+    "native_jobs": 4,
+    "architectures": [
+      "Linux amd64",
+      "Linux arm64"
+    ],
+    "series": [
+      "sbt1",
+      "sbt2"
+    ],
+    "database": "Actual PostgreSQL16.15; nonsuperuser/nonowner/noBYPASSRLS runtime; owned35432/38443loopback only.",
+    "job_minutes": 60,
+    "cold_tool_bootstrap_seconds": 300,
+    "project_command_seconds": 120,
+    "full_selected_job_count": 26,
+    "expected_main_jvm_oci_upgrades_cohort": 21,
+    "expected_selected_job_count": 24,
+    "expected_selected_workflows": [
+      "CI",
+      "Native JVM clients",
+      "Native OCI clients",
+      "Controlled upgrade qualification",
+      "Focused browser regression"
+    ],
+    "selection_reason": "The shared safe exporter changed, so focused browser3 also selects. The main/JVM/OCI/upgrades subset has21jobs; no NuGet library path changed."
+  },
+  "mandatory_profile": {
+    "stages": [
+      "client_identity",
+      "publication",
+      "review_and_tenants",
+      "reader_publication_denied",
+      "proxy_group",
+      "policy_and_restart",
+      "revocation"
+    ],
+    "byte_bindings": 12,
+    "publication": "Six owned resource-only JAR/POM publications with exact producer/retained path-digest-size/raw HTTP bytes. Two releases, dependency and colliding tenant.",
+    "permissions": "Real scoped writer and restricted reader; unassessed review denial; fresh reader4.0.0and revoked writer5.0.0must fail native publication and exact HTTP PUT and leave no partial reference.",
+    "resolution": "Fresh complete transitive sets, proxy checksum verification, group source/range, current cached policy, actual registry restart, reader/writer revocation and other tenant unaffected."
+  },
+  "isolation": [
+    "Direct exact Java executable/official launcher JAR; no shell or native thin-client wrapper. Sanitize Java/SBT and all ambient COURSIER variables.",
+    "Private immutable empty Scala CLI/mirror configurations; Maven settings disabled. Explicit one read resolver, separate exact hosted publication URL, repository override and Coursier cache setting/property.",
+    "Freeze bounded boot and tool-only seed identities before creating project fixtures. Reject fixture coordinates, symlinks, nonregular/changing inputs, excessive file counts/bytes. Each command copies independent cache bytes, uses a private Ivy home inside it and removes only that owned cache after copying proof/publication outputs elsewhere.",
+    "SBT1uses File and separate command arguments; SBT2uses FileConverter VirtualFileRef/HashedVirtualFileRef APIs, an uncached proof-copy task and one semicolon-delimited command sequence. Only owned build rules execute; no uploaded classes/scripts/models.",
+    "Reviewed fixed SBT version/runtime/stage/cache/hash evidence only; unknown/private/partial/missing fields fail closed. Unexpected failed SBT commands join existing bounded owner-recipient CMS collection, with no plaintext upload or CI private key."
+  ],
+  "local_validation": {
+    "make_lint": "passed with owned-process cleanup permission",
+    "log": ".cache/sbt-client-lint.log",
+    "sha256": "1d9a3983337e0f4c05f232f227f8a98a11686f0e3afff3a18e903104d72f8ea8",
+    "sbt_fixture_tests": 5,
+    "sbt_safe_evidence_tests": 3,
+    "safe_exporter_tests": 12,
+    "encrypted_diagnostic_tests": 5,
+    "owned_process_tests": 7,
+    "python_compile": "passed",
+    "shell_syntax": "passed",
+    "workflow_yaml": "parsed; complete four series/architecture cases, fail-fast=false, exact source/helper triggers"
+  },
+  "native_qualification": "Not yet run; only GitHub native jobs with actual clients/PostgreSQL can qualify this profile. No standalone XML/configuration test substitutes for native publication or consumption.",
+  "primary_sources": [
+    "https://www.scala-sbt.org/download/",
+    "https://www.scala-sbt.org/2.x/docs/en/reference/sbt-publish.html",
+    "https://www.scala-sbt.org/2.x/docs/en/reference/sbt-update.html",
+    "https://www.scala-sbt.org/2.x/docs/en/changes/migrating-from-sbt-1.x.html",
+    "https://github.com/sbt/sbt/blob/v2.0.11/main/src/main/scala/sbt/Keys.scala",
+    "https://get-coursier.io/docs/next/other-mirrors",
+    "https://github.com/coursier/coursier/blob/main/modules/cache/jvm/src/main/scala/coursier/cache/CacheDefaults.scala"
+  ],
+  "limits": [
+    "Initial release profile only. SBT snapshots/classifiers/parents/BOMs/richer configurations/conflicts and full source/grant/fault/lifecycle/migration/scale combinations remain required.",
+    "Loopback same-host topology only; productionTLS/private trust, independent hosts and all platforms remain required.",
+    "Explicitly detached processes are outside owned POSIX process-group cleanup guarantees. Tool/cache/thread settings are declared bounds, not a performance or whole-sandbox qualification.",
+    "No primary/data/selected binary/customer/sibling change, no release/package/image publication, no delegation.",
+    "All450capabilities/41families and everylaterGOALstage retained; broad readiness, fullsecurity and packaging false."
+  ]
+}

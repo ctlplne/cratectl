@@ -3,9 +3,9 @@ name: Native JVM clients
 on:
   push:
     branches: [main]
-    paths: ['cmd/**', 'internal/**', 'go.mod', 'go.sum', 'Makefile', 'scripts/conformance.py', 'scripts/conformance_gradle.py', 'scripts/conformance_ivy.py', 'scripts/ivy_metadata_fixture.py', 'scripts/fixtures/ivy-client/**', 'scripts/bounded_client.py', 'scripts/ci_native_diagnostics.py', 'scripts/oci_client_contract.py', 'scripts/fixtures/gradle-client/**', 'scripts/ci/**', 'docs/qualification/jvm-clients.json', '.github/workflows/jvm-clients.yml']
+    paths: ['cmd/**', 'internal/**', 'go.mod', 'go.sum', 'Makefile', 'scripts/conformance.py', 'scripts/conformance_gradle.py', 'scripts/conformance_ivy.py', 'scripts/ivy_metadata_fixture.py', 'scripts/conformance_sbt.py', 'scripts/sbt_fixture.py', 'scripts/fixtures/ivy-client/**', 'scripts/bounded_client.py', 'scripts/ci_native_diagnostics.py', 'scripts/oci_client_contract.py', 'scripts/fixtures/gradle-client/**', 'scripts/ci/**', 'docs/qualification/jvm-clients.json', '.github/workflows/jvm-clients.yml']
   pull_request:
-    paths: ['cmd/**', 'internal/**', 'go.mod', 'go.sum', 'Makefile', 'scripts/conformance.py', 'scripts/conformance_gradle.py', 'scripts/conformance_ivy.py', 'scripts/ivy_metadata_fixture.py', 'scripts/fixtures/ivy-client/**', 'scripts/bounded_client.py', 'scripts/ci_native_diagnostics.py', 'scripts/oci_client_contract.py', 'scripts/fixtures/gradle-client/**', 'scripts/ci/**', 'docs/qualification/jvm-clients.json', '.github/workflows/jvm-clients.yml']
+    paths: ['cmd/**', 'internal/**', 'go.mod', 'go.sum', 'Makefile', 'scripts/conformance.py', 'scripts/conformance_gradle.py', 'scripts/conformance_ivy.py', 'scripts/ivy_metadata_fixture.py', 'scripts/conformance_sbt.py', 'scripts/sbt_fixture.py', 'scripts/fixtures/ivy-client/**', 'scripts/bounded_client.py', 'scripts/ci_native_diagnostics.py', 'scripts/oci_client_contract.py', 'scripts/fixtures/gradle-client/**', 'scripts/ci/**', 'docs/qualification/jvm-clients.json', '.github/workflows/jvm-clients.yml']
   workflow_dispatch:
 
 permissions:
@@ -167,6 +167,89 @@ jobs:
         if: always()
         with:
           name: ci-summary-ivy-${{ matrix.arch }}
+          path: .cache/ci-evidence-summary.json
+          if-no-files-found: error
+          retention-days: 30
+
+  sbt:
+    name: Real SBT publication and resolution (${{ matrix.series }} ${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - series: sbt1
+            arch: amd64
+            runner: ubuntu-24.04
+          - series: sbt1
+            arch: arm64
+            runner: ubuntu-24.04-arm
+          - series: sbt2
+            arch: amd64
+            runner: ubuntu-24.04
+          - series: sbt2
+            arch: arm64
+            runner: ubuntu-24.04-arm
+    env:
+      CRATECTL_CI_CLIENT_SET: jvm
+      CRATECTL_CONFORMANCE_DATABASE_FILE: .private/ci-db.json
+      CRATECTL_DEV_DATABASE: native
+      CRATECTL_QUALIFICATION_BIN_DIR: .cache/ci-build
+    services:
+      cratectl-postgres:
+        image: postgres:16.15-alpine
+        env:
+          POSTGRES_USER: cratectl_owner
+          POSTGRES_DB: cratectl
+          POSTGRES_HOST_AUTH_METHOD: trust
+        options: >-
+          --publish 127.0.0.1:35432:5432
+          --health-cmd "pg_isready -U cratectl_owner -d cratectl"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21.0.13+9.0.LTS'
+      - name: Prepare native registry, PostgreSQL and pinned SBT series
+        env:
+          CRATECTL_CI_POSTGRES_CONTAINER_ID: ${{ job.services['cratectl-postgres'].id }}
+        run: |
+          bash scripts/ci/bootstrap_linux.sh
+          bash scripts/ci/install_sbt.sh '${{ matrix.series }}'
+      - name: Stock SBT publication, transitive resolution, policy and recovery
+        run: python3 scripts/conformance.py '${{ matrix.series }}' --require-clean-build
+      - name: Encrypt bounded JVM failure observations for owner diagnosis
+        if: failure()
+        run: python3 scripts/ci_native_diagnostics.py
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: encrypted-jvm-diagnostics-${{ matrix.series }}-${{ matrix.arch }}
+          path: |
+            .cache/ci-native-diagnostics.cms
+            .cache/ci-native-diagnostics.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Prepare bounded native evidence summary
+        if: always()
+        run: python3 scripts/ci/evidence_summary.py
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: ci-summary-${{ matrix.series }}-${{ matrix.arch }}
           path: .cache/ci-evidence-summary.json
           if-no-files-found: error
           retention-days: 30

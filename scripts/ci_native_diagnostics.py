@@ -107,7 +107,7 @@ def collect_jvm(root, candidate):
             raise ValueError('JVM diagnostic report source does not match')
         if report.get('status') != 'failed':
             continue
-        clients = [client for client in ('gradle','ivy') if isinstance(report.get(client+'_contract'),dict)]
+        clients = [client for client in ('gradle','ivy','sbt') if isinstance(report.get(client+'_contract'),dict)]
         if not clients:
             continue
         if len(clients) != 1 or report.get('run') != match[1] or len(failures) >= 4:

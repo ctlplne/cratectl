@@ -130,6 +130,12 @@ class EncryptedNativeDiagnostics(unittest.TestCase):
             # retains the same exact selected output without credential fields.
             payload=json.dumps(collect_jvm(root,'a'*40)).encode()
             self.assertEqual(unseal(seal(payload,self.cert),self.key,self.cert),payload)
+            sbt_report={k:v for k,v in report.items() if k!='ivy_contract'}
+            sbt_report['sbt_contract']={'series':'sbt1'}
+            path.write_text(json.dumps(sbt_report));sbt_failure=collect_jvm(root,'a'*40)[0]
+            self.assertEqual(sbt_failure['client'],'sbt')
+            self.assertNotIn('private-synthetic-credential-value',json.dumps(sbt_failure))
+            self.assertEqual(base64.b64decode(sbt_failure['commands'][0]['output_base64']),b'owned actual failure')
             with self.assertRaises(ValueError):collect_jvm(root,'b'*40)
             path.unlink();path.symlink_to(private/'reader.token')
             with self.assertRaises(ValueError):collect_jvm(root,'a'*40)
@@ -142,7 +148,7 @@ class EncryptedNativeDiagnostics(unittest.TestCase):
             report={'candidate':'a'*40,'run':'1'*10,'status':'failed','gradle_contract':{},'commands':[{'exit':1,'output':'owned failure'}]}
             changes=[[],{**report,'run':'../wrong'},{**report,'commands':[{'exit':1,'output':'x'*12001}]},
                      {**report,'commands':[{'exit':1,'output':'failure'}]*3},{**report,'commands':[{}]*1025},
-                     {**report,'ivy_contract':{}},{**report,'failure':'x'*8193}]
+                     {**report,'ivy_contract':{}},{**report,'sbt_contract':{}},{**report,'failure':'x'*8193}]
             for change in changes:
                 path.write_text(json.dumps(change))
                 with self.subTest(change_type=type(change).__name__),self.assertRaises(ValueError):collect_jvm(root,'a'*40)

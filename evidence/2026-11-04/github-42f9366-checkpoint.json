@@ -1,0 +1,1861 @@
+{
+  "candidate": "42f93663f0c047713c48bc76f4df4e4f21c26252",
+  "observed_at": "2026-11-04 15:44:02 UTC",
+  "status": "partial;15of17jobs pass;both macOS jobs canceled before runner acquisition",
+  "job_count": 17,
+  "runs": [
+    {
+      "conclusion": "success",
+      "databaseId": 41854076496,
+      "headSha": "42f93663f0c047713c48bc76f4df4e4f21c26252",
+      "status": "completed",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/41854076496",
+      "workflowName": "Native OCI clients"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 41854076693,
+      "headSha": "42f93663f0c047713c48bc76f4df4e4f21c26252",
+      "status": "completed",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/41854076693",
+      "workflowName": "Native JVM clients"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 41854076629,
+      "headSha": "42f93663f0c047713c48bc76f4df4e4f21c26252",
+      "status": "completed",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/41854076629",
+      "workflowName": "Controlled upgrade qualification"
+    },
+    {
+      "conclusion": "failure",
+      "databaseId": 41854076517,
+      "headSha": "42f93663f0c047713c48bc76f4df4e4f21c26252",
+      "status": "completed",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/41854076517",
+      "workflowName": "CI"
+    }
+  ],
+  "jobs": [
+    {
+      "id": 126657820081,
+      "name": "Scoped source, binary and history scans",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41854076517,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Build binaries and scan called Go symbols",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Scan current tree and complete reachable history for secrets",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Exercise narrow secret-rule exceptions with synthetic fixtures",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Prepare bounded security evidence summary",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        }
+      ]
+    },
+    {
+      "id": 126657820356,
+      "name": "Real PostgreSQL and stock clients (arm64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41854076517,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Install stock-client and console dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Prepare checked stock clients and fresh database",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Real PostgreSQL integration and timing",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Real PostgreSQL integration with Go race detector",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Stock client compatibility on real registry",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Native lifecycle with curl, npm, pip, twine and Maven",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        },
+        {
+          "name": "Blank database initialization and trusted TLS client journey",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14
+        },
+        {
+          "name": "Durable jobs and interrupted upload leases",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15
+        },
+        {
+          "name": "Filesystem inventory and integrity sweeps",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16
+        },
+        {
+          "name": "Cross-reference legal-hold matters",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        },
+        {
+          "name": "Chromium console workflows and accessibility",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 18
+        },
+        {
+          "name": "Safe Chromium failure locations",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 19
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 38
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 39
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 40
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 41
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 42
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 43
+        }
+      ]
+    },
+    {
+      "id": 126657820404,
+      "name": "Source and unit (arm64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41854076517,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Install console dependencies without package scripts",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Select native OpenSSL 3 for encrypted diagnostic tests",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 7
+        },
+        {
+          "name": "Build, unit, race and lint",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "npm dependency audit",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19
+        }
+      ]
+    },
+    {
+      "id": 126657820442,
+      "name": "Source and unit (darwin-arm64)",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "run_id": 41854076517,
+      "logs_url": null,
+      "steps": null
+    },
+    {
+      "id": 126657820493,
+      "name": "Bounded native Go fuzz (amd64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41854076517,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Exercise every checked-in fuzz target on this native runner",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        }
+      ]
+    },
+    {
+      "id": 126657820561,
+      "name": "Bounded native Go fuzz (arm64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41854076517,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Exercise every checked-in fuzz target on this native runner",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        }
+      ]
+    },
+    {
+      "id": 126657820667,
+      "name": "Bounded native Go fuzz (darwin-arm64)",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "run_id": 41854076517,
+      "logs_url": null,
+      "steps": null
+    },
+    {
+      "id": 126657820687,
+      "name": "Real PostgreSQL and stock clients (amd64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41854076517,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Install stock-client and console dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Prepare checked stock clients and fresh database",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Real PostgreSQL integration and timing",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Real PostgreSQL integration with Go race detector",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Stock client compatibility on real registry",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Native lifecycle with curl, npm, pip, twine and Maven",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        },
+        {
+          "name": "Blank database initialization and trusted TLS client journey",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14
+        },
+        {
+          "name": "Durable jobs and interrupted upload leases",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15
+        },
+        {
+          "name": "Filesystem inventory and integrity sweeps",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16
+        },
+        {
+          "name": "Cross-reference legal-hold matters",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        },
+        {
+          "name": "Chromium console workflows and accessibility",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18
+        },
+        {
+          "name": "Safe Chromium failure locations",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 19
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 38
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 39
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 40
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 41
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 42
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 43
+        }
+      ]
+    },
+    {
+      "id": 126657820822,
+      "name": "Source and unit (amd64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41854076517,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Install console dependencies without package scripts",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Select native OpenSSL 3 for encrypted diagnostic tests",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 7
+        },
+        {
+          "name": "Build, unit, race and lint",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "npm dependency audit",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19
+        }
+      ]
+    },
+    {
+      "id": 126657821971,
+      "name": "Real Ant and Ivy publication and resolution (amd64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41854076693,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Prepare native registry, PostgreSQL and pinned Ant/Ivy",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Stock Ivy publication, transitive resolution, policy and recovery",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Encrypt bounded JVM failure observations for owner diagnosis",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 10
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25
+        }
+      ]
+    },
+    {
+      "id": 126657822366,
+      "name": "Real Gradle publication and resolution (arm64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41854076693,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Prepare native registry, PostgreSQL and pinned Gradle",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Stock Gradle publication, module/POM resolution, policy and recovery",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Encrypt bounded JVM failure observations for owner diagnosis",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 10
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25
+        }
+      ]
+    },
+    {
+      "id": 126657822500,
+      "name": "Real Gradle publication and resolution (amd64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41854076693,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Prepare native registry, PostgreSQL and pinned Gradle",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Stock Gradle publication, module/POM resolution, policy and recovery",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Encrypt bounded JVM failure observations for owner diagnosis",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 10
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25
+        }
+      ]
+    },
+    {
+      "id": 126657822507,
+      "name": "Real Ant and Ivy publication and resolution (arm64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41854076693,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Prepare native registry, PostgreSQL and pinned Ant/Ivy",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Stock Ivy publication, transitive resolution, policy and recovery",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Encrypt bounded JVM failure observations for owner diagnosis",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 10
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25
+        }
+      ]
+    },
+    {
+      "id": 126657820542,
+      "name": "Docker, Podman and Helm (amd64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41854076496,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Prepare isolated PostgreSQL and exact native registry binaries",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Verify bundled Podman and install checked Helm",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Publish and consume with native Docker, Podman and Helm",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Encrypt bounded native failure logs for local diagnosis",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 10
+        },
+        {
+          "name": "Prepare bounded evidence summary",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25
+        }
+      ]
+    },
+    {
+      "id": 126657821355,
+      "name": "Docker, Podman and Helm (arm64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41854076496,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Prepare isolated PostgreSQL and exact native registry binaries",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Verify bundled Podman and install checked Helm",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Publish and consume with native Docker, Podman and Helm",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Encrypt bounded native failure logs for local diagnosis",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 10
+        },
+        {
+          "name": "Prepare bounded evidence summary",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25
+        }
+      ]
+    },
+    {
+      "id": 126657824420,
+      "name": "Real PostgreSQL controlled upgrades (amd64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41854076629,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Prepare disposable native tools and database",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Rebuild and verify every pinned historical native server",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Legacy adoption with actual migration process interruption",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Retained lifecycle through every schema 2\u201310 upgrade",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Repair and recurring integrity upgrades",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Retention and scheduled-retirement upgrades",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        },
+        {
+          "name": "Prepare bounded upgrade evidence summary",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 26
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 27
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 28
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 29
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 30
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 31
+        }
+      ]
+    },
+    {
+      "id": 126657825239,
+      "name": "Real PostgreSQL controlled upgrades (arm64)",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41854076629,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Prepare disposable native tools and database",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Rebuild and verify every pinned historical native server",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Legacy adoption with actual migration process interruption",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Retained lifecycle through every schema 2\u201310 upgrade",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Repair and recurring integrity upgrades",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Retention and scheduled-retirement upgrades",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        },
+        {
+          "name": "Prepare bounded upgrade evidence summary",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 26
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 27
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 28
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 29
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 30
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 31
+        }
+      ]
+    }
+  ],
+  "summaries": [
+    {
+      "path": "evidence/2026-11-04/github-42f9366-native-amd64-summary.json",
+      "sha256": "6ded653c1ce753620eb1de580e4ddb89ce99a2c5b148380dfcfe8ac189c1ae7c",
+      "run_id": 41854076517,
+      "github_artifact_id": 13339161953,
+      "github_artifact_digest": "sha256:11d164f1c00c8fea08e69329529a46d37269be4affa7ba21baad5e7b6c3421ac"
+    },
+    {
+      "path": "evidence/2026-11-04/github-42f9366-native-arm64-summary.json",
+      "sha256": "b73a4b81001f37c9e38d2d5e89f4dfc30111913bd7921836d280b88c040670b0",
+      "run_id": 41854076517,
+      "github_artifact_id": 13337289852,
+      "github_artifact_digest": "sha256:5130f911671ea5f8dc1cdfbba9a7fc7e7afeac1edde1e616054ce4121fdb0a28"
+    },
+    {
+      "path": "evidence/2026-11-04/github-42f9366-security-summary.json",
+      "sha256": "74b56269f1fb6f6186b151ad22f3f912cf98aaf70a97bafbd85a43e35e021601",
+      "run_id": 41854076517,
+      "github_artifact_id": 13338130344,
+      "github_artifact_digest": "sha256:9b557bc639d40a5cadb0e73c616a5cf753e4b99247dbe9b2fbaf2f905fc3bb0b"
+    },
+    {
+      "path": "evidence/2026-11-04/github-42f9366-oci-amd64-summary.json",
+      "sha256": "4d67a6e6c05d4a6bc0e10f5996db57ef9b09b4c4af61856c9526a8c51cdcdeda",
+      "run_id": 41854076496,
+      "github_artifact_id": 13338345427,
+      "github_artifact_digest": "sha256:27a528c0a7845e4e4ec0d47640d4b3721cc3a886e86aa10eed2f2797a34980c9"
+    },
+    {
+      "path": "evidence/2026-11-04/github-42f9366-oci-arm64-summary.json",
+      "sha256": "36224e7609947c84976f4f3b2079a03110729fe9930471519b315739ae7f1f52",
+      "run_id": 41854076496,
+      "github_artifact_id": 13337122406,
+      "github_artifact_digest": "sha256:ad3b8284e5dc003a0de3c04e90980cabb9b3022fc41bccad953c89feb5440a5b"
+    },
+    {
+      "path": "evidence/2026-11-04/github-42f9366-upgrades-amd64-summary.json",
+      "sha256": "913cf2a860b529d668a230fbfc321d1a80be7a6b0bfed308acc419397b9a444c",
+      "run_id": 41854076629,
+      "github_artifact_id": 13337338787,
+      "github_artifact_digest": "sha256:fdb6dd0f58e62b0e9e01b270841cc22983a6d2dfa03f7313d8a346f62c5ac809"
+    },
+    {
+      "path": "evidence/2026-11-04/github-42f9366-upgrades-arm64-summary.json",
+      "sha256": "026e73418c18eaa4bc0b71fe13f1546efd460d60441b693a8c44a28749274e02",
+      "run_id": 41854076629,
+      "github_artifact_id": 13338501758,
+      "github_artifact_digest": "sha256:17e2b14fef06b908f8ea1425cefd694c48db274adf51f935e4f5110afca4fe4a"
+    },
+    {
+      "path": "evidence/2026-11-04/ivy-42f9366-amd64-summary.json",
+      "sha256": "4e1847f68c05ff7a80a63c986b10ddaa7ba1a297d1c45f6a7da229d1115f6bca",
+      "github_artifact_id": 13337906133,
+      "github_artifact_digest": "sha256:f287f8928a2c7a147c616bd1c50bdefd8d376c62a34742f7105f144b65acd64d"
+    },
+    {
+      "path": "evidence/2026-11-04/ivy-42f9366-arm64-summary.json",
+      "sha256": "159ae3ae0d41eaaf56b54e200593a174fa37338b0925feff3576722cc76ae5b4",
+      "github_artifact_id": 13336569985,
+      "github_artifact_digest": "sha256:52879fc800716610407ec5fe8f44af2473515962d5ba86aa32245a60d797af43"
+    },
+    {
+      "path": "evidence/2026-11-04/gradle-42f9366-amd64-summary.json",
+      "sha256": "a7d35a14b1e0bfe01d44fac083f8e2166b7aa571f6248796620bcd4e14a5cc0d",
+      "github_artifact_id": 13338236180,
+      "github_artifact_digest": "sha256:da4f09e65a98af0f316de7137b706acf227d4648e8ef3421efbf07db093aaaa0"
+    },
+    {
+      "path": "evidence/2026-11-04/gradle-42f9366-arm64-summary.json",
+      "sha256": "61c66f820d5050a8d196447f36b185a8c3f722259440627c0242bcbcce68ac7a",
+      "github_artifact_id": 13336998234,
+      "github_artifact_digest": "sha256:045c4614f737447c9a1132f4cfe78a67ae3202f60862213d9938399a0ac1693f"
+    }
+  ],
+  "qualification": {
+    "native_postgresql": "Both actual Linux architectures pass real PostgreSQL integration and Go race, including new Maven SHA2alias/legacyopaque-sidecar/current-policy/conditional/grant/tenant and atomicreceipt regressions. Every exported operational report passes.",
+    "clients": "Both broader stock-client campaigns pass645checks with SDK10.0.403,56actual HTTP metadata cases before/after registry restart and every original case retained.",
+    "oci": "Both native Docker/Podman/Helm profiles pass214checks with exact clean source/platform identities.",
+    "upgrades": "Both architectures rebuild10pinned historical servers and pass15controlled-upgrade reports, preserving separate historical/current source identities.",
+    "security": "Scoped source/binary/history scans and324synthetic rule cases pass; full security remains unqualified.",
+    "browser": "Full x86 Chromium15workflows pass with0unexpected/skipped/flaky. ARM browser placement remains skipped and not counted as passing. No focused repetition run on this source.",
+    "client": "Both native Linux architectures pass494checks,all8stages/all8metadata cases/all3SHA2consumers and28matching publisher/reference/rawHTTP identities. Ant1.10.18/Ivy2.6.0/JDK21.0.13+9 and exact fixture/helper/clean source/native binary bytes bound.",
+    "original_cases": "All original release publication,scope writer/reader,review,tenants,proxy/group/range,current policy,restart,writer/readerrevocation retained.",
+    "metadata_cases": "Remote parent property/dependency management;unassessed parent denial;classified JAR denial with default artifact unaffected;exact optional/test sets;POM exclusion with nonexcluded control;Ivy branch exclusion;latest-revision conflict;caching parent policy;actual restart;revoked reader. All packages resource-only;no uploadedcodeexecution.",
+    "gradle": "Both native Gradle9.8.2publication-wire-v2profiles pass199checks,all8stages/all24publisher-reference-HTTP identities; exact clean source/native binary/client bytes retained."
+  },
+  "prior_partial_checkpoint": "evidence/2026-11-04/github-419861c-checkpoint.json",
+  "separate_library_checkpoint": "evidence/2026-11-04/nuget-419861c-checkpoint.json",
+  "limits": [
+    "Exact17terminal jobs:15pass,2macOScancelled before runner acquisition; canceled tests never pass. Mainrun fails overall. No focused/SDKlibraryjob here; retain separate419861c proof.",
+    "ARM Chromium placement is skipped and never counted as a pass. Skipped success-only diagnostic steps are not qualification cases.",
+    "Ivy494checks/8stages/8metadata cases/28bytebindings and3SHA2consumers pass; named metadata scope only. Snapshots/interruption/lifecycle/SBTand allotherGOALscope remain required.",
+    "All450capabilities/41families and later stages retained; broad readiness, full security and packaging remain negative.",
+    "No primary/data/selectedbinary/customer/sibling change or release/package/image publication. Local native ARM stand-ins do not replace native CI client proof."
+  ],
+  "macos_cancellation": "evidence/2026-11-04/github-42f9366-macos-capacity-cancellation.json"
+}

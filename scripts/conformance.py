@@ -7,7 +7,7 @@ from pathlib import Path
 from qualification_contract import candidate_binary_directory, candidate_artifact_names
 from bounded_client import run_owned_client
 parser=argparse.ArgumentParser(description='Baseline format campaign or an explicitly selected extended stock-client profile.')
-parser.add_argument('profile',nargs='?',default='all',choices=['all','generic','npm','npmproxy','pypi','pypiproxy','oci','ociproxy','maven','proxy','sourceconfig','nuget','gradle','ivy'])
+parser.add_argument('profile',nargs='?',default='all',choices=['all','generic','npm','npmproxy','pypi','pypiproxy','oci','ociproxy','maven','proxy','sourceconfig','nuget','gradle','ivy','sbt1','sbt2'])
 parser.add_argument('--require-clean-build',action='store_true')
 args=parser.parse_args()
 BIN = candidate_binary_directory()
@@ -56,7 +56,7 @@ def repository(name,fmt,token='admin',review=False,**options):
 
 def start():
  global proc,logfile
- credentials=PRIVATE/'upstreams.json';credentials.write_text(json.dumps({tenants['admin']+'/oci-up':{'value':tokens['origin'],'allowed_url':BASE+'/v2/up-oci/'},tenants['admin']+'/fixture':{'value':tokens['origin'],'allowed_url':BASE+'/r/source/'},tenants['admin']+'/self':{'value':tokens['reader'],'allowed_url':BASE+'/r/java/'},tenants['admin']+'/gradle-self':{'value':tokens['reader'],'allowed_url':BASE+'/r/gradle-hosted/'},tenants['admin']+'/ivy-self':{'value':tokens['reader'],'allowed_url':BASE+'/r/ivy-hosted/'},tenants['admin']+'/bad-fixture':{'value':tokens['origin'],'allowed_url':BASE+'/r/bad-source/'},tenants['admin']+'/npm-fixture':{'value':tokens['origin'],'allowed_url':BASE+'/npm/up-npm/'},tenants['admin']+'/python-up':{'value':tokens['origin'],'allowed_url':BASE+'/pypi/up-python/'},tenants['admin']+'/npm-meta':{'value':tokens['npm-meta-origin'],'allowed_url':BASE+'/r/npm-meta/'},tenants['admin']+'/npm-files':{'value':tokens['npm-files-origin'],'allowed_url':BASE+'/r/npm-files/'}}));credentials.chmod(0o600)
+ credentials=PRIVATE/'upstreams.json';credentials.write_text(json.dumps({tenants['admin']+'/oci-up':{'value':tokens['origin'],'allowed_url':BASE+'/v2/up-oci/'},tenants['admin']+'/fixture':{'value':tokens['origin'],'allowed_url':BASE+'/r/source/'},tenants['admin']+'/self':{'value':tokens['reader'],'allowed_url':BASE+'/r/java/'},tenants['admin']+'/gradle-self':{'value':tokens['reader'],'allowed_url':BASE+'/r/gradle-hosted/'},tenants['admin']+'/ivy-self':{'value':tokens['reader'],'allowed_url':BASE+'/r/ivy-hosted/'},tenants['admin']+'/sbt-self':{'value':tokens['reader'],'allowed_url':BASE+'/r/sbt-hosted/'},tenants['admin']+'/bad-fixture':{'value':tokens['origin'],'allowed_url':BASE+'/r/bad-source/'},tenants['admin']+'/npm-fixture':{'value':tokens['origin'],'allowed_url':BASE+'/npm/up-npm/'},tenants['admin']+'/python-up':{'value':tokens['origin'],'allowed_url':BASE+'/pypi/up-python/'},tenants['admin']+'/npm-meta':{'value':tokens['npm-meta-origin'],'allowed_url':BASE+'/r/npm-meta/'},tenants['admin']+'/npm-files':{'value':tokens['npm-files-origin'],'allowed_url':BASE+'/r/npm-files/'}}));credentials.chmod(0o600)
  if 'config-a' in tokens:
   bindings=json.loads(credentials.read_text())
   for side in ['a','b']:
@@ -831,6 +831,10 @@ def ivy():
  from conformance_ivy import hosted
  hosted(sys.modules[__name__])
 
+def sbt(series):
+ from conformance_sbt import hosted
+ hosted(sys.modules[__name__],series)
+
 def nuget():
  from conformance_nuget_hosted import hosted
  hosted(sys.modules[__name__])
@@ -852,6 +856,7 @@ try:
  start()
  if mode=='gradle':gradle() # Extended stock-client profile; baseline all retains its existing format contract.
  if mode=='ivy':ivy() # Independent native Ant/Ivy profile; never inferred from Gradle/Maven.
+ if mode in ['sbt1','sbt2']:sbt(mode) # Each SBT series is an independent native profile.
  for name,fn in [('generic',generic),('npm',npm),('npmproxy',npmproxy),('pypi',pypi),('pypiproxy',pypiproxy),('oci',oci),('ociproxy',ociproxy),('maven',maven),('proxy',proxy),('sourceconfig',sourceconfig),('nuget',nuget)]:
   if mode in ('all',name):fn()
  result['status']='passed';print(f'PASS: {len(checks)} assertions; native mode {mode}')

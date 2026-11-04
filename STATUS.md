@@ -5,43 +5,39 @@ Owner resumed the complete goal on 2026-11-04. The previous halt commit
 GOAL stage remain committed; broad readiness, full security and packaging
 remain negative. Work and commits stay on main with both owner identities.
 
-Clean `708214f0f82b6ffc144a84dfafecf7ec7b33e93a` now has all 17 observed
-qualification jobs and eleven unchanged safe summaries accepted in
-`evidence/2026-11-04/github-708214f-checkpoint.json`: main9/JVM4/OCI2/upgrades2.
-Both actual native Linux PostgreSQL integration/race lanes pass, including new
-SHA-2 aliases, legacy opaque sidecars, current policy/grants, conditional reads,
-tenant collisions and atomic metadata receipts. Broader clients pass645checks/
-56actual SDK HTTP cases before/after restart; full x86 Chromium passes15with
-zero bad or skipped results. Both OCI profiles pass214checks; each upgrade lane
-passes15reports over10historical pins; scoped security passes324fixtures.
-ARM browser placement remains skipped and never counts as a pass.
+The exact `42f9366` campaign is now accepted for its partial scope: 15 of
+17 jobs pass; macOS source and fuzz are canceled before acquiring a runner.
+GitHub's annotations identify hosted runner acquisition failure and macOS ARM
+capacity constraints, with no assigned runner or executed test step. Keep the
+original cancellations in
+`evidence/2026-11-04/github-42f9366-macos-capacity-cancellation.json`.
+The main run fails overall; canceled tests never count as passes. Eleven safe
+summaries and exact run/job identities are retained in
+`evidence/2026-11-04/github-42f9366-checkpoint.json`. Both native Linux
+PostgreSQL/race and 645-client/56-SDK-HTTP-restart campaigns, full x86 Chromium
+15 with zero bad/skipped results, OCI 214, upgrades 15 reports/ten historical
+pins per architecture and scoped security 324 fixtures pass. The latest fully
+accepted whole observed campaign remains `708214f` with all 17 jobs passing.
 
-Both native Ivy initial release profiles pass228checks, seven original stages,
-twelve publisher/reference/HTTP JAR/POM identities and all three native SHA-2
-consumers. Both Gradle profiles pass199checks/eightstages/24bytebindings.
-Original Ant runtime and unsupported checksum failures remain retained.
-The preceding419861c campaign remains20of22passing, with its own focused-browser
-and separate actual SDK library proof; those results are not relabeled708214f.
+The expanded Ivy metadata profile passes 494 checks per native architecture,
+all eight stages/eight cases, 28 exact publisher/reference/HTTP identities and
+all three SHA-2 consumers. Gradle passes 199 checks/eight stages/24 identities
+per architecture. All four JVM profiles also replay on exact `72b98be`, which
+includes the bounded stdin/output/process harness. That separate JVM proof is
+`evidence/2026-11-04/jvm-72b98be-checkpoint.json`; the new baseline ORAS stdin,
+SDK JSON and PostgreSQL/browser campaign is still live and remains separate.
 
-The expanded Ivy `maven-metadata-v2` profile now passes on clean `42f9366`:
-both actual Linux architectures complete494checks, all eight stages/eight
-metadata cases,28exact publisher/reference/HTTP bindings and all three SHA-2
-consumers. Remote parent property/management, independently governed classified
-JARs, optional/test configurations, Maven and Ivy exclusions, conflicts, cached
-parent policy, registry restart and reader revocation all pass. Every original
-release case remains. See `evidence/2026-11-04/ivy-42f9366-checkpoint.json`.
-Both Gradle jobs also pass199checks/eightstages/24bytebindings on this source;
-all four safe JVM summaries are accepted in
-`evidence/2026-11-04/jvm-42f9366-checkpoint.json`. Main/upgrade jobs are still live;
-no new whole-candidate result is claimed. Snapshots, interruptions, lifecycle,
-SBT and every remaining format/client/stage requirement stay open.
-
-The later bounded harness revision `07170af` is locally committed: complete
-bounded JSON, private1MiBstdin,8MiBoutput rejection with a nonblocking pipe,
-own-group cleanup and unchanged small public observations. Seven process
-regressions and full lint pass; actual baseline/JVM replay on this revision
-remains unverified. See
-`evidence/2026-11-04/baseline-client-bounds-development.json`.
+SBT 1.13.0 and 2.0.11 release profiles are implemented but native replay is
+unverified. Four independent Linux x86/ARM jobs use pinned distributions and
+Java, separate tool bootstrap and fresh project caches, owned resource-only
+JARs and seven mandatory stages/twelve exact byte bindings. Scope includes
+scoped writer/reader, review, tenant collisions, proxy/group/range, current
+policy, registry restart and revocation. Fresh denied versions must retain no
+partial references. Local fixture/cache/API/evidence/privacy tests and lint
+pass; no SBT distribution or real JVM/database campaign runs on this Mac. See
+`evidence/2026-11-04/sbt-client-development.json`. Snapshots, richer metadata,
+interruption/upstream outage, lifecycle, migration, scale, production trust,
+independent hosts and every remaining format/client/stage requirement stay open.
 
 The prior halt record `evidence/2026-11-04/owner-halt-708214f.json` remains an
 immutable observation; the current owner resume supersedes its pause. No primary,

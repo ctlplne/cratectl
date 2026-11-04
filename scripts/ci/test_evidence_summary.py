@@ -10,6 +10,7 @@ import unittest
 from evidence_summary import summarize
 from test_gradle_evidence import complete_contract
 from test_ivy_evidence import complete_contract as complete_ivy_contract, metadata_contract
+from test_sbt_evidence import complete_contract as complete_sbt_contract
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -89,6 +90,16 @@ class EvidenceSummary(unittest.TestCase):
             wire=dict(contract['wire_sha256']);wire.pop(key)
             self.write('ivy-metadata.json',{**report,'ivy_contract':{**contract,'wire_sha256':wire}})
             with self.subTest(key=key),self.assertRaises(SystemExit):summarize(self.root,self.environment)
+
+    def test_sbt_export_keeps_bounded_bootstrap_identity_without_private_observations(self):
+        contract=complete_sbt_contract()
+        report={'candidate':'a'*40,'status':'passed','sbt_contract':contract,'commands':[{'output':'private-synthetic-value'}]}
+        self.write('sbt.json',report)
+        record=summarize(self.root,self.environment)['records'][0]
+        self.assertEqual(record['sbt_contract'],contract)
+        self.assertNotIn('private-synthetic-value',json.dumps(record))
+        self.write('sbt.json',{**report,'sbt_contract':{**contract,'bootstrap_boot':None}})
+        with self.assertRaises(SystemExit):summarize(self.root,self.environment)
 
     def test_nuget_sdk_and_fixture_evidence_is_bounded_and_complete(self):
         fixtures = {key: 'b' * 64 for key in ('dependency', 'application_1', 'application_2', 'other_application_1')}
