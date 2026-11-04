@@ -98,6 +98,10 @@ def build_definition(series, bootstrap=False):
     ]
     if not bootstrap:
         lines += [
+            # SBT adds Scala compiler/doc/repl modules to allDependencies even
+            # with autoScalaLibrary=false. This owned resource-only project
+            # uses its Java-only mode; the real package dependency graph stays.
+            'managedScalaInstance := false',
             'val verifyResolvers = taskKey[Unit]("Require the sole owned package source before every journey command")',
             'verifyResolvers := ' + ('Def.uncached {' if virtual else '{'),
             '  val expected = sys.props("cratectl.repository").stripSuffix("/")',
@@ -108,6 +112,9 @@ def build_definition(series, bootstrap=False):
             '    case _ => false',
             '  }',
             '  require(owned(configured) && owned(effective), "Unexpected package resolver")',
+            '  val declared = libraryDependencies.value.map(d => (d.organization, d.name, d.revision)).sorted',
+            '  val modules = allDependencies.value.map(d => (d.organization, d.name, d.revision)).sorted',
+            '  require(!managedScalaInstance.value && modules == declared && modules.forall(_._1 == sys.props("cratectl.group")), "Tool dependencies entered the package graph")',
             '  println("' + RESOLVER_MARKER + '")',
             '}',
             'credentials += Credentials(new java.io.File(sys.props("cratectl.credentials")))',

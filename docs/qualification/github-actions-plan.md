@@ -34,7 +34,12 @@ separate. Original Ant/checksum failures and each exact source remain retained.
 Four new SBT jobs cover 1.13.0 and 2.0.11 on both native Linux architectures.
 All four first runs on `7667eb3` fail during build loading after successful
 tool bootstrap; retain the [original failures](../../evidence/2026-11-04/sbt-7667eb3-build-resolution-failure.json).
-The repaired resolver separation is locally checked and awaits native replay.
+All four follow-up `30229dc` jobs verify root resolver separation, then fail
+because SBT's managed Scala compiler/doc/repl modules still enter the package
+graph. Preserve the [follow-up failure](../../evidence/2026-11-04/sbt-30229dc-tool-graph-failure.json).
+The resource-only root fixture now uses the Java-only managed Scala mode and
+requires effective dependencies to equal its explicitly declared owned modules;
+normal tool bootstrap and actual native packaging stay intact. Replay is pending.
 Stock clients publish
 owned resource-only JARs/POMs; seven mandatory stages and twelve independent
 publisher/reference/HTTP identities cover review, grants, tenants, dependency

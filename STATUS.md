@@ -24,8 +24,18 @@ all eight stages/eight cases, 28 exact publisher/reference/HTTP identities and
 all three SHA-2 consumers. Gradle passes 199 checks/eight stages/24 identities
 per architecture. All four JVM profiles also replay on exact `72b98be`, which
 includes the bounded stdin/output/process harness. That separate JVM proof is
-`evidence/2026-11-04/jvm-72b98be-checkpoint.json`; the new baseline ORAS stdin,
-SDK JSON and PostgreSQL/browser campaign is still live and remains separate.
+`evidence/2026-11-04/jvm-72b98be-checkpoint.json`. The baseline ORAS stdin,
+SDK JSON and PostgreSQL/browser campaign also passes on that source. Its exact
+partial campaign accepts 16 of 17 jobs and eleven safe summaries; native macOS
+source/unit passes, while macOS fuzz never acquires a runner. See
+`evidence/2026-11-04/github-72b98be-checkpoint.json`.
+
+The complete observed `7667eb3` campaign accepts 18 of 24 jobs with eighteen
+safe summaries: all four SBT jobs fail, and both macOS jobs are canceled before
+runner acquisition. All other named Linux/native/browser/upgrade/scoped scan
+cases pass, including five fresh focused repetitions per browser journey.
+See `evidence/2026-11-04/github-7667eb3-checkpoint.json`. These partial outcomes
+do not replace the latest fully passing `708214f` campaign.
 
 All four first SBT jobs on `7667eb3` fail after 14 checks: the pinned runtimes
 and tool bootstrap succeed, but the global repository override sends the build
@@ -35,7 +45,15 @@ The original summaries and authenticated diagnostic metadata are retained in
 The repair separates official tool/metaproject sources from the sole cratectl
 package source, disables plugin resolver inheritance and checks both effective
 and configured package resolvers before every native command, including expected
-denials. Local regression/lint passes; repaired native replay remains unverified.
+denials. All four `30229dc` jobs load the root project and verify those resolvers,
+then fail because SBT automatically adds its Scala compiler/doc/repl dependencies
+to the root package graph even with `autoScalaLibrary=false`. Preserve
+`evidence/2026-11-04/sbt-30229dc-tool-graph-failure.json`. The next repair uses
+SBT's Java-only `managedScalaInstance=false` mode for owned resource-only package
+projects and checks that effective dependencies equal their declared owned
+modules. Standard tool bootstrap and real packaging/publication tasks remain.
+Local regression/lint passes; the complete native release profile remains
+unverified. Commits/pushes retain both exact owner identities.
 Four independent Linux x86/ARM jobs use pinned distributions and
 Java, separate tool bootstrap and fresh project caches, owned resource-only
 JARs and seven mandatory stages/twelve exact byte bindings. Scope includes

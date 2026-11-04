@@ -1,0 +1,41 @@
+{
+  "observed_at": "2026-11-04T16:57:44.456332+00:00",
+  "source_parent": "30229dc6ec4c67b59df2ea6a12801e0b603a4dda",
+  "source_dirty": true,
+  "state": "Tool graph repair locally checked; complete native release-profile replay pending.",
+  "first_failure": "evidence/2026-11-04/sbt-30229dc-tool-graph-failure.json",
+  "source_sha256": {
+    "scripts/sbt_fixture.py": "6f413b352e80ada31bf1227b7fe644e9e3b3237073d09a6fb1d3acbbda128a6d",
+    "scripts/conformance_sbt.py": "f7f8610bf03c055d6df61d502829f8fd0ea3ceedd3da608ace5c21df4e564700",
+    "scripts/test_sbt_fixture.py": "ae515b54cca54647e1b63258c286acc278386aecf9452132a1590982648f083f"
+  },
+  "repair": "SBT Java-only managedScalaInstance=false on owned resource-only package projects. Preserve standard managed compiler bootstrap/metaproject and real native packaging/publish commands. Before each package command, assert allDependencies equals libraryDependencies and contains only owned group modules, alongside both exact sole cratectl resolver values. No automatic Scala tool dependencies or package fallback.",
+  "local_validation": {
+    "make_lint": "passed with owned process cleanup permission",
+    "sbt_fixture_tests": 6,
+    "log": ".cache/sbt-tool-graph-repair-lint.log",
+    "log_sha256": "275e2ef6d72a4837039ad96bc0b0d70253a6a7cd1a8b2ce2954aca0f03c10d32",
+    "regression": "Version-specific root definitions preserve real dependencyClasspath/native publish, use the Java-only mode only outside bootstrap, and require exact effective/declaration graph equality. Existing resolver-marker denial guards, fake-Java launch isolation, cache bounds and safe/CMS contracts still pass."
+  },
+  "native_required": {
+    "cases": [
+      "sbt1 amd64",
+      "sbt1 arm64",
+      "sbt2 amd64",
+      "sbt2 arm64"
+    ],
+    "stages": 7,
+    "publisher_reference_http_bindings": 12,
+    "placement": "Actual GitHub native Linux architectures and PostgreSQL; no real local SBT/database campaign."
+  },
+  "primary_sources": [
+    "https://github.com/sbt/sbt/blob/v1.13.0/main/src/main/scala/sbt/Defaults.scala",
+    "https://github.com/sbt/sbt/blob/v2.0.11/main/src/main/scala/sbt/Defaults.scala",
+    "https://github.com/sbt/sbt/blob/v1.13.0/main/src/main/scala/sbt/internal/Compiler.scala",
+    "https://github.com/sbt/sbt/blob/v2.0.11/main/src/main/scala/sbt/internal/Compiler.scala"
+  ],
+  "limits": [
+    "Stand-ins establish construction and rejection behavior only. Actual native publication/resolution/policy/recovery must replay independently for each version/architecture.",
+    "All450capabilities/41families and every later GOAL stage retained; broad readiness/fullsecurity/packaging false. No primary/customer/sibling/release change."
+  ]
+}

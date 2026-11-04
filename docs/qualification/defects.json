@@ -1007,10 +1007,20 @@
       "id": "DEFECT.0091",
       "summary": "Global SBT repository override routes build compiler Scala dependencies into the governed package repository",
       "first_failure": "evidence/2026-11-04/sbt-7667eb3-build-resolution-failure.json",
-      "state": "repair implemented and locally checked; four native replays unverified",
+      "state": "Root project loading and exact sole resolver observation replayed on all four native30229dc cases; full release profile still fails from DEFECT.0092.",
       "repair": "Separate explicit official launcher/metaproject repositories without registry credentials from the sole cratectl package resolver. Disable global override/plugin resolver inheritance, set both root resolver tasks explicitly and require their native observation before every command, including expected denials. SBT2 resolver tasks are uncached. Preserve all seven stages and twelve byte bindings.",
       "development": "evidence/2026-11-04/sbt-resolver-repair-development.json",
-      "limits": "Original four native jobs each fail after14checks/one identity stage, before publication. Stand-ins do not qualify native SBT. No scope or readiness change."
+      "limits": "Original four native jobs each fail after14checks/one identity stage, before publication. Stand-ins do not qualify native SBT. No scope or readiness change.",
+      "partial_replay": "evidence/2026-11-04/sbt-30229dc-tool-graph-failure.json"
+    },
+    {
+      "id": "DEFECT.0092",
+      "summary": "SBT automatically adds Scala compiler tools to the isolated resource-only package graph",
+      "first_failure": "evidence/2026-11-04/sbt-30229dc-tool-graph-failure.json",
+      "state": "Repair locally checked; complete native replay pending.",
+      "repair": "Use managedScalaInstance=false only on the resource-only package project, retaining normal managed tool bootstrap and real native package/publish tasks. Require effective dependencies to equal declared owned modules before every native package command. No package resolver fallback.",
+      "development": "evidence/2026-11-04/sbt-tool-graph-repair-development.json",
+      "limits": "All four30229dc cases load the root project and verify its sole resolvers, then fail after14checks/one identity stage. All original stages and byte/authorization/recovery cases remain required; no SBT pass."
     }
   ]
 }

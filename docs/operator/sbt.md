@@ -2,7 +2,8 @@
 
 Independent SBT 1.13.0 and 2.0.11 profiles are implemented for actual Linux
 x86 and ARM GitHub runners. All four initial runs failed while loading the build
-definition; the resolver repair awaits native replay. An Ivy or Gradle
+definition; the follow-up run reaches the root project but still includes tool
+dependencies in its package graph. The next repair awaits native replay. An Ivy or Gradle
 pass does not qualify either SBT version. The [JVM plan](../qualification/jvm-client-plan.json)
 and [runtime pins](../qualification/jvm-clients.json) retain exact versions,
 official distribution digests and unfinished work.
@@ -41,6 +42,14 @@ Maven settings prevent inherited mirror substitution. No Maven
 Central, local package or preseeded fixture may substitute for an observed
 registry resolution. Exact pinned Java invokes the launcher JAR directly;
 shell/thin-client wrappers and inherited JVM/repository injection are excluded.
+
+The follow-up run loads the root project and verifies its resolvers, then exposes
+another tool boundary: `autoScalaLibrary=false` still permits automatic Scala
+compiler/doc/repl modules in the package graph. The owned resource-only package
+fixture now uses `managedScalaInstance := false`, SBT's Java-only mode, and checks
+that effective dependencies equal the declared owned modules. The separately
+bootstrapped build compiler keeps its normal settings. Native packaging and
+publication tasks remain required; this repair is not yet a native pass.
 
 Stock SBT publishes owned resource-only JARs and generated POMs. Fresh
 consumers copy resolved bytes for independent comparison; uploaded classes,
