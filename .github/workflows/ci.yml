@@ -15,7 +15,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     concurrency:
-      group: cratectl-ci-selection-${{ github.ref }}
+      # Keep a later documentation push from replacing an unexecuted source selector.
+      group: cratectl-ci-selection-${{ github.ref }}-${{ github.sha }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     outputs:
       runtime: ${{ steps.select.outputs.runtime }}

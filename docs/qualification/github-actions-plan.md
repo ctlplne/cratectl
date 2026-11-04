@@ -13,13 +13,13 @@ outside this CI authority. No autonomous delegation.
 
 ## Current qualification state
 
-Exact `0edd1a4` passes all 21 actually selected jobs: main9/JVM8/OCI2/
+Exact `0cff4b8` now passes all 21 actually selected jobs: main9/JVM8/OCI2/
 upgrades2. All 15 accepted safe summaries bind exact source/native binaries,
 actual tools, fixture bytes and artifact identities. Both baselines pass663,
 real PostgreSQL normal/race/five snapshot regressions and four Maven warm-cache
 stages/six bindings. Full x86 Chromium passes119/all15workflows without skipped,
 flaky or unexpected results. All three native source and fuzz jobs pass,
-including macOS ARM. See the [whole observed checkpoint](../../evidence/2026-11-04/github-0edd1a4-checkpoint.json).
+including macOS ARM. See the [whole observed checkpoint](../../evidence/2026-11-04/github-0cff4b8-checkpoint.json).
 Library/focused-browser workflows were not selected on this source; earlier
 [1974 library proof](../../evidence/2026-11-04/nuget-1974d94-checkpoint.json)
 remains separate with both actual SDK10.0.403/runtime10.0.14 contracts passing
@@ -27,7 +27,7 @@ all37original assertions. Whole observed success does not qualify the full goal.
 
 The accepted JVM campaign includes Ivy666/cache-v4/ten stages/34wire plus six
 retained-cache bindings per host, Gradle199/eight/24 and four SBT release
-profiles161/seven/12. Both OCI214 and both upgrade10pins/15reports pass.
+snapshot profiles269/eight/18. Both OCI214 and both upgrade10pins/15reports pass.
 Ivy retains the same changing consumer/cache/module through initial/update/
 restart, exact changed POM/JAR bytes and the first observations before overwrite.
 Warm proxy snapshot/offline/fault and broader lifecycle requirements remain open.
@@ -37,7 +37,9 @@ SBT1.13.0 and2.0.11 each pass269checks/eight stages/eight snapshot cases/18bindi
 on native Linux x86 and ARM. Every original release case remains. These commands
 use fresh project caches copied from frozen tool-only seeds; warm project caches
 are unqualified. See the [named checkpoint](../../evidence/2026-11-04/sbt-snapshots-0cff4b8-checkpoint.json).
-The whole campaign is incomplete:19jobs pass and two macOS jobs remain queued.
+The whole campaign now passes all21jobs/15safe summaries: both formerly queued
+macOS jobs actually executed and passed. The earlier0edd checkpoint remains
+retained; later Go/scanner/selection revisions need separate native evidence.
 No duplicate dispatch, retry or skipped-job acceptance. All actual JVM/SDK/
 PostgreSQL campaigns run on GitHub; local tests use small owned stand-ins.
 
@@ -142,8 +144,18 @@ fuzz/native lanes. Only documentation/evidence-only changes can leave those
 lanes unselected; independent scoped source/binary/history/secret scans always
 remain. Every prior command, matrix, budget, permission and concurrency value
 is preserved. Six real-Git/stand-in tests, full lint and semantic YAML comparison
-pass. Actual GitHub source-true and legitimate docs-false execution remain
-unverified. See the [selection development record](../../evidence/2026-11-04/ci-selection-development.json).
+pass. Actual source-true placement passes at63ad692 with exact8path/hash evidence and
+all3source/3fuzz/2native matrix jobs present. Those jobs remain pending/queued in
+that observation; independent security was canceled pending. The e627 docs-only
+selector was canceled before execution, so false selection remains unverified. See the [selection development record](../../evidence/2026-11-04/ci-selection-development.json).
+
+The five-minute selection job now isolates its pending slot by exact source SHA
+as well as branch. A documentation push therefore cannot replace a source
+planner before it schedules runtime jobs. The e627 canceled selector remains
+unexecuted, with no false runtime=false pass. Six real-Git tests and YAML semantic
+preservation pass; actual source-key/docs-only execution still requires proof.
+Heavy-job and independent security concurrency remain unchanged. See the
+[source-key development record](../../evidence/2026-11-04/ci-selection-source-key-development.json).
 
 Enumerate actual full-SHA jobs and the uploaded selection record before campaign
 acceptance. GitHub's [job conditions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idif)

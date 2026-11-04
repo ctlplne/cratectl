@@ -4,7 +4,7 @@ The full goal is active. All 450 capabilities / 41 families and every later
 stage remain committed. Broad readiness, full security and packaging remain
 negative. Both commit identities remain exactly `imfeelingtheagi` on main.
 
-Exact `0edd1a4` passes all 21 jobs actually selected: main nine, JVM eight,
+Exact `0cff4b8` now passes all 21 jobs actually selected: main nine, JVM eight,
 OCI two and controlled upgrades two. All 15 accepted safe summaries bind exact
 clean source/native binaries, actual tools, fixture bytes and artifact identities.
 Both native Linux baselines pass 663 checks, four Maven retained-cache stages
@@ -12,29 +12,31 @@ and six byte bindings, real PostgreSQL integration/timing/race and all five
 snapshot receipt/concurrency regressions. Full x86 Chromium passes 119 checks
 and all 15 workflows with zero unexpected, skipped or flaky results. All three
 native source and fuzz jobs pass, including macOS ARM. See
-`evidence/2026-11-04/github-0edd1a4-checkpoint.json`.
+`evidence/2026-11-04/github-0cff4b8-checkpoint.json`.
 
 That JVM campaign includes Ivy cache-v4: 666 checks, ten stages, all original
 metadata/snapshot/SHA-2 cases and 34 publisher/reference/HTTP bindings plus six
 original cached POM/JAR hashes per host. One changing consumer retains its cache
 and module identity through initial/update/restart; first observations survive
 replacement. Gradle passes 199 checks/eight stages/24 bindings on both hosts.
-SBT release profiles pass 161/seven/12 on each of four series/architecture jobs.
+SBT snapshot-v2 passes269/eight/18 on each of four series/architecture jobs,
+retaining all original161release checks plus108snapshot checks.
 OCI passes 214 checks per host; both upgrade jobs rebuild ten historical pins
 and pass 15 reports. Library and focused-browser jobs were not selected at
 this source. Earlier exact `1974d94` library proof remains separate: both actual
 SDK10.0.403/runtime10.0.14 contracts pass all 37 original assertions with zero
 mismatches. See `evidence/2026-11-04/nuget-1974d94-checkpoint.json`.
 
-The later SBT snapshot-v2 profile is now verified at exact `0cff4b8` on both
+The SBT snapshot-v2 profile is verified at exact `0cff4b8` on both
 SBT1.13.0 and SBT2.0.11, each on actual Linux x86 and ARM GitHub runners. All
 four pass 269 checks, eight stages, eight snapshot cases and 18 exact byte
 bindings. Original release cases remain intact. Default immutability, explicit
 replacement policy, current review, fresh resolution, holds, policy disablement,
 restart and revocation pass. These are fresh project caches, not warm-cache
 proof. See `evidence/2026-11-04/sbt-snapshots-0cff4b8-checkpoint.json`.
-Whole `0cff4b8` acceptance remains open: 19 jobs pass while macOS source and
-fuzz are still queued in the latest observation. They never count as passes.
+Whole `0cff4b8` acceptance is now complete: both formerly queued macOS source
+and fuzz jobs actually executed and passed. All21jobs/15safe summaries are
+accepted at this source, separately from later Go and CI changes.
 
 ORAS/Helm bounded archive caches now have named native miss/save/hit proof.
 Both architectures fetch/verify and save their exact public archive keys at
@@ -104,9 +106,16 @@ Documentation/evidence-only commits retain independent scoped source/binary/
 history/secret scans. Runtime/pin/instruction/unknown changes and manual dispatch
 select all original native lanes. Six real-Git/stand-in tests, full lint and YAML
 semantic preservation checks pass. Every original command/matrix/budget remains.
-Actual GitHub source/docs selection and skip placement remain unverified; an
-unselected job never counts as a pass. See
-`evidence/2026-11-04/ci-selection-development.json`.
+Actual source-true selection now passes at63ad692: exact8path/hash record and
+all3source/3fuzz/2native jobs are placed. Their execution remains pending; its
+security job was canceled pending. The docs-only selector was canceled before
+execution, so runtime=false remains unverified. An unselected/canceled job
+never counts as a pass. The five-minute selector now keys concurrency by exact
+source as well as branch, preventing documentation pushes from replacing a
+queued source planner. This refinement has six tests/semantic YAML proof,
+but requires actual execution. See
+`evidence/2026-11-04/ci-selection-63ad692-placement-checkpoint.json` and
+`evidence/2026-11-04/ci-selection-source-key-development.json`.
 
 Gitleaks now uses the same bounded32MiB public-archive fetch path, retaining
 its exact8.30.1version/SHA256 pin and all original scans/324rule fixtures.

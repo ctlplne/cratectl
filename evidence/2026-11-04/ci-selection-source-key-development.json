@@ -1,0 +1,34 @@
+{
+  "source_parent": "802bb519c10eb49f46fce407fd33fd4088ad0182",
+  "source_dirty": true,
+  "observed_at": "2026-11-04T23:24:55.420336+00:00",
+  "state": "implemented but unverified on GitHub",
+  "discovery": "Actual e627 documentation-only selector was canceled before execution when newer work entered the branch-wide selector group. A later documentation push could similarly replace a queued source selector before it schedules native jobs, so source qualification must not depend on that branch-wide pending slot.",
+  "prior_placement_checkpoint": "evidence/2026-11-04/ci-selection-63ad692-placement-checkpoint.json",
+  "mechanism": "Include exact github.sha in the five-minute selection concurrency key. Different source commits no longer replace each other at this read-only planning step. Existing per-profile/platform heavy-job/security concurrency, running-main preservation, conditions, matrices, commands and budgets remain unchanged.",
+  "files": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "f9c9de6231f73d6da2f37350e4245f9479752cda8e719b0549718755efb6b8cf"
+    }
+  ],
+  "validation": "Six real-Git selection regressions pass. YAML semantic comparison proves only the new selector concurrency key changed from802bb51.",
+  "logs": [
+    {
+      "path": ".cache/ci-selection-source-key-contract.log",
+      "sha256": "1665240747768e5dd488e0bd509cbb578a7518bc71c30eb50fffd7bc1c3e620d"
+    },
+    {
+      "path": ".cache/ci-selection-source-key-workflow.log",
+      "sha256": "6beb93f77e6b81cda96d08073c18176eaeeb2132b1a90b387c48022b7de1fcb4"
+    }
+  ],
+  "native_required": [
+    "Observe actual per-source keys and legitimate documentation-only runtime=false record with independent scoped security. Source-true planning already has named63ad proof, not native execution qualification.",
+    "No skipped/canceled/unselected/absent native job becomes a pass; capture exact handles and keep all original cases."
+  ],
+  "limits": [
+    "No queue-duration/capacity improvement or complete native selection/execution claim.",
+    "All450capabilities/41families/laterstages remain committed; readiness/fullsecurity/packaging false. No primary/customer/sibling/release mutation."
+  ]
+}
