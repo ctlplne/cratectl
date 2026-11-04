@@ -9,6 +9,7 @@ import unittest
 
 from evidence_summary import summarize
 from test_gradle_evidence import complete_contract
+from test_ivy_evidence import complete_contract as complete_ivy_contract
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -66,6 +67,15 @@ class EvidenceSummary(unittest.TestCase):
         self.assertEqual(record['gradle_contract'],complete_contract())
         self.assertNotIn('private-synthetic-value',json.dumps(record))
         self.write('gradle.json',{**report,'gradle_contract':{**complete_contract(),'phase':'snapshots'}})
+        with self.assertRaises(SystemExit):summarize(self.root,self.environment)
+
+    def test_ivy_export_binds_all_owned_bytes_and_rejects_partial_pass(self):
+        report={'candidate':'a'*40,'status':'passed','ivy_contract':complete_ivy_contract(),'commands':[{'output':'private-synthetic-value'}]}
+        self.write('ivy.json',report)
+        record=summarize(self.root,self.environment)['records'][0]
+        self.assertEqual(record['ivy_contract'],complete_ivy_contract())
+        self.assertNotIn('private-synthetic-value',json.dumps(record))
+        self.write('ivy.json',{**report,'ivy_contract':{**complete_ivy_contract(),'wire_sha256':{}}})
         with self.assertRaises(SystemExit):summarize(self.root,self.environment)
 
     def test_nuget_sdk_and_fixture_evidence_is_bounded_and_complete(self):

@@ -1,0 +1,87 @@
+{
+  "updated_at": "2026-11-04T02:43:47.601038+00:00",
+  "scope": "Complete JVM client requirement in GOAL.md, within all 450 capabilities and 41 families; this plan removes no other work.",
+  "qualified_gradle": {
+    "version": "9.8.2",
+    "jdk": "21.0.13+9[-LTS]",
+    "candidate": "9985847d685b2685cbf3c1f334d804e80eee02c1",
+    "evidence": "evidence/2026-11-04/gradle-9985847-checkpoint.json",
+    "hosts": [
+      "GitHub Ubuntu 24.04 amd64",
+      "GitHub Ubuntu 24.04 arm64"
+    ],
+    "checks_per_host": 199,
+    "limits": "Named publication-wire-v2 cases only; full JVM and Maven parity remain unfinished."
+  },
+  "execution_order": [
+    "Ant/Ivy release publication and transitive consumption on each native Linux architecture",
+    "Ivy snapshot, classifier, parent, dynamic and conflict cases; controlled interruption and recovery",
+    "SBT 2.x plus supported 1.x publisher/consumer workflows with isolated project dependency caches",
+    "Production TLS/private CA, independent hosts, faults, lifecycle, migration, scale and every remaining JVM requirement"
+  ],
+  "ivy": {
+    "state": "maven-release-v1 implemented but native replay unverified; remaining mandatory Ivy cases still open",
+    "mechanism": [
+      "Install hash-verified official distributions only on isolated native GitHub hosts; pin the actual JDK/runtime and all tool, fixture and source bytes.",
+      "Run only project-owned Ant build XML and bundled Ivy Ant tasks. Generate resource-only JARs and POMs with ivy:makepom. Never run resolved package code.",
+      "Publish through a Maven-compatible URL resolver with HTTP PUT and publishivy=false; ibiblio explicitly does not support publishing.",
+      "Resolve through ibiblio with m2compatible=true and usepoms=true at one explicit cratectl endpoint. Use a fresh cache per attempt, credentials bound to host/realm cratectl and no implicit Maven Central fallback.",
+      "Bind every published JAR/POM to its exact retained path, digest and size, then independently read HTTP bytes. The generated Ivy-to-POM mapping must preserve the expected dependency graph."
+    ],
+    "first_required_cases": [
+      "native client identity",
+      "scoped writer publishes a dependency and two application versions",
+      "review blocks metadata and JAR before a decision",
+      "exact JAR/POM readback and complete transitive dependency set",
+      "colliding coordinates in two isolated tenants",
+      "reader publication denial",
+      "proxy checksum validation and group member precedence",
+      "dynamic version and metadata freshness",
+      "current policy denies cached bytes",
+      "actual registry restart and fresh resolution",
+      "revoked writer and reader denials with the other tenant unaffected"
+    ],
+    "later_mandatory_cases": [
+      "timestamped and nonunique Maven snapshots under explicit redeployment policy",
+      "parent POMs, classifiers, configuration mapping, exclusions and conflict resolution",
+      "concurrent publish, interrupted transfer/retry, conditional cache and upstream outage",
+      "deletion/restore, lifecycle and complete permission, source, failure and scale combinations"
+    ],
+    "sources": [
+      "https://ant.apache.org/ivy/download.cgi",
+      "https://ant.apache.org/ivy/history/2.6.0/use/makepom.html",
+      "https://ant.apache.org/ivy/history/2.6.0/use/publish.html",
+      "https://ant.apache.org/ivy/history/2.6.0/resolver/url.html",
+      "https://ant.apache.org/ivy/history/2.6.0/resolver/ibiblio.html",
+      "https://ant.apache.org/ivy/history/2.6.0/settings/credentials.html"
+    ],
+    "development": "evidence/2026-11-04/ivy-client-development.json",
+    "surfaces": [
+      "scripts/conformance.py ivy --require-clean-build",
+      ".github/workflows/jvm-clients.yml (ivy amd64/arm64)",
+      "docs/operator/ivy.md"
+    ],
+    "toolchain": "Apache Ant 1.10.18 and Apache Ivy 2.6.0; exact official URLs/checksums are in runtime_pins.",
+    "runtime_pins": "docs/qualification/jvm-clients.json:ivy"
+  },
+  "sbt": {
+    "state": "planned; no SBT installation, execution or compatibility pass",
+    "official_download_observed": "2026-11-04",
+    "current_series": "2.0.11",
+    "also_listed_1x": "1.13.0",
+    "source": "https://www.scala-sbt.org/download/",
+    "next": "Pin official distribution checksums and review current 2.x/1.x configuration contracts before implementation. Preserve independent client/version cases.",
+    "mechanism": [
+      "Separate stock SBT/tool boot dependency bootstrap from the product journey; record actual bootstrap identities and external fetch limits.",
+      "Use only owned build definitions and resource-only published JARs. Disable Scala artifact cross names where appropriate. Never execute resolved package code.",
+      "Use one explicit cratectl source for project dependencies and fresh project artifact caches. Warm boot caches must not contain owned fixture coordinates; fallback or preseeded fixtures cannot stand in for an observed registry resolution.",
+      "Actual publication/consumption, transitive dependency bytes, current policy/authorization, proxy/groups, snapshots, tenant collisions, restart, revocation and later lifecycle/fault cases are mandatory."
+    ]
+  },
+  "placement": {
+    "local": "Small Python/HTTP stand-ins for bounded mapping, configuration, privacy and failure classification; no emulation or local real JVM/PostgreSQL campaign.",
+    "native_ci": "Separate native Linux amd64/arm64 jobs with fail-fast=false; real PostgreSQL 16.15 and a nonowner, nonsuperuser runtime without BYPASSRLS; owned loopback ports 35432/38443; explicit job/client time, memory and output limits.",
+    "evidence": "Reviewed bounded fields, counts, digests and stages only. Each client/version has its own mandatory profile. Preserve original failures; partial, skipped or absent cases never pass.",
+    "limits": "Owned POSIX process-group cleanup does not prove control of processes that explicitly detach into new sessions. Qualify client fork settings and runner containment before stronger descendant claims."
+  }
+}

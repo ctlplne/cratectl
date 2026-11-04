@@ -1,21 +1,27 @@
 # cratectl execution status
 
-Owner resumed the full goal after the 2026-11-03 graceful halt. Current work
-repairs the native ARM Gradle setup failure and strengthens publication evidence.
-The completed `7ea5ee7` campaign has 17 passing jobs out of 18: all 16 earlier
-source/PostgreSQL/client/browser/OCI/upgrade jobs pass, and x86 Gradle passes
-123 checks. ARM Gradle never starts: setup-java v5 requests `21.0.13+9` while
-the upstream advertises `21.0.13+9.0.LTS`. The exact original failure and all
-12 safe summaries are retained in
-`evidence/2026-11-03/github-7ea5ee7-checkpoint.json`. Whole-candidate acceptance
-remains false. The owner halt commit is preserved in main history.
+Owner resumed the full goal after the 2026-11-03 graceful halt. The native
+Gradle `publication-wire-v2` profile now passes on clean
+`9985847d685b2685cbf3c1f334d804e80eee02c1`: both actual Linux architectures
+complete 199 checks, all eight original stages and all 24 matching publisher,
+retained-reference and raw HTTP digests. The original ARM Java setup failure
+is repaired and replayed; its failed `7ea5ee7` campaign remains retained.
+See `evidence/2026-11-04/gradle-9985847-checkpoint.json`. All 15 observed jobs
+on that source now pass: main 9, Gradle 2, OCI 2 and controlled upgrades 2.
+Nine unchanged safe summaries and the exact scopes are accepted in
+`evidence/2026-11-04/github-9985847-checkpoint.json`. Broader clients pass 645
+checks per architecture, full x86 Chromium passes 15 workflows with no bad or
+skipped tests, and both upgrade lanes pass 15 reports over ten historical pins.
 
-The repair requests the advertised Java build while keeping the independent
-exact runtime check. The new `publication-wire-v2` profile requires all 24
-publisher outputs to match retained paths/digests/sizes and independent HTTP
-readback, including tenant B and two distinct snapshot builds. It preserves
-the original eight stages and cases. New native results remain unverified.
-All 450 capabilities / 41 families remain in scope; broad readiness is false.
+The next independent Ant/Ivy and SBT workflows are specified in
+`docs/qualification/jvm-client-plan.json`, with reviewed client versions,
+official Ant/Ivy distribution checksums, actual native-host placement and
+required cases. The Ant/Ivy release profile is now implemented with local build/lint and
+configuration/privacy regressions passing; native results remain unverified.
+See `evidence/2026-11-04/ivy-client-development.json`. SBT and the remaining
+mandatory Ivy cases are still open.
+The complete 450 capabilities / 41 families and every later GOAL stage remain
+committed; all broad readiness verdicts remain negative.
 
 Owner resumed the complete `GOAL.md` scope on 2026-11-02 and reaffirmed that
 both author and committer must be `imfeelingtheagi`. The current work finishes

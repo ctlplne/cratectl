@@ -12,6 +12,7 @@ import subprocess
 
 from native_client_diagnostics import CODES as NATIVE_CLIENT_DIAGNOSTIC_CODES
 from gradle_evidence import safe_gradle_contract
+from ivy_evidence import safe_ivy_contract
 
 
 def summarize(root, environment):
@@ -213,6 +214,11 @@ def summarize(root, environment):
         if 'gradle_contract' in report:
             try:
                 entry['gradle_contract'] = safe_gradle_contract(report['gradle_contract'], status)
+            except ValueError as error:
+                raise SystemExit(str(error)) from error
+        if 'ivy_contract' in report:
+            try:
+                entry['ivy_contract'] = safe_ivy_contract(report['ivy_contract'], status)
             except ValueError as error:
                 raise SystemExit(str(error)) from error
         for key in ('baseline_version', 'expected_schema'):

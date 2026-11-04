@@ -488,8 +488,8 @@ passes 123 checks on x86 at `7ea5ee7`; ARM stops at Java setup. The exact
 [18-job checkpoint](../../evidence/2026-11-03/github-7ea5ee7-checkpoint.json)
 retains 17 successes and the original failure. No ARM client pass is inferred.
 
-Owned client process groups have time/output limits and are stopped even if a
-descendant ignores termination. A timed-out publication is unconfirmed. Safe
+Owned client process groups have time/output limits. Cleanup stops children
+that remain in the group, including a child that ignores termination. A timed-out publication is unconfirmed. Safe
 CI export retains fixed diagnostic codes and exact Gradle/JDK/fixture hashes;
 it rejects arbitrary client output and a success-shaped partial profile. A
 local stand-in regression checks cancellation of an owned child that ignores
@@ -536,3 +536,59 @@ PostgreSQL/clients for protocol proof. Preserve original failing cases and
 partial evidence; do not rerun unrelated completed campaigns merely because
 a prior observation expired. Full format/platform/lifecycle/security, storage,
 packaging, independent-host scale and every later GOAL stage remain required.
+
+
+Both actual native Gradle jobs now pass on clean `9985847`: 199 checks each,
+all eight original stages and 24 matching publisher/reference/HTTP digests per
+architecture. The original ARM setup defect is replayed and the first snapshot
+is read back again after the second publication. See the
+[exact JVM checkpoint](../../evidence/2026-11-04/gradle-9985847-checkpoint.json).
+This accepts the named profile only; current main/upgrade results are separate.
+
+The [durable JVM client plan](jvm-client-plan.json) records the next independent
+Ant/Ivy and SBT work, reviewed official versions/checksums, required cases and
+placement. Ivy's `ibiblio` resolver consumes Maven POMs but cannot publish;
+normal Maven-compatible publication uses its HTTP URL resolver with generated
+POMs. A fresh native Ant/Ivy profile must exercise both paths, real dependency
+bytes and the existing policy/tenant/recovery invariants. SBT needs separate
+2.x and supported 1.x coverage, controlled tool bootstrap and fresh project
+artifact caches; a warmed tool cache must not supply the owned test artifacts.
+These are planned implementations, not client passes.
+
+POSIX cleanup currently covers the owned process group, including a tested
+child that ignores SIGTERM. A process explicitly detaching into a new session
+is outside that guarantee. Qualify client fork settings and native runner
+containment before claiming a bound on every detached descendant. Neither a
+successful client run nor the job timeout proves that stronger property.
+
+
+The initial Ant/Ivy `maven-release-v1` implementation now adds two independent
+native jobs to `jvm-clients.yml`. It installs only hash-verified official Ant
+1.10.18 and Ivy 2.6.0 distributions on the runner. It uses real restricted
+PostgreSQL, a scoped writer, the native URL publisher, generated POMs and fresh
+ibiblio consumers. All seven stages and twelve publisher/reference/HTTP byte
+bindings are mandatory. Publication, review, tenant collisions, two releases,
+proxy/groups/range, cached policy, restart and credential revocation must run
+on both architectures; local fixture/evidence checks cannot qualify them.
+The [development record](../../evidence/2026-11-04/ivy-client-development.json)
+is explicitly unverified for native client behavior. No local Ant/Ivy runtime
+was downloaded or executed. Snapshots, classifiers, parent POMs, richer Ivy
+semantics and every later requirement remain open; SBT has a separate plan.
+
+
+Executable tool pins live in `jvm-clients.json`; narrative status and remaining
+cases live in `jvm-client-plan.json`. Native jobs watch the executable pins and
+client/workflow code. A prose or checkpoint update alone must not cancel and
+restart an otherwise unchanged client campaign. Each future pin change still
+requires official metadata review, exact digest checks and native replay.
+
+
+The complete observed `9985847` campaign now passes all 15 jobs: main 9,
+Gradle 2, OCI 2 and controlled upgrades 2. Its nine unchanged safe summaries
+validate both native PostgreSQL/race and 645 broader-client checks, all 56
+NuGet HTTP/restart cases, 199 Gradle and 214 OCI checks per architecture,
+15 full x86 Chromium workflows with no unexpected/skipped/flaky tests, and
+15 upgrade reports over ten historical pins on each architecture. See the
+[whole observed campaign](../../evidence/2026-11-04/github-9985847-checkpoint.json).
+No focused jobs or Ant/Ivy jobs ran on that source. The next Ant/Ivy campaign
+must qualify its own source; earlier passes cannot supply that missing proof.

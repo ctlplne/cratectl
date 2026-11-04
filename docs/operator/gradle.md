@@ -6,11 +6,13 @@ describes Maven dependencies; Gradle Module Metadata describes Gradle variants
 and dependencies. Both metadata files and the exact JAR remain governed by the
 common repository authorization, digest decisions and storage path.
 
-The first Gradle 9.8.2/JDK 21 profile passes 123 checks on native Linux x86
-at `7ea5ee7`. ARM stops during Java setup before any client journey. The
-[exact checkpoint](../../evidence/2026-11-03/github-7ea5ee7-checkpoint.json) retains
-that failure. The strengthened profile below awaits native replay. Use the
-[Maven guide](maven.md) for the currently named Maven scope and limits.
+Gradle 9.8.2/JDK 21 passes the named `publication-wire-v2` profile on actual
+Linux x86 and ARM at `9985847`: 199 checks per architecture. The
+[exact checkpoint](../../evidence/2026-11-04/gradle-9985847-checkpoint.json)
+binds all 24 publisher files to retained references and independent HTTP bytes.
+The original ARM Java setup failure remains recorded separately. Use the
+[Maven guide](maven.md) for the named Maven scope and limits. Full JVM format
+qualification, including Ivy and SBT, remains open.
 
 Configure a normal Gradle Maven repository with a reader credential supplied by
 your private secret provider:
@@ -63,7 +65,7 @@ publisher file to the retained path, digest and size, then compares raw HTTP
 bytes. Snapshot metadata must use the same timestamp/build as its JAR; a
 second snapshot must preserve the first timestamped publication. Tenant B uses
 its own inventory and credentials. Partial stages or missing readbacks cannot
-produce a passing summary. The original x86 result predates these checks.
+produce a passing summary. The original `7ea5ee7` x86 result predates these checks.
 
 Ivy and SBT, other Gradle/JDK/platform versions, richer variant/plugin/build
 graphs, production TLS, interruptions, every lifecycle/migration/scale case and

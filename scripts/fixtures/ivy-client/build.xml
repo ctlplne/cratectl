@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: BUSL-1.1 -->
+<!-- Owned test build only. Resolved packages are inert and never executed. -->
+<project name="cratectl-ivy-proof" xmlns:ivy="antlib:org.apache.ivy.ant">
+  <target name="configure">
+    <loadfile property="registry.password" srcFile="${credentialFile}">
+      <filterchain><striplinebreaks/></filterchain>
+    </loadfile>
+    <ivy:settings file="ivysettings.xml"/>
+  </target>
+  <target name="publish" depends="configure">
+    <mkdir dir="build"/>
+    <jar destfile="build/${artifactName}-${publicationVersion}.jar" basedir="resources"/>
+    <ivy:resolve file="ivy.xml" conf="default"/>
+    <ivy:makepom ivyfile="ivy.xml" pomfile="build/${artifactName}-${publicationVersion}.pom"
+                 artifactName="${artifactName}" artifactPackaging="jar" conf="default">
+      <mapping conf="default" scope="compile"/>
+    </ivy:makepom>
+    <ivy:publish resolver="cratectl-publisher" pubrevision="${publicationVersion}"
+                 publishivy="false" overwrite="true" haltonmissing="true"
+                 artifactspattern="build/[artifact]-[revision].[ext]"/>
+  </target>
+  <target name="consume" depends="configure">
+    <ivy:resolve file="ivy.xml" conf="default"/>
+    <ivy:retrieve pattern="proof/[artifact]-[revision].[ext]" conf="default" type="jar"/>
+  </target>
+</project>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: BUSL-1.1 -->
+<ivysettings>
+  <settings defaultResolver="cratectl-reader"/>
+  <credentials host="127.0.0.1" realm="cratectl" username="token" passwd="${registry.password}"/>
+  <caches defaultCacheDir="${ivyCache}"/>
+  <resolvers>
+    <ibiblio name="cratectl-reader" m2compatible="true" usepoms="true" root="${repositoryURL}"/>
+    <url name="cratectl-publisher" m2compatible="true" checksums="sha256,sha1,md5">
+      <artifact pattern="${publicationURL}[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
+    </url>
+  </resolvers>
+</ivysettings>
