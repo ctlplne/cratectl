@@ -1,0 +1,41 @@
+{
+  "observed_at": "2026-11-04T16:43:17.246874+00:00",
+  "source_parent": "7667eb312a3f3e6110ff0ce1c34d958a7bd94cb6",
+  "source_dirty": true,
+  "state": "resolver repair locally checked; all four native SBT replays pending",
+  "first_failure": "evidence/2026-11-04/sbt-7667eb3-build-resolution-failure.json",
+  "source_sha256": {
+    "scripts/sbt_fixture.py": "b806ea568e04a5b8f34ec2be8838bbf3d98d9e20b7d7317e1202a6e4f963b131",
+    "scripts/conformance_sbt.py": "f7f8610bf03c055d6df61d502829f8fd0ea3ceedd3da608ace5c21df4e564700",
+    "scripts/test_sbt_fixture.py": "a6d4800345dd086a850020e36a2e13f8d4a94dbbeab5211ae3509059b5fce35b"
+  },
+  "repair": "Official Maven Central only for launcher and owned metaproject; no registry credentials in metaproject. No global override. Root externalResolvers/csrResolvers equal the exact sole package source, no plugin resolver inheritance. Both native task values checked before every package command; expected denied commands must also show the successful fixed resolver marker. SBT2 task wrappers uncached.",
+  "validation": {
+    "make_lint": "passed with owned process cleanup permission",
+    "log": ".cache/sbt-resolver-repair-lint.log",
+    "log_sha256": "6664d5dc0cc65f73f7f1f31743bb0ee4e5aeba460a3a50225fd912eb2a235a3c",
+    "sbt_fixture_tests": 6,
+    "new_regression": "Both series use separate tool/package resolver configurations and native command prefixes; fake JVM verifies global override false, and a compiler/download/HTTP error without the exact native resolver observation fails closed."
+  },
+  "native_required": {
+    "cases": [
+      "sbt1 amd64",
+      "sbt1 arm64",
+      "sbt2 amd64",
+      "sbt2 arm64"
+    ],
+    "stages": 7,
+    "exact_publisher_reference_http_bindings": 12,
+    "limits": "All original fixture/tenant/review/grant/proxy/group/range/policy/restart/revocation cases preserved. Five-minute tool bootstrap, two-minute commands; no local real SBT/PostgreSQL campaign."
+  },
+  "primary_sources": [
+    "https://github.com/sbt/sbt/blob/v1.13.0/main/src/main/scala/sbt/Defaults.scala",
+    "https://github.com/sbt/sbt/blob/v2.0.11/main/src/main/scala/sbt/Defaults.scala",
+    "https://github.com/sbt/sbt/blob/v1.13.0/main/src/main/scala/sbt/Keys.scala",
+    "https://github.com/sbt/sbt/blob/v2.0.11/main/src/main/scala/sbt/Keys.scala"
+  ],
+  "limits": [
+    "Local stand-ins prove construction/failure handling only; native compilation, publication, resolution and authorization remain unverified until exact-source GitHub replay.",
+    "All450capabilities/41families and all later GOAL stages retained; broad readiness/fullsecurity/packaging false. No primary/customer/sibling or release changes."
+  ]
+}

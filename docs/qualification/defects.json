@@ -1002,6 +1002,15 @@
       "observation": "evidence/2026-11-04/owner-halt-708214f.json",
       "client_replay": "evidence/2026-11-04/jvm-708214f-checkpoint.json",
       "replay": "evidence/2026-11-04/github-708214f-checkpoint.json"
+    },
+    {
+      "id": "DEFECT.0091",
+      "summary": "Global SBT repository override routes build compiler Scala dependencies into the governed package repository",
+      "first_failure": "evidence/2026-11-04/sbt-7667eb3-build-resolution-failure.json",
+      "state": "repair implemented and locally checked; four native replays unverified",
+      "repair": "Separate explicit official launcher/metaproject repositories without registry credentials from the sole cratectl package resolver. Disable global override/plugin resolver inheritance, set both root resolver tasks explicitly and require their native observation before every command, including expected denials. SBT2 resolver tasks are uncached. Preserve all seven stages and twelve byte bindings.",
+      "development": "evidence/2026-11-04/sbt-resolver-repair-development.json",
+      "limits": "Original four native jobs each fail after14checks/one identity stage, before publication. Stand-ins do not qualify native SBT. No scope or readiness change."
     }
   ]
 }

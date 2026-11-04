@@ -10,6 +10,37 @@ GROUP = 'dev.cratectl.sbtproof'
 MAX_SEED_FILES = 20000
 MAX_SEED_BYTES = 768 << 20
 CONFIG_FILES = {'scala-cli.json':b'{}\n','mirror.properties':b'','extra-mirrors.properties':b''}
+TOOL_REPOSITORY = 'https://repo.maven.apache.org/maven2/'
+RESOLVER_MARKER = 'CRATECTL_RESOLVERS_OK'
+
+
+def meta_definition(series):
+    """Only the owned build compiler may resolve official tool dependencies."""
+    if series not in ('sbt1','sbt2'):raise ValueError('Unknown owned SBT series')
+    resolvers='Vector("cratectl-tools" at "' + TOOL_REPOSITORY + '")'
+    effective='externalResolvers.value'
+    if series=='sbt2':
+        resolvers='Def.uncached(' + resolvers + ')'
+        effective='Def.uncached(' + effective + ')'
+    return '\n'.join([
+        '// SPDX-License-Identifier: BUSL-1.1',
+        'externalResolvers := ' + resolvers,
+        'csrResolvers := ' + effective,
+        'includePluginResolvers := false',
+        'credentials := Nil',
+        'csrCacheDirectory := new java.io.File(sys.props("cratectl.cache"))',
+    ]) + '\n'
+
+
+def checked_task(task):
+    return 'verifyResolvers;' + task
+
+
+def require_resolver_observation(output):
+    # Check this even for expected client failures: a compiler/resolver failure
+    # before project loading must never qualify an authorization denial.
+    if RESOLVER_MARKER not in output.splitlines():
+        raise ValueError('Native SBT did not verify its sole package resolver')
 
 
 def configure_runtime(root):
@@ -38,6 +69,11 @@ def build_definition(series, bootstrap=False):
         jar = 'fileConverter.value.toVirtualFile((' + jar + ').toPath)'
         pom = 'fileConverter.value.toVirtualFile((' + pom + ').toPath)'
     repository = '("cratectl" at sys.props("cratectl.repository")).withAllowInsecureProtocol(true)'
+    resolvers = 'Vector(' + repository + ')'
+    effective = 'externalResolvers.value'
+    if virtual:
+        resolvers = 'Def.uncached(' + resolvers + ')'
+        effective = 'Def.uncached(' + effective + ')'
     lines = [
         '// SPDX-License-Identifier: BUSL-1.1',
         '// Owned qualification rules. No resolved class or package script runs.',
@@ -53,13 +89,27 @@ def build_definition(series, bootstrap=False):
         'Compile / packageDoc / publishArtifact := false',
         'publishMavenStyle := true',
         'publishTo := Some(("cratectl-publisher" at sys.props("cratectl.publication")).withAllowInsecureProtocol(true))',
-        'externalResolvers := Vector(' + repository + ')',
+        'externalResolvers := ' + resolvers,
+        'csrResolvers := ' + effective,
+        'includePluginResolvers := false',
         'csrCacheDirectory := new java.io.File(sys.props("cratectl.cache"))',
         'Compile / packageBin / artifactPath := ' + jar,
         'makePom / artifactPath := ' + pom,
     ]
     if not bootstrap:
         lines += [
+            'val verifyResolvers = taskKey[Unit]("Require the sole owned package source before every journey command")',
+            'verifyResolvers := ' + ('Def.uncached {' if virtual else '{'),
+            '  val expected = sys.props("cratectl.repository").stripSuffix("/")',
+            '  val configured = externalResolvers.value',
+            '  val effective = csrResolvers.value',
+            '  def owned(rs: Seq[sbt.librarymanagement.Resolver]): Boolean = rs.size == 1 && rs.forall {',
+            '    case r: sbt.librarymanagement.MavenRepository => r.root.stripSuffix("/") == expected',
+            '    case _ => false',
+            '  }',
+            '  require(owned(configured) && owned(effective), "Unexpected package resolver")',
+            '  println("' + RESOLVER_MARKER + '")',
+            '}',
             'credentials += Credentials(new java.io.File(sys.props("cratectl.credentials")))',
             'libraryDependencies ++= sys.props.get("cratectl.dependencyVersion").filter(_.nonEmpty).map { v =>',
             '  sys.props("cratectl.group") % sys.props("cratectl.dependencyArtifact") % v',
@@ -106,7 +156,7 @@ def invocation(jdk, launcher, root, cache, repositories, environment, properties
             '-Dsbt.color=false','-Dsbt.log.noformat=true','-Dsbt.ci=true','-Dsbt.task.cpus=2',
             '-Dsbt.global.base='+str(root/'global'),'-Dsbt.boot.directory='+str(root/'boot'),
             '-Dsbt.coursier.home='+str(cache),
-            '-Dsbt.ivy.home='+str(cache/'ivy-home'),'-Dsbt.override.build.repos=true',
+            '-Dsbt.ivy.home='+str(cache/'ivy-home'),'-Dsbt.override.build.repos=false',
             '-Dsbt.repository.config='+str(repositories),'-Dcoursier.maven-settings=false',
             '-Dcoursier.parallel-download-count=4',
             '-Dcoursier.config-dir='+str(config),'-Dscala-cli.config='+str(config/'scala-cli.json'),

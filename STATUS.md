@@ -27,8 +27,16 @@ includes the bounded stdin/output/process harness. That separate JVM proof is
 `evidence/2026-11-04/jvm-72b98be-checkpoint.json`; the new baseline ORAS stdin,
 SDK JSON and PostgreSQL/browser campaign is still live and remains separate.
 
-SBT 1.13.0 and 2.0.11 release profiles are implemented but native replay is
-unverified. Four independent Linux x86/ARM jobs use pinned distributions and
+All four first SBT jobs on `7667eb3` fail after 14 checks: the pinned runtimes
+and tool bootstrap succeed, but the global repository override sends the build
+compiler's Scala dependencies to cratectl before the root project loads.
+The original summaries and authenticated diagnostic metadata are retained in
+`evidence/2026-11-04/sbt-7667eb3-build-resolution-failure.json`.
+The repair separates official tool/metaproject sources from the sole cratectl
+package source, disables plugin resolver inheritance and checks both effective
+and configured package resolvers before every native command, including expected
+denials. Local regression/lint passes; repaired native replay remains unverified.
+Four independent Linux x86/ARM jobs use pinned distributions and
 Java, separate tool bootstrap and fresh project caches, owned resource-only
 JARs and seven mandatory stages/twelve exact byte bindings. Scope includes
 scoped writer/reader, review, tenant collisions, proxy/group/range, current

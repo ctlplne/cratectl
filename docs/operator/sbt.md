@@ -1,7 +1,8 @@
 # SBT client qualification
 
 Independent SBT 1.13.0 and 2.0.11 profiles are implemented for actual Linux
-x86 and ARM GitHub runners. Native replay remains unverified. An Ivy or Gradle
+x86 and ARM GitHub runners. All four initial runs failed while loading the build
+definition; the resolver repair awaits native replay. An Ivy or Gradle
 pass does not qualify either SBT version. The [JVM plan](../qualification/jvm-client-plan.json)
 and [runtime pins](../qualification/jvm-clients.json) retain exact versions,
 official distribution digests and unfinished work.
@@ -11,9 +12,19 @@ source, a publication destination and a private credential file:
 
 ```scala
 externalResolvers := Vector("cratectl" at "https://registry.example/r/releases/")
+csrResolvers := externalResolvers.value
+includePluginResolvers := false
 publishTo := Some("cratectl" at "https://registry.example/r/releases/")
 credentials += Credentials(Path.userHome / ".sbt" / "cratectl.credentials")
 ```
+
+This example uses the SBT 1.x task syntax. In SBT 2, wrap the right-hand sides
+of both resolver tasks with `Def.uncached(...)`. Keep SBT's launcher and owned
+`project/plugins.sbt` build compiler on explicit tool repositories, with no
+registry credentials. Do not set a global repository override to the package
+endpoint: the build compiler needs its own Scala libraries before these root
+settings load. The CI journey checks both resolver tasks against the exact
+package URL before every package command, including expected failures.
 
 The credential properties use `realm=cratectl`, the registry's exact `host`,
 `user=token` and a scoped token as `password`. Restrict that file to its owner.

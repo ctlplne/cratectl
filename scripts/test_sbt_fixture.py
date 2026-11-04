@@ -9,14 +9,14 @@ import unittest
 from unittest.mock import patch
 
 from bounded_client import run_owned_client
-from sbt_fixture import build_definition,check_runtime_config,configure_runtime,copy_seed,invocation,seed_manifest
+from sbt_fixture import TOOL_REPOSITORY,RESOLVER_MARKER,build_definition,checked_task,check_runtime_config,configure_runtime,copy_seed,invocation,meta_definition,require_resolver_observation,seed_manifest
 
 
 class SbtFixture(unittest.TestCase):
     def test_version_specific_file_apis_and_uncached_copy_preserve_real_graph(self):
         one=build_definition('sbt1');two=build_definition('sbt2')
         for build in [one,two]:
-            self.assertIn('externalResolvers := Vector(',build)
+            self.assertIn('Vector(("cratectl" at',build)
             self.assertIn('sys.props("cratectl.publication")',build)
             self.assertIn('sys.props("cratectl.repository")',build)
             self.assertIn('csrCacheDirectory := new java.io.File(sys.props("cratectl.cache"))',build)
@@ -49,7 +49,7 @@ class SbtFixture(unittest.TestCase):
             self.assertEqual(data['env'],{'JAVA_HOME':str(jdk),'COURSIER_CACHE':str(root/'cache')})
             self.assertEqual(data['argv'][-3:],['-jar',str(root/'sbt-launch.jar'),'show sbtVersion;exit'])
             self.assertIn('-Dsbt.server.autostart=false',data['argv'])
-            self.assertIn('-Dsbt.override.build.repos=true',data['argv'])
+            self.assertIn('-Dsbt.override.build.repos=false',data['argv'])
             self.assertIn('-Dsbt.ivy.home='+str(root/'cache/ivy-home'),data['argv'])
             self.assertIn('-Dcoursier.maven-settings=false',data['argv'])
             self.assertIn('-Dscala-cli.config='+str(root/'config/scala-cli.json'),data['argv'])
@@ -57,6 +57,30 @@ class SbtFixture(unittest.TestCase):
             self.assertIn('-Dsbt.coursier.home='+str(root/'cache'),data['argv'])
             self.assertNotIn('COURSIER_CACHE_SERVER',environment)
             self.assertNotIn('COURSIER_CHECKSUMS',environment)
+
+    def test_build_compiler_and_package_resolution_are_separate_even_on_denial(self):
+        for series in ['sbt1','sbt2']:
+            meta=meta_definition(series)
+            self.assertIn(TOOL_REPOSITORY,meta)
+            self.assertIn('credentials := Nil',meta)
+            self.assertNotIn('cratectl.credentials',meta)
+            self.assertNotIn('cratectl.repository',meta)
+            build=build_definition(series)
+            self.assertNotIn(TOOL_REPOSITORY,build)
+            effective='Def.uncached(externalResolvers.value)' if series=='sbt2' else 'externalResolvers.value'
+            self.assertIn('csrResolvers := '+effective,build)
+            self.assertIn('csrResolvers := '+effective,meta)
+            self.assertIn('includePluginResolvers := false',build)
+            self.assertIn('owned(configured) && owned(effective)',build)
+            self.assertIn('rs.size == 1',build)
+            self.assertIn('case _ => false',build)
+            root=Path('/owned')
+            args,_=invocation(root/'jdk',root/'launcher',root,root/'cache',root/'repositories',{}, {},checked_task('publish'),series)
+            if series=='sbt1':self.assertEqual(args[-3:],['verifyResolvers','publish','exit'])
+            else:self.assertEqual(args[-1],'verifyResolvers;publish;exit')
+        require_resolver_observation('[info] loading project\n'+RESOLVER_MARKER+'\n[error] forbidden')
+        for output in ['[error] compilation failed','[error] Error downloading Scala\n403','[info] '+RESOLVER_MARKER,'prefix'+RESOLVER_MARKER]:
+            with self.assertRaises(ValueError):require_resolver_observation(output)
 
     def test_seed_rejects_preseeded_fixture_symlinks_and_limits(self):
         with tempfile.TemporaryDirectory(prefix='cratectl-sbt-seed-') as temporary:

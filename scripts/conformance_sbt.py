@@ -11,7 +11,7 @@ import zipfile
 
 from bounded_client import run_owned_client
 from ci.sbt_evidence import FIXTURES
-from sbt_fixture import GROUP,build_definition,check_runtime_config,configure_runtime,copy_seed,invocation,seed_manifest
+from sbt_fixture import GROUP,TOOL_REPOSITORY,build_definition,checked_task,check_runtime_config,configure_runtime,copy_seed,invocation,meta_definition,require_resolver_observation,seed_manifest
 
 GROUP_PATH=GROUP.replace('.','/')
 
@@ -47,6 +47,7 @@ def hosted(h,series):
         directory=work/label;directory.mkdir(mode=0o700)
         (directory/'project').mkdir(mode=0o700)
         (directory/'project/build.properties').write_text('sbt.version='+pin['version']+'\n')
+        (directory/'project/plugins.sbt').write_text(meta_definition(series))
         (directory/'build.sbt').write_text(build_definition(series,bootstrap))
         (directory/'publication').mkdir(mode=0o700)
         resources=directory/'resources';resources.mkdir(mode=0o700);(resources/'owned.txt').write_text(label)
@@ -56,8 +57,10 @@ def hosted(h,series):
         cache=seed if bootstrap else directory/('cache-'+str(len(h.commands)))
         if not bootstrap: copy_seed(seed,cache,seed_identity)
         repositories=directory/('repositories-'+str(len(h.commands)))
-        repository='https://repo.maven.apache.org/maven2/' if bootstrap else h.BASE+'/r/'+repo+'/'
-        repositories.write_text('[repositories]\ncratectl: '+repository+'\n');repositories.chmod(0o600)
+        repository=TOOL_REPOSITORY if bootstrap else h.BASE+'/r/'+repo+'/'
+        # Launcher and owned build compiler always use tool coordinates. Root
+        # project dependencies have their own explicit, runtime-checked source.
+        repositories.write_text('[repositories]\ncratectl-tools: '+TOOL_REPOSITORY+'\n');repositories.chmod(0o600)
         properties={'cratectl.group':'dev.cratectl.toolbootstrap' if bootstrap else GROUP,'cratectl.artifact':artifact,
                     'cratectl.version':version,'cratectl.repository':repository,'cratectl.cache':cache,
                     'cratectl.publication':repository if bootstrap else h.BASE+'/r/'+(publication_repo or repo)+'/'}
@@ -69,7 +72,7 @@ def hosted(h,series):
             credential.write_text('realm=cratectl\nhost=127.0.0.1\nuser=token\npassword='+value+'\n');credential.chmod(0o600)
             properties['cratectl.credentials']=credential
             if dependency:properties.update({'cratectl.dependencyArtifact':dependency[0],'cratectl.dependencyVersion':dependency[1]})
-        argv,environment=invocation(jdk,launcher,runtime,cache,repositories,h.env,properties,task,series)
+        argv,environment=invocation(jdk,launcher,runtime,cache,repositories,h.env,properties,task if bootstrap else checked_task(task),series)
         try:
             code,output=run_owned_client(argv,directory,environment,timeout=300 if bootstrap else 120)
         finally:
@@ -83,6 +86,7 @@ def hosted(h,series):
             patterns={'http_401':r'\b401\b','http_403':r'\b403\b','http_404':r'\b404\b','fixture_compilation':r'compilation failed|not found:|type mismatch|Not a valid',
                       'dependency_resolution':r'unresolved|not found|Error downloading|ResolveException','publication':r'publish|PUT','checksum':r'checksum','jvm':r'Unsupported class|Virtual Machine|OutOfMemory'}
             contract['diagnostics']=sorted(k for k,v in patterns.items() if re.search(v,output,re.I))
+        if not bootstrap:require_resolver_observation(output)
         check('stock '+series+(' rejects ' if fail else ' completes ')+directory.name,(code!=0) if fail else (code==0))
         return output
 

@@ -32,13 +32,22 @@ including the bounded process/input/output helper; full baseline replay remains
 separate. Original Ant/checksum failures and each exact source remain retained.
 
 Four new SBT jobs cover 1.13.0 and 2.0.11 on both native Linux architectures.
-They are implemented but native replay is unverified. Stock clients publish
+All four first runs on `7667eb3` fail during build loading after successful
+tool bootstrap; retain the [original failures](../../evidence/2026-11-04/sbt-7667eb3-build-resolution-failure.json).
+The repaired resolver separation is locally checked and awaits native replay.
+Stock clients publish
 owned resource-only JARs/POMs; seven mandatory stages and twelve independent
 publisher/reference/HTTP identities cover review, grants, tenants, dependency
 bytes, proxy/group/range, current policy, restart and revocation. Read and write
 URLs differ explicitly. Fresh denied versions must leave no partial reference.
 Tool bootstrap is separate from fresh project resolution, with bounded cache
-inventories that reject fixture coordinates. See the
+inventories that reject fixture coordinates. Launcher/metaproject dependencies
+use the explicit official tool source; the root package project must report
+exactly its sole cratectl resolver through both `externalResolvers` and
+`csrResolvers`. A global repository override must not route build compiler
+dependencies into the package repository. Require the native resolver observation
+even before an expected denial, so a build-loading error cannot count as a
+permission pass. See the
 [development record](../../evidence/2026-11-04/sbt-client-development.json).
 Snapshots, richer metadata, interruptions, lifecycle, migration, scale, SBT and
 all other GOAL combinations beyond these named cases remain open.
