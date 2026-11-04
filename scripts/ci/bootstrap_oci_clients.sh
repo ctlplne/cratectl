@@ -16,7 +16,7 @@ case "$architecture" in
   *) echo 'OCI client qualification requires native Linux amd64 or arm64' >&2; exit 1 ;;
 esac
 archive="helm-v4.3.1-linux-$architecture.tar.gz"
-curl --fail --location --silent --show-error --output ".cache/$archive" "https://get.helm.sh/$archive"
+python3 scripts/ci/fetch_archive.py --archive "$archive" --url "https://get.helm.sh/$archive" --sha256 "$helm_sha" --max-bytes 67108864
 printf '%s  %s\n' "$helm_sha" ".cache/$archive" | sha256sum --check --status
 tar -xzf ".cache/$archive" -C .cache/bin --strip-components=1 "linux-$architecture/helm"
 chmod 755 .cache/bin/helm

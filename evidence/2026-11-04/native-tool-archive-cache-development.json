@@ -1,0 +1,123 @@
+{
+  "source_parent": "0cff4b880b1a3c1f59127854143c5e565cdbdfc7",
+  "source_dirty": true,
+  "observed_at": "2026-11-04T21:09:07.462545+00:00",
+  "state": "implemented but unverified; bounded native public-tool archive fetch and GitHub cache",
+  "source_files": [
+    {
+      "path": "Makefile",
+      "sha256": "12a44cc8d2b1b51114d0b19efd350ae349cee9e03c16f7a32308bd45a752cdc8"
+    },
+    {
+      "path": "scripts/ci/fetch_archive.py",
+      "sha256": "64d70de80c7ff14870a28d41fb8b2cfb3e05f36315775a11c1851fd321591d62"
+    },
+    {
+      "path": "scripts/ci/test_fetch_archive.py",
+      "sha256": "c73bae1ea12833c12b3d9941117e37a1f5eda705eb1346eed368817fbc7f21fd"
+    },
+    {
+      "path": "scripts/ci/bootstrap_linux.sh",
+      "sha256": "f6c59693fe5f9dd2f341855db5438be7924727f45186e610db99a0232b5a9159"
+    },
+    {
+      "path": "scripts/ci/bootstrap_oci_clients.sh",
+      "sha256": "0e09680f3581bdde96afd124d9891e89abdc744bd3996bb8395d44ef3a271383"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "f892f92a5079391f04946a8db26995c5a62080fdf9fbc210ab79ae2666179b74"
+    },
+    {
+      "path": ".github/workflows/oci-clients.yml",
+      "sha256": "5eaf91b90b0e237b40612d080f25e1f3e6a7964c6747b5d1652b1c24a262862a"
+    },
+    {
+      "path": ".github/workflows/upgrade-qualification.yml",
+      "sha256": "e5d5265e094baa009eca40cb7d1e727eb8380710f9670ded84ed1e1c4a1de19e"
+    }
+  ],
+  "discovery": {
+    "method": "Source inspection, not an observed native transfer failure. ORAS in bootstrap_linux and Helm in bootstrap_oci_clients had no explicit time/size limits on their curl download invocations. Existing immutable reviewed pins and subsequent checksum verification were present and remain unchanged.",
+    "native_first_failure": null
+  },
+  "fetch_contract": {
+    "sources": "Only exact credential-free HTTPS ORAS release/GitHub and get.helm.sh versioned native Linux archive paths; URLbasename must match one bounded filename. No query/fragment/userinfo/port or unknown host.",
+    "pins": "Original ORAS1.3.6 and Helm4.3.1 SHA256 values/extraction/version checks stay unchanged. Cachehit and completeddownload must match pin; corruptcache stays intact and fails without a new request.",
+    "archive_bytes": {
+      "oras": 33554432,
+      "helm": 67108864
+    },
+    "time_output": "15second connect/180second curl transfer/195second outer owned-process deadline plus bounded cleanup; five redirects, TLS1.2minimum/HTTPS redirects only,64KiB processoutput/4KiB capturedtail.",
+    "kernel_bound": "Child Bash FSIZEcap independently stops oversized writes, including missingContentLength; core dumps disabled. Remove ambient BASH_ENV/ENV/POSIX option injection; ignore curlrc. Parent limits remain unchanged.",
+    "filesystem": "Only regular nonlinked files; NONBLOCK/NOFOLLOW rejects FIFOs/links. Stream bounded SHA256 inspection, stable fileidentity, sync bytes then atomically link new filename andsync directory. Clean only owned unique partial; existing cache never overwritten.",
+    "safe_failure": "Expose fixed exit code and optional HTTP4xx/5xx scalar only. Raw command output is not copied to the public error."
+  },
+  "github_cache": {
+    "action": "actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9",
+    "tag_observed": "v6",
+    "action_yml_blob": "2606455d4cedc2a06e05c1bf7feb8cc41aaf28f9",
+    "runtime": "Node24; actual pinnedaction.yml matched the v6 tag and post-if success contract.",
+    "placement": "Existing mainnative2 and upgrades2 cache the exact ORASarchive; existing OCI2 cache exact Helmarchive. One public compressed archive per job; no whole .cache/.private, extracted binaries, package/project caches, credentials or database files.",
+    "identity": "Separate OS/architecture and installer+fetch-source-hash keys; no prefix restore or crossOS sharing. All original bootstrap/checksum/qualification commands run even on cachehit.",
+    "bounds": "Cache step5minutes/segment2minutes, original overall job/client budgets unchanged. Post-save only on successfuljob, as declared by the immutable action.",
+    "native_state": "No actual GitHub cachemiss/save/hit outcome or new boundedinstaller nativepass accepted yet. Require real source/job/byte evidence before making these claims."
+  },
+  "local_validation": {
+    "standins": "10testmethods pass: both approvedsources/flags/privatefilepublication, verifiedcachehit withoutnetwork, corruptcache preservation, transfer/hash failure cleanup, realchildEFBIG bound withparentlimit unchanged/no core, shortened realowneddeadline cleanup, linkedcache/leaf/FIFO rejection, invalidURLs/pins/budgets and nonhostedguard. HTTP22/503 exposes only fixed scalars; synthetic privateoutput excluded. No network or downloadedtool execution.",
+    "lint": "Fullmake lintpasses including existing Go vet/architecture/API/console and every Python suite; newtests registered.",
+    "shell": "Both changed bootstrap scripts pass bash-n. Only each download invocation differs; originalpin/checksum/extraction/database/client commands identical.",
+    "workflow": "Semantic YAML comparison proves only3bounded singlearchive cache steps added; matrices/originalconditions/steps/permissions/concurrency/commands/client-job budgets retained.",
+    "logs": [
+      {
+        "path": ".cache/native-archive-fetch-unit.log",
+        "sha256": "25b13a457b8fd4866eff86f47a4e13a8aae2cb0913ca0d19c8530877b847ea89"
+      },
+      {
+        "path": ".cache/native-archive-fetch-lint.log",
+        "sha256": "af303207128a9342f719a82189f5fc722eb0ce7fe2d4613d6238124078514ffe"
+      },
+      {
+        "path": ".cache/native-archive-workflow-semantics.log",
+        "sha256": "18708a7d620ed5280c734747238b52cb7405011fd655e59d95a14d2bc08cf98c"
+      },
+      {
+        "path": ".cache/native-archive-bootstrap-preservation.log",
+        "sha256": "0b51ff932cc7e330753fad6f4470460db91dd8cb107f9f3b61079eb202467d9b"
+      },
+      {
+        "path": ".cache/native-archive-bash-ulimit.txt",
+        "sha256": "77fbe306dc225d492503bb5ba2e3de203f77df13f660eaa187d9b5dce77096ba"
+      }
+    ],
+    "first_draft_test_failure": {
+      "path": ".cache/native-archive-fetch-unit-first-failure.log",
+      "sha256": "b87a5713d3c4100a5130593db2a0d6592b1d26c684bff9eff500abb6cd0c525f",
+      "scope": "Local test-order error attempted to unlink an archive before the linked-cache fixture was replaced with a realdirectory. Corrected fixture order; all10tests now pass. No helper limit/pin/check removed."
+    }
+  },
+  "sources": [
+    "https://curl.se/docs/manpage.html",
+    "https://github.com/actions/cache/blob/55cc8345863c7cc4c66a329aec7e433d2d1c52a9/action.yml",
+    "https://github.com/actions/cache/blob/v6/README.md"
+  ],
+  "expected_jobs": {
+    "main": 9,
+    "jvm": 8,
+    "oci": 2,
+    "upgrades": 2,
+    "total": 21,
+    "limits": "Enumerate actual full-SHA runs afterpush. No library/focused paths selected; no duplicate dispatch or startedmain cancellation."
+  },
+  "limits": [
+    "Developmentstandins/realchildkernel checks and static source/YAML evidence only; fresh nativeORAS/Helm installation and GitHubcache integration need actual Linux proof. No cachehit, downloadavailability or speedup claim.",
+    "SBTsnapshots-v2 at0cff remains unverified whose existing actualjobs were last observed queued; do not convert unassigned jobs to passes or infer queuecause. New source retains the same required4SBTcases.",
+    "All450capabilities/41families/laterstages remain required; broadreadiness/fullsecurity/packaging false. No primary/sibling/customer/release publication changes."
+  ],
+  "queued_snapshot": {
+    "candidate": "0cff4b880b1a3c1f59127854143c5e565cdbdfc7",
+    "run_id": 41906148830,
+    "observed_at": "2026-11-04T20:51:35.377626+00:00",
+    "state": "All8JVMjobs lastobservedqueued, no runner/step. This is not a testpass or a queuecause diagnosis."
+  }
+}

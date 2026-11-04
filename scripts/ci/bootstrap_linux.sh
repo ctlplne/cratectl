@@ -37,7 +37,7 @@ if test "$client_set" = all; then
     *) printf 'Unsupported CI architecture: %s\n' "$architecture" >&2; exit 1 ;;
   esac
   oras_archive="oras_1.3.6_linux_${architecture}.tar.gz"
-  curl --fail --location --silent --show-error --output ".cache/$oras_archive" "https://github.com/oras-project/oras/releases/download/v1.3.6/$oras_archive"
+  python3 scripts/ci/fetch_archive.py --archive "$oras_archive" --url "https://github.com/oras-project/oras/releases/download/v1.3.6/$oras_archive" --sha256 "$oras_sha" --max-bytes 33554432
   printf '%s  %s\n' "$oras_sha" ".cache/$oras_archive" | sha256sum --check --status
   tar -xzf ".cache/$oras_archive" -C .cache/bin oras
   chmod 755 .cache/bin/oras

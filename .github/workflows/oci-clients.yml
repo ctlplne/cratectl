@@ -60,6 +60,14 @@ jobs:
         env:
           CRATECTL_CI_POSTGRES_CONTAINER_ID: ${{ job.services['cratectl-postgres'].id }}
         run: bash scripts/ci/bootstrap_linux.sh
+      - name: Cache pinned public Helm archive
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        timeout-minutes: 5
+        env:
+          SEGMENT_DOWNLOAD_TIMEOUT_MINS: '2'
+        with:
+          path: .cache/helm-v4.3.1-linux-${{ matrix.arch }}.tar.gz
+          key: cratectl-tool-helm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/ci/bootstrap_oci_clients.sh', 'scripts/ci/fetch_archive.py') }}
       - name: Verify bundled Podman and install checked Helm
         run: bash scripts/ci/bootstrap_oci_clients.sh
       - name: Publish and consume with native Docker, Podman and Helm

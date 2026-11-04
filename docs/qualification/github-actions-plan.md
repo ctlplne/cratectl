@@ -66,6 +66,29 @@ remain bounded and have no plaintext fallback. The baseline failure collector
 currently covers OCI/extendedJVM/browser profiles, so c030baseline traceback
 identity came from privately retained job logs, with only fixed markers public.
 
+The next setup revision bounds the two remaining ORAS/Helm curl invocations
+and caches their exact public compressed archives on GitHub. Original versions,
+pins, checksum/extraction and client/database commands remain. Every existing
+or restored archive must pass bounded regular-file/SHA256 validation; a corrupt
+cache fails intact. Child kernel file caps are32/64MiB, curl bounds15seconds
+connect/180total/five HTTPS redirects, and the common owned-process deadline
+is195seconds with64KiB output. Ten local stand-in/real-kernel/deadline/privacy
+tests and full lint pass. See the [development record](../../evidence/2026-11-04/native-tool-archive-cache-development.json).
+
+Three immutable-action cache steps cover six existing jobs: main/upgrades ORAS
+and OCI Helm, each on both native architectures. Each stores one exact public
+archive, with OS/architecture/installer-source keys and no prefix restore. All
+normal verification/client commands execute on hits. The cache step has a
+five-minute budget and two-minute segment bound; original job/client budgets,
+permissions, cases and concurrency remain. The reviewed
+[cache action](https://github.com/actions/cache/blob/55cc8345863c7cc4c66a329aec7e433d2d1c52a9/action.yml)
+saves only after job success. Whole ignored directories, private credentials,
+databases, extracted tools and consumer caches are outside these paths.
+Native miss/save/hit and boundedinstallation still require actual evidence;
+no timing benefit is inferred. Existing0cffSBTjobs were last observed unassigned and are
+not passes. The new revision selects21expected jobs; enumerate actual full SHA.
+Other JVM/tool-cache opportunities remain separate required placement reviews.
+
 The following campaign notes are historical.
 
 Owner resumed the full goal on 2026-11-04. The latest fully accepted whole

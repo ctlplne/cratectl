@@ -56,6 +56,16 @@ handles remain in durable records; no blind restart or duplicate dispatch.
 All broader formats, faults, source/grant races, lifecycle/GC, migration,
 production platforms, scale and later goal stages remain required.
 
+The next CI revision bounds ORAS/Helm setup and caches their pinned public
+archives on GitHub. It rechecks every restored archive, enforces 32/64MiB child
+file limits, 15/180/195-second connect/transfer/process bounds and atomic verified
+publication. Ten local stand-in/kernel/deadline/privacy tests and full lint pass.
+Three cache steps use an immutable reviewed action commit, OS/architecture/source
+keys and explicit transfer budgets. Every original qualification command remains.
+Native cold-fetch/cache integration is unverified; no cache-hit or speedup claim.
+See `evidence/2026-11-04/native-tool-archive-cache-development.json`.
+Existing `0cff4b8` SBT jobs were last observed unassigned and never count as passing.
+
 No primary, selected binary, data, credential, sibling or customer change.
 Earlier notes below are historical and do not override this current state.
 

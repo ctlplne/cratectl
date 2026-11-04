@@ -72,6 +72,14 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
+      - name: Cache pinned public ORAS archive
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        timeout-minutes: 5
+        env:
+          SEGMENT_DOWNLOAD_TIMEOUT_MINS: '2'
+        with:
+          path: .cache/oras_1.3.6_linux_${{ matrix.arch }}.tar.gz
+          key: cratectl-tool-oras-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/ci/bootstrap_linux.sh', 'scripts/ci/fetch_archive.py') }}
       - name: Prepare disposable native tools and database
         env:
           CRATECTL_CI_POSTGRES_CONTAINER_ID: ${{ job.services['cratectl-postgres'].id }}
