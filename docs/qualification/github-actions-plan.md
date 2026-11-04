@@ -46,6 +46,17 @@ Ten owned-process and six CMS/collection regressions pass locally. The deadline,
 all15workflows and zero retries remain unchanged; native observation is still
 required. See the [development record](../../evidence/2026-11-04/browser-timeout-diagnostics-development.json).
 
+A definite new snapshot browser-fixture locator mismatch is now independently
+reproduced: a nonempty repository search shows the heading action named
+`＋ Create repository`, while the test exactly matched the absent empty-state
+action. Native ARM Chromium static DOM checks old0/corrected1matches. Only that
+heading locator changes; the dialog submit, assertions and budgets stay intact.
+The [repair](../../evidence/2026-11-04/maven-snapshot-locator-repair-development.json)
+still requires actual x86/full-application replay. This test-only push selects
+main9; enumerate actual runs, and retain existing1e9/0efa workflow handles for
+their separate source-bound qualification. No new JVM/OCI/upgrade/focused pass
+is implied by a path filter that does not select those workflows.
+
 The following campaign notes predate this9b00f7e observation.
 
 Owner resumed the full goal on 2026-11-04. The latest fully accepted whole

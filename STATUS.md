@@ -55,6 +55,14 @@ these diagnostics is pending. Existing1e9fdd0run handles remain active; do not
 restart or substitute them. See
 `evidence/2026-11-04/browser-timeout-diagnostics-development.json`.
 
+A definite new snapshot-fixture locator bug is repaired: after a nonempty proxy
+search, the available heading button is ＋ Create repository. The test used an
+exact Create repository match for the absent empty-state action. Native ARM
+Chromium DOM stand-in reproduces zero old/one corrected match. Only the heading
+click changes; modal submit and every assertion remain. Full x86 replay is still
+required. See
+`evidence/2026-11-04/maven-snapshot-locator-repair-development.json`.
+
 No primary, selected binary, data, credential, sibling or customer change.
 Earlier notes below are historical and do not override this current state.
 
