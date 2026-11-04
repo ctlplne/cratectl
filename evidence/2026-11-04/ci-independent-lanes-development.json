@@ -1,0 +1,53 @@
+{
+  "observed_at": "2026-11-04T17:46:41.959123+00:00",
+  "source_parent": "518d489b17ac51839ce43925613b5729e93a033b",
+  "source_dirty": true,
+  "state": "Independent job/platform concurrency implemented and YAML structure checked; native queue observation pending.",
+  "original_workflow_sha256": "24844925dd6e0c62b6170083ab6fd6d43ce32f7db35bef8c393aa3a4ffbc0979",
+  "new_workflow_sha256": "ce2a3ced9f8a53cf7553043a09c98ea3a8d99633cfea7ce0ee1ad95269df213c",
+  "observed_workflows": [
+    {
+      "conclusion": null,
+      "created_at": "2026-11-04T16:44:02Z",
+      "head_sha": "30229dc6ec4c67b59df2ea6a12801e0b603a4dda",
+      "id": 41870382632,
+      "run_started_at": "2026-11-04T16:44:02Z",
+      "status": "queued",
+      "updated_at": "2026-11-04T16:44:02Z"
+    },
+    {
+      "conclusion": null,
+      "created_at": "2026-11-04T16:58:38Z",
+      "head_sha": "d4056d92c5b23ed414109bff36c2d0e237a9b33b",
+      "id": 41872907790,
+      "run_started_at": "2026-11-04T16:58:38Z",
+      "status": "queued",
+      "updated_at": "2026-11-04T17:34:57Z"
+    }
+  ],
+  "change": "Remove the whole CI workflow concurrency group. Give source, fuzz and native PostgreSQL jobs separate per-ref/per-architecture groups, and security its own per-ref group. Running main jobs remain uncanceled; PR jobs can supersede the same lane. A macOS job no longer holds the Linux classes behind a whole-workflow mutex.",
+  "local_validation": {
+    "yaml": "Ruby YAML parsed original and current files; removed concurrency-only fields and asserted all remaining data exactly equal.",
+    "preserved": "Every trigger, permission, job, matrix case, step, action, command and timeout remains unchanged.",
+    "job_count": 9,
+    "groups": [
+      "cratectl-ci-source-REF-ARCH",
+      "cratectl-ci-fuzz-REF-ARCH",
+      "cratectl-ci-security-REF",
+      "cratectl-ci-native-REF-ARCH"
+    ],
+    "main_cancel_in_progress": false,
+    "pending_behavior": "GitHub default single pending job per group remains; a newer pending job can replace an older pending job in the same lane. Such cancellation is not a pass."
+  },
+  "inference": "The legacy whole-workflow group couples unrelated platform queues. This structural change removes that coupling; queued run observations alone do not prove every source of runner delay.",
+  "native_required": "Inspect actual new run/job identities and runner assignment. Retain older30229dc/d4056d9 handles; do not manually restart/cancel them. Linux job progress with old macOS work still queued demonstrates the intended independence, without qualifying macOS itself.",
+  "primary_sources": [
+    "https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency",
+    "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax"
+  ],
+  "limits": [
+    "Runner capacity remains independent. No guarantee of ordering, immediate acquisition or absent cancellation. No skipped/unexecuted job is a pass.",
+    "No job, architecture, fixture, timeout or mandatory check removed. Expected product qualification cohort remains24 jobs on this push; enumerate actual full-SHA runs.",
+    "No publication/release/customer/primary/sibling changes. Full450capability/41family goal and all later stages remain active."
+  ]
+}

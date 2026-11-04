@@ -41,6 +41,11 @@ hashes are observed before replacement. Earlier metadata-v2 and SBT release
 passes do not qualify this new scope. Warm-cache/concurrent/fault/lifecycle,
 remaining JVM clients and every other goal requirement remain open.
 
+CI scheduling now uses independent job/platform concurrency groups, preserving
+all nine main-workflow cases and their commands/budgets. Local YAML comparison
+passes; native queue observation remains pending. Original run handles stay
+retained. See `evidence/2026-11-04/ci-independent-lanes-development.json`.
+
 No primary, selected binary, retained data, credential, sibling or customer
 change. The prior halt is historical and superseded by the owner's resume.
 Earlier notes below are historical and do not override this current state.

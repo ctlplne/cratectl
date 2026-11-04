@@ -83,6 +83,16 @@ read-only tokens, checkout without persisted credentials, fail-fast=false for
 independent matrix results, and no continue-on-error. No publication step is
 implicitly authorized by this plan.
 
+CI now gives source, fuzz and PostgreSQL jobs independent per-architecture
+concurrency groups, with a separate security group. A queued macOS lane cannot
+hold unrelated Linux lanes behind one workflow-wide mutex. Running main jobs
+remain preserved; PR work can supersede the same lane. GitHub's default single
+pending slot still applies within each lane, so retain any superseded pending
+job as unexecuted. Every job, matrix case, command and timeout is unchanged.
+Native scheduling observation remains pending; runner capacity is separate.
+See the [development record](../../evidence/2026-11-04/ci-independent-lanes-development.json)
+and GitHub's [job concurrency contract](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency).
+
 ## Resource and evidence contract
 
 - Use actual native hosts for OS/architecture claims. This ARM Mac runs source

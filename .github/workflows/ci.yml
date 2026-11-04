@@ -9,13 +9,12 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  # Preserve started qualification evidence on main; supersede PR work.
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-
 jobs:
   source:
+    concurrency:
+      group: cratectl-ci-source-${{ github.ref }}-${{ matrix.arch }}
+      # Preserve running main jobs; queue independently by job and platform.
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     timeout-minutes: 30
     name: Source and unit (${{ matrix.arch }})
     runs-on: ${{ matrix.runner }}
@@ -65,6 +64,10 @@ jobs:
         run: npm audit --prefix web --audit-level=high --ignore-scripts
 
   fuzz:
+    concurrency:
+      group: cratectl-ci-fuzz-${{ github.ref }}-${{ matrix.arch }}
+      # Preserve running main jobs; queue independently by job and platform.
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     name: Bounded native Go fuzz (${{ matrix.arch }})
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 25
@@ -89,6 +92,10 @@ jobs:
         run: python3 scripts/ci/fuzz_go.py
 
   security:
+    concurrency:
+      group: cratectl-ci-security-${{ github.ref }}
+      # Preserve running main jobs; queue independently by job and platform.
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     timeout-minutes: 30
     name: Scoped source, binary and history scans
     runs-on: ubuntu-24.04
@@ -131,6 +138,10 @@ jobs:
           retention-days: 30
 
   native:
+    concurrency:
+      group: cratectl-ci-native-${{ github.ref }}-${{ matrix.arch }}
+      # Preserve running main jobs; queue independently by job and platform.
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     name: Real PostgreSQL and stock clients (${{ matrix.arch }})
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 120
