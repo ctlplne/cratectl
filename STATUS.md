@@ -101,6 +101,13 @@ All450capabilities/41families and later stages remain committed. Go proxy,
 legacy/alias/warm-cache/lifecycle/fault/migration/scale/platform/browser and all
 other unfinished requirements remain open. Broad readiness stays false.
 
+Go upstream-representation validators now bind bounded optional-time/future-field
+info metadata to exact coordinates and require independent mod bytes to equal
+the validated ZIP root. Unit/race/vet and a short local ARM fuzz smoke pass.
+They are not wired to proxy routes: atomic retrieval/cache/authority/policy and
+both native client journeys remain required. See
+`evidence/2026-11-04/go-upstream-representations-development.json`.
+
 Main CI now has bounded runtime-input selection, implemented but unverified.
 Documentation/evidence-only commits retain independent scoped source/binary/
 history/secret scans. Runtime/pin/instruction/unknown changes and manual dispatch

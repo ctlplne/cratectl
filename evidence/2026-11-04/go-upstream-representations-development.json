@@ -1,0 +1,60 @@
+{
+  "source_parent": "fdff445ab5f5878988b5c9f0870cb36ac2b1b899",
+  "source_dirty": true,
+  "observed_at": "2026-11-04T23:30:32.230286+00:00",
+  "state": "upstream representation validation foundation only; proxy retrieval remains unimplemented",
+  "files": [
+    {
+      "path": "internal/gomodule/representations.go",
+      "sha256": "34d61cc8aacc4ce6cce6d26a04dc8fdf15efd6928e47c09608618250112b8fb4"
+    },
+    {
+      "path": "internal/gomodule/representations_test.go",
+      "sha256": "156f57ed47e08ed0b81b029c9466038ae7d4300c14f9f0b4e8ba7450827c1987"
+    }
+  ],
+  "mechanism": [
+    "Parse bounded upstream .info metadata against an already canonical exact coordinate, retaining optional Time and opaque future fields. Reject duplicate/root case aliases, invalid UTF8/JSON/trailing values, substituted versions, invalid/nonzero RFC3339 times and inconsistent pseudo-version instants.64KiB/64root-field bounds apply; no credentials/source authority or commands come from metadata.",
+    "Validate the ZIP using the existing portable bounded inspector, then require its exact root go.mod bytes to equal the independently supplied .mod response. No whitespace/newline rewriting, ZIP extraction, package execution or generated time. The caller must retain original .info bytes instead of reserializing parsed values."
+  ],
+  "local_validation": [
+    "Module unit/race/vet and architecture checks pass. Cases include exact/overflow field and byte budgets, future fields/optional time, canonical major/pseudo versions, duplicate/escaped/case keys, truncation/invalidUTF8, exact mod mismatch (including newline normalization), corrupt ZIP and cancellation.",
+    "New FuzzUpstreamVersionInfo passes a five-second owned-input smoke on native local ARM:77401executions after4seed entries,128new interesting entries. This is not a long security/parser campaign or native registry proof. Existing module archive/request tests remain.",
+    "Existing GitHub fuzz inventory automatically includes the new target on all3native source hosts after a source push; x86 execution remains on GitHub."
+  ],
+  "logs": [
+    {
+      "path": ".cache/go-upstream-representations-final-unit.log",
+      "sha256": "0f1d4b30284b7e75cc995fdb764cfbddb77e16dbe183e1de11ff2d72035cb868"
+    },
+    {
+      "path": ".cache/go-upstream-representations-final-race.log",
+      "sha256": "97c7ea142baea9a51d986c41812f3c1b0e31428463639e67fff56f7e8a0cedd1"
+    },
+    {
+      "path": ".cache/go-upstream-representations-final-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/go-upstream-representations-fuzz.log",
+      "sha256": "d5f522f895c695085bbb09c1b12ea7e4039c0183215ad5a63b7c0652ba61242e"
+    },
+    {
+      "path": ".cache/go-upstream-representations-architecture.log",
+      "sha256": "304484513d28c8fcf6a7c9cd5fec70d681f129835aa641ca81348b1cf72e66a8"
+    }
+  ],
+  "reference": "https://go.dev/ref/mod#goproxy-protocol",
+  "reference_observation": "Official protocol requires exact canonical Version when requested canonically, permits optional RFC3339 Time and future fields, requires original .mod/immutable .mod and .zip responses. Module ZIP/root go.mod constraints are separate from legacy synthesis.",
+  "remaining_proxy_work": [
+    "Actual configured upstream retrieval, bounded concurrent lease ownership and renewal, staging/syncing all3objects and one reference/integrity/event/outbox transaction, source/configuration/grant fences, immutable bytes and full-outbox rollback.",
+    "Current whole-bundle policy/freshness/negative/stale/conditional/revalidation/partial-failure/group precedence and complete bounded discovery. No bare generic proxy path or partial .mod/.info response may count as Go intake.",
+    "Explicit trusted upstream/private credential and checksum/public-service/offline rules, realPG normal/race plus stock-Go9originalstages and newproxy/group/restart/revocation/fault journeys on both GitHub architectures.",
+    "Legacy modules without root go.mod, branch/revision aliases, broader metadata/version queries and all remaining GOAL cases remain committed."
+  ],
+  "limits": [
+    "These exported validators are not connected to an HTTP proxy route. Production Go proxy creation remains rejected; no proxy/group-over-proxy, public checksum validation or native client claim.",
+    "Current hosted/group fixture/runtime expectations are unchanged. Later retrieval code must call this validator and still independently enforce common authorization/policy/source/transaction paths.",
+    "All450capabilities/41families/laterstages remain required; readiness/fullsecurity/packaging false. No schema/primary/customer/sibling/release change."
+  ]
+}

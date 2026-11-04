@@ -136,6 +136,14 @@ Canonical CLI upload and strengthened shared503 row/byte/list/latest checks
 are implemented locally but require native replay. See the
 [fixture/diagnostic record](../../evidence/2026-11-04/go-module-fixture-diagnostics-development.json).
 
+Upstream info/mod/ZIP validators now have local bounded-input unit/race/vet
+and five-second ARM fuzz-smoke proof. The new target joins the existing GitHub
+fuzz inventory automatically; no test budget or original target is removed.
+These validators do not enable proxy routes or qualify retrieval. Future proxy
+work must retain both normal/race PostgreSQL and every original stock-Go stage
+while adding upstream authority, multi-object commit/cache, policy/fault and
+group-source journeys. See the [development record](../../evidence/2026-11-04/go-upstream-representations-development.json).
+
 The full workflow union is now29jobs across seven workflows, including one
 new bounded main-CI selection job. It compares exact base/head Git changes and
 records a fixed reason/count/hash. Runtime inputs, known pins/instructions,

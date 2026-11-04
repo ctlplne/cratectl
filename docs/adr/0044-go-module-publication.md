@@ -60,3 +60,13 @@ sources, stronger review, namespace pinning, source-grant denial, group read-onl
 publication and restart/revocation through the group. It requires nine stages,
 24 publisher/reference/HTTP bindings and16 exact stock ZIP/mod cache bindings.
 These are required observations, not a native pass claim.
+
+The next proxy foundation validates independent upstream representations before
+intake: bounded `.info` must name the exact canonical version, preserve optional
+Time and tolerate opaque future fields without trusting them. Duplicate/case
+aliases and ambiguous metadata fail. The `.mod` response must exactly equal the
+validated ZIP root go.mod bytes. Original info bytes remain separate from parsed
+identity. These validators have unit/race and short owned-input fuzz proof; they
+are not connected to proxy routes. Atomic multi-object retrieval/cache receipts,
+source/grant/lease fences, checksum authority and full native journeys remain
+required before enabling Go proxy mode. Legacy module synthesis is separate.
