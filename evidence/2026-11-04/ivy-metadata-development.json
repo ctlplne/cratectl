@@ -1,0 +1,65 @@
+{
+  "observed_at": "2026-11-04T15:04:46.435784+00:00",
+  "source_parent": "5db051eecf3b0c2a8e5df69ccfdfc2bf2a8300b6",
+  "source_dirty": true,
+  "status": "implemented; local fixture/evidence contracts pass; actual native replay unverified",
+  "prior_accepted_candidate": "708214f0f82b6ffc144a84dfafecf7ec7b33e93a",
+  "prior_accepted_checkpoint": "evidence/2026-11-04/github-708214f-checkpoint.json",
+  "profile": "maven-metadata-v2",
+  "source_sha256": {
+    "scripts/conformance_ivy.py": "378153b75bae4295a0944cbf16e595dce72072178c6a9ae1bf39a5195d42accd",
+    "scripts/ivy_metadata_fixture.py": "5343f00d06ea735f85faf6061ceedaf00941f8a2655bd67ac5570c7099ac6029",
+    "scripts/fixtures/ivy-client/build.xml": "7885df6b26990e74365b87f7a56c9184d1587993397c636388157adcebe0e75f",
+    "scripts/fixtures/ivy-client/ivysettings.xml": "371b221363bce8f9a52b297027debf5ed197ea743f56213dbd9c712fba02036c",
+    "scripts/ci/ivy_evidence.py": "0562a18e84c79e7f8c84aa68c5173903407919ae152f3613ac7b08256fb85971",
+    "scripts/test_ivy_fixture.py": "a3f28cadc900fb4042234e56e95b82055c38035ad4182573034c2498dbb46e64",
+    "scripts/ci/test_ivy_evidence.py": "19508c50fe93afbd283710ceec1564232da85b8a599a6edb9575eca532a9c2e0",
+    "scripts/ci/test_evidence_summary.py": "0f6435e9147953ba0dfa64b5f9aab232daa985ba2c883670ae05bb59f640f31d",
+    ".github/workflows/jvm-clients.yml": "a5e056e720f71d806702876ad409d5e6ab3b2ea86513ea9d1c8326d95b652152"
+  },
+  "mandatory": {
+    "stages": 8,
+    "metadata_cases": [
+      "parent_pom",
+      "classifier",
+      "configurations",
+      "pom_exclusion",
+      "client_exclusion",
+      "latest_conflict",
+      "cached_parent_policy",
+      "metadata_restart"
+    ],
+    "byte_bindings": 28,
+    "preserved": "Every original release, scoped writer/reader, tenant, review, proxy/group/range,current-policy,restart,revocation and all3SHA2consumer cases."
+  },
+  "mechanism": [
+    "Actual Ant/Ivy publishes owned prepared Maven POMs and resource-only JARs; all28representations need matching retained digest/size and independent HTTP readback.",
+    "Actual remote parent property/management required; unassessed parent denies child. Classified JAR policy differs from default artifact; optional/test mappings require exact sets.",
+    "POM exclusion has a nonexcluded bridge control. Ivy branch exclusion and latest-revision conflict selection require different exact versions. Fresh group caches honor current parent policy, actual restart and reader revocation.",
+    "Exporter keeps historical v1 separate; v2requires8ordered stages/8metadata cases/all28bindings. Unknown/private/missing/reordered/mismatched evidence fails closed."
+  ],
+  "local_checks": {
+    "make_lint": "passed; existing checks and new regressions",
+    "lint_log": ".cache/ivy-metadata-lint.log",
+    "lint_log_sha256": "73f576ac9f040a220417ea2d9328c1413be480e23c6832720702d14cd64dd26a",
+    "ivy_fixture_tests": 5,
+    "ivy_evidence_tests": 6,
+    "safe_exporter_tests": 11,
+    "python_compile": "passed",
+    "workflow_structure": "Ruby standard YAML parser passed both native architecture matrices, fail-fast=false and push/PR helper triggers. Optional local Python yaml module unavailable; no package installed.",
+    "prior_evidence_verifiers": "708214fJVM4andwhole17job/11summary verifiers pass; historical v1 preserved"
+  },
+  "native_qualification": "pending new exact-source jobs; no native client/PG/runtime pass claimed for metadata-v2",
+  "official_contracts": [
+    "https://cwiki.apache.org/confluence/spaces/ANT/pages/115528605/Publishing%2BMaven%2BArtifacts%2BWith%2BAnt%2BAnd%2BIvy",
+    "https://ant.apache.org/ivy/history/2.6.0/ivyfile/dependency-artifact.html",
+    "https://ant.apache.org/ivy/history/2.6.0/ivyfile/conflict.html"
+  ],
+  "limits": [
+    "Local stand-ins qualify owned XML/configuration and evidence contracts only. Actual Ivy graph interpretation requires both native GitHub lanes and real restricted PostgreSQL; no local JVM/PG campaign.",
+    "Snapshots,interruption,lifecycle,migration,scale,SBT2.x/1.x,productionTLS,allformats/platforms and laterGOALrequirements remain required.",
+    "Never execute uploaded package scripts/classes/models. Only owned build rules and pinned tools execute.",
+    "No primary/service/data/selectedbinary/customer/sibling change, release or package/image publication.",
+    "All450capabilities/41families retained; broad readiness, full security and packaging false."
+  ]
+}

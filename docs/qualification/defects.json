@@ -995,12 +995,13 @@
       "id": "DEFECT.0090",
       "summary": "Maven parser does not bind documented Ivy SHA-2 suffixes to the parent artifact",
       "first_failure": "evidence/2026-11-04/ivy-checksum-development.json",
-      "state": "implemented; both native PostgreSQL integration/race steps successful; final main safe-summary review pending at owner halt",
+      "state": "repaired and replayed on both native PostgreSQL integration/race lanes at708214f",
       "repair": "Canonicalize documented SHA-256/384/512 aliases through the existing parent policy/grant/tenant and checksum-receipt path; add SHA-384 only inside internal/crypto. Preserve legacy opaque references while serving current parent-derived data.",
-      "limits": "Both actual708214fnative PostgreSQL integration/race steps and initial Ivy profiles succeed. Main safe artifacts have not been reviewed at halt, so no new whole-candidate acceptance. Original local parser/SHA384 regressions retained. No observed customer breach or primary change.",
+      "limits": "Both actual native PostgreSQL integration/race lanes and initial Ivy profiles pass; all17observed jobs/11safe summaries are accepted for708214f. Original parser/SHA384 regressions retained; richer metadata belongs to a later unverified profile. No customer breach or primary change.",
       "latest_candidate": "708214f0f82b6ffc144a84dfafecf7ec7b33e93a",
       "observation": "evidence/2026-11-04/owner-halt-708214f.json",
-      "client_replay": "evidence/2026-11-04/jvm-708214f-checkpoint.json"
+      "client_replay": "evidence/2026-11-04/jvm-708214f-checkpoint.json",
+      "replay": "evidence/2026-11-04/github-708214f-checkpoint.json"
     }
   ]
 }

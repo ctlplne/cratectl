@@ -1,45 +1,43 @@
 # cratectl execution status
 
-Owner requested a graceful halt and local commit on 2026-11-04 UTC
-(2026-11-03 America/New_York). The goal is paused and incomplete. All 450
-capabilities / 41 families and every later GOAL stage remain committed;
-all broad readiness verdicts, full security and packaging remain negative.
-No push, new CI dispatch or implementation repair is part of this halt.
+Owner resumed the complete goal on 2026-11-04. The previous halt commit
+`5db051e` remains intact. All 450 capabilities / 41 families and every later
+GOAL stage remain committed; broad readiness, full security and packaging
+remain negative. Work and commits stay on main with both owner identities.
 
-Implementation source is `708214f0f82b6ffc144a84dfafecf7ec7b33e93a`.
-All 17 observed GitHub qualification jobs have now finished successfully:
-main 9, JVM 4, OCI 2 and controlled upgrades 2. Exact terminal job/step
-observations and resume instructions are retained in
-`evidence/2026-11-04/owner-halt-708214f.json`. Both native PostgreSQL integration
-and race steps report success. Main/OCI/upgrade safe artifacts have not been
-reviewed at halt; these job results do not yet establish a newly accepted
-whole-candidate checkpoint. The latest accepted whole observed checkpoint
-remains `9985847`, whose 15 jobs and nine summaries are retained separately.
-ARM Chromium placement is skipped and never counted as a pass.
+Clean `708214f0f82b6ffc144a84dfafecf7ec7b33e93a` now has all 17 observed
+qualification jobs and eleven unchanged safe summaries accepted in
+`evidence/2026-11-04/github-708214f-checkpoint.json`: main9/JVM4/OCI2/upgrades2.
+Both actual native Linux PostgreSQL integration/race lanes pass, including new
+SHA-2 aliases, legacy opaque sidecars, current policy/grants, conditional reads,
+tenant collisions and atomic metadata receipts. Broader clients pass645checks/
+56actual SDK HTTP cases before/after restart; full x86 Chromium passes15with
+zero bad or skipped results. Both OCI profiles pass214checks; each upgrade lane
+passes15reports over10historical pins; scoped security passes324fixtures.
+ARM browser placement remains skipped and never counts as a pass.
 
-The named native JVM evidence on `708214f` is validated and retained in
-`evidence/2026-11-04/jvm-708214f-checkpoint.json`. Both actual Linux architectures
-pass Ivy 228 checks, all seven original stages, twelve exact publisher/reference/
-HTTP JAR/POM identities and all three SHA-256/384/512 consumers. Both Gradle
-profiles pass 199 checks, eight stages and 24 exact byte bindings. This replays
-the original Ant runtime and checksum-spelling failures without removing cases.
-Initial Ivy releases are qualified; snapshots, classifiers, parents,
-configurations, conflicts, interruption, lifecycle and SBT remain unfinished.
+Both native Ivy initial release profiles pass228checks, seven original stages,
+twelve publisher/reference/HTTP JAR/POM identities and all three native SHA-2
+consumers. Both Gradle profiles pass199checks/eightstages/24bytebindings.
+Original Ant runtime and unsupported checksum failures remain retained.
+The preceding419861c campaign remains20of22passing, with its own focused-browser
+and separate actual SDK library proof; those results are not relabeled708214f.
 
-The preceding `419861c` campaign is also now accepted for its exact partial
-scope: 20 of 22 jobs pass; both Ivy first publications fail. Sixteen safe
-summaries, original failures and the separately counted ancillary Dependabot
-job are retained in `evidence/2026-11-04/github-419861c-checkpoint.json`.
-Its separate actual SDK library proof, with all original fixture hashes and
-zero mismatches, is `evidence/2026-11-04/nuget-419861c-checkpoint.json`.
-The original `600466d` Ant identity failures remain retained as well.
+The next Ivy profile, `maven-metadata-v2`, preserves every release case and adds
+actual parent-POM/dependency-management/property lookup, separately governed
+classified JARs, optional/test configurations, Maven and Ivy exclusions,
+conflict selection, cached-parent policy, restart and revoked-reader outcomes.
+It requires eight stages, eight metadata case observations and28exact byte
+bindings. The publisher uses owned prepared POMs and resource-only JARs through
+native Ivy; consumers must interpret the remote graph with fresh isolated caches.
+This new profile is implemented but native replay is unverified. See
+`evidence/2026-11-04/ivy-metadata-development.json`. Snapshots, interruptions,
+lifecycle, SBT and every remaining client/format/stage requirement remain open.
 
-Resume only on owner instruction: inspect the current Git state and exact
-recorded handles; accept remaining `708214f` safe summaries before making a
-whole-candidate claim, then continue all unfinished scope. No project listeners
-were found on loopback qualification ports 38443/35432 at halt. Primary schema
-11, selected qualified binaries, data, credentials and sibling services are
-unchanged. Earlier checkpoints and execution notes below are historical.
+The prior halt record `evidence/2026-11-04/owner-halt-708214f.json` remains an
+immutable observation; the current owner resume supersedes its pause. No primary,
+selected binary, data, credential, sibling or customer change. Earlier notes
+below are historical and do not override this current state.
 
 Owner resumed the complete `GOAL.md` scope on 2026-11-02 and reaffirmed that
 both author and committer must be `imfeelingtheagi`. The current work finishes

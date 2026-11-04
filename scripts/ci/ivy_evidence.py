@@ -8,14 +8,25 @@ PHASES = {'client_identity','publication','review','proxy_group','policy','revoc
 DIAGNOSTICS = {'http_401','http_403','http_404','resolution','publication','fixture','ant_identity','checksum_algorithm'}
 IDENTITIES = ['java_launcher_sha256','java_release_sha256','ivy_launcher_sha256','ant_launcher_sha256','ant_bootstrap_sha256','ant_library_sha256','fixture_source_sha256']
 CHECKSUM_CLIENTS = ['SHA-256','SHA-384','SHA-512']
+METADATA_STAGES = STAGES[:-1] + ['metadata'] + STAGES[-1:]
+METADATA_CASES = ['parent_pom','classifier','configurations','pom_exclusion','client_exclusion',
+                  'latest_conflict','cached_parent_policy','metadata_restart']
+METADATA_REPRESENTATIONS = {
+    'parent': ('pom',), 'choice_1': ('jar','pom'), 'choice_2': ('jar','pom'),
+    'bridge_1': ('jar','pom'), 'bridge_2': ('jar','pom'),
+    'optional_dependency': ('jar','pom'), 'test_dependency': ('jar','pom'),
+    'metadata_app': ('jar','pom','tests_jar'),
+}
 
 
 def safe_ivy_contract(value, status):
     fields = {'profile','version','ant_version','ant_runtime_version','ant_legacy_runtime_version','java_version','ivy_distribution_sha512','ant_distribution_sha512',*IDENTITIES,
               'fixture_sha256','reference_sha256','wire_sha256','completed','checksum_clients_completed','phase','diagnostics'}
+    metadata = isinstance(value,dict) and value.get('profile') == 'maven-metadata-v2'
+    if metadata: fields.add('metadata_cases_completed')
     if not isinstance(value,dict) or set(value) != fields:
         raise ValueError('Ivy fields are outside the reviewed profile')
-    if value['profile'] != 'maven-release-v1':
+    if value['profile'] not in {'maven-release-v1','maven-metadata-v2'}:
         raise ValueError('Ivy profile must identify its exact release workflow')
     for field in ['version','ant_version']:
         if not isinstance(value[field],str) or not re.fullmatch(r'\d{1,2}\.\d{1,3}\.\d{1,3}',value[field]):
@@ -35,7 +46,8 @@ def safe_ivy_contract(value, status):
         if not isinstance(value[field],str) or not re.fullmatch('[0-9a-f]{'+str(size)+'}',value[field]):
             raise ValueError('Ivy tool identity must be a bounded digest')
     completed = value['completed']; diagnostics = value['diagnostics']
-    if not isinstance(completed,list) or completed != STAGES[:len(completed)] or len(completed)>len(STAGES):
+    stages = METADATA_STAGES if metadata else STAGES
+    if not isinstance(completed,list) or completed != stages[:len(completed)] or len(completed)>len(stages):
         raise ValueError('Ivy stages must be the ordered mandatory prefix')
     checksum_clients = value['checksum_clients_completed']
     if not isinstance(checksum_clients,list) or len(checksum_clients)>len(CHECKSUM_CLIENTS) or checksum_clients != CHECKSUM_CLIENTS[:len(checksum_clients)]:
@@ -44,11 +56,21 @@ def safe_ivy_contract(value, status):
         raise ValueError('Passed Ivy evidence requires each native SHA-2 client resolution')
     if (len(completed)<2 and checksum_clients) or (len(completed)>=3 and checksum_clients != CHECKSUM_CLIENTS):
         raise ValueError('Ivy checksum-client observations disagree with completed review stages')
-    if not isinstance(value['phase'],str) or value['phase'] not in PHASES:
+    if metadata:
+        cases = value['metadata_cases_completed']
+        if not isinstance(cases,list) or len(cases)>len(METADATA_CASES) or cases != METADATA_CASES[:len(cases)]:
+            raise ValueError('Ivy metadata cases must be the ordered mandatory prefix')
+        if (status == 'passed' or 'metadata' in completed) and cases != METADATA_CASES:
+            raise ValueError('Passed Ivy metadata evidence requires every native metadata case')
+        if len(completed)<6 and cases:
+            raise ValueError('Metadata observations cannot precede the original policy/restart stages')
+    if not isinstance(value['phase'],str) or value['phase'] not in (PHASES | {'metadata'} if metadata else PHASES):
         raise ValueError('Ivy phase must use the fixed vocabulary')
     if not isinstance(diagnostics,list) or len(diagnostics)>len(DIAGNOSTICS) or any(not isinstance(c,str) or c not in DIAGNOSTICS for c in diagnostics) or len(set(diagnostics))!=len(diagnostics):
         raise ValueError('Ivy diagnostics must use the fixed vocabulary')
     allowed = {name+'_'+ext for name in FIXTURES for ext in ['jar','pom']}
+    if metadata:
+        allowed |= {name+'_'+ext for name,extensions in METADATA_REPRESENTATIONS.items() for ext in extensions}
     fixtures = value['fixture_sha256']
     if not isinstance(fixtures,dict) or not set(fixtures)<=allowed or any(not isinstance(v,str) or not re.fullmatch('[0-9a-f]{64}',v) for v in fixtures.values()):
         raise ValueError('Ivy fixture identity is outside the owned set')
@@ -58,6 +80,6 @@ def safe_ivy_contract(value, status):
             raise ValueError('Ivy retained/HTTP bytes must match the publisher')
         if status=='passed' and set(observed)!=allowed:
             raise ValueError('Passed Ivy evidence requires every retained/HTTP representation')
-    if status=='passed' and (value['phase']!='complete' or completed!=STAGES or set(fixtures)!=allowed or diagnostics):
+    if status=='passed' and (value['phase']!='complete' or completed!=stages or set(fixtures)!=allowed or diagnostics):
         raise ValueError('Passed Ivy evidence requires all fixtures and stages')
     return {**value,**{k:dict(sorted(value[k].items())) for k in ['fixture_sha256','reference_sha256','wire_sha256']},'diagnostics':sorted(diagnostics)}

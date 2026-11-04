@@ -10,6 +10,8 @@ import unittest
 import xml.etree.ElementTree as XML
 
 from conformance_ivy import ant_invocation, descriptor, GROUP
+from ivy_metadata_fixture import MODULES, MAVEN, consumer_descriptor, filename, pom, publisher_descriptor
+from ci.ivy_evidence import METADATA_REPRESENTATIONS
 from bounded_client import run_owned_client
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -63,6 +65,44 @@ class IvyFixture(unittest.TestCase):
             self.assertEqual(resolver.get('checksums'),'${checksumAlgorithms}')
         self.assertTrue(settings.find('resolvers/url/artifact').get('pattern').startswith('${publicationURL}'))
         self.assertEqual(len(settings.findall('resolvers/ibiblio')),1)
+        self.assertEqual(settings.find('resolvers/url/artifact').get('pattern'),
+                         '${publicationURL}[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]')
+        prepared = root.find("target[@name='publish-prepared']")
+        self.assertIsNotNone(prepared.find('ivy:resolve',ns))
+        self.assertEqual(prepared.find('ivy:publish',ns).get('artifactspattern'),'build/[artifact]-[revision](-[classifier]).[ext]')
+        self.assertIsNone(prepared.find('ivy:makepom',ns))
+
+    def test_real_parent_is_required_for_managed_version_and_child_exclusion_is_explicit(self):
+        ns={'p':'http://maven.apache.org/POM/4.0.0'}
+        parent=XML.fromstring(pom('parent'));child=XML.fromstring(pom('metadata_app'))
+        self.assertEqual(parent.find('p:packaging',ns).text,'pom')
+        self.assertEqual(parent.find('p:properties/p:owned.dependency.version',ns).text,'1.0.0')
+        self.assertEqual(parent.find('p:dependencyManagement/p:dependencies/p:dependency/p:version',ns).text,'${owned.dependency.version}')
+        self.assertEqual(child.find('p:parent/p:artifactId',ns).text,'ivy-parent')
+        self.assertIsNone(child.find('p:parent/p:relativePath',ns).text)
+        deps={d.find('p:artifactId',ns).text:d for d in child.findall('p:dependencies/p:dependency',ns)}
+        self.assertIsNone(deps['ivy-dep'].find('p:version',ns))
+        self.assertEqual(deps['ivy-bridge-two'].find('p:exclusions/p:exclusion/p:artifactId',ns).text,'ivy-choice')
+        self.assertEqual(deps['ivy-optional'].find('p:optional',ns).text,'true')
+        self.assertEqual(deps['ivy-test'].find('p:scope',ns).text,'test')
+        for label,version in [('bridge_1','1.0.0'),('bridge_2','2.0.0')]:
+            self.assertEqual(XML.fromstring(pom(label)).find('p:dependencies/p:dependency/p:version',ns).text,version)
+
+    def test_classified_bytes_and_mandatory_graph_are_not_collapsed_to_default_artifact(self):
+        self.assertEqual({name:v[2] for name,v in MODULES.items()},METADATA_REPRESENTATIONS)
+        self.assertEqual(sum(len(v[2]) for v in MODULES.values()),16)
+        root=XML.fromstring(publisher_descriptor(*MODULES['metadata_app']))
+        self.assertIsNone(root.find('dependencies'))
+        self.assertEqual([a.get('{'+MAVEN+'}classifier') for a in root.findall('publications/artifact')],[None,None,'tests'])
+        self.assertEqual(filename('ivy-metadata-app','1.0.0','tests_jar'),'ivy-metadata-app-1.0.0-tests.jar')
+        consumer=XML.fromstring(consumer_descriptor([('ivy-metadata-app','1.0.0')],classifier=True))
+        self.assertEqual(consumer.find('dependencies/dependency/artifact').get('{'+MAVEN+'}classifier'),'tests')
+        consumer=XML.fromstring(consumer_descriptor([('ivy-bridge-one','1.0.0'),('ivy-bridge-two','1.0.0')],exclude=True))
+        self.assertEqual(consumer.find("dependencies/dependency[@name='ivy-bridge-two']/exclude").get('module'),'ivy-choice')
+        self.assertIsNone(consumer.find("dependencies/dependency[@name='ivy-bridge-one']/exclude"))
+        self.assertEqual(consumer.find('dependencies/conflict').get('manager'),'latest-revision')
+        consumer=XML.fromstring(consumer_descriptor([('ivy-metadata-app','1.0.0')],mapping='default->default,optional'))
+        self.assertEqual(consumer.find('dependencies/dependency').get('conf'),'default->default,optional')
 
 
 if __name__ == '__main__':unittest.main()

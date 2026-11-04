@@ -3,7 +3,7 @@
 import copy
 import unittest
 
-from ivy_evidence import CHECKSUM_CLIENTS, FIXTURES, IDENTITIES, STAGES, safe_ivy_contract
+from ivy_evidence import CHECKSUM_CLIENTS, FIXTURES, IDENTITIES, STAGES, METADATA_CASES, METADATA_STAGES, METADATA_REPRESENTATIONS, safe_ivy_contract
 
 
 def complete_contract():
@@ -15,7 +15,37 @@ def complete_contract():
             'completed':list(STAGES),'checksum_clients_completed':list(CHECKSUM_CLIENTS),'phase':'complete','diagnostics':[]}
 
 
+def metadata_contract():
+    value=complete_contract()
+    fixtures={**value['fixture_sha256'],**{name+'_'+ext:'f'*64 for name,extensions in METADATA_REPRESENTATIONS.items() for ext in extensions}}
+    return {**value,'profile':'maven-metadata-v2','completed':list(METADATA_STAGES),
+            'metadata_cases_completed':list(METADATA_CASES),'fixture_sha256':fixtures,
+            'reference_sha256':dict(fixtures),'wire_sha256':dict(fixtures)}
+
+
 class IvyEvidence(unittest.TestCase):
+    def test_metadata_profile_preserves_all_release_cases_and_requires_exact_graph_bytes(self):
+        value=metadata_contract()
+        self.assertEqual(safe_ivy_contract(value,'passed'),value)
+        self.assertEqual(len(value['wire_sha256']),28)
+        self.assertEqual([s for s in value['completed'] if s!='metadata'],STAGES)
+        for key in ['parent_pom','metadata_app_tests_jar','choice_1_pom','bridge_2_jar','dependency_jar']:
+            for field in ['fixture_sha256','reference_sha256','wire_sha256']:
+                bad=copy.deepcopy(value);bad[field].pop(key)
+                with self.subTest(key=key,field=field),self.assertRaises(ValueError):safe_ivy_contract(bad,'passed')
+        for cases in [[],METADATA_CASES[:-1],METADATA_CASES[::-1],['private-synthetic-value']]:
+            with self.subTest(cases=cases),self.assertRaises(ValueError):safe_ivy_contract({**value,'metadata_cases_completed':cases},'passed')
+        for change in [{'completed':STAGES},{'phase':'metadata'},{'profile':'maven-release-v1'}]:
+            with self.subTest(change=change),self.assertRaises(ValueError):safe_ivy_contract({**value,**change},'passed')
+
+    def test_partial_metadata_failure_cannot_fabricate_case_or_stage_completion(self):
+        value={**metadata_contract(),'phase':'metadata','completed':METADATA_STAGES[:6],
+               'metadata_cases_completed':METADATA_CASES[:2],'diagnostics':['resolution']}
+        self.assertEqual(safe_ivy_contract(value,'failed'),value)
+        for change in [{'completed':METADATA_STAGES[:5]},{'completed':METADATA_STAGES[:7]},
+                       {'metadata_cases_completed':METADATA_CASES[:1]*2}]:
+            with self.subTest(change=change),self.assertRaises(ValueError):safe_ivy_contract({**value,**change},'failed')
+
     def test_complete_requires_every_native_stage_and_independent_representation(self):
         value = complete_contract()
         self.assertEqual(safe_ivy_contract(value,'passed'),value)

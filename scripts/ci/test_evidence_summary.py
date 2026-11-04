@@ -9,7 +9,7 @@ import unittest
 
 from evidence_summary import summarize
 from test_gradle_evidence import complete_contract
-from test_ivy_evidence import complete_contract as complete_ivy_contract
+from test_ivy_evidence import complete_contract as complete_ivy_contract, metadata_contract
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -77,6 +77,18 @@ class EvidenceSummary(unittest.TestCase):
         self.assertNotIn('private-synthetic-value',json.dumps(record))
         self.write('ivy.json',{**report,'ivy_contract':{**complete_ivy_contract(),'wire_sha256':{}}})
         with self.assertRaises(SystemExit):summarize(self.root,self.environment)
+
+    def test_ivy_metadata_export_requires_parent_and_classified_wire_bytes(self):
+        contract=metadata_contract()
+        report={'candidate':'a'*40,'status':'passed','ivy_contract':contract,'commands':[{'output':'private-synthetic-value'}]}
+        self.write('ivy-metadata.json',report)
+        record=summarize(self.root,self.environment)['records'][0]
+        self.assertEqual(record['ivy_contract'],contract)
+        self.assertNotIn('private-synthetic-value',json.dumps(record))
+        for key in ['parent_pom','metadata_app_tests_jar']:
+            wire=dict(contract['wire_sha256']);wire.pop(key)
+            self.write('ivy-metadata.json',{**report,'ivy_contract':{**contract,'wire_sha256':wire}})
+            with self.subTest(key=key),self.assertRaises(SystemExit):summarize(self.root,self.environment)
 
     def test_nuget_sdk_and_fixture_evidence_is_bounded_and_complete(self):
         fixtures = {key: 'b' * 64 for key in ('dependency', 'application_1', 'application_2', 'other_application_1')}

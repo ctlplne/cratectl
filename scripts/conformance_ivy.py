@@ -11,7 +11,8 @@ import xml.etree.ElementTree as XML
 import zipfile
 
 from bounded_client import run_owned_client
-from ci.ivy_evidence import FIXTURES
+from ci.ivy_evidence import FIXTURES, METADATA_CASES, METADATA_REPRESENTATIONS
+from ivy_metadata_fixture import MODULES, consumer_descriptor, filename, pom, publisher_descriptor
 
 GROUP = 'dev.cratectl.ivyproof'
 GROUP_PATH = GROUP.replace('.', '/')
@@ -63,7 +64,7 @@ def hosted(h):
     check('Ivy uses the exact native pinned Java runtime', release.get('JAVA_RUNTIME_VERSION') in ('21.0.13+9', '21.0.13+9-LTS') and
           platform.system() == 'Linux' and release.get('OS_NAME') == 'Linux' and release.get('OS_ARCH') == {'x86_64': 'x86_64', 'aarch64': 'aarch64'}[platform.machine()])
     source = h.ROOT / 'scripts/fixtures/ivy-client'
-    contract = {'profile':'maven-release-v1', 'version': pin['version'], 'ant_version': pin['ant_version'], **archives,
+    contract = {'profile':'maven-metadata-v2', 'version': pin['version'], 'ant_version': pin['ant_version'], **archives,
                 'java_version': release['JAVA_RUNTIME_VERSION'],
                 'java_launcher_sha256': hashlib.sha256((jdk / 'bin/java').read_bytes()).hexdigest(),
                 'java_release_sha256': hashlib.sha256(release_bytes).hexdigest(),
@@ -73,9 +74,11 @@ def hosted(h):
                 'ant_runtime_version': None,
                 'ant_legacy_runtime_version': None,
                 'ant_library_sha256': hashlib.sha256((ant.parent.parent / 'lib/ant.jar').read_bytes()).hexdigest(),
-                'fixture_source_sha256': hashlib.sha256(b''.join((source / n).read_bytes() for n in ['build.xml', 'ivysettings.xml'])).hexdigest(),
+                'fixture_source_sha256': hashlib.sha256(b''.join((source / n).read_bytes() for n in ['build.xml', 'ivysettings.xml']) +
+                                                        (h.ROOT/'scripts/ivy_metadata_fixture.py').read_bytes()).hexdigest(),
                 'fixture_sha256': {}, 'reference_sha256': {}, 'wire_sha256': {}, 'completed': [], 'phase': 'client_identity', 'diagnostics': []}
     contract['checksum_clients_completed'] = []
+    contract['metadata_cases_completed'] = []
     h.result['ivy_contract'] = contract
     work = h.PRIVATE / 'ivy'; work.mkdir(mode=0o700)
 
@@ -235,6 +238,99 @@ def hosted(h):
     decision('ivy-proxy','ivy-app','2.0.0','allowed'); h.stop(); h.start()
     consume('restarted-group','2.0.0',['application_2','dependency'],repo='ivy-group')
     contract['completed'].append('policy_and_restart')
+    contract['phase'] = 'metadata'
+
+    # Native Ivy publishes the exact prepared POM graph and inert JAR variants.
+    # No uploaded build rule or class is ever executed by a consumer.
+    for label, (artifact, version, representations) in MODULES.items():
+        check('reviewed metadata representation inventory ' + label, representations == METADATA_REPRESENTATIONS[label])
+        directory = project('metadata-publish-' + label)
+        build = directory / 'build'; build.mkdir()
+        (directory / 'ivy.xml').write_bytes(publisher_descriptor(artifact,version,representations))
+        contents = {}
+        for representation in representations:
+            target = build / filename(artifact,version,representation)
+            if representation == 'pom':
+                target.write_bytes(pom(label))
+            else:
+                with zipfile.ZipFile(target,'w') as archive:
+                    archive.writestr('META-INF/',b'')
+                    archive.writestr('META-INF/MANIFEST.MF',b'Manifest-Version: 1.0\r\n\r\n')
+                    archive.writestr('owned.txt',(label + ':' + representation).encode())
+                with zipfile.ZipFile(target) as archive:
+                    check('metadata JAR is inert owned resources ' + label + representation,
+                          set(archive.namelist()) == {'META-INF/','META-INF/MANIFEST.MF','owned.txt'} and
+                          archive.read('owned.txt') == (label + ':' + representation).encode())
+            contents[representation] = target.read_bytes()
+        command(directory,'publish-prepared','ivy-writer',extra=['-DpublicationVersion='+version])
+        rows = inventory('ivy-hosted'); paths = {}
+        for representation, value in contents.items():
+            path = GROUP_PATH+'/'+artifact+'/'+version+'/'+filename(artifact,version,representation)
+            matches = [r for r in rows if r['path'] == path]; digest = hashlib.sha256(value).hexdigest()
+            check('metadata publication retains exact native-uploaded bytes ' + label + representation,
+                  len(value)<=1<<20 and len(matches)==1 and matches[0]['digest']==digest and matches[0]['size']==len(value))
+            key = label+'_'+representation
+            contract['fixture_sha256'][key] = digest; contract['reference_sha256'][key] = matches[0]['digest']; paths[representation] = path
+        published[label] = {'artifact':artifact,'version':version,'contents':contents,'paths':paths,'repo':'ivy-hosted'}
+        # Keep the parent unassessed until a real child consumer proves denial.
+        if label != 'parent': decision('ivy-hosted',artifact,version,'allowed')
+
+    def metadata_consume(label, expected=None, dependencies=None, mapping='default->default', classifier=False,
+                         exclude=False, repo='ivy-hosted', denied_path=None, denied_status=403):
+        directory = project('metadata-consume-' + label)
+        (directory/'ivy.xml').write_bytes(consumer_descriptor(dependencies or [('ivy-metadata-app','1.0.0')],mapping,classifier,exclude))
+        command(directory,'consume',repo=repo,fail=expected is None)
+        files = sorted((directory/'proof').glob('*.jar'))
+        check('metadata consumer output stays bounded ' + label, len(files)<=16 and all(p.stat().st_size<=1<<20 for p in files))
+        if expected is None:
+            check('denied metadata resolution has no retrieved artifact set ' + label, not files)
+            check('same-credential HTTP confirms exact metadata denial ' + label,
+                  bool(denied_path) and req('/r/'+repo+'/'+denied_path,'reader')[0]==denied_status)
+        else:
+            exact = {filename(published[n]['artifact'],published[n]['version'],representation):published[n]['contents'][representation]
+                     for n,representation in expected}
+            check('native metadata graph resolves exact complete byte set ' + label, {p.name:p.read_bytes() for p in files}==exact)
+
+    parent_path = published['parent']['paths']['pom']
+    base = [('metadata_app','jar'),('dependency','jar'),('bridge_2','jar')]
+    metadata_consume('unassessed-parent',denied_path=parent_path)
+    decision('ivy-hosted','ivy-parent','1.0.0','allowed')
+    for label in MODULES: wire(label)
+    metadata_consume('parent-managed',base)
+    contract['metadata_cases_completed'].append('parent_pom')
+    classified_path = published['metadata_app']['paths']['tests_jar']
+    def classifier_decision(value):
+        check('current common policy governs classified JAR',req('/api/v1/repositories/ivy-hosted/decisions',method='PUT',
+              data={'path':classified_path,'digest':contract['fixture_sha256']['metadata_app_tests_jar'],'decision':value},key=h.uuid.uuid4().hex)[0]==200)
+    classifier_decision('denied')
+    metadata_consume('denied-classifier',classifier=True,denied_path=classified_path)
+    metadata_consume('default-with-classifier-denied',base)
+    classifier_decision('allowed')
+    metadata_consume('classified',[('metadata_app','tests_jar'),('dependency','jar'),('bridge_2','jar')],classifier=True)
+    contract['metadata_cases_completed'].append('classifier')
+    metadata_consume('optional-configuration',base+[('optional_dependency','jar')],mapping='default->default,optional')
+    metadata_consume('test-configuration',base+[('test_dependency','jar')],mapping='default->default,test')
+    contract['metadata_cases_completed'].append('configurations')
+    # The default set already proves POM exclusion of bridge-two's choice2;
+    # the separate controls below prove it exists and would otherwise resolve.
+    metadata_consume('bridge-control',[('bridge_2','jar'),('choice_2','jar')],dependencies=[('ivy-bridge-two','1.0.0')])
+    contract['metadata_cases_completed'].append('pom_exclusion')
+    bridges = [('ivy-bridge-one','1.0.0'),('ivy-bridge-two','1.0.0')]
+    metadata_consume('client-exclusion',[('bridge_1','jar'),('bridge_2','jar'),('choice_1','jar')],dependencies=bridges,exclude=True)
+    contract['metadata_cases_completed'].append('client_exclusion')
+    metadata_consume('latest-conflict',[('bridge_1','jar'),('bridge_2','jar'),('choice_2','jar')],dependencies=bridges)
+    contract['metadata_cases_completed'].append('latest_conflict')
+    metadata_consume('group-parent',base,repo='ivy-group')
+    decision('ivy-proxy','ivy-parent','1.0.0','denied')
+    metadata_consume('cached-parent-denied',repo='ivy-group',denied_path=parent_path)
+    decision('ivy-proxy','ivy-parent','1.0.0','allowed')
+    contract['metadata_cases_completed'].append('cached_parent_policy')
+    h.stop(); h.start()
+    metadata_consume('metadata-restart',base,repo='ivy-group')
+    metadata_consume('classified-restart',[('metadata_app','tests_jar'),('dependency','jar'),('bridge_2','jar')],classifier=True,repo='ivy-group')
+    contract['metadata_cases_completed'].append('metadata_restart')
+    check('every native metadata case completed',contract['metadata_cases_completed']==METADATA_CASES)
+    contract['completed'].append('metadata')
     contract['phase'] = 'revocation'
     h.run([h.BIN/'cratectld','revoke','--token-file',writer])
     rejected = command(publisher,'publish','ivy-writer',extra=extra,fail=True)
@@ -242,7 +338,9 @@ def hosted(h):
     h.run([h.BIN/'cratectld','revoke','--token-file',h.PRIVATE/'reader.token'])
     consume('revoked-reader','1.0.0',denied_status=401)
     wire('application_1',denied=True,denied_status=401)
+    metadata_consume('revoked-metadata',denied_path=published['metadata_app']['paths']['pom'],denied_status=401)
     consume('other-tenant-after-revocation','1.0.0',['other_application_1','other_dependency'],'other')
     contract['completed'].append('revocation')
-    check('all twelve Ivy representations have independent byte binding', set(contract['fixture_sha256']) == {n+'_'+ext for n in FIXTURES for ext in ['jar','pom']} and contract['fixture_sha256'] == contract['reference_sha256'] == contract['wire_sha256'])
+    expected_bindings = {n+'_'+ext for n in FIXTURES for ext in ['jar','pom']} | {n+'_'+ext for n,extensions in METADATA_REPRESENTATIONS.items() for ext in extensions}
+    check('all twenty-eight Ivy representations have independent byte binding', len(expected_bindings)==28 and set(contract['fixture_sha256']) == expected_bindings and contract['fixture_sha256'] == contract['reference_sha256'] == contract['wire_sha256'])
     contract['phase']='complete'

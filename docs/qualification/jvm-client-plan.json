@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-04T04:25:10.177797+00:00",
+  "updated_at": "2026-11-04T15:02:41.966643+00:00",
   "scope": "Complete JVM client requirement in GOAL.md, within all 450 capabilities and 41 families; this plan removes no other work.",
   "qualified_gradle": {
     "version": "9.8.2",
@@ -67,7 +67,25 @@
     "launcher_repair": "evidence/2026-11-04/ivy-launcher-repair-development.json",
     "checksum_repair": "evidence/2026-11-04/ivy-checksum-development.json",
     "candidate": "708214f0f82b6ffc144a84dfafecf7ec7b33e93a",
-    "checkpoint": "evidence/2026-11-04/jvm-708214f-checkpoint.json"
+    "checkpoint": "evidence/2026-11-04/jvm-708214f-checkpoint.json",
+    "metadata_profile": {
+      "profile": "maven-metadata-v2",
+      "state": "implemented but unverified on native clients",
+      "development": "evidence/2026-11-04/ivy-metadata-development.json",
+      "mandatory_cases": [
+        "parent_pom",
+        "classifier",
+        "configurations",
+        "pom_exclusion",
+        "client_exclusion",
+        "latest_conflict",
+        "cached_parent_policy",
+        "metadata_restart"
+      ],
+      "byte_bindings": 28,
+      "stages": 8,
+      "limits": "Every original release/checksum/permission/tenant/restart/revocation case retained. Native replay required; snapshots/interruption/lifecycle,SBTandallotherscope remain unfinished."
+    }
   },
   "sbt": {
     "state": "planned; no SBT installation, execution or compatibility pass",
@@ -89,5 +107,5 @@
     "evidence": "Reviewed bounded fields, counts, digests and stages only. Each client/version has its own mandatory profile. Preserve original failures; partial, skipped or absent cases never pass.",
     "limits": "Owned POSIX process-group cleanup does not prove control of processes that explicitly detach into new sessions. Qualify client fork settings and runner containment before stronger descendant claims."
   },
-  "owner_state": "Paused by explicit owner instruction; no further work until resumed."
+  "owner_state": "Active; explicitly resumed by owner on2026-11-04."
 }

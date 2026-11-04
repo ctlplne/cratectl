@@ -19,10 +19,17 @@
     </ivy:makepom>
     <ivy:publish resolver="cratectl-publisher" pubrevision="${publicationVersion}"
                  publishivy="false" overwrite="true" haltonmissing="true"
-                 artifactspattern="build/[artifact]-[revision].[ext]"/>
+                 artifactspattern="build/[artifact]-[revision](-[classifier]).[ext]"/>
+  </target>
+  <target name="publish-prepared" depends="configure">
+    <!-- Prepared resource-only bytes and POMs are owned by this fixture. -->
+    <ivy:resolve file="ivy.xml" conf="default"/>
+    <ivy:publish resolver="cratectl-publisher" pubrevision="${publicationVersion}"
+                 publishivy="false" overwrite="true" haltonmissing="true"
+                 artifactspattern="build/[artifact]-[revision](-[classifier]).[ext]"/>
   </target>
   <target name="consume" depends="configure">
     <ivy:resolve file="ivy.xml" conf="default"/>
-    <ivy:retrieve pattern="proof/[artifact]-[revision].[ext]" conf="default" type="jar"/>
+    <ivy:retrieve pattern="proof/[artifact]-[revision](-[classifier]).[ext]" conf="default" type="jar"/>
   </target>
 </project>

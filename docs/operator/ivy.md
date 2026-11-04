@@ -6,8 +6,8 @@ publisher/reference/HTTP identities and all three SHA-2 consumers. The
 [named JVM checkpoint](../../evidence/2026-11-04/jvm-708214f-checkpoint.json)
 retains exact source, tool and fixture identities. Original Ant-selection and
 checksum-spelling failures remain retained. Broader Ivy/JVM compatibility is
-unfinished. The owner paused execution; follow the
-[halt record](../../evidence/2026-11-04/owner-halt-708214f.json) before resuming.
+unfinished. The owner resumed execution on2026-11-04. The previous
+[halt record](../../evidence/2026-11-04/owner-halt-708214f.json) remains historical.
 It targets Apache Ant 1.10.18, Ivy 2.6.0 and the pinned Java 21 runtime on
 actual Linux x86 and ARM GitHub runners, using real PostgreSQL and the common
 Maven repository endpoint. The [JVM plan](../qualification/jvm-client-plan.json)
@@ -91,3 +91,22 @@ the complete exact transitive JAR set. Safe evidence requires the three client
 observations in order, in addition to the original seven stages and twelve
 publisher/reference/HTTP identities. SHA-1/MD5 compatibility checks remain;
 no checksum or original client case is removed to obtain a pass.
+
+
+The next `maven-metadata-v2` profile is implemented but awaits native replay.
+It retains all original release cases, then publishes an owned parent POM with
+a property-backed managed dependency, two conflicting versions and bridges,
+optional/test dependencies and a separate classified resource-only JAR. All28
+representations need publisher, retained-reference and independent HTTP digests.
+Fresh consumers must obtain the real parent; an unassessed parent must fail.
+A denied classified JAR must fail while default-artifact consumption still
+works. Explicit optional/test configurations must return exact additional sets.
+Maven and Ivy exclusion controls must differ from their nonexcluded controls;
+latest-revision conflict resolution must return only the selected version.
+Cached-parent policy, registry restart and reader revocation remain mandatory.
+The initial release pass does not qualify these new cases.
+
+Fixture design follows Apache's [Maven publication contract](https://cwiki.apache.org/confluence/spaces/ANT/pages/115528605/Publishing%2BMaven%2BArtifacts%2BWith%2BAnt%2BAnd%2BIvy),
+[artifact selection](https://ant.apache.org/ivy/history/2.6.0/ivyfile/dependency-artifact.html)
+and [conflict managers](https://ant.apache.org/ivy/history/2.6.0/ivyfile/conflict.html).
+Only the owned build files execute; resolved packages remain inert.
