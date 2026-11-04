@@ -4,6 +4,7 @@
 import argparse,datetime,hashlib,io,json,os,subprocess,time,urllib.parse,urllib.request,uuid,zipfile
 from pathlib import Path
 from qualification_contract import candidate_binary_directory, candidate_artifact_names
+from bounded_client import run_owned_client
 parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');parser.add_argument('--serve',action='store_true');parser.add_argument('--binary-directory',type=Path,help='Owned candidate binary directory; defaults to bin without replacing active primary binaries');parser.add_argument('--workflow',choices=['all','repair','retention','nuget'],default='all',help='Run the complete console or a selected real database/browser journey');args=parser.parse_args()
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT);RUN=uuid.uuid4().hex[:10];PRIVATE=ROOT/'.private/console-conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)
 BIN=candidate_binary_directory(args.binary_directory)
@@ -30,18 +31,8 @@ def private(path,data):
 def command(argv,runenv=env,cwd=ROOT):
     if Path(str(argv[0])).name=='playwright':
         with (PRIVATE/'commands.log').open('ab')as log:
-            p=subprocess.Popen([str(a)for a in argv],env=runenv,cwd=cwd,stdout=log,stderr=subprocess.STDOUT)
-            deadline=time.monotonic()+300
-            try:
-                while p.poll()is None:
-                    if time.monotonic()>deadline:raise TimeoutError('owned browser suite exceeded 300 seconds')
-                    worker_control();time.sleep(.05)
-            finally:
-                if p.poll()is None:
-                    p.terminate()
-                    try:p.wait(timeout=10)
-                    except subprocess.TimeoutExpired:p.kill();p.wait(timeout=5)
-        if p.returncode:raise AssertionError('real browser suite failed; inspect its private report')
+            code,_=run_owned_client(argv,cwd,runenv,timeout=300,poll_hook=worker_control,output_sink=log)
+        if code:raise AssertionError('real browser suite failed; inspect its private report')
         return b''
     p=subprocess.run([str(a)for a in argv],env=runenv,cwd=cwd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=300)
     with (PRIVATE/'commands.log').open('ab')as log:log.write(p.stdout)

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
 import os
+import io
 import json
 from pathlib import Path
 import sys
@@ -12,6 +13,33 @@ from bounded_client import ClientLimitError, run_owned_client
 
 
 class BoundedClient(unittest.TestCase):
+    def test_deadline_keeps_bounded_private_output_and_polls_control(self):
+        with tempfile.TemporaryDirectory(prefix='cratectl-browser-client-') as directory:
+            output=io.BytesIO();polls=[]
+            with self.assertRaisesRegex(ClientLimitError,'unconfirmed'):
+                run_owned_client([sys.executable,'-c','import time;print("owned browser progress",flush=True);time.sleep(30)'],directory,dict(os.environ),timeout=.25,poll_hook=lambda:polls.append(True),output_sink=output)
+            self.assertEqual(output.getvalue(),b'owned browser progress\n')
+            self.assertGreater(len(polls),1)
+
+    def test_control_failure_still_stops_owned_descendants(self):
+        with tempfile.TemporaryDirectory(prefix='cratectl-browser-control-') as directory:
+            marker=Path(directory)/'late-child';ready=Path(directory)/'ready'
+            child='import time,signal;from pathlib import Path;signal.signal(signal.SIGTERM,signal.SIG_IGN);time.sleep(.6);Path('+repr(str(marker))+').touch()'
+            parent='import subprocess,sys,time;from pathlib import Path;subprocess.Popen([sys.executable,"-c",'+repr(child)+']);Path('+repr(str(ready))+').touch();time.sleep(30)'
+            def control():
+                if ready.exists():raise RuntimeError('owned control failed')
+            with self.assertRaisesRegex(RuntimeError,'owned control failed'):
+                run_owned_client([sys.executable,'-c',parent],directory,dict(os.environ),poll_hook=control)
+            time.sleep(.7)
+            self.assertFalse(marker.exists())
+
+    def test_output_budget_also_bounds_the_private_sink(self):
+        with tempfile.TemporaryDirectory(prefix='cratectl-browser-output-') as directory:
+            output=io.BytesIO()
+            with self.assertRaisesRegex(ClientLimitError,'output budget'):
+                run_owned_client([sys.executable,'-c','import sys,time;sys.stdout.write("x"*10000);sys.stdout.flush();time.sleep(30)'],directory,dict(os.environ),output_limit=1024,output_sink=output)
+            self.assertLessEqual(len(output.getvalue()),1024)
+
     def test_large_structured_result_is_complete_when_explicitly_requested(self):
         with tempfile.TemporaryDirectory(prefix='cratectl-client-') as directory:
             code, output=run_owned_client([sys.executable,'-c','import json;print(json.dumps({"owned":"x"*200000}))'],directory,dict(os.environ),capture_limit=8<<20)

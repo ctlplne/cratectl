@@ -1,0 +1,70 @@
+{
+  "observed_at": "2026-11-04T18:27:06.111349+00:00",
+  "source_parent": "1e9fdd0f1f5a338ad66b8dffe0b231b9bcb23fb0",
+  "source_dirty": true,
+  "state": "Diagnostic support implemented and locally checked; original browser cause unresolved; native replay pending",
+  "source_files": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "0ff30eeec062626d6a690046a7c118fc4d8d5c7910c879caffbbf8df13fb3198"
+    },
+    {
+      "path": ".github/workflows/browser-repair.yml",
+      "sha256": "bc6299950fc61abe526cad89191a152bdf0a498de70f10d29876f69d89ca17a6"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "0c0a9975774eab826c9b5e90e86ba30eba3b620c1315769deb6c1726a980b983"
+    },
+    {
+      "path": "scripts/conformance_console.py",
+      "sha256": "d0eb6425df92cfb37b09b60323ea8090aa0a0d110b8ee030dabaa4b486168eb5"
+    },
+    {
+      "path": "scripts/ci_native_diagnostics.py",
+      "sha256": "b4a8eee332f3a68ed1f81603daa14685bd5cb66291028b206342f8b9da5376c6"
+    },
+    {
+      "path": "scripts/test_bounded_client.py",
+      "sha256": "7421a984c38e0cb76aa792b3dd45b26e2c139097a92498eaa69e0e3763b84244"
+    },
+    {
+      "path": "scripts/test_ci_native_diagnostics.py",
+      "sha256": "02ec502c8e4c8dfd140ae2dc6e8fcf4e7aead108b0ae1958912b7b85dc52aae7"
+    }
+  ],
+  "original_failure": "evidence/2026-11-04/github-9b00f7e-checkpoint.json",
+  "behavior": [
+    "Playwright uses the common bounded POSIX owned process-group runner with its existing worker-control callback. Deadline300seconds/output8MiB and all15workflows/zero retries unchanged.",
+    "Private command bytes stream within the output budget and survive deadline/control errors; normal, failure and timeout exits clean owned descendants. No raw output is printed.",
+    "Only generated failed exact-source console reports select owned commands.log, optional final browser-results.json and registry.log under the matching private run. Bounded reads reject symlinks and oversized files; fixture/token/database/config files are excluded.",
+    "Existing OpenSSL CMS AES-256-GCM/RSA-OAEP SHA256 seals diagnostic bytes for the owner-held recipient. Key never visits CI; safe metadata and ciphertext retained7days. No plaintext fallback."
+  ],
+  "checks": [
+    {
+      "command": "python3 scripts/test_bounded_client.py",
+      "result": "passed10 meaningful process/input/output/deadline/control regressions",
+      "log": ".cache/browser-diagnostics-bounds-first.log",
+      "sha256": "83e733fff4c317cc6babb6363e021af27c3a4998ce2370de40b8a9247ea2b96f"
+    },
+    {
+      "command": "make lint",
+      "result": "passed, including all10process regressions and6realCMS/collection regressions",
+      "log": ".cache/browser-diagnostics-lint.log",
+      "sha256": "70cca666ab47815727db1a4d7ae380d93f1da6787ab8ad141629cef376a7a9af"
+    },
+    {
+      "command": "Ruby YAML parse both modified workflows; Python compile; git diff --check",
+      "result": "passed"
+    }
+  ],
+  "native_required": [
+    "Observe actual x86 browser process behavior and diagnostic artifact generation on a new exact-source run. Original1e9fdd0jobs continue on their original handles.",
+    "Before local decryption bind artifact/source/run/platform/cipherSHA/recipientSHA, authenticate CMS, write a new private path, inspect only bounded content and publish only safe findings.",
+    "No browser pass until all15originalandexpandedcases complete with zero unexpected/skipped/flaky results. No root-cause claim from an unexecuted case or a timeout."
+  ],
+  "limits": [
+    "No runtime/SQL/schema/product policy or test acceptance change; no deadline increase, retry, case deletion or skip-as-pass.",
+    "All450capabilities/41families/laterstages remain required. Broad readiness/fullsecurity/packaging false. No primary/sibling/customer/release/delegation changes."
+  ]
+}

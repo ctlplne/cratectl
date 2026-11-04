@@ -147,6 +147,45 @@ def collect_jvm(root, candidate):
     return failures
 
 
+def collect_console(root, candidate):
+    """Encrypt only failed owned browser logs, including a suite timeout.
+
+    Final Playwright JSON can be absent when the outer deadline fires. The
+    bounded command stream still identifies the last completed tests and errors.
+    Never read fixture, installation, credential or token files.
+    """
+    if not re.fullmatch('[0-9a-f]{40}',candidate):
+        raise ValueError('browser diagnostics require an exact candidate')
+    generated=subprocess.check_output(['git','ls-files','--others','--modified','--exclude-standard','-z','--','evidence'],cwd=root).split(b'\0')
+    if len(generated)>201:
+        raise ValueError('browser generated report inventory exceeds its bound')
+    failures=[];remaining=16 << 20
+    for raw_path in generated:
+        if not raw_path:continue
+        path=raw_path.decode('utf-8')
+        match=re.fullmatch(r'evidence/\d{4}-\d{2}-\d{2}/console-([0-9a-f]{10})\.json',path)
+        if not match:continue
+        report=json.loads(read_owned_file(root/'evidence',root/path,1 << 20))
+        if not isinstance(report,dict) or report.get('candidate')!=candidate:
+            raise ValueError('browser diagnostic report source does not match')
+        if report.get('status')!='failed':continue
+        if report.get('run')!=match[1] or report.get('workflow') not in ('all','repair','retention','nuget') or len(failures)>=4:
+            raise ValueError('browser diagnostic run/workflow inventory is invalid')
+        error=report.get('failure','')
+        if not isinstance(error,str) or len(error)>8192:
+            raise ValueError('browser diagnostic error exceeds its byte budget')
+        failure={'run':match[1],'client':'console','workflow':report['workflow'],'error':error,'logs':[]}
+        folder=root/'.private/console-conformance'/match[1]
+        for name,limit in [('commands.log',8 << 20),('browser-results.json',4 << 20),('registry.log',4 << 20)]:
+            log=folder/name
+            if not (log.exists() or log.is_symlink()):continue
+            if remaining<=0:raise ValueError('browser diagnostic log inventory exceeds its byte budget')
+            raw=read_owned_file(root/'.private',log,min(limit,remaining));remaining-=len(raw)
+            failure['logs'].append({'name':name,'sha256':hashlib.sha256(raw).hexdigest(),'output_base64':base64.b64encode(raw).decode('ascii')})
+        failures.append(failure)
+    return failures
+
+
 def seal(payload, certificate, openssl='openssl'):
     if not isinstance(payload, bytes) or len(payload) > MAX_PAYLOAD:
         raise ValueError('native diagnostic plaintext exceeds its byte budget')
@@ -219,6 +258,9 @@ def main():
     jvm = collect_jvm(root, candidate)
     decoded['failures'].extend(jvm)
     count += len(jvm)
+    console=collect_console(root,candidate)
+    decoded['failures'].extend(console)
+    count+=len(console)
     decoded.update(run_id=run_id, runner_os='Linux', runner_arch=arch)
     payload = json.dumps(decoded, separators=(',', ':')).encode()
     if len(payload) > MAX_PAYLOAD:

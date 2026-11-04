@@ -94,6 +94,18 @@ jobs:
       - name: Safe failure locations and matcher labels
         if: failure()
         run: python3 scripts/ci/browser_failure_summary.py
+      - name: Encrypt bounded browser failure observations for owner diagnosis
+        if: failure()
+        run: python3 scripts/ci_native_diagnostics.py
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: encrypted-browser-diagnostics-${{ matrix.workflow }}
+          path: |
+            .cache/ci-native-diagnostics.cms
+            .cache/ci-native-diagnostics.json
+          if-no-files-found: error
+          retention-days: 7
       - name: Prepare bounded evidence summary
         if: always()
         run: python3 scripts/ci/evidence_summary.py

@@ -226,6 +226,18 @@ jobs:
       - name: Safe Chromium failure locations
         if: failure() && matrix.arch == 'amd64'
         run: python3 scripts/ci/browser_failure_summary.py
+      - name: Encrypt bounded native failure observations for owner diagnosis
+        if: failure()
+        run: python3 scripts/ci_native_diagnostics.py
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: encrypted-native-diagnostics-${{ matrix.arch }}
+          path: |
+            .cache/ci-native-diagnostics.cms
+            .cache/ci-native-diagnostics.json
+          if-no-files-found: error
+          retention-days: 7
       - name: Prepare bounded native evidence summary
         if: always()
         run: python3 scripts/ci/evidence_summary.py

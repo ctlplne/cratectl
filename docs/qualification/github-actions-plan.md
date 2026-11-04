@@ -15,8 +15,10 @@ outside this CI authority. No autonomous delegation.
 
 Exact9b00f7e now passes all eight native JVM jobs, including Ivy654checks per
 architecture/nine stages/eight snapshot cases/34byte bindings. Both main native
-PostgreSQL integration/race and baseline steps pass; final x86 Chromium is still
-running, so whole-campaign acceptance remains separate. See the
+PostgreSQL integration/race and baseline steps pass. The final x86 Chromium
+suite timed out at300seconds before producing JSON:23of24jobs pass, with18safe
+summaries in the [partial checkpoint](../../evidence/2026-11-04/github-9b00f7e-checkpoint.json).
+No complete browser workflow is accepted from this attempt. See also the
 [JVM checkpoint](../../evidence/2026-11-04/jvm-9b00f7e-checkpoint.json).
 
 The olderd4056d9 baseline has two preserved failures: first dotnet push401 and an
@@ -34,6 +36,15 @@ baseline retains its original645checks and adds two (647expected). The original
 key/request was not exported, so its precise401cause remains unresolved. New
 native replay is required; see the
 [repair record](../../evidence/2026-11-04/ci-bootstrap-key-hardening-development.json).
+
+Browser diagnostics now retain bounded private command output even when the
+suite deadline prevents final JSON. Main and focused failure steps seal only
+selected owned command/report/registry logs with the existing owner CMS
+recipient, never token/config/fixture files. Ciphertext and fixed metadata
+expire after seven days; private key stays local, with no plaintext fallback.
+Ten owned-process and six CMS/collection regressions pass locally. The deadline,
+all15workflows and zero retries remain unchanged; native observation is still
+required. See the [development record](../../evidence/2026-11-04/browser-timeout-diagnostics-development.json).
 
 The following campaign notes predate this9b00f7e observation.
 

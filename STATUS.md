@@ -12,11 +12,13 @@ profiles pass 161/seven stages/twelve identities. Safe artifacts bind actual
 native Linux, clean source, JDK, client and fixture bytes. See
 `evidence/2026-11-04/jvm-9b00f7e-checkpoint.json`.
 
-Both native main-workflow PostgreSQL integration/race and stock-client baseline
-steps also pass on9b00f7e. Its ARM job is complete; x86 Chromium remains running.
-All other23 observed jobs pass, including both macOS source/fuzz, OCI2,
-upgrades2 and focused browser3. Preserve the existing five run handles; do not
-claim the whole campaign green before its final browser artifact is accepted.
+Exact9b00f7e is now terminal:23of24jobs pass. Both native main PostgreSQL
+integration/race and645check client campaigns pass; the x86 full browser suite
+hits its unchanged300second deadline before a final Playwright JSON report.
+Only two harness assertions were recorded; no full browser workflow is accepted
+from that attempt. All other23jobs pass, including macOS source/fuzz, JVM8,
+OCI2, upgrades2 and all three focused browser journeys five times each. See
+`evidence/2026-11-04/github-9b00f7e-checkpoint.json` for18safe source-bound summaries.
 Latest fully accepted whole observed campaign remains708214f (17jobs).
 
 The nonunique snapshot backend and native Ivy journey now have named proof.
@@ -44,6 +46,15 @@ CI uses independent job/platform concurrency groups, preserving existing cases,
 commands and budgets. Native cross-run independence still needs direct observation;
 progress inside one run alone does not establish that scheduling improvement.
 Earlier failures, partial campaigns and runner cancellations remain retained.
+New browser failure support reuses the bounded owned process-group runner,
+retains private output on timeout and encrypts only selected failed command/report/
+registry logs with the existing owner recipient. Ten process-boundary and six CMS
+regressions plus full lint pass locally. All15workflows,300seconds and zero retries
+remain unchanged. The original browser cause is unknown; native observation of
+these diagnostics is pending. Existing1e9fdd0run handles remain active; do not
+restart or substitute them. See
+`evidence/2026-11-04/browser-timeout-diagnostics-development.json`.
+
 No primary, selected binary, data, credential, sibling or customer change.
 Earlier notes below are historical and do not override this current state.
 

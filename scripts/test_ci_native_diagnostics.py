@@ -9,12 +9,36 @@ import subprocess
 import tempfile
 import unittest
 
-from ci_native_diagnostics import collect, collect_jvm, seal, unseal, write_new
+from ci_native_diagnostics import collect, collect_jvm, collect_console, seal, unseal, write_new
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 class EncryptedNativeDiagnostics(unittest.TestCase):
+    def test_console_timeout_collects_only_owned_logs_without_a_final_report(self):
+        with tempfile.TemporaryDirectory(prefix='cratectl-browser-cms-',dir=self.folder) as temp:
+            root=Path(temp);subprocess.run(['git','init','-q','-b','main',str(root)],check=True)
+            evidence=root/'evidence/2026-11-04';evidence.mkdir(parents=True)
+            folder=root/'.private/console-conformance'/('3'*10);folder.mkdir(parents=True)
+            (folder/'commands.log').write_bytes(b'owned private partial Playwright output')
+            (folder/'registry.log').write_bytes(b'owned registry output')
+            for name in ['admin.token','browser-fixture.json','database.json']:
+                (folder/name).write_text('private-synthetic-credential-value')
+            report={'candidate':'a'*40,'run':'3'*10,'workflow':'all','status':'failed','failure':'TimeoutError: owned browser suite exceeded 300 seconds','credential':'private-synthetic-credential-value'}
+            path=evidence/('console-'+'3'*10+'.json');path.write_text(json.dumps(report))
+            failures=collect_console(root,'a'*40);self.assertEqual(len(failures),1)
+            self.assertEqual(failures[0]['error'],report['failure'])
+            self.assertEqual([v['name'] for v in failures[0]['logs']],['commands.log','registry.log'])
+            self.assertEqual(base64.b64decode(failures[0]['logs'][0]['output_base64']),b'owned private partial Playwright output')
+            self.assertNotIn('private-synthetic-credential-value',json.dumps(failures))
+            (folder/'browser-results.json').write_text('{"owned":"final failure"}')
+            self.assertEqual(len(collect_console(root,'a'*40)[0]['logs']),3)
+            with self.assertRaises(ValueError):collect_console(root,'b'*40)
+            report['status']='passed';path.write_text(json.dumps(report));self.assertEqual(collect_console(root,'a'*40),[])
+            report['status']='failed';path.write_text(json.dumps(report))
+            (folder/'commands.log').unlink();(folder/'commands.log').symlink_to(folder/'admin.token')
+            with self.assertRaises(ValueError):collect_console(root,'a'*40)
+
     @classmethod
     def setUpClass(cls):
         observed = subprocess.run(['openssl', 'version'], capture_output=True, text=True, timeout=10)
