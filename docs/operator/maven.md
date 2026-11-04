@@ -23,7 +23,9 @@ overwritten with different bytes. Maven's unique snapshots use timestamped
 filenames under a `-SNAPSHOT` version directory; repeat publication creates a new
 timestamp/build. Current metadata maps each extension/classifier pair separately,
 so a later `sources` publication does not replace the ordinary JAR or POM mapping.
-Nonunique snapshot policy and discovery are implemented; native replay is pending.
+Nonunique snapshot policy and discovery pass the named real PostgreSQL/Ivy
+journeys on both native Linux architectures at
+[9b00f7e](../../evidence/2026-11-04/jvm-9b00f7e-checkpoint.json).
 In a hosted Maven repository, **Snapshot policy** controls literal filenames such
 as `tool-1.0-SNAPSHOT.jar`. The default **Keep existing bytes** rejects a changed
 publication. **Allow base-version snapshot replacement** enables only these

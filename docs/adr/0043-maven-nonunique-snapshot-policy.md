@@ -1,6 +1,8 @@
 # Explicit policy for nonunique Maven snapshots
 
-Status: implemented; native PostgreSQL, Ivy and browser qualification pending.
+Status: named native PostgreSQL/Ivy journeys pass on both architectures at9b00f7e;
+expanded browser qualification remains separate. See
+[the native checkpoint](../../evidence/2026-11-04/jvm-9b00f7e-checkpoint.json).
 
 A literal base-version filename such as `tool-1.1-SNAPSHOT.jar` can already be
 stored once, but discovery omitted its POM and snapshot mapping. Capture that

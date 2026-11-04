@@ -1,0 +1,104 @@
+{
+  "observed_at": "2026-11-04T18:16:17.780921+00:00",
+  "source_parent": "9b00f7ebec3cd6ce4eedda8794f3993f75d37c84",
+  "source_dirty": true,
+  "state": "Implemented and locally checked; native replay required",
+  "changes": [
+    {
+      "path": "Makefile",
+      "sha256": "7ef39067a7ab216c0c455d557cc6ab28b5f290d07cd1cca763e3dd806d3b9d2f"
+    },
+    {
+      "path": "scripts/conformance_nuget_hosted.py",
+      "sha256": "9cb5d62fbe495b5d48388df1434e4864ede14714341f97f678a5a1502619c08b"
+    },
+    {
+      "path": "scripts/ci/install_maven.sh",
+      "sha256": "0d0d97c5f7aeb3289a67a5fff85df23006b4497c718a1c3e0241817021a6ee46"
+    },
+    {
+      "path": "scripts/ci/bootstrap_linux.sh",
+      "sha256": "3999bef9e38ce28fd56d0b7452ab9de25722f2de636a57f0ae8f9e47f0b2f79c"
+    },
+    {
+      "path": "scripts/ci/test_maven_install.py",
+      "sha256": "f466b959e58dcf59db61375a69dbe2005d62d2d531a5f95a5ca0c6067841e00c"
+    },
+    {
+      "path": "docs/qualification/jvm-clients.json",
+      "sha256": "8cbe356951427adb8c446d3f88744cdf2cb870ca20ab6c826221c8e70e720497"
+    },
+    {
+      "path": "docs/operator/nuget.md",
+      "sha256": "d3d034e97035acb61a20e9a4375ee261581c2baf3f44b48ef797f73827dc407d"
+    },
+    {
+      "path": "web/src/repositories.tsx",
+      "sha256": "e0b7babc520a6d5ff8e3df9e8676d30cf16b84baf7ff6feab0b075ec02dbb0dd"
+    },
+    {
+      "path": "web/tests/zzzzzzzzzzzz-nuget.spec.mjs",
+      "sha256": "5f066e1f86e829910acfb96377682c543fb413dcfad5381ed508f74af3999581"
+    },
+    {
+      "path": "web/build-manifest.json",
+      "sha256": "c68ec6ddc03c1b5cde82e62cf920f19f22cdd128d801f43bfd8775a5f5ef12a3"
+    },
+    {
+      "path": "internal/consoleui/dist/assets/index-lqXtj9Lz.js",
+      "sha256": "b2a57b3939599fbf94f55cd8604091bda995b9c6d9e208a08a82473f3cbfb3a9"
+    }
+  ],
+  "original_failure": "evidence/2026-11-04/baseline-d4056d9-failures.json",
+  "local_checks": [
+    {
+      "command": "python3 scripts/ci/test_maven_install.py",
+      "result": "passed5tests; owned HTTP-transfer stand-in, no network",
+      "log": ".cache/maven-bootstrap-standin-tests.log",
+      "log_sha256": "cc1d19305cbb7e9f988094559184284f1820c75bb2e6818acf435d3b2aafeb50"
+    },
+    {
+      "command": "make lint",
+      "result": "passed; includes5new installer boundary regressions",
+      "log": ".cache/ci-bootstrap-hardening-lint.log",
+      "log_sha256": "b54b398b28c45935d5f7cb62b871aa7d4aa31b49ca33cc0d6924a43e2c123241"
+    },
+    {
+      "command": "bash -n scripts/ci/install_maven.sh scripts/ci/bootstrap_linux.sh; python3 -m py_compile scripts/conformance_nuget_hosted.py scripts/ci/test_maven_install.py; git diff --check",
+      "result": "passed"
+    },
+    {
+      "command": "python3 scripts/build_console.py; python3 scripts/build_console.py --check; python3 scripts/check_console_assets.py; node --check web/tests/zzzzzzzzzzzz-nuget.spec.mjs",
+      "result": "passed; TypeScript/Vite and exact asset reproduction. Existing350kBchunkwarning retained.",
+      "logs": [
+        {
+          "path": ".cache/ci-key-console-build.log",
+          "sha256": "1a540e70e96bd9b195c6509296d8aff515d462c6583ef08d2834198509aadcce"
+        },
+        {
+          "path": ".cache/ci-key-console-reproduction.log",
+          "sha256": "5dab13607d5d5bd0210e168af26645cee62bcb71bb80376af62f61eaffa21580"
+        }
+      ]
+    }
+  ],
+  "maven_sources": [
+    "https://downloads.apache.org/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.tar.gz.sha512",
+    "https://archive.apache.org/dist/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.tar.gz.sha512"
+  ],
+  "nuget_parser_sources": [
+    "https://github.com/NuGet/NuGet.Client/blob/dev/src/NuGet.Core/NuGet.CommandLine.XPlat/Commands/PushCommand.cs",
+    "https://learn.microsoft.com/en-us/dotnet/standard/commandline/syntax"
+  ],
+  "native_required": [
+    "Both native Linux installers must obtain the committed exact Maven pin and complete all original real PostgreSQL/race/client stages.",
+    "Both actual SDKs must pass the leading-hyphen invalid-key/no-reference regression, all original positive/negative push/delete/restore cases and56metadataHTTPcases. Baseline expected647checks; original645 retained.",
+    "No original credential recovery is possible from intentionally safe evidence; do not claim original401 root cause proven."
+  ],
+  "limits": [
+    "Tool-source fallback only; no package resolver fallback, skipped case, altered authentication or campaign retry.",
+    "Stand-ins ran locally on ARM; real x86/ARM runtime qualification remains on GitHub Actions.",
+    "All450capabilities/41families/laterstages remain required; broad readiness/fullsecurity/packaging remain false. No primary/sibling/customer/release changes."
+  ],
+  "expected_next_ci": "main9/JVM8/OCI2/upgrades2/focused3=24jobs; actual full-SHA inventory required. No NuGet library path changed, so no implied library replay."
+}

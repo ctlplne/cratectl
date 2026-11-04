@@ -42,13 +42,7 @@ if test "$client_set" = all; then
   tar -xzf ".cache/$oras_archive" -C .cache/bin oras
   chmod 755 .cache/bin/oras
 
-  maven_archive=apache-maven-3.10.0-bin.tar.gz
-  maven_base=https://downloads.apache.org/maven/maven-3/3.10.0/binaries
-  curl --fail --location --silent --show-error --output ".cache/$maven_archive" "$maven_base/$maven_archive"
-  curl --fail --location --silent --show-error --output ".cache/$maven_archive.sha512" "$maven_base/$maven_archive.sha512"
-  maven_sha="$(tr -d '[:space:]' < ".cache/$maven_archive.sha512")"
-  printf '%s  %s\n' "$maven_sha" ".cache/$maven_archive" | sha512sum --check --status
-  tar -xzf ".cache/$maven_archive" -C .cache
+  bash scripts/ci/install_maven.sh
 
   python -m pip install --disable-pip-version-check twine==7.0.0 build==1.3.0
 fi

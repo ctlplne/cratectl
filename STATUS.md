@@ -2,52 +2,49 @@
 
 The full goal is active. All 450 capabilities / 41 families and every later
 stage remain committed. Broad readiness, full security and packaging remain
-negative. Work and both commit identities stay on main as `imfeelingtheagi`.
+negative. Both commit identities remain exactly `imfeelingtheagi` on main.
 
-All eight native JVM jobs pass on exact `d4056d9`. SBT 1.13.0 and 2.0.11 each
-pass 161 checks on Linux amd64 and arm64, all seven stages and twelve exact
-publisher/reference/HTTP byte identities. Gradle passes 199/eight stages/24
-identities; Ivy metadata-v2 passes 494/eight stages/eight metadata cases/28
-identities and three SHA-2 consumers per architecture. See
-`evidence/2026-11-04/jvm-d4056d9-checkpoint.json` and the separate SBT checkpoint.
-Both original SBT failures are preserved and replayed; no client case was removed.
-This accepts those eight jobs, not the unfinished whole campaign.
+All eight native JVM jobs pass on exact `9b00f7e`. Ivy snapshots-v3 passes
+654 checks per architecture, all nine stages, eight snapshot cases, all earlier
+metadata/release cases and 34 exact publisher/reference/HTTP identities.
+Gradle passes 199/eight stages/24 identities; all four SBT series/architecture
+profiles pass 161/seven stages/twelve identities. Safe artifacts bind actual
+native Linux, clean source, JDK, client and fixture bytes. See
+`evidence/2026-11-04/jvm-9b00f7e-checkpoint.json`.
 
-The latest accepted fully passing whole observed campaign remains `708214f`
-(17 jobs). Partial `72b98be` accepts 16 of 17 jobs; only macOS fuzz never acquired
-a runner, while native macOS source/unit passes. Partial `7667eb3` accepts 18 of
-24 jobs with four original SBT failures and two unexecuted macOS capacity
-cancellations. Exact summaries, annotations and job identities remain in their
-committed checkpoints. Re-poll the recorded `30229dc`/`d4056d9` handles for
-remaining workflow outcomes; an observation timeout is not a stopped job.
+Both native main-workflow PostgreSQL integration/race and stock-client baseline
+steps also pass on9b00f7e. Its ARM job is complete; x86 Chromium remains running.
+All other23 observed jobs pass, including both macOS source/fuzz, OCI2,
+upgrades2 and focused browser3. Preserve the existing five run handles; do not
+claim the whole campaign green before its final browser artifact is accepted.
+Latest fully accepted whole observed campaign remains708214f (17jobs).
 
-Maven nonunique snapshot policy/discovery and Ivy snapshots-v3 are implemented
-but unverified on native clients and PostgreSQL. The default remains immutable;
-only explicit hosted Maven opt-in permits literal base-version replacement.
-Publication rechecks current policy/grants, holds and tombstones in the common
-transaction. Changed bytes have current digest policy, old/new journal identity
-and atomic checksum/event/integrity receipts. No schema migration is introduced.
-The operator console exposes creation and revision-controlled preview/apply.
-Local unit/race, compile-only integration, build, lint and console checks pass;
-actual PostgreSQL/race, stock Ivy and Chromium replay remain required. The
-original missing-discovery regression is retained. See
-`evidence/2026-11-04/maven-nonunique-snapshot-development.json`.
+The nonunique snapshot backend and native Ivy journey now have named proof.
+Default immutability, opt-in replacement, current policy/grants/holds, changed-byte
+review, exact checksum receipts and restart/revocation pass on both architectures.
+First-snapshot identities were observed before replacement. Expanded Chromium
+policy administration still needs its separate result. Warm-cache, concurrency,
+interruption, timestamped Ivy snapshots and broader JVM/lifecycle/scale remain open.
 
-The Ivy v3 profile retains every earlier release and metadata case, then requires
-eight snapshot cases, nine stages and 34 byte bindings. It uses fresh consumers,
-checks default and opted-in publication, review, both representation holds,
-policy disablement, restart and fresh writer/reader revocation. First snapshot
-hashes are observed before replacement. Earlier metadata-v2 and SBT release
-passes do not qualify this new scope. Warm-cache/concurrent/fault/lifecycle,
-remaining JVM clients and every other goal requirement remain open.
+Olderd4056d9 has two baseline failures despite its eight separate JVM passes:
+AMD dotnet first push reports a missing API key and401; ARM Maven tool download
+fails before native tests. See `evidence/2026-11-04/baseline-d4056d9-failures.json`.
+The original key/request was not exported; a leading-hyphen parsing cause remains
+a hypothesis. No server authentication or token-generation rule changes.
 
-CI scheduling now uses independent job/platform concurrency groups, preserving
-all nine main-workflow cases and their commands/budgets. Local YAML comparison
-passes; native queue observation remains pending. Original run handles stay
-retained. See `evidence/2026-11-04/ci-independent-lanes-development.json`.
+Maven bootstrap now uses a reviewed immutable checksum, bounded HTTPS transfers
+and one approved Apache archive fallback; a digest mismatch stops immediately.
+Five local stand-in boundary tests and full lint pass. NuGet push/delete keys and
+copyable examples use --api-key=value; a new actual-SDK negative-key/no-reference
+regression is implemented. Both repairs need native replay. Console assets
+reproduce exactly. See
+`evidence/2026-11-04/ci-bootstrap-key-hardening-development.json`.
 
-No primary, selected binary, retained data, credential, sibling or customer
-change. The prior halt is historical and superseded by the owner's resume.
+CI uses independent job/platform concurrency groups, preserving existing cases,
+commands and budgets. Native cross-run independence still needs direct observation;
+progress inside one run alone does not establish that scheduling improvement.
+Earlier failures, partial campaigns and runner cancellations remain retained.
+No primary, selected binary, data, credential, sibling or customer change.
 Earlier notes below are historical and do not override this current state.
 
 Owner resumed the complete `GOAL.md` scope on 2026-11-02 and reaffirmed that

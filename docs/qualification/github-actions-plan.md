@@ -13,6 +13,30 @@ outside this CI authority. No autonomous delegation.
 
 ## Current qualification state
 
+Exact9b00f7e now passes all eight native JVM jobs, including Ivy654checks per
+architecture/nine stages/eight snapshot cases/34byte bindings. Both main native
+PostgreSQL integration/race and baseline steps pass; final x86 Chromium is still
+running, so whole-campaign acceptance remains separate. See the
+[JVM checkpoint](../../evidence/2026-11-04/jvm-9b00f7e-checkpoint.json).
+
+The olderd4056d9 baseline has two preserved failures: first dotnet push401 and an
+ARM Maven tool-download timeout. Its eight JVM passes remain valid only for
+their named scope. Maven bootstrap now uses a committed reviewed SHA512 and two
+approved Apache locations, each bounded15s connect/180s total/32MiB/HTTPS only.
+Only a failed transfer can use the archive; a completed wrong digest stops.
+Five local stand-in tests cover these boundaries. This fallback never changes
+package sources or retries a failed qualification campaign.
+
+Opaque NuGet keys stay attached as --api-key=value in the harness and copyable
+examples. A deterministic actual-SDK leading-hyphen invalid-key probe must
+reach real401 without the missing-key warning and leave no reference. The full
+baseline retains its original645checks and adds two (647expected). The original
+key/request was not exported, so its precise401cause remains unresolved. New
+native replay is required; see the
+[repair record](../../evidence/2026-11-04/ci-bootstrap-key-hardening-development.json).
+
+The following campaign notes predate this9b00f7e observation.
+
 Owner resumed the full goal on 2026-11-04. The latest fully accepted whole
 observed campaign remains `708214f`: all 17 jobs and eleven safe summaries.
 Exact `42f9366` completes with 15 successes and two unexecuted macOS source/fuzz

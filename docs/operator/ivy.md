@@ -114,7 +114,8 @@ and [conflict managers](https://ant.apache.org/ivy/history/2.6.0/ivyfile/conflic
 Only the owned build files execute; resolved packages remain inert.
 
 
-The new `maven-snapshots-v3` journey is implemented but unverified. It retains all
+The `maven-snapshots-v3` journey passes654checks on each native Linux architecture
+at [9b00f7e](../../evidence/2026-11-04/jvm-9b00f7e-checkpoint.json). It retains all
 release and metadata-v2 cases, adds eight ordered snapshot cases, and requires
 nine stages and 34 producer/reference/HTTP bindings. Literal snapshot publication
 uses stock Ivy; fresh consumers resolve the actual dependency graph through a

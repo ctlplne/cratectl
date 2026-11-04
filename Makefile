@@ -25,6 +25,7 @@ lint:
 	python3 scripts/ci/test_browser_failure_summary.py
 	python3 scripts/ci/test_native_client_diagnostics.py
 	python3 scripts/ci/test_postgres_binding.py
+	python3 scripts/ci/test_maven_install.py
 	python3 scripts/test_oci_client_contract.py
 	python3 scripts/test_nuget_feed_cases.py
 	python3 scripts/test_bounded_client.py

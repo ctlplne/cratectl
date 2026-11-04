@@ -97,7 +97,9 @@ def hosted(h):
         return path, digest
 
     def push(path, token='admin', duplicate=False, denied=False):
-        args = [dotnet, 'nuget', 'push', path, '--source', source, '--api-key', h.tokens[token], '--no-symbols']
+        # Bind an opaque key to its option, including a valid generated key
+        # whose first base64url character is '-'. Never regenerate such keys.
+        args = [dotnet, 'nuget', 'push', path, '--source', source, '--api-key=' + h.tokens[token], '--no-symbols']
         if duplicate:
             args.append('--skip-duplicate')
         run(args, work, extra, expect_failure=denied)
@@ -131,6 +133,16 @@ def hosted(h):
     dep, dep_digest = package('dependency', 'Cratectl.Proof.Dependency', '1.0.0')
     app1, app1_digest = package('application_1', 'Cratectl.Proof.Application', '1.0.0', True)
     app2, app2_digest = package('application_2', 'Cratectl.Proof.Application', '2.0.0', True)
+    # This public synthetic value is deliberately not a credential. Exercise the
+    # actual SDK parser and real registry's authentication boundary before any
+    # dependency publication; invalid authentication must leave no reference.
+    parser_probe = run([dotnet, 'nuget', 'push', dep, '--source', source,
+                        '--api-key=-cratectl_owned_invalid_parser_probe_000000', '--no-symbols'],
+                       work, extra, expect_failure=True)
+    check('stock dotnet consumes a leading-hyphen API key without treating it as an option',
+          '401 (Unauthorized)' in parser_probe and 'No API Key was provided' not in parser_probe)
+    check('invalid parser-probe key publishes no NuGet dependency',
+          req('/nuget/dotnet/flat/cratectl.proof.dependency/index.json')[0] == 404)
     for path in [dep, app1, app2]:
         push(path)
     push(app1, duplicate=True)
@@ -159,7 +171,7 @@ def hosted(h):
     check('NuGet registration pages advertise complete numeric bounds', registration()['items'][0]['lower'] == '1.0.0' and registration()['items'][0]['upper'] == '2.0.0')
 
     def unlist(token='admin', denied=False):
-        run([dotnet, 'nuget', 'delete', 'Cratectl.Proof.Application', '1.0.0', '--source', source, '--api-key', h.tokens[token], '--non-interactive'], work, extra, expect_failure=denied)
+        run([dotnet, 'nuget', 'delete', 'Cratectl.Proof.Application', '1.0.0', '--source', source, '--api-key=' + h.tokens[token], '--non-interactive'], work, extra, expect_failure=denied)
 
     def listing_state(expected):
         reference = '/api/v1/repositories/dotnet/artifacts/reference?' + urlencode({'path': 'nuget-packages/cratectl.proof.application/1.0.0.nupkg'})
