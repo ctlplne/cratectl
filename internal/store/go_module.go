@@ -121,6 +121,9 @@ func checkGoModuleBundle(ctx context.Context, tx pgx.Tx, repo string, a Artifact
 	as := make([]Artifact, 0, 3)
 	for _, kind := range []string{"zip", "mod", "info"} {
 		ref, e := readArtifact(ctx, tx, repo, c.Prefix()+"."+kind, review, b)
+		if errors.Is(e, ErrNotFound) {
+			return ErrGoModuleUnvalidated
+		}
 		if e != nil {
 			return e
 		}
@@ -196,4 +199,23 @@ func (s *Store) GoModuleVersions(ctx context.Context, i Identity, repo, mod stri
 	}
 	semver.Sort(out)
 	return out, nil
+}
+
+// A missing sibling of an existing version is damaged publication state, not a
+// not-found result that authorizes a package client's fallback to another source.
+func missingGoModuleRepresentation(ctx context.Context, tx pgx.Tx, repo, p string) error {
+	request, e := gomodule.ParseRequest(p)
+	if e != nil || request.Version == "" {
+		return ErrNotFound
+	}
+	prefix := request.Coordinate.Prefix()
+	var exists bool
+	e = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM cratectl.artifacts WHERE repository=$1 AND path=ANY($2::text[]))`, repo, []string{prefix + ".zip", prefix + ".mod", prefix + ".info"}).Scan(&exists)
+	if e != nil {
+		return e
+	}
+	if exists {
+		return ErrGoModuleUnvalidated
+	}
+	return ErrNotFound
 }

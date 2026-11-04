@@ -166,6 +166,23 @@ func TestGoModuleAtomicPublicationReviewDiscoveryAndImmutableReplay(t *testing.T
 	if w := goHTTP(t, restarted, token, "GET", latest, nil); w.Code != 404 {
 		t.Fatal("denied latest discovered", w.Code)
 	}
+	// Simulate damage inside this disposable test database, after restoring policy.
+	// Incomplete versions must stop Go's comma-separated proxy fallback.
+	for _, a := range as {
+		approve(a, "allowed")
+	}
+	if e = s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
+		_, e := tx.Exec(ctx, `DELETE FROM cratectl.artifacts WHERE repository='owned' AND path=$1`, c.Prefix()+".info")
+		return e
+	}); e != nil {
+		t.Fatal(e)
+	}
+	for _, p := range []string{endpoint + ".zip", endpoint + ".info", list, latest} {
+		if w := goHTTP(t, restarted, token, "GET", p, nil); w.Code != 409 {
+			t.Fatal("partial version permitted fallback", p, w.Code)
+		}
+	}
+
 }
 func TestGoModuleOutboxRollbackAndConcurrentImmutablePublication(t *testing.T) {
 	s, _, token, admin := schemaServer(t)

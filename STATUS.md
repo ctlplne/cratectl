@@ -60,7 +60,11 @@ strict evidence export and byte-for-byte console reproduction pass. Three new
 PostgreSQL test functions compile only; they did not run locally. A separate
 native Go workflow requires both Linux architectures, real PostgreSQL normal/
 race and trusted-TLS stock Go transitive downloads with no VCS/public fallback.
-See `evidence/2026-11-04/go-module-hosted-development.json`. Go proxy/group,
+A source-inspected partial-version fallback defect now returns409 rather than
+404 when any bundle reference remains; its extended PostgreSQL case compiles
+but awaits native replay. See
+`evidence/2026-11-04/go-module-partial-read-development.json` and
+`evidence/2026-11-04/go-module-hosted-development.json`. Go proxy/group,
 legacy/alias/warm-cache/lifecycle/fault/migration/scale/platform and browser
 operator journeys remain required. Broad readiness stays false.
 

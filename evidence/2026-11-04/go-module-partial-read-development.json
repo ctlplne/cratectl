@@ -1,0 +1,32 @@
+{
+  "source_parent": "e62ac699135ed4bc2b6cca2a438f13749db36690",
+  "source_dirty": true,
+  "observed_at": "2026-11-04T22:14:38.464856+00:00",
+  "status": "source-inspection repair; local scoped unit/race and integration compilation pass; native regression unverified",
+  "issue": "A missing sibling of an existing Go bundle could produce 404, which permits stock Go proxy fallback with a comma-separated GOPROXY. Existing version damage must produce a terminal error.",
+  "repair": "Missing requested/sibling references return go_module_unvalidated/409 if any bundle reference exists. A wholly absent coordinate still returns404. The common authorized/RLS-scoped transaction checks only the three canonical paths. Discovery already rejects incomplete bundles.",
+  "regression": "Extend TestGoModuleAtomicPublicationReviewDiscoveryAndImmutableReplay: restore policy, delete only version info in the disposable test database, and require409 for direct ZIP/info/list/latest. No real database was modified locally.",
+  "files": [
+    {
+      "path": "internal/store/artifact_read.go",
+      "sha256": "21a2a827409c1ca7c50569c74bec79ac324950c47221b057db837feb61de9552"
+    },
+    {
+      "path": "internal/store/go_module.go",
+      "sha256": "a44b352c07c825c4cd005b82f3fbd1425dc30e7a4035d31d9f0a4447c842f24f"
+    },
+    {
+      "path": "internal/server/go_module_integration_test.go",
+      "sha256": "5b4a1e52c67845b6820eea2a8dac505669ac53f1d15fc599bb3a42b3dbdf733a"
+    }
+  ],
+  "logs": {
+    ".cache/go-module-partial-unit.log": "19dc6eb865ddca7e4552e4a8e45ddd1145d8c1b55ebb45ba8168b8616f146613",
+    ".cache/go-module-partial-pg-compile.log": "c586c33eda511d7807aa8d6a8d1f0d51f57534bedc07248d77f087849e9571b2",
+    ".cache/go-module-partial-race.log": "01a06d1716408f99fa1293f058e5ec61c8248f233a78a67fb55a66e39f67cb07"
+  },
+  "limits": [
+    "No observed native first failure or native repair pass claimed. The three real PostgreSQL regression functions still require both native jobs and race replay.",
+    "Hosted Go broader proxy/group/alias/legacy/lifecycle/fault/migration/scale/platform and all450capabilities/41families/laterstages remain committed. Full security/packaging/readiness remain false; no primary/customer/sibling/release change."
+  ]
+}

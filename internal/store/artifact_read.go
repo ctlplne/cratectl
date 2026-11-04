@@ -152,6 +152,9 @@ func (s *Store) artifact(ctx context.Context, i Identity, repo, path string, int
 			}
 		}
 		a, e = readArtifact(ctx, tx, repo, path, review && !intake, repositoryReadBudget(r))
+		if r.Format == "go" && errors.Is(e, ErrNotFound) {
+			e = missingGoModuleRepresentation(ctx, tx, repo, path)
+		}
 		if e == nil && r.Format == "pypi" && a.MediaType != PythonCatalogMedia {
 			var metadata PythonFile
 			if json.Unmarshal(a.Metadata, &metadata) != nil || !metadata.Validated {
