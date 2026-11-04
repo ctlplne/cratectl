@@ -2,17 +2,35 @@
 # SPDX-License-Identifier: BUSL-1.1
 """Qualification artifact selection must stay inside its owned workspace."""
 import os
+import json
 from pathlib import Path
 import tempfile
 import unittest
 from unittest.mock import patch
 
-from qualification_contract import candidate_artifact_names, candidate_binary_directory, validate_historical_build
+from qualification_contract import candidate_artifact_names, candidate_binary_directory, validate_historical_build, dotnet_sdk_pin
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 class CandidateArtifacts(unittest.TestCase):
+    def test_dotnet_sdk_selection_requires_an_exact_stable_pin(self):
+        with tempfile.TemporaryDirectory(prefix='cratectl-sdk-pin-',dir=ROOT/'.cache') as temporary:
+            root=Path(temporary);path=root/'global.json'
+            sdk={'version':'10.0.403','rollForward':'disable','allowPrerelease':False}
+            path.write_text(json.dumps({'sdk':sdk}));self.assertEqual(dotnet_sdk_pin(root),'10.0.403')
+            for change in [{'version':'10.0.x'},{'version':'10.0.403-rc.1'},{'version':'11.0.100'},
+                           {'rollForward':'latestPatch'},{'allowPrerelease':True},{'allowPrerelease':0},{'paths':['/foreign/sdk']}]:
+                path.write_text(json.dumps({'sdk':{**sdk,**change}}))
+                with self.subTest(change=change),self.assertRaises(ValueError):dotnet_sdk_pin(root)
+            for document in [None, 1, [], 'sdk', {}, {'sdk':None}, {'sdk':sdk,'other':{}}]:
+                path.write_text(json.dumps(document))
+                with self.subTest(document=document),self.assertRaises(ValueError):dotnet_sdk_pin(root)
+            path.write_text('{')
+            with self.assertRaises(ValueError):dotnet_sdk_pin(root)
+            path.write_text(' '*4097)
+            with self.assertRaises(ValueError):dotnet_sdk_pin(root)
+
     def test_historical_identity_rejects_wrong_source_dirty_and_cross_built_bytes(self):
         source = '1' * 40
         values = {'vcs': 'git', 'vcs.revision': source, 'vcs.modified': 'false', 'GOOS': 'linux', 'GOARCH': 'amd64'}

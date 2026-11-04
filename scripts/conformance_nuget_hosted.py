@@ -18,6 +18,7 @@ import zipfile
 from pathlib import Path
 from urllib.parse import urlencode
 from nuget_feed_cases import cases as metadata_cases, archive as metadata_archive, difference_paths
+from qualification_contract import dotnet_sdk_pin
 
 
 def hosted(h):
@@ -25,7 +26,7 @@ def hosted(h):
     dotnet = shutil.which('dotnet')
     check('actual dotnet SDK is available for hosted NuGet', dotnet is not None)
     sdk = run([dotnet, '--version']).strip()
-    check('actual dotnet SDK has a bounded version identity', re.fullmatch(r'10\.[0-9]{1,3}\.[0-9]{1,4}', sdk) is not None)
+    check('actual dotnet SDK matches the exact repository pin', sdk == dotnet_sdk_pin(h.ROOT))
     h.result['nuget_sdk_version'] = sdk
     with Path(dotnet).resolve().open('rb') as binary:
         h.result['nuget_dotnet_sha256'] = hashlib.file_digest(binary, 'sha256').hexdigest()

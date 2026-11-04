@@ -1,14 +1,32 @@
 # SPDX-License-Identifier: BUSL-1.1
-"""Explicit schema target shared by native upgrade qualification fixtures.
+"""Explicit schema, tool and artifact targets shared by qualification fixtures.
 
-Advance this only with an appended migration and frozen-receipt evidence. Never
-derive the expected version from the database under test.
+Advance the schema target only with an appended migration and frozen-receipt
+evidence. Never derive the expected version from the database under test.
 """
 
 import os
+import json
+import re
 from pathlib import Path
 
 CURRENT_SCHEMA = 11
+
+
+def dotnet_sdk_pin(root=None):
+    """Keep native feed and library comparisons on one exact stable SDK."""
+    path = Path(root or Path(__file__).resolve().parents[1]) / 'global.json'
+    if path.stat().st_size > 4096:
+        raise ValueError('Qualification SDK pin exceeds its byte budget')
+    document = json.loads(path.read_bytes())
+    sdk = document.get('sdk') if isinstance(document, dict) else None
+    if (not isinstance(document, dict) or set(document) != {'sdk'} or not isinstance(sdk, dict)
+            or set(sdk) != {'version', 'rollForward', 'allowPrerelease'}
+            or not isinstance(sdk['version'], str)
+            or not re.fullmatch(r'10\.\d{1,3}\.\d{1,5}', sdk['version'])
+            or sdk['rollForward'] != 'disable' or sdk['allowPrerelease'] is not False):
+        raise ValueError('Qualification requires an exact stable SDK10 pin without roll-forward')
+    return sdk['version']
 
 
 def validate_historical_build(metadata, source, goos, goarch):

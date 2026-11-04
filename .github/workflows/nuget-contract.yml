@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['internal/nuget/**', 'scripts/fixtures/nuget-versions/**', 'scripts/nuget_version_contract.py', '.github/workflows/nuget-contract.yml']
+    paths: ['internal/nuget/**', 'scripts/fixtures/nuget-versions/**', 'scripts/nuget_version_contract.py', 'scripts/qualification_contract.py', 'global.json', '.github/workflows/nuget-contract.yml']
   pull_request:
-    paths: ['internal/nuget/**', 'scripts/fixtures/nuget-versions/**', 'scripts/nuget_version_contract.py', '.github/workflows/nuget-contract.yml']
+    paths: ['internal/nuget/**', 'scripts/fixtures/nuget-versions/**', 'scripts/nuget_version_contract.py', 'scripts/qualification_contract.py', 'global.json', '.github/workflows/nuget-contract.yml']
 
 permissions:
   contents: read
@@ -38,6 +38,9 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: '3.14'
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
       - name: Compare actual native libraries without remote package restore
         run: python3 scripts/nuget_version_contract.py
       - uses: actions/upload-artifact@v7

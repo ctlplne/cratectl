@@ -1,0 +1,105 @@
+{
+  "source_parent": "c030aa0885e4e4e3a39c5213c37c1f25ff6c5874",
+  "source_dirty": true,
+  "observed_at": "2026-11-04T19:50:32.917249+00:00",
+  "state": "implemented but unverified; exact SDK pin and missing-import repair",
+  "source_files": [
+    {
+      "path": "global.json",
+      "sha256": "bd2f7421218da3954279a68a63015aeabda5b7122ec8b47a2f7585b7e284a98d"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "2de4925785bcd3948c79fd13b4a0cc0e41ccc4109ec68a080035c56c48057bcc"
+    },
+    {
+      "path": ".github/workflows/nuget-contract.yml",
+      "sha256": "0ab453f338050e1d2e63c840850c1000fcc4c0abd5e28b7333c414447ea7249b"
+    },
+    {
+      "path": "scripts/qualification_contract.py",
+      "sha256": "66066de50950d4a03ff773794bc898ba9df1638d66283453608c2057baa9a3d9"
+    },
+    {
+      "path": "scripts/test_qualification_contract.py",
+      "sha256": "ef46bce904dc0b537333312d2151418eec63d0fc045a8ceab9945037977a94b0"
+    },
+    {
+      "path": "scripts/conformance.py",
+      "sha256": "1ef7acaaf7df9af6c1be371b0bc0bf1f7fe5dad8b0aa7a43492c05c464ccdfad"
+    },
+    {
+      "path": "scripts/test_conformance_profile.py",
+      "sha256": "cebf09407277dc263b72d437ff62321ded966d7198518edacd91d6c1ba3166be"
+    },
+    {
+      "path": "scripts/nuget_version_contract.py",
+      "sha256": "c5b3fd1ca1485d0690c2c77cf279f580fc1c95e594a3721b2b8080d3cdc0d0df"
+    },
+    {
+      "path": "scripts/conformance_nuget_hosted.py",
+      "sha256": "71d263f5f7780a68ea035819a739d6354d4d8a64cb4c18f395e583657f891c41"
+    }
+  ],
+  "reason": "Native636library jobs used different actual SDKpatches (.402x86/.403ARM). Pin futureCI10.0.403 without relabeling prior results. New c030Maven fixture fails before identity because re was not imported; preserve both failed reports.",
+  "sdk": {
+    "version": "10.0.403",
+    "rollForward": "disable",
+    "allowPrerelease": false,
+    "placement": "actions/setup-dotnet@v6 global-json-file in native-feed and library matrix jobs; no install on this Mac. Actual version equality before original comparisons.",
+    "source_identity": "global.json joins conformance source_scope; library full-worktree source_dirty already covers it.",
+    "limits": "SDK selection only; runtime/DLLversions and hashes remain actual observations. No remote package restore/publication/authentication/cache source added."
+  },
+  "maven": {
+    "first_failure": "evidence/2026-11-04/maven-warm-c030aa0-first-failure.json",
+    "repair": "Import re in actual conformance module. Stand-in loads actual imports/function, pins inert archive bytes and observes plain/ANSIcorrect and wrong/malformed versions, stops at completedclient_identity before deployment. No external client or database.",
+    "acceptance": "All original647baseline checks plus16new=663; all4warm stages/6publisher-reference-wire-retained-local bindings; both actual architectures. No retry/deadline/assertion removal."
+  },
+  "local_validation": {
+    "qualification_contract": "4tests pass, covering exact stable version, rollforward/prerelease/extra-path/nonobject/malformed/oversized rejection and existing artifact/history contracts.",
+    "maven_version_gate": "3testmethods pass; actualfunction imports/version gate exercises4clientstandin observations, plus original invalidprofile/help regressions.",
+    "full_lint": "make lint passes, including Go vet, architecture/console/API and all existing Python contract suites.",
+    "workflow_semantics": "Only2setupsteps and2librarypathinputs differ; allcasecount/commands/budgets/permissions/concurrency unchanged.",
+    "logs": [
+      {
+        "path": ".cache/dotnet-sdk-pin-contract-unit.log",
+        "sha256": "af55efa5c3ceb122f8184c380aa405d3f3b4e7e0c1e892773d0eff31d0645c8a"
+      },
+      {
+        "path": ".cache/maven-version-gate-standin.log",
+        "sha256": "74d500cb31dd1b7f6535f660d85282224028fd9a3dd2ae3818a998e86b5d9b32"
+      },
+      {
+        "path": ".cache/sdk-pin-maven-repair-lint.log",
+        "sha256": "0bbbb73fed8a46c3eaebccd691c76758317d4731f0bf88947b7b02c0d52c159b"
+      },
+      {
+        "path": ".cache/sdk-pin-workflow-semantics.log",
+        "sha256": "cd5a761683fae37a5785b0a3482e98d2afe0f464f3469f59db0d2f48230d6cd6"
+      }
+    ]
+  },
+  "native_prior_proof": {
+    "partial_campaign": "evidence/2026-11-04/github-636dea9-checkpoint.json",
+    "jvm": "evidence/2026-11-04/jvm-636dea9-checkpoint.json",
+    "library": "evidence/2026-11-04/nuget-636dea9-checkpoint.json"
+  },
+  "expected_selected_jobs": {
+    "main": 9,
+    "jvm": 8,
+    "oci": 2,
+    "upgrades": 2,
+    "library": 2,
+    "total": 23,
+    "limits": "Enumerate actualfullSHAafterpush; nofocusedpathselected, no duplicate manual dispatch."
+  },
+  "sources": [
+    "https://github.com/actions/setup-dotnet",
+    "https://learn.microsoft.com/en-us/dotnet/core/tools/global-json"
+  ],
+  "limits": [
+    "This dirty-source record is development evidence only. New SDKpin and repaired663warm fixture need fresh clean native proof. No local JVM/SDK/PG or emulation campaign.",
+    "Original c030failure and all earlierfailures/cancellations retained; unexecuted macOS jobs neverpass.",
+    "All450capabilities/41families/laterstages remain committed; no readiness/fullsecurity/packaging verdict or primary/sibling/customer/release mutation."
+  ]
+}

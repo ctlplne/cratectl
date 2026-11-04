@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: BUSL-1.1
 """Real local service + PostgreSQL + stock clients; all credentials stay private."""
-import argparse,base64,csv,datetime,hashlib,io,json,os,platform,shutil,subprocess,sys,tarfile,time,urllib.error,urllib.parse,urllib.request,uuid,zipfile
+import argparse,base64,csv,datetime,hashlib,io,json,os,platform,re,shutil,subprocess,sys,tarfile,time,urllib.error,urllib.parse,urllib.request,uuid,zipfile
 from concurrent.futures import ThreadPoolExecutor
 import xml.etree.ElementTree as XML
 from pathlib import Path
@@ -909,7 +909,7 @@ def nuget():
  from conformance_nuget_hosted import hosted
  hosted(sys.modules[__name__])
 
-source_scope=['cmd','internal','scripts','api','go.mod','go.sum','Makefile','docs/qualification/jvm-clients.json']
+source_scope=['cmd','internal','scripts','api','go.mod','go.sum','Makefile','global.json','docs/qualification/jvm-clients.json']
 result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':source_scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*source_scope],text=True).strip()),'artifact_digests':{name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in candidate_artifact_names()},'build_identity':{name:build_identity(name) for name in candidate_artifact_names()},'host':platform.platform(),'database_profile':database_profile,'topology':f'native {platform.platform()} server, PostgreSQL 16.15 {database_profile}, filesystem bytes, HTTP loopback only','checks':checks,'commands':commands,'limitations':['Not full format conformance or parity.','Proxy/group proof covers generic, Maven and early npm journeys; no complete mode, migration, HA, scale or scanner qualification.','Client fixture code executes only in the explicitly owned test consumer.','No claim of a separate-machine install.']}
 result['build_source_matches_candidate']=all(meta['settings'].get('vcs.revision')==result['candidate'] and meta['settings'].get('vcs.modified')=='false' for meta in result['build_identity'].values())
 tenants={}

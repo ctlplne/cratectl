@@ -20,6 +20,7 @@ import shutil
 import subprocess
 import uuid
 import zipfile
+from qualification_contract import dotnet_sdk_pin
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -216,7 +217,7 @@ def main():
         dotnet = shutil.which('dotnet')
         check('actual dotnet SDK is installed', dotnet is not None)
         sdk = command([dotnet, '--version'], 'dotnet SDK version observation').decode().strip()
-        check('dotnet SDK version has a bounded public identity', re.fullmatch(r'[0-9]{1,2}\.[0-9]{1,3}\.[0-9]{1,5}(?:-[A-Za-z0-9.-]{1,60})?', sdk) is not None)
+        check('dotnet SDK matches the exact repository pin', sdk == dotnet_sdk_pin(ROOT))
         report.update(sdk_version=sdk, runner_os='Linux', runner_arch=arch)
         fixture = ROOT / 'scripts/fixtures/nuget-versions'
         report['phase'] = 'build'

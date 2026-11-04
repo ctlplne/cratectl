@@ -13,74 +13,66 @@ outside this CI authority. No autonomous delegation.
 
 ## Current qualification state
 
-Exact9b00f7e now passes all eight native JVM jobs, including Ivy654checks per
-architecture/nine stages/eight snapshot cases/34byte bindings. Both main native
-PostgreSQL integration/race and baseline steps pass. The final x86 Chromium
-suite timed out at300seconds before producing JSON:23of24jobs pass, with18safe
-summaries in the [partial checkpoint](../../evidence/2026-11-04/github-9b00f7e-checkpoint.json).
-No complete browser workflow is accepted from this attempt. See also the
-[JVM checkpoint](../../evidence/2026-11-04/jvm-9b00f7e-checkpoint.json).
+Exact `636dea9` has 25 successful jobs out of 26, with 20 accepted safe
+summaries. GitHub reports that the macOS ARM source runner was not acquired
+and identifies capacity constraints; that job is unexecuted. Both Linux source
+jobs, all three native fuzz jobs and scoped security pass. Both native real
+PostgreSQL integration/timing/race suites pass, including all five immutable/
+opt-in/tenant/queue/concurrent snapshot regressions. Both 647-check baseline
+campaigns pass, including the joined-key probe and 56 SDK HTTP cases before/
+after restart. Full x86 Chromium passes 119 checks/all 15 workflows with zero
+unexpected/skipped/flaky results; each focused journey separately passes five
+fresh-database repetitions. See the [partial checkpoint](../../evidence/2026-11-04/github-636dea9-checkpoint.json).
+Latest fully accepted whole observed campaign remains `708214f`.
 
-The olderd4056d9 baseline has two preserved failures: first dotnet push401 and an
-ARM Maven tool-download timeout. Its eight JVM passes remain valid only for
-their named scope. Maven bootstrap now uses a committed reviewed SHA512 and two
-approved Apache locations, each bounded15s connect/180s total/32MiB/HTTPS only.
-Only a failed transfer can use the archive; a completed wrong digest stops.
-Five local stand-in tests cover these boundaries. This fallback never changes
-package sources or retries a failed qualification campaign.
+All eight native JVM jobs pass on that exact source: Ivy 654/nine stages/34 byte
+bindings, Gradle 199/eight/24, and four SBT 161/seven/12 profiles. Both OCI jobs
+pass 214 checks; both upgrade jobs rebuild ten historical pins and pass 15
+reports. See the [JVM checkpoint](../../evidence/2026-11-04/jvm-636dea9-checkpoint.json).
+These named results do not close broader client, fault, lifecycle or goal scope.
 
-Opaque NuGet keys stay attached as --api-key=value in the harness and copyable
-examples. A deterministic actual-SDK leading-hyphen invalid-key probe must
-reach real401 without the missing-key warning and leave no reference. The full
-baseline retains its original645checks and adds two (647expected). The original
-key/request was not exported, so its precise401cause remains unresolved. New
-native replay is required; see the
-[repair record](../../evidence/2026-11-04/ci-bootstrap-key-hardening-development.json).
+The library pair also passes its original 37 assertions and unchanged corpora
+with zero mismatches. Actual x86 SDK/runtime are 10.0.402/10.0.13 and ARM
+10.0.403/10.0.14, with separately retained NuGet 7.9.0.0 DLL hashes. The native
+HTTP baselines independently used SDK 10.0.403 on both hosts. Never relabel the
+library x86 result as 10.0.403; see its [checkpoint](../../evidence/2026-11-04/nuget-636dea9-checkpoint.json).
 
-Browser diagnostics now retain bounded private command output even when the
-suite deadline prevents final JSON. Main and focused failure steps seal only
-selected owned command/report/registry logs with the existing owner CMS
-recipient, never token/config/fixture files. Ciphertext and fixed metadata
-expire after seven days; private key stays local, with no plaintext fallback.
-Ten owned-process and six CMS/collection regressions pass locally. The deadline,
-all15workflows and zero retries remain unchanged; native observation is still
-required. See the [development record](../../evidence/2026-11-04/browser-timeout-diagnostics-development.json).
+The next revision makes SDK selection reproducible through root `global.json`:
+10.0.403, rollForward=disable, allowPrerelease=false. Both native feed jobs and
+both library jobs use `actions/setup-dotnet@v6` with that file; both harnesses
+require the actual SDK to equal the pin before running their original cases.
+The library path filter includes the pin and its shared validator. Runtime
+patch/DLL hashes remain actual observations; no implicit package restore, cache,
+authentication or publication step is added. See the official
+[setup action](https://github.com/actions/setup-dotnet) and
+[SDK selection contract](https://learn.microsoft.com/en-us/dotnet/core/tools/global-json).
+Four contract tests, full lint and semantic workflow comparison pass locally.
+Only two setup steps and two library path inputs change; all cases, commands,
+budgets, permissions and concurrency remain. Native replay is required; the
+[development record](../../evidence/2026-11-04/sdk-pin-maven-identity-repair-development.json)
+selects 23 expected jobs (main9/JVM8/OCI2/upgrades2/library2). Enumerate actual
+runs for the full SHA; focused browser jobs are not selected by these paths.
 
-A definite new snapshot browser-fixture locator mismatch is now independently
-reproduced: a nonempty repository search shows the heading action named
-`＋ Create repository`, while the test exactly matched the absent empty-state
-action. Native ARM Chromium static DOM checks old0/corrected1matches. Only that
-heading locator changes; the dialog submit, assertions and budgets stay intact.
-The [repair](../../evidence/2026-11-04/maven-snapshot-locator-repair-development.json)
-still requires actual x86/full-application replay. This test-only push selects
-main9; enumerate actual runs, and retain existing1e9/0efa workflow handles for
-their separate source-bound qualification. No new JVM/OCI/upgrade/focused pass
-is implied by a path filter that does not select those workflows.
+The hosted retained-cache Maven fixture at `c030aa0` failed on both actual Linux
+hosts after 231 assertions, before completing client identity: its new parser
+omitted the `re` import. Preserve the [first failure](../../evidence/2026-11-04/maven-warm-c030aa0-first-failure.json),
+including both original safe summaries and fixed traceback identity. The import
+is repaired and the actual fixture's version gate now runs against local
+plain/ANSI/wrong/malformed observations, stopping before deployment. No JVM or
+PostgreSQL runs on this Mac. Require the original 647 baseline checks plus 16
+new checks (663 total), four mandatory stages and six publisher/reference/HTTP/
+retained-local-cache bindings on both native hosts. Warm proxy/group/Ivy/SBT,
+offline, interruption and broader scope remain open. Existing c030 runs are
+observed separately, without a blind restart or canceled started main job.
 
-The next core candidate records immutable snapshot publisher receipts before
-returning, so a later policy opt-in does not lose the original writer's delayed
-checksum proof. Source inspection found this gap; no pre-fix native failure is
-claimed. Five snapshot PostgreSQL tests now include that transition, default
-first-upload queue rollback and two restricted concurrent writers' exact journal/
-lifecycle/receipt chain. Normal and race builds compile them locally without
-running a database. Both native GitHub architectures must execute the real tests,
-retain every previous case and complete the full x86 browser journey. The core-only3b28da5push selected21expected jobs (main9/JVM8/OCI2/upgrades2).
-The subsequent scheduling revision changes all workflow paths and selects all26
-union cases; actual source-bound inventory remains required. See the [record](../../evidence/2026-11-04/maven-immutable-receipt-concurrency-development.json).
+The earlier timeout, first dotnet 401 and Maven bootstrap failures remain
+retained. A passing newer full browser suite does not establish the unknown
+original timeout cause. The owner-encrypted browser failure collector was not
+exercised by that success. The c030 baseline failure produces no collector
+record because its current profiles cover OCI/extended JVM/browser only; raw
+job logs remain private and only fixed reviewed traceback identities are public.
 
-The next fixture revision adds a retained-cache native Maven hosted journey:
-initial unique snapshot, changed snapshot with -U, and actual registry restart.
-It preserves all647baseline checks and adds16 (663expected), requiring six
-publisher/reference/HTTP/local byte bindings and unchanged cache/module identity.
-Four safe-contract and14exporter regressions pass locally. The original local
-process-cleanup EPERM is retained; unchanged scoped cleanup and full lint replay
-pass. No native JVM/database ran on this Mac. New native replay remains required;
-see the [development record](../../evidence/2026-11-04/maven-warm-cache-development.json).
-This selects24expected jobs; the SDK library pair on636dea9 is still observed
-separately and needs its own pass artifacts. Warm proxy/group/Ivy/SBT, offline behavior and all
-broader goal requirements remain open.
-
-The following campaign notes predate this9b00f7e observation.
+The following campaign notes are historical.
 
 Owner resumed the full goal on 2026-11-04. The latest fully accepted whole
 observed campaign remains `708214f`: all 17 jobs and eleven safe summaries.
@@ -134,9 +126,9 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 | `ci.yml`: scoped security / 1 | Ubuntu x86 | Pinned source/binary analysis, full reachable Git history secret scan and synthetic rule regressions. 30-minute job. Current324-case named proof is separate from full security/feed/image coverage. |
 | `ci.yml`: PostgreSQL and stock clients / 2 | Both native Linux architectures; real PostgreSQL16.15 | Integration/race, bounded timing, durable jobs/leases, integrity and baseline client/recovery journeys; 120-minute job. Full Chromium suite only on x86. ARM browser placement is skipped and never counted as passing. |
 | `jvm-clients.yml`: Gradle / 2 | Both native Linux architectures; real PostgreSQL | Gradle9.8.2, exact JDK21 build, eight stages and24 publisher/reference/raw-HTTP digests. 60-minute job. Named v2 profile passes; broader JVM remains open. |
-| `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0, exact JDK, Initial release profile passes228checks/sevenstages/12bytebindings/threeSHA2consumers. Named metadata-v2 passes494checks/8stages/8cases/28bytebindings. New snapshot-v3 requires9stages/8snapshot cases/34bytebindings; native replay pending. 60-minute job. Broader Ivy remains open. |
+| `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0, exact JDK, Initial release profile passes228checks/sevenstages/12bytebindings/threeSHA2consumers. Named metadata-v2 passes494checks/8stages/8cases/28bytebindings. Snapshot-v3 passes654checks/9stages/8snapshot cases/34bytebindings on both hosts at636dea9. 60-minute job. Broader Ivy remains open. |
 | `jvm-clients.yml`: SBT / 4 | SBT 1.13.0 and 2.0.11, each on native Linux amd64/arm64; real PostgreSQL | Separate series/version cases, exact JDK, tool-only boot cache, fresh project caches, seven stages/twelve byte bindings. Five-minute cold bootstrap, two-minute project commands, 60-minute job. Named release profile passes161checks on each of the four cases atd4056d9; broader SBT remains open. |
-| `nuget-contract.yml`: libraries / 2 | Both native Linux architectures and actual SDK10.0.403 libraries | Dense version, archive, casing, dependency and framework differential contracts; 20-minute job. Does not replace actual NuGet HTTP/restore/restart proof. |
+| `nuget-contract.yml`: libraries / 2 | Both native Linux architectures; exact SDK10.0.403 pin on the next revision (636observed x86.402/ARM.403) | Dense version, archive, casing, dependency and framework differential contracts; 20-minute job. Does not replace actual NuGet HTTP/restore/restart proof. |
 | `oci-clients.yml`: native clients / 2 | Both native Linux architectures; Docker, Podman, Helm, real PostgreSQL | Actual publication/consumption and policy/tenant/recovery cases with inert owned data; 45-minute job. Do not execute the uploaded image. External-provider interoperability is separate. |
 | `browser-repair.yml`: focused / 3 on relevant pushes | Native x86 Chromium; five fresh PostgreSQL databases per selected journey | Repair, retention and NuGet each repeat five complete journeys; 45-minute job. Manual dispatch selects one. Stop on failure; no retries/skips count as acceptance. |
 | `upgrade-qualification.yml`: controlled upgrades / 2 | Both native Linux architectures; fresh PostgreSQL | Rebuild ten immutable historical pins and require15 reports each; 120-minute job. Relevant pushes, manual dispatch and Monday08:17UTC. Not rolling upgrade, downgrade or backup/restore proof. |
