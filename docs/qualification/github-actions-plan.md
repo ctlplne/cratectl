@@ -244,7 +244,7 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 
 | Workflow / jobs | Actual environment | Required work and current limits |
 | --- | --- | --- |
-| `ci.yml`: selection / 1 | Native Linux amd64; bounded exact Git history | Five-minute placement job; emits reason/count/hash. Not a product test pass. Security remains independent; native selection still needs actual execution proof. |
+| `ci.yml`: selection / 1 | Native Linux amd64; bounded exact Git history | Five-minute per-source placement job; source-true execution/count/hash and8heavy placements verified atfdff. Native checks and documentation-false/security proof remain separate. Not a product test pass. |
 | `ci.yml`: source / 3 | Ubuntu 24.04 amd64 and arm64; macOS 15 arm64 | Build, Go unit/race/vet, architecture/API and Python contracts, console reproduction and npm audit. 30-minute job budget. Source checks do not qualify a full macOS server/package journey. |
 | `ci.yml`: fuzz / 3 | Same three native hosts | Every checked-in Go fuzz target, bounded five-second smoke per target; 25-minute job. Retain target inventory and failures. This is not a long parser campaign. |
 | `ci.yml`: scoped security / 1 | Ubuntu x86 | Pinned source/binary analysis, full reachable Git history secret scan and synthetic rule regressions. 30-minute job. Current324-case named proof is separate from full security/feed/image coverage. |
@@ -252,16 +252,18 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 | `jvm-clients.yml`: Gradle / 2 | Both native Linux architectures; real PostgreSQL | Gradle9.8.2, exact JDK21 build, eight stages and24 publisher/reference/raw-HTTP digests. 60-minute job. Named v2 profile passes; broader JVM remains open. |
 | `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0 and exact JDK. Cache-v4 passes666checks/10stages/34wire+6cachebindings on both hosts at0edd, retaining all release/metadata/snapshot/SHA-2 cases. 60-minute job. Broader Ivy remains open. |
 | `jvm-clients.yml`: SBT / 4 | SBT1.13.0 and2.0.11, each on native Linux amd64/arm64; real PostgreSQL | Snapshot-v2 passes269checks/8stages/8snapshotcases/18bindings on all4cases at0cff, retaining every release case. Frozen tool-only boot cache/fresh project caches. Five-minute bootstrap, two-minute commands, 60-minute job. |
-| `go-modules.yml`: hosted / 2 | Native Linux amd64/arm64; pinned Go, real PostgreSQL16.15, trusted loopback TLS | Four database regressions normal/race; CLI publication, stock hosted/group transitive downloads and current-policy/source/tenant/restart/revocation cases. Implemented but unverified. 45-minute job. |
+| `go-modules.yml`: hosted/group and intake / 2 | Native Linux amd64/arm64; pinned Go, real PostgreSQL16.15, trusted loopback TLS | Seven PG functions normal/race:4original server functions pass both at802;3new atomic-intake functions compile only. Actual CLI upload passes, then Go401 at802. Current authority fix needs all9stock-client stages/24wire/16cache. 45-minute job; public proxy remains rejected. |
 | `nuget-contract.yml`: libraries / 2 | Both native Linux architectures; exact SDK10.0.403 selection | Original37assertions/unchanged dense corpora pass both at1974, actual runtime10.0.14 and separate DLLhashes. 20-minute job. Does not replace actual NuGet HTTP/restore/restart proof. |
 | `oci-clients.yml`: native clients / 2 | Both native Linux architectures; Docker, Podman, Helm, real PostgreSQL | Actual publication/consumption and policy/tenant/recovery cases with inert owned data; 45-minute job. Do not execute the uploaded image. External-provider interoperability is separate. |
 | `browser-repair.yml`: focused / 3 on relevant pushes | Native x86 Chromium; five fresh PostgreSQL databases per selected journey | Repair, retention and NuGet each repeat five complete journeys; 45-minute job. Manual dispatch selects one. Stop on failure; no retries/skips count as acceptance. |
 | `upgrade-qualification.yml`: controlled upgrades / 2 | Both native Linux architectures; fresh PostgreSQL | Rebuild ten immutable historical pins and require15 reports each; 120-minute job. Relevant pushes, manual dispatch and Monday08:17UTC. Not rolling upgrade, downgrade or backup/restore proof. |
 
-The union is 26 jobs when every relevant workflow triggers. A normal push can
-trigger fewer jobs because paths differ. Always enumerate actual runs for the
-full source SHA; never assume 26, treat a missing lane as passing, or substitute
-an old run. Library jobs run only when their own paths select; a workflow omitted by its
+The current union is29jobs across seven workflows, including the selector.
+Exactfc39162 selects six workflows/27expected jobs; NuGet library paths were
+unchanged. A documentation-only commit can select just the planner and scoped
+security, with dependent logical jobs skipped. Enumerate actual jobs after
+matrix expansion for every exact source; never assume29, treat an absent or
+skipped lane as passing, or substitute an old run. Library jobs run only when their own paths select; a workflow omitted by its
 path filter is not evidence for that source. No duplicate dispatch merely to recover visibility.
 
 Workflow files define exact triggers, permissions, matrices and commands. Use
@@ -287,7 +289,8 @@ and GitHub's [job concurrency contract](https://docs.github.com/en/actions/how-t
 ## Resource and evidence contract
 
 - Use actual native hosts for OS/architecture claims. This ARM Mac runs source
-  checks and small Python/HTTP stand-ins; x86, real JVM/client/PostgreSQL and
+  checks and owned Python/HTTP/file/TLS stand-ins, including actual stock Go
+  against inert stand-in modules. x86, registry-backed JVM/SDK/Go/PostgreSQL and
   managed browser qualification runs on GitHub. No emulation-based pass.
 - Each disposable environment owns `cratectl-*` resources, loopback38443/35432,
   a private generated credential directory and restricted PostgreSQL runtime:
@@ -297,8 +300,8 @@ and GitHub's [job concurrency contract](https://docs.github.com/en/actions/how-t
   `jvm-client-plan.json`. Prose/checkpoint edits alone must not restart a client
   lane. Keep owned package payloads inert; run only owned fixture build rules
   and reviewed tool binaries, never uploaded package scripts/classes/models.
-- Preserve started main-branch jobs across repair pushes. All six project
-  workflows now use job/profile/platform groups, including SBT series and
+- Preserve started main-branch jobs across repair pushes. All seven project
+  workflows use job/profile/platform groups, including Go, SBT series and
   focused browser journey. Each group has the default one pending tip. A newer pending
   tip can replace an older pending tip; PR work may still be superseded.
   Pending cancellation supplies no evidence. See
@@ -307,8 +310,11 @@ and GitHub's [job concurrency contract](https://docs.github.com/en/actions/how-t
   differs: all triggers, cases, commands, permissions, budgets and failure handling
   stay equal. Main scheduling has native evidence; the other groups still need
   their own observation. See the [development record](../../evidence/2026-11-04/ci-family-independent-lanes-development.json).
-  Editing all five paths selects all26union cases; enumerate the actual source
-  inventory, including the two actual NuGet library jobs.
+  That historical six-workflow revision selected26union cases. The current
+  seven-workflow union is29; enumerate actual source paths and matrix jobs,
+  including library jobs only when their own filters select them. The short
+  selector now includes source SHA in its key so docs cannot replace a queued
+  source planner. Heavy/security lanes keep their original pending-slot rules.
 - The owned JVM command helper has a two-minute deadline,8MiB output failure
   threshold and64KiB captured tail. The baseline-helper revision on `72b98be`
   routes `conformance.run` through the same path, drains output through a
@@ -352,7 +358,7 @@ and GitHub's [job concurrency contract](https://docs.github.com/en/actions/how-t
 
 | Work still required | Placement / acceptance evidence |
 | --- | --- |
-| Ant/Ivy and SBT client breadth | Ivy cache-v4 and all4SBTrelease cases now pass. Qualify new SBTsnapshot-v2, then remaining warm-cache/classifier/parent/BOM/compiledScala/metadata/interruption/outage/lifecycle/JVM combinations. The [JVM plan](jvm-client-plan.json) preserves exact cases and bootstrap/cache limits. |
+| Ant/Ivy and SBT client breadth | Ivy cache-v4 and all4SBTsnapshot-v2 cases pass at0cff, retaining release cases. Complete remaining warm-cache/classifier/parent/BOM/compiledScala/metadata/interruption/outage/lifecycle/JVM combinations. The [JVM plan](jvm-client-plan.json) preserves exact cases and bootstrap/cache limits. |
 | Every later format and native client | Native Linux architectures and stock ecosystem tools as each adapter is implemented; real restricted PostgreSQL and nontrivial dependency graphs. Hosted/proxy/group, exact bytes, permissions, policy, concurrency, interruption, restart, freshness, lifecycle and migration remain separate required cases. |
 | Real third-party OCI/upstream interoperability | Explicitly authorized project-owned repositories/realm/registry services with pinned tools and inert data. Keep changing external services separate from deterministic PR gates; no publication authority is assumed. |
 | TLS, private trust and identity | Disposable real compatible IdPs/PKI and native clients, scoped tenants, rotation/expiry/revocation, failure and recovery. Stand-ins do not qualify every vendor or customer CA. |
@@ -383,8 +389,8 @@ its exact source/job/labels and platform annotations; distinguish no execution
 from an executed assertion failure. Continue independent native Linux/client
 work while macOS capacity is unavailable. Preserve live handles and started
 main runs; no timeout, queue replacement, earlier source or emulated run fills
-a missing native result. The new SBT matrix brings the fully selected six
-project workflows to 26 jobs; a source change selecting main/JVM/OCI/upgrades
-runs 21. This SBT change also touches the common safe exporter, so it selects
-the three focused browser jobs: 24 expected in total. Exact selected jobs are
-always recorded per candidate.
+a missing native result. Historically the SBT matrix brought six workflows to
+26jobs; current Go and selection additions bring seven workflows to29. That
+older SBT/common-exporter change selected24, while exactfc39162 selects27.
+Record actual selected and skipped jobs for each full candidate instead of
+carrying a historical job count into a later campaign.
