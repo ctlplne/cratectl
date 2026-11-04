@@ -32,12 +32,14 @@ lint:
 	python3 scripts/test_nuget_feed_cases.py
 	python3 scripts/test_bounded_client.py
 	python3 scripts/test_conformance_profile.py
+	python3 scripts/test_go_module_profile.py
 	python3 scripts/ci/test_gradle_evidence.py
 	python3 scripts/test_gradle_publication.py
 	python3 scripts/test_ivy_fixture.py
 	python3 scripts/ci/test_ivy_evidence.py
 	python3 scripts/test_sbt_fixture.py
 	python3 scripts/ci/test_sbt_evidence.py
+	python3 scripts/ci/test_go_module_evidence.py
 	python3 scripts/test_ci_native_diagnostics.py
 console:
 	python3 scripts/build_console.py

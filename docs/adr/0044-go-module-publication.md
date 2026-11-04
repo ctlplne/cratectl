@@ -1,8 +1,8 @@
 # Go module identity and atomic publication
 
-The first implementation slice validates native module identities and immutable
-ZIP bytes. It does not yet register a Go endpoint or establish stock-client
-compatibility. Hosted, proxy and group workflows all remain required.
+The hosted adapter is implemented but unverified. It registers native Go reads
+and atomic bundle publication; local tests do not establish stock-client
+compatibility. Both native hosted journeys and all proxy/group work remain required.
 
 Use the official `golang.org/x/mod` module/path/version and go.mod parsers,
 pinned to v0.42.0 with normal Go checksum verification. Its BSD-3-Clause license
@@ -25,11 +25,13 @@ without one need a separately implemented workflow. A caller supplies the stable
 publication instant; retries must preserve it rather than synthesizing new info
 bytes. Names and sizes are resource controls, not edition entitlements.
 
-Next, stage/sync the exact ZIP, root go.mod and version-info bytes, then insert
-all three references through the common tenant mutation transaction. Apply the
-same current authority, review and lifecycle checks to every representation and
-to discovery. Never make a partial version visible, overwrite a version, or
-substitute a fallback after denial. Proxy/group intake, freshness, source fences
+Publication stages/syncs the exact ZIP, root go.mod and version-info bytes, then inserts
+all three references through the common tenant mutation transaction. It applies the
+same current authority and digest review to the complete bundle and discovery.
+Each read checks all three current references; partial approval cannot expose a
+sibling. Publication cannot overwrite a version. Durable actor/coordinate replay
+checks current write authority before its receipt. Go-specific lifecycle operations
+remain unimplemented; ordinary repository admission stays enforced. Proxy/group intake, freshness, source fences
 and checksum dependencies require separate implementation and native proof.
 
 The stock Go client only applies GOAUTH/netrc credentials to HTTPS. Qualification

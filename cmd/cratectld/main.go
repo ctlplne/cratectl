@@ -158,6 +158,10 @@ func run() error {
 		pythonExpanded := f.Int64("python-expanded-bytes", 256<<20, "maximum expanded Python archive bytes")
 		pythonFiles := f.Int("python-file-budget", 10000, "maximum Python archive entries")
 		pythonMetadata := f.Int64("python-metadata-bytes", 1<<20, "maximum embedded Python core metadata bytes")
+		goUpload := f.Int64("go-module-upload-bytes", 64<<20, "maximum Go module ZIP32 bytes, up to 1 GiB")
+		goExpanded := f.Int64("go-module-expanded-bytes", 256<<20, "maximum expanded Go module ZIP32 bytes, up to 1 TiB")
+		goDirectory := f.Int64("go-module-directory-bytes", 4<<20, "maximum Go module ZIP central-directory bytes, up to 16 MiB")
+		goFiles := f.Int("go-module-file-budget", 10000, "maximum Go module ZIP entries, up to 16384")
 		nugetUpload := f.Int64("nuget-upload-bytes", 64<<20, "maximum NuGet package bytes, up to 1 GiB; multipart overhead has a separate 1 MiB allowance")
 		nugetExpanded := f.Int64("nuget-expanded-bytes", 256<<20, "maximum expanded NuGet ZIP32 bytes, up to 1 TiB")
 		nugetFiles := f.Int("nuget-file-budget", 10000, "maximum NuGet ZIP32 entries, up to 16384")
@@ -282,6 +286,10 @@ func run() error {
 		if *nugetUpload <= 0 || *nugetUpload > 1<<30 || *nugetExpanded <= 0 || *nugetExpanded > 1<<40 || *nugetFiles <= 0 || *nugetFiles > 16384 {
 			return errors.New("NuGet package/expanded/file budgets must be positive and within 1 GiB/1 TiB/16384")
 		}
+		if *goUpload <= 0 || *goUpload > 1<<30 || *goExpanded <= 0 || *goExpanded > 1<<40 || *goDirectory <= 0 || *goDirectory > 16<<20 || *goFiles <= 0 || *goFiles > 16384 {
+			return errors.New("Go module ZIP budgets must be positive and within 1 GiB/1 TiB/16 MiB/16384")
+		}
+		h.GoModuleUploadBytes, h.GoModuleExpandedBytes, h.GoModuleDirectoryBytes, h.GoModuleFileLimit = *goUpload, *goExpanded, *goDirectory, *goFiles
 		h.NuGetUploadBytes, h.NuGetExpandedBytes, h.NuGetFileLimit = *nugetUpload, *nugetExpanded, *nugetFiles
 		if *ociGraphBytes <= 0 || *ociGraphBytes >= 1<<62 {
 			return errors.New("OCI graph byte budget must be positive and below 2^62")

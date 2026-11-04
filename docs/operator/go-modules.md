@@ -1,0 +1,78 @@
+# Hosted Go modules
+
+The hosted adapter is implemented but unverified. Local unit/race, parser and
+stand-in checks pass; real PostgreSQL and stock Go execution are assigned to
+native x86 and ARM GitHub jobs. No full format or production claim follows.
+Proxy/group repositories, branch/revision queries, modules without root go.mod,
+warm caches, lifecycle, migration and broader fault/scale/platform cases remain
+required. See the [development record](../../evidence/2026-11-04/go-module-hosted-development.json).
+
+Create a `go` repository in hosted mode using the console or repository API.
+Its endpoint is `https://REGISTRY/go/REPOSITORY/`. A version is one immutable
+bundle: the original module ZIP, its exact root go.mod, and version/time JSON.
+The server verifies and syncs all three objects before publishing their references
+and journal/outbox in one transaction. It never builds or executes uploaded code.
+
+Go has a download protocol rather than a standard package-push command. Publish
+a portable Go module ZIP with cratectl and a private writer configuration:
+
+```sh
+cratectl --config /private/path/writer.json --method PUT \
+  --path '/go/REPOSITORY/ESCAPED_MODULE/@v/VERSION.zip' \
+  --upload-file MODULE.zip --go-module-time COMMIT_TIME_RFC3339
+```
+
+Use a stable RFC3339 version creation time. A pseudo-version must carry that
+same timestamp. Retain it on retries. Identical retries return the original
+receipt; changing ZIP or info bytes at an existing version returns conflict.
+An optional `--idempotency-key` binds the receipt to the authenticated actor and
+exact repository/bundle; omitting it derives a stable actor-scoped coordinate
+key. Current write authority is checked before replaying a receipt.
+
+The ZIP must contain paths beginning `MODULE@VERSION/`, using the original
+unescaped module name. Its root go.mod must declare that exact module. URLs use
+Go's uppercase convention: `example.org/Owned/app` becomes
+`example.org/!owned/app`. Versions must be canonical and match their module's
+major-version suffix. Branch aliases and revision queries remain unsupported.
+
+Save credentials in a private NETRC file readable only by its owner. Bind its
+machine name to the registry hostname, without scheme, port or path. NETRC binds
+a whole host; use a custom GOAUTH helper if credentials must be scoped to URL
+prefixes. Keep credentials out of GOPROXY URLs and shell command arguments.
+Trust the operator CA and use normal HTTPS verification:
+
+```sh
+export NETRC=/private/path/registry.netrc
+export SSL_CERT_FILE=/private/path/ca.crt
+export GOAUTH=netrc
+export GOPROXY=https://REGISTRY/go/REPOSITORY/
+export GOPRIVATE=YOUR_PRIVATE_MODULE_PREFIX
+export GONOPROXY=none
+export GONOSUMDB=YOUR_PRIVATE_MODULE_PREFIX
+export GOVCS='*:off'
+go mod download MODULE@VERSION
+```
+
+One explicit proxy and disabled VCS avoid an implicit source fallback.
+GONOPROXY keeps private modules on this configured registry. GONOSUMDB prevents
+private names from reaching the public checksum service; it does not provide a
+private checksum database. The Go client still computes module sums. Public
+checksum mirroring, imported trust and disconnected checksum behavior need
+separate implementation and qualification.
+
+A repository requiring review needs current approval for all three bundle
+representations. Denial or missing approval of any one blocks native reads and
+discovery of that version. Inspect the exact digests in the administrative
+inventory before making decisions. Archive validation does not establish a clean
+security scan. A cached client copy remains under the client's control; server
+revocation governs new requests. Ordinary policy cannot erase downloaded files.
+
+Defaults admit 64MiB compressed ZIP, 256MiB expanded bytes, 4MiB central directory,
+10,000 entries and 1MiB root go.mod. Operators can configure ZIP/expanded/directory/
+entry budgets through `--go-module-upload-bytes`, `--go-module-expanded-bytes`,
+`--go-module-directory-bytes` and `--go-module-file-budget`. These are resource
+budgets. ZIP64, split archives, links and alternate path records are rejected.
+
+Protocol and authentication: [official Go module reference](https://go.dev/ref/mod).
+The [architecture record](../adr/0044-go-module-publication.md) explains admission
+and the separate proxy/group requirements.

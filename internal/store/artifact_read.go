@@ -158,6 +158,9 @@ func (s *Store) artifact(ctx context.Context, i Identity, repo, path string, int
 				return ErrPythonUnvalidated
 			}
 		}
+		if e == nil && r.Format == "go" {
+			e = checkGoModuleBundle(ctx, tx, repo, a, review && !intake, repositoryReadBudget(r))
+		}
 		if e == nil && r.Format == "nuget" {
 			if _, e = ValidateNuGetArtifact(ctx, a); e != nil {
 				return e

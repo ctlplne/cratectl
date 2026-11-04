@@ -1,0 +1,77 @@
+name: Native Go modules
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['cmd/**', 'internal/**', 'scripts/**', 'api/**', 'web/**', 'go.mod', 'go.sum', 'Makefile', '.github/workflows/go-modules.yml']
+  pull_request:
+    paths: ['cmd/**', 'internal/**', 'scripts/**', 'api/**', 'web/**', 'go.mod', 'go.sum', 'Makefile', '.github/workflows/go-modules.yml']
+permissions:
+  contents: read
+jobs:
+  go-module:
+    concurrency:
+      group: cratectl-go-modules-${{ github.ref }}-${{ matrix.arch }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    name: Stock Go hosted modules (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    env:
+      GOCACHE: ${{ github.workspace }}/.cache/go-build
+      GOMODCACHE: ${{ github.workspace }}/.cache/go-mod
+      GOTOOLCHAIN: local
+      CRATECTL_CI_CLIENT_SET: go
+      CRATECTL_CONFORMANCE_DATABASE_FILE: .private/ci-db.json
+      CRATECTL_DEV_DATABASE: native
+      CRATECTL_QUALIFICATION_BIN_DIR: .cache/ci-build
+    services:
+      cratectl-postgres:
+        image: postgres:16.15-alpine
+        env:
+          POSTGRES_USER: cratectl_owner
+          POSTGRES_DB: cratectl
+          POSTGRES_HOST_AUTH_METHOD: trust
+        options: >-
+          --publish 127.0.0.1:35432:5432
+          --health-cmd "pg_isready -U cratectl_owner -d cratectl"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - name: Prepare owned PostgreSQL and native binaries
+        env:
+          CRATECTL_CI_POSTGRES_CONTAINER_ID: ${{ job.services['cratectl-postgres'].id }}
+        run: bash scripts/ci/bootstrap_linux.sh
+      - name: Real PostgreSQL Go module regressions
+        run: go test -count=1 -tags=integration -run '^TestGoModule' ./internal/server
+      - name: Real PostgreSQL Go module regressions with race detector
+        run: go test -race -count=1 -tags=integration -run '^TestGoModule' ./internal/server
+      - name: Trusted TLS stock Go transitive downloads and policy recovery
+        run: python3 scripts/conformance_go.py --require-clean-build
+      - name: Prepare bounded native evidence summary
+        if: always()
+        run: python3 scripts/ci/evidence_summary.py
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: ci-summary-go-module-${{ matrix.arch }}
+          path: .cache/ci-evidence-summary.json
+          if-no-files-found: error
+          retention-days: 14

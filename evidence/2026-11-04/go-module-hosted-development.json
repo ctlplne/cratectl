@@ -1,0 +1,183 @@
+{
+  "source_parent": "5b04d3e1af5e54009a85058fe5fc1353c4f2cdfb",
+  "source_dirty": true,
+  "observed_at": "2026-11-04T22:10:18.837462+00:00",
+  "status": "implemented but unverified; local unit/race/lint/console reproduction and PostgreSQL test compilation passed; actual native journeys pending",
+  "files": [
+    {
+      "path": "internal/gomodule/module.go",
+      "sha256": "7d999a8fb90d93b681bf9a299d4081009e17017a3dc9ade8bd5defe76cfaadb6"
+    },
+    {
+      "path": "internal/gomodule/module_test.go",
+      "sha256": "2c76058c3392533ed31771f3e0d62b73f1902088ce8ec3fd3825d51a44d45955"
+    },
+    {
+      "path": "internal/store/go_module.go",
+      "sha256": "2dcab21d3da87df8fbccebbe8a13e63da098d3b3920d2f4f2575b3c94f23a31f"
+    },
+    {
+      "path": "internal/store/go_module_test.go",
+      "sha256": "da82645408fbca52c3d38e26cbd7c90595afd23f5a3d0adb165f0930ddcea375"
+    },
+    {
+      "path": "internal/store/artifact_read.go",
+      "sha256": "b131e501fdfdbf27ff6c6663de25af0a6cf7276fbfedeac772f9d3fdb897eb79"
+    },
+    {
+      "path": "internal/server/go_module.go",
+      "sha256": "0cc2d55365b92197bad73fc084adcf435a966d70dbd6d7a3df4808ae65a91202"
+    },
+    {
+      "path": "internal/server/go_module_test.go",
+      "sha256": "059d0c458e8cb924de01d312e38a60697da30e8b4bc8adf90940555c6da9c40a"
+    },
+    {
+      "path": "internal/server/go_module_integration_test.go",
+      "sha256": "9f76d0b57e50224823e367c8abdd9ba199fb0921fe18b09c0de516207ff999d3"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "caacee6767287e069751ede4719beb1639a03ae2a7a24a85e02f90071134ef42"
+    },
+    {
+      "path": "cmd/cratectl/main.go",
+      "sha256": "62cc02394f0785d92a92a5a0d6339ee4c1cb2d17c6bde8c9b1b4c07e2c51b11a"
+    },
+    {
+      "path": "cmd/cratectld/main.go",
+      "sha256": "c4e0a3317ebe07b1b6313bb9a8ebe198ec8b216a4c98720f684eb88d2794ac67"
+    },
+    {
+      "path": "scripts/conformance_go.py",
+      "sha256": "385e7f713a95d7effe93a8f93445d865d768a9a215fdae26cf8d965d2443ec69"
+    },
+    {
+      "path": "scripts/test_go_module_profile.py",
+      "sha256": "06639014b1a853f30f131116d66964e4af174f6e5875bfc6af63a2edcde7823a"
+    },
+    {
+      "path": "scripts/ci/go_module_evidence.py",
+      "sha256": "45b615b7ceaa08c09005c612d757c57bbc1201f49f39b970ebbca356b5a8803d"
+    },
+    {
+      "path": "scripts/ci/test_go_module_evidence.py",
+      "sha256": "a073b3ba458b21ec6f65c5abc32786e74092fde731fd4e0e1b6fef464e4b8cae"
+    },
+    {
+      "path": "scripts/ci/evidence_summary.py",
+      "sha256": "3ac15c83facb1a0a13439cd862490dfb4b0ec0c5c306bc2f03340a4b194dc973"
+    },
+    {
+      "path": "scripts/ci/test_evidence_summary.py",
+      "sha256": "d304b343455a73d8ba8a1a428434dffae28e8fe2c9d2df96e218120feefb41ca"
+    },
+    {
+      "path": "scripts/ci/bootstrap_linux.sh",
+      "sha256": "11a20ee2918a59a8ab72fcbc588fee9e3c66117d19b6687c80ae27492a3d0191"
+    },
+    {
+      "path": ".github/workflows/go-modules.yml",
+      "sha256": "ed516bc34afe6f484e00b5206e6f5a78ebceb5545f3f0ca034aef54fd1d4103a"
+    },
+    {
+      "path": ".github/workflows/nuget-contract.yml",
+      "sha256": "6f1b4443d1d58d6094eac27b6ae654ba956ff1cb5fc97bcab0a31f5e55f98e88"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "c5cb9f1f429311b0218dc39b0bff95641e5aeae20ae3308c3ace4d13ff9c1b4e"
+    },
+    {
+      "path": "api/openapi.yaml",
+      "sha256": "58c1c89c55e1981a24bc0941f7644a0b68bfd58788fa0c3252c26c8cdd807c9d"
+    },
+    {
+      "path": "web/src/repositories.tsx",
+      "sha256": "760d16293539d595f077598fca01c92d8f999c111f6536e036cf3931a42d50a5"
+    },
+    {
+      "path": "web/build-manifest.json",
+      "sha256": "f0e72be5c4d5dbbeee49ce9c0c4e297450a2c06dbed79ae0afeda230ca3c6c64"
+    }
+  ],
+  "mechanism": {
+    "publication": "Bounded inspect/sync of exact ZIP, root go.mod and stable info bytes precedes one common tenant transaction: three immutable references, integrity intents, event/outbox and actor-scoped replay response. Current repository/write grant authorizes before receipt replay. No schema or primary change.",
+    "read": "Every direct representation checks the complete validated bundle/current digest decisions. Complete discovery uses one bounded SQL reference query and a final current-policy check. Canonical URL/version binding, stable info and chronological pseudo-version fallback are explicit.",
+    "surfaces": [
+      "/go/REPOSITORY/MODULE/@v/VERSION.zip PUT",
+      "native GET/HEAD info/mod/zip/list/latest",
+      "cratectl --upload-file --go-module-time",
+      "console hosted repository/client setup",
+      "configurable upload/expanded/directory/entry resource budgets"
+    ],
+    "unsupported": [
+      "proxy/group",
+      "branch/revision queries",
+      "legacy rootless modules",
+      "Go-specific lifecycle/GC",
+      "broader warm-cache/fault/migration/scale/TLS-provider/platform combinations"
+    ]
+  },
+  "local_validation": {
+    "all_unit": "make test passed with owned loopback stand-ins",
+    "race": "Unfiltered internal/gomodule, internal/store and internal/server unit races passed",
+    "lint": "make lint passed, including three actual-profile stand-in test methods, four evidence-contract tests and the exporter privacy regression",
+    "console": "TypeScript/production build and byte-for-byte reproduction passed; existing Vite chunk-size warning remains informational, not performance qualification",
+    "postgresql": "Three new integration test functions compile with the integration tag. They were not executed locally; compile output explicitly says no tests to run.",
+    "native_go": "Not run locally; no stock client or PostgreSQL claim"
+  },
+  "native_required": {
+    "workflow": ".github/workflows/go-modules.yml",
+    "jobs": 2,
+    "hosts": [
+      "GitHub Ubuntu24.04 amd64",
+      "GitHub Ubuntu24.04 arm64"
+    ],
+    "go_pin": "go.mod",
+    "postgresql": "16.15; owned service on35432, new cratectl_go_* database, nonsuperuser runtime; retained primary untouched",
+    "steps": [
+      "all three new real PostgreSQL regressions",
+      "the same three with Go race detector",
+      "actual trusted loopback TLS installation, CLI publication and stock Go transitive fresh-cache downloads",
+      "review unit, immutable retries, tenant collisions, current policy, actual process restart, writer/reader revocation, owned database cleanup"
+    ],
+    "profile": "hosted-module-v1",
+    "mandatory_stages": 8,
+    "publisher_reference_http_bindings": 15,
+    "stock_cached_zip_mod_bindings": 10,
+    "budgets": "45-minute job; 120-second owned commands/8MiB output; normal TLS verification/private NETRC, no VCS or direct/public package fallback. Fixture GONOSUMDB bypass is explicit; Go still computes sums."
+  },
+  "ci_plan": "New two-job native Go workflow increases the union to28jobs across seven workflows. Actual push path selection must be enumerated by full SHA. NuGet library paths now include shared ZIP code and module dependency pins. No original client case, command or budget removed.",
+  "first_local_failures": [
+    {
+      "log": "go-module-adapter-unit.log",
+      "cause": "The test used a non-pseudo prerelease spelling for a chronology case. Corrected it to the official v1.0.1-0.TIMESTAMP-REV form and retained the chronology assertion; actual helper replay passes."
+    },
+    {
+      "log": "go-module-pg-compile.log",
+      "cause": "Unused encoding/json import in the new integration test. Removed the unused import; integration compile replay passes."
+    },
+    {
+      "log": "go-module-profile-standin-first.log",
+      "cause": "AST-only test loader lacked globals used in command default arguments. Seeded the loader globals without running the campaign module; all byte/path/info/fallback/failure stand-ins pass."
+    }
+  ],
+  "logs": {
+    ".cache/go-module-adapter-unit.log": "5f35633dceb1e34de93ebf3aab18419c448ff8b3441672a81497c148a30e1afe",
+    ".cache/go-module-adapter-unit-replay.log": "dc4da822bde74ce207b0bcaea85b81038df3b9de2dfa153871674d6973f09dc4",
+    ".cache/go-module-pg-compile.log": "a8881352ff27b9a22cf14856274adf2bebc7aaf54e8abf335a582263fc5d47b5",
+    ".cache/go-module-pg-compile-replay.log": "4319bd5a0278cba0c7c00fe016863f7edde55bf91c350297386dcf1dff712812",
+    ".cache/go-module-profile-standin-first.log": "bd512885f793be36df9bd937986afa1d1a8e189e7d929569767ce223eabd51b5",
+    ".cache/go-module-profile-standin-replay.log": "b3e5f99f139784619808b8e52d84b88a7f60bda0d644da99780e1a6a5893c109",
+    ".cache/go-module-hosted-all-unit.log": "81305e242a3d38e39079a997e4d5aa249770a9c6b350709bf26fbe44dcc61313",
+    ".cache/go-module-hosted-race.log": "487bfa42bfaff07839bf4b3d3c13a5a8112de46c2fe4303a3d89d5b990b22fc6",
+    ".cache/go-module-hosted-lint.log": "e8cbdc02e17da657916daf489825a8e97aa3dfdcb65480e5d690feef9dfb6bc2",
+    ".cache/go-module-hosted-console-repro.log": "367679e2237511520b2dda1bb0c49df4e31bad253daf8ea09db5c68118c3641e"
+  },
+  "limits": [
+    "No actual PostgreSQL, stock-Go, browser-Go operator, release, production platform or whole-candidate acceptance from these local checks. GitHub results must identify exact clean source, native binaries, tool/source bytes, job steps and safe artifact IDs/digests.",
+    "All original formats/cases and all450capabilities/41families/laterstages remain committed. No full security, packaging or readiness verdict. No primary/customer/sibling/selected-binary or release mutation."
+  ],
+  "source_record_format": "Explicit path/SHA256 fields avoid interpreting an api/openapi.yaml source-hash map entry as an API credential. The original redacted staged scan is retained locally; no scan rule was ignored."
+}

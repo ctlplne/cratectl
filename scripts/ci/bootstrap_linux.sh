@@ -18,7 +18,7 @@ root="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$root"
 docker inspect --type container --format '{{json .NetworkSettings.Ports}}' "$CRATECTL_CI_POSTGRES_CONTAINER_ID" | python3 scripts/ci/check_postgres_binding.py
 client_set="${CRATECTL_CI_CLIENT_SET:-all}"
-case "$client_set" in all|oci|jvm) ;; *) echo 'Unknown CI client set' >&2; exit 1 ;; esac
+case "$client_set" in all|oci|jvm|go) ;; *) echo 'Unknown CI client set' >&2; exit 1 ;; esac
 architecture="$(dpkg --print-architecture)"
 umask 077
 mkdir -p .cache/go/bin .cache/clients/bin .cache/bin .private

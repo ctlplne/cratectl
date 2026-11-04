@@ -59,13 +59,13 @@ func inspect(data []byte, c Coordinate) (Archive, error) {
 
 func TestNativeRequestIdentityAndAliases(t *testing.T) {
 	cases := map[string]Request{
-		"go.cratectl.invalid/!owned/app/@v/v1.2.3.zip":                      {testCoordinate, "zip"},
-		"go.cratectl.invalid/!owned/app/@v/v1.2.3.mod":                      {testCoordinate, "mod"},
-		"go.cratectl.invalid/!owned/app/@v/v1.2.3.info":                     {testCoordinate, "info"},
-		"go.cratectl.invalid/!owned/app/@v/list":                            {Coordinate{Module: testCoordinate.Module}, "list"},
-		"go.cratectl.invalid/!owned/app/@latest":                            {Coordinate{Module: testCoordinate.Module}, "latest"},
-		"go.cratectl.invalid/app/v2/@v/v2.1.0-!alpha.info":                  {Coordinate{"go.cratectl.invalid/app/v2", "v2.1.0-Alpha"}, "info"},
-		"go.cratectl.invalid/app/@v/v1.0.1-20260102030405-0123456789ab.mod": {Coordinate{"go.cratectl.invalid/app", "v1.0.1-20260102030405-0123456789ab"}, "mod"},
+		"go.cratectl.invalid/!owned/app/@v/v1.2.3.zip":                        {testCoordinate, "zip"},
+		"go.cratectl.invalid/!owned/app/@v/v1.2.3.mod":                        {testCoordinate, "mod"},
+		"go.cratectl.invalid/!owned/app/@v/v1.2.3.info":                       {testCoordinate, "info"},
+		"go.cratectl.invalid/!owned/app/@v/list":                              {Coordinate{Module: testCoordinate.Module}, "list"},
+		"go.cratectl.invalid/!owned/app/@latest":                              {Coordinate{Module: testCoordinate.Module}, "latest"},
+		"go.cratectl.invalid/app/v2/@v/v2.1.0-!alpha.info":                    {Coordinate{"go.cratectl.invalid/app/v2", "v2.1.0-Alpha"}, "info"},
+		"go.cratectl.invalid/app/@v/v1.0.1-0.20260102030405-0123456789ab.mod": {Coordinate{"go.cratectl.invalid/app", "v1.0.1-0.20260102030405-0123456789ab"}, "mod"},
 	}
 	for p, want := range cases {
 		got, e := ParseRequest(p)
@@ -94,7 +94,7 @@ func TestVersionInfoRetainsCallerInstant(t *testing.T) {
 	}
 }
 func TestArchiveRetainsExactGoModAndAgreesWithOfficialChecker(t *testing.T) {
-	for _, c := range []Coordinate{testCoordinate, {"go.cratectl.invalid/app/v2", "v2.0.0"}, {"go.cratectl.invalid/app", "v1.0.1-20260102030405-0123456789ab"}} {
+	for _, c := range []Coordinate{testCoordinate, {"go.cratectl.invalid/app/v2", "v2.0.0"}, {"go.cratectl.invalid/app", "v1.0.1-0.20260102030405-0123456789ab"}} {
 		files := baseFiles(c)
 		files = append(files, fixtureFile{name: "assets/value%owned.txt", body: "inert"}, fixtureFile{name: "assets/unicode-Σ.txt", body: "inert"})
 		data := moduleFixture(t, c, files)
@@ -205,4 +205,18 @@ func FuzzModuleArchive(f *testing.F) {
 			t.Fatal("budget escaped")
 		}
 	})
+}
+
+func TestPseudoVersionInfoBindsItsTimestamp(t *testing.T) {
+	c := Coordinate{"go.cratectl.invalid/app", "v1.0.1-0.20260102030405-0123456789ab"}
+	if _, e := VersionInfo(c, "2026-01-02T03:04:05Z"); e != nil {
+		t.Fatal(e)
+	}
+	if _, e := VersionInfo(c, "2026-01-02T03:04:06Z"); e == nil {
+		t.Fatal("pseudo-version timestamp mismatch")
+	}
+	c.Version = "v1.0.1-0.20261302030405-0123456789ab"
+	if _, e := VersionInfo(c, "2026-01-02T03:04:05Z"); e == nil {
+		t.Fatal("invalid pseudo-version date")
+	}
 }

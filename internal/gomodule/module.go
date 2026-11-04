@@ -108,6 +108,12 @@ func VersionInfo(c Coordinate, instant string) ([]byte, error) {
 	if e != nil || t.IsZero() || t.Year() < 1 || t.Year() > 9999 {
 		return nil, ErrModule
 	}
+	if module.IsPseudoVersion(c.Version) {
+		timestamp, e := module.PseudoVersionTime(c.Version)
+		if e != nil || !timestamp.Equal(t) {
+			return nil, ErrModule
+		}
+	}
 	return json.Marshal(Info{c.Version, t.UTC()})
 }
 

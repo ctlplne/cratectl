@@ -125,6 +125,17 @@ class EvidenceSummary(unittest.TestCase):
             self.write('ivy-metadata.json',{**report,'ivy_contract':{**contract,'wire_sha256':wire}})
             with self.subTest(key=key),self.assertRaises(SystemExit):summarize(self.root,self.environment)
 
+    def test_go_module_export_requires_every_native_stage_and_exact_byte_binding(self):
+        from test_go_module_evidence import complete_contract
+        contract=complete_contract()
+        report={'candidate':'a'*40,'status':'passed','go_module_contract':contract,'commands':[{'output':'private-synthetic-value'}]}
+        self.write('go-module.json',report)
+        record=summarize(self.root,self.environment)['records'][0]
+        self.assertEqual(record['go_module_contract'],contract)
+        self.assertNotIn('private-synthetic-value',json.dumps(record))
+        self.write('go-module.json',{**report,'go_module_contract':{**contract,'completed':contract['completed'][:-1]}})
+        with self.assertRaises(SystemExit):summarize(self.root,self.environment)
+
     def test_sbt_export_keeps_bounded_bootstrap_identity_without_private_observations(self):
         contract=complete_sbt_contract()
         report={'candidate':'a'*40,'status':'passed','sbt_contract':contract,'commands':[{'output':'private-synthetic-value'}]}

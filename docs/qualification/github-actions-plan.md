@@ -72,6 +72,22 @@ no timing benefit is inferred. The f91 revision selects21actual jobs, currently 
 actual full SHA and retain placement/step evidence before native acceptance.
 Other JVM/tool-cache opportunities remain separate required placement reviews.
 
+The Go hosted revision is implemented but unverified. Its new two-job native
+workflow runs all three new PostgreSQL regressions normally and with race, then
+an owned blank TLS installation and stock Go dependency downloads. Mandatory
+profile evidence is eight stages, 15 publisher/reference/HTTP bindings and ten
+exact client ZIP/mod cache bindings. Fresh NETRC/cache directories, explicit
+GONOSUMDB fixture scope, normal TLS verification, no VCS/direct/public package
+fallback, 120-second/8MiB commands and a45-minute job are required. No local
+PostgreSQL/Go-client or production claim. See the [development record](../../evidence/2026-11-04/go-module-hosted-development.json).
+
+The workflow union is now28jobs across seven workflows; enumerate actual path
+selection for every full SHA. NuGet's two library jobs now also select changes
+to shared ZIP inspection and module dependency pins. Existing profiles, cases,
+commands and budgets remain intact. Hosted Go proxy/group, broad version/legacy/
+warm-cache/lifecycle/fault/migration/scale/TLS-provider/platform and browser
+operator outcomes remain separate committed work.
+
 The following campaign notes are historical.
 
 Owner resumed the full goal on 2026-11-04. The latest fully accepted whole
@@ -128,6 +144,7 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 | `jvm-clients.yml`: Gradle / 2 | Both native Linux architectures; real PostgreSQL | Gradle9.8.2, exact JDK21 build, eight stages and24 publisher/reference/raw-HTTP digests. 60-minute job. Named v2 profile passes; broader JVM remains open. |
 | `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0 and exact JDK. Cache-v4 passes666checks/10stages/34wire+6cachebindings on both hosts at0edd, retaining all release/metadata/snapshot/SHA-2 cases. 60-minute job. Broader Ivy remains open. |
 | `jvm-clients.yml`: SBT / 4 | SBT1.13.0 and2.0.11, each on native Linux amd64/arm64; real PostgreSQL | Snapshot-v2 passes269checks/8stages/8snapshotcases/18bindings on all4cases at0cff, retaining every release case. Frozen tool-only boot cache/fresh project caches. Five-minute bootstrap, two-minute commands, 60-minute job. |
+| `go-modules.yml`: hosted / 2 | Native Linux amd64/arm64; pinned Go, real PostgreSQL16.15, trusted loopback TLS | Three database regressions normal/race; CLI publication, stock transitive downloads and current-policy/tenant/restart/revocation cases. Implemented but unverified. 45-minute job. |
 | `nuget-contract.yml`: libraries / 2 | Both native Linux architectures; exact SDK10.0.403 selection | Original37assertions/unchanged dense corpora pass both at1974, actual runtime10.0.14 and separate DLLhashes. 20-minute job. Does not replace actual NuGet HTTP/restore/restart proof. |
 | `oci-clients.yml`: native clients / 2 | Both native Linux architectures; Docker, Podman, Helm, real PostgreSQL | Actual publication/consumption and policy/tenant/recovery cases with inert owned data; 45-minute job. Do not execute the uploaded image. External-provider interoperability is separate. |
 | `browser-repair.yml`: focused / 3 on relevant pushes | Native x86 Chromium; five fresh PostgreSQL databases per selected journey | Repair, retention and NuGet each repeat five complete journeys; 45-minute job. Manual dispatch selects one. Stop on failure; no retries/skips count as acceptance. |

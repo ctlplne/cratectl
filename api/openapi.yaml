@@ -722,7 +722,7 @@ paths:
               required: [name, format]
               properties:
                 name: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$'}
-                format: {type: string, enum: [generic, maven, npm, pypi, oci, nuget]}
+                format: {type: string, enum: [generic, maven, npm, pypi, oci, nuget, go]}
                 require_review: {type: boolean, default: false}
                 mode: {type: string, enum: [hosted, proxy, group], default: hosted}
                 access: {type: string, enum: [tenant, restricted], default: tenant}

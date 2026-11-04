@@ -1,0 +1,321 @@
+//go:build integration
+
+// SPDX-License-Identifier: BUSL-1.1
+package server
+
+import (
+	"archive/zip"
+	"bytes"
+	"context"
+	"errors"
+	"net/http/httptest"
+	"strings"
+	"sync"
+	"testing"
+	"time"
+
+	crypt "ctlplne.dev/cratectl/internal/crypto"
+	"ctlplne.dev/cratectl/internal/gomodule"
+	"ctlplne.dev/cratectl/internal/store"
+	"github.com/jackc/pgx/v5"
+)
+
+const goFixtureInstant = "2026-01-02T03:04:05Z"
+
+func goPublicationFixture(t testing.TB, c gomodule.Coordinate, payload string) ([]byte, []byte) {
+	t.Helper()
+	mod := []byte("module " + c.Module + "\n\ngo 1.26\nrequire go.cratectl.invalid/dependency v1.0.0\n")
+	var b bytes.Buffer
+	z := zip.NewWriter(&b)
+	for _, f := range []struct {
+		name string
+		data []byte
+	}{{"go.mod", mod}, {"assets/owned.txt", []byte(payload)}} {
+		w, e := z.Create(c.Module + "@" + c.Version + "/" + f.name)
+		if e != nil {
+			t.Fatal(e)
+		}
+		if _, e = w.Write(f.data); e != nil {
+			t.Fatal(e)
+		}
+	}
+	if e := z.Close(); e != nil {
+		t.Fatal(e)
+	}
+	return b.Bytes(), mod
+}
+func goHTTP(t testing.TB, s *Server, token, method, p string, data []byte, headers ...string) *httptest.ResponseRecorder {
+	t.Helper()
+	r := httptest.NewRequest(method, p, bytes.NewReader(data))
+	r.SetBasicAuth("token", token)
+	if method == "PUT" {
+		r.Header.Set("X-Cratectl-Module-Time", goFixtureInstant)
+	}
+	for n := 0; n < len(headers); n += 2 {
+		r.Header.Set(headers[n], headers[n+1])
+	}
+	w := httptest.NewRecorder()
+	s.ServeHTTP(w, r)
+	return w
+}
+func goInventory(t *testing.T, s *Server, i store.Identity, repo string) []store.Artifact {
+	t.Helper()
+	as, e := s.DB.Artifacts(context.Background(), i, repo, "", true)
+	if e != nil {
+		t.Fatal(e)
+	}
+	return as
+}
+func TestGoModuleAtomicPublicationReviewDiscoveryAndImmutableReplay(t *testing.T) {
+	s, _, token, admin := schemaServer(t)
+	ctx := context.Background()
+	mavenRepositories(t, s, admin, store.Repository{Name: "owned", Format: "go", Access: "restricted", RequireReview: true})
+	c := gomodule.Coordinate{Module: "go.cratectl.invalid/Owned/app", Version: "v1.0.0"}
+	data, mod := goPublicationFixture(t, c, "first exact owned bytes")
+	endpoint := "/go/owned/" + c.Prefix()
+	published := goHTTP(t, s, token, "PUT", endpoint+".zip", data)
+	if published.Code != 201 {
+		t.Fatal(published.Code, published.Body.String())
+	}
+	replay := goHTTP(t, s, token, "PUT", endpoint+".zip", data)
+	if replay.Code != 201 || !bytes.Equal(replay.Body.Bytes(), published.Body.Bytes()) {
+		t.Fatal("identical response replay", replay.Code)
+	}
+	as := goInventory(t, s, admin, "owned")
+	if len(as) != 3 {
+		t.Fatal("partial publication", len(as))
+	}
+	info, e := gomodule.VersionInfo(c, goFixtureInstant)
+	if e != nil {
+		t.Fatal(e)
+	}
+	expected := map[string][]byte{"zip": data, "mod": mod, "info": info}
+	approve := func(a store.Artifact, decision string) {
+		t.Helper()
+		if e := s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
+			_, e := store.Decide(ctx, tx, admin, "owned", a.Path, a.Digest, decision)
+			return e
+		}); e != nil {
+			t.Fatal(e)
+		}
+	}
+	for _, a := range as {
+		if !strings.HasSuffix(a.Path, ".zip") {
+			approve(a, "allowed")
+		}
+	}
+	for kind := range expected {
+		if w := goHTTP(t, s, token, "GET", endpoint+"."+kind, nil); w.Code != 403 || w.Header().Get("Content-Type") != "text/plain; charset=utf-8" {
+			t.Fatal("partial review exposed representation", kind, w.Code)
+		}
+	}
+	list := "/go/owned/go.cratectl.invalid/!owned/app/@v/list"
+	if w := goHTTP(t, s, token, "GET", list, nil); w.Code != 200 || w.Body.Len() != 0 {
+		t.Fatal("unreviewed version discovered", w.Code, w.Body.String())
+	}
+	for _, a := range as {
+		approve(a, "allowed")
+	}
+	for kind, want := range expected {
+		w := goHTTP(t, s, token, "GET", endpoint+"."+kind, nil)
+		if w.Code != 200 || !bytes.Equal(w.Body.Bytes(), want) || w.Header().Get("ETag") != `"sha256:`+crypt.Digest(want)+`"` {
+			t.Fatal("exact representation", kind, w.Code)
+		}
+		if head := goHTTP(t, s, token, "HEAD", endpoint+"."+kind, nil); head.Code != 200 || head.Body.Len() != 0 {
+			t.Fatal("HEAD", kind, head.Code)
+		}
+		if notModified := goHTTP(t, s, token, "GET", endpoint+"."+kind, nil, "If-None-Match", w.Header().Get("ETag")); notModified.Code != 304 {
+			t.Fatal("conditional", kind, notModified.Code)
+		}
+	}
+	if w := goHTTP(t, s, token, "GET", endpoint+".zip", nil, "Range", "bytes=1-8"); w.Code != 206 || !bytes.Equal(w.Body.Bytes(), data[1:9]) {
+		t.Fatal("range", w.Code)
+	}
+	if w := goHTTP(t, s, token, "GET", list, nil); w.Code != 200 || w.Body.String() != "v1.0.0\n" {
+		t.Fatal("complete list", w.Code, w.Body.String())
+	}
+	latest := "/go/owned/go.cratectl.invalid/!owned/app/@latest"
+	if w := goHTTP(t, s, token, "GET", latest, nil); w.Code != 200 || !bytes.Equal(w.Body.Bytes(), info) {
+		t.Fatal("latest", w.Code)
+	}
+	changed, _ := goPublicationFixture(t, c, "different immutable bytes")
+	if w := goHTTP(t, s, token, "PUT", endpoint+".zip", changed); w.Code != 409 {
+		t.Fatal("changed ZIP accepted", w.Code)
+	}
+	if w := goHTTP(t, s, token, "PUT", endpoint+".zip", data, "X-Cratectl-Module-Time", "2026-01-03T03:04:05Z"); w.Code != 409 {
+		t.Fatal("changed info accepted", w.Code)
+	}
+	events, e := s.DB.Events(ctx, admin, 0)
+	if e != nil || len(events) != 1 {
+		t.Fatal("replay/conflict added an event", len(events), e)
+	}
+	restarted := New(s.DB, s.Blobs, s.PublicURL)
+	if w := goHTTP(t, restarted, token, "GET", endpoint+".zip", nil); w.Code != 200 || !bytes.Equal(w.Body.Bytes(), data) {
+		t.Fatal("handler recreation", w.Code)
+	}
+	for _, a := range as {
+		if strings.HasSuffix(a.Path, ".zip") {
+			approve(a, "denied")
+		}
+	}
+	for kind := range expected {
+		if w := goHTTP(t, restarted, token, "GET", endpoint+"."+kind, nil); w.Code != 403 {
+			t.Fatal("denied sibling exposed", kind, w.Code)
+		}
+	}
+	if w := goHTTP(t, restarted, token, "GET", latest, nil); w.Code != 404 {
+		t.Fatal("denied latest discovered", w.Code)
+	}
+}
+func TestGoModuleOutboxRollbackAndConcurrentImmutablePublication(t *testing.T) {
+	s, _, token, admin := schemaServer(t)
+	ctx := context.Background()
+	mavenRepositories(t, s, admin, store.Repository{Name: "owned", Format: "go"})
+	c := gomodule.Coordinate{Module: "go.cratectl.invalid/app", Version: "v1.0.0"}
+	first, _ := goPublicationFixture(t, c, "first")
+	second, _ := goPublicationFixture(t, c, "second")
+	statuses := make(chan int, 2)
+	var group sync.WaitGroup
+	for _, data := range [][]byte{first, second} {
+		group.Add(1)
+		go func(data []byte) {
+			defer group.Done()
+			statuses <- goHTTP(t, s, token, "PUT", "/go/owned/"+c.Prefix()+".zip", data).Code
+		}(data)
+	}
+	group.Wait()
+	close(statuses)
+	seen := map[int]int{}
+	for code := range statuses {
+		seen[code]++
+	}
+	if seen[201] != 1 || seen[409] != 1 {
+		t.Fatal("immutable race", seen)
+	}
+	as := goInventory(t, s, admin, "owned")
+	if len(as) != 3 {
+		t.Fatal("mixed/partial concurrent publication", len(as))
+	}
+	for _, a := range as {
+		if _, e := store.ValidateGoModuleArtifact(a); e != nil {
+			t.Fatal(e)
+		}
+		if w := goHTTP(t, s, token, "GET", "/go/owned/"+a.Path, nil); w.Code != 200 {
+			t.Fatal("inconsistent winning bundle", w.Code)
+		}
+	}
+	if e := s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
+		_, e := tx.Exec(ctx, `UPDATE cratectl.queue_policies SET capacity=1 WHERE queue='events'`)
+		return e
+	}); e != nil {
+		t.Fatal(e)
+	}
+	c.Version = "v1.1.0"
+	blocked, _ := goPublicationFixture(t, c, "must stay unreferenced")
+	if w := goHTTP(t, s, token, "PUT", "/go/owned/"+c.Prefix()+".zip", blocked, "Idempotency-Key", "blocked-go-version"); w.Code != 503 {
+		t.Fatal("full outbox ignored", w.Code, w.Body.String())
+	}
+	if len(goInventory(t, s, admin, "owned")) != 3 {
+		t.Fatal("partial outbox rollback")
+	}
+	events, e := s.DB.Events(ctx, admin, 0)
+	if e != nil || len(events) != 1 {
+		t.Fatal("event committed on failed publication", len(events), e)
+	}
+	if e = s.DB.Tx(ctx, admin, false, func(tx pgx.Tx) error {
+		var count int
+		e := tx.QueryRow(ctx, `SELECT count(*) FROM cratectl.mutations WHERE key='blocked-go-version'`).Scan(&count)
+		if e == nil && count != 0 {
+			t.Fatal("receipt survived rollback")
+		}
+		return e
+	}); e != nil {
+		t.Fatal(e)
+	}
+}
+func TestGoModuleCurrentGrantsRevocationAndTenantCollision(t *testing.T) {
+	s, d, token, admin := schemaServer(t)
+	ctx := context.Background()
+	mavenRepositories(t, s, admin, store.Repository{Name: "owned", Format: "go", Access: "restricted"})
+	credentials := map[string]string{}
+	for _, actor := range []string{"publisher", "consumer", "other"} {
+		value, e := crypt.Token()
+		if e != nil {
+			t.Fatal(e)
+		}
+		credentials[actor] = value
+		tenant, role := admin.Tenant, "reader"
+		if actor == "publisher" {
+			role = "writer"
+		}
+		if actor == "other" {
+			tenant, role = "go-other", "admin"
+		}
+		if e = store.Provision(ctx, d.OwnerDSN, tenant, actor, role, value, time.Now().Add(time.Hour)); e != nil {
+			t.Fatal(e)
+		}
+	}
+	grant := func(actor string, read, write bool) {
+		t.Helper()
+		if e := s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
+			_, e := tx.Exec(ctx, `INSERT INTO cratectl.repository_grants(tenant,repository,actor,can_read,can_write)VALUES($1,'owned',$2,$3,$4) ON CONFLICT(tenant,repository,actor) DO UPDATE SET can_read=$3,can_write=$4`, admin.Tenant, actor, read, write)
+			return e
+		}); e != nil {
+			t.Fatal(e)
+		}
+	}
+	c := gomodule.Coordinate{Module: "go.cratectl.invalid/app", Version: "v1.0.0"}
+	data, _ := goPublicationFixture(t, c, "tenant A")
+	endpoint := "/go/owned/" + c.Prefix() + ".zip"
+	if w := goHTTP(t, s, credentials["publisher"], "PUT", endpoint, data); w.Code != 403 {
+		t.Fatal("ungranted publisher", w.Code)
+	}
+	grant("publisher", true, true)
+	published := goHTTP(t, s, credentials["publisher"], "PUT", endpoint, data)
+	if published.Code != 201 {
+		t.Fatal("granted publisher", published.Code)
+	}
+	if w := goHTTP(t, s, credentials["consumer"], "GET", endpoint, nil); w.Code != 403 {
+		t.Fatal("ungranted consumer", w.Code)
+	}
+	grant("consumer", true, false)
+	if w := goHTTP(t, s, credentials["consumer"], "GET", endpoint, nil); w.Code != 200 {
+		t.Fatal("granted consumer", w.Code)
+	}
+	if w := goHTTP(t, s, credentials["consumer"], "PUT", endpoint, data); w.Code != 403 {
+		t.Fatal("reader published", w.Code)
+	}
+	publisher, e := s.DB.Authenticate(ctx, credentials["publisher"])
+	if e != nil {
+		t.Fatal(e)
+	}
+	as := goInventory(t, s, admin, "owned")
+	grant("publisher", true, false)
+	if _, e = s.DB.PublishGoModule(ctx, publisher, "owned", as, ""); !errors.Is(e, store.ErrDenied) {
+		t.Fatal("durable replay bypassed current write grant", e)
+	}
+	other, e := s.DB.Authenticate(ctx, credentials["other"])
+	if e != nil {
+		t.Fatal(e)
+	}
+	mavenRepositories(t, s, other, store.Repository{Name: "owned", Format: "go"})
+	different, _ := goPublicationFixture(t, c, "tenant B")
+	if w := goHTTP(t, s, credentials["other"], "PUT", endpoint, different); w.Code != 201 {
+		t.Fatal("tenant collision publication", w.Code)
+	}
+	for who, want := range map[string][]byte{token: data, credentials["other"]: different} {
+		w := goHTTP(t, s, who, "GET", endpoint, nil)
+		if w.Code != 200 || !bytes.Equal(w.Body.Bytes(), want) {
+			t.Fatal("tenant byte isolation", w.Code)
+		}
+	}
+	if e = store.Revoke(ctx, d.OwnerDSN, credentials["consumer"]); e != nil {
+		t.Fatal(e)
+	}
+	if w := goHTTP(t, s, credentials["consumer"], "GET", endpoint, nil); w.Code != 401 || w.Header().Get("Content-Type") != "text/plain; charset=utf-8" {
+		t.Fatal("revoked consumer", w.Code)
+	}
+	if w := goHTTP(t, s, credentials["other"], "GET", endpoint, nil); w.Code != 200 {
+		t.Fatal("other tenant affected", w.Code)
+	}
+}

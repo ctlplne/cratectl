@@ -51,13 +51,18 @@ No duplicate dispatch. No real JVM/SDK/PostgreSQL campaign ran locally.
 All broader formats, faults, source/grant races, lifecycle/GC, migration,
 production platforms, scale and later goal stages remain required.
 
-Go module identity/ZIP validation now has a local foundation: canonical native
-paths/versions, exact root go.mod identity, bounded shared ZIP inspection and
-implicit-directory collision checks. Five Go test methods, two shared callback
-tests, unchanged NuGet archive regressions, affected package race and full lint
-pass. Two new fuzz targets will run on native CI. No Go endpoint or native
-client/database claim yet. See
-`evidence/2026-11-04/go-module-parser-development.json`.
+Hosted Go module publication/read/discovery is implemented but unverified.
+ZIP, exact root go.mod and stable version info are synced before one common
+transaction commits all references, integrity intent, journal/outbox and replay.
+Every read/discovery checks the complete bundle under current policy. CLI and
+hosted console setup are included. Local unit/race/full lint, profile stand-ins,
+strict evidence export and byte-for-byte console reproduction pass. Three new
+PostgreSQL test functions compile only; they did not run locally. A separate
+native Go workflow requires both Linux architectures, real PostgreSQL normal/
+race and trusted-TLS stock Go transitive downloads with no VCS/public fallback.
+See `evidence/2026-11-04/go-module-hosted-development.json`. Go proxy/group,
+legacy/alias/warm-cache/lifecycle/fault/migration/scale/platform and browser
+operator journeys remain required. Broad readiness stays false.
 
 No primary, selected binary, data, credential, sibling or customer change.
 Earlier notes below are historical and do not override this current state.

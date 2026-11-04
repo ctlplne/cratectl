@@ -58,6 +58,10 @@ type Server struct {
 	PythonExpandedBytes          int64
 	PythonFileLimit              int
 	PythonMetadataBytes          int64
+	GoModuleUploadBytes          int64
+	GoModuleExpandedBytes        int64
+	GoModuleDirectoryBytes       int64
+	GoModuleFileLimit            int
 	NuGetUploadBytes             int64
 	NuGetExpandedBytes           int64
 	NuGetFileLimit               int
@@ -83,6 +87,7 @@ func New(db *store.Store, b *blob.Local, public string) *Server {
 	s.ManagementMetadataBytes = 8 << 20
 	s.NPMPublishBytes, s.NPMExpandedBytes, s.NPMFileLimit, s.NPMPackageJSONBytes = 24<<20, 64<<20, 10000, 1<<20
 	s.PythonUploadBytes, s.PythonExpandedBytes, s.PythonFileLimit, s.PythonMetadataBytes = 64<<20, 256<<20, 10000, 1<<20
+	s.GoModuleUploadBytes, s.GoModuleExpandedBytes, s.GoModuleDirectoryBytes, s.GoModuleFileLimit = 64<<20, 256<<20, 4<<20, 10000
 	s.NuGetUploadBytes, s.NuGetExpandedBytes, s.NuGetFileLimit = 64<<20, 256<<20, 10000
 	s.OCIGraphBytes = 4 << 30
 	s.OCIDeliveryRedirects = 5
@@ -95,7 +100,7 @@ func New(db *store.Store, b *blob.Local, public string) *Server {
 	s.InventoryLimits = store.InventoryLimits{MaxEntries: 1000000, DirectoryEntries: 1000000}
 	s.UploadLimit, s.UploadPartLimit, s.UploadMetadataBytes, s.UploadLease, s.UploadTTL = 32, 4096, 1<<20, 30*time.Second, 30*time.Minute
 	s.OCIDeliveryLimits = upstream.DefaultRegistryDeliveryLimits()
-	for _, a := range []adapter{{"generic", s.raw}, {"maven", s.raw}, {"npm", s.npm}, {"pypi", s.pypi}, {"oci", s.oci}, {"nuget", s.nuget}} {
+	for _, a := range []adapter{{"generic", s.raw}, {"maven", s.raw}, {"npm", s.npm}, {"pypi", s.pypi}, {"oci", s.oci}, {"nuget", s.nuget}, {"go", s.goModule}} {
 		s.adapters[a.Format()] = a
 	}
 	secret, keyError := crypt.Token()
@@ -117,6 +122,8 @@ func fail(w http.ResponseWriter, status int, code, action string) {
 }
 func respondErr(w http.ResponseWriter, e error) {
 	switch {
+	case errors.Is(e, store.ErrGoModuleUnvalidated):
+		fail(w, 409, "go_module_unvalidated", "Inspect and reimport a complete validated ZIP/mod/info bundle. Approving a digest cannot repair inconsistent metadata.")
 	case errors.Is(e, store.ErrMatterInput):
 		fail(w, 400, "invalid_hold_matter", "Supply a complete bounded matter request or the exact reviewed target manifest and revision.")
 	case errors.Is(e, store.ErrMatterChanged):
@@ -241,6 +248,9 @@ func respondErr(w http.ResponseWriter, e error) {
 	}
 }
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if strings.HasPrefix(r.URL.Path, "/go/") {
+		w = &goProtocolResponse{ResponseWriter: w}
+	}
 	w.Header().Set("X-Content-Type-Options", "nosniff")
 	w.Header().Set("Cache-Control", "private, no-store")
 	w.Header().Set("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'")
@@ -312,7 +322,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if len(parts) == 3 {
 		p = parts[2]
 	}
-	prefix := map[string]string{"generic": "r", "maven": "r", "npm": "npm", "pypi": "pypi", "oci": "v2", "nuget": "nuget"}[repo.Format]
+	prefix := map[string]string{"generic": "r", "maven": "r", "npm": "npm", "pypi": "pypi", "oci": "v2", "nuget": "nuget", "go": "go"}[repo.Format]
 	a := s.adapters[repo.Format]
 	if a == nil || parts[0] != prefix {
 		fail(w, 404, "format_mismatch", "Use the native endpoint for this repository format.")
@@ -387,7 +397,7 @@ func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Iden
 			return
 		}
 		formats := []string{}
-		for _, name := range []string{"generic", "maven", "npm", "pypi", "oci", "nuget"} {
+		for _, name := range []string{"generic", "maven", "npm", "pypi", "oci", "nuget", "go"} {
 			if s.adapters[name] != nil {
 				formats = append(formats, name)
 			}

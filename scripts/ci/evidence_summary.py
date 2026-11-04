@@ -15,6 +15,7 @@ from native_client_diagnostics import CODES as NATIVE_CLIENT_DIAGNOSTIC_CODES
 from gradle_evidence import safe_gradle_contract
 from ivy_evidence import safe_ivy_contract
 from sbt_evidence import safe_sbt_contract
+from go_module_evidence import safe_go_module_contract
 
 
 def summarize(root, environment):
@@ -226,6 +227,11 @@ def summarize(root, environment):
         if 'ivy_contract' in report:
             try:
                 entry['ivy_contract'] = safe_ivy_contract(report['ivy_contract'], status)
+            except ValueError as error:
+                raise SystemExit(str(error)) from error
+        if 'go_module_contract' in report:
+            try:
+                entry['go_module_contract'] = safe_go_module_contract(report['go_module_contract'], status)
             except ValueError as error:
                 raise SystemExit(str(error)) from error
         if 'sbt_contract' in report:

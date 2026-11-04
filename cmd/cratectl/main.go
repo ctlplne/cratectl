@@ -29,8 +29,9 @@ func run() error {
 	tokenFile := f.String("token-file", "", "private token file")
 	method := f.String("method", "GET", "HTTP method")
 	p := f.String("path", "/api/v1/repositories", "API path")
+	moduleTime := f.String("go-module-time", "", "stable RFC3339 publication instant for a complete Go module ZIP")
 	file := f.String("body-file", "", "JSON request file")
-	upload := f.String("upload-file", "", "stream exact repair source bytes from this regular file")
+	upload := f.String("upload-file", "", "stream exact publication or repair bytes from this regular file")
 	timeout := f.Duration("timeout", 30*time.Second, "request timeout, 1s–24h; increase explicitly for large repair sources")
 	responseLimit := f.Int64("response-limit", 4<<20, "maximum management response bytes, 1–1073741824; increase explicitly for complete large previews")
 	key := f.String("idempotency-key", "", "durable mutation key")
@@ -112,6 +113,9 @@ func run() error {
 	if *upload != "" {
 		req.Header.Set("Content-Type", "application/octet-stream")
 		req.ContentLength = length
+	}
+	if *moduleTime != "" {
+		req.Header.Set("X-Cratectl-Module-Time", *moduleTime)
 	}
 	req.Header.Set("Idempotency-Key", *key)
 	transport := http.DefaultTransport.(*http.Transport).Clone()
