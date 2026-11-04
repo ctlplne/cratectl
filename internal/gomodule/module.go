@@ -30,6 +30,11 @@ func Canonical(m, v string) (Coordinate, error) {
 	if len(m) > MaxModulePath || len(v) > MaxVersion || module.Check(m, v) != nil || module.CanonicalVersion(v) != v {
 		return Coordinate{}, ErrModule
 	}
+	if module.IsPseudoVersion(v) {
+		if _, e := module.PseudoVersionTime(v); e != nil {
+			return Coordinate{}, ErrModule
+		}
+	}
 	return Coordinate{m, v}, nil
 }
 

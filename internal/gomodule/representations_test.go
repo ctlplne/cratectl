@@ -77,6 +77,12 @@ func TestUpstreamInfoRejectsAmbiguityAliasesAndPartialResults(t *testing.T) {
 			t.Fatal("pseudo-version instant binding", e)
 		}
 	}
+	for _, version := range []string{"v1.0.1-0.20261302030405-0123456789ab", "v1.0.1-0.20260102250405-0123456789ab"} {
+		c.Version = version
+		if got, e := ParseVersionInfo([]byte(`{"Version":"`+version+`"}`), c); e == nil || got != (Info{}) {
+			t.Fatal("optional time hid an invalid pseudo-version date", got, e)
+		}
+	}
 }
 
 func TestUpstreamBundleRequiresExactIndependentModAndArchiveIdentity(t *testing.T) {

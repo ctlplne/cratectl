@@ -105,8 +105,13 @@ Go upstream-representation validators now bind bounded optional-time/future-fiel
 info metadata to exact coordinates and require independent mod bytes to equal
 the validated ZIP root. Unit/race/vet and a short local ARM fuzz smoke pass.
 They are not wired to proxy routes: atomic retrieval/cache/authority/policy and
-both native client journeys remain required. See
-`evidence/2026-11-04/go-upstream-representations-development.json`.
+both native client journeys remain required. A follow-up owned regression found
+that optional metadata Time hid an impossible pseudo-version date; common
+canonical identity now validates the calendar independently. Affected unit/race/
+vet and a second short ARM fuzz smoke pass, with native proof still required.
+Hosted publication already rejected such dates. See
+`evidence/2026-11-04/go-upstream-representations-development.json` and
+`evidence/2026-11-04/go-pseudo-calendar-repair-development.json`.
 
 Main CI now has bounded runtime-input selection, implemented but unverified.
 Documentation/evidence-only commits retain independent scoped source/binary/

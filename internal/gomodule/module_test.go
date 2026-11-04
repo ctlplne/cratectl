@@ -219,4 +219,12 @@ func TestPseudoVersionInfoBindsItsTimestamp(t *testing.T) {
 	if _, e := VersionInfo(c, "2026-01-02T03:04:05Z"); e == nil {
 		t.Fatal("invalid pseudo-version date")
 	}
+	for _, version := range []string{"v1.0.1-0.20261302030405-0123456789ab", "v1.0.1-0.20260102250405-0123456789ab"} {
+		if got, e := Canonical(c.Module, version); e == nil || got != (Coordinate{}) {
+			t.Fatal("invalid pseudo-version date entered a canonical coordinate", got, e)
+		}
+		if got, e := ParseRequest(c.Module + "/@v/" + version + ".info"); e == nil || got != (Request{}) {
+			t.Fatal("invalid pseudo-version date entered a native route", got, e)
+		}
+	}
 }

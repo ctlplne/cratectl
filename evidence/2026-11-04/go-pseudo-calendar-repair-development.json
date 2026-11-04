@@ -1,0 +1,55 @@
+{
+  "source_parent": "6c1c8fb9626d8a0c6f92a4a17d970bc4b4e1a556",
+  "source_dirty": true,
+  "observed_at": "2026-11-04T23:33:53.410445+00:00",
+  "state": "focused local repair; native qualification pending",
+  "discovery": "The newly added optional-Time upstream parser accepts a syntactically canonical pseudo-version with an impossible calendar date when Time is absent. An owned deterministic regression reproduces invalid month13 before repair. This is a local validator regression, not an observed native/client/customer failure.",
+  "fixed_marker": "optional time hid an invalid pseudo-version date",
+  "mechanism": "Validate PseudoVersionTime inside the common Canonical gate independently of optional metadata Time. Impossible dates/hours now fail canonical coordinate, native route and upstream info validation. Valid pseudo-versions and explicit timestamp matching retain their existing behavior.",
+  "prior_exposure_limits": "Hosted publication already calls VersionInfo with a required stable instant and rejects these dates. The upstream parser has no HTTP route or production proxy admission. No invalid bundle publication or customer impact is established.",
+  "files": [
+    {
+      "path": "internal/gomodule/module.go",
+      "sha256": "605bf06f2a08170a6af8dd654580596ec71c6194cf3655bce3062d182665eaae"
+    },
+    {
+      "path": "internal/gomodule/module_test.go",
+      "sha256": "95e9c2928cb2b358628531bc56425c1a3e33a0d9e287948ec5c8b92808022d3a"
+    },
+    {
+      "path": "internal/gomodule/representations_test.go",
+      "sha256": "6dcd7e7ed6a72e6a02805ae07b179a2cc53a83ebb1c458301b09ddcbe37374c4"
+    }
+  ],
+  "validation": [
+    "Both invalid-month and invalid-hour regressions now pass through coordinate/native-path/optional-info gates. All affected module/CLI/server/store unit and race packages plus module/CLI vet pass.",
+    "Five-second local ARM upstream-info fuzz replay passes37515executions after132seed/cache entries,21new interesting entries. Initial prior77401input smoke remains separate; neither is a long parser/security or x86 qualification.",
+    "All existing native Go profile cases and new metadata target remain required on actual GitHub runners. No real PostgreSQL or native registry-backed stock-Go journey ran locally."
+  ],
+  "logs": [
+    {
+      "path": ".cache/go-upstream-optional-pseudo-first-regression.log",
+      "sha256": "61fb4d52c2b0c7ad1f257e502244449eed2d308f7f67d1b8fb0f32c8ab0a13c3"
+    },
+    {
+      "path": ".cache/go-upstream-optional-pseudo-unit.log",
+      "sha256": "9a320d5ab378a4932497c1def0ed229424d9e4bcc9205d38842ebf5520f64e72"
+    },
+    {
+      "path": ".cache/go-upstream-optional-pseudo-race.log",
+      "sha256": "25e95d30398db59776f88de6fabd7db6d1fde5c82f0aa8eeb42479bf2496a7a6"
+    },
+    {
+      "path": ".cache/go-upstream-optional-pseudo-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/go-upstream-optional-pseudo-fuzz.log",
+      "sha256": "7798d320f67ef53d645c9ebcfca6c32c7b4e2f13d881d6b4f4a8c8248bb49b12"
+    }
+  ],
+  "limits": [
+    "No proxy route enabled; atomic multi-object/source/grant/lease/cache/policy/checksum and native journeys remain required.",
+    "All450capabilities/41families/laterstages remain committed; readiness/fullsecurity/packaging false. No primary/customer/sibling/schema/release mutation."
+  ]
+}
