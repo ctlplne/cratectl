@@ -1,35 +1,45 @@
 # cratectl execution status
 
-Owner resumed the full goal after the 2026-11-03 graceful halt. The native
-Gradle `publication-wire-v2` profile now passes on clean
-`9985847d685b2685cbf3c1f334d804e80eee02c1`: both actual Linux architectures
-complete 199 checks, all eight original stages and all 24 matching publisher,
-retained-reference and raw HTTP digests. The original ARM Java setup failure
-is repaired and replayed; its failed `7ea5ee7` campaign remains retained.
-See `evidence/2026-11-04/gradle-9985847-checkpoint.json`. All 15 observed jobs
-on that source now pass: main 9, Gradle 2, OCI 2 and controlled upgrades 2.
-Nine unchanged safe summaries and the exact scopes are accepted in
-`evidence/2026-11-04/github-9985847-checkpoint.json`. Broader clients pass 645
-checks per architecture, full x86 Chromium passes 15 workflows with no bad or
-skipped tests, and both upgrade lanes pass 15 reports over ten historical pins.
+Owner requested a graceful halt and local commit on 2026-11-04 UTC
+(2026-11-03 America/New_York). The goal is paused and incomplete. All 450
+capabilities / 41 families and every later GOAL stage remain committed;
+all broad readiness verdicts, full security and packaging remain negative.
+No push, new CI dispatch or implementation repair is part of this halt.
 
-The complete `600466d` campaign has18 successes and2 original Ivy identity
-failures; all 20 jobs finish normally. Its 14 unchanged summaries are accepted as
-that precise partial scope in `evidence/2026-11-04/github-600466d-checkpoint.json`.
-Both actual `419861c` jobs then replay the identity repair: legacy Ant 1.10.14,
-pinned bootstrap/runtime 1.10.18, one completed identity stage. The first
-publication fails Ivy's unsupported `sha256` algorithm spelling. Exact evidence
-and authenticated diagnostic metadata are retained in
-`evidence/2026-11-04/ivy-419861c-publication-failure.json`.
+Implementation source is `708214f0f82b6ffc144a84dfafecf7ec7b33e93a`.
+All 17 observed GitHub qualification jobs have now finished successfully:
+main 9, JVM 4, OCI 2 and controlled upgrades 2. Exact terminal job/step
+observations and resume instructions are retained in
+`evidence/2026-11-04/owner-halt-708214f.json`. Both native PostgreSQL integration
+and race steps report success. Main/OCI/upgrade safe artifacts have not been
+reviewed at halt; these job results do not yet establish a newly accepted
+whole-candidate checkpoint. The latest accepted whole observed checkpoint
+remains `9985847`, whose 15 jobs and nine summaries are retained separately.
+ARM Chromium placement is skipped and never counted as a pass.
 
-The next repair uses documented `SHA-256`, binds Ivy SHA-2 checksum URLs to the
-current parent policy/grant/tenant and adds SHA-384 through internal/crypto.
-It preserves all original cases and adds native SHA-384/SHA-512 consumers,
-checksum denial/revocation and legacy-sidecar/conditional/receipt regressions.
-Build, unit, race and lint pass locally; real PostgreSQL/API and stock-client
-replay on the new source remain unverified. See
-`evidence/2026-11-04/ivy-checksum-development.json`. All 450 capabilities / 41 families
-and every later GOAL stage remain committed; broad readiness is negative.
+The named native JVM evidence on `708214f` is validated and retained in
+`evidence/2026-11-04/jvm-708214f-checkpoint.json`. Both actual Linux architectures
+pass Ivy 228 checks, all seven original stages, twelve exact publisher/reference/
+HTTP JAR/POM identities and all three SHA-256/384/512 consumers. Both Gradle
+profiles pass 199 checks, eight stages and 24 exact byte bindings. This replays
+the original Ant runtime and checksum-spelling failures without removing cases.
+Initial Ivy releases are qualified; snapshots, classifiers, parents,
+configurations, conflicts, interruption, lifecycle and SBT remain unfinished.
+
+The preceding `419861c` campaign is also now accepted for its exact partial
+scope: 20 of 22 jobs pass; both Ivy first publications fail. Sixteen safe
+summaries, original failures and the separately counted ancillary Dependabot
+job are retained in `evidence/2026-11-04/github-419861c-checkpoint.json`.
+Its separate actual SDK library proof, with all original fixture hashes and
+zero mismatches, is `evidence/2026-11-04/nuget-419861c-checkpoint.json`.
+The original `600466d` Ant identity failures remain retained as well.
+
+Resume only on owner instruction: inspect the current Git state and exact
+recorded handles; accept remaining `708214f` safe summaries before making a
+whole-candidate claim, then continue all unfinished scope. No project listeners
+were found on loopback qualification ports 38443/35432 at halt. Primary schema
+11, selected qualified binaries, data, credentials and sibling services are
+unchanged. Earlier checkpoints and execution notes below are historical.
 
 Owner resumed the complete `GOAL.md` scope on 2026-11-02 and reaffirmed that
 both author and committer must be `imfeelingtheagi`. The current work finishes

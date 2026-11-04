@@ -975,29 +975,32 @@
       "id": "DEFECT.0088",
       "summary": "Native Ivy qualification rejects Ant runtime identity despite the pinned distribution download",
       "first_failure": "evidence/2026-11-04/ivy-600466d-identity-failure.json",
-      "state": "repaired and replayed on both native Linux architectures at419861c",
+      "state": "repaired and replayed; both native708214f complete initial Ivy release profile",
       "repair": "Invoke the pinned Java executable and Ant bootstrap JAR directly, with explicit ant.home, isolated classpath and sanitized Java/Ant injection variables. Keep the exact runtime-version assertion; bind the bootstrap digest and observed runtime version. Retain a read-only legacy-launcher observation without requiring a particular host version.",
-      "limits": "Both actual jobs observe legacy1.10.14 and pinned1.10.18 on the same native runner. Only the client_identity stage completes; a separate checksum configuration failure prevents any publication. No full Ivy pass.",
-      "latest_candidate": "419861c46a9052a98647aa834dde06e00e25840f",
-      "replay": "evidence/2026-11-04/ivy-419861c-publication-failure.json"
+      "limits": "Original identity failure and419861cpublication failure remain retained. Both708214fhosts run pinnedAnt1.10.18 and complete228checks; this does not qualify broader Ivy/JVM scope.",
+      "latest_candidate": "708214f0f82b6ffc144a84dfafecf7ec7b33e93a",
+      "replay": "evidence/2026-11-04/jvm-708214f-checkpoint.json"
     },
     {
       "id": "DEFECT.0089",
       "summary": "Owned Ivy resolver uses unsupported sha256 algorithm spelling and aborts first publication",
       "first_failure": "evidence/2026-11-04/ivy-419861c-publication-failure.json",
-      "state": "configuration repair implemented; native replay unverified",
+      "state": "repaired and replayed on both native Linux architectures at708214f",
       "repair": "Use documented SHA-256. Preserve SHA-1/MD5 and all original cases; add actual SHA-384/SHA-512 consumers and exact derived checksum HTTP observations.",
-      "limits": "Both native jobs fail after14checks/oneidentitystage. No publication/consumption compatibility pass.",
-      "latest_candidate": "419861c46a9052a98647aa834dde06e00e25840f"
+      "limits": "Original419861c14check/oneidentitystage failures remain retained. Both708214fprofiles pass228checks/all7stages/all12bytebindings/all3SHA2consumers. Broader Ivy/JVM cases remain open.",
+      "latest_candidate": "708214f0f82b6ffc144a84dfafecf7ec7b33e93a",
+      "replay": "evidence/2026-11-04/jvm-708214f-checkpoint.json"
     },
     {
       "id": "DEFECT.0090",
       "summary": "Maven parser does not bind documented Ivy SHA-2 suffixes to the parent artifact",
       "first_failure": "evidence/2026-11-04/ivy-checksum-development.json",
-      "state": "implemented; local regressions pass, native PostgreSQL/API replay unverified",
+      "state": "implemented; both native PostgreSQL integration/race steps successful; final main safe-summary review pending at owner halt",
       "repair": "Canonicalize documented SHA-256/384/512 aliases through the existing parent policy/grant/tenant and checksum-receipt path; add SHA-384 only inside internal/crypto. Preserve legacy opaque references while serving current parent-derived data.",
-      "limits": "Initial pure-parser regressions rejected aliases and the SHA-384 vector was unsupported. Actual API legacy-sidecar/review/grant/tenant/conditional/receipt tests are compiled but have not run on the new source. No observed customer breach, primary change or native pass is claimed.",
-      "latest_candidate": null
+      "limits": "Both actual708214fnative PostgreSQL integration/race steps and initial Ivy profiles succeed. Main safe artifacts have not been reviewed at halt, so no new whole-candidate acceptance. Original local parser/SHA384 regressions retained. No observed customer breach or primary change.",
+      "latest_candidate": "708214f0f82b6ffc144a84dfafecf7ec7b33e93a",
+      "observation": "evidence/2026-11-04/owner-halt-708214f.json",
+      "client_replay": "evidence/2026-11-04/jvm-708214f-checkpoint.json"
     }
   ]
 }

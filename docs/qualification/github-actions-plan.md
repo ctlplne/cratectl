@@ -13,33 +13,30 @@ outside this CI authority. No autonomous delegation.
 
 ## Current qualification state
 
-The latest fully accepted observed campaign is clean `9985847`: all 15 jobs
-pass, with nine unchanged safe summaries in the
-[exact checkpoint](../../evidence/2026-11-04/github-9985847-checkpoint.json).
-It includes both native PostgreSQL/race and 645 broader-client checks, 56 NuGet
-HTTP/restart cases, 199 Gradle and 214 OCI checks per architecture, 15 full
-x86 Chromium workflows with no unexpected/skipped/flaky tests, and 15 upgrade
-reports over ten historical pins per architecture. No focused or Ant/Ivy job
-ran on that source. Independent focused and library evidence stays bound to
-its own earlier sources; see [the history](github-actions-history.md).
+The owner paused execution with a graceful local commit on 2026-11-04 UTC.
+The [halt record](../../evidence/2026-11-04/owner-halt-708214f.json) captures
+17 terminal successful jobs on clean `708214f`: main9/JVM4/OCI2/upgrades2.
+Both native PostgreSQL integration/race steps succeed. Main/OCI/upgrade safe
+artifacts still require review; job success alone is not acceptance. The latest
+fully accepted whole observed campaign remains `9985847` with15passing jobs;
+its [checkpoint](../../evidence/2026-11-04/github-9985847-checkpoint.json) remains
+separate. No new dispatch, push or repair is part of this halt.
 
-The `600466d` campaign finishes 18 of 20 jobs successfully; both first Ant/Ivy
-identity assertions fail. Keep the
-[complete observed checkpoint](../../evidence/2026-11-04/github-600466d-checkpoint.json).
-On `419861c`, both native jobs confirm legacy Ant 1.10.14 and the repaired
-pinned bootstrap/runtime 1.10.18. First publication then fails the fixture's
-unsupported `sha256` algorithm spelling. The
-[exact JVM failures](../../evidence/2026-11-04/ivy-419861c-publication-failure.json)
-retain four unchanged summaries and two authenticated diagnostic metadata
-files; raw content stays private. No complete native Ivy pass is established.
+The [accepted JVM proof](../../evidence/2026-11-04/jvm-708214f-checkpoint.json)
+binds both actual native Linux architectures: Ivy228checks/all7original stages/
+12publisher-reference-HTTP identities/3SHA2consumers and Gradle199checks/
+8stages/24bytebindings. Original `600466d` Ant identity and `419861c` unsupported
+checksum spelling failures remain retained. Documented SHA-2 aliases derive
+from the current authorized parent. The new API legacy-sidecar, conditional,
+grant, tenant and atomic-receipt regressions have successful native integration/
+race step observations; final main artifact review remains open.
 
-The repair uses documented `SHA-256`, adds parent-derived server support for
-Ivy's `.SHA-256`/`.SHA-384`/`.SHA-512` spellings, and keeps every original case.
-It adds fresh native consumers for each stronger algorithm and direct checksum
-policy/revocation observations. Real PostgreSQL regressions must prove current
-review, conditional policy/grants, tenant collisions, old opaque sidecars and
-actor/repository-scoped atomic metadata receipts. Local source/stand-in checks
-pass; the new API/client behavior still needs native qualification.
+The [preceding419861c campaign](../../evidence/2026-11-04/github-419861c-checkpoint.json)
+is accepted only as20of22passing, with both original Ivy publication failures.
+Its focused-browser and [SDK library proof](../../evidence/2026-11-04/nuget-419861c-checkpoint.json)
+retain their own source and unchanged fixture identities. The ancillary
+Dependabot job is separate from product qualification. Broader Ivy/SBT and all
+other GOAL requirements remain unfinished. Resume only on owner instruction.
 
 All broad readiness verdicts, complete security and packaging remain negative.
 `make security` and `make packaging` continue to fail with their unfinished
@@ -55,7 +52,7 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 | `ci.yml`: scoped security / 1 | Ubuntu x86 | Pinned source/binary analysis, full reachable Git history secret scan and synthetic rule regressions. 30-minute job. Current324-case named proof is separate from full security/feed/image coverage. |
 | `ci.yml`: PostgreSQL and stock clients / 2 | Both native Linux architectures; real PostgreSQL16.15 | Integration/race, bounded timing, durable jobs/leases, integrity and baseline client/recovery journeys; 120-minute job. Full Chromium suite only on x86. ARM browser placement is skipped and never counted as passing. |
 | `jvm-clients.yml`: Gradle / 2 | Both native Linux architectures; real PostgreSQL | Gradle9.8.2, exact JDK21 build, eight stages and24 publisher/reference/raw-HTTP digests. 60-minute job. Named v2 profile passes; broader JVM remains open. |
-| `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0, exact JDK, seven stages,12 JAR/POM byte bindings and three SHA-2 consumer observations. 60-minute job. Identity repair passes; publication/checksum/API behavior still needs native replay. |
+| `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0, exact JDK, seven stages,12 JAR/POM byte bindings and three SHA-2 consumer observations. 60-minute job. Initial release profile passes228checks; broader Ivy remains open. API integration/race steps succeed; final main summary review remains pending. |
 | `nuget-contract.yml`: libraries / 2 | Both native Linux architectures and actual SDK10.0.403 libraries | Dense version, archive, casing, dependency and framework differential contracts; 20-minute job. Does not replace actual NuGet HTTP/restore/restart proof. |
 | `oci-clients.yml`: native clients / 2 | Both native Linux architectures; Docker, Podman, Helm, real PostgreSQL | Actual publication/consumption and policy/tenant/recovery cases with inert owned data; 45-minute job. Do not execute the uploaded image. External-provider interoperability is separate. |
 | `browser-repair.yml`: focused / 3 on relevant pushes | Native x86 Chromium; five fresh PostgreSQL databases per selected journey | Repair, retention and NuGet each repeat five complete journeys; 45-minute job. Manual dispatch selects one. Stop on failure; no retries/skips count as acceptance. |
@@ -90,11 +87,12 @@ implicitly authorized by this plan.
   tip can replace an older pending tip; PR work may still be superseded.
   Pending cancellation supplies no evidence. See
   [GitHub's concurrency contract](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency).
-- A client command has a two-minute deadline,8MiB private output limit and64KiB
+- The owned JVM command helper has a two-minute deadline,8MiB private output limit and64KiB
   captured tail. Gradle uses two workers; the direct Ant JVM declares512MiB
   heap/384MiB metaspace and two processors. Owned process-group cleanup covers
   children remaining in that group. Explicitly detached sessions remain an
-  open containment limit. Timeouts leave remote mutation outcomes unconfirmed.
+  open containment limit. Legacy non-JVM command/probe output and fork bounds
+  still require review. Timeouts leave remote mutation outcomes unconfirmed.
 - Bind source SHA, clean state, embedded binary revision/OS/architecture,
   actual tool and fixture bytes, mandatory stages and independent HTTP effects.
   A publisher-generated hash alone is not wire proof. Historical upgrade
@@ -120,7 +118,7 @@ implicitly authorized by this plan.
 
 | Work still required | Placement / acceptance evidence |
 | --- | --- |
-| Ant/Ivy and SBT client breadth | Complete the current native Ant/Ivy release gate, then snapshots/classifiers/parents/configurations/conflicts and SBT2.x plus supported1.x. The [JVM plan](jvm-client-plan.json) records exact cases and bootstrap/cache limits. |
+| Ant/Ivy and SBT client breadth | The named initial Ant/Ivy release gate passes; complete snapshots/classifiers/parents/configurations/conflicts and SBT2.x plus supported1.x. The [JVM plan](jvm-client-plan.json) records exact cases and bootstrap/cache limits. |
 | Every later format and native client | Native Linux architectures and stock ecosystem tools as each adapter is implemented; real restricted PostgreSQL and nontrivial dependency graphs. Hosted/proxy/group, exact bytes, permissions, policy, concurrency, interruption, restart, freshness, lifecycle and migration remain separate required cases. |
 | Real third-party OCI/upstream interoperability | Explicitly authorized project-owned repositories/realm/registry services with pinned tools and inert data. Keep changing external services separate from deterministic PR gates; no publication authority is assumed. |
 | TLS, private trust and identity | Disposable real compatible IdPs/PKI and native clients, scoped tenants, rotation/expiry/revocation, failure and recovery. Stand-ins do not qualify every vendor or customer CA. |

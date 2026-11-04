@@ -1,13 +1,13 @@
 # Ant and Ivy client qualification
 
-Both native Linux jobs at `419861c` pass the repaired Ant identity gate:
-the explicit bootstrap runs Ant 1.10.18 while the legacy shell selects 1.10.14.
-The first publication then fails because the fixture names an algorithm
-`sha256`; Ivy requires `SHA-256`. The
-[exact failures](../../evidence/2026-11-04/ivy-419861c-publication-failure.json)
-retain both original summaries and authenticated diagnostic metadata. The
-configuration and server alias repairs below are implemented but unverified
-on a native candidate. There is no complete Ivy compatibility pass yet.
+The initial release profile passes on both native Linux architectures at
+`708214f`: 228 checks, all seven original stages, twelve exact JAR/POM
+publisher/reference/HTTP identities and all three SHA-2 consumers. The
+[named JVM checkpoint](../../evidence/2026-11-04/jvm-708214f-checkpoint.json)
+retains exact source, tool and fixture identities. Original Ant-selection and
+checksum-spelling failures remain retained. Broader Ivy/JVM compatibility is
+unfinished. The owner paused execution; follow the
+[halt record](../../evidence/2026-11-04/owner-halt-708214f.json) before resuming.
 It targets Apache Ant 1.10.18, Ivy 2.6.0 and the pinned Java 21 runtime on
 actual Linux x86 and ARM GitHub runners, using real PostgreSQL and the common
 Maven repository endpoint. The [JVM plan](../qualification/jvm-client-plan.json)
