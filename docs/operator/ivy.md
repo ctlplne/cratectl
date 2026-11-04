@@ -93,18 +93,20 @@ publisher/reference/HTTP identities. SHA-1/MD5 compatibility checks remain;
 no checksum or original client case is removed to obtain a pass.
 
 
-The next `maven-metadata-v2` profile is implemented but awaits native replay.
-It retains all original release cases, then publishes an owned parent POM with
-a property-backed managed dependency, two conflicting versions and bridges,
-optional/test dependencies and a separate classified resource-only JAR. All28
-representations need publisher, retained-reference and independent HTTP digests.
-Fresh consumers must obtain the real parent; an unassessed parent must fail.
-A denied classified JAR must fail while default-artifact consumption still
-works. Explicit optional/test configurations must return exact additional sets.
-Maven and Ivy exclusion controls must differ from their nonexcluded controls;
-latest-revision conflict resolution must return only the selected version.
-Cached-parent policy, registry restart and reader revocation remain mandatory.
-The initial release pass does not qualify these new cases.
+The expanded `maven-metadata-v2` profile passes494checks on both native Linux
+architectures at `42f9366`. The
+[metadata checkpoint](../../evidence/2026-11-04/ivy-42f9366-checkpoint.json)
+retains eight stages/eight ordered cases and28exact publisher/reference/HTTP
+identities. It keeps all original releases and the three SHA-2 consumers.
+Owned prepared parent/management/property POMs, conflicting versions and bridges,
+optional/test dependencies and a separate classified inert JAR are published by
+stock Ivy. Fresh consumers obtain the actual remote parent; an unassessed
+parent fails. Classified JAR denial fails classified resolution while default
+consumption succeeds. Optional/test configurations return exact distinct sets.
+Maven and Ivy exclusions differ from their nonexcluded controls, latest-revision
+selects only the expected version, and cached parent policy/restart/revocation
+all pass. These named combinations do not qualify all richer metadata,
+snapshot, interruption, lifecycle, migration, scale or other JVM clients.
 
 Fixture design follows Apache's [Maven publication contract](https://cwiki.apache.org/confluence/spaces/ANT/pages/115528605/Publishing%2BMaven%2BArtifacts%2BWith%2BAnt%2BAnd%2BIvy),
 [artifact selection](https://ant.apache.org/ivy/history/2.6.0/ivyfile/dependency-artifact.html)

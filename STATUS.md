@@ -23,23 +23,25 @@ Original Ant runtime and unsupported checksum failures remain retained.
 The preceding419861c campaign remains20of22passing, with its own focused-browser
 and separate actual SDK library proof; those results are not relabeled708214f.
 
-The next Ivy profile, `maven-metadata-v2`, preserves every release case and adds
-actual parent-POM/dependency-management/property lookup, separately governed
-classified JARs, optional/test configurations, Maven and Ivy exclusions,
-conflict selection, cached-parent policy, restart and revoked-reader outcomes.
-It requires eight stages, eight metadata case observations and28exact byte
-bindings. The publisher uses owned prepared POMs and resource-only JARs through
-native Ivy; consumers must interpret the remote graph with fresh isolated caches.
-This new profile is implemented but native replay is unverified. See
-`evidence/2026-11-04/ivy-metadata-development.json`. Snapshots, interruptions,
-lifecycle, SBT and every remaining client/format/stage requirement remain open.
+The expanded Ivy `maven-metadata-v2` profile now passes on clean `42f9366`:
+both actual Linux architectures complete494checks, all eight stages/eight
+metadata cases,28exact publisher/reference/HTTP bindings and all three SHA-2
+consumers. Remote parent property/management, independently governed classified
+JARs, optional/test configurations, Maven and Ivy exclusions, conflicts, cached
+parent policy, registry restart and reader revocation all pass. Every original
+release case remains. See `evidence/2026-11-04/ivy-42f9366-checkpoint.json`.
+Both Gradle jobs also pass199checks/eightstages/24bytebindings on this source;
+all four safe JVM summaries are accepted in
+`evidence/2026-11-04/jvm-42f9366-checkpoint.json`. Main/upgrade jobs are still live;
+no new whole-candidate result is claimed. Snapshots, interruptions, lifecycle,
+SBT and every remaining format/client/stage requirement stay open.
 
-Candidate `42f9366` is committed/pushed with both owner identities; its17native
-GitHub jobs are queued at the latest verified observation. No metadata-v2pass
-is claimed. A separate local harness revision now bounds baseline command input/
-output and process groups while preserving complete bounded JSON. Its seven
-owned-process regressions and lint pass; actual baseline/JVM replay remains
-unverified. See `evidence/2026-11-04/baseline-client-bounds-development.json`.
+The later bounded harness revision `07170af` is locally committed: complete
+bounded JSON, private1MiBstdin,8MiBoutput rejection with a nonblocking pipe,
+own-group cleanup and unchanged small public observations. Seven process
+regressions and full lint pass; actual baseline/JVM replay on this revision
+remains unverified. See
+`evidence/2026-11-04/baseline-client-bounds-development.json`.
 
 The prior halt record `evidence/2026-11-04/owner-halt-708214f.json` remains an
 immutable observation; the current owner resume supersedes its pause. No primary,

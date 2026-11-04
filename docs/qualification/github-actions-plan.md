@@ -30,16 +30,16 @@ The preceding419861c partial22job campaign and its focused-browser/SDK library
 proof retain their separate exact source. Ancillary Dependabot jobs never count
 as product qualification. Earlier halt evidence remains historical.
 
-The new `maven-metadata-v2` fixture is implemented but native replay is
-unverified. It preserves all original cases and requires real remote parent
-POM/management/property interpretation, classified JAR policy, optional/test
-configuration sets, POM and client exclusions, conflict selection, cached parent
-policy, restart and revocation. Eight stages/eight metadata observations and28
-exact publisher/reference/HTTP bindings are mandatory. The prepared POMs and
-resource-only JARs are owned; stock Ivy publishes them and independently
-interprets the graph. Review the
-[development record](../../evidence/2026-11-04/ivy-metadata-development.json)
-and keep richer Ivy/SBT and every otherGOALrequirement open.
+The expanded `maven-metadata-v2` profile is now
+[verified on42f9366](../../evidence/2026-11-04/ivy-42f9366-checkpoint.json):494checks,
+eightstages/eight metadata cases and28matching publisher/reference/HTTP identities
+per native architecture, retaining all original releases and threeSHA2consumers.
+Both Gradle profiles also pass199checks/8stages/24bytebindings on that source;
+the [four JVM summaries](../../evidence/2026-11-04/jvm-42f9366-checkpoint.json)
+are accepted separately from still-live main/upgrade jobs. Parent property/
+management, classified JAR policy, optional/test sets, POM/client exclusions,
+conflict, cached parent policy, actual restart and revocation pass. Snapshots,
+interruptions/upstreamoutage,lifecycle,SBTandallotherGOALscope remain open.
 
 All broad readiness verdicts, complete security and packaging remain negative.
 `make security` and `make packaging` continue to fail with their unfinished
@@ -55,7 +55,7 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 | `ci.yml`: scoped security / 1 | Ubuntu x86 | Pinned source/binary analysis, full reachable Git history secret scan and synthetic rule regressions. 30-minute job. Current324-case named proof is separate from full security/feed/image coverage. |
 | `ci.yml`: PostgreSQL and stock clients / 2 | Both native Linux architectures; real PostgreSQL16.15 | Integration/race, bounded timing, durable jobs/leases, integrity and baseline client/recovery journeys; 120-minute job. Full Chromium suite only on x86. ARM browser placement is skipped and never counted as passing. |
 | `jvm-clients.yml`: Gradle / 2 | Both native Linux architectures; real PostgreSQL | Gradle9.8.2, exact JDK21 build, eight stages and24 publisher/reference/raw-HTTP digests. 60-minute job. Named v2 profile passes; broader JVM remains open. |
-| `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0, exact JDK, Initial release profile passes228checks/sevenstages/12bytebindings/threeSHA2consumers. New metadata profile requires8stages/28bytebindings; native replay unverified. 60-minute job. Broader Ivy remains open. |
+| `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0, exact JDK, Initial release profile passes228checks/sevenstages/12bytebindings/threeSHA2consumers. Named metadata profile passes494checks/8stages/8cases/28bytebindings on42f9366. 60-minute job. Broader Ivy remains open. |
 | `nuget-contract.yml`: libraries / 2 | Both native Linux architectures and actual SDK10.0.403 libraries | Dense version, archive, casing, dependency and framework differential contracts; 20-minute job. Does not replace actual NuGet HTTP/restore/restart proof. |
 | `oci-clients.yml`: native clients / 2 | Both native Linux architectures; Docker, Podman, Helm, real PostgreSQL | Actual publication/consumption and policy/tenant/recovery cases with inert owned data; 45-minute job. Do not execute the uploaded image. External-provider interoperability is separate. |
 | `browser-repair.yml`: focused / 3 on relevant pushes | Native x86 Chromium; five fresh PostgreSQL databases per selected journey | Repair, retention and NuGet each repeat five complete journeys; 45-minute job. Manual dispatch selects one. Stop on failure; no retries/skips count as acceptance. |
@@ -128,7 +128,7 @@ implicitly authorized by this plan.
 
 | Work still required | Placement / acceptance evidence |
 | --- | --- |
-| Ant/Ivy and SBT client breadth | Initial Ant/Ivy releases pass; qualify the new metadata profile, then snapshots/interruption/lifecycle and SBT2.x plus supported1.x. The [JVM plan](jvm-client-plan.json) records exact cases and bootstrap/cache limits. |
+| Ant/Ivy and SBT client breadth | Initial Ant/Ivy releases pass; the named metadata profile also passes; finish snapshots/interruption/lifecycle and SBT2.x plus supported1.x. The [JVM plan](jvm-client-plan.json) records exact cases and bootstrap/cache limits. |
 | Every later format and native client | Native Linux architectures and stock ecosystem tools as each adapter is implemented; real restricted PostgreSQL and nontrivial dependency graphs. Hosted/proxy/group, exact bytes, permissions, policy, concurrency, interruption, restart, freshness, lifecycle and migration remain separate required cases. |
 | Real third-party OCI/upstream interoperability | Explicitly authorized project-owned repositories/realm/registry services with pinned tools and inert data. Keep changing external services separate from deterministic PR gates; no publication authority is assumed. |
 | TLS, private trust and identity | Disposable real compatible IdPs/PKI and native clients, scoped tenants, rotation/expiry/revocation, failure and recovery. Stand-ins do not qualify every vendor or customer CA. |
