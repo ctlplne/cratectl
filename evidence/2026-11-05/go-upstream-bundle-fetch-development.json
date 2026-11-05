@@ -1,0 +1,114 @@
+{
+  "source_parent": "a0278f5ca838551946005a44db77510ca3f4c759",
+  "source_dirty": true,
+  "observed_at": "2026-11-05T00:49:12.136085+00:00",
+  "state": "internal network bundle foundation implemented and tested with owned ARM stand-ins; public proxy rejected; native replay unverified",
+  "files": [
+    {
+      "path": "internal/server/go_module_proxy.go",
+      "sha256": "a10c87caa6f8fed34b688159d615a633616b38ebf31a5dbf267b35b4f03643a4"
+    },
+    {
+      "path": "internal/server/go_module_proxy_test.go",
+      "sha256": "1245713689a5f3695f3d7be0c9eb0d3dd0a8cb5a41ac6a7e5237cc657a91deec"
+    },
+    {
+      "path": "internal/server/go_module_proxy_integration_test.go",
+      "sha256": "2134a6289fcafcecf46e55e41700b6381f74371a1bfee2397628a6f0ad6de035"
+    },
+    {
+      "path": "internal/store/go_module_retrieval_integration_test.go",
+      "sha256": "450f807181e2b9d5c0193f689db607bd5b3217cdfe836c8567d4e6deefff3ba2"
+    }
+  ],
+  "mechanism": [
+    "Retrieve canonical info/mod/ZIP in order with one approved upstream endpoint and tenant-bound credential. Reuse its network/path/redirect/DNS authority controls, identity encoding, response-header and connection bounds. One context bounds the entire bundle to 120seconds; each metadata body and streaming ZIP has its own configured cap. No VCS/direct/checksum-service fallback or package execution.",
+    "All three original byte sequences are fsynced through common object storage; complete archive/root-mod/metadata identity validation precedes any returned publication bundle. Incomplete/invalid/canceled intake returns no publication-shaped result. Objects staged before failure remain unreferenced for reconciliation. Only initial info404/410 denotes an absent version; missing later siblings cannot authorize lower-source substitution.",
+    "Bundle freshness/stale allowances are minima across all three responses. List-valued Cache-Control/Vary headers are combined so later no-store/no-cache/star directives remain effective; ambiguous singleton headers and partial/encoded responses reject. Full-body refresh only: no bare304 or independent-file validator is promoted into whole-bundle validation.",
+    "Require-checksum refuses before network because independent Go checksum authority is not implemented. Internal byte hashes are not presented as external checksum trust or approval. CompleteRetrieval remains responsible for current authority/source/live lease and atomic references/intents/event. Public creation/reads remain rejected."
+  ],
+  "local_validation": {
+    "focused_top_level_tests": 5,
+    "focused_subcases": 39,
+    "result": "normal and race passed on native darwin/arm64 with owned 127.0.0.1:38443 HTTP stand-ins",
+    "broader": "Affected server/store/gomodule/upstream unit/race and full make lint pass. Integration-tag normal/race compilation and vet pass; zero PostgreSQL functions execute locally.",
+    "new_native_test": "Eighth PG function joins real owned HTTP retrieval to common publication and checks source/lease changes during ZIP transfer, atomic 3refs/3integrity/1event and unassessed policy/cache receipts. Same existing GitHub normal/race filter selects it without workflow/gate changes. Compilation only."
+  },
+  "first_local_results": [
+    "First attempt was denied sandbox loopback binding; unchanged approved replay then exposed a draft expectation that Accept-Encoding was absent. Existing upstream client deliberately sends identity. Only the test expectation changed; repaired normal/race and final checks pass.",
+    "First snapshot-repair compilation used nonexistent Artifact.CreatedAt; corrected to the existing Created field and replayed normal/race integration compilation/vet. Failed log retained."
+  ],
+  "native_first_failure": "evidence/2026-11-05/go-module-5be6d38-persisted-json-first-failure.json",
+  "snapshot_repair": "Capture exact PostgreSQL-persisted metadata after initial approval and compare that snapshot after the rejected overwrite, retaining digest/count/queue/event assertions and adding size/media/source/creation invariants. Native replay remains required.",
+  "logs": [
+    {
+      "path": ".cache/go-origin-first-unit.log",
+      "sha256": "bb8019eb88e591666df37914468cd4839482c70a6e3a03b6c17b970f161dca57"
+    },
+    {
+      "path": ".cache/go-origin-approved-unit.log",
+      "sha256": "1aff54ba6e709939feb50df59cdd3b80fcb21cdd1f88e80f13f0038e8e4b1fb1"
+    },
+    {
+      "path": ".cache/go-origin-repaired-unit.log",
+      "sha256": "307e59a1a1711ac6573bb6f3dd224e89f9de94e1f00d7f7bb4a4c2c9e38ae090"
+    },
+    {
+      "path": ".cache/go-origin-race.log",
+      "sha256": "2ef2713154d342098dc83d077e8a9fe7d3c78d49dadad73110a2133015905899"
+    },
+    {
+      "path": ".cache/go-origin-affected-unit.log",
+      "sha256": "3c96a37a4c3072df81300bbee2da856b3ae508567bfffc5081bfaa51bb312983"
+    },
+    {
+      "path": ".cache/go-origin-affected-race.log",
+      "sha256": "9587cb6c8d8203a4d11a5b1e54f9a608884f805c7f2f3082b89d083a2aab0852"
+    },
+    {
+      "path": ".cache/go-origin-final-unit.jsonl",
+      "sha256": "5ba5cffedece06ae342e20512d8f1f74ffc4894e091bbc66d283c65b034358b2"
+    },
+    {
+      "path": ".cache/go-origin-final-race.log",
+      "sha256": "91ff04551afde6e7bcd351a65ae6c2f912bd4fd8f9abe476a0dc9315b97c8f7e"
+    },
+    {
+      "path": ".cache/go-origin-full-lint.log",
+      "sha256": "19bce263ba280420888380d59f2996482b2561c062e84ccb9b21e26ea3d6267e"
+    },
+    {
+      "path": ".cache/go-origin-snapshot-final-integration-compile.log",
+      "sha256": "5ccdf589388c6435f349b1faaa7556e229619d63560b4e1d7812c6e34c2dd703"
+    },
+    {
+      "path": ".cache/go-origin-snapshot-repaired-integration-compile.log",
+      "sha256": "7e80ca24a741f8244a08e3ae44d13c5cd6a15be8e6c95bf25c98d037f25803c2"
+    },
+    {
+      "path": ".cache/go-origin-snapshot-repaired-race-compile.log",
+      "sha256": "9b02bed75b8bae798cbd73b8637e26118884d1f9a9a93fe8684aafcb5415b3bc"
+    },
+    {
+      "path": ".cache/go-origin-snapshot-repaired-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "references": [
+    {
+      "url": "https://go.dev/ref/mod#goproxy-protocol",
+      "reviewed_on": "2026-11-05",
+      "scope": "GET operations, module escaping, info/mod/ZIP and immutable version protocol; legacy/sumdb/alias/latest/catalog breadth remains unfinished."
+    },
+    {
+      "url": "https://www.postgresql.org/docs/16/datatype-json.html",
+      "reviewed_on": "2026-11-05",
+      "scope": "jsonb does not preserve source whitespace or object-key order."
+    }
+  ],
+  "limits": [
+    "No public Go proxy, source catalog/latest/group-over-proxy, complete current-serving/fresh/stale/conditional/negative policy, independent checksum/offline trust, tenant/grant-transfer race or registry-client proof. New PG test has not executed.",
+    "Full hosted/group v2 native nine-stage/24wire/16cache replay remains required after original failures. All450capabilities/41families/laterstages retained; broad readiness/fullsecurity/packaging false.",
+    "No schema, primary, customer, sibling, credential, released package/image or release mutation. Existing main CI publication authority only."
+  ]
+}

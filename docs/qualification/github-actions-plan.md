@@ -1,6 +1,6 @@
 # GitHub Actions qualification plan
 
-Updated: 2026-11-04. Owner: `imfeelingtheagi`. The complete `GOAL.md`, all
+Updated: 2026-11-05. Owner: `imfeelingtheagi`. The complete `GOAL.md`, all
 450 capabilities / 41 families and all later stages remain committed scope.
 This plan places work on suitable hosts and describes how to accept evidence.
 It does not turn an unfinished feature or absent test into a pass.
@@ -86,14 +86,15 @@ The official release API reports8,230,402bytes and the same SHA256. Cap32MiB,
 8.30.1 is required after the restricted extraction. All original source/binary/
 current-tree/full-history/324synthetic-rule checks remain independent of runtime
 selection and execute on cache hits. Eleven fetch tests/full lint plus YAML/shell
-and semantic workflow preservation pass. Actual cold/save/exact-key restore and
-security execution remain unverified. This helper revision refreshes ORAS/Helm
+and semantic workflow preservation pass. Named x86 cold/save at `fdff445` and
+exact-key restore/revalidation at `b7cc74c` now pass with both original scoped
+security jobs and all 324 rule cases. This helper revision refreshes ORAS/Helm
 cache keys; earlier named proof remains specific to f91/5b. No timing or complete
 security claim. See the [development record](../../evidence/2026-11-04/gitleaks-bounded-download-development.json)
 and [official release](https://github.com/gitleaks/gitleaks/releases/tag/v8.30.1).
 
 Go hosted/group-v2 is implemented but unverified. Its two native Linux jobs
-require four real PostgreSQL functions normally and with race, then an owned
+require eight real PostgreSQL functions normally and with race, then an owned
 trusted-TLS installation, CLI publication and stock Go transitive downloads.
 Every original hosted case remains. The profile requires nine ordered stages,
 24 publisher/reference/HTTP bindings and16exact cached ZIP/mod bindings.
@@ -146,13 +147,26 @@ TLS/auth stand-in: hostname-only denial, exact authority success,2modules and
 make lint on all3source hosts without reducing any native registry case.
 
 The internal atomic Go intake extension shares common lease/source/authority
-and reference/integrity/event/outbox transaction paths. Three new PG functions
-compile only; both Go normal/race commands now include store and server for
-7PGfunctions, retaining all4server functions and every original client stage.
+and reference/integrity/event/outbox transaction paths. Three new store PG
+functions have no complete native pass; both Go normal/race commands include
+store and server. A new HTTP-intake transaction function makes eight PG
+functions, retaining all four original server functions and every client stage.
 Public proxy mode remains rejected until full network/checksum/cache/serving
 integration and actual native proof. No schema or runtime privilege change.
 See the [intake](../../evidence/2026-11-04/go-module-atomic-intake-development.json)
 and [auth repair](../../evidence/2026-11-04/go-netrc-authority-repair-development.json) records.
+
+Exact `5be6d38` passes both normal server packages, then fails one final store
+snapshot assertion. Race/client stages skip; empty summaries remain failures.
+The fixture now compares persisted JSON before/after conflict rather than input
+JSON formatting, retaining all immutable-byte assertions. Normal/race compilation
+and vet pass; native replay is required. The new bounded upstream bundle fetcher
+passes five ARM stand-in tests/39 subcases, affected checks and full lint. It
+preserves all info/mod/ZIP bytes and combined cache directives, rejects incomplete
+intake, and refuses require-checksum without independent authority. Full-body
+refresh only. Public proxy stays disabled pending complete catalog/current-serving
+integration and native proof. See the [first failure](../../evidence/2026-11-05/go-module-5be6d38-persisted-json-first-failure.json)
+and [development record](../../evidence/2026-11-05/go-upstream-bundle-fetch-development.json).
 
 Upstream info/mod/ZIP validators now have local bounded-input unit/race/vet
 and five-second ARM fuzz-smoke proof. The new target joins the existing GitHub
@@ -260,7 +274,7 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 | `jvm-clients.yml`: Gradle / 2 | Both native Linux architectures; real PostgreSQL | Gradle9.8.2, exact JDK21 build, eight stages and24 publisher/reference/raw-HTTP digests. 60-minute job. Named v2 profile passes; broader JVM remains open. |
 | `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0 and exact JDK. Cache-v4 passes666checks/10stages/34wire+6cachebindings on both hosts at0edd, retaining all release/metadata/snapshot/SHA-2 cases. 60-minute job. Broader Ivy remains open. |
 | `jvm-clients.yml`: SBT / 4 | SBT1.13.0 and2.0.11, each on native Linux amd64/arm64; real PostgreSQL | Snapshot-v2 passes269checks/8stages/8snapshotcases/18bindings on all4cases at0cff, retaining every release case. Frozen tool-only boot cache/fresh project caches. Five-minute bootstrap, two-minute commands, 60-minute job. |
-| `go-modules.yml`: hosted/group and intake / 2 | Native Linux amd64/arm64; pinned Go, real PostgreSQL16.15, trusted loopback TLS | Seven PG functions normal/race:4original server functions pass both at802;3new atomic-intake functions compile only. Actual CLI upload passes, then Go401 at802. Current authority fix needs all9stock-client stages/24wire/16cache. 45-minute job; public proxy remains rejected. |
+| `go-modules.yml`: hosted/group and intake / 2 | Native Linux amd64/arm64; pinned Go, real PostgreSQL16.15, trusted loopback TLS | Eight PG functions normal/race: four original server, three atomic intake and one network-to-transaction fence. Both5be normal server packages pass then store snapshot assertion fails; repair/new function compile only. All nine stock-client stages/24wire/16cache remain required after802NETRC401. 45-minute job; public proxy remains rejected. |
 | `nuget-contract.yml`: libraries / 2 | Both native Linux architectures; exact SDK10.0.403 selection | Original37assertions/unchanged dense corpora pass both at1974, actual runtime10.0.14 and separate DLLhashes. 20-minute job. Does not replace actual NuGet HTTP/restore/restart proof. |
 | `oci-clients.yml`: native clients / 2 | Both native Linux architectures; Docker, Podman, Helm, real PostgreSQL | Actual publication/consumption and policy/tenant/recovery cases with inert owned data; 45-minute job. Do not execute the uploaded image. External-provider interoperability is separate. |
 | `browser-repair.yml`: focused / 3 on relevant pushes | Native x86 Chromium; five fresh PostgreSQL databases per selected journey | Repair, retention and NuGet each repeat five complete journeys; 45-minute job. Manual dispatch selects one. Stop on failure; no retries/skips count as acceptance. |

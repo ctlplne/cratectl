@@ -1173,10 +1173,11 @@
       "id": "DEFECT.0108",
       "summary": "Atomic Go intake fixture counts event kinds through a nonexistent column",
       "first_failure": "evidence/2026-11-05/go-module-fc39162-event-query-first-failure.json",
-      "state": "Fixture predicate repaired to existing payload JSON schema; normal/race integration compilation only, native replay unverified",
+      "state": "Original nonexistent event-kind predicate no longer fails either native normal step at5be; both reach a later persisted-JSON fixture failure. No complete intake/race/client pass.",
       "repair": "Use the schema-supported payload::jsonb event predicate; retain all counts, rollback and authority assertions. No production schema change.",
       "limits": "Normal step fails, race/client skipped, empty summaries retained. No native intake or NETRC replay accepted.",
-      "development": "evidence/2026-11-05/go-event-query-repair-development.json"
+      "development": "evidence/2026-11-05/go-event-query-repair-development.json",
+      "partial_replay": "evidence/2026-11-05/go-module-5be6d38-persisted-json-first-failure.json"
     },
     {
       "id": "DEFECT.0109",
@@ -1185,6 +1186,15 @@
       "state": "Explicit403classification implemented; unit/race/vet/actual-Go TLS controls/full-lint replay pass; native policy replay unverified",
       "repair": "Retain known coordinates separately from allowed versions in the same bounded current view; preserve404for absent modules and return403without a version for known-blocked latest.",
       "limits": "ActualGo1.27original404latest/200emptylist shape did not fallback. Separate404-only positive control does;403does not. No observed bypass/customer/native first failure claimed."
+    },
+    {
+      "id": "DEFECT.0110",
+      "summary": "Go immutable-intake fixture compares compact input JSON bytes with persisted jsonb encoding",
+      "first_failure": "evidence/2026-11-05/go-module-5be6d38-persisted-json-first-failure.json",
+      "state": "Both native normal steps fail final store snapshot assertion; persisted before/after snapshot repair compiles normally/race and vets; native replay unverified",
+      "repair": "Compare exact persisted database metadata before/after rejected overwrite, retaining digest/event/queue cases and adding size/media/source/creation invariants. Do not weaken immutable object byte validation or alter storage/schema behavior.",
+      "development": "evidence/2026-11-05/go-upstream-bundle-fetch-development.json",
+      "limits": "Original log returns nil read error without distinguishing digest/metadata operands. Source-inspected JSON encoding mismatch is repaired; no retained-byte corruption or full Go journey pass asserted. Race/client skips remain unqualified."
     }
   ]
 }

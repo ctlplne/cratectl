@@ -151,11 +151,16 @@ func TestGoModuleRetrievalAtomicBundleCacheAndCurrentPolicy(t *testing.T) {
 	}); e != nil {
 		t.Fatal(e)
 	}
+	retained := map[string]Artifact{}
 	for _, want := range f.result.GoModule.Objects {
 		got, e := f.s.Artifact(ctx, f.i, "owned", want.Path)
 		if e != nil || got.Digest != want.Digest || got.Size != want.Size {
 			t.Fatal("approved exact bundle reference", e)
 		}
+		// PostgreSQL's jsonb representation need not preserve JSON whitespace
+		// or key order. Compare the exact persisted snapshot before/after the
+		// rejected intake, while immutable object bytes retain their own hashes.
+		retained[want.Path] = got
 	}
 	if e := f.s.Tx(ctx, f.i, true, func(tx pgx.Tx) error {
 		_, e := tx.Exec(ctx, `UPDATE cratectl.artifacts SET decision='denied' WHERE repository='owned' AND path=$1`, f.lease.Path)
@@ -185,9 +190,9 @@ func TestGoModuleRetrievalAtomicBundleCacheAndCurrentPolicy(t *testing.T) {
 	if a, b, c := f.counts(t); a != 3 || b != 3 || c != 1 {
 		t.Fatal("replay/conflict changed references or emitted new publication intents", a, b, c)
 	}
-	for _, want := range f.result.GoModule.Objects {
-		got, e := f.s.Artifact(ctx, f.i, "owned", want.Path)
-		if e != nil || got.Digest != want.Digest || !bytes.Equal(got.Metadata, want.Metadata) {
+	for p, want := range retained {
+		got, e := f.s.Artifact(ctx, f.i, "owned", p)
+		if e != nil || got.Digest != want.Digest || got.Size != want.Size || got.MediaType != want.MediaType || got.SourceRevision != want.SourceRevision || !got.Created.Equal(want.Created) || !bytes.Equal(got.Metadata, want.Metadata) {
 			t.Fatal("immutable conflict changed a retained representation", e)
 		}
 	}

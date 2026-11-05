@@ -1,0 +1,212 @@
+{
+  "observed_at": "2026-11-05T00:47:46.039752+00:00",
+  "candidate": "5be6d38759dd2a8b8c0ca6c04349c7f878a7ea48",
+  "run_id": 41941058119,
+  "state": "first native fixture failure retained; no complete Go journey pass",
+  "observations": [
+    {
+      "architecture": "arm64",
+      "job_id": 126961661358,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/41941058119/job/126961661358",
+      "job_conclusion": "failure",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare owned PostgreSQL and native binaries",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions with race detector",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Trusted TLS stock Go transitive downloads and policy recovery",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Encrypt bounded Go failure observations for owner diagnosis",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "safe_summary": {
+        "path": "evidence/2026-11-05/go-module-5be6d38-arm64-summary.json",
+        "sha256": "19bb4f810db288ef122a437125a8e63ddbbfff0efa1cbb3c05669c334209da4d",
+        "github_artifact_id": 13378470120,
+        "github_artifact_digest": "sha256:019e36c90b498a842ca887c725bdbe85e366ca57e071f17587aa1887f32cf2b2"
+      },
+      "private_job_log": {
+        "path": ".private/ci-diagnostics/go-5be-first-failures/5be6d38-arm64.txt",
+        "bytes": 56687,
+        "sha256": "2cb03c36a99ed60585f8c2d96be54ee39aa3bd055ed4d6e79c35820f7c574948"
+      },
+      "fixed_observation": {
+        "sole_failed_go_function": "TestGoModuleRetrievalAtomicBundleCacheAndCurrentPolicy",
+        "assertion_line": 191,
+        "assertion": "immutable conflict changed a retained representation",
+        "returned_error_nil": true,
+        "server_package_normal_passed": true,
+        "old_SQLSTATE_42703_absent": true
+      }
+    },
+    {
+      "architecture": "amd64",
+      "job_id": 126961661655,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/41941058119/job/126961661655",
+      "job_conclusion": "failure",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare owned PostgreSQL and native binaries",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions with race detector",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Trusted TLS stock Go transitive downloads and policy recovery",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Encrypt bounded Go failure observations for owner diagnosis",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "safe_summary": {
+        "path": "evidence/2026-11-05/go-module-5be6d38-amd64-summary.json",
+        "sha256": "34b98c254a106ca816a7fb0707e19b85b9d179b3c1572fcad9a3ed8217730c8a",
+        "github_artifact_id": 13376449865,
+        "github_artifact_digest": "sha256:1764ceabadee309bbd440e0fbd0c81f0f4eb57d092a80209e6904a3dce1587db"
+      },
+      "private_job_log": {
+        "path": ".private/ci-diagnostics/go-5be-first-failures/5be6d38-amd64.txt",
+        "bytes": 56510,
+        "sha256": "cc9f49a72092ac2b4a54c43bad62ed16d0f54bea83506ec81924ffe5c6341c80"
+      },
+      "fixed_observation": {
+        "sole_failed_go_function": "TestGoModuleRetrievalAtomicBundleCacheAndCurrentPolicy",
+        "assertion_line": 191,
+        "assertion": "immutable conflict changed a retained representation",
+        "returned_error_nil": true,
+        "server_package_normal_passed": true,
+        "old_SQLSTATE_42703_absent": true
+      }
+    }
+  ],
+  "interpretation": "Both normal steps pass the server package and reach a later immutable-bundle assertion in the store package. That assertion compares compact fixture JSON bytes with PostgreSQL jsonb output; jsonb does not preserve source formatting. The original log reports a nil read error but does not distinguish the digest/metadata operands. Source inspection identifies the raw encoding comparison; no retained-byte corruption is asserted. The repair captures exact persisted metadata before the conflicting intake and compares the unchanged database snapshot afterward, strengthening size/media/source/creation checks while retaining all original digest/event/queue assertions. Native replay is mandatory.",
+  "limits": [
+    "Both race and stock-client steps are skipped; safe summaries are empty and the exporter fails correctly. No successful empty report, full atomic intake, NETRC replay, cache or hosted/group journey acceptance.",
+    "The source-defined normal server filter contains four original PG functions. Normal-only execution at this source does not qualify race or full client journeys.",
+    "Artifact ZIP digests are GitHub metadata; safe JSON/private log hashes are independently computed. All 450 capabilities / 41 families and later stages retained; readiness/security/packaging false. No schema/primary/customer/sibling/release mutation."
+  ]
+}

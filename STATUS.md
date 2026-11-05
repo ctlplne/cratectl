@@ -66,7 +66,8 @@ Local unit/race/full lint, six contract/eighteen exporter/four helper/seven CMS
 tests and console reproduction pass. Four original PostgreSQL server functions
 pass normally and with race on both hosts at `802bb51`. Three additional atomic
 intake store functions require native replay after the recorded fixture repair.
-The current v2 workflow requires both actual Linux hosts, all seven database
+A new network-to-transaction function compiles only. The current v2 workflow
+requires both actual Linux hosts, all eight database
 functions normally/with race, trusted TLS stock Go and all original hosted cases:
 nine stages,24publisher/reference/HTTP bindings and16exact cached ZIP/mod
 bindings. See `evidence/2026-11-04/go-module-groups-development.json`.
@@ -122,8 +123,9 @@ all9stages/24wire/16cache. No local registry/PostgreSQL campaign. See
 Internal Go proxy intake now joins complete immutable three-reference bundles,
 sibling cache receipts, integrity intents and ready event/outbox in the common
 current-authority/source/live-lease transaction. Unit/race/vet/full lint pass.
-Three new real-PG functions compile only; the native workflow now runs both
-server/store packages for seven PG functions normally/with race. Proxy creation
+Three new real-PG store functions have no complete native pass; the workflow
+now runs both server/store packages, including the new network transaction
+function, for eight PG functions normally/with race. Proxy creation
 and reads remain rejected until network/checksum/cache/serving integration and
 full native proof are complete. See
 `evidence/2026-11-04/go-module-atomic-intake-development.json`.
@@ -148,6 +150,28 @@ matches the existing schema, with normal/race compilation only. See
 `evidence/2026-11-05/go-module-fc39162-event-query-first-failure.json` and
 `evidence/2026-11-05/go-event-query-repair-development.json`.
 
+Later exact `5be6d38` passes the normal server package on both native hosts,
+then fails the final store immutability assertion with a nil read error. That
+fixture compares compact input JSON with PostgreSQL jsonb output. The repair
+compares exact persisted metadata before/after the rejected overwrite and adds
+size/media/source/creation checks, retaining all object digest/event/queue cases.
+Normal/race compilation and integration vet pass; native replay remains required.
+Both original race/client stages skip and safe summaries are empty. See
+`evidence/2026-11-05/go-module-5be6d38-persisted-json-first-failure.json`.
+
+An internal upstream bundle fetcher now retrieves bounded info/mod/ZIP through
+the existing tenant credential and network/path/redirect authority. It durably
+stages original bytes, validates the complete bundle, and retains the strictest
+cache directives across all representations. Incomplete, oversized, redirected,
+encoded, inconsistent or canceled intake yields no publishable result. Five ARM
+stand-in tests with 39 subcases pass normally/with race; affected checks and full
+lint pass. Independent checksum authority is unfinished, so require-checksum
+refuses before network. A new PG function combines actual owned HTTP retrieval
+with publication/source/lease fences; it compiles only. Public proxy stays
+rejected pending catalog/current-serving/cache/checksum integration and native
+qualification. See
+`evidence/2026-11-05/go-upstream-bundle-fetch-development.json`.
+
 Latest discovery now distinguishes known-blocked modules (403/no version) from
 absence (404), retaining current view authority and original selection order.
 Unit/race/vet/full-lint replay and actual Go TLS controls pass. The probe also
@@ -165,7 +189,8 @@ physical-line memory regression pass. No catalog/policy/cache/proxy route or
 native registry result follows. See
 `evidence/2026-11-04/go-upstream-version-list-development.json`.
 
-Main CI now has bounded runtime-input selection, implemented but unverified.
+Main CI now has bounded runtime-input selection, with both selector branches
+observed on GitHub; dependent runtime execution remains separately qualified.
 Documentation/evidence-only commits retain independent scoped source/binary/
 history/secret scans. Runtime/pin/instruction/unknown changes and manual dispatch
 select all original native lanes. Six real-Git/stand-in tests, full lint and YAML
