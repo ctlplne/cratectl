@@ -1,0 +1,433 @@
+{
+  "candidate": "b7cc74ca0df84204327ef43bf0dd8855d86bb078",
+  "observed_at": "2026-11-05T00:26:46.516339+00:00",
+  "run_id": 41937236323,
+  "url": "https://github.com/ctlplne/cratectl/actions/runs/41937236323",
+  "status": "verified complete documentation-only selected CI: planner/security pass,3logical runtime jobs intentionally unselected",
+  "selection": {
+    "path": "evidence/2026-11-05/ci-selection-b7cc74c-documentation-record.json",
+    "sha256": "90f7f2fd7bd5cb4b9d51b6bb1be21934ad4afdf0bda89b932be7301fe7880f1c",
+    "github_artifact_id": 13375033887,
+    "github_artifact_digest": "sha256:96bfcedd81539d2fd25f0e46b9a3be88aea32a9851da8e89f7a191fd9d61c5fe"
+  },
+  "jobs": [
+    {
+      "id": 126948667856,
+      "run_id": 41937236323,
+      "workflow_name": "CI",
+      "head_branch": "main",
+      "run_url": "https://api.github.com/repos/ctlplne/cratectl/actions/runs/41937236323",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVbCD-c8AAAAdjrrx0A",
+      "head_sha": "b7cc74ca0df84204327ef43bf0dd8855d86bb078",
+      "url": "https://api.github.com/repos/ctlplne/cratectl/actions/jobs/126948667856",
+      "html_url": "https://github.com/ctlplne/cratectl/actions/runs/41937236323/job/126948667856",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-04T23:53:40Z",
+      "started_at": "2026-11-05T00:24:31Z",
+      "completed_at": "2026-11-05T00:26:59Z",
+      "name": "Scoped source, binary and history scans",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-05T00:24:32Z",
+          "completed_at": "2026-11-05T00:24:33Z"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-05T00:24:33Z",
+          "completed_at": "2026-11-05T00:24:36Z"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-05T00:24:36Z",
+          "completed_at": "2026-11-05T00:24:43Z"
+        },
+        {
+          "name": "Build binaries and scan called Go symbols",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-05T00:24:43Z",
+          "completed_at": "2026-11-05T00:25:16Z"
+        },
+        {
+          "name": "Cache pinned public Gitleaks archive",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-05T00:25:16Z",
+          "completed_at": "2026-11-05T00:25:17Z"
+        },
+        {
+          "name": "Scan current tree and complete reachable history for secrets",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-05T00:25:17Z",
+          "completed_at": "2026-11-05T00:25:21Z"
+        },
+        {
+          "name": "Exercise narrow secret-rule exceptions with synthetic fixtures",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-05T00:25:21Z",
+          "completed_at": "2026-11-05T00:26:55Z"
+        },
+        {
+          "name": "Prepare bounded security evidence summary",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-05T00:26:55Z",
+          "completed_at": "2026-11-05T00:26:55Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-05T00:26:55Z",
+          "completed_at": "2026-11-05T00:26:56Z"
+        },
+        {
+          "name": "Post Cache pinned public Gitleaks archive",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-11-05T00:26:56Z",
+          "completed_at": "2026-11-05T00:26:56Z"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-05T00:26:56Z",
+          "completed_at": "2026-11-05T00:26:56Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-05T00:26:56Z",
+          "completed_at": "2026-11-05T00:26:57Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19,
+          "started_at": "2026-11-05T00:26:57Z",
+          "completed_at": "2026-11-05T00:26:57Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/ctlplne/cratectl/check-runs/126948667856",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000113542,
+      "runner_name": "GitHub Actions 1000113542",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 126948668032,
+      "run_id": 41937236323,
+      "workflow_name": "CI",
+      "head_branch": "main",
+      "run_url": "https://api.github.com/repos/ctlplne/cratectl/actions/runs/41937236323",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVbCD-c8AAAAdjrrygA",
+      "head_sha": "b7cc74ca0df84204327ef43bf0dd8855d86bb078",
+      "url": "https://api.github.com/repos/ctlplne/cratectl/actions/jobs/126948668032",
+      "html_url": "https://github.com/ctlplne/cratectl/actions/runs/41937236323/job/126948668032",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-04T23:53:40Z",
+      "started_at": "2026-11-05T00:17:04Z",
+      "completed_at": "2026-11-05T00:17:14Z",
+      "name": "Select runtime qualification inputs",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-05T00:17:05Z",
+          "completed_at": "2026-11-05T00:17:06Z"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-05T00:17:06Z",
+          "completed_at": "2026-11-05T00:17:09Z"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-05T00:17:09Z",
+          "completed_at": "2026-11-05T00:17:09Z"
+        },
+        {
+          "name": "Select from exact bounded Git changes",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-05T00:17:09Z",
+          "completed_at": "2026-11-05T00:17:10Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-05T00:17:10Z",
+          "completed_at": "2026-11-05T00:17:12Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-05T00:17:12Z",
+          "completed_at": "2026-11-05T00:17:12Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-05T00:17:12Z",
+          "completed_at": "2026-11-05T00:17:12Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-05T00:17:12Z",
+          "completed_at": "2026-11-05T00:17:12Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/ctlplne/cratectl/check-runs/126948668032",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000113483,
+      "runner_name": "GitHub Actions 1000113483",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 126958731732,
+      "run_id": 41937236323,
+      "workflow_name": "CI",
+      "head_branch": "main",
+      "run_url": "https://api.github.com/repos/ctlplne/cratectl/actions/runs/41937236323",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVbCD-c8AAAAdj1SB1A",
+      "head_sha": "b7cc74ca0df84204327ef43bf0dd8855d86bb078",
+      "url": "https://api.github.com/repos/ctlplne/cratectl/actions/jobs/126958731732",
+      "html_url": "https://github.com/ctlplne/cratectl/actions/runs/41937236323/job/126958731732",
+      "status": "completed",
+      "conclusion": "skipped",
+      "created_at": "2026-11-05T00:17:15Z",
+      "started_at": "2026-11-05T00:17:15Z",
+      "completed_at": "2026-11-05T00:17:15Z",
+      "name": "Bounded native Go fuzz (${{ matrix.arch }})",
+      "steps": [],
+      "check_run_url": "https://api.github.com/repos/ctlplne/cratectl/check-runs/126958731732",
+      "labels": [],
+      "runner_id": null,
+      "runner_name": null,
+      "runner_group_id": null,
+      "runner_group_name": null
+    },
+    {
+      "id": 126958731995,
+      "run_id": 41937236323,
+      "workflow_name": "CI",
+      "head_branch": "main",
+      "run_url": "https://api.github.com/repos/ctlplne/cratectl/actions/runs/41937236323",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVbCD-c8AAAAdj1SC2w",
+      "head_sha": "b7cc74ca0df84204327ef43bf0dd8855d86bb078",
+      "url": "https://api.github.com/repos/ctlplne/cratectl/actions/jobs/126958731995",
+      "html_url": "https://github.com/ctlplne/cratectl/actions/runs/41937236323/job/126958731995",
+      "status": "completed",
+      "conclusion": "skipped",
+      "created_at": "2026-11-05T00:17:15Z",
+      "started_at": "2026-11-05T00:17:15Z",
+      "completed_at": "2026-11-05T00:17:15Z",
+      "name": "Source and unit (${{ matrix.arch }})",
+      "steps": [],
+      "check_run_url": "https://api.github.com/repos/ctlplne/cratectl/check-runs/126958731995",
+      "labels": [],
+      "runner_id": null,
+      "runner_name": null,
+      "runner_group_id": null,
+      "runner_group_name": null
+    },
+    {
+      "id": 126958732358,
+      "run_id": 41937236323,
+      "workflow_name": "CI",
+      "head_branch": "main",
+      "run_url": "https://api.github.com/repos/ctlplne/cratectl/actions/runs/41937236323",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVbCD-c8AAAAdj1SERg",
+      "head_sha": "b7cc74ca0df84204327ef43bf0dd8855d86bb078",
+      "url": "https://api.github.com/repos/ctlplne/cratectl/actions/jobs/126958732358",
+      "html_url": "https://github.com/ctlplne/cratectl/actions/runs/41937236323/job/126958732358",
+      "status": "completed",
+      "conclusion": "skipped",
+      "created_at": "2026-11-05T00:17:15Z",
+      "started_at": "2026-11-05T00:17:15Z",
+      "completed_at": "2026-11-05T00:17:15Z",
+      "name": "Real PostgreSQL and stock clients (${{ matrix.arch }})",
+      "steps": [],
+      "check_run_url": "https://api.github.com/repos/ctlplne/cratectl/check-runs/126958732358",
+      "labels": [],
+      "runner_id": null,
+      "runner_name": null,
+      "runner_group_id": null,
+      "runner_group_name": null
+    }
+  ],
+  "independent_security_later_observation": {
+    "conclusion": null,
+    "id": 126948667856,
+    "name": "Scoped source, binary and history scans",
+    "status": "in_progress",
+    "steps": [
+      {
+        "conclusion": "success",
+        "name": "Set up job"
+      },
+      {
+        "conclusion": "success",
+        "name": "Run actions/checkout@v7"
+      },
+      {
+        "conclusion": "success",
+        "name": "Run actions/setup-go@v7"
+      },
+      {
+        "conclusion": null,
+        "name": "Build binaries and scan called Go symbols"
+      },
+      {
+        "conclusion": null,
+        "name": "Cache pinned public Gitleaks archive"
+      },
+      {
+        "conclusion": null,
+        "name": "Scan current tree and complete reachable history for secrets"
+      },
+      {
+        "conclusion": null,
+        "name": "Exercise narrow secret-rule exceptions with synthetic fixtures"
+      },
+      {
+        "conclusion": null,
+        "name": "Prepare bounded security evidence summary"
+      },
+      {
+        "conclusion": null,
+        "name": "Run actions/upload-artifact@v7"
+      },
+      {
+        "conclusion": null,
+        "name": "Post Run actions/setup-go@v7"
+      },
+      {
+        "conclusion": null,
+        "name": "Post Run actions/checkout@v7"
+      }
+    ]
+  },
+  "validation": "Exact legitimate fc/b7 history independently reproduces five changed paths and the normalized path hash. Selector emits false; three dependent logical jobs skip before matrix expansion. Independent scoped security finishes successfully with all original scoped scans and 324 rule cases. Two selected jobs pass; skipped jobs establish no native runtime qualification. No dummy commit, dispatch or rerun.",
+  "limits": [
+    "One planning job passed. Three skipped logical runtime jobs are not test passes and do not qualify any architecture or package client.",
+    "Only the2selected planning/scoped-security jobs pass. The3skipped logical runtime jobs never qualify package clients/platforms/databases, and no timing/speedup/fullsecurity/product claim follows.",
+    "Source-true placement proof is retained separately at63ad/fdff. All450capabilities/41families/laterstages/readinessfalse remain; no primary/customer/sibling/release mutation."
+  ],
+  "independent_security_final_checkpoint": "evidence/2026-11-05/gitleaks-native-archive-cache-checkpoint.json",
+  "independent_security_final_observation": {
+    "conclusion": "success",
+    "id": 126948667856,
+    "name": "Scoped source, binary and history scans",
+    "status": "completed",
+    "steps": [
+      {
+        "conclusion": "success",
+        "name": "Set up job"
+      },
+      {
+        "conclusion": "success",
+        "name": "Run actions/checkout@v7"
+      },
+      {
+        "conclusion": "success",
+        "name": "Run actions/setup-go@v7"
+      },
+      {
+        "conclusion": "success",
+        "name": "Build binaries and scan called Go symbols"
+      },
+      {
+        "conclusion": "success",
+        "name": "Cache pinned public Gitleaks archive"
+      },
+      {
+        "conclusion": "success",
+        "name": "Scan current tree and complete reachable history for secrets"
+      },
+      {
+        "conclusion": "success",
+        "name": "Exercise narrow secret-rule exceptions with synthetic fixtures"
+      },
+      {
+        "conclusion": "success",
+        "name": "Prepare bounded security evidence summary"
+      },
+      {
+        "conclusion": "success",
+        "name": "Run actions/upload-artifact@v7"
+      },
+      {
+        "conclusion": "success",
+        "name": "Post Cache pinned public Gitleaks archive"
+      },
+      {
+        "conclusion": "success",
+        "name": "Post Run actions/setup-go@v7"
+      },
+      {
+        "conclusion": "success",
+        "name": "Post Run actions/checkout@v7"
+      },
+      {
+        "conclusion": "success",
+        "name": "Complete job"
+      }
+    ]
+  }
+}

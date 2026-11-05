@@ -1,0 +1,190 @@
+{
+  "observed_at": "2026-11-05T00:31:44.786501+00:00",
+  "status": "verified named native x86 Gitleaks cold/save/exact-key restore plus original scoped security gates",
+  "observations": [
+    {
+      "candidate": "fdff445ab5f5878988b5c9f0870cb36ac2b1b899",
+      "run_id": 41933572877,
+      "job_id": 126936279015,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/41933572877/job/126936279015",
+      "job": {
+        "conclusion": "success",
+        "head_sha": "fdff445ab5f5878988b5c9f0870cb36ac2b1b899",
+        "id": 126936279015,
+        "name": "Scoped source, binary and history scans",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-go@v7"
+          },
+          {
+            "conclusion": "success",
+            "name": "Build binaries and scan called Go symbols"
+          },
+          {
+            "conclusion": "success",
+            "name": "Cache pinned public Gitleaks archive"
+          },
+          {
+            "conclusion": "success",
+            "name": "Scan current tree and complete reachable history for secrets"
+          },
+          {
+            "conclusion": "success",
+            "name": "Exercise narrow secret-rule exceptions with synthetic fixtures"
+          },
+          {
+            "conclusion": "success",
+            "name": "Prepare bounded security evidence summary"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/upload-artifact@v7"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Cache pinned public Gitleaks archive"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-go@v7"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job"
+          }
+        ]
+      },
+      "scope": "cold bounded verified download and post-success cache save",
+      "cache_key": "cratectl-tool-gitleaks-Linux-X64-38770b2caca0ab3370ada031c8f5ce4cf2831e853483e93cfc4cbf18ada0bba6",
+      "summary": {
+        "path": "evidence/2026-11-05/gitleaks-fdff445-security-summary.json",
+        "sha256": "0221d49520329c9cc9b54c9cb1990b356afc6fd0ed7d5f507af05d29596a74ce",
+        "github_artifact_id": 13375601037,
+        "github_artifact_digest": "sha256:651f4fb81cc720601e05bed17db1a6cb7c63bd40474f5c66838a7379ef743b80"
+      },
+      "private_job_log": ".private/ci-diagnostics/gitleaks-bounded/fdff445-amd64.txt",
+      "private_job_log_sha256": "56145b6cec7c92cb4390667e49600a51d5b2b4957e69c9d40f46662563cd6d40",
+      "private_job_log_bytes": 30418
+    },
+    {
+      "candidate": "b7cc74ca0df84204327ef43bf0dd8855d86bb078",
+      "run_id": 41937236323,
+      "job_id": 126948667856,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/41937236323/job/126948667856",
+      "job": {
+        "conclusion": "success",
+        "id": 126948667856,
+        "name": "Scoped source, binary and history scans",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-go@v7"
+          },
+          {
+            "conclusion": "success",
+            "name": "Build binaries and scan called Go symbols"
+          },
+          {
+            "conclusion": "success",
+            "name": "Cache pinned public Gitleaks archive"
+          },
+          {
+            "conclusion": "success",
+            "name": "Scan current tree and complete reachable history for secrets"
+          },
+          {
+            "conclusion": "success",
+            "name": "Exercise narrow secret-rule exceptions with synthetic fixtures"
+          },
+          {
+            "conclusion": "success",
+            "name": "Prepare bounded security evidence summary"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/upload-artifact@v7"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Cache pinned public Gitleaks archive"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-go@v7"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job"
+          }
+        ]
+      },
+      "scope": "exact-key restore and pin revalidation without fresh archive download",
+      "cache_key": "cratectl-tool-gitleaks-Linux-X64-38770b2caca0ab3370ada031c8f5ce4cf2831e853483e93cfc4cbf18ada0bba6",
+      "summary": {
+        "path": "evidence/2026-11-05/gitleaks-b7cc74c-security-summary.json",
+        "sha256": "9b87139a6ec78d0b8654d90bd7e093097c5eb3d28c523fe47ef82d97572df607",
+        "github_artifact_id": 13376661855,
+        "github_artifact_digest": "sha256:fec0598e34aad1ed30a7099a146e442beee640763f15fa6daae4f2f1926ddf92"
+      },
+      "private_job_log": ".private/ci-diagnostics/gitleaks-bounded/b7cc74c-amd64.txt",
+      "private_job_log_sha256": "8269c58cf9d9e0bff5be82fe5cf4d4dc6c31497d4e6390cc32c241b7679d5608",
+      "private_job_log_bytes": 30713
+    }
+  ],
+  "identical_installer_workflow_rule_sources": [
+    {
+      "path": "scripts/ci/fetch_archive.py",
+      "sha256": "387cebb9d4d967c634d56e3962a79416b55029a42db0b64a8a9e9987a3506dbd"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "f9c9de6231f73d6da2f37350e4245f9479752cda8e719b0549718755efb6b8cf"
+    },
+    {
+      "path": "scripts/test_secret_rules.py",
+      "sha256": "024aaceff8a190a76f33a6e05958e5b17df31f697a570f79517d30cbdfd45372"
+    },
+    {
+      "path": ".gitleaks.toml",
+      "sha256": "12695edacea8dd2d305e15a4cb18cc78f7d1df12f91eb1c9217ff0e0d6c8326d"
+    }
+  ],
+  "qualification": {
+    "tool": "Existing Gitleaks8.30.1Linux-x64 asset/pin unchanged; runtime version test in the successful scan step requires8.30.1. SHA256551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb.",
+    "bounds": "32MiB kernel file cap,15second connect/180second transfer/195second outer bound,5HTTPS redirects and bounded private output/regular-file/atomic publication verification remain at both sources.",
+    "cache": "fdff cold miss\u2192bounded verified download\u2192post-success save; b7 restores that exact public archive key and revalidates without a fresh download. No private, extracted tool, database or consumer state cached.",
+    "original_scans": "Both named jobs pass source/called-symbol/binary analysis and current-tree/full reachable-history secret scans, then all324synthetic-rule cases with clean source summaries. Safe summary binds rule report hash/count; it does not export binary/tool digests, so those are not independently asserted here."
+  },
+  "limits": [
+    "Named existing Linux x86 scanner workflow only. No timing/speedup, other-platform scanner, complete tool-hardening, full security/feed/corpus/image, whole candidate or product readiness claim.",
+    "GitHub artifact archive digests come from API metadata; downloaded safe JSON/private log hashes are independently computed.",
+    "All450capabilities/41families/laterstages retained; readiness/fullsecurity/packaging false. No primary/customer/sibling/release change."
+  ]
+}

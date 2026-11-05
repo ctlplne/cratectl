@@ -195,6 +195,14 @@ or blind retry. Native private clients retain normal TLS, one explicit source,
 private NETRC/caches, and explicit fixture checksum policy. Public checksum
 mirroring, other platforms/providers and all remaining product gates stay open.
 
+Legitimate evidence-onlyb7 now executes documentation-false selection: exact
+5path/hash match,3logical runtime skips before matrix expansion, and an
+independent scoped security job that completes successfully. Both selected
+jobs pass;3logical runtime skips remain unqualified. Original scoped source/
+binary/history/secret scans and324rules pass. Gitleaks now has matching native
+x86 cold/savefdff→exact-key restore/revalidationb7 proof; no timing, fullsecurity
+or runtime/client pass. See the [scanner checkpoint](../../evidence/2026-11-05/gitleaks-native-archive-cache-checkpoint.json). See the [placement record](../../evidence/2026-11-05/ci-selection-b7cc74c-documentation-placement.json).
+
 The following campaign notes are historical.
 
 Owner resumed the full goal on 2026-11-04. The latest fully accepted whole

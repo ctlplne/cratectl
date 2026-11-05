@@ -45,7 +45,7 @@ fresh downloads. Both original OCI214 and controlled-upgrade10pin/15report
 campaigns pass on both sources. See
 `evidence/2026-11-04/native-tool-archive-cache-checkpoint.json`.
 No timing/speedup, whole-candidate or complete tool-hardening claim. Gitleaks'
-security-workflow hardening is described below and remains natively unverified.
+separate native x86 installation/cache proof is described below.
 
 All original failures and cancellations remain retained. The original missing
 Maven import now has both native replays. Later passes cannot establish unknown
@@ -63,8 +63,10 @@ Denial or partial-version damage cannot authorize lower-source substitution.
 Groups are read-only; native proxy retrieval remains unimplemented.
 
 Local unit/race/full lint, six contract/eighteen exporter/four helper/seven CMS
-tests and console reproduction pass. Four PostgreSQL functions compile only.
-The native v2 workflow requires both actual Linux hosts, all four database
+tests and console reproduction pass. Four original PostgreSQL server functions
+pass normally and with race on both hosts at `802bb51`. Three additional atomic
+intake store functions require native replay after the recorded fixture repair.
+The current v2 workflow requires both actual Linux hosts, all seven database
 functions normally/with race, trusted TLS stock Go and all original hosted cases:
 nine stages,24publisher/reference/HTTP bindings and16exact cached ZIP/mod
 bindings. See `evidence/2026-11-04/go-module-groups-development.json`.
@@ -181,13 +183,24 @@ jobs placed. Native execution and docs-false/security proof remain open. See
 `evidence/2026-11-04/ci-selection-source-key-development.json` and
 `evidence/2026-11-04/ci-selection-fdff445-placement-checkpoint.json`.
 
+Legitimate evidence-only `b7cc74c` records runtime=false from the exact five-path
+input and its independently reproduced hash. Both selected planner/security jobs
+pass. Three dependent logical jobs skip before matrix expansion; those skips
+qualify no runtime. Source/binary/history/secret scans and all 324 synthetic-rule
+cases succeed. Gitleaks has native cold/save at `fdff445` and exact-key restore
+and pin revalidation at `b7cc74c`, with matching installer/workflow bytes. This
+proves neither full security nor unselected runtime behavior. See
+`evidence/2026-11-05/ci-selection-b7cc74c-documentation-placement.json`.
+
 Gitleaks now uses the same bounded32MiB public-archive fetch path, retaining
 its exact8.30.1version/SHA256 pin and all original scans/324rule fixtures.
 A single-archive immutable-action cache is reverified on every use; runtime
 version is checked after extraction. Official release API size/digest agrees
 with the existing pin. Eleven fetch boundary tests/full lint and semantic
-workflow preservation pass. Actual native cold/save/restore/security proof
-remains unverified. Helper changes create fresh ORAS/Helm keys; their prior
+workflow preservation pass. Named native x86 cold/save/restore and both scoped
+security jobs now pass; see
+`evidence/2026-11-05/gitleaks-native-archive-cache-checkpoint.json`.
+Helper changes create fresh ORAS/Helm keys; their prior
 f91/5b proof remains specific to those sources. See
 `evidence/2026-11-04/gitleaks-bounded-download-development.json`.
 
