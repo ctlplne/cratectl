@@ -1,0 +1,142 @@
+{
+  "source_parent": "6b564e79bdcccba62f775f88dc769b37d469edf3",
+  "source_dirty": true,
+  "observed_at": "2026-11-05T01:10:40.510846+00:00",
+  "state": "bounded internal Go source catalog intake implemented; no public proxy discovery or native pass",
+  "files": [
+    {
+      "path": "internal/store/go_module_catalog.go",
+      "sha256": "ef2f852039f8000543e925ca6194cdb95a6d98431425826b1f77e4504dc568fc"
+    },
+    {
+      "path": "internal/store/go_module_catalog_test.go",
+      "sha256": "7cdc7aaee56907d2f869991480097a70f8ea4b2831831a587fe0a59d08e3bba6"
+    },
+    {
+      "path": "internal/store/go_module_catalog_integration_test.go",
+      "sha256": "3e5aa3a8fea2a57e7778674c856aa54d2b25406daeb0cfeba0bf5e9a1e10f220"
+    },
+    {
+      "path": "internal/store/retrieval.go",
+      "sha256": "ba5e40c5f9eb91a9a31c4a5b7661082f0a74904efcaed39e2ff727ae65d030aa"
+    },
+    {
+      "path": "internal/store/go_module_retrieval.go",
+      "sha256": "b682641ce818e1e33a54b879d21b7a0510fa3484c703a36620ce340af2262c83"
+    },
+    {
+      "path": "internal/server/go_module_proxy.go",
+      "sha256": "849c0e0ba29830036cf01397fa78757665996fa640c67d6fddf9c4d400bdff4d"
+    },
+    {
+      "path": "internal/server/go_module_proxy_test.go",
+      "sha256": "de9e2d246d3bb44d19d943f65cc44c482fd373c3f639cc860c9254a0691f8f9f"
+    }
+  ],
+  "mechanism": [
+    "Canonical source advertisements retain the exact raw upstream version-list object and its independent SHA256/length binding. Typed derived metadata contains sorted canonical release/prerelease names and a versioned profile. Names are not package approval or permission to serve bytes; bare304, mixed native publications, source/path/object mismatches and unsafe budgets reject.",
+    "A tenant-bound approved upstream endpoint retrieves one list without VCS/direct/public-service fallback. Raw bytes plus derived metadata share the configured metadata budget, with count/byte/semantic bounds. Strict package checksum policy is still enforced by the separate bundle intake; reading an advertisement does not satisfy it.",
+    "The common CompleteRetrieval transaction publishes the catalog reference with integrity intent, ready event/outbox and current source/live lease. Source catalogs can refresh while retaining immutable original objects; no schema/native_sources table change or alternate publication system. Public Go proxy creation/HTTP reads remain rejected.",
+    "Persisted metadata is decoded with exact unique fields, bounded physical version count and per-entry semantic/order validation before append. Invalid UTF8, aliases, duplicates, unknown fields, trailing data and invalid shapes fail. Fuzz target joins the existing GitHub inventory without removing original targets/budgets."
+  ],
+  "local_validation": [
+    "Affected ARM server/store/gomodule/upstream normal/race, integration vet and full lint pass against owned stand-ins. New source catalog HTTP test has7scenarios for exact raw bytes/credential authority/cache policy, invalid/duplicate names, raw/entry/combined budgets and absence; no registry/postgres/stock proxy claim.",
+    "Store tests cover raw/hash/name bindings, legitimate empty advertisement, no valid-prefix result,21unbound/mixed publication cases, six ambiguous metadata shapes and the physical-array allocation regression. Five-second ARM fuzz smoke passes347095executions; no long fuzz/security qualification.",
+    "Tenth PG function compiles normally/with race only. Four owned-database scenarios cover catalog publication and mutable refresh/original-byte preservation, source revision, stale lease and full-integrity-outbox rollback/release. Current stored JSON metadata validates after jsonb reformatting; advertisement alone must publish no package version. Zero localPGfunctions executed."
+  ],
+  "first_failures": {
+    "scope": "Uncommitted local draft only; no public route or observed native/customer breach",
+    "input_bytes": 1050017,
+    "initial_decoder_total_allocated_bytes": 28449544,
+    "partial_count_only_repair_race_allocated_bytes": [
+      14323544,
+      13670624
+    ],
+    "final_regression_limit_bytes": 8388608,
+    "final_result": "normal/race pass after rejecting invalid/noncanonical/unsorted entries as they are decoded and bounding array growth; specific hostile-array allocation proof, not worst-case RSS or full parser campaign"
+  },
+  "logs": [
+    {
+      "path": ".cache/go-catalog-first-unit.log",
+      "sha256": "cd8cffc6fb30f9a517156eef18d2235ad712a940fc5ee66f6f5c2688d4e8a0b2"
+    },
+    {
+      "path": ".cache/go-catalog-first-race.log",
+      "sha256": "f61bf00922620a230b4b46a029fce7a1cd74b697de8bca290f4cd2efc6f6fedc"
+    },
+    {
+      "path": ".cache/go-catalog-array-first-failure.log",
+      "sha256": "bc191b88457a5758d10cae8aa901b2c50e7bd4bd2cfd3ce8a496dce79e8864d9"
+    },
+    {
+      "path": ".cache/go-catalog-array-repaired-unit.log",
+      "sha256": "0c02c458a32517f4e03c44a10d059bb2534811906b55b82fae7f0efd5c741f3c"
+    },
+    {
+      "path": ".cache/go-catalog-array-repaired-race.log",
+      "sha256": "f5025135a1a1408eedf81c11221c974d9571fd653238bbe5d3bdd5b38e2e9fa3"
+    },
+    {
+      "path": ".cache/go-catalog-final-unit.log",
+      "sha256": "089d6ad20a468f39fcd46aa34abbe72a8408eedc630cd188912803175d950497"
+    },
+    {
+      "path": ".cache/go-catalog-final-race.log",
+      "sha256": "9abbf747178f563614adc6c69df9e8d353088d8cb1d50077efe75fcc169fc7f6"
+    },
+    {
+      "path": ".cache/go-catalog-reviewed-unit.log",
+      "sha256": "5aa698ca6379c7bce71bf9fad823316dd8f61eb20921873aa765b99af6273c09"
+    },
+    {
+      "path": ".cache/go-catalog-reviewed-race.log",
+      "sha256": "572a861bb3015d62a12331918480128885ec89997cd01c6e710cdd8709a982f0"
+    },
+    {
+      "path": ".cache/go-catalog-reviewed-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/go-catalog-reviewed-fuzz.log",
+      "sha256": "b1c5fe0cf69387e14c15bd64d8b1b300894b6602e1b479dc888c201b27b65140"
+    },
+    {
+      "path": ".cache/go-catalog-reviewed-lint.log",
+      "sha256": "bd235a09ba75bbfda63dd5649e679174295c41bd2f0dd2fe655e59a41d447979"
+    },
+    {
+      "path": ".cache/go-catalog-current-unit.log",
+      "sha256": "9713e88d59f43bc6355cecd961cd0e572d7b1031641a4f84f4663e620c07f100"
+    },
+    {
+      "path": ".cache/go-catalog-current-race.log",
+      "sha256": "91d7f00fa70daf0b0b2b303bedc4f2c7d6a7fd14b0003ff729153c5bb915eaf5"
+    },
+    {
+      "path": ".cache/go-catalog-current-compile.log",
+      "sha256": "d5fc6e9ec490838b28e5d71cd2f75dc78ae7cdb8973ba7f1e009e1ac2444d744"
+    },
+    {
+      "path": ".cache/go-catalog-current-race-compile.log",
+      "sha256": "981ea33392b8614efea267c26ba81836023099185daf2ceb24eb5f4a9e868590"
+    },
+    {
+      "path": ".cache/go-catalog-current-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "native_pending": {
+    "candidate": "6b564e79bdcccba62f775f88dc769b37d469edf3",
+    "run_id": 41945268753,
+    "jobs": {
+      "amd64": 126975805899,
+      "arm64": 126975806171
+    },
+    "state": "both pending at latest explicit filtered jobs observation; nine PG functions/full hosted-group profile still unverified; next source adds tenth function"
+  },
+  "limits": [
+    "No merged current catalog/group/source precedence view, latest pseudo-version discovery, conditional/fresh/stale/negative catalog serving admission, independent checksum/offline trust, HTTP proxy route or actual stock-Go proxy proof. Bundle/cache foundations also remain natively unqualified.",
+    "Every original9stage/24wire/16cache and normal/race PostgreSQL assertion remains required. Latest native5be store fixture failure and skipped race/client stages stay retained; no successful-empty export.",
+    "All450capabilities/41families/laterstages retained; readiness/fullsecurity/packaging false. No primary/customer/sibling/runtime privilege/schema/release/package/image mutation."
+  ]
+}

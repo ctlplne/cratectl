@@ -1195,6 +1195,14 @@
       "repair": "Compare exact persisted database metadata before/after rejected overwrite, retaining digest/event/queue cases and adding size/media/source/creation invariants. Do not weaken immutable object byte validation or alter storage/schema behavior.",
       "development": "evidence/2026-11-05/go-upstream-bundle-fetch-development.json",
       "limits": "Original log returns nil read error without distinguishing digest/metadata operands. Source-inspected JSON encoding mismatch is repaired; no retained-byte corruption or full Go journey pass asserted. Race/client skips remain unqualified."
+    },
+    {
+      "id": "DEFECT.0111",
+      "summary": "Uncommitted Go catalog JSON decoder amplifies an oversized physical version array",
+      "discovery": "evidence/2026-11-05/go-source-catalog-development.json",
+      "state": "Draft allocates28449544bytes on1050017byte input; count-only repair still fails race allocation guard. Final per-entry semantic/order validation plus count bound passes normal/race and5second fuzz smoke before public exposure.",
+      "repair": "Reject invalid/noncanonical/unsorted version entries while decoding and check array count before append; retain exact-field/duplicate/UTF8/byte bounds and the8MiB allocation regression for this owned input.",
+      "limits": "Local uncommitted draft only; no native/customer first failure, parser worst-case RSS or fullsecurity claim."
     }
   ]
 }

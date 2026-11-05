@@ -67,7 +67,7 @@ tests and console reproduction pass. Four original PostgreSQL server functions
 pass normally and with race on both hosts at `802bb51`. Three additional atomic
 intake store functions require native replay after the recorded fixture repair.
 A new network-to-transaction function compiles only. The current v2 workflow
-requires both actual Linux hosts, all nine database
+requires both actual Linux hosts, all ten database
 functions normally/with race, trusted TLS stock Go and all original hosted cases:
 nine stages,24publisher/reference/HTTP bindings and16exact cached ZIP/mod
 bindings. See `evidence/2026-11-04/go-module-groups-development.json`.
@@ -125,7 +125,7 @@ sibling cache receipts, integrity intents and ready event/outbox in the common
 current-authority/source/live-lease transaction. Unit/race/vet/full lint pass.
 Three new real-PG store functions have no complete native pass; the workflow
 now runs both server/store packages, including the new network transaction
-function and cache admission, for nine PG functions normally/with race. Proxy creation
+function, cache admission and source catalogs, for ten PG functions normally/with race. Proxy creation
 and reads remain rejected until network/checksum/cache/serving integration and
 full native proof are complete. See
 `evidence/2026-11-04/go-module-atomic-intake-development.json`.
@@ -180,6 +180,17 @@ helper body unchanged. Store unit/race, normal/race integration compilation/vet
 and architecture checks pass. The ninth PG function covers 18 cache/authority/
 policy/fault scenarios; none executed locally. Public routes remain disabled.
 See `evidence/2026-11-05/go-bundle-cache-admission-development.json`.
+
+Internal Go source catalog intake now preserves raw list bytes/hash/length and
+bounded sorted names through common retrieval/reference/integrity/event/outbox
+transactions. Advertisements grant no package approval. Owned ARM HTTP/units/
+race/vet/full lint and five-second fuzz smoke pass. A draft JSON-array allocation
+failure and a partial race failure were retained; per-entry semantic/order and
+count bounds now pass the allocation regression. The tenth PG function compiles
+only, covering publication/refresh/original-byte preservation, source/lease
+fences and queue rollback. Public proxy remains rejected until current catalog/
+group/freshness selection and serving integration are complete. See
+`evidence/2026-11-05/go-source-catalog-development.json`.
 
 Latest discovery now distinguishes known-blocked modules (403/no version) from
 absence (404), retaining current view authority and original selection order.

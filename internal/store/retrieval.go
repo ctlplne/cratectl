@@ -185,6 +185,7 @@ type RetrievalResult struct {
 	NativeCatalog              *NativeCatalogPublication
 	OCI                        *OCIPublication
 	GoModule                   *GoModulePublication
+	GoCatalog                  *GoModuleCatalog
 }
 
 func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retrieval, result RetrievalResult) error {
@@ -207,7 +208,12 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 		if !valid {
 			return ErrLeaseLost
 		}
-		if result.GoModule != nil || repo.Format == "go" && (result.Status == 200 || result.Status == 304) && result.Failure == "" {
+		if result.GoCatalog != nil {
+			if e = validateGoModuleCatalogRetrieval(repo, lease, result); e != nil {
+				return e
+			}
+		}
+		if result.GoModule != nil || repo.Format == "go" && result.GoCatalog == nil && (result.Status == 200 || result.Status == 304) && result.Failure == "" {
 			if e = validateGoModuleRetrieval(repo, lease, result); e != nil {
 				return e
 			}
@@ -354,6 +360,9 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 		}
 		if result.GoModule != nil {
 			data["go_module_representations"] = len(result.GoModule.Objects)
+		}
+		if result.GoCatalog != nil {
+			data["go_module_catalog_versions"] = len(result.GoCatalog.Versions)
 		}
 		if replacement != nil {
 			data["reference_replacement"] = replacement

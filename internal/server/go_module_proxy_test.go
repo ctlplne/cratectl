@@ -339,3 +339,74 @@ func TestGoModuleProxyPublicRouteRemainsClosed(t *testing.T) {
 		t.Fatal("internal fetch foundation enabled incomplete public proxy mode", w.Code)
 	}
 }
+
+func TestGoModuleOriginCatalogPreservesBytesAndRejectsPartialNames(t *testing.T) {
+	for _, scenario := range []string{"valid", "bad-version", "duplicate", "raw-budget", "entry-budget", "combined-budget", "not-found"} {
+		t.Run(scenario, func(t *testing.T) {
+			c, _ := goOriginBytes(t)
+			data := []byte("v1.1.0-beta\r\nv1.0.0\n")
+			if scenario == "bad-version" {
+				data = []byte("v1.0.0\nnot-a-version\n")
+			}
+			if scenario == "duplicate" {
+				data = []byte("v1.0.0\nv1.0.0\n")
+			}
+			var calls atomic.Int32
+			origin := goOriginStandIn(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				calls.Add(1)
+				escaped := strings.Split(c.Prefix(), "/@v/")[0]
+				if r.URL.Path != "/go/source/"+escaped+"/@v/list" || r.Header.Get("Authorization") != "Bearer owned-origin-token" || r.Header.Get("If-None-Match") != "" {
+					t.Error("catalog escaped exact source authority")
+					w.WriteHeader(400)
+					return
+				}
+				if scenario == "not-found" {
+					w.WriteHeader(404)
+					return
+				}
+				w.Header().Set("Cache-Control", "max-age=17, must-revalidate")
+				w.Write(data)
+			}))
+			s, i, r, l := goOriginFixture(t, origin.URL, c)
+			l.Path = store.GoModuleCatalogPath(c.Module)
+			// Discovery is not checksum validation or package approval. Strict
+			// package intake still refuses without independent checksum authority.
+			r.Settings.Cache.RequireChecksum = true
+			switch scenario {
+			case "raw-budget":
+				s.NativeMetadataBytes = 4
+			case "combined-budget":
+				s.NativeMetadataBytes = 128
+			case "entry-budget":
+				s.NativeVersionLimit = 1
+			}
+			result, e := s.fetchGoModuleCatalog(context.Background(), i, r, l)
+			if calls.Load() != 1 {
+				t.Fatal("catalog performed fallback/retry", calls.Load())
+			}
+			if scenario != "valid" {
+				if e == nil || result.GoCatalog != nil || result.Object != nil || len(result.Metadata) != 0 {
+					t.Fatal("invalid advertisement returned a valid prefix/publication", scenario, e)
+				}
+				return
+			}
+			if e != nil || result.GoCatalog == nil || result.Object == nil || result.GoModule != nil || result.FreshSeconds != 17 || result.StaleSeconds != 0 {
+				t.Fatal("valid source catalog/cache policy", e)
+			}
+			a := store.Artifact{Path: l.Path, Digest: result.Object.Digest, Size: result.Object.Size, MediaType: result.MediaType, Metadata: result.Metadata}
+			catalog, e := store.ValidateGoModuleCatalogArtifact(a)
+			if e != nil || len(catalog.Versions) != 2 || catalog.Versions[0] != "v1.0.0" {
+				t.Fatal("canonical advertisement identity", e)
+			}
+			f, e := s.Blobs.OpenVerified(context.Background(), i.Tenant, a.Digest, a.Size)
+			if e != nil {
+				t.Fatal(e)
+			}
+			body, e := io.ReadAll(f)
+			f.Close()
+			if e != nil || !bytes.Equal(body, data) {
+				t.Fatal("raw source list changed before publication", e)
+			}
+		})
+	}
+}

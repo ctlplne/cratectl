@@ -21,6 +21,48 @@ import (
 var errGoModuleOriginMissing = errors.New("configured Go origin has no such version")
 var errGoModuleChecksumRequired = errors.New("Go origin checksum authority is not configured")
 
+// fetchGoModuleCatalog stages the original upstream version advertisement. It
+// does not approve listed packages, merge source precedence or enable discovery.
+func (s *Server) fetchGoModuleCatalog(parent context.Context, i store.Identity, repo store.Repository, lease store.Retrieval) (store.RetrievalResult, error) {
+	escaped, ok := strings.CutPrefix(lease.Path, "go-catalog/")
+	request, e := gomodule.ParseRequest(escaped + "/@v/list")
+	if !ok || e != nil || request.Operation != "list" || store.GoModuleCatalogPath(request.Module) != lease.Path || repo.Format != "go" || repo.Mode != "proxy" || repo.Name != lease.Repository || repo.SourceRevision != lease.SourceRevision || repo.Settings.Upstream == nil || s.Blobs == nil || s.NativeMetadataBytes < 1 {
+		return store.RetrievalResult{}, store.ErrGoModuleUnvalidated
+	}
+	ctx, cancel := context.WithTimeout(parent, 120*time.Second)
+	defer cancel()
+	config := *repo.Settings.Upstream
+	credential, e := s.credential(i.Tenant, config)
+	if e != nil {
+		return store.RetrievalResult{}, e
+	}
+	endpoint, e := upstream.New(config, credential, s.PrivateUpstreamNetworks...)
+	if e != nil {
+		return store.RetrievalResult{}, e
+	}
+	defer endpoint.Close()
+	limit := min(s.NativeMetadataBytes, store.MaxGoModuleCatalog)
+	object, data, fresh, stale, e := s.fetchGoRepresentation(ctx, i, repo, endpoint, escaped+"/@v/list", limit, true)
+	if e != nil {
+		return store.RetrievalResult{}, e
+	}
+	catalog, e := store.NewGoModuleCatalog(request.Module, data, s.NativeVersionLimit, limit)
+	if e != nil {
+		return store.RetrievalResult{}, e
+	}
+	metadata, e := json.Marshal(catalog)
+	if e != nil {
+		return store.RetrievalResult{}, e
+	}
+	if object.Size+int64(len(metadata)) > limit {
+		return store.RetrievalResult{}, store.ErrMetadataLimit
+	}
+	if e = ctx.Err(); e != nil {
+		return store.RetrievalResult{}, e
+	}
+	return store.RetrievalResult{Status: http.StatusOK, Object: &object, Metadata: metadata, MediaType: store.GoModuleCatalogMedia, FreshSeconds: fresh, StaleSeconds: stale, GoCatalog: &catalog}, nil
+}
+
 // fetchGoModuleBundle retrieves and durably stages one complete immutable bundle.
 // It never publishes references, grants approval, contacts a checksum service or
 // resolves through VCS/direct fallback. CompleteRetrieval must subsequently fence
