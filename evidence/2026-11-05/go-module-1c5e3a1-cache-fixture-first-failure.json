@@ -1,0 +1,222 @@
+{
+  "candidate": "1c5e3a163b72542bb5dea58054a76a8bfcfe1813",
+  "observed_at": "2026-11-05T02:10:10.482839+00:00",
+  "run_id": 41948972885,
+  "state": "first newer cache/catalog/discovery failure retained on both native architectures; no later profile pass",
+  "observations": [
+    {
+      "architecture": "amd64",
+      "job_id": 126988096037,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/41948972885/job/126988096037",
+      "conclusion": "failure",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare owned PostgreSQL and native binaries",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions with race detector",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Trusted TLS stock Go transitive downloads and policy recovery",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Encrypt bounded Go failure observations for owner diagnosis",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "safe_summary": {
+        "path": "evidence/2026-11-05/go-module-1c5e3a1-amd64-failed-summary.json",
+        "sha256": "7014094c79c0f6fe1aba2433100a67673ab823f908d845c68a09b959c0869217",
+        "github_artifact_id": 13380208153,
+        "github_artifact_digest": "sha256:d0d60d41d0b01c20d5a30cce160dfd339952f3c1c45d412fa8e0691f5284906a"
+      },
+      "private_job_log": {
+        "path": ".private/ci-diagnostics/go-1c5-first-failures/1c5e3a1-amd64.txt",
+        "bytes": 83905,
+        "sha256": "f955128229db31b151a83f4519c955a76dc732495add92eabe759ac7323fa5b9"
+      },
+      "fixed_observations": {
+        "server_package_normal_passed": true,
+        "cache_fresh_read_returned_unvalidated_with_nil_expected": true,
+        "SQLSTATEs": [
+          "23503",
+          "42501",
+          "42883"
+        ],
+        "fixture_foreign_key": "jobs_event_fk"
+      }
+    },
+    {
+      "architecture": "arm64",
+      "job_id": 126988096748,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/41948972885/job/126988096748",
+      "conclusion": "failure",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare owned PostgreSQL and native binaries",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions with race detector",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Trusted TLS stock Go transitive downloads and policy recovery",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Encrypt bounded Go failure observations for owner diagnosis",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "safe_summary": {
+        "path": "evidence/2026-11-05/go-module-1c5e3a1-arm64-failed-summary.json",
+        "sha256": "4352137f8f97697c576f148d0a99ab0a1175b7075a0a4549c753e922e7ace14f",
+        "github_artifact_id": 13380539998,
+        "github_artifact_digest": "sha256:3beab41637290809d980b60a913d5e15bda429c2d59c98238ea813cd7c4a620e"
+      },
+      "private_job_log": {
+        "path": ".private/ci-diagnostics/go-1c5-first-failures/1c5e3a1-arm64.txt",
+        "bytes": 83849,
+        "sha256": "bb19ab6b2c2a537fedcc27799455650e3beeb95b4892c4a1d678711ce7d90f12"
+      },
+      "fixed_observations": {
+        "server_package_normal_passed": true,
+        "cache_fresh_read_returned_unvalidated_with_nil_expected": true,
+        "SQLSTATEs": [
+          "23503",
+          "42501",
+          "42883"
+        ],
+        "fixture_foreign_key": "jobs_event_fk"
+      }
+    }
+  ],
+  "diagnosis": [
+    "Production GoModuleProxyArtifact rejected initial source revision0 before querying state. Existing source_configuration.sql explicitly defaults revisions to0 with check>=0. Source revision is not the positive retrieval generation; rejecting0 broke valid current-cache reads.",
+    "New fixture suffix predicates called ends_with, unavailable in the pinned PostgreSQL16 runtime (42883). They now use bounded right(path,constant) comparisons.",
+    "Deletion fault injection tried the nonsuperuser runtime role, which correctly lacks artifact DELETE (42501). A build-tagged testdb helper now requires a cratectl_init_ disposable owner database, restricts operations to artifact/retrieval DELETE and adds an explicit tenant predicate. No runtime grants change.",
+    "Catalog full-outbox prefill directly enqueued an integrity job without its journal event, so the existing deferred jobs_event_fk correctly rejected commit (23503). Fixture seed now appends its common journal/outbox event in the same transaction. No foreign key is removed or relaxed."
+  ],
+  "repair_limits": [
+    "The epoch0 guard repair, including the new final guard and explicit group-map key presence at revision0, has local unit/race/compile/vet evidence only. New13PG source must replay every original case normally/race on both hosts.",
+    "All normal server functions at1c pass, but the store step fails; race and stock client stages skip and safe summaries are empty. No successful-empty or later cache/catalog/discovery claim.",
+    "Earlier exacta630 hosted-group-v2/8PG profile passes both native architectures separately; it does not qualify these newer functions.",
+    "All450capabilities/41families/laterstages/readinessfalse retained. No primary/customer/sibling/schema/runtime privilege/release change."
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "source_parent": "8c0078eec9c4dc070952f41a29f501ef74975530",
+  "source_dirty": true,
+  "observed_at": "2026-11-05T02:12:00.224135+00:00",
+  "state": "final Go current serving guard and native failure repairs implemented; local checks pass, newer PostgreSQL replay remains required",
+  "files": [
+    {
+      "path": "internal/store/go_module_selection.go",
+      "sha256": "37080077849b7933f822f01c0bb70fa1efc311661e8f50de199164098a66ee09"
+    },
+    {
+      "path": "internal/store/go_module_selection_test.go",
+      "sha256": "0fd66905fd49f52667c95fde75c16e7b919d2c6d8e8d54d47aeb9bd6f2bd7278"
+    },
+    {
+      "path": "internal/store/go_module_selection_integration_test.go",
+      "sha256": "4ec1ddb5992d95f94c4eb77a2c4f112b166710adbf263583ce84a276f15b2432"
+    },
+    {
+      "path": "internal/server/go_module_selection_integration_test.go",
+      "sha256": "3598f9bfecb62814840d0adb6c3a7bea9f3c855a351f2d7f6a5b1e4f4d959947"
+    },
+    {
+      "path": "internal/server/resolve.go",
+      "sha256": "db0dd005f844aa0a4cfc18be81878d30d8af21710212ee52f5cabac2a315d7ec"
+    },
+    {
+      "path": "internal/store/go_module_cache.go",
+      "sha256": "6aa846b83f5add9a2b125cef540a12462e3ba34142162cd359af1e3f84ce5988"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "6d497999d5bdafcb0c66cfcf13038b65a53d03ba25aa47f6be59fd7f3fa07c6a"
+    },
+    {
+      "path": "internal/store/go_module_test.go",
+      "sha256": "79a1275ad79de55ac5891f68616f07b81a041dc25a01567f1a4512a8f71db6b8"
+    },
+    {
+      "path": "internal/store/go_module_discovery.go",
+      "sha256": "5516905ff8130955906a089b0b76a7f11dacf61ad9a75704696d547859d14ae8"
+    },
+    {
+      "path": "internal/store/go_module_discovery_integration_test.go",
+      "sha256": "3c9dc03307d9d06e06cf21543eff60a9df21e85023057cdc95cf4fcc9747face"
+    },
+    {
+      "path": "internal/store/go_module_cache_integration_test.go",
+      "sha256": "f4c408503ba7ab2f09c65299080ee641593f3f70439c5092bba01cf1d55517b2"
+    },
+    {
+      "path": "internal/store/go_module_catalog_integration_test.go",
+      "sha256": "567ec124c30cda5194da6d6107b00f9d6bbda70d3be7f08210ddcfd625118e27"
+    },
+    {
+      "path": "internal/testdb/database.go",
+      "sha256": "8472b91427373f4fcbc974c23cd35644a2c48ae7da0009736371340b7a823bf7"
+    }
+  ],
+  "mechanism": [
+    "After immutable object readback and before response headers, Go serving now reselects current ordered source/namespace ownership, grants, stronger review, complete bundle and proxy validation receipts in one read transaction. A higher-priority publication/denial/partial bundle cannot be bypassed by an already resolved lower artifact. Source/group epochs must still match the original selection; error paths return no artifact/source metadata.",
+    "Exact-version and pseudo-version absence cannot be inferred from list omission. A group can skip a proxy only with current source revision and a404 negative root, with no artifact references or prior successful publication receipt. Missing/expired/fetching/failed/known-negative state never silently authorizes lower bytes. A just-completed no-cache404 may admit only its own root generation/request, never a later request. Discovery supports the same bounded negative admission.",
+    "The guard reads only the sources needed for this transfer, retaining existing readable-first behavior without demanding grants on unused lower sources. Complete metadata discovery still checks every consulted member. Go namespace configuration rejects aliases/version-specific prefixes so metadata and byte selection use the same canonical namespace.",
+    "The shared proxy bundle cache transaction helper is reused for final group reads, without a separate policy/storage system. Initial source revision0 is accepted as required by source_configuration.sql; retrieval generations remain positive. Group snapshot lookup checks key presence explicitly at revision0. Public Go proxy creation and reads stay disabled until durable caller/latest/pseudo/checksum integration."
+  ],
+  "native_failure_repair": "evidence/2026-11-05/go-module-1c5e3a1-cache-fixture-first-failure.json",
+  "repair_details": [
+    "Use PostgreSQL16-compatible right(path,n) fixture predicates. Runtime artifact DELETE stays forbidden; a build-tagged owner fault helper checks the disposable cratectl_init_ database, restricts target tables, sets tenant context and adds a parenthesized tenant predicate. No production/runtime grants or schema change.",
+    "Queue prefill now commits its journal/outbox event with the integrity job, preserving the existing jobs_event_fk instead of disabling it. All original cache/catalog/discovery assertions remain.",
+    "An accidental sandboxed local replay was denied loopback bind permissions; the unchanged approved replay passes. Original failed log retained; no native/product failure inferred from that local permission restriction."
+  ],
+  "local_validation": [
+    "ARM store/server unit/race, full lint and final tagged normal/race integration compilation/vet pass. Zero PostgreSQL functions execute locally.",
+    "New namespace boundary tests and current-request negative-admission checks pass normally/race. Two new PG functions compile only:22 store selection cases plus3 actual server pre-header/readback cases. Existing discovery function gains a sixteenth zero-age negative case. Current total13PG functions; the original complete stock-Go9stage/24wire/16cache remains mandatory.",
+    "Source inspection found the former Go final guard checked only the old source, and canonical namespace restrictions were absent. The new native regressions are compiled-only; no original customer/native byte bypass is asserted."
+  ],
+  "logs": [
+    {
+      "path": ".cache/go-final-selection-final-unit.log",
+      "sha256": "7dd36393bdf52d51f010edb80f4aee8a754a3d2b4e1256787cc8d6ba88f513ff"
+    },
+    {
+      "path": ".cache/go-final-selection-final-race.log",
+      "sha256": "008b686c589ef2a44d5128f83c3e0df772e0573a1cd5fdc819cdc3bfe59d8986"
+    },
+    {
+      "path": ".cache/go-final-selection-final-lint.log",
+      "sha256": "768f44e5ae40038c81f2ef06d12320d7635108b33979a5d80f371fde947aad0f"
+    },
+    {
+      "path": ".cache/go-final-selection-repair-unit.log",
+      "sha256": "2170a2ffd2662b5f66c6cc2bdf63b4e4c42e825640c3a52ee04a90e5a81ddedc"
+    },
+    {
+      "path": ".cache/go-final-selection-repair-approved-unit.log",
+      "sha256": "b0c024fc0d21299982a296e9e31c06d0fea157787d1180bd256f646266d6b6d4"
+    },
+    {
+      "path": ".cache/go-final-selection-repair-approved-race.log",
+      "sha256": "c24f48c46c2774a8c244f69352cf5dbc4fd130fcf929a72aa57638d1282e2767"
+    },
+    {
+      "path": ".cache/go-final-selection-repair-approved-lint.log",
+      "sha256": "2df129184309e7dc2b2b98b91d61b2159fda7d4eed269378b6bfda0c987fc3f0"
+    },
+    {
+      "path": ".cache/go-final-selection-owner-repair-compile.log",
+      "sha256": "61f1aa25479601b638ed3109935571cd2ff7f4b4a603d0d634ec76b745d8f1a5"
+    },
+    {
+      "path": ".cache/go-final-selection-owner-repair-race-compile.log",
+      "sha256": "d3d0448886fa1bae98cedb8169ffe82cddf401b0c6eca3c4a71d9da000e299f3"
+    },
+    {
+      "path": ".cache/go-final-selection-owner-repair-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "qualified_earlier_profile": "evidence/2026-11-05/go-module-a630875-native-checkpoint.json",
+  "limits": [
+    "Only exacta630 earlier hosted-group-v2 and eight PG functions pass both actual Linux hosts. Current cache/catalog/discovery/final-guard and failure repairs require full13function normal/race replay on both hosts; proxy stock-client qualification does not yet exist.",
+    "Durable network/lease/source caller integration, remote latest/pseudo, independent checksum/offline trust, conditional refresh, warm caches, broader lifecycle/fault/migration/scale/platform and every later GOAL stage remain. No proxy API publication or broad readiness claim.",
+    "All450capabilities/41families/laterstages retained; readiness/fullsecurity/packaging false. Primary/customer/sibling/release state preserved."
+  ]
+}

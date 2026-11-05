@@ -1156,11 +1156,12 @@
       "id": "DEFECT.0106",
       "summary": "Go NETRC machine and generated console guidance omit the nondefault registry port",
       "first_failure": "evidence/2026-11-04/go-module-802bb51-netrc-first-failure.json",
-      "state": "Exacta630x86 named hosted-group-v2 and all8PGfunctions normal/race pass; original repairs replayed. ARM and later functions/full Go remain unqualified.",
+      "state": "Exacta630 named hosted-group-v2 and all8PGfunctions normal/race pass both native Linux hosts; these original repairs replayed. Later functions/full Go remain unqualified.",
       "repair": "Use the exact Go URL authority including explicitly configured port; preserve private NETRC, normal TLS, sole proxy, no VCS/fallback, all original stages and strict expected Go exits. Correct generated operator guidance and replay actual client against an owned TLS/auth stand-in.",
       "limits": "No native registry-backed Go cache/download/policy/group/restart/revocation pass. Earlier expected Go failures cannot establish policy while auth fails.",
       "development": "evidence/2026-11-04/go-netrc-authority-repair-development.json",
-      "native_amd64_checkpoint": "evidence/2026-11-05/go-module-a630875-amd64-checkpoint.json"
+      "native_amd64_checkpoint": "evidence/2026-11-05/go-module-a630875-amd64-checkpoint.json",
+      "native_checkpoint": "evidence/2026-11-05/go-module-a630875-native-checkpoint.json"
     },
     {
       "id": "DEFECT.0107",
@@ -1174,31 +1175,34 @@
       "id": "DEFECT.0108",
       "summary": "Atomic Go intake fixture counts event kinds through a nonexistent column",
       "first_failure": "evidence/2026-11-05/go-module-fc39162-event-query-first-failure.json",
-      "state": "Exacta630x86 named hosted-group-v2 and all8PGfunctions normal/race pass; original repairs replayed. ARM and later functions/full Go remain unqualified.",
+      "state": "Exacta630 named hosted-group-v2 and all8PGfunctions normal/race pass both native Linux hosts; these original repairs replayed. Later functions/full Go remain unqualified.",
       "repair": "Use the schema-supported payload::jsonb event predicate; retain all counts, rollback and authority assertions. No production schema change.",
       "limits": "Normal step fails, race/client skipped, empty summaries retained. No native intake or NETRC replay accepted.",
       "development": "evidence/2026-11-05/go-event-query-repair-development.json",
       "partial_replay": "evidence/2026-11-05/go-module-5be6d38-persisted-json-first-failure.json",
-      "native_amd64_checkpoint": "evidence/2026-11-05/go-module-a630875-amd64-checkpoint.json"
+      "native_amd64_checkpoint": "evidence/2026-11-05/go-module-a630875-amd64-checkpoint.json",
+      "native_checkpoint": "evidence/2026-11-05/go-module-a630875-native-checkpoint.json"
     },
     {
       "id": "DEFECT.0109",
       "summary": "Go latest discovery conflates a known policy-blocked module with absence",
       "discovery": "evidence/2026-11-05/go-latest-denial-development.json",
-      "state": "Explicit403classification passes exacta630x86 server PG functions normally/race; actual-Go owned TLS controls remain separate. ARM/full Go unqualified.",
+      "state": "Explicit403classification passes exacta630server PG functions normally/race on both native Linux hosts. Actual-Go owned TLS controls remain separate; broader Go unqualified.",
       "repair": "Retain known coordinates separately from allowed versions in the same bounded current view; preserve404for absent modules and return403without a version for known-blocked latest.",
       "limits": "ActualGo1.27original404latest/200emptylist shape did not fallback. Separate404-only positive control does;403does not. No observed bypass/customer/native first failure claimed.",
-      "native_amd64_checkpoint": "evidence/2026-11-05/go-module-a630875-amd64-checkpoint.json"
+      "native_amd64_checkpoint": "evidence/2026-11-05/go-module-a630875-amd64-checkpoint.json",
+      "native_checkpoint": "evidence/2026-11-05/go-module-a630875-native-checkpoint.json"
     },
     {
       "id": "DEFECT.0110",
       "summary": "Go immutable-intake fixture compares compact input JSON bytes with persisted jsonb encoding",
       "first_failure": "evidence/2026-11-05/go-module-5be6d38-persisted-json-first-failure.json",
-      "state": "Exacta630x86 named hosted-group-v2 and all8PGfunctions normal/race pass; original repairs replayed. ARM and later functions/full Go remain unqualified.",
+      "state": "Exacta630 named hosted-group-v2 and all8PGfunctions normal/race pass both native Linux hosts; these original repairs replayed. Later functions/full Go remain unqualified.",
       "repair": "Compare exact persisted database metadata before/after rejected overwrite, retaining digest/event/queue cases and adding size/media/source/creation invariants. Do not weaken immutable object byte validation or alter storage/schema behavior.",
       "development": "evidence/2026-11-05/go-upstream-bundle-fetch-development.json",
       "limits": "Original log returns nil read error without distinguishing digest/metadata operands. Source-inspected JSON encoding mismatch is repaired; no retained-byte corruption or full Go journey pass asserted. Race/client skips remain unqualified.",
-      "native_amd64_checkpoint": "evidence/2026-11-05/go-module-a630875-amd64-checkpoint.json"
+      "native_amd64_checkpoint": "evidence/2026-11-05/go-module-a630875-amd64-checkpoint.json",
+      "native_checkpoint": "evidence/2026-11-05/go-module-a630875-native-checkpoint.json"
     },
     {
       "id": "DEFECT.0111",
@@ -1207,6 +1211,30 @@
       "state": "Draft allocates28449544bytes on1050017byte input; count-only repair still fails race allocation guard. Final per-entry semantic/order validation plus count bound passes normal/race and5second fuzz smoke before public exposure.",
       "repair": "Reject invalid/noncanonical/unsorted version entries while decoding and check array count before append; retain exact-field/duplicate/UTF8/byte bounds and the8MiB allocation regression for this owned input.",
       "limits": "Local uncommitted draft only; no native/customer first failure, parser worst-case RSS or fullsecurity claim."
+    },
+    {
+      "id": "DEFECT.0112",
+      "summary": "Go final serving guard checks the resolved source without reselecting an earlier current source",
+      "discovery": "evidence/2026-11-05/go-current-serving-selection-development.json",
+      "state": "Source-inspected repair wired after disk verification; unit/race/lint pass and2PGfunctions/25scenarios compile only",
+      "repair": "Reselect ordered namespace/source/current complete-bundle/cache/grant/policy state and exact source/group epochs before headers; preserve readable-first behavior and request-bound negative caching. Reject version-specific/aliased Go namespace pins.",
+      "limits": "No original customer/native byte bypass asserted; native replay/public proxy qualification unfinished."
+    },
+    {
+      "id": "DEFECT.0113",
+      "summary": "Go cache guard rejects the schema-valid initial source revision0",
+      "first_failure": "evidence/2026-11-05/go-module-1c5e3a1-cache-fixture-first-failure.json",
+      "state": "Nonnegative source revisions now accepted; explicit group-key presence prevents missing-key confusion at revision0. Unit/race/compile/vet only; native replay required.",
+      "repair": "Honor existing source_configuration.sql default0/check>=0 without conflating source epochs with positive retrieval generations. Preserve exact equality/current authority checks.",
+      "limits": "Both1cnative store steps fail; race/client skipped. Earlier8function a630profile is separate."
+    },
+    {
+      "id": "DEFECT.0114",
+      "summary": "New Go PostgreSQL fixtures use unavailable suffix SQL, forbidden runtime deletion and an unbound job seed",
+      "first_failure": "evidence/2026-11-05/go-module-1c5e3a1-cache-fixture-first-failure.json",
+      "state": "Fixture-only SQL/owner-fault/journal repairs compile normally/race; native replay required",
+      "repair": "Use right suffix comparisons, guarded disposable owner-only tenant-scoped deletion faults, and journal-bound integrity queue seed. Keep runtime privileges/FK/schema and all original assertions intact.",
+      "limits": "Observed42883/42501/23503 are retained; no skipped or empty-summary pass."
     }
   ]
 }

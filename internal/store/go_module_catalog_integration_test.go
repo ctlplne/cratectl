@@ -42,7 +42,12 @@ func TestGoModuleCatalogPublicationUsesCommonLeaseSourceAndOutbox(t *testing.T) 
 				if _, e = f.s.SetQueuePolicy(ctx, f.i, "catalog-small-queue", "catalog-small-queue", policy); e != nil {
 					t.Fatal(e)
 				}
-				if e = f.s.Tx(ctx, f.i, true, func(tx pgx.Tx) error { return enqueueIntegrity(ctx, tx, f.i, "owned", f.result.GoModule.Objects[:1]) }); e != nil {
+				if e = f.s.Tx(ctx, f.i, true, func(tx pgx.Tx) error {
+					if e := enqueueIntegrity(ctx, tx, f.i, "owned", f.result.GoModule.Objects[:1]); e != nil {
+						return e
+					}
+					return appendEvent(ctx, tx, f.i, "fixture.go_catalog.queue_seed", map[string]any{"repository": "owned"})
+				}); e != nil {
 					t.Fatal(e)
 				}
 				want = ErrQueueFull

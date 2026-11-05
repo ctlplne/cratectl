@@ -24,7 +24,7 @@ func goModuleCatalogInTx(ctx context.Context, tx pgx.Tx, source Repository, mod 
 	if state.SourceRevision != source.SourceRevision {
 		return GoModuleCatalog{}, ErrSourceChanged
 	}
-	if state.State == "negative" && state.Fresh() {
+	if goModuleNegativeAdmitted(state, admissions) {
 		return GoModuleCatalog{Module: mod, Versions: []string{}}, nil
 	}
 	if *budget < 1 {

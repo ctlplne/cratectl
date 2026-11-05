@@ -7,6 +7,7 @@ import (
 	"errors"
 	"strings"
 
+	"ctlplne.dev/cratectl/internal/gomodule"
 	"ctlplne.dev/cratectl/internal/upstream"
 	"github.com/jackc/pgx/v5"
 )
@@ -203,6 +204,12 @@ func ValidateRepository(r *Repository) error {
 		for prefix, owner := range r.Settings.NamespaceOwners {
 			if prefix == "" || !upstream.SafePath(strings.TrimSuffix(prefix, "/")) || !strings.HasSuffix(prefix, "/") || !seen[owner] {
 				return errors.New("namespace owner must be a member and prefix must end in slash")
+			}
+			if r.Format == "go" {
+				request, e := gomodule.ParseRequest(strings.TrimSuffix(prefix, "/") + "/@v/list")
+				if e != nil || request.Operation != "list" {
+					return errors.New("Go namespace owners require a canonical escaped module or parent namespace prefix")
+				}
 			}
 		}
 	default:

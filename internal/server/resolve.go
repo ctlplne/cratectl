@@ -486,6 +486,20 @@ func (s *Server) guardResolved(ctx context.Context, i store.Identity, a resolved
 	var current store.Artifact
 	var e error
 	snapshot := store.SourceSnapshot{Repository: a.source.Name, Revision: a.source.SourceRevision, Groups: a.groupRevisions}
+	if a.source.Format == "go" {
+		endpoint := a.source.Name
+		if len(a.groups) > 0 {
+			endpoint = a.groups[0]
+		}
+		current, source, e := s.DB.GoModuleSelectionAtRevision(ctx, i, endpoint, a.artifact.Path, snapshot, a.admissions...)
+		if e != nil {
+			return current, e
+		}
+		if source.Name != a.source.Name || current.Digest != a.artifact.Digest {
+			return current, store.ErrConflict
+		}
+		return current, nil
+	}
 	if a.ociRef != "" {
 		endpoint := a.source.Name
 		if len(a.groups) > 0 {

@@ -6,6 +6,7 @@ package store
 import (
 	"context"
 	"errors"
+	"strings"
 	"testing"
 	"time"
 
@@ -17,6 +18,9 @@ func TestGoModuleCacheAdmissionRequiresCurrentWholeBundle(t *testing.T) {
 	for _, scenario := range []string{"fresh", "unassessed", "sibling-denied", "missing-receipt", "missing-sibling", "missing-all-references", "wrong-root", "wrong-generation", "expired", "max-age-zero", "fetching", "negative", "stale-transient", "stale-authority", "stale-generation", "source", "grant", "tenant"} {
 		t.Run(scenario, func(t *testing.T) {
 			f := newGoIntakeFixture(t)
+			if scenario == "fresh" && f.lease.SourceRevision != 0 {
+				t.Fatal("initial source epoch regression must exercise the schema's zero revision")
+			}
 			ctx := context.Background()
 			if scenario == "max-age-zero" {
 				f.result.FreshSeconds = 0
@@ -40,22 +44,22 @@ func TestGoModuleCacheAdmissionRequiresCurrentWholeBundle(t *testing.T) {
 			case "unassessed":
 				want = ErrDenied
 			case "sibling-denied":
-				query = `UPDATE cratectl.artifacts SET decision='denied' WHERE repository='owned' AND ends_with(path,'.info')`
+				query = `UPDATE cratectl.artifacts SET decision='denied' WHERE repository='owned' AND right(path,5)='.info'`
 				want = ErrDenied
 			case "missing-receipt":
-				query = `DELETE FROM cratectl.retrievals WHERE repository='owned' AND ends_with(path,'.mod')`
+				query = `DELETE FROM cratectl.retrievals WHERE repository='owned' AND right(path,4)='.mod'`
 				want = ErrGoModuleCacheExpired
 			case "missing-sibling":
-				query = `DELETE FROM cratectl.artifacts WHERE repository='owned' AND ends_with(path,'.mod')`
+				query = `DELETE FROM cratectl.artifacts WHERE repository='owned' AND right(path,4)='.mod'`
 				want = ErrGoModuleUnvalidated
 			case "missing-all-references":
 				query = `DELETE FROM cratectl.artifacts WHERE repository='owned'`
 				want = ErrGoModuleUnvalidated
 			case "wrong-root":
-				query = `UPDATE cratectl.retrievals SET validation_root='other' WHERE repository='owned' AND ends_with(path,'.mod')`
+				query = `UPDATE cratectl.retrievals SET validation_root='other' WHERE repository='owned' AND right(path,4)='.mod'`
 				want = ErrGoModuleUnvalidated
 			case "wrong-generation":
-				query = `UPDATE cratectl.retrievals SET validation_generation=validation_generation+1 WHERE repository='owned' AND ends_with(path,'.mod')`
+				query = `UPDATE cratectl.retrievals SET validation_generation=validation_generation+1 WHERE repository='owned' AND right(path,4)='.mod'`
 				want = ErrGoModuleUnvalidated
 			case "expired":
 				query = `UPDATE cratectl.retrievals SET fresh_until='epoch' WHERE repository='owned'`
@@ -136,7 +140,9 @@ func TestGoModuleCacheAdmissionRequiresCurrentWholeBundle(t *testing.T) {
 				}
 			}
 			if query != "" {
-				if e := f.s.Tx(ctx, f.i, true, func(tx pgx.Tx) error { _, e := tx.Exec(ctx, query); return e }); e != nil {
+				if strings.HasPrefix(query, "DELETE FROM ") {
+					f.d.ExecDeleteFault(t, f.i.Tenant, query)
+				} else if e := f.s.Tx(ctx, f.i, true, func(tx pgx.Tx) error { _, e := tx.Exec(ctx, query); return e }); e != nil {
 					t.Fatal(e)
 				}
 			}

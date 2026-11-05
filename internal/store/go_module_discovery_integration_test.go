@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"errors"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
@@ -17,7 +18,7 @@ import (
 )
 
 func TestGoModuleDiscoveryUsesCurrentCatalogPolicyPrecedenceAndBudgets(t *testing.T) {
-	for _, scenario := range []string{"catalog", "require-review", "denied-first", "group-review", "namespace-pin", "missing-catalog", "expired", "zero-age", "negative", "catalog-denied", "source", "metadata-budget", "count-budget", "grant", "tenant"} {
+	for _, scenario := range []string{"catalog", "require-review", "denied-first", "group-review", "namespace-pin", "missing-catalog", "expired", "zero-age", "negative", "negative-zero-age", "catalog-denied", "source", "metadata-budget", "count-budget", "grant", "tenant"} {
 		t.Run(scenario, func(t *testing.T) {
 			f := newGoIntakeFixture(t)
 			ctx := context.Background()
@@ -58,7 +59,7 @@ func TestGoModuleDiscoveryUsesCurrentCatalogPolicyPrecedenceAndBudgets(t *testin
 			want := error(nil)
 			limit, budget := 100, int64(1<<20)
 			admissions := []NativeAdmission{}
-			if scenario == "denied-first" || scenario == "group-review" || scenario == "namespace-pin" || scenario == "negative" {
+			if scenario == "denied-first" || scenario == "group-review" || scenario == "namespace-pin" || scenario == "negative" || scenario == "negative-zero-age" {
 				settings := RepositorySettings{Members: []string{"owned", "lower"}}
 				if scenario == "namespace-pin" {
 					settings.NamespaceOwners = map[string]string{"go.cratectl.invalid/!owned/": "lower"}
@@ -90,7 +91,7 @@ func TestGoModuleDiscoveryUsesCurrentCatalogPolicyPrecedenceAndBudgets(t *testin
 				if e = f.s.CompleteRetrieval(ctx, f.i, f.lease, f.result); e != nil {
 					t.Fatal(e)
 				}
-				query = `UPDATE cratectl.artifacts SET decision='denied' WHERE repository='owned' AND ends_with(path,'.zip')`
+				query = `UPDATE cratectl.artifacts SET decision='denied' WHERE repository='owned' AND right(path,4)='.zip'`
 				wantVersions = []string{"v1.1.0"}
 			case "namespace-pin":
 				query = `UPDATE cratectl.retrievals SET fresh_until='epoch' WHERE repository='owned'`
@@ -106,15 +107,22 @@ func TestGoModuleDiscoveryUsesCurrentCatalogPolicyPrecedenceAndBudgets(t *testin
 					t.Fatal("zero-age catalog admitted later discovery", e)
 				}
 				admissions = []NativeAdmission{{Repository: "owned", Path: lease.Path, Generation: lease.Generation}}
-			case "negative":
+			case "negative", "negative-zero-age":
 				current, e := f.s.AcquireRetrieval(ctx, f.i, "owned", lease.Path, "owned-catalog-absent", true)
 				if e != nil || !current.Acquired {
 					t.Fatal(e)
 				}
-				if e = f.s.CompleteRetrieval(ctx, f.i, current, RetrievalResult{Status: 404, FreshSeconds: 60}); e != nil {
+				fresh := 60
+				if scenario == "negative-zero-age" {
+					fresh = 0
+				}
+				if e = f.s.CompleteRetrieval(ctx, f.i, current, RetrievalResult{Status: 404, FreshSeconds: fresh}); e != nil {
 					t.Fatal(e)
 				}
 				wantVersions = []string{"v1.0.0"}
+				if scenario == "negative-zero-age" {
+					admissions = []NativeAdmission{{Repository: "owned", Path: current.Path, Generation: current.Generation}}
+				}
 			case "catalog-denied":
 				query = `UPDATE cratectl.artifacts SET decision='denied' WHERE repository='owned'`
 				want = ErrDenied
@@ -167,7 +175,9 @@ func TestGoModuleDiscoveryUsesCurrentCatalogPolicyPrecedenceAndBudgets(t *testin
 				}
 			}
 			if query != "" {
-				if e = f.s.Tx(ctx, f.i, true, func(tx pgx.Tx) error { _, e := tx.Exec(ctx, query); return e }); e != nil {
+				if strings.HasPrefix(query, "DELETE FROM ") {
+					f.d.ExecDeleteFault(t, f.i.Tenant, query)
+				} else if e = f.s.Tx(ctx, f.i, true, func(tx pgx.Tx) error { _, e := tx.Exec(ctx, query); return e }); e != nil {
 					t.Fatal(e)
 				}
 			}

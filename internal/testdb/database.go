@@ -10,11 +10,48 @@ import (
 	"github.com/jackc/pgx/v5"
 	"net/url"
 	"os"
+	"strings"
 	"testing"
 	"time"
 )
 
 type Database struct{ OwnerDSN, RuntimeDSN string }
+
+// ExecDeleteFault corrupts only a newly created cratectl test database. Runtime
+// connections deliberately cannot delete durable artifact rows. Do not grant
+// them extra privileges merely to simulate missing-reference/cache faults.
+func (d Database) ExecDeleteFault(t *testing.T, tenant, query string) {
+	t.Helper()
+	cfg, e := pgx.ParseConfig(d.OwnerDSN)
+	if e != nil || !strings.HasPrefix(cfg.Database, "cratectl_init_") || tenant == "" || !(strings.HasPrefix(query, "DELETE FROM cratectl.artifacts WHERE ") || strings.HasPrefix(query, "DELETE FROM cratectl.retrievals WHERE ")) {
+		t.Fatal("deletion fault requires an owned disposable database and a tenant-scoped artifact/cache query")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	c, e := pgx.ConnectConfig(ctx, cfg)
+	if e != nil {
+		t.Fatal("connect owned deletion-fault fixture")
+	}
+	defer c.Close(ctx)
+	table, predicate, _ := strings.Cut(query, " WHERE ")
+	if strings.ContainsAny(predicate, "$;") {
+		t.Fatal("deletion-fault predicate must be a fixed single fixture statement")
+	}
+	tx, e := c.Begin(ctx)
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer tx.Rollback(ctx)
+	if _, e = tx.Exec(ctx, `SELECT set_config('cratectl.tenant',$1,true)`, tenant); e != nil {
+		t.Fatal(e)
+	}
+	if _, e = tx.Exec(ctx, table+" WHERE tenant=$1 AND ("+predicate+")", tenant); e != nil {
+		t.Fatal(e)
+	}
+	if e = tx.Commit(ctx); e != nil {
+		t.Fatal(e)
+	}
+}
 
 func New(t *testing.T) Database {
 	t.Helper()

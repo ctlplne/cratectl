@@ -4,6 +4,18 @@ The full goal is active. All 450 capabilities / 41 families and every later
 stage remain committed. Broad readiness, full security and packaging remain
 negative. Both commit identities remain exactly `imfeelingtheagi` on main.
 
+Newer exact `1c5e3a1` fails both native store steps, with race/client skipped and
+empty safe summaries retained. The cache guard rejected schema-valid source
+revision0; fixture SQL used unavailable `ends_with`, deletion faults used the
+correctly restricted runtime role, and a queue seed omitted its journal event.
+Focused repairs preserve schema/runtime grants/FKs. The final Go serving guard
+also reselects current ordered sources after disk verification, with canonical
+namespace and per-request negative rules. ARM unit/race/full lint and tagged
+compilation/vet pass; all13PGfunctions still need native replay. Two new guard
+functions cover25scenarios, and discovery now has16. Public proxy remains off.
+See `evidence/2026-11-05/go-module-1c5e3a1-cache-fixture-first-failure.json` and
+`evidence/2026-11-05/go-current-serving-selection-development.json`.
+
 Exact `0cff4b8` now passes all 21 jobs actually selected: main nine, JVM eight,
 OCI two and controlled upgrades two. All 15 accepted safe summaries bind exact
 clean source/native binaries, actual tools, fixture bytes and artifact identities.
@@ -55,8 +67,8 @@ No duplicate dispatch. No real JVM/SDK/PostgreSQL campaign ran locally.
 All broader formats, faults, source/grant races, lifecycle/GC, migration,
 production platforms, scale and later goal stages remain required.
 
-Go hosted/group-v2 now has a named x86 qualification at `a630875`; ARM and the
-broader Go format remain unverified. Three
+Go hosted/group-v2 now has a named qualification on both native Linux
+architectures at `a630875`; the broader Go format remains unverified. Three
 immutable bundle references and replay commit through the common store. Group
 reads and complete bounded discovery preserve first-source ownership, stronger
 whole-bundle review, escaped namespace pins and current underlying grants.
@@ -66,22 +78,22 @@ Groups are read-only; native proxy retrieval remains unimplemented.
 Local unit/race/full lint, six contract/eighteen exporter/four helper/seven CMS
 tests and console reproduction pass. Four original PostgreSQL server functions
 pass normally and with race on both hosts at `802bb51`. Three additional atomic
-intake store functions and the network-to-transaction function pass x86 normally
-and with race at `a630875`; ARM remains unverified. The current v2 workflow
-requires both actual Linux hosts, all eleven database
+intake store functions and the network-to-transaction function pass normally
+and with race on both hosts at `a630875`. The current v2 workflow
+requires both actual Linux hosts, all thirteen database
 functions normally/with race, trusted TLS stock Go and all original hosted cases:
 nine stages,24publisher/reference/HTTP bindings and16exact cached ZIP/mod
 bindings. See `evidence/2026-11-04/go-module-groups-development.json`.
 
-Exact `a630875` now passes the named x86 profile: 312 checks, all nine stages,
+Exact `a630875` now passes the named profile on both hosts: 312 checks, nine stages,
 24 publisher/reference/HTTP bindings and 16 exact cached ZIP/mod bindings with
 actual Go1.27.3 and trusted generated loopback TLS on GitHub. Both binaries bind
-clean native Linux amd64 source. All eight source-defined PG functions pass
+clean native Linux source for each actual architecture. All eight PG functions pass
 normally and with race, including atomic intake and network/source/lease fences.
-The NETRC and persisted-JSON fixture repairs are replayed on this host. ARM
-job126972556526 remains queued; later cache/catalog/discovery functions are not
-part of this source and remain unqualified. See
-`evidence/2026-11-05/go-module-a630875-amd64-checkpoint.json`.
+The NETRC and persisted-JSON fixture repairs are replayed on both hosts. Later
+cache/catalog/discovery/final-guard functions are not part of this source and
+remain unqualified. See
+`evidence/2026-11-05/go-module-a630875-native-checkpoint.json`.
 
 Original exact `e62ac69` fails both native Go jobs at two event-count assertions:
 the fixture expected one total event after provisioning had already recorded one.
@@ -134,10 +146,9 @@ all9stages/24wire/16cache. No local registry/PostgreSQL campaign. See
 Internal Go proxy intake now joins complete immutable three-reference bundles,
 sibling cache receipts, integrity intents and ready event/outbox in the common
 current-authority/source/live-lease transaction. Unit/race/vet/full lint pass.
-Three new real-PG store functions now pass x86 at `a630875`; ARM remains
-unverified. The workflow
+Three new real-PG store functions now pass both hosts at `a630875`. The workflow
 now runs both server/store packages, including the new network transaction
-function, cache admission, source catalogs and discovery, for eleven PG functions normally/with race. Proxy creation
+function, cache admission, source catalogs and discovery, for thirteen PG functions normally/with race. Proxy creation
 and reads remain rejected until network/checksum/cache/serving integration and
 full native proof are complete. See
 `evidence/2026-11-04/go-module-atomic-intake-development.json`.
@@ -179,8 +190,8 @@ encoded, inconsistent or canceled intake yields no publishable result. Five ARM
 stand-in tests with 39 subcases pass normally/with race; affected checks and full
 lint pass. Independent checksum authority is unfinished, so require-checksum
 refuses before network. A new PG function combines actual owned HTTP retrieval
-with publication/source/lease fences and passes x86 normally/race at `a630875`;
-ARM remains unverified. Public proxy stays
+with publication/source/lease fences and passes both hosts normally/race at
+`a630875`. Public proxy stays
 rejected pending catalog/current-serving/cache/checksum integration and native
 qualification. See
 `evidence/2026-11-05/go-upstream-bundle-fetch-development.json`.

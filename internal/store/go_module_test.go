@@ -103,3 +103,18 @@ func TestGoRepositoryModesAdmitHostedGroupsAndRejectProxies(t *testing.T) {
 		t.Fatal("unimplemented Go proxy admitted")
 	}
 }
+
+func TestGoNamespacePinsAgreeForDiscoveryAndExactVersionReads(t *testing.T) {
+	for _, prefix := range []string{"go.cratectl.invalid/!owned/", "go.cratectl.invalid/!owned/app/", "go.cratectl.invalid/"} {
+		r := Repository{Name: "group", Format: "go", Mode: "group", Settings: RepositorySettings{Members: []string{"owned"}, NamespaceOwners: map[string]string{prefix: "owned"}}}
+		if e := ValidateRepository(&r); e != nil {
+			t.Fatal("canonical Go namespace prefix rejected", prefix, e)
+		}
+	}
+	for _, prefix := range []string{"go.cratectl.invalid/Owned/", "go.cratectl.invalid/!owned/app/@v/", "go.cratectl.invalid/!owned/app/@latest/", "go.cratectl.invalid/!!/"} {
+		r := Repository{Name: "group", Format: "go", Mode: "group", Settings: RepositorySettings{Members: []string{"owned"}, NamespaceOwners: map[string]string{prefix: "owned"}}}
+		if e := ValidateRepository(&r); e == nil {
+			t.Fatal("coordinate-specific or aliased namespace split discovery/read ownership", prefix)
+		}
+	}
+}
