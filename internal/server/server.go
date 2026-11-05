@@ -122,6 +122,9 @@ func fail(w http.ResponseWriter, status int, code, action string) {
 }
 func respondErr(w http.ResponseWriter, e error) {
 	switch {
+	case errors.Is(e, store.ErrGoModuleCacheExpired):
+		w.Header().Set("Retry-After", "1")
+		fail(w, 503, "go_module_cache_expired", "The Go source needs revalidation. Retry after the source is available; inspect repository jobs if this persists.")
 	case errors.Is(e, store.ErrGoModuleUnvalidated):
 		fail(w, 409, "go_module_unvalidated", "Inspect and reimport a complete validated ZIP/mod/info bundle. Approving a digest cannot repair inconsistent metadata.")
 	case errors.Is(e, store.ErrMatterInput):

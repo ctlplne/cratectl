@@ -1,0 +1,101 @@
+{
+  "source_parent": "8698b309339734e203eebf730a2da67afa605fdb",
+  "source_dirty": true,
+  "observed_at": "2026-11-05T01:29:38.427708+00:00",
+  "state": "current Go source metadata discovery implemented internally; native database and public proxy qualification unfinished",
+  "files": [
+    {
+      "path": "internal/store/artifact_read.go",
+      "sha256": "aba845ceb45aff4503adb12c7a10330a7a7154f9a048b15ee3fa34b9153ac11e"
+    },
+    {
+      "path": "internal/store/go_module.go",
+      "sha256": "6f57222c96447438695ea98e8f633d9a827352887fd117f7e560f33f9fad0be3"
+    },
+    {
+      "path": "internal/store/go_module_discovery.go",
+      "sha256": "6bd29703e85ea24d0b6b986a779c9b4339b0c20c835839030a9089cc0c556c7f"
+    },
+    {
+      "path": "internal/store/go_module_discovery_test.go",
+      "sha256": "bdd0da330b20b9d53f14ada6615a9e98930417635ad7c00ee4d728a4985f0a43"
+    },
+    {
+      "path": "internal/store/go_module_discovery_integration_test.go",
+      "sha256": "f48a68e66849d4b76441c841b82f20a6bc9ab6c0fd7aac74344b14b12c03eb3d"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "d6096dab35c8f233780797d030a89fd66c16e664993f0aad065c7b1df1b7e373"
+    },
+    {
+      "path": "internal/server/go_module_test.go",
+      "sha256": "6cdfa875aaf537c61690ac9463fc707d04a1c93609ac75e3fec64c664bbbb70b"
+    }
+  ],
+  "mechanism": [
+    "GoModuleView reuses one repeatable-read tenant/grant/source/group snapshot to merge bounded current source catalogs with complete cached bundles. Unknown advertised versions stay unassessed and are hidden under stronger review; cached denial/tombstone coordinates cannot be replaced by advertisements or lower sources. Longest-prefix escaped namespace pins determine consulted members.",
+    "Proxy catalogs require current source and cache state. Fresh negative advertisements permit absence; missing/expired/damaged/denied catalogs fail without a lower-source or partial-name result. Explicit current request admissions support max-age=0 through the unchanged native cache helper. Catalog data does not approve bytes or replace final artifact cache admission.",
+    "Raw catalog metadata, digest and media projections are bounded at SQL in the common reader through an opt-in budget. Default common projection remains unchanged. Cached Go rows now also limit SQL row count by remaining byte capacity plus one and cap each metadata value by the remaining budget. Cached rows, advertised entries, merged coordinates and complete metadata share bounded counters; overflow returns no prefix.",
+    "Cache revalidation refusal has a native plain-text503/Retry-After1 contract. Public Go proxy creation and HTTP proxy reads remain disabled. Group-over-proxy byte selection/final current precedence and source/catalog/lease caller integration remain required."
+  ],
+  "local_validation": [
+    "ARM store/server unit/race, normal/race integration compilation, tagged vet and full lint pass for discovery/SQL changes. Final HTTP mapping unit/race and tagged vet pass. Zero PostgreSQL functions execute locally.",
+    "New policy merge unit checks both review modes and blocked first-source collisions. The eleventh PG function compiles with15scenarios: catalog-only/no package publication, stronger review, denied first source, group review, namespace pins, missing/expired/zero-age/negative/denied catalogs, source epochs, SQL metadata/count budgets, revoked read grants and a colliding tenant repository. Native execution remains mandatory.",
+    "Metadata discovery exposes permitted names; it does not assert package byte freshness/approval. Cached coordinates retain current package policy even if later omitted by an advertisement. Actual bytes require the separate current complete-bundle/cache check immediately before response headers. Latest remote pseudo-version discovery, source attribution/selection and full protocol/client integration remain unfinished."
+  ],
+  "logs": [
+    {
+      "path": ".cache/go-discovery-final-unit.log",
+      "sha256": "c44d223f7f40f91d2fb0cfa9156783fc4c7c2f9524a7d35362d68db7c9b5e727"
+    },
+    {
+      "path": ".cache/go-discovery-final-race.log",
+      "sha256": "bdbc48be9cae0b710b287bb4e6156e6105916d5f0cb632f3793f19b4170268c9"
+    },
+    {
+      "path": ".cache/go-discovery-final-compile.log",
+      "sha256": "b09346ec8cecafdf4da89a5f9922b9f0c784b6bba5fd93beb90ee311eba46eaa"
+    },
+    {
+      "path": ".cache/go-discovery-final-race-compile.log",
+      "sha256": "30fbd922964e4980ce1ab57d38c2ba347287ec541da6394b92454903a15b3e71"
+    },
+    {
+      "path": ".cache/go-discovery-final-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/go-discovery-final-lint.log",
+      "sha256": "5f3bd3b00f097cdd5ddb40aaa229ddaffabafd4072e3c60ae2c2a61ab1c53d23"
+    },
+    {
+      "path": ".cache/go-discovery-http-contract-unit.log",
+      "sha256": "57c49805ebc48ad633cb303dee20395b831f29024fdd076021e8563bcba87290"
+    },
+    {
+      "path": ".cache/go-discovery-http-contract-race.log",
+      "sha256": "b2b4904b9e7e9d2b17d4dc75175a5022e940f9b5490b2ebf462c582ee2d397ce"
+    },
+    {
+      "path": ".cache/go-discovery-http-final-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "native_state": {
+    "last_source": "8698b30; ten PG functions",
+    "run_id": 41946762528,
+    "jobs": {
+      "arm64": 126980786397,
+      "amd64": 126980786727
+    },
+    "status": "pending at latest observed job snapshot; no new native pass",
+    "earlier_a630": "Both eight-function jobs126972556068/126972556526 still queued with no steps at latest direct observations.",
+    "canceled_source_record": "evidence/2026-11-05/go-module-6b564e7-pending-cancellation.json"
+  },
+  "limits": [
+    "No current discovery/database/source-cache/group-over-proxy/native stock proxy pass. Public proxy remains rejected. All eleven PG functions normal/race and full original hosted/group9stage24wire16cache remain mandatory on both actual Linux hosts.",
+    "Original5be store fixture failure and skipped race/client stages remain retained; current repaired code still needs actual replay. Canceled/pending/compile-only cases never count as passes.",
+    "All450capabilities/41families/laterstages retained; broad readiness/fullsecurity/packaging false. No primary/customer/sibling/schema/runtime privilege/release/package/image change."
+  ]
+}

@@ -67,7 +67,7 @@ tests and console reproduction pass. Four original PostgreSQL server functions
 pass normally and with race on both hosts at `802bb51`. Three additional atomic
 intake store functions require native replay after the recorded fixture repair.
 A new network-to-transaction function compiles only. The current v2 workflow
-requires both actual Linux hosts, all ten database
+requires both actual Linux hosts, all eleven database
 functions normally/with race, trusted TLS stock Go and all original hosted cases:
 nine stages,24publisher/reference/HTTP bindings and16exact cached ZIP/mod
 bindings. See `evidence/2026-11-04/go-module-groups-development.json`.
@@ -125,7 +125,7 @@ sibling cache receipts, integrity intents and ready event/outbox in the common
 current-authority/source/live-lease transaction. Unit/race/vet/full lint pass.
 Three new real-PG store functions have no complete native pass; the workflow
 now runs both server/store packages, including the new network transaction
-function, cache admission and source catalogs, for ten PG functions normally/with race. Proxy creation
+function, cache admission, source catalogs and discovery, for eleven PG functions normally/with race. Proxy creation
 and reads remain rejected until network/checksum/cache/serving integration and
 full native proof are complete. See
 `evidence/2026-11-04/go-module-atomic-intake-development.json`.
@@ -191,6 +191,23 @@ only, covering publication/refresh/original-byte preservation, source/lease
 fences and queue rollback. Public proxy remains rejected until current catalog/
 group/freshness selection and serving integration are complete. See
 `evidence/2026-11-05/go-source-catalog-development.json`.
+
+Internal metadata discovery now merges current catalogs and complete bundle
+policy in one tenant/grant/source/group snapshot. Unknown review-required names
+stay blocked, first-source denials persist, and namespace pins select consulted
+members. Missing/expired/damaged catalogs and count/byte overflow return no
+partial result. SQL projections share the complete-view budget; default common
+reads retain their projection. Names are not byte approval or freshness evidence.
+Affected ARM unit/race/full lint, normal/race compilation/vet and native plain
+503/retry checks pass. The eleventh PG function has 15 scenarios compiled only.
+Group byte selection/final admission, latest/pseudo and caller integration remain
+unfinished, with public proxy disabled. See
+`evidence/2026-11-05/go-current-discovery-development.json`.
+
+Both `6b564e7` Go jobs cancel before any test step and produce zero artifacts;
+no qualification follows. The earlier eight-function `a630875` jobs remain
+queued at observation; ten-function `8698b30` jobs are pending. See
+`evidence/2026-11-05/go-module-6b564e7-pending-cancellation.json`.
 
 Latest discovery now distinguishes known-blocked modules (403/no version) from
 absence (404), retaining current view authority and original selection order.

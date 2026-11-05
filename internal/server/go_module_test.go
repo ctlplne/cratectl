@@ -27,6 +27,14 @@ func TestGoNativeErrorsRemainPlainTextAndSuccessfulBytesUnchanged(t *testing.T) 
 		t.Fatal(ok.Code, n, e)
 	}
 }
+
+func TestGoModuleCacheRefusalKeepsNativeRetryAndPlainTextContract(t *testing.T) {
+	w := httptest.NewRecorder()
+	respondErr(&goProtocolResponse{ResponseWriter: w}, store.ErrGoModuleCacheExpired)
+	if w.Code != 503 || w.Header().Get("Retry-After") != "1" || w.Header().Get("Content-Type") != "text/plain; charset=utf-8" || !bytes.HasPrefix(w.Body.Bytes(), []byte("go_module_cache_expired: ")) {
+		t.Fatal("cache revalidation error lost native retry/plain-text behavior", w.Code, w.Header())
+	}
+}
 func TestGoLatestChoosesReleasePrereleaseThenChronologicalPseudoVersion(t *testing.T) {
 	for _, tc := range []struct {
 		versions []string

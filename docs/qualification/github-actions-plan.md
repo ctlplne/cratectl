@@ -94,7 +94,7 @@ security claim. See the [development record](../../evidence/2026-11-04/gitleaks-
 and [official release](https://github.com/gitleaks/gitleaks/releases/tag/v8.30.1).
 
 Go hosted/group-v2 is implemented but unverified. Its two native Linux jobs
-require ten real PostgreSQL functions normally and with race, then an owned
+require eleven real PostgreSQL functions normally and with race, then an owned
 trusted-TLS installation, CLI publication and stock Go transitive downloads.
 Every original hosted case remains. The profile requires nine ordered stages,
 24 publisher/reference/HTTP bindings and16exact cached ZIP/mod bindings.
@@ -151,7 +151,7 @@ and reference/integrity/event/outbox transaction paths. Three new store PG
 functions have no complete native pass; both Go normal/race commands include
 store and server. A new HTTP-intake transaction function makes eight PG
 functions before the latest cache-admission addition, retaining all four original
-server functions and every client stage. The current total is ten functions.
+server functions and every client stage. The current total is eleven functions.
 Public proxy mode remains rejected until full network/checksum/cache/serving
 integration and actual native proof. No schema or runtime privilege change.
 See the [intake](../../evidence/2026-11-04/go-module-atomic-intake-development.json)
@@ -185,6 +185,17 @@ count bounds pass. The tenth PG function compiles only, adding initial/refresh/
 source/lease/outbox cases without changing the workflow filter or budgets.
 Current catalog/group/freshness selection and public proxy remain unfinished.
 See the [catalog development record](../../evidence/2026-11-05/go-source-catalog-development.json).
+
+Internal discovery now joins current catalogs, complete cached-bundle policy,
+namespace pins and first-source precedence in one read snapshot. SQL metadata/
+row and complete-result bounds reject overflow without a prefix. It advertises
+names rather than approving/serving bytes. ARM affected checks/full lint and
+plain503/retry contracts pass. The eleventh PG function has15scenarios compiled
+only; final group byte selection/latest/pseudo/caller integration remains open.
+See the [discovery record](../../evidence/2026-11-05/go-current-discovery-development.json).
+Both6bGo jobs cancel before steps/artifacts, while earliera630 jobs remain queued
+and8698jobs pending at observation. No pass or retry follows; see the
+[cancellation record](../../evidence/2026-11-05/go-module-6b564e7-pending-cancellation.json).
 
 Upstream info/mod/ZIP validators now have local bounded-input unit/race/vet
 and five-second ARM fuzz-smoke proof. The new target joins the existing GitHub
@@ -292,7 +303,7 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 | `jvm-clients.yml`: Gradle / 2 | Both native Linux architectures; real PostgreSQL | Gradle9.8.2, exact JDK21 build, eight stages and24 publisher/reference/raw-HTTP digests. 60-minute job. Named v2 profile passes; broader JVM remains open. |
 | `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0 and exact JDK. Cache-v4 passes666checks/10stages/34wire+6cachebindings on both hosts at0edd, retaining all release/metadata/snapshot/SHA-2 cases. 60-minute job. Broader Ivy remains open. |
 | `jvm-clients.yml`: SBT / 4 | SBT1.13.0 and2.0.11, each on native Linux amd64/arm64; real PostgreSQL | Snapshot-v2 passes269checks/8stages/8snapshotcases/18bindings on all4cases at0cff, retaining every release case. Frozen tool-only boot cache/fresh project caches. Five-minute bootstrap, two-minute commands, 60-minute job. |
-| `go-modules.yml`: hosted/group and intake / 2 | Native Linux amd64/arm64; pinned Go, real PostgreSQL16.15, trusted loopback TLS | Ten PG functions normal/race: four original server, three atomic intake, one network-to-transaction fence, one cache admission and one source catalog. Both5be normal server packages pass then store snapshot assertion fails; repair/new functions compile only. All nine stock-client stages/24wire/16cache remain required after802NETRC401. 45-minute job; public proxy remains rejected. |
+| `go-modules.yml`: hosted/group and intake / 2 | Native Linux amd64/arm64; pinned Go, real PostgreSQL16.15, trusted loopback TLS | Eleven PG functions normal/race: four original server, three atomic intake, network-to-transaction, cache admission, source catalog and discovery. Both5be normal server packages pass then store snapshot assertion fails; repair/new functions compile only. All nine stock-client stages/24wire/16cache remain required after802NETRC401. 45-minute job; public proxy remains rejected. |
 | `nuget-contract.yml`: libraries / 2 | Both native Linux architectures; exact SDK10.0.403 selection | Original37assertions/unchanged dense corpora pass both at1974, actual runtime10.0.14 and separate DLLhashes. 20-minute job. Does not replace actual NuGet HTTP/restore/restart proof. |
 | `oci-clients.yml`: native clients / 2 | Both native Linux architectures; Docker, Podman, Helm, real PostgreSQL | Actual publication/consumption and policy/tenant/recovery cases with inert owned data; 45-minute job. Do not execute the uploaded image. External-provider interoperability is separate. |
 | `browser-repair.yml`: focused / 3 on relevant pushes | Native x86 Chromium; five fresh PostgreSQL databases per selected journey | Repair, retention and NuGet each repeat five complete journeys; 45-minute job. Manual dispatch selects one. Stop on failure; no retries/skips count as acceptance. |

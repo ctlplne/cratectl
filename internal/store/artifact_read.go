@@ -19,26 +19,27 @@ func isManifest(media string) bool {
 }
 
 type graphBudget struct {
-	retainedRoot    string
-	retained        bool
-	observation     bool
-	sourceRevision  *int64
-	remaining       int
-	depth           int
-	stack           map[string]bool
-	checked         map[string]Artifact
-	metadataBytes   int64
-	cacheRepository string
-	admissions      []OCIAdmission
+	retainedRoot     string
+	retained         bool
+	observation      bool
+	sourceRevision   *int64
+	remaining        int
+	depth            int
+	stack            map[string]bool
+	checked          map[string]Artifact
+	metadataBytes    int64
+	sqlMetadataBytes int64
+	cacheRepository  string
+	admissions       []OCIAdmission
 }
 
 func newGraphBudget() *graphBudget {
 	return &graphBudget{remaining: 4096, metadataBytes: 32 << 20, stack: map[string]bool{}, checked: map[string]Artifact{}}
 }
 
-// readArtifact evaluates all members of an OCI graph from one PostgreSQL read
-// snapshot. A result only admits this request. Missing graph metadata fails
-// closed, including pre-graph development records that need re-import/repair.
+// readArtifact evaluates an artifact and dependent graph members from one
+// PostgreSQL read snapshot. A result only admits this request. Missing graph
+// metadata fails closed, including development records needing re-import/repair.
 func readArtifact(ctx context.Context, tx pgx.Tx, repo, path string, review bool, b *graphBudget) (Artifact, error) {
 	if b.stack[path] {
 		return Artifact{}, ErrDenied
@@ -54,7 +55,15 @@ func readArtifact(ctx context.Context, tx pgx.Tx, repo, path string, review bool
 	b.stack[path] = true
 	defer func() { b.depth--; delete(b.stack, path) }()
 	var a Artifact
-	e := scanArtifact(tx.QueryRow(ctx, `SELECT `+artifactColumns+` FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND a.path=$2`, repo, path), &a)
+	columns := artifactColumns
+	args := []any{repo, path}
+	if b.sqlMetadataBytes > 0 {
+		columns = strings.Replace(columns, "a.metadata", "CASE WHEN octet_length(a.metadata::text)<=$3 THEN a.metadata ELSE NULL END", 1)
+		columns = strings.Replace(columns, "a.digest", "left(a.digest,65)", 1)
+		columns = strings.Replace(columns, "a.media_type", "left(a.media_type,257)", 1)
+		args = append(args, b.sqlMetadataBytes)
+	}
+	e := scanArtifact(tx.QueryRow(ctx, `SELECT `+columns+` FROM cratectl.artifacts a `+decisionJoin+` WHERE a.repository=$1 AND a.path=$2`, args...), &a)
 	if errors.Is(e, pgx.ErrNoRows) {
 		return a, ErrNotFound
 	}
