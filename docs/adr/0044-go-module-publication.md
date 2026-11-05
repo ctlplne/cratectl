@@ -79,3 +79,10 @@ All three representations remain immutable in this initial intake profile.
 Three PostgreSQL regressions compile but have not executed; ordinary proxy
 creation stays rejected. A complete network/cache/serving implementation must
 use this foundation and prove its behavior with native clients before exposure.
+
+Bounded upstream version advertisements now have a separate canonical parser:
+whole-input byte/count checks, semantic order, no duplicate/pseudo/alias entries
+and no partial valid prefix after a later failure. A line walk avoids allocating
+one slice per physical line. Advertised names do not approve unknown bytes.
+Persisted source/freshness catalogs and current first-source/bundle policy must
+still be joined before these names can power a proxy/group response.

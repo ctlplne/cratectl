@@ -1,0 +1,63 @@
+{
+  "source_parent": "4a1c32d601ad3fe59227879e34dbacb88e62a2a3",
+  "source_dirty": true,
+  "observed_at": "2026-11-05T00:03:06.398713+00:00",
+  "state": "upstream advertisement parser foundation only; public proxy remains rejected",
+  "files": [
+    {
+      "path": "internal/gomodule/versions.go",
+      "sha256": "f2455a8907b599d1e07982f70b9d58e8cd07869fe2430e087cd5178f72c7113e"
+    },
+    {
+      "path": "internal/gomodule/versions_test.go",
+      "sha256": "a98c6b518d39bf660d15e946e848bbaa4fd443f36c815fd71c660f1a36a513d3"
+    }
+  ],
+  "mechanism": "Parse bounded plain native version lists with exact canonical/module-major identities, CRLF handling, semantic ordering and complete entry/byte budgets. Reject duplicates, aliases, wrong majors, invalidUTF8, whitespace ambiguity and pseudo-versions (native list must exclude them). Empty advertisements remain valid; any bad later entry returns no valid prefix. Names are advertisements, never package approval or permission to serve bytes.",
+  "memory_regression": "An uncommitted eager Split draft allocated25216624bytes for one owned1MiB empty-line response. A physical-line memory regression now passes its512KiB allocation threshold after replacing the eager split with a zero-copy line walk and checking line length before string allocation. The original failed log remains retained. This is not a production/native failure or whole-parser RSS measurement.",
+  "validation": [
+    "Module unit/race/vet pass, including exact/overflow count/byte budgets, canonical major/prerelease/order/input preservation, bad later entries/no partial list and adversarial empty physical lines.",
+    "Initial short local ARM fuzz smoke passes35688executions; repaired parser replay passes25945executions after59seed/cache entries,12new interesting entries. These are distinct five-second owned-input smokes, not a long parser/security/x86/native registry campaign.",
+    "New target joins the existing GitHub all-target native smoke inventory after the next source push. No existing fuzz target or client/database stage is removed."
+  ],
+  "logs": [
+    {
+      "path": ".cache/go-upstream-version-list-unit.log",
+      "sha256": "1edfbad2e9c8b042ff7cd6bfa4836653ab2a8e3657245a0d1fc4131807fe6c61"
+    },
+    {
+      "path": ".cache/go-upstream-version-list-race.log",
+      "sha256": "2f2b771acad2f3f12b373b70b9438666b027ece9bad5c7d34ee2d855bb96d1c7"
+    },
+    {
+      "path": ".cache/go-upstream-version-list-fuzz.log",
+      "sha256": "b2ca6afa8cdcd21075397b090809d6913c37bf4a8a90627a5c376f8bfb6f99f6"
+    },
+    {
+      "path": ".cache/go-upstream-version-list-memory-first-regression.log",
+      "sha256": "18a15d368f0a675ccb86345ae9ff7c71cddf1d49978a29206682fe7ac09b138b"
+    },
+    {
+      "path": ".cache/go-upstream-version-list-final-unit.log",
+      "sha256": "57040ec9e71c6039836f8a904eba78e20720126b3a2565c0662cd8136c6aa40f"
+    },
+    {
+      "path": ".cache/go-upstream-version-list-final-race.log",
+      "sha256": "832962cf2b222ea4aea222ef1665eed56455de0230785a2fc4d6695b13319f4b"
+    },
+    {
+      "path": ".cache/go-upstream-version-list-final-fuzz.log",
+      "sha256": "aef9f85903f8f4b2f711bfa857c6048298f0621b83e84cc5afc1a667e544b993"
+    },
+    {
+      "path": ".cache/go-upstream-version-list-final-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "reference": "https://go.dev/ref/mod#goproxy-protocol",
+  "remaining": "Persist/revalidate configured-source catalog advertisements under common leases; merge first-source ownership and cached complete-bundle current policy/freshness in one bounded read view, then implement safe upstream bundle retrieval and final serving admission before enabling proxy mode. Latest/pseudo fallback, branch aliases/legacy modules/checksum/offline/client/fault/lifecycle/platform and every later GOAL stage remain required.",
+  "limits": [
+    "No new route, upstream retrieval, database/current-policy/cache, stock-Go proxy or full format pass. These exported names are not a clean scan result.",
+    "All450capabilities/41families/laterstages retained; readiness/fullsecurity/packaging false. No primary/customer/sibling/schema/release mutation."
+  ]
+}

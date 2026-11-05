@@ -138,6 +138,13 @@ Hosted publication already rejected such dates. See
 `evidence/2026-11-04/go-upstream-representations-development.json` and
 `evidence/2026-11-04/go-pseudo-calendar-repair-development.json`.
 
+Upstream Go version-advertisement parsing now has canonical/count/byte/order
+and no-partial-result checks. An uncommitted empty-line allocation defect was
+reproduced and repaired before exposure; module unit/race/vet/shortfuzz and the
+physical-line memory regression pass. No catalog/policy/cache/proxy route or
+native registry result follows. See
+`evidence/2026-11-04/go-upstream-version-list-development.json`.
+
 Main CI now has bounded runtime-input selection, implemented but unverified.
 Documentation/evidence-only commits retain independent scoped source/binary/
 history/secret scans. Runtime/pin/instruction/unknown changes and manual dispatch

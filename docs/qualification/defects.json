@@ -1159,6 +1159,14 @@
       "repair": "Use the exact Go URL authority including explicitly configured port; preserve private NETRC, normal TLS, sole proxy, no VCS/fallback, all original stages and strict expected Go exits. Correct generated operator guidance and replay actual client against an owned TLS/auth stand-in.",
       "limits": "No native registry-backed Go cache/download/policy/group/restart/revocation pass. Earlier expected Go failures cannot establish policy while auth fails.",
       "development": "evidence/2026-11-04/go-netrc-authority-repair-development.json"
+    },
+    {
+      "id": "DEFECT.0107",
+      "summary": "Draft upstream version-list splitting amplifies memory for empty physical lines",
+      "discovery": "evidence/2026-11-04/go-upstream-version-list-development.json",
+      "state": "Uncommitted draft reproduced25216624bytes from1MiB owned input; streaming-line repair passes unit/race/vet/fuzz and memory regression before any route exposure",
+      "repair": "Walk bounded lines without allocating a physical-line array; check line size before allocating strings and fail without a valid prefix for invalid/over-budget advertisements.",
+      "limits": "Parser foundation only; no native/production first failure, proxy route, whole-parser RSS or fullsecurity claim."
     }
   ]
 }
