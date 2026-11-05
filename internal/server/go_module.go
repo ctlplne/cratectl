@@ -10,39 +10,15 @@ import (
 	"slices"
 	"strconv"
 	"strings"
-	"time"
 
 	"ctlplne.dev/cratectl/internal/gomodule"
 	"ctlplne.dev/cratectl/internal/store"
 	"ctlplne.dev/cratectl/internal/ziparchive"
 	"golang.org/x/mod/module"
-	"golang.org/x/mod/semver"
 )
 
 func latestGoVersion(versions []string) string {
-	for index := len(versions) - 1; index >= 0; index-- {
-		v := versions[index]
-		if semver.Prerelease(v) == "" && !module.IsPseudoVersion(v) {
-			return v
-		}
-	}
-	for index := len(versions) - 1; index >= 0; index-- {
-		if !module.IsPseudoVersion(versions[index]) {
-			return versions[index]
-		}
-	}
-	latest := ""
-	var instant time.Time
-	for _, v := range versions {
-		t, e := module.PseudoVersionTime(v)
-		if e == nil && (latest == "" || t.After(instant)) {
-			latest, instant = v, t
-		}
-	}
-	if latest != "" {
-		return latest
-	}
-	return ""
+	return gomodule.LatestVersion(versions)
 }
 
 func latestGoSelection(view store.GoModuleVersionView) (string, error) {
@@ -53,6 +29,24 @@ func latestGoSelection(view store.GoModuleVersionView) (string, error) {
 		return "", store.ErrDenied
 	}
 	return "", store.ErrNotFound
+}
+
+func (s *Server) serveGoModuleLatest(w http.ResponseWriter, r *http.Request, i store.Identity, repo, p string, catalogs []store.NativeAdmission) {
+	repository, e := s.DB.Repository(r.Context(), i, repo)
+	if e != nil {
+		respondErr(w, e)
+		return
+	}
+	a, e := s.resolve(r.Context(), i, repository, p, forceRefresh(r))
+	if e != nil {
+		if errors.Is(e, store.ErrNotFound) {
+			e = store.ErrConflict
+		}
+		respondErr(w, e)
+		return
+	}
+	a.goLatest, a.goCatalogAdmissions = true, catalogs
+	s.serveResolvedArtifact(w, r, i, a)
 }
 
 func (s *Server) goModule(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, p string) {
@@ -75,7 +69,7 @@ func (s *Server) goModule(w http.ResponseWriter, r *http.Request, i store.Identi
 		return
 	}
 	if request.Operation == "list" || request.Operation == "latest" {
-		view, admissions, e := s.prepareGoModuleView(r.Context(), i, repo, request.Module, false)
+		view, admissions, e := s.prepareGoModuleView(r.Context(), i, repo, request.Module, forceRefresh(r))
 		if e != nil {
 			respondErr(w, e)
 			return
@@ -87,7 +81,7 @@ func (s *Server) goModule(w http.ResponseWriter, r *http.Request, i store.Identi
 				return
 			}
 			c := gomodule.Coordinate{Module: request.Module, Version: version}
-			s.serveArtifact(w, r, i, repo.Name, c.Prefix()+".info")
+			s.serveGoModuleLatest(w, r, i, repo.Name, c.Prefix()+".info", admissions)
 			return
 		}
 		versions := view.Versions

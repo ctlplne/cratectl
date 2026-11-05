@@ -13,6 +13,23 @@ import (
 	"golang.org/x/mod/semver"
 )
 
+func TestLatestVersionDoesNotDependOnIndexOrder(t *testing.T) {
+	for _, test := range []struct {
+		versions []string
+		want     string
+	}{
+		{nil, ""},
+		{[]string{"v1.10.0", "v1.2.0", "v1.20.0-beta"}, "v1.10.0"},
+		{[]string{"v1.20.0-beta", "v1.2.0-beta"}, "v1.20.0-beta"},
+		{[]string{"v0.0.0-20261104010203-0123456789ab", "v1.0.1-0.20251004010203-0123456789ab"}, "v0.0.0-20261104010203-0123456789ab"},
+		{[]string{"bad", "v1.0.0"}, "v1.0.0"},
+	} {
+		if got := LatestVersion(test.versions); got != test.want {
+			t.Fatal("latest depended on order or ignored native preference", got, test.want)
+		}
+	}
+}
+
 func TestUpstreamVersionListIsCompleteCanonicalAndSemanticallyOrdered(t *testing.T) {
 	for _, tc := range []struct {
 		mod, body string

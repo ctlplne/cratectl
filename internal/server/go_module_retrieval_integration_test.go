@@ -255,8 +255,8 @@ func TestGoModuleProxyCallerRecordsFailuresWithoutPartialPublication(t *testing.
 			if scenario == "checksum" && calls.Load() != 0 {
 				t.Fatal("checksum requirement contacted unchecked origin")
 			}
-			if scenario == "queue" && state.LastError != "retrieval_commit_rejected" {
-				t.Fatal("rolled-back publication left lease unretired")
+			if scenario == "queue" && (state.LastError != "queue_capacity" || state.LeaseUntil.After(state.Now)) {
+				t.Fatal("queue rollback lost common classification or retained a live lease")
 			}
 			if scenario == "transient" && state.LastError != "transient_upstream_failure" {
 				t.Fatal("temporary origin failure lost classification")
@@ -268,6 +268,19 @@ func TestGoModuleProxyCallerRecordsFailuresWithoutPartialPublication(t *testing.
 				if _, e = s.resolve(context.Background(), admin, repo, c.Prefix()+".info", false); !errors.Is(e, store.ErrNotFound) || calls.Load() != 1 {
 					t.Fatal("fresh negative lost canonical coalescing", e, calls.Load())
 				}
+			}
+			if scenario == "queue" {
+				if _, e = s.DB.SetQueuePolicy(context.Background(), admin, "owned-caller-capacity-recovery", "owned-caller-capacity-recovery", store.QueuePolicy{Queue: "integrity", Capacity: 8, MaxRunning: 1, MaxAttempts: 2, RetrySeconds: 1, RetryMaxSeconds: 2}); e != nil {
+					t.Fatal(e)
+				}
+				if recovered, e := s.resolve(context.Background(), admin, repo, c.Prefix()+".info", false); e != nil || recovered.artifact.Digest == "" {
+					t.Fatal("capacity repair did not recover canonical bundle caller", e)
+				}
+				current, e := s.DB.Retrieval(context.Background(), admin, "source", c.Prefix()+".zip")
+				if e != nil || current.Generation <= state.Generation || current.State != "ready" {
+					t.Fatal("queue recovery reused old lease generation", e)
+				}
+				goCallerCounts(t, s, admin, 3)
 			}
 			if w := goHTTP(t, s, token, "GET", "/go/source/"+c.Prefix()+".zip", nil); w.Code != 405 {
 				t.Fatal("internal caller enabled public proxy", w.Code)

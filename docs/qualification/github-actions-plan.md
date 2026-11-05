@@ -13,6 +13,15 @@ outside this CI authority. No autonomous delegation.
 
 ## Current qualification state
 
+Exact946fails both normalserver packages at the queue fixture label; the common
+store already retired the lease as queue_capacity. Race/client stages skip and
+empty summaries remain failures. The repair retains every assertion, requires
+no live lease, and adds capacity recovery/new-generation proof. The same revision
+adds atomic post-readback latest selection in2PGfunctions/22scenarios; current23
+functions compile normally/race only. All original312stock checks remain mandatory.
+See the [first failure](../../evidence/2026-11-05/go-module-946fe55-queue-fixture-first-failure.json) and
+[latest development](../../evidence/2026-11-05/go-latest-current-selection-development.json). Public proxy remains disabled.
+
 Exact4a Go [both-native checkpoint](../../evidence/2026-11-05/go-module-4a131f7-native-checkpoint.json)
 verifies the unchanged hosted/group-v2 profile and13PGfunctions normally/race.
 The internal caller adds6functions/25scenarios, including12concurrent requests;
@@ -164,7 +173,7 @@ and reference/integrity/event/outbox transaction paths. Three new store PG
 functions pass both hosts at a630; thirteen functions pass both hosts at4a. Both normal/race commands include
 store and server. A new HTTP-intake transaction function makes eight PG
 functions before the latest cache-admission addition, retaining all four original
-server functions and every client stage. The caller revision brought nineteen; metadata preparation brings twenty-one functions.
+server functions and every client stage. The caller revision brought nineteen; metadata preparation brings twenty-one, latest selection twenty-three functions.
 Public proxy mode remains rejected until full network/checksum/cache/serving
 integration and actual native proof. No schema or runtime privilege change.
 See the [intake](../../evidence/2026-11-04/go-module-atomic-intake-development.json)
@@ -339,7 +348,7 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 | `jvm-clients.yml`: Gradle / 2 | Both native Linux architectures; real PostgreSQL | Gradle9.8.2, exact JDK21 build, eight stages and24 publisher/reference/raw-HTTP digests. 60-minute job. Named v2 profile passes; broader JVM remains open. |
 | `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0 and exact JDK. Cache-v4 passes666checks/10stages/34wire+6cachebindings on both hosts at0edd, retaining all release/metadata/snapshot/SHA-2 cases. 60-minute job. Broader Ivy remains open. |
 | `jvm-clients.yml`: SBT / 4 | SBT1.13.0 and2.0.11, each on native Linux amd64/arm64; real PostgreSQL | Snapshot-v2 passes269checks/8stages/8snapshotcases/18bindings on all4cases at0cff, retaining every release case. Frozen tool-only boot cache/fresh project caches. Five-minute bootstrap, two-minute commands, 60-minute job. |
-| `go-modules.yml`: hosted/group and intake / 2 | Native Linux amd64/arm64; pinned Go, real PostgreSQL16.15, trusted loopback TLS | Twenty-one PG functions required normally/race for the metadata increment. Exact4a passes both hosts with13PGfunctions and312checks/all9stages/24wire/16cache. Original1cfailures retained;6new caller and2metadata functions compile only.45-minute job; public proxy remains rejected. |
+| `go-modules.yml`: hosted/group and intake / 2 | Native Linux amd64/arm64; pinned Go, real PostgreSQL16.15, trusted loopback TLS | Twenty-three PG functions required normally/race for the latest/queue-repair increment. Exact4a passes both hosts with13PGfunctions and312checks/all9stages/24wire/16cache. Original1cfailures retained;6new caller,2metadata and2latest functions compile only;946queue assertion failure retained.45-minute job; public proxy remains rejected. |
 | `nuget-contract.yml`: libraries / 2 | Both native Linux architectures; exact SDK10.0.403 selection | Original37assertions/unchanged dense corpora pass both at1974, actual runtime10.0.14 and separate DLLhashes. 20-minute job. Does not replace actual NuGet HTTP/restore/restart proof. |
 | `oci-clients.yml`: native clients / 2 | Both native Linux architectures; Docker, Podman, Helm, real PostgreSQL | Actual publication/consumption and policy/tenant/recovery cases with inert owned data; 45-minute job. Do not execute the uploaded image. External-provider interoperability is separate. |
 | `browser-repair.yml`: focused / 3 on relevant pushes | Native x86 Chromium; five fresh PostgreSQL databases per selected journey | Repair, retention and NuGet each repeat five complete journeys; 45-minute job. Manual dispatch selects one. Stop on failure; no retries/skips count as acceptance. |

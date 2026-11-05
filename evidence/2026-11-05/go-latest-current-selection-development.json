@@ -1,0 +1,113 @@
+{
+  "source_parent": "0c6ed887a13f50d0547355ff061f178017ab1b7f",
+  "source_dirty": true,
+  "observed_at": "2026-11-05T02:52:50.048801+00:00",
+  "state": "current latest selection and native queue-fixture repair implemented; native PostgreSQL replay required",
+  "files": [
+    {
+      "path": "internal/gomodule/versions.go",
+      "sha256": "cb35f01ab844d1aaf70d8bd6a1d079222d394a7a9957a35a1ef3e27d1c33dc04"
+    },
+    {
+      "path": "internal/gomodule/versions_test.go",
+      "sha256": "0e2af1a97149b9c13070869c2bc8160bcc74271e53be51c93015a90d7bbb086b"
+    },
+    {
+      "path": "internal/server/go_module.go",
+      "sha256": "b4ec9e6257555512630ccb65b91c38d82e6518d24b74049210d2168c554d767d"
+    },
+    {
+      "path": "internal/server/resolve.go",
+      "sha256": "da5ea5be80725d420b086de1eb6b49efc5043e3db2f335d3ccd66faf23e25aa3"
+    },
+    {
+      "path": "internal/server/go_module_latest_integration_test.go",
+      "sha256": "067c1746c8c4211e3d8366b2382fea0deef8dd30d3e02189f16b033b17b6088d"
+    },
+    {
+      "path": "internal/store/go_module.go",
+      "sha256": "115443d8a6b260fad30ff7d5fccd6471ee32742f1e5736ef3dc349fa691563cf"
+    },
+    {
+      "path": "internal/store/go_module_selection.go",
+      "sha256": "eb60604e178bb591f59e3e82dba9004e9daea3b9837bb993dacc136a1e6aff35"
+    },
+    {
+      "path": "internal/store/go_module_latest.go",
+      "sha256": "9f6d22649c5346b473e2b1ba7147c487277d5d19b7bfea9ff8ae4b6bd2326a85"
+    },
+    {
+      "path": "internal/server/go_module_retrieval.go",
+      "sha256": "81f4bca03d61dffb7e494f08ad4520df39351e859c7a3c37b0194ac4076ccc2d"
+    },
+    {
+      "path": "internal/server/go_module_retrieval_integration_test.go",
+      "sha256": "7304be3e61a2db0c7e426d6649dfbdebe6665cff2f1ecde5b3e24cbe765e77a0"
+    }
+  ],
+  "mechanism": [
+    "Latest is now guarded as mutable discovery as well as immutable bytes. After object verification and before headers, one repeatable-read transaction checks current source/group epochs, complete bundle policy/cache and complete bounded discovery, then verifies that the resolved version is still the current allowed latest. Losing that selection yields conflict/denial without old info bytes or validator headers.",
+    "Common private transaction helpers are shared by existing discovery/exact serving and the latest guard; no second policy or authorization path is added. Catalog and bundle admissions are separately bounded32/64 and revalidated in that same snapshot. Known latest disappearing before resolution maps to conflict, preserving not-found only for the initial truly absent discovery.",
+    "The shared selector retains release/prerelease/chronological-pseudo preference independently of index order. The server uses it for initial choice and the store uses it for final current selection. Metadata force-refresh follows the existing request directive. No network occurs inside the final transaction.",
+    "The original946queue failure is an incorrect fixture label: the shared store had already retired the lease under queue_capacity. The test now requires that label and no future lease deadline, preserves zero partial publication, then restores capacity and requires a new complete generation. Caller cleanup excludes queue/hold cases already handled by the common store."
+  ],
+  "new_postgresql_functions": [
+    {
+      "name": "TestGoModuleLatestRechecksCurrentVersionAfterDiskVerification",
+      "scenarios": 11
+    },
+    {
+      "name": "TestGoModuleLatestBindsCurrentCatalogAndBundleAdmissions",
+      "scenarios": 11
+    }
+  ],
+  "current_required_postgresql_functions": 23,
+  "local_validation": [
+    "Shared latest selector adds five order/preference cases; full ARM make build/test/race/lint and normal/race tagged compilation/vet pass. No actual PostgreSQL/JVM/SDK campaign runs locally.",
+    "Source inspection identified the prior latest mutable-selection gap; new native regression functions are compiled only. No original customer/native stale-latest response is asserted."
+  ],
+  "native_first_failure": "evidence/2026-11-05/go-module-946fe55-queue-fixture-first-failure.json",
+  "qualified_prior_source": "evidence/2026-11-05/go-module-4a131f7-native-checkpoint.json",
+  "references": [
+    {
+      "url": "https://go.dev/ref/mod#goproxy-protocol",
+      "observed_on": "2026-11-05",
+      "use": "Native info/list/latest preference and optional upstream latest behavior; this does not qualify retractions, VCS lineage or a remote checksum authority."
+    }
+  ],
+  "logs": [
+    {
+      "path": ".cache/go-latest-final-repair-compile.log",
+      "sha256": "ed9b560ba1c3bc0c1d664dfff6620557f984edde36223bba0d8874c08db66ef1"
+    },
+    {
+      "path": ".cache/go-latest-final-repair-race-compile.log",
+      "sha256": "87cc703283d964cc89cdcd448245288d70c615c2e010b29c1884e33b74b285af"
+    },
+    {
+      "path": ".cache/go-latest-final-repair-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/go-latest-final-repair-test.log",
+      "sha256": "56ef548b3b47353e32082866882a83d2856b54fb571117c49248bb57e22d6569"
+    },
+    {
+      "path": ".cache/go-latest-final-repair-race.log",
+      "sha256": "7765080b1c72a2cd526bda6a5e3fa3bdc6fc0d4f7de77f852c3b82b740960e0d"
+    },
+    {
+      "path": ".cache/go-latest-final-repair-lint.log",
+      "sha256": "fa40e33dba329e4c5c57c076695a5991716557913efe70fbcdc0194509327587"
+    },
+    {
+      "path": ".cache/go-latest-final-repair-build.log",
+      "sha256": "1f19df18d1adf8e48fea22da7b9d6d0c98d35abc87de201ea48d6bf444de5675"
+    }
+  ],
+  "limits": [
+    "Current23PGfunctions must actually execute normally/race on both GitHub hosts with the unchanged312check/9stage/24wire/16cache profile.946normalserver fails; race/client skip and empty summaries remain retained.0c metadata source was queued at last observation.",
+    "Remote upstream latest/pseudo resolution, independent checksum/offline trust, conditional refresh, full proxy/group/native stock-client journeys, retraction/VCS lineage/warm-cache/lifecycle/fault/migration/scale/platform/browser and all later GOAL scope remain. Public direct proxy remains rejected.",
+    "All450capabilities/41families/every later owner stage retained. Broad readiness/security/packaging false. Primary/customer/sibling/schema/runtime grants/release unchanged."
+  ]
+}

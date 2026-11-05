@@ -112,83 +112,87 @@ func (s *Store) GoModuleSelectionAtRevision(ctx context.Context, i Identity, end
 	var selected Artifact
 	var source Repository
 	e = s.Tx(ctx, i, false, func(tx pgx.Tx) error {
-		group, e := repositoryInTx(ctx, tx, i, endpoint, "read")
-		if e != nil {
-			return e
-		}
-		if group.Format != "go" {
-			return ErrConflict
-		}
-		if group.Mode == "group" {
-			revision, present := snapshot.Groups[group.Name]
-			if len(snapshot.Groups) != 1 || !present || revision != group.SourceRevision {
-				return ErrSourceChanged
-			}
-		} else if len(snapshot.Groups) != 0 {
-			return ErrSourceChanged
-		}
-		for _, name := range MembersForPath(group, escaped+"/") {
-			r, e := repositoryInTx(ctx, tx, i, name, "read")
-			if e != nil {
-				return e
-			}
-			if r.Format != "go" {
-				return ErrConflict
-			}
-			review := r.RequireReview || group.RequireReview
-			var a Artifact
-			switch r.Mode {
-			case "hosted":
-				b := repositoryReadBudget(r)
-				a, e = readArtifact(ctx, tx, r.Name, p, review, b)
-				if errors.Is(e, ErrNotFound) {
-					e = missingGoModuleRepresentation(ctx, tx, r.Name, p)
-				}
-				if errors.Is(e, ErrNotFound) {
-					continue
-				}
-				if e == nil {
-					e = checkGoModuleBundle(ctx, tx, r.Name, a, review, b)
-				}
-			case "proxy":
-				absent, err := goModuleProxyAbsentInTx(ctx, tx, r, request.Coordinate, admissions)
-				if err != nil {
-					return err
-				}
-				if absent {
-					continue
-				}
-				ownAdmissions := []NativeAdmission{}
-				for _, admission := range admissions {
-					if admission.Repository == r.Name && admission.Path == request.Coordinate.Prefix()+".zip" {
-						ownAdmissions = append(ownAdmissions, admission)
-					}
-				}
-				if len(ownAdmissions) > 1 {
-					return ErrGoModuleUnvalidated
-				}
-				a, e = goModuleProxyArtifactInTx(ctx, tx, r, p, request.Coordinate, review, ownAdmissions)
-			default:
-				return ErrConflict
-			}
-			if e != nil {
-				return e
-			}
-			if r.Name != snapshot.Repository {
-				return ErrConflict
-			}
-			if _, e = checkSourceSnapshot(ctx, tx, i, r, snapshot); e != nil {
-				return e
-			}
-			selected, source = a, r
-			return nil
-		}
-		// This API guards an already resolved object. Losing its selection is
-		// not a new absence that can authorize a package client's fallback.
-		return ErrConflict
+		return goModuleSelectionInTx(ctx, tx, i, endpoint, p, escaped, request, snapshot, admissions, &selected, &source)
 	})
 	if e != nil {
 		return Artifact{}, Repository{}, e
 	}
 	return selected, source, nil
+}
+
+func goModuleSelectionInTx(ctx context.Context, tx pgx.Tx, i Identity, endpoint, p, escaped string, request gomodule.Request, snapshot SourceSnapshot, admissions []NativeAdmission, selected *Artifact, source *Repository) error {
+	group, e := repositoryInTx(ctx, tx, i, endpoint, "read")
+	if e != nil {
+		return e
+	}
+	if group.Format != "go" {
+		return ErrConflict
+	}
+	if group.Mode == "group" {
+		revision, present := snapshot.Groups[group.Name]
+		if len(snapshot.Groups) != 1 || !present || revision != group.SourceRevision {
+			return ErrSourceChanged
+		}
+	} else if len(snapshot.Groups) != 0 {
+		return ErrSourceChanged
+	}
+	for _, name := range MembersForPath(group, escaped+"/") {
+		r, e := repositoryInTx(ctx, tx, i, name, "read")
+		if e != nil {
+			return e
+		}
+		if r.Format != "go" {
+			return ErrConflict
+		}
+		review := r.RequireReview || group.RequireReview
+		var a Artifact
+		switch r.Mode {
+		case "hosted":
+			b := repositoryReadBudget(r)
+			a, e = readArtifact(ctx, tx, r.Name, p, review, b)
+			if errors.Is(e, ErrNotFound) {
+				e = missingGoModuleRepresentation(ctx, tx, r.Name, p)
+			}
+			if errors.Is(e, ErrNotFound) {
+				continue
+			}
+			if e == nil {
+				e = checkGoModuleBundle(ctx, tx, r.Name, a, review, b)
+			}
+		case "proxy":
+			absent, err := goModuleProxyAbsentInTx(ctx, tx, r, request.Coordinate, admissions)
+			if err != nil {
+				return err
+			}
+			if absent {
+				continue
+			}
+			ownAdmissions := []NativeAdmission{}
+			for _, admission := range admissions {
+				if admission.Repository == r.Name && admission.Path == request.Coordinate.Prefix()+".zip" {
+					ownAdmissions = append(ownAdmissions, admission)
+				}
+			}
+			if len(ownAdmissions) > 1 {
+				return ErrGoModuleUnvalidated
+			}
+			a, e = goModuleProxyArtifactInTx(ctx, tx, r, p, request.Coordinate, review, ownAdmissions)
+		default:
+			return ErrConflict
+		}
+		if e != nil {
+			return e
+		}
+		if r.Name != snapshot.Repository {
+			return ErrConflict
+		}
+		if _, e = checkSourceSnapshot(ctx, tx, i, r, snapshot); e != nil {
+			return e
+		}
+		*selected, *source = a, r
+		return nil
+	}
+	// This API guards an already resolved object. Losing its selection is
+	// not a new absence that can authorize a package client's fallback.
+	return ErrConflict
 }

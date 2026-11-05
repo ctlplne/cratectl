@@ -4,11 +4,43 @@ package gomodule
 import (
 	"bytes"
 	"strings"
+	"time"
 	"unicode/utf8"
 
 	"golang.org/x/mod/module"
 	"golang.org/x/mod/semver"
 )
+
+// LatestVersion chooses among an already validated bounded set, independently
+// of input order: release, prerelease, then the most recent pseudo timestamp.
+func LatestVersion(versions []string) string {
+	release, prerelease, pseudo := "", "", ""
+	var instant time.Time
+	for _, v := range versions {
+		if !semver.IsValid(v) {
+			continue
+		}
+		if module.IsPseudoVersion(v) {
+			t, e := module.PseudoVersionTime(v)
+			if e == nil && (pseudo == "" || t.After(instant) || t.Equal(instant) && semver.Compare(v, pseudo) > 0) {
+				pseudo, instant = v, t
+			}
+		} else if semver.Prerelease(v) == "" {
+			if release == "" || semver.Compare(v, release) > 0 {
+				release = v
+			}
+		} else if prerelease == "" || semver.Compare(v, prerelease) > 0 {
+			prerelease = v
+		}
+	}
+	if release != "" {
+		return release
+	}
+	if prerelease != "" {
+		return prerelease
+	}
+	return pseudo
+}
 
 // ParseVersionList validates one bounded native upstream advertisement. This
 // establishes names, not permission to serve or approval of any package bytes.

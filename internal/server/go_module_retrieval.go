@@ -95,9 +95,10 @@ func (s *Server) fillGoModuleProxy(parent context.Context, i store.Identity, rep
 		ctx, cancel = context.WithTimeout(context.WithoutCancel(parent), 3*time.Second)
 		defer cancel()
 	}
-	if e = s.DB.CompleteRetrieval(ctx, i, lease, result); e != nil {
-		// Publication can roll back after staging (for example a full integrity
-		// queue). Retire our still-current lease without granting stale use.
+	if e = s.DB.CompleteRetrieval(ctx, i, lease, result); e != nil && !errors.Is(e, store.ErrQueueFull) && !errors.Is(e, store.ErrHeld) {
+		// The common store already retires queue-blocked and held attempts.
+		// Other publication failures may still own a lease after rollback.
+		// Retire that current lease without granting stale use.
 		// Source/grant/lease fences apply to cleanup as well; when they reject
 		// it, the existing bounded lease expires without a publication.
 		cleanup, cancel := context.WithTimeout(context.WithoutCancel(parent), 3*time.Second)

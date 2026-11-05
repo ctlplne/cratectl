@@ -189,89 +189,93 @@ func (s *Store) GoModuleView(ctx context.Context, i Identity, repo, mod string, 
 	}
 	out := GoModuleVersionView{Versions: []string{}}
 	e = s.Tx(ctx, i, false, func(tx pgx.Tx) error {
-		group, members, e := nativeRepositories(ctx, tx, i, repo, escaped, "go")
-		if e != nil {
-			return e
-		}
-		if group.Mode != "hosted" && group.Mode != "group" && group.Mode != "proxy" {
-			return ErrConflict
-		}
-		selected := map[string]bool{}
-		remaining := limit * 3
-		advertisements := limit
-		for _, source := range members {
-			if source.Mode != "hosted" && source.Mode != "proxy" {
-				return ErrConflict
-			}
-			// Each charged row costs at least 192 bytes. Fetch one beyond that
-			// capacity to reject overflow without transferring the full row limit
-			// when the caller has a much smaller complete-view byte budget.
-			maxRows := min(remaining+1, int(budget/192)+1)
-			rows, e := tx.Query(ctx, `SELECT a.repository,left(a.path,2049),left(a.digest,65),a.size,left(a.media_type,257),CASE WHEN octet_length(a.metadata::text)<=$4 THEN a.metadata ELSE NULL END,COALESCE(d.decision,a.decision),a.created_at,a.source_revision,COALESCE(nl.deleted,false) FROM cratectl.artifacts a `+decisionJoin+nativeLifecycleJoin+` WHERE a.repository=$1 AND starts_with(a.path,$2) AND ($5::boolean OR a.source_revision=$6) ORDER BY a.path LIMIT $3`, source.Name, escaped+"/@v/", maxRows, min(MaxGoModuleMetadata, budget), source.Mode != "proxy", source.SourceRevision)
-			if e != nil {
-				return e
-			}
-			as := []Artifact{}
-			for rows.Next() {
-				remaining--
-				if remaining < 0 {
-					rows.Close()
-					return ErrMetadataLimit
-				}
-				var a Artifact
-				if e = scanNativeArtifact(rows, &a); e != nil {
-					rows.Close()
-					return e
-				}
-				if len(a.Metadata) == 0 {
-					rows.Close()
-					return ErrMetadataLimit
-				}
-				budget -= int64(len(a.Path) + len(a.Metadata) + len(a.MediaType) + 192)
-				if budget < 0 {
-					rows.Close()
-					return ErrMetadataLimit
-				}
-				as = append(as, a)
-			}
-			e = rows.Err()
-			rows.Close()
-			if e != nil {
-				return e
-			}
-			candidates, e := goModuleVersionCandidates(as, mod, source.RequireReview || group.RequireReview)
-			if e != nil {
-				return e
-			}
-			if source.Mode == "proxy" {
-				catalog, e := goModuleCatalogInTx(ctx, tx, source, mod, &budget, admissions)
-				if e != nil {
-					return e
-				}
-				advertisements -= len(catalog.Versions)
-				if advertisements < 0 {
-					return ErrMetadataLimit
-				}
-				addGoModuleAdvertisements(candidates, catalog, source.RequireReview || group.RequireReview)
-			}
-			mergeGoModuleVersions(selected, candidates)
-			if len(selected) > limit {
-				return ErrMetadataLimit
-			}
-		}
-		for version, allowed := range selected {
-			out.Known = true
-			if allowed {
-				out.Versions = append(out.Versions, version)
-			}
-		}
-		return nil
+		return goModuleViewInTx(ctx, tx, i, repo, mod, escaped, limit, budget, admissions, &out)
 	})
 	if e != nil {
 		return GoModuleVersionView{}, e
 	}
 	semver.Sort(out.Versions)
 	return out, nil
+}
+
+func goModuleViewInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, mod, escaped string, limit int, budget int64, admissions []NativeAdmission, out *GoModuleVersionView) error {
+	group, members, e := nativeRepositories(ctx, tx, i, repo, escaped, "go")
+	if e != nil {
+		return e
+	}
+	if group.Mode != "hosted" && group.Mode != "group" && group.Mode != "proxy" {
+		return ErrConflict
+	}
+	selected := map[string]bool{}
+	remaining := limit * 3
+	advertisements := limit
+	for _, source := range members {
+		if source.Mode != "hosted" && source.Mode != "proxy" {
+			return ErrConflict
+		}
+		// Each charged row costs at least 192 bytes. Fetch one beyond that
+		// capacity to reject overflow without transferring the full row limit
+		// when the caller has a much smaller complete-view byte budget.
+		maxRows := min(remaining+1, int(budget/192)+1)
+		rows, e := tx.Query(ctx, `SELECT a.repository,left(a.path,2049),left(a.digest,65),a.size,left(a.media_type,257),CASE WHEN octet_length(a.metadata::text)<=$4 THEN a.metadata ELSE NULL END,COALESCE(d.decision,a.decision),a.created_at,a.source_revision,COALESCE(nl.deleted,false) FROM cratectl.artifacts a `+decisionJoin+nativeLifecycleJoin+` WHERE a.repository=$1 AND starts_with(a.path,$2) AND ($5::boolean OR a.source_revision=$6) ORDER BY a.path LIMIT $3`, source.Name, escaped+"/@v/", maxRows, min(MaxGoModuleMetadata, budget), source.Mode != "proxy", source.SourceRevision)
+		if e != nil {
+			return e
+		}
+		as := []Artifact{}
+		for rows.Next() {
+			remaining--
+			if remaining < 0 {
+				rows.Close()
+				return ErrMetadataLimit
+			}
+			var a Artifact
+			if e = scanNativeArtifact(rows, &a); e != nil {
+				rows.Close()
+				return e
+			}
+			if len(a.Metadata) == 0 {
+				rows.Close()
+				return ErrMetadataLimit
+			}
+			budget -= int64(len(a.Path) + len(a.Metadata) + len(a.MediaType) + 192)
+			if budget < 0 {
+				rows.Close()
+				return ErrMetadataLimit
+			}
+			as = append(as, a)
+		}
+		e = rows.Err()
+		rows.Close()
+		if e != nil {
+			return e
+		}
+		candidates, e := goModuleVersionCandidates(as, mod, source.RequireReview || group.RequireReview)
+		if e != nil {
+			return e
+		}
+		if source.Mode == "proxy" {
+			catalog, e := goModuleCatalogInTx(ctx, tx, source, mod, &budget, admissions)
+			if e != nil {
+				return e
+			}
+			advertisements -= len(catalog.Versions)
+			if advertisements < 0 {
+				return ErrMetadataLimit
+			}
+			addGoModuleAdvertisements(candidates, catalog, source.RequireReview || group.RequireReview)
+		}
+		mergeGoModuleVersions(selected, candidates)
+		if len(selected) > limit {
+			return ErrMetadataLimit
+		}
+	}
+	for version, allowed := range selected {
+		out.Known = true
+		if allowed {
+			out.Versions = append(out.Versions, version)
+		}
+	}
+	return nil
 }
 
 // A missing sibling of an existing version is damaged publication state, not a

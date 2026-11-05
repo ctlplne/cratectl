@@ -23,14 +23,16 @@ var errUpstream = errors.New("configured upstream retrieval failed")
 var errUpstreamIntegrity = errors.New("configured upstream checksum verification failed")
 
 type resolvedArtifact struct {
-	artifact       store.Artifact
-	source         store.Repository
-	groups         []string
-	groupRevisions map[string]int64
-	cache          string
-	ociImage       string
-	ociRef         string
-	admissions     []store.NativeAdmission
+	artifact            store.Artifact
+	source              store.Repository
+	groups              []string
+	groupRevisions      map[string]int64
+	cache               string
+	ociImage            string
+	ociRef              string
+	admissions          []store.NativeAdmission
+	goLatest            bool
+	goCatalogAdmissions []store.NativeAdmission
 }
 
 func (s *Server) resolve(ctx context.Context, i store.Identity, repo store.Repository, p string, force bool) (resolvedArtifact, error) {
@@ -523,7 +525,13 @@ func (s *Server) guardResolved(ctx context.Context, i store.Identity, a resolved
 		if len(a.groups) > 0 {
 			endpoint = a.groups[0]
 		}
-		current, source, e := s.DB.GoModuleSelectionAtRevision(ctx, i, endpoint, a.artifact.Path, snapshot, a.admissions...)
+		var source store.Repository
+		if a.goLatest {
+			admissions := append(append([]store.NativeAdmission{}, a.admissions...), a.goCatalogAdmissions...)
+			current, source, e = s.DB.GoModuleLatestSelectionAtRevision(ctx, i, endpoint, a.artifact.Path, snapshot, s.NativeVersionLimit, s.NativeMetadataBytes, admissions...)
+		} else {
+			current, source, e = s.DB.GoModuleSelectionAtRevision(ctx, i, endpoint, a.artifact.Path, snapshot, a.admissions...)
+		}
 		if e != nil {
 			return current, e
 		}

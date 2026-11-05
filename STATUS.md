@@ -35,6 +35,24 @@ function946caller source is queued, with no pass inferred. Public proxy and remo
 latest/pseudo/checksum/conditional/full-format qualification remain unfinished.
 See `evidence/2026-11-05/go-metadata-preparation-development.json`.
 
+Exact946 fails both normal server packages at the queue fixture's label check;
+the common store had already retired the lease as `queue_capacity`. Race/client
+stages skip and both empty summaries are retained. The corrected test requires
+the common label, expired lease, zero partial publication and a successful new
+bundle generation after capacity recovery; no queue/authority rule is weakened.
+See `evidence/2026-11-05/go-module-946fe55-queue-fixture-first-failure.json`.
+
+The latest-selection revision checks mutable latest and exact bundle/source/
+group/policy/cache in one read snapshot after disk verification, before headers.
+A new higher release/pseudo, changed catalog/epoch, lost grant/policy/bundle or
+expired request admission cannot emit old latest info/ETag. Known disappearance
+before resolution returns conflict. The shared order-independent selector and
+existing release/prerelease/pseudo preference have ARM unit/race proof. Two new
+PGfunctions cover22scenarios, compiled normally/race only; current total23.
+Full ARM build/test/race/lint pass. Native23function/full original profile replay
+is required; remote latest/pseudo/checksum/conditional/public proxy remain open.
+See `evidence/2026-11-05/go-latest-current-selection-development.json`.
+
 Exact `0cff4b8` now passes all 21 jobs actually selected: main nine, JVM eight,
 OCI two and controlled upgrades two. All 15 accepted safe summaries bind exact
 clean source/native binaries, actual tools, fixture bytes and artifact identities.
@@ -99,7 +117,7 @@ tests and console reproduction pass. Four original PostgreSQL server functions
 pass normally and with race on both hosts at `802bb51`. Three additional atomic
 intake store functions and the network-to-transaction function pass normally
 and with race on both hosts at `a630875`. The current v2 workflow
-requires both actual Linux hosts, all twenty-one database
+requires both actual Linux hosts, all twenty-three database
 functions normally/with race, trusted TLS stock Go and all original hosted cases:
 nine stages,24publisher/reference/HTTP bindings and16exact cached ZIP/mod
 bindings. See `evidence/2026-11-04/go-module-groups-development.json`.
@@ -167,7 +185,7 @@ sibling cache receipts, integrity intents and ready event/outbox in the common
 current-authority/source/live-lease transaction. Unit/race/vet/full lint pass.
 Three new real-PG store functions now pass both hosts at `a630875`. The workflow
 now runs both server/store packages, including the new network transaction
-function, cache admission, source catalogs and discovery, for twenty-one PG functions normally/with race. Proxy creation
+function, cache admission, source catalogs and discovery, for twenty-three PG functions normally/with race. Proxy creation
 and reads remain rejected until network/checksum/cache/serving integration and
 full native proof are complete. See
 `evidence/2026-11-04/go-module-atomic-intake-development.json`.
