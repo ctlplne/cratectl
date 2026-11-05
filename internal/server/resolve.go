@@ -14,6 +14,7 @@ import (
 	"time"
 
 	crypt "ctlplne.dev/cratectl/internal/crypto"
+	"ctlplne.dev/cratectl/internal/gomodule"
 	"ctlplne.dev/cratectl/internal/store"
 	"ctlplne.dev/cratectl/internal/upstream"
 )
@@ -251,7 +252,11 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 func (s *Server) proxyArtifact(ctx context.Context, i store.Identity, repo store.Repository, p string, admissions ...store.NativeAdmission) (store.Artifact, error) {
 	if repo.Format == "go" {
 		if strings.HasPrefix(p, "go-catalog/") {
-			return s.DB.NativeCatalogArtifact(ctx, i, repo.Name, strings.TrimPrefix(p, "go-catalog/"), "go", store.GoModuleCatalogMedia)
+			request, e := gomodule.ParseRequest(strings.TrimPrefix(p, "go-catalog/") + "/@v/list")
+			if e != nil {
+				return store.Artifact{}, store.ErrGoModuleUnvalidated
+			}
+			return s.DB.GoModuleCatalogArtifact(ctx, i, repo.Name, request.Module, repo.SourceRevision, s.NativeMetadataBytes, admissions...)
 		}
 		return s.DB.GoModuleProxyArtifact(ctx, i, repo.Name, p, repo.SourceRevision, admissions...)
 	}

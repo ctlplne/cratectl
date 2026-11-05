@@ -75,7 +75,7 @@ func (s *Server) goModule(w http.ResponseWriter, r *http.Request, i store.Identi
 		return
 	}
 	if request.Operation == "list" || request.Operation == "latest" {
-		view, e := s.DB.GoModuleView(r.Context(), i, repo.Name, request.Module, s.NativeVersionLimit, s.NativeMetadataBytes)
+		view, admissions, e := s.prepareGoModuleView(r.Context(), i, repo, request.Module, false)
 		if e != nil {
 			respondErr(w, e)
 			return
@@ -102,12 +102,12 @@ func (s *Server) goModule(w http.ResponseWriter, r *http.Request, i store.Identi
 			respondErr(w, store.ErrMetadataLimit)
 			return
 		}
-		current, e := s.DB.GoModuleVersions(r.Context(), i, repo.Name, request.Module, s.NativeVersionLimit, s.NativeMetadataBytes)
+		current, e := s.DB.GoModuleView(r.Context(), i, repo.Name, request.Module, s.NativeVersionLimit, s.NativeMetadataBytes, admissions...)
 		if e != nil {
 			respondErr(w, e)
 			return
 		}
-		if !slices.Equal(current, versions) {
+		if current.Known != view.Known || !slices.Equal(current.Versions, versions) {
 			respondErr(w, store.ErrConflict)
 			return
 		}

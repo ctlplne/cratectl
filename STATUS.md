@@ -25,6 +25,16 @@ still require actual GitHub execution. Public proxy creation/reads remain off;
 remote latest/pseudo/checksum/conditional refresh/full Go remain open. See
 `evidence/2026-11-05/go-durable-proxy-caller-development.json`.
 
+The metadata revision adds complete current-source preparation under one deadline
+and running byte budget. Typed catalog reads use the same cache/policy/source
+helper as discovery, with bounded SQL metadata and original-list digest binding.
+The list response rechecks the complete current view before headers. Eight new
+unit cases and full ARM build/test/race/lint pass; two new PostgreSQL functions /
+24scenarios compile normally/race only. Current total21functions; the nineteen-
+function946caller source is queued, with no pass inferred. Public proxy and remote
+latest/pseudo/checksum/conditional/full-format qualification remain unfinished.
+See `evidence/2026-11-05/go-metadata-preparation-development.json`.
+
 Exact `0cff4b8` now passes all 21 jobs actually selected: main nine, JVM eight,
 OCI two and controlled upgrades two. All 15 accepted safe summaries bind exact
 clean source/native binaries, actual tools, fixture bytes and artifact identities.
@@ -89,7 +99,7 @@ tests and console reproduction pass. Four original PostgreSQL server functions
 pass normally and with race on both hosts at `802bb51`. Three additional atomic
 intake store functions and the network-to-transaction function pass normally
 and with race on both hosts at `a630875`. The current v2 workflow
-requires both actual Linux hosts, all nineteen database
+requires both actual Linux hosts, all twenty-one database
 functions normally/with race, trusted TLS stock Go and all original hosted cases:
 nine stages,24publisher/reference/HTTP bindings and16exact cached ZIP/mod
 bindings. See `evidence/2026-11-04/go-module-groups-development.json`.
@@ -157,7 +167,7 @@ sibling cache receipts, integrity intents and ready event/outbox in the common
 current-authority/source/live-lease transaction. Unit/race/vet/full lint pass.
 Three new real-PG store functions now pass both hosts at `a630875`. The workflow
 now runs both server/store packages, including the new network transaction
-function, cache admission, source catalogs and discovery, for nineteen PG functions normally/with race. Proxy creation
+function, cache admission, source catalogs and discovery, for twenty-one PG functions normally/with race. Proxy creation
 and reads remain rejected until network/checksum/cache/serving integration and
 full native proof are complete. See
 `evidence/2026-11-04/go-module-atomic-intake-development.json`.

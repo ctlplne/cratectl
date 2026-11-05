@@ -1,0 +1,101 @@
+{
+  "source_parent": "946fe55950b9a5342d315013c59439fe9e495305",
+  "source_dirty": true,
+  "observed_at": "2026-11-05T02:42:32.396934+00:00",
+  "state": "bounded current Go metadata preparation implemented; ARM build/unit/race/lint and tagged compilation/vet pass; actual native PostgreSQL replay required",
+  "files": [
+    {
+      "path": "internal/server/go_module_discovery.go",
+      "sha256": "2e1a4dc02d83b59614e235e945fba904df869047100b1e640efdc460e3a719a9"
+    },
+    {
+      "path": "internal/server/go_module_discovery_test.go",
+      "sha256": "c7360120746128823fccb1a0f71e21d627a5a8f15dd3badc7682e23006836de7"
+    },
+    {
+      "path": "internal/server/go_module_discovery_integration_test.go",
+      "sha256": "a6f45ef7c1868e73bc9e735c7e9155a5280031071719e4e1e738f4c574bb15b6"
+    },
+    {
+      "path": "internal/server/go_module.go",
+      "sha256": "f74cacfb24754a4c36693199f150c0fd5af3200b2b4d3558645d6a464ae58a2d"
+    },
+    {
+      "path": "internal/server/resolve.go",
+      "sha256": "02a8d3dc386f8e8140b713571e8f2a2a980b67122997fb1d0aaacbbaa2309a42"
+    },
+    {
+      "path": "internal/store/go_module_discovery.go",
+      "sha256": "b4cdeeeb3aff3c0350e94bfd0f0c8275d603c83eb4a9947346f2435180a326c6"
+    },
+    {
+      "path": "internal/store/go_module_catalog_read_integration_test.go",
+      "sha256": "3e765e6ba17d663d330592d25d0051015203898ce498032ebfe484cea18a1b6d"
+    }
+  ],
+  "mechanism": [
+    "Metadata preparation validates canonical module and configured bounds before effects, then obtains every consulted current source/grant with the same escaped namespace rules. Sources are sequential under one120second preparation deadline and running raw/derived byte budget; one separately bounded catalog may discover budget overflow, then no further source is fetched. At most32sources/admissions are accepted.",
+    "Every proxy advertisement uses the common renewable retrieval caller. Fresh, just-completed zero-age, current negative and explicit transient-stale admissions survive into the final complete GoModuleView. Hosted members remain on the shared current policy path; unknown advertisements do not bypass required review. Invalid/missing/ungranted/changed/over-budget sources return no partial index prefix.",
+    "Typed GoModuleCatalogArtifact reuses the discovery read helper in one current tenant/grant/source/policy/cache snapshot. SQL projects oversized metadata as NULL before transfer and caps digest/media/path. Raw object digest/size and exact typed metadata are validated. No-cache negatives without current generation admission require revalidation instead of being treated as broken package state.",
+    "The adapter prepares metadata before list/latest selection and repeats the complete current list view before GET/HEAD headers, comparing both versions and known/hidden state. Public direct proxy creation/reads remain rejected. Remote latest/pseudo and stronger latest-selection races are separate unfinished work."
+  ],
+  "local_validation": [
+    "New unit function/eight invalid-input cases pass before any database or network effect. Full make build/test/race/lint pass on ARM; existing owned HTTP/TLS/file stand-ins remain mandatory.",
+    "Two new real-PostgreSQL functions/24scenarios compile normally/race and tagged vet passes. No PostgreSQL executes locally. Combined current total21source-defined PGfunctions and the original312check stock hosted/group profile must run on both actual GitHub architectures."
+  ],
+  "new_postgresql_functions": [
+    {
+      "name": "TestGoModulePreparationUsesCompleteCurrentSourceCatalogs",
+      "scenarios": 14
+    },
+    {
+      "name": "TestGoModuleCatalogReadUsesCurrentBoundedTypedAdmission",
+      "scenarios": 10
+    }
+  ],
+  "logs": [
+    {
+      "path": ".cache/go-metadata-build.log",
+      "sha256": "23ee543ce06883ecc2a485bb1df57afa0b447e280638c08621e7ad1b84ea06cf"
+    },
+    {
+      "path": ".cache/go-metadata-test.log",
+      "sha256": "7c1583487e1b7d1e6d4db03902c00c9898fd014820b6e01d9fd43b1a1d71c8b0"
+    },
+    {
+      "path": ".cache/go-metadata-race.log",
+      "sha256": "0e2556da309ba66c8b28e614dd7ba90bf62835de1ae0cdb103b06c293bd0f148"
+    },
+    {
+      "path": ".cache/go-metadata-lint.log",
+      "sha256": "bc6c1b6f321ec9ae7d0f4561048e2365a5ba5a1805723c69efc9d3b2817fcc61"
+    },
+    {
+      "path": ".cache/go-metadata-final-compile.log",
+      "sha256": "f1181e1682585c844ed98abcee09f4fde3241f8213b76e12345b867c2d0aa5af"
+    },
+    {
+      "path": ".cache/go-metadata-final-race-compile.log",
+      "sha256": "38fbeeec9bbdb1c851c1e6e6605e7c1175972e89c4365f593dcb59ad0f810687"
+    },
+    {
+      "path": ".cache/go-metadata-final-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "prior_named_native": "evidence/2026-11-05/go-module-4a131f7-native-checkpoint.json",
+  "pending_caller_source": {
+    "candidate": "946fe55950b9a5342d315013c59439fe9e495305",
+    "run_id": 41956125858,
+    "jobs": {
+      "amd64": 127011324704,
+      "arm64": 127011325020
+    },
+    "state": "queued/no steps at latest observation; no caller pass inferred"
+  },
+  "limits": [
+    "Public proxy remains disabled until remote latest/pseudo, independent checksum/offline trust, conditional refresh and complete stock proxy/group/fault/policy journeys. Current latest-selection concurrency requires further work.",
+    "The running preparation budget permits one bounded catalog read/fill to discover overflow. This is not a strict summed network-byte cap or process RSS/performance claim.",
+    "All450capabilities/41families/every later GOAL stage retained. Full readiness/security/packaging false. No primary/customer/sibling/schema/runtime grant/release change."
+  ]
+}
