@@ -31,6 +31,8 @@ Policy is checked from authoritative state on each read; projections cannot
 authorize downloads. Initial quarantine blocks serving, and a manual decision
 is labelled manual rather than a scanner verdict. There is no scanner yet.
 
-Opaque tokens and digests use `internal/crypto`. No signing key or signer is
-introduced until the isolated signer boundary can be implemented and tested.
+Opaque tokens and digests use `internal/crypto`. The owner's 2026-11-04 scope
+amendment in `GOAL.md` section 4.1 supersedes the earlier native-signer plan:
+artifact/evidence signing uses customer-controlled external tools or providers
+through a bounded adapter. No cratectl signing/custody service is in scope.
 TLS is mandatory except an explicit loopback development mode.

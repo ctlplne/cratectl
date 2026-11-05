@@ -4,12 +4,12 @@
 - Product: cratectl, a ctlplne studio product
 - Workspace: /Users/shankar/Desktop/ctlplne-cratectl
 - Created: 2026-10-28
-- Updated: 2026-11-02
+- Updated: 2026-11-04
 - GitHub: https://github.com/ctlplne/cratectl
 - Origin: https://github.com/ctlplne/cratectl.git
 - Branch: main
 - Visibility: Public by owner direction on 2026-11-02; CI publication is authorized for this repository.
-- Status: Execution contract for the active build. Resume the existing implementation when instructed.
+- Status: Execution contract; implementation is paused at the owner's request. This scope amendment does not resume the build.
 
 ## Owner-directed history reset (2026-10-28)
 
@@ -84,7 +84,7 @@ Create a machine-readable parity matrix before substantial implementation. Every
 
 An implementation label is not a verification result. Library code, mock responses, a generic file store, a screenshot, or an advertised route is not proof that a native package client can complete its workflow.
 
-Maintain the union of relevant documented capabilities as the committed backlog. Identify contradictory vendor documentation rather than guessing. An externally blocked benchmark comparison is separate from cratectl's implementation status. Lack of a paid competitor license can block a hands-on comparison; it does not block implementing a documented workflow with stock clients.
+Maintain the union of relevant artifact-repository and software supply-chain capabilities as the committed backlog, subject to the owner-directed product boundary in section 4.1. A comparator's credential-management suite does not become cratectl scope through parity accounting. Identify contradictory vendor documentation rather than guessing. An externally blocked benchmark comparison is separate from cratectl's implementation status. Lack of a paid competitor license can block a hands-on comparison; it does not block implementing a documented workflow with stock clients.
 
 Only the owner can remove committed scope. A capability with no equivalent must remain visibly open. An alternative design counts as parity only when its end-to-end operator outcome is demonstrated.
 
@@ -100,6 +100,31 @@ Keep trstctl and probectl independent:
 - Do not edit, start, stop, migrate, or clean up either sibling workspace or its services for this project.
 
 Build the repository and its control plane. Deploying arbitrary business applications, replacing a general CI runner, operating a full endpoint-security suite, and becoming a general-purpose data warehouse are separate products. The repository still needs build-system integrations, scanner execution, release delivery, and complete operational automation within its own scope.
+
+### 4.1 Owner-directed exclusion of trstctl (2026-11-04)
+
+The owner explicitly removed trstctl's feature suite from cratectl on 2026-11-04. This decision overrides earlier broad references to PKI, signing services, secret management or credential lifecycle wherever they could require implementing trstctl inside cratectl. The trstctl feature catalog is not a cratectl backlog or an implicit dependency. This exclusion is a scope decision, not a claim that the excluded capabilities were implemented or verified.
+
+The following product outcomes belong to trstctl or another customer-selected external provider and are out of cratectl scope:
+
+- General certificate-authority and PKI operations: public/private CA hierarchies, certificate issuance/enrollment servers (ACME, EST, SCEP, CMP or S/MIME), SSH CAs, OCSP/CRL publication, timestamp authorities, CA migration and fleet certificate deployment/renewal/revocation.
+- General secrets and credential management: a secrets vault or workspace, Vault/OpenBao-compatible APIs, transit-encryption or KMIP services, dynamic database/cloud credentials, secrets delivery/synchronization, and rotation or revocation of credentials in other systems.
+- A signing-management platform: built-in code-signing services, signer/key provisioning, HSM/KMS administration, key custody/escrow, certificate issuance for signing, timestamp issuance, and signing-credential lifecycle. Artifact signing uses customer-selected external signers or ordinary signing tools.
+- Workload and agent identity platforms: SPIFFE/SPIRE issuance, attestation/enrollment brokers, general token-exchange or delegation brokers, privileged/JIT access sessions, cloud entitlement management, and enterprise credential graphs/access reviews.
+- Estate-wide credential discovery, certificate or secret inventory, cryptographic posture/CBOM management, PQC migration campaigns, and credential-compromise response or fleet re-issuance. Artifact-local inspection and findings remain cratectl responsibilities.
+
+Retain these artifact-product outcomes within cratectl:
+
+| Area | cratectl responsibility | External trust/credential provider responsibility |
+| --- | --- | --- |
+| Artifact signatures and provenance | Ingest, retain, verify and bind signatures/attestations to exact digests; enforce publisher/trust policy; request external signatures and verify returned evidence | Signing identities, private-key custody, signing operations, certificate/timestamp issuance and their lifecycle |
+| Identity and access | Consume standard identity/workload credentials; provision cratectl accounts through SCIM; enforce repository permissions, local emergency access, MFA/passkeys and cratectl-issued service-token expiry/rotation/revocation | Identity-provider services, workload identity issuance, external credential lifecycle and enterprise privileged access |
+| Secrets and encryption | Detect secrets inside artifacts; quarantine content and notify; protect cratectl's own configuration and provider references; encrypt artifact storage using customer-selected key providers | General secret storage/sync/rotation, dynamic credentials, KMS/HSM services and administration |
+| Operations and evidence | Bootstrap and secure cratectl's own TLS listeners; configure supplied certificates/trust bundles; audit artifact operations; sign repository evidence through external tools/providers; independently verify exports offline | Fleet PKI/credential deployment, general signing/custody services and estate-wide trust operations |
+
+Each integration must support a documented standard or customer-controlled provider path without requiring trstctl, a vendor account or an entitlement. An unavailable external signer produces an explicit pending/failure result; it must never be replaced with a success-shaped signing receipt. Verification and already-authorized artifact serving follow the configured trust/freshness policy. Optional trstctl integration must use the same bounded, authorized adapter path as other providers.
+
+Shared platform needs such as tenant isolation, audit, backup, HA and local credential protection remain required for cratectl's own operation. They do not authorize rebuilding trstctl's corresponding product suite. All 450 existing artifact capability IDs and 41 format families remain tracked; ambiguous identity, signing, secret and key rows are constrained to the responsibilities above. Do not mark a row verified, delete its history or expand it back into trstctl scope because of this amendment. Future scope expansion requires an explicit owner instruction.
 
 ## 5 Required repository behavior
 
@@ -181,7 +206,7 @@ Block arbitrary package scripts and model deserialization from running in the re
 
 Treat a build and an application release as first-class objects. Record the exact source revision, build identity, dependencies, outputs, digests, environment metadata and associated attestations without collecting secrets.
 
-Support standard CI integrations and machine identities, build-info ingestion, dependency/build graphs, signed evidence, and verification using ordinary tools. Support Sigstore/Cosign/Notation and relevant in-toto/SLSA and package-signing workflows through a defined crypto/trust boundary. Private trust roots and offline verification must work.
+Support standard CI integrations and consume CI/workload identities for artifact access and evidence attribution, build-info ingestion, dependency/build graphs, signed evidence, and verification using ordinary tools. Support Sigstore/Cosign/Notation and relevant in-toto/SLSA and package-signing workflows through verification and customer-selected external signing adapters. Private trust roots and offline verification must work. Certificate/identity issuance, signing services and key custody remain outside cratectl under section 4.1.
 
 A release is an immutable manifest of exact artifacts and required evidence. Support stages, approvals, policy gates, separation of duties, expiring waivers, promotion, rollback to a prior permitted release, and continued monitoring after release. Re-check authorization and relevant policy at execution, not only at preview.
 
@@ -230,11 +255,11 @@ Use tenant-scoped storage namespaces and deduplication by default. A content has
 
 Enforce authorization on package metadata, search, manifests, layers, checksums, SBOMs, build graphs, tags, signatures, direct download URLs and every management operation. Unauthorized metadata can expose a private package even when the blob endpoint refuses access.
 
-Provide OIDC/SAML, LDAP where required for parity, SCIM, local emergency access, MFA/passkey options where applicable, scoped service identities and tokens, expiry, rotation, revocation and narrow repository/content permissions. Keep browser sessions and native package-client credentials distinct where their semantics differ.
+Integrate with OIDC/SAML and LDAP where required for artifact-product parity; accept SCIM provisioning for cratectl accounts. Provide local emergency access, MFA/passkey options where applicable, scoped cratectl service identities and tokens, their expiry/rotation/revocation and narrow repository/content permissions. Keep browser sessions and native package-client credentials distinct where their semantics differ. These controls secure cratectl itself; they do not implement an identity provider, workload issuer or external credential-management platform.
 
 Provider administration is a separate privilege domain. An administrator must not gain silent access to tenant artifact contents. Exceptional access needs explicit authority, a deadline and a separate audit trail.
 
-All cryptographic primitives, including streaming hashes and signature verification, route through internal/crypto. Signing and long-lived private-key use belong behind a narrow, isolated signer or external custody interface. A native signer runs in a separate process with a minimal audited transport, reached through authenticated local IPC or mTLS; it has no HTTP server, SQL driver or general plugin execution. Verify its dependency closure. Do not make trstctl mandatory. Keep sensitive key bytes in short-lived byte buffers, use available locking and dump protections, zero them when done, and never put keys or tokens into events, URLs, telemetry, reports, source control or screenshots.
+All cryptographic primitives, including streaming hashes and signature verification, route through internal/crypto. Artifact and evidence signing must use a bounded external-signer/tool interface with customer-controlled custody. cratectl does not build or operate its own signing service, CA, timestamp authority or general KMS/HSM platform. Authenticate the external signing request, bind its purpose and exact digest, bound concurrency/time/output, and verify the returned signature/evidence before recording completion. An external signer protects its own private-key process and custody boundary; cratectl retains provider references and public verification material. Local bootstrap TLS, cratectl's own service credentials and storage-encryption client operations remain in scope. Do not make trstctl mandatory. Keep sensitive key bytes needed for those local operations in short-lived byte buffers, use available locking and dump protections, zero them when done, and never put keys or tokens into events, URLs, telemetry, reports, source control or screenshots.
 
 Use TLS by default on network listeners and authenticated service/agent channels. Bootstrap must provide a documented trust path without making insecure TLS bypass the normal installation procedure. No default production password.
 
@@ -346,7 +371,7 @@ Write meaningful tests before or alongside implementation. Establish standard lo
 
 Use real PostgreSQL and real storage backends for state, RLS, publication, outbox, restore and replication integration tests. Use stock clients and real compatible services for protocol proof. Mocks support unit contracts, not lifecycle qualification.
 
-Add architecture checks for crypto imports, tenant-scoped data access, core/ee boundaries, mutation idempotency, bounded work lanes, secret handling and signer dependency closure where applicable. Correct false positives with narrow rule fixtures, not blanket ignores.
+Add architecture checks for crypto imports, tenant-scoped data access, core/ee boundaries, mutation idempotency, bounded work lanes, secret handling and external-signing adapter isolation where applicable. Check the section 4.1 product boundary: no built-in CA, vault, workload identity issuer or signing service. Correct false positives with narrow rule fixtures, not blanket ignores.
 
 Fuzz every parser and normalization boundary reached by untrusted input. Add property/differential tests for coordinates, metadata and protocol behavior. Retain a versioned conformance suite that independent users and plugin authors can run.
 
@@ -384,7 +409,7 @@ Run complete stock-client journeys and migration rehearsals as each format lands
 
 ### Stage 3 Complete security and release governance
 
-Finish intelligence distribution, scanners, dependency/build graphs, SBOMs, signatures, provenance, policy, quarantine, waivers, ongoing reassessment, evidence, application releases and staged distribution.
+Finish intelligence distribution, scanners, dependency/build graphs, SBOMs, artifact signature/provenance verification and external signing integrations, policy, quarantine, waivers, ongoing reassessment, evidence, application releases and staged distribution. Follow section 4.1; do not implement trstctl's credential-management or signing-service suite.
 
 Replay every serving path against policy changes and threat findings. Keep the full paid benchmark scope visible, including capabilities requiring external detectors or data.
 

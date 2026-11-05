@@ -1,0 +1,94 @@
+{
+  "date": "2026-11-04",
+  "authority": "Owner instruction: we need to explicitly remove trstctl feature suite out of cratectl. make those changes in the goal files.",
+  "source_parent": "b6c6ec0f473f7ad5b829efe41fde3eedd68b59ea",
+  "source_dirty": true,
+  "state": "owner-directed documentation scope amendment; no runtime qualification",
+  "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04",
+  "excluded_outcomes": [
+    "CA hierarchy, certificate enrollment/issuance services, SSH CA, OCSP/CRL and timestamp authorities; fleet PKI lifecycle and CA migration",
+    "General secrets vault/workspaces, Vault/OpenBao/transit/KMIP services, dynamic credentials, external secret sync/rotation/revocation",
+    "Built-in code-signing service, signing-credential lifecycle, key custody/escrow and KMS/HSM administration",
+    "SPIFFE/SPIRE or other workload/agent identity issuers, attestation/delegation brokers, privileged/JIT access and cloud entitlement management",
+    "Estate-wide credential discovery/inventory/graphs, crypto-posture/CBOM/PQC migration and credential-compromise fleet response"
+  ],
+  "retained_outcomes": [
+    "Artifact/repository lifecycle, scanning/quarantine, provenance/signature verification, publisher/trust policy, release governance and offline evidence verification",
+    "Customer-selected external signing/key-provider adapters with a documented path that does not require trstctl",
+    "cratectl identity-provider consumption/account provisioning, permissions, own service-token lifecycle, own TLS/bootstrap and local credential protection",
+    "Artifact secret detection and storage-encryption client operations; all other artifact-product scope"
+  ],
+  "affected_capability_ids": [
+    "AUTH.OIDC",
+    "AUTH.SAML",
+    "AUTH.LDAP",
+    "AUTH.SCIM",
+    "AUTH.EMERGENCY-ACCESS",
+    "AUTH.MFA",
+    "AUTH.PASSKEY",
+    "AUTH.SERVICE-TOKENS",
+    "AUTH.ROTATION",
+    "AUTH.REVOCATION",
+    "AUTH.CONTENT-PERMISSIONS",
+    "AUTH.PROVIDER-EXCEPTION",
+    "SEC.SIGNATURES",
+    "SEC.PROVENANCE",
+    "SEC.SECRETS",
+    "SEC.REVERSE-IMPACT",
+    "RELEASE.CI-IDENTITIES",
+    "RELEASE.COSIGN",
+    "RELEASE.NOTATION",
+    "RELEASE.INTOTO",
+    "RELEASE.SLSA",
+    "RELEASE.PRIVATE-TRUST",
+    "RELEASE.OFFLINE-VERIFY",
+    "RELEASE.EVIDENCE-EXPORT",
+    "DIST.SIGNED-BUNDLES",
+    "STATE.AUDIT-CHAIN",
+    "STORE.ENCRYPTION",
+    "STORE.CUSTOMER-KEYS"
+  ],
+  "validation": [
+    "All modified JSON parses and scope references resolve to the exact GOAL.md heading.",
+    "All450capability and450journey IDs, state/candidate/evidence fields and existing required assertions are preserved.",
+    "All28affected capability/journey pairs have identical product boundaries.",
+    "All41format families remain; formats.json is unchanged.",
+    "Remaining-work IDs, readiness, current primary, active native run and owner-paused execution are unchanged.",
+    "Obsolete native-signer requirement and vague current PKI/secret-lifecycle next actions are replaced."
+  ],
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "1d597a8754533b5d8d9d83ff57282cb56a88f9430285453180f04f6545a8f01e"
+    },
+    {
+      "path": "GOAL.md",
+      "sha256": "0f4eab5042d63248b9fb2df0df441b717073dc5a42b991327c072b3c8452e8b5"
+    },
+    {
+      "path": "STATUS.md",
+      "sha256": "296d2ae3ecdf3994dbc6970c97cefb2c9be2d63bc547db5402551356d3298f2a"
+    },
+    {
+      "path": "docs/adr/0001-foundations.md",
+      "sha256": "e839ce2bc6574f9d0e194fc5a61ba8a05ce2b910e19801213951aa28e8a67ba9"
+    },
+    {
+      "path": "docs/qualification/remaining.json",
+      "sha256": "510a11c0b3a70628bc696a9046c05752f4f5e72d47ef072ffd14da1c2c9601b0"
+    },
+    {
+      "path": "docs/qualification/parity.json",
+      "sha256": "284c25e9c5ef1a8abad71b5839b40090af040c5832a73c72c232fd062179cc71"
+    },
+    {
+      "path": "docs/qualification/journeys.json",
+      "sha256": "04bbae02ab8177627e8fbe23e0f1b5e62608fbea926670759bfb0da9185782c2"
+    }
+  ],
+  "limits": [
+    "Documentation/ledger change only. No implementation, service, credential, database, sibling workspace or remote mutation.",
+    "No capability state, observed runtime result or readiness verdict is upgraded.",
+    "Owner-requested build pause remains in effect. No new workflow dispatch or release/package publication."
+  ]
+}

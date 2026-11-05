@@ -22102,7 +22102,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Consume an external OIDC provider for cratectl sign-in and artifact access; no identity-provider or workload-issuer service.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "AUTH.SAML",
@@ -22149,7 +22151,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Consume an external SAML provider for cratectl sign-in; no identity-provider service or estate-wide identity lifecycle.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "AUTH.LDAP",
@@ -22196,7 +22200,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Authenticate/map repository users and groups through external LDAP where required; no directory or general credential-management service.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "AUTH.SCIM",
@@ -22243,7 +22249,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Receive provisioning/deprovisioning for cratectl accounts and groups; no enterprise identity-provider or lifecycle broker.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "AUTH.EMERGENCY-ACCESS",
@@ -22290,7 +22298,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Audited emergency access to cratectl administration only; no general privileged-access or fleet break-glass platform.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "AUTH.MFA",
@@ -22337,7 +22347,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Protect cratectl sign-in and sensitive repository actions; no general authentication/identity provider.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "AUTH.PASSKEY",
@@ -22384,11 +22396,13 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Passkeys for cratectl accounts/sign-in only; no estate-wide identity platform.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "AUTH.SERVICE-TOKENS",
-      "customer_job": "service tokens",
+      "customer_job": "scoped service tokens for cratectl operations",
       "protocol_operation": "service-tokens",
       "format": null,
       "source_ids": [
@@ -22437,12 +22451,14 @@
         "evidence/2026-10-29/installation-cb7efcadcd.json",
         "evidence/2026-10-29/init-clean-postgres-race.txt"
       ],
-      "limits": "Verified subset: dedicated empty native database initialization, durable private preparation and atomic first tenant/credentials/audit/receipt, actual initializer kill/resume, config-only runtime, verified local TLS and stock npm first publish/review/approval/install/restart/denial. Strict certificate regression retained. Operator supplies database/login and clients. Full console, production packaging/offline bundle, PKI/credential/identity lifecycle, native platforms and broad product qualification remain required.",
-      "next_action": "Complete the basic React/TypeScript/Vite console and first-use UI, production packaging and trust/credential lifecycle, plus native platform and full scope qualification."
+      "limits": "Verified subset: dedicated empty native database initialization, durable private preparation and atomic first tenant/credentials/audit/receipt, actual initializer kill/resume, config-only runtime, verified local TLS and stock npm first publish/review/approval/install/restart/denial. Strict certificate regression retained. Operator supplies database/login and clients. Full console, production packaging/offline bundle, cratectl TLS/trust configuration, own service-token lifecycle and identity-provider integration, native platforms and broad product qualification remain required.",
+      "next_action": "Complete the basic React/TypeScript/Vite console and first-use UI, production packaging and cratectl TLS/trust configuration and own service-token lifecycle, plus native platform and full scope qualification.",
+      "scope_boundary": "Issue/manage credentials authorizing cratectl operations only; protect local credential files and consume external secret references. No external credential issuer, vault or rotation platform.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "AUTH.ROTATION",
-      "customer_job": "rotation",
+      "customer_job": "rotate cratectl-issued service credentials",
       "protocol_operation": "rotation",
       "format": null,
       "source_ids": [
@@ -22485,11 +22501,13 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Rotate cratectl-issued service tokens and update credentials/configuration for cratectl own operation; no rotation of credentials in external systems.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "AUTH.REVOCATION",
-      "customer_job": "revocation",
+      "customer_job": "revoke cratectl access credentials and sessions",
       "protocol_operation": "revocation",
       "format": null,
       "source_ids": [
@@ -22532,7 +22550,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Revoke cratectl tokens/sessions/grants and enforce current external identity trust for repository access; no CA/SSH/fleet credential revocation service.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "AUTH.CONTENT-PERMISSIONS",
@@ -22583,7 +22603,9 @@
         "evidence/2026-10-28/npm-postgres-race.txt"
       ],
       "limits": "Repository grants and digest-alias decisions plus forced-RLS integration proof only. Full selectors, identity/federation, all concurrency/fault and production migration paths remain open.",
-      "next_action": "Qualify remaining native semantics and fault campaigns; no full-format result follows from this proof."
+      "next_action": "Qualify remaining native semantics and fault campaigns; no full-format result follows from this proof.",
+      "scope_boundary": "Repository/content authorization and external identity mapping only; no enterprise credential graph or access-management product.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "AUTH.PROVIDER-EXCEPTION",
@@ -22630,7 +22652,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Explicit audited exceptional access to cratectl tenant administration/content only; no general PAM/JIT sessions.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "SEC.SBOM-SPDX",
@@ -22818,7 +22842,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Ingest/verify artifact signatures and enforce exact-digest trust policy; request signing through external tools/providers. No signing service, CA, timestamp authority or key custody.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "SEC.PROVENANCE",
@@ -22865,7 +22891,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Verify and bind artifact/build attestations to exact bytes and externally established signer identity; no identity issuance or signing/custody service.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "SEC.VULNERABILITIES",
@@ -23057,7 +23085,7 @@
     },
     {
       "id": "SEC.SECRETS",
-      "customer_job": "secrets",
+      "customer_job": "detect exposed secrets in artifact contents",
       "protocol_operation": "secrets",
       "format": null,
       "source_ids": [
@@ -23100,7 +23128,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Detect leaked secrets inside artifacts, govern/quarantine affected bytes and notify. No general vault, secret sync, dynamic credentials or external credential rotation/remediation service.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "SEC.CODE-ANALYSIS",
@@ -23335,7 +23365,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Dependency/build/release impact of artifact findings only; no enterprise credential graph or fleet credential-remediation platform.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "SEC.OFFLINE-INTELLIGENCE",
@@ -23527,7 +23559,7 @@
     },
     {
       "id": "RELEASE.CI-IDENTITIES",
-      "customer_job": "ci identities",
+      "customer_job": "authorize externally established CI identities for artifact workflows",
       "protocol_operation": "ci-identities",
       "format": null,
       "source_ids": [
@@ -23570,7 +23602,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Consume and authorize external CI/workload credentials for artifact publication and provenance; no workload issuer, token-exchange broker or agent identity platform.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "RELEASE.DEPENDENCY-GRAPHS",
@@ -23664,7 +23698,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Stock Cosign artifact signature/attestation interoperability, storage and verification; signing uses customer-selected external tools/providers. No managed signing/key lifecycle.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "RELEASE.NOTATION",
@@ -23711,7 +23747,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Stock Notation artifact signature interoperability, storage and verification; signing uses customer-selected external tools/providers. No managed signing/key lifecycle.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "RELEASE.INTOTO",
@@ -23758,7 +23796,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Store/verify in-toto evidence for artifact/release policy; consume external signers and identities, without operating their lifecycle.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "RELEASE.SLSA",
@@ -23805,11 +23845,13 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Bind/verify SLSA provenance for artifact/release policy; no general CI runner, identity issuer or signing service.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "RELEASE.PRIVATE-TRUST",
-      "customer_job": "private trust",
+      "customer_job": "apply customer-supplied artifact verification trust",
       "protocol_operation": "private-trust",
       "format": null,
       "source_ids": [
@@ -23852,7 +23894,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Configure customer-supplied verification roots, allowed publishers and artifact trust policy; no CA hierarchy, certificate enrollment or fleet trust deployment.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "RELEASE.OFFLINE-VERIFY",
@@ -23899,7 +23943,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Independently verify artifact/release evidence offline with supplied public trust material; no offline CA or signing service.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "RELEASE.IMMUTABLE-MANIFEST",
@@ -24275,7 +24321,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Export artifact/release evidence and verify external signatures; obtain requested signatures through customer-selected external tools/providers, without owning signing keys.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "DIST.SIGNED-BUNDLES",
@@ -24322,7 +24370,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Distribute exact artifact manifests and verification material with externally produced signatures; no signing/custody or credential-distribution platform.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "DIST.RESUMABLE",
@@ -25224,7 +25274,9 @@
         "evidence/2026-10-28/worker-clean-postgres-race.txt"
       ],
       "limits": "Dedicated tenant-purpose workers execute event projections and exact-byte storage-integrity checks with admission/running budgets, separate lane slots, local round robin, fenced renewable leases, durable retry/cancellation and immutable attempt observations. Real PostgreSQL and two-tenant actual-process API/CLI proof covers crashes, corruption/repair, credential rollover, policy independence, out-of-order activity and source capacity recovery. Full multi-host scheduling, scanners/external adapters, S3, orphan/retrieval/upload reapers, retention, restore, production and full security remain required; storage integrity does not approve content.",
-      "next_action": "Complete mixed-load/multi-host fairness, scanner/external effect handlers, orphan/retrieval/upload reconciliation, S3, retention/restore and full qualification."
+      "next_action": "Complete mixed-load/multi-host fairness, scanner/external effect handlers, orphan/retrieval/upload reconciliation, S3, retention/restore and full qualification.",
+      "scope_boundary": "Tamper-evident cratectl artifact/administrative events and offline verification; signing through external providers, not an estate-wide trust or signing service.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "STORE.FILESYSTEM",
@@ -25466,11 +25518,13 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Encrypt cratectl artifact storage and protect its local configuration using supported provider clients; no transit-encryption/KMIP service or general secrets vault.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "STORE.CUSTOMER-KEYS",
-      "customer_job": "customer keys",
+      "customer_job": "use customer-managed keys for artifact storage encryption",
       "protocol_operation": "customer-keys",
       "format": null,
       "source_ids": [
@@ -25513,7 +25567,9 @@
       "candidate": null,
       "evidence": [],
       "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "next_action": "Specify and implement the owner-required journey, then retain observed evidence.",
+      "scope_boundary": "Consume customer-managed storage-encryption keys through external KMS/HSM/provider interfaces; no KMS/HSM administration, general key custody or signing platform.",
+      "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04"
     },
     {
       "id": "STORE.VERSIONING",
@@ -29191,5 +29247,12 @@
   "go_module_native_checkpoint": "evidence/2026-11-05/go-module-4a131f7-native-checkpoint.json",
   "go_module_durable_proxy_caller_development": "evidence/2026-11-05/go-durable-proxy-caller-development.json",
   "go_module_metadata_preparation_development": "evidence/2026-11-05/go-metadata-preparation-development.json",
-  "go_module_latest_current_selection_development": "evidence/2026-11-05/go-latest-current-selection-development.json"
+  "go_module_latest_current_selection_development": "evidence/2026-11-05/go-latest-current-selection-development.json",
+  "product_scope_boundary": {
+    "date": "2026-11-04",
+    "authority": "Explicit owner instruction to remove the trstctl feature suite from cratectl goal files.",
+    "contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04",
+    "record": "docs/qualification/remaining.json#product_scope",
+    "verification_effect": "Scope only; existing row states/candidates/evidence remain unchanged."
+  }
 }

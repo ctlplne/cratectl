@@ -1,5 +1,15 @@
 # cratectl execution status
 
+Owner amended the goal on 2026-11-04 to explicitly exclude trstctl's feature
+suite. `GOAL.md` section 4.1 governs: no CA/PKI platform, secrets vault or
+external credential lifecycle, signing/custody service, workload/agent identity
+issuer, privileged access or estate-wide credential discovery/crypto migration.
+Artifact signature/provenance verification, external signing/provider adapters,
+repository policy and cratectl's own access credentials/TLS remain required.
+Capability and journey boundaries are recorded without changing verification
+states or historical evidence. This documentation amendment does not resume
+implementation; the owner's pause below remains in effect.
+
 Execution is paused at the owner's explicit request after commit and push.
 The full goal is incomplete. All 450 capabilities / 41 families and every later
 stage remain committed. Broad readiness, full security and packaging remain

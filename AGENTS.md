@@ -2,6 +2,7 @@
 
 Read `GOAL.md`, `STATUS.md`, and `docs/qualification/remaining.json` before work.
 The entire goal remains committed scope. Only the owner can remove it.
+The owner's 2026-11-04 exclusion of trstctl's feature suite is authoritative in `GOAL.md` section 4.1. Do not implement a CA, secrets vault, external credential lifecycle, workload identity issuer or signing service in cratectl. Retain artifact verification/governance, external signing/provider adapters and cratectl's own access/TLS controls.
 
 - Before every commit, verify both author and committer are `imfeelingtheagi <288773099+imfeelingtheagi@users.noreply.github.com>`. Repository hooks enforce this identity.
 - Work and commit on `main`; no push, publication, remote changes, or customer changes without explicit authority.
