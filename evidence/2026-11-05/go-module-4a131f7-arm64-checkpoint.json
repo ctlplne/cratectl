@@ -1,0 +1,165 @@
+{
+  "candidate": "4a131f7236bee3e7d4aee27a6deb4dc206d0fa31",
+  "observed_at": "2026-11-05T02:30:29.528511+00:00",
+  "state": "verified named hosted-group-v2 and thirteen PostgreSQL integration functions normally/race; public proxy disabled",
+  "run_id": 41953811076,
+  "job_id": 127003774305,
+  "url": "https://github.com/ctlplne/cratectl/actions/runs/41953811076/job/127003774305",
+  "steps": [
+    {
+      "name": "Set up job",
+      "conclusion": "success"
+    },
+    {
+      "name": "Initialize containers",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/checkout@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-go@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-python@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Prepare owned PostgreSQL and native binaries",
+      "conclusion": "success"
+    },
+    {
+      "name": "Real PostgreSQL Go module regressions",
+      "conclusion": "success"
+    },
+    {
+      "name": "Real PostgreSQL Go module regressions with race detector",
+      "conclusion": "success"
+    },
+    {
+      "name": "Trusted TLS stock Go transitive downloads and policy recovery",
+      "conclusion": "success"
+    },
+    {
+      "name": "Encrypt bounded Go failure observations for owner diagnosis",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Run actions/upload-artifact@v7",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Prepare bounded native evidence summary",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/upload-artifact@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/setup-python@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/setup-go@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/checkout@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Stop containers",
+      "conclusion": "success"
+    },
+    {
+      "name": "Complete job",
+      "conclusion": "success"
+    }
+  ],
+  "summary": {
+    "path": "evidence/2026-11-05/go-module-4a131f7-arm64-summary.json",
+    "sha256": "72a28fe8cfba18f0ce48d0c7233aabdf7e48c9334f776cef3d938b1e31dc74ec",
+    "github_artifact_id": 13382925695,
+    "github_artifact_digest": "sha256:98fd4db0f1de2dec30b57fcbecb46e06458d6ae33360d930b99bedb8a5a47e3a"
+  },
+  "private_success_log": {
+    "path": ".private/ci-diagnostics/go-4a131f7-success/4a131f7-arm64.txt",
+    "bytes": 117122,
+    "sha256": "5d14659ffe8c84c711e25789fe5d4dccd2cc85a9fcd0fcf02a5cd06a645765a5"
+  },
+  "scope": {
+    "native": "actual GitHub Linux arm64",
+    "go_version": "1.27.3",
+    "go_binary_sha256": "d487fddb6939f3e78f7293fcbdeae610ba8ceae966d3faa4b2094a5688559230",
+    "fixture_source_sha256": "7724be2ca5dff6806e5e9dca8b4d68a699dc09b36b3bba3379a08b2045ae3184",
+    "checks": 312,
+    "stages": 9,
+    "publisher_reference_wire_bindings": 24,
+    "cached_zip_mod_bindings": 16,
+    "postgresql_integration_functions_normal_race": 13,
+    "normal_race_package_success_records": 4
+  },
+  "source_defined_postgresql_functions": [
+    {
+      "function": "TestGoModuleAtomicPublicationReviewDiscoveryAndImmutableReplay",
+      "file": "internal/server/go_module_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleOutboxRollbackAndConcurrentImmutablePublication",
+      "file": "internal/server/go_module_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleCurrentGrantsRevocationAndTenantCollision",
+      "file": "internal/server/go_module_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleGroupsPreservePrecedenceReviewOwnersAndSourceGrants",
+      "file": "internal/server/go_module_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleOriginBundlePublicationUsesCurrentTransactionFences",
+      "file": "internal/server/go_module_proxy_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleServingRechecksEarlierSourcesBeforeHeaders",
+      "file": "internal/server/go_module_selection_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleCacheAdmissionRequiresCurrentWholeBundle",
+      "file": "internal/store/go_module_cache_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleCatalogPublicationUsesCommonLeaseSourceAndOutbox",
+      "file": "internal/store/go_module_catalog_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleDiscoveryUsesCurrentCatalogPolicyPrecedenceAndBudgets",
+      "file": "internal/store/go_module_discovery_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleRetrievalAtomicBundleCacheAndCurrentPolicy",
+      "file": "internal/store/go_module_retrieval_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleRetrievalFullOutboxRollsBackEveryReference",
+      "file": "internal/store/go_module_retrieval_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleRetrievalFencesLeaseSourceGrantAndTenant",
+      "file": "internal/store/go_module_retrieval_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleFinalSelectionRechecksGroupAuthorityAndExactAbsence",
+      "file": "internal/store/go_module_selection_integration_test.go"
+    }
+  ],
+  "limits": [
+    "The nonverbose Go command emits package success records, not individual function PASS records. Exact-source integration functions selected by ^TestGoModule contain no skips; missing PostgreSQL configuration is fatal.",
+    "Hosted/group-v2 named profile plus cache/catalog/discovery/current-serving regression scope only. The later dirty caller implementation is excluded. Public proxy/checksum authority/remote latest/conditional refresh/full format remain unfinished.",
+    "Independently regenerated sixteen deterministic mod/info hashes agree. ZIP hashes bind original publisher/reference/HTTP/cache within each run; dynamic timestamps preclude independent cross-run ZIP reconstruction.",
+    "All450 capabilities/41families/later stages retained. Broad readiness/security/packaging false; no primary/customer/sibling/schema/release changes."
+  ]
+}

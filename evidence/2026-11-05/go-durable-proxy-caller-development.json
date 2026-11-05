@@ -1,0 +1,117 @@
+{
+  "source_parent": "4a131f7236bee3e7d4aee27a6deb4dc206d0fa31",
+  "source_dirty": true,
+  "observed_at": "2026-11-05T02:33:56.075353+00:00",
+  "state": "internal durable Go proxy caller implemented; ARM stand-in/unit/race/lint and tagged compile/vet pass; native caller execution required",
+  "files": [
+    {
+      "path": "internal/server/go_module_proxy.go",
+      "sha256": "7044806254706937fd7258c18afb98584f610605af3955c03a775718c8960882"
+    },
+    {
+      "path": "internal/server/go_module_retrieval.go",
+      "sha256": "d9a9bd3036398dee65dd90798d41924a73811bb1e3d8defd78b52348f9f94f3c"
+    },
+    {
+      "path": "internal/server/go_module_retrieval_test.go",
+      "sha256": "50817e185d61a94ad576accdc0e3007c1c90f7ed6bbb1aacdad0ef376548c83a"
+    },
+    {
+      "path": "internal/server/go_module_retrieval_integration_test.go",
+      "sha256": "f3be2a2061a861b0febdf3957a336f7f8fb7bee229f3af47c095e8fe71fbc493"
+    },
+    {
+      "path": "internal/server/resolve.go",
+      "sha256": "3cbd6775b23a153afbc24fb36f8993d8395890419ee0389955d87d41376d54d3"
+    },
+    {
+      "path": "internal/store/go_module_selection.go",
+      "sha256": "76dd311c8592ab7a7cc8711977ef0446679f95a8af62303760accf17c285b405"
+    }
+  ],
+  "mechanism": [
+    "Every exact representation resolves through the canonical ZIP lease, under existing per-process/tenant transfer limits and renewable current-source lease. Validated original info/mod/ZIP bytes are staged before the common all-reference/integrity/journal/outbox transaction. Requested representation is then read through complete current cache/policy admission.",
+    "Only first info404/410 means exact-version absence; missing later siblings and malformed/incomplete/untrusted bytes are hard failures. Negative cache policy retains combined Cache-Control/Vary and ambiguous singleton refusals. No-cache404 permits only the current exact generation/request. Prior refs/validation witnesses prevent negative group substitution.",
+    "Only explicitly classified HTTP5xx or connection refused/reset/timeout failures permit existing stale-window admission. Authority, checksum, malformed bytes, authorization, throttling and cancellation do not. CompleteRetrieval persists classifications; failed publication attempts three-second fenced cleanup without granting stale use. Lost current authority may reject cleanup, leaving only bounded expiry.",
+    "Ordered groups retain earlier request-bound negative admissions through final current serving selection. New generations invalidate earlier fallback. Catalog names share the common retrieval path, original-byte binding and current request admission, without granting package approval. Public proxy remains disabled."
+  ],
+  "local_validation": [
+    "Two new unit functions/24cases pass against owned loopback stand-ins on ARM. Full make build, make test, make race and make lint pass. Six new real-PostgreSQL functions compile normally/race with tagged vet; no local PostgreSQL/JVM/SDK/native-registry campaigns.",
+    "First lint rejected an unnecessary crypto/x509 import in the classifier test under the existing crypto boundary. Removed that test dependency; opaque network errors exercise the hard-failure branch. Corrected full lint passes. No actual new TLS-failure qualification is claimed."
+  ],
+  "postgresql_caller_functions": [
+    {
+      "function": "TestGoModuleProxyCallerCoalescesRepresentationsUnderOneLease",
+      "scenarios": 1
+    },
+    {
+      "function": "TestGoModuleProxyCallerRecordsFailuresWithoutPartialPublication",
+      "scenarios": 12
+    },
+    {
+      "function": "TestGoModuleProxyCallerOnlyAdmitsExplicitTransientStale",
+      "scenarios": 5
+    },
+    {
+      "function": "TestGoModuleProxyGroupCarriesOnlyCurrentNegativeFallback",
+      "scenarios": 1
+    },
+    {
+      "function": "TestGoModuleProxyCallerRenewsAndCancelsOnSourceLoss",
+      "scenarios": 2
+    },
+    {
+      "function": "TestGoModuleProxyCallerCatalogKeepsAdvertisementSeparateFromApproval",
+      "scenarios": 4
+    }
+  ],
+  "current_required_postgresql_functions": 19,
+  "logs": [
+    {
+      "path": ".cache/go-caller-final-unit.log",
+      "sha256": "a37cb66f43b2964ef51e17888db903577a0ab45f6411a41d3fe5a3b6a093fa7a"
+    },
+    {
+      "path": ".cache/go-caller-final-race.log",
+      "sha256": "7d204352348caccd5659ed1a7406d92702aed7325d2858fa7d5527dd13a33a72"
+    },
+    {
+      "path": ".cache/go-caller-final-lint.log",
+      "sha256": "ca9e287a592b0f710424371c343cbc6a6b9e1f7c48199962d6aa1fd132087235"
+    },
+    {
+      "path": ".cache/go-caller-final-integration-compile.log",
+      "sha256": "47ddc68d255157aa2b985519f781f63e98c1fc0c070d859e4709612a7a0ef73d"
+    },
+    {
+      "path": ".cache/go-caller-final-integration-race-compile.log",
+      "sha256": "7a6f5ff4d79fa4d6a9ff3f2f660badf328d02c0325eaf104da0752eef73de8b7"
+    },
+    {
+      "path": ".cache/go-caller-final-integration-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/go-caller-lint-first-architecture-failure.log",
+      "sha256": "800c1078264ffef81af8719a197d5ec5ca71f6f9b1cf029b2c6163738754f1fb"
+    },
+    {
+      "path": ".cache/go-caller-build.log",
+      "sha256": "f931fa2bebbe14e3287261b4d0fd7955470258e951fc60413be562c02eeb6f12"
+    },
+    {
+      "path": ".cache/go-caller-all-test.log",
+      "sha256": "d53c76a7dbab522ef7b78633c5c0c17dffb13a2126372a7178fe8048f6223def"
+    },
+    {
+      "path": ".cache/go-caller-all-race.log",
+      "sha256": "9f61daa243be729c97e40c68666fe47a0230c34db19f22eec28acd5a93cbe63f"
+    }
+  ],
+  "qualified_prior_source": "evidence/2026-11-05/go-module-4a131f7-native-checkpoint.json",
+  "limits": [
+    "New caller PostgreSQL tests are compilation only until exact-source GitHub execution. Hosted/group312check profile remains unchanged and mandatory on both actual native architectures.",
+    "Public proxy, metadata preparation/remote latest/pseudo, independent checksum/offline authority, conditional refresh, stock-client proxy/group, warm caches, faults/lifecycle/migration/scale/platform and all later stages remain required.",
+    "All450capabilities/41families/every later GOAL stage retained. Broad readiness/fullsecurity/packaging remain false; primary/customer/sibling/schema/runtime grants/release unchanged."
+  ]
+}

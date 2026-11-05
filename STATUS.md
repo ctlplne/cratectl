@@ -4,17 +4,26 @@ The full goal is active. All 450 capabilities / 41 families and every later
 stage remain committed. Broad readiness, full security and packaging remain
 negative. Both commit identities remain exactly `imfeelingtheagi` on main.
 
-Newer exact `1c5e3a1` fails both native store steps, with race/client skipped and
-empty safe summaries retained. The cache guard rejected schema-valid source
-revision0; fixture SQL used unavailable `ends_with`, deletion faults used the
-correctly restricted runtime role, and a queue seed omitted its journal event.
-Focused repairs preserve schema/runtime grants/FKs. The final Go serving guard
-also reselects current ordered sources after disk verification, with canonical
-namespace and per-request negative rules. ARM unit/race/full lint and tagged
-compilation/vet pass; all13PGfunctions still need native replay. Two new guard
-functions cover25scenarios, and discovery now has16. Public proxy remains off.
-See `evidence/2026-11-05/go-module-1c5e3a1-cache-fixture-first-failure.json` and
-`evidence/2026-11-05/go-current-serving-selection-development.json`.
+Exact `4a131f7` now passes the named Go hosted/group-v2 profile on both
+actual GitHub Linux architectures:312checks/all9stages/24wire/16cache and all
+thirteen source-defined PostgreSQL integration functions normally and with race.
+Both clean native binaries, original fixture/tool identities and safe artifacts
+are accepted. This replays the source-revision0, PG16 suffix, owner-only fault
+and journal-bound queue repairs, plus current cache/catalog/discovery/final
+serving-selection regressions. Original1c failures remain retained. See
+`evidence/2026-11-05/go-module-4a131f7-native-checkpoint.json`.
+
+The next internal Go caller revision connects complete bundle/catalog fetchers
+to the common renewable lease, transfer slots and completion transaction. All
+three representations share the ZIP-root lease. Current-request negative and
+stale admissions survive ordered group selection and are rechecked before bytes.
+Hard failures cannot authorize stale or lower-source substitution; rolled-back
+publication attempts bounded fenced lease cleanup. Six new PostgreSQL functions
+cover25scenarios and twelve concurrent requests; current total19functions.
+ARM build/unit/race/lint and tagged compilation/vet pass; these new functions
+still require actual GitHub execution. Public proxy creation/reads remain off;
+remote latest/pseudo/checksum/conditional refresh/full Go remain open. See
+`evidence/2026-11-05/go-durable-proxy-caller-development.json`.
 
 Exact `0cff4b8` now passes all 21 jobs actually selected: main nine, JVM eight,
 OCI two and controlled upgrades two. All 15 accepted safe summaries bind exact
@@ -73,14 +82,14 @@ immutable bundle references and replay commit through the common store. Group
 reads and complete bounded discovery preserve first-source ownership, stronger
 whole-bundle review, escaped namespace pins and current underlying grants.
 Denial or partial-version damage cannot authorize lower-source substitution.
-Groups are read-only; native proxy retrieval remains unimplemented.
+Groups are read-only; public proxy retrieval remains disabled while the internal caller is qualified.
 
 Local unit/race/full lint, six contract/eighteen exporter/four helper/seven CMS
 tests and console reproduction pass. Four original PostgreSQL server functions
 pass normally and with race on both hosts at `802bb51`. Three additional atomic
 intake store functions and the network-to-transaction function pass normally
 and with race on both hosts at `a630875`. The current v2 workflow
-requires both actual Linux hosts, all thirteen database
+requires both actual Linux hosts, all nineteen database
 functions normally/with race, trusted TLS stock Go and all original hosted cases:
 nine stages,24publisher/reference/HTTP bindings and16exact cached ZIP/mod
 bindings. See `evidence/2026-11-04/go-module-groups-development.json`.
@@ -148,7 +157,7 @@ sibling cache receipts, integrity intents and ready event/outbox in the common
 current-authority/source/live-lease transaction. Unit/race/vet/full lint pass.
 Three new real-PG store functions now pass both hosts at `a630875`. The workflow
 now runs both server/store packages, including the new network transaction
-function, cache admission, source catalogs and discovery, for thirteen PG functions normally/with race. Proxy creation
+function, cache admission, source catalogs and discovery, for nineteen PG functions normally/with race. Proxy creation
 and reads remain rejected until network/checksum/cache/serving integration and
 full native proof are complete. See
 `evidence/2026-11-04/go-module-atomic-intake-development.json`.

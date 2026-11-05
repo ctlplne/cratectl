@@ -29,12 +29,15 @@ type resolvedArtifact struct {
 	cache          string
 	ociImage       string
 	ociRef         string
-	admissions     []store.OCIAdmission
+	admissions     []store.NativeAdmission
 }
 
 func (s *Server) resolve(ctx context.Context, i store.Identity, repo store.Repository, p string, force bool) (resolvedArtifact, error) {
 	if repo.Mode != "hosted" && !upstream.SafePath(p) {
 		return resolvedArtifact{}, upstream.ErrPath
+	}
+	if repo.Format == "go" && repo.Mode == "proxy" && !strings.HasPrefix(p, "go-catalog/") {
+		return s.resolveGoModuleProxy(ctx, i, repo, p, force)
 	}
 	switch repo.Mode {
 	case "hosted":
@@ -55,6 +58,7 @@ func (s *Server) resolve(ctx context.Context, i store.Identity, repo store.Repos
 		if owner != "" {
 			members = []string{owner}
 		}
+		var goAdmissions []store.NativeAdmission
 		for _, member := range members {
 			source, e := s.DB.Repository(ctx, i, member)
 			if e != nil {
@@ -64,6 +68,12 @@ func (s *Server) resolve(ctx context.Context, i store.Identity, repo store.Repos
 				return resolvedArtifact{}, store.ErrConflict
 			}
 			a, e := s.resolve(ctx, i, source, p, force)
+			if repo.Format == "go" {
+				goAdmissions = append(goAdmissions, a.admissions...)
+				if len(goAdmissions) > 64 {
+					return resolvedArtifact{}, store.ErrMetadataLimit
+				}
+			}
 			if errors.Is(e, store.ErrNotFound) {
 				continue
 			}
@@ -74,6 +84,11 @@ func (s *Server) resolve(ctx context.Context, i store.Identity, repo store.Repos
 				return a, store.ErrDenied
 			}
 			a.groups = append(a.groups, repo.Name)
+			if repo.Format == "go" {
+				// Earlier no-cache negatives authorize this request's fallback
+				// only while their exact generations remain current at serving.
+				a.admissions = goAdmissions
+			}
 			if a.groupRevisions == nil {
 				a.groupRevisions = map[string]int64{}
 			}
@@ -98,7 +113,7 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 			switch lease.State {
 			case "ready":
 				result.cache = "hit"
-				result.artifact, e = s.proxyArtifact(ctx, i, repo, p)
+				result.artifact, e = s.proxyArtifact(ctx, i, repo, p, result.admissions...)
 				if errors.Is(e, store.ErrSourceChanged) && sourceRetries < 1 {
 					sourceRetries++
 					force = true
@@ -106,14 +121,14 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 				}
 				return result, e
 			case "negative":
-				return result, store.ErrNotFound
+				return result, s.proxyAbsence(ctx, i, repo, p)
 			case "failed":
 				if lease.StalePermitted() {
-					if repo.Format == "oci" {
+					if repo.Format == "oci" || repo.Format == "go" {
 						result.admissions = []store.OCIAdmission{{Repository: repo.Name, Path: p, Generation: lease.Generation, Stale: true}}
 					}
 					result.cache = "stale"
-					result.artifact, e = s.proxyArtifact(ctx, i, repo, p)
+					result.artifact, e = s.proxyArtifact(ctx, i, repo, p, result.admissions...)
 					return result, e
 				}
 				return result, errUpstream
@@ -196,14 +211,14 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 		force = false
 		switch refreshed.State {
 		case "ready":
-			if repo.Format == "oci" {
+			if repo.Format == "oci" || repo.Format == "go" {
 				result.admissions = []store.OCIAdmission{{Repository: repo.Name, Path: p, Generation: refreshed.Generation}}
 			}
 			result.cache = "filled"
 			if refreshed.LastStatus == 304 {
 				result.cache = "revalidated"
 			}
-			result.artifact, e = s.proxyArtifact(ctx, i, repo, p)
+			result.artifact, e = s.proxyArtifact(ctx, i, repo, p, result.admissions...)
 			if errors.Is(e, store.ErrSourceChanged) && sourceRetries < 1 {
 				sourceRetries++
 				force = true
@@ -211,14 +226,17 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 			}
 			return result, e
 		case "negative":
-			return result, store.ErrNotFound
+			if repo.Format == "go" {
+				result.admissions = []store.NativeAdmission{{Repository: repo.Name, Path: p, Generation: refreshed.Generation}}
+			}
+			return result, s.proxyAbsence(ctx, i, repo, p, result.admissions...)
 		case "failed":
 			if refreshed.StalePermitted() {
-				if repo.Format == "oci" {
+				if repo.Format == "oci" || repo.Format == "go" {
 					result.admissions = []store.OCIAdmission{{Repository: repo.Name, Path: p, Generation: refreshed.Generation, Stale: true}}
 				}
 				result.cache = "stale"
-				result.artifact, e = s.proxyArtifact(ctx, i, repo, p)
+				result.artifact, e = s.proxyArtifact(ctx, i, repo, p, result.admissions...)
 				return result, e
 			}
 			if refreshed.LastError == "upstream_integrity_failure" {
@@ -230,7 +248,13 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 		}
 	}
 }
-func (s *Server) proxyArtifact(ctx context.Context, i store.Identity, repo store.Repository, p string) (store.Artifact, error) {
+func (s *Server) proxyArtifact(ctx context.Context, i store.Identity, repo store.Repository, p string, admissions ...store.NativeAdmission) (store.Artifact, error) {
+	if repo.Format == "go" {
+		if strings.HasPrefix(p, "go-catalog/") {
+			return s.DB.NativeCatalogArtifact(ctx, i, repo.Name, strings.TrimPrefix(p, "go-catalog/"), "go", store.GoModuleCatalogMedia)
+		}
+		return s.DB.GoModuleProxyArtifact(ctx, i, repo.Name, p, repo.SourceRevision, admissions...)
+	}
 	if repo.Format == "maven" && path.Base(p) == "maven-metadata.xml" {
 		return s.DB.MavenCatalogArtifact(ctx, i, repo.Name, p)
 	}
@@ -316,6 +340,9 @@ func (s *Server) fillProxy(parent context.Context, i store.Identity, repo store.
 	return e
 }
 func (s *Server) fillProxyOnce(parent context.Context, i store.Identity, repo store.Repository, lease store.Retrieval) error {
+	if repo.Format == "go" {
+		return s.fillGoModuleProxy(parent, i, repo, lease)
+	}
 	if repo.Format == "oci" {
 		return s.fillOCIProxy(parent, i, repo, lease)
 	}

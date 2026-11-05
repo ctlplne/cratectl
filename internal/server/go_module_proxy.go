@@ -19,7 +19,37 @@ import (
 )
 
 var errGoModuleOriginMissing = errors.New("configured Go origin has no such version")
+var errGoModuleOriginTransient = errors.New("temporary configured Go origin failure")
 var errGoModuleChecksumRequired = errors.New("Go origin checksum authority is not configured")
+
+type goModuleOriginStatus struct{ status, fresh int }
+
+func (e *goModuleOriginStatus) Error() string {
+	return "configured Go origin response was not a complete representation"
+}
+func (e *goModuleOriginStatus) Unwrap() error {
+	if e.status == 404 || e.status == 410 {
+		return errGoModuleOriginMissing
+	}
+	if e.status >= 500 {
+		return errGoModuleOriginTransient
+	}
+	return errUpstream
+}
+
+func goModuleCacheHeaders(header http.Header) http.Header {
+	h := header.Clone()
+	for _, name := range []string{"Cache-Control", "Vary"} {
+		h.Set(name, strings.Join(h.Values(name), ","))
+	}
+	for _, field := range strings.Split(h.Get("Vary"), ",") {
+		if strings.TrimSpace(field) == "*" {
+			h.Set("Vary", "*")
+			break
+		}
+	}
+	return h
+}
 
 // fetchGoModuleCatalog stages the original upstream version advertisement. It
 // does not approve listed packages, merge source precedence or enable discovery.
@@ -162,10 +192,16 @@ func (s *Server) fetchGoRepresentation(ctx context.Context, i store.Identity, re
 	}
 	defer response.Body.Close()
 	if response.StatusCode == http.StatusNotFound || response.StatusCode == http.StatusGone {
-		return blob.Object{}, nil, 0, 0, errGoModuleOriginMissing
+		negative := repo
+		negative.Settings.Cache.FreshSeconds = repo.Settings.Cache.NegativeSeconds
+		fresh, _, err := cachePolicy(goModuleCacheHeaders(response.Header), negative, store.Retrieval{}, 404)
+		if err != nil || len(response.Header.Values("Age")) > 1 || len(response.Header.Values("Expires")) > 1 {
+			fresh = 0
+		}
+		return blob.Object{}, nil, 0, 0, &goModuleOriginStatus{status: response.StatusCode, fresh: fresh}
 	}
 	if response.StatusCode != http.StatusOK {
-		return blob.Object{}, nil, 0, 0, errUpstream
+		return blob.Object{}, nil, 0, 0, &goModuleOriginStatus{status: response.StatusCode}
 	}
 	// Multiple singleton headers are ambiguous. Join list-valued directives so
 	// a second no-store/no-cache/Vary:* header cannot disappear behind Get.
@@ -177,18 +213,7 @@ func (s *Server) fetchGoRepresentation(ctx context.Context, i store.Identity, re
 	if encoding := response.Header.Get("Content-Encoding"); encoding != "" && encoding != "identity" || len(response.Header.Values("Content-Range")) != 0 || len(response.Header.Get("ETag")) > 1024 || len(response.Header.Get("Last-Modified")) > 128 {
 		return blob.Object{}, nil, 0, 0, errUpstream
 	}
-	headers := response.Header.Clone()
-	for _, name := range []string{"Cache-Control", "Vary"} {
-		headers.Set(name, strings.Join(headers.Values(name), ","))
-	}
-	// cachePolicy's shared Vary rule recognizes the single '*'. In a list,
-	// preserve the same refusal to reuse this response for another request.
-	for _, field := range strings.Split(headers.Get("Vary"), ",") {
-		if strings.TrimSpace(field) == "*" {
-			headers.Set("Vary", "*")
-			break
-		}
-	}
+	headers := goModuleCacheHeaders(response.Header)
 	fresh, stale, e := cachePolicy(headers, repo, store.Retrieval{}, http.StatusOK)
 	if e != nil {
 		return blob.Object{}, nil, 0, 0, e

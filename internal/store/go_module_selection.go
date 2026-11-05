@@ -69,6 +69,32 @@ func goModuleProxyAbsentInTx(ctx context.Context, tx pgx.Tx, r Repository, c gom
 	return true, nil
 }
 
+func (s *Store) GoModuleProxyAbsent(ctx context.Context, i Identity, repo, p string, revision int64, admissions ...NativeAdmission) (bool, error) {
+	request, e := gomodule.ParseRequest(p)
+	if e != nil || request.Operation != "zip" || revision < 0 || len(admissions) > 1 {
+		return false, ErrGoModuleUnvalidated
+	}
+	var absent bool
+	e = s.Tx(ctx, i, false, func(tx pgx.Tx) error {
+		r, e := repositoryInTx(ctx, tx, i, repo, "read")
+		if e != nil {
+			return e
+		}
+		if r.Format != "go" || r.Mode != "proxy" {
+			return ErrConflict
+		}
+		if r.SourceRevision != revision {
+			return ErrSourceChanged
+		}
+		absent, e = goModuleProxyAbsentInTx(ctx, tx, r, request.Coordinate, admissions)
+		return e
+	})
+	if e != nil {
+		return false, e
+	}
+	return absent, nil
+}
+
 // GoModuleSelectionAtRevision is the final serving guard, after disk readback.
 // It reselects current precedence rather than checking only the old source, so
 // a new higher-priority publication cannot be bypassed by an in-flight request.
