@@ -1,0 +1,117 @@
+{
+  "source_parent": "40276125405b7971ff1a18ca2a9237bb80b59215",
+  "source_dirty": true,
+  "observed_at": "2026-11-05T00:22:56.285294+00:00",
+  "state": "explicit latest-denial classification implemented locally; native registry replay unverified",
+  "files": [
+    {
+      "path": "internal/store/go_module.go",
+      "sha256": "5bd21adcd16035bf38bcd9f5cd39b8615fa9e8a30b5c8d6d08278f5405bf5801"
+    },
+    {
+      "path": "internal/server/go_module.go",
+      "sha256": "9beaf908558d917a3e286973c13579728945717162e54438d30a5054afe1b529"
+    },
+    {
+      "path": "internal/server/go_module_test.go",
+      "sha256": "eae8887cbd74106badf5b98b05a883fb31b939bf99acac42b7f3739e08b99bf3"
+    },
+    {
+      "path": "internal/server/go_module_integration_test.go",
+      "sha256": "fb26050ad0754d47c8c693532dfe9fe6004056cf190d8d4f676c11cc9f4e1ba9"
+    },
+    {
+      "path": "scripts/test_go_tls_proxy.py",
+      "sha256": "11f505499ebfbbfb37a2347b1244bcc4e80c1c9eff28f2ec7aa9a44a3b5ed60a"
+    }
+  ],
+  "discovery": "Source inspection: a known module with no policy-allowed versions returned the same latest404 as an absent module. Existing denied-latest fixture explicitly expected404. This change preserves known-coordinate state so that policy denial is explicit403, while a truly absent module retains404. No observed customer/native bypass is claimed.",
+  "mechanism": "GoModuleView retains a Known boolean separately from the allowed sorted versions in the same bounded repeatable-read tenant/source/grant/policy snapshot. The legacy list method wraps that view unchanged. Latest selects the same allowed release/prerelease/pseudo order; known empty allowed sets deny403 without returning version data. Original group merge/order/budgets and complete-bundle checks remain.",
+  "actual_stock_go_controls": {
+    "status": "passed; actual Go consumer against owned HTTPS/auth stand-in only",
+    "go": "go version go1.27.3 darwin/arm64",
+    "go_binary_sha256": "aa355b078a81158d418079a3f8c776719eb99cc6f527e39ffa3250c66566aafb",
+    "fixture_source_sha256": "7724be2ca5dff6806e5e9dca8b4d68a699dc09b36b3bba3379a08b2045ae3184",
+    "hostname_only_denied": true,
+    "exact_host_port_authorized": true,
+    "requests": {
+      "authorized": 6,
+      "unauthorized": 4
+    },
+    "cached_byte_bindings": 4,
+    "comma_proxy_fallback_cases": [
+      {
+        "primary_latest_status": 404,
+        "primary_list_status": 200,
+        "lower_proxy_requests": 0,
+        "expected_outcome_observed": true
+      },
+      {
+        "primary_latest_status": 404,
+        "primary_list_status": 404,
+        "lower_proxy_requests": 3,
+        "expected_outcome_observed": true
+      },
+      {
+        "primary_latest_status": 403,
+        "primary_list_status": 200,
+        "lower_proxy_requests": 0,
+        "expected_outcome_observed": true
+      }
+    ],
+    "limits": [
+      "No registry/PostgreSQL/publication/current-policy/restart/revocation proof; actual native GitHub jobs remain mandatory.",
+      "Generated CA/NETRC/command streams remain in one private owned temporary directory; no insecure TLS, URL credentials, VCS/direct/public package fallback or package execution.",
+      "Two owned same-authority proxy paths deliberately exercise comma fallback. The registry qualification client still uses one sole proxy; these controls do not establish real registry denial behavior."
+    ]
+  },
+  "control_interpretation": "Actual pinned Go1.27.3 on ARM does not contact a lower comma proxy for the original latest404/list200-empty shape (no matching versions). When both endpoints return404 it performs3lower metadata requests and succeeds; latest403 contacts0lower requests. Thus the original empty-list shape was not an observed bypass in this client. The first positive-control assumption was corrected and its failed log retained. The new403 makes the policy outcome explicit; the registry qualification client continues to use one sole proxy.",
+  "validation": [
+    "Affected store/server unit/race/vet and full lint replay pass. Seven PostgreSQL functions compile only, with stronger empty404/unreviewed403/denied403/no-version-body assertions added to the existing server function. No local database executes.",
+    "All original latest selection and repository/policy cases remain. The former denied404 expectation is tightened to explicit denial403 plus no version disclosure, rather than omitting the case. Native normal/race and complete9stage/24wire/16cache still required."
+  ],
+  "logs": [
+    {
+      "path": ".cache/go-latest-fallback-unit.log",
+      "sha256": "3caef2d71a4b48a40cdc3440b3159776d1139400d3ec8ee54fd918c33c90fe9a"
+    },
+    {
+      "path": ".cache/go-latest-fallback-race.log",
+      "sha256": "6bbbcd621d7a6f6155e2bea18a31ec7d288e28a146aa422e36f788956b997762"
+    },
+    {
+      "path": ".cache/go-latest-fallback-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/go-latest-fallback-final-integration-compile.log",
+      "sha256": "4d6c96337853941740de6f89032ba098edbc00366f5be8aaae00de3a74fb7920"
+    },
+    {
+      "path": ".cache/go-latest-fallback-stock-go-tls.log",
+      "sha256": "68a823ef39b86616e7e626c97db4fa1dd9964c02f7b8354fcd29e907eb709716"
+    },
+    {
+      "path": ".cache/go-latest-fallback-stock-go-tls-final.log",
+      "sha256": "f3e847214074d558645d3fe26b2faac56b20dfdf5a83960988e0870ad39ebf77"
+    },
+    {
+      "path": ".cache/go-latest-fallback-final-lint.log",
+      "sha256": "e4794a02a5cc1ceeac9b109c66f29d0bddfea020f179d95f65163af7bbfc1c6b"
+    },
+    {
+      "path": ".cache/go-latest-cleanup-diagnostic-replay.log",
+      "sha256": "5e597e89ac0403ff7f41708e535241e1791ba0ee550467c55e681257de6b46a2"
+    },
+    {
+      "path": ".cache/go-latest-fallback-lint-replay.log",
+      "sha256": "1ab8b0476d689e85de77df93711154bf0fda4db6bd292198128185042d55b151"
+    }
+  ],
+  "intermittent_local_limit": "First full lint failed at the pre-existing owned-process cleanup test with killpg SIGKILL EPERM. Five unchanged instrumented repetitions and the unchanged full lint replay pass; no EPERM recurred and no cause or repair is established. Helper/cleanup assertions were not changed. See earlier maven-warm-cache-development.json for a prior occurrence.",
+  "reference": "https://go.dev/ref/mod#goproxy-protocol",
+  "limits": [
+    "Owned TLS/stock-client controls establish client behavior, not current registry policy, database, external source or native x86 behavior. No native first failure/customer breach asserted for this classification.",
+    "Public proxy stays rejected. Full lifecycle/retirement/aliases/metadata/query/provider/fault/scale and every450capability/41family/laterstage remain required; readiness/fullsecurity/packaging false. No primary/customer/sibling/schema/release change."
+  ]
+}

@@ -4,6 +4,7 @@ package server
 import (
 	"bytes"
 	"ctlplne.dev/cratectl/internal/store"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -36,6 +37,23 @@ func TestGoLatestChoosesReleasePrereleaseThenChronologicalPseudoVersion(t *testi
 	} {
 		if got := latestGoVersion(tc.versions); got != tc.want {
 			t.Errorf("%v: %s", tc.versions, got)
+		}
+	}
+}
+
+func TestGoLatestKeepsPolicyHiddenModulesDistinctFromAbsence(t *testing.T) {
+	for _, tc := range []struct {
+		view store.GoModuleVersionView
+		want string
+		err  error
+	}{
+		{store.GoModuleVersionView{}, "", store.ErrNotFound},
+		{store.GoModuleVersionView{Known: true}, "", store.ErrDenied},
+		{store.GoModuleVersionView{Known: true, Versions: []string{"v1.0.0", "v1.1.0-beta"}}, "v1.0.0", nil},
+	} {
+		got, e := latestGoSelection(tc.view)
+		if got != tc.want || !errors.Is(e, tc.err) {
+			t.Fatal("latest selection authorized fallback for a known blocked module", got, e)
 		}
 	}
 }

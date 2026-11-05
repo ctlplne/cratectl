@@ -138,6 +138,24 @@ Hosted publication already rejected such dates. See
 `evidence/2026-11-04/go-upstream-representations-development.json` and
 `evidence/2026-11-04/go-pseudo-calendar-repair-development.json`.
 
+The laterfc39162database step fails on both hosts because the new fixture
+queries a nonexistent events.kind column. The event kind is inside payload
+JSON. All three new store functions hit that counter; race and stock client
+stages are skipped, with empty summaries retained. The fixture predicate now
+matches the existing schema, with normal/race compilation only. See
+`evidence/2026-11-05/go-module-fc39162-event-query-first-failure.json` and
+`evidence/2026-11-05/go-event-query-repair-development.json`.
+
+Latest discovery now distinguishes known-blocked modules (403/no version) from
+absence (404), retaining current view authority and original selection order.
+Unit/race/vet/full-lint replay and actual Go TLS controls pass. The probe also
+shows original404latest/200empty-list does not fallback inGo1.27;404for both
+endpoints does, while403stops it. No observed bypass is claimed. Seven PG
+functions compile only; native proof remains required. A pre-existing local
+cleanup EPERM failed the first lint attempt, then five unchanged probes and
+the full replay pass without establishing its cause. See
+`evidence/2026-11-05/go-latest-denial-development.json`.
+
 Upstream Go version-advertisement parsing now has canonical/count/byte/order
 and no-partial-result checks. An uncommitted empty-line allocation defect was
 reproduced and repaired before exposure; module unit/race/vet/shortfuzz and the

@@ -115,7 +115,7 @@ func (f goIntakeFixture) counts(t *testing.T) (references, integrity, ready int)
 		for _, query := range []struct {
 			sql string
 			n   *int
-		}{{`SELECT count(*) FROM cratectl.artifacts WHERE repository='owned'`, &references}, {`SELECT count(*) FROM cratectl.jobs WHERE queue='integrity'`, &integrity}, {`SELECT count(*) FROM cratectl.events WHERE kind='proxy.retrieval.ready'`, &ready}} {
+		}{{`SELECT count(*) FROM cratectl.artifacts WHERE repository='owned'`, &references}, {`SELECT count(*) FROM cratectl.jobs WHERE queue='integrity'`, &integrity}, {`SELECT count(*) FROM cratectl.events WHERE payload::jsonb->>'kind'='proxy.retrieval.ready'`, &ready}} {
 			if e := tx.QueryRow(context.Background(), query.sql).Scan(query.n); e != nil {
 				return e
 			}

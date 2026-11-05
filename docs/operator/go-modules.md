@@ -33,6 +33,12 @@ An optional `--idempotency-key` binds the receipt to the authenticated actor and
 exact repository/bundle; omitting it derives a stable actor-scoped coordinate
 key. Current write authority is checked before replaying a receipt.
 
+Latest discovery returns403when this module has retained versions but current
+review/policy leaves none readable. It keeps404for an absent module and never
+returns blocked version metadata. Continue to configure one explicit proxy.
+Go1.27also stops on the former empty-list response; broader client/fallback
+behavior and native registry replay remain unverified.
+
 The ZIP must contain paths beginning `MODULE@VERSION/`, using the original
 unescaped module name. Its root go.mod must declare that exact module. URLs use
 Go's uppercase convention: `example.org/Owned/app` becomes

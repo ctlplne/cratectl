@@ -1,0 +1,27 @@
+{
+  "source_parent": "40276125405b7971ff1a18ca2a9237bb80b59215",
+  "source_dirty": true,
+  "observed_at": "2026-11-05T00:22:56.285294+00:00",
+  "state": "fixture-only schema predicate repaired; native replay unverified",
+  "first_failure": "evidence/2026-11-05/go-module-fc39162-event-query-first-failure.json",
+  "file": {
+    "path": "internal/store/go_module_retrieval_integration_test.go",
+    "sha256": "7e0464c3a9707f601a48e2b35d4efd0a0f96f905c67355f6a8ea3b9bcac9e898"
+  },
+  "mechanism": "Read ready-event kind through payload::jsonb->>kind, matching schema.sql, appendEvent and existing integrity/hold/retention tests. Keep exact reference/integrity/ready counts and all original atomicity/current-policy/cache/immutable/rollback/lease/source/grant/tenant assertions. No schema or production transaction code changes for this repair.",
+  "validation": "Both normal and race-tagged integration packages compile with -run ^$: zero database functions execute locally. The same corrected seven functions must pass normally/race on both actual GitHub architectures.",
+  "logs": [
+    {
+      "path": ".cache/go-event-query-repair-integration-compile.log",
+      "sha256": "fcecfe99f1653f957d444af5a4ea36e235c0f243e1afcc22e9b1113a3e5bd1e8"
+    },
+    {
+      "path": ".cache/go-event-query-repair-race-compile.log",
+      "sha256": "50729486f75ccd9538cc89d71b5f0933e5611fd561517d5f4e81a01796355a52"
+    }
+  ],
+  "limits": [
+    "No native transaction or NETRC/client replay accepted. Empty failed summaries and both original SQLSTATE42703 logs retained.",
+    "All450capabilities/41families/laterstages retained; readiness/fullsecurity/packaging false. No primary/customer/sibling/release mutation."
+  ]
+}

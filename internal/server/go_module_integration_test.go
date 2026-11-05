@@ -77,6 +77,10 @@ func TestGoModuleAtomicPublicationReviewDiscoveryAndImmutableReplay(t *testing.T
 	c := gomodule.Coordinate{Module: "go.cratectl.invalid/Owned/app", Version: "v1.0.0"}
 	data, mod := goPublicationFixture(t, c, "first exact owned bytes")
 	endpoint := "/go/owned/" + c.Prefix()
+	latest := "/go/owned/go.cratectl.invalid/!owned/app/@latest"
+	if w := goHTTP(t, s, token, "GET", latest, nil); w.Code != 404 {
+		t.Fatal("empty module lost normal not-found semantics", w.Code)
+	}
 	published := goHTTP(t, s, token, "PUT", endpoint+".zip", data)
 	if published.Code != 201 {
 		t.Fatal(published.Code, published.Body.String())
@@ -117,6 +121,9 @@ func TestGoModuleAtomicPublicationReviewDiscoveryAndImmutableReplay(t *testing.T
 	if w := goHTTP(t, s, token, "GET", list, nil); w.Code != 200 || w.Body.Len() != 0 {
 		t.Fatal("unreviewed version discovered", w.Code, w.Body.String())
 	}
+	if w := goHTTP(t, s, token, "GET", latest, nil); w.Code != 403 || w.Header().Get("Content-Type") != "text/plain; charset=utf-8" {
+		t.Fatal("unreviewed latest permitted native source fallback", w.Code)
+	}
 	for _, a := range as {
 		approve(a, "allowed")
 	}
@@ -138,7 +145,6 @@ func TestGoModuleAtomicPublicationReviewDiscoveryAndImmutableReplay(t *testing.T
 	if w := goHTTP(t, s, token, "GET", list, nil); w.Code != 200 || w.Body.String() != "v1.0.0\n" {
 		t.Fatal("complete list", w.Code, w.Body.String())
 	}
-	latest := "/go/owned/go.cratectl.invalid/!owned/app/@latest"
 	if w := goHTTP(t, s, token, "GET", latest, nil); w.Code != 200 || !bytes.Equal(w.Body.Bytes(), info) {
 		t.Fatal("latest", w.Code)
 	}
@@ -162,13 +168,16 @@ func TestGoModuleAtomicPublicationReviewDiscoveryAndImmutableReplay(t *testing.T
 			approve(a, "denied")
 		}
 	}
+	if w := goHTTP(t, s, token, "GET", latest, nil); w.Code != 403 {
+		t.Fatal("denied latest permitted native source fallback", w.Code)
+	}
 	for kind := range expected {
 		if w := goHTTP(t, restarted, token, "GET", endpoint+"."+kind, nil); w.Code != 403 {
 			t.Fatal("denied sibling exposed", kind, w.Code)
 		}
 	}
-	if w := goHTTP(t, restarted, token, "GET", latest, nil); w.Code != 404 {
-		t.Fatal("denied latest discovered", w.Code)
+	if w := goHTTP(t, restarted, token, "GET", latest, nil); w.Code != 403 || strings.Contains(w.Body.String(), c.Version) {
+		t.Fatal("denied latest exposed a version or became fallback-eligible", w.Code)
 	}
 	// Simulate damage inside this disposable test database, after restoring policy.
 	// Incomplete versions must stop Go's comma-separated proxy fallback.

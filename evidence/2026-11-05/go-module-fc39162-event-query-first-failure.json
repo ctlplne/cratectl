@@ -1,0 +1,90 @@
+{
+  "candidate": "fc39162c9afe5fed7b944b7c90fd5c4f30b7aa00",
+  "observed_at": "2026-11-05T00:20:13.327300+00:00",
+  "run_id": 41936924127,
+  "url": "https://github.com/ctlplne/cratectl/actions/runs/41936924127",
+  "status": "failed; new fixture event query references nonexistent column on both native hosts",
+  "jobs": [
+    {
+      "architecture": "amd64",
+      "job_id": 126947602785,
+      "job_url": "https://github.com/ctlplne/cratectl/actions/runs/41936924127/job/126947602785",
+      "steps": {
+        "Set up job": "success",
+        "Initialize containers": "success",
+        "Run actions/checkout@v7": "success",
+        "Run actions/setup-go@v7": "success",
+        "Run actions/setup-python@v7": "success",
+        "Prepare owned PostgreSQL and native binaries": "success",
+        "Real PostgreSQL Go module regressions": "failure",
+        "Real PostgreSQL Go module regressions with race detector": "skipped",
+        "Trusted TLS stock Go transitive downloads and policy recovery": "skipped",
+        "Encrypt bounded Go failure observations for owner diagnosis": "success",
+        "Run actions/upload-artifact@v7": "success",
+        "Prepare bounded native evidence summary": "failure",
+        "Post Run actions/setup-python@v7": "skipped",
+        "Post Run actions/setup-go@v7": "skipped",
+        "Post Run actions/checkout@v7": "success",
+        "Stop containers": "success",
+        "Complete job": "success"
+      },
+      "failed_store_functions": [
+        "TestGoModuleRetrievalAtomicBundleCacheAndCurrentPolicy",
+        "TestGoModuleRetrievalFullOutboxRollsBackEveryReference",
+        "TestGoModuleRetrievalFencesLeaseSourceGrantAndTenant"
+      ],
+      "fixed_marker": "ERROR: column \"kind\" does not exist (SQLSTATE 42703)",
+      "private_job_log": ".private/ci-diagnostics/go-atomic-first-failures/fc39162-amd64.txt",
+      "private_job_log_sha256": "ad4dff6b191160d02ea4e5ff83d2950990f878ffbad3938bac793d49c199c945",
+      "private_job_log_bytes": 59355,
+      "summary": "evidence/2026-11-05/go-module-fc39162-amd64-empty-summary.json",
+      "summary_sha256": "a96f4efd7037286c134915768cff839d4c0a7593dcbc1dd67746f19dfb1ed29d",
+      "github_artifact_id": 13376325911,
+      "github_artifact_digest": "sha256:95d841d6f60dbf9ca514e12a318e7be2ba44251571c5b17b2d0a71efefdcc86c"
+    },
+    {
+      "architecture": "arm64",
+      "job_id": 126947602506,
+      "job_url": "https://github.com/ctlplne/cratectl/actions/runs/41936924127/job/126947602506",
+      "steps": {
+        "Set up job": "success",
+        "Initialize containers": "success",
+        "Run actions/checkout@v7": "success",
+        "Run actions/setup-go@v7": "success",
+        "Run actions/setup-python@v7": "success",
+        "Prepare owned PostgreSQL and native binaries": "success",
+        "Real PostgreSQL Go module regressions": "failure",
+        "Real PostgreSQL Go module regressions with race detector": "skipped",
+        "Trusted TLS stock Go transitive downloads and policy recovery": "skipped",
+        "Encrypt bounded Go failure observations for owner diagnosis": "success",
+        "Run actions/upload-artifact@v7": "success",
+        "Prepare bounded native evidence summary": "failure",
+        "Post Run actions/setup-python@v7": "skipped",
+        "Post Run actions/setup-go@v7": "skipped",
+        "Post Run actions/checkout@v7": "success",
+        "Stop containers": "success",
+        "Complete job": "success"
+      },
+      "failed_store_functions": [
+        "TestGoModuleRetrievalAtomicBundleCacheAndCurrentPolicy",
+        "TestGoModuleRetrievalFullOutboxRollsBackEveryReference",
+        "TestGoModuleRetrievalFencesLeaseSourceGrantAndTenant"
+      ],
+      "fixed_marker": "ERROR: column \"kind\" does not exist (SQLSTATE 42703)",
+      "private_job_log": ".private/ci-diagnostics/go-atomic-first-failures/fc39162-arm64.txt",
+      "private_job_log_sha256": "3e0563638570e4c373fa641d679006ee3df693a308e5d4df6033f159bb867b2d",
+      "private_job_log_bytes": 59502,
+      "summary": "evidence/2026-11-05/go-module-fc39162-arm64-empty-summary.json",
+      "summary_sha256": "39c7dc129d47e89de59830607641e3a1da8007039b7f47cf03bdff62adff205e",
+      "github_artifact_id": 13376770254,
+      "github_artifact_digest": "sha256:e527d85b3a23ac593377046c17b999d12a4b10c861c712403fa9293868daaae3"
+    }
+  ],
+  "cause": "The events table stores kind inside its text JSON payload. The new shared fixture counter incorrectly queries a kind column. Both architectures fail all3new store functions/fence subcases at that counter with SQLSTATE42703. This is a fixture query error; the compiled program did not validate SQL against a database locally.",
+  "repair_required": "Use the existing payload::jsonb->>kind predicate while preserving exact event/reference/integrity counts and all original atomicity, current-policy, lease/source/grant/tenant and rollback assertions. No production schema or query change is required.",
+  "limits": [
+    "Normal database step fails; race and complete stock-Go stages are skipped. Safe summaries correctly contain0generated registry reports. No7function or native NETRC/client journey pass is accepted.",
+    "Source-supported preceding operations reaching the counter do not substitute for completed assertions or native replay. Original8024server normal/race/CLI proof remains separate.",
+    "All450capabilities/41families/laterstages retained; readiness/fullsecurity/packaging false. No primary/customer/sibling/release change."
+  ]
+}

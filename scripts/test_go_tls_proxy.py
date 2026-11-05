@@ -30,11 +30,21 @@ try:
    for kind in ['zip','mod','info']:files['/go/owned/'+ns['escaped'](f['module'])+'/@v/'+f['version']+'.'+kind]=f[kind]
   expected='Basic '+base64.b64encode(('token:'+ns['tokens']['reader']).encode()).decode()
   requests={'authorized':0,'unauthorized':0}
+  gate_status=404;gate_list_status=200;fallback_requests=0
   class Handler(http.server.BaseHTTPRequestHandler):
    def do_GET(self):
     if self.headers.get('Authorization')!=expected:
      requests['unauthorized']+=1;self.send_response(401);self.send_header('WWW-Authenticate','Basic realm="owned-go-stand-in"');self.send_header('Content-Length','0');self.end_headers();return
-    requests['authorized']+=1;url=urllib.parse.urlsplit(self.path);data=files.get(urllib.parse.unquote(url.path))if not url.query else None
+    global fallback_requests
+    requests['authorized']+=1;url=urllib.parse.urlsplit(self.path);path=urllib.parse.unquote(url.path)
+    if path.startswith('/gate/'):
+     status=gate_list_status if path.endswith('/@v/list')else gate_status;body=b''if status==200 else b'Owned policy/source gate\n'
+     self.send_response(status);self.send_header('Content-Type','text/plain; charset=utf-8');self.send_header('Content-Length',str(len(body)));self.end_headers();self.wfile.write(body);return
+    if path.startswith('/fallback/'):
+     fallback_requests+=1;path='/go/owned/'+path.removeprefix('/fallback/')
+    data=files.get(path)if not url.query else None
+    if path.endswith('/@latest'):data=ns['fixtures']['application_1']['info']
+    if path.endswith('/@v/list'):data=b'v1.0.0\n'
     self.send_response(200 if data is not None else 404);self.send_header('Content-Length',str(len(data or b'')));self.end_headers()
     if data is not None:self.wfile.write(data)
    def log_message(self,*args):pass
@@ -53,6 +63,21 @@ try:
    ns['consume']('application_1')
    assert requests['authorized']>=6,'Pinned Go did not request all six transitive representations'
    assert set(ns['contract']['cached_sha256'])=={'application_1_zip','application_1_mod','dependency_zip','dependency_mod'}
+   hosted_requests=dict(requests)
+   fallback_cases=[]
+   for status,list_status,success in [(404,200,False),(404,404,True),(403,200,False)]:
+    gate_status=status;gate_list_status=list_status;before=fallback_requests;consumer=root/('fallback-'+str(status)+'-'+str(list_status));consumer.mkdir()
+    (consumer/'go.mod').write_text('module go.cratectl.invalid/fallback-consumer\n\ngo 1.26.0\n')
+    netrc=private(consumer.name+'/netrc',('machine localhost:38443 login token password '+ns['tokens']['reader']+'\n').encode())
+    env=dict(ns['public_env'],GOENV='off',GOWORK='off',GOFLAGS='',GOTOOLCHAIN='local',GOTELEMETRY='off',GOINSECURE='',GOPROXY='https://localhost:38443/gate/,https://localhost:38443/fallback/',GOPRIVATE='go.cratectl.invalid',GONOPROXY='none',GONOSUMDB='go.cratectl.invalid',GOSUMDB='sum.golang.org',GOVCS='*:off',GOAUTH='netrc',NETRC=str(netrc),SSL_CERT_FILE=str(cert),GOMODCACHE=str(consumer/'module-cache'),GOPATH=str(consumer/'gopath'),GOCACHE=str(consumer/'build-cache'))
+    output=ns['command']([go,'list','-m','-json',ns['MODULE']+'@latest'],runenv=env,cwd=consumer,ok=success)
+    contacts=fallback_requests-before
+    if success:
+     observed_module=json.loads(output);assert contacts>0 and observed_module['Path']==ns['MODULE']and observed_module['Version']=='v1.0.0','404 positive control did not exercise native fallback'
+    else:
+     assert contacts==0,'Terminal policy/empty-list response contacted the lower proxy'
+     if status==404:assert 'no matching versions'in output,'Original empty-list behavior changed'
+    fallback_cases.append({'primary_latest_status':status,'primary_list_status':list_status,'lower_proxy_requests':contacts,'expected_outcome_observed':True})
   except BaseException:
    observations=[]
    for command in ns['commands']:
@@ -62,6 +87,6 @@ try:
    raise
   finally:
    server.shutdown();server.server_close();thread.join(timeout=5)
-  print(json.dumps({'status':'passed; actual Go consumer against owned HTTPS/auth stand-in only','go':observed,'go_binary_sha256':hashlib.sha256(go.read_bytes()).hexdigest(),'fixture_source_sha256':hashlib.sha256((ROOT/'scripts/conformance_go.py').read_bytes()).hexdigest(),'hostname_only_denied':True,'exact_host_port_authorized':True,'requests':requests,'cached_byte_bindings':len(ns['contract']['cached_sha256']),'limits':['No registry/PostgreSQL/publication/policy/restart/revocation proof; actual native GitHub jobs remain mandatory.','Generated CA/NETRC/command streams remain in one private owned temporary directory; no insecure TLS, URL credentials, VCS/direct/public package fallback or package execution.']},indent=2))
+  print(json.dumps({'status':'passed; actual Go consumer against owned HTTPS/auth stand-in only','go':observed,'go_binary_sha256':hashlib.sha256(go.read_bytes()).hexdigest(),'fixture_source_sha256':hashlib.sha256((ROOT/'scripts/conformance_go.py').read_bytes()).hexdigest(),'hostname_only_denied':True,'exact_host_port_authorized':True,'requests':hosted_requests,'cached_byte_bindings':len(ns['contract']['cached_sha256']),'comma_proxy_fallback_cases':fallback_cases,'limits':['No registry/PostgreSQL/publication/current-policy/restart/revocation proof; actual native GitHub jobs remain mandatory.','Generated CA/NETRC/command streams remain in one private owned temporary directory; no insecure TLS, URL credentials, VCS/direct/public package fallback or package execution.','Two owned same-authority proxy paths deliberately exercise comma fallback. The registry qualification client still uses one sole proxy; these controls do not establish real registry denial behavior.']},indent=2))
 finally:
  os.umask(mask)

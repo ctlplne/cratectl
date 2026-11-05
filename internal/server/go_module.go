@@ -45,6 +45,16 @@ func latestGoVersion(versions []string) string {
 	return ""
 }
 
+func latestGoSelection(view store.GoModuleVersionView) (string, error) {
+	if version := latestGoVersion(view.Versions); version != "" {
+		return version, nil
+	}
+	if view.Known {
+		return "", store.ErrDenied
+	}
+	return "", store.ErrNotFound
+}
+
 func (s *Server) goModule(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, p string) {
 	request, e := gomodule.ParseRequest(p)
 	if e != nil || r.URL.RawQuery != "" {
@@ -65,21 +75,22 @@ func (s *Server) goModule(w http.ResponseWriter, r *http.Request, i store.Identi
 		return
 	}
 	if request.Operation == "list" || request.Operation == "latest" {
-		versions, e := s.DB.GoModuleVersions(r.Context(), i, repo.Name, request.Module, s.NativeVersionLimit, s.NativeMetadataBytes)
+		view, e := s.DB.GoModuleView(r.Context(), i, repo.Name, request.Module, s.NativeVersionLimit, s.NativeMetadataBytes)
 		if e != nil {
 			respondErr(w, e)
 			return
 		}
 		if request.Operation == "latest" {
-			version := latestGoVersion(versions)
-			if version == "" {
-				respondErr(w, store.ErrNotFound)
+			version, e := latestGoSelection(view)
+			if e != nil {
+				respondErr(w, e)
 				return
 			}
 			c := gomodule.Coordinate{Module: request.Module, Version: version}
 			s.serveArtifact(w, r, i, repo.Name, c.Prefix()+".info")
 			return
 		}
+		versions := view.Versions
 		var b strings.Builder
 		for _, v := range versions {
 			if !module.IsPseudoVersion(v) {

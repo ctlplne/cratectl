@@ -167,15 +167,27 @@ func mergeGoModuleVersions(selected, candidates map[string]bool) {
 	}
 }
 
-// GoModuleVersions takes one repeatable-read authority/policy snapshot across
+type GoModuleVersionView struct {
+	Versions []string
+	Known    bool
+}
+
+func (s *Store) GoModuleVersions(ctx context.Context, i Identity, repo, mod string, limit int, budget int64) ([]string, error) {
+	view, e := s.GoModuleView(ctx, i, repo, mod, limit, budget)
+	return view.Versions, e
+}
+
+// GoModuleView takes one repeatable-read authority/policy snapshot across
 // all consulted sources. SQL rows and metadata share one complete-view budget;
 // blocked first-source coordinates are retained during ordered group merging.
-func (s *Store) GoModuleVersions(ctx context.Context, i Identity, repo, mod string, limit int, budget int64) ([]string, error) {
+// Known is kept independently of allowed versions: a policy-hidden module must
+// not become a not-found result authorizing a native client's source fallback.
+func (s *Store) GoModuleView(ctx context.Context, i Identity, repo, mod string, limit int, budget int64) (GoModuleVersionView, error) {
 	escaped, e := module.EscapePath(mod)
 	if e != nil || len(mod) > gomodule.MaxModulePath || limit < 1 || limit > 10000 || budget < 1 || budget > 64<<20 {
-		return nil, ErrMetadataLimit
+		return GoModuleVersionView{}, ErrMetadataLimit
 	}
-	out := []string{}
+	out := GoModuleVersionView{Versions: []string{}}
 	e = s.Tx(ctx, i, false, func(tx pgx.Tx) error {
 		group, members, e := nativeRepositories(ctx, tx, i, repo, escaped, "go")
 		if e != nil {
@@ -225,16 +237,17 @@ func (s *Store) GoModuleVersions(ctx context.Context, i Identity, repo, mod stri
 			mergeGoModuleVersions(selected, candidates)
 		}
 		for version, allowed := range selected {
+			out.Known = true
 			if allowed {
-				out = append(out, version)
+				out.Versions = append(out.Versions, version)
 			}
 		}
 		return nil
 	})
 	if e != nil {
-		return nil, e
+		return GoModuleVersionView{}, e
 	}
-	semver.Sort(out)
+	semver.Sort(out.Versions)
 	return out, nil
 }
 
