@@ -1,8 +1,17 @@
 # cratectl execution status
 
-The full goal is active. All 450 capabilities / 41 families and every later
+Execution is paused at the owner's explicit request after commit and push.
+The full goal is incomplete. All 450 capabilities / 41 families and every later
 stage remain committed. Broad readiness, full security and packaging remain
 negative. Both commit identities remain exactly `imfeelingtheagi` on main.
+
+Code candidate `210ac68` is committed and pushed as the exact owner. ARM build,
+unit, race and lint pass; all23PGfunctions compile only. Native Go run41958115865
+and four other workflows are pending at this handoff. Earlier0c metadata jobs
+are queued/in progress; no new pass is inferred. Existing GitHub jobs continue
+without further monitoring while paused. Resume from
+`evidence/2026-11-05/owner-pause-after-go-latest.json` and the actual job results.
+
 
 Exact `4a131f7` now passes the named Go hosted/group-v2 profile on both
 actual GitHub Linux architectures:312checks/all9stages/24wire/16cache and all
