@@ -14,11 +14,13 @@ var ErrOCIMemberChanged = errors.New("OCI graph member changed during retrieval"
 // Admission belongs to one request's just-completed fill. It permits a positive
 // max-age=0 validation to admit that request, without making later requests fresh.
 // Root generation/state and member validation receipts are rechecked in SQL.
-type OCIAdmission struct {
+type NativeAdmission struct {
 	Repository, Path string
 	Generation       int64
 	Stale            bool
 }
+
+type OCIAdmission = NativeAdmission
 type NativeMemberCache struct {
 	ETag, Modified             string
 	FreshSeconds, StaleSeconds int

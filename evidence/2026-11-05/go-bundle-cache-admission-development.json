@@ -1,0 +1,79 @@
+{
+  "source_parent": "a630875150f3790a56cc166024b4622f36b5bd84",
+  "source_dirty": true,
+  "observed_at": "2026-11-05T00:58:15.651093+00:00",
+  "state": "internal current bundle cache admission implemented; local checks pass; real PostgreSQL execution and public proxy remain unqualified",
+  "files": [
+    {
+      "path": "internal/store/go_module_cache.go",
+      "sha256": "be672257181826eaa331846ba07d6bea9763bb1cf15b465eced351013bf00a1c"
+    },
+    {
+      "path": "internal/store/go_module_cache_test.go",
+      "sha256": "697fd913e7813be5b8f098b9729b38c15cc4c5b7cde57daa6e26b0cb55838aee"
+    },
+    {
+      "path": "internal/store/go_module_cache_integration_test.go",
+      "sha256": "66425cf2df6d2d0f3333b7caa414362a0fa7a922d2dccdd00aa0eb7544b0c689"
+    },
+    {
+      "path": "internal/store/oci_cache.go",
+      "sha256": "b6f2b8142a2cd4a873cf8e644955f458b9c1b6a07ad9f305653170661769ad58"
+    }
+  ],
+  "mechanism": [
+    "Read the current tenant/repository grant and source revision, all three cache receipts, artifact decisions and the complete ZIP/mod/info bundle in one repeatable-read transaction. All receipts must bind the same canonical ZIP root and last successful generation/current source. Ready roots must bind their current generation. Missing/expired/inconsistent cache state never supplies artifact metadata on rejection.",
+    "Reuse unchanged native cache admission helpers to enforce active refresh, fresh negative cache, per-request max-age=0 admission, and explicitly admitted transient stale content. Source/grant/tenant/current whole-bundle policy remain mandatory. Authority failures and wrong-generation stale admission cannot authorize old bytes.",
+    "Existing OCIAdmission is a compatible alias of the common NativeAdmission type. A byte comparison verifies every original OCI helper body unchanged; no OCI runtime semantics are modified or newly qualified.",
+    "The caller must repeat this check after object verification immediately before response headers. This helper selects only one proxy repository; it does not implement group precedence, source catalogs, retrieval, HTTP routing or conditional revalidation. Public Go proxy creation and reads remain rejected."
+  ],
+  "local_validation": [
+    "All store unit/race checks pass, including one new receipt-binding function with 11 negative shapes and a positive last-complete-generation case.",
+    "Integration-tag normal/race compilation and vet pass for store/server. Zero real-PG functions execute locally. Architecture/RLS/license/crypto boundary checks pass.",
+    "The ninth PG function has 18 owned-database scenarios: fresh, unassessed, sibling denial, missing receipt/sibling/all refs, wrong root/generation, expired/max-age-zero, fetching/negative, transient/authority/wrong-generation stale, source revision, revoked read grant and colliding tenant. Each checks all representations and empty output on rejection. Actual native execution is mandatory."
+  ],
+  "review_correction": "Before exposure, source review found that losing all artifact references while retaining complete cache receipts could return absence. The new helper now returns invalid-bundle state for any missing referenced representation; two explicit PG fault scenarios were added and compile only. No observed native/customer bypass is asserted.",
+  "logs": [
+    {
+      "path": ".cache/go-cache-admission-reviewed-unit.log",
+      "sha256": "e400eaff713e5ec677858acb04ec42384254e9aec5771cd54ec1f233b68cfb21"
+    },
+    {
+      "path": ".cache/go-cache-admission-reviewed-race.log",
+      "sha256": "5e839fe65768ab3f4633c2cde8eb1955998017e6356f47fdca3e8652b2304302"
+    },
+    {
+      "path": ".cache/go-cache-admission-reviewed-compile.log",
+      "sha256": "304d8f9e2b7189213e5c7713466dc55f4a6ac5ff4ecd577a54d45e5ba880ff1f"
+    },
+    {
+      "path": ".cache/go-cache-admission-reviewed-race-compile.log",
+      "sha256": "558fed92d9c168aa752157c009651eaebec573af4c537e0dd4b08479147bdc30"
+    },
+    {
+      "path": ".cache/go-cache-admission-reviewed-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/go-cache-admission-architecture.log",
+      "sha256": "304484513d28c8fcf6a7c9cd5fec70d681f129835aa641ca81348b1cf72e66a8"
+    },
+    {
+      "path": ".cache/go-cache-oci-preservation.json",
+      "sha256": "85ee5ab6a099b44acd5e3c78b4e5855281d8057994eb9b4d3e59c8f874ec6347"
+    }
+  ],
+  "native_pending": {
+    "candidate": "a630875150f3790a56cc166024b4622f36b5bd84",
+    "run_id": 41944298280,
+    "amd64_job": 126972556068,
+    "arm64_job": 126972556526,
+    "status": "both queued at the observation before this cache increment; no duplicate dispatch or pass",
+    "required": "Eight PG functions plus all original native stock-Go stages at that source. Next source adds the ninth function without changing the workflow filter or budgets."
+  },
+  "limits": [
+    "No actual current-cache database pass, group-over-proxy, stock proxy client, catalog/latest/freshness merge, checksum authority, offline trust, conditional refresh or lifecycle/provider/scale qualification.",
+    "No complete hosted/group native acceptance yet; 5be normal store failure and skipped race/client steps remain retained. All450capabilities/41families/laterstages retained; broad readiness/security/packaging false.",
+    "No schema/runtime privilege/primary/customer/sibling/release mutation. No local PostgreSQL/JVM/SDK campaign."
+  ]
+}

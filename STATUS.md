@@ -67,7 +67,7 @@ tests and console reproduction pass. Four original PostgreSQL server functions
 pass normally and with race on both hosts at `802bb51`. Three additional atomic
 intake store functions require native replay after the recorded fixture repair.
 A new network-to-transaction function compiles only. The current v2 workflow
-requires both actual Linux hosts, all eight database
+requires both actual Linux hosts, all nine database
 functions normally/with race, trusted TLS stock Go and all original hosted cases:
 nine stages,24publisher/reference/HTTP bindings and16exact cached ZIP/mod
 bindings. See `evidence/2026-11-04/go-module-groups-development.json`.
@@ -125,7 +125,7 @@ sibling cache receipts, integrity intents and ready event/outbox in the common
 current-authority/source/live-lease transaction. Unit/race/vet/full lint pass.
 Three new real-PG store functions have no complete native pass; the workflow
 now runs both server/store packages, including the new network transaction
-function, for eight PG functions normally/with race. Proxy creation
+function and cache admission, for nine PG functions normally/with race. Proxy creation
 and reads remain rejected until network/checksum/cache/serving integration and
 full native proof are complete. See
 `evidence/2026-11-04/go-module-atomic-intake-development.json`.
@@ -171,6 +171,15 @@ with publication/source/lease fences; it compiles only. Public proxy stays
 rejected pending catalog/current-serving/cache/checksum integration and native
 qualification. See
 `evidence/2026-11-05/go-upstream-bundle-fetch-development.json`.
+
+Proxy-only bundle cache admission now rechecks current tenant/grants/source,
+all three validation receipts and whole-bundle policy in one read snapshot.
+Missing references remain damaged state, including loss of every reference.
+The common native admission type retains an OCI alias with every original
+helper body unchanged. Store unit/race, normal/race integration compilation/vet
+and architecture checks pass. The ninth PG function covers 18 cache/authority/
+policy/fault scenarios; none executed locally. Public routes remain disabled.
+See `evidence/2026-11-05/go-bundle-cache-admission-development.json`.
 
 Latest discovery now distinguishes known-blocked modules (403/no version) from
 absence (404), retaining current view authority and original selection order.
