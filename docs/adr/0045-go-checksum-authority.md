@@ -1,8 +1,9 @@
 # Go content checksums and external checksum authority
 
 Observed: 2026-11-06. Status: hashing, offline verification and bounded configured
-proof collection implemented internally; durable publication and customer
-configuration/serving journeys remain open.
+proof collection qualified in named internal profiles. Durable timeline and
+atomic publication implemented internally, awaiting native PostgreSQL replay;
+customer configuration/serving journeys remain open.
 This consumes an external verification service. It does not introduce a signing
 service, key custody, CA, vault or workload issuer; GOAL section 4.1 governs.
 
@@ -41,9 +42,9 @@ not claims of full arbitrary-log-size compatibility or whole-process RSS limits.
 An old immutable record can remain valid on a proven newer timeline. Verification
 retains the newer checkpoint; this establishes consistency, not current freshness,
 publisher identity, scan evidence or package approval. The returned checkpoint is
-only a proposal until the following durable path exists. `require_checksum` and
-any configured authority still refuse bundle publication/cached serving: this
-foundation does not enable public Go proxy mode.
+only a proposal until durable transaction admission. `require_checksum` and any
+configured authority refuse publication without a complete fenced proof; cached
+serving remains closed pending proof readback. Public Go proxy mode stays gated.
 
 ## Configured collection boundary
 
@@ -77,14 +78,59 @@ staging original proof JSON with expected SHA256 and exact length; staged bytes
 are at most2MiB and remain subject to the common metadata budget. It creates no
 artifact reference, trust update, approval, event or idempotency receipt. It is
 not yet wired into the common renewable lease/fill admission. Current bundle
-fetch, common completion and cache guards refuse configured/required checksum
-admission until that durable integration exists; a proposal cannot bypass it.
+fetch and cache guards still refuse configured/required checksum admission.
+Common completion now accepts only the complete durable publication below;
+a self-selected key, h1 assertion or unfenced proposal cannot bypass it.
 
 Tests use actual inert ZIP/mod inspection and an owned HTTP authority serving a
 frozen public x/mod fixture. No private signing key is retained or used by the
 server. The new database regression tests both publication and prior cached bytes
 under newly required/configured trust, even in a deliberate same-epoch row fault.
-It compiles locally; execution belongs on native GitHub PostgreSQL jobs.
+Exact5380 executes this29function named Go regression suite normally/race and
+the original312stock hosted/group checks on both native GitHub Linux hosts.
+Source/unit/race and43fuzz targets pass on Linuxamd64/arm64/macOSarm64. Its wider
+ARM durable-jobs profile fails after68assertions; no whole-campaign pass follows.
+
+## Durable publication boundary, native replay pending
+
+Appended immutable migration12 adds forced-RLS tenant/key checkpoint history,
+a current-head pointer and repository-scoped proof receipts. Existing11receipt
+definitions stay byte-identical. Runtime roles can insert history/receipts, read
+their tenant and update only the head revision. A database trigger requires each
+head update to advance exactly once to a strictly larger signed tree. The
+application checks signatures and consistency before that update. Missing head
+history fails closed; it never falls back to a new bootstrap.
+
+An authorized source-epoch snapshot supplies the retained head or explicit
+revision-zero bootstrap. Common bundle completion validates original proof JSON's
+staged SHA256/length, both independently inspected h1 values and the canonical
+coordinate. Under the existing tenant write lock/current source and lease, it
+authenticates against the separately retained expected pin. An identical winning
+head coalesces by tree size/root; another winner requires bounded offline replay
+against that head. Missing tiles return a recollection conflict, with no network
+inside the transaction. Authenticated same-size differing roots are a distinct
+fork error, even when the authority withholds the retained head's tiles.
+
+The initial/advanced signed heads, three bundle references, internal immutable
+proof reference, source/generation receipt, all integrity intents and ready
+journal/outbox event share one transaction. The receipt binds all three raw
+SHA256 digests and the exact proof object. Proof metadata contains no top-level
+module/version and cannot masquerade as a package advertisement. References
+retain ordinary unassessed policy; checksum consistency grants no scan approval.
+
+Nine new PostgreSQL functions cover actual staged ZIP/mod hashes, concurrent
+repository collectors, same-head coalescing, consistent growth/older lookups,
+rollback, source/lease/grant/tenant/key fences, missing tiles/forks, retained
+11receipt upgrade, immutable runtime privileges and forced-RLS admission. Local
+compilation is not execution. Native CI must also rebuild11historical baselines
+and run schema2–11 maintenance journeys into12. The retained primary remains
+schema11 on its existing selected binaries, stopped; source work does not migrate it.
+
+The server collector is not yet connected to this publication under the shared
+renewable fill lease. Actual proof blob readback/current serving, bounded
+recollection, failure-evidence publication, customer API/CLI/UI, offline export/
+backup/GC and native checksum-on proxy/group journeys remain required. Current
+fetch and cached-byte guards stay closed until those paths are complete.
 
 ## Required integration, in dependency order
 

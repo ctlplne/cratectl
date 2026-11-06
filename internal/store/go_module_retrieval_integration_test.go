@@ -32,6 +32,10 @@ type goIntakeFixture struct {
 }
 
 func newGoIntakeFixture(t *testing.T) goIntakeFixture {
+	return newGoIntakeFixtureAt(t, gomodule.Coordinate{Module: "go.cratectl.invalid/Owned/intake", Version: "v1.0.0"}, "assets/owned.txt", "original bytes")
+}
+
+func newGoIntakeFixtureAt(t *testing.T, coordinate gomodule.Coordinate, asset, payload string) goIntakeFixture {
 	t.Helper()
 	d, s, _, token, _ := schemaFixture(t)
 	ctx := context.Background()
@@ -53,7 +57,7 @@ func newGoIntakeFixture(t *testing.T) goIntakeFixture {
 		t.Fatal(e)
 	}
 	f := goIntakeFixture{s: s, d: d, i: i, objects: objects}
-	f.result = f.bundle(t, "original bytes")
+	f.result = f.bundleAtPath(t, coordinate, asset, payload)
 	f.lease, e = s.AcquireRetrieval(ctx, i, "owned", f.result.GoModule.Objects[0].Path, "owned-intake-lease", false)
 	if e != nil || !f.lease.Acquired {
 		t.Fatal("acquire complete-bundle root", e)
@@ -66,6 +70,10 @@ func (f goIntakeFixture) bundle(t *testing.T, payload string) RetrievalResult {
 }
 
 func (f goIntakeFixture) bundleAt(t *testing.T, c gomodule.Coordinate, payload string) RetrievalResult {
+	return f.bundleAtPath(t, c, "assets/owned.txt", payload)
+}
+
+func (f goIntakeFixture) bundleAtPath(t *testing.T, c gomodule.Coordinate, asset, payload string) RetrievalResult {
 	t.Helper()
 	mod := []byte("module " + c.Module + "\n\ngo 1.26.0\n")
 	instant := "2026-01-02T03:04:05Z"
@@ -85,7 +93,7 @@ func (f goIntakeFixture) bundleAt(t *testing.T, c gomodule.Coordinate, payload s
 	for _, file := range []struct {
 		name string
 		body []byte
-	}{{"go.mod", mod}, {"assets/owned.txt", []byte(payload)}} {
+	}{{"go.mod", mod}, {asset, []byte(payload)}} {
 		w, e := z.Create(c.Module + "@" + c.Version + "/" + file.name)
 		if e != nil {
 			t.Fatal(e)

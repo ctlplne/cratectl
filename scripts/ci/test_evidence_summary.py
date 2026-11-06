@@ -224,6 +224,15 @@ class EvidenceSummary(unittest.TestCase):
         self.assertEqual((record['baseline_version'], record['expected_schema']), (2, 11))
         self.assertNotIn('private-synthetic-value', json.dumps(record))
 
+    def test_historical_inventory_includes_schema_eleven_and_remains_bounded(self):
+        baselines = [{'schema': schema, 'source': format(n, '040x'), 'binary_sha256': format(n, '064x')} for n, schema in enumerate([None, *range(2, 12)], start=1)]
+        report = {'candidate': 'a' * 40, 'status': 'passed', 'baselines': baselines}
+        self.write('historical.json', report)
+        self.assertEqual(len(summarize(self.root, self.environment)['records'][0]['baselines']), 11)
+        for invalid in [baselines + [baselines[-1]], [{**baselines[-1], 'schema': 12}]]:
+            self.write('historical.json', {**report, 'baselines': invalid})
+            with self.assertRaises(SystemExit): summarize(self.root, self.environment)
+
     def test_current_binary_hash_and_embedded_identity_are_retained_without_extra_fields(self):
         name = '.cache/ci-build/cratectld'
         identity = {'vcs.revision': 'a' * 40, 'vcs.modified': 'false', 'GOOS': 'linux', 'GOARCH': 'amd64', 'private': 'private-synthetic-value'}

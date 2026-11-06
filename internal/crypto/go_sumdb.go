@@ -18,6 +18,10 @@ import (
 
 var ErrGoChecksumAuthority = errors.New("Go checksum authority evidence is missing, invalid or inconsistent")
 
+// ErrGoChecksumFork identifies authenticated conflicting log history. Missing
+// responses and corrupt tiles remain ordinary unverified evidence.
+var ErrGoChecksumFork = fmt.Errorf("%w: authenticated log history fork", ErrGoChecksumAuthority)
+
 const maxGoSumDBBytes = 1 << 20
 const maxGoSumDBResponses = 128
 
@@ -151,14 +155,17 @@ func prepareGoSumDB(ctx context.Context, mod, version, zipHash, modHash string, 
 
 func verifyGoSumDB(ops *goSumDBOps, mod, version, zipHash, modHash string) (GoSumDBVerification, error) {
 	ctx := ops.ctx
+	// Read the bounded lookup first so two authenticated equal-size heads can
+	// establish a fork even if the authority withholds the retained head's tiles.
+	// The standard client still authenticates the complete record and both h1s.
+	if _, err := ops.ReadRemote(ops.lookup); err != nil {
+		return GoSumDBVerification{}, ops.verificationError(err)
+	}
 	client := sumdb.NewClient(ops)
 	for _, entry := range []struct{ version, hash string }{{version, zipHash}, {version + "/go.mod", modHash}} {
 		lines, err := client.Lookup(mod, entry.version)
 		if err != nil || len(lines) != 1 || lines[0] != mod+" "+entry.version+" "+entry.hash {
-			if err := ctx.Err(); err != nil {
-				return GoSumDBVerification{}, err
-			}
-			return GoSumDBVerification{}, ErrGoChecksumAuthority
+			return GoSumDBVerification{}, ops.verificationError(err)
 		}
 	}
 	if err := ctx.Err(); err != nil {
@@ -167,9 +174,22 @@ func verifyGoSumDB(ops *goSumDBOps, mod, version, zipHash, modHash string) (GoSu
 	ops.mu.Lock()
 	defer ops.mu.Unlock()
 	if ops.securityError {
-		return GoSumDBVerification{}, ErrGoChecksumAuthority
+		return GoSumDBVerification{}, ErrGoChecksumFork
 	}
 	return GoSumDBVerification{Authority: ops.name, Module: mod, Version: version, ZIPHash: zipHash, GoModHash: modHash, Checkpoint: bytes.Clone(ops.checkpoint)}, nil
+}
+
+func (ops *goSumDBOps) verificationError(err error) error {
+	if err := ops.ctx.Err(); err != nil {
+		return err
+	}
+	ops.mu.Lock()
+	fork := ops.securityError
+	ops.mu.Unlock()
+	if fork || errors.Is(err, sumdb.ErrSecurity) {
+		return ErrGoChecksumFork
+	}
+	return ErrGoChecksumAuthority
 }
 
 func validGoH1(value string) bool {
@@ -209,6 +229,11 @@ func (o *goSumDBOps) ReadRemote(path string) ([]byte, error) {
 		return nil, ErrGoChecksumAuthority
 	}
 	if len(data) != 0 {
+		if path == o.lookup && o.sameSizeFork(data) {
+			o.securityError = true
+			o.mu.Unlock()
+			return nil, ErrGoChecksumFork
+		}
 		o.bytes += len(data)
 		o.mu.Unlock()
 		return bytes.Clone(data), nil
@@ -235,6 +260,10 @@ func (o *goSumDBOps) ReadRemote(path string) ([]byte, error) {
 	}
 	o.mu.Lock()
 	defer o.mu.Unlock()
+	if path == o.lookup && o.sameSizeFork(data) {
+		o.securityError = true
+		return nil, ErrGoChecksumFork
+	}
 	if len(data) > maxGoSumDBBytes-o.bytes {
 		return nil, ErrGoChecksumAuthority
 	}
@@ -251,6 +280,24 @@ func (o *goSumDBOps) ReadRemote(path string) ([]byte, error) {
 		o.responses[path] = bytes.Clone(data)
 	}
 	return bytes.Clone(data), nil
+}
+
+// Two valid signatures by the configured key over different roots of exactly
+// the same tree size prove a fork without consulting any tile. The standard
+// client otherwise tries to authenticate tiles against the retained head first,
+// which can report missing/corrupt data before exposing this signed conflict.
+// Called under o.mu; malformed/unsigned lookup heads are not fork evidence.
+func (o *goSumDBOps) sameSizeFork(data []byte) bool {
+	_, _, head, err := tlog.ParseRecord(data)
+	if err != nil {
+		return false
+	}
+	remote, err := ParseGoSumDBCheckpoint(o.key, head)
+	if err != nil {
+		return false
+	}
+	pinned, err := ParseGoSumDBCheckpoint(o.key, o.checkpoint)
+	return err == nil && remote.TreeSize == pinned.TreeSize && remote.RootHash != pinned.RootHash
 }
 
 func (o *goSumDBOps) responseLimit(path string) int64 {

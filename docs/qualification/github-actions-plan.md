@@ -27,23 +27,32 @@ retains28PGnormal/race and the original312checks/9stages24wire16cache on bothLin
 hosts, with exact clean source/binary/tool/fixture identity. DEFECTS0118–0121
 replay in the campaign; all original failure and cancellation records remain.
 
-The new [configured checksum collection](../../evidence/2026-11-06/go-checksum-collection-development.json)
-adds10unitfunctions,1PGfunction/four cases and1fuzz target. Current29PGfunctions
-must run normally/race on both hosts; the existing automated fuzz inventory now
-selects43targets on all three native runners, within the unchanged25minute job.
-ARM full build/test/race/lint, tagged compile/vet and91814collector fuzz executions
-pass. Native replay remains required. The existing network controls, explicit
-operator trust, bounded original proof capture/offline replay and immutable
-staging create no trust update or package approval. Required/configured checksums
-still refuse unfenced publication/cached bytes; public proxy remains gated.
+The [exact5380 named Go checkpoint](../../evidence/2026-11-06/go-module-5380e84-native-checkpoint.json)
+now qualifies29PGfunctions normally/race and the original312stock checks on both
+native Linux hosts. The [partial wider campaign](../../evidence/2026-11-06/go-checksum-5380e84-ci-partial.json)
+retains source/unit/race and43fuzz targets on all3native hosts, plus the ARM
+runtime's durable-jobs failure after68assertions. Its raw failure assertion was
+not selected by the then-current encrypted collectors. Root cause is unknown;
+new bounded encrypted job assertion/process-log coverage is instrumentation,
+not a repair. No rerun, skip or green sibling job erases that original failure.
 
-[ADR0045](../adr/0045-go-checksum-authority.md) now specifies shared tenant/key
-timeline continuity, identical-head concurrency coalescing and bounded consistency
-recheck/recollection before common atomic publication. Add forced-RLS checkpoint
-history and repository-scoped proof receipts, customer/offline/current-policy
-surfaces and complete checksum-on native proxy/group journeys. Preserve the
-stock client's independent GOSUMDB policy and every original profile. No localPG,
-emulated x86, extra workflow, duplicate dispatch or retry/deadline increase.
+The [durable publication development](../../evidence/2026-11-06/go-checksum-publication-development.json)
+appends migration12 and forced-RLS tenant/key history/proof receipts without
+changing the first11checksums. Nine new PostgreSQL functions bring the named Go
+suite to38 and the full integration source inventory to212. Run every function
+normally/race on both actual Linux architectures with the unchanged312stock
+profile. Source/unit/race and43bounded fuzz targets remain on all3native hosts.
+The existing upgrade jobs now rebuild11clean native historical sources and run
+schema2–11 maintenance journeys into12. No new workflow, duplicate dispatch,
+retry/deadline increase or assertion removal; no localPG or emulated x86.
+
+[ADR0045](../adr/0045-go-checksum-authority.md) records transaction continuity,
+same-head coalescing, bounded offline rebase and distinct signed-fork handling.
+After native replay, connect collection/publication to one renewable fill lease,
+complete proof byte readback/current/offline guards and customer/export/backup/
+GC paths, then qualify checksum-on stock Go proxy/group journeys before opening
+public mode. Preserve the client's independent GOSUMDB policy and every original
+hosted/group profile. The retained schema11 primary is outside CI migration scope.
 
 Earlier source-specific observations below retain their historical limits; the
 newest exact checkpoint above governs current qualified scope.

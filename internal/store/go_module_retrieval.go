@@ -15,15 +15,11 @@ import (
 // which representation caused intake. Proxy HTTP mode remains disabled until
 // its network/cache/current-policy path is implemented and qualified.
 type GoModulePublication struct {
-	Objects []Artifact
+	Objects  []Artifact
+	Checksum *GoModuleChecksumPublication
 }
 
 func validateGoModuleRetrieval(repo Repository, lease Retrieval, result RetrievalResult) error {
-	if repo.Settings.GoChecksumAuthority != nil || repo.Settings.Cache.RequireChecksum {
-		// A configured authority cannot be satisfied by internal blob hashes or
-		// an unfenced proof proposal. Durable checkpoint publication comes next.
-		return ErrGoModuleUnvalidated
-	}
 	if repo.Format != "go" || repo.Mode != "proxy" || lease.Repository != repo.Name || result.Status != 200 || result.Failure != "" || result.GoModule == nil || result.Object == nil || result.GoCatalog != nil || result.GoLatest != nil || result.OCI != nil || result.NativeCatalog != nil || result.NPMCatalog != nil || len(result.NPMSources) != 0 {
 		return ErrGoModuleUnvalidated
 	}
@@ -53,7 +49,7 @@ func validateGoModuleRetrieval(repo Repository, lease Retrieval, result Retrieva
 	if !found {
 		return ErrGoModuleUnvalidated
 	}
-	return nil
+	return validateGoChecksumPublication(repo, result.GoModule.Checksum, coordinate)
 }
 
 // CompleteRetrieval owns the surrounding current-authority/source/lease/event
@@ -93,6 +89,13 @@ func completeGoModulePublication(ctx context.Context, tx pgx.Tx, i Identity, rep
 		if e = refreshNativeMember(ctx, tx, i, lease, a, cache, sequence); e != nil {
 			return e
 		}
+	}
+	if result.GoModule.Checksum != nil {
+		proof, e := completeGoChecksumPublication(ctx, tx, i, repo, lease, result, sequence)
+		if e != nil {
+			return e
+		}
+		siblings = append(siblings, proof)
 	}
 	// The common completion path enqueues the ZIP root once after this helper.
 	return enqueueIntegrity(ctx, tx, i, repo.Name, siblings)

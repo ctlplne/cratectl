@@ -227,6 +227,48 @@ def collect_go_modules(root,candidate):
     return failures
 
 
+def collect_jobs(root, candidate):
+    """Retain failed durable-job assertions and fixed owned process logs encrypted.
+
+    Successful reports, command arguments, configuration and token files are
+    excluded. This closes the missing diagnostic detail in the 5380 ARM run.
+    """
+    if not re.fullmatch('[0-9a-f]{40}', candidate):
+        raise ValueError('Job diagnostics require an exact candidate')
+    generated = subprocess.check_output(['git', 'ls-files', '--others', '--modified', '--exclude-standard', '-z', '--', 'evidence'], cwd=root).split(b'\0')
+    if len(generated) > 201:
+        raise ValueError('Job diagnostic report inventory exceeds its bound')
+    failures, remaining = [], 8 << 20
+    for raw_path in generated:
+        if not raw_path:
+            continue
+        path = raw_path.decode('utf-8')
+        match = re.fullmatch(r'evidence/\d{4}-\d{2}-\d{2}/jobs-([0-9a-f]{10})\.json', path)
+        if not match:
+            continue
+        report = json.loads(read_owned_file(root / 'evidence', root / path, 4 << 20))
+        if not isinstance(report, dict) or report.get('candidate') != candidate:
+            raise ValueError('Job diagnostic report source does not match')
+        if report.get('status') != 'failed':
+            continue
+        run, error, checks = match[1], report.get('error', ''), report.get('checks')
+        if report.get('run') != run or len(failures) >= 4 or not isinstance(error, str) or len(error) > 8192 or not isinstance(checks, list) or len(checks) > 1000 or any(not isinstance(c, str) or len(c) > 1024 for c in checks):
+            raise ValueError('Job diagnostic run/assertion inventory is invalid')
+        failure = {'client': 'durable-jobs', 'run': run, 'error': error, 'completed_checks': len(checks), 'last_completed_check': checks[-1] if checks else '', 'process_logs': []}
+        folder = root / '.private/jobs-conformance' / run
+        for name in ('registry', 'crash', 'recovered', 'corruption', 'repair', 'cancel', 'revoked', 'final'):
+            log = folder / (name + '.log')
+            if not log.exists() and not log.is_symlink():
+                continue
+            if remaining <= 0:
+                raise ValueError('Job process logs exceed their total byte budget')
+            raw = read_owned_file(root / '.private', log, min(MAX_LOG, remaining))
+            remaining -= len(raw)
+            failure['process_logs'].append({'process': name, 'sha256': hashlib.sha256(raw).hexdigest(), 'output_base64': base64.b64encode(raw).decode('ascii')})
+        failures.append(failure)
+    return failures
+
+
 def seal(payload, certificate, openssl='openssl'):
     if not isinstance(payload, bytes) or len(payload) > MAX_PAYLOAD:
         raise ValueError('native diagnostic plaintext exceeds its byte budget')
@@ -305,6 +347,9 @@ def main():
     go=collect_go_modules(root,candidate)
     decoded['failures'].extend(go)
     count+=len(go)
+    jobs = collect_jobs(root, candidate)
+    decoded['failures'].extend(jobs)
+    count += len(jobs)
     decoded.update(run_id=run_id, runner_os='Linux', runner_arch=arch)
     payload = json.dumps(decoded, separators=(',', ':')).encode()
     if len(payload) > MAX_PAYLOAD:

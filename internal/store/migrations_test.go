@@ -18,6 +18,7 @@ func TestAppliedMigrationDefinitionsStayImmutable(t *testing.T) {
 		"5794b2b9420d489ce0530c22174047b0a608a14d45d5ea1fb4c563585af0ab04",
 		"f8c9da14c14a2f18575ce1583a8cc94bd0b424740b96cc4367dcd016e96db0ba",
 		"9fadadf954d8c0cdc5c905c367e49e1cffc31c82e72205f21a0e690653802feb",
+		"2ba151f1b80253fbca009c157f5c72dbb68481ffdefe9dacf18f9e14a3069f71",
 	}
 	steps := currentMigrations()
 	for n, checksum := range expected {

@@ -182,7 +182,7 @@ func TestGoChecksumOfflineProofRejectsSignedForkWithoutExiting(t *testing.T) {
 	changed := checksumTestModule + " " + checksumTestVersion + " " + a.modHash + "\n" + checksumTestModule + " " + checksumTestVersion + "/go.mod " + a.modHash + "\n"
 	b := checksumLog(t, a.signer, a.key, changed)
 	got, err := VerifyGoSumDB(context.Background(), checksumTestModule, checksumTestVersion, a.modHash, a.modHash, b.snapshot(t, pinned, 1))
-	if !errors.Is(err, ErrGoChecksumAuthority) || !reflect.DeepEqual(got, GoSumDBVerification{}) {
+	if !errors.Is(err, ErrGoChecksumAuthority) || !errors.Is(err, ErrGoChecksumFork) || !reflect.DeepEqual(got, GoSumDBVerification{}) {
 		t.Fatal("same-key signed fork accepted", err)
 	}
 }

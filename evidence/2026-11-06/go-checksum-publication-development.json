@@ -1,0 +1,138 @@
+{
+  "observed_at": "2026-11-06T22:13:50.838841+00:00",
+  "source_parent": "5380e84b6c35473568af94c75c25b855124e48f9",
+  "source_dirty": true,
+  "state": "implemented internally; native PostgreSQL/upgrade replay pending",
+  "source_sha256": {
+    "internal/crypto/go_sumdb.go": "4941a97d1f86893aabf1eb1fe053e7c0513f09887828a2053c1b985500a451fc",
+    "internal/crypto/go_sumdb_test.go": "4924b492300d4b569fabe43b4dab10bfe9a95cdbe1e8f8ff3e580bb0fb358cdb",
+    "internal/store/go_checksum.sql": "3c7342e0cd9143240ea2497f2e6947ad727d11aa3afd870573ed4f8e7703a955",
+    "internal/store/go_checksum_checkpoint.go": "7ccdb7beb68c354337554f9624ab65670a67b21544212004ebb7decef7c0dacc",
+    "internal/store/go_checksum_checkpoint_test.go": "1f8ee6bea3058466dd97c324fbbc657dfe0648b632dddb91be2c8b342980bd35",
+    "internal/store/go_module_checkpoint_integration_test.go": "bb487dde4ddbd43c5ff4929672b73916ac7be4f7f1642dbbc90da0b36d01cf9b",
+    "internal/store/go_module_retrieval.go": "024afb2ed0fc69597de0e91e1ab832e9b0c92e7f7dd68f07b5998e8306021093",
+    "internal/store/go_module_retrieval_integration_test.go": "d08d397e5506c40a197b4a051d59bffc900b42d99f739334b9ed0bcba776e631",
+    "internal/store/store.go": "b7c6387d1ff15b85012b0a0370977b3298e1b257daf8aa6b005995756b7a6433",
+    "internal/store/migrations.go": "e8172d82457329a0cb3c7b91377d2d888e60c00284193fbf54f65c9ad87a7ba8",
+    "internal/store/migrations_test.go": "551b0203a254011be9e10b990a39691628d6e0aa6aeffc01a0bd2b28c0985c0f",
+    "internal/store/testdata/go-checksum-timeline-public.json": "db8788f5779a6cf7d406b71f60a2411cdadd44a4719841c056b3c3a4acf85910",
+    "internal/store/testdata/README.md": "cb6a96cc7d0ecfc9b02f9dd89916c8cb03eb7748f6fb9f783df81528c8643d67",
+    "scripts/ci_native_diagnostics.py": "0273150681a296311febee24589a5cf646c974de6e5a6f86165428bc4193c606",
+    "scripts/test_ci_native_diagnostics.py": "1f9923e788c80ac66f07eebf5e741cc86f78e0c14c597a670b5215b2e71c5ca7",
+    "scripts/ci/test_evidence_summary.py": "c31bf7087b8abc65dc8bc72c0a02c4f79b58b70fad433b21dac67b375433ad2b",
+    "scripts/ci/evidence_summary.py": "ddca977bdc47959a64f190793ca6295fd84685deebe6cf99acec5abae06f146e",
+    "scripts/ci/build_upgrade_baselines.py": "e8a44acd5a503c2c4140ecbc1231e82a5d3c63dea520e9d303bc1ca77d9ebb19",
+    "scripts/ci/bootstrap_linux.sh": "9f2911491de0504a5e3cebb5d61729034144e41e38ec4dabc23ff502260a81ac",
+    "scripts/qualification_contract.py": "cfa892f6b2fba84b05c36eddd9a839c033be2c30983f41eb4b20fdb3b07bb30e",
+    "scripts/conformance_lifecycle.py": "976e0bc3b64629da83bb53e96407972f89e310cc14480aa4002635d7c3d7174c",
+    "scripts/check_architecture.py": "cadc701fdb234accec4f6a8f50587c6a0a151e8aed13478a24adcbe28040bf11",
+    ".github/workflows/upgrade-qualification.yml": "6f7789f8e0e184c8bdcb0eb78f36eac64062013fbd5bdefdb08b711c7f8c5dd7",
+    "docs/qualification/upgrade-baselines.json": "e9cd0582417b11107b3956f811f2f811a0f3121c9f31e0b0ae83c104625e6a03"
+  },
+  "schema": {
+    "candidate": 12,
+    "new_migration_checksum": "2ba151f1b80253fbca009c157f5c72dbb68481ffdefe9dacf18f9e14a3069f71",
+    "first_eleven_receipts": "frozen byte-identical; unit regression passes",
+    "tables": [
+      "go_checksum_checkpoint_revisions",
+      "go_checksum_checkpoints",
+      "go_module_checksum_receipts"
+    ],
+    "security": "forced tenant RLS; immutable history/receipt grants; current pointer column-only update and forward-only size/revision trigger",
+    "primary": "unchanged schema11, selected5483878b binaries; stopped; ten retained receipts/credentials preserved"
+  },
+  "implementation": [
+    "Authorized source-epoch snapshot returns separately retained tenant/key head or explicit revision-zero configured bootstrap; missing history never resets trust.",
+    "Original proof JSON staged SHA256/length and separate inspected ZIP/go.mod h1 values bind canonical coordinate; raw ZIP/mod/info SHA256s bind repository/source/generation receipt.",
+    "Under common tenant write lock/current lease, verify expected retained pin then bounded offline rebase against winning head. Identical size/root coalesces; consistent growth/older lookup retains newest head. Missing tiles require bounded recollection; no network in SQL.",
+    "Authenticated equal-size signed differing roots are stable fork error, including withheld retained-head tiles; malformed/missing/corrupt evidence stays unverified, all failures zero verification. Standard client still verifies inclusion/consistency and both exact h1 entries.",
+    "Initial/advanced immutable history, current pointer, proof artifact reference, all3bundle references, source/generation receipt, integrity intents and ready journal/outbox share existing CompleteRetrieval transaction. Replayed lease, changed source/grant/tenant, conflict or capacity failure cannot publish partial trust.",
+    "Proof artifact uses ordinary internal immutable reference/integrity path, no module/version top-level advertisement fields, no scan approval. Actual proof serving/readback remains closed.",
+    "CI extends existing upgrade inventory to11pinned native historical sources and schema2\u201311 maintenance journeys into12, preserving old pins. No local historical builds or primary migration.",
+    "Encrypted diagnostics now select only failed exact-source durable-job error/last completed check and fixed owned process logs; bounded, no auth/config/token files or command arguments, no plaintext fallback. Diagnostic addition is not a demonstrated repair for DEFECT.0122."
+  ],
+  "tests": {
+    "new_unit_functions": 2,
+    "unit_rebase_cases": 8,
+    "unit_publication_binding_cases": 15,
+    "new_postgresql_functions": 9,
+    "named_go_postgresql_functions": 38,
+    "all_integration_source_functions": 212,
+    "automatic_fuzz_targets": 43,
+    "local_native": "darwin/arm64",
+    "local_gates": [
+      "make build BINDIR=.cache/go-checkpoint-build",
+      "make test",
+      "make race",
+      "make lint",
+      "all3integration packages normal/race compile-only and tagged vet",
+      "11historical pin read-only preflight"
+    ],
+    "local_postgresql_executed": false,
+    "local_jvm_or_native_registry_campaign": false,
+    "bounded_collector_fuzz": {
+      "executions": 37960,
+      "workers": 2,
+      "elapsed_seconds": 11.244
+    },
+    "new_python_regressions": [
+      "durable-job assertions/fixed log selection, real authenticated CMS roundtrip, credential/config exclusion, wrong-source/oversized-error/symlink refusal, successful report exclusion",
+      "schema11 historical inventory positive bound and12entry/unknownschema refusal"
+    ]
+  },
+  "validation_logs": [
+    {
+      "path": ".cache/go-checkpoint-final-build.log",
+      "sha256": "5ec1912cd87fecf5c66763be536fa18a33e0ddb3779e50477cf6e698075f739b",
+      "bytes": 407
+    },
+    {
+      "path": ".cache/go-checkpoint-final-test.log",
+      "sha256": "024c1af440218fd92df96b7b05854a64ddb62b4bf9763e658270f7e66d0411a8",
+      "bytes": 885
+    },
+    {
+      "path": ".cache/go-checkpoint-final-race.log",
+      "sha256": "34f47edca5c3f68b028d89edc8e18259eed65c6d9990dbcc1d397e2becbd01e9",
+      "bytes": 891
+    },
+    {
+      "path": ".cache/go-checkpoint-final-lint.log",
+      "sha256": "bd5b51c441821cc699e33ed8743e8adedb87b37824f3a23fb618bd7614cd1ff9",
+      "bytes": 9004
+    },
+    {
+      "path": ".cache/go-checkpoint-final-integration-compile.log",
+      "sha256": "fd41d94053ff91e147616cb9cd46280baeec4c0b62529547bea0de8d33d14882",
+      "bytes": 410
+    },
+    {
+      "path": ".cache/go-checkpoint-final-fuzz.log",
+      "sha256": "2091642e435b8f6c312d5bc9b4db1e4429af1c0838083efd8a284cc1ea20b675",
+      "bytes": 507
+    },
+    {
+      "path": ".cache/go-checkpoint-upgrade-preflight.log",
+      "sha256": "de04051b97f13155ffdae93dbfbe9fe193f402029d0d36163a0b407dae15829a",
+      "bytes": 79
+    },
+    {
+      "path": ".cache/go-checkpoint-final-receipt-unit.log",
+      "sha256": "c43d6b9f60d041d7089c70224bb47a0349c0a1af4ce4105729a919c5b6c7986b",
+      "bytes": 198
+    }
+  ],
+  "previous_native_checkpoint": "evidence/2026-11-06/go-module-5380e84-native-checkpoint.json",
+  "previous_partial_campaign": "evidence/2026-11-06/go-checksum-5380e84-ci-partial.json",
+  "first_development_failures": [
+    "Standard sumdb client initialized retained head using tiles before exposing same-size signed fork. Distinct classification regression first failed; repair prefetches bounded lookup and compares both authenticated equal-size heads before standard inclusion/consistency checks. Original failing local logs retained in.cache/go-checkpoint-initial-unit.log and.cache/go-checkpoint-rebase-unit.log.",
+    "Manual SQL review caught missing PL/pgSQL END terminator before any PostgreSQL execution or commit. Corrected; only final migration12 checksum frozen."
+  ],
+  "limits": [
+    "No local compile-only PostgreSQL result is a pass;38namedGo/212full functions need normal/race execution on both native GitHub Linux architectures.",
+    "Server collection is not yet connected to common renewable lease/one-fill deadline/durable completion. Actual proof readback/current/offline serving, bounded recollection and failure evidence remain. Public Go proxy creation and configured bundle fetch/cache serving stay closed.",
+    "Customer API/CLI/UI, conditional refresh, export/backup/GC and checksum-on stock Go public proxy/group remain required; original312hosted/group profile has independent GOSUMDB policy.",
+    "DEFECT.0122 remains unresolved at exact5380 ARMjobs68assertions; original detail unavailable and zero-record encrypted metadata retained. No root cause inferred, no whole5380pass. Last whole accepted selected campaign3b.",
+    "All450artifact capabilities/41families and laterGOALstages remain under4.1. No CA/vault/signing/workload issuer service; external artifact verification only. Readiness/security/packaging false. No primary/customer/sibling/release/package/image changes."
+  ]
+}

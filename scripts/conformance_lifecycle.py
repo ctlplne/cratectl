@@ -5,7 +5,7 @@ import argparse,datetime,hashlib,json,os,platform,subprocess,time,urllib.error,u
 from pathlib import Path
 from qualification_contract import candidate_binary_directory, candidate_artifact_names
 
-parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');parser.add_argument('--binary-directory',type=Path,help='Owned candidate binaries; defaults to bin');parser.add_argument('--baseline-version',type=int,choices=[2,3,4,5,6,7,8,9,10],default=2);args=parser.parse_args()
+parser=argparse.ArgumentParser();parser.add_argument('--require-clean-build',action='store_true');parser.add_argument('--binary-directory',type=Path,help='Owned candidate binaries; defaults to bin');parser.add_argument('--baseline-version',type=int,choices=[2,3,4,5,6,7,8,9,10,11],default=2);args=parser.parse_args()
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT);RUN=uuid.uuid4().hex[:10]
 PRIVATE=ROOT/'.private/lifecycle-conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)
 BASELINES={row['schema']:(row['binary'],row['source']) for row in json.loads((ROOT/'docs/qualification/upgrade-baselines.json').read_text())['baselines'] if row['schema'] is not None}

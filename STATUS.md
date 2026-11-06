@@ -29,24 +29,43 @@ are retained and their scoped repairs replayed; no original skip/failure became
 a pass. This campaign qualifies only actually selected jobs and named profiles,
 not fullGo/450capabilities/security/packaging/readiness.
 
-The new configured checksum collector validates explicit endpoint/CIDRs,
-tenant-bound credentials, canonical public key and signed checkpoint before
-capturing bounded original lookup/hash-tile responses. It independently replays
-both archive-derived h1 values, then durably stages proof bytes with exact
-SHA256/length. It performs no reference, approval or trust update. Ten unit
-functions plus one PGfunction/four cases and one fuzz target are added: current
-29PGnormal/race and43automatic fuzz targets require native replay. Full ARM
-build/test/race/lint, tagged compilation/vet and91814collector fuzz executions
-pass; zero local PostgreSQL. See
-`evidence/2026-11-06/go-checksum-collection-development.json`.
+Exact `5380e84` qualifies the configured collection foundation:29named Go
+PostgreSQL functions normally/race and the original312stock checks/9stages/
+24wire16cache on both actual GitHub Linux architectures. Source/unit/race and
+43fuzz targets pass on Linuxamd64/arm64/macOSarm64. The wider ARM runtime fails
+its durable-jobs journey after68assertions; raw assertion detail was not retained
+by the then-current diagnostic collectors. No root cause or whole-campaign pass
+is inferred. The last fully accepted selected campaign remains3b. See
+`evidence/2026-11-06/go-module-5380e84-native-checkpoint.json` and
+`evidence/2026-11-06/go-checksum-5380e84-ci-partial.json`.
 
-Durable tenant/key checkpoint CAS/history, atomic common proof/reference/event
-publication, current offline/cache/readback, customer configuration and full
-public proxy/group journeys remain required under ADR0045. Required/configured
-checksums still block bundle publication and cached bytes without that durable
-admission. Public Go proxy stays disabled. All450artifact capabilities/41families
-and laterGOALstages remain under4.1; no schema/runtime privilege or primary/
-customer/sibling/release change was made.
+Durable checkpoint/proof publication is now implemented internally with appended
+migration12, preserving the first11migration checksums. Forced-RLS tenant/key
+history survives repository/source changes; a database trigger prevents head
+rollback. Common completion binds the current source/lease, original staged
+proof, both inspected h1s and all3raw digests in one transaction with references,
+integrity intents and ready journal/outbox. Same-head winners coalesce; a
+consistent winner replays offline, missing tiles require bounded recollection,
+and authenticated same-size log forks are distinguished. No network runs in SQL.
+
+Two new unit functions and9new PGfunctions cover these cases, including actual
+concurrent repositories, rollback, tenant/key isolation, immutable privileges,
+11receipt migration and forced-RLS admission. Current38named Go/212full PG
+functions are compile-only locally and require normal/race native replay; no
+local PostgreSQL. ARM build/test/race/lint, tagged compilation/vet and37960proof
+fuzz executions pass. Encrypted durable-jobs assertions/fixed owned logs are
+added as diagnostic coverage, not a demonstrated repair. See
+`evidence/2026-11-06/go-checksum-publication-development.json`.
+
+Actual proof readback/current cache/offline admission, server collector/fill-lease
+integration, bounded recollection and failure evidence, customer API/CLI/UI,
+export/backup/GC and complete checksum-on native proxy/group remain required.
+Current fetch/cached serving and public Go proxy creation stay closed. Eleven
+historical native baselines and schema2–11 upgrade journeys must qualify12 on
+disposable CI databases. The retained primary stays schema11 with its selected
+5483878b binaries, stopped. All450artifact capabilities/41families and later
+stages remain underGOAL4.1; readiness/security/packaging false. No primary,
+customer, sibling, release, package or image change.
 
 Earlier development and source-specific checkpoints follow; their original
 qualification limits remain historical evidence rather than current readiness.

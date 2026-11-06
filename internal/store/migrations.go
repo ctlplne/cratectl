@@ -59,9 +59,13 @@ var retentionSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationS
 var retentionScheduleSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationSafetySQL(), migrationSafetySQLFor(schemaTablesV8), 1)
 var holdCasesSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationSafetySQL(), migrationSafetySQLFor(schemaTablesV10), 1)
 var holdMattersSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationSafetySQL(), migrationSafetySQLFor(schemaTablesV11), 1)
+var goChecksumSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationSafetySQL(), migrationSafetySQLFor(schemaTablesV12), 1)
 
 func schemaStateBody() string { return frozenSchemaStateBody }
 func schemaStateBodyForVersion(version int) string {
+	if version >= 12 {
+		return goChecksumSchemaStateBody
+	}
 	if version >= 11 {
 		return holdMattersSchemaStateBody
 	}
@@ -124,7 +128,13 @@ func buildMigrations() []migrationStep {
 		matters += `ALTER TABLE ` + q + ` ENABLE ROW LEVEL SECURITY; ALTER TABLE ` + q + ` FORCE ROW LEVEL SECURITY; CREATE POLICY tenant_scope ON ` + q + ` USING (tenant=current_setting('cratectl.tenant',true)) WITH CHECK (tenant=current_setting('cratectl.tenant',true)); GRANT SELECT,INSERT ON ` + q + ` TO cratectl_app;`
 	}
 	matters += `GRANT UPDATE(revision,state,title,reason,actor,change_sequence,changed_at) ON cratectl.hold_matters TO cratectl_app; GRANT UPDATE(revision,released,hold_reason,hold_until,reason,actor,change_sequence,changed_at) ON cratectl.hold_matter_members TO cratectl_app; GRANT UPDATE(revision,state,approver_actor,approver_hash,approval_reason,job_sequence,job_task,change_sequence,changed_at) ON cratectl.hold_matter_operations TO cratectl_app;` + schemaStateSQL(holdMattersSchemaStateBody)
-	return []migrationStep{{1, "legacy baseline", legacySchemaSQL()}, {2, "schema state and runtime coordination", migrationLedgerSQL + "\n" + state}, {3, "retained artifact and repository lifecycle", lifecycle}, {4, "versioned repository source configuration", sourceConfigurationSchema + schemaStateSQL(sourceSchemaStateBody)}, {5, "fenced exact-byte repair jobs", schemaStateSQL(sourceSchemaStateBody)}, {6, "recurring bounded integrity sampling", schedules}, {7, "policy-driven retained retirement", retention}, {8, "explicitly authorized scheduled retirement", retentionSchedules}, {9, "bounded hold inventory and immutable lifecycle history", holdManagementSchema + schemaStateSQL(retentionScheduleSchemaStateBody)}, {10, "independent immutable-reference hold cases", holdCases}, {11, "cross-reference hold matters and reviewed bulk preservation", matters}}
+	checksums := goChecksumSchema
+	for _, table := range []string{"go_checksum_checkpoint_revisions", "go_checksum_checkpoints", "go_module_checksum_receipts"} {
+		q := pgx.Identifier{"cratectl", table}.Sanitize()
+		checksums += `ALTER TABLE ` + q + ` ENABLE ROW LEVEL SECURITY; ALTER TABLE ` + q + ` FORCE ROW LEVEL SECURITY; CREATE POLICY tenant_scope ON ` + q + ` USING (tenant=current_setting('cratectl.tenant',true)) WITH CHECK (tenant=current_setting('cratectl.tenant',true)); GRANT SELECT,INSERT ON ` + q + ` TO cratectl_app;`
+	}
+	checksums += `GRANT UPDATE(revision) ON cratectl.go_checksum_checkpoints TO cratectl_app;` + schemaStateSQL(goChecksumSchemaStateBody)
+	return []migrationStep{{1, "legacy baseline", legacySchemaSQL()}, {2, "schema state and runtime coordination", migrationLedgerSQL + "\n" + state}, {3, "retained artifact and repository lifecycle", lifecycle}, {4, "versioned repository source configuration", sourceConfigurationSchema + schemaStateSQL(sourceSchemaStateBody)}, {5, "fenced exact-byte repair jobs", schemaStateSQL(sourceSchemaStateBody)}, {6, "recurring bounded integrity sampling", schedules}, {7, "policy-driven retained retirement", retention}, {8, "explicitly authorized scheduled retirement", retentionSchedules}, {9, "bounded hold inventory and immutable lifecycle history", holdManagementSchema + schemaStateSQL(retentionScheduleSchemaStateBody)}, {10, "independent immutable-reference hold cases", holdCases}, {11, "cross-reference hold matters and reviewed bulk preservation", matters}, {12, "retained Go checksum timelines and atomic proof receipts", checksums}}
 }
 
 var frozenMigrations = buildMigrations()
