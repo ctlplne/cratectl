@@ -87,12 +87,29 @@ func (s *Store) GoModuleProxyArtifact(ctx context.Context, i Identity, repo, p s
 
 func goModuleProxyArtifactInTx(ctx context.Context, tx pgx.Tx, r Repository, p string, c gomodule.Coordinate, review bool, admissions []NativeAdmission) (Artifact, error) {
 	if r.Settings.GoChecksumAuthority != nil || r.Settings.Cache.RequireChecksum {
-		return Artifact{}, ErrGoModuleUnvalidated
+		if r.Settings.GoChecksumAuthority == nil || len(admissions) != 1 || admissions[0].GoChecksum == nil {
+			return Artifact{}, ErrGoModuleUnvalidated
+		}
+		view, err := goChecksumReadbackInTx(ctx, tx, r, p, c, review, admissions)
+		if err != nil {
+			return Artifact{}, err
+		}
+		if admissions[0].GoChecksum.binding != view.binding {
+			return Artifact{}, ErrGoModuleUnvalidated
+		}
+		return view.artifact, nil
 	}
+	return goModuleProxyBundleInTx(ctx, tx, r, p, c, review, admissions)
+}
+
+// This private witness admits SQL metadata for inspection, never serving on its
+// own. The serving wrapper separately requires checksum readback admission.
+func goModuleProxyBundleInTx(ctx context.Context, tx pgx.Tx, r Repository, p string, c gomodule.Coordinate, review bool, admissions []NativeAdmission) (Artifact, error) {
 	if e := goModuleCacheReceiptsInTx(ctx, tx, r, c); e != nil {
 		return Artifact{}, e
 	}
 	b := repositoryReadBudget(r)
+	b.sqlMetadataBytes = MaxGoModuleMetadata
 	b.cacheRepository, b.admissions = r.Name, admissions
 	a, e := readArtifact(ctx, tx, r.Name, p, review, b)
 	if errors.Is(e, ErrNotFound) {

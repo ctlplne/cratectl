@@ -13,46 +13,43 @@ outside this CI authority. No autonomous delegation.
 
 ## Current qualification state
 
-Exact3b [campaign checkpoint](../../evidence/2026-11-06/github-3b66edb-checkpoint.json)
-passes all24actually selected jobs,17safe summaries and60reports. Source/unit/
-race and42target fuzz pass on Linuxamd64/arm64 and macOSarm64; all202source-defined
-PGfunctions run normally/race on bothLinuxhosts without source skips. Existing
-stock client/lifecycle profiles,8JVMjobs,2OCIjobs and2upgrade jobs pass. Chromium
-was selected and passes119checks on x86; ARM Chromium was not selected. Absent
-library/focused workflows are not passes. No broad readiness/security/packaging
-or full450capability inference follows from this selected campaign.
+Exact5ee [campaign checkpoint](../../evidence/2026-11-06/github-5ee4fbc-checkpoint.json)
+accepts all29actually selected jobs in7workflows:22safe summaries/79reports.
+All212PGfunctions run normally/race onbothLinuxhosts, source/unit/race/lint and
+43fuzz targets pass on3native hosts, original38PG/312Go profile passes onboth,
+11historical baselines and16upgrade reports perarch cover schema2–11 into12.
+JVM/OCI, exactSDK NuGet libraries and15focused x86browser trials also pass.
+Mainx86Chromium119checks/15tests has0skips/flaky/unexpected; ARMunselected. This
+qualifies the named profiles; full450capabilities/security/packaging remain open.
 
-The [named Go checkpoint](../../evidence/2026-11-06/go-module-3b66edb-native-checkpoint.json)
-retains28PGnormal/race and the original312checks/9stages24wire16cache on bothLinux
-hosts, with exact clean source/binary/tool/fixture identity. DEFECTS0118–0121
-replay in the campaign; all original failure and cancellation records remain.
+The [named Go checkpoint](../../evidence/2026-11-06/go-module-5ee4fbc-native-checkpoint.json)
+qualifies configured collection plus9new durable timeline/publication functions,
+including actual concurrent repository collectors, immutable/RLS/lease/source/
+policy/capacity/fork fences and11receipt preservation into12. The original5380
+ARMjobs68assertion failure did not reproduce:5eepasses all71assertions and later
+profiles. Its cause remains unknown. KeepDEFECT.0122 intermittent/open; new
+bounded encrypted assertion/process-log coverage is instrumentation, not proof
+of repair. No retry/deadline increase or original failure removal.
 
-The [exact5380 named Go checkpoint](../../evidence/2026-11-06/go-module-5380e84-native-checkpoint.json)
-now qualifies29PGfunctions normally/race and the original312stock checks on both
-native Linux hosts. The [partial wider campaign](../../evidence/2026-11-06/go-checksum-5380e84-ci-partial.json)
-retains source/unit/race and43fuzz targets on all3native hosts, plus the ARM
-runtime's durable-jobs failure after68assertions. Its raw failure assertion was
-not selected by the then-current encrypted collectors. Root cause is unknown;
-new bounded encrypted job assertion/process-log coverage is instrumentation,
-not a repair. No rerun, skip or green sibling job erases that original failure.
+The [readback development](../../evidence/2026-11-06/go-checksum-readback-development.json)
+adds5PGfunctions/33cases, one28case unit function and one fuzz target. Current
+43Go/217fullPG functions need normal/race execution onboth actual Linuxhosts;
+all44bounded fuzz targets/source/unit/race/lint run on3native hosts. Keep the
+original312Go checks, every other selected profile and11historical native
+baselines/schema2–11 upgrades. ARM gates and10090new parser fuzz executions pass;
+compile-only PostgreSQL is not execution. Existing workflow path selection
+chooses actual next jobs; never infer unselected library/focused jobs passed.
 
-The [durable publication development](../../evidence/2026-11-06/go-checksum-publication-development.json)
-appends migration12 and forced-RLS tenant/key history/proof receipts without
-changing the first11checksums. Nine new PostgreSQL functions bring the named Go
-suite to38 and the full integration source inventory to212. Run every function
-normally/race on both actual Linux architectures with the unchanged312stock
-profile. Source/unit/race and43bounded fuzz targets remain on all3native hosts.
-The existing upgrade jobs now rebuild11clean native historical sources and run
-schema2–11 maintenance journeys into12. No new workflow, duplicate dispatch,
-retry/deadline increase or assertion removal; no localPG or emulated x86.
-
-[ADR0045](../adr/0045-go-checksum-authority.md) records transaction continuity,
-same-head coalescing, bounded offline rebase and distinct signed-fork handling.
-After native replay, connect collection/publication to one renewable fill lease,
-complete proof byte readback/current/offline guards and customer/export/backup/
-GC paths, then qualify checksum-on stock Go proxy/group journeys before opening
-public mode. Preserve the client's independent GOSUMDB policy and every original
-hosted/group profile. The retained schema11 primary is outside CI migration scope.
+[ADR0045](../adr/0045-go-checksum-authority.md) now defines exact physical proof
+readback and opaque current-policy admission, including tenant and all3raw sizes.
+After native replay, wire collection/publication/readback to one120second fill
+and renewable lease, bounded recollection outside SQL, metadata discovery/current
+selection and failure evidence. Complete explicit offline/freshness policy,
+customer/export/backup/GC paths and checksum-on stock proxy/group journeys before
+opening public mode. Preserve independent client GOSUMDB policy and every prior
+hosted/group check. Keep allPG/JVM/SDK/client/upgrade campaigns on their native
+GitHub hosts; no localPG or emulatedx86, no duplicate dispatch or extra workflow.
+The retained schema11 primary is outside CI maintenance scope.
 
 Earlier source-specific observations below retain their historical limits; the
 newest exact checkpoint above governs current qualified scope.

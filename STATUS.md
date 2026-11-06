@@ -14,58 +14,59 @@ The full goal is incomplete. All 450 capabilities / 41 families and every later
 stage remain committed. Broad readiness, full security and packaging remain
 negative. Both commit identities remain exactly `imfeelingtheagi` on main.
 
-Exact `3b66edb` now passes every job selected by its GitHub campaign: 24jobs,
-17safe summaries and60reports, with original JSON and artifact/log identities
-retained. This includes source/unit/race and42fuzz targets onLinuxamd64/arm64/
-macOSarm64,202source-defined PostgreSQL functions normally/race on bothLinux
-hosts, all existing client/lifecycle profiles,8JVMjobs,2OCIjobs,2upgrade jobs and
-x86Chromium119checks. ARM Chromium was unselected, not a pass. The named Go jobs
-retain28PGnormal/race and312checks/9stages24wire16cache on bothLinuxhosts. See
-`evidence/2026-11-06/github-3b66edb-checkpoint.json` and
-`evidence/2026-11-06/go-module-3b66edb-native-checkpoint.json`.
+Exact `5ee4fbc` now passes all29actually selected jobs in7workflows, with
+22retained safe summaries/79reports and every artifact/log identity bound to
+that clean source. All212source-defined PostgreSQL functions run normally/race
+on bothLinuxhosts. Source/unit/race/lint and43fuzz targets pass onLinuxamd64,
+Linuxarm64 andmacOSarm64. Named Go retains38PGnormal/race and the original
+312checks/9stages24wire16cache on bothLinuxhosts. Bothupgrade jobs rebuild11
+historical native sources and pass16reports each, including schema2–11 controlled
+maintenance into12. JVM8/OCI2/library2/focused-browser3jobs pass; actualNuGet
+SDK10.0.403/libraries7.9.0.0 and alloriginal corpora have0mismatches. Mainx86
+Chromium119checks/15tests plus15focused trials pass with0skips/flaky/unexpected;
+ARMChromium unselected. No broad readiness/fullsecurity/packaging/fullformat verdict.
+See `evidence/2026-11-06/github-5ee4fbc-checkpoint.json` and
+`evidence/2026-11-06/go-module-5ee4fbc-native-checkpoint.json`.
 
-The earlier port collision, final-output/cleanup and random worker-key failures
-are retained and their scoped repairs replayed; no original skip/failure became
-a pass. This campaign qualifies only actually selected jobs and named profiles,
-not fullGo/450capabilities/security/packaging/readiness.
+This qualifies bounded configured checksum collection and9durable checkpoint/
+publication PGfunctions internally on disposable schema12 databases. The first
+11migration checksums remain frozen. Tenant/key timelines survive source/repo
+changes; immutable history, forward-only head trigger, proof/bundle references,
+receipts, integrity intents and ready journal/outbox are atomic. Signed forks,
+missing tiles, concurrency, tenant/key/source/lease/grant/capacity and RLS fences
+are exercised normally/race. Current primary remains schema11, stopped, using
+its selected5483878b binaries; no local PostgreSQL or primary migration.
 
-Exact `5380e84` qualifies the configured collection foundation:29named Go
-PostgreSQL functions normally/race and the original312stock checks/9stages/
-24wire16cache on both actual GitHub Linux architectures. Source/unit/race and
-43fuzz targets pass on Linuxamd64/arm64/macOSarm64. The wider ARM runtime fails
-its durable-jobs journey after68assertions; raw assertion detail was not retained
-by the then-current diagnostic collectors. No root cause or whole-campaign pass
-is inferred. The last fully accepted selected campaign remains3b. See
-`evidence/2026-11-06/go-module-5380e84-native-checkpoint.json` and
-`evidence/2026-11-06/go-checksum-5380e84-ci-partial.json`.
+The original5380 ARMdurable-jobs failure after68assertions remains retained with
+unknown rootcause. The full71assertion profile and later stages pass at5ee;
+new encrypted assertion/process-log coverage is instrumentation, not proof of a
+behavior repair. DEFECT.0122 remains open as intermittent; no failure became a pass.
 
-Durable checkpoint/proof publication is now implemented internally with appended
-migration12, preserving the first11migration checksums. Forced-RLS tenant/key
-history survives repository/source changes; a database trigger prevents head
-rollback. Common completion binds the current source/lease, original staged
-proof, both inspected h1s and all3raw digests in one transaction with references,
-integrity intents and ready journal/outbox. Same-head winners coalesce; a
-consistent winner replays offline, missing tiles require bounded recollection,
-and authenticated same-size log forks are distinguished. No network runs in SQL.
+Current proof readback is implemented internally after5ee: an authorized one-RR
+snapshot checks package/cache/proof policy and retained trust, exact proof bytes
+are physically read and verified offline, then an opaque tenant/repo/source/
+generation/key/head/proof/all3digest+size admission is rechecked by current common
+selection before bytes. Unknown/duplicate/noncanonical JSON, missing/corrupt
+proofs, changed policy and another tenant's identical token fail closed. Inert
+unassessed proof evidence can be verified; package review and explicit proof
+denial/lifecycle stay enforced, with no scan approval. Same proof bytes can span
+source epochs while receipts/admissions cannot; consistent head growth retains
+valid historical proofs without new network use.
 
-Two new unit functions and9new PGfunctions cover these cases, including actual
-concurrent repositories, rollback, tenant/key isolation, immutable privileges,
-11receipt migration and forced-RLS admission. Current38named Go/212full PG
-functions are compile-only locally and require normal/race native replay; no
-local PostgreSQL. ARM build/test/race/lint, tagged compilation/vet and37960proof
-fuzz executions pass. Encrypted durable-jobs assertions/fixed owned logs are
-added as diagnostic coverage, not a demonstrated repair. See
-`evidence/2026-11-06/go-checksum-publication-development.json`.
+One new28case unit function, one44thfuzz target and5PGfunctions/33fixed cases
+cover readback and current guards. ARM build/test/race/lint, all3PGpackages normal/
+race compile+vet and10090fuzz executions pass; zero localPG. Current43namedGo/
+217fullPG and44fuzz require exact native replay. See
+`evidence/2026-11-06/go-checksum-readback-development.json`.
 
-Actual proof readback/current cache/offline admission, server collector/fill-lease
-integration, bounded recollection and failure evidence, customer API/CLI/UI,
-export/backup/GC and complete checksum-on native proxy/group remain required.
-Current fetch/cached serving and public Go proxy creation stay closed. Eleven
-historical native baselines and schema2–11 upgrade journeys must qualify12 on
-disposable CI databases. The retained primary stays schema11 with its selected
-5483878b binaries, stopped. All450artifact capabilities/41families and later
-stages remain underGOAL4.1; readiness/security/packaging false. No primary,
-customer, sibling, release, package or image change.
+Default collector/fill/resolve/metadata-discovery integration, bounded outside-
+transaction recollection and failure evidence, explicit offline/freshness policy,
+customer API/CLI/UI, export/backup/GC and complete checksum-on native proxy/group
+remain required. Public Go proxy creation/HTTP routing remain gated. Internal
+cached-byte selection requires the opaque verified token; no proof flag grants
+access. All450artifact capabilities/41families/later stages remain underGOAL4.1;
+readiness/security/packaging false. No primary/customer/sibling/release/package/
+image changes.
 
 Earlier development and source-specific checkpoints follow; their original
 qualification limits remain historical evidence rather than current readiness.

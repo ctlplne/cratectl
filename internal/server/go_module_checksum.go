@@ -24,6 +24,38 @@ type goChecksumFetch struct {
 	Object   blob.Object
 }
 
+// readGoModuleChecksumProof admits only the exact retained proof bytes under an
+// authorized current repository/cache/policy snapshot. The opaque admission is
+// rechecked by common selection after package byte readback, before headers.
+// No network, approval or timeline update occurs here.
+func (s *Server) readGoModuleChecksumProof(ctx context.Context, i store.Identity, repo store.Repository, c gomodule.Coordinate, admissions ...store.NativeAdmission) (store.NativeAdmission, error) {
+	if s.DB == nil || s.Blobs == nil || repo.Format != "go" || repo.Mode != "proxy" {
+		return store.NativeAdmission{}, store.ErrGoModuleUnvalidated
+	}
+	view, err := s.DB.GoModuleChecksumReadback(ctx, i, repo.Name, c, repo.SourceRevision, admissions...)
+	if err != nil {
+		return store.NativeAdmission{}, err
+	}
+	object := view.Object()
+	if object.Size <= 0 || object.Size > min(s.NativeMetadataBytes, int64(store.MaxGoModuleChecksumProof)) {
+		return store.NativeAdmission{}, store.ErrMetadataLimit
+	}
+	file, err := s.Blobs.OpenVerified(ctx, i.Tenant, object.Digest, object.Size)
+	if err != nil {
+		return store.NativeAdmission{}, err
+	}
+	defer file.Close()
+	raw, err := io.ReadAll(io.LimitReader(file, object.Size+1))
+	if err != nil {
+		return store.NativeAdmission{}, err
+	}
+	marker, err := store.VerifyGoModuleChecksumReadback(ctx, view, raw)
+	if err != nil {
+		return store.NativeAdmission{}, err
+	}
+	return marker.NativeAdmission(), nil
+}
+
 // fetchGoModuleChecksumProof fetches only an explicitly configured authority.
 // currentCheckpoint is a separately read retained timeline, not a response hint
 // or automatic reset to initial trust. No database transaction is held here.

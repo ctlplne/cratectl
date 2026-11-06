@@ -2,8 +2,9 @@
 
 Observed: 2026-11-06. Status: hashing, offline verification and bounded configured
 proof collection qualified in named internal profiles. Durable timeline and
-atomic publication implemented internally, awaiting native PostgreSQL replay;
-customer configuration/serving journeys remain open.
+atomic publication qualify in38native GoPGfunctions normally/race. Actual proof
+readback/current opaque admission is implemented internally, awaiting native
+replay; customer configuration/serving journeys remain open.
 This consumes an external verification service. It does not introduce a signing
 service, key custody, CA, vault or workload issuer; GOAL section 4.1 governs.
 
@@ -91,7 +92,7 @@ the original312stock hosted/group checks on both native GitHub Linux hosts.
 Source/unit/race and43fuzz targets pass on Linuxamd64/arm64/macOSarm64. Its wider
 ARM durable-jobs profile fails after68assertions; no whole-campaign pass follows.
 
-## Durable publication boundary, native replay pending
+## Durable publication boundary, qualified internally
 
 Appended immutable migration12 adds forced-RLS tenant/key checkpoint history,
 a current-head pointer and repository-scoped proof receipts. Existing11receipt
@@ -121,16 +122,56 @@ retain ordinary unassessed policy; checksum consistency grants no scan approval.
 Nine new PostgreSQL functions cover actual staged ZIP/mod hashes, concurrent
 repository collectors, same-head coalescing, consistent growth/older lookups,
 rollback, source/lease/grant/tenant/key fences, missing tiles/forks, retained
-11receipt upgrade, immutable runtime privileges and forced-RLS admission. Local
-compilation is not execution. Native CI must also rebuild11historical baselines
-and run schema2–11 maintenance journeys into12. The retained primary remains
+11receipt upgrade, immutable runtime privileges and forced-RLS admission. Exact5ee executes these functions normally/race on bothLinuxhosts, rebuilds11
+historical native baselines and runs schema2–11 maintenance journeys into12. The retained primary remains
 schema11 on its existing selected binaries, stopped; source work does not migrate it.
 
 The server collector is not yet connected to this publication under the shared
-renewable fill lease. Actual proof blob readback/current serving, bounded
-recollection, failure-evidence publication, customer API/CLI/UI, offline export/
-backup/GC and native checksum-on proxy/group journeys remain required. Current
-fetch and cached-byte guards stay closed until those paths are complete.
+renewable fill lease. Bounded recollection, failure-evidence publication, customer API/CLI/UI, explicit
+offline policy, export/backup/GC and native checksum-on proxy/group remain required.
+The readback path below admits internal cached bytes only with an opaque token;
+current fetch/default resolve/public routing remain closed until integrated.
+
+## Current proof readback, native replay pending
+
+`GoModuleChecksumReadback` authorizes source/grants and the complete current
+three-member cache/policy unit in one repeatable-read snapshot. It binds the
+immutable receipt, current exact verifier key, retained accepted signed head and
+current forward-only timeline. Proof metadata has a4KiB SQL projection bound;
+package metadata uses the existing4KiB Go profile bound. The proof reference can
+retain an older source epoch because its bytes are immutable; the package and
+receipt must match the current epoch and root validation generation.
+
+The server opens the exact proof blob with common SHA256/length verification,
+reads at most its bounded size plus one, and accepts only canonical typed JSON.
+Decoded field/count/byte bounds apply before re-encoding. Exact re-encoding
+rejects duplicate/unknown/trailing fields and ambiguous encodings. Original log
+response bytes remain unchanged. The proof's original signed pin must parse
+under the configured key but never defines current trust: verification replays
+against the separately retained accepted checkpoint and both admitted h1 values.
+
+Only successful verification creates `GoChecksumAdmission`, whose bindings are
+unexported and omitted from `NativeAdmission` JSON. The final current SQL guard
+rebuilds the same witness and compares tenant, repo, source epoch, root attempt/
+validation generations, stale context, exact key/head, proof digest/length and
+all3package digests/sizes. It also rechecks current package/proof decisions and
+lifecycle. Another tenant's otherwise identical proof token cannot authorize
+bytes. A consistent later timeline head leaves an unchanged accepted proof valid.
+
+Proof content is inert verification evidence: unassessed proof bytes may be
+parsed and verified, while explicit proof denial or retirement blocks packages.
+This does not mark scan evidence clean or relax any package `require_review`.
+No network or mutation occurs in readback. The helper will run under the existing
+bounded HTTP transfer admission when connected to resolution; the default HTTP
+controller is not yet wired and public Go proxy mode remains gated.
+
+One new28case unit function and deterministic public-seed fuzz target plus
+5PostgreSQL functions/33cases cover canonical parsing, actual corrupt/missing
+proof objects, current post-readback denial, digest/size/epoch/generation/stale
+changes, historical proof continuity, cross-epoch immutable proof reuse and
+cross-tenant identical-token refusal. Current43Go/217fullPG functions compile
+normally/race locally; native execution is still required. The new44thfuzz
+profile passed10090local ARM executions in11.225seconds with2workers.
 
 ## Required integration, in dependency order
 

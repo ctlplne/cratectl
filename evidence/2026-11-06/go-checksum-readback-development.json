@@ -1,0 +1,119 @@
+{
+  "observed_at": "2026-11-06T22:50:52.444835+00:00",
+  "source_parent": "5ee4fbc197d4c152a6ebb7aa3421afd4b83ccb88",
+  "source_dirty": true,
+  "state": "implemented internally; native readback replay pending",
+  "source_sha256": {
+    "internal/store/go_checksum_readback.go": "6fa0a9687dde9433faa50ea78ee4c0f9fd39ac3cf12f352c8aef760840ded6b0",
+    "internal/store/go_checksum_readback_test.go": "e456b809566b298533d1c72f1f18576f51ce29af4eb5ba2eade413bb658ae076",
+    "internal/store/go_module_readback_integration_test.go": "ba245d98f68caff35152067be51856b95c703ac2056a1b4955b011b5d0d5fb46",
+    "internal/store/go_module_cache.go": "02f2049bf63fb32e6e7b7e7e1f5bf29359c2e985485d2c29020bc30091566e0f",
+    "internal/store/go_checksum_checkpoint.go": "f5cb5ea74063dd865497c33d73416dbfa4f3680343203865733dee26990d3d1c",
+    "internal/store/go_module_checksum.go": "c8f532339e93f33a4d2bd5d9a4b05824bacdd07c6b72636cba47c1cb82cc3e30",
+    "internal/store/oci_cache.go": "eb5f7d4772375c0e40e000821e6b4c7998c6246911293742b7dc329145120036",
+    "internal/server/go_module_checksum.go": "f949634844dfe8c201992a6dccb98e6542f20d593e17668c8368abf3dbb5d892",
+    "internal/server/go_module_checksum_readback_integration_test.go": "10a3c39699026fd70eaeae5de1f9059469a010107b3e6a8dbf3d76a0c5fdb16c"
+  },
+  "prior_qualified_candidate": "evidence/2026-11-06/github-5ee4fbc-checkpoint.json",
+  "schema": {
+    "candidate": 12,
+    "migration_changes": false,
+    "frozen_checksum": "2ba151f1b80253fbca009c157f5c72dbb68481ffdefe9dacf18f9e14a3069f71",
+    "primary": "unchanged schema11, stopped, selected5483878b binaries/tenreceipts preserved"
+  },
+  "implementation": [
+    "Authorized RR proof view checks complete3member package/cache/review policy, repository/source epoch, root attempt/validation generation and immutable receipt/all3rawdigest identities.",
+    "Current exact verifier key and immutable accepted signed head are separate trust. Accepted revision remains on current forward-only tenant/key timeline; consistent later head does not force old cached proof online.",
+    "Proof artifact uses common explicit-denial/lifecycle checks and4KiB SQL metadata cap. Unassessed inert proof can be verified; packageRequireReview stays independently enforced. Immutable proof can retain old source epoch; receipt/package cannot.",
+    "Server helper opens exact proof SHA256/length with common blob verification, then bounded size+1 read. Decoded shape/count/byte bounds precede canonical re-encoding; duplicate/unknown/trailing/noncanonical JSON and invalid original signed pin fail closed.",
+    "Replay both h1 values against separately retained accepted checkpoint, never self-selected proof trust. Only successful physical/canonical/crypto verification creates opaque admission; fields unexported, NativeAdmission.GoChecksum JSON omitted.",
+    "Final common Go proxy/selection guard rebuilds witness in one current RR transaction and compares tenant/repository/source/generation/stale/key/head/proof and all3rawdigest+size bindings. Explicit package/proof policy and lifecycle rechecked; failure returns no artifact.",
+    "Identical-all-fields-except-tenant proof token cannot cross tenant. Package metadata has4KiB SQL cap. No network/mutation in readback; existing bounded HTTP transfer admission remains when the helper is wired into default resolution."
+  ],
+  "tests": {
+    "new_unit_functions": 1,
+    "new_unit_cases": 28,
+    "new_fuzz_targets": 1,
+    "automatic_fuzz_inventory": 44,
+    "new_postgresql_functions": 5,
+    "new_postgresql_cases": 33,
+    "named_go_postgresql_inventory": 43,
+    "full_postgresql_inventory": 217,
+    "local_platform": "darwin/arm64",
+    "local_gates": [
+      "make build BINDIR=.cache/go-proof-readback-build",
+      "make test",
+      "make race",
+      "make lint",
+      "all3PGpackages normal/race compile-only and tagged vet"
+    ],
+    "local_postgresql_executed": false,
+    "local_jvm_sdk_or_native_registry_campaign": false,
+    "readback_fuzz": {
+      "executions": 10090,
+      "elapsed_seconds": 11.225,
+      "workers": 2,
+      "valid_seed": "frozen public fixture must authenticate separately in every worker"
+    },
+    "pg_cases": [
+      "Current complete package/review and proof denial/retirement/media/metadata/digest/size/receipt/key/source/cache/grant checks",
+      "Physical proof and package readback; corrupt/missing proof returns no admission; denial after disk readback fails final guard; public405 retained",
+      "Post-readback proof/package denial, retirement, source, metadata/token/root/generation/stale and root/sibling size changes",
+      "Consistent later head retains historical proof; identical proof reused across source epochs while old request admission fails",
+      "Two authorized tenants match all other proof/key/head/package/source/generation fields; borrowed token refused, own physical proof accepted"
+    ]
+  },
+  "validation_logs": [
+    {
+      "path": ".cache/go-proof-readback-final-build.log",
+      "sha256": "5bc5ea9f27ac1a7b57e6d669d64e4b2793bc62824ebc1da76a4cf6bb1fddd422",
+      "bytes": 419
+    },
+    {
+      "path": ".cache/go-proof-readback-final-test.log",
+      "sha256": "59ad5c7541792439bc7e9c4b17ba13ce0c323cbc5f21114f824bfa4d9023fd0e",
+      "bytes": 885
+    },
+    {
+      "path": ".cache/go-proof-readback-final-race.log",
+      "sha256": "989f4a4c1d50af1e6c2c199c82897b64f66d055f8aa33f92e72680220b32122d",
+      "bytes": 891
+    },
+    {
+      "path": ".cache/go-proof-readback-final-lint.log",
+      "sha256": "2f469162462ce8e325b28baccbfc044fd979b306755fc4d44a67a61521237726",
+      "bytes": 9004
+    },
+    {
+      "path": ".cache/go-proof-readback-final-integration-compile.log",
+      "sha256": "f765ed815e40cd6c8080997fca41bc11e902bba13bce5611d7141d4215e638b1",
+      "bytes": 410
+    },
+    {
+      "path": ".cache/go-proof-readback-final-fuzz.log",
+      "sha256": "793be68b67cae83175f5fe6c23ec23e2a9ada69178b8d589ac4b4e2c22e6e306",
+      "bytes": 494
+    }
+  ],
+  "prior_native_scope": {
+    "candidate": "5ee4fbc197d4c152a6ebb7aa3421afd4b83ccb88",
+    "jobs": 29,
+    "workflows": 7,
+    "safe_summaries": 22,
+    "safe_reports": 79,
+    "go_pg_normal_race": 38,
+    "all_pg_normal_race": 212,
+    "fuzz_per_native_host": 43,
+    "go_stock_checks_per_linux_arch": 312,
+    "historical_baselines_per_linux_arch": 11,
+    "upgrade_reports_per_linux_arch": 16,
+    "limits": "Named profiles only, new readback source excluded. Original5380 ARMjobs68failure nonreproduced at5ee71assertions but rootcauseunknown; DEFECT.0122 remains intermittent/open."
+  },
+  "limits": [
+    "Current43Go/217fullPG compiled normal/race only locally, not executed. New44target native fuzz and actual readback source need exact GitHub replay.",
+    "Default resolve/fill/metadata discovery not wired yet. Public Go proxy creation/HTTP stays gated; internal cached-byte selection requires opaque verified physical-proof admission.",
+    "No new schema/privilege change; no primary/customer/sibling/release/package/image action. Disposable5ee schema12 qualification is separate from retained schema11 primary.",
+    "Explicit offline/freshness policy, one120s renewable fill integration, bounded recollection outside SQL, failure evidence, customer API/CLI/UI, export/backup/GC and checksum-on stock proxy/group remain. Original312profile and independent client GOSUMDB policy retained.",
+    "All450artifact capabilities/41families/everylaterGOALstage remain under4.1. No CA/vault/signing/workloadissuer suite; broad readiness/security/packaging/fullformat verdicts false."
+  ]
+}

@@ -18,6 +18,7 @@ type NativeAdmission struct {
 	Repository, Path string
 	Generation       int64
 	Stale            bool
+	GoChecksum       *GoChecksumAdmission `json:"-"`
 }
 
 type OCIAdmission = NativeAdmission

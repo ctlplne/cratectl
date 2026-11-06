@@ -114,20 +114,11 @@ func validateGoChecksumPublication(repo Repository, p *GoModuleChecksumPublicati
 		}
 		return nil
 	}
-	if p == nil || p.ExpectedCheckpointRevision < 0 || p.Proof.Module != c.Module || p.Proof.Version != c.Version || p.Proof.Profile != GoModuleChecksumProfile || p.Proof.ZIPHash != p.ZIPHash || p.Proof.ModHash != p.ModHash || p.Proof.Snapshot.VerifierKey != a.VerifierKey || len(p.ZIPHash) != 47 || len(p.ModHash) != 47 {
+	if p == nil || p.ExpectedCheckpointRevision < 0 {
 		return ErrGoModuleUnvalidated
 	}
-	// Bound the Go value before JSON allocation. Crypto applies tighter path,
-	// canonical key/hash and per-response limits during transaction admission.
-	if len(a.VerifierKey) > 4096 || len(p.Proof.Snapshot.Checkpoint) > 16<<10 || len(p.Proof.Snapshot.Responses) > 128 {
-		return ErrGoModuleUnvalidated
-	}
-	budget := 1 << 20
-	for path, body := range p.Proof.Snapshot.Responses {
-		if len(path) > 2048 || len(path) > budget || len(body) > budget-len(path) {
-			return ErrGoModuleUnvalidated
-		}
-		budget -= len(path) + len(body)
+	if err := validateGoChecksumProofShape(p.Proof, c, p.ZIPHash, p.ModHash, a.VerifierKey); err != nil {
+		return err
 	}
 	raw, err := json.Marshal(p.Proof)
 	if err != nil || len(raw) > MaxGoModuleChecksumProof || p.Object.Size != int64(len(raw)) || p.Object.Digest != crypt.Digest(raw) {

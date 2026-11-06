@@ -49,6 +49,22 @@ type GoModuleChecksumProof struct {
 	Snapshot crypt.GoSumDBSnapshot `json:"snapshot"`
 }
 
+// Bound decoded values before JSON re-encoding or cryptographic replay. Exact
+// canonical lookup/tile paths and per-response sizes remain crypto admission.
+func validateGoChecksumProofShape(proof GoModuleChecksumProof, c gomodule.Coordinate, zipHash, modHash, key string) error {
+	if proof.Profile != GoModuleChecksumProfile || proof.Module != c.Module || proof.Version != c.Version || proof.ZIPHash != zipHash || proof.ModHash != modHash || proof.Snapshot.VerifierKey != key || len(zipHash) != 47 || len(modHash) != 47 || len(key) > 4096 || len(proof.Snapshot.Checkpoint) == 0 || len(proof.Snapshot.Checkpoint) > 16<<10 || len(proof.Snapshot.Responses) == 0 || len(proof.Snapshot.Responses) > 128 {
+		return ErrGoModuleUnvalidated
+	}
+	budget := 1 << 20
+	for path, body := range proof.Snapshot.Responses {
+		if len(path) > 2048 || len(path) > budget || len(body) > budget-len(path) {
+			return ErrGoModuleUnvalidated
+		}
+		budget -= len(path) + len(body)
+	}
+	return nil
+}
+
 func VerifyGoModuleChecksumProof(ctx context.Context, proof GoModuleChecksumProof, c gomodule.Coordinate, zipHash, modHash, key string, checkpoint []byte) (crypt.GoSumDBVerification, error) {
 	if _, err := gomodule.Canonical(c.Module, c.Version); err != nil || proof.Profile != GoModuleChecksumProfile || proof.Module != c.Module || proof.Version != c.Version || proof.ZIPHash != zipHash || proof.ModHash != modHash || proof.Snapshot.VerifierKey != key || !bytes.Equal(proof.Snapshot.Checkpoint, checkpoint) {
 		return crypt.GoSumDBVerification{}, crypt.ErrGoChecksumAuthority
