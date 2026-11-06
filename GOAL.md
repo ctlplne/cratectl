@@ -4,12 +4,12 @@
 - Product: cratectl, a ctlplne studio product
 - Workspace: /Users/shankar/Desktop/ctlplne-cratectl
 - Created: 2026-10-28
-- Updated: 2026-11-04
+- Updated: 2026-11-06
 - GitHub: https://github.com/ctlplne/cratectl
 - Origin: https://github.com/ctlplne/cratectl.git
 - Branch: main
 - Visibility: Public by owner direction on 2026-11-02; CI publication is authorized for this repository.
-- Status: Execution contract; implementation is paused at the owner's request. This scope amendment does not resume the build.
+- Status: Active execution contract. The owner resumed the full amended goal on 2026-11-06; section 4.1 remains authoritative.
 
 ## Owner-directed history reset (2026-10-28)
 

@@ -89,10 +89,10 @@ func TestGoModuleLatestRechecksCurrentVersionAfterDiskVerification(t *testing.T)
 				want, status = store.ErrMetadataLimit, 503
 			case "group-source-change":
 				query = `UPDATE cratectl.repositories SET source_revision=source_revision+1 WHERE name='combined'`
-				want, status = store.ErrSourceChanged, 409
+				want, status = store.ErrSourceChanged, 503
 			case "group-reorder":
 				query = `UPDATE cratectl.repositories SET settings=jsonb_set(settings,'{members}','["lower","higher"]'),source_revision=source_revision+1 WHERE name='combined'`
-				want, status = store.ErrSourceChanged, 409
+				want, status = store.ErrSourceChanged, 503
 			}
 			if query != "" {
 				if e = s.DB.Tx(ctx, i, true, func(tx pgx.Tx) error { _, e := tx.Exec(ctx, query); return e }); e != nil {

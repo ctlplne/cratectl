@@ -1,0 +1,54 @@
+{
+  "source_parent": "de14b53a546f37faa5cf2a9a69343f56c0b0028d",
+  "source_dirty": true,
+  "observed_at": "2026-11-06T19:48:31.155054+00:00",
+  "state": "native source-response fixture repair; ARM affected unit/race/lint and tagged compile/vet pass; full native replay required",
+  "files": [
+    {
+      "path": "internal/server/go_module_latest_integration_test.go",
+      "sha256": "8b26bc4000be047321c3f2478f2c9354509b5492b332600adb0c6910f2acf242"
+    },
+    {
+      "path": "internal/server/go_module_test.go",
+      "sha256": "3165cfcc025e8b98b7252ff22567ba619dcb357c70033752d56a2b183d2a04d0"
+    }
+  ],
+  "first_failure": "evidence/2026-11-06/go-module-210ac68-source-response-first-failure.json",
+  "related_metadata_failure": "evidence/2026-11-06/go-module-0c6ed88-queue-fixture-first-failure.json",
+  "repair": [
+    "Both native final guard calls already return the expected ErrSourceChanged. Correct the two HTTP expectations to the existing503 revalidation response; retain complete bundle/source/current latest selection and all original no-body/validator assertions.",
+    "Add a plain-text Go response regression for the503 source_configuration_changed response. No production error/serving handler, workflow, filter, budget or original stock case changes."
+  ],
+  "local_validation": "ARM server/store unit/race and full lint pass;23PGfunctions compile normally/race and tagged vet passes. Zero actual PostgreSQL/JVM/SDK campaign locally.",
+  "logs": [
+    {
+      "path": ".cache/go-source-response-resume-unit.log",
+      "sha256": "ec986ee571d72b8b983deb118a8a2723dfe819a88631b4801e7f98a65cdc82bd"
+    },
+    {
+      "path": ".cache/go-source-response-resume-race.log",
+      "sha256": "247f41b56758205b6aaa351e28d3e4144788344bbe9deff8742a690d67904eff"
+    },
+    {
+      "path": ".cache/go-source-response-resume-compile.log",
+      "sha256": "36b5f99b390b5b29715b30108f6734b212ca71d6d106720f6255d557363ec189"
+    },
+    {
+      "path": ".cache/go-source-response-resume-race-compile.log",
+      "sha256": "ab24ca2cf40890a4f959d9377d01923b051d49022246199a8f14a92b90449854"
+    },
+    {
+      "path": ".cache/go-source-response-resume-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/go-source-response-resume-lint.log",
+      "sha256": "af7165eeb33fccb9dfc17574d715de76e9610a4948405beb96e63e518de7cd8d"
+    }
+  ],
+  "limits": [
+    "Both210normalserver jobs fail; race/client skipped and empty summaries retained. No later PG/client acceptance until new exact-source actual GitHub run.",
+    "All450artifact capabilities/41families/all later stages retained under GOAL4.1 exclusions; no CA/vault/signing/workload-issuer suite. Public Go proxy/fullGo/fullreadiness/security/packaging remain unfinished.",
+    "No primary/customer/sibling/runtime grant/schema/release changes."
+  ]
+}

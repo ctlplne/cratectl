@@ -35,6 +35,14 @@ func TestGoModuleCacheRefusalKeepsNativeRetryAndPlainTextContract(t *testing.T) 
 		t.Fatal("cache revalidation error lost native retry/plain-text behavior", w.Code, w.Header())
 	}
 }
+
+func TestGoModuleSourceChangeRefusesClientFallback(t *testing.T) {
+	w := httptest.NewRecorder()
+	respondErr(&goProtocolResponse{ResponseWriter: w}, store.ErrSourceChanged)
+	if w.Code != http.StatusServiceUnavailable || w.Header().Get("Content-Type") != "text/plain; charset=utf-8" || !bytes.HasPrefix(w.Body.Bytes(), []byte("source_configuration_changed: ")) {
+		t.Fatal("changed source lost the native revalidation refusal", w.Code, w.Header())
+	}
+}
 func TestGoLatestChoosesReleasePrereleaseThenChronologicalPseudoVersion(t *testing.T) {
 	for _, tc := range []struct {
 		versions []string

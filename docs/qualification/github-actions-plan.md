@@ -1,6 +1,6 @@
 # GitHub Actions qualification plan
 
-Updated: 2026-11-05. Owner: `imfeelingtheagi`. The complete `GOAL.md`, all
+Updated: 2026-11-06. Owner: `imfeelingtheagi`. The complete `GOAL.md`, all
 450 capabilities / 41 families and all later stages remain committed scope.
 This plan places work on suitable hosts and describes how to accept evidence.
 It does not turn an unfinished feature or absent test into a pass.
@@ -12,6 +12,17 @@ Release, package/image publication and customer/primary/sibling changes remain
 outside this CI authority. No autonomous delegation.
 
 ## Current qualification state
+
+The owner resumed the amended goal on2026-11-06. Section4.1 excludes trstctl
+services; artifact verification/external provider adapters and cratectl own
+access/TLS remain. Both210native Go jobs fail two response assertions: final
+guards return the expected ErrSourceChanged, while the existing shared503
+response conflicts with fixture409. Production response/serving code is unchanged
+by the repair; both no-byte/validator checks remain. ARM unit/race/full lint and
+23PGnormal/race compilation/vet pass. Race/client stages skipped and empty
+summary exports remain failures. See the [first failure](../../evidence/2026-11-06/go-module-210ac68-source-response-first-failure.json)
+and [repair](../../evidence/2026-11-06/go-source-response-repair-development.json). Re-run all23functions normally/race and every
+original312stock check on both GitHub hosts; no duplicate dispatch.
 
 Exact946fails both normalserver packages at the queue fixture label; the common
 store already retired the lease as queue_capacity. Race/client stages skip and
@@ -28,7 +39,7 @@ The internal caller adds6functions/25scenarios, including12concurrent requests;
 metadata preparation adds2functions/24scenarios. All21execute on both GitHub hosts
 through the existing filter. ARM build/unit/race/lint and tagged compile/vet pass;
 zero PostgreSQL runs locally. No retries, budgets widened, cases removed or public
-proxy enablement. Source946's19function jobs are queued at latest observation;
+proxy enablement. Source946 and0c normalserver packages fail the queue-label fixture;
 no pending/skipped/canceled source counts as a pass. [Metadata development](../../evidence/2026-11-05/go-metadata-preparation-development.json)
 records complete grants/source catalogs, running byte/deadline limits, typed cache
 admission, current response view and the precise overflow/network-byte limits.

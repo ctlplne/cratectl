@@ -7,20 +7,26 @@ issuer, privileged access or estate-wide credential discovery/crypto migration.
 Artifact signature/provenance verification, external signing/provider adapters,
 repository policy and cratectl's own access credentials/TLS remain required.
 Capability and journey boundaries are recorded without changing verification
-states or historical evidence. This documentation amendment does not resume
-implementation; the owner's pause below remains in effect.
+states or historical evidence. The owner resumed implementation on 2026-11-06; this boundary remains in effect.
 
-Execution is paused at the owner's explicit request after commit and push.
+Execution resumed at the owner's explicit request on 2026-11-06.
 The full goal is incomplete. All 450 capabilities / 41 families and every later
 stage remain committed. Broad readiness, full security and packaging remain
 negative. Both commit identities remain exactly `imfeelingtheagi` on main.
 
-Code candidate `210ac68` is committed and pushed as the exact owner. ARM build,
-unit, race and lint pass; all23PGfunctions compile only. Native Go run41958115865
-and four other workflows are pending at this handoff. Earlier0c metadata jobs
-are queued/in progress; no new pass is inferred. Existing GitHub jobs continue
-without further monitoring while paused. Resume from
-`evidence/2026-11-05/owner-pause-after-go-latest.json` and the actual job results.
+The saved210native Go run completed with both normalserver jobs failed. The
+latest guard correctly returns ErrSourceChanged, whose existing HTTP mapping is
+503; two group-epoch/reorder fixtures expected409. The assertions are corrected
+without changing production error handling, and all no-byte/validator checks
+remain. ARM affected unit/race/full lint and23PGnormal/race compilation/vet pass.
+Race and stock-client steps were skipped on210; safe summaries are empty. No new
+native pass is inferred. Earlier0c jobs also failed the original queue label.
+Both original results and private-log hashes are retained in
+`evidence/2026-11-06/go-module-210ac68-source-response-first-failure.json` and
+`evidence/2026-11-06/go-module-0c6ed88-queue-fixture-first-failure.json`.
+The repair needs the complete23function normal/race and unchanged312check stock
+profile on both native GitHub hosts. Public Go proxy stays disabled. Full scope
+remains subject to GOAL4.1; no trstctl suite is being built.
 
 
 Exact `4a131f7` now passes the named Go hosted/group-v2 profile on both

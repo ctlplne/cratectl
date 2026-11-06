@@ -1,0 +1,214 @@
+{
+  "candidate": "210ac682037a145144393b1dbbca94705774972e",
+  "observed_at": "2026-11-06T19:47:23.743423+00:00",
+  "run_id": 41958115865,
+  "state": "both native normal server packages fail; race/client skipped; safe summaries empty",
+  "jobs": [
+    {
+      "architecture": "amd64",
+      "job_id": 127017777447,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/41958115865/job/127017777447",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare owned PostgreSQL and native binaries",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions with race detector",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Trusted TLS stock Go transitive downloads and policy recovery",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Encrypt bounded Go failure observations for owner diagnosis",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/go-resume-20261106/210ac68-amd64.txt",
+        "bytes": 116646,
+        "sha256": "b77a9ccab5ff20163707cf9536eacc6d077b63045df5aab93550a71f53d4a663"
+      },
+      "failed_tests": [
+        "TestGoModuleLatestRechecksCurrentVersionAfterDiskVerification",
+        "TestGoModuleLatestRechecksCurrentVersionAfterDiskVerification/group-source-change",
+        "TestGoModuleLatestRechecksCurrentVersionAfterDiskVerification/group-reorder"
+      ],
+      "fixed_diagnostics": [
+        "latest response did not enforce final guard group-source-change 503 409",
+        "latest response did not enforce final guard group-reorder 503 409"
+      ],
+      "safe_summary": {
+        "path": "evidence/2026-11-06/go-module-210ac68-amd64-failed-summary.json",
+        "sha256": "af7a9120b35b67fd4904c4e7ba947a1d48234ff1757383cd01ce27ac84b3b415",
+        "github_artifact_id": 13384674028,
+        "github_artifact_digest": "sha256:646e735c3cdbcd497c39ee32b205713b439c8152653daefeeca695501e86fc67"
+      },
+      "normal_store_package_success_records": 1
+    },
+    {
+      "architecture": "arm64",
+      "job_id": 127017777791,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/41958115865/job/127017777791",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare owned PostgreSQL and native binaries",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions with race detector",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Trusted TLS stock Go transitive downloads and policy recovery",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Encrypt bounded Go failure observations for owner diagnosis",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/go-resume-20261106/210ac68-arm64.txt",
+        "bytes": 116639,
+        "sha256": "7b00e739c6a0178a989a9f958fff14429da8410f0691d80ce28b2211efd1d0e8"
+      },
+      "failed_tests": [
+        "TestGoModuleLatestRechecksCurrentVersionAfterDiskVerification",
+        "TestGoModuleLatestRechecksCurrentVersionAfterDiskVerification/group-source-change",
+        "TestGoModuleLatestRechecksCurrentVersionAfterDiskVerification/group-reorder"
+      ],
+      "fixed_diagnostics": [
+        "latest response did not enforce final guard group-source-change 503 409",
+        "latest response did not enforce final guard group-reorder 503 409"
+      ],
+      "safe_summary": {
+        "path": "evidence/2026-11-06/go-module-210ac68-arm64-failed-summary.json",
+        "sha256": "a910708c7bdbf1fd81d56e48c412d2c0dddb20ab3557f62b87412e27ff921b4e",
+        "github_artifact_id": 13385568364,
+        "github_artifact_digest": "sha256:9acc3b1beec55ccc4143ecbcf258e3d974790bda6a50172b354755debbf20c93"
+      },
+      "normal_store_package_success_records": 1
+    }
+  ],
+  "limits": [
+    "No normal/race complete PostgreSQL or stock-client acceptance. Original failures remain durable; source-specific earlier4a13function/hosted-group-v2 proof remains separate.",
+    "All450artifact capabilities/41families/all later stages remain, constrained by owner GOAL4.1 trstctl exclusion. Broad readiness/security/packaging false."
+  ],
+  "diagnosis": "Both final guards return the expected ErrSourceChanged. The shared unchanged HTTP mapping returns503 source_configuration_changed; two fixtures incorrectly expect409. No original stale-info/body bypass is established; their later no-byte assertions were not reached after the status assertion failed.",
+  "repair": "Retain typed ErrSourceChanged, require existing503 for group epoch/reorder changes, preserve all byte/validator/policy assertions and add a Go plain-text source-response regression. No production serving/error mapping, test filter, native profile or budget change."
+}

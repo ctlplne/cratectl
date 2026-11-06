@@ -1,0 +1,209 @@
+{
+  "candidate": "0c6ed887a13f50d0547355ff061f178017ab1b7f",
+  "observed_at": "2026-11-06T19:47:23.743423+00:00",
+  "run_id": 41956961059,
+  "state": "both native normal server packages fail; race/client skipped; safe summaries empty",
+  "jobs": [
+    {
+      "architecture": "amd64",
+      "job_id": 127014063283,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/41956961059/job/127014063283",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare owned PostgreSQL and native binaries",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions with race detector",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Trusted TLS stock Go transitive downloads and policy recovery",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Encrypt bounded Go failure observations for owner diagnosis",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/go-resume-20261106/0c6ed88-amd64.txt",
+        "bytes": 106700,
+        "sha256": "1f0a3a8f9567ca6b4fe8af9ac69c1fa8ea999d0e61ad4f8ea5568e3f68f519d4"
+      },
+      "failed_tests": [
+        "TestGoModuleProxyCallerRecordsFailuresWithoutPartialPublication",
+        "TestGoModuleProxyCallerRecordsFailuresWithoutPartialPublication/queue"
+      ],
+      "fixed_diagnostics": [
+        "rolled-back publication left lease unretired"
+      ],
+      "safe_summary": {
+        "path": "evidence/2026-11-06/go-module-0c6ed88-amd64-failed-summary.json",
+        "sha256": "bd48793c87ea87f86af56a3bccd857d7bc13639db6006f8864e1cd766ebbe39b",
+        "github_artifact_id": 13384436162,
+        "github_artifact_digest": "sha256:ef32030f6176bf351048ecba132a0302ae780d2b13e92c16c3f9d6fc4d446b4d"
+      },
+      "normal_store_package_success_records": 1
+    },
+    {
+      "architecture": "arm64",
+      "job_id": 127014062746,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/41956961059/job/127014062746",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare owned PostgreSQL and native binaries",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions with race detector",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Trusted TLS stock Go transitive downloads and policy recovery",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Encrypt bounded Go failure observations for owner diagnosis",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/go-resume-20261106/0c6ed88-arm64.txt",
+        "bytes": 106559,
+        "sha256": "26c3d0c79f4c2558bb62b33b14bfefa1b73f7a8b79698c593df45423ef4b7c8c"
+      },
+      "failed_tests": [
+        "TestGoModuleProxyCallerRecordsFailuresWithoutPartialPublication",
+        "TestGoModuleProxyCallerRecordsFailuresWithoutPartialPublication/queue"
+      ],
+      "fixed_diagnostics": [
+        "rolled-back publication left lease unretired"
+      ],
+      "safe_summary": {
+        "path": "evidence/2026-11-06/go-module-0c6ed88-arm64-failed-summary.json",
+        "sha256": "6b0960a48618abb03a0f8ce720e8c3570fbdf9dfdf7930711ed916d67c076e3d",
+        "github_artifact_id": 13383564539,
+        "github_artifact_digest": "sha256:af5c1ae1885ea52d6c2e22a8510594f641f10d308f8dd23391deca29d7b0f61d"
+      },
+      "normal_store_package_success_records": 1
+    }
+  ],
+  "limits": [
+    "No normal/race complete PostgreSQL or stock-client acceptance. Original failures remain durable; source-specific earlier4a13function/hosted-group-v2 proof remains separate.",
+    "All450artifact capabilities/41families/all later stages remain, constrained by owner GOAL4.1 trstctl exclusion. Broad readiness/security/packaging false."
+  ],
+  "diagnosis": "Same incorrect caller queue label as the earlier946failure. Common store already retires queue_capacity; source210contains its correction but fails a separate new status expectation."
+}
