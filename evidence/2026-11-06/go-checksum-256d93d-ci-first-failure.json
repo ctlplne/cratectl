@@ -1,0 +1,110 @@
+{
+  "candidate": "256d93da72457c360974f219e7b48e9b57e235c6",
+  "observed_at": "2026-11-06T20:47:16.047399+00:00",
+  "run_id": 42289553314,
+  "state": "broader candidate failed; both named Go jobs separately pass28PGnormal/race and312stock checks",
+  "failed_jobs": [
+    {
+      "job_id": 128139176547,
+      "native": "Linux amd64",
+      "conclusion": "failure",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42289553314/job/128139176547",
+      "private_log": {
+        "path": ".private/ci-diagnostics/checksum-256-ci-first/runtime-amd64.txt",
+        "bytes": 266017,
+        "sha256": "84d4d1fbd85303ee1d2a726c1283785f8e02c53b38bb3a8daeb76b3d4948e45b"
+      },
+      "observed_port_collisions": 17,
+      "named_go_failures": [
+        "TestGoModuleLatestCallerUsesCurrentMetadataCacheWithoutPackageAdmission",
+        "TestGoModulePreparationUsesCompleteCurrentSourceCatalogs"
+      ],
+      "evidence_export": "No generated evidence records; refusing a successful empty summary",
+      "limits": "Normal integration fails before race/client/browser; missing summaries and skips are not passes. Fixed owned listener38443 is shared across parallel server/conformance packages."
+    },
+    {
+      "job_id": 128139176369,
+      "native": "Linux arm64",
+      "conclusion": "failure",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42289553314/job/128139176369",
+      "private_log": {
+        "path": ".private/ci-diagnostics/checksum-256-ci-first/runtime-arm64.txt",
+        "bytes": 271212,
+        "sha256": "7f5ac97f7cb6b5e6fefcd9a1f7afe999bbda958b97617ddeb37c66c481031d1e"
+      },
+      "observed_port_collisions": 36,
+      "named_go_failures": [
+        "TestGoModuleLatestCallerUsesCurrentMetadataCacheWithoutPackageAdmission",
+        "TestGoModuleLatestPreparationAndServingUseCurrentHintWithOldCachedPseudos",
+        "TestGoModulePreparationUsesCompleteCurrentSourceCatalogs"
+      ],
+      "evidence_export": "No generated evidence records; refusing a successful empty summary",
+      "limits": "Normal integration fails before race/client/browser; missing summaries and skips are not passes. Fixed owned listener38443 is shared across parallel server/conformance packages."
+    },
+    {
+      "job_id": 128139176795,
+      "native": "macOS arm64",
+      "conclusion": "failure",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42289553314/job/128139176795",
+      "private_log": {
+        "path": ".private/ci-diagnostics/checksum-256-ci-first/source-darwin-arm64.txt",
+        "bytes": 36169,
+        "sha256": "2c91a9c448cf8bb7c08fcea379a68740fca1dac1437160b335e057a9d1e68ef4"
+      },
+      "test": "test_successful_parent_exit_stops_children_holding_output_open",
+      "error": "PermissionError in final owned-group SIGKILL after parent exit",
+      "limits": "No live/zombie member inventory was recorded; exact group state is unknown. New repair requires observed group removal, preserving failures for a live/still-denied group."
+    }
+  ],
+  "other_job_observations": [
+    {
+      "id": 128139078170,
+      "name": "Scoped source, binary and history scans",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128139078634,
+      "name": "Select runtime qualification inputs",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128139176495,
+      "name": "Source and unit (amd64)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128139176530,
+      "name": "Bounded native Go fuzz (darwin-arm64)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128139176579,
+      "name": "Bounded native Go fuzz (amd64)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128139176632,
+      "name": "Source and unit (arm64)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128139176735,
+      "name": "Bounded native Go fuzz (arm64)",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "safe_export": "Empty evidence export correctly refuses success. No exporter weakening or retry increase.",
+  "native_go_checkpoint": "evidence/2026-11-06/go-module-256d93d-native-checkpoint.json",
+  "development": "evidence/2026-11-06/go-checksum-ci-repair-development.json",
+  "limits": [
+    "All original native failures/skips retained. No whole-candidate/fullGo/readiness/security/packaging verdict. No local PostgreSQL or emulated x86 test.",
+    "Source/unit passed bothLinuxhosts;42target fuzz passed onLinuxamd64/arm64/macOSarm64. Original random checksum fuzz key limits valid signed-seed replay across workers; later deterministic fixture repair must replay."
+  ]
+}

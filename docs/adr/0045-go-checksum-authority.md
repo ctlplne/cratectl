@@ -81,7 +81,9 @@ refuses bundle retrieval: this foundation does not enable public Go proxy mode.
 ## Evidence and test placement
 
 The real x/mod test server is used only as an in-memory external-service stand-in;
-test signing keys are ephemeral and never implement a product signing service.
+test signing keys are in-memory synthetic fixtures. The public deterministic
+fuzz seed keeps signed coordinator/worker baselines identical; no fixture key
+implements a product signing service.
 ARM local gates exercise parsing, streams, real owned child processes and these
 stand-ins. No local PostgreSQL or emulated x86 acceptance is claimed.
 

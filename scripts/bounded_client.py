@@ -12,9 +12,38 @@ class ClientLimitError(RuntimeError):
     pass
 
 
+def _owned_client_exit_code(process):
+    # Observe exit without reaping the session leader. Its reserved PID keeps
+    # the owned process-group identity from being reused before final signals.
+    if process.returncode is not None:
+        return process.returncode
+    status=os.waitid(os.P_PID,process.pid,os.WEXITED|os.WNOHANG|os.WNOWAIT)
+    if status is None:
+        return None
+    return status.si_status if status.si_code==os.CLD_EXITED else -status.si_status
+
+
+def _wait_for_owned_group_removal(group, timeout=3):
+    # Darwin can return EPERM when a group contains only zombies. Do not treat
+    # that errno as success: require observed group removal. Probe only with
+    # signal zero, so PID reuse cannot turn this wait into a new kill request.
+    deadline=time.monotonic()+timeout
+    while True:
+        try:
+            os.killpg(group,0)
+        except ProcessLookupError:
+            return True
+        except PermissionError:
+            pass
+        remaining=deadline-time.monotonic()
+        if remaining<=0:
+            return False
+        time.sleep(min(.01,remaining))
+
+
 def run_owned_client(argv, cwd, environment, timeout=120, output_limit=8 << 20, *, input_text=None, capture_limit=65536, poll_hook=None, output_sink=None):
-    if os.name != 'posix' or not 0 < timeout <= 300 or not 1 <= output_limit <= 8 << 20 or not 1 <= capture_limit <= 8 << 20:
-        raise ValueError('Owned client requires POSIX and bounded time/output')
+    if os.name != 'posix' or not all(hasattr(os,name)for name in ['waitid','WNOWAIT','P_PID','WEXITED','WNOHANG','CLD_EXITED']) or not 0 < timeout <= 300 or not 1 <= output_limit <= 8 << 20 or not 1 <= capture_limit <= 8 << 20:
+        raise ValueError('Owned client requires POSIX nonreaping exit observation and bounded time/output')
     if input_text is not None and (not isinstance(input_text,str) or len(input_text)>1<<20):
         raise ValueError('Owned client input must be bounded UTF-8 text')
     if poll_hook is not None and not callable(poll_hook):
@@ -44,10 +73,11 @@ def run_owned_client(argv, cwd, environment, timeout=120, output_limit=8 << 20, 
                         raise ClientLimitError('Owned client deadline expired; remote mutation outcome is unconfirmed')
                     ready = selector.select(min(.025,remaining))
                     # The parent can write and exit between a selector timeout
-                    # and poll(). Read once after observing exit, even when the
+                    # and exit observation. Read once after exit, even when the
                     # old readiness snapshot was empty. If a descendant holds
                     # an empty pipe open, stop here and let cleanup retire it.
-                    if not ready and process.poll() is not None:
+                    exit_code=_owned_client_exit_code(process)
+                    if not ready and exit_code is not None:
                         if not output_open:
                             break
                         try:
@@ -76,9 +106,10 @@ def run_owned_client(argv, cwd, environment, timeout=120, output_limit=8 << 20, 
                             output_sink.write(chunk)
                         captured.extend(chunk)
                         if len(captured)>capture_limit: del captured[:-capture_limit]
-                    if process.poll() is not None and not output_open:
+                    exit_code=_owned_client_exit_code(process)
+                    if exit_code is not None and not output_open:
                         break
-                return process.returncode, captured.decode('utf-8',errors='replace')
+                return exit_code, captured.decode('utf-8',errors='replace')
             finally:
                 # Signal only descendants still in this owned process group,
                 # never the caller. Explicit new sessions can escape.
@@ -86,13 +117,25 @@ def run_owned_client(argv, cwd, environment, timeout=120, output_limit=8 << 20, 
                     os.killpg(process.pid, signal.SIGTERM)
                 except ProcessLookupError:
                     pass
-                try:
-                    process.wait(timeout=3)
-                except subprocess.TimeoutExpired:
+                except PermissionError:
+                    # Still require the final hard kill or confirmed removal.
+                    # A denied graceful signal alone never establishes cleanup.
                     pass
+                deadline=time.monotonic()+3
+                while _owned_client_exit_code(process) is None:
+                    remaining=deadline-time.monotonic()
+                    if remaining<=0: break
+                    time.sleep(min(.01,remaining))
                 try:
                     os.killpg(process.pid, signal.SIGKILL)
                 except ProcessLookupError:
                     pass
+                except PermissionError:
+                    # The leader can now be reaped: no more termination
+                    # signals follow, only bounded disappearance probes.
+                    if _owned_client_exit_code(process) is not None:
+                        process.wait(timeout=3)
+                    if not _wait_for_owned_group_removal(process.pid):
+                        raise
                 process.wait(timeout=3)
 

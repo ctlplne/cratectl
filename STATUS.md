@@ -14,30 +14,34 @@ The full goal is incomplete. All 450 capabilities / 41 families and every later
 stage remain committed. Broad readiness, full security and packaging remain
 negative. Both commit identities remain exactly `imfeelingtheagi` on main.
 
-Exact `492381f` now passes both actual native Linux Go jobs: 28 source-defined
-PostgreSQL functions normally and with race detection, plus the original 312
-checks, 9 stages, 24 wire bindings and 16 cache bindings. Clean native binaries,
-source, tools and fixture identity were verified. This includes optional latest
-hint discovery and final current selection. See
-`evidence/2026-11-06/go-module-492381f-native-checkpoint.json`.
+Exact `256d93d` passes both actual native Linux Go jobs: 28 PostgreSQL functions
+normally/race and all original 312 checks, 9 stages, 24 wire and 16 cache bindings,
+with clean source/binary/tool/fixture identity. See
+`evidence/2026-11-06/go-module-256d93d-native-checkpoint.json`.
 
-The next checksum foundation computes standard Go ZIP and go.mod h1 values during
-bounded archive inspection and verifies both against offline signed checksum-log
-proofs. It checks inclusion, consistent checkpoint advancement, forks, exact
-identity and bounded input without contacting a service. ARM build/unit/race,
-focused tests, 179414 fuzz executions and normal/race PG compilation/vet pass.
-The first lint failure exposed a deterministic final-output race in the owned
-client helper; its regression fails against original code and passes the repair.
-Full repaired lint passes. A separate initial cleanup EPERM observation remains
-unexplained and retained; cleanup authority was not weakened. See
-`evidence/2026-11-06/go-checksum-authority-development.json` and
-`evidence/2026-11-06/bounded-client-selector-output-first-failure.json`.
+Its broader main CI campaign fails: server and conformance packages collide on
+owned loopback38443 on both Linux hosts, and macOS lint reports a final owned-
+group kill PermissionError after parent exit. Empty evidence exports correctly
+refuse success. Linux source/unit jobs and all three native42target fuzz jobs
+pass, separately from those failures. See
+`evidence/2026-11-06/go-checksum-256d93d-ci-first-failure.json`.
 
-These later changes still require native CI replay. Configured authority/trust,
-durable tenant checkpoint and proof publication, current offline policy and
-full public proxy/group journeys remain required under ADR0045. RequireChecksum
-still refuses bundle retrieval and public proxy stays disabled. No schema,
-primary/customer/sibling or release change was made.
+The current repair serializes integration packages without dropping cases,
+waits for confirmed group removal after a denied kill while preserving actual
+cleanup failure, and makes the checksum fuzz fixture identical across workers.
+The new worker initialization regression fails with original random generation,
+then passes. ARM crypto unit/race/vet,110329fuzz executions, all16client cases,
+full lint and serial3package normal/race compilation pass; no local PostgreSQL.
+Exact-source full native replay remains required. See
+`evidence/2026-11-06/go-checksum-ci-repair-development.json`.
+
+Standard Go h1 archive hashing and offline authenticated checksum-log proof
+verification are implemented. Configured external authority/trust, durable tenant
+checkpoint CAS/proof publication, current offline policy and full public proxy/
+group journeys remain required under ADR0045. RequireChecksum still refuses
+bundle retrieval and public proxy stays disabled. No schema, primary/customer/
+sibling or release change was made. Full450capability/41family/later-stage scope
+under GOAL4.1 remains; broad readiness/security/packaging are false.
 
 Earlier development and source-specific checkpoints follow; their original
 qualification limits remain historical evidence rather than current readiness.

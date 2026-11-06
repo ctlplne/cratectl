@@ -1,0 +1,105 @@
+{
+  "source_parent": "256d93da72457c360974f219e7b48e9b57e235c6",
+  "source_dirty": true,
+  "observed_at": "2026-11-06T20:47:16.047399+00:00",
+  "state": "three native-campaign/harness refinements repaired locally; exact-source native replay required",
+  "files": [
+    {
+      "path": "Makefile",
+      "bytes": 2648,
+      "sha256": "8326917dfe74052d089cdeb8368ffefcd7f2614398d19600965f0f66e9a5c8f8"
+    },
+    {
+      "path": "internal/crypto/go_sumdb_test.go",
+      "bytes": 11805,
+      "sha256": "62f5e7e38eb6877710e9dd278a17878b1dc3f8098e277eed74309bab5624f6d7"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "bytes": 7239,
+      "sha256": "8205d979c2eb37283255ad6c3fa51949802e1b892ac480f19149e0cff4949ecf"
+    },
+    {
+      "path": "scripts/test_bounded_client.py",
+      "bytes": 12191,
+      "sha256": "238ff480ed3b1cba3c1ce0e776e65ea3ea5f4d74ef498bc92602997477d40d88"
+    }
+  ],
+  "changes": [
+    "Integration and integration-race serialize package suites with -p=1 because server and conformance suites both bind owned loopback38443. All existing packages/cases remain selected, with unchanged job/deadline budgets. Native Go filtered lanes remain intact.",
+    "Checksum fuzzing uses a public deterministic in-memory synthetic signing seed, so coordinator/worker signed baseline bytes match. A new independent-initialization regression first fails with original random generation, then passes; fuzzing explicitly requires the original valid seed to verify in its worker. No production signing behavior or verifier code changed.",
+    "Observe client exit with waitid/WNOWAIT, keeping its session-leader PID reserved until all final signals finish. After denied final group kill, reap the exited owned leader and wait boundedly using only signal-zero probes until ESRCH proves group removal. Never send another termination signal after this reaping/wait begins. A live or persistently denied group still raises the original PermissionError. A graceful denial must still lead to hard kill or confirmed removal."
+  ],
+  "local_validation": {
+    "crypto": "normal/race allcrypto tests and vet pass; new independent worker initialization regression passes",
+    "fuzz": {
+      "executions": 110329,
+      "elapsed_seconds": 11.205,
+      "workers": 2,
+      "result": "pass including explicit valid worker seed"
+    },
+    "bounded_client": "All16cases pass in final full make lint, including real owned nonreaping child-exit observation, final output, descendant cancellation, denied removal probe and original-denial propagation.",
+    "lint": "Final full make lint passes after nonreaping ownership pinning.",
+    "integration": "all3package suites compile serially normally/race; zero localPostgreSQL execution"
+  },
+  "logs": [
+    {
+      "path": ".cache/go-checksum-fuzz-seed-original-failure.log",
+      "bytes": 237,
+      "sha256": "bd94de727fd10e1608e74b777a8dae3af0a62d1212dbb4b47e1087d5a801161a"
+    },
+    {
+      "path": ".cache/go-checksum-fuzz-seed-unit.log",
+      "bytes": 49,
+      "sha256": "1570f4406977b88e7037bea2a01948076a0267b2471de2d6dcd3911e7eecc7a9"
+    },
+    {
+      "path": ".cache/go-checksum-fuzz-seed-race.log",
+      "bytes": 49,
+      "sha256": "e8421f6238458de5c0fe1ff65e1fb7acd76d45fe0b9895f93c2dc06372e14c51"
+    },
+    {
+      "path": ".cache/go-checksum-fuzz-seed-fuzz.log",
+      "bytes": 518,
+      "sha256": "52b9c5e5cec4b5f806c88524518a687c5c994cec5ffb35d16ce0a8cb57eb3b29"
+    },
+    {
+      "path": ".cache/go-checksum-ci-repair-bounded-client.log",
+      "bytes": 113,
+      "sha256": "a783b166c6a52b0ede6d50f7a7fa004391ad77f950b2bfda3d71a5823e21deff"
+    },
+    {
+      "path": ".cache/go-checksum-ci-repair-lint.log",
+      "bytes": 9001,
+      "sha256": "eca1853b0acecd64972334dc5c0e2d44a4465456638aad1c90aabc41ed881d72"
+    },
+    {
+      "path": ".cache/go-checksum-ci-repair-integration-compile.log",
+      "bytes": 418,
+      "sha256": "8ba114e79b75e59c425c3e723000628b8651815f46909a57ca1480a9bf31cf8e"
+    },
+    {
+      "path": ".cache/go-checksum-ci-repair-bounded-client-pinned.log",
+      "bytes": 795,
+      "sha256": "213110460da20e6719021e1e08621ab8b2bed02fe82880ef9b18d6ac3aa23a07"
+    },
+    {
+      "path": ".cache/go-checksum-ci-repair-pinned-lint.log",
+      "bytes": 9002,
+      "sha256": "b5aa0ed35345d704ea30cd7c3dd57875f899ef1a0b5fa4fe3c4e159c376611de"
+    }
+  ],
+  "native_first_failure": "evidence/2026-11-06/go-checksum-256d93d-ci-first-failure.json",
+  "prior_named_go_checkpoint": "evidence/2026-11-06/go-module-256d93d-native-checkpoint.json",
+  "platform_reference": {
+    "url": "https://github.com/apple-oss-distributions/xnu/blob/main/bsd/kern/kern_sig.c",
+    "observed_on": "2026-11-06",
+    "scope": "killpg1 excludes zombie group members and returns EPERM when no eligible member was found. This is consistent with the observed post-exit denial, not proof of that job group inventory. The repair requires observed removal instead of treating errno as success."
+  },
+  "limits": [
+    "Current test/Makefile/cleanup source still needs nativeLinuxamd64/arm64 and macOS replay; broader mainPG normal/race/all original stock/browser stages must complete. No skipped case or successful named Go job repairs the failed broad campaign.",
+    "Checksum-specific primitive tests do not implement configured external authority, durable tenant checkpoint CAS/proof publication/current offline policy or publicGo proxy/group. RequireChecksum remains fail-closed.",
+    "All450artifact capabilities/41families/all later amendedGOAL stages retained; broad readiness/security/packaging false. No primary/customer/sibling/schema/runtime privilege/release change."
+  ],
+  "fixture_correction": "The first new nonreaping test incorrectly queried getpgid on an exited macOS child; that log remains a failure. Corrected it to non-signaling kill(pid,0) plus repeated WNOWAIT and final exact exit-code reaping, preserving the ownership assertion. Final all16cases pass."
+}

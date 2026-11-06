@@ -13,30 +13,31 @@ outside this CI authority. No autonomous delegation.
 
 ## Current qualification state
 
-Exact492 [both-native checkpoint](../../evidence/2026-11-06/go-module-492381f-native-checkpoint.json)
+Exact256 [both-native checkpoint](../../evidence/2026-11-06/go-module-256d93d-native-checkpoint.json)
 verifies all28 PostgreSQL functions normally/race and the original312 checks,
-9stages,24wire and16cache bindings on both actual Linux hosts. This includes
-current optional latest-hint discovery/preparation and the final snapshot guard.
-Ordinary lists remain independent of hints; cached pseudo ownership and review
-policy remain enforced. Clean native source/binary/tool/fixture identity is bound.
+9stages,24wire and16cache bindings on both actual Linux hosts. This named Go
+result is separate from the [failed broad campaign](../../evidence/2026-11-06/go-checksum-256d93d-ci-first-failure.json):
+both Linux runtime suites suffer parallel-package owned38443 collisions, and
+macOS source/unit fails final owned-group cleanup. Empty exports remain failures.
+Linux source/unit jobs and42target fuzz jobs on all three platforms pass; original
+random checksum fixture keys limit valid coordinator seed replay in workers.
 
-The new [checksum foundation](../../evidence/2026-11-06/go-checksum-authority-development.json)
-adds eight Go regression functions and one fuzz target. Standard h1 values are
-computed during bounded inspection; original offline lookup/tile proofs verify
-both hashes against a separately supplied signed checkpoint and verifier key.
-ARM build/unit/race, tagged compile/vet and179414 fuzz executions pass. The first
-lint failure and deterministic final-output harness repair remain recorded;
-full repaired lint passes. Exact-source native replay is still required.
+The [current repair](../../evidence/2026-11-06/go-checksum-ci-repair-development.json)
+serializes integration packages, requires confirmed group removal after a denied
+kill, and uses a public deterministic checksum fuzz fixture. Persistent denial
+still fails; signal-zero probes never send another kill. Nine new checksum Go
+regression functions and the new fuzz target retain both valid authenticated and
+rejection paths. Local ARM crypto unit/race/vet,110329fuzz executions,16client
+cases, full lint and serial3package normal/race compilation pass. No localPG.
 
-[ADR0045](../adr/0045-go-checksum-authority.md) orders the remaining configured
-trust, forced-RLS checkpoint CAS, immutable proof staging/common transaction,
-current cache/readback and offline export work. Existing native source/unit/race
-jobs cover these primitives and the client repair on Linux amd64/arm64 and macOS
-arm64. The existing fuzz inventory automatically includes the new target:42total
-at5seconds each, within the unchanged25minute lane. Native Go retains all28PG
-functions and the original312check profile. No extra workflow, emulated x86,
-local PostgreSQL, duplicate dispatch, retry increase or acceptance reduction.
-Configured authority/publication and public proxy remain unfinished.
+Existing native source/unit/race jobs must replay on Linux amd64/arm64 and macOS
+arm64, automatic42target fuzz on all three, both complete mainPG normal/race/
+stock/browser campaigns and the unchanged28PG/312check named Go jobs. No extra
+workflow, emulated x86, duplicate dispatch, retry/deadline increase or acceptance
+reduction. [ADR0045](../adr/0045-go-checksum-authority.md) orders remaining explicit
+external trust, forced-RLS checkpoint CAS, immutable proof/common publication,
+current cache/readback and offline export. Public proxy and broad readiness remain
+unfinished; require_checksum still refuses bundles without integrated authority.
 
 Earlier source-specific observations below retain their historical limits; the
 newest exact checkpoint above governs current qualified scope.

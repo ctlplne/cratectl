@@ -238,8 +238,31 @@ func TestGoChecksumOfflineProofBoundsBeforeParsingAndHonorsCancellation(t *testi
 	}
 }
 
+func checksumFuzzLog(t testing.TB) checksumLogFixture {
+	t.Helper()
+	// Public synthetic seed, solely for this in-memory fuzz fixture. Every
+	// coordinator/worker must derive identical signed baseline bytes. No test
+	// signing key is used by cratectl or by any external service.
+	signer, key, err := note.GenerateKey(bytes.NewReader(bytes.Repeat([]byte{0x42}, 32)), "cratectl-checksums.invalid")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return checksumLog(t, signer, key, "")
+}
+
+func TestGoChecksumFuzzFixtureIsStableAcrossWorkerInitialization(t *testing.T) {
+	a, b := checksumFuzzLog(t), checksumFuzzLog(t)
+	first, second := a.snapshot(t, a.empty, 1), b.snapshot(t, b.empty, 1)
+	if !reflect.DeepEqual(first, second) {
+		t.Fatal("coordinator and worker initialization produce different signed fuzz seeds")
+	}
+	if _, err := verifyChecksumFixture(b, first); err != nil {
+		t.Fatal("coordinator seed cannot replay through an independently initialized worker", err)
+	}
+}
+
 func FuzzGoChecksumOfflineLookup(f *testing.F) {
-	fixture := checksumLog(f, "", "", "")
+	fixture := checksumFuzzLog(f)
 	snapshot := fixture.snapshot(f, fixture.empty, 1)
 	lookup := ""
 	for path, data := range snapshot.Responses {
@@ -257,6 +280,9 @@ func FuzzGoChecksumOfflineLookup(f *testing.F) {
 		responses[lookup] = data
 		input := GoSumDBSnapshot{VerifierKey: snapshot.VerifierKey, Checkpoint: snapshot.Checkpoint, Responses: responses}
 		got, err := verifyChecksumFixture(fixture, input)
+		if bytes.Equal(data, snapshot.Responses[lookup]) && err != nil {
+			t.Fatal("valid coordinator seed lost its authenticated worker path", err)
+		}
 		if err != nil {
 			if !errors.Is(err, ErrGoChecksumAuthority) || !reflect.DeepEqual(got, GoSumDBVerification{}) {
 				t.Fatal("invalid proof returned partial trust or unbounded error detail", err)
