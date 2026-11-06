@@ -1265,6 +1265,15 @@
       "repair": "Keep expected ErrSourceChanged and all no-byte/validator checks; require existing503 for group epoch/reorder changes. Leave production response and source/policy/cache guards unchanged.",
       "limits": "No observed source/byte bypass established. Later leak assertions did not execute after the failed status assertions; re-run complete23function normal/race and original stock profile.",
       "replay": "evidence/2026-11-06/go-module-8f66bf4-native-checkpoint.json"
+    },
+    {
+      "id": "DEFECT.0118",
+      "summary": "Owned client can lose final private output when the parent exits after an empty selector snapshot",
+      "first_failure": "evidence/2026-11-06/bounded-client-selector-output-first-failure.json",
+      "state": "confirmed against original source and repaired locally; native CI replay pending",
+      "repair": "Drain a final nonblocking read after observed exit, retaining output/capture/sink bounds and owned descendant cleanup. New deterministic case proves complete structured output and output-budget rejection.",
+      "limits": "Separate first-run cleanup EPERM did not reproduce in isolated/full repaired lint; no cleanup authority change or claimed fix for that observation. Native source/unit lanes still required.",
+      "replay": "evidence/2026-11-06/go-checksum-authority-development.json"
     }
   ]
 }

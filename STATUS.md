@@ -14,22 +14,30 @@ The full goal is incomplete. All 450 capabilities / 41 families and every later
 stage remain committed. Broad readiness, full security and packaging remain
 negative. Both commit identities remain exactly `imfeelingtheagi` on main.
 
-Exact `1e38876` now passes both actual native Linux Go jobs:26source-defined
-PostgreSQL functions normally/race and the original312check/9stage/24wire/16cache
-hosted-group profile with clean native binary/source/tool/fixture identity. This
-qualifies the current typed hint-cache/renewable caller, separately from the new
-discovery integration. See
-`evidence/2026-11-06/go-module-1e38876-native-checkpoint.json`.
+Exact `492381f` now passes both actual native Linux Go jobs: 28 source-defined
+PostgreSQL functions normally and with race detection, plus the original 312
+checks, 9 stages, 24 wire bindings and 16 cache bindings. Clean native binaries,
+source, tools and fixture identity were verified. This includes optional latest
+hint discovery and final current selection. See
+`evidence/2026-11-06/go-module-492381f-native-checkpoint.json`.
 
-Current latest discovery now prepares optional hints only without an allowed
-tagged version. Ordinary lists remain independent. Cached proxy pseudos retain
-first-source ownership but the current hint determines latest eligibility;
-required review still blocks unknown/unassessed coordinates. The final one-
-snapshot guard rechecks hint/catalog/bundle generations after disk verification.
-Full ARM build/test/race/lint and28PGnormal/race compilation/vet pass. The two
-new functions/34scenarios still require actual native execution and the original
-312check stock profile; public proxy/fullGo remain unfinished. See
-`evidence/2026-11-06/go-current-latest-discovery-development.json`.
+The next checksum foundation computes standard Go ZIP and go.mod h1 values during
+bounded archive inspection and verifies both against offline signed checksum-log
+proofs. It checks inclusion, consistent checkpoint advancement, forks, exact
+identity and bounded input without contacting a service. ARM build/unit/race,
+focused tests, 179414 fuzz executions and normal/race PG compilation/vet pass.
+The first lint failure exposed a deterministic final-output race in the owned
+client helper; its regression fails against original code and passes the repair.
+Full repaired lint passes. A separate initial cleanup EPERM observation remains
+unexplained and retained; cleanup authority was not weakened. See
+`evidence/2026-11-06/go-checksum-authority-development.json` and
+`evidence/2026-11-06/bounded-client-selector-output-first-failure.json`.
+
+These later changes still require native CI replay. Configured authority/trust,
+durable tenant checkpoint and proof publication, current offline policy and
+full public proxy/group journeys remain required under ADR0045. RequireChecksum
+still refuses bundle retrieval and public proxy stays disabled. No schema,
+primary/customer/sibling or release change was made.
 
 Earlier development and source-specific checkpoints follow; their original
 qualification limits remain historical evidence rather than current readiness.

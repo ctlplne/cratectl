@@ -1,0 +1,149 @@
+{
+  "source_parent": "492381ff7e3ba5f76c7d7a04468233235539a65f",
+  "source_dirty": true,
+  "observed_at": "2026-11-06T20:34:02.092660+00:00",
+  "state": "standard Go content hashing integrated into bounded archive inspection; offline signed checksum proof foundation implemented and ARM tested; configured authority/publication and native source replay still required",
+  "files": [
+    {
+      "path": "internal/crypto/go_checksum.go",
+      "sha256": "03cdc2dbd40e51f8e31f777ba6f41feaf9ea0c9d02bd7c166fd2ab445902b354"
+    },
+    {
+      "path": "internal/crypto/go_checksum_test.go",
+      "sha256": "f7258bc5093e670158e51a19e05ece0905f0cf9e87ecd3627191d24a5904699c"
+    },
+    {
+      "path": "internal/crypto/go_sumdb.go",
+      "sha256": "d0e19e3d45bb354eceb9607dea29571b5e612c14c7edc0e7dace07109f5589c2"
+    },
+    {
+      "path": "internal/crypto/go_sumdb_test.go",
+      "sha256": "6adab6d8653aeae26203c9e78cebe9718bdac579f5144101dfb1ddc572a40ab8"
+    },
+    {
+      "path": "internal/gomodule/module.go",
+      "sha256": "e2631f7f864b4e7ad40e10c113be9461ca882be0f2fc4d90905402bcee12c526"
+    },
+    {
+      "path": "internal/gomodule/checksum_test.go",
+      "sha256": "7f30a04075c788f4dfc4acb91c1c2d89debb70b340a5b68f375151075e600ba9"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "bed4d195a11670bfb6a9125d16d9bb1eefeb7a25bef72a93209cf5d47b5ab6d9"
+    },
+    {
+      "path": "scripts/test_bounded_client.py",
+      "sha256": "e9b2754613b428fc9a609c467732b036add0169c84c9727a3c15230172c46b0f"
+    },
+    {
+      "path": "docs/adr/0045-go-checksum-authority.md",
+      "sha256": "283c861b94b643dcb410ed08479904d2fc420668f32f08e713d0b5ca735dbc47"
+    }
+  ],
+  "mechanism": [
+    "ZIP h1 is computed during the existing fully bounded/validated streaming inspection, using original entry names including explicit directories and SHA256 file digests. Exact go.mod bytes receive the standard separate h1. No second archive read or expanded copy; errors return no archive/hashes. Differential tests use pinned standard dirhash algorithms.",
+    "Offline VerifyGoSumDB requires a separately supplied current verifier key and nonempty signed checkpoint, bounded original canonical lookup/hash-tile responses, both exact expected ZIP/mod h1 values, authenticated inclusion and timeline consistency. Standard x/mod client performs cryptographic verification. No network/filesystem operations, implicit public service, package approval or untrusted error detail. Checkpoint output remains a proposal until current-policy atomic publication exists.",
+    "Limits:128responses/1MiB total input including names/key/checkpoint;64KiB per response,16KiB checkpoint,4096byte key; height8 exact-length hash tiles;256reads/1MiB returned response copies. Signed empty-tree bootstrap is explicit; old immutable proofs retain a newer consistent checkpoint without a freshness claim.",
+    "Existing GitHub source/unit/race and automatic fuzz inventory run new primitives on actual Linux amd64/arm64 and macOS arm64;42total checked-in fuzz targets at5seconds each, unchanged25minute lane. Native Go retains28PGfunctions and312stock checks on both Linux hosts. No workflow/test reduction or duplicate dispatch.",
+    "The discovered bounded-client selector/exit race is repaired with a final direct nonblocking read after observing parent exit. Exact output/capture/sink budgets remain enforced; empty pipes held by descendants still terminate through existing owned-group cleanup."
+  ],
+  "tests": {
+    "new_go_functions": 8,
+    "new_go_fuzz_targets": 1,
+    "local_fuzz_executions": 179414,
+    "local_fuzz_seconds": 16.167,
+    "normal_and_race": "full ARM make test/race passed; focused final tests include new fuzz seeds",
+    "build": "make build passed to ignored candidate directory",
+    "lint": "first run failed two unchanged bounded-client cases; original retained;10case isolated replay then11case deterministic repair and full make lint passed",
+    "integration": "28real-PGfunctions compile normal/race plus tagged vet; zero localPGexecution",
+    "regressions": [
+      "streaming ordering/directory/Unicode/original byte hashing vs standardGo",
+      "incomplete/duplicate/oversized hashing never returns checksum",
+      "valid signed empty bootstrap, consistent extension and nonrollback old proof",
+      "lookup/tile forgery, missing proof/mod, duplicate entries, wrong key/hashes/coordinate, unsigned/empty/bad checkpoint",
+      "signed same-key fork refuses without process exit or partial output",
+      "response/path/count/total/key/checkpoint bounds and cancellation",
+      "deterministic final-output and output-budget regression fails both cases against original helper and passes repair"
+    ]
+  },
+  "logs": [
+    {
+      "path": ".cache/go-checksum-foundation-first-test.log",
+      "sha256": "502a964c497974749a3880c9a4c10009651b9604ac5a091059325dde574b186b"
+    },
+    {
+      "path": ".cache/go-checksum-foundation-focused-race.log",
+      "sha256": "2adc6306cb880c9269b61c8637127bbd7e7760504ce624a4abe0ee6453d0eb0a"
+    },
+    {
+      "path": ".cache/go-checksum-foundation-build.log",
+      "sha256": "37b716e10a1e59068cf3c09ba43142e469a92375b9188d94087e9b6001b5e7f7"
+    },
+    {
+      "path": ".cache/go-checksum-foundation-test.log",
+      "sha256": "2fdc02fdb43613fb66578a6521d8e81534449dcb2e7205385f16681a1d7b0e24"
+    },
+    {
+      "path": ".cache/go-checksum-foundation-race.log",
+      "sha256": "a3801df90f2d93d09c95a16182b87066c53f1bc7ae5ac26111685391ed85a33a"
+    },
+    {
+      "path": ".cache/go-checksum-foundation-lint.log",
+      "sha256": "7c6fbef1d1c43136fb2c86c550656aa0134f9452111ca42e9ab5ea4e1746e548"
+    },
+    {
+      "path": ".cache/go-checksum-foundation-lint-repaired.log",
+      "sha256": "13082e4c4a231c57aac554140aa2828debf19e6c776c559bc40ea1d4ee20756c"
+    },
+    {
+      "path": ".cache/go-checksum-foundation-integration-compile.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/go-checksum-foundation-bounded-client-replay.log",
+      "sha256": "3090f68516e49688367ec489936c10e0dff7d4e608a50d3136d4f59ef26e4114"
+    },
+    {
+      "path": ".cache/go-checksum-foundation-bounded-client-fixed.log",
+      "sha256": "284250475e5d8254c5fcdd717b2247ca88ffba444e4fb85f2146ab07ab6e90a4"
+    },
+    {
+      "path": ".cache/go-checksum-foundation-client-output-original-regression.log",
+      "sha256": "fdd89c7198fc5e3dcfecdf8e8a35b4ff9644f1c913829e499ea1ac7ee25b4651"
+    },
+    {
+      "path": ".cache/go-checksum-foundation-fuzz.log",
+      "sha256": "a3ce40bde390df87e521e922b869b04c7e128b4c3e35059527f5289dd3de535a"
+    },
+    {
+      "path": ".cache/go-checksum-foundation-final-unit.log",
+      "sha256": "126cb7307e621aca08d114660e00d90aabc76040ce7479b9718a3ae212d1b976"
+    },
+    {
+      "path": ".cache/go-checksum-foundation-final-race.log",
+      "sha256": "ac9f39673b021cdfd547916f8d4acb0b42c7e4334c7472f19bd0c98be1894617"
+    }
+  ],
+  "prior_native_checkpoint": "evidence/2026-11-06/go-module-492381f-native-checkpoint.json",
+  "references": [
+    {
+      "url": "https://go.dev/ref/mod#authenticating",
+      "observed_on": "2026-11-06"
+    },
+    {
+      "url": "https://pkg.go.dev/golang.org/x/mod/sumdb/dirhash",
+      "observed_on": "2026-11-06"
+    },
+    {
+      "url": "https://pkg.go.dev/golang.org/x/mod/sumdb#ClientOps",
+      "observed_on": "2026-11-06"
+    }
+  ],
+  "next_design": "docs/adr/0045-go-checksum-authority.md",
+  "limits": [
+    "Current changes need exact-source native build/unit/race/fuzz and full28PGnormal/race plus312stock Go replay. Exact492acceptance excludes this later source.",
+    "No configured authority endpoint/trust controls, durable tenant checkpoint CAS, atomic proof/reference publication, authority-aware cache/readback or complete offline export journey yet. RequireChecksum still fails bundle retrieval; public proxy stays disabled.",
+    "No checksum/freshness/publisher/scan approval equivalence. No broad Go/full goal/security/packaging/release qualification. All450artifact capabilities/41families/all later stages retained underGOAL4.1. No primary/customer/sibling/schema/runtime privilege change."
+  ]
+}

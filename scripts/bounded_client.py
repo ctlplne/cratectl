@@ -43,6 +43,27 @@ def run_owned_client(argv, cwd, environment, timeout=120, output_limit=8 << 20, 
                     if remaining <= 0:
                         raise ClientLimitError('Owned client deadline expired; remote mutation outcome is unconfirmed')
                     ready = selector.select(min(.025,remaining))
+                    # The parent can write and exit between a selector timeout
+                    # and poll(). Read once after observing exit, even when the
+                    # old readiness snapshot was empty. If a descendant holds
+                    # an empty pipe open, stop here and let cleanup retire it.
+                    if not ready and process.poll() is not None:
+                        if not output_open:
+                            break
+                        try:
+                            chunk = os.read(output.fileno(),65536)
+                        except BlockingIOError:
+                            break
+                        if not chunk:
+                            break
+                        total += len(chunk)
+                        if total > output_limit:
+                            raise ClientLimitError('Owned client exceeded its private output budget')
+                        if output_sink is not None:
+                            output_sink.write(chunk)
+                        captured.extend(chunk)
+                        if len(captured)>capture_limit: del captured[:-capture_limit]
+                        continue
                     for _key, _events in ready:
                         chunk = os.read(output.fileno(),65536)
                         if not chunk:
@@ -55,7 +76,7 @@ def run_owned_client(argv, cwd, environment, timeout=120, output_limit=8 << 20, 
                             output_sink.write(chunk)
                         captured.extend(chunk)
                         if len(captured)>capture_limit: del captured[:-capture_limit]
-                    if process.poll() is not None and (not output_open or not ready):
+                    if process.poll() is not None and not output_open:
                         break
                 return process.returncode, captured.decode('utf-8',errors='replace')
             finally:

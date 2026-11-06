@@ -13,6 +13,7 @@ import (
 	"time"
 	"unicode"
 
+	cryptox "ctlplne.dev/cratectl/internal/crypto"
 	"ctlplne.dev/cratectl/internal/ziparchive"
 	"golang.org/x/mod/modfile"
 	"golang.org/x/mod/module"
@@ -126,6 +127,8 @@ type Archive struct {
 	GoMod         []byte
 	Files         int
 	ExpandedBytes int64
+	ZIPHash       string
+	GoModHash     string
 }
 
 func simpleFold(s string) string {
@@ -154,6 +157,10 @@ func InspectArchive(ctx context.Context, input io.ReaderAt, size int64, c Coordi
 		return Archive{}, err
 	}
 	prefix := c.Module + "@" + c.Version + "/"
+	checksum, err := cryptox.NewGoDirectoryHash(min(limits.Files, 65534), limits.DirectoryBytes)
+	if err != nil {
+		return Archive{}, err
+	}
 	var manifest bytes.Buffer
 	found := false
 	// Record implicit parents too: Dir/a and dir/b collide even without a Dir/ entry.
@@ -183,7 +190,7 @@ func InspectArchive(ctx context.Context, input io.ReaderAt, size int64, c Coordi
 		rel := strings.TrimSuffix(strings.TrimPrefix(name, prefix), "/")
 		if rel == "" {
 			if directory {
-				return nil, nil
+				return checksum.File(name, expanded)
 			}
 			return nil, ErrModule
 		}
@@ -200,9 +207,13 @@ func InspectArchive(ctx context.Context, input io.ReaderAt, size int64, c Coordi
 				return nil, ErrModule
 			}
 			found = true
-			return &manifest, nil
+			writer, e := checksum.File(name, expanded)
+			if e != nil {
+				return nil, e
+			}
+			return io.MultiWriter(&manifest, writer), nil
 		}
-		return nil, nil
+		return checksum.File(name, expanded)
 	})
 	if err != nil {
 		return Archive{}, err
@@ -214,5 +225,13 @@ func InspectArchive(ctx context.Context, input io.ReaderAt, size int64, c Coordi
 	if e != nil || parsed.Module == nil || parsed.Module.Mod.Path != c.Module {
 		return Archive{}, ErrModule
 	}
-	return Archive{GoMod: manifest.Bytes(), Files: inventory.Files, ExpandedBytes: inventory.ExpandedBytes}, nil
+	zipHash, e := checksum.Sum()
+	if e != nil {
+		return Archive{}, e
+	}
+	modHash, e := cryptox.GoModHash(manifest.Bytes())
+	if e != nil {
+		return Archive{}, e
+	}
+	return Archive{GoMod: manifest.Bytes(), Files: inventory.Files, ExpandedBytes: inventory.ExpandedBytes, ZIPHash: zipHash, GoModHash: modHash}, nil
 }

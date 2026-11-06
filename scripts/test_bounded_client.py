@@ -3,16 +3,50 @@
 import os
 import io
 import json
+import selectors
+import subprocess
 from pathlib import Path
 import sys
 import tempfile
 import time
 import unittest
+from unittest.mock import patch
 
 from bounded_client import ClientLimitError, run_owned_client
 
 
 class BoundedClient(unittest.TestCase):
+    def test_parent_exit_after_selector_timeout_drains_complete_private_output(self):
+        # The real child writes and exits after the deliberately empty readiness
+        # snapshot. Do not mock the pipe, bytes, child exit or private input.
+        process=[]; real_popen=subprocess.Popen; real_selector=selectors.DefaultSelector
+        class DelayedReadiness:
+            def __init__(self): self.selector=real_selector(); self.first=True
+            def __enter__(self): return self
+            def __exit__(self,*args): self.selector.close()
+            def register(self,*args): return self.selector.register(*args)
+            def unregister(self,*args): return self.selector.unregister(*args)
+            def select(self,timeout):
+                if self.first:
+                    self.first=False; process[0].wait(timeout=3); return []
+                return self.selector.select(timeout)
+        def start(*args,**kwargs):
+            child=real_popen(*args,**kwargs); process.append(child); return child
+        with tempfile.TemporaryDirectory(prefix='cratectl-client-final-output-') as directory:
+            for limit in [4096,8]:
+                with self.subTest(limit=limit),patch('bounded_client.subprocess.Popen',side_effect=start),patch('bounded_client.selectors.DefaultSelector',DelayedReadiness):
+                    process.clear(); sink=io.BytesIO()
+                    argv=[sys.executable,'-c','import json;print(json.dumps({"owned":"final private output"}))']
+                    if limit==8:
+                        with self.assertRaisesRegex(ClientLimitError,'output budget'):
+                            run_owned_client(argv,directory,dict(os.environ),output_sink=sink,output_limit=limit)
+                        self.assertEqual(sink.getvalue(),b'')
+                    else:
+                        code,output=run_owned_client(argv,directory,dict(os.environ),output_sink=sink,output_limit=limit)
+                        self.assertEqual(code,0)
+                        self.assertEqual(json.loads(output),{'owned':'final private output'})
+                        self.assertEqual(sink.getvalue().decode(),output)
+
     def test_deadline_keeps_bounded_private_output_and_polls_control(self):
         with tempfile.TemporaryDirectory(prefix='cratectl-browser-client-') as directory:
             output=io.BytesIO();polls=[]

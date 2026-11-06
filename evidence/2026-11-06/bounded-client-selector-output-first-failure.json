@@ -1,0 +1,31 @@
+{
+  "source_parent": "492381ff7e3ba5f76c7d7a04468233235539a65f",
+  "observed_at": "2026-11-06T20:34:02.092660+00:00",
+  "first_failure": {
+    "path": ".cache/go-checksum-foundation-lint.log",
+    "sha256": "7c6fbef1d1c43136fb2c86c550656aa0134f9452111ca42e9ab5ea4e1746e548"
+  },
+  "state": "confirmed final-output race repaired locally; native CI replay pending",
+  "cause": "Selector can time out just before the owned parent writes and exits. The subsequent process.poll sees exit and the old helper returns before draining buffered stdout, losing a structured result and skipping its output-budget check.",
+  "deterministic_original_replay": {
+    "path": ".cache/go-checksum-foundation-client-output-original-regression.log",
+    "sha256": "fdd89c7198fc5e3dcfecdf8e8a35b4ff9644f1c913829e499ea1ac7ee25b4651"
+  },
+  "repair": "After observing parent exit with an empty readiness snapshot, directly read nonblocking stdout until EOF or no data; preserve output/capture/private sink bounds and existing descendant cleanup.",
+  "repair_replay": [
+    {
+      "path": ".cache/go-checksum-foundation-bounded-client-fixed.log",
+      "sha256": "284250475e5d8254c5fcdd717b2247ca88ffba444e4fb85f2146ab07ab6e90a4"
+    },
+    {
+      "path": ".cache/go-checksum-foundation-lint-repaired.log",
+      "sha256": "13082e4c4a231c57aac554140aa2828debf19e6c776c559bc40ea1d4ee20756c"
+    }
+  ],
+  "other_observations": [
+    "The first lint run also reported EPERM in final owned-group SIGKILL after a control failure. All10unchanged tests passed isolated, then all11with deterministic output regression passed and full lint passed. This separate permission observation is not explained or claimed repaired; cleanup authority was not weakened."
+  ],
+  "limits": [
+    "Real owned child processes with delayed-selector readiness stand-in; localARM only. Native Linux amd64/arm64 and macOS source/unit lanes still required. No original failure reclassified as a pass."
+  ]
+}
