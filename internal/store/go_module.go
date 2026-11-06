@@ -189,7 +189,7 @@ func (s *Store) GoModuleView(ctx context.Context, i Identity, repo, mod string, 
 	}
 	out := GoModuleVersionView{Versions: []string{}}
 	e = s.Tx(ctx, i, false, func(tx pgx.Tx) error {
-		return goModuleViewInTx(ctx, tx, i, repo, mod, escaped, limit, budget, admissions, &out)
+		return goModuleViewInTx(ctx, tx, i, repo, mod, escaped, limit, budget, admissions, &out, false)
 	})
 	if e != nil {
 		return GoModuleVersionView{}, e
@@ -198,7 +198,7 @@ func (s *Store) GoModuleView(ctx context.Context, i Identity, repo, mod string, 
 	return out, nil
 }
 
-func goModuleViewInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, mod, escaped string, limit int, budget int64, admissions []NativeAdmission, out *GoModuleVersionView) error {
+func goModuleViewInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, mod, escaped string, limit int, budget int64, admissions []NativeAdmission, out *GoModuleVersionView, latest bool) error {
 	group, members, e := nativeRepositories(ctx, tx, i, repo, escaped, "go")
 	if e != nil {
 		return e
@@ -206,6 +206,16 @@ func goModuleViewInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, mod, esc
 	if group.Mode != "hosted" && group.Mode != "group" && group.Mode != "proxy" {
 		return ErrConflict
 	}
+	if len(members) > 32 {
+		return ErrMetadataLimit
+	}
+	type sourceCandidates struct {
+		repository Repository
+		versions   map[string]bool
+		pseudos    map[string]bool
+		review     bool
+	}
+	var sources []sourceCandidates
 	selected := map[string]bool{}
 	remaining := limit * 3
 	advertisements := limit
@@ -264,9 +274,71 @@ func goModuleViewInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, mod, esc
 			}
 			addGoModuleAdvertisements(candidates, catalog, source.RequireReview || group.RequireReview)
 		}
+		if latest {
+			entry := sourceCandidates{repository: source, versions: candidates, review: source.RequireReview || group.RequireReview}
+			if source.Mode == "proxy" {
+				entry.pseudos = map[string]bool{}
+				for version, allowed := range candidates {
+					if module.IsPseudoVersion(version) {
+						entry.pseudos[version] = allowed
+						// A cached commit is not evidence of the upstream's current
+						// default-branch latest. Retain ownership, pending its hint.
+						candidates[version] = false
+					}
+				}
+			}
+			sources = append(sources, entry)
+		}
 		mergeGoModuleVersions(selected, candidates)
 		if len(selected) > limit {
 			return ErrMetadataLimit
+		}
+	}
+	if latest {
+		tagged := false
+		for version, allowed := range selected {
+			if allowed && !module.IsPseudoVersion(version) {
+				tagged = true
+				break
+			}
+		}
+		if !tagged {
+			for _, entry := range sources {
+				if entry.repository.Mode != "proxy" {
+					continue
+				}
+				budget -= 192
+				if budget < 1 {
+					return ErrMetadataLimit
+				}
+				_, hint, e := readGoModuleLatestInTx(ctx, tx, entry.repository, mod, &budget, admissions)
+				if e != nil {
+					return e
+				}
+				if hint.Version == "" {
+					continue
+				}
+				advertisements--
+				if advertisements < 0 {
+					return ErrMetadataLimit
+				}
+				if module.IsPseudoVersion(hint.Version) {
+					allowed, known := entry.pseudos[hint.Version]
+					if !known {
+						allowed = !entry.review
+					}
+					entry.versions[hint.Version] = allowed
+				} else if _, known := entry.versions[hint.Version]; !known {
+					entry.versions[hint.Version] = !entry.review
+				}
+			}
+			selected = map[string]bool{}
+			for _, entry := range sources {
+				mergeGoModuleVersions(selected, entry.versions)
+				if len(selected) > limit {
+					return ErrMetadataLimit
+				}
+			}
 		}
 	}
 	for version, allowed := range selected {

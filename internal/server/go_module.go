@@ -45,7 +45,7 @@ func (s *Server) serveGoModuleLatest(w http.ResponseWriter, r *http.Request, i s
 		respondErr(w, e)
 		return
 	}
-	a.goLatest, a.goCatalogAdmissions = true, catalogs
+	a.goLatest, a.goMetadataAdmissions = true, catalogs
 	s.serveResolvedArtifact(w, r, i, a)
 }
 
@@ -69,7 +69,7 @@ func (s *Server) goModule(w http.ResponseWriter, r *http.Request, i store.Identi
 		return
 	}
 	if request.Operation == "list" || request.Operation == "latest" {
-		view, admissions, e := s.prepareGoModuleView(r.Context(), i, repo, request.Module, forceRefresh(r))
+		view, admissions, e := s.prepareGoModuleDiscovery(r.Context(), i, repo, request.Module, forceRefresh(r), request.Operation == "latest")
 		if e != nil {
 			respondErr(w, e)
 			return

@@ -165,7 +165,7 @@ func TestGoModuleLatestBindsCurrentCatalogAndBundleAdmissions(t *testing.T) {
 			if e != nil {
 				t.Fatal(e)
 			}
-			a.goLatest, a.goCatalogAdmissions = true, catalogs
+			a.goLatest, a.goMetadataAdmissions = true, catalogs
 			if _, e = s.guardResolved(ctx, i, a); e != nil {
 				t.Fatal("initial catalog/bundle admission rejected", scenario, e)
 			}
@@ -179,7 +179,7 @@ func TestGoModuleLatestBindsCurrentCatalogAndBundleAdmissions(t *testing.T) {
 				}
 				want = store.ErrConflict
 			case "catalog-expired":
-				a.goCatalogAdmissions = nil
+				a.goMetadataAdmissions = nil
 				query = `UPDATE cratectl.retrievals SET fresh_until='epoch',stale_until='epoch' WHERE repository='source' AND path=$1`
 				want = store.ErrGoModuleCacheExpired
 			case "bundle-expired":
@@ -193,7 +193,7 @@ func TestGoModuleLatestBindsCurrentCatalogAndBundleAdmissions(t *testing.T) {
 				query = `UPDATE cratectl.artifacts SET decision='denied' WHERE repository='source' AND path=$1`
 				p, want = c.Prefix()+".zip", store.ErrDenied
 			case "wrong-catalog-generation":
-				a.goCatalogAdmissions[0].Generation++
+				a.goMetadataAdmissions[0].Generation++
 				want = store.ErrGoModuleCacheExpired
 			case "wrong-bundle-generation":
 				a.admissions[0].Generation++

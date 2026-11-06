@@ -14,6 +14,26 @@ The full goal is incomplete. All 450 capabilities / 41 families and every later
 stage remain committed. Broad readiness, full security and packaging remain
 negative. Both commit identities remain exactly `imfeelingtheagi` on main.
 
+Exact `1e38876` now passes both actual native Linux Go jobs:26source-defined
+PostgreSQL functions normally/race and the original312check/9stage/24wire/16cache
+hosted-group profile with clean native binary/source/tool/fixture identity. This
+qualifies the current typed hint-cache/renewable caller, separately from the new
+discovery integration. See
+`evidence/2026-11-06/go-module-1e38876-native-checkpoint.json`.
+
+Current latest discovery now prepares optional hints only without an allowed
+tagged version. Ordinary lists remain independent. Cached proxy pseudos retain
+first-source ownership but the current hint determines latest eligibility;
+required review still blocks unknown/unassessed coordinates. The final one-
+snapshot guard rechecks hint/catalog/bundle generations after disk verification.
+Full ARM build/test/race/lint and28PGnormal/race compilation/vet pass. The two
+new functions/34scenarios still require actual native execution and the original
+312check stock profile; public proxy/fullGo remain unfinished. See
+`evidence/2026-11-06/go-current-latest-discovery-development.json`.
+
+Earlier development and source-specific checkpoints follow; their original
+qualification limits remain historical evidence rather than current readiness.
+
 Exact `dbd5671` now passes both actual native Linux Go jobs:25source-defined
 PostgreSQL functions normally/race and the unchanged312check/9stage/24wire/16cache
 profile with exact clean native binary/tool/fixture identities. This includes
@@ -176,7 +196,7 @@ tests and console reproduction pass. Four original PostgreSQL server functions
 pass normally and with race on both hosts at `802bb51`. Three additional atomic
 intake store functions and the network-to-transaction function pass normally
 and with race on both hosts at `a630875`. The current v2 workflow
-requires both actual Linux hosts, all twenty-six database
+requires both actual Linux hosts, all twenty-eight database
 functions normally/with race, trusted TLS stock Go and all original hosted cases:
 nine stages,24publisher/reference/HTTP bindings and16exact cached ZIP/mod
 bindings. See `evidence/2026-11-04/go-module-groups-development.json`.
@@ -244,7 +264,7 @@ sibling cache receipts, integrity intents and ready event/outbox in the common
 current-authority/source/live-lease transaction. Unit/race/vet/full lint pass.
 Three new real-PG store functions now pass both hosts at `a630875`. The workflow
 now runs both server/store packages, including the new network transaction
-function, cache admission, source catalogs and discovery, for twenty-six PG functions normally/with race. Proxy creation
+function, cache admission, source catalogs and discovery, for twenty-eight PG functions normally/with race. Proxy creation
 and reads remain rejected until network/checksum/cache/serving integration and
 full native proof are complete. See
 `evidence/2026-11-04/go-module-atomic-intake-development.json`.

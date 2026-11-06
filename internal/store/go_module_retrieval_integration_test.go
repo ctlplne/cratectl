@@ -19,6 +19,7 @@ import (
 	"ctlplne.dev/cratectl/internal/upstream"
 	"ctlplne.dev/cratectl/internal/ziparchive"
 	"github.com/jackc/pgx/v5"
+	"golang.org/x/mod/module"
 )
 
 type goIntakeFixture struct {
@@ -61,10 +62,24 @@ func newGoIntakeFixture(t *testing.T) goIntakeFixture {
 }
 
 func (f goIntakeFixture) bundle(t *testing.T, payload string) RetrievalResult {
+	return f.bundleAt(t, gomodule.Coordinate{Module: "go.cratectl.invalid/Owned/intake", Version: "v1.0.0"}, payload)
+}
+
+func (f goIntakeFixture) bundleAt(t *testing.T, c gomodule.Coordinate, payload string) RetrievalResult {
 	t.Helper()
-	c := gomodule.Coordinate{Module: "go.cratectl.invalid/Owned/intake", Version: "v1.0.0"}
 	mod := []byte("module " + c.Module + "\n\ngo 1.26.0\n")
-	info := []byte(`{"Version":"v1.0.0","Time":"2026-01-02T03:04:05Z"}`)
+	instant := "2026-01-02T03:04:05Z"
+	if module.IsPseudoVersion(c.Version) {
+		timestamp, e := module.PseudoVersionTime(c.Version)
+		if e != nil {
+			t.Fatal(e)
+		}
+		instant = timestamp.UTC().Format(time.RFC3339)
+	}
+	info, e := gomodule.VersionInfo(c, instant)
+	if e != nil {
+		t.Fatal(e)
+	}
 	var body bytes.Buffer
 	z := zip.NewWriter(&body)
 	for _, file := range []struct {

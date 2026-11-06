@@ -1,0 +1,110 @@
+{
+  "source_parent": "d16e54c4251329cbff61e67d02120821e409801c",
+  "source_dirty": true,
+  "observed_at": "2026-11-06T20:17:24.491737+00:00",
+  "state": "current latest-hint discovery/serving integrated; ARM gates and28PGnormal/race compilation pass; native replay required",
+  "files": [
+    {
+      "path": "internal/store/go_module.go",
+      "sha256": "5eb9062de540433e7b7651fcb1474f6ed03a5963fd789b81a9c38a84a49e88e5"
+    },
+    {
+      "path": "internal/store/go_module_latest.go",
+      "sha256": "072d3c0b79548b1f9970720a0b81b8d3c031251bc4217da7e5e1546f598b95bc"
+    },
+    {
+      "path": "internal/store/go_module_retrieval_integration_test.go",
+      "sha256": "2415072d5044f8f4d5bd98617fb4e076878dfbb210bbd74daac6368eb60814d9"
+    },
+    {
+      "path": "internal/store/go_module_latest_discovery_integration_test.go",
+      "sha256": "3530063daca4149ee7cd87535a6a65cdb2654d61148d2ca5745a1241ad23dfa4"
+    },
+    {
+      "path": "internal/server/go_module.go",
+      "sha256": "7695c0162b411ff73d7d797412ab6c8929038273b3fc051499564a7ba50fa925"
+    },
+    {
+      "path": "internal/server/go_module_discovery.go",
+      "sha256": "e490e811db1eaf595303f8772aaabdead556e5b0d0eb4012a7108edcb3dc2d79"
+    },
+    {
+      "path": "internal/server/resolve.go",
+      "sha256": "4e513de2b6b920c1f1d2fc3851550f8cca35e9be30e715d0808536fd7e6b0ea2"
+    },
+    {
+      "path": "internal/server/go_module_latest_integration_test.go",
+      "sha256": "3b3e2caa3d2ca9464d0340e482575e7353e9e3059b312c31590e4c8269b674af"
+    },
+    {
+      "path": "internal/server/go_module_latest_discovery_integration_test.go",
+      "sha256": "705ca8af4333cd0b553c549c941eb84471aa13707281543d6e29e0a0f9599bfa"
+    }
+  ],
+  "mechanism": [
+    "Latest discovery is separate from ordinary version-list discovery. All current catalogs/grants/namespace sources are prepared first. If any globally allowed tagged version exists, optional upstream latest is not contacted. Otherwise hints are prepared sequentially within the same120second deadline and running raw/derived metadata byte budget.",
+    "The shared complete current discovery snapshot preserves first-source ownership and full bundle review/denial/tombstone policy. Proxy cached pseudos retain ownership but are ineligible for latest until the current hint selects that coordinate. This prevents choosing an unrelated newer cached commit and prevents lower-source replacement of blocked known coordinates. Hosted pseudo candidates remain supported.",
+    "A current hinted known coordinate keeps its complete cached policy; unknown hinted coordinates remain unassessed under required review. Negative hints do not prove exact-version absence; known cached coordinates remain known/blocked. Missing/expired/malformed/denied hints return explicit failure and no partial view. Ordinary lists remain independent of optional hints.",
+    "After immutable object verification and before headers, latest and exact-byte source/group/bundle/cache selection share one repeatable-read snapshot. Catalog/hint/bundle admissions are separately capped32/32/64(total128). New tags, changed/expired hint generations, group/source epochs and package denial invalidate the prior latest selection without old info/validator headers.",
+    "No new schema or policy bypass. The existing fixture builder now accepts explicit canonical coordinates and supplies matching pseudo timestamps while preserving the original fixed release-info bytes. Public direct proxy mode remains rejected until complete native proxy/checksum/freshness journeys."
+  ],
+  "local_validation": [
+    "Full ARM make build/test/race/lint pass. All28source-defined real-PG functions compile normally/race and tagged vet passes; no local PostgreSQL/JVM/SDK/native-registry campaign.",
+    "Two new real-PG functions/34scenarios compile only:18current discovery/policy/namespace/cache/negative/budget cases and16upstream/adapter/post-readback cases including an older current hint with a newer cached pseudo, unknown/review/known-negative, tagged/list optional-hint avoidance, zero-cache/current generation, changed hints/new tags/source/group/denial and exact selected info bytes.",
+    "First tagged compilation rejected an unused encoding/json import in the new fixture. Removed the import and repeated normal/race compilation/vet. Original local log retained; this is not a product/native failure."
+  ],
+  "new_postgresql_functions": [
+    {
+      "name": "TestGoModuleLatestDiscoveryUsesCurrentHintInsteadOfCachedPseudoHistory",
+      "scenarios": 18
+    },
+    {
+      "name": "TestGoModuleLatestPreparationAndServingUseCurrentHintWithOldCachedPseudos",
+      "scenarios": 16
+    }
+  ],
+  "logs": [
+    {
+      "path": ".cache/go-latest-discovery-final-compile.log",
+      "sha256": "c853f561e3db6948057cbf5657c3762b09e3592b9b76c472cb6b352ffd14802b"
+    },
+    {
+      "path": ".cache/go-latest-discovery-final-race-compile.log",
+      "sha256": "6205df019fd0d1f98cb41d43b3f8544faf4246e9cad613c8a3dcfa303efceed1"
+    },
+    {
+      "path": ".cache/go-latest-discovery-final-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/go-latest-discovery-build.log",
+      "sha256": "3cd0c2f99e3594cb9dd68b78779c67fe20943664495e721eafcd5b6a683e6a5c"
+    },
+    {
+      "path": ".cache/go-latest-discovery-test.log",
+      "sha256": "1a36bde1eabbe757c4fdf4782440dda0a52840abe70c48fe4cfec7744468b958"
+    },
+    {
+      "path": ".cache/go-latest-discovery-race.log",
+      "sha256": "2469ba574967522f36c145fb0e837702bcbb96d29f614938670e8cbbc28205b3"
+    },
+    {
+      "path": ".cache/go-latest-discovery-lint.log",
+      "sha256": "3f3c009ba48402aae3f02f11a6bad455bc3e8ce1fd8fdaa2b42adcb907772ede"
+    },
+    {
+      "path": ".cache/go-latest-discovery-unused-import-first-failure.log",
+      "sha256": "15a190982629d455f108b79f44106147f87b9b8e517d4030726167cc715443e3"
+    }
+  ],
+  "prior_named_native": "evidence/2026-11-06/go-module-1e38876-native-checkpoint.json",
+  "reference": {
+    "url": "https://go.dev/ref/mod#goproxy-protocol",
+    "scope": "Tagged release/prerelease preference, optional latest response and chronological pseudo selection; no VCS lineage/retraction/checksum authority claim."
+  },
+  "limits": [
+    "Current28function/latest-discovery source needs actual normal/race PostgreSQL and unchanged312check/9stage/24wire/16cache hosted-group profile on both GitHub hosts. Exact1e26function acceptance is separate and excludes these changes.",
+    "Public proxy/full native proxy/group, broader source/grant/network races, independent checksum/offline trust, conditional refresh and warm-cache/lifecycle/migration/scale/platform/browser and every later amended GOAL stage remain.",
+    "All450artifact capabilities/41families retained under ownerGOAL4.1; no CA/vault/external credential/signing/workload issuance suite. Broad readiness/security/packaging false; no primary/customer/sibling/schema/runtime grant/release change."
+  ]
+}

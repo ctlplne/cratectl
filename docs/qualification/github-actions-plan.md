@@ -13,6 +13,16 @@ outside this CI authority. No autonomous delegation.
 
 ## Current qualification state
 
+Exact1e [both-native checkpoint](../../evidence/2026-11-06/go-module-1e38876-native-checkpoint.json) verifies26PGfunctions normally/
+race and the original312check/9stage24wire16cache profile on both actual hosts.
+Current latest-discovery integration adds2PGfunctions/34scenarios compiled only;
+current28requires a new exact-source native replay. It uses optional hints only
+without allowed tagged names and preserves cached coordinate ownership/current
+package policy, with one post-readback latest/catalog/hint/bundle snapshot.
+Ordinary lists never require optional hints. Full ARM build/test/race/lint and
+tagged compilation/vet pass; no local PostgreSQL campaign. See
+[development](../../evidence/2026-11-06/go-current-latest-discovery-development.json). Public proxy and broad readiness remain false.
+
 Exactdbd [both-native checkpoint](../../evidence/2026-11-06/go-module-dbd5671-native-checkpoint.json) verifies25PGfunctions normally/
 race and the original312check/9stage24wire16cache profile on both actual Linux
 hosts, including typed original latest-advertisement/network transaction cases.
@@ -385,7 +395,7 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 | `jvm-clients.yml`: Gradle / 2 | Both native Linux architectures; real PostgreSQL | Gradle9.8.2, exact JDK21 build, eight stages and24 publisher/reference/raw-HTTP digests. 60-minute job. Named v2 profile passes; broader JVM remains open. |
 | `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0 and exact JDK. Cache-v4 passes666checks/10stages/34wire+6cachebindings on both hosts at0edd, retaining all release/metadata/snapshot/SHA-2 cases. 60-minute job. Broader Ivy remains open. |
 | `jvm-clients.yml`: SBT / 4 | SBT1.13.0 and2.0.11, each on native Linux amd64/arm64; real PostgreSQL | Snapshot-v2 passes269checks/8stages/8snapshotcases/18bindings on all4cases at0cff, retaining every release case. Frozen tool-only boot cache/fresh project caches. Five-minute bootstrap, two-minute commands, 60-minute job. |
-| `go-modules.yml`: hosted/group and intake / 2 | Native Linux amd64/arm64; pinned Go, real PostgreSQL16.15, trusted loopback TLS | Twenty-six PG functions required normally/race for latest-hint cache/caller integration. Exact4a passes both hosts with13PGfunctions and312checks/all9stages/24wire/16cache. Original1cfailures retained;Exact8f qualifies23PGnormal/race and full312check hosted-group-v2;2advertisement functions compile only. Original failures retained.45-minute job; public proxy remains rejected. |
+| `go-modules.yml`: hosted/group and intake / 2 | Native Linux amd64/arm64; pinned Go, real PostgreSQL16.15, trusted loopback TLS | Twenty-eight PG functions required normally/race for current latest-hint discovery/selection integration. Exact4a passes both hosts with13PGfunctions and312checks/all9stages/24wire/16cache. Original1cfailures retained;Exact8f qualifies23PGnormal/race and full312check hosted-group-v2;2advertisement functions compile only. Original failures retained.45-minute job; public proxy remains rejected. |
 | `nuget-contract.yml`: libraries / 2 | Both native Linux architectures; exact SDK10.0.403 selection | Original37assertions/unchanged dense corpora pass both at1974, actual runtime10.0.14 and separate DLLhashes. 20-minute job. Does not replace actual NuGet HTTP/restore/restart proof. |
 | `oci-clients.yml`: native clients / 2 | Both native Linux architectures; Docker, Podman, Helm, real PostgreSQL | Actual publication/consumption and policy/tenant/recovery cases with inert owned data; 45-minute job. Do not execute the uploaded image. External-provider interoperability is separate. |
 | `browser-repair.yml`: focused / 3 on relevant pushes | Native x86 Chromium; five fresh PostgreSQL databases per selected journey | Repair, retention and NuGet each repeat five complete journeys; 45-minute job. Manual dispatch selects one. Stop on failure; no retries/skips count as acceptance. |
