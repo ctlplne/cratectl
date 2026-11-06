@@ -108,10 +108,10 @@ func (s *Server) fetchGoModuleBundle(parent context.Context, i store.Identity, r
 	if e != nil || request.Operation != "zip" || repo.Format != "go" || repo.Mode != "proxy" || repo.Name != lease.Repository || repo.SourceRevision != lease.SourceRevision || repo.Settings.Upstream == nil || s.Blobs == nil {
 		return store.RetrievalResult{}, store.ErrGoModuleUnvalidated
 	}
-	if repo.Settings.GoChecksumAuthority != nil {
+	if repo.Settings.GoChecksumAuthority != nil && s.DB == nil {
 		return store.RetrievalResult{}, errGoModuleChecksumPublicationRequired
 	}
-	if repo.Settings.Cache.RequireChecksum {
+	if repo.Settings.Cache.RequireChecksum && repo.Settings.GoChecksumAuthority == nil {
 		// Internal hashes bind the retrieved bytes; they are not an independent
 		// checksum authority. Never silently satisfy require_checksum with them.
 		return store.RetrievalResult{}, errGoModuleChecksumRequired
@@ -121,6 +121,13 @@ func (s *Server) fetchGoModuleBundle(parent context.Context, i store.Identity, r
 	}
 	ctx, cancel := context.WithTimeout(parent, 120*time.Second)
 	defer cancel()
+	var checkpoint store.GoChecksumCheckpoint
+	if repo.Settings.GoChecksumAuthority != nil {
+		checkpoint, e = s.DB.GoModuleChecksumCheckpoint(ctx, i, repo.Name, repo.SourceRevision)
+		if e != nil {
+			return store.RetrievalResult{}, e
+		}
+	}
 	config := *repo.Settings.Upstream
 	credential, e := s.credential(i.Tenant, config)
 	if e != nil {
@@ -171,7 +178,7 @@ func (s *Server) fetchGoModuleBundle(parent context.Context, i store.Identity, r
 	if e != nil {
 		return store.RetrievalResult{}, e
 	}
-	_, e = gomodule.InspectRepresentations(ctx, file, zipObject.Size, request.Coordinate, mod, info, ziparchive.Limits{CompressedBytes: s.GoModuleUploadBytes, ExpandedBytes: s.GoModuleExpandedBytes, DirectoryBytes: s.GoModuleDirectoryBytes, Files: s.GoModuleFileLimit})
+	inspected, e := gomodule.InspectRepresentations(ctx, file, zipObject.Size, request.Coordinate, mod, info, ziparchive.Limits{CompressedBytes: s.GoModuleUploadBytes, ExpandedBytes: s.GoModuleExpandedBytes, DirectoryBytes: s.GoModuleDirectoryBytes, Files: s.GoModuleFileLimit})
 	file.Close()
 	if e != nil {
 		return store.RetrievalResult{}, e
@@ -183,10 +190,18 @@ func (s *Server) fetchGoModuleBundle(parent context.Context, i store.Identity, r
 	for n := range objects {
 		objects[n].Metadata = raw
 	}
+	publication := &store.GoModulePublication{Objects: objects}
+	if repo.Settings.GoChecksumAuthority != nil {
+		proof, err := s.fetchGoModuleChecksumProof(ctx, i, repo, request.Coordinate, inspected.ZIPHash, inspected.GoModHash, checkpoint.Checkpoint)
+		if err != nil {
+			return store.RetrievalResult{}, err
+		}
+		publication.Checksum = &store.GoModuleChecksumPublication{Proof: proof.Proof, Object: proof.Object, ZIPHash: inspected.ZIPHash, ModHash: inspected.GoModHash, ExpectedCheckpointRevision: checkpoint.Revision}
+	}
 	if e = ctx.Err(); e != nil {
 		return store.RetrievalResult{}, e
 	}
-	return store.RetrievalResult{Status: http.StatusOK, Object: &zipObject, MediaType: "application/zip", Metadata: raw, FreshSeconds: fresh, StaleSeconds: stale, GoModule: &store.GoModulePublication{Objects: objects}}, nil
+	return store.RetrievalResult{Status: http.StatusOK, Object: &zipObject, MediaType: "application/zip", Metadata: raw, FreshSeconds: fresh, StaleSeconds: stale, GoModule: publication}, nil
 }
 
 func (s *Server) fetchGoRepresentation(ctx context.Context, i store.Identity, repo store.Repository, endpoint *upstream.Endpoint, p string, limit int64, metadata bool) (blob.Object, []byte, int, int, error) {

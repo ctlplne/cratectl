@@ -1,0 +1,87 @@
+{
+  "observed_at": "2026-11-06T23:25:35.618667+00:00",
+  "source_parent": "b6bb53fe2338e65920d402b9606af56e6590cc11",
+  "source_dirty": true,
+  "state": "implemented private controller integration; native replay pending",
+  "source_sha256": {
+    "internal/server/go_module_proxy.go": "462aaa096bb04d0ef250cbbf2df60be7a97adabf30973a3618d11e84139181bb",
+    "internal/server/go_module_retrieval.go": "41c96dc036acf4ff867d4034e5916d846e2e42cbeecdb7d9623c9577acf147f9",
+    "internal/server/resolve.go": "c9d02e70a76a77b05900331849f531c073eff17c9627d0e3ee1a09fb40c8d0b9",
+    "internal/server/go_module_checksum_controller_integration_test.go": "289fe4dbcf0540f51748bb2f638dc8327986f21f2396112b63af4ec23df8ef7d",
+    "internal/server/go_module_checksum_controller_test.go": "f24549d29ef1c3b35cb9714685d5872e15d8226f687676e7db0ecfd89b66908d"
+  },
+  "prior_native_checkpoint": "evidence/2026-11-06/go-module-b6bb53f-native-checkpoint.json",
+  "implementation": [
+    "Configured bundle fetch reads separately authorized current tenant/key checkpoint before network, inspects actual ZIP/mod/info and both h1 values, then collects/replays/stages original proof and constructs typed common publication. DB-nil standalone configured fetch remains closed.",
+    "One120second outer context covers bundle/proof/recollection/publication under existing renewable common fill lease and transfer slot. CompleteRetrieval remains the atomic current-authority/source/lease/checkpoint/reference/job/journal boundary.",
+    "Two completion attempts maximum: only a missing-consistency-tile checkpoint conflict triggers one proof-only recollection outside SQL against the current retained head. No bundle bytes are fetched again; no timeline reset.",
+    "Common cache hit/stale/filled reads now physically verify retained proof and attach opaque tenant/repository/source/generation/key/head/proof/all3digest+size admission to the resolved request. Final common selection still rechecks policy after package disk readback.",
+    "Stable cache/journal failure codes distinguish upstream_checksum_fork, upstream_checksum_unverified and upstream_checksum_checkpoint_changed. None grants stale; cancellation and explicit ordinary-origin transient classifications retain prior rules. Classified checksum completion failures survive terminal lease cleanup.",
+    "Public Go proxy creation/HTTP route remains gated. This is an internal coordinate controller, not a full stock-client checksum-on proxy/group qualification."
+  ],
+  "tests": {
+    "new_unit_functions": 1,
+    "new_unit_cases": 8,
+    "new_postgresql_functions": 5,
+    "new_postgresql_cases": 12,
+    "named_go_inventory": 48,
+    "full_postgresql_inventory": 222,
+    "fuzz_inventory": 44,
+    "new_fuzz_targets": 0,
+    "local_platform": "darwin/arm64",
+    "local_postgresql_executed": false,
+    "local_gates": [
+      "make build BINDIR=.cache/go-checksum-controller-build",
+      "make test",
+      "make race",
+      "make lint",
+      "all3integration packages normal/race compile-only and tagged vet"
+    ],
+    "pg_profiles": [
+      "12concurrent ZIP/mod/info callers share one3representation+2sumdb-request fill,4references/intents and one durable head; each retains opaque physical-proof admission/final guard.",
+      "8fault cases: corrupt signed proof, actual changed valid ZIP content/checksum mismatch, authority503, initial info404, cancellation, source epoch change, package review and full integrity outbox. No partial trust; required review cannot approve security.",
+      "Actual1second lease renews while checksum lookup is deliberately blocked; exactly one fill slot and zero references/integrity/head publication before release, then complete publication.",
+      "Another repository publishes a valid newer head during first tile request. Original publication rolls back, one proof-only recollection succeeds, each package representation fetched once and winning signed head unchanged.",
+      "Known same-key signed fork on forced refresh records distinct common cache/journal failure, preserves prior trust/references/validation witness and refuses stale despite an explicit retained stale window."
+    ]
+  },
+  "validation_logs": [
+    {
+      "path": ".cache/go-checksum-controller-final-build.log",
+      "sha256": "c68c89e9b4a051605817574a5efaa83a2366db4e020ca7bf77fe1d3a5c87ef9c",
+      "bytes": 434
+    },
+    {
+      "path": ".cache/go-checksum-controller-final-test.log",
+      "sha256": "6c85954baa2ede35cbbf623cae7e31a286438c8e05403a0fae333d4ff9cc9bc6",
+      "bytes": 887
+    },
+    {
+      "path": ".cache/go-checksum-controller-final-race.log",
+      "sha256": "fd76dfb59c1f0c63c7e4c308e0857a42138dc024a93c724cd815db00effaf3b2",
+      "bytes": 893
+    },
+    {
+      "path": ".cache/go-checksum-controller-final-lint.log",
+      "sha256": "2538fe9671bb31a7585dad30099fb7049fa41e946e160ba884db404ec5525058",
+      "bytes": 9004
+    },
+    {
+      "path": ".cache/go-checksum-controller-final-integration-compile.log",
+      "sha256": "8ccccef06f464f78144e693bfbbc6a3f5e851d3d012051f5ae1393efee7669c5",
+      "bytes": 418
+    }
+  ],
+  "first_local_environment_failure": {
+    "path": ".cache/go-checksum-controller-initial-unit.log",
+    "cause": "Default sandbox denied owned loopback listening sockets; subsequent authorized-loopback server units pass. Not a product failure or PostgreSQL result."
+  },
+  "limits": [
+    "Current48Go/222fullPG are compiled only locally; exact native normal/race execution on both Linux architectures and original312Go profile remain required. No local PostgreSQL/JVM/SDK/native registry campaign.",
+    "Previous b6 readback43PG normal/race plus312stock checks is independently accepted onbothLinux. Its wider campaign is tracked separately; last whole accepted selected campaign5ee29jobs/7workflows,22safe79reports.",
+    "Metadata discovery still needs a bounded current proof-receipt/policy witness preserving first-source shadowing. Explicit offline/freshness policy, retained raw failure/fork evidence and authority-wide governance, customer API/CLI/UI, export/backup/GC, conditional refresh and complete checksum-on stock proxy/group remain.",
+    "Crypto proof failure returns no partial trusted snapshot. Current fork code retains failure classification only, not original failed proof bytes; do not claim complete forensic evidence or trust-governance journey.",
+    "No schema/privilege or retained primary change: source12 only on disposable CI; local primary11/selected5483878b binaries/tenreceipts/credentials stopped and preserved. No customer/sibling/release/package/image change.",
+    "All450artifact capabilities/41families/everylaterGOALstage remain under4.1; no CA/vault/signing/workloadissuer suite. FullGo/security/packaging/readiness remainfalse."
+  ]
+}

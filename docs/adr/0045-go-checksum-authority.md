@@ -3,8 +3,8 @@
 Observed: 2026-11-06. Status: hashing, offline verification and bounded configured
 proof collection qualified in named internal profiles. Durable timeline and
 atomic publication qualify in38native GoPGfunctions normally/race. Actual proof
-readback/current opaque admission is implemented internally, awaiting native
-replay; customer configuration/serving journeys remain open.
+readback/current opaque admission qualifies in43native GoPGfunctions normally/
+race; private fill/controller wiring awaits native replay. Customer journeys stay open.
 This consumes an external verification service. It does not introduce a signing
 service, key custody, CA, vault or workload issuer; GOAL section 4.1 governs.
 
@@ -132,7 +132,7 @@ offline policy, export/backup/GC and native checksum-on proxy/group remain requi
 The readback path below admits internal cached bytes only with an opaque token;
 current fetch/default resolve/public routing remain closed until integrated.
 
-## Current proof readback, native replay pending
+## Current proof readback, qualified internally
 
 `GoModuleChecksumReadback` authorizes source/grants and the complete current
 three-member cache/policy unit in one repeatable-read snapshot. It binds the
@@ -162,16 +162,49 @@ Proof content is inert verification evidence: unassessed proof bytes may be
 parsed and verified, while explicit proof denial or retirement blocks packages.
 This does not mark scan evidence clean or relax any package `require_review`.
 No network or mutation occurs in readback. The helper will run under the existing
-bounded HTTP transfer admission when connected to resolution; the default HTTP
-controller is not yet wired and public Go proxy mode remains gated.
+bounded HTTP transfer admission when connected to resolution; private controller below now wires coordinate resolution. Public Go proxy mode
+remains gated; metadata and customer/offline/governance journeys are still open.
 
 One new28case unit function and deterministic public-seed fuzz target plus
 5PostgreSQL functions/33cases cover canonical parsing, actual corrupt/missing
 proof objects, current post-readback denial, digest/size/epoch/generation/stale
 changes, historical proof continuity, cross-epoch immutable proof reuse and
-cross-tenant identical-token refusal. Current43Go/217fullPG functions compile
-normally/race locally; native execution is still required. The new44thfuzz
-profile passed10090local ARM executions in11.225seconds with2workers.
+cross-tenant identical-token refusal. Exactb6 executes all43named Go functions normally/race and312stock checks onboth
+Linuxhosts. Its wider217fullPG/44fuzz campaign is tracked separately. The new44th
+fuzz profile also passed10090local ARM executions in11.225seconds with2workers.
+
+## Coordinate controller integration, native replay pending
+
+Configured bundle intake now reads the authorized retained checkpoint before
+network access, inspects all three actual representations and both h1 values,
+collects/stages proof and submits typed common publication. Missing authority or
+standalone configured fetch without a database stays closed. No implicit public
+service or response-selected key is introduced.
+
+The existing common fill slot and renewable lease enclose one120second parent
+context for all package/proof transfers and publication. At most two completion
+attempts are allowed. Only an offline consistency conflict requiring missing
+tiles triggers one new proof collection against current trust, outside SQL;
+package bytes are not fetched again and the timeline cannot reset. A second
+conflict terminates. Cache hit/stale/filled coordinate reads retain physical
+proof admission in the resolved request for final common selection after package
+readback. Metadata advertisements still need their distinct bounded receipt/
+policy witness before complete discovery is qualified.
+
+Stable cache/journal failure codes distinguish a signed fork, unverified proof
+and checkpoint conflict. None grants stale. An unavailable checksum authority
+currently fails conservatively as unverified evidence; it does not borrow ordinary
+origin transient status. Package cancellation/explicit ordinary-origin transient
+rules remain. This retains a failure classification only: original failed proof
+bytes, tenant/key-wide governance and complete operator recovery remain required.
+
+Five new real-PG functions/12fixed cases cover12concurrent representations sharing
+one fill,8fault cases, a blocked proof whose1second lease renews with no partial
+references/work/trust, a second repository winning the head followed by exactly
+one proof-only recollection, and a known signed fork that preserves prior trust
+and denies stale despite its retained window. One8case unit function covers stable
+classification. Current48Go/222fullPG compile normally/race locally; actual native
+execution is required. Public repository creation/HTTP proxy routing stays gated.
 
 ## Required integration, in dependency order
 

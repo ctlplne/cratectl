@@ -116,7 +116,7 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 			switch lease.State {
 			case "ready":
 				result.cache = "hit"
-				result.artifact, e = s.proxyArtifact(ctx, i, repo, p, result.admissions...)
+				e = s.readProxyArtifact(ctx, i, repo, p, &result)
 				if errors.Is(e, store.ErrSourceChanged) && sourceRetries < 1 {
 					sourceRetries++
 					force = true
@@ -131,7 +131,7 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 						result.admissions = []store.OCIAdmission{{Repository: repo.Name, Path: p, Generation: lease.Generation, Stale: true}}
 					}
 					result.cache = "stale"
-					result.artifact, e = s.proxyArtifact(ctx, i, repo, p, result.admissions...)
+					e = s.readProxyArtifact(ctx, i, repo, p, &result)
 					return result, e
 				}
 				return result, errUpstream
@@ -221,7 +221,7 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 			if refreshed.LastStatus == 304 {
 				result.cache = "revalidated"
 			}
-			result.artifact, e = s.proxyArtifact(ctx, i, repo, p, result.admissions...)
+			e = s.readProxyArtifact(ctx, i, repo, p, &result)
 			if errors.Is(e, store.ErrSourceChanged) && sourceRetries < 1 {
 				sourceRetries++
 				force = true
@@ -239,7 +239,7 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 					result.admissions = []store.OCIAdmission{{Repository: repo.Name, Path: p, Generation: refreshed.Generation, Stale: true}}
 				}
 				result.cache = "stale"
-				result.artifact, e = s.proxyArtifact(ctx, i, repo, p, result.admissions...)
+				e = s.readProxyArtifact(ctx, i, repo, p, &result)
 				return result, e
 			}
 			if refreshed.LastError == "upstream_integrity_failure" {
@@ -251,6 +251,29 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 		}
 	}
 }
+
+// readProxyArtifact retains opaque proof readback with the resolved request so
+// the final common selection guard can recheck it after package disk readback.
+func (s *Server) readProxyArtifact(ctx context.Context, i store.Identity, repo store.Repository, p string, result *resolvedArtifact) error {
+	if repo.Format == "go" && !goModuleAdvertisementPath(p) && repo.Settings.GoChecksumAuthority != nil {
+		request, err := gomodule.ParseRequest(p)
+		if err != nil || request.Version == "" {
+			return store.ErrGoModuleUnvalidated
+		}
+		admission, err := s.readGoModuleChecksumProof(ctx, i, repo, request.Coordinate, result.admissions...)
+		if err != nil {
+			return err
+		}
+		result.admissions = []store.NativeAdmission{admission}
+	}
+	artifact, err := s.proxyArtifact(ctx, i, repo, p, result.admissions...)
+	if err != nil {
+		return err
+	}
+	result.artifact = artifact
+	return nil
+}
+
 func (s *Server) proxyArtifact(ctx context.Context, i store.Identity, repo store.Repository, p string, admissions ...store.NativeAdmission) (store.Artifact, error) {
 	if repo.Format == "go" {
 		if strings.HasPrefix(p, "go-latest/") {

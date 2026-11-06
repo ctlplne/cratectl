@@ -31,25 +31,30 @@ profiles. Its cause remains unknown. KeepDEFECT.0122 intermittent/open; new
 bounded encrypted assertion/process-log coverage is instrumentation, not proof
 of repair. No retry/deadline increase or original failure removal.
 
-The [readback development](../../evidence/2026-11-06/go-checksum-readback-development.json)
-adds5PGfunctions/33cases, one28case unit function and one fuzz target. Current
-43Go/217fullPG functions need normal/race execution onboth actual Linuxhosts;
-all44bounded fuzz targets/source/unit/race/lint run on3native hosts. Keep the
-original312Go checks, every other selected profile and11historical native
-baselines/schema2–11 upgrades. ARM gates and10090new parser fuzz executions pass;
-compile-only PostgreSQL is not execution. Existing workflow path selection
-chooses actual next jobs; never infer unselected library/focused jobs passed.
+The [exactb6 named Go checkpoint](../../evidence/2026-11-06/go-module-b6bb53f-native-checkpoint.json)
+now qualifies43PGfunctions normally/race and all312stock checks onboth native
+Linuxhosts, including5physical-readback/current-guard functions/33cases. Its
+wider217PG/44fuzz campaign remains separately tracked; do not infer an unselected
+library/focused pass. Previous5ee remains the latest fully accepted selected campaign.
 
-[ADR0045](../adr/0045-go-checksum-authority.md) now defines exact physical proof
-readback and opaque current-policy admission, including tenant and all3raw sizes.
-After native replay, wire collection/publication/readback to one120second fill
-and renewable lease, bounded recollection outside SQL, metadata discovery/current
-selection and failure evidence. Complete explicit offline/freshness policy,
-customer/export/backup/GC paths and checksum-on stock proxy/group journeys before
-opening public mode. Preserve independent client GOSUMDB policy and every prior
-hosted/group check. Keep allPG/JVM/SDK/client/upgrade campaigns on their native
-GitHub hosts; no localPG or emulatedx86, no duplicate dispatch or extra workflow.
-The retained schema11 primary is outside CI maintenance scope.
+The [private controller development](../../evidence/2026-11-06/go-checksum-controller-development.json)
+adds5PGfunctions/12cases and one8case unit function. Current48Go/222fullPG must run
+normally/race onboth actual Linuxhosts, with original312Go and all other actually
+selected profiles;44fuzz/source/unit/race/lint stays on3native hosts. Eleven
+historical native baselines and schema2–11 maintenance into12 remain mandatory.
+ARM gates and tagged compile/vet pass; zero localPG. No new workflow, duplicate
+dispatch, case removal or retry/deadline increase: one existing120second fill and
+renewable lease now covers the whole checksum path, with one bounded proof-only
+consistency recovery.
+
+After native replay, complete bounded metadata receipt/policy discovery, explicit
+offline/freshness policy and original failure/fork evidence with authority-wide
+governance. Add customer/export/backup/GC surfaces and checksum-on stock proxy/
+group journeys before public mode. Preserve independent client GOSUMDB policy,
+prior hosted/group checks and original unknown/intermittent failure evidence.
+KeepPG/JVM/SDK/client/upgrade work on native GitHub hosts; no localPG or emulated
+x86. Running main jobs remain preserved; keep handles for any prior still-running
+candidate. The retained schema11 primary is outside CI maintenance scope.
 
 Earlier source-specific observations below retain their historical limits; the
 newest exact checkpoint above governs current qualified scope.

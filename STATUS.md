@@ -53,20 +53,38 @@ denial/lifecycle stay enforced, with no scan approval. Same proof bytes can span
 source epochs while receipts/admissions cannot; consistent head growth retains
 valid historical proofs without new network use.
 
-One new28case unit function, one44thfuzz target and5PGfunctions/33fixed cases
-cover readback and current guards. ARM build/test/race/lint, all3PGpackages normal/
-race compile+vet and10090fuzz executions pass; zero localPG. Current43namedGo/
-217fullPG and44fuzz require exact native replay. See
-`evidence/2026-11-06/go-checksum-readback-development.json`.
+Exact `b6bb53f` now qualifies actual proof readback/current opaque admission:
+43named GoPGfunctions normally/race and the original312stock checks onboth
+actual Linuxhosts. The five new functions cover33readback/fence cases, including
+physical corruption/missing objects, post-readback proof denial, historical
+continuity, size/generation/source changes and identical cross-tenant tokens.
+Its wider campaign is tracked separately; last fully accepted selected campaign
+remains5ee. See `evidence/2026-11-06/go-module-b6bb53f-native-checkpoint.json`.
 
-Default collector/fill/resolve/metadata-discovery integration, bounded outside-
-transaction recollection and failure evidence, explicit offline/freshness policy,
-customer API/CLI/UI, export/backup/GC and complete checksum-on native proxy/group
-remain required. Public Go proxy creation/HTTP routing remain gated. Internal
-cached-byte selection requires the opaque verified token; no proof flag grants
-access. All450artifact capabilities/41families/later stages remain underGOAL4.1;
-readiness/security/packaging false. No primary/customer/sibling/release/package/
-image changes.
+The current private controller connects configured collection, atomic publication
+and physical readback to the existing common renewable fill lease. One120second
+parent covers package/proof/commit and at most one proof-only recollection after
+a checkpoint winner needs missing consistency tiles. Package bytes are not
+re-fetched for that conflict. Cached hit/stale/filled requests retain opaque
+admission through final current selection. Fork/unverified/checkpoint-change
+failure codes persist in cache and journal; none permits stale. No scan approval.
+
+One8case unit function and5PGfunctions/12fixed cases add12concurrent callers,
+8faults, actual1second lease renewal while proof transfer is blocked, a forced
+cross-repo checkpoint winner/recollection and known signed fork/no-stale behavior.
+ARM build/test/race/lint and all3packages normal/race compile+vet pass, zero local
+PostgreSQL. Current48Go/222fullPG need exact native normal/race replay;44fuzz
+inventory unchanged. See `evidence/2026-11-06/go-checksum-controller-development.json`.
+
+Metadata discovery still needs a bounded current checksum receipt/policy witness
+with known-blocked first-source shadowing. Explicit offline/freshness policy,
+original failed-proof evidence/authority-wide governance, customer API/CLI/UI,
+export/backup/GC, conditional refresh and complete checksum-on native proxy/group
+remain. Current fork status records classification, not original failed proof
+bytes. Public Go proxy creation/HTTP routing stay gated. All450artifact
+capabilities/41families/later stages remain underGOAL4.1; readiness/security/
+packaging false. No primary/customer/sibling/release/package/image changes; primary
+schema11/selected5483878b binaries/tenreceipts remain stopped and preserved.
 
 Earlier development and source-specific checkpoints follow; their original
 qualification limits remain historical evidence rather than current readiness.
