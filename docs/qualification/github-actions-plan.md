@@ -13,6 +13,14 @@ outside this CI authority. No autonomous delegation.
 
 ## Current qualification state
 
+The latest-hint current-cache/renewable caller adds1PGfunction/14scenarios,
+compiled normally/race only; current26functions must run through the unchanged
+filter/profile on both native hosts. ARM build/unit/race/lint/vet pass; zero local
+PostgreSQL. Hints retain bounded metadata/current grants/source/cache and grant
+no package approval. [Development evidence](../../evidence/2026-11-06/go-latest-hint-caller-development.json)
+keeps absent optional hints separate from module/version absence. Discovery/final
+latest integration and public proxy remain unfinished.
+
 Exact8f [both-native checkpoint](../../evidence/2026-11-06/go-module-8f66bf4-native-checkpoint.json) now verifies all23PGfunctions
 normally/race and the unchanged312check/9stage/24wire/16cache hosted-group-v2 on
 both actual Linux hosts, including queue and503 source-change repairs. The next
@@ -370,7 +378,7 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 | `jvm-clients.yml`: Gradle / 2 | Both native Linux architectures; real PostgreSQL | Gradle9.8.2, exact JDK21 build, eight stages and24 publisher/reference/raw-HTTP digests. 60-minute job. Named v2 profile passes; broader JVM remains open. |
 | `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0 and exact JDK. Cache-v4 passes666checks/10stages/34wire+6cachebindings on both hosts at0edd, retaining all release/metadata/snapshot/SHA-2 cases. 60-minute job. Broader Ivy remains open. |
 | `jvm-clients.yml`: SBT / 4 | SBT1.13.0 and2.0.11, each on native Linux amd64/arm64; real PostgreSQL | Snapshot-v2 passes269checks/8stages/8snapshotcases/18bindings on all4cases at0cff, retaining every release case. Frozen tool-only boot cache/fresh project caches. Five-minute bootstrap, two-minute commands, 60-minute job. |
-| `go-modules.yml`: hosted/group and intake / 2 | Native Linux amd64/arm64; pinned Go, real PostgreSQL16.15, trusted loopback TLS | Twenty-five PG functions required normally/race for the latest-advertisement increment. Exact4a passes both hosts with13PGfunctions and312checks/all9stages/24wire/16cache. Original1cfailures retained;Exact8f qualifies23PGnormal/race and full312check hosted-group-v2;2advertisement functions compile only. Original failures retained.45-minute job; public proxy remains rejected. |
+| `go-modules.yml`: hosted/group and intake / 2 | Native Linux amd64/arm64; pinned Go, real PostgreSQL16.15, trusted loopback TLS | Twenty-six PG functions required normally/race for latest-hint cache/caller integration. Exact4a passes both hosts with13PGfunctions and312checks/all9stages/24wire/16cache. Original1cfailures retained;Exact8f qualifies23PGnormal/race and full312check hosted-group-v2;2advertisement functions compile only. Original failures retained.45-minute job; public proxy remains rejected. |
 | `nuget-contract.yml`: libraries / 2 | Both native Linux architectures; exact SDK10.0.403 selection | Original37assertions/unchanged dense corpora pass both at1974, actual runtime10.0.14 and separate DLLhashes. 20-minute job. Does not replace actual NuGet HTTP/restore/restart proof. |
 | `oci-clients.yml`: native clients / 2 | Both native Linux architectures; Docker, Podman, Helm, real PostgreSQL | Actual publication/consumption and policy/tenant/recovery cases with inert owned data; 45-minute job. Do not execute the uploaded image. External-provider interoperability is separate. |
 | `browser-repair.yml`: focused / 3 on relevant pushes | Native x86 Chromium; five fresh PostgreSQL databases per selected journey | Repair, retention and NuGet each repeat five complete journeys; 45-minute job. Manual dispatch selects one. Stop on failure; no retries/skips count as acceptance. |

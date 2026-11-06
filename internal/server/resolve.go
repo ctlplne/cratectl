@@ -39,7 +39,7 @@ func (s *Server) resolve(ctx context.Context, i store.Identity, repo store.Repos
 	if repo.Mode != "hosted" && !upstream.SafePath(p) {
 		return resolvedArtifact{}, upstream.ErrPath
 	}
-	if repo.Format == "go" && repo.Mode == "proxy" && !strings.HasPrefix(p, "go-catalog/") {
+	if repo.Format == "go" && repo.Mode == "proxy" && !goModuleAdvertisementPath(p) {
 		return s.resolveGoModuleProxy(ctx, i, repo, p, force)
 	}
 	switch repo.Mode {
@@ -253,6 +253,13 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 }
 func (s *Server) proxyArtifact(ctx context.Context, i store.Identity, repo store.Repository, p string, admissions ...store.NativeAdmission) (store.Artifact, error) {
 	if repo.Format == "go" {
+		if strings.HasPrefix(p, "go-latest/") {
+			request, e := gomodule.ParseRequest(strings.TrimPrefix(p, "go-latest/") + "/@latest")
+			if e != nil {
+				return store.Artifact{}, store.ErrGoModuleUnvalidated
+			}
+			return s.DB.GoModuleLatestArtifact(ctx, i, repo.Name, request.Module, repo.SourceRevision, s.NativeMetadataBytes, admissions...)
+		}
 		if strings.HasPrefix(p, "go-catalog/") {
 			request, e := gomodule.ParseRequest(strings.TrimPrefix(p, "go-catalog/") + "/@v/list")
 			if e != nil {

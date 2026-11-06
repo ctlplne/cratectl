@@ -1,0 +1,79 @@
+{
+  "source_parent": "dbd56712fb34da1d30e18d406e35ad754a45ac21",
+  "source_dirty": true,
+  "observed_at": "2026-11-06T20:01:21.037414+00:00",
+  "state": "current latest hint cache/renewable caller integrated; ARM gates pass; new PostgreSQL function compiled only",
+  "files": [
+    {
+      "path": "internal/store/go_module_latest_cache.go",
+      "sha256": "b45d90c4947bf1ab64e417be35c4a7bbbe1a6a0124eab17dd0c067e6be033976"
+    },
+    {
+      "path": "internal/server/go_module_retrieval.go",
+      "sha256": "b1963ee89cb89c556209c133871759a4b76a9df10eaaefaa968efd1aed54367d"
+    },
+    {
+      "path": "internal/server/resolve.go",
+      "sha256": "d5a68e3f5d391d66100c20d30bff20f071897bca4ca61896f33596ceedf78a1e"
+    },
+    {
+      "path": "internal/server/go_module_latest_caller_integration_test.go",
+      "sha256": "453d84d1f9c567bb0c44d84bcb20bb2f4e8cc9851e9576720eea4a6281690b8d"
+    }
+  ],
+  "mechanism": [
+    "Latest hint misses now dispatch through the existing transfer slots, tenant limits, renewable lease, source/credential endpoint guard and common completion transaction. Metadata paths cannot accidentally acquire an exact-version ZIP lease.",
+    "GoModuleLatestArtifact reads canonical typed info binding, current source/tenant/grants, lifecycle/denial and cache admission in one repeatable-read snapshot. Metadata SQL is capped4096bytes before transfer; oversized or broken references return no partial hint.",
+    "Fresh/no-cache/current-negative/explicit transient-stale rules use common request-generation admissions. Hard upstream failures stop stale use. A missing optional hint is metadata absence, never proof that a module or exact version is absent.",
+    "No package reference or approval is created by a hint, and public direct proxy mode remains rejected. Complete tagged-list/pseudo/hint precedence and current final latest selection still need integration; old cached pseudos must not replace a current hint or turn its absence into source fallback."
+  ],
+  "local_validation": [
+    "Full ARM make build/test/race/lint pass. Current26PGfunctions compile normally/race and tagged vet passes; no local PostgreSQL/JVM/SDK/native registry execution.",
+    "One new real-PG function/fourteen scenarios covers fresh/zero-age/negative/refresh/transient-stale/hard/source/denial/wrong-generation/SQL metadata damage/missing reference/tenant/grant boundaries; actual native replay required."
+  ],
+  "logs": [
+    {
+      "path": ".cache/go-latest-hint-caller-compile.log",
+      "sha256": "0108f3f7f9919a127fd2ad1e462077a1a0d1ab8d8728b7648bed1ab82610fca8"
+    },
+    {
+      "path": ".cache/go-latest-hint-caller-race-compile.log",
+      "sha256": "840a61820764b4851d4bd3148535a65ace312e0a1fa7d6f1341370c79bf1beeb"
+    },
+    {
+      "path": ".cache/go-latest-hint-caller-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/go-latest-hint-caller-build.log",
+      "sha256": "f31461ebea45d7d28538cd978367ff85b22346a394f27699c21b1f0d214b525a"
+    },
+    {
+      "path": ".cache/go-latest-hint-caller-test.log",
+      "sha256": "7c3b2b6569d63a8712a2d74584731fdd6aafa2014fff5923483731f945ea34d8"
+    },
+    {
+      "path": ".cache/go-latest-hint-caller-race.log",
+      "sha256": "80a42b68ffbc9208e80e044f449dfee74d2db673669fdcb07daac5e40daaf1ab"
+    },
+    {
+      "path": ".cache/go-latest-hint-caller-lint.log",
+      "sha256": "eda2fbe01eb6224f5025ac40e9d915df26b7d8eedca144f05f180d4d614540c2"
+    }
+  ],
+  "prior_named_native": "evidence/2026-11-06/go-module-8f66bf4-native-checkpoint.json",
+  "pending_foundation": {
+    "candidate": "dbd56712fb34da1d30e18d406e35ad754a45ac21",
+    "run_id": 42284136706,
+    "jobs": {
+      "amd64": 128120462523,
+      "arm64": 128120463135
+    },
+    "status": "normal/race in progress at latest observation; no25function acceptance inferred"
+  },
+  "limits": [
+    "Exact8f23PGnormal/race plus named312check hosted-group-v2 remains qualified separately. Current26functions and original312/9stage24wire16cache require exact-source actual GitHub execution on both hosts.",
+    "Full discovery/latest-hint integration, remote pseudo stock journeys, independent checksum/offline authority, conditional refresh and complete native proxy/group/public/full-format/fault/lifecycle/migration/scale/platform scope remain.",
+    "All450artifact capabilities/41families/every later stage retained under GOAL4.1; no trstctl suite. Broad readiness/security/packaging false; no primary/customer/sibling/schema/runtime grant/release changes."
+  ]
+}

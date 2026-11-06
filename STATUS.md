@@ -31,6 +31,15 @@ Current hint cache/caller/discovery/latest integration and the full stock proxy
 journey remain required. Public proxy is still disabled. See
 `evidence/2026-11-06/go-latest-advertisement-development.json`.
 
+The latest-hint caller now uses common transfer/renewal/completion and a typed
+bounded current-cache read. It separates optional hint absence from package
+absence, preserves current-request/stale rules and grants no package approval.
+Full ARM build/test/race/lint pass. One new PGfunction/fourteen scenarios compiles
+normally/race with tagged vet only; current total26. The dbd25function jobs were
+running at latest observation. Full discovery/final latest integration and
+public proxy remain unfinished. See
+`evidence/2026-11-06/go-latest-hint-caller-development.json`.
+
 The saved210native Go run completed with both normalserver jobs failed. The
 latest guard correctly returns ErrSourceChanged, whose existing HTTP mapping is
 503; two group-epoch/reorder fixtures expected409. The assertions are corrected
@@ -159,7 +168,7 @@ tests and console reproduction pass. Four original PostgreSQL server functions
 pass normally and with race on both hosts at `802bb51`. Three additional atomic
 intake store functions and the network-to-transaction function pass normally
 and with race on both hosts at `a630875`. The current v2 workflow
-requires both actual Linux hosts, all twenty-five database
+requires both actual Linux hosts, all twenty-six database
 functions normally/with race, trusted TLS stock Go and all original hosted cases:
 nine stages,24publisher/reference/HTTP bindings and16exact cached ZIP/mod
 bindings. See `evidence/2026-11-04/go-module-groups-development.json`.
@@ -227,7 +236,7 @@ sibling cache receipts, integrity intents and ready event/outbox in the common
 current-authority/source/live-lease transaction. Unit/race/vet/full lint pass.
 Three new real-PG store functions now pass both hosts at `a630875`. The workflow
 now runs both server/store packages, including the new network transaction
-function, cache admission, source catalogs and discovery, for twenty-five PG functions normally/with race. Proxy creation
+function, cache admission, source catalogs and discovery, for twenty-six PG functions normally/with race. Proxy creation
 and reads remain rejected until network/checksum/cache/serving integration and
 full native proof are complete. See
 `evidence/2026-11-04/go-module-atomic-intake-development.json`.

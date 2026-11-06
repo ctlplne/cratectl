@@ -30,7 +30,7 @@ func (s *Server) resolveGoModuleProxy(ctx context.Context, i store.Identity, rep
 }
 
 func (s *Server) proxyAbsence(ctx context.Context, i store.Identity, repo store.Repository, p string, admissions ...store.NativeAdmission) error {
-	if repo.Format == "go" && !strings.HasPrefix(p, "go-catalog/") {
+	if repo.Format == "go" && !goModuleAdvertisementPath(p) {
 		absent, e := s.DB.GoModuleProxyAbsent(ctx, i, repo.Name, p, repo.SourceRevision, admissions...)
 		if e != nil {
 			return e
@@ -40,6 +40,10 @@ func (s *Server) proxyAbsence(ctx context.Context, i store.Identity, repo store.
 		}
 	}
 	return store.ErrNotFound
+}
+
+func goModuleAdvertisementPath(p string) bool {
+	return strings.HasPrefix(p, "go-catalog/") || strings.HasPrefix(p, "go-latest/")
 }
 
 func goModuleFillFailure(e error) string {
@@ -68,7 +72,9 @@ func goModuleFillFailure(e error) string {
 func (s *Server) fillGoModuleProxy(parent context.Context, i store.Identity, repo store.Repository, lease store.Retrieval) error {
 	var result store.RetrievalResult
 	var e error
-	if strings.HasPrefix(lease.Path, "go-catalog/") {
+	if strings.HasPrefix(lease.Path, "go-latest/") {
+		result, e = s.fetchGoModuleLatest(parent, i, repo, lease)
+	} else if strings.HasPrefix(lease.Path, "go-catalog/") {
 		result, e = s.fetchGoModuleCatalog(parent, i, repo, lease)
 	} else {
 		result, e = s.fetchGoModuleBundle(parent, i, repo, lease)
