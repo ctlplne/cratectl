@@ -14,6 +14,51 @@ The full goal is incomplete. All 450 capabilities / 41 families and every later
 stage remain committed. Broad readiness, full security and packaging remain
 negative. Both commit identities remain exactly `imfeelingtheagi` on main.
 
+Exact `b6bb53f` is now accepted across all24actually selected jobs in5workflows:
+17original safe summaries/62reports,217full PostgreSQL functions normally/race
+onboth native Linux hosts, source/unit/race/lint and44fuzz targets onLinuxamd64,
+Linuxarm64 andmacOSarm64. All original named client/upgrade profiles pass, including
+x86Chromium119checks/15tests with0flaky/skipped/unexpected and11historical native
+baselines/16upgrade reports perarch. Library/focused workflows were unselected;
+their previous5ee evidence stays source-specific. See
+`evidence/2026-11-06/github-b6bb53f-checkpoint.json`.
+
+Exact `2da6957` additionally qualifies configured coordinate fills on both actual
+GitHub Linux architectures:48named GoPGfunctions normally/race plus the original
+312stock checks/9stages24wire16cache. This covers12concurrent callers,8faults,
+actual lease renewal during proof transfer, one proof-only checkpoint recollection
+and known signed fork/no-stale classification. See
+`evidence/2026-11-06/go-module-2da6957-native-checkpoint.json`.
+Its wider222PG/44fuzz campaign is still tracked separately; no whole-candidate
+acceptance is inferred from the named Go results.
+
+Current checksum discovery adds one bounded receipt/proof-policy batch per
+consulted source, using only known canonical roots and the shared complete-view
+budget. Exact current key/history, source/validation generation, all3raw identities,
+proof metadata/size and current digest decision/lifecycle are required. Expired
+complete packages remain routing metadata for refresh; discovery does not open
+proof blobs or grant bytes. Known blocked coordinates shadow catalog ads and
+lower sources. Permanent failures stay blocked even during a new fetch. Original
+physical proof verification and final current policy remain mandatory for bytes.
+
+Three new PGfunctions/39fixed cases and one8case unit function cover these
+witnesses, list/latest, ordered groups, namespace owners, unknown advertisements,
+proof SQL projection/aggregate budgets, history growth and cross-epoch proof reuse.
+A new metadata fuzz target passed127595executions in11.262seconds on ARM.
+ARM build/test/race/lint and normal/race tagged compilation/vet pass; no localPG.
+Current51Go/225fullPG and45fuzz require exact-source native replay. See
+`evidence/2026-11-06/go-checksum-discovery-development.json`.
+
+Next: explicit offline/freshness policy, original failed-proof/fork evidence and
+tenant/key-wide governance, customer API/CLI/UI, export/backup/GC, conditional
+refresh and complete checksum-on stock proxy/group journeys. Public mode remains
+gated. Primary11/selected5483878b binaries/tenreceipts/credentials remain stopped
+and preserved. All450capabilities/41families/later stages remain; readiness,
+security and packaging stay false. Original5380ARMjobs failure remains unknown
+and DEFECT.0122 intermittent/open despite later passing campaigns.
+
+Earlier source-specific development/checkpoints follow with their original limits.
+
 Exact `5ee4fbc` now passes all29actually selected jobs in7workflows, with
 22retained safe summaries/79reports and every artifact/log identity bound to
 that clean source. All212source-defined PostgreSQL functions run normally/race

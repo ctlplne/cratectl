@@ -4,7 +4,9 @@ Observed: 2026-11-06. Status: hashing, offline verification and bounded configur
 proof collection qualified in named internal profiles. Durable timeline and
 atomic publication qualify in38native GoPGfunctions normally/race. Actual proof
 readback/current opaque admission qualifies in43native GoPGfunctions normally/
-race; private fill/controller wiring awaits native replay. Customer journeys stay open.
+race; configured renewable fills qualify in48at2da onboth Linuxhosts. Current
+bounded metadata discovery adds3PGfunctions pending native replay. Customer
+journeys stay open.
 This consumes an external verification service. It does not introduce a signing
 service, key custody, CA, vault or workload issuer; GOAL section 4.1 governs.
 
@@ -45,7 +47,8 @@ retains the newer checkpoint; this establishes consistency, not current freshnes
 publisher identity, scan evidence or package approval. The returned checkpoint is
 only a proposal until durable transaction admission. `require_checksum` and any
 configured authority refuse publication without a complete fenced proof; cached
-serving remains closed pending proof readback. Public Go proxy mode stays gated.
+serving requires physical proof readback and opaque current admission. Public Go
+proxy mode stays gated.
 
 ## Configured collection boundary
 
@@ -78,8 +81,8 @@ and the separately supplied key/checkpoint. The server replays it offline before
 staging original proof JSON with expected SHA256 and exact length; staged bytes
 are at most2MiB and remain subject to the common metadata budget. It creates no
 artifact reference, trust update, approval, event or idempotency receipt. It is
-not yet wired into the common renewable lease/fill admission. Current bundle
-fetch and cache guards still refuse configured/required checksum admission.
+wired into the private common renewable lease/fill admission below. Current
+bundle/cache guards require the durable receipt and physical-proof admission.
 Common completion now accepts only the complete durable publication below;
 a self-selected key, h1 assertion or unfenced proposal cannot bypass it.
 
@@ -126,11 +129,11 @@ rollback, source/lease/grant/tenant/key fences, missing tiles/forks, retained
 historical native baselines and runs schema2–11 maintenance journeys into12. The retained primary remains
 schema11 on its existing selected binaries, stopped; source work does not migrate it.
 
-The server collector is not yet connected to this publication under the shared
-renewable fill lease. Bounded recollection, failure-evidence publication, customer API/CLI/UI, explicit
-offline policy, export/backup/GC and native checksum-on proxy/group remain required.
-The readback path below admits internal cached bytes only with an opaque token;
-current fetch/default resolve/public routing remain closed until integrated.
+The private controller now connects collection/publication under the shared
+renewable fill lease, including one bounded proof-only recollection. Original
+failure-evidence publication, customer API/CLI/UI, explicit offline policy,
+export/backup/GC and native checksum-on proxy/group remain required. Readback
+admits internal cached bytes only with an opaque token; public routing stays gated.
 
 ## Current proof readback, qualified internally
 
@@ -161,8 +164,8 @@ bytes. A consistent later timeline head leaves an unchanged accepted proof valid
 Proof content is inert verification evidence: unassessed proof bytes may be
 parsed and verified, while explicit proof denial or retirement blocks packages.
 This does not mark scan evidence clean or relax any package `require_review`.
-No network or mutation occurs in readback. The helper will run under the existing
-bounded HTTP transfer admission when connected to resolution; private controller below now wires coordinate resolution. Public Go proxy mode
+No network or mutation occurs in readback. The helper runs under the existing
+bounded HTTP transfer admission through private coordinate resolution. Public Go proxy mode
 remains gated; metadata and customer/offline/governance journeys are still open.
 
 One new28case unit function and deterministic public-seed fuzz target plus
@@ -173,7 +176,7 @@ cross-tenant identical-token refusal. Exactb6 executes all43named Go functions n
 Linuxhosts. Its wider217fullPG/44fuzz campaign is tracked separately. The new44th
 fuzz profile also passed10090local ARM executions in11.225seconds with2workers.
 
-## Coordinate controller integration, native replay pending
+## Coordinate controller integration, qualified internally
 
 Configured bundle intake now reads the authorized retained checkpoint before
 network access, inspects all three actual representations and both h1 values,
@@ -188,8 +191,8 @@ tiles triggers one new proof collection against current trust, outside SQL;
 package bytes are not fetched again and the timeline cannot reset. A second
 conflict terminates. Cache hit/stale/filled coordinate reads retain physical
 proof admission in the resolved request for final common selection after package
-readback. Metadata advertisements still need their distinct bounded receipt/
-policy witness before complete discovery is qualified.
+readback. Metadata advertisements now use the distinct bounded receipt/policy
+witness below; its new source still needs native PostgreSQL replay.
 
 Stable cache/journal failure codes distinguish a signed fork, unverified proof
 and checkpoint conflict. None grants stale. An unavailable checksum authority
@@ -203,8 +206,48 @@ one fill,8fault cases, a blocked proof whose1second lease renews with no partial
 references/work/trust, a second repository winning the head followed by exactly
 one proof-only recollection, and a known signed fork that preserves prior trust
 and denies stale despite its retained window. One8case unit function covers stable
-classification. Current48Go/222fullPG compile normally/race locally; actual native
-execution is required. Public repository creation/HTTP proxy routing stays gated.
+classification. Exact2da executes all48namedGoPGfunctions normally/race and
+312stock checks onboth native GitHub Linuxhosts. Its wider222PG campaign remains
+separate. Public repository creation/HTTP proxy routing stays gated.
+
+## Bounded checksum discovery, native replay pending
+
+Version lists and latest selection apply the same repeatable-read group/source
+snapshot to a bounded receipt/proof-policy witness. One batch query per source
+is restricted to the already-bounded canonical cached roots. It joins current
+root and both sibling validation receipts, the immutable checksum receipt, its
+accepted history under the exact current configured key, and the common proof
+artifact/digest-decision/lifecycle paths. The retained current signed head is
+validated once per consulted key/source; the accepted revision cannot be newer.
+Proof SQL metadata is capped at4KiB and all returned identities/metadata plus
+trust bytes consume the existing complete-view byte budget. Overflow returns
+no partial version list. No new schema or per-version query loop is introduced.
+
+This is routing metadata, never proof-byte admission. An expired complete cache
+must remain discoverable so ordinary resolution can refresh it. Existing valid
+receipts can survive a pending refresh or an ordinary transient failure even
+when stale serving has expired; only the byte path decides current admission.
+A permanent failure, including a known signed fork, stays blocked during another
+fetch until complete publication replaces the failed state. Missing/mismatched
+receipts, key changes, proof denial/retirement and altered raw identities make
+known versions false entries. Neither a fresh catalog nor a lower group source
+can override them. Explicit namespace ownership still chooses the consulted
+source; unknown catalog entries remain routing hints under package review policy.
+
+Proof references may retain an earlier source epoch while current receipts and
+packages must match the new epoch. Immutable historical proof acceptance also
+survives consistent head growth. Discovery need not physically read every proof
+or contact a log per version; serving still requires exact physical proof replay
+and the opaque current post-readback guard. Independent log consistency does not
+establish freshness; explicit offline policy is still required.
+
+Three new PostgreSQL functions/39cases cover list/latest receipt/key/generation/
+raw identity and proof policy fences, expired/refreshing/transient routing,
+permanent failures, group shadowing and namespace ownership, unknown hints,
+SQL/aggregate budgets, retained history and cross-epoch proof reuse. One8case
+unit function and a new metadata fuzz target cover shared proof metadata parsing.
+The45thtarget passed127595local ARM executions in11.262seconds. Current51Go/
+225fullPG compile normally/race; actual new-source native execution is required.
 
 ## Required integration, in dependency order
 
@@ -249,8 +292,9 @@ tenant; its checkpoint record contains signed heads, not other repositories'
 private module names or proof bodies. Proof receipts remain repository-scoped
 and bind source/lease, exact three representation digests and the admitted trust
 revision. Force RLS on every new table and retain immutable checkpoint history.
-Append a new checksummed migration; do not edit the existing11receipts or migrate
-the retained primary as a side effect of source development.
+Source migrations1–12 are immutable; append a new checksummed migration for any
+new durable schema. Do not migrate the retained schema11 primary as a side effect
+of source development.
 
 Concurrent completion can coalesce an identical already-retained proposed head.
 For a different winning head, verify consistency against current trust using

@@ -165,11 +165,7 @@ func goChecksumReadbackInTx(ctx context.Context, tx pgx.Tx, r Repository, p stri
 	if err != nil {
 		return GoModuleChecksumReadback{}, err
 	}
-	var metadata struct {
-		Profile   string `json:"go_checksum_profile"`
-		KeyDigest string `json:"go_checksum_key_digest"`
-	}
-	if proof.Digest != b.proofDigest || proof.Size != b.proofSize || proof.MediaType != GoChecksumProofMedia || len(proof.Metadata) > 4096 || json.Unmarshal(proof.Metadata, &metadata) != nil || metadata.Profile != GoModuleChecksumProfile || metadata.KeyDigest != initial.KeyDigest {
+	if proof.Digest != b.proofDigest || proof.Size != b.proofSize || validateGoChecksumProofArtifact(proof, initial.KeyDigest) != nil {
 		return GoModuleChecksumReadback{}, ErrGoModuleUnvalidated
 	}
 	if err = validateGoChecksumReadback(v); err != nil {

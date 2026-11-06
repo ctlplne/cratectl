@@ -31,30 +31,37 @@ profiles. Its cause remains unknown. KeepDEFECT.0122 intermittent/open; new
 bounded encrypted assertion/process-log coverage is instrumentation, not proof
 of repair. No retry/deadline increase or original failure removal.
 
-The [exactb6 named Go checkpoint](../../evidence/2026-11-06/go-module-b6bb53f-native-checkpoint.json)
-now qualifies43PGfunctions normally/race and all312stock checks onboth native
-Linuxhosts, including5physical-readback/current-guard functions/33cases. Its
-wider217PG/44fuzz campaign remains separately tracked; do not infer an unselected
-library/focused pass. Previous5ee remains the latest fully accepted selected campaign.
+The [whole b6 campaign](../../evidence/2026-11-06/github-b6bb53f-checkpoint.json)
+now accepts all24actually selected jobs/5workflows,17safe summaries/62reports,
+217fullPGnormally/race on bothLinuxhosts and44fuzz/source/unit/race/lint on3native
+hosts. Library/focused were unselected; retain their previous5ee source-specific
+results. Original5380jobs68failure remains unknown/intermittent, not repaired.
 
-The [private controller development](../../evidence/2026-11-06/go-checksum-controller-development.json)
-adds5PGfunctions/12cases and one8case unit function. Current48Go/222fullPG must run
-normally/race onboth actual Linuxhosts, with original312Go and all other actually
-selected profiles;44fuzz/source/unit/race/lint stays on3native hosts. Eleven
-historical native baselines and schema2–11 maintenance into12 remain mandatory.
-ARM gates and tagged compile/vet pass; zero localPG. No new workflow, duplicate
-dispatch, case removal or retry/deadline increase: one existing120second fill and
-renewable lease now covers the whole checksum path, with one bounded proof-only
-consistency recovery.
+The [exact2da named Go checkpoint](../../evidence/2026-11-06/go-module-2da6957-native-checkpoint.json)
+qualifies48PGfunctions normally/race and all312stock checks onboth native Linux
+hosts. Configured renewable fill,12concurrent callers,8faults, held-proof lease
+renewal, one proof-only CAS recollection and known signed fork/no-stale are now
+observed. Its wider222PG/44fuzz campaign remains separately tracked.
 
-After native replay, complete bounded metadata receipt/policy discovery, explicit
-offline/freshness policy and original failure/fork evidence with authority-wide
-governance. Add customer/export/backup/GC surfaces and checksum-on stock proxy/
-group journeys before public mode. Preserve independent client GOSUMDB policy,
-prior hosted/group checks and original unknown/intermittent failure evidence.
-KeepPG/JVM/SDK/client/upgrade work on native GitHub hosts; no localPG or emulated
-x86. Running main jobs remain preserved; keep handles for any prior still-running
-candidate. The retained schema11 primary is outside CI maintenance scope.
+The [current discovery development](../../evidence/2026-11-06/go-checksum-discovery-development.json)
+adds3PGfunctions/39cases plus one8case unit function and a45thfuzz target.
+Current51Go/225fullPG must run normally/race onboth native GitHub Linuxhosts;
+45fuzz/source/unit/race/lint stays on3native hosts. Preserve312stockGo, all other
+actually selected client profiles and11historical native/16upgrade reportsperarch.
+No new workflow, duplicate dispatch, retry/deadline increase or case removal.
+Local ARM gates/tagged compile/vet pass; no localPG/JVM/SDK campaigns or emulatedx86.
+
+Discovery now uses one bounded known-root receipt/proof-policy batch per source
+under the existing complete-view budget. Expired complete packages can still
+route for refresh, but missing receipts, current proof denial/retirement or
+permanent checksum failures retain first-source blocking. Catalog/unknown version
+advertisements never grant bytes; physical proof readback/current guards remain.
+
+Then complete explicit offline/freshness policy and original failure/fork evidence
+with tenant/key-wide governance; customer/export/backup/GC and checksum-on stock
+proxy/group journeys before public mode. Keep independent client GOSUMDB policy,
+original hosted/group checks and every original failure. Running main jobs remain
+preserved; the retained schema11 primary is outside disposable CI maintenance.
 
 Earlier source-specific observations below retain their historical limits; the
 newest exact checkpoint above governs current qualified scope.

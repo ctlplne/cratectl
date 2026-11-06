@@ -1,0 +1,94 @@
+{
+  "observed_at": "2026-11-06T23:49:29.228691+00:00",
+  "source_parent": "2da695748b67f003bbc1813cc70bc9570d17fe7e",
+  "source_dirty": true,
+  "state": "implemented internal checksum discovery; native PostgreSQL replay pending",
+  "source_sha256": {
+    "internal/store/go_module.go": "5034ec7d4cc3a2f24ebf05d4cdf9184ea320ca154c61a2f21cf3db6740befbb6",
+    "internal/store/go_checksum_readback.go": "e95fe61691f602bf452260da54b1029bb878cd8f396e7df77277059343ca4d4f",
+    "internal/store/go_checksum_discovery.go": "97d0b640a6deacc89928d3957cb45dd976959407cad88aaf8878e6a37bd6abe8",
+    "internal/store/go_checksum_discovery_test.go": "8bf4b1f5992947da4325c1c4fe36488a67b70af426581b2289308234dcdcd050",
+    "internal/store/go_module_checksum_discovery_integration_test.go": "d49a6c3b4ff28a9097ae238f1c45e17583a809e5e0a96629a19eb12a6d2b1e10"
+  },
+  "prior_native_checkpoint": "evidence/2026-11-06/go-module-2da6957-native-checkpoint.json",
+  "prior_whole_selected_checkpoint": "evidence/2026-11-06/github-b6bb53f-checkpoint.json",
+  "implementation": [
+    "Version-list/latest discovery runs one bounded batch per consulted checksum-configured source, restricted to already-admitted canonical cached roots; no per-version SQL loop, network or proof object reads.",
+    "Current root and sibling source/validation witnesses, immutable exact-key/history receipt and all3raw digest identities plus current common proof digest decision/lifecycle and bounded metadata are required. Signed current head is validated once per source; accepted revision cannot exceed it.",
+    "Proof SQL metadata cap4096 and all trust/identity/metadata bytes share the original complete-view budget. Overflow returns no partial names. Existing ordered group/namespace/review semantics are preserved.",
+    "Expired complete packages remain routable for refresh; ordinary pending/transient refresh remains metadata-only. Permanent failures, including known signed forks during a new fetch, remain known blocked coordinates. Catalog ads and lower sources cannot replace them. Unknown ads are routing hints only, never byte approval.",
+    "Original proof references may retain an earlier source epoch; current package/receipt cannot. Historical accepted proofs survive consistent head growth. Serving still requires independent physical proof replay and opaque current selection; no scan approval or implicit public-service dependency."
+  ],
+  "tests": {
+    "new_postgresql_functions": [
+      "TestGoModuleChecksumDiscoveryRequiresCurrentReceiptKeyAndProofPolicy",
+      "TestGoModuleChecksumDiscoveryRetainsHistoricalProofAcrossGrowthAndSourceEpoch",
+      "TestGoModuleChecksumDiscoveryBlockedFirstSourceShadowsLowerAndCatalog"
+    ],
+    "new_postgresql_case_counts": [
+      32,
+      2,
+      5
+    ],
+    "new_postgresql_cases": 39,
+    "new_unit_functions": 1,
+    "new_unit_cases": 8,
+    "new_fuzz_target": "FuzzGoChecksumProofArtifactMetadata",
+    "current_go_postgresql_functions": 51,
+    "current_full_postgresql_functions": 225,
+    "current_fuzz_targets": 45,
+    "local_postgresql_executed": false,
+    "local_gates": {
+      "build": {
+        "path": ".cache/go-checksum-discovery-final-build.log",
+        "bytes": 431,
+        "sha256": "4b6139c72439f6bdd94a1ca3128b6a6aea38d341aa0d3f6e6f654fb64da1a012",
+        "status": "passed"
+      },
+      "test": {
+        "path": ".cache/go-checksum-discovery-final-test.log",
+        "bytes": 885,
+        "sha256": "b8a1753b0f7117b8fd9d5628349e23d7724aa06ba06ae546b46a30e515e3da82",
+        "status": "passed"
+      },
+      "race": {
+        "path": ".cache/go-checksum-discovery-final-race.log",
+        "bytes": 891,
+        "sha256": "809c1f8bdb0b714de8f1f48659f28094f0a4edddc8872fe06ff6ac05fcdbfacf",
+        "status": "passed"
+      },
+      "lint": {
+        "path": ".cache/go-checksum-discovery-final-lint.log",
+        "bytes": 9004,
+        "sha256": "8a8a4e7992fb211c2ca8347be4a189a1ebaf2d3b9cb0ee36b85cdaaa63b057ba",
+        "status": "passed"
+      },
+      "integration-compile": {
+        "path": ".cache/go-checksum-discovery-final-integration-compile.log",
+        "bytes": 410,
+        "sha256": "04720d773bc89f9a6cc52c62e94202c3f24e39ec2401131ff1a4d582faa504ac",
+        "status": "passed; compilation only, no PostgreSQL executed"
+      },
+      "metadata_fuzz": {
+        "path": ".cache/go-checksum-discovery-fuzz.log",
+        "sha256": "067df6ba47df69917d8a8f3c089bc45cfb3f2281c1cc108880a7b9d484ab6796",
+        "bytes": 520,
+        "status": "passed",
+        "executions": 127595,
+        "seconds": 11.262,
+        "workers": 2
+      }
+    }
+  },
+  "native_plan": [
+    "Existing go-modules workflow selects all51named functions normally/race on actual GitHub Linux amd64/arm64 with original312stock checks.",
+    "Existing main pipeline selects all225integration functions normally/race on both native Linux hosts;45fuzz/source/unit/race/lint onLinuxamd64/arm64/macOSarm64.",
+    "Keep every actually selected stock client/upgrade profile and11historical sources; do not duplicate dispatch, retry failures or cancel active main jobs."
+  ],
+  "limits": [
+    "Current discovery PGtests compile only until this new exact source executes on GitHub. Earlier2da48PG/b6whole evidence does not qualify current source.",
+    "Discovery witness grants routing metadata, not byte admission or log freshness. Public Go proxy mode stays gated; explicit offline policy, original failed proof/fork bytes and tenant/key-wide governance remain required.",
+    "Customer API/CLI/UI, export/backup/GC, conditional refresh and complete checksum-on native proxy/group remain incomplete. All450capabilities/41families/later stages underGOAL4.1 retained; readiness/security/packaging false.",
+    "No schema change: source migration12 frozen, primary11/selected5483878b binaries/tenreceipts/credentials remain stopped/preserved. No customer/sibling/release/package/image change. Original5380jobs failure remains unknown/intermittent despite later passes."
+  ]
+}

@@ -264,6 +264,9 @@ func goModuleViewInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, mod, esc
 			return e
 		}
 		if source.Mode == "proxy" {
+			if e := filterGoChecksumCandidatesInTx(ctx, tx, source, mod, as, candidates, &budget); e != nil {
+				return e
+			}
 			catalog, e := goModuleCatalogInTx(ctx, tx, source, mod, &budget, admissions)
 			if e != nil {
 				return e
