@@ -21,6 +21,7 @@ import (
 var errGoModuleOriginMissing = errors.New("configured Go origin has no such version")
 var errGoModuleOriginTransient = errors.New("temporary configured Go origin failure")
 var errGoModuleChecksumRequired = errors.New("Go origin checksum authority is not configured")
+var errGoModuleChecksumPublicationRequired = errors.New("Go checksum proofs require durable publication admission")
 
 type goModuleOriginStatus struct{ status, fresh int }
 
@@ -106,6 +107,9 @@ func (s *Server) fetchGoModuleBundle(parent context.Context, i store.Identity, r
 	request, e := gomodule.ParseRequest(lease.Path)
 	if e != nil || request.Operation != "zip" || repo.Format != "go" || repo.Mode != "proxy" || repo.Name != lease.Repository || repo.SourceRevision != lease.SourceRevision || repo.Settings.Upstream == nil || s.Blobs == nil {
 		return store.RetrievalResult{}, store.ErrGoModuleUnvalidated
+	}
+	if repo.Settings.GoChecksumAuthority != nil {
+		return store.RetrievalResult{}, errGoModuleChecksumPublicationRequired
 	}
 	if repo.Settings.Cache.RequireChecksum {
 		// Internal hashes bind the retrieved bytes; they are not an independent

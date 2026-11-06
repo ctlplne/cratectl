@@ -19,6 +19,11 @@ type GoModulePublication struct {
 }
 
 func validateGoModuleRetrieval(repo Repository, lease Retrieval, result RetrievalResult) error {
+	if repo.Settings.GoChecksumAuthority != nil || repo.Settings.Cache.RequireChecksum {
+		// A configured authority cannot be satisfied by internal blob hashes or
+		// an unfenced proof proposal. Durable checkpoint publication comes next.
+		return ErrGoModuleUnvalidated
+	}
 	if repo.Format != "go" || repo.Mode != "proxy" || lease.Repository != repo.Name || result.Status != 200 || result.Failure != "" || result.GoModule == nil || result.Object == nil || result.GoCatalog != nil || result.GoLatest != nil || result.OCI != nil || result.NativeCatalog != nil || result.NPMCatalog != nil || len(result.NPMSources) != 0 {
 		return ErrGoModuleUnvalidated
 	}

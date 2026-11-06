@@ -28,6 +28,7 @@ func TestGoModuleFillFailureOnlyPermitsExplicitTransientStale(t *testing.T) {
 		{"redirect", upstream.ErrRedirect, "upstream_authority_failure"},
 		{"path", upstream.ErrPath, "upstream_authority_failure"},
 		{"checksum", errGoModuleChecksumRequired, "upstream_checksum_required"},
+		{"configured-checksum", errGoModuleChecksumPublicationRequired, "upstream_checksum_required"},
 		{"server", &goModuleOriginStatus{status: 503}, "transient_upstream_failure"},
 		{"refused", &net.OpError{Op: "dial", Err: syscall.ECONNREFUSED}, "transient_upstream_failure"},
 		{"reset", &net.OpError{Op: "read", Err: syscall.ECONNRESET}, "transient_upstream_failure"},

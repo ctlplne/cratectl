@@ -13,31 +13,37 @@ outside this CI authority. No autonomous delegation.
 
 ## Current qualification state
 
-Exact256 [both-native checkpoint](../../evidence/2026-11-06/go-module-256d93d-native-checkpoint.json)
-verifies all28 PostgreSQL functions normally/race and the original312 checks,
-9stages,24wire and16cache bindings on both actual Linux hosts. This named Go
-result is separate from the [failed broad campaign](../../evidence/2026-11-06/go-checksum-256d93d-ci-first-failure.json):
-both Linux runtime suites suffer parallel-package owned38443 collisions, and
-macOS source/unit fails final owned-group cleanup. Empty exports remain failures.
-Linux source/unit jobs and42target fuzz jobs on all three platforms pass; original
-random checksum fixture keys limit valid coordinator seed replay in workers.
+Exact3b [campaign checkpoint](../../evidence/2026-11-06/github-3b66edb-checkpoint.json)
+passes all24actually selected jobs,17safe summaries and60reports. Source/unit/
+race and42target fuzz pass on Linuxamd64/arm64 and macOSarm64; all202source-defined
+PGfunctions run normally/race on bothLinuxhosts without source skips. Existing
+stock client/lifecycle profiles,8JVMjobs,2OCIjobs and2upgrade jobs pass. Chromium
+was selected and passes119checks on x86; ARM Chromium was not selected. Absent
+library/focused workflows are not passes. No broad readiness/security/packaging
+or full450capability inference follows from this selected campaign.
 
-The [current repair](../../evidence/2026-11-06/go-checksum-ci-repair-development.json)
-serializes integration packages, requires confirmed group removal after a denied
-kill, and uses a public deterministic checksum fuzz fixture. Persistent denial
-still fails; signal-zero probes never send another kill. Nine new checksum Go
-regression functions and the new fuzz target retain both valid authenticated and
-rejection paths. Local ARM crypto unit/race/vet,110329fuzz executions,16client
-cases, full lint and serial3package normal/race compilation pass. No localPG.
+The [named Go checkpoint](../../evidence/2026-11-06/go-module-3b66edb-native-checkpoint.json)
+retains28PGnormal/race and the original312checks/9stages24wire16cache on bothLinux
+hosts, with exact clean source/binary/tool/fixture identity. DEFECTS0118–0121
+replay in the campaign; all original failure and cancellation records remain.
 
-Existing native source/unit/race jobs must replay on Linux amd64/arm64 and macOS
-arm64, automatic42target fuzz on all three, both complete mainPG normal/race/
-stock/browser campaigns and the unchanged28PG/312check named Go jobs. No extra
-workflow, emulated x86, duplicate dispatch, retry/deadline increase or acceptance
-reduction. [ADR0045](../adr/0045-go-checksum-authority.md) orders remaining explicit
-external trust, forced-RLS checkpoint CAS, immutable proof/common publication,
-current cache/readback and offline export. Public proxy and broad readiness remain
-unfinished; require_checksum still refuses bundles without integrated authority.
+The new [configured checksum collection](../../evidence/2026-11-06/go-checksum-collection-development.json)
+adds10unitfunctions,1PGfunction/four cases and1fuzz target. Current29PGfunctions
+must run normally/race on both hosts; the existing automated fuzz inventory now
+selects43targets on all three native runners, within the unchanged25minute job.
+ARM full build/test/race/lint, tagged compile/vet and91814collector fuzz executions
+pass. Native replay remains required. The existing network controls, explicit
+operator trust, bounded original proof capture/offline replay and immutable
+staging create no trust update or package approval. Required/configured checksums
+still refuse unfenced publication/cached bytes; public proxy remains gated.
+
+[ADR0045](../adr/0045-go-checksum-authority.md) now specifies shared tenant/key
+timeline continuity, identical-head concurrency coalescing and bounded consistency
+recheck/recollection before common atomic publication. Add forced-RLS checkpoint
+history and repository-scoped proof receipts, customer/offline/current-policy
+surfaces and complete checksum-on native proxy/group journeys. Preserve the
+stock client's independent GOSUMDB policy and every original profile. No localPG,
+emulated x86, extra workflow, duplicate dispatch or retry/deadline increase.
 
 Earlier source-specific observations below retain their historical limits; the
 newest exact checkpoint above governs current qualified scope.
@@ -414,7 +420,7 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 | `jvm-clients.yml`: Gradle / 2 | Both native Linux architectures; real PostgreSQL | Gradle9.8.2, exact JDK21 build, eight stages and24 publisher/reference/raw-HTTP digests. 60-minute job. Named v2 profile passes; broader JVM remains open. |
 | `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0 and exact JDK. Cache-v4 passes666checks/10stages/34wire+6cachebindings on both hosts at0edd, retaining all release/metadata/snapshot/SHA-2 cases. 60-minute job. Broader Ivy remains open. |
 | `jvm-clients.yml`: SBT / 4 | SBT1.13.0 and2.0.11, each on native Linux amd64/arm64; real PostgreSQL | Snapshot-v2 passes269checks/8stages/8snapshotcases/18bindings on all4cases at0cff, retaining every release case. Frozen tool-only boot cache/fresh project caches. Five-minute bootstrap, two-minute commands, 60-minute job. |
-| `go-modules.yml`: hosted/group and intake / 2 | Native Linux amd64/arm64; pinned Go, real PostgreSQL16.15, trusted loopback TLS | Twenty-eight PG functions now pass normally/race at492 on both hosts; later checksum foundation needs exact-source replay. Exact4a passes both hosts with13PGfunctions and312checks/all9stages/24wire/16cache. Original1cfailures retained;Exact8f qualifies23PGnormal/race and full312check hosted-group-v2;2advertisement functions compile only. Original failures retained.45-minute job; public proxy remains rejected. |
+| `go-modules.yml`: hosted/group and intake / 2 | Native Linux amd64/arm64; pinned Go, real PostgreSQL16.15, trusted loopback TLS | Current29PGfunctions are required normally/race; exact3b qualifies28plus the original312profile. Configured checksum collection needs a new exact replay. Exact4a passes both hosts with13PGfunctions and312checks/all9stages/24wire/16cache. Original1cfailures retained;Exact8f qualifies23PGnormal/race and full312check hosted-group-v2;2advertisement functions compile only. Original failures retained.45-minute job; public proxy remains rejected. |
 | `nuget-contract.yml`: libraries / 2 | Both native Linux architectures; exact SDK10.0.403 selection | Original37assertions/unchanged dense corpora pass both at1974, actual runtime10.0.14 and separate DLLhashes. 20-minute job. Does not replace actual NuGet HTTP/restore/restart proof. |
 | `oci-clients.yml`: native clients / 2 | Both native Linux architectures; Docker, Podman, Helm, real PostgreSQL | Actual publication/consumption and policy/tenant/recovery cases with inert owned data; 45-minute job. Do not execute the uploaded image. External-provider interoperability is separate. |
 | `browser-repair.yml`: focused / 3 on relevant pushes | Native x86 Chromium; five fresh PostgreSQL databases per selected journey | Repair, retention and NuGet each repeat five complete journeys; 45-minute job. Manual dispatch selects one. Stop on failure; no retries/skips count as acceptance. |

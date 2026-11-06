@@ -1,0 +1,226 @@
+{
+  "source_parent": "3b66edbded387f118bb83e85f5b1da76dbdc75be",
+  "source_dirty": true,
+  "observed_at": "2026-11-06T21:27:14.774872+00:00",
+  "state": "configured trust validation/bounded network proof capture and immutable staging implemented internally; ARM gates pass;29PGnative replay and durable checkpoint/publication integration remain",
+  "files": [
+    {
+      "path": "internal/crypto/go_sumdb.go",
+      "sha256": "583320f58f1571ed5c3797a68fced5a32d308ee44dd671888355d20b19f83b0e"
+    },
+    {
+      "path": "internal/crypto/go_sumdb_collection_test.go",
+      "sha256": "7bf4b5a199914159160befd577ea7b3bad3241fe2fd9d5ef0f79424ff75c98bb"
+    },
+    {
+      "path": "internal/server/go_module_checksum.go",
+      "sha256": "be24d5777aa82556ab96f7663594ac25ef736655269aa938a0f9e658ccca7c94"
+    },
+    {
+      "path": "internal/server/go_module_checksum_test.go",
+      "sha256": "8529a9f0f8e867659d7e45af492068112236831a7ecfc1fde6c2678fa0317aec"
+    },
+    {
+      "path": "internal/server/go_module_proxy.go",
+      "sha256": "cc74d6a54265eec5e5a025cae10b75bcb258a797aea0a039dd44bdee6ce8c7bb"
+    },
+    {
+      "path": "internal/server/go_module_retrieval.go",
+      "sha256": "399fc827c19108c75ed05699224b7f50456c94a2d40ea4067aae5d7494d8d3b3"
+    },
+    {
+      "path": "internal/server/go_module_retrieval_test.go",
+      "sha256": "95cf684803ab36cef40b748177dd6876c175bdc396314e1cb76bafa691c28d83"
+    },
+    {
+      "path": "internal/server/testdata/README.md",
+      "sha256": "945b1ae13dfbce27199c2b667dadb302d85b6eecf76b26c890d61a1126fa5390"
+    },
+    {
+      "path": "internal/server/testdata/go-checksum-public.json",
+      "sha256": "f37d83a3f1e782a14c13a34934a7be367a46a6d36d31caa2715fa5ec6fbfdad1"
+    },
+    {
+      "path": "internal/store/go_module_cache.go",
+      "sha256": "4903b7215219f12d935f6d06eb07ffe3bed75b51ae11d69b4eef1303c8390c1e"
+    },
+    {
+      "path": "internal/store/go_module_checksum.go",
+      "sha256": "57b3d137afac37c99ff0aeb013204e8a26b19860e4db83b946da8561f85240e4"
+    },
+    {
+      "path": "internal/store/go_module_checksum_integration_test.go",
+      "sha256": "369e293ad7afabf6d5f2fdef3d275e183183274905cddbf935aebf92fc5312ff"
+    },
+    {
+      "path": "internal/store/go_module_checksum_test.go",
+      "sha256": "008c91341c3e75fc452478b14cc24a54cf886b9988b87bc88bd242cbd05d9ba9"
+    },
+    {
+      "path": "internal/store/go_module_retrieval.go",
+      "sha256": "4ae9aab817619b8f9215a023d092720cdb8766913e4b0fe94a49693636dfdef6"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "3d63227c3dd03281eaeac6b48ae7cf7cf9d4bff09cf5a48ecbe72eac05bf0f48"
+    }
+  ],
+  "new_function_inventory": [
+    {
+      "file": "internal/crypto/go_sumdb_collection_test.go",
+      "function": "TestGoChecksumCheckpointBindsCanonicalKeyAndOriginalSignedTree"
+    },
+    {
+      "file": "internal/crypto/go_sumdb_collection_test.go",
+      "function": "TestGoChecksumCollectionCapturesOriginalProofAndReplaysOffline"
+    },
+    {
+      "file": "internal/crypto/go_sumdb_collection_test.go",
+      "function": "TestGoChecksumCollectionRejectsPartialOversizedAndUntrustedReads"
+    },
+    {
+      "file": "internal/crypto/go_sumdb_collection_test.go",
+      "function": "TestGoChecksumCollectionBoundsConcurrentReadersAndCancelsWaiters"
+    },
+    {
+      "file": "internal/crypto/go_sumdb_collection_test.go",
+      "function": "FuzzGoChecksumCollectedProof"
+    },
+    {
+      "file": "internal/server/go_module_checksum_test.go",
+      "function": "TestGoModuleChecksumFetchUsesConfiguredAuthorityAndStagesOriginalProof"
+    },
+    {
+      "file": "internal/server/go_module_checksum_test.go",
+      "function": "TestGoModuleChecksumFetchRejectsAuthorityNetworkCredentialAndResponseFaults"
+    },
+    {
+      "file": "internal/server/go_module_checksum_test.go",
+      "function": "TestGoModuleChecksumFetchDoesNotBypassDurableBundleAdmission"
+    },
+    {
+      "file": "internal/store/go_module_checksum_integration_test.go",
+      "function": "TestGoModuleChecksumPolicyRejectsUnfencedPublicationAndCachedBytes"
+    },
+    {
+      "file": "internal/store/go_module_checksum_test.go",
+      "function": "TestGoChecksumAuthorityRequiresExplicitTrustAndBoundedEndpoint"
+    },
+    {
+      "file": "internal/store/go_module_checksum_test.go",
+      "function": "TestGoChecksumProofBindsBothHashesCoordinateAndSeparateCurrentTrust"
+    },
+    {
+      "file": "internal/store/go_module_checksum_test.go",
+      "function": "TestGoChecksumProposalCannotAdmitPublicationOrCachedBytesWithoutDurableFence"
+    }
+  ],
+  "mechanism": [
+    "A canonical public verifier key and explicit signed bootstrap checkpoint validate before any remote contact; exact key digest distinguishes same-name keys. Base64 plus characters remain key-body bytes, covered by a positive regression. No implicit public authority or environment bypass.",
+    "CollectGoSumDB shares the standard authenticated client and accepts only an explicit bounded reader. Canonical lookup/height8 hash tiles,128captured responses/1MiB input,256read/1MiB copied-response budgets, two simultaneous callbacks and cancellation before entering a released slot. Capture retains original prior checkpoint/responses and replays offline to the same proposed head.",
+    "Server uses existing tenant/destination-bound credentials, DNS/CIDR/redirect/TLS controls and a120second shared deadline. A1MiB raw-read budget charges trust/identity/path and reserves maxbody+overflow byte before each attempt; failed attempts keep reservations, successful short bodies refund unused body space. Common separate32KiB response-header cap. HTTP304/206/encoded/ranged/trailer/ambiguous-singleton/no-store-without-opt-in responses fail.",
+    "The server checks archive-derived ZIP/mod h1 values against the configured authority, then independently replays the captured typed proof before staging JSON with expectedSHA256 and exact length, at most2MiB and within shared metadata bounds. This creates no reference, checkpoint update, approval, journal or job. The common renewable retrieval lease/fill integration is still required.",
+    "Configured authority settings remain internal to the gated Go proxy profile. Both configured authority and require_checksum refuse bundle intake/completion/cached serving until durable checkpoint admission exists, regardless of the optional checksum flag. Advertisement/latest metadata does not become package approval."
+  ],
+  "validation": {
+    "new_unit_functions": 10,
+    "new_real_postgresql_functions": 1,
+    "new_real_postgresql_scenarios": 4,
+    "current_required_go_postgresql_functions_normal_race": 29,
+    "local_postgresql_executions": 0,
+    "new_fuzz_targets": 1,
+    "current_checked_in_fuzz_targets": 43,
+    "local_collector_fuzz_executions": 91814,
+    "local_collector_fuzz_seconds": 10.301,
+    "gates": "Full ARM build/test/race/lint pass after final code; all3integration packages compile normally/race and tagged vet passes. Public fixture scanner reports0findings.",
+    "public_fixture": "internal/server/testdata/go-checksum-public.json",
+    "public_fixture_scope": "Only public verifier/signed checkpoint/lookup/hash-tile data; generated inside the crypto test boundary. No signing key or generator remains in the application. Actual owned ZIP/mod bytes are independently inspected against this fixture.",
+    "network_scenarios": "5successes (public, bearer, basic, retained head, explicit no-store opt-in),22authority/network/credential/HTTP/size/cancellation failures, and configured bundle-admission refusal with both checksum flags.",
+    "initial_local_failures": "First unit regressions caught splitting Base64 plus as a key delimiter; corrected to SplitN and retained positive plus regression. A first server build caught incorrect blob Put arguments; corrected to expected digest/exact length. These original logs remain failures, not native failures or passes.",
+    "earlier_development_collector_fuzz_executions": 40463
+  },
+  "logs": [
+    {
+      "path": ".cache/go-checksum-collector-initial-unit.log",
+      "sha256": "4682f6979d56671d30618b3d4e0b495c96dc882055d4e6e2c530b8f56006169c"
+    },
+    {
+      "path": ".cache/go-checksum-collector-regressions.log",
+      "sha256": "a91b3356446495fa52a12b4d6dba1c45ebf67a2853820b03a181ac1f6528608a"
+    },
+    {
+      "path": ".cache/go-checksum-collector-fixed-regressions.log",
+      "sha256": "49733bb1db23e7048c0e9c83c0a6efb155d4fad43612f38692dcae2636cf13ba"
+    },
+    {
+      "path": ".cache/go-checksum-fetch-types-unit.log",
+      "sha256": "e6354b50cd78d4bf686f5be134e64d1fe0b63a17326014cb5b6ab030ee068927"
+    },
+    {
+      "path": ".cache/go-checksum-fetch-regressions.log",
+      "sha256": "68a73e9e28e81f0f095f75de8d4f65ec44863847bb31c578e0918f1a7225c136"
+    },
+    {
+      "path": ".cache/go-checksum-fetch-fixed-regressions.log",
+      "sha256": "81271e479da60f39651c4fa874ba8e0cecea7983530d3f28bb279f6288e70d08"
+    },
+    {
+      "path": ".cache/go-checksum-fetch-final-build.log",
+      "sha256": "a5d1af450ad98bb21575c0957a1a5d109bee0d05d621978968b031f03219756b"
+    },
+    {
+      "path": ".cache/go-checksum-fetch-final-test.log",
+      "sha256": "7fcdbc9f7b380438d1c54547277cc6c3fd7ce84a8adf4235e2753e1ec7f42f9c"
+    },
+    {
+      "path": ".cache/go-checksum-fetch-final-race.log",
+      "sha256": "05e6a881ab42a58e65ae40967879269f53808253c98541eb1fce5a9df37623c8"
+    },
+    {
+      "path": ".cache/go-checksum-fetch-final-lint.log",
+      "sha256": "8297b992898456d10dbc4a7019593669d00fe3e41374aceddf55648c4e555cc3"
+    },
+    {
+      "path": ".cache/go-checksum-fetch-final-integration-compile.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/go-checksum-fetch-collector-fuzz.log",
+      "sha256": "0f5d738f976f27ad3d4f8623ad822375c482e632a0f5e392d51daca94889f09a"
+    },
+    {
+      "path": ".cache/go-checksum-fetch-final-cancel-race.log",
+      "sha256": "dc97af6a7c34182d9d187286860ba1964ac2223a18ba6508f169d3bd64eed0f5"
+    },
+    {
+      "path": ".cache/go-checksum-public-fixture-secret-scan.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": ".cache/go-checksum-public-fixture-generation.log",
+      "sha256": "196606fea6d886b622bb492ea09e1b09fa3e1f0c219cab90dc454416f952bf04"
+    },
+    {
+      "path": ".cache/go-checksum-fetch-final-collector-fuzz.log",
+      "sha256": "d76f64f4b55c0217bb29b2bb0e90eeed6d203b7c991fb9dc9de025f13972b4c8"
+    }
+  ],
+  "prior_native_campaign": "evidence/2026-11-06/github-3b66edb-checkpoint.json",
+  "prior_named_go": "evidence/2026-11-06/go-module-3b66edb-native-checkpoint.json",
+  "design": "docs/adr/0045-go-checksum-authority.md",
+  "references": [
+    {
+      "url": "https://go.dev/ref/mod#checksum-database",
+      "observed_on": "2026-11-06"
+    },
+    {
+      "url": "https://pkg.go.dev/golang.org/x/mod/sumdb#ClientOps",
+      "observed_on": "2026-11-06"
+    }
+  ],
+  "limits": [
+    "New source needs native29PGnormal/race,43fuzz/unit/race on3hosts and unchanged312check Go stock profile. Exact3b24jobs/17summaries/60reports qualify prior source only. No localPG/JVM/native-client campaign.",
+    "No durable tenant/key checkpoint CAS/history, atomic proof/reference publication, current proof/cache/readback integration, customer configuration/UI, offline export/policy or full native publicGo proxy/group journey yet. No schema/runtime privilege changes or primary migration.",
+    "All450artifact capabilities/41families/every laterGOAL stage retained under4.1; no trstctl signing/vault/CA/workload issuance platform. Broad readiness/security/packaging/release false; primary/customer/sibling state preserved."
+  ]
+}

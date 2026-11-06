@@ -86,6 +86,9 @@ func (s *Store) GoModuleProxyArtifact(ctx context.Context, i Identity, repo, p s
 }
 
 func goModuleProxyArtifactInTx(ctx context.Context, tx pgx.Tx, r Repository, p string, c gomodule.Coordinate, review bool, admissions []NativeAdmission) (Artifact, error) {
+	if r.Settings.GoChecksumAuthority != nil || r.Settings.Cache.RequireChecksum {
+		return Artifact{}, ErrGoModuleUnvalidated
+	}
 	if e := goModuleCacheReceiptsInTx(ctx, tx, r, c); e != nil {
 		return Artifact{}, e
 	}

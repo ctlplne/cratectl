@@ -21,15 +21,16 @@ type CacheSettings struct {
 	AllowLegacyNPM  bool `json:"allow_legacy_npm_shasum"`
 }
 type RepositorySettings struct {
-	Upstream            *upstream.Config  `json:"upstream,omitempty"`
-	Cache               CacheSettings     `json:"cache"`
-	Members             []string          `json:"members,omitempty"`
-	NamespaceOwners     map[string]string `json:"namespace_owners,omitempty"`
-	DownloadSources     []upstream.Config `json:"download_sources,omitempty"`
-	PythonIndexFormat   string            `json:"python_index_format,omitempty"`
-	OCITokenEndpoint    *upstream.Config  `json:"oci_token_endpoint,omitempty"`
-	OCITokenService     string            `json:"oci_token_service,omitempty"`
-	MavenSnapshotPolicy string            `json:"maven_snapshot_policy,omitempty"`
+	Upstream            *upstream.Config     `json:"upstream,omitempty"`
+	Cache               CacheSettings        `json:"cache"`
+	Members             []string             `json:"members,omitempty"`
+	NamespaceOwners     map[string]string    `json:"namespace_owners,omitempty"`
+	DownloadSources     []upstream.Config    `json:"download_sources,omitempty"`
+	PythonIndexFormat   string               `json:"python_index_format,omitempty"`
+	OCITokenEndpoint    *upstream.Config     `json:"oci_token_endpoint,omitempty"`
+	OCITokenService     string               `json:"oci_token_service,omitempty"`
+	MavenSnapshotPolicy string               `json:"maven_snapshot_policy,omitempty"`
+	GoChecksumAuthority *GoChecksumAuthority `json:"go_checksum_authority,omitempty"`
 }
 type Repository struct {
 	SourceRevision int64              `json:"source_revision"`
@@ -122,6 +123,14 @@ func ValidateRepository(r *Repository) error {
 	}
 	if policy := r.Settings.MavenSnapshotPolicy; policy != "" && (r.Format != "maven" || r.Mode != "hosted" || policy != "immutable" && policy != MavenSnapshotRedeployNonunique) {
 		return errors.New("Maven snapshot policy requires a hosted Maven repository and immutable or redeploy_nonunique")
+	}
+	if authority := r.Settings.GoChecksumAuthority; authority != nil {
+		if r.Format != "go" || r.Mode != "proxy" {
+			return errors.New("Go checksum authority requires a Go proxy")
+		}
+		if e := authority.Validate(); e != nil {
+			return e
+		}
 	}
 	if r.Mode != "hosted" && r.Format != "generic" && r.Format != "maven" && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" && !(r.Format == "go" && r.Mode == "group") {
 		return errors.New("proxy/group native adapters not yet implemented for this format")

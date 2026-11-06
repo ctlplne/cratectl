@@ -14,34 +14,39 @@ The full goal is incomplete. All 450 capabilities / 41 families and every later
 stage remain committed. Broad readiness, full security and packaging remain
 negative. Both commit identities remain exactly `imfeelingtheagi` on main.
 
-Exact `256d93d` passes both actual native Linux Go jobs: 28 PostgreSQL functions
-normally/race and all original 312 checks, 9 stages, 24 wire and 16 cache bindings,
-with clean source/binary/tool/fixture identity. See
-`evidence/2026-11-06/go-module-256d93d-native-checkpoint.json`.
+Exact `3b66edb` now passes every job selected by its GitHub campaign: 24jobs,
+17safe summaries and60reports, with original JSON and artifact/log identities
+retained. This includes source/unit/race and42fuzz targets onLinuxamd64/arm64/
+macOSarm64,202source-defined PostgreSQL functions normally/race on bothLinux
+hosts, all existing client/lifecycle profiles,8JVMjobs,2OCIjobs,2upgrade jobs and
+x86Chromium119checks. ARM Chromium was unselected, not a pass. The named Go jobs
+retain28PGnormal/race and312checks/9stages24wire16cache on bothLinuxhosts. See
+`evidence/2026-11-06/github-3b66edb-checkpoint.json` and
+`evidence/2026-11-06/go-module-3b66edb-native-checkpoint.json`.
 
-Its broader main CI campaign fails: server and conformance packages collide on
-owned loopback38443 on both Linux hosts, and macOS lint reports a final owned-
-group kill PermissionError after parent exit. Empty evidence exports correctly
-refuse success. Linux source/unit jobs and all three native42target fuzz jobs
-pass, separately from those failures. See
-`evidence/2026-11-06/go-checksum-256d93d-ci-first-failure.json`.
+The earlier port collision, final-output/cleanup and random worker-key failures
+are retained and their scoped repairs replayed; no original skip/failure became
+a pass. This campaign qualifies only actually selected jobs and named profiles,
+not fullGo/450capabilities/security/packaging/readiness.
 
-The current repair serializes integration packages without dropping cases,
-waits for confirmed group removal after a denied kill while preserving actual
-cleanup failure, and makes the checksum fuzz fixture identical across workers.
-The new worker initialization regression fails with original random generation,
-then passes. ARM crypto unit/race/vet,110329fuzz executions, all16client cases,
-full lint and serial3package normal/race compilation pass; no local PostgreSQL.
-Exact-source full native replay remains required. See
-`evidence/2026-11-06/go-checksum-ci-repair-development.json`.
+The new configured checksum collector validates explicit endpoint/CIDRs,
+tenant-bound credentials, canonical public key and signed checkpoint before
+capturing bounded original lookup/hash-tile responses. It independently replays
+both archive-derived h1 values, then durably stages proof bytes with exact
+SHA256/length. It performs no reference, approval or trust update. Ten unit
+functions plus one PGfunction/four cases and one fuzz target are added: current
+29PGnormal/race and43automatic fuzz targets require native replay. Full ARM
+build/test/race/lint, tagged compilation/vet and91814collector fuzz executions
+pass; zero local PostgreSQL. See
+`evidence/2026-11-06/go-checksum-collection-development.json`.
 
-Standard Go h1 archive hashing and offline authenticated checksum-log proof
-verification are implemented. Configured external authority/trust, durable tenant
-checkpoint CAS/proof publication, current offline policy and full public proxy/
-group journeys remain required under ADR0045. RequireChecksum still refuses
-bundle retrieval and public proxy stays disabled. No schema, primary/customer/
-sibling or release change was made. Full450capability/41family/later-stage scope
-under GOAL4.1 remains; broad readiness/security/packaging are false.
+Durable tenant/key checkpoint CAS/history, atomic common proof/reference/event
+publication, current offline/cache/readback, customer configuration and full
+public proxy/group journeys remain required under ADR0045. Required/configured
+checksums still block bundle publication and cached bytes without that durable
+admission. Public Go proxy stays disabled. All450artifact capabilities/41families
+and laterGOALstages remain under4.1; no schema/runtime privilege or primary/
+customer/sibling/release change was made.
 
 Earlier development and source-specific checkpoints follow; their original
 qualification limits remain historical evidence rather than current readiness.

@@ -53,7 +53,7 @@ func goModuleFillFailure(e error) string {
 	if errors.Is(e, upstream.ErrDestination) || errors.Is(e, upstream.ErrRedirect) || errors.Is(e, upstream.ErrPath) {
 		return "upstream_authority_failure"
 	}
-	if errors.Is(e, errGoModuleChecksumRequired) {
+	if errors.Is(e, errGoModuleChecksumRequired) || errors.Is(e, errGoModuleChecksumPublicationRequired) {
 		return "upstream_checksum_required"
 	}
 	if errors.Is(e, errGoModuleOriginTransient) {

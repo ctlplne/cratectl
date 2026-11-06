@@ -1,7 +1,8 @@
 # Go content checksums and external checksum authority
 
-Observed: 2026-11-06. Status: hashing and offline proof primitives implemented;
-configured authority, durable publication and customer journeys remain open.
+Observed: 2026-11-06. Status: hashing, offline verification and bounded configured
+proof collection implemented internally; durable publication and customer
+configuration/serving journeys remain open.
 This consumes an external verification service. It does not introduce a signing
 service, key custody, CA, vault or workload issuer; GOAL section 4.1 governs.
 
@@ -40,8 +41,50 @@ not claims of full arbitrary-log-size compatibility or whole-process RSS limits.
 An old immutable record can remain valid on a proven newer timeline. Verification
 retains the newer checkpoint; this establishes consistency, not current freshness,
 publisher identity, scan evidence or package approval. The returned checkpoint is
-only a proposal until the following durable path exists. `require_checksum` still
-refuses bundle retrieval: this foundation does not enable public Go proxy mode.
+only a proposal until the following durable path exists. `require_checksum` and
+any configured authority still refuse bundle publication/cached serving: this
+foundation does not enable public Go proxy mode.
+
+## Configured collection boundary
+
+Repository settings now carry an explicit endpoint/CIDRs, credential reference,
+canonical verifier key and original signed bootstrap checkpoint. Keys distinguish
+the authority by exact digest, including when names match; Base64 `+` is part of
+the key body. An initial signed checkpoint is not an instruction to reset a
+retained timeline. Other formats/modes reject this setting. Public Go proxy
+creation remains gated, so this is not yet a customer configuration surface.
+
+`CollectGoSumDB` drives the same authenticated client through a supplied bounded
+reader. It retains only successful original lookup/hash-tile responses, with
+two concurrent reads, context-aware waiting and no callback entry after observed
+cancellation. Proof failure returns neither verification nor a partial snapshot.
+Successful snapshots retain the original separately supplied checkpoint and can
+replay offline to the same proposed head. A new fuzz target exercises both lookup
+and tile mutation, requiring its valid deterministic worker seeds to authenticate.
+
+The server collector uses existing tenant/destination-bound credentials and
+DNS/CIDR/redirect/TLS controls. It shares one120second deadline and reserves a
+maximum body plus overflow-detection byte and path before each transfer from a
+1MiB budget that also charges trust/identity overhead. Failed attempts keep their
+reservation; successful short responses refund unused body space. Response
+headers have the common separate32KiB transport cap. No implicit public sumdb,
+Origin-derived destination, HTTP304, partial/encoded response, cross-authority
+redirect, credential fallback or no-store override without explicit opt-in.
+
+The typed proof binds canonical module/version, both archive-derived h1 values
+and the separately supplied key/checkpoint. The server replays it offline before
+staging original proof JSON with expected SHA256 and exact length; staged bytes
+are at most2MiB and remain subject to the common metadata budget. It creates no
+artifact reference, trust update, approval, event or idempotency receipt. It is
+not yet wired into the common renewable lease/fill admission. Current bundle
+fetch, common completion and cache guards refuse configured/required checksum
+admission until that durable integration exists; a proposal cannot bypass it.
+
+Tests use actual inert ZIP/mod inspection and an owned HTTP authority serving a
+frozen public x/mod fixture. No private signing key is retained or used by the
+server. The new database regression tests both publication and prior cached bytes
+under newly required/configured trust, even in a deliberate same-epoch row fault.
+It compiles locally; execution belongs on native GitHub PostgreSQL jobs.
 
 ## Required integration, in dependency order
 
@@ -78,6 +121,32 @@ refuses bundle retrieval: this foundation does not enable public Go proxy mode.
    route or repository creation. Then finish conditional refresh as a separate
    complete three-member validation contract; a ZIP-only304 remains insufficient.
 
+### Durable checkpoint implementation constraints
+
+Keep a tenant/key timeline across repository source changes. A shared authority
+key must not acquire inconsistent heads through two repositories in the same
+tenant; its checkpoint record contains signed heads, not other repositories'
+private module names or proof bodies. Proof receipts remain repository-scoped
+and bind source/lease, exact three representation digests and the admitted trust
+revision. Force RLS on every new table and retain immutable checkpoint history.
+Append a new checksummed migration; do not edit the existing11receipts or migrate
+the retained primary as a side effect of source development.
+
+Concurrent completion can coalesce an identical already-retained proposed head.
+For a different winning head, verify consistency against current trust using
+bounded retained evidence, with no network in the transaction. If additional
+tiles are needed, roll back and perform bounded re-collection outside it; never
+reset the timeline or mislabel missing evidence as clean. Distinguish a proven
+signed fork from unavailable/incomplete proof, retain failure evidence and keep
+artifact references, trust change, journal/outbox and job intent atomic.
+
+The next native proxy/group profile must separately exercise the stock client's
+GOSUMDB policy and cratectl's configured authority. Namespace/source shadowing
+does not authorize different contents for one coordinate under one checksum key.
+Tenant collision fixtures may use explicitly separate private-log trust keys;
+a conflicting lower source under the same authority must fail verification.
+Keep the original hosted/group profile and every required failure/restart case.
+
 ## Evidence and test placement
 
 The real x/mod test server is used only as an in-memory external-service stand-in;
@@ -88,8 +157,11 @@ ARM local gates exercise parsing, streams, real owned child processes and these
 stand-ins. No local PostgreSQL or emulated x86 acceptance is claimed.
 
 Existing GitHub unit/race jobs run these primitives on actual Linux amd64,
-Linux arm64 and macOS arm64. Existing native Go jobs retain all28 real-PostgreSQL
-functions normally/race and every312check hosted/group case on both Linux hosts.
+Linux arm64 and macOS arm64. The current native Go inventory retains the original
+28 real-PostgreSQL functions plus the new checksum-policy function:29 required
+normally/race and every312check hosted/group case on both Linux hosts. The new
+collector fuzz target makes43automatic targets; this later source still requires
+its own exact native replay after the accepted3b24job/17summary campaign.
 New durable-authority tests must run through those native jobs, with missing
 database configuration fatal and no skipped cases counted as passes. Preserve
 first failures, exact source/binary/tool/fixture identity and original safe
