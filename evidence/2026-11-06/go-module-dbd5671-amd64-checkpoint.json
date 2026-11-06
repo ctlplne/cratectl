@@ -1,0 +1,213 @@
+{
+  "candidate": "dbd56712fb34da1d30e18d406e35ad754a45ac21",
+  "observed_at": "2026-11-06T20:04:45.124770+00:00",
+  "state": "verified named hosted-group-v2 and25PGintegration functions normally/race; current hint caller/full Go remain unfinished",
+  "run_id": 42284136706,
+  "job_id": 128120462523,
+  "url": "https://github.com/ctlplne/cratectl/actions/runs/42284136706/job/128120462523",
+  "steps": [
+    {
+      "name": "Set up job",
+      "conclusion": "success"
+    },
+    {
+      "name": "Initialize containers",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/checkout@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-go@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-python@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Prepare owned PostgreSQL and native binaries",
+      "conclusion": "success"
+    },
+    {
+      "name": "Real PostgreSQL Go module regressions",
+      "conclusion": "success"
+    },
+    {
+      "name": "Real PostgreSQL Go module regressions with race detector",
+      "conclusion": "success"
+    },
+    {
+      "name": "Trusted TLS stock Go transitive downloads and policy recovery",
+      "conclusion": "success"
+    },
+    {
+      "name": "Encrypt bounded Go failure observations for owner diagnosis",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Run actions/upload-artifact@v7",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Prepare bounded native evidence summary",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/upload-artifact@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/setup-python@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/setup-go@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/checkout@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Stop containers",
+      "conclusion": "success"
+    },
+    {
+      "name": "Complete job",
+      "conclusion": "success"
+    }
+  ],
+  "summary": {
+    "path": "evidence/2026-11-06/go-module-dbd5671-amd64-summary.json",
+    "sha256": "906aa28dba52f57b9a93b6c1aed34c1c194e255f4f0ed909c43a48db7000575c",
+    "github_artifact_id": 13536218687,
+    "github_artifact_digest": "sha256:a1846186eae3b66dd9be051caf8566106c062f017119f685bab35f0af39b492e"
+  },
+  "private_success_log": {
+    "path": ".private/ci-diagnostics/go-dbd5671-success/dbd5671-amd64.txt",
+    "bytes": 187101,
+    "sha256": "0483ad341ec0e363c0cb024c29af08ad818a9ea0c6b5d413ce12456321478feb"
+  },
+  "scope": {
+    "native": "actual GitHub Linux amd64",
+    "go_version": "1.27.3",
+    "go_binary_sha256": "5f5eb6d0b2fb6aa0bb5d5f8c5f1c944e0de955c925f0111af92a9d8f79680b5b",
+    "fixture_source_sha256": "7724be2ca5dff6806e5e9dca8b4d68a699dc09b36b3bba3379a08b2045ae3184",
+    "checks": 312,
+    "stages": 9,
+    "publisher_reference_wire_bindings": 24,
+    "cached_zip_mod_bindings": 16,
+    "postgresql_integration_functions_normal_race": 25,
+    "normal_race_package_success_records": 4
+  },
+  "source_defined_postgresql_functions": [
+    {
+      "function": "TestGoModulePreparationUsesCompleteCurrentSourceCatalogs",
+      "file": "internal/server/go_module_discovery_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleAtomicPublicationReviewDiscoveryAndImmutableReplay",
+      "file": "internal/server/go_module_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleOutboxRollbackAndConcurrentImmutablePublication",
+      "file": "internal/server/go_module_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleCurrentGrantsRevocationAndTenantCollision",
+      "file": "internal/server/go_module_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleGroupsPreservePrecedenceReviewOwnersAndSourceGrants",
+      "file": "internal/server/go_module_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleLatestRechecksCurrentVersionAfterDiskVerification",
+      "file": "internal/server/go_module_latest_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleLatestBindsCurrentCatalogAndBundleAdmissions",
+      "file": "internal/server/go_module_latest_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleOriginLatestPublicationUsesCurrentTransactionFences",
+      "file": "internal/server/go_module_latest_proxy_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleOriginBundlePublicationUsesCurrentTransactionFences",
+      "file": "internal/server/go_module_proxy_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleProxyCallerCoalescesRepresentationsUnderOneLease",
+      "file": "internal/server/go_module_retrieval_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleProxyCallerRecordsFailuresWithoutPartialPublication",
+      "file": "internal/server/go_module_retrieval_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleProxyCallerOnlyAdmitsExplicitTransientStale",
+      "file": "internal/server/go_module_retrieval_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleProxyGroupCarriesOnlyCurrentNegativeFallback",
+      "file": "internal/server/go_module_retrieval_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleProxyCallerRenewsAndCancelsOnSourceLoss",
+      "file": "internal/server/go_module_retrieval_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleProxyCallerCatalogKeepsAdvertisementSeparateFromApproval",
+      "file": "internal/server/go_module_retrieval_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleServingRechecksEarlierSourcesBeforeHeaders",
+      "file": "internal/server/go_module_selection_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleCacheAdmissionRequiresCurrentWholeBundle",
+      "file": "internal/store/go_module_cache_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleCatalogPublicationUsesCommonLeaseSourceAndOutbox",
+      "file": "internal/store/go_module_catalog_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleCatalogReadUsesCurrentBoundedTypedAdmission",
+      "file": "internal/store/go_module_catalog_read_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleDiscoveryUsesCurrentCatalogPolicyPrecedenceAndBudgets",
+      "file": "internal/store/go_module_discovery_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleLatestAdvertisementUsesCommonTransactionAndCurrentFences",
+      "file": "internal/store/go_module_latest_hint_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleRetrievalAtomicBundleCacheAndCurrentPolicy",
+      "file": "internal/store/go_module_retrieval_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleRetrievalFullOutboxRollsBackEveryReference",
+      "file": "internal/store/go_module_retrieval_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleRetrievalFencesLeaseSourceGrantAndTenant",
+      "file": "internal/store/go_module_retrieval_integration_test.go"
+    },
+    {
+      "function": "TestGoModuleFinalSelectionRechecksGroupAuthorityAndExactAbsence",
+      "file": "internal/store/go_module_selection_integration_test.go"
+    }
+  ],
+  "limits": [
+    "Nonverbose Go command proves four package success records. Exact-source25integration functions selected by ^TestGoModule contain no skips; missing owned PostgreSQL configuration is fatal.",
+    "Named hosted/group and internal caller/catalog/current-byte/latest/advertisement publication regressions only. Later1e latest-hint current cache/caller excluded; no public proxy/complete remote latest/checksum/conditional/full-format/product qualification.",
+    "Exact fixture source bytes match8f, with all sixteen independently regenerated deterministic mod/info identities retained. ZIP timestamps prevent cross-run reconstruction; publisher/reference/HTTP/cache bindings match exactly within each run. API ZIP/safe JSON/private-log digests are distinct.",
+    "All original failures and scope under GOAL4.1 retained. All450artifact capabilities/41families/laterstages incomplete; broad readiness/security/packaging false. No primary/customer/sibling/release changes."
+  ]
+}

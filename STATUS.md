@@ -14,6 +14,14 @@ The full goal is incomplete. All 450 capabilities / 41 families and every later
 stage remain committed. Broad readiness, full security and packaging remain
 negative. Both commit identities remain exactly `imfeelingtheagi` on main.
 
+Exact `dbd5671` now passes both actual native Linux Go jobs:25source-defined
+PostgreSQL functions normally/race and the unchanged312check/9stage/24wire/16cache
+profile with exact clean native binary/tool/fixture identities. This includes
+original-byte latest advertisement and common publication fences. The later1e
+current latest-hint cache/caller function is excluded and still needs its own
+26function native replay. Public proxy and complete latest integration remain
+unfinished. See `evidence/2026-11-06/go-module-dbd5671-native-checkpoint.json`.
+
 Exact `8f66bf4` now passes both actual native Linux Go jobs. Both complete all
 23source-defined PostgreSQL integration functions normally/race and the unchanged
 312check/9stage/24wire/16cache hosted/group-v2 profile with pinned Go1.27.3,

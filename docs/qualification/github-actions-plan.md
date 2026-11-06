@@ -13,6 +13,13 @@ outside this CI authority. No autonomous delegation.
 
 ## Current qualification state
 
+Exactdbd [both-native checkpoint](../../evidence/2026-11-06/go-module-dbd5671-native-checkpoint.json) verifies25PGfunctions normally/
+race and the original312check/9stage24wire16cache profile on both actual Linux
+hosts, including typed original latest-advertisement/network transaction cases.
+Later1e current hint cache/caller remains unqualified; observe existing26function
+Go run42284736457 without duplicate dispatch. No skipped/empty/compile-only result
+counts as a pass, and public proxy/fullGo/product readiness remain unfinished.
+
 The latest-hint current-cache/renewable caller adds1PGfunction/14scenarios,
 compiled normally/race only; current26functions must run through the unchanged
 filter/profile on both native hosts. ARM build/unit/race/lint/vet pass; zero local
