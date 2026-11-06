@@ -15,6 +15,24 @@ import (
 
 const MaxVersionInfo = 64 << 10
 
+// ParseLatestVersionInfo discovers an advertised canonical coordinate, then
+// applies the same exact-field, timestamp and pseudo-version rules as .info.
+// The preliminary decode is byte-bounded; it never authorizes a source or bytes.
+func ParseLatestVersionInfo(data []byte, mod string) (Info, error) {
+	if len(data) > MaxVersionInfo || len(mod) > MaxModulePath || !utf8.Valid(data) {
+		return Info{}, ErrModule
+	}
+	var header struct{ Version string }
+	if json.Unmarshal(data, &header) != nil {
+		return Info{}, ErrModule
+	}
+	c, e := Canonical(mod, header.Version)
+	if e != nil {
+		return Info{}, ErrModule
+	}
+	return ParseVersionInfo(data, c)
+}
+
 // ParseVersionInfo binds upstream metadata to an already canonical coordinate.
 // Time is optional in the Go protocol. Unknown future fields are opaque, bounded
 // data; they do not supply credentials, sources, executable commands or policy.

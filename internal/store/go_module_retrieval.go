@@ -19,7 +19,7 @@ type GoModulePublication struct {
 }
 
 func validateGoModuleRetrieval(repo Repository, lease Retrieval, result RetrievalResult) error {
-	if repo.Format != "go" || repo.Mode != "proxy" || lease.Repository != repo.Name || result.Status != 200 || result.Failure != "" || result.GoModule == nil || result.Object == nil || result.GoCatalog != nil || result.OCI != nil || result.NativeCatalog != nil || result.NPMCatalog != nil || len(result.NPMSources) != 0 {
+	if repo.Format != "go" || repo.Mode != "proxy" || lease.Repository != repo.Name || result.Status != 200 || result.Failure != "" || result.GoModule == nil || result.Object == nil || result.GoCatalog != nil || result.GoLatest != nil || result.OCI != nil || result.NativeCatalog != nil || result.NPMCatalog != nil || len(result.NPMSources) != 0 {
 		return ErrGoModuleUnvalidated
 	}
 	if result.FreshSeconds < 0 || result.FreshSeconds > 86400 || result.StaleSeconds < 0 || result.StaleSeconds > 604800 || len(result.ETag) > 1024 || len(result.Modified) > 128 || strings.ContainsAny(result.ETag+result.Modified, "\r\n\x00") {

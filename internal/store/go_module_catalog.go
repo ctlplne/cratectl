@@ -143,7 +143,7 @@ func decodeGoModuleCatalog(data []byte) (GoModuleCatalog, error) {
 }
 
 func validateGoModuleCatalogRetrieval(repo Repository, lease Retrieval, result RetrievalResult) error {
-	if repo.Format != "go" || repo.Mode != "proxy" || lease.Repository != repo.Name || result.Status != 200 || result.Failure != "" || result.GoCatalog == nil || result.Object == nil || result.GoModule != nil || result.OCI != nil || result.NativeCatalog != nil || result.NPMCatalog != nil || len(result.NPMSources) != 0 {
+	if repo.Format != "go" || repo.Mode != "proxy" || lease.Repository != repo.Name || result.Status != 200 || result.Failure != "" || result.GoCatalog == nil || result.GoLatest != nil || result.Object == nil || result.GoModule != nil || result.OCI != nil || result.NativeCatalog != nil || result.NPMCatalog != nil || len(result.NPMSources) != 0 {
 		return ErrGoModuleUnvalidated
 	}
 	a := Artifact{Path: lease.Path, Digest: result.Object.Digest, Size: result.Object.Size, MediaType: result.MediaType, Metadata: result.Metadata}

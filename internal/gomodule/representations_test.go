@@ -12,6 +12,58 @@ import (
 	"testing"
 )
 
+func TestLatestInfoDiscoversOnlyCanonicalBoundedCoordinates(t *testing.T) {
+	mod := "go.cratectl.invalid/Owned/latest"
+	for _, body := range []string{
+		`{"Version":"v1.2.3"}`,
+		`{"Time":"2026-01-02T03:04:05Z","Version":"v0.0.0-20260102030405-0123456789ab","Origin":{"URL":"https://ignored.invalid/never-follow"}}`,
+		`{"Version":"v1.2.3-beta","Future":[true,null,1]}`,
+	} {
+		data := []byte(body)
+		info, e := ParseLatestVersionInfo(data, mod)
+		if e != nil || info.Version == "" || string(data) != body {
+			t.Fatal("canonical latest identity rejected or input changed", e)
+		}
+		if exact, e := ParseVersionInfo(data, Coordinate{Module: mod, Version: info.Version}); e != nil || exact != info {
+			t.Fatal("latest bypassed exact info constraints", e)
+		}
+	}
+	for _, body := range []string{
+		`null`, `[]`, `{}`, `{"Version":null}`, `{"Version":"v1.2"}`, `{"Version":"v2.0.0"}`,
+		`{"version":"v1.2.3"}`, `{"Version":"v1.2.3","Version":"v1.2.4"}`, `{"Version":"v1.2.3","version":"v1.2.3"}`,
+		`{"Version":"v1.2.3","Future":1,"Future":2}`, `{"Version":"v1.2.3","time":"2026-01-02T03:04:05Z"}`,
+		`{"Version":"v0.0.0-20261302030405-0123456789ab"}`, `{"Version":"v0.0.0-20260102030405-0123456789ab","Time":"2026-01-02T03:04:06Z"}`,
+		`{"Version":"v1.2.3"} {}`, `{"Version":"v1.2.3","Future":"` + string([]byte{255}) + `"}`,
+		strings.Repeat(" ", MaxVersionInfo) + `{"Version":"v1.2.3"}`,
+	} {
+		if info, e := ParseLatestVersionInfo([]byte(body), mod); !errors.Is(e, ErrModule) || info != (Info{}) {
+			t.Fatal("latest returned ambiguous or partial identity", e)
+		}
+	}
+}
+
+func FuzzLatestVersionInfo(f *testing.F) {
+	for _, body := range []string{`{"Version":"v1.2.3"}`, `{"Version":"v0.0.0-20260102030405-0123456789ab"}`, `{"version":"v1.2.3"}`} {
+		f.Add([]byte(body))
+	}
+	f.Fuzz(func(t *testing.T, data []byte) {
+		mod := "go.cratectl.invalid/Owned/latest"
+		info, e := ParseLatestVersionInfo(data, mod)
+		if e != nil {
+			if info != (Info{}) {
+				t.Fatal("latest returned partial identity")
+			}
+			return
+		}
+		if len(data) > MaxVersionInfo {
+			t.Fatal("latest escaped byte budget")
+		}
+		if exact, e := ParseVersionInfo(data, Coordinate{Module: mod, Version: info.Version}); e != nil || exact != info {
+			t.Fatal("latest escaped exact metadata validation", e)
+		}
+	})
+}
+
 func TestUpstreamInfoBindsCanonicalIdentityAndOptionalTime(t *testing.T) {
 	for _, data := range []string{
 		`{"Version":"v1.2.3"}`,

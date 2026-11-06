@@ -14,6 +14,23 @@ The full goal is incomplete. All 450 capabilities / 41 families and every later
 stage remain committed. Broad readiness, full security and packaging remain
 negative. Both commit identities remain exactly `imfeelingtheagi` on main.
 
+Exact `8f66bf4` now passes both actual native Linux Go jobs. Both complete all
+23source-defined PostgreSQL integration functions normally/race and the unchanged
+312check/9stage/24wire/16cache hosted/group-v2 profile with pinned Go1.27.3,
+trusted generated loopback TLS and clean native binary/source identity. The
+queue label/recovery and503 group-change fixtures are replayed. Original failed
+runs/skips remain retained. See
+`evidence/2026-11-06/go-module-8f66bf4-native-checkpoint.json`.
+
+The new internal latest-advertisement foundation preserves bounded original
+upstream info bytes and canonical release/prerelease/pseudo coordinates. A typed
+mutable hint commits through the common source/lease/tenant/reference/integrity/
+event transaction, with no package approval. ARM build/unit/race/lint and a short
+fuzz smoke pass. Two new PGfunctions/eight scenarios compile only; current total25.
+Current hint cache/caller/discovery/latest integration and the full stock proxy
+journey remain required. Public proxy is still disabled. See
+`evidence/2026-11-06/go-latest-advertisement-development.json`.
+
 The saved210native Go run completed with both normalserver jobs failed. The
 latest guard correctly returns ErrSourceChanged, whose existing HTTP mapping is
 503; two group-epoch/reorder fixtures expected409. The assertions are corrected
@@ -142,7 +159,7 @@ tests and console reproduction pass. Four original PostgreSQL server functions
 pass normally and with race on both hosts at `802bb51`. Three additional atomic
 intake store functions and the network-to-transaction function pass normally
 and with race on both hosts at `a630875`. The current v2 workflow
-requires both actual Linux hosts, all twenty-three database
+requires both actual Linux hosts, all twenty-five database
 functions normally/with race, trusted TLS stock Go and all original hosted cases:
 nine stages,24publisher/reference/HTTP bindings and16exact cached ZIP/mod
 bindings. See `evidence/2026-11-04/go-module-groups-development.json`.
@@ -210,7 +227,7 @@ sibling cache receipts, integrity intents and ready event/outbox in the common
 current-authority/source/live-lease transaction. Unit/race/vet/full lint pass.
 Three new real-PG store functions now pass both hosts at `a630875`. The workflow
 now runs both server/store packages, including the new network transaction
-function, cache admission, source catalogs and discovery, for twenty-three PG functions normally/with race. Proxy creation
+function, cache admission, source catalogs and discovery, for twenty-five PG functions normally/with race. Proxy creation
 and reads remain rejected until network/checksum/cache/serving integration and
 full native proof are complete. See
 `evidence/2026-11-04/go-module-atomic-intake-development.json`.

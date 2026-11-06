@@ -186,6 +186,7 @@ type RetrievalResult struct {
 	OCI                        *OCIPublication
 	GoModule                   *GoModulePublication
 	GoCatalog                  *GoModuleCatalog
+	GoLatest                   *GoModuleLatest
 }
 
 func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retrieval, result RetrievalResult) error {
@@ -213,7 +214,12 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 				return e
 			}
 		}
-		if result.GoModule != nil || repo.Format == "go" && result.GoCatalog == nil && (result.Status == 200 || result.Status == 304) && result.Failure == "" {
+		if result.GoLatest != nil {
+			if e = validateGoModuleLatestRetrieval(repo, lease, result); e != nil {
+				return e
+			}
+		}
+		if result.GoModule != nil || repo.Format == "go" && result.GoCatalog == nil && result.GoLatest == nil && (result.Status == 200 || result.Status == 304) && result.Failure == "" {
 			if e = validateGoModuleRetrieval(repo, lease, result); e != nil {
 				return e
 			}
@@ -363,6 +369,9 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 		}
 		if result.GoCatalog != nil {
 			data["go_module_catalog_versions"] = len(result.GoCatalog.Versions)
+		}
+		if result.GoLatest != nil {
+			data["go_module_latest_version"] = result.GoLatest.Version
 		}
 		if replacement != nil {
 			data["reference_replacement"] = replacement

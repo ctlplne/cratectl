@@ -1,0 +1,126 @@
+{
+  "source_parent": "8f66bf4315e7a7d4f554cc84dc94b1ebc8420679",
+  "source_dirty": true,
+  "observed_at": "2026-11-06T19:56:53.645922+00:00",
+  "state": "bounded upstream latest advertisement fetch/typed common publication implemented; ARM checks pass and two new PGfunctions compile only",
+  "files": [
+    {
+      "path": "internal/gomodule/representations.go",
+      "sha256": "f005f12c41ec41c92e7965c0bf87007f5aa4ad65bf6658b7a13c490c13112413"
+    },
+    {
+      "path": "internal/gomodule/representations_test.go",
+      "sha256": "d682da92e7885f604fc7031ea3cbbe37b612d4ee4dc8db1df0c8fc3af1a11508"
+    },
+    {
+      "path": "internal/store/go_module_latest_hint.go",
+      "sha256": "a438864646a455fb0fc7bb6462281024090fe89ea647490abed2a1d3b5710b34"
+    },
+    {
+      "path": "internal/store/go_module_latest_hint_test.go",
+      "sha256": "d72e80dc6ae13f9452ab205b56dee39055ab2f31346a045119304c31475926b4"
+    },
+    {
+      "path": "internal/store/go_module_latest_hint_integration_test.go",
+      "sha256": "4d945058fc49fabfbe50bd7945d69446433a3c4ac75cb74b33291960ecaba380"
+    },
+    {
+      "path": "internal/store/go_module_catalog.go",
+      "sha256": "a405e0e2ffa171661277181cb29210d03c81fc0dfaf9cad9931ede9147bc533f"
+    },
+    {
+      "path": "internal/store/go_module_retrieval.go",
+      "sha256": "203ff65beb919417ff8087fc5cc89af43140bcd3835cf92f1ee0ac0cf817b8ce"
+    },
+    {
+      "path": "internal/store/retrieval.go",
+      "sha256": "d2c4648d3772bdff97e146d798e019e467df9b237d2e032221e0ca39819903d1"
+    },
+    {
+      "path": "internal/server/go_module_latest_proxy.go",
+      "sha256": "ec579cf9c3609c587f73b0d685409f84627ec551bd55b7ab80ec82fa3eada911"
+    },
+    {
+      "path": "internal/server/go_module_latest_proxy_test.go",
+      "sha256": "a57effba3746f4ce29d4c2095d1349b752fb067c314046bd4a8f5fda0d781eac"
+    },
+    {
+      "path": "internal/server/go_module_latest_proxy_integration_test.go",
+      "sha256": "96b1d76feeacd2e44d935f7f96012adf5f87190655a7c9c63a014d2e5c83bd8e"
+    }
+  ],
+  "mechanism": [
+    "A bounded latest parser discovers the advertised coordinate then reuses exact .info validation for canonical module/major/version, optional time and pseudo timestamp, UTF8, duplicate/alias/future-field and byte limits. It preserves original response bytes; opaque Origin fields are never destinations or authority.",
+    "The fetcher uses only the configured common endpoint/credential/network/redirect guard, one120second deadline, identity encoding and full200body. Original info bytes stage before references. Raw-plus-derived bytes share a64KiB/configured bound, and combined cache headers remain authoritative. No retries, VCS/direct/public checksum contact or package execution.",
+    "Typed GoModuleLatest metadata binds original info digest/size and canonical coordinate to a go-latest reference with an exact bounded internal shape. The common completion transaction handles current tenant/source/live lease, mutable reference protection, integrity intent, journal/outbox and review state. Bundle/catalog/latest publication types are mutually exclusive; bare304 and mixed/unbound intake fail.",
+    "This is an advertisement only: no package reference, package approval or independent checksum proof. Current latest-hint cache reads/caller/discovery/precedence/selection integration remain required. Public Go proxy stays disabled."
+  ],
+  "local_validation": [
+    "Full ARM make build/test/race/lint pass; four new unit functions cover parser ambiguities, typed publication/bindings and ten owned HTTP cases. No local PostgreSQL/JVM/SDK/native-registry campaign.",
+    "FuzzLatestVersionInfo joins native CI inventory; requested5second local ARM smoke passes38250executions in6.177seconds wall time. This is not worst-case memory/RSS/performance or full fuzz qualification.",
+    "Two new real-PG functions/eight scenarios compile normally/race and tagged vet passes: common transaction initial/refresh/queue/source/lease/tenant and owned network-to-completion current fences. Combined required total25functions; actual native execution remains required."
+  ],
+  "new_postgresql_functions": [
+    {
+      "name": "TestGoModuleLatestAdvertisementUsesCommonTransactionAndCurrentFences",
+      "scenarios": 5
+    },
+    {
+      "name": "TestGoModuleOriginLatestPublicationUsesCurrentTransactionFences",
+      "scenarios": 3
+    }
+  ],
+  "logs": [
+    {
+      "path": ".cache/go-latest-advertisement-unit.log",
+      "sha256": "ed01ce0942542201fc1c42efc52c754b365c5c1ae0126f3c5a0bab983083957c"
+    },
+    {
+      "path": ".cache/go-latest-advertisement-race.log",
+      "sha256": "1a02ec6c95bccafd13a82ed89da54d2f17efe25d50606616edb5281634dbbabe"
+    },
+    {
+      "path": ".cache/go-latest-advertisement-compile.log",
+      "sha256": "9325aa9a01ed87ec48c8b63ea88a78b6be4495ba00b29aae7b15dde83b754e04"
+    },
+    {
+      "path": ".cache/go-latest-advertisement-race-compile.log",
+      "sha256": "f26ee5f49385e43b6746285bc6eb78762789a9ebe1a087bcaba00cf73c1e4322"
+    },
+    {
+      "path": ".cache/go-latest-advertisement-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/go-latest-advertisement-build.log",
+      "sha256": "4ac0052c9241976f4db0a5033a586d4c852c34c962cffa7ebe06e549bff5e6ac"
+    },
+    {
+      "path": ".cache/go-latest-advertisement-all-test.log",
+      "sha256": "47ca89d1d71bb667e0b825db046e2a367d5ed2506f672cf2595a339fec7d554d"
+    },
+    {
+      "path": ".cache/go-latest-advertisement-all-race.log",
+      "sha256": "b0ae753a7cf4df00d5464a74b2ab1dbe5aa991555f0187fc11cdf005cf0f7db7"
+    },
+    {
+      "path": ".cache/go-latest-advertisement-lint.log",
+      "sha256": "394c9b8504e6e66e9c685e9d5bfe6e440bb872658dc0267745dccdfe27be2416"
+    },
+    {
+      "path": ".cache/go-latest-advertisement-fuzz.log",
+      "sha256": "6570623703a7b2cad40ff046cb4d780bc99059b8b78d2a243fb8de2e9c90e205"
+    }
+  ],
+  "qualified_prior_source": "evidence/2026-11-06/go-module-8f66bf4-native-checkpoint.json",
+  "reference": {
+    "url": "https://go.dev/ref/mod#goproxy-protocol",
+    "observed_on": "2026-11-06",
+    "scope": "latest shares info shape; optional Time; list excludes pseudos; optional upstream latest is unauthenticated mutable metadata, separate from package hashes"
+  },
+  "limits": [
+    "Exact8f23PGnormal/race and hosted-group-v2 on both actual Linux hosts is separate. New25function/latest-advertisement source needs its own normal/race and unchanged312stock checks/9stages/24wire/16cache.",
+    "Current hint caller/cache/discovery/latest-selection integration, remote pseudo journeys, independent checksum/offline trust, conditional refresh, public proxy/full Go and all remaining goal requirements remain.",
+    "All450artifact capabilities/41families/every later stage retained under ownerGOAL4.1; no CA/vault/external credential/signing/workload issuance platform. Broad readiness/security/packaging false; primary/customer/sibling/schema/runtime grants/release unchanged."
+  ]
+}
