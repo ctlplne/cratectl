@@ -118,6 +118,33 @@ def generic():
   check(f'audit chain {seq}',event['previous_hash']==prev and event['hash']==hashlib.sha256((prev+'\n'+event['payload']).encode()).hexdigest())
   prev=event['hash']
  check('audit is tenant scoped',all(json.loads(x['payload'])['tenant']==tenants['admin'] for x in events))
+ # The test's expected head comes from the independently recomputed original
+ # event chain above. This owned test does not authenticate a customer signer.
+ observation=json.loads(req('/api/v1/audit/checkpoint')[1])
+ head={'tenant':tenants['admin'],'sequence':seq,'hash':prev}
+ check('journal checkpoint is explicitly unsigned and matches the independently recomputed owned chain',observation['signed']is False and observation['checkpoint']==head)
+ client=PRIVATE/'journal-client.json';client.write_text(json.dumps({'version':1,'url':BASE,'token_file':str(PRIVATE/'admin.token')}));client.chmod(0o600)
+ export=PRIVATE/'journal.jsonl'
+ arguments=['--tenant',head['tenant'],'--through',str(head['sequence']),'--through-hash',head['hash']]
+ receipt=json.loads(run([BIN/'cratectl','journal-export','--config',client,'--output',export,'--limit','2',*arguments]))
+ original=export.read_bytes();pages=[json.loads(line)for line in original.splitlines()]
+ check('native journal collector verifies every fixed-range page and persisted EOF',receipt['matches_supplied_checkpoint']and receipt['events']==seq and receipt['pages']==len(pages)>1 and receipt['export_sha256']==hashlib.sha256(original).hexdigest())
+ check('native journal export is an owner-private regular file',export.is_file()and export.stat().st_mode&0o077==0)
+ offline=json.loads(run([BIN/'cratectl','journal-verify','--export-file',export,*arguments]))
+ check('native offline journal command independently rechecks the exact complete file',offline['matches_supplied_checkpoint']and offline['head_hash']==head['hash']and offline['export_sha256']==receipt['export_sha256'])
+ replay=PRIVATE/'journal-replay.jsonl';run([BIN/'cratectl','journal-export','--config',client,'--output',replay,'--limit','2',*arguments])
+ check('fixed journal export reread preserves exact immutable page bytes',replay.read_bytes()==original)
+ run([BIN/'cratectl','journal-export','--config',client,'--output',export,*arguments],expect_failure=True)
+ check('native journal collection never replaces an existing export',export.read_bytes()==original)
+ damaged=PRIVATE/'journal-damaged.jsonl';damaged.write_bytes(original.replace(b'identity.provisioned',b'identity.forged',1));damaged.chmod(0o600)
+ rejected=run([BIN/'cratectl','journal-verify','--export-file',damaged,*arguments],expect_failure=True)
+ check('native offline verifier rejects altered original events without a success receipt','matches_supplied_checkpoint'not in rejected)
+ truncated=PRIVATE/'journal-truncated.jsonl';truncated.write_bytes(original[:original.find(b'\n')+1]);truncated.chmod(0o600)
+ rejected=run([BIN/'cratectl','journal-verify','--export-file',truncated,*arguments],expect_failure=True)
+ check('native offline verifier rejects a valid prefix missing the terminal checkpoint','matches_supplied_checkpoint'not in rejected)
+ wrong=[*arguments];wrong[-1]='0'*64
+ rejected=run([BIN/'cratectl','journal-verify','--export-file',export,*wrong],expect_failure=True)
+ check('native offline verifier requires the separately supplied terminal hash','matches_supplied_checkpoint'not in rejected)
  object_path=PRIVATE/'objects'/tenants['admin']/'sha256'/obj['digest'][:2]/obj['digest']
  object_path.write_bytes(b'X'*len(payload))
  check('same-length storage corruption is never served',req('/r/raw/object')[0]==503)

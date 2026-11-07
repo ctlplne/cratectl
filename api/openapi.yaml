@@ -1040,13 +1040,92 @@ paths:
   /api/v1/audit:
     get:
       operationId: listAuditEvents
+      description: Current tenant administrators only. Read original retained payloads with separate count and byte bounds; this live list is not an independently attributed export. Duplicate or unknown query keys are rejected.
       parameters:
         - in: query
           name: after
-          schema: {type: integer, minimum: 0, default: 0}
+          schema: {type: integer, format: int64, minimum: 0, default: 0}
+        - {$ref: '#/components/parameters/ListLimit'}
       responses:
-        '200': {description: "Up to 1000 tenant events in sequence order; use last sequence as next cursor."}
-        '400': {description: "Invalid sequence cursor."}
+        '200': {description: "Original items with limit, more and next_after. Follow next_after whenever more is true; a byte limit may shorten the page. Empty future cursors remain valid."}
+        '400': {description: "Invalid or ambiguous sequence cursor or limit."}
+        '401': {description: "Current credential required."}
+        '403': {description: "Current tenant administrator required."}
+        '503': {description: "Retained event integrity or supported byte budget unavailable; no complete export or clean verdict."}
+
+  /api/v1/audit/checkpoint:
+    get:
+      operationId: observeJournalCheckpoint
+      description: Current administrator observation in one forced-RLS read-only snapshot. No query parameters. The exact checkpoint tenant/sequence/hash must be authenticated outside the export with a separate trusted record or external signing tool; this endpoint does not sign or authenticate itself.
+      responses:
+        '200':
+          description: Unsigned current checkpoint; sequence zero and empty hash represent genesis.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [checkpoint, signed, trust]
+                properties:
+                  checkpoint:
+                    type: object
+                    required: [tenant, sequence, hash]
+                    properties:
+                      tenant: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$'}
+                      sequence: {type: integer, format: int64, minimum: 0}
+                      hash: {type: string, pattern: '^([a-f0-9]{64})?$'}
+                  signed: {const: false}
+                  trust: {type: string}
+        '400': {description: "Query parameters are not supported."}
+        '401': {description: "Current credential required."}
+        '403': {description: "Current tenant administrator required."}
+        '503': {description: "Retained checkpoint unavailable or inconsistent."}
+
+  /api/v1/audit/export:
+    get:
+      operationId: readFixedJournalRangePage
+      description: Read-only version-1 canonical JSON page plus LF. Every page binds the same terminal checkpoint and original tenant/sequence/payload/hash chain in a repeatable-read forced-RLS snapshot. Authenticate checkpoint bindings separately. At most 1000 events and 2 MiB per frame; original payloads over 256 KiB fail explicitly. No duplicate/unknown query keys; exact canonical nonnegative int64 decimal sequences only. Current administrator authority is rechecked per request. Later appends do not change the selected range.
+      parameters:
+        - {in: query, name: after, required: true, schema: {type: integer, format: int64, minimum: 0}}
+        - {in: query, name: after_hash, required: true, schema: {type: string, pattern: '^([a-f0-9]{64})?$'}, description: "Empty only for sequence zero; otherwise exact start SHA-256."}
+        - {in: query, name: through, required: true, schema: {type: integer, format: int64, minimum: 0}}
+        - {in: query, name: through_hash, required: true, schema: {type: string, pattern: '^([a-f0-9]{64})?$'}, description: "Exact terminal SHA-256 from independently authenticated checkpoint; empty only for genesis."}
+        - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 1000, default: 100}}
+      responses:
+        '200':
+          description: "Canonical JSONL page. Retain exact response bytes; continue from next_after/next_hash only when more is true. Full offline verification requires every page through the supplied terminal anchor and EOF. No event claims or package approval are established."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [version, tenant, after, after_hash, through, through_hash, items, more, next_after, next_hash]
+                properties:
+                  version: {const: 1}
+                  tenant: {type: string}
+                  after: {type: integer, format: int64, minimum: 0}
+                  after_hash: {type: string}
+                  through: {type: integer, format: int64, minimum: 0}
+                  through_hash: {type: string}
+                  items:
+                    type: array
+                    maxItems: 1000
+                    items:
+                      type: object
+                      additionalProperties: false
+                      required: [sequence, payload, previous_hash, hash]
+                      properties:
+                        sequence: {type: integer, format: int64, minimum: 1}
+                        payload: {type: string, description: "Exact original UTF-8 payload bytes; at most 256 KiB before outer JSON escaping."}
+                        previous_hash: {type: string}
+                        hash: {type: string, pattern: '^[a-f0-9]{64}$'}
+                  more: {type: boolean}
+                  next_after: {type: integer, format: int64, minimum: 0}
+                  next_hash: {type: string}
+        '400': {description: "Invalid, ambiguous or missing exact range bindings."}
+        '401': {description: "Current credential required."}
+        '403': {description: "Current tenant administrator required."}
+        '409': {description: "Supplied anchor absent or mismatched; preserve the original trusted checkpoint and investigate."}
+        '503': {description: "Retained evidence integrity or supported byte budget unavailable; no partial page is a pass."}
 
   /api/v1/repositories/{repository}/yanks:
     parameters:

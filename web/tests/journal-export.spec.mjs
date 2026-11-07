@@ -1,0 +1,40 @@
+// SPDX-License-Identifier: BUSL-1.1
+import {test,expect} from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+
+test('journal export keeps independent trust explicit and follows byte-bounded audit cursors',async({page,browser})=>{
+  const fixture=JSON.parse(await fs.readFile(process.env.CRATECTL_CONSOLE_FIXTURE_JSON,'utf8'));
+  const credential='owned-journal-ui-standin-'+ 'x'.repeat(32),tenant='journal-ui-owned';
+  const checks=[],accessibility=[],calls=[],errors=[];let mode='normal',role='admin',phase='connect';
+  const event=sequence=>({sequence,payload:JSON.stringify({tenant,sequence,actor:'operator',kind:'owned.fixture',time:'2026-11-07T00:00:00Z',data:{claim:'original UI stand-in'}}),previous_hash:sequence===1?'':'a'.repeat(64),hash:(sequence===1?'a':'b').repeat(64)});
+  page.on('pageerror',e=>errors.push(e.message));
+  async function axe(state){const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();expect(result.violations).toEqual([]);accessibility.push({state,violations:0})}
+  await page.route('**/api/v1/**',async route=>{
+    const request=route.request(),url=new URL(request.url());calls.push({method:request.method(),path:url.pathname,after:url.searchParams.get('after')});
+    const send=(data,status=200)=>route.fulfill({status,contentType:'application/json',body:JSON.stringify(data)});
+    if(url.pathname==='/api/v1/session')return send({tenant,actor:'operator',role,public_url:fixture.base_url,formats:['generic']});
+    if(url.pathname==='/api/v1/repositories')return send({items:[],limit:1000});
+    if(url.pathname==='/api/v1/audit')return send(url.searchParams.get('after')==='1'?{items:[event(2)],limit:1000,more:false,next_after:2}:{items:[event(1)],limit:1000,more:true,next_after:1});
+    if(url.pathname==='/api/v1/audit/checkpoint'){
+      if(mode==='denied')return send({error:{code:'forbidden',action:'Reconnect with a current tenant administrator credential.'}},403);
+      return send({checkpoint:{tenant,sequence:mode==='unsafe'?9007199254740992:mode==='genesis'?0:2,hash:mode==='genesis'?'':'b'.repeat(64)},signed:false,trust:'Authenticate separately.'});
+    }
+    return send({error:{code:'not_found',action:'Only owned journal UI stand-ins are available.'}},404);
+  });
+  const modal=()=>page.getByRole('dialog');
+  async function connect(){await page.getByLabel('Tenant credential',{exact:true}).fill(credential);await page.getByRole('button',{name:'Connect to installation',exact:true}).click();await page.getByRole('link',{name:'Audit',exact:true}).click()}
+  try{
+    await page.goto(fixture.base_url+'/console/');await connect();phase='pagination';
+    const pages=page.getByRole('navigation',{name:'Audit journal pages'});
+    await expect(page.getByRole('region',{name:'Tenant audit events'})).toContainText('#1');await expect(pages.getByRole('button',{name:'Next page',exact:true})).toBeEnabled();await pages.getByRole('button',{name:'Next page',exact:true}).click();await expect(page.getByRole('region',{name:'Tenant audit events'})).toContainText('#2');await expect(pages.getByRole('button',{name:'Next page',exact:true})).toBeDisabled();expect(calls.some(c=>c.path==='/api/v1/audit'&&c.after==='1')).toBe(true);checks.push('journal UI stand-in advances from a short byte-bounded audit page using the explicit cursor');
+    await page.getByRole('button',{name:'Complete journal export',exact:true}).click();await expect(modal()).toContainText('This observation is unsigned.');await expect(modal()).toContainText('Required separately');await axe('journal unsigned checkpoint and separate trust');checks.push('journal UI stand-in explicitly identifies the observed head as unsigned and requires separate external authentication');
+    const commands=modal().locator('pre');await expect(commands).toContainText('cratectl journal-export');await expect(commands).toContainText('cratectl journal-verify');await expect(commands).toContainText('--through "$CRATECTL_TRUSTED_JOURNAL_SEQUENCE"');await expect(commands).toContainText('--through-hash "$CRATECTL_TRUSTED_JOURNAL_HASH"');await expect(commands).not.toContainText('b'.repeat(64));await expect(modal().getByRole('button',{name:'Copy journal export commands',exact:true})).toBeVisible();checks.push('journal UI stand-in commands require separately supplied trusted bindings rather than promoting the displayed hash into trust');
+    await expect(modal()).toContainText('incomplete private file');await expect(modal()).toContainText('does not prove event claims or approve package bytes');checks.push('journal UI stand-in explains incomplete collection and limits of successful chain verification');
+    mode='unsafe';phase='unsafe';await modal().getByRole('button',{name:'Refresh journal checkpoint',exact:true}).click();await expect(modal().getByRole('alert')).toContainText('exceeds exact console precision');await expect(modal().getByRole('button',{name:'Copy journal export commands',exact:true})).toHaveCount(0);await axe('journal unsafe sequence precision');checks.push('journal UI stand-in refuses copy commands for terminal sequence values outside exact browser precision');
+    mode='genesis';phase='genesis';await modal().getByRole('button',{name:'Refresh journal checkpoint',exact:true}).click();await expect(modal()).toContainText('This tenant has no recorded journal events.');await expect(modal()).toContainText('Empty genesis hash');await axe('journal empty genesis');checks.push('journal UI stand-in explains the empty genesis range without inventing a history');
+    mode='denied';phase='denied';await modal().getByRole('button',{name:'Refresh journal checkpoint',exact:true}).click();await expect(modal().getByRole('alert')).toContainText('Access denied');await expect(modal().getByRole('button',{name:'Copy journal export commands',exact:true})).toHaveCount(0);await expect(modal()).not.toContainText('Empty genesis hash');await axe('journal denied checkpoint clears prior observation');checks.push('journal UI stand-in denial removes the old checkpoint and its commands');
+    await page.getByRole('button',{name:'Close dialog',exact:true}).click();await page.getByRole('button',{name:'Disconnect',exact:true}).click();const previous=calls.filter(c=>c.path.startsWith('/api/v1/audit')).length;role='reader';phase='reader';await connect();await expect(page.getByRole('heading',{name:'Administrator access required',exact:true})).toBeVisible();expect(calls.filter(c=>c.path.startsWith('/api/v1/audit')).length).toBe(previous);expect(calls.every(c=>c.method==='GET')).toBe(true);expect(calls.some(c=>c.path==='/api/v1/audit/export')).toBe(false);expect(await page.content()).not.toContain(credential);expect(await page.evaluate(()=>localStorage.length+sessionStorage.length)).toBe(0);expect(errors).toEqual([]);await axe('journal reader denied');checks.push('journal UI stand-ins perform only explicit reads and keep reader requests and credentials out of journal export and persistent storage');phase='complete';
+  }finally{await fs.writeFile(path.join(fixture.private,'journal-export-browser-proof.json'),JSON.stringify({phase,checks,accessibility,browser:browser.version(),scope:'Real x86 Chromium against embedded console with explicitly owned management response stand-ins. UI language, pagination, permissions rendering and precision only. No actual database authentication, independently authenticated checkpoint, cryptographic chain or network export claim; separate PostgreSQL and native CLI journeys cover those. Full console/WCAG/readiness remains unqualified.'},null,2))}
+});

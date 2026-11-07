@@ -32,16 +32,51 @@ laterGOAL4.1scope/readiness/security/packaging remain incomplete.
 Named source14 [Go79/312](../../evidence/2026-11-07/go-module-5816b27-native-checkpoint.json)
 and [13historical/18upgrade](../../evidence/2026-11-07/github-5816b27-upgrades-checkpoint.json)
 profiles pass onbothLinuxhosts. All29selectedjobs are now independently accepted.
-The separate [client investigation](go-checksum-client-plan.md) preserves an ARM
-stockGo1.27.3 failed ZIP trust-state control. A new dedicated workflow runs the
-same strict7controls onactualLinuxamd64/Linuxarm64/macOSarm64,15minutes max perjob.
-It never masks failure or counts the controlled retry as safe admission. Fixed
-safe summaries omit raw output; bounded diagnostics are owner-encrypted with the
-existing public recipient. No private key or plaintext fallback visits artifacts.
-This additional3job lane is separate from real registry/database journeys; its
-expected selection must be read from actual runs, not inferred as a pass. It does
-not run locally as a database or stock-registry campaign. Keep full Go proxy,
-checksum-on stock customers and all later GOAL outcomes open.
+The separate [client investigation](go-checksum-client-plan.md) is now reproduced
+on all three actual native hosts at5567d24: Linux amd64, Linux arm64 and macOS
+arm64. All three jobs fail the unchanged mandatory ZIP trust-state assertion;
+six other controls pass per host. See the [original safe/encrypted evidence
+checkpoint](../../evidence/2026-11-07/go-checksum-client-5567d24-native-reproduction.json). It remains a failed profile, with no
+maintainer-confirmed rootcause or external report. Do not hide it behind the
+separately passing repository admission,79Go/312stock or controlled-upgrade jobs.
+The [repository-profile checkpoint](../../evidence/2026-11-07/github-5567d24-checkpoint.json) independently accepts
+24jobs/5workflows,17safe summaries/66reports,253PG normal/race both Linux hosts,
+79Go/312stock,48fuzz/source on three hosts and17x86 browser workflows/132checks.
+Native NuGet-library and focused browser jobs were unselected. Thus all27 actually
+selected jobs are terminal:24 pass and the three strict client probes fail.
+No duplicate run, weakened assertion, private-key upload or plaintext fallback is
+needed. Public checksum-on proxy/group and all broader Go outcomes stay open.
+
+## Bounded journal export lane
+
+ADR0046 and [operator instructions](../journal-export.md) define the new read-only
+range API and serial private-file collector/offline verifier. ARM development
+gates pass; native PostgreSQL/CLI/browser qualification is pending. The expected
+source inventory grows from253 to257PG functions and48 to49fuzz targets. Keep all
+original source/build/unit/race/lint, real-PG normal/race, stock-client, upgrade,
+JVM and OCI jobs. The normal native registry profile adds nine real CLI checks
+for collection, private files, immutable reread, no overwrite, altered/truncated
+input and independently supplied anchors; expected conformance count672. Main
+x86 Chromium adds one explicitly declared journal UI response-stand-in workflow:
+18 workflows/140 checks, comprising15existing and3declared UI stand-ins. Actual
+RLS/current credentials/original chain/byte-budget verification has four new
+PostgreSQL functions; no browser response stand-in can establish that proof.
+
+The API reads bounded metadata before payloads and uses an exact retained
+terminal sequence/hash, so no new schema step or primary maintenance is needed.
+Use the existing workflow selectors and actual run identities; unselected jobs
+remain unselected. Run the same source on actual native Linux hosts for database
+and stock clients and on the native source/fuzz hosts. No local database, SDK,
+JVM, stock-registry or Chromium campaign is needed. Preserve first failures
+before repairs and original safe reports; accept each candidate only after its
+actually selected stages and source/build identities agree.
+
+A self-reported server hash is unsigned. Separate trusted checkpoint records and
+external signer verification/adapters remain required; no signing custody service
+is introduced. Large-event/history behavior, full Go evidence bundles, offline
+cache/install, consistent backup/restore, export/GC leases and all later GOAL
+stages remain open. CI placement accelerates qualification; it cannot substitute
+for implementing those outcomes.
 
 ## Earlier source-specific qualification
 

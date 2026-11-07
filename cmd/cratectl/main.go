@@ -21,6 +21,12 @@ import (
 )
 
 func run() error {
+	if len(os.Args) > 1 && os.Args[1] == "journal-export" {
+		return runJournalExport(os.Args[2:], os.Stdout)
+	}
+	if len(os.Args) > 1 && os.Args[1] == "journal-verify" {
+		return runJournalVerify(os.Args[2:], os.Stdout)
+	}
 	if len(os.Args) > 1 && os.Args[1] == "go-checksum-verify" {
 		return runGoChecksumVerify(os.Args[2:], os.Stdout)
 	}

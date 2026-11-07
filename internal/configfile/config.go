@@ -66,6 +66,26 @@ func Read(path string, value any) error {
 	return nil
 }
 func ReadBytes(path string, limit int64, private bool) ([]byte, error) {
+	f, e := OpenBounded(path, limit, private)
+	if e != nil {
+		return nil, e
+	}
+	defer f.Close()
+	b, e := io.ReadAll(io.LimitReader(f, limit+1))
+	if e != nil || int64(len(b)) > limit {
+		clear(b)
+		return nil, errors.New("cannot read bounded configuration")
+	}
+	return b, nil
+}
+
+// OpenBounded applies the regular-file, no-symlink and permission checks before
+// exposing a streaming descriptor. The caller must also bound bytes read: an
+// already-open regular file may grow after Stat.
+func OpenBounded(path string, limit int64, private bool) (*os.File, error) {
+	if limit < 1 {
+		return nil, errors.New("file byte budget must be positive")
+	}
 	before, e := os.Lstat(path)
 	if e != nil || !before.Mode().IsRegular() || private && before.Mode().Perm()&0077 != 0 {
 		return nil, errors.New("configuration must be a regular file with appropriate private permissions")
@@ -74,15 +94,10 @@ func ReadBytes(path string, limit int64, private bool) ([]byte, error) {
 	if e != nil {
 		return nil, errors.New("cannot open configuration file")
 	}
-	defer f.Close()
 	after, e := f.Stat()
 	if e != nil || !after.Mode().IsRegular() || !os.SameFile(before, after) || after.Size() > limit || private && after.Mode().Perm()&0077 != 0 {
+		f.Close()
 		return nil, errors.New("configuration changed, is not private or exceeds its byte budget")
 	}
-	b, e := io.ReadAll(io.LimitReader(f, limit+1))
-	if e != nil || int64(len(b)) > limit {
-		clear(b)
-		return nil, errors.New("cannot read bounded configuration")
-	}
-	return b, nil
+	return f, nil
 }

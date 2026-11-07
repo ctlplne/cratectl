@@ -431,26 +431,15 @@ type Event struct {
 }
 
 func (s *Store) Events(ctx context.Context, i Identity, after int64) ([]Event, error) {
-	if i.Role != "admin" {
-		return nil, ErrDenied
+	page, err := s.JournalEvents(ctx, i, after, crypt.MaxJournalPageEvents)
+	if err != nil {
+		return nil, err
 	}
-	out := []Event{}
-	e := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
-		rows, e := tx.Query(ctx, `SELECT sequence,payload,previous_hash,hash FROM cratectl.events WHERE sequence>$1 ORDER BY sequence LIMIT 1000`, after)
-		if e != nil {
-			return e
-		}
-		defer rows.Close()
-		for rows.Next() {
-			var v Event
-			if e = rows.Scan(&v.Sequence, &v.Payload, &v.PreviousHash, &v.Hash); e != nil {
-				return e
-			}
-			out = append(out, v)
-		}
-		return rows.Err()
-	})
-	return out, e
+	out := make([]Event, 0, len(page.Items))
+	for _, v := range page.Items {
+		out = append(out, Event{Sequence: v.Sequence, Payload: v.Payload, PreviousHash: v.PreviousHash, Hash: v.Hash})
+	}
+	return out, nil
 }
 
 // ReplaceMetadata changes a native mutable metadata reference. The old and new

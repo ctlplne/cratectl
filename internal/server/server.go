@@ -11,7 +11,6 @@ import (
 	"net/http"
 	"net/url"
 	"path"
-	"strconv"
 	"strings"
 	"time"
 
@@ -122,6 +121,14 @@ func fail(w http.ResponseWriter, status int, code, action string) {
 }
 func respondErr(w http.ResponseWriter, e error) {
 	switch {
+	case errors.Is(e, store.ErrJournalInput):
+		fail(w, 400, "invalid_journal_range", "Supply one canonical nonnegative sequence and exact lowercase SHA-256 for each nonzero anchor, with after no later than through and limit 1–1000. A zero anchor has an empty hash.")
+	case errors.Is(e, store.ErrJournalChanged):
+		fail(w, 409, "journal_checkpoint_changed", "The supplied anchor is absent or differs from retained history. Preserve the original checkpoint and investigate; a newly observed hash cannot replace independent trust.")
+	case errors.Is(e, crypt.ErrJournalLimit):
+		fail(w, 503, "journal_evidence_limit", "This retained range exceeds the bounded export profile. Preserve it and use a separately qualified large-event recovery path. No complete export or clean integrity result was produced.")
+	case errors.Is(e, crypt.ErrJournalEvidence):
+		fail(w, 503, "journal_evidence_unavailable", "The retained journal does not satisfy its original tenant, sequence and hash bindings. Preserve database evidence and investigate; no complete export was produced.")
 	case errors.Is(e, store.ErrGoChecksumLegacyInput):
 		fail(w, 400, "invalid_checksum_legacy_review", "Supply the exact incident hash, repository source/key/checkpoint, bounded review reason, external review reference SHA-256 and explicit acceptance of unattributed history.")
 	case errors.Is(e, store.ErrGoChecksumLegacyChanged):
@@ -376,6 +383,9 @@ func readJSON(w http.ResponseWriter, r *http.Request, v any, limit int64) bool {
 }
 func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Identity) {
 	p := strings.TrimPrefix(r.URL.Path, "/api/v1/")
+	if s.journalManagement(w, r, i, p) {
+		return
+	}
 	if s.goChecksumLegacyManagement(w, r, i, p) {
 		return
 	}
@@ -445,26 +455,6 @@ func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Iden
 		switch {
 		case p == "repositories":
 			s.managementPage(w, r, i, "")
-		case p == "audit":
-			if i.Role != "admin" {
-				fail(w, 403, "forbidden", "A tenant administrator token is required to inspect the full tenant audit journal.")
-				return
-			}
-			after, e := strconv.ParseInt(r.URL.Query().Get("after"), 10, 64)
-			if r.URL.Query().Get("after") == "" {
-				after = 0
-				e = nil
-			}
-			if e != nil || after < 0 {
-				fail(w, 400, "invalid_cursor", "Use a nonnegative sequence number.")
-				return
-			}
-			v, e := s.DB.Events(r.Context(), i, after)
-			if e != nil {
-				respondErr(w, e)
-				return
-			}
-			writeJSON(w, 200, map[string]any{"items": v, "limit": 1000})
 		case strings.HasPrefix(p, "repositories/") && !strings.Contains(strings.TrimPrefix(p, "repositories/"), "/"):
 			name := strings.TrimPrefix(p, "repositories/")
 			if !store.Name.MatchString(name) || r.URL.RawQuery != "" {

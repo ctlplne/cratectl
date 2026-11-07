@@ -1,7 +1,11 @@
 # Qualify stock Go checksum verification and failed client state
 
-Status: open investigation. The pinned native Go 1.27.3 on the ARM development
-host passes a signed cold download and two warm/fresh-consumer controls against
+Status: open investigation. The exact5567d24 GitHub workflow reproduces the
+mandatory ZIP trust-state failure on actual Linux amd64, Linux arm64 and macOS
+arm64. Original safe summaries and owner-encrypted observations are retained in
+[the three-host checkpoint](../../evidence/2026-11-07/go-checksum-client-5567d24-native-reproduction.json). All21 inner records were
+authenticated/decrypted locally; six other controls pass per host. The dedicated
+three-job profile remains failed. The pinned native Go 1.27.3 probe passes a signed cold download and two warm/fresh-consumer controls against
 owned TLS response stand-ins. It rejects altered go.mod, invalid signature and
 unavailable authority controls without recording sums. The altered ZIP control
 fails a stronger trust-state requirement: the first command returns nonzero,
@@ -23,7 +27,9 @@ lookup/tile signatures and exact mod/ZIP h1 are checked by the stock client.
 The local command source matches [official Go 1.27.3 fetch.go](https://github.com/golang/go/blob/go1.27.3/src/cmd/go/internal/modfetch/fetch.go)
 byte-for-byte. Its used-sum bookkeeping before verification and later sum-file
 rewrite suggest an explanation for the observed failed-cache transition. This
-is an inference, not a maintainer-confirmed root cause or a cross-platform result.
+is an inference, not a maintainer-confirmed root cause. The failure observations
+are independently reproduced on the three named hosts; broader SDK versions and
+platforms remain unqualified.
 No external report or message has been sent.
 
 ## Required native evidence

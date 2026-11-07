@@ -1341,12 +1341,13 @@
     },
     {
       "id": "DEFECT.0126",
-      "summary": "ARM stock Go1.27.3 client retains unexpected ZIP sum after checksum rejection; controlled retry extracts altered inert file",
-      "state": "Open investigation; repeated on actual Darwinarm64 against owned TLS response stand-ins only. Actual Linuxamd64/arm64 reproduction pending.",
+      "summary": "Stock Go1.27.3 retains an unexpected ZIP sum after rejection; controlled retry extracts altered inert bytes on all three native hosts",
+      "state": "Open investigation. Strict7-control profile fails on actual GitHub Linux amd64, Linux arm64 and macOS arm64 at5567d24; six other controls pass per host.",
       "first_failure": "evidence/2026-11-07/go-checksum-client-negative-control-first.json",
       "plan": "docs/qualification/go-checksum-client-plan.md",
       "inference": "Matching official1.27.3 source used-sum bookkeeping suggests an explanation, not a maintainer-confirmed root cause.",
-      "limits": "No cratectl registry/PG, package compilation/execution, public WAN package fallback or customer/primary change. The strong ZIP trust-state assertion remains failed. No new public Go proxy or checksum-on stock readiness verdict."
+      "limits": "Owned TLS response stand-ins only. No cratectl registry/PG, package code compilation/execution, public WAN fallback, customer/primary change or external maintainer report. All21 encrypted observation records authenticated/decrypted locally. Strong ZIP trust-state assertion remains failed; no public Go proxy/checksum-on stock readiness verdict.",
+      "native_reproduction": "evidence/2026-11-07/go-checksum-client-5567d24-native-reproduction.json"
     }
   ]
 }

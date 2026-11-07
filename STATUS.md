@@ -27,16 +27,38 @@ authority; new public Go proxy creation/routing stay gated. All14source migratio
 definitions are frozen; schema14 checksum:
 `b1900b2f1e3fd96955b5a40e52e9dd0f37eb0303bfda513dd77f518dac25bcb5`.
 
-A separate checksum-on stock Go client probe remains failed, outside5816source.
-On native ARM Go1.27.3, an altered ZIP is initially rejected, but the failed
-consumer retains its unexpected ZIP sum; a controlled retry extracts altered
-inert bytes. No cratectl registry/database or package code execution participates.
-The strong assertion remains failed under DEFECT0126. A dedicated three-native-
-platform workflow and bounded safe/owner-encrypted evidence export are ready for
-GitHub reproduction. Its exporter unit controls, Python compile and YAML parse
-pass; those are not actual native client/security passes. See
-`docs/qualification/go-checksum-client-plan.md` and the first-failure/development
-records. No maintainer-confirmed rootcause or Linux result is claimed yet.
+The separate strict checksum-on stock Go1.27.3 profile fails on all three actual
+GitHub hosts at5567d24: Linux amd64, Linux arm64 and macOS arm64. Each first ZIP
+download rejects altered bytes but writes the unexpected ZIP sum; one controlled
+retry succeeds and extracts the known altered inert file, with no new authority
+request. Six other controls pass per host. The original safe summaries and
+owner-encrypted observations are retained; all21 inner records were independently
+authenticated/decrypted locally. The strong assertion remains failed under
+DEFECT0126. No cratectl registry/database, package code execution or external
+maintainer report participates. Rootcause remains an inference. See
+`evidence/2026-11-07/go-checksum-client-5567d24-native-reproduction.json`.
+All24 repository-profile jobs across five5567d24 workflows are independently
+accepted:17 original safe summaries/66 reports,253PG normal/race on both Linux
+hosts, Go79/312stock,48fuzz/source gates on three hosts,13historical/18upgrades
+each and17x86 browser workflows/132 checks. Native NuGet-library and focused
+browser workflows were unselected. See
+`evidence/2026-11-07/github-5567d24-checkpoint.json`. All27 selected jobs across
+six workflows are terminal:24 pass and the three client probes fail. The whole
+5567candidate is not green.
+
+Bounded journal export is implemented but native PostgreSQL/CLI/browser
+unverified. ARM build/unit/race/lint, a five-second parser fuzz run (48,072 inputs),
+TypeScript/Vite and byte-for-byte console reproduction pass; four new PostgreSQL
+functions compile normally/race and pass tagged vet only. The checkpoint is
+explicitly unsigned; offline attribution requires a separately authenticated
+exact tenant/start/head. Metadata-first pages, private serial collection,
+streaming EOF verification and explicit audit cursors preserve original payloads
+without new migration. See `docs/journal-export.md`, ADR0046 and
+`evidence/2026-11-07/journal-export-development.json`. Native acceptance must run
+all257PG functions normal/race,49fuzz and18x86 browser workflows (three declared
+UI stand-ins) without treating those stand-ins as database/cryptographic proof.
+Full export/signing adapters, Go bundles, offline install, backup/GC leases,
+conditional refresh and every other committed GOAL outcome remain required.
 
 The full amended GOAL remains active: all450artifactcapabilities,41families and
 later stages remain under section4.1. Full/offline Go, independently anchored
