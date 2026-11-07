@@ -168,11 +168,14 @@ and the other qualification manifests. Narrative edits do not change tool pins.
 
 - Read-only tokens, checkout without persisted credentials, independent matrix
   outcomes and no `continue-on-error` for required gates.
-- Profile/platform concurrency preserves running `main` jobs; PR work may be
-  superseded. Selector keys include source SHA. Heavy/security groups still
-  have replaceable pending slots. A later push can cancel an unstarted case;
-  preserve it as unexecuted. Avoid documentation pushes that displace a required
-  pending source job. Queue/observation timeouts never justify redispatch.
+- Core CI selector/source/fuzz/security/native keys now include the source SHA
+  on `main`, preserving pending work across later pushes. PR heavy/security keys
+  retain a replaceable `latest` slot. This is a workflow change requiring actual
+  GitHub qualification, not a local runtime pass. Other workflow profile/platform
+  groups retain replaceable pending slots: avoid pushes that would displace their
+  required unstarted cases and preserve any cancellation as unexecuted.
+  Queue/observation timeouts never justify redispatch. The pending-slot behavior is
+  documented by [GitHub](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency).
 - Re-poll known handles and retain actual runner labels/start/steps. Distinguish
   acquisition/capacity from executed assertions; no missing native result is
   filled by emulation, an earlier source or a canceled job.

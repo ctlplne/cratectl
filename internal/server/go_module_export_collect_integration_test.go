@@ -89,7 +89,6 @@ func TestGoModuleCommonSetOfflineNativeGraphAndUncertainAcknowledgement(t *testi
 		if response := goHTTP(t, s, token, "PUT", "/go/graph/"+coordinate.Prefix()+".zip", archive); response.Code != 201 {
 			t.Fatal("owned graph publication", n, response.Code)
 		}
-		selection.Entries = append(selection.Entries, store.GoExportSetEntry{Repository: "graph", Module: name, Version: "v1.0.0"})
 	}
 	for _, a := range goInventory(t, s, admin, "graph") {
 		if err := s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
@@ -98,6 +97,30 @@ func TestGoModuleCommonSetOfflineNativeGraphAndUncertainAcknowledgement(t *testi
 		}); err != nil {
 			t.Fatal(err)
 		}
+	}
+	// Derive the selected modules from the actual authorized .mod bytes. The
+	// stock SDK below independently downloads exactly this selected set; the
+	// complete common snapshot still checks every final ZIP/mod/info and grant.
+	// This is metadata graph selection, not package/platform closure admission.
+	mainMod := []byte("module go.cratectl.invalid/owned-consumer\n\ngo 1.27.0\nrequire " + modules[0] + " v1.0.0\n")
+	graph, err := gomodule.ResolveRequirements(ctx, mainMod, func(ctx context.Context, c gomodule.Coordinate, maximum int64) ([]byte, error) {
+		if err := ctx.Err(); err != nil {
+			return nil, err
+		}
+		response := goHTTP(t, s, token, "GET", "/go/graph/"+c.Prefix()+".mod", nil)
+		if response.Code != 200 || int64(response.Body.Len()) > maximum {
+			return nil, errors.New("owned dependency metadata unavailable under current policy or budget")
+		}
+		return bytes.Clone(response.Body.Bytes()), nil
+	}, gomodule.DefaultGraphLimits())
+	if err != nil || graph == nil || !graph.Pruned || len(graph.BuildList) != len(modules) || len(graph.Inputs) != 1 {
+		t.Fatal("owned automatic graph selection differs from modern requirements", graph, err)
+	}
+	for n, member := range graph.BuildList {
+		if member.Logical != member.Source || member.Logical.Module != modules[n] || member.Logical.Version != "v1.0.0" {
+			t.Fatal("automatic selection changed the fixed owned native graph", n)
+		}
+		selection.Entries = append(selection.Entries, store.GoExportSetEntry{Repository: "graph", Module: member.Source.Module, Version: member.Source.Version})
 	}
 	body, _ := json.Marshal(selection)
 	created := goHTTP(t, s, token, "POST", "/api/v1/go/export-sets", body, "Idempotency-Key", "owned-complete-native-graph")

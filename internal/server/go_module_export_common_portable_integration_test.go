@@ -29,7 +29,7 @@ func writeNativeGoCommonPortableFixture(t *testing.T, root, collection string, s
 		return
 	}
 	destination := filepath.Join(root, ".cache", "go-common-export-portable-upload")
-	if requested != destination || os.Getenv("GITHUB_ACTIONS") != "true" || os.Getenv("RUNNER_ENVIRONMENT") != "github-hosted" || os.Getenv("GITHUB_JOB") != "produce" || os.Getenv("GITHUB_REPOSITORY") != "ctlplne/cratectl" || runtime.GOOS != "linux" || runtime.GOARCH != "amd64" || head.Tenant != "schema-team" || session.RootCount != 8 || session.CreatedSequence < 1 || session.CreatedSequence > head.Sequence || !head.Valid() || !store.ValidGoExportID(session.ID) || !strings.HasPrefix(module, "go.cratectl.invalid/Owned/") {
+	if requested != destination || os.Getenv("GITHUB_ACTIONS") != "true" || os.Getenv("RUNNER_ENVIRONMENT") != "github-hosted" || os.Getenv("GITHUB_JOB") != "produce" || os.Getenv("GITHUB_REPOSITORY") != "ctlplne/cratectl" || runtime.GOOS != "linux" || runtime.GOARCH != "amd64" || head.Tenant != "schema-http" || session.RootCount != 8 || session.CreatedSequence < 1 || session.CreatedSequence > head.Sequence || !head.Valid() || !store.ValidGoExportID(session.ID) || !strings.HasPrefix(module, "go.cratectl.invalid/Owned/") {
 		t.Fatal("common portable fixture is restricted to its owned native CI source")
 	}
 	sha, run, runner := os.Getenv("GITHUB_SHA"), os.Getenv("GITHUB_RUN_ID"), os.Getenv("RUNNER_NAME")

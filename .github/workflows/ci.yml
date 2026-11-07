@@ -43,8 +43,8 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.runtime == 'true' }}
     concurrency:
-      group: cratectl-ci-source-${{ github.ref }}-${{ matrix.arch }}
-      # Preserve running main jobs; queue independently by job and platform.
+      group: cratectl-ci-source-${{ github.ref }}-${{ matrix.arch }}-${{ github.ref == 'refs/heads/main' && github.sha || 'latest' }}
+      # Bind main jobs to their source so newer pushes cannot replace pending work.
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     timeout-minutes: 30
     name: Source and unit (${{ matrix.arch }})
@@ -98,8 +98,8 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.runtime == 'true' }}
     concurrency:
-      group: cratectl-ci-fuzz-${{ github.ref }}-${{ matrix.arch }}
-      # Preserve running main jobs; queue independently by job and platform.
+      group: cratectl-ci-fuzz-${{ github.ref }}-${{ matrix.arch }}-${{ github.ref == 'refs/heads/main' && github.sha || 'latest' }}
+      # Bind main jobs to their source so newer pushes cannot replace pending work.
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     name: Bounded native Go fuzz (${{ matrix.arch }})
     runs-on: ${{ matrix.runner }}
@@ -126,8 +126,8 @@ jobs:
 
   security:
     concurrency:
-      group: cratectl-ci-security-${{ github.ref }}
-      # Preserve running main jobs; queue independently by job and platform.
+      group: cratectl-ci-security-${{ github.ref }}-${{ github.ref == 'refs/heads/main' && github.sha || 'latest' }}
+      # Bind main jobs to their source so newer pushes cannot replace pending work.
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     timeout-minutes: 30
     name: Scoped source, binary and history scans
@@ -183,8 +183,8 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.runtime == 'true' }}
     concurrency:
-      group: cratectl-ci-native-${{ github.ref }}-${{ matrix.arch }}
-      # Preserve running main jobs; queue independently by job and platform.
+      group: cratectl-ci-native-${{ github.ref }}-${{ matrix.arch }}-${{ github.ref == 'refs/heads/main' && github.sha || 'latest' }}
+      # Bind main jobs to their source so newer pushes cannot replace pending work.
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     name: Real PostgreSQL and stock clients (${{ matrix.arch }})
     runs-on: ${{ matrix.runner }}

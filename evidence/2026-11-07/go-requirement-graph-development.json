@@ -1,0 +1,100 @@
+{
+  "source_parent": "f7802a4148a4d96a10c1a10c740c351fc1b3b8d1",
+  "source_dirty": true,
+  "observed_at": "2026-11-07T20:07:14.794335+00:00",
+  "state": "metadata graph and native fixture selection implemented locally; actual native qualification pending",
+  "adr": "docs/adr/0067-bounded-go-requirement-graph.md",
+  "files_sha256": {
+    "internal/gomodule/graph.go": "cbfd3a141f1d3abd20f3305f355d1ea427fc8475c9471605d950cf7e5473e9fd",
+    "internal/gomodule/graph_test.go": "70ad7b0874374fe9aaae12754cad59c2888af656eb5b0058488d2ba1e9426bfd",
+    "internal/gomodule/graph_fuzz_test.go": "daede0c099e781265f25c4e4185baa209237b0a5bcffb76952bc5d18c3377cae",
+    "internal/server/go_module_export_collect_integration_test.go": "4643421ed7359a88ec6e8d4a22357f3fd6ff44533b90676e791cfa7b50131b45",
+    "internal/server/go_module_export_common_portable_integration_test.go": "c07aa930886beeeb82ece88835b84e4e0c305247100241b55fdeacb95b03ab88",
+    "scripts/go_common_export_fixture.py": "a60d2fc276e5e2001bace060d64f28561246cfda6a422aab5b8401993d2c5504",
+    "scripts/test_go_common_export_fixture.py": "0ca42d42473d2fa0b5fb18c34126f9012d00d713a917e1ee9f48bc22db0f224a",
+    ".github/workflows/ci.yml": "96cb455a04890139d448a8263f89ce82907be81554633b75729594e2dc807a80"
+  },
+  "checks": {
+    "graph_unit_functions": 7,
+    "graph_race": "passed",
+    "bounded_graph_fuzz_executions": 81685,
+    "graph_fuzz_seconds": 5,
+    "tenant_decoder_source_tests": 7,
+    "channel_and_actual_bounded_subprocess_tests": 4,
+    "arm_build_unit_race_lint": "passed; owned stand-ins only; binaries under .cache/go-graph-development",
+    "tagged_normal_race_vet": "compile/vet only; no actual local PostgreSQL campaign",
+    "core_ci_yaml": "Ruby YAML parsed; all5coreCIgroups source-bound onmain"
+  },
+  "logs": [
+    {
+      "path": ".cache/go-graph-unit.log",
+      "bytes": 51,
+      "sha256": "0bfdeda5f9eb686faca241f151cfbe960e8f8a90d3a6158d97eaecdac6d413ae"
+    },
+    {
+      "path": ".cache/go-graph-race.log",
+      "bytes": 51,
+      "sha256": "b0462690ee5f666b2c99e534fe62740d526cf435c75bb0de40dc342533ce38c0"
+    },
+    {
+      "path": ".cache/go-graph-fuzz.log",
+      "bytes": 363,
+      "sha256": "920bf0d244f6a4d131b0550a86a7f43a827211400ecf718938a36287f07a7758"
+    },
+    {
+      "path": ".cache/go-graph-tagged-compile.log",
+      "bytes": 67,
+      "sha256": "57c71a92cbf6a183672ab2e74869cf2423ca0ec988f943570fb5525547feeead"
+    },
+    {
+      "path": ".cache/go-graph-tagged-race-compile.log",
+      "bytes": 67,
+      "sha256": "ccfbcb65e710f0611f36e782584a019c1cd26dd4742b3aefda37fcaae06bf604"
+    },
+    {
+      "path": ".cache/go-graph-tagged-vet.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/go-graph-development-gates.log",
+      "bytes": 13884,
+      "sha256": "2fe7b7115cfd4ab36f45112f0579307e5edd2ee4fc0d400e2597fc8d6a3c7d37"
+    },
+    {
+      "path": ".cache/go-common-tenant-regression.log",
+      "bytes": 105,
+      "sha256": "2d60e6fa3d0346b683733ac3ff5c83049b835a5ecb19c5cb6a80e95b67b6d643"
+    },
+    {
+      "path": ".cache/go-common-tenant-channel-regression.log",
+      "bytes": 102,
+      "sha256": "9fe2729a6b710b31527f2f4120b3bd5e274ff35fb66be391e5675b917c3092ea"
+    }
+  ],
+  "required_native": {
+    "postgresql_functions": 284,
+    "named_go_functions": 106,
+    "fuzz_targets": 63,
+    "portability_stages": 34,
+    "platforms": [
+      "native Linux x86",
+      "native Linux ARM",
+      "native macOS ARM source/fuzz"
+    ],
+    "scope": "All actually selected original profile requirements, stock8root comparison, newcommon separateVM/observedCLIpidfd/14empty-netcommands/8refusals. Actual API inventory governs."
+  },
+  "original_failures": [
+    "evidence/2026-11-07/go-common-portability-704e81a-first-native-failure.json",
+    "evidence/2026-11-07/go-common-portability-f7802a4-first-native-failure.json"
+  ],
+  "limits": [
+    "Library requirement graph only; no product API/CLI, package/platform closure, current checksum authority, destination admission or signed automatic selection proof. All existing grant/closure flags remainfalse.",
+    "Version selection, pruning, replacements, exclusions, cycles, input identity and refusal controls have local units/fuzz only; new eight-module actual SDK comparison stillpending. Broader native SDK differential cases remain required.",
+    "Local replacements, excluded direct roots, workspaces/automatic version queries, production loader/common snapshot ofallinputs/current permission/provenance/provider authority remain required. No database transaction held across external I/O bythis pure resolver.",
+    "Tenant guard/decoder nowmatchactualschema-httpfixture; original separate legacy schema-teamfixture unchanged. Bothoriginalnativefailures/consumerskips retained; no weakened assertion or deadline increase.",
+    "Core CI concurrency update requires actual GitHub validation; other workflow pending-slot limits remaindocumented.",
+    "Full450/41/all14exportcases/7environments/laterGOAL4.1/security/packaging/readiness remainsincomplete; no primary/customer/sibling/release/package/image changes."
+  ],
+  "goal_sha256": "7b8ff58dcefd07a4818ab4c274a8950a7907a13ef36855e14ad6a797abfb8c78"
+}

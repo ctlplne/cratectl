@@ -4,6 +4,7 @@
 import base64
 import json
 from pathlib import Path
+import re
 import tempfile
 import unittest
 
@@ -18,13 +19,33 @@ def fixture():
     files['signer-public.pem'] = base64.b64encode(b'-----BEGIN PUBLIC KEY-----\nowned\n-----END PUBLIC KEY-----\n').decode()
     return {'profile': 'cratectl.go.common-export.portable.fixture.v1', 'candidate': 'a' * 40,
             'source_run_id': '123', 'source_job': 'produce', 'source_runner_sha256': 'b' * 64,
-            'source_os': 'linux', 'source_arch': 'amd64', 'tenant': 'schema-team',
+            'source_os': 'linux', 'source_arch': 'amd64', 'tenant': 'schema-http',
             'set_id': 'c' * 64, 'created_sequence': 7,
-            'through': {'tenant': 'schema-team', 'sequence': 8, 'hash': 'd' * 64},
+            'through': {'tenant': 'schema-http', 'sequence': 8, 'hash': 'd' * 64},
             'root_count': 8, 'root_module': MODULE_PREFIX + '/node0', 'files': files}
 
 
 class FixtureTests(unittest.TestCase):
+    def test_tenant_binding_matches_actual_native_server_fixture_and_refuses_old_tenant(self):
+        # Cross-language fixture contract: the shared PG fixture provisions this
+        # tenant, while both the Go capsule guard and Python decoder must retain
+        # its exact identity. The former copied store-fixture tenant must refuse.
+        root = Path(__file__).resolve().parents[1]
+        source = (root / 'internal/server/schema_integration_test.go').read_text()
+        tenant = re.search(r'store\.Provision\(ctx, d\.OwnerDSN, "([a-z0-9-]+)", "operator", "admin"', source)
+        self.assertIsNotNone(tenant)
+        native = (root / 'internal/server/go_module_export_common_portable_integration_test.go').read_text()
+        guard = re.search(r'head\.Tenant != "([a-z0-9-]+)"', native)
+        self.assertIsNotNone(guard)
+        value, _ = self.decode(fixture())
+        self.assertEqual(value['tenant'], tenant[1])
+        self.assertEqual(value['through']['tenant'], tenant[1])
+        self.assertEqual(guard[1], tenant[1])
+        old = fixture()
+        old['tenant'] = old['through']['tenant'] = 'schema-team'
+        with self.assertRaises(ValueError):
+            self.decode(old)
+
     def decode(self, value):
         return decode_common_fixture(json.dumps(value).encode(), 'a' * 40, '123')
 

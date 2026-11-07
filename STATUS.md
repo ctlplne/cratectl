@@ -69,16 +69,41 @@ See the [development record](evidence/2026-11-07/go-common-portability-developme
 540-second command timeout against the unchanged shared 300-second bound and
 was refused before starting the new common fixture. The ARM consumer was skipped.
 The [original log/artifact record](evidence/2026-11-07/go-common-portability-704e81a-first-native-failure.json)
-and unchanged safe summary are retained as DEFECT.0142. The caller now uses the
-existing bound; an actual bounded subprocess regression passes with an owned
-stand-in. Repaired native qualification is pending; all original assertions stay.
+and unchanged safe summary are retained as DEFECT.0142. Candidate f780 reaches the
+actual new fixture, then fails the capsule guard: it expected the store-fixture
+tenant `schema-team`, while `schemaServer` provisions `schema-http`. The authenticated
+[original failure](evidence/2026-11-07/go-common-portability-f7802a4-first-native-failure.json)
+and unchanged summary remain retained as DEFECT.0143; its consumer was skipped.
+The guard and decoder now bind to the actual server fixture. Seven decoder/source
+contract tests and four channel/actual bounded subprocess tests pass locally.
+Repaired native qualification is pending; all original assertions stay.
 
-The next source requires 284 PostgreSQL/106
-named Go functions, 62 fuzz targets and all original selected profiles. Expect
-29 jobs/seven workflows, 22 safe summaries/91 reports and 19 source contracts:
-34 portability stages (16 original plus 18 common), with three focused browser jobs
-selected by the shared summary dependency. NuGet-library/strict inputs are unchanged.
-Actual GitHub API inventory governs. Do not infer a pass from local stand-ins.
+The next source requires 284 PostgreSQL/106 named Go functions, 63 fuzz targets,
+34 portability stages (16 original plus 18 common) and all actually selected
+profiles. Original 704 selected 29 jobs/seven workflows; f780 selected 18 jobs/five
+workflows. Actual GitHub API inventory governs the next selection; do not manually
+replay unchanged optional profiles or infer a pass from local stand-ins.
+
+## Requirement selection foundation
+
+[ADR 0067](docs/adr/0067-bounded-go-requirement-graph.md) adds bounded read-only
+minimal version selection, modern pruning/legacy graphs, main-only versioned
+replacements/exclusions and original metadata identities for every examined
+version. Missing/denied/canceled/over-budget inputs never return a partial graph.
+Local replacements and excluded direct roots require explicit future resolution.
+The result retains toolchain requirements without executing a toolchain.
+
+Seven unit functions, race tests and 81,685 bounded fuzz executions pass locally;
+ARM build/unit/race/lint pass. The existing native eight-module journey now derives
+its selection through the resolver from authorized original .mod bytes before
+the common snapshot, with stock SDK comparison unchanged. Tagged normal/race
+compile and vet pass only. This new native comparison remains pending. No new
+product API/CLI or complete package/platform closure is claimed; production
+integration, all-input revalidation and authenticated graph proof remain required.
+
+Core CI jobs now include source SHA in main concurrency keys, preserving old
+pending jobs across the next push. Other profile groups retain their documented
+pending-slot limits; original handles remain active, never canceled for a queue.
 
 ## Continue the full goal
 

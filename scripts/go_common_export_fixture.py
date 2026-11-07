@@ -30,7 +30,7 @@ def decode_common_fixture(raw, candidate, run_id):
             or value['candidate'] != candidate or not isinstance(run_id, str)
             or not re.fullmatch('[1-9][0-9]{0,19}', run_id) or value['source_run_id'] != run_id
             or value['source_job'] != 'produce' or value['source_os'] != 'linux'
-            or value['source_arch'] != 'amd64' or value['tenant'] != 'schema-team'
+            or value['source_arch'] != 'amd64' or value['tenant'] != 'schema-http'
             or value['root_module'] != MODULE_PREFIX + '/node0'
             or type(value['root_count']) is not int or value['root_count'] != 8):
         raise ValueError('Common capsule is outside its owned candidate/run/coordinate')
@@ -39,7 +39,7 @@ def decode_common_fixture(raw, candidate, run_id):
             raise ValueError('Common capsule identity is not canonical')
     head, sequence = value['through'], value['created_sequence']
     if (not isinstance(head, dict) or set(head) != {'tenant', 'sequence', 'hash'}
-            or head['tenant'] != 'schema-team' or type(head['sequence']) is not int
+            or head['tenant'] != 'schema-http' or type(head['sequence']) is not int
             or not 1 <= head['sequence'] <= (1 << 63) - 1
             or not isinstance(head['hash'], str) or not re.fullmatch('[a-f0-9]{64}', head['hash'])
             or type(sequence) is not int or not 1 <= sequence <= head['sequence']):
