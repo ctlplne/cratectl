@@ -11,6 +11,21 @@ commits stay on `main`, with both author and committer exactly
 Release, package/image publication and customer/primary/sibling changes remain
 outside this CI authority. No autonomous delegation.
 
+Exactfca2d4a [whole campaign](../../evidence/2026-11-07/github-fca2d4a-checkpoint.json)
+is now accepted:24jobs/five workflows,17safe68reports;271PG/93Go normal/race,
+312stock/683baseline per Linux host,55fuzz/source on three hosts,19main151 and
+14historical19upgrades each. Focused/NuGet-library/strict-client were unselected.
+Original [fbe3bf9 final](../../evidence/2026-11-07/github-fbe3bf9-final-checkpoint.json)
+retains29terminal27pass2driverfail/22safe77reports. Earlier a17bf87 has14passes
+and two unstarted main jobs superseded while pending; neither is a pass. See its
+[final record](../../evidence/2026-11-07/github-a17bf87-final-checkpoint.json).
+Main concurrency preserves running work but GitHub can replace older pending
+jobs; actual cancelled states must always remain visible. The new portable
+source is unverified and does not inherit a whole-campaign pass.
+
+Earlier source-specific qualification statements below retain their historical
+scope; exact-source checkpoints govern present acceptance.
+
 ## Current qualification state
 
 Exact1a61120 [campaign checkpoint](../../evidence/2026-11-07/github-1a61120-checkpoint.json)
@@ -59,7 +74,7 @@ and two NuGet-library jobs. The failed upgrade jobs retain their actual partial
 reports and skipped dependent steps. This corrects
 the original development estimate of six/27. Enumerate actual expanded
 jobs, accept exact-source original summaries and preserve the first failures.
-NuGet-library was selected by the shared evidence tooling changes; the strict
+NuGet-library was selected by the schema-target qualification_contract.py change; the strict
 checksum-client remains separately selected. No local
 PostgreSQL/SDK/OpenSSL/stock registry/Chromium campaign is required.
 
@@ -91,6 +106,40 @@ normal/race per Linux host, with all prior55fuzz/19main151browser/14historical19
 upgrade and original stock profiles retained. Compile/vet is local development
 only. A declared timestamp-aging fixture does not establish real clock-shift or
 large-history/backlog throughput. PhysicalGC and full closure/import remain open.
+
+## Separate-runner export consumption
+
+[ADR0052](../adr/0052-cross-runner-go-export-qualification.md) adds the implemented
+but unverified `go-export-portability.yml` lane: actual x86 PostgreSQL/CAS/signed
+source fixture and a separate native ARM consumer without a database service.
+Only the fixed eight-member inert test capsule is transferred. Public-key and
+capsule fingerprints arrive separately through producer job outputs; artifact
+identity/digest and complete original signed journal/manifest binding all apply.
+After online bootstrap/transfer, actual CLI/SDK controls run in fresh empty child
+network namespaces under the original nonroot job UID. The namespace observation
+and utility identities are mandatory. No host network mutation or local emulation.
+
+Require all three producer/thirteen consumer stages and exact native build/tool/
+input identities. The original271PG/93Go normal/race,55fuzz,19main151browser,
+14historical19upgrades and stock profiles remain. New parser/capture/diagnostic
+units are local development only. First failed command streams are sealed to the
+existing owner recipient; no signing key/config/token/input file is selected.
+No production signer service, full closure/import, complete offline installer,
+HA/backup/physicalGC/platform/scale verdict is inferred.
+
+This source is expected to select seven workflows/29jobs: the five base families,
+three focused browser jobs selected by the shared safe exporter change, and the
+new two-job portability lane. A complete passing campaign would have22safe
+summaries/85reports. NuGet-library and strict checksum-client paths are unchanged
+and expected unselected. Enumerate actual expanded jobs and preserve cancellations
+or skipped consumers without counting them as passes.
+
+The export plan JSON is reviewed documentation only: no runtime, harness or
+client-pin consumer reads it. Its exact path now joins the documentation-only
+selector allowlist, with a real Git fixture proving that a concurrent source
+change still selects full checks. Unknown JSON and real migration/client pins
+remain conservative runtime inputs. This avoids redundant native work for plan
+status updates; it cannot turn an omitted or cancelled job into a pass.
 
 ## Checksum client investigation lane
 
@@ -644,6 +693,7 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 | `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0 and exact JDK. Cache-v4 passes666checks/10stages/34wire+6cachebindings on both hosts at0edd, retaining all release/metadata/snapshot/SHA-2 cases. 60-minute job. Broader Ivy remains open. |
 | `jvm-clients.yml`: SBT / 4 | SBT1.13.0 and2.0.11, each on native Linux amd64/arm64; real PostgreSQL | Snapshot-v2 passes269checks/8stages/8snapshotcases/18bindings on all4cases at0cff, retaining every release case. Frozen tool-only boot cache/fresh project caches. Five-minute bootstrap, two-minute commands, 60-minute job. |
 | `go-modules.yml`: hosted/group and private checksum foundation / 2 | Native Linux amd64/arm64; pinned Go1.27.3, real PostgreSQL16.15, trusted loopback TLS | Exact1a61120 qualifies81PG normally/race and312stock checks/9stages24wire16cache on both hosts, including historical offline preparation and DEFECT0128 replay. New source15 requires90namedGo plus original312stock; producer/manifest/API/expiry/CLI native proof remains unverified.45-minute job. Public proxy remains gated and independent strict-client DEFECT0126 remains failed. |
+| `go-export-portability.yml`: signed hosted export / 2 | Actual Linux amd64 producer with PostgreSQL; separate Linux arm64 consumer without DB, CLI/SDK in fresh empty network namespaces | New16stage owned profile requires exact clean native source, eight-file synthetic capsule, separate job-output trust fingerprints, full signed-history/manifest binding, exact inert SDK extraction and all negative controls.30/25minute job budgets. Native unverified; no full closure/import/HA/offline-install claim. |
 | `nuget-contract.yml`: libraries / 2 | Both native Linux architectures; exact SDK10.0.403 selection | Original37assertions/unchanged dense corpora pass both at1974, actual runtime10.0.14 and separate DLLhashes. 20-minute job. Does not replace actual NuGet HTTP/restore/restart proof. |
 | `oci-clients.yml`: native clients / 2 | Both native Linux architectures; Docker, Podman, Helm, real PostgreSQL | Actual publication/consumption and policy/tenant/recovery cases with inert owned data; 45-minute job. Do not execute the uploaded image. External-provider interoperability is separate. |
 | `browser-repair.yml`: focused / 3 on relevant pushes | Native x86 Chromium; five fresh PostgreSQL databases per selected journey | Repair, retention and NuGet each repeat five complete journeys; 45-minute job. Manual dispatch selects one. Stop on failure; no retries/skips count as acceptance. |
@@ -651,7 +701,7 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 
 | `go-checksum-client.yml`: strict SDK / 3 on its own selected inputs | Actual Linux amd64/arm64 and macOS arm64; Go1.27.3 with owned authority/response stand-ins, no registry/database | Seven mandatory controls per host. The altered-ZIP trust-state assertion fails on all3hosts at5567d24 (DEFECT0126); six other controls pass each. Preserve original first-failure/encrypted evidence. No private-hosted GONOSUMDB bypass or later unrelated green run repairs this failure. |
 
-The current union is32jobs across eight workflows, including the selector and
+The current union is34jobs across nine workflows, including the selector and
 the separately selected three-host checksum-client lane.
 Exact1a61120 selects five workflows/24jobs; focused browser, NuGet library and
 strict checksum-client paths were unchanged/unselected. Source15 is expected to

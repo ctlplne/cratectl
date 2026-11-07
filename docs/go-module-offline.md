@@ -134,3 +134,11 @@ This profile still exports one hosted version. Complete dependency closure,
 source permission/authority/provenance bundles, destination current-policy
 import, large-backlog expiry throughput, physical GC, provider/independent-host/
 Windows/scale and backup outcomes remain open in the export acceptance plan.
+
+The new cross-runner qualification workflow prepares the owned signed fixture on
+an x86 GitHub VM and verifies/consumes it on a separate native ARM VM. After
+online transfer, the consumer uses fresh empty network namespaces for the CLI
+and stock Go commands. Its public key is checked against a separate source-job
+fingerprint before verification. The fixture capsule is only CI test data;
+normal customer collection still uses the documented API and private files.
+This workflow is implemented but has not yet run on its new source. See ADR0052.

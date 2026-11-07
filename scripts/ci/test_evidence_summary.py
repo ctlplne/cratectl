@@ -13,11 +13,29 @@ from test_ivy_evidence import complete_contract as complete_ivy_contract, metada
 from test_sbt_evidence import complete_contract as complete_sbt_contract, snapshot_contract as sbt_snapshot_contract
 from test_maven_evidence import complete_contract as complete_maven_cache_contract
 from test_journal_evidence import complete as complete_journal_checkpoint_contract
+from test_go_export_portability_evidence import complete as complete_portable_contract
 
 ROOT = Path(__file__).resolve().parents[2]
 
 
 class EvidenceSummary(unittest.TestCase):
+    def test_portable_summary_binds_actual_run_architecture_and_excludes_raw_fixture(self):
+        self.environment['GITHUB_RUN_ID'] = '123'
+        report = {'candidate': 'a' * 40, 'status': 'passed',
+                  'go_export_portability_contract': complete_portable_contract('producer'),
+                  'raw_fixture': 'private-synthetic-value', 'failure': 'private-synthetic-value'}
+        self.write('portable.json', report)
+        exported = summarize(self.root, self.environment)['records'][0]
+        self.assertEqual(exported['go_export_portability_contract'], report['go_export_portability_contract'])
+        self.assertNotIn('private-synthetic-value', json.dumps(exported))
+        for change in [{'source_run_id': '124'}, {'completed': []}]:
+            self.write('portable.json', {**report, 'go_export_portability_contract': {**report['go_export_portability_contract'], **change}})
+            with self.assertRaises(SystemExit):
+                summarize(self.root, self.environment)
+        self.write('portable.json', report)
+        with self.assertRaises(SystemExit):
+            summarize(self.root, {**self.environment, 'RUNNER_ARCH': 'ARM64'})
+
     def test_external_checkpoint_summary_requires_every_control_and_excludes_signing_context(self):
         contract = complete_journal_checkpoint_contract()
         report = {'candidate':'a'*40, 'status':'passed', 'journal_checkpoint_contract':contract,

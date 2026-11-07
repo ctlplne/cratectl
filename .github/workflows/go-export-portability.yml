@@ -1,0 +1,154 @@
+name: Native Go export portability
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['cmd/**', 'internal/**', 'scripts/**', 'api/**', 'go.mod', 'go.sum', 'Makefile', '.github/workflows/go-export-portability.yml']
+  pull_request:
+    paths: ['cmd/**', 'internal/**', 'scripts/**', 'api/**', 'go.mod', 'go.sum', 'Makefile', '.github/workflows/go-export-portability.yml']
+permissions:
+  contents: read
+jobs:
+  produce:
+    name: Real PostgreSQL signed export source (amd64)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    concurrency:
+      group: cratectl-go-export-source-${{ github.ref }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    env:
+      GOCACHE: ${{ github.workspace }}/.cache/go-build
+      GOMODCACHE: ${{ github.workspace }}/.cache/go-mod
+      GOTOOLCHAIN: local
+      CRATECTL_CI_CLIENT_SET: go
+      CRATECTL_CONFORMANCE_DATABASE_FILE: .private/ci-db.json
+      CRATECTL_DEV_DATABASE: native
+      CRATECTL_QUALIFICATION_BIN_DIR: .cache/ci-build
+    outputs:
+      artifact_id: ${{ steps.fixture.outputs.artifact-id }}
+      fixture_sha256: ${{ steps.prepare.outputs.fixture_sha256 }}
+      public_key_sha256: ${{ steps.prepare.outputs.public_key_sha256 }}
+      source_runner_sha256: ${{ steps.prepare.outputs.source_runner_sha256 }}
+    services:
+      cratectl-postgres:
+        image: postgres:16.15-alpine
+        env:
+          POSTGRES_USER: cratectl_owner
+          POSTGRES_DB: cratectl
+          POSTGRES_HOST_AUTH_METHOD: trust
+        options: >-
+          --publish 127.0.0.1:35432:5432
+          --health-cmd "pg_isready -U cratectl_owner -d cratectl"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - name: Prepare isolated PostgreSQL and exact native binaries
+        env:
+          CRATECTL_CI_POSTGRES_CONTAINER_ID: ${{ job.services['cratectl-postgres'].id }}
+        run: bash scripts/ci/bootstrap_linux.sh
+      - name: Prepare actual signed source fixture and independent trust-channel digests
+        id: prepare
+        run: python3 scripts/conformance_go_export_portable.py producer
+      - name: Transfer reviewed synthetic fixture only
+        id: fixture
+        uses: actions/upload-artifact@v7
+        with:
+          name: cratectl-owned-go-export-fixture
+          path: .cache/go-export-portable-upload/fixture.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Seal bounded original command failure for owner
+        if: failure()
+        run: python3 scripts/ci/go_export_portable_diagnostics.py
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: encrypted-go-export-portability-producer
+          path: |
+            .cache/ci-go-export-diagnostics.cms
+            .cache/ci-go-export-diagnostics.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Prepare bounded source evidence summary
+        if: always()
+        run: python3 scripts/ci/evidence_summary.py
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: ci-summary-export-portability-producer
+          path: .cache/ci-evidence-summary.json
+          if-no-files-found: error
+          retention-days: 14
+
+  consume:
+    name: Independent signed export consumer (arm64)
+    needs: produce
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 25
+    concurrency:
+      group: cratectl-go-export-consumer-${{ github.ref }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    env:
+      GOCACHE: ${{ github.workspace }}/.cache/go-build
+      GOMODCACHE: ${{ github.workspace }}/.cache/go-mod
+      GOTOOLCHAIN: local
+      CRATECTL_QUALIFICATION_BIN_DIR: .cache/ci-build
+      CRATECTL_PORTABLE_FIXTURE_SHA256: ${{ needs.produce.outputs.fixture_sha256 }}
+      CRATECTL_PORTABLE_PUBLIC_KEY_SHA256: ${{ needs.produce.outputs.public_key_sha256 }}
+      CRATECTL_PORTABLE_SOURCE_RUNNER_SHA256: ${{ needs.produce.outputs.source_runner_sha256 }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - name: Build exact native consumer without a database service
+        run: |
+          umask 077
+          mkdir -p .private
+          chmod 700 .private
+          make build BINDIR=.cache/ci-build
+      - name: Receive the exact source artifact
+        uses: actions/download-artifact@v8
+        with:
+          artifact-ids: ${{ needs.produce.outputs.artifact_id }}
+          path: .cache/go-export-portable-download
+          digest-mismatch: error
+      - name: Independently verify, install inert bytes and reject changed inputs
+        run: python3 scripts/conformance_go_export_portable.py consumer
+      - name: Seal bounded original command failure for owner
+        if: failure()
+        run: python3 scripts/ci/go_export_portable_diagnostics.py
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: encrypted-go-export-portability-consumer
+          path: |
+            .cache/ci-go-export-diagnostics.cms
+            .cache/ci-go-export-diagnostics.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Prepare bounded destination evidence summary
+        if: always()
+        run: python3 scripts/ci/evidence_summary.py
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: ci-summary-export-portability-consumer
+          path: .cache/ci-evidence-summary.json
+          if-no-files-found: error
+          retention-days: 14

@@ -27,6 +27,12 @@ class ChangeSelection(unittest.TestCase):
   for path in ['cmd/owned.go','internal/x.go','scripts/x.py','api/openapi.yaml','web/src/x.tsx','go.mod','Makefile','global.json','.github/workflows/ci.yml','AGENTS.md','GOAL.md','.gitleaks.toml','new-configuration','docs/qualification/jvm-clients.json','docs/qualification/upgrade-baselines.json','docs/qualification/ci-diagnostics-recipient.pem','docs/new-runtime-pins.json','docs/new-certificate.pem']:
    self.assertTrue(runtime_input(path),path)
   self.write('docs/qualification/jvm-clients.json','{}');head=self.commit();self.assertTrue(selection(self.root,head,'push',{'before':self.base})['runtime'])
+ def test_export_plan_alone_is_documentation_but_cannot_hide_changed_source(self):
+  self.write('docs/qualification/go-export-plan.json','{"state":"incomplete"}');head=self.commit()
+  d=selection(self.root,head,'push',{'before':self.base});self.assertFalse(d['runtime']);self.assertEqual(d['reason'],'documentation_only')
+  self.write('internal/owned.go','changed owned source');updated=self.commit()
+  self.assertTrue(selection(self.root,updated,'push',{'before':head})['runtime'])
+  self.assertTrue(runtime_input('docs/qualification/go-export-new-runtime-input.json'))
  def test_runtime_rename_to_docs_cannot_hide_deleted_input(self):
   (self.root/'docs').mkdir();(self.root/'internal/owned.go').rename(self.root/'docs/moved.txt');head=self.commit();d=selection(self.root,head,'push',{'before':self.base});self.assertTrue(d['runtime']);self.assertEqual(d['changed_paths'],2)
  def test_manual_missing_base_unknown_event_and_bad_checkout_never_skip(self):

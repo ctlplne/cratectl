@@ -8,7 +8,7 @@ from bounded_client import run_owned_client
 
 SHA=re.compile('[0-9a-f]{40}')
 RUNTIME_DOCS={'docs/qualification/jvm-clients.json','docs/qualification/upgrade-baselines.json','docs/qualification/ci-diagnostics-recipient.pem'}
-DOCUMENTATION_DATA={'docs/qualification/'+name+'.json'for name in ['remaining','parity','journeys','formats','defects','sources','jvm-client-plan']}
+DOCUMENTATION_DATA={'docs/qualification/'+name+'.json'for name in ['remaining','parity','journeys','formats','defects','sources','jvm-client-plan','go-export-plan']}
 
 def runtime_input(path):
     # Unknown files and malformed names select all checks. Only this narrow

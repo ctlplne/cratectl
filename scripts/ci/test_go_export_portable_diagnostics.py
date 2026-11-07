@@ -1,0 +1,85 @@
+# SPDX-License-Identifier: BUSL-1.1
+import base64
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import tempfile
+import unittest
+
+from go_export_portable_diagnostics import collect
+
+
+class DiagnosticTests(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory(prefix='cratectl-portable-diagnostic-')
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name)
+        subprocess.run(['git', 'init', '-q', '-b', 'main', self.root], check=True)
+        self.run = '0123456789'
+        self.folder = self.root / '.private/go-export-portability' / self.run
+        self.folder.mkdir(parents=True)
+        self.folder.chmod(0o700)
+        self.report = self.root / 'evidence/2026-11-07' / ('go-export-portability-' + self.run + '.json')
+        self.report.parent.mkdir(parents=True)
+        self.log = self.folder / ('command-' + 'b' * 32 + '.log')
+        self.log.write_bytes(b'owned-stderr')
+        self.log.chmod(0o600)
+        Path(str(self.log) + '.stdout').write_bytes(b'owned-stdout')
+        Path(str(self.log) + '.stdout').chmod(0o600)
+        self.value = {'candidate': 'a' * 40, 'run': self.run, 'status': 'failed',
+                      'failure': 'Owned native assertion failed',
+                      'go_export_portability_contract': {'profile': 'hosted-export-cross-runner-v1', 'role': 'consumer', 'source_run_id': '123'},
+                      'commands': [{'exit': 1, 'private_log': str(self.log.relative_to(self.root))}]}
+
+    def save(self):
+        self.report.write_text(json.dumps(self.value))
+
+    def test_only_exact_command_streams_are_selected_without_keys_or_inputs(self):
+        (self.folder / 'signer-private.pem').write_text('private-key-synthetic-value')
+        self.save()
+        payload = collect(self.root, 'a' * 40, '123', 'consumer')
+        streams = payload['failures'][0]['commands'][0]['streams']
+        self.assertEqual([base64.b64decode(s['head_b64']) for s in streams], [b'owned-stderr', b'owned-stdout'])
+        self.assertNotIn('private-key-synthetic-value', json.dumps(payload))
+        self.assertTrue(all(s['complete'] for s in streams))
+
+    def test_wrong_source_run_role_private_path_and_symlink_are_rejected(self):
+        self.save()
+        for candidate, run_id, role in [('c' * 40, '123', 'consumer'), ('a' * 40, '124', 'consumer'), ('a' * 40, '123', 'producer')]:
+            with self.subTest(context=(candidate, run_id, role)), self.assertRaises(ValueError):
+                collect(self.root, candidate, run_id, role)
+        self.value['commands'][0]['private_log'] = str((self.folder / 'signer-private.pem').relative_to(self.root))
+        self.save()
+        with self.assertRaises(ValueError):
+            collect(self.root, 'a' * 40, '123', 'consumer')
+        self.value['commands'][0]['private_log'] = str(self.log.relative_to(self.root))
+        self.save()
+        secret = self.root / 'private-input'
+        secret.write_text('never-select-this')
+        self.log.unlink()
+        self.log.symlink_to(secret)
+        with self.assertRaises((ValueError, OSError)):
+            collect(self.root, 'a' * 40, '123', 'consumer')
+
+    def test_large_log_retains_exact_identity_and_bounded_head_tail(self):
+        body = b'x' * (2 << 20)
+        self.log.write_bytes(body)
+        self.save()
+        stream = collect(self.root, 'a' * 40, '123', 'consumer')['failures'][0]['commands'][0]['streams'][0]
+        self.assertEqual(stream['bytes'], len(body))
+        self.assertEqual(stream['sha256'], hashlib.sha256(body).hexdigest())
+        self.assertFalse(stream['complete'])
+        self.assertEqual(len(base64.b64decode(stream['head_b64'])), 512 << 10)
+        self.assertEqual(len(base64.b64decode(stream['tail_b64'])), 512 << 10)
+
+    def test_successful_or_absent_reports_never_become_empty_diagnostic_success(self):
+        self.save()
+        self.value['status'] = 'passed'
+        self.save()
+        with self.assertRaises(ValueError):
+            collect(self.root, 'a' * 40, '123', 'consumer')
+
+
+if __name__ == '__main__':
+    unittest.main()

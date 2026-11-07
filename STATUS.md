@@ -1,5 +1,48 @@
 # cratectl execution status
 
+Current source parent is fca2d4a; new cross-runner qualification is implemented
+but unverified. ADR0052 and
+`evidence/2026-11-07/go-export-portability-development.json` define an actual x86
+PostgreSQL/signed-export producer and separate native ARM consumer. Only a fixed
+synthetic eight-member capsule moves; private keys, credentials, configs and
+logs do not. Source-job fingerprints are a separate owned trust-channel stand-in.
+After online transfer, consumer CLI/SDK controls use fresh empty kernel network
+namespaces under the original nonroot UID. All16outerstages are mandatory.
+Local parser/capture/diagnostic/exporter units, authorized ARM lint, normal/race
+compile, tagged vet and workflow syntax pass. No new namespace/SDK/VM runtime
+qualification is inferred. All15definitions remain frozen.
+
+Exact fca2d4a now qualifies93namedGo PostgreSQL functions normally/race and312stock
+checks on both actual Linux hosts, including the three expiry-worker regressions.
+It also qualifies14clean historical binaries/19upgrade reports per Linux host,
+including81schema14into15 checks. See named Go and upgrade checkpoints. The whole
+24-job/five-workflow campaign is now independently accepted:17originalsafe
+summaries/68reports,271PG normal/race,55fuzz/source onthreehosts and19main151
+Chromium. See `evidence/2026-11-07/github-fca2d4a-checkpoint.json`. It is the latest
+fully accepted selected campaign. The new cross-runner source must replay its
+own native profile.
+
+The final original fbe3bf9 campaign is retained:29terminal jobs,27pass/two native
+upgrade-driver failures,22original safe summaries/77reports. Both Linux hosts pass
+268fullPG normally/race and90Go/312stock/683baseline; all three native source/
+55fuzz profiles, JVM/OCI/library and focused browser jobs pass. Main x86 Chromium
+passes19workflows/151checks with zero skips/flaky/unexpected:15existing and four
+declared UI response stand-ins. The15focused trials are separate. The original
+failed schema14 reports stop at59checks and skip dependent upgrade gates; those
+are not passes. DEFECT0129's fixture-only rename is separately replayed at a17bf87
+and fca2d4a. See `evidence/2026-11-07/github-fbe3bf9-final-checkpoint.json`.
+
+Full dependency/authority/permission/provenance closure, current-policy/scanning
+import, other formats/providers/platforms, complete offline installation,
+backup/GC/HA/large-history/clock/scale and every remaining GOAL requirement stay
+required. All450capabilities/41families/later stages remain under section4.1.
+Readiness/security/packaging remain false;0126strict SDK and0122unknown browser
+intermittent remain open. Primary11/selected5483878b/tenreceipts/credentials stay
+stopped and untouched. No customer/sibling/release/package/image change.
+
+Earlier source-specific records follow; their then-current status statements are
+historical, and the exact-source checkpoints above govern current qualification.
+
 Exact `1a611201b20f3e6a58b8377d151e7c92425a79db` is the latest accepted
 selected GitHub campaign: 24 jobs/five workflows, 17 original safe summaries/
 66 reports. Both actual Linux architectures pass 259 PostgreSQL functions

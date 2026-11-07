@@ -288,5 +288,72 @@ func verifyNativeGoOffline(t *testing.T, private string, files [3]string, journa
 			t.Fatal("wrong export identity exposed proxy")
 		}
 	}
+	if os.Getenv("CRATECTL_GO_EXPORT_PORTABLE_OUT") != "" {
+		if len(snapshots) != 1 {
+			t.Fatal("portable fixture requires the owned export snapshot test only")
+		}
+		writeNativeGoPortableFixture(t, root, private, files, journal, statement, head, sequence, repo, module, version, snapshots[0], receipt.ZIPHash, receipt.ModHash)
+	}
+}
 
+// Only the dedicated GitHub-hosted fixture job may retain this synthetic input.
+// The exhaustive file list excludes the signer private key, database/API tokens,
+// configs, command logs and SDK caches. This is not a customer export path.
+func writeNativeGoPortableFixture(t *testing.T, root, private string, files [3]string, journal, statement []byte, head crypt.JournalAnchor, sequence int64, repo, module, version string, snapshot nativeGoExportSnapshot, zipH1, modH1 string) {
+	t.Helper()
+	destination := filepath.Join(root, ".cache", "go-export-portable-upload")
+	if os.Getenv("RUNNER_NAME") == "" || len(os.Getenv("RUNNER_NAME")) > 256 {
+		t.Fatal("portable source requires the actual bounded runner identity")
+	}
+	if os.Getenv("GITHUB_ACTIONS") != "true" || os.Getenv("RUNNER_ENVIRONMENT") != "github-hosted" || os.Getenv("GITHUB_JOB") != "produce" || os.Getenv("CRATECTL_GO_EXPORT_PORTABLE_OUT") != destination || runtime.GOOS != "linux" || runtime.GOARCH != "amd64" || head.Tenant != "schema-team" || repo != "exported" || module != "go.cratectl.invalid/Owned/intake" || version != "v1.0.0" || len(journal) > 1<<20 {
+		t.Fatal("portable fixture output is restricted to the declared owned native CI job")
+	}
+	data := map[string][]byte{"manifest.json": snapshot.raw, "journal.jsonl": journal, "checkpoint.json": statement}
+	for n, name := range []string{"original.zip", "original.mod", "original.info", "signer-public.pem", "checkpoint.sig"} {
+		path := filepath.Join(private, name)
+		if n < 3 {
+			path = files[n]
+		}
+		f, err := os.Open(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		raw, err := io.ReadAll(io.LimitReader(f, 4<<20+1))
+		f.Close()
+		if err != nil || len(raw) > 4<<20 {
+			t.Fatal("portable fixture exceeds its input bound", err)
+		}
+		data[name] = raw
+	}
+	fixture := map[string]any{"profile": "cratectl.go.export.portable.fixture.v1", "candidate": os.Getenv("GITHUB_SHA"), "source_run_id": os.Getenv("GITHUB_RUN_ID"), "source_job": "produce", "source_runner_sha256": crypt.Digest([]byte(os.Getenv("RUNNER_NAME"))), "source_os": runtime.GOOS, "source_arch": runtime.GOARCH, "tenant": head.Tenant, "repository": repo, "module": module, "version": version, "export_id": snapshot.id, "created_sequence": sequence, "through": head, "zip_h1": zipH1, "mod_h1": modH1, "files": data}
+	raw, err := json.Marshal(fixture)
+	if err != nil || len(raw)+1 > 8<<20 {
+		t.Fatal("portable fixture capsule exceeds its byte bound", err)
+	}
+	if err := os.Mkdir(destination, 0700); err != nil {
+		t.Fatal("portable output must be a new private directory", err)
+	}
+	f, err := os.OpenFile(filepath.Join(destination, "fixture.json"), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, writeErr := f.Write(append(raw, '\n'))
+	if err := f.Sync(); writeErr == nil {
+		writeErr = err
+	}
+	if err := f.Close(); writeErr == nil {
+		writeErr = err
+	}
+	if writeErr != nil {
+		t.Fatal(writeErr)
+	}
+	folder, err := os.Open(destination)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = folder.Sync()
+	folder.Close()
+	if err != nil {
+		t.Fatal(err)
+	}
 }

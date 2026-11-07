@@ -10,12 +10,13 @@
     "docs/go-module-offline.md",
     "docs/qualification/github-actions-plan.md",
     "docs/adr/0050-durable-hosted-go-export.md",
-    "docs/adr/0051-export-expiry-worker.md"
+    "docs/adr/0051-export-expiry-worker.md",
+    "docs/adr/0052-cross-runner-go-export-qualification.md"
   ],
   "current_implementation": {
-    "source_parent": "a17bf874b337da2e87b1f325d7ea045f2d7f1958",
+    "source_parent": "fca2d4a2cb3f23002ebee55060d6956c5f54f467",
     "source_dirty": true,
-    "state": "schema15 snapshot/session/manifest/API/CLI90namedGo profile qualified atfbe3bf9; whole-campaign/native upgrade/browser acceptance pending; new background expiry worker unverified",
+    "state": "Exactfca2d4a source15 whole24job campaign accepted:271PG/93Go/55fuzz/19main151/14historical19upgrades; new cross-runner/kernel-isolated consumption unverified; full export/GOAL incomplete",
     "qualified_historical_consumer": "evidence/2026-11-07/github-1a61120-checkpoint.json",
     "producer_development": "evidence/2026-11-07/go-durable-export-development.json",
     "schema": 15,
@@ -26,13 +27,22 @@
     "dependency_closure": false,
     "full_goal_complete": false,
     "expiry_worker": {
-      "state": "implemented but native unverified",
+      "state": "verified in exact fca2d4a93namedGo real-PostgreSQL normal/race profile on both actual Linux hosts; large-history/clock-fault/scale incomplete",
       "adr": "docs/adr/0051-export-expiry-worker.md",
       "scope": "Dedicated current tenant worker; one due session per bounded visit; state/journal/job intent commit under common mutation fence. No payload pin release on queue/credential failure. No new migration or physical deletion.",
       "required_qualification": "Three new actual PostgreSQL functions;271fullPG/93namedGo normal and race per actual Linux architecture. Background loop observed through read-only list only; owned timestamp aging is not real clock-shift proof.",
-      "development": "evidence/2026-11-07/go-export-expiry-development.json"
+      "development": "evidence/2026-11-07/go-export-expiry-development.json",
+      "checkpoint": "evidence/2026-11-07/go-module-fca2d4a-native-checkpoint.json"
     },
-    "producer_native_go_checkpoint": "evidence/2026-11-07/go-module-fbe3bf9-native-checkpoint.json"
+    "producer_native_go_checkpoint": "evidence/2026-11-07/go-module-fca2d4a-native-checkpoint.json",
+    "cross_runner": {
+      "state": "implemented but native unverified",
+      "adr": "docs/adr/0052-cross-runner-go-export-qualification.md",
+      "profile": "hosted-export-cross-runner-v1",
+      "scope": "Separate actual GitHub Linux amd64 producer and arm64 consumer, real PostgreSQL/source signed manifest and complete journal, exact artifact ID and separate job-output fingerprints; consumer native CLI/SDK in empty child network namespaces under original UID.16outerstages; no package code execution.",
+      "limits": "One synthetic hosted version and owned trust-channel stand-in only. Full closure/import/provider/platform/offline-install/backup/GC/HA/scale remain required."
+    },
+    "qualified_parent_campaign": "evidence/2026-11-07/github-fca2d4a-checkpoint.json"
   },
   "environment_profiles": {
     "development-arm": {
@@ -277,7 +287,7 @@
       "profiles": [
         "independent-hosts"
       ],
-      "state": "required; not accepted by this plan"
+      "state": "Single-version cross-runner/native-isolated fixture implemented but unverified; full portable closure and production signer/permission/provenance provider acceptance remain required"
     },
     {
       "id": "GO.EXPORT.destination-import",
@@ -344,6 +354,7 @@
     }
   ],
   "execution_order": [
+    "Qualify new16stage two-native-runner portable profile; actual offline CLI/SDK namespace execution and separate trust-channel checks are mandatory. No local emulation or skipped consumer counts as proof.",
     "Preserve qualified1a61120 historical consumer and original d179222 failures; qualify clean schema15 producer/manifest/CLI/console/upgrade source on actual native hosts.",
     "Qualify dedicated background expiry reconciliation; then complete remaining producer policy/provenance/permission/authority/closure/GC protections and backlog throughput.",
     "implement complete producer/API/CLI/UI and portable proof/policy/closure consumer",
@@ -369,7 +380,7 @@
       "A reusable export must cover dependency/proof/policy closure, safe current-policy import and independent consumer recovery. A successful three-file install does not complete those outcomes.",
       "Broad source/native regression cost is justified while shared store/authorization paths change; new native cases belong in existing architecture jobs before adding duplicate local campaigns."
     ],
-    "next_implementation_boundary": "qualify exact source15 snapshot/session/manifest and background expiry; then complete closure/authority/permission/provenance/import/full lifecycle and throughput protections",
+    "next_implementation_boundary": "Qualify separate-host native-isolated export consumption, then complete dependency/authority/permission/provenance closure, destination import and full lifecycle/backlog/clock/platform/scale protections.",
     "accepted_capability_states_changed": false
   }
 }

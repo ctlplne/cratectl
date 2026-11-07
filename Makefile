@@ -45,6 +45,9 @@ lint:
 	python3 scripts/ci/test_sbt_evidence.py
 	python3 scripts/ci/test_go_module_evidence.py
 	python3 scripts/ci/test_journal_evidence.py
+	python3 scripts/ci/test_go_export_portability_evidence.py
+	python3 scripts/ci/test_go_export_portable_diagnostics.py
+	python3 scripts/test_go_export_portable.py
 	python3 scripts/test_ci_native_diagnostics.py
 console:
 	python3 scripts/build_console.py
