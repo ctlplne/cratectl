@@ -442,8 +442,8 @@ func TestGoModuleChecksumForkAndMissingTilesPreserveCurrentTrust(t *testing.T) {
 			if err = f.s.CompleteRetrieval(ctx, f.i, lease, f.result); !errors.Is(err, want) {
 				t.Fatal("fork/unavailable evidence classification lost", err)
 			}
-			after, err := f.s.GoModuleChecksumCheckpoint(ctx, f.i, "owned", 0)
-			if err != nil || before.Revision != after.Revision || !bytes.Equal(before.Checkpoint, after.Checkpoint) {
+			after, err := f.s.GoChecksumState(ctx, f.i, "owned", 0)
+			if err != nil || before.Revision != after.Checkpoint.Revision || !bytes.Equal(before.Checkpoint, after.Checkpoint.Checkpoint) || after.Blocked != (scenario == "signed-fork") {
 				t.Fatal("rejected proof changed retained trust", err)
 			}
 			if a, b, c := f.counts(t); a != refs || b != jobs || c != ready {

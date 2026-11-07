@@ -39,6 +39,9 @@ func (s *Store) GoModuleCatalogArtifact(ctx context.Context, i Identity, repo, m
 		if r.SourceRevision != revision {
 			return ErrSourceChanged
 		}
+		if e := goChecksumRepositoryUsable(ctx, tx, r); e != nil {
+			return e
+		}
 		a, _, e = readGoModuleCatalogInTx(ctx, tx, r, mod, &budget, admissions)
 		if e == nil && a.Path == "" {
 			return ErrNotFound

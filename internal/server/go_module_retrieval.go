@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"net"
+	"sort"
 	"strings"
 	"syscall"
 	"time"
@@ -48,6 +49,9 @@ func goModuleAdvertisementPath(p string) bool {
 }
 
 func goModuleFillFailure(e error) string {
+	if errors.Is(e, store.ErrGoChecksumAuthorityBlocked) {
+		return "upstream_checksum_authority_blocked"
+	}
 	if errors.Is(e, context.Canceled) || errors.Is(e, context.DeadlineExceeded) {
 		return "retrieval_cancelled"
 	}
@@ -86,15 +90,25 @@ func (s *Server) fillGoModuleProxy(parent context.Context, i store.Identity, rep
 	defer cancel()
 	var result store.RetrievalResult
 	var e error
-	if strings.HasPrefix(lease.Path, "go-latest/") {
-		result, e = s.fetchGoModuleLatest(parent, i, repo, lease)
-	} else if strings.HasPrefix(lease.Path, "go-catalog/") {
-		result, e = s.fetchGoModuleCatalog(parent, i, repo, lease)
-	} else {
-		result, e = s.fetchGoModuleBundle(parent, i, repo, lease)
+	if goModuleAdvertisementPath(lease.Path) && repo.Settings.GoChecksumAuthority != nil {
+		_, e = s.DB.GoModuleChecksumCheckpoint(parent, i, repo.Name, repo.SourceRevision)
+	}
+	if e == nil {
+		switch {
+		case strings.HasPrefix(lease.Path, "go-latest/"):
+			result, e = s.fetchGoModuleLatest(parent, i, repo, lease)
+		case strings.HasPrefix(lease.Path, "go-catalog/"):
+			result, e = s.fetchGoModuleCatalog(parent, i, repo, lease)
+		default:
+			result, e = s.fetchGoModuleBundle(parent, i, repo, lease)
+		}
 	}
 	if e != nil {
 		result = store.RetrievalResult{Failure: goModuleFillFailure(e)}
+		var observation *goChecksumCollectionError
+		if errors.As(e, &observation) {
+			result.GoChecksumFailure = &observation.failure
+		}
 		var origin *goModuleOriginStatus
 		if errors.As(e, &origin) {
 			result.Status = origin.status
@@ -107,7 +121,7 @@ func (s *Server) fillGoModuleProxy(parent context.Context, i store.Identity, rep
 		}
 	}
 	if parent.Err() != nil {
-		result = store.RetrievalResult{Failure: "retrieval_cancelled"}
+		result = store.RetrievalResult{Failure: "retrieval_cancelled", GoChecksumFailure: result.GoChecksumFailure}
 	}
 	ctx := parent
 	if parent.Err() != nil {
@@ -136,10 +150,20 @@ func (s *Server) fillGoModuleProxy(parent context.Context, i store.Identity, rep
 		previous := result.GoModule.Checksum
 		proof, err := s.fetchGoModuleChecksumProof(parent, i, repo, request.Coordinate, previous.ZIPHash, previous.ModHash, checkpoint.Checkpoint)
 		if err != nil {
+			var observation *goChecksumCollectionError
+			if errors.As(err, &observation) {
+				observation.failure.ExpectedCheckpointRevision = checkpoint.Revision
+			}
 			e = err
 			break
 		}
 		result.GoModule.Checksum = &store.GoModuleChecksumPublication{Proof: proof.Proof, Object: proof.Object, ZIPHash: previous.ZIPHash, ModHash: previous.ModHash, ExpectedCheckpointRevision: checkpoint.Revision}
+	}
+	var collectionError *goChecksumCollectionError
+	if errors.Is(e, crypt.ErrGoChecksumFork) && !errors.As(e, &collectionError) {
+		// Common positive completion commits authenticated fail-stop evidence
+		// before returning its rejected-publication error.
+		return store.ErrGoChecksumAuthorityBlocked
 	}
 	if e != nil && !errors.Is(e, store.ErrQueueFull) && !errors.Is(e, store.ErrHeld) {
 		// The common store already retires queue-blocked and held attempts.
@@ -150,10 +174,35 @@ func (s *Server) fillGoModuleProxy(parent context.Context, i store.Identity, rep
 		cleanup, cancel := context.WithTimeout(context.WithoutCancel(parent), 3*time.Second)
 		defer cancel()
 		failure := "retrieval_commit_rejected"
-		if errors.Is(e, crypt.ErrGoChecksumAuthority) || errors.Is(e, store.ErrGoChecksumCheckpointChanged) {
+		if errors.Is(e, crypt.ErrGoChecksumAuthority) || errors.Is(e, store.ErrGoChecksumCheckpointChanged) || errors.Is(e, store.ErrGoChecksumAuthorityBlocked) {
 			failure = goModuleFillFailure(e)
 		}
-		_ = s.DB.CompleteRetrieval(cleanup, i, lease, store.RetrievalResult{Failure: failure})
+		failed := store.RetrievalResult{Failure: failure, GoChecksumFailure: result.GoChecksumFailure}
+		if result.Failure == "retrieval_cancelled" && result.GoChecksumFailure != nil {
+			failed.Failure = "retrieval_cancelled"
+		}
+		var observation *goChecksumCollectionError
+		if errors.As(e, &observation) {
+			failed.GoChecksumFailure = &observation.failure
+		} else if pending := new(store.PendingGoChecksumFailure); errors.As(e, &pending) {
+			retained := pending.Observation()
+			failed.GoChecksumFailure = &retained
+		} else if errors.Is(e, crypt.ErrGoChecksumFork) && result.GoModule != nil && result.GoModule.Checksum != nil {
+			p := result.GoModule.Checksum
+			report := store.GoChecksumFailureReport{Profile: store.GoChecksumFailureProfile, Module: p.Proof.Module, Version: p.Proof.Version, ZIPHash: p.ZIPHash, ModHash: p.ModHash, VerifierKey: p.Proof.Snapshot.VerifierKey, Checkpoint: p.Proof.Snapshot.Checkpoint}
+			paths := make([]string, 0, len(p.Proof.Snapshot.Responses))
+			for path := range p.Proof.Snapshot.Responses {
+				paths = append(paths, path)
+			}
+			sort.Strings(paths)
+			for _, path := range paths {
+				report.Attempts = append(report.Attempts, store.GoChecksumFailureAttempt{Path: path, Status: 200, Code: "ok", Body: p.Proof.Snapshot.Responses[path]})
+			}
+			failed.GoChecksumFailure = &store.GoChecksumFailure{ExpectedCheckpointRevision: p.ExpectedCheckpointRevision, Report: report}
+		}
+		if release := s.DB.CompleteRetrieval(cleanup, i, lease, failed); release == nil && failed.GoChecksumFailure != nil {
+			return nil
+		}
 	}
 	return e
 }

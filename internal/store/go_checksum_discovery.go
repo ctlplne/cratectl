@@ -18,7 +18,7 @@ import (
 // Retain false entries: neither an upstream advertisement nor a lower-priority
 // group member may replace a known but blocked coordinate.
 func filterGoChecksumCandidatesInTx(ctx context.Context, tx pgx.Tx, r Repository, mod string, as []Artifact, candidates map[string]bool, budget *int64) error {
-	if len(candidates) == 0 || r.Settings.GoChecksumAuthority == nil && !r.Settings.Cache.RequireChecksum {
+	if r.Settings.GoChecksumAuthority == nil && !r.Settings.Cache.RequireChecksum {
 		return nil
 	}
 	allowed := make(map[string]bool, len(candidates))
@@ -40,6 +40,12 @@ func filterGoChecksumCandidatesInTx(ctx context.Context, tx pgx.Tx, r Repository
 	initial, err := crypt.ParseGoSumDBCheckpoint(authority.VerifierKey, authority.InitialCheckpoint)
 	if err != nil {
 		return err
+	}
+	if err := goChecksumAuthorityUsable(ctx, tx, initial.KeyDigest); err != nil {
+		return err
+	}
+	if len(candidates) == 0 {
+		return nil
 	}
 	current, err := currentGoChecksumCheckpoint(ctx, tx, authority.VerifierKey, initial.KeyDigest)
 	if errors.Is(err, pgx.ErrNoRows) {

@@ -1,0 +1,209 @@
+{
+  "observed_at": "2026-11-07T01:11:07.176658+00:00",
+  "source_parent": "20d2be37191398df2cbe1e4b8b0f9c535a2128ef",
+  "source_dirty": true,
+  "state": "implemented source13 failure evidence and tenant-key enforcement; native PostgreSQL/upgrade replay pending",
+  "source_sha256": {
+    ".github/workflows/upgrade-qualification.yml": "d21c27a8b54cb8fa109733dbe0e2e83955992401648c71af44aaad63bd53b2d8",
+    "docs/qualification/upgrade-baselines.json": "21f2db7fdf7af1c96a313dcbce74341b3379998b091b7b6916dd2fa569d87eb3",
+    "internal/server/go_module_checksum.go": "5e9d62d2426503e41eb8e3660475939dc97523c386e32850cf5e4e8cbc9a4535",
+    "internal/server/go_module_checksum_controller_integration_test.go": "7a83ddc5888e4e1b351e060b17a6d0322b855017f69e5e54589e5c29730bca22",
+    "internal/server/go_module_checksum_controller_test.go": "8f891c64ba5feb72a6eb3c921ea690f60b821528c20443222000d66d0f2a09fb",
+    "internal/server/go_module_checksum_failure_test.go": "7fecd45c001dbbc2b81786ac4022d4b8ae1c4e5f52fc14d34b3286282a32b01b",
+    "internal/server/go_module_failure_integration_test.go": "226fa24386f00f8c056a34b683a7c4b5aea326c3dfeb6364844dd7b226ac6e7d",
+    "internal/server/go_module_proxy.go": "98d5e7a6cb7f801c9be86c6a8e7e43f111afd1fe3ed0d75925d65e5b9989c022",
+    "internal/server/go_module_retrieval.go": "ff4c54cbec89c3762718af43d07a95079e233f8fafb0ffe60079d944d8b55ff2",
+    "internal/server/resolve.go": "0c192ff9413dda2d66b51748b7edfe0e92e74c1024373fa86d52e09d33633c84",
+    "internal/server/server.go": "f64e0a905489711234a0da2a3ce1c7772cef43805f18325f98058375a67cbde0",
+    "internal/store/go_checksum_checkpoint.go": "70dd43a624cddf38bdabeffb311dd19143b87aecd964c73daac8c44e89f822db",
+    "internal/store/go_checksum_discovery.go": "4a4222b0d4a72e22f5b91f99368aef4e4290af17c3c64bab835f5269396f600f",
+    "internal/store/go_checksum_failure.go": "409d82dc44fc04304d3a5baab9d3097457e7e83d8a0fe56049f16036ec56adb4",
+    "internal/store/go_checksum_failure_read.go": "c78e0dd7db78b0e30f8c0243cf92fbfb1dbda4e0d8417cbbf7b996aed09c1ff4",
+    "internal/store/go_checksum_failure_test.go": "c7e9297075665dcbdd8e3cf01f26e9f37cc41a30510314b57c4676fad32e19c4",
+    "internal/store/go_checksum_failures.sql": "24190769f68d2a99a0c34c3dc5d11f9646cd18c0897712ebc8126b5e48a55bcb",
+    "internal/store/go_checksum_readback.go": "fffaec4599c5decd0843345a4caea53d7be30160d387d9ebfa16d39d634e3bd4",
+    "internal/store/go_module_checkpoint_integration_test.go": "239758368ecb1b74bedd78eefba72cedcd4a1a66a49e80309771c0feedfb6a6c",
+    "internal/store/go_module_discovery.go": "1fdab85524ec605456e8f7148a8ea90d592c2856fcd1273cf99239ffb229663b",
+    "internal/store/go_module_failure_integration_test.go": "914b337cda2c08dc30abec5a32841c48cb5d34dca160e4de6b9c4e4c80bf6c23",
+    "internal/store/go_module_latest_cache.go": "540d4dce6ec478a4fb408bd803449657c7bd6a699938f111b16b1a6f09d49dec",
+    "internal/store/migrations.go": "ced63d791ce9b882aa28edb46e1604348c23ca057eec392764350f4a93cfbc7f",
+    "internal/store/migrations_test.go": "9d48db0061ac4eaeaf56b479e3c9c732a212a7be2ab739fd2b5c5448b35878ea",
+    "internal/store/retrieval.go": "fe7cdcdc0c7c20204d2552de41b0a90e74ffed9b16ad08d90351eb7a2b2af0bf",
+    "internal/store/store.go": "92125534e902d75cb667b09322ba3cc8ac4be828c2867524f50b5aeffa1a97be",
+    "scripts/ci/bootstrap_linux.sh": "671e5402eb7b17f0ccdd86ac5b9326ee3eab4e8fa012f5ff646255f8da5aa371",
+    "scripts/ci/build_upgrade_baselines.py": "6007d555f434e84b4e1c756321d2ddfc0db93a572dcb85a8f6d6f912a2556bdf",
+    "scripts/ci/evidence_summary.py": "2437bf3dbc82c0268047a482f63c291e20756f8a409e0d9fba235eed14500155",
+    "scripts/ci/fuzz_go.py": "b1689afde4df4f14dcf636be6a71456dd20664aee607d13b66c911845f8800f5",
+    "scripts/ci/test_evidence_summary.py": "761dfea463c3028ba8097535eedbd7ae2f6b2bdde65fb06c7dd7442db6704caa",
+    "scripts/qualification_contract.py": "b3dabb1ab308608772b0c4e4d03f7887bf6ccad48d04e8714c418ba1fdbb4ff4"
+  },
+  "prior_native_checkpoint": "evidence/2026-11-06/go-module-20d2be3-native-checkpoint.json",
+  "prior_whole_selected_checkpoints": [
+    "evidence/2026-11-06/github-c615c42-checkpoint.json",
+    "evidence/2026-11-06/github-20d2be3-checkpoint.json"
+  ],
+  "implementation": [
+    "Original bounded response attempts are captured outside SQL under existing transfer/deadline/read quotas. Admission closes before cancellation/join; no callback may mutate an exported failure. CryptoCollect failures still return no successful snapshot.",
+    "Immutable inline PostgreSQL control evidence, its digest, independently selected expected/current pins, failed live-lease state, first authenticated tenant/key block and journal commit together. No external object reference or ordinary asynchronous enqueue exists for this synchronous fail-stop path.",
+    "Store independently replays complete successful observations under current exact key/retained history. Caller labels do not establish a fork; ambiguous, absent, corrupt and policy-omitted bytes remain unverified. Current winner is preserved for offline proof explanation.",
+    "Positive publication preflights authenticated forks before artifact writes. It commits negative evidence under the same tenant lock and returns rejected-publication error. Failed commit preserves pending observations for fenced cleanup without claiming durable block; cancellation data survives cleanup.",
+    "New authenticated key blocks fence reads/discovery, acquisition/renewal and publication across same-tenant repositories/source epochs. Current post-physical-read guard rejects an earlier sibling admission. Different tenant/key remains independent; no head reset.",
+    "Raw upstream bodies require current tenant-administrator and repository authorization. Headers/request credential fields/arbitrary error strings excluded; source storage policy retains explicit omitted-prefix length/digest. Ordinary known credential reflections omit original bytes without a secret hash. Authenticated fork observations remain sensitive admin-only verification data.",
+    "Canonical offline verifier requires separately supplied trust key and independently checks fork classification. Journal/export-manifest digest verification remains required for cratectl tenant/repository attribution; no package approval or downstream delivery is inferred."
+  ],
+  "schema": {
+    "source_version": 13,
+    "previous_source_version": 12,
+    "new_tables": [
+      "go_checksum_failures",
+      "go_checksum_forks"
+    ],
+    "forced_tenant_rls": true,
+    "runtime_grants": "SELECT,INSERT only",
+    "first12checksums_unchanged": true,
+    "new13checksum": "40eaf4d68b7cb6b867dba8451e001401a942014acf478bd03d5f4264cecb7daa",
+    "primary_untouched_schema": 11,
+    "historical_native_baselines_required": 12,
+    "added_schema12_source": "c615c4240f9b1bb4dfb7fca23b03b68b635639ab",
+    "controlled_upgrades": "schemas2\u201312 into13;17reportsperarch required"
+  },
+  "tests": {
+    "new_postgresql_functions": [
+      {
+        "file": "internal/store/go_module_failure_integration_test.go",
+        "function": "TestGoModuleChecksumFailureEvidenceAndKeyBlockAreAtomicWithoutOrdinaryQueueCapacity"
+      },
+      {
+        "file": "internal/store/go_module_failure_integration_test.go",
+        "function": "TestGoModuleChecksumFailureRetainsSourceGrantLeaseAndEvidenceShapeFences"
+      },
+      {
+        "file": "internal/store/go_module_failure_integration_test.go",
+        "function": "TestGoModuleChecksumForkBlocksTenantKeyAcrossRepositoriesPublicationAndSourceChanges"
+      },
+      {
+        "file": "internal/store/go_module_failure_integration_test.go",
+        "function": "TestGoModuleChecksumFailureUpgradeAndRuntimeImmutability"
+      },
+      {
+        "file": "internal/store/go_module_failure_integration_test.go",
+        "function": "TestGoModuleChecksumForkAndPublicationRacePreservesOneTimelineAndDeniesFinalReads"
+      },
+      {
+        "file": "internal/store/go_module_failure_integration_test.go",
+        "function": "TestGoModuleChecksumFailureSchemaSafetyRequiresBothForcedTenantTables"
+      },
+      {
+        "file": "internal/store/go_module_failure_integration_test.go",
+        "function": "TestGoModuleChecksumForkEvidenceDoesNotExposeAnUnrelatedRepository"
+      },
+      {
+        "file": "internal/server/go_module_failure_integration_test.go",
+        "function": "TestGoModuleChecksumCapturedForkBlocksSiblingAndSurvivesSaturatedQueues"
+      },
+      {
+        "file": "internal/server/go_module_failure_integration_test.go",
+        "function": "TestGoModuleChecksumUnverifiedObservationPreservesBytesWithoutBlockingRecovery"
+      }
+    ],
+    "new_postgresql_fixed_cases": 20,
+    "case_inventory": [
+      "5atomic evidence/classification/queue cases",
+      "7source/grant/lease/shape fences",
+      "1cross-repository/key/tenant/source/group journey",
+      "1schema12upgrade/immutable runtime journey",
+      "1actual concurrent publication/fork race",
+      "2new-table forced-RLS refusal cases",
+      "1ordinary-reader/private-coordinate denial journey",
+      "2actual original-response/queue/sibling/unknown-recovery server journeys"
+    ],
+    "new_unit_functions": 6,
+    "new_unit_fixed_cases": 45,
+    "expanded_existing_failure_code_cases": 1,
+    "new_fuzz_target": "FuzzGoChecksumFailureEvidence",
+    "current_go_postgresql_functions": 64,
+    "current_full_postgresql_functions": 238,
+    "full_postgresql_packages": [
+      "internal/store",
+      "internal/server",
+      "internal/conformance"
+    ],
+    "current_fuzz_targets": 47,
+    "local_postgresql_executed": false,
+    "local_gates": {
+      "build": {
+        "path": ".cache/go-checksum-failure-final-build.log",
+        "bytes": 425,
+        "sha256": "609c008e798072b3163a58def235b0e5f8c5c68b9cbca67b09529285d8038f47",
+        "status": "passed"
+      },
+      "test": {
+        "path": ".cache/go-checksum-failure-final-test.log",
+        "bytes": 885,
+        "sha256": "ad6aa6b8ad1568f68678395b9ebf894f80860832ab1c0dc60cc75a69af7b525e",
+        "status": "passed"
+      },
+      "race": {
+        "path": ".cache/go-checksum-failure-final-race.log",
+        "bytes": 891,
+        "sha256": "2058dd3855fa297e53bdce9455fb03664cbf89165c85a0c59b1b6711edfa2496",
+        "status": "passed"
+      },
+      "lint": {
+        "path": ".cache/go-checksum-failure-final-lint.log",
+        "bytes": 9004,
+        "sha256": "4dc0f14f57726c55e377a3b23cc7742f52f880239fc217934bbcca80acc383b9",
+        "status": "passed"
+      },
+      "integration-compile": {
+        "path": ".cache/go-checksum-failure-final-integration-compile.log",
+        "bytes": 410,
+        "sha256": "5effebab35c485fe04df363a4726c8c8bd0f28b3529e76b881768c70f3074c96",
+        "status": "passed; compilation/race/vet only, no database executed"
+      },
+      "initial_fuzz": {
+        "path": ".cache/go-checksum-failure-fuzz.log",
+        "bytes": 475,
+        "sha256": "7eecaa5222cbf55a60bb54501af3ed17961cd6976e6e64d521f10e4f7cf732c1",
+        "status": "passed",
+        "executions": 9,
+        "seconds": 11.198,
+        "workers": 2,
+        "minimization": "default"
+      },
+      "controlled_fuzz": {
+        "path": ".cache/go-checksum-failure-fuzz-bounded-minimization.log",
+        "bytes": 667,
+        "sha256": "1cdd3dce4b5f031b0729fb6bc06642b3bfb0186e40eb87c094f5ab42e381503d",
+        "status": "passed",
+        "executions": 73578,
+        "seconds": 15.49,
+        "workers": 2,
+        "minimization": "500ms"
+      },
+      "final_fuzz": {
+        "path": ".cache/go-checksum-failure-final-fuzz.log",
+        "bytes": 523,
+        "sha256": "123825a75fffe75dfa4edbb01440039fb70c71a5dd5b9fe1ce01ad460c45e08c",
+        "status": "passed",
+        "executions": 95359,
+        "seconds": 10.591,
+        "workers": 2,
+        "minimization": "500ms"
+      }
+    }
+  },
+  "fuzz_budget_observation": "Default short run completed9mutations; controlled500msminimization run73578 and final95359 without parser change/failure. Consistent with minimization-budget overhead, not a demonstrated parser repair. Original results retained; CI keeps all targets/5seconds/2workers and bounds minimization to500ms.",
+  "native_plan": [
+    "Existing Go workflow64PGnormally/race bothactualLinuxarchitectures plus312stock checks.",
+    "Existing main238PGnormally/race bothLinux,47fuzz/source/unit/race/lint3native hosts, every actually selected client profile.",
+    "Twelve clean historical native rebuilds and source13 controlled upgrade into13 from2\u201312,17reportsperarch. No localPG, duplicate dispatch or cancellation of active main jobs."
+  ],
+  "limits": [
+    "Current source13 PG/upgrade paths compile only until exact native replay. Earlier20d2/c615 evidence is source-specific and excludes this implementation.",
+    "Source12prototype fork classifications have no original observations; no retrospective proof/backfill or complete legacy incident recovery is claimed. Legacy incident handling remains required before public mode.",
+    "Raw fork observations may contain sensitive source data; administrator-only. Known-reflection omission is not a general secret detector. Missing/omitted evidence stays unverified.",
+    "No customer HTTP/CLI/UI trust/failure surfaces, complete disconnected cache/install, export/backup/GC, conditional refresh or stock checksum-on public proxy/group qualification yet. Public Go proxy mode stays gated.",
+    "All450artifact capabilities/41families/later stages underGOAL4.1 retained; readiness/security/packaging false. Primary11/selected5483878b binaries/tenreceipts/credentials stopped/preserved; no primary/customer/sibling/release/package/image changes. Original5380jobs failure remains unknown/intermittent."
+  ]
+}

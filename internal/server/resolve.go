@@ -136,6 +136,9 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 			case "negative":
 				return result, s.proxyAbsence(ctx, i, repo, p)
 			case "failed":
+				if lease.LastError == "upstream_checksum_fork" || lease.LastError == "upstream_checksum_authority_blocked" {
+					return result, store.ErrGoChecksumAuthorityBlocked
+				}
 				if lease.StalePermitted() {
 					if repo.Format == "oci" || repo.Format == "go" {
 						result.admissions = []store.OCIAdmission{{Repository: repo.Name, Path: p, Generation: lease.Generation, Stale: true}}
@@ -249,6 +252,9 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 			}
 			return result, s.proxyAbsence(ctx, i, repo, p, result.admissions...)
 		case "failed":
+			if refreshed.LastError == "upstream_checksum_fork" || refreshed.LastError == "upstream_checksum_authority_blocked" {
+				return result, store.ErrGoChecksumAuthorityBlocked
+			}
 			if refreshed.StalePermitted() {
 				if repo.Format == "oci" || repo.Format == "go" {
 					result.admissions = []store.OCIAdmission{{Repository: repo.Name, Path: p, Generation: refreshed.Generation, Stale: true}}

@@ -14,55 +14,74 @@ The full goal is incomplete. All 450 capabilities / 41 families and every later
 stage remain committed. Broad readiness, full security and packaging remain
 negative. Both commit identities remain exactly `imfeelingtheagi` on main.
 
-Exact `2da6957` is now accepted across all24actually selected jobs in5workflows:
-17original safe summaries/62reports,222fullPGfunctions normally/race onboth actual
-GitHub Linuxhosts, source/unit/race/lint and44fuzz onLinuxamd64/arm64/macOSarm64.
-Original named clients/upgrade profiles pass, including x86Chromium119checks/
-15tests with0flaky/skipped/unexpected and11historical native baselines/16upgrade
-reportsperarch. Library/focused workflows were unselected; their prior5ee evidence
-remains source-specific. See `evidence/2026-11-06/github-2da6957-checkpoint.json`.
+Exact `20d2be3` passes both named native Go jobs:55PGfunctions normally/race and
+312stock checks/9stages24wire16cache onboth actual GitHub Linuxhosts. Explicit
+proof reuse/age and one generation-fenced refresh for concurrent expired reads
+are qualified internally. See
+`evidence/2026-11-06/go-module-20d2be3-native-checkpoint.json`.
 
-Exact `c615c42` additionally qualifies checksum discovery onboth native Linuxhosts:
-51namedGoPGfunctions normally/race plus312stock checks/9stages24wire16cache.
-The3new functions/39cases prove current receipt/key/generation/raw identity/proof
-policy witnesses for list/latest, group shadowing/namespace ownership, unknown
-ads, refreshable expired/transient routing, permanent failure blocking, budgets
-and historical proof/source continuity. See
-`evidence/2026-11-06/go-module-c615c42-native-checkpoint.json`.
-Its wider225PG/45fuzz campaign is separately tracked; no whole-candidate inference.
+The completed `c615c42` campaign is accepted across all24actually selected jobs:
+17safe summaries/62reports,225fullPGnormally/race onboth Linuxhosts and45fuzz/
+source/unit/race/lint onLinuxamd64/arm64/macOSarm64. All selected clients,
+x86Chromium119checks/15tests and11historical native/16upgrade reportsperarch pass.
+Library/focused workflows were unselected; previous5ee results remain source-specific.
+See `evidence/2026-11-06/github-c615c42-checkpoint.json`. Exact20d2also now passes
+all24selected jobs/17safe62reports,229fullPGnormal/race and46fuzz; all named
+clients/Chromium/11historical upgrades pass. See
+`evidence/2026-11-06/github-20d2be3-checkpoint.json`. Source13 is excluded.
 
-Current private checksum authorities require an explicit proof policy: retained
-means no proof age requirement under current exact-key trust; max_age accepts
-1second–1year since cratectl last accepted a complete verified proof. This is a
-local verification time, not the external log's content age or a scan verdict.
-PostgreSQL supplies receipt/current times; future observations and exact expiry
-fail closed. Package cache/source/review/lifecycle remain separate requirements.
+Current source13 appends immutable forced-RLS failure evidence and tenant/key
+fork tables. Bounded original response observations, separately retained expected/
+current signed pins, failed lease state, first authenticated key block and hashed
+journal entry commit together. No external blob reference or ordinary work enqueue
+is required for this synchronous fail-stop path, so ordinary queue saturation
+cannot erase a newly authenticated fork. No external delivery/projection is claimed.
 
-Expired otherwise-admitted fresh hits trigger at most one governed refresh;
-a generation fence prevents delayed/concurrent observations from starting a
-second forced fill. Proof denial/retirement precede age checks and cannot trigger
-automatic evidence replacement. Stale windows cannot override proof expiry.
-Opaque admissions bind the exact proof policy and recheck age/current policy
-after physical proof/package readback. Expiry reports a bounded503/retry action.
+The store independently verifies observed proof under current exact-key/history;
+caller labels cannot establish a fork. Current proof/package reads, discovery,
+acquisition, renewal and publication consult a monotone key block across repositories
+and source epochs. Positive publication detects a fork before artifact writes,
+commits negative evidence and still returns a rejected-publication error. A failed
+commit exposes pending evidence for fenced cleanup without claiming durable block.
+Unknown/partial/bad evidence remains unverified; genuine new verification can recover
+an unavailable authority, while changing a source cannot reset a proved key fork.
 
-Four new PGfunctions/22fixed cases cover age/current/clock/stale/policy fences,
-proof-policy changes after readback, actual package readback then expiry, one
-refresh for12concurrent callers and deterministic delayed-generation fencing.
-Two new unit functions/15cases plus2expanded authority cases and46thfuzz target
-cover explicit policy, exact time bounds and safe HTTP errors. The new fuzzer
-passed204398ARM executions in10.887seconds. Final ARMbuild/test/race/lint and
-tagged normal/race compile/vet pass; no localPG. Current55Go/229fullPG/46fuzz need
-new exact-source native replay. See
-`evidence/2026-11-06/go-checksum-policy-development.json`.
+Raw upstream bodies require current tenant-administrator/repository access.
+Headers/request credential fields and arbitrary errors are excluded. Source storage
+policy produces explicit omitted-prefix length/hash; ordinary known credential
+reflections are omitted without a secret hash. Authenticated fork observations are
+retained for verification and may contain sensitive source data. Export verification
+proves log misbehavior under a separately supplied key; journal/manifest validation
+is still needed for tenant/repository attribution. Cancellation evidence survives
+bounded cleanup. Missing original bytes never mean clean or verified.
 
-Next: original failed-proof/fork bytes and tenant/key-wide governance; complete
-disconnected-cache/installation policy, customer API/CLI/UI, export/backup/GC,
-conditional refresh and checksum-on stock proxy/group journeys. Retained proof
-verification alone does not qualify complete offline operation. Public mode stays
-gated. Primary11/selected5483878b binaries/tenreceipts/credentials remain stopped
-and preserved. All450capabilities/41families/later stages remain; readiness,
-security and packaging false. Original5380ARMjobs failure remains unknown and
-DEFECT.0122 intermittent/open despite subsequent passing campaigns.
+Nine new PGfunctions/20fixed cases add queue saturation, exact original byte/export
+checks, grant/source/lease/shape fences, cross-repo/tenant/key/epoch behavior,
+pre-opened sibling byte denial, actual concurrent fork/publication, source12 upgrade,
+runtime immutability/RLS and unknown-evidence recovery. Six new unit functions/
+45cases plus one expanded failure-code case and47thfuzz cover canonical bounded
+proofs, response/privacy/cancellation and safe errors. Final ARMbuild/test/race/lint
+and all3integration packages normal/race compilation/vet pass; zero localPG.
+Current64Go/238fullPG/47fuzz remain native-unverified. See
+`evidence/2026-11-06/go-checksum-failure-development.json`.
+
+The first12source migration checksums remain unchanged; new13is frozen as
+40eaf4d68b7cb6b867dba8451e001401a942014acf478bd03d5f4264cecb7daa.
+Native CI now must rebuild12historical sources and qualify schema2–12 into13,
+17upgrade reportsperarch. The new bounded-minimization fuzz run passed95359ARM
+executions/10.591seconds; original low-density9/11.198s and controlled73578/15.490s
+runs remain retained. CI retains5seconds/2workers pertarget and bounds minimization
+to500ms; no parser failure or behavioral repair is claimed from those observations.
+
+Next: qualify current source13, then finish legacy source12 incident handling,
+customer failure/trust API/CLI/UI, complete disconnected cache/installation,
+export/backup/GC, conditional refresh and checksum-on stock proxy/group. Prototype
+source12 fork labels lack original observations; no retroactive proof/backfill or
+complete legacy incident recovery is claimed. Public mode stays gated. All450
+artifact capabilities/41families/later stages remain underGOAL4.1; readiness,
+security and packaging false. Primary11/selected5483878b binaries/tenreceipts/
+credentials remain stopped/preserved. No primary/customer/sibling/release change.
+Original5380jobs failure is still unknown/intermittent despite later passing campaigns.
 
 Earlier source-specific development/checkpoints follow with their original limits.
 

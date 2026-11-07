@@ -21,7 +21,7 @@ if not targets or len(targets) > 100:
 environment = dict(os.environ, GOTOOLCHAIN='local', GOCACHE=str(root / '.cache/go-build'), GOMODCACHE=str(root / '.cache/go-mod'))
 print(f'Native {platform.system()} {platform.machine()}: {len(targets)} Go fuzz targets, 5 seconds each', flush=True)
 for package, name in targets:
-    command = [executable, 'test', '-run=^$', f'-fuzz=^{name}$', '-fuzztime=5s', '-parallel=2', '-timeout=90s', package]
+    command = [executable, 'test', '-run=^$', f'-fuzz=^{name}$', '-fuzztime=5s', '-fuzzminimizetime=500ms', '-parallel=2', '-timeout=90s', package]
     print(f'FUZZ {package} {name}', flush=True)
     result = subprocess.run(command, cwd=root, env=environment, capture_output=True, text=True, timeout=120)
     output = result.stdout + result.stderr

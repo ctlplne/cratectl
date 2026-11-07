@@ -58,6 +58,9 @@ func (s *Store) GoModuleChecksumCheckpoint(ctx context.Context, i Identity, repo
 		if err != nil {
 			return err
 		}
+		if err := goChecksumAuthorityUsable(ctx, tx, initial.KeyDigest); err != nil {
+			return err
+		}
 		out, err = currentGoChecksumCheckpoint(ctx, tx, a.VerifierKey, initial.KeyDigest)
 		if errors.Is(err, pgx.ErrNoRows) {
 			out = GoChecksumCheckpoint{KeyDigest: initial.KeyDigest, Checkpoint: bytes.Clone(a.InitialCheckpoint), TreeSize: initial.TreeSize, RootHash: initial.RootHash}
@@ -185,6 +188,9 @@ func completeGoChecksumPublication(ctx context.Context, tx pgx.Tx, i Identity, r
 	}
 	initial, err := crypt.ParseGoSumDBCheckpoint(a.VerifierKey, a.InitialCheckpoint)
 	if err != nil {
+		return Artifact{}, err
+	}
+	if err := goChecksumAuthorityUsable(ctx, tx, initial.KeyDigest); err != nil {
 		return Artifact{}, err
 	}
 	current, err := currentGoChecksumCheckpoint(ctx, tx, a.VerifierKey, initial.KeyDigest)

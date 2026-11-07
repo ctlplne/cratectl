@@ -194,6 +194,10 @@ func (s *Server) fetchGoModuleBundle(parent context.Context, i store.Identity, r
 	if repo.Settings.GoChecksumAuthority != nil {
 		proof, err := s.fetchGoModuleChecksumProof(ctx, i, repo, request.Coordinate, inspected.ZIPHash, inspected.GoModHash, checkpoint.Checkpoint)
 		if err != nil {
+			var observation *goChecksumCollectionError
+			if errors.As(err, &observation) {
+				observation.failure.ExpectedCheckpointRevision = checkpoint.Revision
+			}
 			return store.RetrievalResult{}, err
 		}
 		publication.Checksum = &store.GoModuleChecksumPublication{Proof: proof.Proof, Object: proof.Object, ZIPHash: inspected.ZIPHash, ModHash: inspected.GoModHash, ExpectedCheckpointRevision: checkpoint.Revision}

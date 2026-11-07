@@ -107,6 +107,9 @@ func goChecksumReadbackInTx(ctx context.Context, tx pgx.Tx, r Repository, p stri
 	if err != nil {
 		return GoModuleChecksumReadback{}, err
 	}
+	if err := goChecksumAuthorityUsable(ctx, tx, initial.KeyDigest); err != nil {
+		return GoModuleChecksumReadback{}, err
+	}
 	v := GoModuleChecksumReadback{key: a.VerifierKey, artifact: selected}
 	b := &v.binding
 	b.repository = r.Name

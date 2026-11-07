@@ -305,8 +305,8 @@ func TestGoModuleChecksumControllerRetainsForkCodeWithoutServingStale(t *testing
 	if err != nil || after.State != "failed" || after.LastError != "upstream_checksum_fork" || after.StalePermitted() || after.ValidationGeneration != before.ValidationGeneration {
 		t.Fatal("known signed fork lost durable classification or granted stale", err)
 	}
-	checkpoint, err := s.DB.GoModuleChecksumCheckpoint(ctx, i, repo.Name, repo.SourceRevision)
-	if err != nil || checkpoint.Revision != 2 || !bytes.Equal(checkpoint.Checkpoint, log.One) {
+	state, err := s.DB.GoChecksumState(ctx, i, repo.Name, repo.SourceRevision)
+	if err != nil || !state.Blocked || state.Checkpoint.Revision != 2 || !bytes.Equal(state.Checkpoint.Checkpoint, log.One) {
 		t.Fatal("fork changed retained trust", err)
 	}
 	goCallerCounts(t, s, i, 4)

@@ -64,6 +64,9 @@ func (s *Store) Retrieval(ctx context.Context, i Identity, repo, path string, ex
 		if len(expected) > 0 && cfg.SourceRevision != expected[0] {
 			return ErrSourceChanged
 		}
+		if e := goChecksumRepositoryUsable(ctx, tx, cfg); e != nil {
+			return e
+		}
 		e = scanRetrieval(tx.QueryRow(ctx, `SELECT `+retrievalColumns+` FROM cratectl.retrievals WHERE repository=$1 AND path=$2`, repo, path), &r)
 		r.SourceChanged = r.SourceRevision != cfg.SourceRevision
 		return e
@@ -163,6 +166,9 @@ func (s *Store) RenewRetrieval(ctx context.Context, i Identity, r Retrieval, lea
 		if config.SourceRevision != r.SourceRevision {
 			return ErrSourceChanged
 		}
+		if e := goChecksumRepositoryUsable(ctx, tx, config); e != nil {
+			return e
+		}
 		var state string
 		var valid bool
 		e = tx.QueryRow(ctx, `SELECT state,lease_until>clock_timestamp() FROM cratectl.retrievals WHERE repository=$1 AND path=$2 AND generation=$3 AND lease_token=$4 AND source_revision=$5 FOR UPDATE`, r.Repository, r.Path, r.Generation, r.Token, r.SourceRevision).Scan(&state, &valid)
@@ -204,9 +210,11 @@ type RetrievalResult struct {
 	GoModule                   *GoModulePublication
 	GoCatalog                  *GoModuleCatalog
 	GoLatest                   *GoModuleLatest
+	GoChecksumFailure          *GoChecksumFailure
 }
 
 func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retrieval, result RetrievalResult) error {
+	var rejectedPublication error
 	e := s.Tx(ctx, i, true, func(tx pgx.Tx) error {
 		repo, e := repositoryInTx(ctx, tx, i, lease.Repository, "read")
 		if e != nil {
@@ -256,6 +264,35 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 		sequence, e := nextEventSequence(ctx, tx, i)
 		if e != nil {
 			return e
+		}
+		failureDigest := ""
+		if result.GoModule != nil && result.GoModule.Checksum != nil && result.Failure == "" {
+			failure, err := proposedGoChecksumFork(ctx, tx, repo, result.GoModule.Checksum)
+			if err != nil {
+				return err
+			}
+			if failure != nil {
+				result = RetrievalResult{Failure: "upstream_checksum_fork", GoChecksumFailure: failure}
+				rejectedPublication = crypt.ErrGoChecksumFork
+			}
+		}
+		if result.GoChecksumFailure != nil {
+			if result.GoModule != nil || result.Object != nil || result.GoCatalog != nil || result.GoLatest != nil || result.Failure == "" {
+				return ErrGoModuleUnvalidated
+			}
+			classification, digest, err := completeGoChecksumFailure(ctx, tx, i, repo, lease, *result.GoChecksumFailure, sequence)
+			if err != nil {
+				return err
+			}
+			cancelled := result.Failure == "retrieval_cancelled"
+			result.Failure = "upstream_checksum_unverified"
+			if classification == "fork" {
+				result.Failure = "upstream_checksum_fork"
+			} else if cancelled {
+				result.Failure = "retrieval_cancelled"
+			}
+			result.Status = 0
+			failureDigest = digest
 		}
 		state := "ready"
 		var replacement *referenceReplacement
@@ -393,8 +430,20 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 		if replacement != nil {
 			data["reference_replacement"] = replacement
 		}
+		if result.GoChecksumFailure != nil {
+			data["go_checksum_failure_digest"] = failureDigest
+			// Failure evidence and enforcement finish synchronously. No ordinary
+			// queue capacity is required and no worker/delivery is promised.
+			return appendEventIntent(ctx, tx, i, "proxy.retrieval."+state, data, false)
+		}
 		return appendEvent(ctx, tx, i, "proxy.retrieval."+state, data)
 	})
+	if e == nil && rejectedPublication != nil {
+		return rejectedPublication
+	}
+	if e != nil && rejectedPublication != nil && result.GoChecksumFailure != nil {
+		return &PendingGoChecksumFailure{failure: *result.GoChecksumFailure, cause: e}
+	}
 	if errors.Is(e, ErrQueueFull) {
 		cleanup, done := context.WithTimeout(context.WithoutCancel(ctx), 3*time.Second)
 		defer done()

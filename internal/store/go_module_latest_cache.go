@@ -30,6 +30,9 @@ func (s *Store) GoModuleLatestArtifact(ctx context.Context, i Identity, repo, mo
 		if r.SourceRevision != revision {
 			return ErrSourceChanged
 		}
+		if e := goChecksumRepositoryUsable(ctx, tx, r); e != nil {
+			return e
+		}
 		a, _, e = readGoModuleLatestInTx(ctx, tx, r, mod, &budget, admissions)
 		if e == nil && a.Path == "" {
 			return ErrNotFound

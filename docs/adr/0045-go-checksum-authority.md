@@ -304,6 +304,72 @@ cover explicit policy/time bounds and safe HTTP errors. The fuzzer passed204398
 ARM executions in10.887seconds. Current55Go/229fullPG compile normally/race;
 actual new-source native execution is required before qualification.
 
+## Failure evidence and tenant/key enforcement, native replay pending
+
+Keep bounded original checksum failure observations as immutable control evidence
+inside PostgreSQL. They are not package/proof artifact approvals. A new append-only
+migration13 stores at most2MiB of canonical observation JSON per failed leased
+attempt, including original bounded response bytes, canonical request paths and
+fixed response/error classifications; never headers, request credential fields or arbitrary
+error text. A source storage-policy rejection retains only the observed-prefix
+length/digest and an explicit omission marker; missing original bytes stay
+unverified. Ordinary unverified credential reflections are omitted without a
+secret hash. Raw failure bodies remain tenant-administrator-only under current
+repository authorization; independently proved fork observations are retained
+for verification and may contain sensitive source data. No external object reference is needed: evidence bytes, their digest,
+failed retrieval state, first authenticated fork block and journal entry commit
+in one database transaction with forced tenant RLS. Source migrations1–12 remain
+immutable and primary11 is outside source/CI maintenance.
+
+This critical synchronous fail-stop path schedules no worker or external effect.
+It journals without an ordinary outbox/integrity enqueue, like existing bounded
+queue-abandonment handling. A full ordinary work queue must not prevent recording
+and enforcing an authenticated fork. This makes no downstream-delivery claim;
+future projection/export work must reconcile the authoritative journal. Database
+commit failure remains a failed operation, never a durable-enforcement claim.
+
+The store independently replays complete successful observations against the
+separately retained expected pin and current exact-key timeline. A caller's error
+label or proof-selected pin cannot establish a fork. Missing/invalid/ambiguous
+observations remain unverified. A proved fork records a monotone tenant/key block;
+it never advances or resets trust. Current serving, discovery, fill admission and
+publication consult that block. Already-open bytes still need their final current
+SQL guard. Another repository/source epoch cannot rehabilitate the same key;
+an explicitly different externally trusted key has its own timeline. Metadata
+must not reveal private coordinates from the repository that observed the fork.
+
+Retain every source/grant/live-lease/tenant fence. Collect bounded observations
+outside SQL and cancel/join active response readers before serializing a failure.
+CryptoCollect's failure output stays empty; raw failed observations are explicitly
+unverified evidence. Qualification must cover ordinary queue saturation, concurrent
+publication/fork races, cross-repository enforcement, tenant/key/source separation,
+no stale, original-byte readback, raw-input limits, runtime immutability/RLS and
+controlled12to13 upgrades before any public Go proxy mode is enabled. The new9PGfunctions/
+20fixed cases and6unitfunctions/45cases plus one expanded code case compile/run
+at their appropriate local layers; current64Go/238fullPG need native execution.
+The47thfuzz target passed95359ARM mutations in10.591seconds with2workers and
+500ms minimization. Its earlier9/11.198s default-minimization result and controlled
+73578/15.490s run remain retained; these are coverage-budget observations, not a
+parser failure/reproducer or proof of a behavior repair. CI applies the same500ms
+minimization bound while preserving5seconds pertarget and every source target.
+
+The canonical evidence envelope retains the store-selected current winner as
+well as the original expected pin, so an offline verifier can prove a fork that
+only became visible against a concurrent winner. Log signatures do not authenticate
+cratectl tenant/repository attribution: separately check its digest against a
+trusted journal/export manifest. Raw bodies may be sensitive and require current
+tenant-administrator plus underlying repository authorization. A no-store/storage-
+policy rejection records an explicit omitted prefix length/digest; ordinary known
+credential reflections are omitted without a secret hash. Original authenticated
+fork observations stay available to administrators for independent verification.
+
+Source12 prototype fork classifications have no original captured observations.
+This migration does not invent retrospective proofs or claim complete legacy
+incident backfill/recovery. Legacy incident handling, customer API/CLI/UI,
+complete offline cache/install, export/backup/GC and stock checksum-on proxy/group
+remain required before public Go mode. The retained primary remains schema11.
+
+
 ## Required integration, in dependency order
 
 1. Add an explicit Go proxy authority configuration using the common destination,

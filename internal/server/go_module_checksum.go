@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"strings"
@@ -22,6 +23,33 @@ type goChecksumFetch struct {
 	Proof    store.GoModuleChecksumProof
 	Verified crypt.GoSumDBVerification
 	Object   blob.Object
+}
+
+type goChecksumCollectionError struct {
+	err     error
+	failure store.GoChecksumFailure
+}
+
+func (e *goChecksumCollectionError) Error() string { return "Go checksum proof collection failed" }
+func (e *goChecksumCollectionError) Unwrap() error { return e.err }
+
+func checksumCredentialReflection(body []byte, value, authentication string) bool {
+	if value == "" {
+		return false
+	}
+	needles := []string{value}
+	if authentication == "basic" {
+		user, password, _ := strings.Cut(value, ":")
+		request := &http.Request{Header: make(http.Header)}
+		request.SetBasicAuth(user, password)
+		needles = append(needles, password, request.Header.Get("Authorization"), strings.TrimPrefix(request.Header.Get("Authorization"), "Basic "))
+	}
+	for _, needle := range needles {
+		if needle != "" && bytes.Contains(body, []byte(needle)) {
+			return true
+		}
+	}
+	return false
 }
 
 // readGoModuleChecksumProof admits only the exact retained proof bytes under an
@@ -93,41 +121,83 @@ func (s *Server) fetchGoModuleChecksumProof(parent context.Context, i store.Iden
 	// two concurrent readers, including full/partial-tile fallback.
 	remaining := min(s.NativeMetadataBytes, int64(1<<20)) - int64(len(authority.VerifierKey)+len(currentCheckpoint)+len(c.Module)+len(c.Version)+512)
 	var budget sync.Mutex
+	var readers sync.WaitGroup
+	var attempts []store.GoChecksumFailureAttempt
+	closed := false
 	read := func(ctx context.Context, path string, limit int64) ([]byte, error) {
 		budget.Lock()
 		cost := int64(len(path)) + limit + 1
-		if cost > remaining {
+		if closed || len(attempts) >= 128 || cost > remaining {
 			budget.Unlock()
 			return nil, store.ErrMetadataLimit
 		}
 		remaining -= cost
+		index := len(attempts)
+		observed := store.GoChecksumFailureAttempt{Path: path, Code: "transport"}
+		attempts = append(attempts, observed)
+		readers.Add(1)
 		budget.Unlock()
+		defer func() {
+			budget.Lock()
+			attempts[index] = observed
+			budget.Unlock()
+			readers.Done()
+		}()
 		response, err := endpoint.Get(ctx, strings.TrimPrefix(path, "/"), http.Header{"Accept": {"text/plain, application/octet-stream"}})
 		if err != nil {
 			return nil, err
 		}
 		defer response.Body.Close()
-		if response.StatusCode != http.StatusOK || response.ContentLength > limit || len(response.Header.Values("Content-Range")) != 0 || len(response.Trailer) != 0 {
+		observed.Status = response.StatusCode
+		observed.Code = "read"
+		data, err := io.ReadAll(io.LimitReader(response.Body, limit+1))
+		observed.Body = data
+		if _, _, policyErr := cachePolicy(goModuleCacheHeaders(response.Header), repo, store.Retrieval{}, response.StatusCode); policyErr != nil {
+			observed.Code = "cache_policy"
+			observed.Body = nil
+			observed.Omitted = true
+			observed.OmittedPrefixSHA256 = crypt.Digest(data)
+			observed.OmittedPrefixBytes = len(data)
+			if checksumCredentialReflection(data, credential, authority.Endpoint.Authentication) {
+				observed.Code = "credential"
+				observed.OmittedPrefixSHA256 = ""
+			}
+			return nil, policyErr
+		}
+		if err != nil {
+			return nil, err
+		}
+		if response.StatusCode != http.StatusOK {
+			observed.Code = "status"
+			return nil, crypt.ErrGoChecksumAuthority
+		}
+		if response.ContentLength > limit {
+			observed.Code = "length"
+			return nil, crypt.ErrGoChecksumAuthority
+		}
+		if len(response.Header.Values("Content-Range")) != 0 || len(response.Trailer) != 0 {
+			observed.Code = "range"
 			return nil, crypt.ErrGoChecksumAuthority
 		}
 		for _, name := range []string{"Content-Encoding", "Age", "Expires", "ETag", "Last-Modified"} {
 			if len(response.Header.Values(name)) > 1 {
+				observed.Code = "length"
 				return nil, crypt.ErrGoChecksumAuthority
 			}
 		}
 		if encoding := response.Header.Get("Content-Encoding"); encoding != "" && encoding != "identity" {
+			observed.Code = "encoding"
 			return nil, crypt.ErrGoChecksumAuthority
 		}
-		if _, _, err := cachePolicy(goModuleCacheHeaders(response.Header), repo, store.Retrieval{}, http.StatusOK); err != nil {
-			return nil, err
-		}
-		data, err := io.ReadAll(io.LimitReader(response.Body, limit+1))
-		if err != nil {
-			return nil, err
-		}
-		if int64(len(data)) > limit || response.ContentLength >= 0 && response.ContentLength != int64(len(data)) {
+		if int64(len(data)) > limit {
+			observed.Code = "overflow"
 			return nil, crypt.ErrGoChecksumAuthority
 		}
+		if response.ContentLength >= 0 && response.ContentLength != int64(len(data)) {
+			observed.Code = "length"
+			return nil, crypt.ErrGoChecksumAuthority
+		}
+		observed.Code = "ok"
 		budget.Lock()
 		remaining += limit + 1 - int64(len(data))
 		budget.Unlock()
@@ -135,13 +205,36 @@ func (s *Server) fetchGoModuleChecksumProof(parent context.Context, i store.Iden
 	}
 	trust := crypt.GoSumDBSnapshot{VerifierKey: authority.VerifierKey, Checkpoint: currentCheckpoint}
 	verified, snapshot, err := crypt.CollectGoSumDB(ctx, c.Module, c.Version, zipHash, modHash, trust, read)
+	// Close admission before waiting, so no reader can Add after Wait starts.
+	// Cancel outstanding HTTP reads on failure, then retain exact bounded bytes.
+	budget.Lock()
+	closed = true
+	budget.Unlock()
 	if err != nil {
-		return goChecksumFetch{}, err
+		cancel()
+	}
+	readers.Wait()
+	if err != nil && !errors.Is(err, crypt.ErrGoChecksumFork) {
+		for n := range attempts {
+			if !attempts[n].Omitted && checksumCredentialReflection(attempts[n].Body, credential, authority.Endpoint.Authentication) {
+				attempts[n].Omitted = true
+				attempts[n].Code = "credential"
+				attempts[n].OmittedPrefixBytes = len(attempts[n].Body)
+				attempts[n].Body = nil
+			}
+		}
+	}
+	failure := func(err error) error {
+		report := store.GoChecksumFailureReport{Profile: store.GoChecksumFailureProfile, Module: c.Module, Version: c.Version, ZIPHash: zipHash, ModHash: modHash, VerifierKey: authority.VerifierKey, Checkpoint: bytes.Clone(currentCheckpoint), Attempts: attempts}
+		return &goChecksumCollectionError{err: err, failure: store.GoChecksumFailure{Report: report}}
+	}
+	if err != nil {
+		return goChecksumFetch{}, failure(err)
 	}
 	proof := store.GoModuleChecksumProof{Profile: store.GoModuleChecksumProfile, Module: c.Module, Version: c.Version, ZIPHash: zipHash, ModHash: modHash, Snapshot: snapshot}
 	replayed, err := store.VerifyGoModuleChecksumProof(ctx, proof, c, zipHash, modHash, authority.VerifierKey, currentCheckpoint)
 	if err != nil {
-		return goChecksumFetch{}, err
+		return goChecksumFetch{}, failure(err)
 	}
 	if !bytes.Equal(replayed.Checkpoint, verified.Checkpoint) {
 		return goChecksumFetch{}, crypt.ErrGoChecksumAuthority
