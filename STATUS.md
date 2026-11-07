@@ -65,7 +65,15 @@ and encrypted failure capture are implemented locally. ARM build/unit/race/lint,
 and vet pass only; no actual local PostgreSQL, signer or package SDK campaign runs.
 See the [development record](evidence/2026-11-07/go-common-portability-development.json).
 
-**Native qualification is pending.** The next source requires 284 PostgreSQL/106
+**Candidate 704e81a failed native qualification.** Its producer requested a
+540-second command timeout against the unchanged shared 300-second bound and
+was refused before starting the new common fixture. The ARM consumer was skipped.
+The [original log/artifact record](evidence/2026-11-07/go-common-portability-704e81a-first-native-failure.json)
+and unchanged safe summary are retained as DEFECT.0142. The caller now uses the
+existing bound; an actual bounded subprocess regression passes with an owned
+stand-in. Repaired native qualification is pending; all original assertions stay.
+
+The next source requires 284 PostgreSQL/106
 named Go functions, 62 fuzz targets and all original selected profiles. Expect
 29 jobs/seven workflows, 22 safe summaries/91 reports and 19 source contracts:
 34 portability stages (16 original plus 18 common), with three focused browser jobs

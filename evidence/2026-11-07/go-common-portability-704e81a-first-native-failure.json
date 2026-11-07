@@ -1,0 +1,38 @@
+{
+  "candidate": "704e81a6df7a0e93dd1794a6a0750438eae5381e",
+  "observed_at": "2026-11-07T19:52:33.451847+00:00",
+  "defect": "DEFECT.0142",
+  "run_id": 42407504012,
+  "producer_job_id": 128508267823,
+  "consumer_job_id": 128508659240,
+  "producer_conclusion": "failure",
+  "consumer_conclusion": "skipped",
+  "observation": "New common producer requested timeout540; shared run_owned_client requires 0<timeout<=300 and refused before starting the new PostgreSQL fixture. Original single-version producer completed its3stages. Common producer completed native_identity only.",
+  "private_original_log": {
+    "path": ".private/ci-diagnostics/704e81a-first-failure/128508267823.txt",
+    "bytes": 59822,
+    "sha256": "4512fae81107e1a41af090d074b26d1b4e3665f61a7750f69ea746de8e9e9000"
+  },
+  "original_artifacts": [
+    {
+      "id": 13588161568,
+      "name": "encrypted-go-export-portability-producer",
+      "archive_bytes": 2407,
+      "archive_sha256": "abb812c8a4ee8ec1bdfdb1e176173eec75bbcc064cb65ca0ed6828a9a17ccc2b",
+      "github_digest": "sha256:abb812c8a4ee8ec1bdfdb1e176173eec75bbcc064cb65ca0ed6828a9a17ccc2b"
+    },
+    {
+      "id": 13588081938,
+      "name": "ci-summary-export-portability-producer",
+      "archive_bytes": 2226,
+      "archive_sha256": "2af91939f712eb0c8b33699f58e11d0a039d44a7ee85b6327afbbf3f79fe3314",
+      "github_digest": "sha256:2af91939f712eb0c8b33699f58e11d0a039d44a7ee85b6327afbbf3f79fe3314"
+    }
+  ],
+  "repair": "Use the existing300second per-command bound, unchanged shared runner limits and native assertions. Exercise the real bounded subprocess launch with an owned Python stand-in; no actual local PostgreSQL/SDK/signer campaign.",
+  "limits": [
+    "Original704campaign has failed; other jobs retain their own exact results only. No consumer/nativecommon portability pass.",
+    "No timeout/output-limit increase or test omission. Actual repaired source must replay all selected profiles and preserve these original failures.",
+    "Full GOAL4.1/all450capabilities/41families/later stages remain active; no release/readiness/primary change."
+  ]
+}

@@ -32,6 +32,15 @@ def require(condition, message):
         raise ValueError(message)
 
 
+def prepare_source_fixture(go, root, fixture_dir, command):
+    # The shared owned-process runner caps each command at 300 seconds. Keep
+    # this caller within that bound, as the original portability producer does.
+    native_env = {**os.environ, 'CRATECTL_GO_COMMON_EXPORT_PORTABLE_OUT': str(fixture_dir)}
+    return command([go, 'test', '-count=1', '-tags=integration', '-run',
+                    '^TestGoModuleCommonSetOfflineNativeGraphAndUncertainAcknowledgement$', './internal/server'],
+                   command_env=native_env, cwd=root, timeout=300, combined=True)
+
+
 def original_arguments(cli, value, collection, output, independent_key):
     return [str(cli), 'go-export-set-offline', '--collection-directory', str(collection),
             '--set-id', value['set_id'], '--output-directory', str(output),
@@ -234,9 +243,7 @@ def main(role):
         stage('native_identity')
         if role == 'producer':
             fixture_dir = root / '.cache/go-common-export-portable-upload'
-            native_env = {**os.environ, 'CRATECTL_GO_COMMON_EXPORT_PORTABLE_OUT': str(fixture_dir)}
-            command([go, 'test', '-count=1', '-tags=integration', '-run', '^TestGoModuleCommonSetOfflineNativeGraphAndUncertainAcknowledgement$', './internal/server'],
-                    command_env=native_env, cwd=root, timeout=540, combined=True)
+            prepare_source_fixture(go, root, fixture_dir, command)
             stage('native_postgresql_common_fixture')
             raw = read_common_capsule(fixture_dir / 'fixture.json')
         else:

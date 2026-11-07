@@ -1,0 +1,39 @@
+{
+  "source_parent": "704e81a6df7a0e93dd1794a6a0750438eae5381e",
+  "source_dirty": true,
+  "observed_at": "2026-11-07T19:54:28.300370+00:00",
+  "state": "implemented locally; native replay pending",
+  "defect": "DEFECT.0142",
+  "first_failure": "evidence/2026-11-07/go-common-portability-704e81a-first-native-failure.json",
+  "files_sha256": {
+    "scripts/conformance_go_common_export_portable.py": "041a8ea4109a345ff205852fc13d588e161399ab48294dbe453871125576c2d5",
+    "scripts/test_go_common_export_transport.py": "b48a729101cc04e1757873cf97ba41f2db51a7a81df02aae6c16a3b9c0c57a29",
+    "scripts/bounded_client.py": "8205d979c2eb37283255ad6c3fa51949802e1b892ac480f19149e0cff4949ecf",
+    "scripts/conformance_go_export_portable.py": "7f5679ed6a10de05adbacd23bbcb25dabd521405198913c46762170acc3b78ce"
+  },
+  "checks": [
+    {
+      "command": "PYTHONPATH=scripts python3 scripts/test_go_common_export_transport.py",
+      "result": "passed4 tests; actual bounded Python subprocess stand-in",
+      "private_log": ".cache/go-common-timeout-regression.log",
+      "sha256": "97b2f5a9d8feeedf564629023bd23afe8368f887dac126643c706d8bc935d90e"
+    },
+    {
+      "command": "make lint",
+      "result": "passed outside sandbox with authorized owned loopback stand-ins",
+      "private_log": ".cache/go-common-timeout-lint-authorized.log",
+      "sha256": "95fedb597824fb18c3c1f606de5d8e07ae5616fa6525752e4938a92a7d6e6188"
+    }
+  ],
+  "local_sandbox_attempt": {
+    "path": ".cache/go-common-timeout-lint.log",
+    "result": "owned HTTP stand-in bind denied by sandbox; not native/product failure; unfiltered original retained",
+    "sha256": "73a8855f38584257fbf984393e1b7b3636033d0d6117c500fd5d18cfdc0f00d8"
+  },
+  "limits": [
+    "No actual local PostgreSQL, SDK, signer, namespace or PIDfd campaign.",
+    "Native producer/consumer replay still required. Shared300second timeout and all output/test/fixture/assertion bounds unchanged.",
+    "284PostgreSQL/106namedGo/62fuzz/native clients/upgrades/portable and actual selected browser profiles remain required; actual API inventory governs.",
+    "Full450/41/later GOAL4.1 remains active; broad readiness/security/packaging unqualified; primary/customer/sibling untouched."
+  ]
+}
