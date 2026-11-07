@@ -1,0 +1,21 @@
+{
+  "candidate": "812bd5814d69fbe8f8ebf22f49ad3fac62db9462",
+  "source_dirty": true,
+  "observed_at": "2026-11-07T10:40:26.372689+00:00",
+  "defect": "DEFECT.0132",
+  "state": "first owned filesystem unit failure retained before repair",
+  "failing_test": "TestCollectionFailedMetadataWriteDoesNotPublishFinalName",
+  "private_log": {
+    "path": ".cache/go-export-publication-first-failure.log",
+    "sha256": "a0b5a4d2748b356b9914c6f05540a559ab2df3420b557efb51cf9e19e0e41d1c",
+    "bytes": 249
+  },
+  "fault": "A disposable child alone gets a128-byte kernel regular-file limit. bindCollection returns an error but leaves128bytes under the final bindings.json name. Parent kernel limit is unchanged. No registry, signer, SDK or network command is run.",
+  "cause": "Binding and receipt JSON are created directly under final names before write/sync completion. The binding writer is reproduced; receipt code has the same direct-final publication pattern by source inspection.",
+  "repair_required": "Stage/checkpoint private JSON separately, publish final names without replacement only after complete sync, and recover exact pending intent/link states on explicit resume. Keep corrupt completed records and unrelated hardlinks intact.",
+  "limits": [
+    "Local owned filesystem/kernel stand-in only; not an observed customer, PostgreSQL, native collector, actual power-loss or disk-full campaign.",
+    "No claim that the receipt writer was independently faulted yet. No new success receipt or full-goal readiness.",
+    "All450/41/laterGOAL4.1scope remains; primary11/5483878b/tenreceipts unchanged."
+  ]
+}

@@ -228,3 +228,15 @@ Its browser checks are UI response stand-ins, distinct from native collector
 and stock-client evidence. Linux/macOS private files and directory locks are the
 implemented path; Windows ACL/durability qualification and complete disconnected
 closure, installation, provider integration and destination import remain open.
+
+Collection metadata is staged separately before final publication. During an
+interruption you may see `.bindings.pending` or `receipt.GENERATION.pending`.
+Leave these files in place and use `--resume`: the collector can finish an exact
+prefix and recover its own published alias. If serving was renewed, the final
+receipt preserves the earlier completion generation after rechecking current
+access and all bytes. Corrupt completed metadata, unrelated links and ambiguous
+pending states are preserved and refused. A successful directory still contains
+the ten documented files. The implemented local filesystem path requires atomic
+hard links, directory sync and locking; unsupported filesystem behavior fails
+without replacing an existing final record. See
+[ADR0056](adr/0056-atomic-collection-metadata.md) for the qualification limits.

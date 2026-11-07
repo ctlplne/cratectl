@@ -11,6 +11,14 @@ commits stay on `main`, with both author and committer exactly
 Release, package/image publication and customer/primary/sibling changes remain
 outside this CI authority. No autonomous delegation.
 
+Exact `4956197` [whole selected campaign](../../evidence/2026-11-07/github-4956197-checkpoint.json)
+is accepted:26jobs/six workflows,19safe72reports,273PG/95Go normal/race on both
+Linux hosts,55fuzz/source onthreehosts,19main151Chromium,15historical20upgrades each
+and16portable stages. Four declared UI response stand-ins remain identified;
+focused browser/NuGet-library/strict SDK were unselected. New collector/metadata
+work is outside that proof; all450/41/later scope/readiness remain incomplete.
+Earlier source-specific records below retain their historical scope.
+
 Exactfca2d4a [whole campaign](../../evidence/2026-11-07/github-fca2d4a-checkpoint.json)
 is now accepted:24jobs/five workflows,17safe68reports;271PG/93Go normal/race,
 312stock/683baseline per Linux host,55fuzz/source on three hosts,19main151 and
@@ -910,3 +918,18 @@ a missing native result. Historically the SBT matrix brought six workflows to
 older SBT/common-exporter change selected24, while exactfc39162 selects27.
 Record actual selected and skipped jobs for each full candidate instead of
 carrying a historical job count into a later campaign.
+
+## Atomic collection metadata continuation
+
+[ADR0056](../adr/0056-atomic-collection-metadata.md) preserves the original
+[DEFECT0132 failure](../../evidence/2026-11-07/go-export-publication-first-failure.json).
+An owned child kernel limit exposed a partial final binding name. Metadata now
+stages, syncs, verifies and publishes exclusively; explicit resume preserves exact
+prefixes and recovers only its exact two-name link pair. Local ARM build/unit/race/
+lint and twelve collector units pass, including separate binding/receipt kernel
+faults. No actual registry/signer/SDK campaign runs locally. The existing native
+process-kill/socket test adds declared partial-receipt and post-link states after
+real renewal; these are not actual power-loss/full-disk/provider fault proof.
+Require exact-source274PG/96Go normal/race on both Linux hosts,56fuzz onthreehosts,
+19main151browser and all original stock/upgrade/portable selected profiles. All
+16schemas, primary11/5483878b/tenreceipts and full450/41/later scope remain.

@@ -1,0 +1,1824 @@
+{
+  "source_parent": "812bd5814d69fbe8f8ebf22f49ad3fac62db9462",
+  "source_dirty": true,
+  "observed_at": "2026-11-07T10:50:02.922669+00:00",
+  "state": "DEFECT0132 staged metadata publication/recovery implemented; native collector qualification unverified",
+  "original_failure": "evidence/2026-11-07/go-export-publication-first-failure.json",
+  "source_sha256": [
+    {
+      "path": "cmd/cratectl/go_export_collect.go",
+      "sha256": "026b1bffa17a650700f61885b9d8c77a057276ff2b342a9b4f3b1cf714e9b59e"
+    },
+    {
+      "path": "cmd/cratectl/go_export_collect_unix.go",
+      "sha256": "0118ccb4de34049a3fc64e477c6edeae81a29f6867be1a395fa52553438914ec"
+    },
+    {
+      "path": "cmd/cratectl/go_export_collect_other.go",
+      "sha256": "93c927999570580ce47837e151b3005f9244850cc0b4bcac52304539a4e6fe39"
+    },
+    {
+      "path": "cmd/cratectl/go_export_publication.go",
+      "sha256": "be06c80bd277c77d169cb182bce69f8bcbc5e645097ba086fe6287c4a560620b"
+    },
+    {
+      "path": "cmd/cratectl/go_export_collect_test.go",
+      "sha256": "3baea0a52a026ceabac364748d6375b38c38843a6028c63faee2e366f183f73e"
+    },
+    {
+      "path": "cmd/cratectl/go_export_publication_fault_test.go",
+      "sha256": "85d2df511f7880cd0043e3b512573d2a8a7873dacc543f28ace208ce4eaeea74"
+    },
+    {
+      "path": "internal/server/go_module_export_collect_integration_test.go",
+      "sha256": "6053315f69a34d264d50738ab9f8d6168f7d2e4e804d6a55979eece712030e21"
+    }
+  ],
+  "development_logs": [
+    {
+      "path": ".cache/go-export-publication-first-failure.log",
+      "sha256": "a0b5a4d2748b356b9914c6f05540a559ab2df3420b557efb51cf9e19e0e41d1c"
+    },
+    {
+      "path": ".cache/go-export-publication-unit-final.log",
+      "sha256": "b4fb84503d4840bd5f58b4fb5b8553b6f3972d42c67fca2d5217e15b7c2f1901"
+    },
+    {
+      "path": ".cache/go-export-publication-build.log",
+      "sha256": "d9c1f9f0a3dc18b491c91d69b4319cc0327e89fc772412972751c0a3024e0328"
+    },
+    {
+      "path": ".cache/go-export-publication-all-unit.log",
+      "sha256": "c0fa82f6593bc4e5ba776313438ecdd58c4610e55d21ba78c96cc1ddc60728b7"
+    },
+    {
+      "path": ".cache/go-export-publication-race.log",
+      "sha256": "d385362dfebc03d42de57db29ca5716a61224fab43caff36db87c6dd039673a6"
+    },
+    {
+      "path": ".cache/go-export-publication-lint.log",
+      "sha256": "12f364e81910a599125cf84f90d11efa1c65fb1f8dc939cacac650afb9d4b827"
+    },
+    {
+      "path": ".cache/go-export-publication-pg-compile.log",
+      "sha256": "6419c9587c4313615bc5d8143d776d156140fe1a159ccf11570cc8aba245a199"
+    },
+    {
+      "path": ".cache/go-export-publication-pg-race-compile.log",
+      "sha256": "906be2d33230d2380469d7d794996a987af99997a1a974475854134ed8a4a883"
+    },
+    {
+      "path": ".cache/go-export-publication-pg-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/go-export-publication-fuzz.log",
+      "sha256": "ba963a368fc23a0fe9945c780b19717505a446e9314a2a999782da01f12d1312"
+    }
+  ],
+  "checks": [
+    "Original128byte failed-binding-write regression now passes; separate owned receipt writer kernel-limit case leaves only pending bytes and resumes after a later generation. Parent limits unchanged.",
+    "Exact pending binding/receipt prefixes and own post-link pairs recover; corrupt completed records, unrelated/wrong/third links, future/noncanonical/multiple intent and unbound data refuse intact.",
+    "ARM build/unit/race/lint and bounded5second CLI fuzz pass. Normal/race PostgreSQL package compilation and tagged vet pass; no local PostgreSQL/registry/signer/SDK/native collector campaign.",
+    "Existing real socket/processSIGKILL/nativeCLI/OpenSSL/SDK function retains every original assertion and adds declared metadata-prefix/post-link recovery after another real renewal. Compiled only locally."
+  ],
+  "publication": {
+    "metadata_bytes_maximum": 65536,
+    "directory_members_maximum": 12,
+    "completed_members": 10,
+    "binding_pending": ".bindings.pending",
+    "receipt_pending": "receipt.GENERATION.pending",
+    "replace_existing_final": false,
+    "minimum_sequence": "complete file write and fsync; exclusive hardlink; directory fsync; remove owned pending alias; directory fsync",
+    "allowed_shared_state": "only exact final/pending metadata names, same owner-private regular inode, exactly two links; ordinary data/proof files remain single-link"
+  },
+  "native_required": {
+    "full_pg_normal_race": 274,
+    "named_go_normal_race": 96,
+    "stock_go_checks": 312,
+    "baseline_checks": 683,
+    "fuzz_targets": 56,
+    "native_fuzz_hosts": 3,
+    "main_browser_workflows": 19,
+    "main_browser_checks": 151,
+    "historical_binaries_per_host": 15,
+    "upgrade_reports_per_host": 20,
+    "portable_stages": 16
+  },
+  "source_defined_integration_inventory": [
+    {
+      "file": "internal/conformance/oci_delivery_integration_test.go",
+      "function": "TestOCIStockORASSignedDeliveryAndGovernedPublication"
+    },
+    {
+      "file": "internal/conformance/oci_descriptor_integration_test.go",
+      "function": "TestOCINativeProcessDescriptorURLsAndRetainedRefresh"
+    },
+    {
+      "file": "internal/conformance/oci_discovery_integration_test.go",
+      "function": "TestOCIStockDiscoveryPagesFallbackAndAtomicity"
+    },
+    {
+      "file": "internal/server/console_integration_test.go",
+      "function": "TestConsoleSessionUsesCurrentCredentialAndDoesNotExposeSecrets"
+    },
+    {
+      "file": "internal/server/go_module_checksum_controller_integration_test.go",
+      "function": "TestGoModuleChecksumControllerRecollectsOnlyProofAfterCheckpointWinner"
+    },
+    {
+      "file": "internal/server/go_module_checksum_controller_integration_test.go",
+      "function": "TestGoModuleChecksumControllerRetainsForkCodeWithoutServingStale"
+    },
+    {
+      "file": "internal/server/go_module_checksum_controller_integration_test.go",
+      "function": "TestGoModuleChecksumControllerCoalescesBundleProofAndReadback"
+    },
+    {
+      "file": "internal/server/go_module_checksum_controller_integration_test.go",
+      "function": "TestGoModuleChecksumControllerRenewsLeaseWhileProofTransferIsBlocked"
+    },
+    {
+      "file": "internal/server/go_module_checksum_controller_integration_test.go",
+      "function": "TestGoModuleChecksumControllerFailuresNeverPublishPartialTrust"
+    },
+    {
+      "file": "internal/server/go_module_checksum_readback_integration_test.go",
+      "function": "TestGoModuleChecksumPhysicalReadbackAndCurrentGuard"
+    },
+    {
+      "file": "internal/server/go_module_discovery_integration_test.go",
+      "function": "TestGoModulePreparationUsesCompleteCurrentSourceCatalogs"
+    },
+    {
+      "file": "internal/server/go_module_export_collect_integration_test.go",
+      "function": "TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline"
+    },
+    {
+      "file": "internal/server/go_module_export_expiry_integration_test.go",
+      "function": "TestGoModuleExportBackgroundWorkerReconcilesWithoutAdministratorRead"
+    },
+    {
+      "file": "internal/server/go_module_exports_integration_test.go",
+      "function": "TestGoModuleExportManagementActualHTTPAndResumableCurrentPolicy"
+    },
+    {
+      "file": "internal/server/go_module_exports_integration_test.go",
+      "function": "TestGoModuleExportManagementHeartbeatFencesCancelledTransfer"
+    },
+    {
+      "file": "internal/server/go_module_failure_inspection_integration_test.go",
+      "function": "TestGoModuleChecksumManagementDownloadsExactEvidenceWithCurrentAuthorization"
+    },
+    {
+      "file": "internal/server/go_module_failure_integration_test.go",
+      "function": "TestGoModuleChecksumCapturedForkBlocksSiblingAndSurvivesSaturatedQueues"
+    },
+    {
+      "file": "internal/server/go_module_failure_integration_test.go",
+      "function": "TestGoModuleChecksumUnverifiedObservationPreservesBytesWithoutBlockingRecovery"
+    },
+    {
+      "file": "internal/server/go_module_integration_test.go",
+      "function": "TestGoModuleAtomicPublicationReviewDiscoveryAndImmutableReplay"
+    },
+    {
+      "file": "internal/server/go_module_integration_test.go",
+      "function": "TestGoModuleOutboxRollbackAndConcurrentImmutablePublication"
+    },
+    {
+      "file": "internal/server/go_module_integration_test.go",
+      "function": "TestGoModuleCurrentGrantsRevocationAndTenantCollision"
+    },
+    {
+      "file": "internal/server/go_module_integration_test.go",
+      "function": "TestGoModuleGroupsPreservePrecedenceReviewOwnersAndSourceGrants"
+    },
+    {
+      "file": "internal/server/go_module_latest_caller_integration_test.go",
+      "function": "TestGoModuleLatestCallerUsesCurrentMetadataCacheWithoutPackageAdmission"
+    },
+    {
+      "file": "internal/server/go_module_latest_discovery_integration_test.go",
+      "function": "TestGoModuleLatestPreparationAndServingUseCurrentHintWithOldCachedPseudos"
+    },
+    {
+      "file": "internal/server/go_module_latest_integration_test.go",
+      "function": "TestGoModuleLatestRechecksCurrentVersionAfterDiskVerification"
+    },
+    {
+      "file": "internal/server/go_module_latest_integration_test.go",
+      "function": "TestGoModuleLatestBindsCurrentCatalogAndBundleAdmissions"
+    },
+    {
+      "file": "internal/server/go_module_latest_proxy_integration_test.go",
+      "function": "TestGoModuleOriginLatestPublicationUsesCurrentTransactionFences"
+    },
+    {
+      "file": "internal/server/go_module_legacy_management_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumManagementReviewRecoveryAndCurrentCredentials"
+    },
+    {
+      "file": "internal/server/go_module_proof_policy_integration_test.go",
+      "function": "TestGoModuleChecksumProofPolicyRefreshesExpiredHitWithoutServingExpiredStale"
+    },
+    {
+      "file": "internal/server/go_module_proxy_integration_test.go",
+      "function": "TestGoModuleOriginBundlePublicationUsesCurrentTransactionFences"
+    },
+    {
+      "file": "internal/server/go_module_retrieval_integration_test.go",
+      "function": "TestGoModuleProxyCallerCoalescesRepresentationsUnderOneLease"
+    },
+    {
+      "file": "internal/server/go_module_retrieval_integration_test.go",
+      "function": "TestGoModuleProxyCallerRecordsFailuresWithoutPartialPublication"
+    },
+    {
+      "file": "internal/server/go_module_retrieval_integration_test.go",
+      "function": "TestGoModuleProxyCallerOnlyAdmitsExplicitTransientStale"
+    },
+    {
+      "file": "internal/server/go_module_retrieval_integration_test.go",
+      "function": "TestGoModuleProxyGroupCarriesOnlyCurrentNegativeFallback"
+    },
+    {
+      "file": "internal/server/go_module_retrieval_integration_test.go",
+      "function": "TestGoModuleProxyCallerRenewsAndCancelsOnSourceLoss"
+    },
+    {
+      "file": "internal/server/go_module_retrieval_integration_test.go",
+      "function": "TestGoModuleProxyCallerCatalogKeepsAdvertisementSeparateFromApproval"
+    },
+    {
+      "file": "internal/server/go_module_selection_integration_test.go",
+      "function": "TestGoModuleServingRechecksEarlierSourcesBeforeHeaders"
+    },
+    {
+      "file": "internal/server/hold_administration_integration_test.go",
+      "function": "TestHoldAdministrationPagingScopesRevocationAndInput"
+    },
+    {
+      "file": "internal/server/hold_administration_integration_test.go",
+      "function": "TestHoldAdministrationInventoryAndRetainedRepositoryRecovery"
+    },
+    {
+      "file": "internal/server/hold_cases_integration_test.go",
+      "function": "TestIndependentHoldCasesPreserveOtherProtection"
+    },
+    {
+      "file": "internal/server/hold_cases_integration_test.go",
+      "function": "TestHoldCaseScopesRetainedRecoveryAndCurrentAuthority"
+    },
+    {
+      "file": "internal/server/hold_matters_integration_test.go",
+      "function": "TestHoldMatterGroupsReferencesAcrossRepositories"
+    },
+    {
+      "file": "internal/server/hold_matters_integration_test.go",
+      "function": "TestHoldMatterStrictHTTPInputsAndLiteralSearch"
+    },
+    {
+      "file": "internal/server/integrity_schedules_integration_test.go",
+      "function": "TestIntegrityScheduleHTTPWorkerReadsActualBytesAndSurvivesRestart"
+    },
+    {
+      "file": "internal/server/integrity_schedules_integration_test.go",
+      "function": "TestIntegrityScheduleHTTPPurposeAndTenantBoundaries"
+    },
+    {
+      "file": "internal/server/integrity_schedules_integration_test.go",
+      "function": "TestIntegrityScheduleHTTPRejectsReceiptDriftAndWorkerFailsWithoutObservations"
+    },
+    {
+      "file": "internal/server/inventory_integration_test.go",
+      "function": "TestInventoryAdmissionReplaySurvivesUnsupportedStorageRoot"
+    },
+    {
+      "file": "internal/server/journal_management_integration_test.go",
+      "function": "TestJournalManagementExportsExactBoundedPagesAndCurrentAuthority"
+    },
+    {
+      "file": "internal/server/lifecycle_integration_test.go",
+      "function": "TestLifecycleHTTPRestoreVerifiesBytesAndPreservesRetargets"
+    },
+    {
+      "file": "internal/server/lifecycle_integration_test.go",
+      "function": "TestLifecycleHTTPDeletedGroupCollisionNeverFallsThrough"
+    },
+    {
+      "file": "internal/server/lifecycle_integration_test.go",
+      "function": "TestLifecycleHTTPProxyRefreshCannotRestoreLocalTombstone"
+    },
+    {
+      "file": "internal/server/lifecycle_integration_test.go",
+      "function": "TestLifecycleHTTPSuspendResumeFencesBlockedUpstream"
+    },
+    {
+      "file": "internal/server/management_pages_integration_test.go",
+      "function": "TestManagementPagesTraverseGrantsAndHiddenGraphs"
+    },
+    {
+      "file": "internal/server/maven_checksum_integration_test.go",
+      "function": "TestMavenChecksumAliasesShareParentPolicyGrantAndTenant"
+    },
+    {
+      "file": "internal/server/maven_integration_test.go",
+      "function": "TestMavenMetadataUnionCurrentPolicyAndNativeHTTP"
+    },
+    {
+      "file": "internal/server/maven_integration_test.go",
+      "function": "TestMavenSnapshotClassifiersLatestBuildAndNoDeniedFallback"
+    },
+    {
+      "file": "internal/server/maven_integration_test.go",
+      "function": "TestMavenProxyCatalogValidationAndKnownDigestDenial"
+    },
+    {
+      "file": "internal/server/maven_integration_test.go",
+      "function": "TestMavenMetadataGrantTenantReviewAndVersionOwnership"
+    },
+    {
+      "file": "internal/server/maven_integration_test.go",
+      "function": "TestMavenChecksumPublicationReceiptsAreScopedAndAtomic"
+    },
+    {
+      "file": "internal/server/maven_snapshot_integration_test.go",
+      "function": "TestMavenNonuniqueSnapshotsPreservePolicyHoldsReceiptsAndConfiguration"
+    },
+    {
+      "file": "internal/server/maven_snapshot_integration_test.go",
+      "function": "TestMavenNonuniqueSnapshotQueueFailureRollsBackReferenceReceiptsAndLifecycle"
+    },
+    {
+      "file": "internal/server/maven_snapshot_integration_test.go",
+      "function": "TestMavenImmutableSnapshotReceiptSurvivesLaterPolicyOptInAndAnotherPublisher"
+    },
+    {
+      "file": "internal/server/maven_snapshot_integration_test.go",
+      "function": "TestMavenNonuniqueSnapshotPolicyAndReceiptsRemainTenantScoped"
+    },
+    {
+      "file": "internal/server/maven_snapshot_integration_test.go",
+      "function": "TestMavenNonuniqueSnapshotConcurrentWritersKeepOneJournalChainAndTheirOwnReceipts"
+    },
+    {
+      "file": "internal/server/native_lifecycle_integration_test.go",
+      "function": "TestMaterializedNativeHTTPMetadataRetirementAndVerifiedRestore"
+    },
+    {
+      "file": "internal/server/nuget_discovery_integration_test.go",
+      "function": "TestNuGetDiscoveryUsesCurrentCatalogPolicyAndGrants"
+    },
+    {
+      "file": "internal/server/nuget_discovery_integration_test.go",
+      "function": "TestNuGetRebuildRollsBackMetadataWhenOutboxIsFull"
+    },
+    {
+      "file": "internal/server/nuget_integration_test.go",
+      "function": "TestNuGetListingIsDurableAndPreservesConsumption"
+    },
+    {
+      "file": "internal/server/nuget_integration_test.go",
+      "function": "TestNuGetHostedPublicationPolicyBytesAndLifecycle"
+    },
+    {
+      "file": "internal/server/nuget_integration_test.go",
+      "function": "TestNuGetConcurrentCoordinatesAndCompleteIndexBudget"
+    },
+    {
+      "file": "internal/server/oci_accept_integration_test.go",
+      "function": "TestOCIMultipleAcceptFieldsServeExactBytesAndPreservePolicy"
+    },
+    {
+      "file": "internal/server/oci_integration_test.go",
+      "function": "TestOCIReadGuardRejectsRetargetedTag"
+    },
+    {
+      "file": "internal/server/oci_integration_test.go",
+      "function": "TestSameProxyMissWaitsForSharedFillAdmission"
+    },
+    {
+      "file": "internal/server/oci_integration_test.go",
+      "function": "TestOCIManifestRevalidationPreservesExactIdentityAndRefreshesChildren"
+    },
+    {
+      "file": "internal/server/oci_observation_integration_test.go",
+      "function": "TestOCIProxyReferrersRetainRetiredObservationsAndApplySubjectPolicy"
+    },
+    {
+      "file": "internal/server/oci_observation_integration_test.go",
+      "function": "TestOCIProxyDiscoveryObservesRetiredAndDeniedPeersWithoutRevivingThem"
+    },
+    {
+      "file": "internal/server/repairs_integration_test.go",
+      "function": "TestRepairHTTPRecoversCorruptSharedBytesWithoutChangingDenial"
+    },
+    {
+      "file": "internal/server/repairs_integration_test.go",
+      "function": "TestRepairInstallationSurvivesLostDatabaseReceiptAndReplaysReadback"
+    },
+    {
+      "file": "internal/server/repairs_integration_test.go",
+      "function": "TestRepairRevokedRequesterAndCancellationFencePhysicalEffects"
+    },
+    {
+      "file": "internal/server/repairs_integration_test.go",
+      "function": "TestRepairRechecksPreparedEffectAgainstAuthoritySourceCancellationAndLease"
+    },
+    {
+      "file": "internal/server/repairs_integration_test.go",
+      "function": "TestRepairAdministrationIsTenantScopedAndPrivateFencesStayPrivate"
+    },
+    {
+      "file": "internal/server/repairs_integration_test.go",
+      "function": "TestRepairIntentAndOutboxAdmissionFailTogether"
+    },
+    {
+      "file": "internal/server/repository_routes_integration_test.go",
+      "function": "TestRepositoryNamesDoNotSelectNestedManagementRoutes"
+    },
+    {
+      "file": "internal/server/retention_integration_test.go",
+      "function": "TestRetentionHTTPWorkerResumesApprovedTargetsAndNativeRestorePreservesBytes"
+    },
+    {
+      "file": "internal/server/retention_schedules_integration_test.go",
+      "function": "TestRetentionScheduleHTTPExplicitAuthorityAndWorkerFences"
+    },
+    {
+      "file": "internal/server/schema_integration_test.go",
+      "function": "TestSchemaHTTPMaintenanceRetainsCredentialAndReadiness"
+    },
+    {
+      "file": "internal/server/schema_integration_test.go",
+      "function": "TestSchemaCurrentNoopDoesNotInterruptSlowUpload"
+    },
+    {
+      "file": "internal/server/source_configuration_integration_test.go",
+      "function": "TestConfigurationHTTPCredentialAuthorityRolesAndReplay"
+    },
+    {
+      "file": "internal/server/source_configuration_integration_test.go",
+      "function": "TestConfigurationHTTPRevalidatesSourceAndNeverBorrowsValidatorsOr304Body"
+    },
+    {
+      "file": "internal/server/source_configuration_integration_test.go",
+      "function": "TestConfigurationHTTPFencesRunningFillAndGroupSelection"
+    },
+    {
+      "file": "internal/server/uploads_integration_test.go",
+      "function": "TestSlowOCIUploadDoesNotHoldTenantMutationLock"
+    },
+    {
+      "file": "internal/server/uploads_integration_test.go",
+      "function": "TestUploadHeartbeatCancellationAndCredentialExpiry"
+    },
+    {
+      "file": "internal/server/uploads_integration_test.go",
+      "function": "TestLegacyUploadMigratesOnlyAcknowledgedPrefix"
+    },
+    {
+      "file": "internal/store/bootstrap_integration_test.go",
+      "function": "TestBootstrapCatalogInspectionIsBounded"
+    },
+    {
+      "file": "internal/store/bootstrap_integration_test.go",
+      "function": "TestBlankBootstrapAtomicReplayAndRLS"
+    },
+    {
+      "file": "internal/store/go_module_cache_integration_test.go",
+      "function": "TestGoModuleCacheAdmissionRequiresCurrentWholeBundle"
+    },
+    {
+      "file": "internal/store/go_module_catalog_integration_test.go",
+      "function": "TestGoModuleCatalogPublicationUsesCommonLeaseSourceAndOutbox"
+    },
+    {
+      "file": "internal/store/go_module_catalog_read_integration_test.go",
+      "function": "TestGoModuleCatalogReadUsesCurrentBoundedTypedAdmission"
+    },
+    {
+      "file": "internal/store/go_module_checkpoint_integration_test.go",
+      "function": "TestGoModuleChecksumPublishesProofHistoryAndBundleAtomically"
+    },
+    {
+      "file": "internal/store/go_module_checkpoint_integration_test.go",
+      "function": "TestGoModuleChecksumConcurrentCollectorsCoalesceAndAdvanceWithoutReset"
+    },
+    {
+      "file": "internal/store/go_module_checkpoint_integration_test.go",
+      "function": "TestGoModuleChecksumRejectedPublicationRollsBackTrustAndReferences"
+    },
+    {
+      "file": "internal/store/go_module_checkpoint_integration_test.go",
+      "function": "TestGoModuleChecksumUpgradeRetainsElevenReceiptsAndEnforcesRLS"
+    },
+    {
+      "file": "internal/store/go_module_checkpoint_integration_test.go",
+      "function": "TestGoModuleChecksumTimelineSurvivesRepositoryChangesAndSeparatesTenantsAndKeys"
+    },
+    {
+      "file": "internal/store/go_module_checkpoint_integration_test.go",
+      "function": "TestGoModuleChecksumForkAndMissingTilesPreserveCurrentTrust"
+    },
+    {
+      "file": "internal/store/go_module_checkpoint_integration_test.go",
+      "function": "TestGoModuleChecksumConcurrentRepositoriesShareOneWinningTimeline"
+    },
+    {
+      "file": "internal/store/go_module_checkpoint_integration_test.go",
+      "function": "TestGoModuleChecksumRuntimeCannotRollBackHeadOrRewriteHistory"
+    },
+    {
+      "file": "internal/store/go_module_checkpoint_integration_test.go",
+      "function": "TestGoModuleChecksumSchemaSafetyFailsClosedForEveryNewTable"
+    },
+    {
+      "file": "internal/store/go_module_checksum_discovery_integration_test.go",
+      "function": "TestGoModuleChecksumDiscoveryRequiresCurrentReceiptKeyAndProofPolicy"
+    },
+    {
+      "file": "internal/store/go_module_checksum_discovery_integration_test.go",
+      "function": "TestGoModuleChecksumDiscoveryRetainsHistoricalProofAcrossGrowthAndSourceEpoch"
+    },
+    {
+      "file": "internal/store/go_module_checksum_discovery_integration_test.go",
+      "function": "TestGoModuleChecksumDiscoveryBlockedFirstSourceShadowsLowerAndCatalog"
+    },
+    {
+      "file": "internal/store/go_module_checksum_integration_test.go",
+      "function": "TestGoModuleChecksumPolicyRejectsUnfencedPublicationAndCachedBytes"
+    },
+    {
+      "file": "internal/store/go_module_discovery_integration_test.go",
+      "function": "TestGoModuleDiscoveryUsesCurrentCatalogPolicyPrecedenceAndBudgets"
+    },
+    {
+      "file": "internal/store/go_module_export_expiry_integration_test.go",
+      "function": "TestGoModuleExportWorkerExpiryQueueRollbackReplicasAndReferenceSafety"
+    },
+    {
+      "file": "internal/store/go_module_export_expiry_integration_test.go",
+      "function": "TestGoModuleExportWorkerExpiryRequiresCurrentPurposeAndTenant"
+    },
+    {
+      "file": "internal/store/go_module_export_index_integration_test.go",
+      "function": "TestGoModuleExportExpiryIndexBoundsIdleAndDueWorkThroughRetainedHistory"
+    },
+    {
+      "file": "internal/store/go_module_export_migration_integration_test.go",
+      "function": "TestGoModuleExportSchema14UpgradePreservesReceiptsRowsAndRLS"
+    },
+    {
+      "file": "internal/store/go_module_export_migration_integration_test.go",
+      "function": "TestGoModuleExportSchema15UpgradePreservesRowsAndRequiresExactExpiryIndex"
+    },
+    {
+      "file": "internal/store/go_module_exports_integration_test.go",
+      "function": "TestGoModuleExportImmutableSnapshotStageReplayAndOriginalJournal"
+    },
+    {
+      "file": "internal/store/go_module_exports_integration_test.go",
+      "function": "TestGoModuleExportRevalidatesPolicyBytesEpochAndStagedHandle"
+    },
+    {
+      "file": "internal/store/go_module_exports_integration_test.go",
+      "function": "TestGoModuleExportQueueRollbackConcurrentReplayAndRetainedBudget"
+    },
+    {
+      "file": "internal/store/go_module_exports_integration_test.go",
+      "function": "TestGoModuleExportCurrentPolicyRenewAcknowledgeCancelAndPins"
+    },
+    {
+      "file": "internal/store/go_module_exports_integration_test.go",
+      "function": "TestGoModuleExportForcedRLSImmutableRuntimeAndDurableExpiry"
+    },
+    {
+      "file": "internal/store/go_module_exports_integration_test.go",
+      "function": "TestGoModuleExportSignedManifestNativeOfflineSDK"
+    },
+    {
+      "file": "internal/store/go_module_failure_inspection_integration_test.go",
+      "function": "TestGoModuleChecksumFailureInspectionPagesAndRetiredEvidence"
+    },
+    {
+      "file": "internal/store/go_module_failure_inspection_integration_test.go",
+      "function": "TestGoModuleChecksumForkPrecedesFreshNegativeFallback"
+    },
+    {
+      "file": "internal/store/go_module_failure_integration_test.go",
+      "function": "TestGoModuleChecksumFailureEvidenceAndKeyBlockAreAtomicWithoutOrdinaryQueueCapacity"
+    },
+    {
+      "file": "internal/store/go_module_failure_integration_test.go",
+      "function": "TestGoModuleChecksumFailureRetainsSourceGrantLeaseAndEvidenceShapeFences"
+    },
+    {
+      "file": "internal/store/go_module_failure_integration_test.go",
+      "function": "TestGoModuleChecksumForkBlocksTenantKeyAcrossRepositoriesPublicationAndSourceChanges"
+    },
+    {
+      "file": "internal/store/go_module_failure_integration_test.go",
+      "function": "TestGoModuleChecksumFailureUpgradeAndRuntimeImmutability"
+    },
+    {
+      "file": "internal/store/go_module_failure_integration_test.go",
+      "function": "TestGoModuleChecksumForkAndPublicationRacePreservesOneTimelineAndDeniesFinalReads"
+    },
+    {
+      "file": "internal/store/go_module_failure_integration_test.go",
+      "function": "TestGoModuleChecksumFailureSchemaSafetyRequiresBothForcedTenantTables"
+    },
+    {
+      "file": "internal/store/go_module_failure_integration_test.go",
+      "function": "TestGoModuleChecksumForkEvidenceDoesNotExposeAnUnrelatedRepository"
+    },
+    {
+      "file": "internal/store/go_module_failure_journal_integration_test.go",
+      "function": "TestGoModuleChecksumFailureBindsOriginalEvidenceToCompleteJournalRange"
+    },
+    {
+      "file": "internal/store/go_module_latest_discovery_integration_test.go",
+      "function": "TestGoModuleLatestDiscoveryUsesCurrentHintInsteadOfCachedPseudoHistory"
+    },
+    {
+      "file": "internal/store/go_module_latest_hint_integration_test.go",
+      "function": "TestGoModuleLatestAdvertisementUsesCommonTransactionAndCurrentFences"
+    },
+    {
+      "file": "internal/store/go_module_legacy_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumReviewFencesAndConcurrentLostResponses"
+    },
+    {
+      "file": "internal/store/go_module_legacy_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumRetainedConfigurationRecoveryKeepsCreationAndForkGates"
+    },
+    {
+      "file": "internal/store/go_module_legacy_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumConcurrentForkAlwaysOverridesExternalReview"
+    },
+    {
+      "file": "internal/store/go_module_legacy_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumIncidentBlocksEveryKeyWorkAndBytePathWithoutInventingProof"
+    },
+    {
+      "file": "internal/store/go_module_legacy_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumExternalReviewIsAtomicIdempotentAndCannotClearAFutureFork"
+    },
+    {
+      "file": "internal/store/go_module_legacy_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumRuntimeImmutabilityAndUnscopedRLS"
+    },
+    {
+      "file": "internal/store/go_module_legacy_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumRuntimeRefusesEitherUnforcedEvidenceTable"
+    },
+    {
+      "file": "internal/store/go_module_legacy_migration_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumBackfillPreservesEveryTenantAndOriginalJournalUnderNonsuperOwner"
+    },
+    {
+      "file": "internal/store/go_module_legacy_migration_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumInterruptedBackfillRollsBackPoliciesRowsAndReceipt"
+    },
+    {
+      "file": "internal/store/go_module_legacy_migration_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumBackfillDistinguishesTypedForkFromOrphanedAttribution"
+    },
+    {
+      "file": "internal/store/go_module_legacy_migration_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumDamagedOriginalHistoryRefusesMigrationAtomically"
+    },
+    {
+      "file": "internal/store/go_module_offline_integration_test.go",
+      "function": "TestGoModuleHostedOfflinePublicationPreparesExactStockClientBytes"
+    },
+    {
+      "file": "internal/store/go_module_proof_policy_integration_test.go",
+      "function": "TestGoModuleChecksumProofAgePolicyDoesNotGrantStaleOrHideRefreshableVersions"
+    },
+    {
+      "file": "internal/store/go_module_proof_policy_integration_test.go",
+      "function": "TestGoModuleChecksumProofPolicyIsRecheckedAfterPhysicalReadback"
+    },
+    {
+      "file": "internal/store/go_module_proof_policy_integration_test.go",
+      "function": "TestGoModuleChecksumExpiredProofRefreshFencesDelayedGeneration"
+    },
+    {
+      "file": "internal/store/go_module_readback_integration_test.go",
+      "function": "TestGoModuleChecksumReadbackRequiresCurrentPolicyProofReceiptAndAuthority"
+    },
+    {
+      "file": "internal/store/go_module_readback_integration_test.go",
+      "function": "TestGoModuleChecksumPostReadbackGuardRejectsChangedProofPolicyAndBindings"
+    },
+    {
+      "file": "internal/store/go_module_readback_integration_test.go",
+      "function": "TestGoModuleChecksumReadbackRetainsHistoryAcrossGrowthAndSourceEpoch"
+    },
+    {
+      "file": "internal/store/go_module_readback_integration_test.go",
+      "function": "TestGoModuleChecksumReadbackCannotBorrowAnotherTenantsIdenticalProofToken"
+    },
+    {
+      "file": "internal/store/go_module_retrieval_integration_test.go",
+      "function": "TestGoModuleRetrievalAtomicBundleCacheAndCurrentPolicy"
+    },
+    {
+      "file": "internal/store/go_module_retrieval_integration_test.go",
+      "function": "TestGoModuleRetrievalFullOutboxRollsBackEveryReference"
+    },
+    {
+      "file": "internal/store/go_module_retrieval_integration_test.go",
+      "function": "TestGoModuleRetrievalFencesLeaseSourceGrantAndTenant"
+    },
+    {
+      "file": "internal/store/go_module_selection_integration_test.go",
+      "function": "TestGoModuleFinalSelectionRechecksGroupAuthorityAndExactAbsence"
+    },
+    {
+      "file": "internal/store/hold_cases_integration_test.go",
+      "function": "TestHoldCasesConcurrentIndependentRevisionsAndLegacyProtection"
+    },
+    {
+      "file": "internal/store/hold_cases_integration_test.go",
+      "function": "TestHoldCasesActualExpiryDoesNotReleaseAnotherCase"
+    },
+    {
+      "file": "internal/store/hold_cases_integration_test.go",
+      "function": "TestHoldCasesQueueRollbackReplayAndStaleSameCase"
+    },
+    {
+      "file": "internal/store/hold_cases_integration_test.go",
+      "function": "TestHoldCaseInventoryBoundsStablePaginationAndTenantRLS"
+    },
+    {
+      "file": "internal/store/hold_cases_integration_test.go",
+      "function": "TestHoldCasesRetentionWorkerRechecksRemainingCase"
+    },
+    {
+      "file": "internal/store/hold_management_integration_test.go",
+      "function": "TestHoldInventoryPagesHistoryAndIsolation"
+    },
+    {
+      "file": "internal/store/hold_management_integration_test.go",
+      "function": "TestHoldActualExpiryKeepsOriginalReceipt"
+    },
+    {
+      "file": "internal/store/hold_management_integration_test.go",
+      "function": "TestHoldMutationRollbackAndConcurrentRevision"
+    },
+    {
+      "file": "internal/store/hold_management_integration_test.go",
+      "function": "TestHoldPageBudgetAndMaximumPosition"
+    },
+    {
+      "file": "internal/store/hold_management_migration_integration_test.go",
+      "function": "TestHoldManagementUpgradePreservesEightReceiptsAndJournal"
+    },
+    {
+      "file": "internal/store/hold_management_migration_integration_test.go",
+      "function": "TestHoldCasesUpgradePreservesNineReceiptsAndJournal"
+    },
+    {
+      "file": "internal/store/hold_matters_integration_test.go",
+      "function": "TestHoldMattersPreserveOverlappingLegacyCaseAndTombstoneProtection"
+    },
+    {
+      "file": "internal/store/hold_matters_integration_test.go",
+      "function": "TestHoldMatterExactManifestAdmissionAndCurrentRevision"
+    },
+    {
+      "file": "internal/store/hold_matters_integration_test.go",
+      "function": "TestHoldMatterCompletePreviewIncludesDigestInByteBudget"
+    },
+    {
+      "file": "internal/store/hold_matters_integration_test.go",
+      "function": "TestHoldMatterAdmissionApprovalAndTargetQueueRollback"
+    },
+    {
+      "file": "internal/store/hold_matters_integration_test.go",
+      "function": "TestHoldMatterPartialCancelRetryImmutablePayloadAndNewMembership"
+    },
+    {
+      "file": "internal/store/hold_matters_integration_test.go",
+      "function": "TestHoldMatterRevokedAuthoritiesCannotContinueOrTransferApproval"
+    },
+    {
+      "file": "internal/store/hold_matters_integration_test.go",
+      "function": "TestHoldMatterIndependentCurrentApprovalAndTenantBoundaries"
+    },
+    {
+      "file": "internal/store/hold_matters_integration_test.go",
+      "function": "TestHoldMatterLeaseFencesAndChangedTargetOutcome"
+    },
+    {
+      "file": "internal/store/hold_matters_integration_test.go",
+      "function": "TestHoldMatterRLSAndImmutableAdmissionRecords"
+    },
+    {
+      "file": "internal/store/hold_matters_integration_test.go",
+      "function": "TestHoldMattersUpgradePreservesTenReceiptsAndJournal"
+    },
+    {
+      "file": "internal/store/hold_matters_integration_test.go",
+      "function": "TestHoldMatterRealExpiryPreservesReceiptAndStopsLateEffects"
+    },
+    {
+      "file": "internal/store/hold_matters_integration_test.go",
+      "function": "TestHoldMatterFirstOversizedRecordsFailInsteadOfTruncating"
+    },
+    {
+      "file": "internal/store/hold_matters_integration_test.go",
+      "function": "TestHoldMatterAddedAfterRetirementAdmissionProtectsCapturedReference"
+    },
+    {
+      "file": "internal/store/integrity_schedule_migration_integration_test.go",
+      "function": "TestIntegrityScheduleMigrationPreservesFiveReceiptsAndGuardsNewTenantTables"
+    },
+    {
+      "file": "internal/store/integrity_schedules_integration_test.go",
+      "function": "TestIntegrityScheduleRotatesImmutableSamplesAndDoesNotOverlap"
+    },
+    {
+      "file": "internal/store/integrity_schedules_integration_test.go",
+      "function": "TestIntegrityScheduleConcurrentAdmissionAndQueueDeferral"
+    },
+    {
+      "file": "internal/store/integrity_schedules_integration_test.go",
+      "function": "TestIntegrityScheduleCredentialExpiryAndRevocationBlockUntilReauthorized"
+    },
+    {
+      "file": "internal/store/integrity_schedules_integration_test.go",
+      "function": "TestIntegrityScheduleTenantIsolationAndImmutableReceipts"
+    },
+    {
+      "file": "internal/store/integrity_schedules_integration_test.go",
+      "function": "TestIntegrityScheduleConfigurationAndDispatchRollbackWithJournal"
+    },
+    {
+      "file": "internal/store/integrity_schedules_integration_test.go",
+      "function": "TestIntegrityScheduleRequesterExpiryDuringAdmissionRollsBackAllEffects"
+    },
+    {
+      "file": "internal/store/integrity_schedules_integration_test.go",
+      "function": "TestIntegrityScheduleSamplesRetiredHeldDeniedAndConflictingUploadBindings"
+    },
+    {
+      "file": "internal/store/integrity_schedules_integration_test.go",
+      "function": "TestIntegrityScheduleEmptyCaptureDoesNotClaimByteVerification"
+    },
+    {
+      "file": "internal/store/integrity_schedules_integration_test.go",
+      "function": "TestIntegrityScheduleRunInspectionAndWorkerRejectMutableReceiptDrift"
+    },
+    {
+      "file": "internal/store/inventory_integration_test.go",
+      "function": "TestInventoryDurableWalkFencesCurrentReferencesAndPasses"
+    },
+    {
+      "file": "internal/store/inventory_integration_test.go",
+      "function": "TestInventoryMissingReferencesCorruptOrphansAndUnknownLayout"
+    },
+    {
+      "file": "internal/store/inventory_integration_test.go",
+      "function": "TestInventoryTotalBudgetNeverCommitsAnOversizedPage"
+    },
+    {
+      "file": "internal/store/inventory_integration_test.go",
+      "function": "TestWorkerCredentialExpiringDuringMetadataBatchRollsBack"
+    },
+    {
+      "file": "internal/store/inventory_integration_test.go",
+      "function": "TestInventoryUnknownDirectoryCannotProduceCleanCASVerdict"
+    },
+    {
+      "file": "internal/store/jobs_integration_test.go",
+      "function": "TestDurableJobsPublicationFencesCancellationAndCapacity"
+    },
+    {
+      "file": "internal/store/jobs_integration_test.go",
+      "function": "TestDurableJobsConcurrentClaimsRLSAndExpiredCancellation"
+    },
+    {
+      "file": "internal/store/jobs_integration_test.go",
+      "function": "TestWorkerActivityDoesNotLoseLateProjection"
+    },
+    {
+      "file": "internal/store/jobs_integration_test.go",
+      "function": "TestWorkerExpiryIsRecheckedAfterTenantLockWait"
+    },
+    {
+      "file": "internal/store/jobs_integration_test.go",
+      "function": "TestQueueSaturationDoesNotStrandProxyLease"
+    },
+    {
+      "file": "internal/store/journal_integration_test.go",
+      "function": "TestJournalExportPinsImmutableRangeAndRechecksTenantAndCredentials"
+    },
+    {
+      "file": "internal/store/journal_integration_test.go",
+      "function": "TestJournalExportBoundsOriginalPayloadBytesAndAdvancingLegacyList"
+    },
+    {
+      "file": "internal/store/journal_integration_test.go",
+      "function": "TestJournalExportRejectsOversizedGappedAndCorruptRetainedHistory"
+    },
+    {
+      "file": "internal/store/lifecycle_integration_test.go",
+      "function": "TestLifecycleLegacyManifestNeedsIntakeRepairBeforeDeletion"
+    },
+    {
+      "file": "internal/store/lifecycle_integration_test.go",
+      "function": "TestLifecycleReferencesTombstonesAndVerifiedRestore"
+    },
+    {
+      "file": "internal/store/lifecycle_integration_test.go",
+      "function": "TestLifecycleHoldsRevisionsIdempotencyAndIsolation"
+    },
+    {
+      "file": "internal/store/lifecycle_integration_test.go",
+      "function": "TestLifecycleWeakSubjectAndRevokedGrantStayAuthoritative"
+    },
+    {
+      "file": "internal/store/lifecycle_integration_test.go",
+      "function": "TestLifecycleRepositoryFencesPersistAfterResume"
+    },
+    {
+      "file": "internal/store/lifecycle_integration_test.go",
+      "function": "TestLifecycleBudgetAndOutboxFailureRollBack"
+    },
+    {
+      "file": "internal/store/lifecycle_migration_integration_test.go",
+      "function": "TestLifecycleMigrationPreservesV2ReceiptsAndGuardsRLS"
+    },
+    {
+      "file": "internal/store/migrations_integration_test.go",
+      "function": "TestSchemaFreshCurrentAndPrivateReceipts"
+    },
+    {
+      "file": "internal/store/migrations_integration_test.go",
+      "function": "TestSchemaDrainQueueAndFutureVersion"
+    },
+    {
+      "file": "internal/store/migrations_integration_test.go",
+      "function": "TestSchemaDriftFailsClosed"
+    },
+    {
+      "file": "internal/store/migrations_integration_test.go",
+      "function": "TestSchemaInterruptedAndFailedDDLIsAtomic"
+    },
+    {
+      "file": "internal/store/migrations_integration_test.go",
+      "function": "TestSchemaConcurrentMigratorsAndCanceledSession"
+    },
+    {
+      "file": "internal/store/migrations_integration_test.go",
+      "function": "TestSchemaRuntimeRoleDrift"
+    },
+    {
+      "file": "internal/store/migrations_integration_test.go",
+      "function": "TestSchemaLegacyRequiresAcknowledgement"
+    },
+    {
+      "file": "internal/store/native_lifecycle_integration_test.go",
+      "function": "TestMaterializedNativeProxyRefreshRechecksHoldAndRetirementAtPublication"
+    },
+    {
+      "file": "internal/store/native_lifecycle_integration_test.go",
+      "function": "TestMaterializedNativeLifecycleProtectsRetiresAndRestoresExactReference"
+    },
+    {
+      "file": "internal/store/native_lifecycle_integration_test.go",
+      "function": "TestMaterializedNativeProxyMetadataRetainsDeletedSourceIdentity"
+    },
+    {
+      "file": "internal/store/npm_integration_test.go",
+      "function": "TestDigestDecisionsCoverExistingAndFutureAliases"
+    },
+    {
+      "file": "internal/store/npm_integration_test.go",
+      "function": "TestNPMTagsBudgetsAndPublicationRollback"
+    },
+    {
+      "file": "internal/store/npm_integration_test.go",
+      "function": "TestNPMIndexSnapshotDuringPublication"
+    },
+    {
+      "file": "internal/store/npm_proxy_integration_test.go",
+      "function": "TestNPMSourcePublicationIsFencedAndAtomic"
+    },
+    {
+      "file": "internal/store/oci_integration_test.go",
+      "function": "TestOCIIntakeRechecksDescriptorAndPolicyAtomically"
+    },
+    {
+      "file": "internal/store/oci_integration_test.go",
+      "function": "TestOCIWeakSubjectReferrersCurrentPolicyAndBounds"
+    },
+    {
+      "file": "internal/store/oci_proxy_integration_test.go",
+      "function": "TestOCIZeroFreshnessAdmissionCannotSurviveInvalidation"
+    },
+    {
+      "file": "internal/store/oci_proxy_integration_test.go",
+      "function": "TestOCIParentCannotOverwriteConcurrentMemberInvalidation"
+    },
+    {
+      "file": "internal/store/oci_proxy_integration_test.go",
+      "function": "TestOCIOlderTagFillCannotUndoNewerCatalogBinding"
+    },
+    {
+      "file": "internal/store/oci_proxy_integration_test.go",
+      "function": "TestOCIStaleGraphRequiresRequestReceiptAndEveryMemberWindow"
+    },
+    {
+      "file": "internal/store/oci_proxy_integration_test.go",
+      "function": "TestOCIParentPreservesNewerFreshMemberValidation"
+    },
+    {
+      "file": "internal/store/oci_proxy_integration_test.go",
+      "function": "TestOCIProxyGraphFenceAndAtomicPublication"
+    },
+    {
+      "file": "internal/store/oci_proxy_integration_test.go",
+      "function": "TestOCIGraphBudgetIsExplicitAndCheckedNodesRemainReusable"
+    },
+    {
+      "file": "internal/store/oci_proxy_integration_test.go",
+      "function": "TestOCIRetainedParentsAreBoundedTenantScopedAndCurrent"
+    },
+    {
+      "file": "internal/store/python_integration_test.go",
+      "function": "TestPythonSourceFencingPolicyAndRLS"
+    },
+    {
+      "file": "internal/store/python_integration_test.go",
+      "function": "TestPythonYankReplayAndLegacyEnrichment"
+    },
+    {
+      "file": "internal/store/repair_migration_integration_test.go",
+      "function": "TestRepairMigrationPreservesFourReceiptsAndRejectsOldWorkers"
+    },
+    {
+      "file": "internal/store/retention_integration_test.go",
+      "function": "TestRetentionPolicyPreviewRevisionHistoryAndBudget"
+    },
+    {
+      "file": "internal/store/retention_integration_test.go",
+      "function": "TestRetentionPlanDigestRejectsChangedMembershipAndExpiredPreview"
+    },
+    {
+      "file": "internal/store/retention_integration_test.go",
+      "function": "TestRetentionKeepsNewestTagsHoldsParentsAndUnvalidatedContent"
+    },
+    {
+      "file": "internal/store/retention_integration_test.go",
+      "function": "TestRetentionExecutionRechecksLateHoldsTagsAndParentsAndIgnoresMutableJobAuthority"
+    },
+    {
+      "file": "internal/store/retention_integration_test.go",
+      "function": "TestRetentionRequesterAndPolicyChangesStopUnprocessedEffects"
+    },
+    {
+      "file": "internal/store/retention_integration_test.go",
+      "function": "TestRetentionTargetJournalFailureAndLateRequesterExpiryRollbackTogether"
+    },
+    {
+      "file": "internal/store/retention_integration_test.go",
+      "function": "TestRetentionUnprotectedApprovalDoesNotRetireANewTagBinding"
+    },
+    {
+      "file": "internal/store/retention_integration_test.go",
+      "function": "TestRetentionRunAndExecutionRollBackWhenOutboxIsFull"
+    },
+    {
+      "file": "internal/store/retention_integration_test.go",
+      "function": "TestRetentionTenantIsolationAndCancellationPreserveApprovedTargets"
+    },
+    {
+      "file": "internal/store/retention_migration_integration_test.go",
+      "function": "TestRetentionMigrationPreservesSixReceiptsAndForcesTenantEvidenceIsolation"
+    },
+    {
+      "file": "internal/store/retention_schedule_migration_integration_test.go",
+      "function": "TestRetentionScheduleMigrationPreservesSevenReceiptsAndGuardsTenantTables"
+    },
+    {
+      "file": "internal/store/retention_schedules_integration_test.go",
+      "function": "TestRetentionSchedulePreviewRevisionAndReplayPreserveApproval"
+    },
+    {
+      "file": "internal/store/retention_schedules_integration_test.go",
+      "function": "TestRetentionScheduleConcurrentCaptureCoalescesAndDoesNotOverlap"
+    },
+    {
+      "file": "internal/store/retention_schedules_integration_test.go",
+      "function": "TestRetentionSchedulePauseFencesPendingEffectsAndPreservesManualApproval"
+    },
+    {
+      "file": "internal/store/retention_schedules_integration_test.go",
+      "function": "TestRetentionScheduleRequesterLossBlocksUntilExplicitReauthorization"
+    },
+    {
+      "file": "internal/store/retention_schedules_integration_test.go",
+      "function": "TestRetentionSchedulePolicyAndSourceChangesRequireNewApproval"
+    },
+    {
+      "file": "internal/store/retention_schedules_integration_test.go",
+      "function": "TestRetentionScheduleBudgetAndQueueDeferralsKeepDueIntent"
+    },
+    {
+      "file": "internal/store/retention_schedules_integration_test.go",
+      "function": "TestRetentionScheduleFinalJournalAndRequesterFailureRollBackAdmission"
+    },
+    {
+      "file": "internal/store/retention_schedules_integration_test.go",
+      "function": "TestRetentionScheduleInspectionAndExecutionRejectContradictoryReceipts"
+    },
+    {
+      "file": "internal/store/retention_schedules_integration_test.go",
+      "function": "TestRetentionScheduleTenantIsolationAndImmutableHistory"
+    },
+    {
+      "file": "internal/store/retention_schedules_integration_test.go",
+      "function": "TestRetentionScheduleRejectsCrossLinkedPolicyAndRequesterEvidence"
+    },
+    {
+      "file": "internal/store/retrieval_integration_test.go",
+      "function": "TestRetrievalFencingAndTenantScope"
+    },
+    {
+      "file": "internal/store/source_configuration_integration_test.go",
+      "function": "TestSourceConfigurationEpochFencesCacheValidatorsAndABARollback"
+    },
+    {
+      "file": "internal/store/source_configuration_integration_test.go",
+      "function": "TestSourceConfigurationCurrentLocatorRevisionAndOutboxAtomicity"
+    },
+    {
+      "file": "internal/store/source_configuration_integration_test.go",
+      "function": "TestSourceConfigurationMigrationPreservesV3AndForcedRLS"
+    },
+    {
+      "file": "internal/store/source_configuration_integration_test.go",
+      "function": "TestSourceConfigurationPopulatedHistoryIsTenantScopedAndAppendOnly"
+    },
+    {
+      "file": "internal/store/store_integration_test.go",
+      "function": "TestForcedRLSAndPublication"
+    },
+    {
+      "file": "internal/store/store_integration_test.go",
+      "function": "TestOCIGraphPolicy"
+    },
+    {
+      "file": "internal/store/store_integration_test.go",
+      "function": "TestMetadataDecisionTracksExactBytes"
+    },
+    {
+      "file": "internal/store/sweeps_integration_test.go",
+      "function": "TestSweepSnapshotsAllReferencesFencesProgressAndRetainsPasses"
+    },
+    {
+      "file": "internal/store/sweeps_integration_test.go",
+      "function": "TestSweepRunningCancellationDoesNotRecordAnObservation"
+    },
+    {
+      "file": "internal/store/sweeps_integration_test.go",
+      "function": "TestCredentialExpiringDuringBulkMutationRollsBack"
+    },
+    {
+      "file": "internal/store/sweeps_integration_test.go",
+      "function": "TestSweepSizeConflictsFollowTenantCASAcrossRepositories"
+    },
+    {
+      "file": "internal/store/uploads_integration_test.go",
+      "function": "TestUploadsFenceOffsetsPartsAuthorizationAndCancellation"
+    },
+    {
+      "file": "internal/store/uploads_integration_test.go",
+      "function": "TestReconciliationIsResumableBoundedFencedAndPreservesLiveWork"
+    }
+  ],
+  "source_defined_go_inventory": [
+    {
+      "file": "internal/server/go_module_checksum_controller_integration_test.go",
+      "function": "TestGoModuleChecksumControllerRecollectsOnlyProofAfterCheckpointWinner"
+    },
+    {
+      "file": "internal/server/go_module_checksum_controller_integration_test.go",
+      "function": "TestGoModuleChecksumControllerRetainsForkCodeWithoutServingStale"
+    },
+    {
+      "file": "internal/server/go_module_checksum_controller_integration_test.go",
+      "function": "TestGoModuleChecksumControllerCoalescesBundleProofAndReadback"
+    },
+    {
+      "file": "internal/server/go_module_checksum_controller_integration_test.go",
+      "function": "TestGoModuleChecksumControllerRenewsLeaseWhileProofTransferIsBlocked"
+    },
+    {
+      "file": "internal/server/go_module_checksum_controller_integration_test.go",
+      "function": "TestGoModuleChecksumControllerFailuresNeverPublishPartialTrust"
+    },
+    {
+      "file": "internal/server/go_module_checksum_readback_integration_test.go",
+      "function": "TestGoModuleChecksumPhysicalReadbackAndCurrentGuard"
+    },
+    {
+      "file": "internal/server/go_module_discovery_integration_test.go",
+      "function": "TestGoModulePreparationUsesCompleteCurrentSourceCatalogs"
+    },
+    {
+      "file": "internal/server/go_module_export_collect_integration_test.go",
+      "function": "TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline"
+    },
+    {
+      "file": "internal/server/go_module_export_expiry_integration_test.go",
+      "function": "TestGoModuleExportBackgroundWorkerReconcilesWithoutAdministratorRead"
+    },
+    {
+      "file": "internal/server/go_module_exports_integration_test.go",
+      "function": "TestGoModuleExportManagementActualHTTPAndResumableCurrentPolicy"
+    },
+    {
+      "file": "internal/server/go_module_exports_integration_test.go",
+      "function": "TestGoModuleExportManagementHeartbeatFencesCancelledTransfer"
+    },
+    {
+      "file": "internal/server/go_module_failure_inspection_integration_test.go",
+      "function": "TestGoModuleChecksumManagementDownloadsExactEvidenceWithCurrentAuthorization"
+    },
+    {
+      "file": "internal/server/go_module_failure_integration_test.go",
+      "function": "TestGoModuleChecksumCapturedForkBlocksSiblingAndSurvivesSaturatedQueues"
+    },
+    {
+      "file": "internal/server/go_module_failure_integration_test.go",
+      "function": "TestGoModuleChecksumUnverifiedObservationPreservesBytesWithoutBlockingRecovery"
+    },
+    {
+      "file": "internal/server/go_module_integration_test.go",
+      "function": "TestGoModuleAtomicPublicationReviewDiscoveryAndImmutableReplay"
+    },
+    {
+      "file": "internal/server/go_module_integration_test.go",
+      "function": "TestGoModuleOutboxRollbackAndConcurrentImmutablePublication"
+    },
+    {
+      "file": "internal/server/go_module_integration_test.go",
+      "function": "TestGoModuleCurrentGrantsRevocationAndTenantCollision"
+    },
+    {
+      "file": "internal/server/go_module_integration_test.go",
+      "function": "TestGoModuleGroupsPreservePrecedenceReviewOwnersAndSourceGrants"
+    },
+    {
+      "file": "internal/server/go_module_latest_caller_integration_test.go",
+      "function": "TestGoModuleLatestCallerUsesCurrentMetadataCacheWithoutPackageAdmission"
+    },
+    {
+      "file": "internal/server/go_module_latest_discovery_integration_test.go",
+      "function": "TestGoModuleLatestPreparationAndServingUseCurrentHintWithOldCachedPseudos"
+    },
+    {
+      "file": "internal/server/go_module_latest_integration_test.go",
+      "function": "TestGoModuleLatestRechecksCurrentVersionAfterDiskVerification"
+    },
+    {
+      "file": "internal/server/go_module_latest_integration_test.go",
+      "function": "TestGoModuleLatestBindsCurrentCatalogAndBundleAdmissions"
+    },
+    {
+      "file": "internal/server/go_module_latest_proxy_integration_test.go",
+      "function": "TestGoModuleOriginLatestPublicationUsesCurrentTransactionFences"
+    },
+    {
+      "file": "internal/server/go_module_legacy_management_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumManagementReviewRecoveryAndCurrentCredentials"
+    },
+    {
+      "file": "internal/server/go_module_proof_policy_integration_test.go",
+      "function": "TestGoModuleChecksumProofPolicyRefreshesExpiredHitWithoutServingExpiredStale"
+    },
+    {
+      "file": "internal/server/go_module_proxy_integration_test.go",
+      "function": "TestGoModuleOriginBundlePublicationUsesCurrentTransactionFences"
+    },
+    {
+      "file": "internal/server/go_module_retrieval_integration_test.go",
+      "function": "TestGoModuleProxyCallerCoalescesRepresentationsUnderOneLease"
+    },
+    {
+      "file": "internal/server/go_module_retrieval_integration_test.go",
+      "function": "TestGoModuleProxyCallerRecordsFailuresWithoutPartialPublication"
+    },
+    {
+      "file": "internal/server/go_module_retrieval_integration_test.go",
+      "function": "TestGoModuleProxyCallerOnlyAdmitsExplicitTransientStale"
+    },
+    {
+      "file": "internal/server/go_module_retrieval_integration_test.go",
+      "function": "TestGoModuleProxyGroupCarriesOnlyCurrentNegativeFallback"
+    },
+    {
+      "file": "internal/server/go_module_retrieval_integration_test.go",
+      "function": "TestGoModuleProxyCallerRenewsAndCancelsOnSourceLoss"
+    },
+    {
+      "file": "internal/server/go_module_retrieval_integration_test.go",
+      "function": "TestGoModuleProxyCallerCatalogKeepsAdvertisementSeparateFromApproval"
+    },
+    {
+      "file": "internal/server/go_module_selection_integration_test.go",
+      "function": "TestGoModuleServingRechecksEarlierSourcesBeforeHeaders"
+    },
+    {
+      "file": "internal/store/go_module_cache_integration_test.go",
+      "function": "TestGoModuleCacheAdmissionRequiresCurrentWholeBundle"
+    },
+    {
+      "file": "internal/store/go_module_catalog_integration_test.go",
+      "function": "TestGoModuleCatalogPublicationUsesCommonLeaseSourceAndOutbox"
+    },
+    {
+      "file": "internal/store/go_module_catalog_read_integration_test.go",
+      "function": "TestGoModuleCatalogReadUsesCurrentBoundedTypedAdmission"
+    },
+    {
+      "file": "internal/store/go_module_checkpoint_integration_test.go",
+      "function": "TestGoModuleChecksumPublishesProofHistoryAndBundleAtomically"
+    },
+    {
+      "file": "internal/store/go_module_checkpoint_integration_test.go",
+      "function": "TestGoModuleChecksumConcurrentCollectorsCoalesceAndAdvanceWithoutReset"
+    },
+    {
+      "file": "internal/store/go_module_checkpoint_integration_test.go",
+      "function": "TestGoModuleChecksumRejectedPublicationRollsBackTrustAndReferences"
+    },
+    {
+      "file": "internal/store/go_module_checkpoint_integration_test.go",
+      "function": "TestGoModuleChecksumUpgradeRetainsElevenReceiptsAndEnforcesRLS"
+    },
+    {
+      "file": "internal/store/go_module_checkpoint_integration_test.go",
+      "function": "TestGoModuleChecksumTimelineSurvivesRepositoryChangesAndSeparatesTenantsAndKeys"
+    },
+    {
+      "file": "internal/store/go_module_checkpoint_integration_test.go",
+      "function": "TestGoModuleChecksumForkAndMissingTilesPreserveCurrentTrust"
+    },
+    {
+      "file": "internal/store/go_module_checkpoint_integration_test.go",
+      "function": "TestGoModuleChecksumConcurrentRepositoriesShareOneWinningTimeline"
+    },
+    {
+      "file": "internal/store/go_module_checkpoint_integration_test.go",
+      "function": "TestGoModuleChecksumRuntimeCannotRollBackHeadOrRewriteHistory"
+    },
+    {
+      "file": "internal/store/go_module_checkpoint_integration_test.go",
+      "function": "TestGoModuleChecksumSchemaSafetyFailsClosedForEveryNewTable"
+    },
+    {
+      "file": "internal/store/go_module_checksum_discovery_integration_test.go",
+      "function": "TestGoModuleChecksumDiscoveryRequiresCurrentReceiptKeyAndProofPolicy"
+    },
+    {
+      "file": "internal/store/go_module_checksum_discovery_integration_test.go",
+      "function": "TestGoModuleChecksumDiscoveryRetainsHistoricalProofAcrossGrowthAndSourceEpoch"
+    },
+    {
+      "file": "internal/store/go_module_checksum_discovery_integration_test.go",
+      "function": "TestGoModuleChecksumDiscoveryBlockedFirstSourceShadowsLowerAndCatalog"
+    },
+    {
+      "file": "internal/store/go_module_checksum_integration_test.go",
+      "function": "TestGoModuleChecksumPolicyRejectsUnfencedPublicationAndCachedBytes"
+    },
+    {
+      "file": "internal/store/go_module_discovery_integration_test.go",
+      "function": "TestGoModuleDiscoveryUsesCurrentCatalogPolicyPrecedenceAndBudgets"
+    },
+    {
+      "file": "internal/store/go_module_export_expiry_integration_test.go",
+      "function": "TestGoModuleExportWorkerExpiryQueueRollbackReplicasAndReferenceSafety"
+    },
+    {
+      "file": "internal/store/go_module_export_expiry_integration_test.go",
+      "function": "TestGoModuleExportWorkerExpiryRequiresCurrentPurposeAndTenant"
+    },
+    {
+      "file": "internal/store/go_module_export_index_integration_test.go",
+      "function": "TestGoModuleExportExpiryIndexBoundsIdleAndDueWorkThroughRetainedHistory"
+    },
+    {
+      "file": "internal/store/go_module_export_migration_integration_test.go",
+      "function": "TestGoModuleExportSchema14UpgradePreservesReceiptsRowsAndRLS"
+    },
+    {
+      "file": "internal/store/go_module_export_migration_integration_test.go",
+      "function": "TestGoModuleExportSchema15UpgradePreservesRowsAndRequiresExactExpiryIndex"
+    },
+    {
+      "file": "internal/store/go_module_exports_integration_test.go",
+      "function": "TestGoModuleExportImmutableSnapshotStageReplayAndOriginalJournal"
+    },
+    {
+      "file": "internal/store/go_module_exports_integration_test.go",
+      "function": "TestGoModuleExportRevalidatesPolicyBytesEpochAndStagedHandle"
+    },
+    {
+      "file": "internal/store/go_module_exports_integration_test.go",
+      "function": "TestGoModuleExportQueueRollbackConcurrentReplayAndRetainedBudget"
+    },
+    {
+      "file": "internal/store/go_module_exports_integration_test.go",
+      "function": "TestGoModuleExportCurrentPolicyRenewAcknowledgeCancelAndPins"
+    },
+    {
+      "file": "internal/store/go_module_exports_integration_test.go",
+      "function": "TestGoModuleExportForcedRLSImmutableRuntimeAndDurableExpiry"
+    },
+    {
+      "file": "internal/store/go_module_exports_integration_test.go",
+      "function": "TestGoModuleExportSignedManifestNativeOfflineSDK"
+    },
+    {
+      "file": "internal/store/go_module_failure_inspection_integration_test.go",
+      "function": "TestGoModuleChecksumFailureInspectionPagesAndRetiredEvidence"
+    },
+    {
+      "file": "internal/store/go_module_failure_inspection_integration_test.go",
+      "function": "TestGoModuleChecksumForkPrecedesFreshNegativeFallback"
+    },
+    {
+      "file": "internal/store/go_module_failure_integration_test.go",
+      "function": "TestGoModuleChecksumFailureEvidenceAndKeyBlockAreAtomicWithoutOrdinaryQueueCapacity"
+    },
+    {
+      "file": "internal/store/go_module_failure_integration_test.go",
+      "function": "TestGoModuleChecksumFailureRetainsSourceGrantLeaseAndEvidenceShapeFences"
+    },
+    {
+      "file": "internal/store/go_module_failure_integration_test.go",
+      "function": "TestGoModuleChecksumForkBlocksTenantKeyAcrossRepositoriesPublicationAndSourceChanges"
+    },
+    {
+      "file": "internal/store/go_module_failure_integration_test.go",
+      "function": "TestGoModuleChecksumFailureUpgradeAndRuntimeImmutability"
+    },
+    {
+      "file": "internal/store/go_module_failure_integration_test.go",
+      "function": "TestGoModuleChecksumForkAndPublicationRacePreservesOneTimelineAndDeniesFinalReads"
+    },
+    {
+      "file": "internal/store/go_module_failure_integration_test.go",
+      "function": "TestGoModuleChecksumFailureSchemaSafetyRequiresBothForcedTenantTables"
+    },
+    {
+      "file": "internal/store/go_module_failure_integration_test.go",
+      "function": "TestGoModuleChecksumForkEvidenceDoesNotExposeAnUnrelatedRepository"
+    },
+    {
+      "file": "internal/store/go_module_failure_journal_integration_test.go",
+      "function": "TestGoModuleChecksumFailureBindsOriginalEvidenceToCompleteJournalRange"
+    },
+    {
+      "file": "internal/store/go_module_latest_discovery_integration_test.go",
+      "function": "TestGoModuleLatestDiscoveryUsesCurrentHintInsteadOfCachedPseudoHistory"
+    },
+    {
+      "file": "internal/store/go_module_latest_hint_integration_test.go",
+      "function": "TestGoModuleLatestAdvertisementUsesCommonTransactionAndCurrentFences"
+    },
+    {
+      "file": "internal/store/go_module_legacy_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumReviewFencesAndConcurrentLostResponses"
+    },
+    {
+      "file": "internal/store/go_module_legacy_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumRetainedConfigurationRecoveryKeepsCreationAndForkGates"
+    },
+    {
+      "file": "internal/store/go_module_legacy_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumConcurrentForkAlwaysOverridesExternalReview"
+    },
+    {
+      "file": "internal/store/go_module_legacy_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumIncidentBlocksEveryKeyWorkAndBytePathWithoutInventingProof"
+    },
+    {
+      "file": "internal/store/go_module_legacy_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumExternalReviewIsAtomicIdempotentAndCannotClearAFutureFork"
+    },
+    {
+      "file": "internal/store/go_module_legacy_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumRuntimeImmutabilityAndUnscopedRLS"
+    },
+    {
+      "file": "internal/store/go_module_legacy_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumRuntimeRefusesEitherUnforcedEvidenceTable"
+    },
+    {
+      "file": "internal/store/go_module_legacy_migration_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumBackfillPreservesEveryTenantAndOriginalJournalUnderNonsuperOwner"
+    },
+    {
+      "file": "internal/store/go_module_legacy_migration_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumInterruptedBackfillRollsBackPoliciesRowsAndReceipt"
+    },
+    {
+      "file": "internal/store/go_module_legacy_migration_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumBackfillDistinguishesTypedForkFromOrphanedAttribution"
+    },
+    {
+      "file": "internal/store/go_module_legacy_migration_integration_test.go",
+      "function": "TestGoModuleLegacyChecksumDamagedOriginalHistoryRefusesMigrationAtomically"
+    },
+    {
+      "file": "internal/store/go_module_offline_integration_test.go",
+      "function": "TestGoModuleHostedOfflinePublicationPreparesExactStockClientBytes"
+    },
+    {
+      "file": "internal/store/go_module_proof_policy_integration_test.go",
+      "function": "TestGoModuleChecksumProofAgePolicyDoesNotGrantStaleOrHideRefreshableVersions"
+    },
+    {
+      "file": "internal/store/go_module_proof_policy_integration_test.go",
+      "function": "TestGoModuleChecksumProofPolicyIsRecheckedAfterPhysicalReadback"
+    },
+    {
+      "file": "internal/store/go_module_proof_policy_integration_test.go",
+      "function": "TestGoModuleChecksumExpiredProofRefreshFencesDelayedGeneration"
+    },
+    {
+      "file": "internal/store/go_module_readback_integration_test.go",
+      "function": "TestGoModuleChecksumReadbackRequiresCurrentPolicyProofReceiptAndAuthority"
+    },
+    {
+      "file": "internal/store/go_module_readback_integration_test.go",
+      "function": "TestGoModuleChecksumPostReadbackGuardRejectsChangedProofPolicyAndBindings"
+    },
+    {
+      "file": "internal/store/go_module_readback_integration_test.go",
+      "function": "TestGoModuleChecksumReadbackRetainsHistoryAcrossGrowthAndSourceEpoch"
+    },
+    {
+      "file": "internal/store/go_module_readback_integration_test.go",
+      "function": "TestGoModuleChecksumReadbackCannotBorrowAnotherTenantsIdenticalProofToken"
+    },
+    {
+      "file": "internal/store/go_module_retrieval_integration_test.go",
+      "function": "TestGoModuleRetrievalAtomicBundleCacheAndCurrentPolicy"
+    },
+    {
+      "file": "internal/store/go_module_retrieval_integration_test.go",
+      "function": "TestGoModuleRetrievalFullOutboxRollsBackEveryReference"
+    },
+    {
+      "file": "internal/store/go_module_retrieval_integration_test.go",
+      "function": "TestGoModuleRetrievalFencesLeaseSourceGrantAndTenant"
+    },
+    {
+      "file": "internal/store/go_module_selection_integration_test.go",
+      "function": "TestGoModuleFinalSelectionRechecksGroupAuthorityAndExactAbsence"
+    }
+  ],
+  "fuzz_inventory": [
+    {
+      "file": "internal/blob/inventory_test.go",
+      "function": "FuzzInventoryFilenameCursor"
+    },
+    {
+      "file": "internal/crypto/cursor_test.go",
+      "function": "FuzzCursorRejectsMalformedInput"
+    },
+    {
+      "file": "internal/crypto/go_sumdb_collection_test.go",
+      "function": "FuzzGoChecksumCollectedProof"
+    },
+    {
+      "file": "internal/crypto/go_sumdb_test.go",
+      "function": "FuzzGoChecksumOfflineLookup"
+    },
+    {
+      "file": "internal/crypto/integrity_test.go",
+      "function": "FuzzSourceIntegrity"
+    },
+    {
+      "file": "internal/crypto/journal_checkpoint_test.go",
+      "function": "FuzzJournalCheckpointSignatureBindings"
+    },
+    {
+      "file": "internal/crypto/journal_test.go",
+      "function": "FuzzJournalSelectionDiscardsIncompleteInput"
+    },
+    {
+      "file": "internal/crypto/journal_test.go",
+      "function": "FuzzJournalPageBindings"
+    },
+    {
+      "file": "internal/gomodule/module_test.go",
+      "function": "FuzzNativeRequest"
+    },
+    {
+      "file": "internal/gomodule/module_test.go",
+      "function": "FuzzModuleArchive"
+    },
+    {
+      "file": "internal/gomodule/representations_test.go",
+      "function": "FuzzLatestVersionInfo"
+    },
+    {
+      "file": "internal/gomodule/representations_test.go",
+      "function": "FuzzUpstreamVersionInfo"
+    },
+    {
+      "file": "internal/gomodule/versions_test.go",
+      "function": "FuzzUpstreamVersionList"
+    },
+    {
+      "file": "internal/nuget/archive_test.go",
+      "function": "FuzzArchiveIdentity"
+    },
+    {
+      "file": "internal/nuget/dependencies_test.go",
+      "function": "FuzzNuspecDependencies"
+    },
+    {
+      "file": "internal/nuget/id_test.go",
+      "function": "FuzzIDKey"
+    },
+    {
+      "file": "internal/nuget/nuspec_test.go",
+      "function": "FuzzNuspecIdentity"
+    },
+    {
+      "file": "internal/nuget/order_test.go",
+      "function": "FuzzVersionOrdering"
+    },
+    {
+      "file": "internal/nuget/properties_test.go",
+      "function": "FuzzNuspecProperties"
+    },
+    {
+      "file": "internal/nuget/range_test.go",
+      "function": "FuzzNuGetVersionRange"
+    },
+    {
+      "file": "internal/nuget/version_test.go",
+      "function": "FuzzVersionIdentity"
+    },
+    {
+      "file": "internal/nuget/xml_attributes_test.go",
+      "function": "FuzzNuspecXMLAttributeNormalization"
+    },
+    {
+      "file": "internal/server/go_exports_test.go",
+      "function": "FuzzGoExportRequest"
+    },
+    {
+      "file": "internal/server/integrity_schedules_test.go",
+      "function": "FuzzIntegritySchedulePlan"
+    },
+    {
+      "file": "internal/server/maven_checksum_test.go",
+      "function": "FuzzMavenChecksumParentBinding"
+    },
+    {
+      "file": "internal/server/maven_metadata_test.go",
+      "function": "FuzzMavenMetadata"
+    },
+    {
+      "file": "internal/server/npm_archive_test.go",
+      "function": "FuzzNPMArchive"
+    },
+    {
+      "file": "internal/server/npm_proxy_test.go",
+      "function": "FuzzNPMCatalog"
+    },
+    {
+      "file": "internal/server/npm_test.go",
+      "function": "FuzzNPMCoordinate"
+    },
+    {
+      "file": "internal/server/oci_manifest_test.go",
+      "function": "FuzzOCIAcceptFieldLines"
+    },
+    {
+      "file": "internal/server/oci_manifest_test.go",
+      "function": "FuzzOCIManifest"
+    },
+    {
+      "file": "internal/server/oci_pagination_test.go",
+      "function": "FuzzOCINextLink"
+    },
+    {
+      "file": "internal/server/oci_proxy_test.go",
+      "function": "FuzzOCIChallenge"
+    },
+    {
+      "file": "internal/server/paths_test.go",
+      "function": "FuzzPath"
+    },
+    {
+      "file": "internal/server/paths_test.go",
+      "function": "FuzzPythonNormalize"
+    },
+    {
+      "file": "internal/server/python_archive_test.go",
+      "function": "FuzzPythonArchive"
+    },
+    {
+      "file": "internal/server/python_index_test.go",
+      "function": "FuzzPythonIndex"
+    },
+    {
+      "file": "internal/server/repairs_test.go",
+      "function": "FuzzRepairPlan"
+    },
+    {
+      "file": "internal/server/retention_test.go",
+      "function": "FuzzRetentionJSONBounded"
+    },
+    {
+      "file": "internal/server/retention_test.go",
+      "function": "FuzzRetentionScheduleJSONBounded"
+    },
+    {
+      "file": "internal/server/uploads_test.go",
+      "function": "FuzzUploadContentRange"
+    },
+    {
+      "file": "internal/store/go_checksum_discovery_test.go",
+      "function": "FuzzGoChecksumProofArtifactMetadata"
+    },
+    {
+      "file": "internal/store/go_checksum_failure_test.go",
+      "function": "FuzzGoChecksumFailureEvidence"
+    },
+    {
+      "file": "internal/store/go_checksum_journal_test.go",
+      "function": "FuzzGoChecksumJournalBindings"
+    },
+    {
+      "file": "internal/store/go_checksum_legacy_test.go",
+      "function": "FuzzGoChecksumLegacyEvidenceBindings"
+    },
+    {
+      "file": "internal/store/go_checksum_policy_test.go",
+      "function": "FuzzGoChecksumProofPolicy"
+    },
+    {
+      "file": "internal/store/go_checksum_readback_test.go",
+      "function": "FuzzGoChecksumReadbackCanonicalProof"
+    },
+    {
+      "file": "internal/store/go_exports_test.go",
+      "function": "FuzzGoExportManifest"
+    },
+    {
+      "file": "internal/store/go_module_catalog_test.go",
+      "function": "FuzzGoModuleCatalogMetadata"
+    },
+    {
+      "file": "internal/store/go_module_offline_test.go",
+      "function": "FuzzGoHostedPublicationBindings"
+    },
+    {
+      "file": "internal/store/jobs_test.go",
+      "function": "FuzzJobID"
+    },
+    {
+      "file": "internal/store/literal_search_test.go",
+      "function": "FuzzLiteralSearchDoesNotTurnInputIntoOperators"
+    },
+    {
+      "file": "internal/store/maven_snapshot_test.go",
+      "function": "FuzzMavenNonuniqueSnapshotPath"
+    },
+    {
+      "file": "internal/upstream/registry_delivery_test.go",
+      "function": "FuzzRegistryDeliveryURL"
+    },
+    {
+      "file": "internal/upstream/upstream_test.go",
+      "function": "FuzzUpstreamPath"
+    },
+    {
+      "file": "cmd/cratectl/go_export_collect_test.go",
+      "function": "FuzzCollectionIdentityHeaders"
+    }
+  ],
+  "limits": [
+    "Owned child kernel file-size fault and manually declared metadata crash states, not actual power loss/full disk/provider/registry crash/Windows/large-scale proof. Original source812candidate actual native jobs retain their own states.",
+    "Complete snapshot collector still needs exact-source actual native socket/processdeath/renewal/metadata/tenant/policy/revocation/OpenSSL/SDK and expanded browser qualification. No skipped/pending/unselected acceptance.",
+    "All16schema definitions/primary11/selected5483878b/tenreceipts untouched; no credential/signing-custody/customer/sibling/release/package/image change.",
+    "All450/41/laterGOAL4.1scope, readiness/security/packaging false and0126strictSDK/0122unknownbrowser remain. Full closure/current destination import/GC/backup/platform/scale required."
+  ]
+}

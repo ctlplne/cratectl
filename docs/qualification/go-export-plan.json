@@ -13,12 +13,13 @@
     "docs/adr/0051-export-expiry-worker.md",
     "docs/adr/0052-cross-runner-go-export-qualification.md",
     "docs/adr/0053-indexed-export-expiry.md",
-    "docs/adr/0055-resumable-signed-go-collection.md"
+    "docs/adr/0055-resumable-signed-go-collection.md",
+    "docs/adr/0056-atomic-collection-metadata.md"
   ],
   "current_implementation": {
-    "source_parent": "4956197bf03800c66801305cfe2246677a943cae",
+    "source_parent": "812bd5814d69fbe8f8ebf22f49ad3fac62db9462",
     "source_dirty": true,
-    "state": "Exact495source16named95Go/312,15historical20upgrades and16portable proof accepted; new collector274/96/56/UI native unverified; fullGOAL incomplete",
+    "state": "Source495 named proof retained; source812 collector native queued/unaccepted; atomic metadata repair locally verified, native unverified; fullGOAL incomplete",
     "qualified_historical_consumer": "evidence/2026-11-07/github-1a61120-checkpoint.json",
     "producer_development": "evidence/2026-11-07/go-durable-export-development.json",
     "schema": 16,
@@ -53,14 +54,22 @@
       "limits": "One synthetic hosted version and owned trust-channel stand-in only. Full closure/import/provider/platform/offline-install/backup/GC/HA/scale remain required.",
       "checkpoint": "evidence/2026-11-07/go-export-portability-4956197-checkpoint.json"
     },
-    "qualified_parent_campaign": "evidence/2026-11-07/github-fca2d4a-checkpoint.json",
+    "qualified_parent_campaign": "evidence/2026-11-07/github-4956197-checkpoint.json",
     "qualified_candidate": "4956197bf03800c66801305cfe2246677a943cae",
     "resumable_collection": {
       "state": "implemented but native unverified",
       "adr": "docs/adr/0055-resumable-signed-go-collection.md",
       "development": "evidence/2026-11-07/go-export-collect-development.json",
       "scope": "Eight fixed signed historical members, private directory/OSlock/immutable bindings, current-generation serialranges, checkpointfsync/fullhash, explicitrenewedresume/localreceipt replay; no credential/config/private-key/remoteack or destination/checksum/closure grant.",
-      "native_required": "New actual socket/barrier/processSIGKILL/renewal/replay/corruption/tenant/policy/revocation/OpenSSL/SDK function,96namedGo/274fullPG normal/race bothLinux.56fuzz/19main151browser, originalstock15historical20upgrades/16portable remain."
+      "native_required": "New actual socket/barrier/processSIGKILL/renewal/replay/corruption/tenant/policy/revocation/OpenSSL/SDK function,96namedGo/274fullPG normal/race bothLinux.56fuzz/19main151browser, originalstock15historical20upgrades/16portable remain.",
+      "atomic_metadata": {
+        "state": "implemented but native unverified",
+        "adr": "docs/adr/0056-atomic-collection-metadata.md",
+        "development": "evidence/2026-11-07/go-export-publication-development.json",
+        "first_failure": "evidence/2026-11-07/go-export-publication-first-failure.json",
+        "scope": "Bound64KiB pending canonical prefix; fsync, exclusive link, directory sync, owned alias removal and sync; recover only exact two-link metadata pair, preserve original generation after renewal; all original checks retained",
+        "limits": "Owned child128byte kernel limit and declared FS states; not power-loss/full-disk/provider/Windows/scale proof"
+      }
     }
   },
   "environment_profiles": {

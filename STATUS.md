@@ -1,5 +1,35 @@
 # cratectl execution status
 
+Current development parent is `812bd58`. ADR0056 repairs DEFECT0132: an owned
+128-byte child file limit reproduced a failed binding write exposing partial
+`bindings.json`. The original failure is retained. Canonical metadata now stages
+in private pending files, syncs and verifies all bytes, publishes with an exclusive
+hard link, syncs the directory, then removes only its owned pending alias. Explicit
+resume recovers exact prefixes and exact two-name post-link states; renewed
+serving preserves the original completion intent. Corrupt records, unrelated
+links, future/multiple intent and unbound data fail intact.
+
+ARM build/unit/race/lint, twelve collector units, bounded CLI fuzz, normal/race
+PostgreSQL compilation and tagged vet pass. The existing native function adds
+manually declared partial-receipt/post-link recovery after real renewal; its
+actual process-kill/socket/OpenSSL/SDK assertions remain. Native qualification is
+pending:274fullPG/96namedGo normal/race,56fuzz/19main151browser and all original
+selected profiles. Local kernel/FS stand-ins establish neither power-loss nor
+provider/full-disk/registry-death/Windows/scale behavior. Source812 actual GitHub
+jobs retain their own queued/running/completed states. No schema, primary11,
+selected5483878b binary, tenreceipt, credential or customer change. All450/41/later
+GOAL4.1 scope and readiness/security/packaging remain incomplete.
+
+Exact `4956197` whole selected campaign is now accepted:26 successful jobs across
+six workflows,19 original safe summaries/72 reports. All273PG functions pass
+normally/race on both Linux hosts;95namedGo/312stock,55fuzz/source onthreehosts,
+19main151Chromium,15historical20upgrades each and16portable stages pass. Four UI
+workflows use declared response stand-ins. Focused-browser/NuGet-library/strict
+client were unselected. New collector/metadata work is outside that proof.
+See `evidence/2026-11-07/github-4956197-checkpoint.json`; original failures remain.
+
+Earlier source-specific records follow; current exact-source records govern.
+
 Current development parent is `4956197`. ADR0055 and
 `evidence/2026-11-07/go-export-collect-development.json` define the implemented,
 native-unverified resumable signed Go collector and console commands. It verifies

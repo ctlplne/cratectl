@@ -20,3 +20,13 @@ func lockCollection(file *os.File) error {
 	}
 	return nil
 }
+
+// Nonzero only for owner-private regular files; publication recovery permits
+// exactly two links solely when both fixed names refer to the same inode.
+func collectionFileLinks(info os.FileInfo) uint64 {
+	s, ok := info.Sys().(*syscall.Stat_t)
+	if !ok || s.Uid != uint32(os.Geteuid()) || !info.Mode().IsRegular() || info.Mode().Perm()&0077 != 0 {
+		return 0
+	}
+	return uint64(s.Nlink)
+}

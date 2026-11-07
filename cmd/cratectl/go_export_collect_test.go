@@ -283,6 +283,13 @@ func FuzzCollectionIdentityHeaders(f *testing.F) {
 		if accepted != (digest == expected.Digest && generation == "1" && !duplicate) {
 			t.Fatal("ambiguous serving identity accepted")
 		}
+		n, ok := receiptPendingGeneration("receipt." + generation + ".pending")
+		want, err := strconv.ParseInt(generation, 10, 64)
+		canonical := err == nil && want > 0 && strconv.FormatInt(want, 10) == generation
+		if ok != canonical || ok && n != want {
+			t.Fatal("ambiguous pending generation accepted")
+		}
+
 	})
 }
 
@@ -326,6 +333,138 @@ func TestCollectionCurrentSessionCanonicalAndLargeGenerationBinding(t *testing.T
 			err := c.checkCurrent(context.Background(), m, object, 9)
 			if (err == nil) != (scenario == "valid") {
 				t.Fatal("current session binding", scenario, err)
+			}
+		})
+	}
+}
+
+func TestCollectionPendingBindingAndReceiptResumeAcrossRenewal(t *testing.T) {
+	root, path := collectionUnitRoot(t)
+	binding := collectionBinding{Profile: goCollectionProfile, Authority: "https://cratectl.invalid", ExportID: strings.Repeat("a", 64)}
+	expectedBinding := collectionJSON(binding)
+	if err := os.WriteFile(filepath.Join(path, collectionBindingPending), expectedBinding[:128], 0600); err != nil {
+		t.Fatal(err)
+	}
+	if err := bindCollection(root, binding, true); err != nil {
+		t.Fatal(err)
+	}
+	if got, _ := os.ReadFile(filepath.Join(path, "bindings.json")); !bytes.Equal(got, expectedBinding) {
+		t.Fatal("pending binding changed")
+	}
+	if _, err := os.Stat(filepath.Join(path, collectionBindingPending)); !os.IsNotExist(err) {
+		t.Fatal("binding alias was retained")
+	}
+	original := collectionJSON(goCollectionReceipt{Binding: binding, CollectedGeneration: 1, BytesVerified: true})
+	if err := os.WriteFile(filepath.Join(path, "receipt.1.pending"), original[:128], 0600); err != nil {
+		t.Fatal(err)
+	}
+	actual, err := publishCollectionReceipt(root, binding, 2, true)
+	if err != nil || !bytes.Equal(actual, original) {
+		t.Fatal("renewed generation changed earlier completion intent", err)
+	}
+	if got, _ := os.ReadFile(filepath.Join(path, "receipt.json")); !bytes.Equal(got, original) {
+		t.Fatal("completed receipt bytes changed")
+	}
+	if _, err := os.Stat(filepath.Join(path, "receipt.1.pending")); !os.IsNotExist(err) {
+		t.Fatal("receipt alias retained")
+	}
+}
+func TestCollectionPostLinkRecoveryRequiresOnlyItsExactTwoNames(t *testing.T) {
+	for _, scenario := range []string{"own-two-links", "outside-link", "wrong-alias", "extra-link", "corrupt-complete"} {
+		t.Run(scenario, func(t *testing.T) {
+			root, path := collectionUnitRoot(t)
+			binding := collectionBinding{Profile: goCollectionProfile, Authority: "https://cratectl.invalid", ExportID: strings.Repeat("b", 64)}
+			expected := collectionJSON(binding)
+			if err := os.WriteFile(filepath.Join(path, "bindings.json"), expected, 0600); err != nil {
+				t.Fatal(err)
+			}
+			outside := filepath.Join(filepath.Dir(path), "unrelated")
+			switch scenario {
+			case "own-two-links":
+				if err := os.Link(filepath.Join(path, "bindings.json"), filepath.Join(path, collectionBindingPending)); err != nil {
+					t.Fatal(err)
+				}
+			case "outside-link":
+				if err := os.Link(filepath.Join(path, "bindings.json"), outside); err != nil {
+					t.Fatal(err)
+				}
+			case "wrong-alias":
+				if err := os.WriteFile(filepath.Join(path, collectionBindingPending), expected, 0600); err != nil {
+					t.Fatal(err)
+				}
+			case "extra-link":
+				for _, name := range []string{filepath.Join(path, collectionBindingPending), outside} {
+					if err := os.Link(filepath.Join(path, "bindings.json"), name); err != nil {
+						t.Fatal(err)
+					}
+				}
+			case "corrupt-complete":
+				if err := os.WriteFile(filepath.Join(path, "bindings.json"), []byte("incomplete final"), 0600); err != nil {
+					t.Fatal(err)
+				}
+			}
+			err := bindCollection(root, binding, true)
+			if (err == nil) != (scenario == "own-two-links") {
+				t.Fatal("publication recovery admitted unrelated/corrupt state", scenario, err)
+			}
+			if scenario == "own-two-links" {
+				if _, err := os.Stat(filepath.Join(path, collectionBindingPending)); !os.IsNotExist(err) {
+					t.Fatal("valid alias not removed")
+				}
+				info, err := os.Stat(filepath.Join(path, "bindings.json"))
+				if err != nil || collectionFileLinks(info) != 1 {
+					t.Fatal("published metadata still shared")
+				}
+			}
+			if scenario == "outside-link" || scenario == "extra-link" {
+				if got, _ := os.ReadFile(outside); !bytes.Equal(got, expected) {
+					t.Fatal("unrelated alias modified")
+				}
+			}
+		})
+	}
+}
+func TestCollectionCorruptFutureOrMultiplePendingIntentIsPreserved(t *testing.T) {
+	for _, scenario := range []string{"bad-prefix", "future", "leading-zero", "multiple", "unbound-data", "receipt-mismatch"} {
+		t.Run(scenario, func(t *testing.T) {
+			root, path := collectionUnitRoot(t)
+			binding := collectionBinding{Profile: goCollectionProfile, Authority: "https://cratectl.invalid", ExportID: strings.Repeat("c", 64)}
+			if scenario == "unbound-data" {
+				if err := os.WriteFile(filepath.Join(path, "original.zip"), []byte("retained"), 0600); err != nil {
+					t.Fatal(err)
+				}
+				if err := bindCollection(root, binding, true); err == nil {
+					t.Fatal("unbound payload acquired a new identity")
+				}
+				return
+			}
+			if err := bindCollection(root, binding, false); err != nil {
+				t.Fatal(err)
+			}
+			pending := "receipt.1.pending"
+			body := []byte("corrupt prefix")
+			switch scenario {
+			case "future":
+				pending = "receipt.3.pending"
+			case "leading-zero":
+				pending = "receipt.01.pending"
+			case "multiple":
+				if err := os.WriteFile(filepath.Join(path, "receipt.2.pending"), nil, 0600); err != nil {
+					t.Fatal(err)
+				}
+			case "receipt-mismatch":
+				if err := os.WriteFile(filepath.Join(path, "receipt.json"), collectionJSON(goCollectionReceipt{Binding: binding, CollectedGeneration: 2, BytesVerified: true}), 0600); err != nil {
+					t.Fatal(err)
+				}
+			}
+			if err := os.WriteFile(filepath.Join(path, pending), body, 0600); err != nil {
+				t.Fatal(err)
+			}
+			if _, err := publishCollectionReceipt(root, binding, 2, true); err == nil {
+				t.Fatal("invalid pending state accepted")
+			}
+			if got, _ := os.ReadFile(filepath.Join(path, pending)); !bytes.Equal(got, body) {
+				t.Fatal("invalid pending state was overwritten")
 			}
 		})
 	}

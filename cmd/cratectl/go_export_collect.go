@@ -15,7 +15,6 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"reflect"
 	"runtime"
 	"strconv"
 	"strings"
@@ -245,33 +244,6 @@ func copyCollectionLocal(ctx context.Context, root *os.Root, name string, source
 	return verifyCollectionFile(ctx, f, object)
 }
 func collectionJSON(value any) []byte { raw, _ := json.Marshal(value); return append(raw, '\n') }
-func bindCollection(root *os.Root, binding collectionBinding, resume bool) error {
-	expected := collectionJSON(binding)
-	f, err := root.OpenFile("bindings.json", os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
-	if err == nil {
-		if _, err = f.Write(expected); err == nil {
-			err = f.Sync()
-		}
-		ce := f.Close()
-		if err != nil {
-			return err
-		}
-		return ce
-	}
-	if !resume || !os.IsExist(err) {
-		return errors.New("cannot create immutable collection bindings")
-	}
-	f, err = openCollectionMember(root, "bindings.json")
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	actual, err := io.ReadAll(io.LimitReader(f, int64(len(expected))+1))
-	if err != nil || !bytes.Equal(actual, expected) {
-		return errors.New("resume authority, export, signed proof or immutable file identities changed")
-	}
-	return nil
-}
 func openCollectionDirectory(path string, resume bool) (*os.Root, *os.File, error) {
 	path, err := filepath.Abs(path)
 	if err != nil {
@@ -331,20 +303,16 @@ func openCollectionDirectory(path string, resume bool) (*os.Root, *os.File, erro
 			return nil, nil, se
 		}
 	}
-	entries, err := dir.ReadDir(12)
-	allowed := map[string]bool{"bindings.json": true, "receipt.json": true, "manifest.json": true, "original.zip": true, "original.mod": true, "original.info": true, "journal.jsonl": true, "checkpoint.json": true, "checkpoint.sig": true, "signer-public.pem": true}
-	if err != nil && err != io.EOF {
+	entries, err := collectionEntries(root)
+	if err == nil {
+		err = validateCollectionEntries(entries)
+	}
+	if err != nil {
 		dir.Close()
 		root.Close()
 		return nil, nil, err
 	}
-	for _, entry := range entries {
-		if !allowed[entry.Name()] {
-			dir.Close()
-			root.Close()
-			return nil, nil, errors.New("collection contains an unexpected member; preserve it and choose another directory")
-		}
-	}
+
 	return root, dir, nil
 }
 
@@ -500,48 +468,11 @@ func runGoExportCollect(args []string, out io.Writer) error {
 	if err := ctx.Err(); err != nil {
 		return collectionFailure(err)
 	}
-	receipt := goCollectionReceipt{Binding: binding, CollectedGeneration: *generation, BytesVerified: true}
-	expected := collectionJSON(receipt)
-	saved, err := root.OpenFile("receipt.json", os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
-	if err == nil {
-		if _, err = saved.Write(expected); err == nil {
-			err = saved.Sync()
-		}
-		ce := saved.Close()
-		if err != nil {
-			return err
-		}
-		if ce != nil {
-			return ce
-		}
-		if err := dir.Sync(); err != nil {
-			return err
-		}
-	} else {
-		if !*resume || !os.IsExist(err) {
-			return collectionFailure(err)
-		}
-		saved, err = openCollectionMember(root, "receipt.json")
-		if err != nil {
-			return err
-		}
-		defer saved.Close()
-		previous, err := io.ReadAll(io.LimitReader(saved, (64<<10)+1))
-		if err != nil {
-			return err
-		}
-		var original goCollectionReceipt
-		if len(previous) > 64<<10 || json.Unmarshal(previous, &original) != nil || !bytes.Equal(previous, collectionJSON(original)) || !reflect.DeepEqual(original.Binding, binding) || !original.BytesVerified || original.CollectedGeneration < 1 || original.CollectedGeneration > *generation || original.CurrentRegistryAdmission || original.ChecksumAuthority || original.DependencyClosure || original.DeliveryVerified {
-			return errors.New("saved receipt differs from this verified historical collection")
-		}
-		if err := saved.Sync(); err != nil {
-			return err
-		}
-		if err := dir.Sync(); err != nil {
-			return err
-		}
-		expected = previous
+	expected, err := publishCollectionReceipt(root, binding, *generation, *resume)
+	if err != nil {
+		return collectionFailure(err)
 	}
+
 	n, err := out.Write(expected)
 	if err == nil && n != len(expected) {
 		err = io.ErrShortWrite

@@ -250,6 +250,30 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 	if again := run(true, nil, resume...); !bytes.Equal(again, receipt) || beforeEvents() != count {
 		t.Fatal("completion replay changed original receipt or server journal")
 	}
+	// Declared filesystem crash states supplement the real process kill: an
+	// interrupted JSON prefix after a newer renewal, then both post-link aliases.
+	if err := os.Rename(filepath.Join(output, "receipt.json"), filepath.Join(output, "receipt.2.pending")); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(output, "receipt.2.pending"), receipt[:128], 0600); err != nil {
+		t.Fatal(err)
+	}
+	advanced, err := s.DB.ChangeGoExport(ctx, admin, session.ID, store.GoExportChange{Action: "renew", ExpectedGeneration: 2, ManifestSHA256: session.Manifest.Digest, LifetimeSeconds: 3600}, "native-collector-metadata-renew")
+	if err != nil || advanced.Status != 200 {
+		t.Fatal("metadata renewal", err)
+	}
+	resume = append(resume, "--generation", "3")
+	if recovered := run(true, nil, resume...); !bytes.Equal(recovered, receipt) {
+		t.Fatal("pending completion changed its original generation or bytes")
+	}
+	for _, pair := range [][2]string{{"bindings.json", ".bindings.pending"}, {"receipt.json", "receipt.2.pending"}} {
+		if err := os.Link(filepath.Join(output, pair[0]), filepath.Join(output, pair[1])); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if recovered := run(true, nil, resume...); !bytes.Equal(recovered, receipt) {
+		t.Fatal("post-link publication replay changed receipt")
+	}
 	otherToken, err := crypt.Token()
 	if err != nil {
 		t.Fatal(err)
@@ -339,7 +363,7 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 		t.Fatal("stock SDK extracted different inert bytes", err)
 	}
 	// A local receipt is not allowed to invent a future completed generation.
-	corrupt := bytes.Replace(receipt, []byte(`"collected_generation":2`), []byte(`"collected_generation":3`), 1)
+	corrupt := bytes.Replace(receipt, []byte(`"collected_generation":2`), []byte(`"collected_generation":4`), 1)
 	if bytes.Equal(corrupt, receipt) {
 		t.Fatal("owned receipt generation fixture absent")
 	}
