@@ -945,3 +945,14 @@ unserved destination references, current write-grant revocation and coordinate
 conflict preservation. No local PG/signer/stock import campaign and no new import
 browser proof. Preserve274PG/96Go/56fuzz/19main151 and allselectedprofiles. Full
 scan/provenance/import-console/closure/platform/backup/scale scope remains open.
+
+## Collector fixture first native failure
+
+Original812bd58 x86 normal PG fails before collector execution: its2MiB inert
+fixture ZIP exceeds the shared schema helper's1MiB CAS object cap (DEFECT0133).
+Retain the [first failure](../../evidence/2026-11-07/go-export-812bd58-first-native-failure.json),
+race/stock skips and zero-report summary. Only this owned native server now gets
+a fresh4MiB CAS; all original asset/range/process/metadata/import/SDK assertions
+and shared/production limits remain. Local filesystem probe and tagged normal/
+race compilation/vet pass; native full274/96/56/19main151 and every selected profile
+remain required. This failed setup supplies no collector product qualification.

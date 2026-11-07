@@ -1,0 +1,56 @@
+{
+  "source_parent": "f8aaaeb2c022f428c1b76831d2ac92b878d71643",
+  "source_dirty": true,
+  "observed_at": "2026-11-07T11:12:56.002058+00:00",
+  "state": "DEFECT0133 test-only CAS budget repair locally reproduced/compiled; actual native replay unverified",
+  "original_failure": "evidence/2026-11-07/go-export-812bd58-first-native-failure.json",
+  "source": {
+    "path": "internal/server/go_module_export_collect_integration_test.go",
+    "sha256": "00c2f5eebddfae01a33fa887e40eaa0217b210b930aa23e69eb34f44666dab5b"
+  },
+  "owned_fs_probe": {
+    "asset_bytes": 2097152,
+    "original_cap": 1048576,
+    "original_rejected": true,
+    "owned_cap": 4194304,
+    "owned_exact_staged": true,
+    "scope": "owned local FS stand-in, no PostgreSQL/signature/registry/client campaign",
+    "zip_bytes": 1146646
+  },
+  "probe_source": {
+    "path": ".cache/go-export-fixture-budget-check.go",
+    "sha256": "67a31b05789f1d45419a9e7448083407da808eff1bcfe99948d57a7e1126c22d"
+  },
+  "development_logs": [
+    {
+      "path": ".cache/go-export-fixture-budget-check.log",
+      "sha256": "ebb810fa7be63fdd961a1eec9fe09b9605e4eb17db2118007d8b75a07beecda3"
+    },
+    {
+      "path": ".cache/go-export-fixture-budget-pg-compile.log",
+      "sha256": "5702b6cc39394606e25bd5663b9cfb31426de9742ab4d0bdd9e2b9b2d5acc872"
+    },
+    {
+      "path": ".cache/go-export-fixture-budget-pg-race-compile.log",
+      "sha256": "3ee9f6d512e7b817849a7fcc4f839aeb0e5cc5504e88bf54754ec17bfff2a249"
+    },
+    {
+      "path": ".cache/go-export-fixture-budget-pg-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "encrypted_original_diagnostics": [
+    {
+      "path": ".private/ci-diagnostics/812bd58-campaign/artifacts/encrypted-go-diagnostics-amd64/ci-native-diagnostics.json",
+      "bytes": 224,
+      "sha256": "98fd13372c666928aa3e5de892906d865cd85d33a095ef5adc4cb8234d6c30e9"
+    }
+  ],
+  "repair": "Only new owned native collector server receives fresh4MiB CAS. Shared schema helper1MiB and production64MiB Go upload limits unchanged. Original2MiB inert asset/ZIP/range/processdeath/metadata/import/SDK/assertions retained, add explicit4MiB fixture ceiling.",
+  "limits": [
+    "Original actual native x86 setup returns413 before any collector execution; normal failure/race-stock skips/zero-report summary remain. No product/native collector/import pass inferred.",
+    "Local owned filesystem probe reproduces1MiB rejection and stages exact1,146,646byte ZIP under4MiB. Normal/race tagged packages compile and vet passes; no local PostgreSQL/server/signer/stock client campaign.",
+    "All274PG/96Go normal/race/56fuzz/19main151 and all original selected profiles still require exact-source native replay.",
+    "No product/schema/primary11/5483878b/tenreceipt change. Full450/41/laterGOAL4.1/readiness/security/packaging remain incomplete."
+  ]
+}

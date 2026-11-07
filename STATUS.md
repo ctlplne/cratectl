@@ -1,5 +1,23 @@
 # cratectl execution status
 
+Current development parent is `f8aaaeb`. Original812bd58 x86 normal GoPG fails
+DEFECT0133 before collector execution: its2MiB inert asset produces a1,146,646-byte
+ZIP, exceeding the shared helper's1MiB CAS cap. Original job/log/zero-report safe
+summary/encrypted artifact identities and skipped race/stock stages are retained.
+Only this owned native fixture now uses a fresh4MiB CAS. Original asset, range,
+process-kill, metadata/import/SDK and all assertions remain; add a4MiB fixture
+ceiling. Shared fixture and production admission limits remain unchanged.
+
+An owned local FS probe reproduces1MiB rejection and exact4MiB staging. Normal/
+race tagged compilation and vet pass. Native collector/metadata/import replay is
+unverified: require274PG/96Go normal/race,56fuzz/19main151 and all selected profiles.
+New-sourcef8 actual runs are recorded in remaining.json; original965Go jobs were
+cancelled while pending and are not passes. Latest whole selected proof4956197;
+all450/41/laterGOAL4.1 scope/readiness remain incomplete. No schema/primary11/
+5483878b/tenreceipt/credential/customer changes.
+
+Earlier source-specific records follow; current exact-source records govern.
+
 Current development parent is `9654224`. ADR0057 and
 `evidence/2026-11-07/go-export-import-development.json` define the new signed
 single-version destination publication command. It independently verifies source

@@ -1,0 +1,129 @@
+{
+  "candidate": "812bd5814d69fbe8f8ebf22f49ad3fac62db9462",
+  "observed_at": "2026-11-07T11:11:23.550311+00:00",
+  "state": "original native amd64 normal GoPG failure retained; repair pending",
+  "run_id": 42364360987,
+  "job_id": 128379199421,
+  "url": "https://github.com/ctlplne/cratectl/actions/runs/42364360987/job/128379199421",
+  "steps": [
+    {
+      "name": "Set up job",
+      "conclusion": "success"
+    },
+    {
+      "name": "Initialize containers",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/checkout@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-go@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-python@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Prepare owned PostgreSQL and native binaries",
+      "conclusion": "success"
+    },
+    {
+      "name": "Real PostgreSQL Go module regressions",
+      "conclusion": "failure"
+    },
+    {
+      "name": "Real PostgreSQL Go module regressions with race detector",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Trusted TLS stock Go transitive downloads and policy recovery",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Encrypt bounded Go failure observations for owner diagnosis",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/upload-artifact@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Prepare bounded native evidence summary",
+      "conclusion": "failure"
+    },
+    {
+      "name": "Run actions/upload-artifact@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/setup-python@v7",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Run actions/setup-go@v7",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Run actions/checkout@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Stop containers",
+      "conclusion": "success"
+    },
+    {
+      "name": "Complete job",
+      "conclusion": "success"
+    }
+  ],
+  "failure": {
+    "test": "TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline",
+    "file": "internal/server/go_module_export_collect_integration_test.go",
+    "line": 110,
+    "observation": "actual module publication returns413 before collector/socket/signature/SDK journey",
+    "cause": "shared schemaServer creates CAS with1MiB object cap; new2MiB inert hexadecimal asset ZIP exceeds it. Product Go upload cap remains64MiB.",
+    "repair": "Only this test server gets fresh owned4MiB CAS; original2MiB asset and every range/processkill/assertion remain. No production budget or sharedfixture relaxation."
+  },
+  "private_original_log": {
+    "path": ".private/ci-diagnostics/812bd58-campaign/128379199421.txt",
+    "bytes": 234328,
+    "sha256": "28997bfdb2c4924eb998e59e1662acfc6064f3f64f4f5dbfa5b674fe6ea5ce17"
+  },
+  "original_safe_summary": {
+    "candidate": "812bd5814d69fbe8f8ebf22f49ad3fac62db9462",
+    "generated_at": "2026-11-07T11:09:33.911553+00:00",
+    "limits": [
+      "Only counts, report hashes, reviewed binary digests and clean embedded source/platform identities are exported.",
+      "Raw evidence, browser reports, private command logs and generated credentials remain on the disposable runner.",
+      "This summary establishes only the named CI job stages, not release or product readiness."
+    ],
+    "records": [],
+    "run_id": "42364360987",
+    "runner_arch": "X64",
+    "runner_os": "Linux"
+  },
+  "original_artifacts": [
+    {
+      "id": 13572301769,
+      "name": "ci-summary-go-module-amd64",
+      "size_in_bytes": 531,
+      "digest": "sha256:c892ba555bfdb84f7cfc07998aa5e97a1ed07b385b7e8a52053199abe5dc2113",
+      "expired": false
+    },
+    {
+      "id": 13571862704,
+      "name": "encrypted-go-diagnostics-amd64",
+      "size_in_bytes": 324,
+      "digest": "sha256:38ab60cd6a7faec39ba7b48bcfe8db8285a7447fbaaa49fc095ffbe7ace54b3b",
+      "expired": false
+    }
+  ],
+  "limits": [
+    "One exact actual native x86 first failure. Race/stock stages skipped, zero-report summary and dependent summary failure are not passes. ARM/current source stages retain actual states.",
+    "No collector product defect or callback/processdeath/metadata/import pass inferred from failed setup. Same fixture exists in9654224/f8aaaeb; qualification remains incomplete.",
+    "All450/41/laterGOAL4.1scope/readiness remain incomplete; primary/schema/binaries/tenreceipts unchanged."
+  ]
+}

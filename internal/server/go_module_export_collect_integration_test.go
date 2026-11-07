@@ -22,6 +22,7 @@ import (
 	"testing"
 	"time"
 
+	"ctlplne.dev/cratectl/internal/blob"
 	"ctlplne.dev/cratectl/internal/configfile"
 	crypt "ctlplne.dev/cratectl/internal/crypto"
 	"ctlplne.dev/cratectl/internal/gomodule"
@@ -42,6 +43,14 @@ func (b *collectionCommandOutput) Write(raw []byte) (int, error) {
 // second-range barrier and close one import socket after its real DB commit.
 func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testing.T) {
 	s, d, token, admin := schemaServer(t)
+	// The shared schema helper deliberately caps objects at1MiB. This owned
+	// transfer fixture retains its original2MiB asset and uses a separate4MiB
+	// CAS; neither the shared helper nor production admission limits change.
+	ownedBlobs, err := blob.New(t.TempDir(), 4<<20)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s.Blobs = ownedBlobs
 	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Minute)
 	defer cancel()
 	private := t.TempDir()
@@ -103,7 +112,7 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 		asset.WriteString(crypt.Digest([]byte(fmt.Sprintf("owned-collector-asset/%d", n))))
 	}
 	zip, _ := goPublicationFixture(t, coordinate, asset.String())
-	if len(zip) < 2*(64<<10) {
+	if len(zip) < 2*(64<<10) || len(zip) > 4<<20 {
 		t.Fatal("owned ZIP does not exercise range continuation")
 	}
 	if response := goHTTP(t, s, token, "PUT", "/go/exported/"+coordinate.Prefix()+".zip", zip); response.Code != 201 {

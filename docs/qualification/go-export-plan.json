@@ -18,9 +18,9 @@
     "docs/adr/0057-signed-export-destination-publication.md"
   ],
   "current_implementation": {
-    "source_parent": "9654224a81909e6b043325db7d69bc4260eb3042",
+    "source_parent": "f8aaaeb2c022f428c1b76831d2ac92b878d71643",
     "source_dirty": true,
-    "state": "Exact495whole selected campaign accepted; collector/atomic metadata965native queued/unaccepted; new signed single-version destination publication locally verified/native unverified; fullGOAL incomplete",
+    "state": "Source495whole campaign accepted; original812native setup fails413, firstfailure retained. Collector/metadata/import and test-only CAS repair remain native unverified.",
     "qualified_historical_consumer": "evidence/2026-11-07/github-1a61120-checkpoint.json",
     "producer_development": "evidence/2026-11-07/go-durable-export-development.json",
     "schema": 16,
@@ -70,7 +70,9 @@
         "first_failure": "evidence/2026-11-07/go-export-publication-first-failure.json",
         "scope": "Bound64KiB pending canonical prefix; fsync, exclusive link, directory sync, owned alias removal and sync; recover only exact two-link metadata pair, preserve original generation after renewal; all original checks retained",
         "limits": "Owned child128byte kernel limit and declared FS states; not power-loss/full-disk/provider/Windows/scale proof"
-      }
+      },
+      "first_native_failure": "evidence/2026-11-07/go-export-812bd58-first-native-failure.json",
+      "fixture_budget_repair": "evidence/2026-11-07/go-export-fixture-budget-development.json"
     },
     "destination_import": {
       "state": "implemented but native unverified",
@@ -425,6 +427,7 @@
     }
   ],
   "execution_order": [
+    "Replay DEFECT0133 owned testCAS budget repair before collector/metadata/import acceptance; retain original2MiB asset/all assertions and original native413/race-stock skips/zero reports.",
     "Qualify signed CLI destination publication and real post-commit socket closure/replay/unassessed/currentgrant/conflict controls on both actual native Linux hosts. Preserve all original collector/metadata/stock assertions; full import/provenance/scanning/closure/operator/platform scope remains.",
     "Qualify the new eight-member signed collector and actual process-death/renewed-resume/SDK/credential-policy journey on both native Linux hosts,96Go/274fullPG normal/race;56cmd+internal fuzz and expanded19main151 UI response stand-ins. Preserve every original assertion and all broader closure/import/operations/format requirements.",
     "Preserve exact470ca74 named95Go normal/race/312stock,15historical20upgrades each and16stage portability proof. Complete full31job acceptance, retain original ARM Ant/Ivy bootstrap failure and repair its bounded pinned installation; then continue every closure/import/provider/platform/scale/other-format requirement.",
