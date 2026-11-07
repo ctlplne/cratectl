@@ -995,3 +995,25 @@ literal; all current grant/revocation/replay/denial/conflict and collector/metad
 OpenSSL/SDK assertions remain. Normal/race tagged compilation and vet pass; no
 local native campaign. Require actual new274PG/96Go/56fuzz/19main151 and every
 selected profile before accepting collector/import or expanded UI instructions.
+
+## TLS and admitted destination consumption continuation
+
+The [new native fixture](../../evidence/2026-11-07/go-export-tls-destination-development.json)
+uses trusted loopback HTTP/1.1 TLS for collector/import and retains its actual
+process-kill/post-commit socket fault. Wrong CA must fail before the application
+handler. Five fresh native Go caches exercise unassessed denial, explicit manual
+destination review through candidate CLI/API, exact original h1/inert asset,
+wrong CA, later policy denial and read-grant revocation. NETRC/trust remain private;
+only the known private fixture namespace bypasses public SumDB. No package code
+is built/executed. HTTP/1.1 is explicit for Hijack fault semantics; HTTP/2/customer
+PKI/provider and full scan/import/provenance/closure/platform remain required.
+Normal/race tagged compilation/vet and lint pass locally; actual new native cases
+are unverified. Keep274PG/96Go/56fuzz/19main151andallselectedprofiles.
+
+Exactbadb85b [dedicated native Go profile](../../evidence/2026-11-07/go-module-badb85b-native-checkpoint.json)
+is now accepted:96GoPG functions normally/race and original312stock/9stages on
+both actual Linux architectures, exact clean binary/client/fixture/wire/cache
+bindings retained. Original collector/import/metadata and0132/0133/0135failure
+repairs replay; original failed/skipped records stay unchanged. Whole selected
+campaign and newTLS/manual-review/freshSDK additions are separate, unverified
+claims; full274PG/56fuzz/19main151/allselectedprofiles/all450/41/later scope remain.

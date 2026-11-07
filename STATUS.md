@@ -5,11 +5,10 @@ artifact capabilities,41format families and later stages remain required. Broad
 readiness, security and packaging are **not qualified**. No release/package/image
 publication is authorized by the CI work.
 
-Last inspected native qualification candidate (failed; new source replay required): `d186dd0014dbb7bc67bba193b56d2e71ed0b07a4`
-on `main`, author and committer `imfeelingtheagi` with the owner's noreply address.
-Local evidence documentation may be ahead of that candidate. Preserve the exact
-source distinctions below; local checks and selected profiles do not prove the
-full goal.
+Current inspected native qualification source: `badb85b52bd8aa06f64e7937a5ce0969eda5190b`
+on `main`, author and committer `imfeelingtheagi`. Both dedicated Go jobs pass
+96Go normal/race and312stock; full-campaign acceptance remains pending. New TLS/destination
+SDK test additions below are local and unverified, outside that source's proof.
 
 ## Current implementation and first native failure
 
@@ -66,24 +65,33 @@ Actual official-archive fallback remains unselected; no speedup/availability cla
 Whole812is not accepted: original collector normal suites fail, race/stock skip,
 zero-report summary fails. Original965Go jobs were cancelled while pending.
 
-The d186candidate requires274fullPG/96namedGo normal/race,56cmd+internal fuzz on
-three hosts,19main151browser and every original selected profile. Its native Go
-jobs128387838848(ARM)/128387838901(x86) now both fail at import fixture role
-provisioning: `publisher` is unsupported; the existing scoped role is `writer`.
-DEFECT0135 and original logs/zero reports/race-stock skips are retained. The
-one-literal writer repair compiles normally/race and passes tagged vet; actual
-new-source replay remains required. Earlier setup413does not recur atd186, but
-the whole collector/import function is still failed.
+The badbcandidate still requires274fullPG/56cmd+internal fuzz onthree hosts,
+19main151browser and every other selected profile. Its [named Go profile](evidence/2026-11-07/go-module-badb85b-native-checkpoint.json)
+is accepted:96Go normal/race/312stock onboth actual Linux hosts, including actual
+collector processkill/renewal/declared metadata recovery, signed offline bytes,
+normal destination publication, postcommit TCP closure/replay, unassessed denial,
+current write grant and coordinate conflict. This fixture uses owned loopback
+HTTP; original312stock uses trustedTLS. New TLS/manual destination review/SDK
+additions are outside that source. Original0132/0133/0135failures and skipped
+stages remain retained. Whole selected candidate acceptance is still incomplete.
 Inspect actual handles before resuming; never restart because observation expired.
 
 | Profile | GitHub run |
 | --- | --- |
-| Main CI | [42367261625](https://github.com/ctlplne/cratectl/actions/runs/42367261625) |
-| Go modules | [42367261639](https://github.com/ctlplne/cratectl/actions/runs/42367261639) |
-| JVM | [42367261584](https://github.com/ctlplne/cratectl/actions/runs/42367261584) |
-| OCI clients | [42367261593](https://github.com/ctlplne/cratectl/actions/runs/42367261593) |
-| Historical upgrades | [42367261592](https://github.com/ctlplne/cratectl/actions/runs/42367261592) |
-| Cross-runner export | [42367261643](https://github.com/ctlplne/cratectl/actions/runs/42367261643) |
+| Main CI | [42369373993](https://github.com/ctlplne/cratectl/actions/runs/42369373993) |
+| Go modules | [42369373947](https://github.com/ctlplne/cratectl/actions/runs/42369373947) |
+| JVM | [42369374001](https://github.com/ctlplne/cratectl/actions/runs/42369374001) |
+| OCI clients | [42369374023](https://github.com/ctlplne/cratectl/actions/runs/42369374023) |
+| Historical upgrades | [42369374085](https://github.com/ctlplne/cratectl/actions/runs/42369374085) |
+| Cross-runner export | [42369374223](https://github.com/ctlplne/cratectl/actions/runs/42369374223) |
+
+Local continuation extends the same native function with trusted loopbackTLS,
+wrong-CA refusal before handler, and five fresh-cache destination SDK consumers:
+unassessed deny, explicit CLI/API manual review then exact originalh1/asset,
+wrongCA, later policy denial and read-grant revocation. All original assertions
+remain. Normal/race tagged compile/vet and lint pass; new cases have not run.
+See `evidence/2026-11-07/go-export-tls-destination-development.json`. One version,
+HTTP1/manual decision is not HTTP2/customer-PKI/scanner/full import qualification.
 
 ## Remaining work and protected local state
 

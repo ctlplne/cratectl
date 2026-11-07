@@ -68,3 +68,15 @@ records/lists.35JavaScript and9shell/argv stand-in checks pass. The existing
 Chromium UI response-stand-in workflow adds import/invalid-record controls and
 retains every original assertion;19mainworkflows/151expected checks remain. Actual
 new Chromium qualification is pending, distinct from local build/lint/unit proof.
+
+Native qualification now additionally requires trusted loopback TLS for the
+collector/importer and refusal of an unrelated valid CA before any application
+request. HTTP/1.1 is explicit for the existing actual post-commit socket-close
+fault; this supplies no HTTP/2 qualification. Fresh stock Go consumers must fail
+while destination bytes are unassessed, consume exact original h1/inert bytes
+after explicit destination manual decisions through the current CLI/API, refuse
+wrong TLS trust and later policy/read-grant denial. Each gets a separate private
+cache/NETRC; no warm client cache can stand in for a new serving decision. Manual
+review is distinct from scanner cleanliness. These additions are compiled/vetted/
+linted locally only; actual native replay, full import/provenance/closure and
+all original profile/platform requirements remain open.

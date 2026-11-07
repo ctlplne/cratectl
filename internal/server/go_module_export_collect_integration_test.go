@@ -19,6 +19,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -39,8 +40,8 @@ func (b *collectionCommandOutput) Write(raw []byte) (int, error) {
 	return b.Buffer.Write(raw)
 }
 
-// Real PG/CAS/socket/CLI/OpenSSL/stock Go. Owned faults stop the collector at a
-// second-range barrier and close one import socket after its real DB commit.
+// Real PG/CAS/TLS/socket/CLI/OpenSSL/stock Go. Owned faults stop the collector
+// at a second-range barrier and close one import socket after its real DB commit.
 func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testing.T) {
 	s, d, token, admin := schemaServer(t)
 	// The shared schema helper deliberately caps objects at1MiB. This owned
@@ -172,11 +173,14 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 	run(true, nil, openssl, "pkeyutl", "-verify", "-rawin", "-pubin", "-inkey", publicKey, "-in", statementPath, "-sigfile", signature)
 	reached, release := make(chan struct{}), make(chan struct{})
 	var barrier, lostImportResponse sync.Once
+	var applicationRequests atomic.Int64
 	listener, err := net.Listen("tcp4", "127.0.0.1:38443")
 	if err != nil {
 		t.Fatal("owned collector loopback port", err)
 	}
+	defer listener.Close()
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		applicationRequests.Add(1)
 		if r.Method == "PUT" && strings.HasPrefix(r.URL.Path, "/go/imported/") {
 			dropped := false
 			lostImportResponse.Do(func() {
@@ -209,18 +213,56 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 		}
 		s.ServeHTTP(w, r)
 	})
-	server := httptest.NewUnstartedServer(handler)
-	server.Listener.Close()
-	server.Listener = listener
-	server.Start()
-	defer server.Close()
+	localTLS, err := crypt.LocalIdentity("127.0.0.1", time.Now().UTC())
+	if err != nil {
+		t.Fatal(err)
+	}
+	caPath := write("collector-ca.pem", []byte(localTLS.CA))
+	certPath := write("collector-server.pem", []byte(localTLS.Certificate))
+	keyPath := write("collector-server-key.pem", []byte(localTLS.Key))
+	// HTTP/1.1 is deliberate for the owned post-commit Hijack/close fault.
+	// HTTP/2 qualification is a separate case, not inferred from this fixture.
+	protocols := new(http.Protocols)
+	protocols.SetHTTP1(true)
+	server := &http.Server{Handler: handler, ReadHeaderTimeout: 10 * time.Second, Protocols: protocols}
+	serverDone := make(chan error, 1)
+	go func() { serverDone <- server.ServeTLS(listener, certPath, keyPath) }()
+	defer func() {
+		server.Close()
+		select {
+		case err := <-serverDone:
+			if !errors.Is(err, http.ErrServerClosed) {
+				t.Error("owned TLS server stopped unexpectedly", err)
+			}
+		case <-time.After(5 * time.Second):
+			t.Error("owned TLS server did not stop")
+		}
+	}()
+	serverURL := "https://127.0.0.1:38443"
 	tokenPath := write("admin.token", []byte(token))
-	configRaw, _ := json.Marshal(configfile.Client{Version: 1, URL: server.URL, TokenFile: tokenPath})
+	configRaw, _ := json.Marshal(configfile.Client{Version: 1, URL: serverURL, TokenFile: tokenPath, CAFile: caPath})
 	configPath := write("client.json", configRaw)
 	output := filepath.Join(private, "collected package")
 	journalArguments := []string{"--journal-file", journalPath, "--journal-tenant", admin.Tenant, "--journal-event-sequence", strconv.FormatInt(session.CreatedSequence, 10), "--journal-through", strconv.FormatInt(head.Sequence, 10), "--journal-through-hash", head.Hash, "--checkpoint-file", statementPath, "--checkpoint-signature-file", signature, "--checkpoint-key-file", publicKey}
 	args := []string{cli, "go-export-collect", "--config", configPath, "--export-id", session.ID, "--generation", "1", "--repository", req.Repository, "--module", req.Module, "--version", req.Version, "--output-directory", output, "--chunk-bytes", "65536"}
 	args = append(args, journalArguments...)
+	unrelatedTLS, err := crypt.LocalIdentity("127.0.0.1", time.Now().UTC())
+	if err != nil {
+		t.Fatal(err)
+	}
+	unrelatedCA := write("unrelated-ca.pem", []byte(unrelatedTLS.CA))
+	untrustedConfig, _ := json.Marshal(configfile.Client{Version: 1, URL: serverURL, TokenFile: tokenPath, CAFile: unrelatedCA})
+	untrustedConfigPath := write("untrusted-client.json", untrustedConfig)
+	untrustedOutput := filepath.Join(private, "untrusted-collection")
+	untrustedArgs := append(append([]string{}, args...), "--config", untrustedConfigPath, "--output-directory", untrustedOutput)
+	beforeUntrusted := applicationRequests.Load()
+	run(false, nil, untrustedArgs...)
+	if applicationRequests.Load() != beforeUntrusted {
+		t.Fatal("wrong-CA collector reached the application handler")
+	}
+	if _, err := os.Stat(untrustedOutput); !os.IsNotExist(err) {
+		t.Fatal("wrong-CA collector created collection output")
+	}
 	child, out, diagnostic := command(args, nil)
 	if err := child.Start(); err != nil {
 		t.Fatal(err)
@@ -313,7 +355,7 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 		t.Fatal(err)
 	}
 	otherTokenPath := write("other.token", []byte(otherToken))
-	otherConfig, _ := json.Marshal(configfile.Client{Version: 1, URL: server.URL, TokenFile: otherTokenPath})
+	otherConfig, _ := json.Marshal(configfile.Client{Version: 1, URL: serverURL, TokenFile: otherTokenPath, CAFile: caPath})
 	otherConfigPath := write("other-client.json", otherConfig)
 	crossTenant := append(append([]string{}, resume...), "--config", otherConfigPath)
 	run(false, nil, crossTenant...)
@@ -413,12 +455,26 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 		}
 	}
 	grantImport(true)
-	importConfig, _ := json.Marshal(configfile.Client{Version: 1, URL: server.URL, TokenFile: write("import.token", []byte(importToken))})
+	importTokenPath := write("import.token", []byte(importToken))
+	importConfig, _ := json.Marshal(configfile.Client{Version: 1, URL: serverURL, TokenFile: importTokenPath, CAFile: caPath})
 	importConfigPath := write("import-client.json", importConfig)
 	importArgs := append([]string{cli, "go-export-import"}, offlineArgs[2:]...)
 	importArgs = append(importArgs, "--config", importConfigPath, "--destination-repository", "imported", "--idempotency-key", "native-signed-import-v1")
 	attempt := func(name string) []string {
 		return append(append([]string{}, importArgs...), "--output-directory", filepath.Join(private, name))
+	}
+	untrustedImportConfig, _ := json.Marshal(configfile.Client{Version: 1, URL: serverURL, TokenFile: importTokenPath, CAFile: unrelatedCA})
+	untrustedImportPath := write("untrusted-import-client.json", untrustedImportConfig)
+	beforeUntrusted = applicationRequests.Load()
+	run(false, nil, append(attempt("import-untrusted-tls"), "--config", untrustedImportPath)...)
+	if applicationRequests.Load() != beforeUntrusted {
+		t.Fatal("wrong-CA importer reached the application handler")
+	}
+	if _, err := os.Stat(filepath.Join(private, "import-untrusted-tls", "import-intent.json")); err != nil {
+		t.Fatal("wrong-CA import lost its nonsecret intent", err)
+	}
+	if _, err := os.Stat(filepath.Join(private, "import-untrusted-tls", "import-receipt.json")); !os.IsNotExist(err) {
+		t.Fatal("wrong-CA import claimed publication")
 	}
 	lost := "import-lost-response"
 	run(false, nil, attempt(lost)...)
@@ -456,6 +512,92 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 	if beforeEvents() != importEvents {
 		t.Fatal("denied durable replay created an effect")
 	}
+	// Each network consumer gets fresh private caches. A prior downloaded copy
+	// cannot be recalled, so warm-cache reuse cannot test current serving denial.
+	netrcPath := write("destination.netrc", []byte("machine 127.0.0.1:38443 login token password "+importToken+"\n"))
+	sdkDestination := func(name, trust string, allowed bool) {
+		t.Helper()
+		directory := filepath.Join(private, name)
+		if err := os.Mkdir(directory, 0700); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(filepath.Join(directory, "go.mod"), []byte("module owned.invalid/destination-consumer\n\ngo 1.27.0\n"), 0600); err != nil {
+			t.Fatal(err)
+		}
+		moduleCache := filepath.Join(directory, "modcache")
+		env := []string{"GOENV=off", "GOWORK=off", "GOFLAGS=", "GOTOOLCHAIN=local", "GOTELEMETRY=off", "GOINSECURE=", "GOPROXY=" + serverURL + "/go/imported/", "GOPRIVATE=go.cratectl.invalid", "GONOPROXY=none", "GONOSUMDB=go.cratectl.invalid", "GOSUMDB=sum.golang.org", "GOVCS=*:off", "GOAUTH=netrc", "NETRC=" + netrcPath, "SSL_CERT_FILE=" + trust, "GOMODCACHE=" + moduleCache, "GOPATH=" + filepath.Join(directory, "gopath"), "GOCACHE=" + filepath.Join(directory, "buildcache")}
+		t.Cleanup(func() {
+			cleanup, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+			defer cancel()
+			cmd := exec.CommandContext(cleanup, goBinary, "clean", "-modcache")
+			cmd.Dir, cmd.Env, cmd.WaitDelay = directory, append(append([]string{}, environment...), env...), 2*time.Second
+			if err := cmd.Run(); err != nil {
+				t.Error("owned destination SDK cache cleanup failed")
+			}
+		})
+		cmd, stdout, _ := command([]string{goBinary, "mod", "download", "-json", req.Module + "@" + req.Version}, env)
+		cmd.Dir = directory
+		err := cmd.Run()
+		if (err == nil) != allowed {
+			// The NETRC is private. Do not print arbitrary authenticated output.
+			t.Fatalf("owned destination SDK %s expected success=%t: %v", name, allowed, err)
+		}
+		var result struct{ Dir, Sum, GoModSum string }
+		parsed := json.Unmarshal(stdout.Bytes(), &result) == nil
+		escapedModule, escapedVersion, ok := strings.Cut(coordinate.Prefix(), "/@v/")
+		if !ok {
+			t.Fatal("owned module cache coordinate is invalid")
+		}
+		extractedPath := filepath.Join(moduleCache, filepath.FromSlash(escapedModule+"@"+escapedVersion), "assets", "owned.txt")
+		if !allowed {
+			if result.Dir != "" || result.Sum != "" || result.GoModSum != "" {
+				t.Fatal("denied destination SDK retained a success identity")
+			}
+			if _, err := os.Stat(extractedPath); !os.IsNotExist(err) {
+				t.Fatal("denied destination SDK extracted inert bytes")
+			}
+			if sums, err := os.ReadFile(filepath.Join(directory, "go.sum")); err == nil && (bytes.Contains(sums, []byte(prepared.ZIPHash)) || bytes.Contains(sums, []byte(prepared.ModHash))) {
+				t.Fatal("denied destination SDK recorded the original package sums")
+			}
+			return
+		}
+		if !parsed || result.Dir == "" || result.Sum != prepared.ZIPHash || result.GoModSum != prepared.ModHash {
+			t.Fatal("admitted destination SDK changed original h1 identities")
+		}
+		body, err := os.ReadFile(extractedPath)
+		if err != nil || !bytes.Equal(body, asset.Bytes()) {
+			t.Fatal("admitted destination SDK extracted different inert bytes", err)
+		}
+	}
+	sdkDestination("destination-unassessed", caPath, false)
+	manualDecision := func(a store.Artifact, decision, key string) {
+		t.Helper()
+		body, _ := json.Marshal(map[string]string{"path": a.Path, "digest": a.Digest, "decision": decision})
+		bodyPath := write(key+".json", body)
+		run(true, nil, cli, "--config", configPath, "--method", "PUT", "--path", "/api/v1/repositories/imported/decisions", "--body-file", bodyPath, "--idempotency-key", key)
+	}
+	var destinationZIP store.Artifact
+	for n, a := range imported {
+		manualDecision(a, "allowed", fmt.Sprintf("native-destination-review-%d", n))
+		if strings.HasSuffix(a.Path, ".zip") {
+			destinationZIP = a
+		}
+	}
+	if destinationZIP.Digest == "" {
+		t.Fatal("owned destination ZIP reference missing")
+	}
+	sdkDestination("destination-reviewed", caPath, true)
+	beforeUntrusted = applicationRequests.Load()
+	sdkDestination("destination-untrusted-ca", unrelatedCA, false)
+	if applicationRequests.Load() != beforeUntrusted {
+		t.Fatal("wrong-CA SDK reached the destination handler")
+	}
+	manualDecision(destinationZIP, "denied", "native-destination-deny")
+	sdkDestination("destination-policy-denied", caPath, false)
+	manualDecision(destinationZIP, "allowed", "native-destination-reopen")
+	grantBody := write("destination-read-revoked.json", []byte(`{"actor":"export-importer","read":false,"write":false}`))
+	run(true, nil, cli, "--config", configPath, "--method", "PUT", "--path", "/api/v1/repositories/imported/grants", "--body-file", grantBody, "--idempotency-key", "native-destination-read-revoked")
+	sdkDestination("destination-read-revoked", caPath, false)
 	mavenRepositories(t, s, admin, store.Repository{Name: "import-conflict", Format: "go", Access: "restricted", RequireReview: true})
 	conflictingZIP, _ := goPublicationFixture(t, coordinate, "different destination bytes")
 	if seeded := goHTTP(t, s, token, "PUT", "/go/import-conflict/"+coordinate.Prefix()+".zip", conflictingZIP); seeded.Code != 201 {
