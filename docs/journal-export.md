@@ -9,7 +9,10 @@ with three declared UI response stand-ins. See the
 This does not declare complete export, signing-provider or release readiness.
 The later signed one-version Go collection/publication journey has separate
 [badb85b native Go evidence](../evidence/2026-11-07/go-module-badb85b-native-checkpoint.json).
-The multiple-event selection extension below still requires native qualification.
+The multiple-event selection extension below has
+[named b5cfb5d native Go normal/race evidence](../evidence/2026-11-07/go-module-b5cfb5d-native-checkpoint.json)
+for actual candidate CLI, external signer and two original real-journal events
+onboth Linux hosts. Full main/fuzz/browser and artifact closure remain separate.
 
 The tenant journal retains original event payloads. Each event hash covers the
 previous hash, one newline and the exact original payload bytes. The new export

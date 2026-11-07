@@ -1,7 +1,8 @@
 # 0058: Select several original events from one verified journal pass
 
-Date: 2026-11-07. State: implemented; local development checks pass, native
-qualification pending.
+Date: 2026-11-07. State: implemented; local development and named native Go
+normal/race checks pass onboth Linux hosts atb5cfb5d. Full main/fuzz/browser and
+multi-artifact/closure qualification remain incomplete.
 
 Complete artifact bundles need several original publication/export events, not
 repeated scans of a potentially large journal. Add a bounded selection operation

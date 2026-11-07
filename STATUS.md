@@ -5,13 +5,19 @@ artifact capabilities,41format families and later stages remain required. Broad
 readiness, security and packaging are **not qualified**. No release/package/image
 publication is authorized by the CI work.
 
+The [Actions plan](docs/qualification/github-actions-plan.md) is now a concise
+current placement/evidence/offload plan. Its previous79,054bytes are archived
+unchanged with a retained SHA256. A read-only cross-workflow acceptance job is
+the next CI offload; it remains planned, not implemented or qualified.
+
 Current pushed qualification source: `b5cfb5d2b03017fac3e41ee75e306b1b0e41be52`
-on `main`, author and committer `imfeelingtheagi`. New TLS/destination SDK and
-multiple-event selection cases are running on GitHub, without native acceptance.
+on `main`, author and committer `imfeelingtheagi`. Its named96Go normal/race and
+312stock perhost plus16stage separate-runner portable profile are accepted.
+New TLS/destination SDK and multiple-event cases pass within that named profile.
 The earlier `badb85b` passes96Go normal/race and312stock onboth Linux hosts;
 its original main Linux jobs remain running and full acceptance remains pending.
 ADR0058 adds bounded multiple-event journal selection with passing local ARM
-development checks. It awaits native qualification; the new source inventory is
+development and named native checks; full main qualification remains pending:
 274PG/96Go/57fuzz/19main151. Historical source counts retain their exact scope.
 
 ## Current implementation and first native failure
@@ -49,7 +55,7 @@ handoff and DEFECT0134 source-binding/display repair.35owned JavaScript and9shel
 argv checks, TypeScript/Vite, Go console unit/build/lint pass. The existing
 Chromium response-stand-in adds import and malformed source/list controls with
 all original assertions; same19main151expected checks. This new UI is native
-unverified and awaits a new source campaign after the retained d186failure.
+unverified and awaits the recorded b5cfb5d Chromium result; retain the d186failure.
 See `evidence/2026-11-07/go-export-import-console-development.json`; full durable
 server import/provenance/scan/progress and remaining console outcomes stay open.
 
@@ -107,11 +113,12 @@ Original `badb85b` handles:
 | Historical upgrades | [42369374085](https://github.com/ctlplne/cratectl/actions/runs/42369374085) |
 | Cross-runner export | [42369374223](https://github.com/ctlplne/cratectl/actions/runs/42369374223) |
 
-Local continuation extends the same native function with trusted loopbackTLS,
+Sourceb5cfb5d extends the same native function with trusted loopbackTLS,
 wrong-CA refusal before handler, and five fresh-cache destination SDK consumers:
 unassessed deny, explicit CLI/API manual review then exact originalh1/asset,
 wrongCA, later policy denial and read-grant revocation. All original assertions
-remain. Normal/race tagged compile/vet and lint pass; new cases have not run.
+remain. These cases now pass normally/race onboth actual Linux hosts in the
+[named Go profile](evidence/2026-11-07/go-module-b5cfb5d-native-checkpoint.json).
 See `evidence/2026-11-07/go-export-tls-destination-development.json`. One version,
 HTTP1/manual decision is not HTTP2/customer-PKI/scanner/full import qualification.
 
@@ -122,7 +129,8 @@ metadata. Late corrupt/truncated/trailing input returns no selection or receipt.
 ARM build/unit/race/lint,17crypto/14signedCLI scenarios, selector boundary tests
 and5second fuzz pass. Normal/race PG compile/tagged vet pass. The existing native
 fixture adds real-journal/external-OpenSSL/candidate-CLI two-event selection and
-late trailing rejection; these new cases have not run. See the
+late trailing rejection; these now pass normally/race onboth actual Linux hosts.
+Full57fuzz/main/browser acceptance remains pending. See the
 [development record](evidence/2026-11-07/journal-multiple-selection-development.json).
 This supports, and does not complete, multi-artifact/dependency/provenance export.
 
