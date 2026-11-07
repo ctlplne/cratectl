@@ -85,9 +85,9 @@ jobs:
         run: python3 scripts/ci/build_upgrade_baselines.py
       - name: Legacy adoption with actual migration process interruption
         run: python3 scripts/conformance_schema.py --require-clean-build
-      - name: Retained lifecycle through every schema 2–15 upgrade
+      - name: Retained lifecycle through every schema 2–16 upgrade
         run: |
-          for baseline in 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do
+          for baseline in 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16; do
             python3 scripts/conformance_lifecycle.py --baseline-version "$baseline" --require-clean-build
           done
       - name: Repair and recurring integrity upgrades

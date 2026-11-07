@@ -261,7 +261,7 @@ func respondErr(w http.ResponseWriter, e error) {
 	case errors.Is(e, store.ErrGoExportSetInput):
 		fail(w, 400, "invalid_go_export_set", "Select distinct exact hosted Go coordinates and source revisions, a lifetime from 60 through 3600 seconds and a positive declared byte budget through 64 GiB.")
 	case errors.Is(e, store.ErrGoExportSetChanged):
-		fail(w, 409, "go_export_set_changed", "Refresh every selected repository source revision and prepare a new complete preview; no partial selection was accepted.")
+		fail(w, 409, "go_export_set_changed", "Read the current set generation or refresh every source revision and prepare a new complete selection. A stale generation or changed member cannot authorize delivery.")
 	case errors.Is(e, store.ErrGoExportSetBudget):
 		fail(w, 413, "go_export_set_budget", "Choose fewer or smaller members, or raise max_artifact_bytes within the 64 GiB ceiling. Metadata remains bounded to 8 MiB; no partial preview was returned.")
 	case errors.Is(e, store.ErrGoExportInput):

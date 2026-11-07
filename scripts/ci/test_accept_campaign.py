@@ -27,7 +27,7 @@ class Source:
     paths = set()
     compatibility = []
     inventory = {'integration_functions': 274, 'named_go_functions': 96, 'fuzz_targets': 57}
-    baselines = json.loads((ROOT / 'docs/qualification/upgrade-baselines.json').read_text())['baselines']
+    baselines = json.loads((ROOT / 'scripts/ci/testdata/schema16-historical-baselines.json').read_text())['baselines']
 
     def __call__(self, _):
         return b'owned-fixture'

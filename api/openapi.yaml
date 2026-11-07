@@ -1037,10 +1037,92 @@ paths:
         '403': {description: "Tenant admin required."}
         '404': {description: "Exact coordinate and digest not found."}
         '409': {description: "Idempotency conflict."}
+  /api/v1/go/export-sets:
+    post:
+      summary: Create one atomic durable set of explicitly selected hosted Go versions
+      description: Current tenant administrator and read access to every selected repository are required. Physically hash and inspect every ZIP/mod/info through the existing bounded package inspector, sync the common canonical manifest, then revalidate every original metadata/policy/lifecycle/source identity under the tenant publication fence. Parent, ordered roots, package pins, creation event, original idempotency receipt and job intent commit together. A failure creates no partial set. A lost-response replay returns the exact original receipt under current source administrative authority without reopening or re-inspecting packages. The receipt is historical metadata until independently authenticated by an external signed journal. Automatic dependency closure, public checksum authority and destination admission remain unverified. The whole request is bounded to two minutes and the commit transaction to thirty seconds. Legacy and common sets share the configured active-session budget.
+      parameters:
+        - {in: header, name: Idempotency-Key, required: true, schema: {type: string, minLength: 1, maxLength: 200}}
+      requestBody:
+        $ref: '#/paths/~1api~1v1~1go~1export-sets~1preview/post/requestBody'
+      responses:
+        '201': {description: "Original complete parent session receipt with manifest digest/size, ordered root count, declared artifact bytes, generation, deadlines and delivery_verified=false. Exact replay sets Idempotent-Replayed=true."}
+        '400': {description: "Invalid selection, body or single bounded idempotency key."}
+        '401': {description: "Current credential required."}
+        '403': {description: "Any current selected source or byte policy denied."}
+        '409': {description: "Any original member identity changed after preparation or the idempotency key has another request."}
+        '413': {description: "Request, canonical manifest, declared artifact bytes or configured object ceiling exceeded."}
+        '503': {description: "Physical integrity, package validation, deadline, database, schema, event queue or shared session capacity unavailable. No partial durable set."}
+  /api/v1/go/export-sets/{set}:
+    parameters:
+      - {in: path, name: set, required: true, schema: {type: string, pattern: '^[a-f0-9]{64}$'}}
+    get:
+      summary: Read the current common export-set session
+      description: Current tenant administrator and read access to every retained selected repository are required. Returns immutable parent identity and current generation/control state. A due session is durably expired under the mutation fence before pins release; failed queue admission retains them. Historical metadata and a receipt do not grant download permission.
+      responses:
+        '200': {description: "Current session metadata. delivery_verified remains false; manifest retained in every state."}
+        '400': {description: "Invalid set identity or unexpected query."}
+        '401': {description: "Current credential required."}
+        '403': {description: "Current selected source access denied."}
+        '404': {description: "No set in the authorized tenant."}
+        '503': {description: "Schema, database or expiry intent unavailable; no inferred pin release."}
+  /api/v1/go/export-sets/{set}/control:
+    parameters:
+      - {in: path, name: set, required: true, schema: {type: string, pattern: '^[a-f0-9]{64}$'}}
+    post:
+      summary: Renew, acknowledge, cancel or expire the entire common set
+      description: Bind the exact parent manifest and generation with one idempotency key. Renewal and acknowledgment recheck every member's current source and byte policy. Renewal is bounded to the original twenty-four-hour window. Acknowledgment records the caller's statement and keeps delivery_verified=false. Cancellation or durable expiry releases all package pins together and retains the manifest and historical rows. Terminal sets cannot reopen. Each successful transition fences older generations. All four fields are mandatory; nonrenewal actions require lifetime_seconds=0.
+      parameters:
+        - {in: header, name: Idempotency-Key, required: true, schema: {type: string, minLength: 1, maxLength: 200}}
+      requestBody:
+        $ref: '#/paths/~1api~1v1~1go~1exports~1{export}/patch/requestBody'
+      responses:
+        '200': {description: "Original atomic transition receipt; exact replay changes no rows or journal."}
+        '400': {description: "Invalid complete control request or idempotency key."}
+        '401': {description: "Current credential required."}
+        '403': {description: "Current source grant or required whole-set policy denied."}
+        '404': {description: "No set in the authorized tenant."}
+        '409': {description: "Generation, manifest, source, deadline condition, terminal state or idempotency fingerprint differs."}
+        '410': {description: "Expired selection cannot renew or acknowledge."}
+        '503': {description: "Schema, database or event queue unavailable; transition and package-pin release roll back together."}
+  /api/v1/go/export-sets/{set}/manifest:
+    parameters:
+      - {in: path, name: set, required: true, schema: {type: string, pattern: '^[a-f0-9]{64}$'}}
+      - {in: query, name: generation, required: true, schema: {type: integer, format: int64, minimum: 1}}
+    get:
+      summary: Download exact common canonical manifest bytes under current whole-set authority
+      description: GET and HEAD support ordinary ranges and conditionals only after every selected root passes current authorization, source epoch, policy and original package identity checks. Hash the stored object before response visibility and recheck whole-set authority during transfer. Bound transfer by the current session deadline and ninety seconds. private/no-store, exact ETag and generation apply to every range. A downloaded manifest is unsigned and supplies no independent trust or automatic closure.
+      responses:
+        '200': {description: "Exact canonical common manifest including final newline, or authorized HEAD metadata."}
+        '206': {description: "Authorized exact range of the same immutable manifest."}
+        '304': {description: "Current whole-set authority passed before evaluating the validator."}
+        '400': {description: "Invalid identity or exact positive generation query."}
+        '403': {description: "Any current selected source or byte policy denied."}
+        '409': {description: "Generation or any source/member identity changed."}
+        '410': {description: "Parent is expired or cancelled."}
+        '503': {description: "Required stored integrity, database or deadline unavailable."}
+  /api/v1/go/export-sets/{set}/roots/{root}/{kind}:
+    parameters:
+      - {in: path, name: set, required: true, schema: {type: string, pattern: '^[a-f0-9]{64}$'}}
+      - {in: path, name: root, required: true, schema: {type: integer, minimum: 0, maximum: 255}}
+      - {in: path, name: kind, required: true, schema: {type: string, enum: [zip, mod, info]}}
+      - {in: query, name: generation, required: true, schema: {type: integer, format: int64, minimum: 1}}
+    get:
+      summary: Read one original root representation under current complete-set authority
+      description: GET and HEAD use the same physical verification, range, conditionals, transfer deadline and current whole-set revalidation as manifest delivery. Root is the zero-based original request order; leading-zero or signed ordinal aliases are refused. A denied later root fences every earlier root. Bytes already delivered are not an acknowledgment or revocation of downloaded copies. The durable all-member resumable collector and authenticated common proof binder remain separate unfinished work.
+      responses:
+        '200': {description: "Exact original ZIP/mod/info bytes or authorized HEAD metadata."}
+        '206': {description: "Exact authorized range with immutable digest and generation binding."}
+        '304': {description: "Validator matched after whole-set authority passed."}
+        '400': {description: "Invalid ordinal, kind, identity or generation query."}
+        '403': {description: "Any selected source or byte policy denied."}
+        '409': {description: "Generation or any original source/member identity changed."}
+        '410': {description: "Parent is expired or cancelled."}
+        '503': {description: "Physical integrity, database or deadline unavailable."}
   /api/v1/go/export-sets/preview:
     post:
       summary: Preview one bounded set of hosted Go versions from a common metadata snapshot
-      description: Current tenant administrator and read access to every selected hosted repository are required. All entries are read in one PostgreSQL repeatable-read and read-only transaction, so concurrent changes cannot mix metadata views between members. Each source revision is the repository configuration counter selected by the caller. Duplicate module/version pairs are rejected even across repositories. This endpoint opens no package object and creates no export session, reference, journal event, idempotency receipt or job. The manifest and its object hash are unsigned preview data, not proof of physical bytes, dependency closure, checksum authority or destination admission. A durable common-snapshot creation path with immutable staging and current-policy revalidation remains required before collection. Planning is bounded to 30 seconds, 256 entries and 8 MiB of canonical manifest metadata; the ordinary server request/concurrency limits also apply. The embedded manifest is JSON data; object identifies its canonical encoding including a final newline.
+      description: Current tenant administrator and read access to every selected hosted repository are required. All entries are read in one PostgreSQL repeatable-read and read-only transaction, so concurrent changes cannot mix metadata views between members. Each source revision is the repository configuration counter selected by the caller. Duplicate module/version pairs are rejected even across repositories. This endpoint opens no package object and creates no export session, reference, journal event, idempotency receipt or job. The manifest and its object hash are unsigned preview data, not proof of physical bytes, dependency closure, checksum authority or destination admission. The separate creation endpoint physically inspects immutable package bytes and revalidates this complete identity under the publication fence; this unsigned preview cannot authorize collection. Planning is bounded to 30 seconds, 256 entries and 8 MiB of canonical manifest metadata; the ordinary server request/concurrency limits also apply. The embedded manifest is JSON data; object identifies its canonical encoding including a final newline.
       requestBody:
         required: true
         content:

@@ -17,7 +17,7 @@ SPECS = {spec['artifact']: spec for family in WORKFLOWS.values() for spec in job
 
 class CampaignReports(unittest.TestCase):
     def setUp(self):
-        self.baselines = json.loads((ROOT / 'docs/qualification/upgrade-baselines.json').read_text())['baselines']
+        self.baselines = json.loads((ROOT / 'scripts/ci/testdata/schema16-historical-baselines.json').read_text())['baselines']
 
     def report(self, name):
         return json.loads((ROOT / 'evidence/2026-11-07/github-4956197' / (name + '.json')).read_text())
@@ -36,6 +36,13 @@ class CampaignReports(unittest.TestCase):
                 records += summary['records']
                 self.assertNotIn('candidate', summary)
         self.assertEqual(records, 72)
+
+    def test_new_schema17_contract_refuses_old15_baseline_campaign(self):
+        current = json.loads((ROOT / 'docs/qualification/upgrade-baselines.json').read_text())['baselines']
+        self.assertEqual({row['schema'] for row in current}, {None, *range(2, 17)})
+        original = self.report('ci-summary-upgrades-amd64')
+        with self.assertRaisesRegex(EvidenceError, 'historical_baselines'):
+            validate_summary(original, original['candidate'], int(original['run_id']), SPECS['ci-summary-upgrades-amd64'], current)
 
     def test_metadata_empty_partial_and_unreviewed_record_never_pass(self):
         original = self.report('ci-summary-go-module-amd64')

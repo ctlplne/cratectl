@@ -61,7 +61,7 @@ def jobs(family):
         elif family == 'upgrades':
             add('Real PostgreSQL controlled upgrades (' + arch + ')', arch,
                 ['Rebuild and verify every pinned historical native server', 'Legacy adoption with actual migration process interruption',
-                 'Retained lifecycle through every schema 2–15 upgrade', 'Repair and recurring integrity upgrades',
+                 'Retained lifecycle through every schema 2–16 upgrade', 'Repair and recurring integrity upgrades',
                  'Retention and scheduled-retirement upgrades', 'Prepare bounded upgrade evidence summary'], 'ci-summary-upgrades-' + arch, 'upgrades')
         elif family == 'library':
             add('Actual NuGet libraries versus Go (' + arch + ')', arch,

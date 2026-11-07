@@ -224,3 +224,50 @@ func FuzzGoExportSetCanonicalManifest(f *testing.F) {
 		}
 	})
 }
+
+func TestGoExportSetMemberPlansRetainCommonIdentityWithoutLendingMutableBytes(t *testing.T) {
+	m := exportSetManifestFixture(t, 2)
+	raw, err := m.Bytes()
+	if err != nil {
+		t.Fatal(err)
+	}
+	request := GoExportSetRequest{LifetimeSeconds: 60, MaxArtifactBytes: MaxGoExportSetArtifactBytes}
+	for _, e := range m.Entries {
+		request.Entries = append(request.Entries, GoExportSetEntry{Repository: e.Repository, Module: e.Module, Version: e.Version, ExpectedSourceRevision: e.SourceRevision})
+	}
+	p := GoExportSetPlan{tenant: m.Tenant, actor: "owned", request: request, manifest: m, raw: raw}
+	members, err := p.Members()
+	if err != nil || len(members) != 2 {
+		t.Fatal("member decomposition", err)
+	}
+	for n, member := range members {
+		child, err := ParseGoExportManifest(member.Bytes())
+		if err != nil || child.ObservedJournal != m.ObservedJournal || !child.PreparedAt.Equal(m.PreparedAt) || member.Coordinate().Version != request.Entries[n].Version || member.tenant != p.tenant || member.actor != p.actor {
+			t.Fatal("member lost original common snapshot", err)
+		}
+	}
+	members[0].manifest.Artifacts[0].Metadata[0] ^= 1
+	members[0].raw[0] ^= 1
+	again, err := p.Members()
+	if err != nil || !bytes.Equal(p.Bytes(), raw) || !bytes.Equal(again[0].manifest.Artifacts[0].Metadata, m.Entries[0].Artifacts[0].Metadata) {
+		t.Fatal("member lent immutable common storage", err)
+	}
+	original := goExportSetFingerprint(request)
+	for _, scenario := range []string{"order", "revision", "budget", "lifetime"} {
+		r := request
+		r.Entries = append([]GoExportSetEntry(nil), request.Entries...)
+		switch scenario {
+		case "order":
+			r.Entries[0], r.Entries[1] = r.Entries[1], r.Entries[0]
+		case "revision":
+			r.Entries[1].ExpectedSourceRevision++
+		case "budget":
+			r.MaxArtifactBytes--
+		case "lifetime":
+			r.LifetimeSeconds++
+		}
+		if goExportSetFingerprint(r) == original {
+			t.Fatal("idempotency omitted caller intent", scenario)
+		}
+	}
+}

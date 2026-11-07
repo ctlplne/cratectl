@@ -52,7 +52,7 @@ class Source:
             require(self(name) == current, 'unsupported_source_contract_revision')
             self.compatibility.append({'path': name, 'sha256': hashlib.sha256(current).hexdigest()})
         self.baselines = strict_json(self('docs/qualification/upgrade-baselines.json'))['baselines']
-        require(isinstance(self.baselines, list) and len(self.baselines) == 15, 'unsupported_baseline_inventory')
+        require(isinstance(self.baselines, list) and len(self.baselines) == 16, 'unsupported_baseline_inventory')
         pg, go, fuzz = [], [], []
         for name in sorted(self.paths):
             if not name.endswith('_test.go') or not name.startswith(('internal/', 'cmd/')):

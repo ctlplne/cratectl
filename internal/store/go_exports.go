@@ -239,7 +239,7 @@ func (s *Store) CommitGoExport(ctx context.Context, i Identity, p GoExportPlan, 
 		}
 		var now time.Time
 		var count int
-		if err := tx.QueryRow(ctx, `SELECT clock_timestamp(),(SELECT count(*) FROM (SELECT 1 FROM cratectl.artifact_exports WHERE state IN ('open','acknowledged') LIMIT $1)x)`, activeLimit).Scan(&now, &count); err != nil {
+		if err := tx.QueryRow(ctx, `SELECT clock_timestamp(),(SELECT count(*) FROM (SELECT 1 FROM cratectl.artifact_exports WHERE state IN ('open','acknowledged') UNION ALL SELECT 1 FROM cratectl.artifact_export_sets WHERE state IN ('open','acknowledged') LIMIT $1)x)`, activeLimit).Scan(&now, &count); err != nil {
 			return nil, 0, err
 		}
 		if now.Before(m.PreparedAt) || now.Sub(m.PreparedAt) > 5*time.Minute {

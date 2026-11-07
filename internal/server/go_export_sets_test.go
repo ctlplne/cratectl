@@ -99,10 +99,39 @@ func TestGoExportSetPreviewMethodAuthorityAndRoute(t *testing.T) {
 	if !new(Server).goExportSetManagement(w, httptest.NewRequest("POST", "/?unknown=1", strings.NewReader(exportSetRequestBody())), store.Identity{Role: "admin"}, "go/export-sets/preview") || w.Code != 400 {
 		t.Fatal("query accepted")
 	}
-	for _, path := range []string{"go/export-sets", "go/export-sets/previewx", "go/export-sets/preview/extra", "go/exports/preview", "repositories/owned/go/export-sets/preview"} {
+	for _, path := range []string{"go/exports/preview", "repositories/owned/go/export-sets/preview"} {
 		if new(Server).goExportSetManagement(httptest.NewRecorder(), httptest.NewRequest("POST", "/", nil), store.Identity{Role: "admin"}, path) {
 			t.Fatal("unrelated route claimed", path)
 		}
+	}
+	for _, path := range []string{"go/export-sets", "go/export-sets/previewx", "go/export-sets/preview/extra"} {
+		w := httptest.NewRecorder()
+		if !new(Server).goExportSetManagement(w, httptest.NewRequest("POST", "/", nil), store.Identity{Role: "admin"}, path) || w.Code != 400 {
+			t.Fatal("malformed namespace reached database", path, w.Code)
+		}
+	}
+
+}
+
+func TestGoExportSetDurableRoutesRejectAliasesAndIncompleteControlBeforeDatabase(t *testing.T) {
+	id := strings.Repeat("a", 64)
+	for _, suffix := range []string{"roots/0/manifest", "roots/00/zip", "roots/-1/zip", "roots/256/zip", "roots/0/unknown", "manifest/extra"} {
+		w := httptest.NewRecorder()
+		path := "go/export-sets/" + id + "/" + suffix
+		if !new(Server).goExportSetManagement(w, httptest.NewRequest("GET", "/?generation=1", nil), store.Identity{Role: "admin"}, path) || w.Code != 400 {
+			t.Fatal("malformed durable path reached database", suffix, w.Code)
+		}
+	}
+	for _, path := range []string{"go/export-sets", "go/export-sets/" + id + "/control"} {
+		w := httptest.NewRecorder()
+		if !new(Server).goExportSetManagement(w, httptest.NewRequest("POST", "/", strings.NewReader("{}")), store.Identity{Role: "admin"}, path) || w.Code != 400 {
+			t.Fatal("incomplete mutation reached database", path, w.Code)
+		}
+	}
+	w := httptest.NewRecorder()
+	r := httptest.NewRequest("POST", "/", strings.NewReader(exportSetRequestBody()))
+	if !new(Server).goExportSetManagement(w, r, store.Identity{Role: "admin"}, "go/export-sets") || w.Code != 400 {
+		t.Fatal("missing mutation key reached database", w.Code)
 	}
 }
 

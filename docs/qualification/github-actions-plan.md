@@ -36,8 +36,10 @@ and unknown browser intermittent0122 remain preserved. Strict SDK0126 stays open
 
 New ADR0062 common-snapshot preview is locally implemented and qualified against
 development/owned stand-ins. Its three actual PostgreSQL/API cases are compiled
-normally/race and vetted, not executed locally. The next exact-source native
-inventory is 277 PostgreSQL/99 named Go/60 fuzz. Keep the existing architecture
+normally/race and vetted, not executed locally. That pushed preview inventory is 277 PostgreSQL/99 named Go/60 fuzz.
+The subsequent ADR0063 durable common-set/schema17/original signed binding source
+requires 283 PostgreSQL/105 named Go/61 fuzz and16 historical binaries/21 upgrade
+reports per actual Linux architecture; local gates/compile are not native proof. Keep the existing architecture
 jobs, original assertions and all selected profile contracts; do not add a
 parallel local PostgreSQL/client campaign. Continue durable creation, collection,
 offline proxy, current scanner/import/provenance and the full six-step export plan.
@@ -71,10 +73,10 @@ only. Real PostgreSQL/registry/external signer/stock-client campaigns and Chromi
 run on GitHub. Local emulation/cross-compilation never qualifies x86 behavior.
 
 The accepted index source contains 274 PostgreSQL/96 named Go/58 fuzz targets.
-The new common-snapshot preview requires 277 full PostgreSQL/99 named Go functions
-normally and under race on both Linux hosts, plus 60 product fuzz targets on three
-hosts. Preserve main 19/151 Chromium, 312 Go/683 baseline checks, 15 historical
-binaries/20 upgrades per host, 16 portable stages and every other selected profile.
+The pushed common-snapshot preview requires277 PostgreSQL/99 Go/60 fuzz.
+The new durable common-set source requires283 full PostgreSQL/105 named Go
+functions normally/race onboth Linux hosts, plus61 fuzz targets onthree hosts. Preserve main 19/151 Chromium, 312 Go/683 baseline checks, 16 historical
+binaries/21 upgrades per host, 16 portable stages and every other selected profile.
 Existing jobs discover the new functions and targets; a source-defined inventory
 change never authorizes skipping the original regressions.
 
@@ -90,11 +92,11 @@ change never authorizes skipping the original regressions.
 | `jvm-clients.yml`: Ant/Ivy /2 | Both Linux architectures, PostgreSQL/JDK | Ant1.10.18/Ivy2.6.0,666checks, original SHA512 pins and verified compressed archive cache;60minutes. |
 | `jvm-clients.yml`: SBT /4 | SBT1.13.0/2.0.11 onboth Linux architectures | Release/snapshot cases, fresh project caches, pinned tool-only boot cache;60minutes. |
 | `oci-clients.yml` /2 | Both Linux architectures, PostgreSQL/Docker/Podman/Helm | Inert publication/consumption, tenant/policy/revocation/restart;45minutes. Uploaded images are not executed. |
-| `upgrade-qualification.yml` /2 | Both Linux architectures, fresh PostgreSQL | Rebuild15frozen historical native sources,20reports each, actual maintenance-process interruption;120minutes. Also scheduled/manual. |
+| `upgrade-qualification.yml` /2 | Both Linux architectures, fresh PostgreSQL | Rebuild16frozen historical native sources,21reports each, actual maintenance-process interruption;120minutes. Also scheduled/manual. |
 | `go-export-portability.yml` /2 | x86 PostgreSQL producer; separate ARM consumer without DB | Exact synthetic signed capsule, separate trust fingerprints, CLI/SDK in observed empty child network namespaces;30/25minutes. |
 | `nuget-contract.yml` /2 | Both Linux architectures | Actual pinned SDK10.0.403/NuGet-library differential corpus;20minutes. Separate from HTTP feed/restore journeys. |
 | `browser-repair.yml` /up to3 | x86 Chromium, fresh PostgreSQL per replay | Repair/retention/NuGet, five full repetitions per selected journey;45minutes. Stop on failure. |
-| `qualification-acceptance.yml` /1 | Linux x86, manual main dispatch | Contents/actions read only; bounded exact-source API/log/archive/report inspection,20component test functions, scoped counts/hash verdict;20minutes. Starts no native tests. |
+| `qualification-acceptance.yml` /1 | Linux x86, manual main dispatch | Contents/actions read only; bounded exact-source API/log/archive/report inspection,21component test functions, scoped counts/hash verdict;20minutes. Starts no native tests. |
 | `go-checksum-client.yml` /3 | Linux x86/ARM and macOS ARM | Seven strict Go1.27.3 controls perhost, owned authority stand-ins. Altered-ZIP assertion fails onallthreehosts; six other controls pass each. |
 
 Native test union:34possible matrix jobs/nine workflows. The new manual
@@ -251,3 +253,24 @@ qualified5483878b selected binaries and tenreceipts unchanged. Local builds use
 `.cache/` output directories. Preserve ignored `.private/`0700 and `.cache/`;
 never commit credential values. No release/package/image/customer/sibling action
 is part of this CI plan.
+
+## Common-set source contract advancement
+
+The qualified schema16ca44source is pinned before appending migration17. Actual
+native historical qualification must rebuild all16original pinned binaries and
+produce21reports per Linux host. The closed read-only source verifier requires
+that exact16pin inventory and unchanged compatible workflow/report-source hashes;
+it cannot reuse a prior15pin/20report campaign for the new contract. Original
+safe report fixtures retain their frozen schema16historical pin list only for
+unit regression, with a new explicit refusal test against the current16pin list.
+The fixture is data and never executed. Twenty-one verifier component functions
+pass locally; actual updated verifier/native upgrade qualification remains pending.
+
+New native set cases belong in the existing full/named architecture jobs. Extend
+the existing actual PG/CLI/external OpenSSL collector journey for two-repository
+common creation and complete signed statement binding; preserve every original
+collector/import/TLS/SDK/index assertion. No additional local native campaign or
+new workflow is needed. Preserve the running166preview campaign and accept it
+before pushing incompatible schema17closed contracts. Full all-member collection,
+offlineproxy/closure/currentscanner/import/provenance/operator/production and every
+GOAL4.1requirement remain open; scoped green CI cannot close them.

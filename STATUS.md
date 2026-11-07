@@ -35,28 +35,46 @@ skipped. No PostgreSQL/stock-client/fuzz/browser runtime passed on that docs sou
 
 ## Current implementation and qualification boundary
 
-[ADR0062](docs/adr/0062-common-go-export-set-metadata.md) adds a bounded
-common-snapshot metadata planner and `POST /api/v1/go/export-sets/preview`, usable
-through the management CLI. Every selected root uses one tenant-scoped
-repeatable-read/read-only transaction, DB clock and journal head. Late denial,
-missing/changed member, cancellation or byte-budget failure returns no partial set.
-The streaming canonical parser bounds typed roots before allocation. This remains
-unsigned metadata: no package is opened/verified/staged/pinned and no session,
-journal, job or receipt is created. Durable all-member creation remains required.
+Pushed preview source: `1664c7c77191a5cc97313d7a2f924de0b6c5a053`.
+Its six existing native workflows remain active. Main CI42389001092 has8of10
+successful jobs and two full integration/race jobs running; Go42389001082,
+JVM42389001057, OCI42389001081, upgrades42389001085 and portable42389001071
+jobs succeed. Exact count/log/hash and whole-campaign acceptance remain pending.
+No restart or later evidence substitution is permitted. Its source inventory is
+277 PostgreSQL/99 named Go/60 fuzz, not the new durable implementation below.
 
-Local ARM build/unit/race/lint and two bounded fuzz targets pass; tagged normal
-and race PostgreSQL compilation/vet pass. Three new meaningful native tests cover
-an actual second-connection policy commit across a repeatable-read snapshot,
-no-effect/late-member controls and actual publication/approval/API semantics.
-Their execution is pending GitHub:277full PostgreSQL/99named Go/60fuzz inventory.
-See the [development record](evidence/2026-11-07/go-export-set-preview-development.json)
-and [operator preview](docs/go-export-set-preview.md). Compile-only and owned
-HTTP/filesystem stand-ins never qualify real PostgreSQL or x86 behavior.
+[ADR0063](docs/adr/0063-atomic-common-go-export-set.md) now implements one
+fenced durable common set over explicitly selected hosted Go versions: physical
+original-package inspection, synced common manifest, atomic parent/root/item
+refs/journal/original receipt/job intent, current whole-member authorization for
+ranges/HEAD/conditionals, generation controls, shared legacy/set session budget,
+worker expiry and inventory roots. A denied late member fences the first root.
+Cancellation/expiry releases all payload pins durably and retains the manifest.
+Acknowledgment keeps delivery_verified=false. Current source decisions grant no
+destination permission or scan cleanliness.
 
-All16migrations stay frozen. Freeze an actually qualified schema16historical
-baseline before appending durable-set migration17. The stopped primary remains
-schema11with5483878bqualified binaries and ten original receipts. Continue the
-complete six-step export outcome and every later GOAL requirement.
+The new `go-export-set-verify` authenticates the original common-manifest creation
+statement through a complete journal under an independently selected external
+signer/head. It outputs only bounded identities/counts/attribution. Physical
+package-byte verification, automatic closure, checksum authority and current
+admission remain false. See the [operator workflow](docs/go-export-sets.md).
+The complete durable all-member collector/private offline proxy, full closure,
+current destination scanner/import/provenance and console progress remain required.
+
+Local ARM build/unit/race/lint, focused final route race and215bounded binding
+fuzz executions pass. Tagged normal/race PostgreSQL compilation and vet pass.
+The six new meaningful native functions and extended actual CLI/OpenSSL collector
+case are compiled only. New source requires283PostgreSQL/105namedGo/61fuzz,
+16historical native binaries and21upgrade reports per Linux host. See the
+[development record](evidence/2026-11-07/go-export-set-durable-development.json).
+
+The actually qualified schema16ca44baseline is pinned before appended migration17
+(checksum7d786d8f03fa6ba8b75b2c114ff13ac2f288a1792856b94fc7e3e57a769ffead).
+All first16definitions are unchanged. New17has three forced-RLS tenant tables,
+immutable identities and an exact expiry-index admission contract; real native
+migration/receipt/old-byte/rights/index proof remains pending. The stopped primary
+stays schema11with5483878bqualified binaries and ten original receipts. Continue
+the full six-step export outcome and all450/41/laterGOAL4.1requirements.
 
 ## Implemented export foundations and remaining outcome
 

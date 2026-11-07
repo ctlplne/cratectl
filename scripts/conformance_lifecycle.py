@@ -129,17 +129,17 @@ try:
             prior_export_request={'repository':'export-source','module':go_module,'version':go_version,'expected_source_revision':0,'lifetime_seconds':3600}
             prior_export_key='actual-schema15-export-'+RUN
             status,prior_export_receipt,_=api('/api/v1/go/exports','POST',prior_export_request,key=prior_export_key);prior_export=json.loads(prior_export_receipt)
-            check('actual old15 daemon creates durable export before index migration',status==201 and prior_export['generation']==1 and prior_export['payload_pins_retained'])
+            check(f'actual schema{args.baseline_version} daemon creates durable export before migration to{CURRENT_SCHEMA}',status==201 and prior_export['generation']==1 and prior_export['payload_pins_retained'])
             prior_change={'action':'acknowledge','expected_generation':1,'lifetime_seconds':0,'manifest_sha256':prior_export['manifest']['digest']}
             prior_change_key='actual-schema15-ack-'+RUN
             status,prior_change_receipt,_=api('/api/v1/go/exports/'+prior_export['id'],'PATCH',prior_change,key=prior_change_key)
-            check('actual old15 daemon acknowledges export before index migration',status==200 and json.loads(prior_change_receipt)['generation']==2 and json.loads(prior_change_receipt)['state']=='acknowledged')
+            check(f'actual schema{args.baseline_version} daemon acknowledges export before migration to{CURRENT_SCHEMA}',status==200 and json.loads(prior_change_receipt)['generation']==2 and json.loads(prior_change_receipt)['state']=='acknowledged')
             status,prior_session,_=api('/api/v1/go/exports/'+prior_export['id']);prior_session=json.loads(prior_session)
-            check('old15 original session is readable',status==200)
+            check(f'old schema{args.baseline_version} original session is readable',status==200)
             prior_objects={}
             for kind in ['manifest','zip','mod','info']:
                 status,body,_=api('/api/v1/go/exports/'+prior_export['id']+'/'+kind+'?generation=2')
-                check('old15 retains exact export object '+kind,status==200)
+                check(f'old schema{args.baseline_version} retains exact export object '+kind,status==200)
                 prior_objects[kind]=body
             prior_audit=json.loads(api('/api/v1/audit')[1])['items']
     stop()
@@ -152,15 +152,15 @@ try:
         check(f'actual schema{args.baseline_version} to{CURRENT_SCHEMA} preserves Go bytes metadata timestamps and approvals',go_after==go_before)
         if args.baseline_version>=15:
             status,after_session,_=api('/api/v1/go/exports/'+prior_export['id']);after_session=json.loads(after_session)
-            check('schema15 into16 preserves original session state identity deadlines and roots',status==200 and {k:v for k,v in after_session.items()if k!='server_time'}=={k:v for k,v in prior_session.items()if k!='server_time'})
+            check(f'schema{args.baseline_version} into{CURRENT_SCHEMA} preserves original session state identity deadlines and roots',status==200 and {k:v for k,v in after_session.items()if k!='server_time'}=={k:v for k,v in prior_session.items()if k!='server_time'})
             for kind,original in prior_objects.items():
                 status,body,_=api('/api/v1/go/exports/'+prior_export['id']+'/'+kind+'?generation=2')
-                check('schema15 into16 preserves exact old export bytes '+kind,status==200 and body==original)
+                check(f'schema{args.baseline_version} into{CURRENT_SCHEMA} preserves exact old export bytes '+kind,status==200 and body==original)
             status,replayed,headers=api('/api/v1/go/exports','POST',prior_export_request,key=prior_export_key)
-            check('schema15 creation receipt replays byte for byte after16',status==201 and replayed==prior_export_receipt and headers.get('Idempotent-Replayed')=='true')
+            check(f'schema{args.baseline_version} creation receipt replays byte for byte after{CURRENT_SCHEMA}',status==201 and replayed==prior_export_receipt and headers.get('Idempotent-Replayed')=='true')
             status,replayed,headers=api('/api/v1/go/exports/'+prior_export['id'],'PATCH',prior_change,key=prior_change_key)
-            check('schema15 acknowledgment receipt replays byte for byte after16',status==200 and replayed==prior_change_receipt and headers.get('Idempotent-Replayed')=='true')
-            check('schema15 original journal prefix survives16 without replayed events',json.loads(api('/api/v1/audit')[1])['items']==prior_audit)
+            check(f'schema{args.baseline_version} acknowledgment receipt replays byte for byte after{CURRENT_SCHEMA}',status==200 and replayed==prior_change_receipt and headers.get('Idempotent-Replayed')=='true')
+            check(f'schema{args.baseline_version} original journal prefix survives{CURRENT_SCHEMA} without replayed events',json.loads(api('/api/v1/audit')[1])['items']==prior_audit)
         request={'repository':'export-source','module':go_module,'version':go_version,'expected_source_revision':0,'lifetime_seconds':3600}
         export_key=f'native-schema{args.baseline_version}-export-'+RUN
         status,raw,_=api('/api/v1/go/exports','POST',request,key=export_key);export=json.loads(raw)

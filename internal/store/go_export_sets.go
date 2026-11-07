@@ -236,7 +236,11 @@ func planGoExportSetInTx(ctx context.Context, tx pgx.Tx, i Identity, r GoExportS
 	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
 		return GoExportSetPlan{}, err
 	}
-	m := GoExportSetManifest{Profile: GoExportSetProfile, Tenant: i.Tenant, PreparedAt: now.UTC(), ObservedJournal: anchor, PolicyScope: goExportSetPolicyScope}
+	return goExportSetManifestInTx(ctx, tx, i, r, now.UTC(), anchor)
+}
+
+func goExportSetManifestInTx(ctx context.Context, tx pgx.Tx, i Identity, r GoExportSetRequest, prepared time.Time, anchor crypt.JournalAnchor) (GoExportSetPlan, error) {
+	m := GoExportSetManifest{Profile: GoExportSetProfile, Tenant: i.Tenant, PreparedAt: prepared, ObservedJournal: anchor, PolicyScope: goExportSetPolicyScope}
 	var metadataBytes int
 	for _, entry := range r.Entries {
 		if err := ctx.Err(); err != nil {
@@ -303,4 +307,28 @@ func (s *Store) PlanGoExportSet(ctx context.Context, i Identity, r GoExportSetRe
 		return GoExportSetPlan{}, err
 	}
 	return plan, nil
+}
+
+// Member plans retain their exact original common observation; the server uses
+// the existing package inspector, with at most three open files at a time.
+func (p GoExportSetPlan) Members() ([]GoExportPlan, error) {
+	if p.request.Validate() != nil || p.manifest.validate() != nil || len(p.manifest.Entries) != len(p.request.Entries) {
+		return nil, ErrGoExportSetInput
+	}
+	out := make([]GoExportPlan, 0, len(p.manifest.Entries))
+	for n, m := range p.manifest.Entries {
+		raw, err := m.Bytes()
+		if err != nil {
+			return nil, err
+		}
+		// Reparse to avoid lending any nested slice owned by the common plan.
+		child, err := ParseGoExportManifest(raw)
+		if err != nil {
+			return nil, err
+		}
+		e := p.request.Entries[n]
+		request := GoExportRequest{Repository: e.Repository, Module: e.Module, Version: e.Version, ExpectedSourceRevision: e.ExpectedSourceRevision, LifetimeSeconds: p.request.LifetimeSeconds}
+		out = append(out, GoExportPlan{tenant: p.tenant, actor: p.actor, request: request, manifest: child, raw: raw})
+	}
+	return out, nil
 }

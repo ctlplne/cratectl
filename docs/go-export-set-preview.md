@@ -4,8 +4,9 @@ The new `POST /api/v1/go/export-sets/preview` endpoint plans selected package
 metadata in one database view. It is implemented; actual native qualification
 is pending. A concurrent publication or policy update cannot make the first
 member come from one view and the last member from another. This is metadata
-planning only. Durable common-snapshot creation and package collection remain
-in progress in the [complete export plan](qualification/go-export-plan.json).
+planning only. [Durable creation/control and signed attribution](go-export-sets.md) are now
+implemented with actual native qualification pending. All-member collection and
+the [complete export outcome](qualification/go-export-plan.json) remain in progress.
 
 Use a current tenant administrator credential with read access to every selected
 hosted repository. Read each repository's current `source_revision` from normal
@@ -59,15 +60,15 @@ dependency closure false. A list chosen by an operator is not automatic closure.
 
 The endpoint opens no package object and adds no session, blob pin, mutation
 receipt, event or job. A policy change after the admitted read does not upgrade
-that old preview: the later creation path must recheck current permissions,
+that old preview: the creation path independently rechecks current permissions,
 source epochs, exact bytes and policy under the publication fence. Do not collect
 or import a bundle based only on this preview hash.
 
-Limits are256entries,256KiB request,32KiB per child manifest,8MiB combined
-canonical metadata and30seconds for the complete database planning transaction.
+Limits are 256 entries,256 KiB request,32 KiB per child manifest,8 MiB combined
+canonical metadata and 30 seconds for the complete database planning transaction.
 The usual bounded request slots/server timeouts still apply. Declared bytes must
-fit the requested positive budget through64GiB. A409means refresh source
-revisions and preview again;403requires current source access/policy;413requires
+fit the requested positive budget through 64 GiB. A409 means refresh source
+revisions and preview again;403 requires current source access/policy;413 requires
 a smaller selection or higher permitted byte budget. No failed preview certifies
 a partial or complete export. All other export/platform/provider/production
 requirements remain in the plan.

@@ -220,7 +220,7 @@ def validate_summary(summary, candidate, run_id, spec, baselines, source=None):
         history = [r for r in observed if r['report'].startswith('historical-build-')]
         lifecycle = [r for r in observed if r['report'].startswith('lifecycle-')]
         require(len(history) == 1 and 'baselines' in history[0] and history[0]['checks'] == len(baselines)
-                and len(lifecycle) == 14 and {r.get('baseline_version') for r in lifecycle} == set(range(2, 16)), 'upgrade_baseline_inventory')
+                and len(lifecycle) == len(baselines)-1 and {r.get('baseline_version') for r in lifecycle} == {b['schema'] for b in baselines if b['schema'] is not None}, 'upgrade_baseline_inventory')
         historical_hashes = {row['schema']: row['binary_sha256'] for row in history[0]['baselines']}
         historical_paths = {row['binary']: row['schema'] for row in baselines}
         for record in lifecycle:
@@ -228,7 +228,7 @@ def validate_summary(summary, candidate, run_id, spec, baselines, source=None):
             original = [a for a in record.get('artifacts', []) if a['path'] in historical_paths]
             require(len(original) == 1 and historical_paths[original[0]['path']] == version
                     and original[0]['sha256'] == historical_hashes[version], 'upgrade_historical_binary_identity')
-        for version, checks in [(13, 70), (14, 81), (15, 96)]:
+        for version, checks in [(13, 70), (14, 81), (15, 96)] + ([(16, 96)] if any(b["schema"] == 16 for b in baselines) else []):
             require(next(r for r in lifecycle if r['baseline_version'] == version)['checks'] == checks, 'upgrade_baseline_checks')
         require({r['report'].split('-')[0] for r in observed} == {'historical', 'lifecycle', 'repairs', 'retention', 'schedules', 'schema'}, 'upgrade_report_inventory')
     elif kind.startswith('browser-'):

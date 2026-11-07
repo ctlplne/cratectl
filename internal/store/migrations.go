@@ -80,8 +80,29 @@ func goExportExpirySafetySQL() string {
  AND regexp_replace(pg_get_expr(i.indpred,i.indrelid),'\s','','g')='(state=ANY(ARRAY[''open''::text,''acknowledged''::text]))')`
 }
 
+var goExportSetSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationSafetySQL(), goExportSetSafetySQL(), 1)
+
+func goExportSetSafetySQL() string {
+	// Preserve schema16's exact expiry-index checks and require the new tenant tables.
+	return `SELECT (` + goExportExpirySafetySQL() + `) AND (` + migrationSafetySQLFor(schemaTablesV17) + `) AND EXISTS(
+ SELECT 1 FROM pg_index i JOIN pg_class x ON x.oid=i.indexrelid
+ JOIN pg_namespace n ON n.oid=x.relnamespace JOIN pg_am a ON a.oid=x.relam
+ WHERE n.nspname='cratectl' AND x.relname='artifact_export_sets_due'
+ AND i.indrelid='cratectl.artifact_export_sets'::regclass AND a.amname='btree'
+ AND i.indisvalid AND i.indisready AND i.indislive AND NOT i.indisunique
+ AND i.indnkeyatts=3 AND i.indnatts=3
+ AND pg_get_indexdef(i.indexrelid,1,true)='tenant'
+ AND pg_get_indexdef(i.indexrelid,2,true)='expires_at'
+ AND pg_get_indexdef(i.indexrelid,3,true)='id'
+ AND i.indoption[0]=0 AND i.indoption[1]=0 AND i.indoption[2]=0
+ AND regexp_replace(pg_get_expr(i.indpred,i.indrelid),'\s','','g')='(state=ANY(ARRAY[''open''::text,''acknowledged''::text]))')`
+}
+
 func schemaStateBody() string { return frozenSchemaStateBody }
 func schemaStateBodyForVersion(version int) string {
+	if version >= 17 {
+		return goExportSetSchemaStateBody
+	}
 	if version >= 16 {
 		return goExportExpirySchemaStateBody
 	}
@@ -174,7 +195,8 @@ func buildMigrations() []migrationStep {
 	legacy := goChecksumLegacySchema + schemaStateSQL(goChecksumLegacySchemaStateBody)
 	exports := goExportSchema + schemaStateSQL(goExportSchemaStateBody)
 	exportExpiry := goExportExpirySchema + schemaStateSQL(goExportExpirySchemaStateBody)
-	return []migrationStep{{1, "legacy baseline", legacySchemaSQL()}, {2, "schema state and runtime coordination", migrationLedgerSQL + "\n" + state}, {3, "retained artifact and repository lifecycle", lifecycle}, {4, "versioned repository source configuration", sourceConfigurationSchema + schemaStateSQL(sourceSchemaStateBody)}, {5, "fenced exact-byte repair jobs", schemaStateSQL(sourceSchemaStateBody)}, {6, "recurring bounded integrity sampling", schedules}, {7, "policy-driven retained retirement", retention}, {8, "explicitly authorized scheduled retirement", retentionSchedules}, {9, "bounded hold inventory and immutable lifecycle history", holdManagementSchema + schemaStateSQL(retentionScheduleSchemaStateBody)}, {10, "independent immutable-reference hold cases", holdCases}, {11, "cross-reference hold matters and reviewed bulk preservation", matters}, {12, "retained Go checksum timelines and atomic proof receipts", checksums}, {13, "immutable checksum failure evidence and tenant key fork blocks", failures}, {14, "retained unattributed checksum incidents and explicit external trust reviews", legacy}, {15, "durable immutable hosted Go export snapshots and object references", exports}, {16, "indexed bounded export expiry admission", exportExpiry}}
+	exportSets := goExportSetSchema + schemaStateSQL(goExportSetSchemaStateBody)
+	return []migrationStep{{1, "legacy baseline", legacySchemaSQL()}, {2, "schema state and runtime coordination", migrationLedgerSQL + "\n" + state}, {3, "retained artifact and repository lifecycle", lifecycle}, {4, "versioned repository source configuration", sourceConfigurationSchema + schemaStateSQL(sourceSchemaStateBody)}, {5, "fenced exact-byte repair jobs", schemaStateSQL(sourceSchemaStateBody)}, {6, "recurring bounded integrity sampling", schedules}, {7, "policy-driven retained retirement", retention}, {8, "explicitly authorized scheduled retirement", retentionSchedules}, {9, "bounded hold inventory and immutable lifecycle history", holdManagementSchema + schemaStateSQL(retentionScheduleSchemaStateBody)}, {10, "independent immutable-reference hold cases", holdCases}, {11, "cross-reference hold matters and reviewed bulk preservation", matters}, {12, "retained Go checksum timelines and atomic proof receipts", checksums}, {13, "immutable checksum failure evidence and tenant key fork blocks", failures}, {14, "retained unattributed checksum incidents and explicit external trust reviews", legacy}, {15, "durable immutable hosted Go export snapshots and object references", exports}, {16, "indexed bounded export expiry admission", exportExpiry}, {17, "atomic common-snapshot Go export sets and retained object roots", exportSets}}
 }
 
 var frozenMigrations = buildMigrations()

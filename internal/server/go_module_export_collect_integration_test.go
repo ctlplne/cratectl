@@ -167,6 +167,25 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 		indexManifests[name] = bytes.Clone(response.Body.Bytes())
 		write(name, response.Body.Bytes())
 	}
+
+	// A common set is a distinct single fenced transaction over both originals.
+	// Existing independent-export collector/index assertions below stay intact.
+	setRequest := store.GoExportSetRequest{Entries: []store.GoExportSetEntry{
+		{Repository: req.Repository, Module: req.Module, Version: req.Version},
+		{Repository: "index-extra", Module: indexCoordinate.Module, Version: indexCoordinate.Version},
+	}, LifetimeSeconds: 3600, MaxArtifactBytes: 1 << 30}
+	setBody, _ := json.Marshal(setRequest)
+	setCreated := goHTTP(t, s, token, "POST", "/api/v1/go/export-sets", setBody, "Idempotency-Key", "native-common-export-set")
+	var commonSession store.GoExportSetSession
+	if setCreated.Code != 201 || json.Unmarshal(setCreated.Body.Bytes(), &commonSession) != nil || commonSession.RootCount != 2 {
+		t.Fatal("actual common-set creation", setCreated.Code)
+	}
+	commonResponse := goHTTP(t, s, token, "GET", "/api/v1/go/export-sets/"+commonSession.ID+"/manifest?generation=1", nil)
+	commonManifest, err := store.ParseGoExportSetManifest(commonResponse.Body.Bytes())
+	if commonResponse.Code != 200 || err != nil || crypt.Digest(commonResponse.Body.Bytes()) != commonSession.Manifest.Digest || len(commonManifest.Entries) != 2 {
+		t.Fatal("actual complete common manifest", commonResponse.Code, err)
+	}
+	commonManifestPath := write("common-manifest.json", commonResponse.Body.Bytes())
 	head, err := s.DB.JournalCheckpoint(ctx, admin)
 	if err != nil {
 		t.Fatal(err)
@@ -209,6 +228,55 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 	run(true, nil, openssl, "pkey", "-in", privateKey, "-pubout", "-out", publicKey)
 	run(true, nil, openssl, "pkeyutl", "-sign", "-rawin", "-inkey", privateKey, "-in", statementPath, "-out", signature)
 	run(true, nil, openssl, "pkeyutl", "-verify", "-rawin", "-pubin", "-inkey", publicKey, "-in", statementPath, "-sigfile", signature)
+
+	commonArguments := []string{cli, "go-export-set-verify", "--manifest-file", commonManifestPath, "--set-id", commonSession.ID, "--journal-file", journalPath, "--journal-tenant", admin.Tenant, "--journal-event-sequence", strconv.FormatInt(commonSession.CreatedSequence, 10), "--journal-through", strconv.FormatInt(head.Sequence, 10), "--journal-through-hash", head.Hash, "--checkpoint-file", statementPath, "--checkpoint-signature-file", signature, "--checkpoint-key-file", publicKey}
+	commonResult := run(true, nil, commonArguments...)
+	var commonReceipt struct {
+		Profile               string `json:"profile"`
+		SetID                 string `json:"set_id"`
+		ManifestSHA256        string `json:"manifest_sha256"`
+		ManifestBytes         int    `json:"manifest_bytes"`
+		Roots                 int    `json:"roots"`
+		DeclaredArtifactBytes int64  `json:"declared_artifact_bytes"`
+		Attribution           struct {
+			EventSequence       int64                               `json:"event_sequence"`
+			CheckpointSignature crypt.JournalCheckpointVerification `json:"checkpoint_signature"`
+			Journal             crypt.JournalVerification           `json:"journal"`
+		} `json:"attribution"`
+		Bound bool `json:"common_snapshot_manifest_bound"`
+	}
+	if json.Unmarshal(commonResult, &commonReceipt) != nil || commonReceipt.Profile != "cratectl.go.export-set.binding.v1" || commonReceipt.SetID != commonSession.ID || commonReceipt.ManifestSHA256 != commonSession.Manifest.Digest || commonReceipt.ManifestBytes != int(commonSession.Manifest.Size) || commonReceipt.Roots != 2 || commonReceipt.DeclaredArtifactBytes != commonManifest.DeclaredArtifactBytes || !commonReceipt.Bound || commonReceipt.Attribution.EventSequence != commonSession.CreatedSequence || !commonReceipt.Attribution.CheckpointSignature.SignatureVerified || commonReceipt.Attribution.Journal.ExportSHA256 != crypt.Digest(journal.Bytes()) {
+		t.Fatal("actual common creation/signer/journal binding failed")
+	}
+	var commonFields map[string]json.RawMessage
+	if json.Unmarshal(commonResult, &commonFields) != nil {
+		t.Fatal("common receipt shape")
+	}
+	for _, name := range []string{"artifact_bytes_verified", "dependency_closure", "checksum_authority_verified", "current_registry_admission"} {
+		if !bytes.Equal(commonFields[name], []byte("false")) {
+			t.Fatal("common receipt supplied unsupported trust", name)
+		}
+	}
+	if bytes.Contains(commonResult, []byte(private)) || bytes.Contains(commonResult, []byte(`"metadata"`)) {
+		t.Fatal("common verification leaked private path/policy")
+	}
+	run(false, nil, append(commonArguments, "--set-id", strings.Repeat("b", 64))...)
+	run(false, nil, append(commonArguments, "--journal-event-sequence", strconv.FormatInt(session.CreatedSequence, 10))...)
+	changedCommon, err := store.ParseGoExportSetManifest(commonResponse.Body.Bytes())
+	if err != nil {
+		t.Fatal(err)
+	}
+	changedCommon.Entries[1].Artifacts[0].DecisionVersion++
+	changedRaw, err := changedCommon.Bytes()
+	if err != nil {
+		t.Fatal(err)
+	}
+	changedCommonPath := write("common-changed-late-member.json", changedRaw)
+	run(false, nil, append(commonArguments, "--manifest-file", changedCommonPath)...)
+	// Retain and independently verify the original complete proof after a late
+	// trailing frame; no command may emit a partial successful binding.
+	commonTrailing := write("common-trailing-journal.jsonl", append(bytes.Clone(journal.Bytes()), []byte("{}\n")...))
+	run(false, nil, append(commonArguments, "--journal-file", commonTrailing)...)
 	// Select in reverse history order from the complete, externally signed real
 	// journal. Summaries identify exact original payload bytes without printing
 	// those tenant payloads; a late trailing frame must discard both selections.
