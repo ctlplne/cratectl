@@ -30,7 +30,15 @@ This qualifies unsigned common metadata planning only. No package is physically
 opened/pinned and no durable set/session/event/job/receipt is created by preview.
 The newer schema17/common-set/collector source is outside that native result.
 
-## Current native failure and repair
+## Current native repair replay
+
+Exact pushed `a331612316ef77186055ca61da92cc8f06eb0a87` preserves every original
+profile:31jobs/eight workflows. At the last API observation29jobs succeed; both
+main full-PostgreSQL race jobs are running. Both named105Go normal/race/312stock,
+JVM8/OCI2,16historical21upgrade reports per Linux host,16portable stages,
+focused-browser3andNuGet-library2jobs pass. Whole campaign acceptance remains
+pending. Keep those original handles; no restart for queue time. This replay has
+not qualified the newer offline proxy below.
 
 Pushed `b937fd924e1f51e0e2a3a188510b0f0d7952f653` is **not accepted**:
 [31 original jobs](evidence/2026-11-07/github-b937fd9-original-failure-checkpoint.json)
@@ -49,6 +57,37 @@ Preserve every original failure and guarded empty summary; native replay remains
 required. Expect29automatic jobs plus one explicit two-architecture NuGet-library
 dispatch, retaining every original31job/eightworkflow profile on exactnewsource.
 No schema checksum, package assertion or empty-summary guard is relaxed.
+
+## Common-set private offline proxy
+
+[ADR0065](docs/adr/0065-common-set-native-file-proxy.md) implements
+`go-export-set-offline`: independently reverify complete retained proof and exact
+original common creation, copy every selected ZIP/mod/info and all original proof,
+inspect/hash actual bytes, derive selected-version discovery and sync everything
+before atomically publishing one native file proxy. Explicit same-input resume
+checks retained prefixes before appending; completed replay verifies without
+repairing published data and returns the original receipt. Corrupt/unknown state
+is preserved. No network, package execution or credential copy is required.
+
+Seven new meaningful local filesystem/trust/parser regressions plus ARM build/unit/race/
+lint pass. [DEFECT0140](evidence/2026-11-07/go-export-set-offline-prefix-first-failure.json)
+preserves the caught corrupt-prefix extension and its comparison-before-append
+repair. Tagged normal/race compile and vet pass only; no local real PG/SDK/signer
+campaign runs. The new actual native journey creates/collects an8module transitive
+graph through PostgreSQL/TLS/OpenSSL, stops the registry, then runs CLI and pinned
+stockGo1.27.3 in observed empty kernel network namespaces under the original UID.
+A4096byte pipe deterministically stops the final acknowledgement before SIGKILL;
+resume must return the exact saved receipt, and late source corruption must fail.
+The bounded metadata fuzzer passes287local executions. This source requires
+284fullPG/106namedGo/62fuzz; native execution is pending.
+
+See the [development record](evidence/2026-11-07/go-export-set-offline-development.json)
+and [operator instructions](docs/go-export-sets.md). Explicit selected roots do
+not prove automatic dependency/permission/provenance closure, public checksum
+authority or current scanner/destination admission. Those receipt flags remain
+false. Separate-host common-graph qualification and every remaining export case,
+environment and full GOAL4.1 requirement remain open. No primary/customer/sibling
+or release/package/image changes are implied.
 
 ## Current implementation and qualification boundary
 
@@ -85,7 +124,7 @@ checksum7d786d8f03fa6ba8b75b2c114ff13ac2f288a1792856b94fc7e3e57a769ffeadhas
 forced-RLS immutable tenant roots and exact expiry-index admission. Native old-byte/
 receipt/rights/index/worker/delivery/collection proof remains required. The stopped
 primary remains schema11with5483878bqualified binaries and ten original receipts.
-Complete the private native fileproxy/fullclosure/current destination scanner/
+Complete fullclosure/current destination scanner/
 import/provenance/console/lifecycle/provider/platform/production outcome, every
 export case/environment and all450capabilities/41families/laterGOAL4.1scope.
 
@@ -161,7 +200,8 @@ consistency now passes both component and actual verifier qualification.
 
 ## Protected state and history
 
-All 16 source migrations remain frozen. Primary is stopped at schema 11 with
+The first16migration definitions remain frozen; appended17is unchanged and its
+whole native qualification is pending. Primary is stopped at schema11with
 qualified `5483878b211f9d30ebf4e72a9bc6ed20fc9d7040` binaries and ten receipts
 unchanged. New local binaries go under `.cache/`; `.private/` remains 0700 and
 both directories stay ignored. No credential values, customer/sibling change,

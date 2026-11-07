@@ -119,8 +119,8 @@ The output's parent must already be owner-private. Keep tokens and client config
 outside the collection. Retained files are manifest.json, checkpoint.json,
 checkpoint.sig, signer-public.pem, journal.jsonl and root.NNN.zip/mod/info for
 every zero-based original root, plus immutable bindings.json and final receipt.json.
-The directory is flat retained input for the future complete native file proxy;
-it supplies no current destination admission or automatic dependency selection.
+The directory is flat retained input for the native file proxy below. It supplies
+no current destination admission or automatic dependency selection.
 
 An interruption keeps private checkpointed bytes and emits no new success result.
 Read current set status, explicitly renew if needed, then repeat with the same
@@ -143,3 +143,48 @@ the 16,384 network-request ceiling. The separate journal byte/time budgets apply
 before the HTTP/copy/inspection deadline. Source expiry and 90-second transfer
 leases still apply. Metadata is bounded to 512 KiB and directory enumeration to 780
 entries. Actual throughput/large-volume/Windows qualification remains required.
+
+## Prepare one private native file proxy
+
+`go-export-set-offline` independently verifies the complete retained journal and
+original common creation again, using your separately selected signer/head. It
+then copies every selected original into native Go proxy paths, retains all seven
+original proof/collection metadata files, and checks the ZIP/mod/info consistency
+and native h1 identities. It needs no registry connection or client credentials.
+
+```sh
+cratectl go-export-set-offline \
+  --collection-directory '/private/path/collected common set' \
+  --set-id <exact-set-id> --output-directory '/private/path/offline common set' \
+  --journal-tenant <tenant> --journal-event-sequence <creation-sequence> \
+  --journal-through <exact-head-sequence> --journal-through-hash <exact-head-hash> \
+  --checkpoint-key-file /private/path/separately-trusted-public.pem
+```
+
+Select the key through an independent trust channel. The command uses only the
+collection's exact journal.jsonl/checkpoint.json/checkpoint.sig for the other
+proof inputs. Merely copying signer-public.pem or receipt.json grants no trust.
+Its parent and output must be owner-private, and output must be outside the
+collection. Keep the original directory unchanged during preparation.
+
+The command stages everything under `staging/`, syncs files and directories, then
+atomically publishes `bundle/`. Use the receipt's exact `goproxy` file URL, which
+points to `bundle/proxy`. `bundle/proof` retains original proof and collection
+metadata; `bundle/receipt.json` records the complete selected originals and hashes.
+Lists and latest information describe this selected set only. No package content
+is extracted or executed by cratectl.
+
+A failed or interrupted command emits no complete success result. Keep its
+private state and repeat the same command with `--resume`; matching partial bytes
+are checked before appending. Corrupt or unknown state is preserved and refused.
+A completed replay rechecks source and output without repairing published data,
+and returns its original receipt byte for byte, including after a lost final
+acknowledgement. Applications must accept only a complete successful result.
+
+The receipt's dependency_closure, checksum_authority_verified and
+current_registry_admission remain false. Explicitly including a graph does not
+prove automatic dependency/permission/provenance closure or destination scanning.
+For the declared private download profile, select exactly this file proxy and
+disable VCS/toolchain/network fallback. Public checksum authority, full closure,
+independent host/platform/scale and destination admission require their own proof.
+The new native journey is not qualified until the exact source passes GitHub.

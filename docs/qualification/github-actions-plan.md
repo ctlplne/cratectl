@@ -7,6 +7,40 @@ committed scope under section4.1. This plan assigns work to suitable hosts and
 defines acceptance. Broad readiness, security and packaging remain unqualified.
 A selected CI campaign is a scoped result, not full product parity.
 
+## Current replay and next source
+
+Exact `a331612316ef77186055ca61da92cc8f06eb0a87` replays all31original native jobs
+across eight workflows after the source-pinned schema guard repair.29jobs have
+succeeded; both full PostgreSQL race jobs remain running at the last API check.
+Keep those handles and preserve originalb937failures. Accept the whole expanded
+inventory before treating schema17/common durability/collection as qualified.
+
+The next source adds ADR0065's complete private native file proxy for every
+explicitly selected common root. Seven local filesystem/trust/parser regressions
+and the bounded metadata fuzzer cover interrupted state, corrupt prefixes,
+published replay, ambiguous metadata and independent-trust refusals. Native
+qualification requires284PostgreSQL/106namedGo/62fuzz, all16historical binaries/
+21upgrade reports and every other selected original profile.
+
+Run the new actual8module graph journey inside existing Linux x86/ARM Go jobs and
+both full PostgreSQL suites, normally and under race. It creates/approves the
+common selection through real PostgreSQL/CAS, collects through TLS under an
+external OpenSSL-signed complete journal, then stops the registry. The actual
+CLI and pinned stockGo run in independently observed empty kernel network
+namespaces under the original ordinary UID. A4096byte kernel pipe deterministically
+blocks the final receipt acknowledgement for SIGKILL/exact replay. Corrupt later
+source bytes must refuse without rewriting the historical receipt. Never compile
+or execute package contents. The developer ARM host compiles the tagged journey;
+actual native clients and services execute on GitHub.
+
+This proves the explicitly selected graph only. Next extend the separate x86
+producer/ARM consumer with common collections, preserving every original16stage
+portable control and independent signer/head channel. Then finish automatic
+dependency/permission/provenance/authority selection, current scanning/import and
+operator outcomes. A single VM's empty namespace does not prove independent hosts,
+an offline installer, provider failure, Windows ACLs, power loss or production scale.
+Those requirements and all450capabilities/41families/laterGOAL4.1 remain open.
+
 ## Authority and current sources
 
 Work and commits stay on `main`. Before every commit, verify both author and

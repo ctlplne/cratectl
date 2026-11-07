@@ -4,6 +4,7 @@
 package server
 
 import (
+	"archive/zip"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -30,6 +31,176 @@ import (
 	"ctlplne.dev/cratectl/internal/store"
 	"github.com/jackc/pgx/v5"
 )
+
+// Real PostgreSQL/common snapshot/TLS collection/external signer, followed by
+// actual pinned stock Go inert downloads with the registry listener stopped.
+// The child records its empty network namespace before every offline command.
+func TestGoModuleCommonSetOfflineNativeGraphAndUncertainAcknowledgement(t *testing.T) {
+	s, _, token, admin := schemaServer(t)
+	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Minute)
+	defer cancel()
+	private := t.TempDir()
+	if err := os.Chmod(private, 0700); err != nil {
+		t.Fatal(err)
+	}
+	root, err := filepath.Abs("../..")
+	if err != nil {
+		t.Fatal(err)
+	}
+	binaries := os.Getenv("CRATECTL_QUALIFICATION_BIN_DIR")
+	if binaries == "" {
+		t.Fatal("actual candidate CLI directory required")
+	}
+	if !filepath.IsAbs(binaries) {
+		binaries = filepath.Join(root, binaries)
+	}
+	cli := filepath.Join(binaries, "cratectl")
+	write := func(name string, raw []byte) string {
+		t.Helper()
+		path := filepath.Join(private, name)
+		if err := os.WriteFile(path, raw, 0600); err != nil {
+			t.Fatal(err)
+		}
+		return path
+	}
+	run := func(arguments ...string) []byte {
+		t.Helper()
+		cmd := exec.CommandContext(ctx, arguments[0], arguments[1:]...)
+		cmd.Dir = private
+		cmd.Env = []string{"PATH=" + os.Getenv("PATH"), "HOME=" + private}
+		cmd.WaitDelay = 2 * time.Second
+		out, diagnostic := new(collectionCommandOutput), new(collectionCommandOutput)
+		cmd.Stdout, cmd.Stderr = out, diagnostic
+		if err := cmd.Run(); err != nil {
+			t.Fatalf("owned native %s: %v; bounded stdout=%q stderr=%q", filepath.Base(arguments[0]), err, out.Bytes(), diagnostic.Bytes())
+		}
+		return bytes.Clone(out.Bytes())
+	}
+	mavenRepositories(t, s, admin, store.Repository{Name: "graph", Format: "go", Access: "restricted", RequireReview: true})
+	modules := make([]string, 8)
+	for n := range modules {
+		// Long canonical names make the final completion exceed4096bytes, which
+		// provides a deterministic kernel acknowledgement barrier in the child.
+		modules[n] = "go.cratectl.invalid/Owned/" + strings.Repeat("a", 100) + "/" + strings.Repeat("b", 100) + "/" + strings.Repeat("c", 100) + fmt.Sprintf("/node%d", n)
+	}
+	selection := store.GoExportSetRequest{LifetimeSeconds: 3600, MaxArtifactBytes: 32 << 20}
+	for n, name := range modules {
+		coordinate := gomodule.Coordinate{Module: name, Version: "v1.0.0"}
+		mod := []byte("module " + name + "\n\ngo 1.26.0\n")
+		if n+1 < len(modules) {
+			mod = append(mod, []byte("require "+modules[n+1]+" v1.0.0\n")...)
+		}
+		var archive bytes.Buffer
+		z := zip.NewWriter(&archive)
+		for _, item := range []struct {
+			name string
+			raw  []byte
+		}{{"go.mod", mod}, {"assets/owned.txt", []byte("owned inert graph asset")}} {
+			w, err := z.Create(name + "@v1.0.0/" + item.name)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, err := w.Write(item.raw); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if err := z.Close(); err != nil {
+			t.Fatal(err)
+		}
+		if response := goHTTP(t, s, token, "PUT", "/go/graph/"+coordinate.Prefix()+".zip", archive.Bytes()); response.Code != 201 {
+			t.Fatal("owned graph publication", n, response.Code)
+		}
+		selection.Entries = append(selection.Entries, store.GoExportSetEntry{Repository: "graph", Module: name, Version: "v1.0.0"})
+	}
+	for _, a := range goInventory(t, s, admin, "graph") {
+		if err := s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
+			_, err := store.Decide(ctx, tx, admin, "graph", a.Path, a.Digest, "allowed")
+			return err
+		}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	body, _ := json.Marshal(selection)
+	created := goHTTP(t, s, token, "POST", "/api/v1/go/export-sets", body, "Idempotency-Key", "owned-complete-native-graph")
+	var session store.GoExportSetSession
+	if created.Code != 201 || json.Unmarshal(created.Body.Bytes(), &session) != nil || session.RootCount != 8 {
+		t.Fatal("owned common graph creation", created.Code)
+	}
+	head, err := s.DB.JournalCheckpoint(ctx, admin)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var journal bytes.Buffer
+	query := store.JournalRange{Through: head.Sequence, ThroughHash: head.Hash, Limit: 7}
+	for {
+		page, err := s.DB.JournalPage(ctx, admin, query)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := json.NewEncoder(&journal).Encode(page); err != nil {
+			t.Fatal(err)
+		}
+		if !page.More {
+			break
+		}
+		query.After, query.AfterHash = page.NextAfter, page.NextHash
+	}
+	statement, err := crypt.JournalCheckpointBytes(head)
+	if err != nil {
+		t.Fatal(err)
+	}
+	journalPath, statementPath := write("journal.jsonl", journal.Bytes()), write("checkpoint.json", statement)
+	privateKey, publicKey, signature := filepath.Join(private, "external-private.pem"), filepath.Join(private, "independent-public.pem"), filepath.Join(private, "external.sig")
+	openssl, err := exec.LookPath("openssl")
+	if err != nil {
+		t.Fatal("external OpenSSL required")
+	}
+	run(openssl, "genpkey", "-algorithm", "ED25519", "-out", privateKey)
+	if err := os.Chmod(privateKey, 0600); err != nil {
+		t.Fatal(err)
+	}
+	run(openssl, "pkey", "-in", privateKey, "-pubout", "-out", publicKey)
+	run(openssl, "pkeyutl", "-sign", "-rawin", "-inkey", privateKey, "-in", statementPath, "-out", signature)
+	run(openssl, "pkeyutl", "-verify", "-rawin", "-pubin", "-inkey", publicKey, "-in", statementPath, "-sigfile", signature)
+	identity, err := crypt.LocalIdentity("127.0.0.1", time.Now().UTC())
+	if err != nil {
+		t.Fatal(err)
+	}
+	ca, cert, key := write("server-ca.pem", []byte(identity.CA)), write("server.pem", []byte(identity.Certificate)), write("server-key.pem", []byte(identity.Key))
+	listener, err := net.Listen("tcp", "127.0.0.1:38443")
+	if err != nil {
+		t.Fatal(err)
+	}
+	server := &http.Server{Handler: s, ReadHeaderTimeout: 10 * time.Second}
+	defer server.Close()
+	done := make(chan error, 1)
+	go func() { done <- server.ServeTLS(listener, cert, key) }()
+	tokenFile := write("admin.token", []byte(token))
+	config, _ := json.Marshal(configfile.Client{Version: 1, URL: "https://127.0.0.1:38443", TokenFile: tokenFile, CAFile: ca})
+	configPath := write("client.json", config)
+	run(cli, "go-export-set-collect", "--config", configPath, "--set-id", session.ID, "--generation", "1", "--output-directory", filepath.Join(private, "collection"), "--journal-file", journalPath, "--journal-tenant", admin.Tenant, "--journal-event-sequence", strconv.FormatInt(session.CreatedSequence, 10), "--journal-through", strconv.FormatInt(head.Sequence, 10), "--journal-through-hash", head.Hash, "--checkpoint-file", statementPath, "--checkpoint-signature-file", signature, "--checkpoint-key-file", publicKey)
+	if err := server.Close(); err != nil {
+		t.Fatal(err)
+	}
+	select {
+	case err := <-done:
+		if !errors.Is(err, http.ErrServerClosed) {
+			t.Fatal("owned registry did not close", err)
+		}
+	case <-ctx.Done():
+		t.Fatal("owned registry stop timed out")
+	}
+	fixture, _ := json.Marshal(map[string]any{"cli": cli, "go": filepath.Join(root, ".cache/go/bin/go"), "set_id": session.ID, "tenant": admin.Tenant, "created_sequence": session.CreatedSequence, "through": head, "root_module": modules[0]})
+	write("fixture.json", fixture)
+	python, err := exec.LookPath("python3")
+	if err != nil {
+		t.Fatal("native Python required")
+	}
+	result := run(python, filepath.Join(root, "scripts/ci/go_set_offline_native.py"), private)
+	if !bytes.Contains(result, []byte("Common-set offline native graph")) {
+		t.Fatal("native graph journey omitted its completion")
+	}
+}
 
 type collectionCommandOutput struct{ bytes.Buffer }
 

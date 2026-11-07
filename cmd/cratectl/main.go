@@ -21,6 +21,9 @@ import (
 )
 
 func run() error {
+	if len(os.Args) > 1 && os.Args[1] == "go-export-set-offline" {
+		return runGoExportSetOffline(os.Args[2:], os.Stdout)
+	}
 	if len(os.Args) > 1 && os.Args[1] == "go-export-set-collect" {
 		return runGoExportSetCollect(os.Args[2:], os.Stdout)
 	}

@@ -1,0 +1,116 @@
+{
+  "observed_at": "2026-11-07T17:59:42.856336+00:00",
+  "source_parent": "a331612316ef77186055ca61da92cc8f06eb0a87",
+  "source_dirty": true,
+  "state": "implemented; local ARM stand-ins pass; actual native common graph qualification pending",
+  "profile": "cratectl.go.hosted.set-offline.v1",
+  "implementation": [
+    {
+      "path": "cmd/cratectl/main.go",
+      "bytes": 8062,
+      "sha256": "6490ad33ab22cecc15ce229955310c73264e5aee80dd028095946ff3a46dc7da"
+    },
+    {
+      "path": "cmd/cratectl/go_export_set_offline.go",
+      "bytes": 34419,
+      "sha256": "c2d0d7ca983e986eb67120e328010b98e23f3f7ac23a3e1acfbf9c270259c30e"
+    },
+    {
+      "path": "cmd/cratectl/go_export_set_offline_test.go",
+      "bytes": 20201,
+      "sha256": "6364be0c96ff33e38da4615015eae81eebdaad9c621cd41b1613e6af26bdf8e8"
+    },
+    {
+      "path": "internal/server/go_module_export_collect_integration_test.go",
+      "bytes": 60324,
+      "sha256": "ac87467b177f4c6cec5c6e0cf3136caee3791c62023570ed4b1c498645cdf8f6"
+    },
+    {
+      "path": "scripts/ci/go_set_offline_native.py",
+      "bytes": 8545,
+      "sha256": "c5f439dedd0dc1e1e64e7e90e8d41964d4397489c56f34a9a828007986512752"
+    },
+    {
+      "path": "docs/adr/0065-common-set-native-file-proxy.md",
+      "bytes": 3021,
+      "sha256": "07c4d891e789bc240ae7f7f4d9ece54a5664632c02b989914e501085cb821095"
+    },
+    {
+      "path": "docs/go-export-sets.md",
+      "bytes": 10997,
+      "sha256": "c74a0994f165c5a530c6217d474c0efb724c032579d16b1d25692e90b9b84790"
+    }
+  ],
+  "first_failure": "evidence/2026-11-07/go-export-set-offline-prefix-first-failure.json",
+  "local_checks": {
+    "build_unit_race_lint": {
+      "state": "passed",
+      "original_local_log": {
+        "path": ".cache/go-set-offline-gates.log",
+        "bytes": 13279,
+        "sha256": "82800c9151b90d8fd7b3576bc78a2a800922d751b46f794a5d1fa41308cb036a"
+      },
+      "command": "make build test race lint BINDIR=.cache/go-set-offline-development",
+      "limits": "Authorized owned loopback HTTP/filesystem stand-ins only. No actual PostgreSQL, stock SDK, external signer or browser campaign."
+    },
+    "tagged_integration": {
+      "state": "compile only; no actual tests run",
+      "normal": {
+        "path": ".cache/go-set-offline-tagged-compile.log",
+        "bytes": 67,
+        "sha256": "8f3bc5ce3fae3ed1986d5790c21cb9e6097ccc114279671c99c6a1d0f3096e7c"
+      },
+      "race": {
+        "path": ".cache/go-set-offline-tagged-race-compile.log",
+        "bytes": 67,
+        "sha256": "0bc15591dc6b04202d9d9ed947f21b1e24d532398afc7d1a707ba097f43cec15"
+      },
+      "vet": {
+        "path": ".cache/go-set-offline-tagged-vet.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "python_helper": "AST/bytecode compilation passed; no local actual helper journey execution",
+    "focused_seven_offline_unit_functions": {
+      "state": "all seven pass normally and in complete make race gate",
+      "normal": {
+        "path": ".cache/go-set-offline-unit.log",
+        "bytes": 46,
+        "sha256": "d27586526a5708cbd30a9cc4a30987fa961f7f454552f19c070878c052c3811b"
+      },
+      "initial_six_function_race": {
+        "path": ".cache/go-set-offline-unit-race.log",
+        "bytes": 46,
+        "sha256": "eab9c2aa1455cd4a82bda51c3b7d52e667a644a2bdd25f8b8d729c6b42e65867"
+      },
+      "race_coverage": "The aggregate complete make race gate includes the new seventh metadata negative function and fuzz seeds; the separate initial six-function race log predates parser addition."
+    },
+    "metadata_fuzz": {
+      "state": "passed",
+      "executions": 287,
+      "workers": 2,
+      "requested_seconds": 5,
+      "original_local_log": {
+        "path": ".cache/go-set-offline-metadata-fuzz.log",
+        "bytes": 411,
+        "sha256": "f86de95169cf5b76e67d4c09eff2d3fecce3e4f797603114d1b338c6b702a8bd"
+      }
+    }
+  },
+  "native_required": {
+    "full_pg_functions_each_linux_normal_race": 284,
+    "named_go_functions_each_linux_normal_race": 106,
+    "fuzz_targets_each_native_source_host": 62,
+    "new_function": "TestGoModuleCommonSetOfflineNativeGraphAndUncertainAcknowledgement",
+    "scope": "Real PostgreSQL+CAS common8root snapshot/approval/TLS range collection/full journal/OpenSSL external signature. Registry stopped; CLI and pinnedGo1.27.3 download all eight explicitly selected transitive modules. Before each offline command observe a distinct empty kernel network namespace and original ordinary UID. Deterministic4096byte-pipe final acknowledgement SIGKILL, exact original receipt replay and late source corruption refusal. Never compile/execute package content.",
+    "state": "compiled only; actual GitHub results required"
+  },
+  "limits": [
+    "Selected roots complete does not imply automatic dependency/permission/provenance closure, public checksum authority, current scanner/destination admission or delivery. Those receipt flags remain false.",
+    "No local PostgreSQL/stock-client/external-signer/native-browser execution; x86 qualification only on actual native GitHub runners.",
+    "No Windows private ACL, power loss, provider, multi-host common graph, scale, offline installer, fullsecurity/packaging or broad readiness qualification. Original single-version16stage portable profile stays separate.",
+    "No schema change: first17definitions/checksums frozen; primary remains stopped schema11/5483878b/ten original receipts.",
+    "Entire450capabilities/41families/laterGOAL4.1 remains required."
+  ]
+}

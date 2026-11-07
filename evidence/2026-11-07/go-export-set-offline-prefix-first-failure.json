@@ -1,0 +1,19 @@
+{
+  "observed_at": "2026-11-07T17:59:42.855777+00:00",
+  "source_parent": "a331612316ef77186055ca61da92cc8f06eb0a87",
+  "source_dirty": true,
+  "profile": "owned-common-offline-filesystem-regression",
+  "state": "first owned unit failure retained from actual tool output",
+  "first_observation": {
+    "tool": "exec_command/write_stdin",
+    "session_id": 65575,
+    "exit_code": 1,
+    "output": "--- FAIL: TestCommonOfflineProxyResumesOnlyExactUnpublishedPrefixes (0.84s)\n    --- FAIL: TestCommonOfflineProxyResumesOnlyExactUnpublishedPrefixes/corrupt-prefix (0.12s)\n        go_export_set_offline_test.go:257: unsafe prefix overwritten <nil>\nFAIL\nFAIL\tctlplne.dev/cratectl/cmd/cratectl\t2.582s\nFAIL\n"
+  },
+  "cause": "The shared local copy primitive appends retained prefixes before the final full digest rejects a corrupt prefix. The new offline builder must preserve the exact corrupt partial state on refusal.",
+  "repair": "Before any append, compare the entire retained prefix against independently authenticated source bytes with fixed64KiB buffers and stable private-file identity. Apply to original and derived unpublished files. Published replay remains read-only.",
+  "limits": [
+    "Owned filesystem stand-in, not a native PG/SDK failure. Existing historical collector results keep their exact source scope.",
+    "The internal assembler fixture uses a real public signature over its own original journal, not over this synthetic common creation; CLI wrong-kind controls reject that substitution."
+  ]
+}
