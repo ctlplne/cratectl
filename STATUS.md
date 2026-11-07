@@ -1,5 +1,37 @@
 # cratectl execution status
 
+Exact `470ca74` now qualifies all 95 named Go PostgreSQL functions normally and
+under race, plus the original 312 stock-client checks on both actual GitHub Linux
+architectures. The new index regression requires the default planner, nonowner/
+nonsuperuser runtime without BYPASSRLS, one returned row and at most 64 shared
+query buffers through the declared terminal/future/other-tenant fixture. It also
+checks idle no-op, one acknowledged expiry, retained roots and tenant isolation.
+The declared schema-15 fixture preserves every tenant table/receipt and rejects
+missing or malformed indexes. This is bounded query work, not API creation
+throughput, a complete independently bound fixture-manifest history or broad scale.
+
+Both native historical lanes pass 15 rebuilt binaries/20 upgrade reports each,
+including 96 actual old-schema-15 export preservation checks. The dedicated
+upgrade tool profile repairs/replays DEFECT0130 on both hosts without unused
+Maven/JDK/PyPI downloads. The source-16 separate x86 producer/ARM consumer also
+passes all 16 stages with exact signed history/file/runner/network bindings.
+See the source-specific Go, upgrade and portability checkpoints.
+
+The whole 31-job/eight-workflow campaign is not accepted. The original ARM
+Ant/Ivy installer times out connecting to downloads.apache.org before its stock
+Ivy journey runs (DEFECT0131). The original log does not identify which of its two
+sequential archive fetches failed; zero-report summary, skipped stage and original
+diagnostic artifact identities are retained. Next: bounded reviewed primary/archive
+fetches and exact public-archive caching, retaining original versions/SHA512 and
+all assertions. Continue full 273-PG normal/race, three-host source/55fuzz,
+19-main/151 Chromium, remaining JVM/OCI/library/focused acceptance from actual jobs.
+Latest fully accepted selected campaign remains fca2d4a. All 450 capabilities/
+41 families/later GOAL4.1 scope and readiness/security/packaging remain incomplete.
+All 16 migrations are frozen; primary 11/5483878b/ten receipts remain untouched.
+Original DEFECT0126 strict SDK and DEFECT0122 browser intermittent remain open.
+
+Earlier source-specific records follow; current exact-source checkpoints above govern.
+
 Current source parent is `15a49d3`; schema 16 indexed export expiry is
 implemented but native unverified. ADR0053 and
 `evidence/2026-11-07/go-export-expiry-index-development.json` record the append-only

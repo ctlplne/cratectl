@@ -1386,9 +1386,18 @@
       "summary": "Controlled upgrade bootstrap unnecessarily depends on Maven and fails before qualification when both approved Apache transfers time out",
       "first_failure": "evidence/2026-11-07/github-15a49d3-upgrades-first-failure.json",
       "candidate": "15a49d3ca663a936e7459b1687ff77ecb49fdbc6",
-      "state": "original retained; narrow bootstrap repair implemented but native unverified",
+      "state": "repaired and replayed on both native Linux hosts at470ca74",
       "repair": "Dedicated upgrades client set keeps stock npm, pinned ORAS, real PostgreSQL and all historical/native assertions; omits unused Java/Maven/PyPI tools. No weaker downloads, timeouts or upgrade checks.",
-      "limits": "One actual ARM bootstrap failure; zero reports and dependent skipped stages are not passes. Replay requires new exact-source GitHub jobs."
+      "limits": "One actual ARM bootstrap failure; zero reports and dependent skipped stages are not passes. Replay requires new exact-source GitHub jobs.",
+      "replay": "evidence/2026-11-07/github-470ca74-upgrades-checkpoint.json"
+    },
+    {
+      "id": "DEFECT.0131",
+      "summary": "Single-origin ARM Ant/Ivy installer download connection times out before native Ivy qualification",
+      "candidate": "470ca7456c0008657c0e6e0f9f9a7a1039ac3f6d",
+      "first_failure": "evidence/2026-11-07/github-470ca74-ivy-first-failure.json",
+      "state": "original retained; bounded primary/archive/cache repair required",
+      "limits": "No native Ivy journey ran; failed archive not identified by original log. Preserve package versions/SHA512/size bounds and every original client assertion."
     }
   ]
 }

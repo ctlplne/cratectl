@@ -1,6 +1,8 @@
 # 0053: Bound export expiry lookup through retained history
 
-Date: 2026-11-07. State: implemented; native qualification pending.
+Date: 2026-11-07. State: named source16 native cases verified at470ca74; full operations scope incomplete.
+
+See [95Go normal/race](../../evidence/2026-11-07/go-module-470ca74-native-checkpoint.json), [native upgrades](../../evidence/2026-11-07/github-470ca74-upgrades-checkpoint.json) and [separate-host portable profile](../../evidence/2026-11-07/go-export-portability-470ca74-checkpoint.json). Full273PG and whole31job campaign acceptance remain separate; original ARM Ant/Ivy bootstrap fails before client qualification.
 
 An export keeps its manifest after expiry so an operator can explain the original
 transfer. The previous worker query returned one session but could inspect and

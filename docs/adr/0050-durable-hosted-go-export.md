@@ -1,9 +1,16 @@
 # Durable hosted Go export snapshots
 
-Status: implemented but native unverified. ARM unit/race/build/lint and bounded
-parser development checks pass. New PostgreSQL/API/OpenSSL/CLI/SDK, historical
-upgrade and Chromium cases must execute on the exact clean GitHub candidate.
-This is one hosted version, not complete dependency/authority/permissions export.
+Status: named source-15 native cases verified; full export scope incomplete.
+Exact `15a49d3` passes 93 named Go PostgreSQL functions normally/under race and
+312 stock checks on both Linux architectures, plus a separate 16-stage x86
+producer/ARM consumer. See the [Go checkpoint](../../evidence/2026-11-07/go-module-15a49d3-native-checkpoint.json)
+and [portable checkpoint](../../evidence/2026-11-07/go-export-portability-15a49d3-checkpoint.json).
+Historical source-15 upgrades and main Chromium proof remain source-specific;
+the complete 15a49d3 campaign is not accepted because ARM upgrade bootstrap fails
+before qualification. [ADR0053](0053-indexed-export-expiry.md) adds source-16
+indexed expiry and old schema-15 export preservation; its new native campaign
+is in progress. This decision below describes the original schema-15 profile,
+one hosted version rather than complete dependency/authority/permissions export.
 
 ## Commit immutable identity after storage is durable
 

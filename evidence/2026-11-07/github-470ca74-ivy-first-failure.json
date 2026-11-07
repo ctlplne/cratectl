@@ -1,0 +1,116 @@
+{
+  "candidate": "470ca7456c0008657c0e6e0f9f9a7a1039ac3f6d",
+  "observed_at": "2026-11-07T09:44:41.692760+00:00",
+  "defect": "DEFECT.0131",
+  "state": "original ARM Ant/Ivy installer timeout retained; no native Ivy journey ran",
+  "run_id": 42359745416,
+  "job_id": 128365400555,
+  "url": "https://github.com/ctlplne/cratectl/actions/runs/42359745416/job/128365400555",
+  "runner_labels": [
+    "ubuntu-24.04-arm"
+  ],
+  "steps": [
+    {
+      "name": "Set up job",
+      "conclusion": "success"
+    },
+    {
+      "name": "Initialize containers",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/checkout@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-go@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-python@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-java@v5",
+      "conclusion": "success"
+    },
+    {
+      "name": "Prepare native registry, PostgreSQL and pinned Ant/Ivy",
+      "conclusion": "failure"
+    },
+    {
+      "name": "Stock Ivy publication, transitive resolution, policy and recovery",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Encrypt bounded JVM failure observations for owner diagnosis",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/upload-artifact@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Prepare bounded native evidence summary",
+      "conclusion": "failure"
+    },
+    {
+      "name": "Run actions/upload-artifact@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/setup-java@v5",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/setup-python@v7",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Run actions/setup-go@v7",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Run actions/checkout@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Stop containers",
+      "conclusion": "success"
+    },
+    {
+      "name": "Complete job",
+      "conclusion": "success"
+    }
+  ],
+  "safe_summary": {
+    "path": "evidence/2026-11-07/ci-summary-ivy-arm64-470ca74-first-failure.json",
+    "sha256": "8f9fc5df8eebd0d6f156dc9ee5bbccebae9c76dfc5be83aa8b2ee9fea80cca6c",
+    "github_artifact_id": 13569418009,
+    "github_artifact_digest": "sha256:dfeffe9049f12748a43ef2cbd41ccc4a858f35315c12ccc1fd2ad4ac1c68ad8b",
+    "reports": 0
+  },
+  "private_original_log": {
+    "path": ".private/ci-diagnostics/470ca74-campaign/128365400555.txt",
+    "sha256": "28dd3a47cc7f2b6001ca32eef29dcce5ea6259ad4217dd0f6730a4f98b3808dc",
+    "bytes": 54523
+  },
+  "original_diagnostic_artifact": {
+    "github_artifact_id": 13569517239,
+    "github_artifact_digest": "sha256:dd5cc3bad725276f2c62b7bbe4e2e48b79fb23803d2ddc1d55c84ce839a7c41c",
+    "files": [
+      {
+        "path": ".private/ci-diagnostics/470ca74-campaign/artifacts/encrypted-jvm-diagnostics-ivy-arm64/ci-native-diagnostics.json",
+        "bytes": 226,
+        "sha256": "e7eb05b1c4b9fa01612b3cc5dbc3fb36544cefabd8ea8273f09e20c0ef8bc0ea"
+      }
+    ]
+  },
+  "observed_failure": "The common Ant/Ivy installer curl fails28 connecting to downloads.apache.org:443 after268903ms. The log does not identify which of its two sequential archive downloads failed. Native binaries/PostgreSQL bootstrap had completed; stock Ivy step was skipped.",
+  "next": "Add reviewed bounded primary/archive Apache sources, original SHA512 verification and exact-public-archive caching. Preserve original Ant/Ivy versions, assertions, archive size bounds and fail closed on a completed digest mismatch.",
+  "limits": [
+    "This is an installer dependency failure, not an executed Ivy product journey. Empty summary and skipped stock-client step are not passes.",
+    "No Apache-wide availability conclusion or exact failed archive identity is inferred. No retry, timeout increase, different package or weaker digest is a repair.",
+    "Source16 Go95 normal/race/312stock, both native upgrades and16stage portability have independent accepted evidence; the whole31job campaign is not accepted."
+  ]
+}

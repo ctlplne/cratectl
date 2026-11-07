@@ -5,8 +5,11 @@ GOPROXY. Its original publication mode is qualified on both native GitHub Linux
 architectures at1a61120:81named Go PostgreSQL functions normally/race and312stock
 checks. Both original d179222 cache-cleanup failures and skipped stages remain
 retained; the exact fixture repair replays with standard SDK read-only cache
-behavior. The new schema15 producer and manifest mode below remain native
-unverified. See ADR0050 and the source-specific native checkpoint.
+behavior. At exact `15a49d3`, the schema-15 producer and manifest mode pass 93
+named PostgreSQL functions normally/under race on both Linux architectures. The
+separate x86-producer/ARM-consumer profile passes all 16 stages. Schema-16 indexed
+expiry is implemented and awaiting its own complete native qualification. See
+[ADR0050](adr/0050-durable-hosted-go-export.md) and the source-specific checkpoints.
 
 You need the original ZIP, `go.mod` and `.info` bytes, the exact original
 `go.module.published` event sequence, a complete journal containing that event,
@@ -19,7 +22,7 @@ The journal signer authenticates historical publication. Approve these exact
 packages for your disconnected environment first. This command cannot determine
 current server permissions, scan approval, revoked/latest history or whether you
 have every dependency. It does not supply a SumDB approval or import into a live
-registry. The new single-version durable producer is implemented but native unverified;
+registry. The single-version durable producer has named source-15 native proof;
 complete policy/proof/permission/dependency bundles remain open in
 [ADR0050](adr/0050-durable-hosted-go-export.md).
 
@@ -147,9 +150,11 @@ The exact source `15a49d3` passed both actual GitHub jobs and all 16 stages. See
 This verifies one owned hosted version; it does not complete dependency closure,
 destination import or a customer-selected trust-provider integration.
 
+Source16 named95Go normal/race and both historical upgrade profiles now pass at470ca74. The whole campaign remains unaccepted because of the separate ARM Ant/Ivy bootstrap failure.
+
 Schema 16 adds an ordered partial index so an idle expiry worker reads only the
 earliest nonterminal session. It requires stopped-registry migration and matching
-binaries; its new native qualification is pending. Existing schema-15 receipts,
+binaries; its named native proof is retained at470ca74; broad operations/clock/scale qualification remains incomplete. Existing schema-15 receipts,
 manifest/package bytes, deadlines and payload roots must survive unchanged. The
 primary schema-11 environment has not been migrated or switched. See
 [ADR0053](adr/0053-indexed-export-expiry.md).
