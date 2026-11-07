@@ -261,11 +261,11 @@ def summarize(root, environment):
                     raise SystemExit('Schema evidence must be a bounded positive integer')
                 entry[key] = report[key]
         if 'baselines' in report:
-            if not isinstance(report['baselines'], list) or len(report['baselines']) > 14:
+            if not isinstance(report['baselines'], list) or len(report['baselines']) > 15:
                 raise SystemExit('Historical build evidence exceeds its inventory bound')
             entry['baselines'] = []
             for baseline in report['baselines']:
-                if baseline.get('schema') not in (None, *range(2, 15)) or not re.fullmatch('[0-9a-f]{40}', baseline.get('source', '')) or not re.fullmatch('[0-9a-f]{64}', baseline.get('binary_sha256', '')):
+                if baseline.get('schema') not in (None, *range(2, 16)) or not re.fullmatch('[0-9a-f]{40}', baseline.get('source', '')) or not re.fullmatch('[0-9a-f]{64}', baseline.get('binary_sha256', '')):
                     raise SystemExit('Historical build evidence has an invalid source or binary digest')
                 entry['baselines'].append({key: baseline[key] for key in ('schema', 'source', 'binary_sha256')})
         summary['records'].append(entry)

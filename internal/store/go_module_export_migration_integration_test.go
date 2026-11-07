@@ -15,19 +15,32 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-// This declared schema14 SQL fixture is distinct from the workflow's real
-// qualified809e826 historical binary and stock-client maintenance journey.
+// These declared old-schema SQL fixtures are distinct from the workflow's
+// qualified historical daemons, real export manifests and stock-client journey.
 func TestGoModuleExportSchema14UpgradePreservesReceiptsRowsAndRLS(t *testing.T) {
+	testGoExportOldSchemaUpgrade(t, 14)
+}
+
+func TestGoModuleExportSchema15UpgradePreservesRowsAndRequiresExactExpiryIndex(t *testing.T) {
+	testGoExportOldSchemaUpgrade(t, 15)
+}
+
+func testGoExportOldSchemaUpgrade(t *testing.T, baseline int) {
+	t.Helper()
 	d := testdb.New(t)
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	steps := currentMigrations()
-	if err := migrateSteps(ctx, d.OwnerDSN, MigrationOptions{}, steps[:14]); err != nil {
+	if err := migrateSteps(ctx, d.OwnerDSN, MigrationOptions{}, steps[:baseline]); err != nil {
 		t.Fatal(err)
 	}
 	beforePlan, err := MigrationPlan(ctx, d.OwnerDSN)
-	if err != nil || !reflect.DeepEqual(beforePlan.Pending, []int{15}) || len(beforePlan.Applied) != 14 {
-		t.Fatal("prior14 plan", err)
+	pending := []int{16}
+	if baseline == 14 {
+		pending = []int{15, 16}
+	}
+	if err != nil || !reflect.DeepEqual(beforePlan.Pending, pending) || len(beforePlan.Applied) != baseline {
+		t.Fatal("prior schema plan", err)
 	}
 	owner, err := pgx.Connect(ctx, d.OwnerDSN)
 	if err != nil {
@@ -55,6 +68,16 @@ func TestGoModuleExportSchema14UpgradePreservesReceiptsRowsAndRLS(t *testing.T) 
 			t.Fatal("owned declared prior rows", err)
 		}
 	}
+	if baseline == 15 {
+		for _, sql := range []string{
+			`INSERT INTO cratectl.artifact_exports(tenant,id,repository,source_revision,module,version,actor,manifest_digest,manifest_size,state,generation,created_sequence,change_sequence,expires_at,max_expires_at)VALUES('schema14-export',repeat('c',64),'retained',0,'go.cratectl.invalid/Owned/fixture','v1.0.0','operator',repeat('b',64),17,'acknowledged',2,1,1,clock_timestamp()+interval '1 hour',clock_timestamp()+interval '23 hours')`,
+			`INSERT INTO cratectl.artifact_export_items(tenant,export_id,ordinal,path,digest,size)VALUES('schema14-export',repeat('c',64),0,'original.bin',repeat('a',64),7)`,
+		} {
+			if _, err := tx.Exec(ctx, sql); err != nil {
+				t.Fatal("owned declared15 export rows", err)
+			}
+		}
+	}
 	if err := tx.Commit(ctx); err != nil {
 		t.Fatal(err)
 	}
@@ -69,9 +92,13 @@ func TestGoModuleExportSchema14UpgradePreservesReceiptsRowsAndRLS(t *testing.T) 
 		if _, err := tx.Exec(ctx, `SELECT set_config('cratectl.tenant','schema14-export',true)`); err != nil {
 			t.Fatal(err)
 		}
-		for _, name := range []string{"repositories", "artifacts", "events", "jobs", "mutations", "inventory_entries"} {
+		tables := []string{"tenants", "repositories", "artifacts", "events", "jobs", "mutations", "inventory_entries"}
+		if baseline == 15 {
+			tables = schemaTablesV15
+		}
+		for _, name := range tables {
 			expr := "to_jsonb(x)"
-			if after && name == "inventory_entries" {
+			if after && baseline == 14 && name == "inventory_entries" {
 				expr += "-'export_references'"
 			}
 			var raw string
@@ -87,19 +114,19 @@ func TestGoModuleExportSchema14UpgradePreservesReceiptsRowsAndRLS(t *testing.T) 
 		t.Fatal(err)
 	}
 	afterPlan, err := MigrationPlan(ctx, d.OwnerDSN)
-	if err != nil || len(afterPlan.Applied) != 15 || !afterPlan.SafetyValid || !reflect.DeepEqual(afterPlan.Applied[:14], beforePlan.Applied) || !reflect.DeepEqual(before, snapshot(true)) {
-		t.Fatal("schema15 changed old durable bytes or receipts", err)
+	if err != nil || len(afterPlan.Applied) != 16 || !afterPlan.SafetyValid || !reflect.DeepEqual(afterPlan.Applied[:baseline], beforePlan.Applied) || !reflect.DeepEqual(before, snapshot(true)) {
+		t.Fatal("schema16 changed old durable bytes or receipts", err)
 	}
 	runtime, err := pgx.Connect(ctx, d.RuntimeDSN)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer runtime.Close(ctx)
-	if err := checkSchemaPlan(ctx, runtime, steps[:14], true); !errors.Is(err, ErrSchemaIncompatible) {
-		t.Fatal("schema14 runtime admitted15", err)
+	if err := checkSchemaPlan(ctx, runtime, steps[:baseline], true); !errors.Is(err, ErrSchemaIncompatible) {
+		t.Fatal("old runtime admitted16", err)
 	}
 	if err := checkSchemaPlan(ctx, runtime, steps, true); err != nil {
-		t.Fatal("matching15 runtime refused", err)
+		t.Fatal("matching16 runtime refused", err)
 	}
 	for _, name := range []string{"artifact_exports", "artifact_export_items"} {
 		var n int
@@ -108,7 +135,45 @@ func TestGoModuleExportSchema14UpgradePreservesReceiptsRowsAndRLS(t *testing.T) 
 		}
 	}
 	if err := Migrate(ctx, d.OwnerDSN); err != nil {
-		t.Fatal("schema15 no-op replay", err)
+		t.Fatal("schema16 no-op replay", err)
+	}
+	if baseline == 15 {
+		for name, definition := range map[string]string{
+			"missing":              "",
+			"wrong order":          `CREATE INDEX artifact_exports_due ON cratectl.artifact_exports(tenant,id,expires_at) WHERE state IN ('open','acknowledged')`,
+			"missing acknowledged": `CREATE INDEX artifact_exports_due ON cratectl.artifact_exports(tenant,expires_at,id) WHERE state='open'`,
+			"descending":           `CREATE INDEX artifact_exports_due ON cratectl.artifact_exports(tenant,expires_at DESC,id) WHERE state IN ('open','acknowledged')`,
+			"included payload":     `CREATE INDEX artifact_exports_due ON cratectl.artifact_exports(tenant,expires_at,id) INCLUDE(state) WHERE state IN ('open','acknowledged')`,
+		} {
+			t.Run(name, func(t *testing.T) {
+				if _, err := owner.Exec(ctx, `DROP INDEX cratectl.artifact_exports_due`); err != nil {
+					t.Fatal(err)
+				}
+				if definition != "" {
+					if _, err := owner.Exec(ctx, definition); err != nil {
+						t.Fatal(err)
+					}
+				}
+				if _, err := MigrationPlan(ctx, d.OwnerDSN); !errors.Is(err, ErrSchemaIncompatible) {
+					t.Fatal("migrator admitted altered expiry index", err)
+				}
+				if err := checkSchemaPlan(ctx, runtime, steps, true); !errors.Is(err, ErrSchemaIncompatible) {
+					t.Fatal("runtime admitted altered expiry index", err)
+				}
+				if definition != "" {
+					if _, err := owner.Exec(ctx, `DROP INDEX cratectl.artifact_exports_due`); err != nil {
+						t.Fatal(err)
+					}
+				}
+				if _, err := owner.Exec(ctx, goExportExpirySchema); err != nil {
+					t.Fatal(err)
+				}
+			})
+		}
+		if plan, err := MigrationPlan(ctx, d.OwnerDSN); err != nil || !plan.SafetyValid || !reflect.DeepEqual(plan.Applied, afterPlan.Applied) || !reflect.DeepEqual(before, snapshot(true)) {
+			t.Fatal("index repair changed original rows or receipts", err)
+		}
+		t.Logf("declared schema15 preserved %d tenant tables and15 receipts; exact schema16 index required", len(schemaTablesV15))
 	}
 	if _, err := owner.Exec(ctx, `ALTER TABLE cratectl.artifact_exports NO FORCE ROW LEVEL SECURITY`); err != nil {
 		t.Fatal(err)

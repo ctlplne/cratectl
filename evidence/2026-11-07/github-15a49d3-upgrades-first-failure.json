@@ -1,0 +1,129 @@
+{
+  "candidate": "15a49d3ca663a936e7459b1687ff77ecb49fdbc6",
+  "observed_at": "2026-11-07T09:19:36.026638+00:00",
+  "defect": "DEFECT.0130",
+  "state": "original bootstrap failure retained; no upgrade qualification ran in this job",
+  "run_id": 42357426599,
+  "job_id": 128358478117,
+  "url": "https://github.com/ctlplne/cratectl/actions/runs/42357426599/job/128358478117",
+  "runner_labels": [
+    "ubuntu-24.04-arm"
+  ],
+  "steps": [
+    {
+      "name": "Set up job",
+      "conclusion": "success"
+    },
+    {
+      "name": "Initialize containers",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/checkout@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-go@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-node@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-python@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-java@v5",
+      "conclusion": "success"
+    },
+    {
+      "name": "Cache pinned public ORAS archive",
+      "conclusion": "success"
+    },
+    {
+      "name": "Prepare disposable native tools and database",
+      "conclusion": "failure"
+    },
+    {
+      "name": "Rebuild and verify every pinned historical native server",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Legacy adoption with actual migration process interruption",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Retained lifecycle through every schema 2\u201314 upgrade",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Repair and recurring integrity upgrades",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Retention and scheduled-retirement upgrades",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Prepare bounded upgrade evidence summary",
+      "conclusion": "failure"
+    },
+    {
+      "name": "Run actions/upload-artifact@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Cache pinned public ORAS archive",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Run actions/setup-java@v5",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/setup-python@v7",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Run actions/setup-node@v7",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Run actions/setup-go@v7",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Run actions/checkout@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Stop containers",
+      "conclusion": "success"
+    },
+    {
+      "name": "Complete job",
+      "conclusion": "success"
+    }
+  ],
+  "safe_summary": {
+    "path": "evidence/2026-11-07/ci-summary-upgrades-arm64-15a49d3-first-failure.json",
+    "sha256": "cf0d4afc03b7d7f96f8868cf1c7bfa79738652a80a413d87707a1d2268c8c7a8",
+    "github_artifact_id": 13568610700,
+    "github_artifact_digest": "sha256:ce315786f11b5cf51b23930cde3ee9f063e008a6f47f8b573ee0ff95feb1f775",
+    "reports": 0
+  },
+  "private_original_log": {
+    "path": ".private/ci-diagnostics/15a49d3-campaign/128358478117.txt",
+    "sha256": "656b3b23a1e546388ed0f5baf4b48d9d9d60cc74ce5e38e527d395039061c1d3",
+    "bytes": 51419
+  },
+  "observed_failure": "Both approved Maven hosts failed TCP443 connection within their original15second bounds. Bootstrap exits1 before native qualification; safe exporter exits1 with zero reports.",
+  "repair_proposal": "Controlled upgrades need native npm and pinned ORAS, not Maven/JDK/PyPI build tools. Add a narrow upgrades bootstrap profile and retain all upgrade assertions, strict archive digests and transfer bounds.",
+  "limits": [
+    "This is one actual ARM bootstrap failure, not a product integration failure or evidence that either Apache service is generally unavailable.",
+    "No retry or skipped qualification is accepted as a pass. Other jobs and cross-runner consumer remain separate.",
+    "New schema16 and narrowed bootstrap profile remain native unverified until their own exact-source CI."
+  ]
+}

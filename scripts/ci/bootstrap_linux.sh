@@ -18,7 +18,7 @@ root="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$root"
 docker inspect --type container --format '{{json .NetworkSettings.Ports}}' "$CRATECTL_CI_POSTGRES_CONTAINER_ID" | python3 scripts/ci/check_postgres_binding.py
 client_set="${CRATECTL_CI_CLIENT_SET:-all}"
-case "$client_set" in all|oci|jvm|go) ;; *) echo 'Unknown CI client set' >&2; exit 1 ;; esac
+case "$client_set" in all|oci|jvm|go|upgrades) ;; *) echo 'Unknown CI client set' >&2; exit 1 ;; esac
 architecture="$(dpkg --print-architecture)"
 umask 077
 mkdir -p .cache/go/bin .cache/clients/bin .cache/bin .private
@@ -29,8 +29,7 @@ if test "$client_set" = all || test "$client_set" = jvm; then
   mkdir -p .cache/jdk-21.0.13+9/Contents
   ln -s "$JAVA_HOME" .cache/jdk-21.0.13+9/Contents/Home
 fi
-if test "$client_set" = all; then
-
+if test "$client_set" = all || test "$client_set" = upgrades; then
   case "$architecture" in
     amd64) oras_sha=66fb0ad7206f3f6fa77ed5b552049d364ccf4b50b1684554f731f76302b52ca0 ;;
     arm64) oras_sha=b84269e78dfc2d5329a4aab373da3200de95e6c138338cf6c66c10c0a3f248c1 ;;
@@ -41,7 +40,10 @@ if test "$client_set" = all; then
   printf '%s  %s\n' "$oras_sha" ".cache/$oras_archive" | sha256sum --check --status
   tar -xzf ".cache/$oras_archive" -C .cache/bin oras
   chmod 755 .cache/bin/oras
+fi
 
+# Controlled upgrades need stock npm (setup-node) and ORAS, not JVM/PyPI tools.
+if test "$client_set" = all; then
   bash scripts/ci/install_maven.sh
 
   python -m pip install --disable-pip-version-check twine==7.0.0 build==1.3.0
@@ -73,7 +75,7 @@ psql -h 127.0.0.1 -p 35432 -U cratectl_owner -d cratectl -v ON_ERROR_STOP=1 -c "
 for tenant in test-a test-b; do
   .cache/ci-build/cratectld provision --tenant "$tenant" --actor operator --role admin --token-file ".private/ci-$tenant.token"
 done
-.cache/ci-build/cratectld migrate --plan | python -c 'import json,sys; p=json.load(sys.stdin); assert p["binary_version"]==15 and p["safety_valid"] and len(p["applied"])==15 and not p["pending"]'
+.cache/ci-build/cratectld migrate --plan | python -c 'import json,sys; p=json.load(sys.stdin); assert p["binary_version"]==16 and p["safety_valid"] and len(p["applied"])==16 and not p["pending"]'
 uname -sm
 go version
 python --version

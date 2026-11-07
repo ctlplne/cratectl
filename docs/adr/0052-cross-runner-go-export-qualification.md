@@ -1,6 +1,10 @@
 # 0052: Verify a hosted Go export on a separate native runner
 
-Date: 2026-11-07. State: implemented; new native workflow unverified.
+Date: 2026-11-07. State: named native profile verified at exact `15a49d3`.
+
+Both actual jobs and all 16 stages pass; see the [checkpoint](../../evidence/2026-11-07/go-export-portability-15a49d3-checkpoint.json).
+The full portable customer outcome and owned trust-channel limitations below
+remain required. Later schema-16 source must qualify its own runtime.
 
 The existing signed-manifest journey creates and consumes one hosted version on
 one host. It does not establish that a second machine can verify and use the

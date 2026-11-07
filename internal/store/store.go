@@ -66,6 +66,9 @@ var goChecksumLegacySchema string
 
 //go:embed go_exports.sql
 var goExportSchema string
+
+//go:embed go_export_expiry.sql
+var goExportExpirySchema string
 var Name = regexp.MustCompile(`^[a-z][a-z0-9-]{0,62}$`)
 var ErrConflict = errors.New("conflict")
 var ErrDenied = errors.New("policy denied")

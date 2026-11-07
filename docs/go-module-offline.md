@@ -141,4 +141,15 @@ online transfer, the consumer uses fresh empty network namespaces for the CLI
 and stock Go commands. Its public key is checked against a separate source-job
 fingerprint before verification. The fixture capsule is only CI test data;
 normal customer collection still uses the documented API and private files.
-This workflow is implemented but has not yet run on its new source. See ADR0052.
+The exact source `15a49d3` passed both actual GitHub jobs and all 16 stages. See
+[ADR0052](adr/0052-cross-runner-go-export-qualification.md) and the
+[named checkpoint](../evidence/2026-11-07/go-export-portability-15a49d3-checkpoint.json).
+This verifies one owned hosted version; it does not complete dependency closure,
+destination import or a customer-selected trust-provider integration.
+
+Schema 16 adds an ordered partial index so an idle expiry worker reads only the
+earliest nonterminal session. It requires stopped-registry migration and matching
+binaries; its new native qualification is pending. Existing schema-15 receipts,
+manifest/package bytes, deadlines and payload roots must survive unchanged. The
+primary schema-11 environment has not been migrated or switched. See
+[ADR0053](adr/0053-indexed-export-expiry.md).

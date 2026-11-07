@@ -1,5 +1,40 @@
 # cratectl execution status
 
+Current source parent is `15a49d3`; schema 16 indexed export expiry is
+implemented but native unverified. ADR0053 and
+`evidence/2026-11-07/go-export-expiry-index-development.json` record the append-only
+partial index, exact index admission and earliest-session lookup. Two added
+PostgreSQL functions require default-planner bounded work through 32,768 terminal/
+4,096 future sessions, other-tenant isolation and schema-15 row/receipt preservation.
+The occupancy rows are a declared SQL fixture, not API creation throughput or a
+complete bound-manifest history. The historical lane adds the qualified fca2d4a
+schema-15 daemon and verifies an export created/acknowledged before maintenance.
+Local ARM build/unit/race/lint, normal/race tagged compilation and vet pass.
+All first 15 definitions remain unchanged; new 16 is frozen. Native 273 full PG/
+95 named Go normal/race and 15 historical binaries/20 upgrade reports per Linux
+host remain required. Primary 11 and its selected binaries/ten receipts stay
+stopped and untouched.
+
+Exact `15a49d3` now passes both actual GitHub portability jobs: x86 real PostgreSQL
+producer and distinct native ARM consumer, all 16 mandatory stages. Eight exact
+file identities, signed original history, separate source-job trust fingerprints,
+empty child network namespaces and native inert Go consumption/negative controls
+are accepted in `evidence/2026-11-07/go-export-portability-15a49d3-checkpoint.json`.
+This is one hosted version and an owned trust-channel stand-in; full disconnected
+closure, customer trust providers, destination import and other platforms remain
+required. Its 93 named Go normal/race/312 stock checks also pass both Linux hosts.
+
+The whole 15a49d3 campaign is not accepted. Original ARM upgrade bootstrap stops
+before qualification when both approved Maven transfers time out (DEFECT0130),
+with zero reports and dependent skips retained. The new `upgrades` tool profile
+keeps npm/ORAS/PostgreSQL and all assertions while removing unused Maven/JDK/PyPI
+downloads; its native replay is pending. See the observed checkpoint and original
+failure record. The latest fully accepted selected campaign remains fca2d4a.
+All 450 capabilities/41 families/later scope, broad readiness/security/packaging
+false and original DEFECT0126/0122 remain unchanged.
+
+Earlier source-specific records follow; current exact-source records above govern.
+
 Current source parent is fca2d4a; new cross-runner qualification is implemented
 but unverified. ADR0052 and
 `evidence/2026-11-07/go-export-portability-development.json` define an actual x86

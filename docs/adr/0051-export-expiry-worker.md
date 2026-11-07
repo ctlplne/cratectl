@@ -1,6 +1,10 @@
 # 0051: Reconcile expired export sessions through tenant workers
 
-Date: 2026-11-07. State: implemented; native qualification pending.
+Date: 2026-11-07. State: named source-15 worker cases verified at fca2d4a/15a49d3.
+
+See the [native Go checkpoint](../../evidence/2026-11-07/go-module-15a49d3-native-checkpoint.json).
+This decision describes the original schema-15 worker. [ADR0053](0053-indexed-export-expiry.md)
+adds schema-16 indexed lookup; its new native proof remains pending.
 
 An expired export stops serving immediately, but its payload pins remain until
 a terminal transaction records the expiry. Relying on an administrator to open

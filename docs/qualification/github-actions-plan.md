@@ -23,6 +23,38 @@ Main concurrency preserves running work but GitHub can replace older pending
 jobs; actual cancelled states must always remain visible. The new portable
 source is unverified and does not inherit a whole-campaign pass.
 
+Exact `15a49d3` now qualifies the separate GitHub x86 PostgreSQL producer and
+native ARM consumer, all 16 mandatory stages, with eight original file bindings,
+signed journal/manifest verification, an observed empty child network namespace
+and stock Go inert consumption. The independently supplied source-job fingerprints
+remain an owned trust-channel stand-in. See the [portable checkpoint](../../evidence/2026-11-07/go-export-portability-15a49d3-checkpoint.json).
+Its 93 named Go functions normally/under race and 312 stock checks pass both Linux
+hosts. The whole campaign is not accepted: the [original ARM upgrade bootstrap](../../evidence/2026-11-07/github-15a49d3-upgrades-first-failure.json)
+fails before qualification when both approved Maven connections time out.
+The [observed campaign](../../evidence/2026-11-07/github-15a49d3-observed-checkpoint.json)
+retains actual statuses, including zero upgrade reports and dependent skips.
+
+[ADR0053](../adr/0053-indexed-export-expiry.md) adds immutable schema 16, an
+admission-checked partial expiry index and earliest-session lookup. Its two new
+PostgreSQL regressions require 273 full PG/95 named Go normal/race on both native
+Linux hosts. The declared 32,768-terminal/4,096-future occupancy fixture and 1,024
+other-tenant due rows measure default-planner query work and references; they do
+not establish creation throughput, a full bound-manifest history or broad scale.
+Fifteen historical native binaries/20 upgrade reports per host must include an
+export created and acknowledged by the qualified old schema-15 daemon, then
+retained exactly through stopped-registry maintenance. The new `upgrades`
+bootstrap profile keeps npm, pinned ORAS, PostgreSQL and all original assertions,
+while omitting unused Maven/JDK/PyPI tools. No retry, lower archive integrity,
+weaker connection bound or removed product assertion repairs DEFECT0130.
+
+This source-16 continuation remains native unverified. Local ARM build/unit/race/
+lint and tagged compile/vet pass; actual PostgreSQL/stock-client/historical-daemon/
+Chromium and namespace-consumer campaigns stay on GitHub. Preserve 55 fuzz targets,
+19 main Chromium workflows/151 checks, 312 stock Go/683 baseline checks and all
+selected focused/portable profiles. Inspect the expanded job set and statuses
+rather than inferring a campaign pass from one green lane. Source-15 portability
+proof does not qualify schema 16. All broader GOAL work remains required.
+
 Earlier source-specific qualification statements below retain their historical
 scope; exact-source checkpoints govern present acceptance.
 

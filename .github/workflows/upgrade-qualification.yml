@@ -36,6 +36,7 @@ jobs:
           - arch: arm64
             runner: ubuntu-24.04-arm
     env:
+      CRATECTL_CI_CLIENT_SET: upgrades
       CRATECTL_CONFORMANCE_DATABASE_FILE: .private/ci-db.json
       CRATECTL_DEV_DATABASE: native
       CRATECTL_QUALIFICATION_BIN_DIR: .cache/ci-build
@@ -68,10 +69,6 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: '3.14'
-      - uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: '21'
       - name: Cache pinned public ORAS archive
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         timeout-minutes: 5
@@ -88,9 +85,9 @@ jobs:
         run: python3 scripts/ci/build_upgrade_baselines.py
       - name: Legacy adoption with actual migration process interruption
         run: python3 scripts/conformance_schema.py --require-clean-build
-      - name: Retained lifecycle through every schema 2–14 upgrade
+      - name: Retained lifecycle through every schema 2–15 upgrade
         run: |
-          for baseline in 2 3 4 5 6 7 8 9 10 11 12 13 14; do
+          for baseline in 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do
             python3 scripts/conformance_lifecycle.py --baseline-version "$baseline" --require-clean-build
           done
       - name: Repair and recurring integrity upgrades

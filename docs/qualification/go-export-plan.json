@@ -11,15 +11,16 @@
     "docs/qualification/github-actions-plan.md",
     "docs/adr/0050-durable-hosted-go-export.md",
     "docs/adr/0051-export-expiry-worker.md",
-    "docs/adr/0052-cross-runner-go-export-qualification.md"
+    "docs/adr/0052-cross-runner-go-export-qualification.md",
+    "docs/adr/0053-indexed-export-expiry.md"
   ],
   "current_implementation": {
-    "source_parent": "fca2d4a2cb3f23002ebee55060d6956c5f54f467",
+    "source_parent": "15a49d3ca663a936e7459b1687ff77ecb49fdbc6",
     "source_dirty": true,
-    "state": "Exactfca2d4a source15 whole24job campaign accepted:271PG/93Go/55fuzz/19main151/14historical19upgrades; new cross-runner/kernel-isolated consumption unverified; full export/GOAL incomplete",
+    "state": "Source15 exact15a49d3 named93Go normal/race/312stock and16stage separate native producer/consumer accepted; source16 indexed expiry/narrow upgrade tools native unverified; full export/GOAL incomplete",
     "qualified_historical_consumer": "evidence/2026-11-07/github-1a61120-checkpoint.json",
     "producer_development": "evidence/2026-11-07/go-durable-export-development.json",
-    "schema": 15,
+    "schema": 16,
     "current_registry_admission": false,
     "checksum_authority_verified": false,
     "durable_server_snapshot": "verified in exact fbe3bf9 90namedGo real-PostgreSQL normal/race profile on both Linux architectures; broader acceptance remains incomplete",
@@ -29,18 +30,26 @@
     "expiry_worker": {
       "state": "verified in exact fca2d4a93namedGo real-PostgreSQL normal/race profile on both actual Linux hosts; large-history/clock-fault/scale incomplete",
       "adr": "docs/adr/0051-export-expiry-worker.md",
-      "scope": "Dedicated current tenant worker; one due session per bounded visit; state/journal/job intent commit under common mutation fence. No payload pin release on queue/credential failure. No new migration or physical deletion.",
-      "required_qualification": "Three new actual PostgreSQL functions;271fullPG/93namedGo normal and race per actual Linux architecture. Background loop observed through read-only list only; owned timestamp aging is not real clock-shift proof.",
+      "scope": "Dedicated current tenant worker; one due session per paced visit; state/journal/job intent commit under common mutation fence. Prior source15 semantics qualified; new source16 ordered partial-index lookup requires native proof. No physical deletion.",
+      "required_qualification": "Two added functions and original93Go cases; actual old15daemon export migration plus15historical20upgrade reports per host. Timestamp aging remains a declared fixture.",
       "development": "evidence/2026-11-07/go-export-expiry-development.json",
-      "checkpoint": "evidence/2026-11-07/go-module-fca2d4a-native-checkpoint.json"
+      "checkpoint": "evidence/2026-11-07/go-module-fca2d4a-native-checkpoint.json",
+      "indexed_lookup": {
+        "state": "implemented but native unverified",
+        "schema": 16,
+        "adr": "docs/adr/0053-indexed-export-expiry.md",
+        "development": "evidence/2026-11-07/go-export-expiry-index-development.json",
+        "required": "273fullPG/95namedGo normal/race bothactualLinux; declared32768terminal4096future/1024othertenant fixture with actual runtime default planner <=64shared querybuffers; no physical deletion/large-scale throughput claim"
+      }
     },
-    "producer_native_go_checkpoint": "evidence/2026-11-07/go-module-fca2d4a-native-checkpoint.json",
+    "producer_native_go_checkpoint": "evidence/2026-11-07/go-module-15a49d3-native-checkpoint.json",
     "cross_runner": {
-      "state": "implemented but native unverified",
+      "state": "verified named16stage profile at exact15a49d3; full portable closure incomplete",
       "adr": "docs/adr/0052-cross-runner-go-export-qualification.md",
       "profile": "hosted-export-cross-runner-v1",
       "scope": "Separate actual GitHub Linux amd64 producer and arm64 consumer, real PostgreSQL/source signed manifest and complete journal, exact artifact ID and separate job-output fingerprints; consumer native CLI/SDK in empty child network namespaces under original UID.16outerstages; no package code execution.",
-      "limits": "One synthetic hosted version and owned trust-channel stand-in only. Full closure/import/provider/platform/offline-install/backup/GC/HA/scale remain required."
+      "limits": "One synthetic hosted version and owned trust-channel stand-in only. Full closure/import/provider/platform/offline-install/backup/GC/HA/scale remain required.",
+      "checkpoint": "evidence/2026-11-07/go-export-portability-15a49d3-checkpoint.json"
     },
     "qualified_parent_campaign": "evidence/2026-11-07/github-fca2d4a-checkpoint.json"
   },
@@ -143,7 +152,10 @@
         "native-linux-amd64",
         "native-linux-arm64"
       ],
-      "state": "implementing; new-source native qualification required"
+      "state": "implementing; named source15 cases verified at15a49d3, complete case/platform/scale scope remains required",
+      "accepted_scoped_evidence": [
+        "evidence/2026-11-07/go-module-15a49d3-native-checkpoint.json"
+      ]
     },
     {
       "id": "GO.EXPORT.snapshot-revalidation",
@@ -159,7 +171,10 @@
         "native-linux-amd64",
         "native-linux-arm64"
       ],
-      "state": "implementing; new-source native qualification required"
+      "state": "implementing; named source15 cases verified at15a49d3, complete case/platform/scale scope remains required",
+      "accepted_scoped_evidence": [
+        "evidence/2026-11-07/go-module-15a49d3-native-checkpoint.json"
+      ]
     },
     {
       "id": "GO.EXPORT.tenant-runtime",
@@ -174,7 +189,10 @@
         "native-linux-amd64",
         "native-linux-arm64"
       ],
-      "state": "implementing; new-source native qualification required"
+      "state": "implementing; named source15 cases verified at15a49d3, complete case/platform/scale scope remains required",
+      "accepted_scoped_evidence": [
+        "evidence/2026-11-07/go-module-15a49d3-native-checkpoint.json"
+      ]
     },
     {
       "id": "GO.EXPORT.session-resume",
@@ -192,7 +210,10 @@
         "native-linux-arm64",
         "browser-amd64"
       ],
-      "state": "implementing; new-source native qualification required"
+      "state": "implementing; named source15 cases verified at15a49d3, complete case/platform/scale scope remains required",
+      "accepted_scoped_evidence": [
+        "evidence/2026-11-07/go-module-15a49d3-native-checkpoint.json"
+      ]
     },
     {
       "id": "GO.EXPORT.gc-pins",
@@ -208,7 +229,10 @@
         "native-linux-amd64",
         "native-linux-arm64"
       ],
-      "state": "durable item/manifest roots and inventory references implemented but native unverified; physical GC and other protections unfinished"
+      "state": "implementing; durable source15 roots/rollback verified in named native cases; source16 indexed expiry unverified and physicalGC/other protection incomplete",
+      "accepted_scoped_evidence": [
+        "evidence/2026-11-07/go-module-15a49d3-native-checkpoint.json"
+      ]
     },
     {
       "id": "GO.EXPORT.manifest-bindings",
@@ -224,7 +248,10 @@
         "native-linux-amd64",
         "native-linux-arm64"
       ],
-      "state": "implementing; new-source native qualification required"
+      "state": "implementing; named source15 cases verified at15a49d3, complete case/platform/scale scope remains required",
+      "accepted_scoped_evidence": [
+        "evidence/2026-11-07/go-module-15a49d3-native-checkpoint.json"
+      ]
     },
     {
       "id": "GO.EXPORT.hosted-offline",
@@ -241,8 +268,11 @@
         "native-linux-arm64",
         "native-macos-arm64"
       ],
-      "state": "historical publication mode verified on both Linux hosts at1a61120; new manifest mode and remaining platforms required",
-      "evidence": "evidence/2026-11-07/go-module-1a61120-native-checkpoint.json"
+      "state": "implementing; historical1a61120 and signed-manifest16stage15a49d3 native Linux fixtures verified; complete disconnected workflow/platforms required",
+      "evidence": "evidence/2026-11-07/go-module-1a61120-native-checkpoint.json",
+      "accepted_scoped_evidence": [
+        "evidence/2026-11-07/go-export-portability-15a49d3-checkpoint.json"
+      ]
     },
     {
       "id": "GO.EXPORT.proxy-authority",
@@ -287,7 +317,10 @@
       "profiles": [
         "independent-hosts"
       ],
-      "state": "Single-version cross-runner/native-isolated fixture implemented but unverified; full portable closure and production signer/permission/provenance provider acceptance remain required"
+      "state": "implementing; named16stage source15 cross-runner fixture verified at15a49d3; full closure/trust-provider/permission/provenance outcome required",
+      "accepted_scoped_evidence": [
+        "evidence/2026-11-07/go-export-portability-15a49d3-checkpoint.json"
+      ]
     },
     {
       "id": "GO.EXPORT.destination-import",
@@ -307,7 +340,7 @@
     {
       "id": "GO.EXPORT.migration",
       "area": "upgrade",
-      "outcome": "Append any export schema after the fourteen frozen definitions and qualify historical native maintenance.",
+      "outcome": "Append new immutable steps after the fifteen frozen definitions and qualify historical native maintenance.",
       "required_controls": [
         "rebuild exact qualified schema14 baseline before testing next schema",
         "all old bytes/receipts/holds/RLS retained through interrupted/no-op/rollback paths",
@@ -317,7 +350,8 @@
         "native-linux-amd64",
         "native-linux-arm64"
       ],
-      "state": "implementing; new-source native qualification required"
+      "state": "implementing; source15 historical maintenance qualified atfca2d4a; new16/actual old15 export preservation native unverified",
+      "development": "evidence/2026-11-07/go-export-expiry-index-development.json"
     },
     {
       "id": "GO.EXPORT.operator-surface",
@@ -333,7 +367,10 @@
         "native-linux-arm64",
         "browser-amd64"
       ],
-      "state": "implementing; new-source native qualification required"
+      "state": "implementing; named source15 cases verified at15a49d3, complete case/platform/scale scope remains required",
+      "accepted_scoped_evidence": [
+        "evidence/2026-11-07/go-module-15a49d3-native-checkpoint.json"
+      ]
     },
     {
       "id": "GO.EXPORT.fault-scale-platform",
@@ -342,7 +379,8 @@
       "required_controls": [
         "measure transfer/memory/SQL result limits and recovery; no skips counted as passes",
         "two containers are a topology stand-in, not independent-host evidence",
-        "explicitly retain unsupported platforms/providers and missing scale profiles"
+        "explicitly retain unsupported platforms/providers and missing scale profiles",
+        "Default-planner partial-index bounded-work proof through declared terminal/future rows is separate from API throughput, full history/actual clock faults or broad scale."
       ],
       "profiles": [
         "native-linux-amd64",
@@ -354,7 +392,8 @@
     }
   ],
   "execution_order": [
-    "Qualify new16stage two-native-runner portable profile; actual offline CLI/SDK namespace execution and separate trust-channel checks are mandatory. No local emulation or skipped consumer counts as proof.",
+    "Qualify schema16 indexed idle/due expiry and exact index admission on both actual Linux hosts:273PG/95Go normal/race,15historical20upgrades each; keep original assertions/clients/fuzz/browser/portable profiles. Replay DEFECT0130 narrow upgrade tools without unused Maven/JDK/PyPI dependency.",
+    "Preserve exact15a49d3 separate-native-runner16stage portable proof and original ARM upgrade bootstrap failure; full disconnected closure/import/provider/platform outcomes stay required.",
     "Preserve qualified1a61120 historical consumer and original d179222 failures; qualify clean schema15 producer/manifest/CLI/console/upgrade source on actual native hosts.",
     "Qualify dedicated background expiry reconciliation; then complete remaining producer policy/provenance/permission/authority/closure/GC protections and backlog throughput.",
     "implement complete producer/API/CLI/UI and portable proof/policy/closure consumer",

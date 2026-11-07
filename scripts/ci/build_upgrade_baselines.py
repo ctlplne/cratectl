@@ -21,7 +21,7 @@ from qualification_contract import validate_historical_build
 
 def baselines():
     rows = json.loads((ROOT / 'docs/qualification/upgrade-baselines.json').read_text())['baselines']
-    if len(rows) != 14 or {row['schema'] for row in rows} != {None, *range(2, 15)}:
+    if len(rows) != 15 or {row['schema'] for row in rows} != {None, *range(2, 16)}:
         raise ValueError('Historical schema inventory is incomplete')
     sources, outputs = set(), set()
     for row in rows:

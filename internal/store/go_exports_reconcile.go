@@ -7,6 +7,11 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
+// Do not filter every row using volatile clock_timestamp(). The ordered partial
+// index returns one earliest nonterminal session; scanGoExport compares its
+// deadline to database time. An idle visit need not scan later live sessions.
+const nextGoExportExpirySQL = `SELECT ` + goExportColumns + ` FROM cratectl.artifact_exports WHERE state IN ('open','acknowledged') ORDER BY expires_at,id LIMIT 1`
+
 // ExpireNextGoExport releases one due session's payload roots. It cannot renew,
 // acknowledge, download, or grant artifact access. Dedicated worker credentials
 // are rechecked under the tenant mutation fence and again before commit.
@@ -15,11 +20,14 @@ import (
 func (s *Store) ExpireNextGoExport(ctx context.Context, i WorkerIdentity) (GoExportSession, error) {
 	var out GoExportSession
 	err := s.workerTx(ctx, i, func(tx pgx.Tx) error {
-		v, err := scanGoExport(tx.QueryRow(ctx, `SELECT `+goExportColumns+` FROM cratectl.artifact_exports WHERE state IN ('open','acknowledged') AND expires_at<=clock_timestamp() ORDER BY expires_at,id LIMIT 1`))
+		v, err := scanGoExport(tx.QueryRow(ctx, nextGoExportExpirySQL))
 		if err != nil {
 			return err
 		}
-		if v.State != "expired_unreconciled" || v.Generation == int64(^uint64(0)>>1) {
+		if v.State != "expired_unreconciled" {
+			return ErrNotFound
+		}
+		if v.Generation == int64(^uint64(0)>>1) {
 			return ErrGoExportChanged
 		}
 		identity := Identity{Tenant: i.Tenant, Actor: i.Actor, Role: "worker"}
