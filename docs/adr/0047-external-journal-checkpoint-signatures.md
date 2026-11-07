@@ -1,10 +1,12 @@
 # Verify externally signed journal checkpoints
 
-Status: implemented but native external-tool/registry/browser unverified. ARM
-build/unit/race/lint, signature fuzz and reproducible console pass. Bounded range
-export ca56447 fails both normal PostgreSQL store suites on an invalid oversized
-fixture; repaired valid JSON fixture compiles/vets only. Native replay is pending.
-All first fourteen source migrations remain frozen; primary11 is untouched.
+Status: implemented and qualified at a3d8df2 in the named bounded native profiles.
+Eleven actual external OpenSSL3.0.13/registry/CLI controls pass per Linux host with
+exact tool/public statement/signature/PEM/DER/export hashes; all257PG normal/race,
+50fuzz three hosts and18main Chromium141checks pass. Original ca fixture failures
+and strict client0126 failure remain preserved separately. Full provider requests,
+artifact signing policy and complete export bundles remain required. First14source
+migrations stay frozen; stopped primary11 is untouched.
 
 ## Trust path and product boundary
 

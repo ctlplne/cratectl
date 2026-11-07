@@ -1,0 +1,171 @@
+{
+  "observed_at": "2026-11-07T05:23:30.344944+00:00",
+  "state": "implemented but native typed PostgreSQL/external-tool/CLI/browser unverified",
+  "source_parent": "a3d8df2fcc9ae809f262057a0690de9eee78c1b6",
+  "source_dirty": true,
+  "source_schema": 14,
+  "source_files": [
+    {
+      "path": "cmd/cratectl/go_checksum.go",
+      "sha256": "345af83d87f565b8427ad61e598442441a28554e4a9855cbf52f5c511a03e5aa"
+    },
+    {
+      "path": "cmd/cratectl/go_checksum_journal.go",
+      "sha256": "5aa4f7effb0195432abdcc67d8dcbea49b9fdb697bfa0ecf5d8cca38a5d2bc25"
+    },
+    {
+      "path": "cmd/cratectl/go_checksum_journal_test.go",
+      "sha256": "f91e229acf8707ebb2bbf1ae2efc484d5cca04bc4f7cf541c68a8bd6fdb141e8"
+    },
+    {
+      "path": "internal/consoleui/dist/assets/index-BIHtlw_w.js",
+      "sha256": "e483fd5e1d638eba2c76f201f8abab81aef327412d5080eddef70e7651142455"
+    },
+    {
+      "path": "internal/consoleui/dist/index.html",
+      "sha256": "a4f2428aa10d7a0dd095d700644919b7a99d41f8ed6eb010c70c11f48e705919"
+    },
+    {
+      "path": "internal/crypto/journal.go",
+      "sha256": "0376cae2396927732ae737386c4aa29c01a661ee8b52e581d3f80d6bbe9ea1cb"
+    },
+    {
+      "path": "internal/crypto/journal_test.go",
+      "sha256": "7fc0e3bc2b77a652bb8fa39a80bf6685a7da5af38bda2410c1d20be683c3b6a2"
+    },
+    {
+      "path": "internal/crypto/testdata/go-checksum-journal-public.json",
+      "sha256": "05cb8364010aa66a0926b0bd2821962bead25611a1be5912872b5b5f0229ec99"
+    },
+    {
+      "path": "internal/crypto/testdata/go-checksum-journal-unverified-public.json",
+      "sha256": "0f590db55bf4c2337a128835310ff37534ee015ec01e5339f42f91b21d5b00a5"
+    },
+    {
+      "path": "internal/store/go_checksum_journal.go",
+      "sha256": "3591bbb57d2e38fa2861aaade84a14e0df068b9da13912eb8d1bbbbfc541e068"
+    },
+    {
+      "path": "internal/store/go_checksum_journal_test.go",
+      "sha256": "e0725ca908916f34e313686156519ab47af1cb4d8c0b24ce00e53fbd628da751"
+    },
+    {
+      "path": "internal/store/go_module_failure_journal_integration_test.go",
+      "sha256": "0a72bea90e6d6cb85ddbd9b105eaff19ccdf87247f80e2aca3444c79366aa730"
+    },
+    {
+      "path": "web/build-manifest.json",
+      "sha256": "0fe023267cffd5d31261addaee813e1e0935ca55d9dd8ca4e520aa914df8e13f"
+    },
+    {
+      "path": "web/src/go-checksum.tsx",
+      "sha256": "b0011d93ecaa2c677136479ac4bf95b1d62a688bba96f8d8672a64d132b714fa"
+    },
+    {
+      "path": "web/tests/go-checksum-inspection.spec.mjs",
+      "sha256": "dcb8edde4c26147f6fbae617c04f0940da3929cacd6f9b5f7b4c81f7a6e65038"
+    }
+  ],
+  "binaries": [
+    {
+      "path": ".cache/go-checksum-journal-development-build/cratectl",
+      "sha256": "c854afb88dd1f5aa43826b6ede4b58304e9fd5a296e83d3dbac8141f31729bb5",
+      "source_parent": "a3d8df2fcc9ae809f262057a0690de9eee78c1b6",
+      "source_dirty": true,
+      "native": "darwin/arm64"
+    },
+    {
+      "path": ".cache/go-checksum-journal-development-build/cratectld",
+      "sha256": "7727c1e8edfa3f0464cc1114793d83c21c9a612c164e6d44dee6395592510699",
+      "source_parent": "a3d8df2fcc9ae809f262057a0690de9eee78c1b6",
+      "source_dirty": true,
+      "native": "darwin/arm64"
+    }
+  ],
+  "local_gates": {
+    "make_build_test_race_lint": "passed on native ARM, existing owned response stand-ins only",
+    "selector_and_binding": "13complete-range selection and24typed original binding scenarios pass race; two generated public fork/unverified joint CLI fixtures,19invalid/coherence controls and an attributed unverified nonzero outcome pass race",
+    "new_fuzz": "selection27313 andbinding25223 inputs across two five-second/two-worker runs; full52targets reserved for native GitHub",
+    "real_postgresql": "all three packages compile normally/race and pass tagged vet only; no local database/OpenSSL/native fixture process execution",
+    "console": "TypeScript/Vite/source-asset manifest and byte-for-byte embedded reproduction pass; no local Chromium",
+    "public_fixture_representation": "Readable public JSON/PEM and raw signature bytes replace opaque envelopes; the redundant public authority fingerprint is derived from the public verifier and signed pin by the fixture loader. The original signed journal digest and checkpoint signatures verify exact reconstructed bytes. CLI/store/crypto race replay passes; scanner rules unchanged."
+  },
+  "private_logs": [
+    {
+      "path": ".cache/go-checksum-journal-development-gates.log",
+      "bytes": 11527,
+      "sha256": "885d61359b80168e25d627111702918e8b73421212fad653fca5df8af8fe684b"
+    },
+    {
+      "path": ".cache/go-checksum-journal-unverified-race.log",
+      "bytes": 145,
+      "sha256": "e4ef6a105142ff7fbb767bfc525c7a6706517d159444ebc31e810eafec32172c"
+    },
+    {
+      "path": ".cache/journal-selection-fuzz.log",
+      "bytes": 357,
+      "sha256": "0cd86a9c8043a4709b322b60481577f51633a3b8fc702b69814e55c551d8c698"
+    },
+    {
+      "path": ".cache/go-checksum-journal-binding-fuzz.log",
+      "bytes": 357,
+      "sha256": "5fdfeb57a0d45b3e2e4548b33eb61de877d4ec0062bcfff220a39e21eda06a12"
+    },
+    {
+      "path": ".cache/go-checksum-journal-native-cli-pg-normal-compile.log",
+      "bytes": 205,
+      "sha256": "2837d9bf5e9fc272edc8f5edeb3c359e644563f1a560ba41821cde124020dcb7"
+    },
+    {
+      "path": ".cache/go-checksum-journal-native-cli-pg-race-compile.log",
+      "bytes": 209,
+      "sha256": "8381f7a5e7074e1d90d37a3a90683086d905c45c24953560bb5c34e05d023da0"
+    },
+    {
+      "path": ".cache/go-checksum-journal-native-cli-pg-vet.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/go-checksum-journal-console-reproduction.log",
+      "bytes": 1011,
+      "sha256": "0238e0b16f56e4ab6c70c64b34b9fc4bb5981508616f79e4ecfdf22ed2d637dd"
+    },
+    {
+      "path": ".cache/go-checksum-journal-readable-fixture-race.log",
+      "bytes": 147,
+      "sha256": "68206478a8d279a486ce7f648d84ebfe3dbcbefc3903160f87c535a1f99e2781"
+    },
+    {
+      "path": ".cache/go-checksum-journal-derived-fingerprint-race.log",
+      "bytes": 147,
+      "sha256": "146977a72532a5fe2aba419fda915847adbce557b4aa3cba741cec6cd9445f6c"
+    }
+  ],
+  "native_expected": {
+    "postgresql_functions": 258,
+    "named_go_functions": 80,
+    "source_fuzz_targets": 52,
+    "stock_go_checks": 312,
+    "baseline_conformance_checks": 683,
+    "main_chromium_workflows": 18,
+    "main_chromium_checks": 142,
+    "explicit_ui_response_standin_workflows": 3
+  },
+  "new_native_function": "internal/store/go_module_failure_journal_integration_test.go:TestGoModuleChecksumFailureBindsOriginalEvidenceToCompleteJournalRange",
+  "outcomes": [
+    "Streaming selection retains at most one original event and returns it only after every page, terminal checkpoint and EOF verifies; all late failures return zero event and zero receipt.",
+    "Canonical typed Go failure binding requires exact original event tenant/kind/data digest/repository/root/generation/source/failed state/classification, strict case-sensitive unique/non-null fields and bounded metadata; old labels without original digest remain unattributed.",
+    "Offline Go CLI automatic mode requires independently trusted checkpoint signature plus complete private range/exact selected event and separate Go authority key, verifies original record and authority observations, checks optional manual digest agreement, emits only small proof metadata and keeps unverified observations nonzero with PackageAdmissionfalse.",
+    "New actual-native integration function records genuine typed failure, exports original forced-RLS PostgreSQL bytes, checks complete selection and generation/tenant/truncation fences, then uses bounded disposable external OpenSSL signing/verification and the owned built CLI. This function is compiled only locally.",
+    "Console offers explicit signed journal failure instructions only for exact positive event/generation identities in a currently loaded successful history page; unavailable/loading/denied and stale selections expose no commands."
+  ],
+  "limits": [
+    "All new actual258PG/80Go normal/race,52fuzz and18mainChromium142checks still require exact-source native GitHub execution. Public Go-generated fixtures and UI response stand-ins are not actual database/stock-tool proof.",
+    "The preceding a3d8df2 candidate separately qualifies signature/range implementation and fixture repair: its source has257PG/79Go/50fuzz/18main141checks. Do not mix those results with this uncommitted extension.",
+    "No migration or retained primary changes. First14definitions, stopped primary11/selected5483878b binaries/tenreceipts/credentials and customer/sibling/release/package/image state unchanged.",
+    "Signing keys/processes stay with customer tools; disposable SDK signing exists only in the integration fixture. No production signer/CA/vault/workload issuer/key lifecycle service. Native fixture enforces OpenSSL3/4 and logs a bounded public binary identity, without claiming exact unseen metadata from nonverbose passing package logs.",
+    "Attribution depends on separately trusted checkpoint signer and checksum authority keys; it proves neither event truth/latest history/current serving permission nor package admission. Full provider requests/adapters, complete Go/package/proof/policy export bundles, offline cache/install, backup/restore/export-GC leases, conditional refresh and all450capabilities/41families/laterGOAL scope remain open.",
+    "DEFECT0126 strict Go1.27.3 ZIP trust-state failure remains reproduced on all three named native hosts; no assertion removal or maintainer message. Broad readiness/security/packaging remain false."
+  ]
+}

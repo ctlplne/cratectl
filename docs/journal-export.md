@@ -1,9 +1,13 @@
 # Export and verify a bounded journal range
 
-Implementation status: ARM development build/unit/race/lint, parser fuzz and
-reproducible console checks pass. New real-PostgreSQL tests compile normally and
-under race and pass tagged vet only; actual native PostgreSQL, CLI and browser
-qualification is pending. This document does not declare release readiness.
+The bounded range/signature foundation is qualified at a3d8df2 within the named
+native profile: all257PostgreSQL functions normally/race on both actual Linux
+hosts,683baseline checks including11actual OpenSSL3.0.13 checkpoint controls per
+host,50fuzz/source gates on three hosts and18main x86 browser workflows/141checks
+with three declared UI response stand-ins. See the
+[exact-source checkpoint](../evidence/2026-11-07/github-a3d8df2-checkpoint.json).
+This does not declare complete export, signing-provider or release readiness.
+The later journal-to-Go attribution extension is separate native-unverified work.
 
 The tenant journal retains original event payloads. Each event hash covers the
 previous hash, one newline and the exact original payload bytes. The new export
@@ -110,10 +114,10 @@ pretty-printing or normalizing JSON is not accepted.
 
 ## Verify a checkpoint signed with an external tool
 
-This additional profile is implemented with unit fixtures; actual OpenSSL and
-native registry qualification is pending. Keep its result separate from a
-manual supplied-hash match. It adds offline Ed25519 signature verification;
-external provider requests/adapters and other signing formats remain required.
+This additional profile passes11actual OpenSSL3.0.13/native registry and CLI
+controls per Linux architecture at a3d8df2. Keep its result separate from a manual
+supplied-hash match. It adds offline Ed25519 signature verification; external
+provider requests/adapters and other signing formats remain required.
 
 Prepare the exact selected tenant/head for your external signer. Preparation is
 unsigned and does not read a signing key:

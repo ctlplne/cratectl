@@ -213,6 +213,32 @@ type JournalVerification struct {
 // records for the management CLI's normal terminal newline. No success receipt
 // is returned until all input and the supplied terminal anchor are verified.
 func VerifyJournalExport(ctx context.Context, input io.Reader, start, head JournalAnchor, maxBytes int64) (JournalVerification, error) {
+	return verifyJournalExport(ctx, input, start, head, maxBytes, nil)
+}
+
+type journalSelection struct {
+	sequence int64
+	event    JournalEvent
+}
+
+// Select one original event while verifying the complete immutable range. The
+// selection is never returned to a caller if any later page or EOF fails.
+func VerifyJournalExportEvent(ctx context.Context, input io.Reader, start, head JournalAnchor, maxBytes int64, sequence int64) (JournalVerification, JournalEvent, error) {
+	if sequence <= start.Sequence || sequence > head.Sequence {
+		return JournalVerification{}, JournalEvent{}, ErrJournalEvidence
+	}
+	selection := journalSelection{sequence: sequence}
+	receipt, err := verifyJournalExport(ctx, input, start, head, maxBytes, &selection)
+	if err != nil {
+		return JournalVerification{}, JournalEvent{}, err
+	}
+	if selection.event.Sequence != sequence {
+		return JournalVerification{}, JournalEvent{}, ErrJournalEvidence
+	}
+	return receipt, selection.event, nil
+}
+
+func verifyJournalExport(ctx context.Context, input io.Reader, start, head JournalAnchor, maxBytes int64, selection *journalSelection) (JournalVerification, error) {
 	if input == nil || !start.Valid() || !head.Valid() || start.Tenant != head.Tenant || start.Sequence > head.Sequence || maxBytes < 1 || maxBytes > MaxJournalInputBytes {
 		return JournalVerification{}, ErrJournalEvidence
 	}
@@ -269,6 +295,14 @@ func VerifyJournalExport(ctx context.Context, input io.Reader, start, head Journ
 		current, err = VerifyJournalPage(ctx, page, current, head)
 		if err != nil {
 			return JournalVerification{}, err
+		}
+		if selection != nil && selection.sequence > page.After && selection.sequence <= page.NextAfter {
+			for _, event := range page.Items {
+				if event.Sequence == selection.sequence {
+					selection.event = event
+					break
+				}
+			}
 		}
 		pages++
 		events += int64(len(page.Items))

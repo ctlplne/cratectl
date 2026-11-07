@@ -1,0 +1,3024 @@
+{
+  "candidate": "ca56447dc22b0d343de9b97e63e1ed08202ffcc8",
+  "observed_at": "2026-11-07T04:53:25.300283+00:00",
+  "state": "failed both actual Linux normal PostgreSQL store suites on invalid oversize JSON fixture; repaired native replay pending",
+  "whole_candidate_passed": false,
+  "runs": {
+    "main": 42338417730,
+    "go": 42338417900,
+    "jvm": 42338417768,
+    "oci": 42338417875,
+    "upgrades": 42338417779,
+    "focused": 42338417739
+  },
+  "job_count": 27,
+  "completed_jobs": 27,
+  "failed_jobs": [
+    128300739686,
+    128300739707
+  ],
+  "pending_jobs": [],
+  "jobs": [
+    {
+      "family": "main",
+      "id": 128300474298,
+      "name": "Select runtime qualification inputs",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417730/job/128300474298",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Select from exact bounded Git changes",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300474298.txt",
+        "bytes": 19188,
+        "sha256": "91fdccc2ef9de5f697b0af04dca44e095b5d9dee024868d4851328d312982266"
+      }
+    },
+    {
+      "family": "main",
+      "id": 128300474475,
+      "name": "Scoped source, binary and history scans",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417730/job/128300474475",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build binaries and scan called Go symbols",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache pinned public Gitleaks archive",
+          "conclusion": "success"
+        },
+        {
+          "name": "Scan current tree and complete reachable history for secrets",
+          "conclusion": "success"
+        },
+        {
+          "name": "Exercise narrow secret-rule exceptions with synthetic fixtures",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare bounded security evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache pinned public Gitleaks archive",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300474475.txt",
+        "bytes": 30036,
+        "sha256": "e16a44535eabe097ce06ea5a65124e1f969e710798a4c6903a3be846cf57824a"
+      }
+    },
+    {
+      "family": "main",
+      "id": 128300739686,
+      "name": "Real PostgreSQL and stock clients (amd64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417730/job/128300739686",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "status": "completed",
+      "conclusion": "failure",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-dotnet@v6",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install stock-client and console dependencies",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache pinned public ORAS archive",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare checked stock clients and fresh database",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real PostgreSQL integration and timing",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Real PostgreSQL integration with Go race detector",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Stock client compatibility on real registry",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Native lifecycle with curl, npm, pip, twine and Maven",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Blank database initialization and trusted TLS client journey",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Durable jobs and interrupted upload leases",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Filesystem inventory and integrity sweeps",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Cross-reference legal-hold matters",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Chromium console workflows and accessibility",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Safe Chromium failure locations",
+          "conclusion": "success"
+        },
+        {
+          "name": "Encrypt bounded native failure observations for owner diagnosis",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache pinned public ORAS archive",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-dotnet@v6",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300739686.txt",
+        "bytes": 607117,
+        "sha256": "f7ef72f068f6920ee9a0836b5273a26e0c8c2ac7f28bb841bbe0f248b40ef883"
+      },
+      "failure": {
+        "function": "TestJournalExportRejectsOversizedGappedAndCorruptRetainedHistory",
+        "case": "oversize",
+        "classification": "invalid JSON owned oversize fixture rejected during setup",
+        "sqlstate": "22P02"
+      }
+    },
+    {
+      "family": "main",
+      "id": 128300739707,
+      "name": "Real PostgreSQL and stock clients (arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417730/job/128300739707",
+      "labels": [
+        "ubuntu-24.04-arm"
+      ],
+      "status": "completed",
+      "conclusion": "failure",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-dotnet@v6",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install stock-client and console dependencies",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache pinned public ORAS archive",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare checked stock clients and fresh database",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real PostgreSQL integration and timing",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Real PostgreSQL integration with Go race detector",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Stock client compatibility on real registry",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Native lifecycle with curl, npm, pip, twine and Maven",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Blank database initialization and trusted TLS client journey",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Durable jobs and interrupted upload leases",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Filesystem inventory and integrity sweeps",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Cross-reference legal-hold matters",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Chromium console workflows and accessibility",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Safe Chromium failure locations",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Encrypt bounded native failure observations for owner diagnosis",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache pinned public ORAS archive",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-dotnet@v6",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300739707.txt",
+        "bytes": 605985,
+        "sha256": "0ccda3d04ccef3b11ef78fbdfe9618fe6830c67b9ad4f3297b55e022921c7aab"
+      },
+      "failure": {
+        "function": "TestJournalExportRejectsOversizedGappedAndCorruptRetainedHistory",
+        "case": "oversize",
+        "classification": "invalid JSON owned oversize fixture rejected during setup",
+        "sqlstate": "22P02"
+      }
+    },
+    {
+      "family": "main",
+      "id": 128300739722,
+      "name": "Source and unit (darwin-arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417730/job/128300739722",
+      "labels": [
+        "macos-15"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install console dependencies without package scripts",
+          "conclusion": "success"
+        },
+        {
+          "name": "Select native OpenSSL 3 for encrypted diagnostic tests",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build, unit, race and lint",
+          "conclusion": "success"
+        },
+        {
+          "name": "npm dependency audit",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300739722.txt",
+        "bytes": 50275,
+        "sha256": "20da89efa3b9e8b646154a6589cef1f494f8eb6d2e8d527aa69a331f386180eb"
+      }
+    },
+    {
+      "family": "main",
+      "id": 128300739740,
+      "name": "Bounded native Go fuzz (amd64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417730/job/128300739740",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Exercise every checked-in fuzz target on this native runner",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300739740.txt",
+        "bytes": 51571,
+        "sha256": "a3a3c974035841e463ef8b53cdb58542ef7adc54d06f2f50b3e3f6eb23b5d586"
+      },
+      "fuzz_targets": 49
+    },
+    {
+      "family": "main",
+      "id": 128300739744,
+      "name": "Source and unit (amd64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417730/job/128300739744",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install console dependencies without package scripts",
+          "conclusion": "success"
+        },
+        {
+          "name": "Select native OpenSSL 3 for encrypted diagnostic tests",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Build, unit, race and lint",
+          "conclusion": "success"
+        },
+        {
+          "name": "npm dependency audit",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300739744.txt",
+        "bytes": 48089,
+        "sha256": "caec2c5328ca224db092eaf2b85801abde7b849960bd9a4ca7a2fe3a3d1ccbc1"
+      }
+    },
+    {
+      "family": "main",
+      "id": 128300739758,
+      "name": "Bounded native Go fuzz (darwin-arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417730/job/128300739758",
+      "labels": [
+        "macos-15"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Exercise every checked-in fuzz target on this native runner",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300739758.txt",
+        "bytes": 52527,
+        "sha256": "9ab3babad0ff2e46e33caf8934fc4ce7eb7a9ed1c294f79a4ebfefdf2543ba94"
+      },
+      "fuzz_targets": 49
+    },
+    {
+      "family": "main",
+      "id": 128300739768,
+      "name": "Bounded native Go fuzz (arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417730/job/128300739768",
+      "labels": [
+        "ubuntu-24.04-arm"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Exercise every checked-in fuzz target on this native runner",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300739768.txt",
+        "bytes": 51646,
+        "sha256": "ab6c49e51ca5778c59387ca1d04828d37a3053f138980ac2dfb5558b40044524"
+      },
+      "fuzz_targets": 49
+    },
+    {
+      "family": "main",
+      "id": 128300739806,
+      "name": "Source and unit (arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417730/job/128300739806",
+      "labels": [
+        "ubuntu-24.04-arm"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install console dependencies without package scripts",
+          "conclusion": "success"
+        },
+        {
+          "name": "Select native OpenSSL 3 for encrypted diagnostic tests",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Build, unit, race and lint",
+          "conclusion": "success"
+        },
+        {
+          "name": "npm dependency audit",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300739806.txt",
+        "bytes": 48189,
+        "sha256": "2351fc9dbd90bcbf219bc558ab1993215affd66c4e890d1d374bf546af461f1d"
+      }
+    },
+    {
+      "family": "go",
+      "id": 128300475007,
+      "name": "Stock Go hosted and group modules (amd64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417900/job/128300475007",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare owned PostgreSQL and native binaries",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions with race detector",
+          "conclusion": "success"
+        },
+        {
+          "name": "Trusted TLS stock Go transitive downloads and policy recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Encrypt bounded Go failure observations for owner diagnosis",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300475007.txt",
+        "bytes": 392793,
+        "sha256": "c4831d2618eb25c40fa4ab49b30802b90d2ecbc16ffc62938162e965e1a918af"
+      }
+    },
+    {
+      "family": "go",
+      "id": 128300475247,
+      "name": "Stock Go hosted and group modules (arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417900/job/128300475247",
+      "labels": [
+        "ubuntu-24.04-arm"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare owned PostgreSQL and native binaries",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions with race detector",
+          "conclusion": "success"
+        },
+        {
+          "name": "Trusted TLS stock Go transitive downloads and policy recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Encrypt bounded Go failure observations for owner diagnosis",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300475247.txt",
+        "bytes": 393233,
+        "sha256": "64ebf79320f21658ad8e756a7e4bde1a2ba1f748252b870b5ea0b319501ed887"
+      }
+    },
+    {
+      "family": "jvm",
+      "id": 128300474537,
+      "name": "Real Gradle publication and resolution (amd64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417768/job/128300474537",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare native registry, PostgreSQL and pinned Gradle",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stock Gradle publication, module/POM resolution, policy and recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Encrypt bounded JVM failure observations for owner diagnosis",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300474537.txt",
+        "bytes": 51527,
+        "sha256": "bc80b7b2d89fdab8cfdfb8fa3d7971d67ea03ecc978d55e20b59d6f6c666afd8"
+      }
+    },
+    {
+      "family": "jvm",
+      "id": 128300474697,
+      "name": "Real SBT publication and resolution (sbt2 amd64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417768/job/128300474697",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare native registry, PostgreSQL and pinned SBT series",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stock SBT publication, transitive resolution, policy and recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Encrypt bounded JVM failure observations for owner diagnosis",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300474697.txt",
+        "bytes": 51822,
+        "sha256": "82e653471a7e28f076c12031154f9b490b97a90f03574873bc682742695846aa"
+      }
+    },
+    {
+      "family": "jvm",
+      "id": 128300474764,
+      "name": "Real Ant and Ivy publication and resolution (amd64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417768/job/128300474764",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare native registry, PostgreSQL and pinned Ant/Ivy",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stock Ivy publication, transitive resolution, policy and recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Encrypt bounded JVM failure observations for owner diagnosis",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300474764.txt",
+        "bytes": 51510,
+        "sha256": "a9a792162afe914d967f1460375f50b738ddeb841c9bc22b166093efc3881440"
+      }
+    },
+    {
+      "family": "jvm",
+      "id": 128300474767,
+      "name": "Real SBT publication and resolution (sbt1 amd64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417768/job/128300474767",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare native registry, PostgreSQL and pinned SBT series",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stock SBT publication, transitive resolution, policy and recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Encrypt bounded JVM failure observations for owner diagnosis",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300474767.txt",
+        "bytes": 51275,
+        "sha256": "a9ded20227610b60a38b3ffbb2cb67dfabf21f3e2a9c179a03a8277fda7104f5"
+      }
+    },
+    {
+      "family": "jvm",
+      "id": 128300474803,
+      "name": "Real Gradle publication and resolution (arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417768/job/128300474803",
+      "labels": [
+        "ubuntu-24.04-arm"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare native registry, PostgreSQL and pinned Gradle",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stock Gradle publication, module/POM resolution, policy and recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Encrypt bounded JVM failure observations for owner diagnosis",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300474803.txt",
+        "bytes": 51629,
+        "sha256": "22fdc909f987f0b685d8837ec1aac337c9dc45fcd11f577c6885c727cd366310"
+      }
+    },
+    {
+      "family": "jvm",
+      "id": 128300474832,
+      "name": "Real SBT publication and resolution (sbt1 arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417768/job/128300474832",
+      "labels": [
+        "ubuntu-24.04-arm"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare native registry, PostgreSQL and pinned SBT series",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stock SBT publication, transitive resolution, policy and recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Encrypt bounded JVM failure observations for owner diagnosis",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300474832.txt",
+        "bytes": 51925,
+        "sha256": "68ea86d7814ac104362d5964e101c201a3d04569f65847954ffb8dc1514da7dc"
+      }
+    },
+    {
+      "family": "jvm",
+      "id": 128300474837,
+      "name": "Real SBT publication and resolution (sbt2 arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417768/job/128300474837",
+      "labels": [
+        "ubuntu-24.04-arm"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare native registry, PostgreSQL and pinned SBT series",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stock SBT publication, transitive resolution, policy and recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Encrypt bounded JVM failure observations for owner diagnosis",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300474837.txt",
+        "bytes": 52335,
+        "sha256": "3debe0987c0448116ecfdcd262a856b0c899119eada1977734995e3207aecc01"
+      }
+    },
+    {
+      "family": "jvm",
+      "id": 128300474859,
+      "name": "Real Ant and Ivy publication and resolution (arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417768/job/128300474859",
+      "labels": [
+        "ubuntu-24.04-arm"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare native registry, PostgreSQL and pinned Ant/Ivy",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stock Ivy publication, transitive resolution, policy and recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Encrypt bounded JVM failure observations for owner diagnosis",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300474859.txt",
+        "bytes": 51553,
+        "sha256": "5c24f6d33d6b5230c0b93377682cb58cbbaaa8a171d7c9c606f4b20112552667"
+      }
+    },
+    {
+      "family": "oci",
+      "id": 128300474784,
+      "name": "Docker, Podman and Helm (amd64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417875/job/128300474784",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare isolated PostgreSQL and exact native registry binaries",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache pinned public Helm archive",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify bundled Podman and install checked Helm",
+          "conclusion": "success"
+        },
+        {
+          "name": "Publish and consume with native Docker, Podman and Helm",
+          "conclusion": "success"
+        },
+        {
+          "name": "Encrypt bounded native failure logs for local diagnosis",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache pinned public Helm archive",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300474784.txt",
+        "bytes": 71954,
+        "sha256": "ac3da2bebba0197d484676a1a0dcf18939123d3e79fde5db1b29da2d8bafc89e"
+      }
+    },
+    {
+      "family": "oci",
+      "id": 128300474966,
+      "name": "Docker, Podman and Helm (arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417875/job/128300474966",
+      "labels": [
+        "ubuntu-24.04-arm"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare isolated PostgreSQL and exact native registry binaries",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache pinned public Helm archive",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify bundled Podman and install checked Helm",
+          "conclusion": "success"
+        },
+        {
+          "name": "Publish and consume with native Docker, Podman and Helm",
+          "conclusion": "success"
+        },
+        {
+          "name": "Encrypt bounded native failure logs for local diagnosis",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache pinned public Helm archive",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300474966.txt",
+        "bytes": 72001,
+        "sha256": "6de6d74672ed039fe093e42be7bd69480e77397ee531fb96e95289e9df81f340"
+      }
+    },
+    {
+      "family": "upgrades",
+      "id": 128300474450,
+      "name": "Real PostgreSQL controlled upgrades (arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417779/job/128300474450",
+      "labels": [
+        "ubuntu-24.04-arm"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache pinned public ORAS archive",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare disposable native tools and database",
+          "conclusion": "success"
+        },
+        {
+          "name": "Rebuild and verify every pinned historical native server",
+          "conclusion": "success"
+        },
+        {
+          "name": "Legacy adoption with actual migration process interruption",
+          "conclusion": "success"
+        },
+        {
+          "name": "Retained lifecycle through every schema 2\u201313 upgrade",
+          "conclusion": "success"
+        },
+        {
+          "name": "Repair and recurring integrity upgrades",
+          "conclusion": "success"
+        },
+        {
+          "name": "Retention and scheduled-retirement upgrades",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare bounded upgrade evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache pinned public ORAS archive",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300474450.txt",
+        "bytes": 92583,
+        "sha256": "19747ce9d4b9347ec3541c2bc1d40467a4d7927cd2d6760530be0c943151541b"
+      }
+    },
+    {
+      "family": "upgrades",
+      "id": 128300474605,
+      "name": "Real PostgreSQL controlled upgrades (amd64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417779/job/128300474605",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache pinned public ORAS archive",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare disposable native tools and database",
+          "conclusion": "success"
+        },
+        {
+          "name": "Rebuild and verify every pinned historical native server",
+          "conclusion": "success"
+        },
+        {
+          "name": "Legacy adoption with actual migration process interruption",
+          "conclusion": "success"
+        },
+        {
+          "name": "Retained lifecycle through every schema 2\u201313 upgrade",
+          "conclusion": "success"
+        },
+        {
+          "name": "Repair and recurring integrity upgrades",
+          "conclusion": "success"
+        },
+        {
+          "name": "Retention and scheduled-retirement upgrades",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare bounded upgrade evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache pinned public ORAS archive",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300474605.txt",
+        "bytes": 93039,
+        "sha256": "628578ede0ef0c221bf36a1038880d32875457216c219e8a99080314d0bb5d56"
+      }
+    },
+    {
+      "family": "focused",
+      "id": 128300474374,
+      "name": "Real x86 Chromium nuget replay",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417739/job/128300474374",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare real database, registry and Chromium",
+          "conclusion": "success"
+        },
+        {
+          "name": "Replay selected journey five times with independent fresh databases",
+          "conclusion": "success"
+        },
+        {
+          "name": "Safe failure locations and matcher labels",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Encrypt bounded browser failure observations for owner diagnosis",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300474374.txt",
+        "bytes": 86456,
+        "sha256": "bb256f313f587dd69caf9b4ac1cc30c4968404fa82f9c09b53f6c716f961a266"
+      }
+    },
+    {
+      "family": "focused",
+      "id": 128300474540,
+      "name": "Real x86 Chromium retention replay",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417739/job/128300474540",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare real database, registry and Chromium",
+          "conclusion": "success"
+        },
+        {
+          "name": "Replay selected journey five times with independent fresh databases",
+          "conclusion": "success"
+        },
+        {
+          "name": "Safe failure locations and matcher labels",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Encrypt bounded browser failure observations for owner diagnosis",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300474540.txt",
+        "bytes": 87144,
+        "sha256": "08e567b642a182b0e8c7b7c492a2c25d4ff903196ea33e56ab38fd090b5f7358"
+      }
+    },
+    {
+      "family": "focused",
+      "id": 128300474652,
+      "name": "Real x86 Chromium repair replay",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417739/job/128300474652",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare real database, registry and Chromium",
+          "conclusion": "success"
+        },
+        {
+          "name": "Replay selected journey five times with independent fresh databases",
+          "conclusion": "success"
+        },
+        {
+          "name": "Safe failure locations and matcher labels",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Encrypt bounded browser failure observations for owner diagnosis",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_log": {
+        "path": ".private/ci-diagnostics/ca56447-campaign/128300474652.txt",
+        "bytes": 86404,
+        "sha256": "c8c5d8eaa57c46ef26b761150a3b5f56322fb79e4cfec9b7320437b0c4474238"
+      }
+    }
+  ],
+  "original_safe_summary_count": 20,
+  "original_safe_report_count": 64,
+  "summaries": [
+    {
+      "family": "main",
+      "path": "evidence/2026-11-07/github-ca56447-final/ci-summary-arm64.json",
+      "sha256": "b22547ae9ac01cd5e6bf5d27ca2c2d2b038d3c15974718bfcc517cd385fc7ac0",
+      "github_artifact_id": 13561500723,
+      "github_artifact_digest": "sha256:a6148f9926c4b238ddf9cea61eb96731ce1a5de410f19d9b562d35a528ea5c16",
+      "records": []
+    },
+    {
+      "family": "main",
+      "path": "evidence/2026-11-07/github-ca56447-final/ci-summary-security.json",
+      "sha256": "c510aa5c6739d50c3be491f4d52a77c91b1262c7d1ff0d616825f06a461cf181",
+      "github_artifact_id": 13560911011,
+      "github_artifact_digest": "sha256:90cd3aeeb923665bdfe3be2ca74d928d267ed09862fd15e1558cd3b6c28bf46b",
+      "records": [
+        {
+          "report": "gitleaks-rule-fixtures.json",
+          "status": "passed",
+          "checks": null,
+          "raw_report_sha256": "014ecb66b24cb390a0c17223fe52f8bdb2e2376030b75dfe919cd1dd5c569c0a"
+        }
+      ]
+    },
+    {
+      "family": "main",
+      "path": "evidence/2026-11-07/github-ca56447-final/ci-summary-amd64.json",
+      "sha256": "e417115d51a32ef7e4d76c2ae84b482bdd6ac3a7341f06c62ab51fd4d5d6d48f",
+      "github_artifact_id": 13560742118,
+      "github_artifact_digest": "sha256:8cf063a04af686064f838e301a1275e6bb04e5ccdb4d137d08bb6e772d882821",
+      "records": []
+    },
+    {
+      "family": "go",
+      "path": "evidence/2026-11-07/github-ca56447-final/ci-summary-go-module-arm64.json",
+      "sha256": "20a6bc0df07e21276d6636d3b0fa5c5999fe7a9f7a5d9711fa313203a66788d2",
+      "github_artifact_id": 13560712597,
+      "github_artifact_digest": "sha256:7610b9c3247747b579a192e789aed667f9e175c12f2fb06083211cf93c68eb0b",
+      "records": [
+        {
+          "report": "go-module-b927ac1710.json",
+          "status": "passed",
+          "checks": 312,
+          "raw_report_sha256": "276e5ac8a0a0d2f0f7dcc1fd30cf725658993a6dfbebf79072124fd097c0ff87"
+        }
+      ]
+    },
+    {
+      "family": "go",
+      "path": "evidence/2026-11-07/github-ca56447-final/ci-summary-go-module-amd64.json",
+      "sha256": "1806fcc32ac1841285c3cd75a88b72bee1c838ba53da3903c4733cf9a1004e75",
+      "github_artifact_id": 13560523580,
+      "github_artifact_digest": "sha256:7a107dd11979e4cdd21155aa96858b04211655d8fc399c1b764ac5702cad1030",
+      "records": [
+        {
+          "report": "go-module-82417f46c7.json",
+          "status": "passed",
+          "checks": 312,
+          "raw_report_sha256": "73923367a27922c23fdc5f04e0f0de4f69a73a79bd5cc3cce01027ba06d8341d"
+        }
+      ]
+    },
+    {
+      "family": "jvm",
+      "path": "evidence/2026-11-07/github-ca56447-final/ci-summary-sbt1-amd64.json",
+      "sha256": "2f76fb542fd5528e891a719b007939acc45960beac2b330c0eb1756f3732098a",
+      "github_artifact_id": 13561161115,
+      "github_artifact_digest": "sha256:fbf8cb474e62330da772f3dc1e76afd3332cf312a9d5fa70cbcb3d441d55ee88",
+      "records": [
+        {
+          "report": "conformance-063d396932.json",
+          "status": "passed",
+          "checks": 269,
+          "raw_report_sha256": "45500ed20f865e616f61b4a37bfc807c6a8e40607230af2abda9f9727baf529f"
+        }
+      ]
+    },
+    {
+      "family": "jvm",
+      "path": "evidence/2026-11-07/github-ca56447-final/ci-summary-ivy-amd64.json",
+      "sha256": "cbac6d5755562e7f354845fbd2e9ee0b2d99fabeb662ed5bb28a6064edc32ec8",
+      "github_artifact_id": 13561121021,
+      "github_artifact_digest": "sha256:861f5e88be0c297c178534556d05567be31b538ab435b754adc9ea48f622589d",
+      "records": [
+        {
+          "report": "conformance-edbf0c7fba.json",
+          "status": "passed",
+          "checks": 666,
+          "raw_report_sha256": "c04412147561f1ed3c0d9a4727e2c3fbddfbd09e6ae888deba244d88d4b6540c"
+        }
+      ]
+    },
+    {
+      "family": "jvm",
+      "path": "evidence/2026-11-07/github-ca56447-final/ci-summary-gradle-arm64.json",
+      "sha256": "14ba3c01a665b6b59b5cf561579960ae4d7e3b9db6a583878e2676710f962bb2",
+      "github_artifact_id": 13561120829,
+      "github_artifact_digest": "sha256:bb5994c672e65e26430d2299c9ab6f01671f6d88cca56dd5ee3d0c4c3a6c4bd5",
+      "records": [
+        {
+          "report": "conformance-1ba3c33867.json",
+          "status": "passed",
+          "checks": 199,
+          "raw_report_sha256": "d38f9c6730855add9e26b4450c20a531f054921ab648725bb3eb7f68658eab89"
+        }
+      ]
+    },
+    {
+      "family": "jvm",
+      "path": "evidence/2026-11-07/github-ca56447-final/ci-summary-sbt1-arm64.json",
+      "sha256": "8c4d6f4958db2c51c6172a8a10ecca30f3d754c059ed36384b11552e0b0e8b72",
+      "github_artifact_id": 13561095746,
+      "github_artifact_digest": "sha256:fd95687d2bf39a7e8f3822a518b02ebaaa72a8da90d6d9b652be1bd939e5171a",
+      "records": [
+        {
+          "report": "conformance-2972c39076.json",
+          "status": "passed",
+          "checks": 269,
+          "raw_report_sha256": "0683641a164fc4c83ca8e7e2d053c5553b567e26a6ea5e910531d94a5d014d7d"
+        }
+      ]
+    },
+    {
+      "family": "jvm",
+      "path": "evidence/2026-11-07/github-ca56447-final/ci-summary-sbt2-arm64.json",
+      "sha256": "c12127407608087af13117e877f09724696f17003a79d94d4f194be8ae7d7977",
+      "github_artifact_id": 13560754369,
+      "github_artifact_digest": "sha256:653c945c03c43061f9f1843b70d3e99a04e4e7a145edb858f2b3bad9d562049c",
+      "records": [
+        {
+          "report": "conformance-4bf323b846.json",
+          "status": "passed",
+          "checks": 269,
+          "raw_report_sha256": "0caff1e908406233bb3479721f51283e371fb12cc1e78c4354fb209454dff531"
+        }
+      ]
+    },
+    {
+      "family": "jvm",
+      "path": "evidence/2026-11-07/github-ca56447-final/ci-summary-ivy-arm64.json",
+      "sha256": "539dd67aab7b37f74f0eccaf08ff8962b256f33fd343fc9e1c18cfe935c5e5b4",
+      "github_artifact_id": 13560747384,
+      "github_artifact_digest": "sha256:c830e1f32bf3b079df739f5fd341787def2c0c5c2187e2e03a24fded1899f0bd",
+      "records": [
+        {
+          "report": "conformance-b6cd33c9a7.json",
+          "status": "passed",
+          "checks": 666,
+          "raw_report_sha256": "1ddc5c23224979e2b654a0df3f6c3d042578b3b1433c87996f93f2b61aaf5f9e"
+        }
+      ]
+    },
+    {
+      "family": "jvm",
+      "path": "evidence/2026-11-07/github-ca56447-final/ci-summary-sbt2-amd64.json",
+      "sha256": "b9e4f2091d2768f65f6ba9d32e9508bb2bb87244cf654e0058fa27b014f65c3c",
+      "github_artifact_id": 13560723086,
+      "github_artifact_digest": "sha256:f09a81865301e7c531e3eb39ca247d5afc36a407fb07d9f671da6a0763d8b023",
+      "records": [
+        {
+          "report": "conformance-dcb03d0f29.json",
+          "status": "passed",
+          "checks": 269,
+          "raw_report_sha256": "9ec5b49be186c8118f049f9787c4033b81b204d36c4c82ce6f05df466bfc599b"
+        }
+      ]
+    },
+    {
+      "family": "jvm",
+      "path": "evidence/2026-11-07/github-ca56447-final/ci-summary-gradle-amd64.json",
+      "sha256": "a2dfc4837b3f4378a6eecd9d3b5cdf0c91bc8017542c0b405a7c3c48369a4863",
+      "github_artifact_id": 13560209357,
+      "github_artifact_digest": "sha256:ed381974c9520773118a796bad9e76b37771caa1239d6f78bc662300bd7f84e9",
+      "records": [
+        {
+          "report": "conformance-e52181d0ee.json",
+          "status": "passed",
+          "checks": 199,
+          "raw_report_sha256": "1776a3066a1e6a9109969551c4ce5187c8a5bd36fd6f31387437c54a66357552"
+        }
+      ]
+    },
+    {
+      "family": "oci",
+      "path": "evidence/2026-11-07/github-ca56447-final/ci-summary-oci-clients-amd64.json",
+      "sha256": "a60c14acb2dbe95405ee609a8092b97f8b952536964627a19f4c182c9ae171d1",
+      "github_artifact_id": 13560731087,
+      "github_artifact_digest": "sha256:0814f89a1019d1799e75b7121685ac502098afaade0b2b675835b1c80affe257",
+      "records": [
+        {
+          "report": "oci-clients-ad0cbcc465.json",
+          "status": "passed",
+          "checks": 214,
+          "raw_report_sha256": "a1b59c5cb5d15c59210239da0bc6c186cbccb3aae609ea4fc493bfd29b370675"
+        }
+      ]
+    },
+    {
+      "family": "oci",
+      "path": "evidence/2026-11-07/github-ca56447-final/ci-summary-oci-clients-arm64.json",
+      "sha256": "3b01445fadc841dec983f5d997e5d44f470181063726385905ed936c6b7eea3b",
+      "github_artifact_id": 13559898148,
+      "github_artifact_digest": "sha256:9f4e2444f8b4bc214eafa0e0a1621c747a9593fa7454f78e065540bb637b1e8c",
+      "records": [
+        {
+          "report": "oci-clients-795044b5c1.json",
+          "status": "passed",
+          "checks": 214,
+          "raw_report_sha256": "ea95a3247b2e0100b24fdd8abf7123e324223c4849d42a5ad3c39f8cadc14d5a"
+        }
+      ]
+    },
+    {
+      "family": "upgrades",
+      "path": "evidence/2026-11-07/github-ca56447-final/ci-summary-upgrades-amd64.json",
+      "sha256": "b4868d05f1ef2323d6d7553aefc2a9bfe22ba38a5b45f72aade7173774622d67",
+      "github_artifact_id": 13561335191,
+      "github_artifact_digest": "sha256:174019ef45e8c66828122b14ed9756764a5343391728cd2c062cae11bccfa547",
+      "records": [
+        {
+          "report": "historical-build-e4b976b6bb.json",
+          "status": "passed",
+          "checks": 13,
+          "raw_report_sha256": "f08feb7b021227a898b0016e235c34cae4efbb50ec828f468f91b05c1a20177c"
+        },
+        {
+          "report": "lifecycle-0a606146c8.json",
+          "status": "passed",
+          "checks": 46,
+          "raw_report_sha256": "0c95ed11afeae8373c2201077ab0d1233eb116be80b105a5424734f9ae171b29"
+        },
+        {
+          "report": "lifecycle-17c0565a22.json",
+          "status": "passed",
+          "checks": 44,
+          "raw_report_sha256": "29b423eb82cb51a39c1bae5f18b8ce51244269ce0e489549db5ff3351fbab344"
+        },
+        {
+          "report": "lifecycle-2cd044f375.json",
+          "status": "passed",
+          "checks": 70,
+          "raw_report_sha256": "550a66d98662949840c0ecdb86fe4b8d795e7f58579034781335b6bcbdf33cfa"
+        },
+        {
+          "report": "lifecycle-4e4fc1d0d7.json",
+          "status": "passed",
+          "checks": 46,
+          "raw_report_sha256": "345e1e7ed3bbfad1101e2329b0b1444a1f4c6fd570ead78e6697a72fa892d964"
+        },
+        {
+          "report": "lifecycle-5f86e594b4.json",
+          "status": "passed",
+          "checks": 70,
+          "raw_report_sha256": "b2d7dc58726f9b8eabee6cfe4d0de1a09d32ab5e64b48d81bc314314567b7ae4"
+        },
+        {
+          "report": "lifecycle-6510063d0d.json",
+          "status": "passed",
+          "checks": 70,
+          "raw_report_sha256": "d283fb12c94fb9157f43916ba05aeb13193fb481071b103d063fea1013bc610f"
+        },
+        {
+          "report": "lifecycle-6556b4809c.json",
+          "status": "passed",
+          "checks": 46,
+          "raw_report_sha256": "3b1f2c0ecad3e09f706cd76261789f0f84fa3f6a9ab1935a71b198ce2a0ed3d4"
+        },
+        {
+          "report": "lifecycle-7b6d68bfcf.json",
+          "status": "passed",
+          "checks": 70,
+          "raw_report_sha256": "15f7f35d9cea9c1ade032e694b1c9c48f3c0eb30a57732a66b376cda8277d982"
+        },
+        {
+          "report": "lifecycle-93a5d1e995.json",
+          "status": "passed",
+          "checks": 53,
+          "raw_report_sha256": "6348bbddd17fcd276df6adcde90f4499b20093a122190f895ea6b9b7d82ed2fb"
+        },
+        {
+          "report": "lifecycle-a686ec1f70.json",
+          "status": "passed",
+          "checks": 46,
+          "raw_report_sha256": "8096a68ecd95123e4fddb644ed6c78761e6ba4f6212d6003758b4fed6c2855df"
+        },
+        {
+          "report": "lifecycle-d220b09389.json",
+          "status": "passed",
+          "checks": 64,
+          "raw_report_sha256": "d8efd86dcc94749b2582d5f4573c232f9f4d73cda3d6c743a49afd8f240bb3d2"
+        },
+        {
+          "report": "lifecycle-eb06457a68.json",
+          "status": "passed",
+          "checks": 46,
+          "raw_report_sha256": "49ed4246e465ffba1c082cc8034be82223980ce0ee14428e4c991a3c3512a677"
+        },
+        {
+          "report": "repairs-ea670a986b.json",
+          "status": "passed",
+          "checks": 45,
+          "raw_report_sha256": "96beb6fd1c00eb0feb0005ece3244f95141279d58c9649f483e790a194c8b095"
+        },
+        {
+          "report": "retention-6d6e868736.json",
+          "status": "passed",
+          "checks": 38,
+          "raw_report_sha256": "499df4edd2168df7f4357e79a7edb5d743b12221fd8289bf8bbdf23ac0c67d77"
+        },
+        {
+          "report": "retention-schedules-17a23208fe.json",
+          "status": "passed",
+          "checks": 60,
+          "raw_report_sha256": "5802969a60d21c6f7c1d33f7b766658041888fb1ba7230f6892e34131aad8910"
+        },
+        {
+          "report": "schedules-e5db103e03.json",
+          "status": "passed",
+          "checks": 32,
+          "raw_report_sha256": "c2e01578009e09c6bb451c13194a52ba15450d50785b498a15601d6905463c29"
+        },
+        {
+          "report": "schema-0943cd4928.json",
+          "status": "passed",
+          "checks": 14,
+          "raw_report_sha256": "52c9dd3c8400e60886d57d38865e0afe56a8c3125c39274c793d92e3cdb63c26"
+        }
+      ]
+    },
+    {
+      "family": "upgrades",
+      "path": "evidence/2026-11-07/github-ca56447-final/ci-summary-upgrades-arm64.json",
+      "sha256": "f2557ba5ec99576966e4be702ce89260f31326f7e8573e5dfc893871bca7b718",
+      "github_artifact_id": 13560354852,
+      "github_artifact_digest": "sha256:0e38ed304bb68fb904860f8d7985d388f432d93662863e2a05a54edd09698738",
+      "records": [
+        {
+          "report": "historical-build-57585bb56d.json",
+          "status": "passed",
+          "checks": 13,
+          "raw_report_sha256": "98ed21846fe439c38c3e277bf8923c13d00544633c7374f6c4ff56557663e6eb"
+        },
+        {
+          "report": "lifecycle-07bc74bbe2.json",
+          "status": "passed",
+          "checks": 53,
+          "raw_report_sha256": "519701ec57d732d477d278e7d71a9f6eb17b994cd6484e4d42f529c37a28c19a"
+        },
+        {
+          "report": "lifecycle-13a094433e.json",
+          "status": "passed",
+          "checks": 70,
+          "raw_report_sha256": "35949c01718df5cf43a3c748ddff484e248c2922394edc2bbf04670b12ae72ce"
+        },
+        {
+          "report": "lifecycle-2f4fecadb3.json",
+          "status": "passed",
+          "checks": 46,
+          "raw_report_sha256": "b331ccfa8d44769dd3e6d0c3cf6ad7081cfb7571b3af235d87cebf14a2bc4a2d"
+        },
+        {
+          "report": "lifecycle-42f68eb6f0.json",
+          "status": "passed",
+          "checks": 44,
+          "raw_report_sha256": "06803f81f1519ccdc2b838831c7f7d0144d5c3512e8b6b7576dedb2c44dc495b"
+        },
+        {
+          "report": "lifecycle-58b1a6a1b7.json",
+          "status": "passed",
+          "checks": 46,
+          "raw_report_sha256": "109ddd67f4f0562399cf99aacc23d276096588927cdb455d8f3565c7c5f9665f"
+        },
+        {
+          "report": "lifecycle-5b591b85bf.json",
+          "status": "passed",
+          "checks": 70,
+          "raw_report_sha256": "322df6fb9cef1c6bb2d3c0ffe4a80d7765dbb9e058c6efed9ec4500439ebb556"
+        },
+        {
+          "report": "lifecycle-844a20fe13.json",
+          "status": "passed",
+          "checks": 64,
+          "raw_report_sha256": "b8806dcf4dfa2057eff29f376fd083b8de9cbb38421ac1c6c134418d836dc28b"
+        },
+        {
+          "report": "lifecycle-87364e8ac5.json",
+          "status": "passed",
+          "checks": 70,
+          "raw_report_sha256": "cdae0238d6bd0ec7aabdcace348e46ec00c74d1fbb0c54e0ae79219527833bc8"
+        },
+        {
+          "report": "lifecycle-8ed567fe50.json",
+          "status": "passed",
+          "checks": 46,
+          "raw_report_sha256": "30478c56db81c7d1dc1761bbbc869e48825a631c4b1eb9bdc7f44ac9d74e65a1"
+        },
+        {
+          "report": "lifecycle-c907342970.json",
+          "status": "passed",
+          "checks": 46,
+          "raw_report_sha256": "23153aa9907781ef36095f24fab44417ef57c0beb409c8b1e879c3ca8168c1e8"
+        },
+        {
+          "report": "lifecycle-c92e62078c.json",
+          "status": "passed",
+          "checks": 70,
+          "raw_report_sha256": "61726376ae5d1e4df2555267b0a2c4a7ba0a0bef2d860b471b640cfec491dfa9"
+        },
+        {
+          "report": "lifecycle-cc2ae8d295.json",
+          "status": "passed",
+          "checks": 46,
+          "raw_report_sha256": "f7210456dd8037ea8368761fa0cf5ff738cca21630a6cd8c0b2f89ac4a770055"
+        },
+        {
+          "report": "repairs-0887945279.json",
+          "status": "passed",
+          "checks": 45,
+          "raw_report_sha256": "98962db3951eff7bd70519ffc56ba870a96ae6399ef4a014a742160a299c388a"
+        },
+        {
+          "report": "retention-3160722d51.json",
+          "status": "passed",
+          "checks": 38,
+          "raw_report_sha256": "97d6af1cb5052fd5a374379474fb1042172e66f293319d1edff022454f845d7c"
+        },
+        {
+          "report": "retention-schedules-5f2e5e5357.json",
+          "status": "passed",
+          "checks": 60,
+          "raw_report_sha256": "8437be625989e7be539eb0dff29cacfb9053b04ae838098d6be644bd42c6becf"
+        },
+        {
+          "report": "schedules-873a8de17e.json",
+          "status": "passed",
+          "checks": 32,
+          "raw_report_sha256": "6ca37fa94bb7efe0c90d3c9399d601437ed476bcb60ac01921fffdf294ed7ff6"
+        },
+        {
+          "report": "schema-0cc4e6380e.json",
+          "status": "passed",
+          "checks": 14,
+          "raw_report_sha256": "59824e5c97a43ce97dc536f10418e86d960b2aceae57cb9df01939d641e5ff1b"
+        }
+      ]
+    },
+    {
+      "family": "focused",
+      "path": "evidence/2026-11-07/github-ca56447-final/ci-summary-repair-browser.json",
+      "sha256": "071b0111b81096fd28e9aea5c7fc4c982907f5f906c8886a795cfdc0739c5ab8",
+      "github_artifact_id": 13561065116,
+      "github_artifact_digest": "sha256:ba40ec6b90107beba78a2ad29c9fe3928e983ee13f06bb4512869849915544c7",
+      "records": [
+        {
+          "report": "console-0d82065996.json",
+          "status": "passed",
+          "checks": 7,
+          "raw_report_sha256": "1e12bff402d8ddcf34c3dd351e93dfc350e64895c3a4528d4b778b1409fe54d8"
+        },
+        {
+          "report": "console-2293900102.json",
+          "status": "passed",
+          "checks": 7,
+          "raw_report_sha256": "426363f35db38214f980421c80027f2e92b2a82738985449c446f121a70baa1e"
+        },
+        {
+          "report": "console-63def03579.json",
+          "status": "passed",
+          "checks": 7,
+          "raw_report_sha256": "dae8249d0d4fd719d813edd8e633810c96de3b95acb35041557fe56222382dd8"
+        },
+        {
+          "report": "console-8aa77f61b9.json",
+          "status": "passed",
+          "checks": 7,
+          "raw_report_sha256": "4f26762a38ba4c7d6d89770fcd9cbb1aaef7ae114a6133626fead56ba8b15f52"
+        },
+        {
+          "report": "console-bea893a5a4.json",
+          "status": "passed",
+          "checks": 7,
+          "raw_report_sha256": "e1cb589b9f38f1a1c19bb081f71b16c90d2121158c47fcf9cd385a668f7be84a"
+        }
+      ]
+    },
+    {
+      "family": "focused",
+      "path": "evidence/2026-11-07/github-ca56447-final/ci-summary-retention-browser.json",
+      "sha256": "7c7a048e9575a1170fcba1e3687738ed796ee23f60d9ac86a3f158a6e0558093",
+      "github_artifact_id": 13560537738,
+      "github_artifact_digest": "sha256:e224d70b0a9bac2ac3a965e837d481f41d840109a20b669f1bf782ba07462f64",
+      "records": [
+        {
+          "report": "console-3f2931b8d4.json",
+          "status": "passed",
+          "checks": 13,
+          "raw_report_sha256": "fc491c4c65ffdad644724943509032b46b8483faf76637d132557d756f776564"
+        },
+        {
+          "report": "console-5359a3794b.json",
+          "status": "passed",
+          "checks": 13,
+          "raw_report_sha256": "787d40a521d1c72ae45c182d659a6f46bb11e8606bd07f04ff2449bf9a53368b"
+        },
+        {
+          "report": "console-8cdb31df86.json",
+          "status": "passed",
+          "checks": 13,
+          "raw_report_sha256": "5d3433c133b1fa375a350f8f3218167a318ca8d1239e5dd24bc497ee336e68e7"
+        },
+        {
+          "report": "console-a989ba318a.json",
+          "status": "passed",
+          "checks": 13,
+          "raw_report_sha256": "7a06ce86704d9524580b0afb38d256594e163b7617f5d8548a58de0cc1d6ce77"
+        },
+        {
+          "report": "console-d7f499f6f7.json",
+          "status": "passed",
+          "checks": 13,
+          "raw_report_sha256": "76b4b13f27edccb8df44d079a1be451580b26af2bede3eb1ad8b003e68416151"
+        }
+      ]
+    },
+    {
+      "family": "focused",
+      "path": "evidence/2026-11-07/github-ca56447-final/ci-summary-nuget-browser.json",
+      "sha256": "fdadc73aa1fda2a5d47f6ab572004477abd82705fc933ff3f4f292d5d7c89cbe",
+      "github_artifact_id": 13560488856,
+      "github_artifact_digest": "sha256:3fd54238fea049cff05ec62ad87c21f43421a2695e2bfe90afb54b265750ca34",
+      "records": [
+        {
+          "report": "console-40d3bb9b69.json",
+          "status": "passed",
+          "checks": 12,
+          "raw_report_sha256": "ad0f58024d2e11eb4ec3403be01a8117bfe6a5974e8dcd2bd8021ae760c828fb"
+        },
+        {
+          "report": "console-56c6209266.json",
+          "status": "passed",
+          "checks": 12,
+          "raw_report_sha256": "aa4db317eb6c017793a72ba74d94891cc916434765db50b5990fb8e5f34a2aa2"
+        },
+        {
+          "report": "console-7c3b18ebb8.json",
+          "status": "passed",
+          "checks": 12,
+          "raw_report_sha256": "2e89a0c358750f2321f6cfc49f8f9143893895996e1649fcda29b10a91ed1219"
+        },
+        {
+          "report": "console-9b4480873b.json",
+          "status": "passed",
+          "checks": 12,
+          "raw_report_sha256": "8d63aeda87687ee56276af34a9599906acf08958af38543cbaf17d6d784f1d79"
+        },
+        {
+          "report": "console-a2d2e5c0e2.json",
+          "status": "passed",
+          "checks": 12,
+          "raw_report_sha256": "c759d7f4f188113c545295ff9aee99d861fe4b5ac55c43d7bcf3309ec24137f8"
+        }
+      ]
+    }
+  ],
+  "first_failure": "evidence/2026-11-07/journal-export-ca56447-first-failure.json",
+  "named_go_checkpoint": "evidence/2026-11-07/go-module-ca56447-native-checkpoint.json",
+  "upgrade_checkpoint": "evidence/2026-11-07/github-ca56447-upgrades-checkpoint.json",
+  "limits": [
+    "The first oversize fixture is invalid JSON and fails during retained-event INSERT before export limit code. Repair uses valid tenant/sequence/padding JSON above the same 256KiB limit; ErrJournalLimit assertion and all14 frozen migrations stay unchanged.",
+    "Main normal store packages fail; full race, native stock/lifecycle and main18Chromium/140checks are skipped and are not passes. The two zero-report summaries correctly fail closed. Three focused jobs/15one-workflow trials are separate, not the full main console.",
+    "Go79normal/race+312stock and13historical/18upgrade profiles are independently accepted on both actual native Linux hosts. Source/unit/race/lint and49fuzz3hosts pass; all eight JVM jobs are now terminal success. Main browser/race/stock stages remain skipped.",
+    "No manual rerun, cancellation, weakened assertion, private data upload, primary/customer/sibling/release/package/image change. Earlier strict Go1.27.3 client ZIP trust-state control still fails on all three named hosts under DEFECT0126.",
+    "External checkpoint signature verification is a later uncommitted development change, not part of this candidate. All450artifactcapabilities/41families/laterGOAL scope/readiness/security/packaging remain incomplete."
+  ]
+}

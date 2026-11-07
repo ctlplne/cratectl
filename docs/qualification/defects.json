@@ -1352,11 +1352,12 @@
     {
       "id": "DEFECT.0127",
       "summary": "Journal oversize regression fixture uses invalid JSON and fails during retained-event INSERT before reaching the export byte limit",
-      "state": "Repaired fixture locally; actual native replay pending. Both ca56447 Linux normal store suites fail the same setup control. Full race/stock/main browser stages skip.",
+      "state": "Fixture repair verified at a3d8df2 in both actual Linux full normal/race PostgreSQL suites; original ca56447 failures and skipped stages retained.",
       "first_failure": "evidence/2026-11-07/journal-export-ca56447-first-failure.json",
       "campaign": "evidence/2026-11-07/github-ca56447-initial-checkpoint.json",
       "repair": "Marshal valid tenant/sequence/padding JSON with padding greater than256KiB; retain exact ErrJournalLimit assertion, product metadata-first byte bounds and all14 frozen migration definitions.",
-      "limits": "No assertion removal, schema relaxation, workflow rerun/cancel or local database campaign. Three other new journal functions and server package normal success do not qualify the failed full suite; all257normal/race and actual CLI/browser replay required."
+      "limits": "Valid oversized JSON reaches the unchanged256KiB/ErrJournalLimit rejection. All257source-defined PG functions execute normally/race on both Linux hosts; no case removal, schema relaxation or product-bound change. New journal-to-Go bridge is separate uncommitted development and requires fresh native qualification.",
+      "replay": "evidence/2026-11-07/github-a3d8df2-checkpoint.json"
     }
   ]
 }

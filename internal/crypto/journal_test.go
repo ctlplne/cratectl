@@ -201,6 +201,94 @@ func TestJournalReaderFailureCannotProduceAnAuthenticatedReceipt(t *testing.T) {
 	}
 }
 
+func TestJournalSelectionRequiresCompleteRangeAndDiscardsVerifiedPrefixes(t *testing.T) {
+	start, head, pages := journalFixture(t)
+	for _, scenario := range []string{"first", "last", "incremental", "before-range", "after-range", "missing-tail", "tampered-tail", "repeated-tail", "missing-final-newline", "trailing-data", "budget", "reader-error", "cancelled"} {
+		t.Run(scenario, func(t *testing.T) {
+			begin := start
+			sequence := int64(1)
+			raw := journalBytes(t, pages)
+			ctx := context.Background()
+			budget := int64(len(raw))
+			valid := scenario == "first" || scenario == "last" || scenario == "incremental"
+			want := ErrJournalEvidence
+			switch scenario {
+			case "last":
+				sequence = 2
+			case "incremental":
+				begin = JournalAnchor{Tenant: start.Tenant, Sequence: 1, Hash: pages[0].NextHash}
+				sequence = 2
+				raw = journalBytes(t, pages[1:])
+			case "before-range":
+				sequence = 0
+			case "after-range":
+				sequence = 3
+			case "missing-tail":
+				raw = journalBytes(t, pages[:1])
+			case "tampered-tail":
+				tail := pages[1]
+				tail.Items = append([]JournalEvent(nil), tail.Items...)
+				tail.Items[0].Payload += " "
+				raw = journalBytes(t, []JournalPage{pages[0], tail})
+				budget = int64(len(raw))
+			case "repeated-tail":
+				raw = journalBytes(t, []JournalPage{pages[0], pages[0], pages[1]})
+				budget = int64(len(raw))
+			case "missing-final-newline":
+				raw = raw[:len(raw)-1]
+			case "trailing-data":
+				raw = append(raw, []byte("{}\n")...)
+				budget = int64(len(raw))
+			case "budget":
+				budget--
+				want = ErrJournalLimit
+			case "reader-error":
+				want = io.ErrUnexpectedEOF
+			case "cancelled":
+				var cancel context.CancelFunc
+				ctx, cancel = context.WithCancel(ctx)
+				cancel()
+				want = context.Canceled
+			}
+			var input io.Reader = bytes.NewReader(raw)
+			if scenario == "reader-error" {
+				input = failedJournalReader{bytes.NewReader(raw)}
+			}
+			receipt, event, err := VerifyJournalExportEvent(ctx, input, begin, head, budget, sequence)
+			if valid {
+				expected := pages[sequence-1].Items[0]
+				if err != nil || !receipt.MatchesSuppliedCheckpoint || event != expected || receipt.ExportSHA256 != Digest(raw) || receipt.Events != head.Sequence-begin.Sequence {
+					t.Fatal("exact original event selection failed", err)
+				}
+			} else if !errors.Is(err, want) || !reflect.DeepEqual(receipt, JournalVerification{}) || !reflect.DeepEqual(event, JournalEvent{}) {
+				t.Fatal("unverified prefix escaped selection", scenario, err)
+			}
+		})
+	}
+}
+
+func FuzzJournalSelectionDiscardsIncompleteInput(f *testing.F) {
+	start, head, pages := journalFixture(f)
+	complete := journalBytes(f, pages)
+	f.Add(complete, int64(1))
+	f.Add(journalBytes(f, pages[:1]), int64(1))
+	f.Fuzz(func(t *testing.T, raw []byte, sequence int64) {
+		if len(raw) > 64<<10 {
+			return
+		}
+		receipt, event, err := VerifyJournalExportEvent(context.Background(), bytes.NewReader(raw), start, head, 64<<10, sequence)
+		if err != nil {
+			if !reflect.DeepEqual(receipt, JournalVerification{}) || !reflect.DeepEqual(event, JournalEvent{}) {
+				t.Fatal("failed input leaked selected data")
+			}
+			return
+		}
+		if !receipt.MatchesSuppliedCheckpoint || event.Sequence != sequence || sequence <= start.Sequence || sequence > head.Sequence || VerifyJournalEvent(start.Tenant, event) != nil {
+			t.Fatal("unbound selected event accepted")
+		}
+	})
+}
+
 func FuzzJournalPageBindings(f *testing.F) {
 	start, head, pages := journalFixture(f)
 	valid, _ := json.Marshal(pages[0])

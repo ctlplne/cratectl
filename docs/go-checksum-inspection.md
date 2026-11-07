@@ -66,8 +66,76 @@ Supply the public verifier key through an independently trusted channel. Supply
 the expected evidence SHA-256 from a trusted audit journal or export manifest;
 the download's header and adjacent summary alone do not independently authenticate
 its cratectl tenant/repository attribution. The authority's signatures prove log
-misbehavior; they do not sign cratectl's attribution fields. Journal chain/export
-anchor validation and a complete signed export workflow remain separate work.
+misbehavior; they do not sign cratectl's attribution fields. The additional
+journal-bound mode below connects these separate trust paths. Full signed export
+bundles and durable external signing/provider adapters remain required work.
+
+## Derive attribution from a complete externally signed journal
+
+Implementation status: development unit/race tests pass; actual typed PostgreSQL,
+external-tool and native CLI/browser qualification is pending for this extension.
+Public generated fixtures are unit inputs, not a native registry proof.
+
+First follow [journal export](journal-export.md) to collect the complete private
+range and authenticate its checkpoint with a separately trusted external signer
+public key. Retain the original canonical statement, raw signature and public
+key. Do not take either public key from an untrusted download alone: the journal
+signer attributes cratectl history; the checksum authority signs module-log
+history. They perform different jobs.
+
+Select the exact event `sequence` from the administrator failure summary. The
+selected original event must be inside the supplied range. Then run:
+
+```sh
+cratectl go-checksum-verify \
+  --evidence-file ./go-checksum-failure.json \
+  --key-file "$CRATECTL_CHECKSUM_PUBLIC_KEY" \
+  --journal-file "$CRATECTL_PRIVATE_JOURNAL_FILE" \
+  --journal-tenant "$CRATECTL_TRUSTED_TENANT" \
+  --journal-event-sequence "$CRATECTL_FAILURE_EVENT_SEQUENCE" \
+  --journal-through "$CRATECTL_TRUSTED_JOURNAL_SEQUENCE" \
+  --journal-through-hash "$CRATECTL_TRUSTED_JOURNAL_HASH" \
+  --checkpoint-file ./checkpoint.json \
+  --checkpoint-signature-file ./checkpoint.sig \
+  --checkpoint-key-file "$CRATECTL_JOURNAL_TRUSTED_PUBLIC_KEY_FILE"
+```
+
+For an incremental range, also provide `--journal-after` and
+`--journal-after-hash` from its trusted start checkpoint. The target must be
+strictly after that start and no later than the terminal checkpoint. Journal
+input defaults to 1 GiB/five minutes; `--journal-max-bytes` may be 1–64 GiB and
+`--journal-timeout` may be positive through one hour. The same per-event/page/
+frame limits apply as in the general journal verifier.
+
+The command verifies the external signature, every journal page through EOF,
+and only then exposes the exact selected event internally. It requires the
+original `proxy.retrieval.failed` event's typed evidence digest, tenant,
+repository, module ZIP root, generation, source revision, failed state and
+classification to match the canonical failure record. It also independently
+verifies the original checksum authority observations and pins. A valid prefix
+cannot supply attribution if a later page is absent, modified or unreadable.
+Bare historical fork labels without an original digest remain unattributed.
+
+Manual `--expected-sha256` mode remains available. If it is supplied together
+with journal mode, both must agree. Automatic mode requires all three external
+checkpoint files; an unsigned observed head cannot silently replace them.
+Partial/orphan flags, wrong signer/authority keys, mismatched identity/digest,
+noncanonical records and incomplete ranges fail without a partial receipt.
+
+A valid result includes a small `journal_attribution` receipt containing the
+exact event sequence/hash, complete input-file hash and checkpoint signature
+proof. It omits original payloads, package paths and upstream response bodies.
+An attributed but unverified observation still returns nonzero. Neither a
+signed journal nor a proved authority fork approves package bytes, clears a
+block, proves event truth/latest history or changes any server state.
+
+In **Checksum inspection → Evidence commands**, the optional signed-journal
+instructions preserve the exact selected event. Commands are unavailable for
+unsafe integer identities, failed/loading history or a selection no longer in
+the loaded page. Actual current authorization remains enforced by the API;
+offline verification does not contact the server.
+
+## Verification results and retained history
 
 The verifier performs no network or database access. It requires an owner-private
 regular evidence file of at most 2 MiB and separately supplied public key. It

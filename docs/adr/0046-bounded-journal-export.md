@@ -1,13 +1,14 @@
 # Bounded journal export with a separately trusted checkpoint
 
-Status: implemented; ARM development build/unit/race/lint, bounded parser fuzz
-and reproducible console pass. Real PostgreSQL suites compile normally/race and
-pass tagged vet only. Native database/CLI/browser qualification is pending; no
-independently authenticated customer export or broad readiness pass.
-The first native ca56447 normal store suites fail an invalid-JSON oversize fixture
-before export code. Both original failures are retained under DEFECT0127; valid
-oversized JSON replaces only fixture setup. Main race/stock/browser skip and are
-not passes. Native repaired replay remains required.
+Status: implemented and qualified at a3d8df2 within the bounded native profiles.
+Both actual Linux hosts pass all257PG functions normally/race and683baseline
+assertions; three native hosts pass50fuzz/source gates. Main x86 Chromium passes
+18workflows/141checks, including three explicit UI response stand-ins with actual
+store/CLI enforcement separately tested. The original ca56447 invalid-JSON
+oversize fixture failures remain preserved under DEFECT0127; valid oversized JSON
+replays the same limit assertion normally/race without schema or bound changes.
+No broad export/provider/large-history/readiness verdict. The later journal-to-Go
+attribution extension remains native unverified.
 All 450 artifact capabilities, 41 families and later GOAL stages remain. This
 adds repository evidence verification under section 4.1, without a signing/key
 custody service. Source migration definitions 1–14 remain frozen.

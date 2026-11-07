@@ -13,19 +13,23 @@ outside this CI authority. No autonomous delegation.
 
 ## Current qualification state
 
-Exact5816b27 [campaign checkpoint](../../evidence/2026-11-07/github-5816b27-checkpoint.json)
-accepts all29selectedjobs/7workflows,22safe summaries/83reports:79Go and253fullPG
-normally/race onbothLinuxhosts,312stockGo checks each,48fuzz/source/unit/race/lint
-on3nativehosts,13clean historical builds/18upgrades each and132checks/17x86Chromium
-workflows. Two checksum UI workflows use explicit response stand-ins; database,
-auth,key,migration,review and evidence enforcement have separate realPG coverage.
-Native JVM/OCI/NuGet library and15focusedbrowser trials pass their named profiles.
-Original2d/31failedcampaigns and DEFECT0122unknown/intermittent remain retained.
+Exacta3d8df2 [campaign checkpoint](../../evidence/2026-11-07/github-a3d8df2-checkpoint.json) independently accepts
+all27selected jobs/six workflows,20original safe summaries/81reports:257PG and
+79Go normally/race both Linux hosts,312stockGo and683baseline assertions each,
+50fuzz/source/unit/race/lint on three native hosts,13historical builds/18upgrades
+each and141checks/18main x86 Chromium workflows (15existing+3explicit UI response
+stand-ins). Eleven actual external checkpoint controls pass per Linux host with
+OpenSSL3.0.13 and exact native binary/public statement/signature/PEM/DER/export
+hashes. JVM/OCI and15focused browser trials pass. Native NuGet-library and strict
+checksum-client workflows were unselected; unselected is not passed.
 
-Source14 [legacy recovery](go-checksum-legacy-plan.md) is qualified within those
-bounds. All14source definitions are frozen; primary11 remains outside CI
-maintenance. PublicGo proxy/checksum-onstock and broader450capabilities/41families/
-laterGOAL4.1scope/readiness/security/packaging remain incomplete.
+The earlier ca56447 fixture failures and20original failed-campaign summaries are
+preserved separately; the valid oversized-JSON fixture replays the same limit
+assertion normally/race in a3d8df2. DEFECT0126's actual three-host strict Go client
+trust-state failure and DEFECT0122's unknown intermittent remain open. All14source
+definitions are frozen and stopped primary11 is preserved. This accepts bounded
+signature/range profiles, not public/fullGo, provider requests, complete bundles,
+all450/41/laterGOAL scope/readiness/security/packaging.
 
 ## Checksum client investigation lane
 
@@ -111,6 +115,37 @@ expectations describe ca56447, not the extension. No local PostgreSQL/OpenSSL/
 SDK/JVM/stock-registry/Chromium campaign substitutes for native GitHub evidence.
 This is not a durable external signing-request adapter, signed full export bundle,
 Sigstore/Cosign/Notation, freshness/revocation or later-stage readiness verdict.
+
+## Complete journal-to-Go attribution lane
+
+ADR0048 and the [operator workflow](../go-checksum-inspection.md) connect an exact
+original typed Go failure to the complete journal range and an externally signed
+checkpoint. This implementation has52fuzz targets and passes ARM development gates;
+native execution remains pending. Keep manually supplied trusted digests, but
+require all external signature files in automatic journal mode and reject
+missing tails, legacy labels without digests, mismatched identity and conflicting
+manual values. An authenticated unverified observation still exits nonzero.
+
+One new actual-PostgreSQL Go function raises inventory to258full/80namedGo. It
+records original typed evidence, exports a pinned forced-RLS range, rejects a
+missing suffix/wrong canonical generation/cross-tenant head and executes the
+owned candidate CLI with a disposable external OpenSSL signature. Both main and
+Go workflows already prepare owned binaries and set
+CRATECTL_QUALIFICATION_BIN_DIR before these tests. Commands have30second limits,
+2second pipe-drain limits and1MiB stdout/stderr bounds; test signer files remain
+in the private fixture directory. No HTTP signing process or customer key
+lifecycle is added. Passing nonverbose package logs do not establish unseen
+exact tool versions; the separate reviewed native signature profile supplies
+its own version/binary hash evidence.
+
+Next-source expectations:52fuzz,258PG/80Go normal/race, unchanged312stockGo and
+683baseline assertions,18main Chromium workflows/142checks (three declared UI
+response stand-ins). One added browser check covers exact event/signer/authority
+instructions; it does not prove cryptographic enforcement. Preserve every prior
+job/profile and first failed candidate. The preceding a3d8df2 source instead has
+257PG/79Go/50fuzz/18main141checks; qualification remains source-specific. No local
+PostgreSQL/OpenSSL/native registry/Chromium campaign is needed. All450/41/later
+GOAL scope and broad readiness/security/packaging remain incomplete.
 
 ## Earlier source-specific qualification
 

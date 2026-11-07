@@ -1,19 +1,44 @@
 # cratectl execution status
 
-Exact `5816b2723e3e032569c6c83d9960b62375100e27` is the latest accepted selected
-GitHub campaign: all 29 jobs in seven workflows, 22 original safe summaries and
-83 reports. Both actual Linux architectures pass all 253 database tests normally
-and under race, plus the named 79 Go tests and unchanged 312 stock Go checks.
-Three native hosts pass source/unit/race/lint and 48 fuzz targets. Thirteen clean
-historical native binaries and 18 upgrade reports each qualify controlled schema
-2–13 maintenance into 14, including 70 assertions for schema 13→14. Main x86
-Chromium passes 132 checks/17 workflows with zero skips/flaky/unexpected: 15
-existing workflows plus two explicit checksum UI response stand-ins. Actual
-migration/auth/key/review/evidence enforcement has separate real-PG coverage.
-JVM, OCI, native NuGet library and 15 focused browser trials also pass their named
-profiles. See `evidence/2026-11-07/github-5816b27-checkpoint.json` and named
-Go/upgrade checkpoints. All original 2d/31 failed campaigns and the unexplained
-DEFECT0122 intermittent remain retained; a later pass does not prove its repair.
+Exact `a3d8df2fcc9ae809f262057a0690de9eee78c1b6` is the latest accepted selected
+GitHub campaign:27jobs/six workflows,20original safe summaries/81reports. Both
+actual Linux architectures pass all257PostgreSQL functions normally and under
+race, Go79/312stock checks,683baseline assertions and11external checkpoint
+controls using actual OpenSSL3.0.13. Source/unit/race/lint and50fuzz pass on three
+native hosts;13historical binaries/18upgrades each retain controlled schema2–13
+into14, including70schema13→14 assertions. Main x86 Chromium passes141checks/
+18workflows with no skips/flaky/unexpected:15existing workflows and three
+explicit checksum/journal UI response stand-ins. Their UI results are separate
+from real-PG/CLI/cryptographic proof. Native JVM/OCI and15focused browser trials
+pass; NuGet-library and strict checksum-client workflows were unselected. The
+three-host DEFECT0126 client trust-state failure and DEFECT0122 unexplained
+intermittent remain open. See `evidence/2026-11-07/github-a3d8df2-checkpoint.json`
+and named Go/upgrade checkpoints. This is scoped qualification, not readiness.
+
+The two original ca56447 normal store fixture failures remain retained before
+the valid oversized-JSON repair. Its final snapshot contains27terminal jobs,
+25pass/2fail,20safe summaries/64reports. a3d8df2 replays the original limit
+assertion on both native hosts normally/race; no schema or product-bound
+relaxation was needed. Bounded immutable range collection, private-file offline
+verification, unsigned preparation and verification of externally signed
+checkpoints are now qualified in the named profiles. Signature keys/operations
+remain external, and full bundles/provider adapters/latest-history/revocation/
+backup/GC/performance outcomes remain incomplete.
+
+Journal-bound Go failure attribution is implemented but native unverified. It
+requires a complete private journal, exact selected event and externally signed
+checkpoint before deriving a failure digest, then matches original typed
+repository/path/source/generation/state/classification and independently verifies
+the Go authority. Old labels without original digests remain unattributed;
+unverified observations stay nonzero and never admit package bytes. ARM full
+build/unit/race/lint, public joint fork/unverified CLI fixtures, both new bounded
+fuzz targets and console reproduction pass. The actual typed PostgreSQL/external
+OpenSSL/native CLI test compiles normally/race and passes tagged vet only. Next
+source requires258PG/80Go normal/race,52fuzz and18main x86 browser workflows/142
+checks; original312stockGo/683baseline profiles remain. See
+`evidence/2026-11-07/go-checksum-journal-development.json` and ADR0048. All first14
+migrations and stopped primary11 are preserved. Full bundles/provider adapters,
+offline cache/install/backup/GC/conditional refresh and all later scope stay open.
 
 Schema14 internal legacy recovery is qualified in that scope. It preserves
 unattributed old incidents without inventing proof or clearing authenticated
@@ -59,21 +84,15 @@ pending in that initial snapshot. DEFECT0127 repairs only the fixture to valid
 JSON above the same256KiB limit; its ErrJournalLimit assertion and all14 frozen
 migrations stay intact. Native replay remains required.
 
-Externally signed checkpoint verification is implemented but native-tool
-unverified. The CLI prepares unsigned canonical profile/purpose/tenant/head
-statements; customer tools perform signing outside cratectl. Both collector and
-offline verifier optionally require all three statement/signature/independently
-trusted public-key files, verify them before output/journal access and emit proof
-only after complete range verification. No signing key/service is added. ARM
-build/unit/race/lint, a five-second signature parser fuzz run (36,499 inputs),
-exact public-key fingerprint/exporter regressions and console reproduction pass.
-Repaired PostgreSQL suites compile normally/race and pass tagged vet only. See
-`evidence/2026-11-07/journal-checkpoint-signature-development.json`, ADR0047 and
-`docs/journal-export.md`. Next native acceptance requires257PG normal/race,
-50fuzz,683baseline CLI checks including11actual OpenSSL controls and18main x86
-browser workflows/141 checks. Three browser workflows use declared response
-stand-ins. Full external request/provider adapters, Go bundles/offline install,
-backup/GC leases, conditional refresh and every other GOAL outcome remain open.
+Externally signed checkpoint verification is qualified at a3d8df2 within the
+bounds above. The canonical profile/purpose/tenant/head statement is prepared
+unsigned; customer tools sign outside cratectl. The CLI verifies an independently
+trusted public key and emits signature proof only after the complete persisted
+range passes. Native OpenSSL3.0.13 exact binary and public statement/signature/
+PEM/DER/export byte hashes are retained separately for both Linux hosts. No
+production signer, signing key, CA, key custody or timestamp service is added.
+Full external signing-request/provider adapters and every other GOAL requirement
+remain open. See ADR0047 and `docs/journal-export.md`.
 
 The full amended GOAL remains active: all450artifactcapabilities,41families and
 later stages remain under section4.1. Full/offline Go, independently anchored
