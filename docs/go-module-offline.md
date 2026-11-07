@@ -8,7 +8,8 @@ retained; the exact fixture repair replays with standard SDK read-only cache
 behavior. At exact `15a49d3`, the schema-15 producer and manifest mode pass 93
 named PostgreSQL functions normally/under race on both Linux architectures. The
 separate x86-producer/ARM-consumer profile passes all 16 stages. Schema-16 indexed
-expiry is implemented and awaiting its own complete native qualification. See
+expiry passes the named95Go normal/race profile onboth actual Linux hosts at
+470ca74; broader clock/provider/operator/scale qualification remains required. See
 [ADR0050](adr/0050-durable-hosted-go-export.md) and the source-specific checkpoints.
 
 You need the original ZIP, `go.mod` and `.info` bytes, the exact original
@@ -113,8 +114,9 @@ or source access is required. It processes at most one due session per tenant
 visit, paced by at least one second, and records expiry and projection intent
 atomically. Queue or credential failure keeps payload pins retained and emits a
 bounded `go_export_expiry_*` notice. Renewals and other workers share the same
-database fence. The historical manifest remains retained. This worker path is
-implemented but still requires its new native PostgreSQL qualification.
+database fence. The historical manifest remains retained. The worker/indexed
+path passes named95Go normal/race onboth actual Linux hosts at470ca74. Broader
+clock/fault/operator/provider/scale qualification remains required.
 
 For independent offline verification, collect a complete journal that includes
 this session's **created_sequence**. Authenticate its terminal checkpoint through
@@ -304,3 +306,8 @@ This does not restore source download access. Missing/invalid source bindings,
 stale loading state and denied source administration withhold commands. The new
 dialog and malformed-record controls are implemented but their expanded Chromium
 response-stand-in assertions remain unverified until GitHub executes them.
+
+For several independently selected exports, [verify their manifest index](go-export-index.md)
+against one complete signed journal before collecting package bytes. That new
+preflight is implemented but native-unverified; it supplies neither a multi-module
+proxy nor dependency/proof closure or destination admission.

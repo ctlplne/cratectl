@@ -135,6 +135,38 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 	if created.Code != 201 || json.Unmarshal(created.Body.Bytes(), &session) != nil {
 		t.Fatal("actual export creation", created.Code)
 	}
+	// A second original export is independent historical selection, not a claim
+	// of one atomic server snapshot or dependency closure. It uses another owned
+	// repository so the original collector/import fixture and assertions remain.
+	mavenRepositories(t, s, admin, store.Repository{Name: "index-extra", Format: "go", RequireReview: true, Access: "restricted"})
+	indexCoordinate := gomodule.Coordinate{Module: "go.cratectl.invalid/Owned/index-extra", Version: "v1.0.0"}
+	indexZIP, _ := goPublicationFixture(t, indexCoordinate, "owned inert index-only asset")
+	if response := goHTTP(t, s, token, "PUT", "/go/index-extra/"+indexCoordinate.Prefix()+".zip", indexZIP); response.Code != 201 {
+		t.Fatal("second index publication", response.Code)
+	}
+	for _, a := range goInventory(t, s, admin, "index-extra") {
+		if err := s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
+			_, err := store.Decide(ctx, tx, admin, "index-extra", a.Path, a.Digest, "allowed")
+			return err
+		}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	indexRequest, _ := json.Marshal(store.GoExportRequest{Repository: "index-extra", Module: indexCoordinate.Module, Version: indexCoordinate.Version, LifetimeSeconds: 3600})
+	indexCreated := goHTTP(t, s, token, "POST", "/api/v1/go/exports", indexRequest, "Idempotency-Key", "native-index-extra-export", "Content-Type", "application/json")
+	var indexSession store.GoExportSession
+	if indexCreated.Code != 201 || json.Unmarshal(indexCreated.Body.Bytes(), &indexSession) != nil {
+		t.Fatal("second index export", indexCreated.Code)
+	}
+	indexManifests := map[string][]byte{}
+	for name, v := range map[string]store.GoExportSession{"index-primary-manifest.json": session, "index-extra-manifest.json": indexSession} {
+		response := goHTTP(t, s, token, "GET", "/api/v1/go/exports/"+v.ID+"/manifest?generation=1", nil)
+		if response.Code != 200 || crypt.Digest(response.Body.Bytes()) != v.Manifest.Digest {
+			t.Fatal("actual index manifest", response.Code)
+		}
+		indexManifests[name] = bytes.Clone(response.Body.Bytes())
+		write(name, response.Body.Bytes())
+	}
 	head, err := s.DB.JournalCheckpoint(ctx, admin)
 	if err != nil {
 		t.Fatal(err)
@@ -203,6 +235,81 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 	}
 	trailingPath := write("journal-trailing.jsonl", append(bytes.Clone(journal.Bytes()), []byte("{}\n")...))
 	run(false, nil, append(selectionArguments, "--export-file", trailingPath)...)
+	// Verify both original manifests in reverse creation order after one full
+	// signed journal pass. No private paths, policy body or package-byte claim.
+	indexEntries := []map[string]any{
+		{"repository": "index-extra", "module": indexCoordinate.Module, "version": indexCoordinate.Version, "export_id": indexSession.ID, "event_sequence": indexSession.CreatedSequence, "manifest_file": filepath.Join(private, "index-extra-manifest.json")},
+		{"repository": req.Repository, "module": req.Module, "version": req.Version, "export_id": session.ID, "event_sequence": session.CreatedSequence, "manifest_file": filepath.Join(private, "index-primary-manifest.json")},
+	}
+	encodeIndex := func(entries []map[string]any) []byte {
+		// Use exact typed-field order; map order is not the canonical CLI profile.
+		type member struct {
+			Repository    string `json:"repository"`
+			Module        string `json:"module"`
+			Version       string `json:"version"`
+			ExportID      string `json:"export_id"`
+			EventSequence int64  `json:"event_sequence"`
+			ManifestFile  string `json:"manifest_file"`
+		}
+		index := struct {
+			Profile string   `json:"profile"`
+			Entries []member `json:"entries"`
+		}{Profile: "cratectl.go.export.index.v1"}
+		for _, entry := range entries {
+			index.Entries = append(index.Entries, member{entry["repository"].(string), entry["module"].(string), entry["version"].(string), entry["export_id"].(string), entry["event_sequence"].(int64), entry["manifest_file"].(string)})
+		}
+		raw, err := json.Marshal(index)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return append(raw, '\n')
+	}
+	indexPath := write("export-index.json", encodeIndex(indexEntries))
+	indexArguments := []string{cli, "go-export-index-verify", "--index-file", indexPath, "--journal-file", journalPath, "--journal-tenant", admin.Tenant, "--journal-through", strconv.FormatInt(head.Sequence, 10), "--journal-through-hash", head.Hash, "--checkpoint-file", statementPath, "--checkpoint-signature-file", signature, "--checkpoint-key-file", publicKey}
+	indexResult := run(true, nil, indexArguments...)
+	var indexReceipt struct {
+		Profile     string                               `json:"profile"`
+		IndexSHA256 string                               `json:"index_sha256"`
+		Journal     crypt.JournalVerification            `json:"journal"`
+		Signature   *crypt.JournalCheckpointVerification `json:"checkpoint_signature"`
+		Bindings    []struct {
+			ExportID       string `json:"export_id"`
+			EventSequence  int64  `json:"event_sequence"`
+			ManifestSHA256 string `json:"manifest_sha256"`
+		} `json:"bindings"`
+		DeclaredArtifactBytes int64 `json:"declared_artifact_bytes"`
+	}
+	if json.Unmarshal(indexResult, &indexReceipt) != nil || indexReceipt.Profile != "cratectl.go.export.index.v1" || indexReceipt.IndexSHA256 != crypt.Digest(encodeIndex(indexEntries)) || !indexReceipt.Journal.MatchesSuppliedCheckpoint || indexReceipt.Journal.ExportSHA256 != crypt.Digest(journal.Bytes()) || indexReceipt.Signature == nil || !indexReceipt.Signature.SignatureVerified || len(indexReceipt.Bindings) != 2 || indexReceipt.DeclaredArtifactBytes < 1 {
+		t.Fatal("actual index receipt missing")
+	}
+	for n, v := range []store.GoExportSession{indexSession, session} {
+		if indexReceipt.Bindings[n].ExportID != v.ID || indexReceipt.Bindings[n].EventSequence != v.CreatedSequence || indexReceipt.Bindings[n].ManifestSHA256 != v.Manifest.Digest {
+			t.Fatal("index original order/binding changed")
+		}
+	}
+	var indexFields map[string]json.RawMessage
+	if json.Unmarshal(indexResult, &indexFields) != nil {
+		t.Fatal("index receipt JSON")
+	}
+	for _, name := range []string{"artifact_bytes_verified", "dependency_closure", "consistent_server_snapshot", "current_registry_admission", "checksum_authority_verified"} {
+		if !bytes.Equal(indexFields[name], []byte("false")) {
+			t.Fatal("index supplied unsupported trust", name)
+		}
+	}
+	if bytes.Contains(indexResult, []byte(private)) || bytes.Contains(indexResult, []byte(`"metadata"`)) {
+		t.Fatal("index leaked private source path/policy")
+	}
+	run(false, nil, append(indexArguments, "--journal-file", trailingPath)...)
+	run(false, nil, append(indexArguments, "--max-artifact-bytes", strconv.FormatInt(indexReceipt.DeclaredArtifactBytes-1, 10))...)
+	changedLast := make([]map[string]any, 2)
+	for n, row := range indexEntries {
+		changedLast[n] = map[string]any{}
+		for key, value := range row {
+			changedLast[n][key] = value
+		}
+	}
+	changedLast[1]["manifest_file"] = write("index-changed-last.json", append(bytes.Clone(indexManifests["index-primary-manifest.json"]), []byte("{}")...))
+	run(false, nil, append(indexArguments, "--index-file", write("index-changed.json", encodeIndex(changedLast)))...)
 	reached, release := make(chan struct{}), make(chan struct{})
 	var barrier, lostImportResponse sync.Once
 	var applicationRequests atomic.Int64

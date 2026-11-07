@@ -92,6 +92,20 @@ controls; retain the originals and qualify the repaired source on GitHub.
 See `evidence/2026-11-07/go-export-import-console-development.json`; full durable
 server import/provenance/scan/progress and remaining console outcomes stay open.
 
+[ADR0061](docs/adr/0061-bounded-export-index-verification.md) adds a bounded
+`go-export-index-verify` preflight: authenticate up to256distinct historical
+manifests with one complete signed-journal pass, then bind every original
+creation event before emitting identity/size metadata. Later failure returns no
+partial bindings. Private paths/policy bodies are omitted; package verification,
+closure, common snapshot, checksum authority and admission stayfalse. Four local
+unit functions/45subcases/exact256members, CLI race/build/lint,114505fuzz and
+normal/race tagged compilation/vet pass. Actual two-export PostgreSQL/OpenSSL/CLI
+cases extend the existing native function but are unverified. New source needs
+274PG/96Go normal-race and58fuzz; currentc1has57and no index command. See the
+[development record](evidence/2026-11-07/go-export-index-development.json) and
+[operator workflow](docs/go-export-index.md). Full multi-artifact collection,
+dependency/authority/permission/provenance closure and import remain required.
+
 ## Native acceptance and live handles
 
 Latest fully accepted selected campaign: [4956197](evidence/2026-11-07/github-4956197-checkpoint.json),

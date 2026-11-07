@@ -58,8 +58,8 @@ stand-ins. Normal/race PostgreSQL compilation and tagged vet prove compilation
 only. Real PostgreSQL/registry/external signer/stock-client campaigns and Chromium
 run on GitHub. Local emulation/cross-compilation never qualifies x86 behavior.
 
-New source requires274fullPG/96namedGo normal/race onboth Linux hosts,
-57checked-in product fuzz targets onthreehosts,19main151Chromium, original312Go/
+Index source now requires274fullPG/96namedGo normal/race onboth Linux hosts,
+58checked-in product fuzz targets onthreehosts (currentc1has57and no index),19main151Chromium, original312Go/
 683baseline checks,15historical20upgrades perhost,16portable stages and every
 other actually selected profile. Existing jobs discover the new fuzz target and
 extended native function; no duplicate local integration campaign is needed.
@@ -194,6 +194,7 @@ See [development evidence](../../evidence/2026-11-07/campaign-acceptance-develop
 | Required work | Placement / acceptance |
 | --- | --- |
 | Exact-source campaign acceptance | The read-only aggregator above, retaining per-job originals/typed contracts/source inventories/first failures. Its scoped green verdict never grants full readiness. |
+| Bounded export index preflight | ADR0061local4unit/45subcases/exact256/fuzz/build/lint and tagged compilation pass. Existing native Go job gains two real PG exports/external signature/candidateCLI checks; actual replay pending. No extra native workflow, local PG campaign, package-byte/closure/snapshot/admission claim. |
 | Complete export/import/disconnected outcomes | Native Linux and separate producer/consumer hosts; full dependency/authority/permission/provenance closure and current destination scanning/import session/progress. One version/manual review is incomplete; retain all14cases/7environments in the Go export plan. |
 | JVM breadth and every later format | Native stock tools/restricted PostgreSQL; hosted/proxy/group, nontrivial dependencies, exact bytes, permissions/policy/concurrency/faults/restart/freshness/lifecycle/migration. Retain all41families and JVM plan cases. |
 | OCI/upstream interoperability | Authorized owned compatible registries/realms, pinned tools/inert content. Changing external services stay separate from deterministic gates; no publication authority inferred. |

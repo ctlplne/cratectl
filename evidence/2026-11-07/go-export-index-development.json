@@ -1,0 +1,94 @@
+{
+  "source_parent": "d4c4f4ce0356ee92ea47e61e459e0ef13ea08e48",
+  "source_dirty": true,
+  "observed_at": "2026-11-07T14:35:19.820278+00:00",
+  "state": "bounded canonical export-index manifest verification implemented; local CLI/race/build/lint/fuzz/tagged compile-vet pass; actual two-export native CLI journey pending",
+  "adr": "docs/adr/0061-bounded-export-index-verification.md",
+  "operator_documentation": "docs/go-export-index.md",
+  "source": [
+    {
+      "path": "cmd/cratectl/go_export_index.go",
+      "bytes": 9355,
+      "sha256": "2ec98a619d9ef53b2cfb4c192aa2ea70f5e85e9e68c7bfe8e50f21438f23e1c9"
+    },
+    {
+      "path": "cmd/cratectl/go_export_index_test.go",
+      "bytes": 12871,
+      "sha256": "48b46a19cd6058ca226ce19ae1099db5462acda2ebf6024e83450c2f73ae9aee"
+    },
+    {
+      "path": "cmd/cratectl/main.go",
+      "bytes": 7698,
+      "sha256": "c6ebdd79654d031a6df919cd370bd9c80074e1ed92b9a3346fcbb8aae1df7bad"
+    },
+    {
+      "path": "internal/server/go_module_export_collect_integration_test.go",
+      "bytes": 40046,
+      "sha256": "affdbd230a6ccd199612dac2307a3fd925d2379d299259eb1cb1a3197555d20c"
+    }
+  ],
+  "development_logs": [
+    {
+      "path": ".cache/go-export-index-unit-first.log",
+      "bytes": 46,
+      "sha256": "f871a01ed362670e89d530169578cd637ed24013ed9db1fa6d0e3a86bb3fd59b"
+    },
+    {
+      "path": ".cache/go-export-index-cli-race.log",
+      "bytes": 46,
+      "sha256": "67649e450720be5911c27f294a40eb7d7b51f0783dd2967a7a522e64bc864162"
+    },
+    {
+      "path": ".cache/go-export-index-cli-race-sandbox-restriction.log",
+      "bytes": 1677,
+      "sha256": "002c01aaef4cf86c111f0d67b8e1673577b56f889196efeb81f3ca893a483ffe"
+    },
+    {
+      "path": ".cache/go-export-index-unit-final.log",
+      "bytes": 46,
+      "sha256": "21dd591b80dce0a79780d278faf8257d5d345321e06305b1f1405e50351f8ecc"
+    },
+    {
+      "path": ".cache/go-export-index-build-lint.log",
+      "bytes": 11232,
+      "sha256": "71bd5263d71f0cfdaa1c964f07c1a4f37d6891dc8832caa62ee0a32860a17df6"
+    },
+    {
+      "path": ".cache/go-export-index-fuzz.log",
+      "bytes": 427,
+      "sha256": "d1820fb0c333ccbc8a0086b34d0c1ba50e18743c2ba7e054ff023df1c2d1d2b9"
+    },
+    {
+      "path": ".cache/go-export-index-pg-compile-final.log",
+      "bytes": 209,
+      "sha256": "16cd32e88e7e25e265bf1f3140ac2222334f1a48f99a39ff7a6b46d4572e8d5f"
+    },
+    {
+      "path": ".cache/go-export-index-pg-race-compile-final.log",
+      "bytes": 209,
+      "sha256": "c05b8d52987100c40f3b2c3e14f1040726f7f74115fa3a17145b3721d6f427ee"
+    },
+    {
+      "path": ".cache/go-export-index-pg-vet-final.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "source_inventory": {
+    "integration_functions": 274,
+    "named_go_functions": 96,
+    "fuzz_targets": 58
+  },
+  "scope": [
+    "Newgo-export-index-verify accepts1\u2013256distinct original hosted exports under one externally signed complete journal and independently selected signer. Canonical256KiB private index, exact absolute private manifest paths, one full signed pass/EOF/4MiB retained original event payload, serial32KiB manifest binding. Default1GiB/maximum64GiB sum of declared representation sizes; no package-byte I/O, network, signing/private-key input, scripts or source/destination mutation.",
+    "Every binding contains only selected original coordinate/export/event/manifest identity and size. No private path, policy payload or partial list/total escapes after any later failure. Explicit package-byte/closure/common-snapshot/checksum-authority/current-admission flags remainfalse. Different historical exports do not imply one atomic source snapshot.",
+    "Four unit functions cover45named shape/binding/trust refusal subcases plus exact256member acceptance. Meaningful negative cases include duplicate coordinates/IDs/sequences, unknown/null/alias/noncanonical/oversized fields, bad private input, wrong event/tenant/order, late manifest change, declared-byte ceiling, early/late cancellation and no partial receipt. Local complete CLI unit/race passes with owned loopback stand-ins; first sandbox EPERM remains retained.",
+    "Five-second requested parser fuzz with four seeds, including a valid canonical member, passes114505executions (reported6.205s including setup/shutdown). Parser/fuzzer bytes are unchanged by later added exact-byte/cancellation-only assertions; final focused four index tests/race pass. Build/lint passes on the final production command bytes. Final normal/race tagged PostgreSQL package compilation/vet passes; no local PostgreSQL test executes.",
+    "Existing native Go function retains original collector SIGKILL/renewal/metadata/TLS/import/manualreview/SDK assertions and adds a second distinct owned export. New actual candidate CLI verifies reversed two-manifest index after external OpenSSL signature and original complete real PG journal; checks explicit false trust flags, original hashes/order, no private path/body, and late changed-member/trailing/budget refusal. These native cases are implemented but not executed yet."
+  ],
+  "limits": [
+    "This is manifest preflight only. Multi-artifact package collection, dependency/authority/permission/provenance closure, consistent multi-object snapshot, complete import/scanner/session/progress/offline install/provider/Windows/lifecycle/GC/HA/scale outcomes remain required. No capability state is upgraded by local stand-ins.",
+    "New source requires274PG/96Go normal/race both actual Linux hosts,58fuzz/source onthree hosts, original312stock/683baseline/19main151/15historical20upgrades/16portable and all actually selected profiles. Currentc1campaign has57fuzz and no index command; its evidence cannot qualify the new source.",
+    "No local real PostgreSQL/registry/external-signer/stock-client/browser campaign. All16migrations frozen; primary11/qualified5483878b/tenreceipts/credentials/customer/sibling/release/package/image unchanged. Full450/41/laterGOAL4.1/readiness/security/packaging remain incomplete."
+  ]
+}

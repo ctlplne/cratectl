@@ -16,7 +16,9 @@
     "docs/adr/0055-resumable-signed-go-collection.md",
     "docs/adr/0056-atomic-collection-metadata.md",
     "docs/adr/0057-signed-export-destination-publication.md",
-    "docs/adr/0058-bounded-multiple-journal-selections.md"
+    "docs/adr/0058-bounded-multiple-journal-selections.md",
+    "docs/adr/0061-bounded-export-index-verification.md",
+    "docs/go-export-index.md"
   ],
   "current_implementation": {
     "source_parent": "badb85b52bd8aa06f64e7937a5ce0969eda5190b",
@@ -128,7 +130,16 @@
     },
     "native_upgrade_checkpoint": "evidence/2026-11-07/github-badb85b-upgrades-checkpoint.json",
     "native_portability_checkpoint": "evidence/2026-11-07/go-export-portability-b5cfb5d-checkpoint.json",
-    "original_parent_failed_final_checkpoint": "evidence/2026-11-07/github-badb85b-final-checkpoint.json"
+    "original_parent_failed_final_checkpoint": "evidence/2026-11-07/github-badb85b-final-checkpoint.json",
+    "export_index": {
+      "state": "implemented but actual native unverified",
+      "source_parent": "d4c4f4ce0356ee92ea47e61e459e0ef13ea08e48",
+      "source_dirty": true,
+      "adr": "docs/adr/0061-bounded-export-index-verification.md",
+      "development": "evidence/2026-11-07/go-export-index-development.json",
+      "scope": "Up to256distinct original export manifests bound in one complete externally signed journal pass; fixed canonical/private/count/metadata/event/declared-byte budgets; no partial results or private path/policy output. Package bytes, closure, common snapshot, authority and current admission explicitlyfalse.",
+      "required_native": "Existing274PG/96Go normal-race function extended with two real original exports/OpenSSL/candidateCLI and late refusal controls onboth actualLinux; new58fuzz/source three hosts; all original clients/browser/upgrades/portable required."
+    }
   },
   "environment_profiles": {
     "development-arm": {
@@ -508,9 +519,10 @@
       "Actual stock client behavior must be tested on each native architecture. A stand-in protocol or GOSUMDB bypass cannot erase DEFECT0126.",
       "A reusable export must cover dependency/proof/policy closure, safe current-policy import and independent consumer recovery. A successful three-file install does not complete those outcomes.",
       "Broad source/native regression cost is justified while shared store/authorization paths change; new native cases belong in existing architecture jobs before adding duplicate local campaigns.",
-      "One complete signed journal pass can select up to256original events with bounded retained payload and no partial success. Metadata-only CLI output avoids printing original tenant payloads. This reduces repeated scans but does not qualify scale or implement artifact closure."
+      "One complete signed journal pass can select up to256original events with bounded retained payload and no partial success. Metadata-only CLI output avoids printing original tenant payloads. This reduces repeated scans but does not qualify scale or implement artifact closure.",
+      "A bounded canonical index now binds up to256distinct original hosted export manifests through one complete signed journal pass. It omits private paths/policy bodies and keeps byte/closure/snapshot/authority/admission flagsfalse; actual native two-export verification is pending."
     ],
-    "next_implementation_boundary": "Complete actual repaired Chromium and strengthened read-only campaign verifier qualification without displacing pending native jobs. Multiple-event signed selection/TLS destination SDK pass named96Go and full274PG normal/race bothLinux; implement full bounded multi-artifact dependency/authority/permission/provenance closure and current destination import outcomes. Preserve all450/41/later scope.",
+    "next_implementation_boundary": "Qualify actual scroll-region Chromium, strengthened read-only campaign acceptance and two-export index verification. Then connect bounded multi-artifact collection and full dependency/authority/permission/provenance closure with current destination scanning/import. Keep all14cases/7environments and450/41/later scope.",
     "accepted_capability_states_changed": false
   }
 }
