@@ -3,8 +3,8 @@
 Collection/offline caller implemented but native unverified. Local ARM
 build/unit/race/lint and tagged compilation do not qualify that caller's real
 PostgreSQL, external signer, stock SDK or complete export journey. The separate
-durable-creation source 52dca42 has passed its dedicated native Go/upgrade jobs;
-whole-campaign acceptance remains pending. All 14 cases/seven environments in the
+durable-creation source52dca42 is whole-campaign accepted by actual read-only
+verifier42426208635:26 original jobs/19 unchanged safe summaries/78 reports. All 14 cases/seven environments in the
 export plan remain required.
 
 Use the same private request as the [preview](go-requirement-preview.md). A tenant

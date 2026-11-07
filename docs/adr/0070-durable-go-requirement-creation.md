@@ -1,7 +1,10 @@
 # 0070: Commit original requirement evidence with the shared export lifecycle
 
-Status: implemented but unverified. Native PostgreSQL/HTTP/CLI/upgrade gates are
-required; collector and signed offline caller integration remain unfinished.
+Status: native verified within exact52dca42 whole26-job campaign, accepted by
+actual read-only verifier42426208635 from compatiblef32031b. All294 PostgreSQL/
+116 named Go functions pass normally/race onbothLinux and17 native historical
+binaries/22 upgrade reports pass perhost. New requirement collector/offline caller
+in ADR0071 is separate and its native campaign remains incomplete.
 
 Append schema 18, checksum
 `6c60ac3e1228e57b54cdd99397ef4bccfb91cbd942b3437e41a63441b9ad1035`.
@@ -55,6 +58,6 @@ bound increase; every other closed contract stays byte-identical for ancestor
 acceptance. No job restart repairs observation
 or compatibility, and no skipped/unselected profile counts as passed.
 
-Full collection/offline verification, package/platform closure, authority/source
+New ADR0071 collection/offline caller qualification, package/platform closure, authority/source
 precedence, scanning/import/operator outcomes, providers/platforms/GC/installation/
 backup/HA/scale and all owner-amended GOAL4.1 scope remain required.

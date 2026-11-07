@@ -7,44 +7,45 @@ packaging or release authority.
 
 ## Current evidence and next source
 
-[9bbfb79](../../evidence/2026-11-07/github-9bbfb79-checkpoint.json) is accepted by
-actual read-only [verifier42420490091](https://github.com/ctlplne/cratectl/actions/runs/42420490091)
-from compatible aaf3045: 26 original jobs/six workflows/19 unchanged safe members/
-76 reports. All original log/member/report hashes and 19 source contracts match.
-Both Linux hosts pass 287PG/109 named Go normal/race, 312 stock Go/683 baseline checks,
-16 historical binaries/21 upgrades. Three source hosts pass 65 fuzz targets.
-Main x86 Chromium passes 19 workflows/151 checks; independent x86/ARM portability
-passes 34 stages. Four UI cases use declared response stand-ins. Exact 31 common
-fixture files/eight roots, separate fingerprints, API runner identities, 14 empty
-networks and actual pidfd interruption retain their scope. Focused browser/library/
-strict profiles were unselected. The new real-PG planner stages original metadata
-without creating a graph session; real creation-envelope/signed offline caller
-qualification does not follow. All full goal scope remains active.
+[52dca42](../../evidence/2026-11-07/github-52dca42-checkpoint.json) is accepted by
+actual read-only [verifier42426208635](https://github.com/ctlplne/cratectl/actions/runs/42426208635)
+from compatible f32031b:26 original jobs/six workflows/19 unchanged safe members/
+78 reports. All26 original log hashes/byte counts,19 member/78 raw report hashes
+and19 source contracts independently match. The original verifier log records
+30 component functions:7+10+13. No native tests were restarted.
 
-The newer schema 18 source aaf3045 is failed, fully retained and never accepted:
-31 terminal jobs, 24 successful/seven failed/zero job skips, all 31 original logs and
-24 unchanged safe members/76 reports. Four safe members are empty. The failures
-cover three source jobs and both Go/full PostgreSQL jobs. Missing/skipped later
-stages are not passes. Both actual Linux upgrade jobs pass 17 historical binaries/
-22 reports; focused browser/library/JVM/OCI/portability retain scoped success.
-See the [original failure checkpoint](../../evidence/2026-11-07/github-aaf3045-original-failure-checkpoint.json).
+Both Linux hosts pass294 PostgreSQL/116 named Go functions normally/race,
+312 stock Go/683 baseline checks and17 independently rebuilt historical binaries/
+22 upgrade reports. All three source hosts pass65 fuzz targets. Main x86 Chromium
+passes19 workflows/151 checks with four declared response stand-ins. Separate
+x86/ARM portability retains34 stages, exact owned common31-file/eight-root proof,
+independent fingerprints/API runner identities,14 empty networks and pidfd
+interruption. Focused browser/library/strict profiles were unselected.
 
-Local repairs address 0144 shallow-checkout ancestry unit assumptions,0145 missing
-published transitive fixture bytes and0146 modern pruning versus intended legacy
-three-input traversal. Keep the real dependency and both selected roots, original
-root Go 1.26/main Go 1.27/pinned SDK and every all-input/atomicity/policy/replay/count
-control. The new selector explicitly declares Go 1.16. Actual ancestry/native builds
-remain in the full-history upgrade jobs; generic unit tests use owned stand-ins.
-The production resolver/current policy path and all 18 migrations are unchanged.
-Local ARM build/unit/race/lint and tagged compile/vet pass only.
+This qualifies durable schema18 requirement creation, actual six-field original
+creation binding,current all-input guards,immutable RLS references/audit inventory
+and actual17-to18 old-session/receipt/byte preservation. It does not qualify the
+new requirement collector/offline caller or full closure/authority/current import.
+Original aaf3045 stays failed:31 terminal jobs/24 successful/seven failed/zero job
+skips,all31 original logs and24 unchanged safe members/76 reports,four empty.
+[Original failures](../../evidence/2026-11-07/github-aaf3045-original-failure-checkpoint.json)
+remain retained. Repairs0144/0145/0146 replay at52 without changing production
+resolver/pruning/policy/migrations or removing original native assertions.
 
-Require full 294 PostgreSQL/116 named Go/65 fuzz on the repaired exact source, 17 historical binaries/
-22 upgrades per Linux host, and all actual selected workflows. Current changes
-should select six standard workflows/26 jobs/19 safe summaries/78 reports. Focused
-browser/library/strict paths are unchanged; no manual replay of unchanged optional
-profiles is needed. Enumerate actual expanded API inventory before acceptance.
-Complete graph collection/signed offline callers, closure, authority, import/
-scanning, operator/platform/provider/GC/production outcomes remain unfinished.
+Pushed f32031b adds the independently signed requirement collect/verify/offline
+caller and one actual native competing-version/refusal case. All three native
+source/unit jobs and both Linux normal Go steps are observed successful; race,
+full client/fuzz/campaign proof remains incomplete. Local ARM build/unit/race/lint,
+tagged normal/race compile/vet and bounded parser fuzz pass. Require exact295
+PostgreSQL/117 named Go/66 fuzz,17 historical binaries/22 upgrades per Linux host,
+all26 jobs/six workflows/19 safe members/78 reports and actual read-only acceptance.
+Fixed original runs: main42425695414,Go42425695417,JVM42425695455,OCI42425695341,
+upgrades42425695485,portable42425695567. Actual API inventory controls.
+
+Then complete requirement-profile separate hosts/processkill/renewal, broader
+workspace/replacement/exclusion/source-authority and package/platform closure,
+current scanning/import/operator/provider/GC/platform/production outcomes and
+all owner-amended450/41/14-case/seven-environment/later goal scope.
 
 ## Placement
 
@@ -84,7 +85,7 @@ that result cannot qualify changed runtime code.
   with emulation, another source, a canceled job or a fresh green run.
 - Existing main source/fuzz/security/native concurrency keys include source SHA.
   Other profiles retain per-platform slots; finish/retain their original cases
-  before a push could replace required unstarted work. Running original 9bb jobs
+  before a push could replace required unstarted work. Running original f320 jobs
   remain on their recorded handles. Independent matrices keep fail-fast disabled.
 - Use read-only tokens, checkout without persisted credentials, pinned tools,
   project-owned cratectl resources and loopback38443/35432. Runtime PostgreSQL is
@@ -117,7 +118,7 @@ that result cannot qualify changed runtime code.
 
 | Required outcome | Next native work |
 | --- | --- |
-| Full export/import/disconnected operation | Complete graph collection and independent signed offline verification, native MVS/package/platform/workspace/source authority differentials, current scan/import session/operator journeys and every14-case/7-environment acceptance row. |
+| Full export/import/disconnected operation | Qualify the new requirement collector/offline caller, then its separate-host/interruption/renewal controls, native MVS/package/platform/workspace/source authority differentials, current scan/import session/operator journeys and every14-case/7-environment acceptance row. |
 | JVM breadth and41 format families | Native stock clients/restricted PostgreSQL; hosted/proxy/group, nontrivial dependencies, exact bytes, policy/tenant/fault/restart/freshness/lifecycle/migration. |
 | OCI/upstream/provider interoperability | Owned compatible registries/realms, production-compatible source/blob/scanner/external adapters and controlled faults. Keep changing external providers distinct from deterministic gates. |
 | Own TLS/access/external identity | Real compatible customer-selected IdPs/trust services, tenant permissions, expiry/revocation/rotation/recovery. No CA/vault/issuer/signing service feature suite. |
@@ -131,7 +132,7 @@ that result cannot qualify changed runtime code.
 Original failures and limits remain intact; strict Go DEFECT.0126 and unknown
 browser DEFECT.0122 remain open. Prior accepted campaigns retain their own exact
 scope. A skipped, unselected or compile-only case never becomes verified.
-All first 17 migrations remain frozen;18 is newly implemented and unqualified.
+All18 migrations remain frozen;18 is qualified within the exact52 scope.
 Primary stays stopped at 11/5483878b/ten original receipts. New binaries stay.cache;
 .private remains0700 and ignored. No autonomous delegation.
 
