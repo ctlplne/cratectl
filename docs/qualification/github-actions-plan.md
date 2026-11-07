@@ -7,13 +7,16 @@ committed scope under section4.1. This plan assigns work to suitable hosts and
 defines acceptance. Broad readiness, security and packaging remain unqualified.
 A selected CI campaign is a scoped result, not full product parity.
 
-## Current replay and next source
+## Current accepted replay and next source
 
 Exact `a331612316ef77186055ca61da92cc8f06eb0a87` replays all31original native jobs
-across eight workflows after the source-pinned schema guard repair.29jobs have
-succeeded; both full PostgreSQL race jobs remain running at the last API check.
-Keep those handles and preserve originalb937failures. Accept the whole expanded
-inventory before treating schema17/common durability/collection as qualified.
+successfully across eight workflows after the source-pinned schema guard repair.
+Actual read-only [verifier42400756971](https://github.com/ctlplne/cratectl/actions/runs/42400756971)
+accepts all24unchanged safe summaries/91reports. Every original31log hash/byte count,
+24member/89rawreport/two customlibrarymember hashes and18source contracts match.
+See the [whole checkpoint](../../evidence/2026-11-07/github-a331612-checkpoint.json); originalb937failures remain untouched.
+Schema17/durablecommonset/allmembercollection pass within283PG/105Go normalrace
+onboth actualLinux hosts. The newer commonofflineproxy is outside that source.
 
 The next source adds ADR0065's complete private native file proxy for every
 explicitly selected common root. Seven local filesystem/trust/parser regressions
@@ -49,7 +52,7 @@ audit afterward. Public repository and CI pushes/repairs are authorized. Release
 package/image publication, customer, primary and sibling changes need their own
 authority. No autonomous delegation.
 
-Latest accepted runtime: `1664c7c77191a5cc97313d7a2f924de0b6c5a053`.
+Previous accepted preview runtime: `1664c7c77191a5cc97313d7a2f924de0b6c5a053`.
 Its six selected workflows pass all26native jobs. Actual read-only
 [verifier42392247746](https://github.com/ctlplne/cratectl/actions/runs/42392247746)
 accepts the complete inventory. All26original log hashes/byte counts,19safe
@@ -73,7 +76,7 @@ and unknown browser intermittent0122 remain preserved. Strict SDK0126 stays open
 ADR0062 common-snapshot preview now passes its three actual PostgreSQL/API cases
 normally and under race on both Linux hosts, within the accepted 277 PostgreSQL/
 99 Go/60 fuzz campaign. ADR0063/0064 durable common-set/schema17/original signed
-binding and all-member collection remain native unverified. Their new source
+binding and all-member collection are qualified at a331 above. That exact source
 requires 283 PostgreSQL/105 named Go/61 fuzz, 16 historical binaries and 21 upgrade
 reports per actual Linux architecture, plus every other selected profile. Keep
 the existing architecture jobs and original assertions. Continue the complete
@@ -109,7 +112,7 @@ run on GitHub. Local emulation/cross-compilation never qualifies x86 behavior.
 
 The accepted index source contains 274 PostgreSQL/96 named Go/58 fuzz targets.
 The pushed common-snapshot preview requires277 PostgreSQL/99 Go/60 fuzz.
-The new durable common-set source requires283 full PostgreSQL/105 named Go
+The accepted durable common-set source requires283 full PostgreSQL/105 named Go
 functions normally/race onboth Linux hosts, plus61 fuzz targets onthree hosts. Preserve main 19/151 Chromium, 312 Go/683 baseline checks, 16 historical
 binaries/21 upgrades per host, 16 portable stages and every other selected profile.
 Existing jobs discover the new functions and targets; a source-defined inventory
@@ -283,7 +286,7 @@ SHA256 `bd9d42a2da23adda13460da49bd06174ab43a2f24c42d46513aed9b69a955d4c`. Earli
 original failures retain their scopes. Historical current-state statements do
 not supersede this plan or `STATUS.md`.
 
-All16source migrations remain frozen. Primary is stopped at schema11 with
+All 17 source migrations remain frozen. Primary is stopped at schema11 with
 qualified5483878b selected binaries and tenreceipts unchanged. Local builds use
 `.cache/` output directories. Preserve ignored `.private/`0700 and `.cache/`;
 never commit credential values. No release/package/image/customer/sibling action
@@ -291,66 +294,47 @@ is part of this CI plan.
 
 ## Common-set source contract advancement
 
-The qualified schema16ca44source is pinned before appending migration17. Actual
-native historical qualification must rebuild all16original pinned binaries and
-produce21reports per Linux host. The closed read-only source verifier requires
-that exact16pin inventory and unchanged compatible workflow/report-source hashes;
-it cannot reuse a prior15pin/20report campaign for the new contract. Original
-safe report fixtures retain their frozen schema16historical pin list only for
-unit regression, with a new explicit refusal test against the current16pin list.
-The fixture is data and never executed. Twenty-one verifier component functions
-pass locally; actual updated verifier/native upgrade qualification remains pending.
+The qualified schema-16 ca44 source was pinned before migration 17. Exact a331
+now rebuilds all 16 historical binaries and passes 21 upgrade reports per Linux
+host. The actual read-only verifier accepts the 16-pin inventory and all 18
+unchanged compatible source contracts. Frozen schema-16 fixtures remain data for
+negative tests; they cannot substitute for the new baseline inventory. All 17
+migration definitions and checksums remain unchanged.
 
-New native set cases belong in the existing full/named architecture jobs. Extend
-the existing actual PG/CLI/external OpenSSL collector journey for two-repository
-common creation and complete signed statement binding; preserve every original
-collector/import/TLS/SDK/index assertion. No additional local native campaign or
-new workflow is needed. Preserve the running166preview campaign and accept it
-before pushing incompatible schema17closed contracts. Full all-member collection,
-offlineproxy/closure/currentscanner/import/provenance/operator/production and every
-GOAL4.1requirement remain open; scoped green CI cannot close them.
+The existing full and named Linux jobs pass the real PostgreSQL/CLI/OpenSSL
+common creation and signed binding controls, preserving the original collector,
+import, TLS, SDK and index assertions. The previous 166 preview campaign was
+accepted and retained before incompatible schema-17 contracts were pushed.
 
 ## Common-set collector qualification
 
-ADR0064 extends the existing real PG/CAS/TLS/CLI/OpenSSL journey with independent
-common-set processkill/renewal/all-member/replay/late-denial/corruptresume controls.
-Local build/unit/race/lint and normal/race tagged compilation/vet pass; these are
-not native integration proof. Keep full283PG/105Go/61fuzz,16historical21upgrades,
-all original stock/browser/portable contracts and unchanged first16migrations.
+ADR 0064's process-kill, renewal, all-member, exact receipt replay, late-denial and
+corrupt-resume controls pass at a331 within 283 PostgreSQL/105 named Go functions
+normally and under race on both Linux hosts. Its selected shared inputs also
+qualify both NuGet-library jobs and all three focused Chromium jobs. Actual
+inventory is 31 jobs/eight workflows, 24 safe summaries and 91 reports. Strict
+checksum inputs were unselected; DEFECT.0126 stays open.
 
-The next combined push also changes scripts/qualification_contract.py and
-scripts/ci/evidence_summary.py. Their existing path rules select two native
-NuGet-library jobs and three focused Chromium jobs as well as the six standard
-workflow families. Expect31nativejobs/eight workflows,24safe artifacts and91
-report records including custom library reports. Enumerate actual GitHub API
-runs before acceptance; a green subset cannot stand in for that selected union.
-Strict checksum remains unselected unless its own inputs change;0126staysopen.
-No new local native campaign or duplicate Actions workflow is added.
-
-After exact native collection qualification, complete the private native file
-proxy and full dependency/authority/permission/provenance closure with current
-scanner/import/operator/lifecycle/provider/platform/production proof. All14export
-cases/7environments and450capabilities/41families/laterGOAL4.1remain required.
+The newer private file proxy has local stand-in and tagged compile proof only.
+Qualify 284 PostgreSQL/106 named Go/62 fuzz on the next exact source, then extend
+independent-host common collection transfer without removing any of the original
+16 portable controls. Automatic dependency/authority/permission/provenance closure,
+current scanning/import/operator outcomes, lifecycle/provider/platform/production,
+all 14 export cases, seven environments and full GOAL 4.1 remain required.
 
 ## Source-pinned bootstrap recovery
 
-Originalb937selects31native jobs/eight workflows and fails:10success20failure1skipped.
-All20failed bootstrap logs corroborate DEFECT0139, an old16literal after migration/
-provisioning of the17candidate. Retain the [original checkpoint](../../evidence/2026-11-07/github-b937fd9-original-failure-checkpoint.json),
-all30non-skipped original logs and23unchanged safe artifacts. Guarded zero-record
-summaries remain failures. The skipped portable consumer supplies no host proof.
+Original b937 fails 20 bootstrap jobs after migrating to schema 17 because its
+admission guard still requires 16. Preserve the
+[original checkpoint](../../evidence/2026-11-07/github-b937fd9-original-failure-checkpoint.json),
+all 30 nonskipped logs and 23 unchanged safe artifacts. Ten other jobs succeeded;
+one skipped portable consumer supplies no host proof. Empty summaries still fail.
 
-The [strict guard](../../scripts/ci/check_schema_plan.py) imports the committed
-CURRENT_SCHEMA and validates complete ordered current/safe/nonadopting/no-pending
-receipts. Four meaningful source/old-target/unsafe/malformed/pipeline regressions
-and lint pass locally. Actual native bootstrap/product replay remains required.
-Focused-browser inputs now include bootstrap/schema guard/schema target, so a
-shared admission change cannot silently omit its real PG/Chromium profile.
-
-The repair push automatically selects29jobs/seven families; dispatch the existing
-NuGet-library workflow once on that exact main source for both architectures.
-This restores all31original selected profiles without restarting old runs or
-changing their failures. Enumerate actual runs before acceptance. Keep every
-283PG/105Go/61fuzz/16historical21upgrade and original stock/browser/portable/library
-contract. Full fileproxy/closure/current scanner/import/provenance/operator/
-production and all450capabilities/41families/laterGOAL4.1scope remain required.
+The [strict guard](../../scripts/ci/check_schema_plan.py) imports committed
+CURRENT_SCHEMA and checks complete ordered receipts, current state, safety, no
+adoption and no pending migration. Four local regressions pass. Exact a331 now
+replays and accepts every original native profile: 29 automatic jobs plus one
+explicit two-architecture NuGet-library dispatch. No original job was restarted
+or assertion weakened. Focused-browser selectors include shared bootstrap/schema
+inputs, so future admission changes cannot silently omit those native profiles.
+The accepted repair does not qualify the newer offline proxy or close the goal.
