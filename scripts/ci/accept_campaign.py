@@ -148,6 +148,22 @@ def check_log(raw, spec, source):
                     {'mode': 'reserved', 'automatic_uses_owned_port': False, 'explicit_bind_succeeds': True}], 'kernel_observation_identity')
 
 
+def validate_portable_pairs(portable, runners):
+    for key, roles in portable.items():
+        require(set(roles) == {'producer', 'consumer'}, 'portable_pair_missing')
+        a, b = roles['producer'], roles['consumer']
+        require(a['profile'] == b['profile'] == key[0]
+                and a['source_run_id'] == b['source_run_id'] == str(key[1]), 'portable_pair_identity')
+        fields = ['profile', 'fixture_sha256', 'public_key_sha256', 'source_runner_sha256', 'source_run_id',
+                  'source_arch', 'fixture_source_sha256', 'script_sha256', 'files_sha256']
+        if key[0] == 'hosted-common-export-cross-runner-v1':
+            fields += ['capsule_source_sha256', 'graph_fixture_source_sha256', 'native_helper_sha256',
+                       'process_helper_sha256', 'decoder_sha256', 'explicit_roots', 'automatic_closure', 'destination_admission']
+        require(all(a[field] == b[field] for field in fields), 'portable_pair_identity')
+        require(b['network_isolated'] is True and b['source_runner_sha256'] != b['destination_runner_sha256']
+                and runners[key]['producer'] != runners[key]['consumer'], 'portable_pair_isolation')
+
+
 def accept(client, source, expected_ids):
     require(isinstance(expected_ids, list) and 0 < len(expected_ids) <= 32
             and all(type(n) is int and 0 < n < 10 ** 18 for n in expected_ids)
@@ -175,6 +191,10 @@ def accept(client, source, expected_ids):
             # Native producer/consumer jobs independently verify all capsule
             # members. Preserve its API identity without downloading/executing it.
             transfers.append({'run_id': run_id, **artifact_metadata(capsule, source.candidate, run_id, 26 << 20)})
+            if 'scripts/conformance_go_common_export_portable.py' in source.paths:
+                common = by_artifact.get('cratectl-owned-go-common-export-fixture')
+                transfers.append({'run_id': run_id, 'profile': 'hosted-common-export-cross-runner-v1',
+                                  **artifact_metadata(common, source.candidate, run_id, 2 << 20)})
         specs = job_contracts(family)
         runtime = True
         used = set()
@@ -229,20 +249,17 @@ def accept(client, source, expected_ids):
                     counts, contract = validate_summary(report, source.candidate, run_id, spec, source.baselines, source)
                     if contract is not None:
                         require(isinstance(job.get('runner_name'), str) and type(job.get('runner_id')) is int and job['runner_id'] > 0, 'portable_runner_metadata')
-                        key = 'source_runner_sha256' if contract['role'] == 'producer' else 'destination_runner_sha256'
-                        require(contract[key] == hashlib.sha256(job['runner_name'].encode()).hexdigest(), 'portable_runner_identity')
-                        portable.setdefault(run_id, {})[contract['role']] = contract
-                        portable_runners.setdefault(run_id, {})[contract['role']] = job['runner_id']
+                        contracts = contract if isinstance(contract, list) else [contract]
+                        for item_contract in contracts:
+                            key = 'source_runner_sha256' if item_contract['role'] == 'producer' else 'destination_runner_sha256'
+                            require(item_contract[key] == hashlib.sha256(job['runner_name'].encode()).hexdigest(), 'portable_runner_identity')
+                            pair = (item_contract['profile'], run_id)
+                            portable.setdefault(pair, {})[item_contract['role']] = item_contract
+                            portable_runners.setdefault(pair, {})[item_contract['role']] = job['runner_id']
                 item.update(artifact=reference, report_counts=counts)
             accepted.append(item)
         require({name for name in by_artifact if isinstance(name, str) and (name.startswith('ci-summary-') or name == 'ci-selection')} == used, 'unexpected_safe_artifact')
-    for run_id, roles in portable.items():
-        require(set(roles) == {'producer', 'consumer'}, 'portable_pair_missing')
-        a, b = roles['producer'], roles['consumer']
-        for key in ('profile', 'fixture_sha256', 'public_key_sha256', 'source_runner_sha256', 'source_run_id', 'source_arch', 'fixture_source_sha256', 'script_sha256', 'files_sha256'):
-            require(a[key] == b[key], 'portable_pair_identity')
-        require(b['network_isolated'] is True and b['source_runner_sha256'] != b['destination_runner_sha256'], 'portable_pair_isolation')
-        require(portable_runners[run_id]['producer'] != portable_runners[run_id]['consumer'], 'portable_pair_isolation')
+    validate_portable_pairs(portable, portable_runners)
     require(discover(client, source.candidate) == runs, 'campaign_snapshot_changed')
     families = {f for f, _ in runs.values()}
     return {'schema': 1, 'profile': 'cratectl-ci-campaign-v1', 'status': 'passed',

@@ -6,6 +6,7 @@ No package is compiled or executed. Every offline command observes its own empty
 kernel network namespace before executing under the original ordinary job UID.
 """
 import fcntl
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -17,6 +18,7 @@ import urllib.parse
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from conformance_go_export_portable import (NETWORK_PROBE, network_prefix,
                                            run_capture, verify_network_probe)
+from ci.owned_child_process import kill_owned_cli
 
 PROBE_EXEC = '''
 import os,resource,sys
@@ -26,7 +28,12 @@ resource.setrlimit(resource.RLIMIT_FSIZE,(8<<20,8<<20))
 raw=__import__('subprocess').check_output([sys.executable,'-c',sys.argv[2]],timeout=10)
 fd=os.open(sys.argv[1],os.O_CREAT|os.O_EXCL|os.O_WRONLY|os.O_NOFOLLOW,0o600)
 with os.fdopen(fd,'wb')as f:f.write(raw)
-os.execvpe(sys.argv[3],sys.argv[3:],os.environ)
+args=sys.argv[3:]
+if args[0]=='--owned-cli-pid-file':
+ fd=os.open(args[1],os.O_CREAT|os.O_EXCL|os.O_WRONLY|os.O_NOFOLLOW,0o600)
+ with os.fdopen(fd,'wb')as f:f.write((str(os.getpid())+'\\n').encode())
+ args=args[2:]
+os.execvpe(args[0],args,os.environ)
 '''
 
 
@@ -80,9 +87,11 @@ def main(path):
     checked(fcntl.fcntl(write_fd, fcntl.F_SETPIPE_SZ, 4096) == 4096, 'Owned pipe capacity changed')
     child = None
     probe = private / 'network-probe-ack.json'
+    pid_file = private / 'ack-cli.pid'
     try:
         with (private / 'uncertain-ack.stderr').open('xb') as diagnostic:
-            child = subprocess.Popen(prefix + [sys.executable, '-c', PROBE_EXEC, str(probe), NETWORK_PROBE, *args],
+            child = subprocess.Popen(prefix + [sys.executable, '-c', PROBE_EXEC, str(probe), NETWORK_PROBE,
+                                               '--owned-cli-pid-file', str(pid_file), *args],
                                      cwd=private, env=env, stdout=write_fd, stderr=diagnostic)
             os.close(write_fd)
             write_fd = -1
@@ -91,7 +100,9 @@ def main(path):
             receipt_raw = (output / 'bundle' / 'receipt.json').read_bytes()
             checked(4097 < len(receipt_raw) <= 512 << 10 and child.poll() is None,
                     'Final receipt did not exceed the actual pipe capacity')
-            child.kill()
+            probe_raw = probe.read_bytes()
+            verify_network_probe(probe_raw, host_ns, os.getuid(), os.getgid())
+            killed_pid = kill_owned_cli(child, pid_file, cli, json.loads(probe_raw)['namespace'])
             checked(child.wait(timeout=10) != 0, 'Interrupted child reported success')
         verify_network_probe(probe.read_bytes(), host_ns, os.getuid(), os.getgid())
     finally:
@@ -151,6 +162,23 @@ def main(path):
     isolated(args + ['--resume'], ok=False)
     checked((output / 'bundle' / 'receipt.json').read_bytes() == receipt_raw
             and corrupt.read_bytes() == changed, 'Failed replay changed original state')
+    probes = {}
+    for path in sorted(private.glob('network-probe-*.json')):
+        body = path.read_bytes()
+        verify_network_probe(body, host_ns, os.getuid(), os.getgid())
+        probes[path.name] = hashlib.sha256(body).hexdigest()
+    checked(len(probes) == 6, 'Offline native journey omitted an observed command network')
+    journey = {'profile': 'cratectl.go.common-offline.native.v1', 'status': 'passed',
+               'roots': 8, 'go_version': '1.27.3', 'killed_verified_cli': True,
+               'killed_cli_pid': killed_pid, 'signal': 'SIGKILL',
+               'receipt_sha256': hashlib.sha256(receipt_raw).hexdigest(),
+               'download_sha256': hashlib.sha256(downloaded).hexdigest(),
+               'network_probes': probes,
+               'checks': ['complete_proxy', 'stock_go_exact_graph', 'verified_cli_sigkill',
+                          'original_receipt_replay', 'every_empty_network', 'late_corruption_refused']}
+    fd = os.open(private / 'offline-journey.json', os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW, 0o600)
+    with os.fdopen(fd, 'wb') as report:
+        report.write((json.dumps(journey, sort_keys=True) + '\n').encode())
     print('Common-set offline native graph, empty networks, uncertain acknowledgement and corruption controls passed')
 
 

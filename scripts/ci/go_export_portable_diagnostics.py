@@ -26,14 +26,17 @@ def collect(root, candidate, run_id, role):
         if not raw:
             continue
         path = raw.decode('utf-8')
-        match = re.fullmatch(r'evidence/\d{4}-\d{2}-\d{2}/go-export-portability-([a-f0-9]{10})\.json', path)
+        match = re.fullmatch(r'evidence/\d{4}-\d{2}-\d{2}/go-(common-)?export-portability-([a-f0-9]{10})\.json', path)
         if not match:
             continue
+        common, fixture_run = bool(match[1]), match[2]
+        field = 'go_common_export_portability_contract' if common else 'go_export_portability_contract'
+        profile = 'hosted-common-export-cross-runner-v1' if common else 'hosted-export-cross-runner-v1'
         report = json.loads(read_owned_file(root / 'evidence', root / path, 1 << 20))
-        if not isinstance(report, dict) or not isinstance(report.get('go_export_portability_contract'), dict):
+        if not isinstance(report, dict) or not isinstance(report.get(field), dict):
             raise ValueError('Portability diagnostics require a reviewed report object')
-        contract = report.get('go_export_portability_contract', {})
-        if report.get('candidate') != candidate or contract.get('source_run_id') != run_id or contract.get('role') != role or contract.get('profile') != 'hosted-export-cross-runner-v1' or report.get('run') != match[1]:
+        contract = report[field]
+        if report.get('candidate') != candidate or contract.get('source_run_id') != run_id or contract.get('role') != role or contract.get('profile') != profile or report.get('run') != fixture_run:
             raise ValueError('Portability diagnostic context differs from the current job')
         if report.get('status') != 'failed':
             continue
@@ -45,7 +48,7 @@ def collect(root, candidate, run_id, role):
             if not isinstance(command, dict) or command.get('exit') is not None and (type(command['exit']) is not int or not -255 <= command['exit'] <= 255):
                 raise ValueError('Portability diagnostic command exit is invalid')
             log = command.get('private_log')
-            prefix = '.private/go-export-portability/' + match[1] + '/'
+            prefix = '.private/go-' + ('common-' if common else '') + 'export-portability/' + fixture_run + '/'
             if not isinstance(log, str) or not re.fullmatch(re.escape(prefix) + r'command-[a-f0-9]{32}\.log', log):
                 raise ValueError('Portability diagnostics cannot select private inputs or keys')
             item = {'exit': command.get('exit'), 'streams': []}
@@ -60,10 +63,12 @@ def collect(root, candidate, run_id, role):
                                         'tail_b64': base64.b64encode(body[-(512 << 10):]).decode(),
                                         'complete': len(body) <= 1 << 20})
             selected.append(item)
-        failures.append({'run': match[1], 'role': role, 'error': error, 'commands': selected})
+        failures.append({'run': fixture_run, 'role': role, 'profile': profile, 'error': error, 'commands': selected})
     if not failures:
         raise ValueError('No failed portability report is available; no empty diagnostic success')
-    return {'schema': 1, 'candidate': candidate, 'run_id': run_id, 'profile': 'hosted-export-cross-runner-v1', 'failures': failures,
+    extended = any(f['profile'] == 'hosted-common-export-cross-runner-v1' for f in failures)
+    return {'schema': 2 if extended else 1, 'candidate': candidate, 'run_id': run_id,
+            'profile': 'hosted-export-command-diagnostics-v2' if extended else 'hosted-export-cross-runner-v1', 'failures': failures,
             'limits': ['Only the last two owned command streams are retained. Above1MiB, exact length/hash plus bounded head/tail replace the middle.',
                        'No package input, token/config, signing private key or SDK cache file is selected. No plaintext publication fallback.']}
 

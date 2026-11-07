@@ -80,6 +80,48 @@ class DiagnosticTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             collect(self.root, 'a' * 40, '123', 'consumer')
 
+    def common(self):
+        folder = self.root / '.private/go-common-export-portability' / self.run
+        folder.mkdir(parents=True, mode=0o700)
+        log = folder / ('command-' + 'c' * 32 + '.log')
+        log.write_bytes(b'owned-common-stderr')
+        log.chmod(0o600)
+        Path(str(log) + '.stdout').write_bytes(b'owned-common-stdout')
+        Path(str(log) + '.stdout').chmod(0o600)
+        report = self.report.with_name('go-common-export-portability-' + self.run + '.json')
+        value = {**self.value, 'go_common_export_portability_contract':
+                 {'profile': 'hosted-common-export-cross-runner-v1', 'role': 'consumer', 'source_run_id': '123'},
+                 'commands': [{'exit': 1, 'private_log': str(log.relative_to(self.root))}]}
+        del value['go_export_portability_contract']
+        report.write_text(json.dumps(value))
+        return folder, report, value
+
+    def test_common_command_capture_excludes_inputs_and_private_pid(self):
+        folder, _, _ = self.common()
+        (folder / 'ack-cli.pid').write_text('12345\n')
+        (folder / 'fixture.json').write_text('owned-private-input-not-for-diagnostics')
+        payload = collect(self.root, 'a' * 40, '123', 'consumer')
+        self.assertEqual(payload['schema'], 2)
+        self.assertEqual(payload['failures'][0]['profile'], 'hosted-common-export-cross-runner-v1')
+        streams = payload['failures'][0]['commands'][0]['streams']
+        self.assertEqual([base64.b64decode(s['head_b64']) for s in streams], [b'owned-common-stderr', b'owned-common-stdout'])
+        self.assertNotIn('owned-private-input-not-for-diagnostics', json.dumps(payload))
+
+    def test_common_cannot_select_legacy_namespace_or_private_member(self):
+        folder, report, value = self.common()
+        for path in [self.log, folder / 'ack-cli.pid', folder / 'signer-private.pem']:
+            value['commands'][0]['private_log'] = str(path.relative_to(self.root))
+            report.write_text(json.dumps(value))
+            with self.subTest(path=path), self.assertRaises(ValueError):
+                collect(self.root, 'a' * 40, '123', 'consumer')
+
+    def test_both_failed_profiles_keep_their_own_bounded_original_streams(self):
+        self.save()
+        self.common()
+        payload = collect(self.root, 'a' * 40, '123', 'consumer')
+        self.assertEqual({f['profile'] for f in payload['failures']}, {'hosted-common-export-cross-runner-v1', 'hosted-export-cross-runner-v1'})
+        self.assertEqual(len(payload['failures']), 2)
+
 
 if __name__ == '__main__':
     unittest.main()

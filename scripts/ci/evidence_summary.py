@@ -18,6 +18,7 @@ from sbt_evidence import safe_sbt_contract
 from go_module_evidence import safe_go_module_contract
 from journal_evidence import safe_journal_checkpoint_contract
 from go_export_portability_evidence import safe_go_export_portability_contract
+from go_common_export_portability_evidence import safe_go_common_export_portability_contract
 
 
 def summarize(root, environment):
@@ -248,6 +249,15 @@ def summarize(root, environment):
                         or portable['source_run_id'] != str(environment.get('GITHUB_RUN_ID'))):
                     raise ValueError('Portability evidence differs from the actual native job/run')
                 entry['go_export_portability_contract'] = portable
+            except ValueError as error:
+                raise SystemExit(str(error)) from error
+        if 'go_common_export_portability_contract' in report:
+            try:
+                common = safe_go_common_export_portability_contract(report['go_common_export_portability_contract'], status)
+                if (native_os != 'linux' or native_arch != ('amd64' if common['role'] == 'producer' else 'arm64')
+                        or common['source_run_id'] != str(environment.get('GITHUB_RUN_ID'))):
+                    raise ValueError('Common portability evidence differs from the actual native job/run')
+                entry['go_common_export_portability_contract'] = common
             except ValueError as error:
                 raise SystemExit(str(error)) from error
         if 'sbt_contract' in report:

@@ -14,6 +14,8 @@ from unittest.mock import patch
 import zipfile
 
 import accept_campaign as acceptance
+from test_go_export_portability_evidence import complete as complete_legacy_contract
+from test_go_common_export_portability_evidence import complete as complete_common_contract
 from campaign_contract import WORKFLOWS, jobs
 from campaign_transport import EvidenceError, REPOSITORY
 
@@ -90,6 +92,53 @@ class API:
 
 
 class CampaignAcceptance(unittest.TestCase):
+    def pairs(self):
+        pairs, runners = {}, {}
+        for factory in [complete_legacy_contract, complete_common_contract]:
+            producer, consumer = factory('producer'), factory('consumer')
+            key = (producer['profile'], 123)
+            pairs[key] = {'producer': producer, 'consumer': consumer}
+            runners[key] = {'producer': 100, 'consumer': 200}
+        return pairs, runners
+
+    def test_original_and_common_pair_each_bind_distinct_actual_runner_identities(self):
+        pairs, runners = self.pairs()
+        acceptance.validate_portable_pairs(pairs, runners)
+        # Each CPU has its own native SDK bytes; equality across architectures
+        # would misrepresent the actual independent native builds.
+        for pair in pairs.values():
+            pair['consumer']['go_binary_sha256'] = 'e' * 64
+        acceptance.validate_portable_pairs(pairs, runners)
+
+    def test_common_pair_missing_peer_changed_inputs_or_code_cannot_pass(self):
+        for mode in ['missing', 'files', 'helper', 'run', 'scope']:
+            pairs, runners = self.pairs()
+            key = ('hosted-common-export-cross-runner-v1', 123)
+            value = pairs[key]
+            if mode == 'missing':
+                del value['consumer']
+            if mode == 'files':
+                value['consumer']['files_sha256']['root.007.zip'] = 'f' * 64
+            if mode == 'helper':
+                value['consumer']['process_helper_sha256'] = 'f' * 64
+            if mode == 'run':
+                value['consumer']['source_run_id'] = '124'
+            if mode == 'scope':
+                value['consumer']['automatic_closure'] = True
+            with self.subTest(mode=mode), self.assertRaises(EvidenceError):
+                acceptance.validate_portable_pairs(pairs, runners)
+
+    def test_runner_name_fingerprint_alone_cannot_replace_distinct_api_runner_ids(self):
+        for mode in ['same-id', 'same-fingerprint']:
+            pairs, runners = self.pairs()
+            key = ('hosted-common-export-cross-runner-v1', 123)
+            if mode == 'same-id':
+                runners[key]['consumer'] = runners[key]['producer']
+            else:
+                pairs[key]['consumer']['destination_runner_sha256'] = pairs[key]['consumer']['source_runner_sha256']
+            with self.subTest(mode=mode), self.assertRaisesRegex(EvidenceError, 'portable_pair_isolation'):
+                acceptance.validate_portable_pairs(pairs, runners)
+
     def test_catalog_covers_every_existing_native_job_template(self):
         expected = {'main': 10, 'go': 2, 'jvm': 8, 'oci': 2, 'upgrades': 2, 'portable': 2, 'library': 2, 'browser': 3, 'strict': 3}
         self.assertEqual(sum(expected.values()), 34)

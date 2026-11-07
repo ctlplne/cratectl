@@ -7,52 +7,55 @@ committed scope under section4.1. This plan assigns work to suitable hosts and
 defines acceptance. Broad readiness, security and packaging remain unqualified.
 A selected CI campaign is a scoped result, not full product parity.
 
-## Current accepted replay and next source
+## Current accepted source and next native profile
 
-The subsequent `976e8c7` offline-proxy campaign has an actual native failure:
-both Linux normal Go jobs fail the eight-root download-count assertion. Preserve
-[both originals](../../evidence/2026-11-07/go-common-graph-976e8c7-first-native-failure.json)
-and their empty guarded summaries; race and stock stages skip. The owned fixture
-was missing modern indirect requirements. An import-derived local regression now
-rejects that hole; the repair preserves the SDK, modern module directive, all roots,
-byte/proof/namespace/acknowledgement/corruption assertions and budgets. Local gates
-pass; actual native replay remains required. Do not replace still-queued original
-profiles when pushing the repair. Full 976 campaign retention remains pending.
+Exact `1756bb0034363c6a9d8672adf733b3ba50741a43` passes all 26 selected jobs/six
+workflows, 19 unchanged safe summaries and 74 reports. Actual
+[verifier 42406937133](https://github.com/ctlplne/cratectl/actions/runs/42406937133)
+accepts that inventory; all original logs/member/report hashes and 18 source
+contracts independently match. See the [checkpoint](../../evidence/2026-11-07/github-1756bb0-checkpoint.json).
+Both Linux hosts pass 284 PostgreSQL/106 named Go functions normally and under race,
+312 stock Go/683 baseline checks; all three source hosts pass 62 fuzz targets.
+Each Linux host passes 16 historical binaries/21 upgrade reports. Main Chromium
+passes 19 workflows/151 checks; separate hosts retain all 16 original portable stages.
 
-Exact `a331612316ef77186055ca61da92cc8f06eb0a87` replays all31original native jobs
-successfully across eight workflows after the source-pinned schema guard repair.
-Actual read-only [verifier42400756971](https://github.com/ctlplne/cratectl/actions/runs/42400756971)
-accepts all24unchanged safe summaries/91reports. Every original31log hash/byte count,
-24member/89rawreport/two customlibrarymember hashes and18source contracts match.
-See the [whole checkpoint](../../evidence/2026-11-07/github-a331612-checkpoint.json); originalb937failures remain untouched.
-Schema17/durablecommonset/allmembercollection pass within283PG/105Go normalrace
-onboth actualLinux hosts. The newer commonofflineproxy is outside that source.
+[Original 976](../../evidence/2026-11-07/github-976e8c7-original-failure-checkpoint.json)
+remains 22 successful/four failed jobs, 19 safe summaries/55 reports and four matching
+graph-count failures. The modern import/indirect-requirement fixture repair retains
+Go 1.26.0, pinned SDK 1.27.3, every root/assertion/budget and an import-derived local
+regression. No failed or skipped stage becomes a pass. The 175 fault establishes
+interrupted launch/acknowledgement and exact replay; its actual killed executable
+was not separately observed. The new PID-descriptor proof is outside that source.
 
-The next source adds ADR0065's complete private native file proxy for every
-explicitly selected common root. Seven local filesystem/trust/parser regressions
-and the bounded metadata fuzzer cover interrupted state, corrupt prefixes,
-published replay, ambiguous metadata and independent-trust refusals. Native
-qualification requires284PostgreSQL/106namedGo/62fuzz, all16historical binaries/
-21upgrade reports and every other selected original profile.
+The next source extends the existing two portability jobs with a separate common
+collection; it keeps every original 16-stage control. An owned PostgreSQL/TLS/
+OpenSSL x86 source supplies exactly 31 original/proof/metadata files for eight roots.
+An actual ARM consumer verifies exact artifact ID plus three separate fingerprints,
+its own different API runner identity, signed proof, native bytes/h1 and complete
+file proxy. Fourteen command namespaces, verified CLI PID/inode/UID/ancestry plus
+Linux process-descriptor SIGKILL, exact replay and eight refusal cases are required.
+No package code executes. PID/proof/raw command data remains private and bounded;
+only closed metadata/hashes are exported. Both old and common reports are required
+in each job; the verifier pairs both sets against actual runner IDs and source code.
 
-Run the new actual8module graph journey inside existing Linux x86/ARM Go jobs and
-both full PostgreSQL suites, normally and under race. It creates/approves the
-common selection through real PostgreSQL/CAS, collects through TLS under an
-external OpenSSL-signed complete journal, then stops the registry. The actual
-CLI and pinned stockGo run in independently observed empty kernel network
-namespaces under the original ordinary UID. A4096byte kernel pipe deterministically
-blocks the final receipt acknowledgement for SIGKILL/exact replay. Corrupt later
-source bytes must refuse without rewriting the historical receipt. Never compile
-or execute package contents. The developer ARM host compiles the tagged journey;
-actual native clients and services execute on GitHub.
+Local ARM build/unit/race/lint, 18 transport/evidence/process/channel stand-ins,
+seven diagnostic tests, 26 verifier components and 22 summary tests pass. Tagged
+normal/race compilation and vet pass only. See
+[ADR 0066](../adr/0066-independent-host-common-go-collection.md). No actual local
+PostgreSQL, signer, SDK or namespace campaign runs. Native qualification is pending.
 
-This proves the explicitly selected graph only. Next extend the separate x86
-producer/ARM consumer with common collections, preserving every original16stage
-portable control and independent signer/head channel. Then finish automatic
-dependency/permission/provenance/authority selection, current scanning/import and
-operator outcomes. A single VM's empty namespace does not prove independent hosts,
-an offline installer, provider failure, Windows ACLs, power loss or production scale.
-Those requirements and all450capabilities/41families/laterGOAL4.1 remain open.
+Expect 29 jobs/seven workflows, 22 safe summaries/91 reports and 19 source contracts.
+The shared summary dependency selects three focused browser jobs; NuGet-library
+and strict inputs stay unchanged. The existing two portability jobs now cover
+34 stages: 16 original plus 18 common. Actual API inventory governs. Complete and
+retain the accepted 175 campaign before pushing these changed workflow/report
+contracts. Do not restart jobs because of observation timeouts or queue delay.
+
+This remains an explicitly selected small private graph. Automatic dependency/
+permission/provenance/authority selection, current scanning/import/operator flow,
+production providers, Windows ACLs, actual power loss, disconnected installation,
+backup/HA/scale, all 14 export cases/seven environments and the full 450/41/later
+GOAL 4.1 remain required. Strict DEFECT.0126 and unknown DEFECT.0122 stay open.
 
 ## Authority and current sources
 

@@ -10,12 +10,64 @@ import unittest
 from campaign_contract import WORKFLOWS, jobs
 from campaign_reports import validate_custom, validate_summary
 from campaign_transport import EvidenceError
+from test_go_common_export_portability_evidence import complete as complete_common_contract
 
 ROOT = Path(__file__).resolve().parents[2]
 SPECS = {spec['artifact']: spec for family in WORKFLOWS.values() for spec in jobs(family).values() if spec['artifact']}
 
 
 class CampaignReports(unittest.TestCase):
+    def common_pair(self, role='producer'):
+        summary = self.report('ci-summary-export-portability-' + role)
+        code = b'owned frozen source data, never executed'
+        code_hash = hashlib.sha256(code).hexdigest()
+        old = summary['records'][0]
+        old['go_export_portability_contract']['script_sha256'] = code_hash
+        old['go_export_portability_contract']['fixture_source_sha256'] = code_hash
+        common = copy.deepcopy(old)
+        del common['go_export_portability_contract']
+        contract = complete_common_contract(role)
+        contract['source_run_id'] = str(summary['run_id'])
+        for key in ['script_sha256', 'fixture_source_sha256', 'capsule_source_sha256', 'graph_fixture_source_sha256',
+                    'native_helper_sha256', 'process_helper_sha256', 'decoder_sha256']:
+            contract[key] = code_hash
+        common.update(report='owned-common-portability.json', raw_report_sha256='e' * 64,
+                      checks=4 if role == 'producer' else 14, go_common_export_portability_contract=contract)
+        summary['records'].append(common)
+
+        class FrozenSource:
+            paths = {'scripts/conformance_go_common_export_portable.py'}
+
+            def __call__(self, _):
+                return code
+
+        return summary, FrozenSource()
+
+    def test_current_portability_requires_both_original_and_common_source_bound_records(self):
+        for role in ['producer', 'consumer']:
+            summary, source = self.common_pair(role)
+            name = 'ci-summary-export-portability-' + role
+            counts, contracts = validate_summary(summary, summary['candidate'], int(summary['run_id']), SPECS[name], self.baselines, source)
+            self.assertEqual(counts['records'], 2)
+            self.assertEqual(len(contracts), 2)
+            for index in range(2):
+                changed = copy.deepcopy(summary)
+                del changed['records'][index]
+                with self.subTest(role=role, missing=index), self.assertRaisesRegex(EvidenceError, 'common_profile_report_inventory'):
+                    validate_summary(changed, changed['candidate'], int(changed['run_id']), SPECS[name], self.baselines, source)
+
+    def test_common_code_identity_and_separate_record_cannot_be_substituted(self):
+        summary, source = self.common_pair()
+        name = 'ci-summary-export-portability-producer'
+        bad = copy.deepcopy(summary)
+        bad['records'][1]['go_common_export_portability_contract']['process_helper_sha256'] = '0' * 64
+        with self.assertRaisesRegex(EvidenceError, 'common_portable_source_identity'):
+            validate_summary(bad, bad['candidate'], int(bad['run_id']), SPECS[name], self.baselines, source)
+        bad = copy.deepcopy(summary)
+        bad['records'][0]['go_common_export_portability_contract'] = bad['records'][1].pop('go_common_export_portability_contract')
+        with self.assertRaisesRegex(EvidenceError, 'common_profile_report_inventory'):
+            validate_summary(bad, bad['candidate'], int(bad['run_id']), SPECS[name], self.baselines, source)
+
     def setUp(self):
         self.baselines = json.loads((ROOT / 'scripts/ci/testdata/schema16-historical-baselines.json').read_text())['baselines']
 

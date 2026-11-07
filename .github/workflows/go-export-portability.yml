@@ -29,6 +29,10 @@ jobs:
       fixture_sha256: ${{ steps.prepare.outputs.fixture_sha256 }}
       public_key_sha256: ${{ steps.prepare.outputs.public_key_sha256 }}
       source_runner_sha256: ${{ steps.prepare.outputs.source_runner_sha256 }}
+      common_artifact_id: ${{ steps.common_fixture.outputs.artifact-id }}
+      common_fixture_sha256: ${{ steps.common_prepare.outputs.common_fixture_sha256 }}
+      common_public_key_sha256: ${{ steps.common_prepare.outputs.common_public_key_sha256 }}
+      common_source_runner_sha256: ${{ steps.common_prepare.outputs.common_source_runner_sha256 }}
     services:
       cratectl-postgres:
         image: postgres:16.15-alpine
@@ -65,6 +69,17 @@ jobs:
         with:
           name: cratectl-owned-go-export-fixture
           path: .cache/go-export-portable-upload/fixture.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Prepare complete common collection and separate trust-channel digests
+        id: common_prepare
+        run: python3 scripts/conformance_go_common_export_portable.py producer
+      - name: Transfer reviewed common collection fixture only
+        id: common_fixture
+        uses: actions/upload-artifact@v7
+        with:
+          name: cratectl-owned-go-common-export-fixture
+          path: .cache/go-common-export-portable-upload/fixture.json
           if-no-files-found: error
           retention-days: 7
       - name: Seal bounded original command failure for owner
@@ -106,6 +121,9 @@ jobs:
       CRATECTL_PORTABLE_FIXTURE_SHA256: ${{ needs.produce.outputs.fixture_sha256 }}
       CRATECTL_PORTABLE_PUBLIC_KEY_SHA256: ${{ needs.produce.outputs.public_key_sha256 }}
       CRATECTL_PORTABLE_SOURCE_RUNNER_SHA256: ${{ needs.produce.outputs.source_runner_sha256 }}
+      CRATECTL_COMMON_FIXTURE_SHA256: ${{ needs.produce.outputs.common_fixture_sha256 }}
+      CRATECTL_COMMON_PUBLIC_KEY_SHA256: ${{ needs.produce.outputs.common_public_key_sha256 }}
+      CRATECTL_COMMON_SOURCE_RUNNER_SHA256: ${{ needs.produce.outputs.common_source_runner_sha256 }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -130,6 +148,14 @@ jobs:
           digest-mismatch: error
       - name: Independently verify, install inert bytes and reject changed inputs
         run: python3 scripts/conformance_go_export_portable.py consumer
+      - name: Receive the exact common collection artifact
+        uses: actions/download-artifact@v8
+        with:
+          artifact-ids: ${{ needs.produce.outputs.common_artifact_id }}
+          path: .cache/go-common-export-portable-download
+          digest-mismatch: error
+      - name: Independently verify complete common graph and native interruption controls
+        run: python3 scripts/conformance_go_common_export_portable.py consumer
       - name: Seal bounded original command failure for owner
         if: failure()
         run: python3 scripts/ci/go_export_portable_diagnostics.py

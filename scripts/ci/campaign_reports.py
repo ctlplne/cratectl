@@ -14,11 +14,13 @@ from sbt_evidence import safe_sbt_contract
 from go_module_evidence import safe_go_module_contract
 from journal_evidence import safe_journal_checkpoint_contract
 from go_export_portability_evidence import safe_go_export_portability_contract
+from go_common_export_portability_evidence import safe_go_common_export_portability_contract
 
 CONTRACTS = {'maven_cache_contract': safe_maven_cache_contract, 'gradle_contract': safe_gradle_contract,
              'ivy_contract': safe_ivy_contract, 'sbt_contract': safe_sbt_contract,
              'go_module_contract': safe_go_module_contract, 'journal_checkpoint_contract': safe_journal_checkpoint_contract,
-             'go_export_portability_contract': safe_go_export_portability_contract}
+             'go_export_portability_contract': safe_go_export_portability_contract,
+             'go_common_export_portability_contract': safe_go_common_export_portability_contract}
 NATIVE_COUNTS = {'conformance': 683, 'hold-matters': 31, 'installation': 30,
                  'inventory': 67, 'jobs': 71, 'leases': 63, 'native-lifecycle': 335, 'sweeps': 80}
 HASH = re.compile('[a-f0-9]{64}')
@@ -117,6 +119,7 @@ def validate_summary(summary, candidate, run_id, spec, baselines, source=None):
     require(isinstance(records, list) and 0 < len(records) <= 100, 'summary_record_inventory')
     observed = []
     portable = None
+    common_portable = None
     candidate_binaries = None
     pins = {row['binary']: row['source'] for row in baselines}
     expected_baselines = {(row['schema'], row['source']) for row in baselines}
@@ -177,6 +180,19 @@ def validate_summary(summary, candidate, run_id, spec, baselines, source=None):
             if source is not None:
                 require(portable['script_sha256'] == hashlib.sha256(source('scripts/conformance_go_export_portable.py')).hexdigest()
                         and portable['fixture_source_sha256'] == hashlib.sha256(source('internal/store/go_module_offline_integration_test.go')).hexdigest(), 'portable_source_identity')
+        if 'go_common_export_portability_contract' in record:
+            require(common_portable is None, 'common_portable_inventory')
+            common_portable = record['go_common_export_portability_contract']
+            require(common_portable['role'] == spec['kind'] and common_portable['source_run_id'] == str(run_id), 'common_portable_identity')
+            if source is not None:
+                bindings = {'script_sha256': 'scripts/conformance_go_common_export_portable.py',
+                            'fixture_source_sha256': 'internal/server/go_module_export_collect_integration_test.go',
+                            'capsule_source_sha256': 'internal/server/go_module_export_common_portable_integration_test.go',
+                            'graph_fixture_source_sha256': 'internal/server/go_common_graph_fixture_test.go',
+                            'native_helper_sha256': 'scripts/ci/go_set_offline_native.py',
+                            'process_helper_sha256': 'scripts/ci/owned_child_process.py',
+                            'decoder_sha256': 'scripts/go_common_export_fixture.py'}
+                require(all(common_portable[key] == hashlib.sha256(source(path)).hexdigest() for key, path in bindings.items()), 'common_portable_source_identity')
         if 'go_module_contract' in record and source is not None:
             fixture = source('scripts/conformance_go.py')
             contract = record['go_module_contract']
@@ -188,7 +204,14 @@ def validate_summary(summary, candidate, run_id, spec, baselines, source=None):
     required = {'go': ('go_module_contract', 312), 'gradle': ('gradle_contract', 199),
                 'ivy': ('ivy_contract', 666), 'sbt': ('sbt_contract', 269),
                 'producer': ('go_export_portability_contract', 3), 'consumer': ('go_export_portability_contract', 13)}
-    if kind in required:
+    requires_common = source is not None and 'scripts/conformance_go_common_export_portable.py' in getattr(source, 'paths', ())
+    if kind in ('producer', 'consumer') and requires_common:
+        old = [r for r in observed if 'go_export_portability_contract' in r]
+        common = [r for r in observed if 'go_common_export_portability_contract' in r]
+        require(len(observed) == 2 and len(old) == len(common) == 1 and old[0] is not common[0]
+                and old[0]['checks'] == (3 if kind == 'producer' else 13)
+                and common[0]['checks'] == (4 if kind == 'producer' else 14), 'common_profile_report_inventory')
+    elif kind in required:
         field, count = required[kind]
         require(len(observed) == 1 and field in observed[0] and observed[0]['checks'] == count, 'profile_report_inventory')
     elif kind == 'security':
@@ -237,4 +260,4 @@ def validate_summary(summary, candidate, run_id, spec, baselines, source=None):
     else:
         require(False, 'unsupported_report_profile')
     return {'records': len(observed), 'checks': sum(r['checks'] or r['cases'] or 0 for r in observed),
-            'raw_report_sha256': [r['raw_report_sha256'] for r in observed]}, portable
+            'raw_report_sha256': [r['raw_report_sha256'] for r in observed]}, [portable, common_portable] if requires_common and kind in ('producer', 'consumer') else portable

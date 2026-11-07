@@ -169,6 +169,7 @@ func TestGoModuleCommonSetOfflineNativeGraphAndUncertainAcknowledgement(t *testi
 	case <-ctx.Done():
 		t.Fatal("owned registry stop timed out")
 	}
+	writeNativeGoCommonPortableFixture(t, root, filepath.Join(private, "collection"), session, head, modules[0])
 	fixture, _ := json.Marshal(map[string]any{"cli": cli, "go": filepath.Join(root, ".cache/go/bin/go"), "set_id": session.ID, "tenant": admin.Tenant, "created_sequence": session.CreatedSequence, "through": head, "root_module": modules[0]})
 	write("fixture.json", fixture)
 	python, err := exec.LookPath("python3")

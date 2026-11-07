@@ -14,11 +14,30 @@ from test_sbt_evidence import complete_contract as complete_sbt_contract, snapsh
 from test_maven_evidence import complete_contract as complete_maven_cache_contract
 from test_journal_evidence import complete as complete_journal_checkpoint_contract
 from test_go_export_portability_evidence import complete as complete_portable_contract
+from test_go_common_export_portability_evidence import complete as complete_common_contract
 
 ROOT = Path(__file__).resolve().parents[2]
 
 
 class EvidenceSummary(unittest.TestCase):
+    def test_common_summary_exports_closed_hashes_and_never_raw_pid_or_inputs(self):
+        self.environment['GITHUB_RUN_ID'] = '123'
+        report = {'candidate': 'a' * 40, 'status': 'passed',
+                  'go_common_export_portability_contract': complete_common_contract('producer'),
+                  'raw_fixture': 'private-synthetic-value', 'raw_pid': 12345}
+        self.write('common-portable.json', report)
+        exported = summarize(self.root, self.environment)['records'][0]
+        self.assertEqual(exported['go_common_export_portability_contract'], report['go_common_export_portability_contract'])
+        self.assertNotIn('private-synthetic-value', json.dumps(exported))
+        self.assertNotIn('raw_pid', exported)
+        for change in [{'source_run_id': '124'}, {'completed': []}, {'automatic_closure': True}]:
+            self.write('common-portable.json', {**report, 'go_common_export_portability_contract': {**report['go_common_export_portability_contract'], **change}})
+            with self.assertRaises(SystemExit):
+                summarize(self.root, self.environment)
+        self.write('common-portable.json', report)
+        with self.assertRaises(SystemExit):
+            summarize(self.root, {**self.environment, 'RUNNER_ARCH': 'ARM64'})
+
     def test_portable_summary_binds_actual_run_architecture_and_excludes_raw_fixture(self):
         self.environment['GITHUB_RUN_ID'] = '123'
         report = {'candidate': 'a' * 40, 'status': 'passed',

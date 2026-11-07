@@ -12,7 +12,7 @@ PLATFORMS = {'amd64': ('ubuntu-24.04', 'Linux', 'X64'),
              'arm64': ('ubuntu-24.04-arm', 'Linux', 'ARM64'),
              'darwin-arm64': ('macos-15', 'macOS', 'ARM64')}
 VALIDATOR_FILES = ['scripts/ci/' + name + '_evidence.py' for name in
-                   ['maven', 'gradle', 'ivy', 'sbt', 'go_module', 'journal', 'go_export_portability']]
+                   ['maven', 'gradle', 'ivy', 'sbt', 'go_module', 'journal', 'go_export_portability', 'go_common_export_portability']]
 COMPATIBLE_FILES = ['.github/workflows/' + name for name in WORKFLOWS] + VALIDATOR_FILES + ['scripts/ci/evidence_summary.py', 'scripts/conformance_go.py']
 
 
@@ -68,10 +68,14 @@ def jobs(family):
                 ['Compare actual native libraries without remote package restore'], 'ci-summary-nuget-version-' + arch, 'library')
     if family == 'portable':
         add('Real PostgreSQL signed export source (amd64)', 'amd64',
-            ['Prepare actual signed source fixture and independent trust-channel digests', 'Transfer reviewed synthetic fixture only', 'Prepare bounded source evidence summary'],
+            ['Prepare actual signed source fixture and independent trust-channel digests', 'Transfer reviewed synthetic fixture only',
+             'Prepare complete common collection and separate trust-channel digests', 'Transfer reviewed common collection fixture only',
+             'Prepare bounded source evidence summary'],
             'ci-summary-export-portability-producer', 'producer')
         add('Independent signed export consumer (arm64)', 'arm64',
-            ['Receive the exact source artifact', 'Independently verify, install inert bytes and reject changed inputs', 'Prepare bounded destination evidence summary'],
+            ['Receive the exact source artifact', 'Independently verify, install inert bytes and reject changed inputs',
+             'Receive the exact common collection artifact', 'Independently verify complete common graph and native interruption controls',
+             'Prepare bounded destination evidence summary'],
             'ci-summary-export-portability-consumer', 'consumer')
     if family == 'browser':
         for journey in ('repair', 'retention', 'nuget'):
