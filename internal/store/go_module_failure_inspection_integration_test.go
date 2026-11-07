@@ -78,7 +78,10 @@ func TestGoModuleChecksumFailureInspectionPagesAndRetiredEvidence(t *testing.T) 
 func TestGoModuleChecksumForkPrecedesFreshNegativeFallback(t *testing.T) {
 	f, log := publishGoFailureFixture(t)
 	ctx := context.Background()
-	c := gomodule.Coordinate{Module: log.Module, Version: "v9.9.9"}
+	c, err := gomodule.Canonical(log.Module, "v1.9.9")
+	if err != nil {
+		t.Fatal("negative fallback control requires a canonical module/version", err)
+	}
 	negative, err := f.s.AcquireRetrieval(ctx, f.i, "owned", c.Prefix()+".zip", "negative-before-fork", false)
 	if err != nil || !negative.Acquired {
 		t.Fatal(err)

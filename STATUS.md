@@ -1,5 +1,32 @@
 # cratectl execution status
 
+Exact31a4dd3 now qualifies both native upgrade workflows:12historical clean native
+binaries and17reportsperarch, including70assertions for schema12into13. See
+`evidence/2026-11-07/github-31a4dd3-upgrades-checkpoint.json`. DEFECT.0123 has a
+named native replay; no whole-candidate pass follows. Clean nativeARM CLI entry
+also confirms fork exit0/unverified exit1 using only public signed fixtures and
+synthetic attribution, without database/client/browser execution.
+
+Both31Go normal suites now fail only the new negative-fallback control: the test
+usedv9.9.9 without a/v9module path, so the canonical parser correctly rejected it.
+The correction validatesv1.9.9 for both negative and new-root controls. Production
+code and all before/after-fork assertions remain unchanged. Original2dfourfailures
+do not recur normally, but race/stock stages are skipped. Retain first failure
+`evidence/2026-11-07/go-checksum-31a4dd3-negative-fixture-first-failure.json` and
+require complete67Go/241fullPG/47fuzz/16browser replay. Latest fully accepted
+whole selected campaign remains20d2. See the canonical fixture development record.
+
+The durable legacy plan is `docs/qualification/go-checksum-legacy-plan.md`:
+unknown old key attribution remains an incident, never fabricated fork proof;
+conservative tenant/key review cannot clear authenticated fork blocks. A new
+migration would append14only after qualification, preserving all13definitions,
+forced RLS/exclusive maintenance, original journal bytes and explicit external
+trust review. This is a plan, not implemented recovery or a primary migration.
+All450artifact capabilities/41families/later stages and every remaining limit
+below remain. Primary11/selected5483878b binaries/tenreceipts/credentials preserved.
+
+Earlier source-specific implementation and qualification records follow.
+
 Current continuation preserves the first exact `2d29380` native failures in
 `evidence/2026-11-07/go-checksum-2d29380-first-failures.json`. BothGo normal suites
 expose a misplaced guard: acquisition can start new work after a proved key fork,

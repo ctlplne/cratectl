@@ -1,0 +1,50 @@
+{
+  "observed_at": "2026-11-07T01:50:45.543122+00:00",
+  "source_parent": "31a4dd303d7015a6e1d09918e987439d4b0e15fe",
+  "source_dirty": true,
+  "state": "canonical test-fixture correction implemented; no local PostgreSQL or new native acceptance",
+  "source_files": [
+    {
+      "path": "internal/store/go_module_failure_inspection_integration_test.go",
+      "sha256": "262eb51f68bea5346e2e9003a9c092b224e8ae769e7dbc3ebfb823e48e439b58"
+    },
+    {
+      "path": "internal/store/go_module_failure_integration_test.go",
+      "sha256": "6cc20844dd4b4e5a02ea23bcf32f6d8fdad3a52c48fe4282230d0bb4f577332a"
+    }
+  ],
+  "first_failure": "evidence/2026-11-07/go-checksum-31a4dd3-negative-fixture-first-failure.json",
+  "repair": "Use gomodule.Canonical(module,v1.9.9) for unknown negative and new-root acquisition controls. v9.9.9 was invalid without /v9. No production code, parser rule, enforcement, assertions, test count or deadline changed.",
+  "inventory": {
+    "named_go_pg": 67,
+    "full_three_package_pg": 241,
+    "fuzz_targets": 47,
+    "browser_workflows": 16,
+    "existing_browser_workflows_retained": 15,
+    "new_checksum_ui_workflow": "owned response stand-ins only"
+  },
+  "local_checks": [
+    {
+      "path": ".cache/go-checksum-negative-fixture-compile.log",
+      "bytes": 418,
+      "sha256": "00599d1b6d88b9d67db655381893e6337bfc44f659e2ac3deef180371e13bdfa",
+      "scope": "all3PG packages normal/race compilation and tagged vet only; zero database tests executed locally"
+    },
+    {
+      "path": ".cache/go-checksum-negative-fixture-lint.log",
+      "bytes": 7269,
+      "sha256": "74c31a9bc6df614a8bb5ad092cfabdc612d46ed4452664edfd79f138a9372e3a",
+      "scope": "make lint passed; no integration or browser execution"
+    }
+  ],
+  "qualified_scoped": {
+    "native_upgrade": "evidence/2026-11-07/github-31a4dd3-upgrades-checkpoint.json",
+    "clean_arm_cli": "evidence/2026-11-07/go-checksum-31a4dd3-cli-smoke.json"
+  },
+  "legacy_plan": "docs/qualification/go-checksum-legacy-plan.md",
+  "limits": [
+    "Whole67Go normal/race and original312stock profiles still required; failed/skipped31stages are not passes. Original2d four failures didnot recur normally only.",
+    "Source13/all13checksums unchanged. Primary11/stopped/selected5483878b binaries/tenreceipts/credentials retained. No customer/sibling/release/package/image changes.",
+    "All450artifactcapabilities/41families/laterGOAL4.1 stages retained. Legacyincident recovery, full offline/export/backup/GC/conditionalrefresh/checksum-onstockproxy/group/publicGo/readiness/security/packaging remain open."
+  ]
+}

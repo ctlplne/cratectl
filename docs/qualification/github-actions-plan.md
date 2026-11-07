@@ -13,6 +13,20 @@ outside this CI authority. No autonomous delegation.
 
 ## Current qualification state
 
+Exact31a4dd3 now accepts the [two native upgrade jobs](../../evidence/2026-11-07/github-31a4dd3-upgrades-checkpoint.json):
+12historical binaries and17reportsperarch, including schema12into13/70checks each.
+Its Go normal suites fail the new noncanonicalv9negative-control fixture, with
+race/stock skipped. Preserve [both failures](../../evidence/2026-11-07/go-checksum-31a4dd3-negative-fixture-first-failure.json);
+validatev1.9.9 controls and replay unchanged67Go/241PG/47fuzz/16browser requirements.
+No production parser/admission relaxation or removed assertion. Wholecampaign
+qualification remains20d2; the cleanARM offline CLI smoke is separately scoped.
+
+Follow the [legacy incident plan](go-checksum-legacy-plan.md) after repair replay.
+It preserves unattributed incidents and immutable original journal bindings,
+requires explicit external-trust review and cannot clear authenticated key forks.
+No implementation, source14migration or primary maintenance follows from the plan.
+
+
 The first source13 candidate2d29380 has a retained failure record:
 [evidence](../../evidence/2026-11-07/go-checksum-2d29380-first-failures.json).
 BothGo normal suites expose the misplaced acquisition/inspection guard; both

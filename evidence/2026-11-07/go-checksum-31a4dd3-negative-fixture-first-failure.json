@@ -1,0 +1,41 @@
+{
+  "candidate": "31a4dd303d7015a6e1d09918e987439d4b0e15fe",
+  "observed_at": "2026-11-07T01:48:18.540114+00:00",
+  "state": "both native Go normal suites fail the new negative-fallback control; race/stock stages skipped, no named Go acceptance",
+  "defect": "DEFECT.0125",
+  "jobs": [
+    {
+      "job_id": 128257601370,
+      "run_id": 42324834892,
+      "architecture": "linux/amd64",
+      "conclusion": "failure",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42324834892/job/128257601370",
+      "private_log": {
+        "path": ".private/ci-diagnostics/31a4dd3-first-failure/128257601370.txt",
+        "bytes": 212423,
+        "sha256": "cec95dd8154769a9be5cea8643df9597739480385bfc1b2d7fdf1a84b67200b8"
+      }
+    },
+    {
+      "job_id": 128257601619,
+      "run_id": 42324834892,
+      "architecture": "linux/arm64",
+      "conclusion": "failure",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42324834892/job/128257601619",
+      "private_log": {
+        "path": ".private/ci-diagnostics/31a4dd3-first-failure/128257601619.txt",
+        "bytes": 212537,
+        "sha256": "53f38affe15b2d0119e842c5061ac63555fbaa3574868030224d4f25de9b8c51"
+      }
+    }
+  ],
+  "failed_function": "TestGoModuleChecksumForkPrecedesFreshNegativeFallback",
+  "failed_assertion": "control must begin with a valid fresh negative fallback",
+  "cause": "The new test requests v9.9.9 on a major1 module path without /v9. Existing gomodule.ParseRequest correctly refuses that invalid canonical coordinate before its negative-cache query. No production fallback bypass is established by this failure.",
+  "repair": "Use gomodule.Canonical(module,v1.9.9) for the negative control and the added new-root acquisition branch. Preserve before-fork absence and after-fork key block, all original assertions and production canonical parsing/enforcement.",
+  "other_observations": [
+    "Original2d29380four failing functions do not recur in these normal runs; that is not normal/race/stock acceptance.",
+    "Both31a4dd3 upgrade jobs complete successfully; exact17reportperarch acceptance remains a separate scoped record.",
+    "No local PostgreSQL, test skipping or native retry. All450artifactcapabilities/41families/laterGOAL4.1 scope retained; publicGo/readiness/security/packaging remain false."
+  ]
+}

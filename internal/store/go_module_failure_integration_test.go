@@ -227,10 +227,14 @@ func TestGoModuleChecksumForkBlocksTenantKeyAcrossRepositoriesPublicationAndSour
 	if _, err = f.s.AcquireRetrieval(ctx, f.i, "sibling", alias.Path, "blocked-new-fill", true); !errors.Is(err, ErrGoChecksumAuthorityBlocked) {
 		t.Fatal("blocked key acquired new upstream work", err)
 	}
+	absent, err := gomodule.Canonical(log.Module, "v1.9.9")
+	if err != nil {
+		t.Fatal("new-root acquisition control requires a canonical coordinate", err)
+	}
 	for _, request := range []struct {
 		path  string
 		force bool
-	}{{alias.Path, false}, {next.GoModule.Objects[0].Path, false}, {"go.cratectl.invalid/!owned/checksum/@v/v9.9.9.zip", true}} {
+	}{{alias.Path, false}, {next.GoModule.Objects[0].Path, false}, {absent.Prefix() + ".zip", true}} {
 		if lease, err := f.s.AcquireRetrieval(ctx, f.i, "sibling", request.path, "blocked-all-acquisitions", request.force); !errors.Is(err, ErrGoChecksumAuthorityBlocked) || lease.Acquired {
 			t.Fatal("key block must precede fresh-cache, busy and new-root acquisition", err)
 		}
