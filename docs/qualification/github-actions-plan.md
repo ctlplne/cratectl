@@ -53,10 +53,12 @@ verify live no-op preservation. Keep all old baseline cases and first14 frozen
 checksums. A separate declared14 SQL fixture regression does not replace native
 historical binary proof.
 
-Expected source15 placement is six workflows/27jobs,20safe summaries/83reports,
-including the three path-selected focused browser jobs. Enumerate actual expanded
+Actual source15 placement is seven workflows/29jobs,22safe summaries/85reports,
+including the three focused browser and two NuGet-library jobs; this corrects
+the original development estimate of six/27. Enumerate actual expanded
 jobs, accept exact-source original summaries and preserve the first failures.
-NuGet-library and strict checksum-client remain separately selected. No local
+NuGet-library was selected by the shared evidence tooling changes; the strict
+checksum-client remains separately selected. No local
 PostgreSQL/SDK/OpenSSL/stock registry/Chromium campaign is required.
 
 The historical one-version consumer is independently qualified at1a61120.

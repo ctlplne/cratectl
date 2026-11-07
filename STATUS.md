@@ -12,6 +12,17 @@ explicit owned UI response stand-ins. Focused browser, NuGet-library and strict
 checksum-client workflows were unselected. See
 `evidence/2026-11-07/github-1a61120-checkpoint.json` and named Go/upgrade records.
 
+Source15 candidate fbe3bf9 is running on GitHub. Both actual native upgrade jobs
+fail in the new driver after59checks of baseline14: parsed Go manifest replaced
+the existing OCI manifest variable. DEFECT0129 renames only the new binding;
+all old/new assertions, migration definitions and pins remain intact. Original
+logs/safe summaries are retained in
+`evidence/2026-11-07/go-export-upgrade-fbe3bf9-first-failure.json`.
+Python compile passes locally; fresh native replay is required. Other jobs are
+still running. Actual placement selects seven workflows/29jobs including native
+NuGet libraries, correcting the initial six/27 estimate; no absent/skipped run
+counts as a pass.
+
 Hosted offline Go publication is verified in that historical single-version
 profile: actual PostgreSQL/CAS/current source approval, original journal bytes,
 external OpenSSL signature, candidate CLI private file proxy and pinned native
@@ -36,8 +47,8 @@ normal/race PostgreSQL compile and tagged vet pass. Actual PostgreSQL/SDK/CLI/
 OpenSSL/Chromium/historical upgrade qualification belongs on GitHub: 268 full PG,
 90 named Go, 55 fuzz, 19 main browser workflows/151 checks (four declared UI
 response stand-ins), 14 native historical binaries/19 upgrade reports per Linux
-host. Expected selected campaign is six workflows/27 jobs including three focused
-browser jobs; enumerate actual results rather than infer success. All first14
+host. Actual selected campaign is seven workflows/29 jobs including three focused
+browser and two NuGet-library jobs; enumerate results rather than infer success. All first14
 migration definitions remain frozen. New15 is frozen before publication at
 `e09da69fe6a5c3a653a3d3e86d85c2a08250b05fd099ac9bef73e11d74d9d325`.
 See ADR0050, `evidence/2026-11-07/go-durable-export-development.json` and the
