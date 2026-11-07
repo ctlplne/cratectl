@@ -9,7 +9,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"net"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -25,6 +24,7 @@ import (
 	crypt "ctlplne.dev/cratectl/internal/crypto"
 	"ctlplne.dev/cratectl/internal/server"
 	"ctlplne.dev/cratectl/internal/store"
+	"ctlplne.dev/cratectl/internal/testnet"
 	"ctlplne.dev/cratectl/internal/upstream"
 	"github.com/jackc/pgx/v5"
 )
@@ -186,7 +186,7 @@ func TestOCIStockDiscoveryPagesFallbackAndAtomicity(t *testing.T) {
 	create(repo)
 	group := store.Repository{Name: repo.Name + "-group", Format: "oci", Mode: "group", Settings: store.RepositorySettings{Members: []string{repo.Name}}}
 	create(group)
-	listener, e := net.Listen("tcp", "127.0.0.1:38443")
+	listener, e := testnet.ListenOwned()
 	if e != nil {
 		t.Fatal(e)
 	}

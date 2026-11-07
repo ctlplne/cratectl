@@ -1447,6 +1447,16 @@
       "development": "evidence/2026-11-07/go-export-import-role-development.json",
       "limits": "Both native Linux normal suites fail at role provisioning before import. Race/stock skipped, zero-report summaries fail. No collector/import pass inferred; full actual replay required.",
       "replay": "evidence/2026-11-07/go-module-badb85b-native-checkpoint.json"
+    },
+    {
+      "id": "DEFECT.0136",
+      "summary": "Full native x86 race conformance cannot bind owned loopback38443",
+      "candidate": "badb85b52bd8aa06f64e7937a5ce0969eda5190b",
+      "first_failure": "evidence/2026-11-07/github-badb85b-owned-port-first-failure.json",
+      "state": "original failure retained; original socket owner/cause unknown; repair and replay pending",
+      "limits": "No original socket table was captured. Do not infer root cause from a later green run or erase skipped stock/browser/zero-summary results.",
+      "development": "evidence/2026-11-07/owned-ci-ports-development.json",
+      "repair": "Guarded disposable hosted Linux merges inherited automatic-port reservations plus35432/38443; two fresh child namespace kernel controls; bounded future TCP bind-state diagnostics. No retry/kill/port/time-budget/assertion change; actual native replay unverified."
     }
   ]
 }

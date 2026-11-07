@@ -17,6 +17,10 @@ fi
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$root"
 docker inspect --type container --format '{{json .NetworkSettings.Ports}}' "$CRATECTL_CI_POSTGRES_CONTAINER_ID" | python3 scripts/ci/check_postgres_binding.py
+# These fixed service ports must not be chosen as automatic outbound client
+# ports while a fixture listener is between lifetimes. Preserve inherited
+# reservations and prove the kernel behavior in fresh child namespaces first.
+sudo -n --preserve-env=GITHUB_ACTIONS,RUNNER_ENVIRONMENT,RUNNER_OS,CRATECTL_CI_POSTGRES_CONTAINER_ID python3 scripts/ci/prepare_owned_ports.py
 client_set="${CRATECTL_CI_CLIENT_SET:-all}"
 case "$client_set" in all|oci|jvm|go|upgrades) ;; *) echo 'Unknown CI client set' >&2; exit 1 ;; esac
 architecture="$(dpkg --print-architecture)"

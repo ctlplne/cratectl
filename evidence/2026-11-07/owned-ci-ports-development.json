@@ -1,0 +1,96 @@
+{
+  "source_parent": "aba203efb3fc32b092c97b336642dad661ebb23a",
+  "source_dirty": true,
+  "observed_at": "2026-11-07T13:09:16.738063+00:00",
+  "state": "Guarded owned CI reservation/kernel controls and bounded bind diagnostics implemented; actual native replay unverified",
+  "adr": "docs/adr/0060-owned-native-port-isolation.md",
+  "first_failure": "evidence/2026-11-07/github-badb85b-owned-port-first-failure.json",
+  "source": [
+    {
+      "path": "scripts/ci/prepare_owned_ports.py",
+      "sha256": "a73851beb5d10a61afd4ee00f6eb63e2c1b1d88e39f93c25f5bc0dd7eedf6353"
+    },
+    {
+      "path": "scripts/ci/test_prepare_owned_ports.py",
+      "sha256": "2055f37524a553906c9ec9381d4e71a17ec83e7c8fa62330deab2b97930eebea"
+    },
+    {
+      "path": "scripts/ci/bootstrap_linux.sh",
+      "sha256": "9f00e837613909d640f8d4cc66a2067657c426ec55e6212e112ed96fed937779"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "33fd859cd3bd1e6869f2683918125f0d77a44e9d870163d41b897a821ab2e96d"
+    },
+    {
+      "path": "internal/testnet/ports.go",
+      "sha256": "dacdd75f566888b7e21f75065a75743c0d4956007f9731c33807dd7ae29714f9"
+    },
+    {
+      "path": "internal/testnet/ports_test.go",
+      "sha256": "1779b7c245f098e25565698c4bef3511793868b998f77794eaba7445bd85733d"
+    },
+    {
+      "path": "internal/conformance/oci_delivery_integration_test.go",
+      "sha256": "51b05c19218d143c4677fa3cd4ca994a79977c17e4ada294cfa385203f3662b8"
+    },
+    {
+      "path": "internal/conformance/oci_discovery_integration_test.go",
+      "sha256": "30e9ae23459cd477303d58336c84d155ec47d9a1dc1bd5ca1fb709a64ea1be60"
+    }
+  ],
+  "development_logs": [
+    {
+      "path": ".cache/owned-ports-standins-final.log",
+      "sha256": "87578f2fe4d6902dff24988aed54087da09e87393d7135be492b1066cbaba89d"
+    },
+    {
+      "path": ".cache/owned-ports-go-parser.log",
+      "sha256": "7a95988037039504c66b5c9d529104292bfb5ec758b88edd6f5d9e0b8e40d078"
+    },
+    {
+      "path": ".cache/owned-ports-build-lint.log",
+      "sha256": "32d267b5558017237c1e1375012c182c18c5bb9a118d68d9b29ef9a2942c721e"
+    },
+    {
+      "path": ".cache/owned-ports-pg-compile.log",
+      "sha256": "e155fdbfdffe33b6d7d14cfe522fe243f84a17f8de8db3836ffd1096db0546a8"
+    },
+    {
+      "path": ".cache/owned-ports-pg-race-compile.log",
+      "sha256": "e3c36b3957c9261913e553f34ea2a7e3cda5b8b63c0a77ddb48ac0d9e4a1ece4"
+    },
+    {
+      "path": ".cache/owned-ports-pg-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/owned-ports-final-lint.log",
+      "sha256": "9098da5be660d27f486d69a1ea4868e8adca1e9c897426350c056fa99a12b842"
+    }
+  ],
+  "development_scope": [
+    "Seven pure guard/parser/readback/FS stand-in unit functions; malformed/oversized fields never write, preserve all inherited ranges, exact replay/readback and reject root/platform/host/namespace misuse before commands. No local proc/sys/kernel setting or root namespace execution.",
+    "Bounded owned-port TCP-state Go parser/race unit passes: IPv4/IPv6 owned38443states only, other ports ignored, malformed/oversized/read-error input discards counts, no raw endpoint/process context returned.",
+    "ARM build/lint and tagged normal/race PostgreSQL package compilation/vet pass. Existing lint standalone SDK/HTTP/FS stand-ins remain distinct from real registry/PG/signer/stock-client and Chromium campaigns."
+  ],
+  "native_required": {
+    "full_pg_normal_race": 274,
+    "named_go_normal_race": 96,
+    "fuzz_targets": 57,
+    "main_browser_workflows": 19,
+    "main_browser_checks": 151,
+    "kernel_namespace_cases_per_bootstrap": 2,
+    "stock_go_checks": 312,
+    "historical_binaries_per_host": 15,
+    "upgrade_reports_per_host": 20,
+    "portable_stages": 16
+  },
+  "limits": [
+    "Actual Linux root kernel controls/reservation have not run locally; they must pass onboth actual GitHub Linux architectures before original full native replay. Only two fresh owned child namespaces get the declared one-port automatic range; parent range/reservations are checked unchanged before host-only merged35432/38443reservation.",
+    "Original failed socket owner/cause was not captured. This prevention/diagnostic control does not retrospectively establish ephemeral allocation, TIME_WAIT, leaked daemon or any other root cause. No original assertion, timeout, port, client pin, permission or source snapshot rule is changed.",
+    "Never kill an unidentified process, retry bind as a repair, alter a sibling/customer service or treat skipped stock/browser/zero-report summary as passed. All450/41/laterGOAL4.1scope and readiness/security/packaging remain incomplete.",
+    "No schema/primary11/5483878b/tenreceipt/credential/customer/sibling/release/package/image change. Ongoing read-only campaign acceptance implementation is separate and incomplete."
+  ],
+  "check_reuse_limits": "Go and kernel/bootstrap implementation bytes are unchanged since recorded build/tagged compile/vet. Final Makefile lint additionally runs the separately committed bounded transport stand-ins; final lint passes with both registrations. No local native kernel execution."
+}

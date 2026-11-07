@@ -8,14 +8,16 @@ publication is authorized by the CI work.
 The [Actions plan](docs/qualification/github-actions-plan.md) is now a concise
 current placement/evidence/offload plan. Its previous79,054bytes are archived
 unchanged with a retained SHA256. A read-only cross-workflow acceptance job is
-the next CI offload; it remains planned, not implemented or qualified.
+in progress: its bounded transfer component passes seven owned stand-in tests;
+job/report wiring and actual GitHub acceptance remain unfinished.
 
 Current pushed qualification source: `b5cfb5d2b03017fac3e41ee75e306b1b0e41be52`
 on `main`, author and committer `imfeelingtheagi`. Its named96Go normal/race and
 312stock perhost plus16stage separate-runner portable profile are accepted.
 New TLS/destination SDK and multiple-event cases pass within that named profile.
-The earlier `badb85b` passes96Go normal/race and312stock onboth Linux hosts;
-its original main Linux jobs remain running and full acceptance remains pending.
+The earlier `badb85b` passes96Go normal/race and312stock onboth Linux hosts,
+but its [whole campaign fails](evidence/2026-11-07/github-badb85b-final-checkpoint.json):
+25successful jobs/one x86 full-race failure. No whole-campaign acceptance.
 ADR0058 adds bounded multiple-event journal selection with passing local ARM
 development and named native checks; full main qualification remains pending:
 274PG/96Go/57fuzz/19main151. Historical source counts retain their exact scope.
@@ -75,15 +77,18 @@ Actual official-archive fallback remains unselected; no speedup/availability cla
 Whole812is not accepted: original collector normal suites fail, race/stock skip,
 zero-report summary fails. Original965Go jobs were cancelled while pending.
 
-The badbcandidate still requires274fullPG/56cmd+internal fuzz onthree hosts,
-19main151browser and every other selected profile. Its [named Go profile](evidence/2026-11-07/go-module-badb85b-native-checkpoint.json)
+The badbcandidate's source/fuzz gates pass onthreehosts with56targets, and ARM
+full main succeeds. Its x86 full-race OCI signed-delivery test cannot bind38443
+(DEFECT0136); later stock/browser stages skip and empty summary fails. Original
+socket ownership/cause is unknown. All26logs/19safe summaries/63reports are retained
+in the failed checkpoint. Its [named Go profile](evidence/2026-11-07/go-module-badb85b-native-checkpoint.json)
 is accepted:96Go normal/race/312stock onboth actual Linux hosts, including actual
 collector processkill/renewal/declared metadata recovery, signed offline bytes,
 normal destination publication, postcommit TCP closure/replay, unassessed denial,
 current write grant and coordinate conflict. This fixture uses owned loopback
 HTTP; original312stock uses trustedTLS. New TLS/manual destination review/SDK
 additions are outside that source. Original0132/0133/0135failures and skipped
-stages remain retained. Whole selected candidate acceptance is still incomplete.
+stages remain retained. Whole selected candidate acceptance is failed.
 The same source now also accepts15historical binaries/20upgrade reports perhost,
 [16separate-host portable stages](evidence/2026-11-07/go-export-portability-badb85b-checkpoint.json)
 and [666Ivy checks with verified warm restore perhost](evidence/2026-11-07/apache-archive-badb85b-warm-native-checkpoint.json).
@@ -102,7 +107,7 @@ New source `b5cfb5d`:
 | Historical upgrades | [42372660809](https://github.com/ctlplne/cratectl/actions/runs/42372660809) |
 | Cross-runner export | [42372660915](https://github.com/ctlplne/cratectl/actions/runs/42372660915) |
 
-Original `badb85b` handles:
+Retained failed `badb85b` campaign handles:
 
 | Profile | GitHub run |
 | --- | --- |
@@ -134,10 +139,21 @@ Full57fuzz/main/browser acceptance remains pending. See the
 [development record](evidence/2026-11-07/journal-multiple-selection-development.json).
 This supports, and does not complete, multi-artifact/dependency/provenance export.
 
+[ADR0060](docs/adr/0060-owned-native-port-isolation.md) preserves the original
+[bind failure](evidence/2026-11-07/github-badb85b-owned-port-first-failure.json).
+Guarded disposable GitHub Linux setup merges35432/38443into inherited automatic
+port reservations, after two controlled fresh-network-namespace kernel cases.
+Future conformance bind errors expose bounded TCP-state counts only. Seven
+guard/parser/readback/FS stand-ins, Go parser/race, build/lint and normal/race
+tagged compilation/vet pass locally. No local kernel setting changed. Actual
+Linux kernel controls and full native replay are unverified; original socket
+owner/cause remains unproven. See the [development record](evidence/2026-11-07/owned-ci-ports-development.json).
+
 ## Remaining work and protected local state
 
-Preserve the named badb85b replay and qualify the expanded TLS/destination SDK,
-multiple-event selection, full main suite and browser path. Retain actual process kill/socket closure, renewal, metadata
+Preserve all original failures and qualify owned-port isolation plus the full
+main/browser path. Named b5cfb5d TLS/SDK/multiple-event controls remain scoped.
+Retain actual process kill/socket closure, renewal, metadata
 prefix/link recovery, byte-exact receipt replay, tenant/policy/grant/revocation,
 external OpenSSL and stock inert Go assertions. No pending/skipped/unselected pass.
 Then complete the full14-case/7-environment [Go export plan](docs/qualification/go-export-plan.json),

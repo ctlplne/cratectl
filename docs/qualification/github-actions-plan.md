@@ -37,7 +37,9 @@ Later `badb85b` has separate accepted profiles:
 - [16stages on actual separate x86 producer/ARM consumer](../../evidence/2026-11-07/go-export-portability-badb85b-checkpoint.json).
 - [666Ivy checks per host and exact warm archive restore/pin revalidation](../../evidence/2026-11-07/apache-archive-badb85b-warm-native-checkpoint.json).
 
-Its original main Linux jobs remain live; full acceptance is pending. New TLS/
+Its whole campaign now fails one x86 race conformance bind on38443;25jobs succeed.
+Retain the [failed final checkpoint](../../evidence/2026-11-07/github-badb85b-final-checkpoint.json),
+skipped stock/browser stages and zero-report summary. New TLS/
 destination SDK/multiple-event cases are outside that proof. Original0132/0133/
 0135failures, skipped stages and zero-report summaries stay unchanged. DEFECT0126
 strict SDK trust-state failure and DEFECT0122unknown browser intermittent remain
@@ -101,6 +103,11 @@ and the other qualification manifests. Narrative edits do not change tool pins.
 - Owned `cratectl-*` resources, loopback38443/35432 and private generated
   credentials only. PostgreSQL runtime is nonsuperuser/nonowner/noBYPASSRLS;
   tenant tables have forced RLS. No primary/customer/sibling service changes.
+- ADR0060adds guarded disposable Linux port reservation and two fresh child
+  namespace kernel controls before integration. Preserve inherited reservations
+  and parent automatic range; only35432/38443are added on the runner. Bounded
+  future bind-state counts aid diagnosis. Local stand-ins pass; actual kernel
+  controls/replay are unverified. Original DEFECT0136socket owner is unknown.
 - Pin/verify executable bytes. Cache only reviewed public compressed archives
   or bounded approved tool-only boot data. Reverify archive pins after restore;
   no credentials/databases/uncontrolled project dependency caches. Cold/save
@@ -139,7 +146,8 @@ and the other qualification manifests. Narrative edits do not change tool pins.
 
 Public uploads contain reviewed counts/hashes/fixed diagnostics/stages or the
 reviewed synthetic capsule. Raw browser/command/SQL reports, credential/config
-values and signing private keys stay private. Safe summaries have30day retention;
+values and signing private keys stay private. Safe summary retention is currently
+14days for Go/portable and30days for the other workflows;
 preserve accepted bytes in Git before expiry. Failure diagnostics may retain
 bounded owner-recipient CMS ciphertext/fixed metadata for7days. Decryption keys
 never visit CI; no plaintext fallback. Existing collectors select at most two
