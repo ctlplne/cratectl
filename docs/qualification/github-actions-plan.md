@@ -53,8 +53,10 @@ verify live no-op preservation. Keep all old baseline cases and first14 frozen
 checksums. A separate declared14 SQL fixture regression does not replace native
 historical binary proof.
 
-Actual source15 placement is seven workflows/29jobs,22safe summaries/85reports,
-including the three focused browser and two NuGet-library jobs; this corrects
+Actual fbe3bf9 placement is seven workflows/29jobs; a complete passing campaign
+would contain22safe summaries/85reports, including the three focused browser
+and two NuGet-library jobs. The failed upgrade jobs retain their actual partial
+reports and skipped dependent steps. This corrects
 the original development estimate of six/27. Enumerate actual expanded
 jobs, accept exact-source original summaries and preserve the first failures.
 NuGet-library was selected by the shared evidence tooling changes; the strict
@@ -69,6 +71,26 @@ retains24terminal/20pass/four cleanup failures,17safe47reports and skipped stage
 This repair does not close full dependency/authority/provenance/permission closure,
 current destination admission/scanning/import, background expiry, physicalGC,
 backup/providers/Windows/macOSserver/independenthost/mixedload/scale or DEFECT0126.
+
+The named90Go PostgreSQL normal/race/312stock profile is now accepted on both
+actual Linux hosts atfbe3bf9. The binding-only DEFECT0129 driver repair replays
+at a17bf87:14native historical binaries/19upgrade reports per host, including
+81schema14into15 checks. Original failed reports remain retained. These are
+separate exact-source profiles; neither makes a still-running whole campaign a
+pass. The later expiry-worker source requires fresh271/93 qualification.
+
+## Background export expiry continuation
+
+[ADR0051](../adr/0051-export-expiry-worker.md) adds dedicated tenant-worker
+reconciliation, one due session per paced tenant visit. It retains source15 and
+all frozen definitions. State/journal/projection intent commit under the common
+fence; queue or current worker credential failures retain protection. Revoked
+creators or retired sources cannot strand due leases while the worker remains
+authorized. Three new actual PostgreSQL regressions require271fullPG/93namedGo
+normal/race per Linux host, with all prior55fuzz/19main151browser/14historical19
+upgrade and original stock profiles retained. Compile/vet is local development
+only. A declared timestamp-aging fixture does not establish real clock-shift or
+large-history/backlog throughput. PhysicalGC and full closure/import remain open.
 
 ## Checksum client investigation lane
 

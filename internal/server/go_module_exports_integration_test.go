@@ -20,12 +20,13 @@ import (
 	crypt "ctlplne.dev/cratectl/internal/crypto"
 	"ctlplne.dev/cratectl/internal/gomodule"
 	"ctlplne.dev/cratectl/internal/store"
+	"ctlplne.dev/cratectl/internal/testdb"
 	"github.com/jackc/pgx/v5"
 )
 
-func exportServerFixture(t *testing.T) (*Server, string, store.Identity, store.GoExportRequest) {
+func exportServerFixture(t *testing.T) (*Server, string, store.Identity, store.GoExportRequest, testdb.Database) {
 	t.Helper()
-	s, _, token, admin := schemaServer(t)
+	s, d, token, admin := schemaServer(t)
 	mavenRepositories(t, s, admin, store.Repository{Name: "exported", Format: "go", RequireReview: true, Access: "restricted"})
 	c := gomodule.Coordinate{Module: "go.cratectl.invalid/Owned/app", Version: "v1.0.0"}
 	raw, _ := goPublicationFixture(t, c, "owned export API bytes")
@@ -40,11 +41,11 @@ func exportServerFixture(t *testing.T) (*Server, string, store.Identity, store.G
 			t.Fatal(err)
 		}
 	}
-	return s, token, admin, store.GoExportRequest{Repository: "exported", Module: c.Module, Version: c.Version, LifetimeSeconds: 60}
+	return s, token, admin, store.GoExportRequest{Repository: "exported", Module: c.Module, Version: c.Version, LifetimeSeconds: 60}, d
 }
 
 func TestGoModuleExportManagementActualHTTPAndResumableCurrentPolicy(t *testing.T) {
-	s, token, admin, req := exportServerFixture(t)
+	s, token, admin, req, _ := exportServerFixture(t)
 	listener, err := net.Listen("tcp4", "127.0.0.1:38443")
 	if err != nil {
 		t.Fatal("owned export API loopback port unavailable", err)
@@ -168,7 +169,7 @@ func (w *blockedExportWriter) SetWriteDeadline(d time.Time) error {
 func (w *blockedExportWriter) abort() { w.abortOnce.Do(func() { close(w.aborted) }) }
 
 func TestGoModuleExportManagementHeartbeatFencesCancelledTransfer(t *testing.T) {
-	s, token, admin, req := exportServerFixture(t)
+	s, token, admin, req, _ := exportServerFixture(t)
 	raw, _ := json.Marshal(req)
 	w := goHTTP(t, s, token, "POST", "/api/v1/go/exports", raw, "Idempotency-Key", "blocked-export")
 	var v store.GoExportSession

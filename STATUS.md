@@ -12,16 +12,35 @@ explicit owned UI response stand-ins. Focused browser, NuGet-library and strict
 checksum-client workflows were unselected. See
 `evidence/2026-11-07/github-1a61120-checkpoint.json` and named Go/upgrade records.
 
-Source15 candidate fbe3bf9 is running on GitHub. Both actual native upgrade jobs
-fail in the new driver after59checks of baseline14: parsed Go manifest replaced
-the existing OCI manifest variable. DEFECT0129 renames only the new binding;
-all old/new assertions, migration definitions and pins remain intact. Original
-logs/safe summaries are retained in
-`evidence/2026-11-07/go-export-upgrade-fbe3bf9-first-failure.json`.
-Python compile passes locally; fresh native replay is required. Other jobs are
-still running. Actual placement selects seven workflows/29jobs including native
-NuGet libraries, correcting the initial six/27 estimate; no absent/skipped run
-counts as a pass.
+Exact fbe3bf9 now qualifies90namedGo PostgreSQL functions normally/race and
+312stock checks on both actual Linux architectures. This includes snapshot/
+transaction/tenant/current-policy/range/expiry and independently signed manifest
+CLI/native SDK cases. The blocked-writer and declared14SQL migration fixtures
+remain explicit; actual historical binary upgrades and full browser/campaign
+acceptance are separate. See
+`evidence/2026-11-07/go-module-fbe3bf9-native-checkpoint.json`.
+
+Current continuation adds dedicated tenant-worker expiry reconciliation without a
+new migration. It processes one due session per paced tenant visit, rechecks its
+worker credential under the common fence, and commits terminal state/journal/job
+intent together. Queue failure retains pins; concurrent workers cannot duplicate
+expiry. Three new PostgreSQL functions cover rollback/replicas/current credentials/
+tenants, revoked creator/retired source and the actual worker loop observed only
+through the read-only list. Local ARM build/unit/race/lint and normal/race tagged
+compile/vet pass. New-source271fullPG/93namedGo runtime proof remains unverified;
+the running268/90 campaigns qualify their own earlier source only. See ADR0051
+and `evidence/2026-11-07/go-export-expiry-development.json`. All15definitions stay
+frozen. Full closure/import/physicalGC/large-backlog/platform/scale remains open.
+
+Original source15 candidate fbe3bf9 has two retained native upgrade driver
+failures: parsed Go manifest replaced the existing OCI manifest variable.
+DEFECT0129's binding-only repair is verified at a17bf87 on both actual Linux
+architectures:14clean historical native binaries/19upgrade reports each,
+including81schema14into15 checks. All old/new assertions and15frozen definitions
+remain intact. See `evidence/2026-11-07/github-a17bf87-upgrades-checkpoint.json`
+and `go-export-upgrade-fbe3bf9-first-failure.json`. Full campaigns remain running.
+Actual fbe3bf9 placement selected seven workflows/29jobs including native NuGet
+libraries, correcting the initial six/27 estimate. No skipped run is a pass.
 
 Hosted offline Go publication is verified in that historical single-version
 profile: actual PostgreSQL/CAS/current source approval, original journal bytes,
@@ -34,7 +53,7 @@ their skipped stages are not passes. The pinned cleaner changes no default SDK
 permissions, assertion or product bound.
 
 New source schema15 adds a durable hosted Go export producer, manifest verifier,
-CLI collection path and console. It is **implemented but native unverified**.
+CLI collection path and console. Its **90-function native Go profile is verified; full campaign acceptance remains pending**.
 Canonical policy/byte snapshots are staged in CAS before immutable RLS references;
 event/idempotency/job intent share the transaction. Current credentials/policy,
 source epoch, generation and expiry fence bounded single-range downloads.
@@ -55,7 +74,7 @@ See ADR0050, `evidence/2026-11-07/go-durable-export-development.json` and the
 14-case/seven-environment `docs/qualification/go-export-plan.json`.
 
 Full dependency/authority/provenance/source-permission closure, policy/scanning
-import, background expiry, protected physical GC, backup/provider/platform/scale
+import, expiry backlog throughput, protected physical GC, backup/provider/platform/scale
 and every remaining GOAL requirement remain open. Independent DEFECT0126's
 three-host strict Go client trust-state failure and DEFECT0122's unknown browser
 intermittent remain open. All450 capabilities/41 families/later stages remain

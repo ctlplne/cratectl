@@ -9,21 +9,30 @@
     "docs/adr/0049-hosted-go-offline-publication.md",
     "docs/go-module-offline.md",
     "docs/qualification/github-actions-plan.md",
-    "docs/adr/0050-durable-hosted-go-export.md"
+    "docs/adr/0050-durable-hosted-go-export.md",
+    "docs/adr/0051-export-expiry-worker.md"
   ],
   "current_implementation": {
-    "source_parent": "1a611201b20f3e6a58b8377d151e7c92425a79db",
+    "source_parent": "a17bf874b337da2e87b1f325d7ea045f2d7f1958",
     "source_dirty": true,
-    "state": "schema15 hosted snapshot/session/manifest/API/CLI/console implemented but native unverified",
+    "state": "schema15 snapshot/session/manifest/API/CLI90namedGo profile qualified atfbe3bf9; whole-campaign/native upgrade/browser acceptance pending; new background expiry worker unverified",
     "qualified_historical_consumer": "evidence/2026-11-07/github-1a61120-checkpoint.json",
     "producer_development": "evidence/2026-11-07/go-durable-export-development.json",
     "schema": 15,
     "current_registry_admission": false,
     "checksum_authority_verified": false,
-    "durable_server_snapshot": "implemented but native unverified",
+    "durable_server_snapshot": "verified in exact fbe3bf9 90namedGo real-PostgreSQL normal/race profile on both Linux architectures; broader acceptance remains incomplete",
     "physical_gc_qualified": false,
     "dependency_closure": false,
-    "full_goal_complete": false
+    "full_goal_complete": false,
+    "expiry_worker": {
+      "state": "implemented but native unverified",
+      "adr": "docs/adr/0051-export-expiry-worker.md",
+      "scope": "Dedicated current tenant worker; one due session per bounded visit; state/journal/job intent commit under common mutation fence. No payload pin release on queue/credential failure. No new migration or physical deletion.",
+      "required_qualification": "Three new actual PostgreSQL functions;271fullPG/93namedGo normal and race per actual Linux architecture. Background loop observed through read-only list only; owned timestamp aging is not real clock-shift proof.",
+      "development": "evidence/2026-11-07/go-export-expiry-development.json"
+    },
+    "producer_native_go_checkpoint": "evidence/2026-11-07/go-module-fbe3bf9-native-checkpoint.json"
   },
   "environment_profiles": {
     "development-arm": {
@@ -336,7 +345,7 @@
   ],
   "execution_order": [
     "Preserve qualified1a61120 historical consumer and original d179222 failures; qualify clean schema15 producer/manifest/CLI/console/upgrade source on actual native hosts.",
-    "Finish background expiry janitor and complete remaining producer policy/provenance/permission/authority/closure/GC protections.",
+    "Qualify dedicated background expiry reconciliation; then complete remaining producer policy/provenance/permission/authority/closure/GC protections and backlog throughput.",
     "implement complete producer/API/CLI/UI and portable proof/policy/closure consumer",
     "qualify interrupted/native historical upgrades, import and lifecycle/GC",
     "qualify independent hosts, remaining platforms/providers/scale and broader committed formats"
@@ -360,7 +369,7 @@
       "A reusable export must cover dependency/proof/policy closure, safe current-policy import and independent consumer recovery. A successful three-file install does not complete those outcomes.",
       "Broad source/native regression cost is justified while shared store/authorization paths change; new native cases belong in existing architecture jobs before adding duplicate local campaigns."
     ],
-    "next_implementation_boundary": "qualify source15 exact snapshot/session and manifest consumer; then complete closure/authority/permission/provenance/import/background expiry/full lifecycle protections",
+    "next_implementation_boundary": "qualify exact source15 snapshot/session/manifest and background expiry; then complete closure/authority/permission/provenance/import/full lifecycle and throughput protections",
     "accepted_capability_states_changed": false
   }
 }

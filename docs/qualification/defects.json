@@ -1374,11 +1374,12 @@
     {
       "id": "DEFECT.0129",
       "summary": "Schema14-to15 Go export upgrade fixture overwrites retained OCI manifest bytes with parsed Go JSON, breaking later native OCI request serialization",
-      "state": "Fixture-only rename implemented; Python compile passes locally. Both original native failures retained; fresh native upgrade replay required.",
+      "state": "Fixture-only rename verified at a17bf87 in actual Linux amd64 and arm64 historical upgrade profiles; both original failed fbe3bf9 jobs retained.",
       "first_failure": "evidence/2026-11-07/go-export-upgrade-fbe3bf9-first-failure.json",
       "candidate": "fbe3bf928688275fc6c0d958916d04fdab898445",
       "repair": "Rename new parsed Go binding to export_manifest. Preserve original OCI manifest bytes and every old/new assertion. No product/schema/bound/pin change.",
-      "limits": "Both failed baseline14 reports retain59checks; later repair/retention/schedule steps skip. Partial checks are not whole upgrade passes. Primary11 untouched; full scope/readiness remain open."
+      "limits": "Each actual Linux host rebuilds14clean historical native binaries and passes19upgrade reports including81schema14into15 checks, preserving every old/new assertion and all frozen definitions. Original59check failures and skipped stages are not passes. No full-campaign/rolling/production/large-history verdict; primary11 untouched. Full scope/readiness remain open.",
+      "replay": "evidence/2026-11-07/github-a17bf87-upgrades-checkpoint.json"
     }
   ]
 }

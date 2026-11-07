@@ -104,6 +104,15 @@ or durable expiry releases package pins and retains the historical manifest.
 The operator controls retained-session capacity with `--export-session-limit`.
 This adds no physical-GC deletion permission.
 
+The normal `cratectld worker` process also expires due sessions for its configured
+tenants. It needs a current dedicated worker credential; no administrator read
+or source access is required. It processes at most one due session per tenant
+visit, paced by at least one second, and records expiry and projection intent
+atomically. Queue or credential failure keeps payload pins retained and emits a
+bounded `go_export_expiry_*` notice. Renewals and other workers share the same
+database fence. The historical manifest remains retained. This worker path is
+implemented but still requires its new native PostgreSQL qualification.
+
 For independent offline verification, collect a complete journal that includes
 this session's **created_sequence**. Authenticate its terminal checkpoint through
 your external signer and separately trusted public key as described above.
@@ -123,5 +132,5 @@ historical context and does not approve the destination or supply SumDB trust.
 
 This profile still exports one hosted version. Complete dependency closure,
 source permission/authority/provenance bundles, destination current-policy
-import, background expiry maintenance, physical GC, provider/independent-host/
+import, large-backlog expiry throughput, physical GC, provider/independent-host/
 Windows/scale and backup outcomes remain open in the export acceptance plan.
