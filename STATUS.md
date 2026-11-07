@@ -5,22 +5,30 @@ artifact capabilities,41format families and later stages remain required. Broad
 readiness, security and packaging are **not qualified**. No release/package/image
 publication is authorized by the CI work.
 
-The [Actions plan](docs/qualification/github-actions-plan.md) is now a concise
-current placement/evidence/offload plan. Its previous79,054bytes are archived
-unchanged with a retained SHA256. A read-only cross-workflow acceptance job is
-in progress: its bounded transfer component passes seven owned stand-in tests;
-job/report wiring and actual GitHub acceptance remain unfinished.
+The [Actions plan](docs/qualification/github-actions-plan.md) assigns native
+qualification and remaining offloads. The manual read-only cross-workflow
+acceptance job is now implemented, with19local API/archive/report/run/receipt
+unit functions and required lint passing. Actual GitHub acceptance remains
+unverified; the first dispatch will inspect the retained complete495campaign
+without restarting native tests. See [development evidence](evidence/2026-11-07/campaign-acceptance-development.json).
 
-Current pushed qualification source: `b5cfb5d2b03017fac3e41ee75e306b1b0e41be52`
-on `main`, author and committer `imfeelingtheagi`. Its named96Go normal/race and
-312stock perhost plus16stage separate-runner portable profile are accepted.
-New TLS/destination SDK and multiple-event cases pass within that named profile.
-The earlier `badb85b` passes96Go normal/race and312stock onboth Linux hosts,
-but its [whole campaign fails](evidence/2026-11-07/github-badb85b-final-checkpoint.json):
-25successful jobs/one x86 full-race failure. No whole-campaign acceptance.
-ADR0058 adds bounded multiple-event journal selection with passing local ARM
-development and named native checks; full main qualification remains pending:
-274PG/96Go/57fuzz/19main151. Historical source counts retain their exact scope.
+Current pushed source: `ae7d00ece68d45f953d53f1728169e00b6dbe608`, on `main`,
+owner author/committer. Its [final campaign fails](evidence/2026-11-07/github-ae7d00e-final-checkpoint.json):
+25successful jobs/one x86 Chromium failure;19safe summaries/72reports retained.
+Both actual Linux hosts pass274PG normal/race,96namedGo/312stock and all earlier
+native main stages. Source/fuzz57pass onthreehosts; JVM/OCI/upgrades/portable pass.
+The [earlier b5 campaign](evidence/2026-11-07/github-b5cfb5d-final-checkpoint.json)
+has the same final counts and failed console report. Neither is whole accepted.
+Latest whole acceptance remains4956197below. Historical counts retain exact scope.
+
+The original b5 Chromium diagnostic is authenticated: serious Axe
+`scrollable-region-focusable` on a command `pre`. Six audited blocks now receive
+keyboard focus, with named command regions. Regression retains every original
+assertion and adds actual Tab/ArrowDown scrolling plus collection-dialog Axe.
+Local TypeScript/Vite/embedded reproduction/console unit-race/build/lint pass;
+new actual GitHub browser replay remains pending. See the
+[first failure](evidence/2026-11-07/go-export-b5cfb5d-accessibility-first-failure.json)
+and [repair development](evidence/2026-11-07/go-export-scroll-region-development.json).
 
 ## Current implementation and first native failure
 
@@ -56,8 +64,9 @@ Local continuation adds the console's explicit destination-import instruction
 handoff and DEFECT0134 source-binding/display repair.35owned JavaScript and9shell
 argv checks, TypeScript/Vite, Go console unit/build/lint pass. The existing
 Chromium response-stand-in adds import and malformed source/list controls with
-all original assertions; same19main151expected checks. This new UI is native
-unverified and awaits the recorded b5cfb5d Chromium result; retain the d186failure.
+all original assertions; same19main151expected checks. The b5/ae7
+Chromium path fails at the serious scroll-region Axe finding before later
+controls; retain the originals and qualify the repaired source on GitHub.
 See `evidence/2026-11-07/go-export-import-console-development.json`; full durable
 server import/provenance/scan/progress and remaining console outcomes stay open.
 
@@ -96,16 +105,16 @@ These named profiles do not accept the full main campaign. See the
 [upgrade checkpoint](evidence/2026-11-07/github-badb85b-upgrades-checkpoint.json).
 Inspect actual handles before resuming; never restart because observation expired.
 
-New source `b5cfb5d`:
+Completed failed source `ae7d00e` (inspect these handles, never restart for queue time):
 
 | Profile | GitHub run |
 | --- | --- |
-| Main CI | [42372660917](https://github.com/ctlplne/cratectl/actions/runs/42372660917) |
-| Go modules | [42372660922](https://github.com/ctlplne/cratectl/actions/runs/42372660922) |
-| JVM | [42372660836](https://github.com/ctlplne/cratectl/actions/runs/42372660836) |
-| OCI clients | [42372660819](https://github.com/ctlplne/cratectl/actions/runs/42372660819) |
-| Historical upgrades | [42372660809](https://github.com/ctlplne/cratectl/actions/runs/42372660809) |
-| Cross-runner export | [42372660915](https://github.com/ctlplne/cratectl/actions/runs/42372660915) |
+| Main CI | [42376273969](https://github.com/ctlplne/cratectl/actions/runs/42376273969) |
+| Go modules | [42376273879](https://github.com/ctlplne/cratectl/actions/runs/42376273879) |
+| JVM | [42376273927](https://github.com/ctlplne/cratectl/actions/runs/42376273927) |
+| OCI clients | [42376273850](https://github.com/ctlplne/cratectl/actions/runs/42376273850) |
+| Historical upgrades | [42376273960](https://github.com/ctlplne/cratectl/actions/runs/42376273960) |
+| Cross-runner export | [42376274024](https://github.com/ctlplne/cratectl/actions/runs/42376274024) |
 
 Retained failed `badb85b` campaign handles:
 
@@ -135,7 +144,7 @@ ARM build/unit/race/lint,17crypto/14signedCLI scenarios, selector boundary tests
 and5second fuzz pass. Normal/race PG compile/tagged vet pass. The existing native
 fixture adds real-journal/external-OpenSSL/candidate-CLI two-event selection and
 late trailing rejection; these now pass normally/race onboth actual Linux hosts.
-Full57fuzz/main/browser acceptance remains pending. See the
+All57fuzz targets pass onthreehosts atb5/ae7; full campaign still fails Chromium. See the
 [development record](evidence/2026-11-07/journal-multiple-selection-development.json).
 This supports, and does not complete, multi-artifact/dependency/provenance export.
 
@@ -146,13 +155,15 @@ port reservations, after two controlled fresh-network-namespace kernel cases.
 Future conformance bind errors expose bounded TCP-state counts only. Seven
 guard/parser/readback/FS stand-ins, Go parser/race, build/lint and normal/race
 tagged compilation/vet pass locally. No local kernel setting changed. Actual
-Linux kernel controls and full native replay are unverified; original socket
-owner/cause remains unproven. See the [development record](evidence/2026-11-07/owned-ci-ports-development.json).
+Linux kernel controls and original full274PG normal/race replay now pass onboth
+actual hosts atae7; original socket owner/cause remains unproven. The whole
+campaign still fails Chromium. See the [kernel checkpoint](evidence/2026-11-07/owned-ci-ports-ae7d00e-native-checkpoint.json)
+and [main replay](evidence/2026-11-07/owned-ci-ports-ae7d00e-main-replay.json). See the [development record](evidence/2026-11-07/owned-ci-ports-development.json).
 
 ## Remaining work and protected local state
 
-Preserve all original failures and qualify owned-port isolation plus the full
-main/browser path. Named b5cfb5d TLS/SDK/multiple-event controls remain scoped.
+Preserve all original failures, qualify the repaired full main/browser path
+and independently check real GitHub campaign acceptance. Named b5cfb5d TLS/SDK/multiple-event controls remain scoped.
 Retain actual process kill/socket closure, renewal, metadata
 prefix/link recovery, byte-exact receipt replay, tenant/policy/grant/revocation,
 external OpenSSL and stock inert Go assertions. No pending/skipped/unselected pass.

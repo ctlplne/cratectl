@@ -15,14 +15,16 @@ audit afterward. Public repository and CI pushes/repairs are authorized. Release
 package/image publication, customer, primary and sibling changes need their own
 authority. No autonomous delegation.
 
-Current pushed qualification source: `b5cfb5d2b03017fac3e41ee75e306b1b0e41be52`.
-Its six handles are in [STATUS.md](../../STATUS.md) and [remaining.json](remaining.json).
-It adds trusted TLS/current destination manual review/fresh SDK consumers and
-bounded multiple-event journal selection. ARM development passes. Its
-[96Go normal/race and312stock per Linux host](../../evidence/2026-11-07/go-module-b5cfb5d-native-checkpoint.json)
-and [16stage separate-runner portable profile](../../evidence/2026-11-07/go-export-portability-b5cfb5d-checkpoint.json)
-are now accepted, including new TLS/manual review/SDK/multiple-event controls.
-Full main/fuzz/browser and every other selected profile remain separate.
+Current pushed qualification source: `ae7d00ece68d45f953d53f1728169e00b6dbe608`.
+Its six completed handles are in [STATUS.md](../../STATUS.md) and
+[remaining.json](remaining.json). [Final campaign](../../evidence/2026-11-07/github-ae7d00e-final-checkpoint.json):
+26jobs/25success1x86Chromiumfailure,19safe72reports. BothLinux274PG normal/race,
+96namedGo/312stock and other native main stages pass;57fuzz/source passes three
+native hosts and JVM/OCI/upgrades/portable pass. Kernel controls and original
+full-race replay pass bothLinux; historical socket cause remains unknown.
+Originalb5serious Axe scrollable-region-focusable is retained. Six focus fixes
+and keyboard/Axe regression pass local build/reproduction/console race/lint;
+actual new browser replay remains required. Wholeb5/ae7are not accepted.
 
 Latest whole selected acceptance: [4956197](../../evidence/2026-11-07/github-4956197-checkpoint.json),
 26jobs/six workflows,19safe summaries/72reports. Its exact inventory is273fullPG,
@@ -75,10 +77,14 @@ extended native function; no duplicate local integration campaign is needed.
 | `go-export-portability.yml` /2 | x86 PostgreSQL producer; separate ARM consumer without DB | Exact synthetic signed capsule, separate trust fingerprints, CLI/SDK in observed empty child network namespaces;30/25minutes. |
 | `nuget-contract.yml` /2 | Both Linux architectures | Actual pinned SDK10.0.403/NuGet-library differential corpus;20minutes. Separate from HTTP feed/restore journeys. |
 | `browser-repair.yml` /up to3 | x86 Chromium, fresh PostgreSQL per replay | Repair/retention/NuGet, five full repetitions per selected journey;45minutes. Stop on failure. |
+| `qualification-acceptance.yml` /1 | Linux x86, manual main dispatch | Contents/actions read only; bounded exact-source API/log/archive/report inspection,19stand-in tests, scoped counts/hash verdict;20minutes. Starts no native tests. |
 | `go-checksum-client.yml` /3 | Linux x86/ARM and macOS ARM | Seven strict Go1.27.3 controls perhost, owned authority stand-ins. Altered-ZIP assertion fails onallthreehosts; six other controls pass each. |
 
-Current repository union:34possible matrix jobs/nine workflows. Current source
-selects six standard workflows/26jobs. Enumerate actual expanded jobs per exact
+Native test union:34possible matrix jobs/nine workflows. The new manual
+read-only acceptance job makes35possible jobs/ten workflows. Sourceae7selects
+six standard workflows/26native jobs. The scroll-region repair also touches
+focused-browser triggers, so expect seven native workflows/29jobs; verify actual
+API inventory. Manual acceptance is a separate job, never another native pass. Enumerate actual expanded jobs per exact
 source; path filters and inputs vary. An omitted lane supplies no evidence.
 Documentation may select planner/security with runtime jobs skipped. Neither
 that green result nor an older source qualifies changed runtime code.
@@ -106,8 +112,9 @@ and the other qualification manifests. Narrative edits do not change tool pins.
 - ADR0060adds guarded disposable Linux port reservation and two fresh child
   namespace kernel controls before integration. Preserve inherited reservations
   and parent automatic range; only35432/38443are added on the runner. Bounded
-  future bind-state counts aid diagnosis. Local stand-ins pass; actual kernel
-  controls/replay are unverified. Original DEFECT0136socket owner is unknown.
+  future bind-state counts aid diagnosis. Local stand-ins and actual both-host kernel
+  controls/full274PG normal-race replay pass atae7. Full campaign fails Chromium;
+  original DEFECT0136socket owner remains unknown.
 - Pin/verify executable bytes. Cache only reviewed public compressed archives
   or bounded approved tool-only boot data. Reverify archive pins after restore;
   no credentials/databases/uncontrolled project dependency caches. Cold/save
@@ -154,15 +161,25 @@ never visit CI; no plaintext fallback. Existing collectors select at most two
 failed commands or the final assertion observation, validate source/inventory/
 owned paths/budgets, then encrypt.
 
-Acceptance currently uses local bounded inspection of GitHub metadata/reports.
-Further offload: implement a versioned, read-only cross-workflow acceptance job
-binding all selected runs to one source and actual completion, validating bounded
-safe artifacts and emitting only a typed scoped verdict. It must reject missing/
-failed/skipped/empty reports and unexpected archive content, keep unselected lanes
-explicit, and never execute downloaded artifact code or use privileged
-`workflow_run` handling for fork/PR inputs. Test API/archive/error boundaries with
-stand-ins, then qualify a real multi-workflow campaign before replacing local
-acceptance. This is planned, not implemented or accepted by current campaigns.
+Manual read-only aggregation is implemented as `qualification-acceptance.yml`
+and `scripts/ci/accept_campaign.py` (ADR0059). Local19unit functions and required
+lint pass. It binds all observed selected runs to one clean owner-authored main
+source; rejects pending/failed/canceled/rerun/skipped required/empty or changed
+inventories; checks34native job variants, exact native labels, required steps,
+source-compatible typed contracts, complete report/binary/tool/fixture inventories,
+actual separated portability runners and kernel/fuzz observations. Only fixed
+bounded GitHub API routes, token-free reviewed download redirects and digest-
+verified single-JSON archives are admitted. No downloaded artifact code executes.
+Only constructed labels/counts/hashes/IDs are uploaded; goal/readiness stayfalse.
+
+The actual workflow/source-reader/API path remains unqualified. First inspect
+the complete retained495six-workflow campaign in a manual main dispatch: candidate
+workflow/typed contract/script bytes match the current verifier, but actual Git
+and API inspection must confirm. No native test restart. Then independently
+accept the new repaired source only after its entire actual selected inventory
+finishes. Existing reviewed exact-source records remain authoritative. No
+workflow_run/PR privilege path, external message, publishing or implicit release.
+See [development evidence](../../evidence/2026-11-07/campaign-acceptance-development.json).
 
 ## Remaining offload order
 

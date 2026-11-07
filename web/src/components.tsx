@@ -33,7 +33,7 @@ export function Freshness({at,loading}:{at:number;loading:boolean}){
 }
 export function Heading({eyebrow,title,description,action}:{eyebrow:string;title:string;description:string;action?:ReactNode}){return <header className="page-heading"><div><p className="eyebrow">{eyebrow}</p><h1 tabIndex={-1} id="page-title">{title}</h1><p>{description}</p></div>{action}</header>}
 export function Panel({title,children,action}:{title:string;children:ReactNode;action?:ReactNode}){return <section className="panel"><div className="panel-heading"><h2>{title}</h2>{action}</div>{children}</section>}
-export function Json({value}:{value:unknown}){const text=JSON.stringify(value,null,2)??'No value recorded.';return <pre className="json">{text.length>20000?text.slice(0,20000)+'\n… Display truncated; use the API for the complete record.':text}</pre>}
+export function Json({value}:{value:unknown}){const text=JSON.stringify(value,null,2)??'No value recorded.';return <pre className="json"tabIndex={0}>{text.length>20000?text.slice(0,20000)+'\n… Display truncated; use the API for the complete record.':text}</pre>}
 export function Details({value,title='Recorded details'}:{value:unknown;title?:string}){return <details className="record-details"><summary>{title}</summary><Json value={value}/></details>}
 export function Copy({text,label='Copy'}:{text:string;label?:string}){
   const [message,setMessage]=useState('');

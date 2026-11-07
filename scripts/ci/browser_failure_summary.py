@@ -30,17 +30,44 @@ def safe_error_kind(message):
     return 'unclassified'
 
 
-def safe_axe_findings(proof):
-    states = {'exact byte repair form', 'byte repair impact preview', 'repair awaiting source', 'repair rejects incorrect source digest', 'repair verified with immutable observation'}
+def safe_axe_findings(proof, states=None):
+    if states is None:
+        states = {'exact byte repair form', 'byte repair impact preview', 'repair awaiting source', 'repair rejects incorrect source digest', 'repair verified with immutable observation'}
     lines = []
-    for observation in proof.get('accessibility', [])[:10]:
-        if observation.get('state') not in states:
+    observations = proof.get('accessibility', []) if isinstance(proof, dict) else []
+    if not isinstance(observations, list):
+        return lines
+    for observation in observations[:10]:
+        if not isinstance(observation, dict):
             continue
-        for finding in observation.get('findings', [])[:20]:
+        if not isinstance(observation.get('state'), str) or observation['state'] not in states:
+            continue
+        findings = observation.get('findings', [])
+        if not isinstance(findings, list):
+            continue
+        for finding in findings[:20]:
+            if not isinstance(finding, dict):
+                continue
             rule, impact, nodes = finding.get('id', ''), finding.get('impact'), finding.get('nodes')
-            if not re.fullmatch('[a-z][a-z0-9-]{0,79}', rule) or impact not in ('minor', 'moderate', 'serious', 'critical', None) or type(nodes) is not int or not 0 <= nodes <= 10000:
+            if not isinstance(rule, str) or not re.fullmatch('[a-z][a-z0-9-]{0,79}', rule) or impact not in ('minor', 'moderate', 'serious', 'critical', None) or type(nodes) is not int or not 0 <= nodes <= 10000:
                 continue
             lines.append(f'{observation["state"]}: rule={rule} impact={impact} nodes={nodes}')
+    return lines
+
+
+def safe_go_export_progress(proof):
+    if not isinstance(proof, dict):
+        return []
+    phases = {'connect', 'commands', 'import-command', 'create', 'unsafe', 'loading', 'denied', 'expiry', 'reader', 'complete'}
+    states = {'export historical source list', 'export collection command scroll region',
+              'export explicit destination import instructions', 'export unsigned preview and current recheck',
+              'export unsafe generation', 'export unreconciled expiry', 'export reader denied'}
+    lines = []
+    if isinstance(proof.get('phase'), str) and proof['phase'] in phases:
+        lines.append('Hosted export workflow phase: ' + proof['phase'])
+    if isinstance(proof.get('checks'), list) and len(proof['checks']) <= 32:
+        lines.append(f'Hosted export workflow progress: {len(proof["checks"])} completed checks')
+    lines.extend('Hosted export accessibility finding: ' + line for line in safe_axe_findings(proof, states))
     return lines
 
 
@@ -76,6 +103,10 @@ def main():
     if nuget_path.is_file() and nuget_path.stat().st_size <= 1 << 20:
         for line in safe_nuget_progress(json.loads(nuget_path.read_text())):
             print(line)
+    export_path = report_path.parent / 'go-export-browser-proof.json'
+    if export_path.is_file() and export_path.stat().st_size <= 1 << 20:
+        for line in safe_go_export_progress(json.loads(export_path.read_text())):
+            print(line)
     stats = report.get('stats', {})
     print('Playwright counts: ' + ', '.join(f'{key}={int(stats.get(key, 0))}' for key in ('expected', 'unexpected', 'skipped', 'flaky')))
 
@@ -100,6 +131,7 @@ def main():
                 print(f'Nonpassing test: {source}:{line}; status={test.get("status", "unknown")}')
                 for result in test.get('results', [])[-2:]:
                     print(f'  attempt={result.get("retry", 0)} status={result.get("status", "unknown")}')
+                    message = ''
                     for error in result.get('errors', [])[:3]:
                         location = error.get('location') or {}
                         if location:

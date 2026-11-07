@@ -1,0 +1,199 @@
+{
+  "candidate": "b5cfb5d2b03017fac3e41ee75e306b1b0e41be52",
+  "observed_at": "2026-11-07T13:57:37.321343+00:00",
+  "defect": "DEFECT.0137",
+  "state": "original native Chromium serious accessibility failure retained; repair/replay pending",
+  "run_id": 42372660917,
+  "job_id": 128405688073,
+  "url": "https://github.com/ctlplne/cratectl/actions/runs/42372660917/job/128405688073",
+  "steps": [
+    {
+      "name": "Set up job",
+      "conclusion": "success"
+    },
+    {
+      "name": "Initialize containers",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/checkout@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-go@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-node@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-python@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-java@v5",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-dotnet@v6",
+      "conclusion": "success"
+    },
+    {
+      "name": "Install stock-client and console dependencies",
+      "conclusion": "success"
+    },
+    {
+      "name": "Cache pinned public ORAS archive",
+      "conclusion": "success"
+    },
+    {
+      "name": "Prepare checked stock clients and fresh database",
+      "conclusion": "success"
+    },
+    {
+      "name": "Real PostgreSQL integration and timing",
+      "conclusion": "success"
+    },
+    {
+      "name": "Real PostgreSQL integration with Go race detector",
+      "conclusion": "success"
+    },
+    {
+      "name": "Stock client compatibility on real registry",
+      "conclusion": "success"
+    },
+    {
+      "name": "Native lifecycle with curl, npm, pip, twine and Maven",
+      "conclusion": "success"
+    },
+    {
+      "name": "Blank database initialization and trusted TLS client journey",
+      "conclusion": "success"
+    },
+    {
+      "name": "Durable jobs and interrupted upload leases",
+      "conclusion": "success"
+    },
+    {
+      "name": "Filesystem inventory and integrity sweeps",
+      "conclusion": "success"
+    },
+    {
+      "name": "Cross-reference legal-hold matters",
+      "conclusion": "success"
+    },
+    {
+      "name": "Chromium console workflows and accessibility",
+      "conclusion": "failure"
+    },
+    {
+      "name": "Safe Chromium failure locations",
+      "conclusion": "success"
+    },
+    {
+      "name": "Encrypt bounded native failure observations for owner diagnosis",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/upload-artifact@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Prepare bounded native evidence summary",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/upload-artifact@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Cache pinned public ORAS archive",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Run actions/setup-dotnet@v6",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Run actions/setup-java@v5",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/setup-python@v7",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Run actions/setup-node@v7",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Run actions/setup-go@v7",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Run actions/checkout@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Stop containers",
+      "conclusion": "success"
+    },
+    {
+      "name": "Complete job",
+      "conclusion": "success"
+    }
+  ],
+  "private_original_log": {
+    "path": ".private/ci-diagnostics/b5cfb5d-campaign/128405688073.txt",
+    "bytes": 738850,
+    "sha256": "065c725073a18d8ada03297d145da08c423f248e286490c85b368d386661158c"
+  },
+  "private_authenticated_diagnostic": {
+    "path": ".private/ci-diagnostics/b5cfb5d-browser.json",
+    "bytes": 72702,
+    "sha256": "7d2750ffd5445cd09a7b74f3f431c6c29a441ddfadfcff2e1c48ab2485b41259"
+  },
+  "original_ciphertext": {
+    "path": ".cache/b5cfb5d-native-browser-diagnostics/ci-native-diagnostics.cms",
+    "bytes": 73321,
+    "sha256": "da7cfb4dfac515c0fbd32eaa97a09e0ec778ccad74b866d3878e3d863007b7a8"
+  },
+  "original_metadata": {
+    "path": ".cache/b5cfb5d-native-browser-diagnostics/ci-native-diagnostics.json",
+    "bytes": 469,
+    "sha256": "166620bea7466aaebc2d59752326f260d20410f10566aa928ca5ee743fa26ba3"
+  },
+  "github_artifact_id": 13576475310,
+  "github_artifact_digest": "sha256:b0344ac8bf34d87fbe52354a5e049f166e164ef742729c314742d1b2a864a441",
+  "decryption": {
+    "tool": "OpenSSL3.6.5nativeARM",
+    "authenticated": true,
+    "private_key_uploaded": false
+  },
+  "failure": {
+    "test_file": "web/tests/go-exports.spec.mjs",
+    "test_line": 7,
+    "error_line": 13,
+    "matcher": "assert_equal",
+    "axe_rule": "scrollable-region-focusable",
+    "impact": "serious",
+    "target_element": "pre",
+    "browser": {
+      "expected": 18,
+      "unexpected": 1,
+      "skipped": 0,
+      "flaky": 0
+    }
+  },
+  "source_observation": [
+    "The new destination import command uses a pre.json block with max-height420px/overflow:auto and no tabindex or focusable descendants. The actual Axe failure identifies a pre target without focusable content/element. The test evaluates this dialog after entering a valid destination.",
+    "The same source audit finds six .json pre instances without keyboard focus across shared JSON, Go export/checksum, journal and repository client views; two other command blocks already have named regions/tabindex0. Preserve original commands, field validation, permissions and every browser assertion."
+  ],
+  "limits": [
+    "Actual GitHub x86 Chromium with declared management response stand-ins; not a database/crypto failure, local browser test, full WCAG or external assistive-technology verdict.",
+    "Full x86 PG normal/race and earlier stock/native main stages pass atb5; original Chromium fails18/19workflows and full campaign is not accepted. Existing named96Go/312stock/16portable scopes remain separate.",
+    "Do not attribute unrelated original DEFECT0122unknown browser intermittent to this failure. Preserve exact first failure and verify actual new Chromium after repair.",
+    "No credential/HTML/DOM/raw-message/key values are published. Authenticated plaintext remains0600under ignored.private. Full450/41/laterGOAL4.1scope and readiness/security/packaging remain incomplete."
+  ]
+}

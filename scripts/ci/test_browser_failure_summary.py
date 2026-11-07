@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
 """Browser diagnostics expose known focus labels, never raw locator/error text."""
+from contextlib import redirect_stdout
+import io
+import json
+from pathlib import Path
+import tempfile
 import unittest
-from browser_failure_summary import safe_axe_findings, safe_error_kind, safe_focus_target, safe_nuget_progress
+from unittest.mock import patch
+import browser_failure_summary as diagnostics
+from browser_failure_summary import safe_axe_findings, safe_error_kind, safe_focus_target, safe_go_export_progress, safe_nuget_progress
 
 
 class SafeFocusTarget(unittest.TestCase):
@@ -33,6 +40,40 @@ class SafeFocusTarget(unittest.TestCase):
         self.assertEqual(safe_nuget_progress(proof), ['NuGet workflow phase: exact_review', 'NuGet workflow progress: 1 completed checks'])
         self.assertNotIn('private-synthetic-value', '\n'.join(safe_nuget_progress(proof)))
         self.assertEqual(safe_nuget_progress({'phase': 'private-synthetic-value', 'checks': ['secret'] * 33}), [])
+
+    def test_export_scroll_failure_reports_only_reviewed_state_rule_and_counts(self):
+        proof = {'phase': 'import-command', 'checks': ['private-synthetic-value'], 'raw_message': 'private-synthetic-value',
+                 'accessibility': [{'state': 'export explicit destination import instructions', 'findings': [
+                     {'id': 'scrollable-region-focusable', 'impact': 'serious', 'nodes': 1,
+                      'html': 'private-synthetic-value', 'target': ['private-synthetic-value']},
+                     {'id': 'private/value', 'impact': 'serious', 'nodes': 1}]}]}
+        self.assertEqual(safe_go_export_progress(proof), ['Hosted export workflow phase: import-command',
+                         'Hosted export workflow progress: 1 completed checks',
+                         'Hosted export accessibility finding: export explicit destination import instructions: rule=scrollable-region-focusable impact=serious nodes=1'])
+        self.assertNotIn('private-synthetic-value', '\n'.join(safe_go_export_progress(proof)))
+        self.assertEqual(safe_go_export_progress({'phase': 'private-synthetic-value', 'checks': ['secret'] * 33}), [])
+
+    def test_malformed_accessibility_arrays_never_echo_or_crash(self):
+        for proof in [None, {'accessibility': {}}, {'accessibility': [None]},
+                      {'accessibility': [{'state': 'repair awaiting source', 'findings': 'private-synthetic'}]}, {'accessibility': [{'state': [], 'findings': []}]}, {'accessibility': [{'state': 'repair awaiting source', 'findings': [{'id': [], 'impact': 'serious', 'nodes': 1}]}]}]:
+            self.assertEqual(safe_axe_findings(proof), [])
+
+    def test_result_without_error_body_keeps_safe_location_and_unclassified_kind(self):
+        with tempfile.TemporaryDirectory(prefix='cratectl-browser-summary-') as directory:
+            root = Path(directory)
+            folder = root / '.private/console-conformance/owned'
+            folder.mkdir(parents=True)
+            report = {'stats': {'expected': 0, 'unexpected': 1, 'skipped': 0, 'flaky': 0},
+                      'suites': [{'specs': [{'file': 'go-exports.spec.mjs', 'line': 7,
+                                            'tests': [{'status': 'unexpected', 'results': [
+                                                {'status': 'failed', 'retry': 0, 'errors': [], 'error': 'private-synthetic-value'}]}]}]}]}
+            (folder / 'browser-results.json').write_text(json.dumps(report))
+            output = io.StringIO()
+            with patch.object(diagnostics, '__file__', str(root / 'scripts/ci/browser_failure_summary.py')), redirect_stdout(output):
+                diagnostics.main()
+            self.assertIn('Nonpassing test: go-exports.spec.mjs:7', output.getvalue())
+            self.assertIn('error kind: unclassified', output.getvalue())
+            self.assertNotIn('private-synthetic-value', output.getvalue())
 
 
 if __name__ == '__main__':

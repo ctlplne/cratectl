@@ -1,6 +1,6 @@
 # 0060: Reserve owned CI ports and retain bind-state diagnostics
 
-Date: 2026-11-07. State: implementation/qualification in progress.
+Date: 2026-11-07. State: both native kernel controls and full original PG normal/race replay qualified at ae7d00e; whole campaign fails Chromium.
 
 Preserve DEFECT0136: exactbadb85b x86 full race suite fails in the original OCI
 signed-delivery test when127.0.0.1:38443 is already in use. No socket/process
@@ -35,3 +35,10 @@ Official kernel contracts checked2026-11-07:
 
 No schema/primary/release/package/image/credential/customer/sibling change.
 Full450capabilities/41families/later GOAL4.1 scope and readiness gates stay open.
+
+Actual x86/ARM kernel controls and214OCI checks are retained in
+`evidence/2026-11-07/owned-ci-ports-ae7d00e-native-checkpoint.json`. Full274PG
+normal/race original replay passes both hosts, with source/fuzz57on three hosts:
+`evidence/2026-11-07/owned-ci-ports-ae7d00e-main-replay.json`. The original
+socket owner remains unknown. These scoped passes do not accept ae7d00e, whose
+x86 Chromium fails, or supersede any first failure.
