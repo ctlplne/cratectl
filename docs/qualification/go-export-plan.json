@@ -26,7 +26,8 @@
     "docs/adr/0066-independent-host-common-go-collection.md",
     "docs/adr/0067-bounded-go-requirement-graph.md",
     "docs/adr/0068-go-requirement-preview-current-inputs.md",
-    "docs/go-requirement-preview.md"
+    "docs/go-requirement-preview.md",
+    "docs/adr/0069-immutable-go-requirement-export-proof.md"
   ],
   "current_implementation": {
     "source_parent": "1756bb0034363c6a9d8672adf733b3ba50741a43",
@@ -66,8 +67,8 @@
       "limits": "One synthetic hosted version and owned trust-channel stand-in only. Full closure/import/provider/platform/offline-install/backup/GC/HA/scale remain required.",
       "checkpoint": "evidence/2026-11-07/go-export-portability-b5cfb5d-checkpoint.json"
     },
-    "qualified_parent_campaign": "evidence/2026-11-07/github-1756bb0-checkpoint.json",
-    "qualified_candidate": "1756bb0034363c6a9d8672adf733b3ba50741a43",
+    "qualified_parent_campaign": "evidence/2026-11-07/github-bb6f728-checkpoint.json",
+    "qualified_candidate": "bb6f7288f3ec9df94c3f3100b9a5b2df81df64d0",
     "resumable_collection": {
       "state": "verified named96Go normal/race onboth actualLinux atbadb; fullcase/platform/provider scope remains",
       "adr": "docs/adr/0055-resumable-signed-go-collection.md",
@@ -223,6 +224,20 @@
         "postgresql_functions": 286,
         "named_go_functions": 108,
         "fuzz_targets": 63
+      }
+    },
+    "requirement_proof_preparation": {
+      "state": "internalcanonicalproof/parent/eventbinding/currentstorepreparationimplementedlocally; no durablecaller yet",
+      "adr": "docs/adr/0069-immutable-go-requirement-export-proof.md",
+      "development": "evidence/2026-11-07/go-requirement-export-proof-development.json",
+      "durable_graph_tables": false,
+      "creation_route": false,
+      "resumable_graph_collection": false,
+      "signed_outer_offline_caller": false,
+      "native_inventory": {
+        "postgresql_functions": 287,
+        "named_go_functions": 109,
+        "fuzz_targets": 65
       }
     }
   },
