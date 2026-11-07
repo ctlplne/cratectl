@@ -1,0 +1,128 @@
+{
+  "observed_at": "2026-11-07T03:21:38.321769+00:00",
+  "state": "failed ARM stock-client trust-state negative control; native Linux reproduction pending",
+  "source_parent": "5816b2723e3e032569c6c83d9960b62375100e27",
+  "source_dirty": true,
+  "go_version": "go version go1.27.3 darwin/arm64",
+  "go_binary_sha256": "aa355b078a81158d418079a3f8c776719eb99cc6f527e39ffa3250c66566aafb",
+  "probe_private_copy": {
+    "path": ".private/ci-diagnostics/go-checksum-client/d82cc1978d4781411ff0b8f17a59ce191516db82dfe4341b17d17eda61d099ab.py",
+    "sha256": "d82cc1978d4781411ff0b8f17a59ce191516db82dfe4341b17d17eda61d099ab"
+  },
+  "public_fixture": {
+    "path": "internal/server/testdata/go-checksum-public.json",
+    "sha256": "f37d83a3f1e782a14c13a34934a7be367a46a6d36d31caa2715fa5ec6fbfdad1"
+  },
+  "controls": [
+    {
+      "control": "zip-mismatch",
+      "private_record": {
+        "path": ".private/go-checksum-client-cratectl-go-checksum-client-9jw2hahe-zip-mismatch.json",
+        "bytes": 2604,
+        "sha256": "3dc17e46b279ef5edfe7a2a44846aff7f43777e1e7972baab7a0afa3adafa612"
+      },
+      "first_exit": 1,
+      "go_sum_line_count": 2,
+      "retry_exit": 0,
+      "altered_inert_file_extracted": true,
+      "new_module_zip_requests": 1,
+      "new_authority_requests": 0
+    },
+    {
+      "control": "mod-mismatch",
+      "private_record": {
+        "path": ".private/go-checksum-client-cratectl-go-checksum-client-9jw2hahe-mod-mismatch.json",
+        "bytes": 1421,
+        "sha256": "c73464a93c0b197aedb9fa1c71ea4a5b02c377a0d1f0f44cdf66df9d20384208"
+      },
+      "first_exit": 1,
+      "go_sum_line_count": 0
+    },
+    {
+      "control": "invalid-signature",
+      "private_record": {
+        "path": ".private/go-checksum-client-cratectl-go-checksum-client-9jw2hahe-invalid-signature.json",
+        "bytes": 1284,
+        "sha256": "f5c88e5993aed2ed616ea2ab49aca9a07c28ab63cda63616d7ab37fc6d1dad9b"
+      },
+      "first_exit": 1,
+      "go_sum_line_count": 0
+    },
+    {
+      "control": "authority-unavailable",
+      "private_record": {
+        "path": ".private/go-checksum-client-cratectl-go-checksum-client-9jw2hahe-authority-unavailable.json",
+        "bytes": 909,
+        "sha256": "151597ef3679e3a89148e87d0a9388e3fb8d412b5dfcf326aadc75917a27ae89"
+      },
+      "first_exit": 1,
+      "go_sum_line_count": 0
+    }
+  ],
+  "logs": [
+    {
+      "path": ".cache/go-checksum-client-standin-retry-diagnostic.log",
+      "bytes": 565,
+      "sha256": "e0e5367d3620cd956c50bd922a87a4fade8229b91e1f22792b22c3196f525d4d"
+    },
+    {
+      "path": ".cache/go-checksum-client-standin-first.log",
+      "bytes": 1003,
+      "sha256": "d2dfc83db9b6d673bc343c3a1f1d1180f4ae3c130fca51379c6cbee9b099dde7"
+    },
+    {
+      "path": ".cache/go-checksum-client-standin-diagnostic.log",
+      "bytes": 565,
+      "sha256": "cddd60da5573d9c37708c561469b8aea5ba40fd1c2d6c7a7233cf74540d6d7e2"
+    },
+    {
+      "path": ".cache/go-checksum-client-standin-third.log",
+      "bytes": 565,
+      "sha256": "83dad7b9218516ddfa196dcaa9ce26d81f87ed815bc9fed56143e7b1516e243d"
+    },
+    {
+      "path": ".cache/go-checksum-client-standin-all-diagnostic.log",
+      "bytes": 484,
+      "sha256": "e5790a534eecc99e4542930eeebdadfefa5aa7cbae14ff05a4af7af8543e9fd5"
+    },
+    {
+      "path": ".cache/go-checksum-client-standin-second.log",
+      "bytes": 492,
+      "sha256": "9c148bed21ba26d17499916eac663328ee7f61d491b445c8ab25d4cf44eab7c2"
+    },
+    {
+      "path": ".cache/go-checksum-client-standin-ci-draft.log",
+      "bytes": 484,
+      "sha256": "2637a4c982df1de2ca4c9650befc747612d1c3b5218efba0a0cbfb39633a3b63"
+    },
+    {
+      "path": ".cache/go-checksum-client-standin-final-source.log",
+      "bytes": 484,
+      "sha256": "092e03a77fbe71e72507e5be5de23e8ff83841f5862e2ab44a7b7b6b36affb6e"
+    }
+  ],
+  "observation": "Cold stock Go checks original signed lookup/tiles and expected module/mod h1. Warm and fresh-consumer/same-client-cache controls pass without new network requests. Changed ZIP is initially rejected with checksum mismatch and no extracted directory. The failed consumer retains an unexpected ZIP sum; one controlled retry returns zero and physically extracts the known altered inert asset, with one new ZIP request and no new authority request. Three other negative controls reject changed go.mod, invalid log signature and unavailable authority without go.sum entries. The seven-control profile fails overall; no assertion is removed.",
+  "inference": "The matching official Go1.27.3 source marks a checksum as used before checksum-database verification; later tidyGoSum re-adds used sums. This is a source-level hypothesis explaining the observed client-side result, not a maintainer-confirmed root cause or a cross-platform verdict.",
+  "official_source": {
+    "url": "https://github.com/golang/go/blob/go1.27.3/src/cmd/go/internal/modfetch/fetch.go",
+    "sha256": "6091e4e72edf83f6fa96eb98e41a310e24ff5e7712a7763bde8e51d6a5f2844b",
+    "local_file_matches": true
+  },
+  "next": "Run the same strict seven-control probe on actual GitHub Linuxamd64/Linuxarm64/macOSarm64; preserve failed status and owner-encrypted raw observations. Do not infer registry admission from client cache behavior or bypass checksum checks. New probe stays separate from the already qualified79PG/312stock profile.",
+  "limits": [
+    "Owned TLS response stand-ins only on loopback38443, temporary private consumer/cache state, original public signed fixture and inert bytes; no cratectl registry, PostgreSQL, public WAN package fallback, code compilation/package execution, customer data or primary change.",
+    "First local draft additionally corrected URL percent decoding and recognized that stock Go can preserve a separately verified go.mod sum when a ZIP fails. Original logs remain. The stronger unexpected ZIP-sum assertion still fails; it was not relaxed.",
+    "No messages or report sent to external maintainers. Broader fullGoal/publicGo/checksum-onstockproxy/group/offline/export/backup/GC/readiness remain incomplete."
+  ],
+  "earlier_draft_probe_copy": {
+    "path": ".private/ci-diagnostics/go-checksum-client/48155b17fa860063435cb736ab5703a3b2cc1f2a0f3a4346ad872c5d3e9fa074.py",
+    "sha256": "48155b17fa860063435cb736ab5703a3b2cc1f2a0f3a4346ad872c5d3e9fa074"
+  },
+  "subsequent_exact_source_reproduction": "The exact retained final probe source reproduces the same failed ZIP trust-state control locally. It also includes CI-only safe/encrypted evidence export, not exercised as an actual GitHub result locally. Three exporter boundary unit controls pass with explicit stand-ins.",
+  "earlier_probe_copies": [
+    {
+      "path": ".private/ci-diagnostics/go-checksum-client/48155b17fa860063435cb736ab5703a3b2cc1f2a0f3a4346ad872c5d3e9fa074.py",
+      "sha256": "48155b17fa860063435cb736ab5703a3b2cc1f2a0f3a4346ad872c5d3e9fa074"
+    }
+  ]
+}

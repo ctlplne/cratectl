@@ -13,35 +13,35 @@ outside this CI authority. No autonomous delegation.
 
 ## Current qualification state
 
-Exact92ec23f [campaign checkpoint](../../evidence/2026-11-07/github-92ec23f-checkpoint.json)
-accepts all24selectedjobs/5workflows,17safe summaries/64reports:67Go and241fullPG
-normally/race onbothLinuxhosts,312stockGo checks perhost,47fuzz andsource/unit/race/
-lint on3nativehosts,12clean historical builds/17upgrades perarch and125checks/
-16x86Chromium workflows. One checksum UI workflow uses explicit response stand-ins;
-actual database/auth/key/evidence behavior is separately covered by Go PG tests.
-Library/focused workflows were unselected. Original2d/31 failed campaigns are
-retained unchanged. DEFECT0122 remains unknown/intermittent.
+Exact5816b27 [campaign checkpoint](../../evidence/2026-11-07/github-5816b27-checkpoint.json)
+accepts all29selectedjobs/7workflows,22safe summaries/83reports:79Go and253fullPG
+normally/race onbothLinuxhosts,312stockGo checks each,48fuzz/source/unit/race/lint
+on3nativehosts,13clean historical builds/18upgrades each and132checks/17x86Chromium
+workflows. Two checksum UI workflows use explicit response stand-ins; database,
+auth,key,migration,review and evidence enforcement have separate realPG coverage.
+Native JVM/OCI/NuGet library and15focusedbrowser trials pass their named profiles.
+Original2d/31failedcampaigns and DEFECT0122unknown/intermittent remain retained.
 
-Schema14 [development](../../evidence/2026-11-07/go-checksum-legacy-development.json)
-requires79Go/253fullPG normally/race onbothactualGitHubLinuxhosts,48fuzz/source/
-unit/race/lint on3nativehosts,all312Go/originalselectedprofiles,13clean native
-historical rebuilds and18upgrade reports perarch. A qualified clean92source13 pin
-is added without changing older pins. Seventeen x86 Chromium workflows comprise
-15existing and2explicit checksum UI response-stand-in workflows; their UI results
-must not become actual migration/auth/signature claims. Native14qualification is
-pending; localARMcompile/vet/list/build/unit/race/lint/fuzz passes are distinct.
+Source14 [legacy recovery](go-checksum-legacy-plan.md) is qualified within those
+bounds. All14source definitions are frozen; primary11 remains outside CI
+maintenance. PublicGo proxy/checksum-onstock and broader450capabilities/41families/
+laterGOAL4.1scope/readiness/security/packaging remain incomplete.
 
-The [legacy recovery contract](go-checksum-legacy-plan.md) preserves unknown
-historical key attribution, immutable original events and explicit external trust
-reviews. It never clears an authenticated key fork or resets a checkpoint. All14
-source definitions are frozen. Primary11 remains outside CI maintenance.
+## Checksum client investigation lane
 
-Inventory and serializer/CLI bounds advance together. Accept exact native source,
-platform/build hashes and original safe artifact hashes only when all actually
-selected jobs are terminal. No reruns, assertion removal or skipped stage counted
-as a pass. Preserve first failures and repair/replay at a new exact candidate.
-No local PostgreSQL/JVM/SDK/emulatedx86/Chromium campaign. Actual x86 and both
-native Linux database/client profiles run on GitHub-hosted runners.
+Named source14 [Go79/312](../../evidence/2026-11-07/go-module-5816b27-native-checkpoint.json)
+and [13historical/18upgrade](../../evidence/2026-11-07/github-5816b27-upgrades-checkpoint.json)
+profiles pass onbothLinuxhosts. All29selectedjobs are now independently accepted.
+The separate [client investigation](go-checksum-client-plan.md) preserves an ARM
+stockGo1.27.3 failed ZIP trust-state control. A new dedicated workflow runs the
+same strict7controls onactualLinuxamd64/Linuxarm64/macOSarm64,15minutes max perjob.
+It never masks failure or counts the controlled retry as safe admission. Fixed
+safe summaries omit raw output; bounded diagnostics are owner-encrypted with the
+existing public recipient. No private key or plaintext fallback visits artifacts.
+This additional3job lane is separate from real registry/database journeys; its
+expected selection must be read from actual runs, not inferred as a pass. It does
+not run locally as a database or stock-registry campaign. Keep full Go proxy,
+checksum-on stock customers and all later GOAL outcomes open.
 
 ## Earlier source-specific qualification
 

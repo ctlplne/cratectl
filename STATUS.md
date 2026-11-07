@@ -1,50 +1,54 @@
 # cratectl execution status
 
-Exact `92ec23f9358c0dabbd86a7091f229d0769d554e5` is the latest accepted selected
-GitHub campaign: 24 jobs in five workflows, 17 unchanged safe summaries and 64
-reports. Both native Linux hosts pass all 241 source-defined database tests
-normally/under race and all 67 Go tests plus 312 stock Go checks. Three native
-hosts pass source/unit/race/lint and 47 fuzz targets. Twelve clean historical
-native binaries and 17 upgrade reports per architecture qualify schema 2–12 into
-13. x86 Chromium passes 125 checks/16 workflows with zero skips/flaky/unexpected:
-15 existing workflows plus one explicit checksum inspection UI response stand-in.
-That stand-in does not prove database/auth/key enforcement. See
-`evidence/2026-11-07/github-92ec23f-checkpoint.json` and the named Go/upgrade
-checkpoints. Library/focused workflows were unselected. DEFECT.0123/0124/0125
-have named native repair replay; complete original 2d/31 failed campaigns remain
-retained. DEFECT.0122 remains unexplained/intermittent, not a repaired defect.
+Exact `5816b2723e3e032569c6c83d9960b62375100e27` is the latest accepted selected
+GitHub campaign: all 29 jobs in seven workflows, 22 original safe summaries and
+83 reports. Both actual Linux architectures pass all 253 database tests normally
+and under race, plus the named 79 Go tests and unchanged 312 stock Go checks.
+Three native hosts pass source/unit/race/lint and 48 fuzz targets. Thirteen clean
+historical native binaries and 18 upgrade reports each qualify controlled schema
+2–13 maintenance into 14, including 70 assertions for schema 13→14. Main x86
+Chromium passes 132 checks/17 workflows with zero skips/flaky/unexpected: 15
+existing workflows plus two explicit checksum UI response stand-ins. Actual
+migration/auth/key/review/evidence enforcement has separate real-PG coverage.
+JVM, OCI, native NuGet library and 15 focused browser trials also pass their named
+profiles. See `evidence/2026-11-07/github-5816b27-checkpoint.json` and named
+Go/upgrade checkpoints. All original 2d/31 failed campaigns and the unexplained
+DEFECT0122 intermittent remain retained; a later pass does not prove its repair.
 
-Schema 14 is implemented but native-unverified. It preserves unattributed old
-checksum incidents and requires per-incident/exact-key external trust review
-without inventing proof or clearing authenticated fork blocks. Backfill keeps
-forced tenant RLS on under exclusive maintenance, uses temporary owner-only
-policies and checks original event links before removing them. Review, journal
-and idempotency receipt commit synchronously without ordinary queue capacity.
-Admin API/CLI/console supports original context, exact-state preview,
-acknowledgment, replay and immutable historical review/key/checkpoint outcomes.
-Retained Go proxy trust configuration enforces checksums and exact credential
-authority; new creation/public routing stay gated.
-
-All fourteen source migration definitions are frozen. Source 14 checksum is
+Schema14 internal legacy recovery is qualified in that scope. It preserves
+unattributed old incidents without inventing proof or clearing authenticated
+fork blocks. Backfill keeps FORCE on under exclusive maintenance, validates
+original event links and removes temporary owner-only policies before admission.
+Review/journal/idempotency remain atomic and independent of ordinary queues.
+Admin API/CLI/console exposes original context, exact-state preview,
+acknowledgment, replay and immutable historical public key/checkpoint outcomes.
+Retained proxy configuration requires checksum enforcement and exact credential
+authority; new public Go proxy creation/routing stay gated. All14source migration
+definitions are frozen; schema14 checksum:
 `b1900b2f1e3fd96955b5a40e52e9dd0f37eb0303bfda513dd77f518dac25bcb5`.
-Twelve new PG functions bring required inventories to 79 Go / 253 full PG,
-48 fuzz targets, 17 x86 Chromium workflows (15 existing plus two explicit checksum
-UI response stand-ins), 13 historical native binaries and 18 upgrade reports per
-architecture. ARM build/unit/race/lint, three PG packages' normal/race compile and
-tagged vet, console reproduction, new bounded fuzz and browser list pass.
-No new PG/stock-client/JVM/SDK/Chromium campaign ran locally. Local checks do not
-qualify durable behavior. See
-`evidence/2026-11-07/go-checksum-legacy-development.json` and
-`docs/qualification/go-checksum-legacy-plan.md`.
 
-The full amended GOAL remains active: all 450 artifact capabilities, 41 families
-and later stages remain under section 4.1. Full/offline Go, independently anchored
-journal export, backup/GC/conditional refresh and stock checksum-on proxy/group
-remain open. Readiness/security/packaging remain false. Stopped primary schema 11,
-selected 5483878b binaries, ten receipts and ignored credentials are preserved.
+A separate checksum-on stock Go client probe remains failed, outside5816source.
+On native ARM Go1.27.3, an altered ZIP is initially rejected, but the failed
+consumer retains its unexpected ZIP sum; a controlled retry extracts altered
+inert bytes. No cratectl registry/database or package code execution participates.
+The strong assertion remains failed under DEFECT0126. A dedicated three-native-
+platform workflow and bounded safe/owner-encrypted evidence export are ready for
+GitHub reproduction. Its exporter unit controls, Python compile and YAML parse
+pass; those are not actual native client/security passes. See
+`docs/qualification/go-checksum-client-plan.md` and the first-failure/development
+records. No maintainer-confirmed rootcause or Linux result is claimed yet.
+
+The full amended GOAL remains active: all450artifactcapabilities,41families and
+later stages remain under section4.1. Full/offline Go, independently anchored
+journal export, backup/GC/conditional refresh and checksum-on stock proxy/group
+remain open. Readiness/security/packaging remain false. Stopped primary schema11,
+selected5483878b binaries, tenreceipts and ignored credentials are preserved.
 No customer/sibling/release/package/image change.
 
 Earlier source-specific implementation and qualification records follow.
+Their then-current status statements remain historical; the exact-source records
+above determine present qualification.
+
 Their then-current status statements remain historical; the exact-source records
 above determine present qualification.
 

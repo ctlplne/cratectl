@@ -1,0 +1,108 @@
+{
+  "observed_at": "2026-11-07T03:40:08.532838+00:00",
+  "source_parent": "5816b2723e3e032569c6c83d9960b62375100e27",
+  "source_dirty": true,
+  "state": "strict native client probe implemented; failed locally at ZIP trust-state control; GitHub reproduction pending",
+  "source_files": [
+    {
+      "path": ".github/workflows/go-checksum-client.yml",
+      "sha256": "c30c5005c4cb9aa4963bd0b84654c6d4a87819d035cf87816592c2e3fb865ee2"
+    },
+    {
+      "path": "scripts/test_go_checksum_client.py",
+      "sha256": "d82cc1978d4781411ff0b8f17a59ce191516db82dfe4341b17d17eda61d099ab"
+    },
+    {
+      "path": "scripts/test_go_checksum_client_report.py",
+      "sha256": "e8c8aab223cb5b14761b435087eebb852d9a7a1c7f38e14e4d5b893650deef74"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "8205d979c2eb37283255ad6c3fa51949802e1b892ac480f19149e0cff4949ecf"
+    },
+    {
+      "path": "scripts/ci_native_diagnostics.py",
+      "sha256": "0273150681a296311febee24589a5cf646c974de6e5a6f86165428bc4193c606"
+    },
+    {
+      "path": "scripts/oci_client_contract.py",
+      "sha256": "77df1148acb1291c0dcab87f40e9fa790f53eb111a7f72dcbf3cc99a6e8979db"
+    },
+    {
+      "path": "docs/qualification/ci-diagnostics-recipient.pem",
+      "sha256": "c8d71045bbd45288ba426e4cad940ae4a2f3e33388f15b090a76c54a5b46173e"
+    },
+    {
+      "path": "internal/server/testdata/go-checksum-public.json",
+      "sha256": "f37d83a3f1e782a14c13a34934a7be367a46a6d36d31caa2715fa5ec6fbfdad1"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "7b6e2869c240126b6c6dec176003e25d7fbe68d6399ca09021ff969320c71307"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "d95076e34dc46e8ed9ae897c856cd26c4ff0878c6113ab1b02d5d035973dbec3"
+    }
+  ],
+  "first_failure": "evidence/2026-11-07/go-checksum-client-negative-control-first.json",
+  "plan": "docs/qualification/go-checksum-client-plan.md",
+  "required_native_platforms": [
+    "Linux amd64",
+    "Linux arm64",
+    "macOS arm64"
+  ],
+  "required_controls": [
+    "verified-cold",
+    "verified-warm",
+    "fresh-consumer",
+    "zip-mismatch",
+    "mod-mismatch",
+    "invalid-signature",
+    "authority-unavailable"
+  ],
+  "local_results": {
+    "pinned_native": "Go1.27.3 Darwinarm64",
+    "client_probe": "FAIL: ZIP rejection leaves unexpected sum; controlled retry returns0 andphysicallyextracts altered inert file. Six other controls pass, but no profile pass. All original strong trust-state assertions retained.",
+    "report_boundary": "3unitfunctions pass using explicit owned transport/metadata stand-ins; unknown/incomplete/source-mismatched/binary-unbound/oversized output refused; private payload excluded from safe summary. Actual CMS sealing reuses independently tested standard helper; new actual runner export still pending.",
+    "validation": "make lint passed before final export identity hardening; final3boundaryunits and Python compile pass afterward. Ruby YAML parse verifies3native runners/read-only permissions; actual GitHub workflow validation/execution remains pending. CoreGo/14schema definitions unchanged since5816, so no redundant rebuild/race campaign run locally.",
+    "logs": {
+      "standard_lint": {
+        "path": ".cache/go-checksum-client-final-lint.log",
+        "bytes": 9156,
+        "sha256": "f9a1b32f773ebcef07b623e4eb98013e5a5b629b16ae27e46668cf852adb77f1"
+      },
+      "final_export_boundary_units": {
+        "path": ".cache/go-checksum-client-report-unit-final.log",
+        "bytes": 101,
+        "sha256": "41cee9cc70f8e2902ff4277cf9577cbdf05c130cf7652490990fd48efa2e4859"
+      },
+      "python_compile_only": {
+        "path": ".cache/go-checksum-client-pycompile.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "workflow_parse_only": {
+        "path": ".cache/go-checksum-client-workflow-parse.log",
+        "bytes": 63,
+        "sha256": "c5eff5f16fa2f3e514ddc25618459039cc926bac179fd12460f18893f35e213c"
+      },
+      "actual_ARM_probe_FAILED": {
+        "path": ".cache/go-checksum-client-standin-final-source.log",
+        "bytes": 484,
+        "sha256": "092e03a77fbe71e72507e5be5de23e8ff83841f5862e2ab44a7b7b6b36affb6e"
+      }
+    }
+  },
+  "workflow_contract": [
+    "Dedicated3native-platform jobs,15minute budget, each client60seconds/bounded output; fail-fast false and main jobs preserved. No continue-on-error, checksum bypass, case removal or failure-shaped pass.",
+    "Safe schema1 binds actual run ID/GITHUB_SHA/clean git source, native Go version/binary SHA and exact fixture/script SHA; passing status requires all7controls plus source/binary identity.",
+    "At most8explicit owned private observation files/256KiB each/1MiB envelope are sealed with existing owner recipient via CMS AES256GCM/RSA-OAEP-SHA256, never plaintext artifacts. Existing nofollow output/private-read helpers reused.",
+    "Probe uses original public signed notes/tiles and inert module resource ZIP; no cratectl registry/PG, package compilation/scripts/model deserialization or public package fallback."
+  ],
+  "limits": [
+    "Local ARM result alone doesnotestablish Linux behavior or maintainer-confirmed rootcause. Matching official Go1.27.3 source bookkeeping is a documented inference. No external message/report sent.",
+    "This is separate from accepted source14 Go79normal/race+312stock hosted/group and13historical18upgrades perarchitecture. Source14 whole29selected campaign is now independently accepted in evidence/2026-11-07/github-5816b27-checkpoint.json; retain exact source scope.",
+    "Full450artifactcapabilities/41families/alllaterGOAL4.1scope remains active. No publicGo proxy/checksum-onstock/offlinecache/install/export/backup/GC/conditionalrefresh/security/packaging/readiness verdict. Primary11/5483878b binaries/tenreceipts/credentials and customer/sibling/release/package/image state preserved."
+  ]
+}

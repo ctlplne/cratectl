@@ -36,6 +36,7 @@ lint:
 	python3 scripts/test_go_module_profile.py
 	python3 scripts/test_go_file_proxy.py
 	python3 scripts/test_go_tls_proxy.py
+	python3 scripts/test_go_checksum_client_report.py
 	python3 scripts/ci/test_gradle_evidence.py
 	python3 scripts/test_gradle_publication.py
 	python3 scripts/test_ivy_fixture.py

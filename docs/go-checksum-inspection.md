@@ -176,7 +176,7 @@ private/no-store. Pages contain at most 100 incidents; original journal payloads
 are at most 64 KiB. The local event hash link alone is not an independently
 trusted journal/export anchor.
 
-For a retained Go proxy, **Repository configuration** can replace the explicitly
+For a retained Go proxy, **Sources** can replace the explicitly
 supplied checksum verifier/bootstrap through the existing complete settings
 replacement and source-revision preview. It requires valid checksum authority and
 mandatory checksum enforcement, and checks any endpoint credential against its
@@ -192,5 +192,7 @@ Original label links are checked in 64-row pages, with at most 100,000 labels an
 64 KiB per event. Damaged links or exceeded bounds roll back the whole migration;
 large-history qualification and a broader maintenance path remain open. Do not
 apply this source migration to the retained primary without separate maintenance
-authority. The new recovery/migration behavior remains unverified until its exact
-native PostgreSQL normal/race and browser campaigns pass.
+authority. The named recovery/migration behavior is qualified by exact source5816 on both
+native Linux hosts normally/under race. Console behavior uses two explicit
+response-stand-in Chromium workflows, with real database enforcement separately
+qualified. This does not qualify full Go proxy or checksum-on stock clients.

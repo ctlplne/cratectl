@@ -1,12 +1,15 @@
 # Recover unattributed checksum incidents without inventing proof
 
-Status: schema-14 implementation under qualification. Exact source-13 candidate
-`92ec23f9358c0dabbd86a7091f229d0769d554e5` passes all 24 selected GitHub jobs,
-including normal/race Go and full PostgreSQL suites on both native Linux hosts.
-See `evidence/2026-11-07/github-92ec23f-checkpoint.json`. That result does not
-qualify the new migration/recovery implementation. All 450 capabilities, 41
-families and later GOAL stages remain committed under section 4.1. Public Go proxy
-creation and routing stay gated. Primary 11 remains untouched.
+Status: implemented and verified within the exact source14 selected native
+campaign at `5816b2723e3e032569c6c83d9960b62375100e27`:29jobs/22safe83reports,
+79Go/253fullPG normally/race onbothLinuxhosts,13historical native rebuilds and18
+upgrade reports each,48fuzz/source3hosts and17x86browser workflows including two
+explicit checksum UI response stand-ins. See
+`evidence/2026-11-07/github-5816b27-checkpoint.json`. Declared13SQLincident fixtures
+and actual historical binary maintenance remain separate. Full450capabilities,
+41families and laterGOAL4.1stages remain. PublicGo proxy/fullchecksum-onstock,
+independent journal anchor/export/offlinecache/install/backup/GC/conditionalrefresh
+and readiness remain open; primary11 is untouched.
 
 Source-12 prototypes retained a failed-attempt label and journal entry, without
 the original authority responses. The label alone cannot authenticate a fork.
@@ -40,8 +43,8 @@ and new tenant table forced throughout maintenance. PostgreSQL supports
 role-scoped policies and an explicit current-user role target; use temporary
 owner-only SELECT policies for the source event/failure/fork tables and a narrowly
 scoped owner INSERT policy for the new incident table. The implementation uses
-those mechanisms under cratectl's existing exclusive schema transaction; native
-verification remains pending. See PostgreSQL 16's [row security](https://www.postgresql.org/docs/16/ddl-rowsecurity.html)
+those mechanisms under cratectl's existing exclusive schema transaction; named native
+verification is retained in the exact5816checkpoint. See PostgreSQL 16's [row security](https://www.postgresql.org/docs/16/ddl-rowsecurity.html)
 and [policy definition](https://www.postgresql.org/docs/16/sql-createpolicy.html).
 
 Create those temporary policies only after runtime transactions drain through
