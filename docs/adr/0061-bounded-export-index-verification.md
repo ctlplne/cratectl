@@ -1,7 +1,7 @@
 # 0061: Bind selected export manifests through one signed journal pass
 
-Date: 2026-11-07. State: implemented; local development in progress, actual
-native verification pending.
+Date: 2026-11-07. State: implemented; named96Go normal/race/312stock passes onboth actual native
+Linux hosts atca44b37. Full multi-artifact and whole-campaign qualification remain.
 
 An operator preparing several artifacts needs to authenticate all selected
 original export manifests before collecting their package bytes. Add
@@ -46,3 +46,9 @@ reverse-order binding and late-member/trailing/budget refusal. Keep all original
 collector process-kill/renewal/metadata/TLS/destination/SDK assertions; actual
 normal/race executions belong to both native GitHub Linux jobs. No local real
 PostgreSQL/registry/signer/client/browser campaign or schema/primary change.
+
+Actual two-export original PG journal/external OpenSSL/candidateCLI reverse-order
+binding and late-member/trailing/byte-budget refusal pass normally/race onboth
+Linux hosts. See `evidence/2026-11-07/go-module-ca44b37-native-checkpoint.json`.
+This does not verify multi-artifact package bytes, closure, one common snapshot
+or current destination admission; all five explicit trust flags remainfalse.

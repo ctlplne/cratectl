@@ -17,10 +17,13 @@ verifierca44, run42382397175, passes all20component functions and the same actua
 26jobs/19safe72reports with matching originals. See the
 [stronger verifier checkpoint](evidence/2026-11-07/campaign-acceptance-4956197-ca44b37-native-checkpoint.json).
 Neither verifier restarted native tests or qualified newer product source.
+Actual negative run42383100883also refuses the preserved failedb5campaign with
+`not_accepted/run_not_accepted` and no partial positive fields. See the
+[refusal checkpoint](evidence/2026-11-07/campaign-acceptance-b5cfb5d-refusal-ca44b37-checkpoint.json).
 
 Current active product candidate: `ca44b3789f4d26530d71fa29c7097321f3a12687`,
-six native workflows/26jobs. Index two-export normal/race/58fuzz and every other
-selected profile remain pending. Actual handles:
+six native workflows/26jobs. Named96Go normal/race/312stock passes bothLinux, including new two-export index
+controls. Main274PG/19main151/allselectedprofile acceptance remains pending. Actual handles:
 
 | Profile | GitHub run |
 | --- | --- |
@@ -121,8 +124,9 @@ partial bindings. Private paths/policy bodies are omitted; package verification,
 closure, common snapshot, checksum authority and admission stayfalse. Four local
 unit functions/45subcases/exact256members, CLI race/build/lint,114505fuzz and
 normal/race tagged compilation/vet pass. Actual two-export PostgreSQL/OpenSSL/CLI
-cases extend the existing native function but are unverified. New source needs
-274PG/96Go normal-race and58fuzz; currentc1has57and no index command. See the
+cases now pass in96Go normal/race plus312stock onboth native Linux hosts:
+[index checkpoint](evidence/2026-11-07/go-module-ca44b37-native-checkpoint.json). Remaining whole source needs
+274PG/main19/151/58fuzz/all selected profiles; currentc1has57and no index command. See the
 [development record](evidence/2026-11-07/go-export-index-development.json) and
 [operator workflow](docs/go-export-index.md). Full multi-artifact collection,
 dependency/authority/permission/provenance closure and import remain required.

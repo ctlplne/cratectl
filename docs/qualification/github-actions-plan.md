@@ -16,8 +16,8 @@ package/image publication, customer, primary and sibling changes need their own
 authority. No autonomous delegation.
 
 Current product candidate: `ca44b3789f4d26530d71fa29c7097321f3a12687`, six native
-workflows/26jobs. Two-export index/58fuzz and all selected profile qualification
-are pending. Actual handles are in STATUS/remaining. Previousc1has seven workflows/
+workflows/26jobs. Named96Go normal/race/312stock including two-export index controls pass bothLinux.
+Main274PG/19main151/58fuzz/allselectedprofile acceptance remains pending. Actual handles are in STATUS/remaining. Previousc1has seven workflows/
 29jobs;15focused trials pass, while new export-keyboard/main19/151remains required.
 Both campaigns are preserved; no redispatch for queue time. Earlier failed
 source: `ae7d00ece68d45f953d53f1728169e00b6dbe608`.
@@ -193,12 +193,19 @@ entire selected inventory finishes. Existing reviewed records retain authority. 
 workflow_run/PR privilege path, external message, publishing or implicit release.
 See [development evidence](../../evidence/2026-11-07/campaign-acceptance-development.json).
 
+The same verifier also refuses the known failedb5campaign on actual GitHub,
+run42383100883, emitting only fixed refusal fields and no partial acceptance.
+See the [negative checkpoint](../../evidence/2026-11-07/campaign-acceptance-b5cfb5d-refusal-ca44b37-checkpoint.json).
+No native test was restarted. Full export implementation now has a concrete
+six-step execution sequence in [the export plan](go-export-plan.json); all
+existing14cases/7environments and broader scope remain required.
+
 ## Remaining offload order
 
 | Required work | Placement / acceptance |
 | --- | --- |
 | Exact-source campaign acceptance | The read-only aggregator above, retaining per-job originals/typed contracts/source inventories/first failures. Its scoped green verdict never grants full readiness. |
-| Bounded export index preflight | ADR0061local4unit/45subcases/exact256/fuzz/build/lint and tagged compilation pass. Existing native Go job gains two real PG exports/external signature/candidateCLI checks; actual replay pending. No extra native workflow, local PG campaign, package-byte/closure/snapshot/admission claim. |
+| Bounded export index preflight | ADR0061local4unit/45subcases/exact256/fuzz/build/lint and tagged compilation pass. Two real PG exports/external signature/candidateCLI controls now pass in96Go normal/race/312stock onboth native Linux hosts atca44; full multi-artifact work remains. No extra native workflow, local PG campaign, package-byte/closure/snapshot/admission claim. |
 | Complete export/import/disconnected outcomes | Native Linux and separate producer/consumer hosts; full dependency/authority/permission/provenance closure and current destination scanning/import session/progress. One version/manual review is incomplete; retain all14cases/7environments in the Go export plan. |
 | JVM breadth and every later format | Native stock tools/restricted PostgreSQL; hosted/proxy/group, nontrivial dependencies, exact bytes, permissions/policy/concurrency/faults/restart/freshness/lifecycle/migration. Retain all41families and JVM plan cases. |
 | OCI/upstream interoperability | Authorized owned compatible registries/realms, pinned tools/inert content. Changing external services stay separate from deterministic gates; no publication authority inferred. |

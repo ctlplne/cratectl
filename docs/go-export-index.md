@@ -1,8 +1,9 @@
 # Verify several historical export manifests together
 
 `cratectl go-export-index-verify` authenticates a selected list of export
-manifests through one complete signed journal. It is implemented; actual native
-qualification is pending. This preflight checks what each original export
+manifests through one complete signed journal. The two-export preflight passes
+named96Go normal/race and312stock profiles onboth native GitHub Linux hosts at
+ca44b37; see the [checkpoint](../evidence/2026-11-07/go-module-ca44b37-native-checkpoint.json). This preflight checks what each original export
 claimed before you collect its package bytes. Full multi-artifact collection,
 dependency/proof closure and current-policy import remain unfinished.
 
