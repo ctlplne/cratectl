@@ -1,9 +1,12 @@
 # Prepare a hosted Go package for a disconnected client
 
 `go-module-offline` prepares one exact hosted module/version as a private file
-GOPROXY. It is implemented but native unverified. Local ARM checks pass; GitHub
-must run the real PostgreSQL/CAS, external OpenSSL, candidate CLI and pinned Go
-SDK journey before this profile can be called verified.
+GOPROXY. It is implemented but native unverified. Local ARM checks pass. The
+first d179222 attempt fails native fixture cleanup on both Linux
+hosts after Go creates its standard read-only module cache. DEFECT0128 uses the
+pinned SDK cleaner for only that fresh test cache; native replay is required.
+Original race/stock stages skipped and are not passes. The original failures
+are retained in `evidence/2026-11-07/go-hosted-offline-d179222-first-failure.json`.
 
 You need the original ZIP, `go.mod` and `.info` bytes, the exact original
 `go.module.published` event sequence, a complete journal containing that event,

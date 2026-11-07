@@ -3,7 +3,11 @@
 Status: implemented but native unverified. The new command and binding/file tests
 pass on the ARM development host. The real PostgreSQL/CAS, external OpenSSL,
 candidate CLI and stock Go SDK journey is assigned to GitHub, normally and under
-race. No migration, server export session or current policy transfer is added.
+race. First d179222 both-Linux runs fail only TempDir cleanup of default read-only
+Go cache directories (DEFECT0128). Keep those failures and skipped stages; the
+fixture repair uses pinned `go clean -modcache` only on its isolated cache, with
+all original assertions/default permissions unchanged. Native replay remains
+required. No migration, server export session or current policy transfer is added.
 
 ## Complete one historical package before preparing its file proxy
 

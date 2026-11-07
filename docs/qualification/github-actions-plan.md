@@ -13,26 +13,21 @@ outside this CI authority. No autonomous delegation.
 
 ## Current qualification state
 
-Exacta3d8df2 [campaign checkpoint](../../evidence/2026-11-07/github-a3d8df2-checkpoint.json) independently accepts
-all27selected jobs/six workflows,20original safe summaries/81reports:257PG and
-79Go normally/race both Linux hosts,312stockGo and683baseline assertions each,
-50fuzz/source/unit/race/lint on three native hosts,13historical builds/18upgrades
-each and141checks/18main x86 Chromium workflows (15existing+3explicit UI response
-stand-ins). Eleven actual external checkpoint controls pass per Linux host with
-OpenSSL3.0.13 and exact native binary/public statement/signature/PEM/DER/export
-hashes. JVM/OCI and15focused browser trials pass. Native NuGet-library and strict
-checksum-client workflows were unselected; unselected is not passed.
-
-The earlier ca56447 fixture failures and20original failed-campaign summaries are
-preserved separately; the valid oversized-JSON fixture replays the same limit
-assertion normally/race in a3d8df2. DEFECT0126's actual three-host strict Go client
-trust-state failure and DEFECT0122's unknown intermittent remain open. All14source
-definitions are frozen and stopped primary11 is preserved. This accepts bounded
-signature/range profiles, not public/fullGo, provider requests, complete bundles,
-all450/41/laterGOAL scope/readiness/security/packaging.
+Exact809e826 [campaign checkpoint](../../evidence/2026-11-07/github-809e826-checkpoint.json) independently accepts
+all24selected jobs/five workflows,17original safe summaries/66reports:258PG and
+80Go normally/race both actual Linux hosts,312stockGo/683baseline each,
+52fuzz/source/unit/race/lint on three native hosts,13historical builds/18upgrades
+each and142checks/18main x86 Chromium workflows (15existing+3declared UI response
+stand-ins). Eleven actual external OpenSSL checkpoint controls pass per Linux
+host. JVM/OCI pass; focused browser, NuGet-library and strict checksum-client
+were unselected. All original failures remain retained. DEFECT0126's three-host
+strict client trust-state failure and0122unknown intermittent remain open.
+All14frozen definitions and stopped primary11 stay unchanged; full readiness is
+false.
 
 ## Hosted Go offline preparation lane
 
+The [machine-readable export plan](go-export-plan.json),
 [ADR0049](../adr/0049-hosted-go-offline-publication.md) and the
 [operator path](../go-module-offline.md) add one exact hosted publication's
 consumer: complete externally signed journal verification, original three raw
@@ -50,6 +45,13 @@ never compile or run fixture code. The fixture uses a path containing a space,
 checks unchanged h1/original extracted inert bytes, no output overwrite and no
 success from a truncated signed history. Keep bounded inert fixture failures
 visible for diagnosis; no credential environment is passed to those processes.
+
+The first d179222 native attempt fails both dedicated Linux normal store suites
+only during TempDir cleanup of Go's ordinary read-only module cache; race/stock
+skip. [Original failures](../../evidence/2026-11-07/go-hosted-offline-d179222-first-failure.json)
+and the partial campaign are retained. DEFECT0128 adds the pinned SDK's own
+cleaner for only this fresh private cache, with no mode/assertion/product/schema
+relaxation. Compile/vet passes locally; fresh-source native replay is required.
 
 New source requires259fullPG/81namedGo/53fuzz; original312stockGo,683baseline,
 18main x86 browser workflows/142checks, JVM/OCI and13historical/18upgrades remain
@@ -612,17 +614,20 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 | `jvm-clients.yml`: Gradle / 2 | Both native Linux architectures; real PostgreSQL | Gradle9.8.2, exact JDK21 build, eight stages and24 publisher/reference/raw-HTTP digests. 60-minute job. Named v2 profile passes; broader JVM remains open. |
 | `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0 and exact JDK. Cache-v4 passes666checks/10stages/34wire+6cachebindings on both hosts at0edd, retaining all release/metadata/snapshot/SHA-2 cases. 60-minute job. Broader Ivy remains open. |
 | `jvm-clients.yml`: SBT / 4 | SBT1.13.0 and2.0.11, each on native Linux amd64/arm64; real PostgreSQL | Snapshot-v2 passes269checks/8stages/8snapshotcases/18bindings on all4cases at0cff, retaining every release case. Frozen tool-only boot cache/fresh project caches. Five-minute bootstrap, two-minute commands, 60-minute job. |
-| `go-modules.yml`: hosted/group and private checksum foundation / 2 | Native Linux amd64/arm64; pinned Go, real PostgreSQL16.15, trusted loopback TLS | Exact20d2 qualifies55PG normally/race and312stock checks/9stages24wire16cache onboth hosts. Current64PG adds source13 original failure evidence, current tenant/key enforcement and privacy/queue/concurrency regressions; compile-only locally pending native replay. Preserve all original cases/failures;45-minute job. Public proxy stays gated until complete checksum-on customer journeys. |
+| `go-modules.yml`: hosted/group and private checksum foundation / 2 | Native Linux amd64/arm64; pinned Go1.27.3, real PostgreSQL16.15, trusted loopback TLS | Exact809e826 qualifies80PG normally/race and312stock checks/9stages24wire16cache on both hosts. New d179222 adds the81st historical offline publication/SDK journey but both normal store suites fail only read-only cache TempDir cleanup; race/stock skip. DEFECT0128 uses the pinned cleaner only on the test cache; fresh native replay required. All original assertions/default SDK behavior retained;45-minute job. Public proxy remains gated and strict-client DEFECT0126 remains failed. |
 | `nuget-contract.yml`: libraries / 2 | Both native Linux architectures; exact SDK10.0.403 selection | Original37assertions/unchanged dense corpora pass both at1974, actual runtime10.0.14 and separate DLLhashes. 20-minute job. Does not replace actual NuGet HTTP/restore/restart proof. |
 | `oci-clients.yml`: native clients / 2 | Both native Linux architectures; Docker, Podman, Helm, real PostgreSQL | Actual publication/consumption and policy/tenant/recovery cases with inert owned data; 45-minute job. Do not execute the uploaded image. External-provider interoperability is separate. |
 | `browser-repair.yml`: focused / 3 on relevant pushes | Native x86 Chromium; five fresh PostgreSQL databases per selected journey | Repair, retention and NuGet each repeat five complete journeys; 45-minute job. Manual dispatch selects one. Stop on failure; no retries/skips count as acceptance. |
-| `upgrade-qualification.yml`: controlled upgrades / 2 | Both native Linux architectures; fresh PostgreSQL | Rebuild ten immutable historical pins and require15 reports each; 120-minute job. Relevant pushes, manual dispatch and Monday08:17UTC. Not rolling upgrade, downgrade or backup/restore proof. |
+| `upgrade-qualification.yml`: controlled upgrades / 2 | Both native Linux architectures; fresh PostgreSQL | Rebuild13immutable historical pins and require18reports each; 120-minute job. Relevant pushes, manual dispatch and Monday08:17UTC. Not rolling upgrade, downgrade or backup/restore proof. |
 
-The current union is29jobs across seven workflows, including the selector.
-Exactfc39162 selects six workflows/27expected jobs; NuGet library paths were
-unchanged. A documentation-only commit can select just the planner and scoped
+| `go-checksum-client.yml`: strict SDK / 3 on its own selected inputs | Actual Linux amd64/arm64 and macOS arm64; Go1.27.3 with owned authority/response stand-ins, no registry/database | Seven mandatory controls per host. The altered-ZIP trust-state assertion fails on all3hosts at5567d24 (DEFECT0126); six other controls pass each. Preserve original first-failure/encrypted evidence. No private-hosted GONOSUMDB bypass or later unrelated green run repairs this failure. |
+
+The current union is32jobs across eight workflows, including the selector and
+the separately selected three-host checksum-client lane.
+Exact809e826 and d179222 each select five workflows/24jobs. Focused browser,
+NuGet library and strict checksum-client paths were unchanged/unselected. A documentation-only commit can select just the planner and scoped
 security, with dependent logical jobs skipped. Enumerate actual jobs after
-matrix expansion for every exact source; never assume29, treat an absent or
+matrix expansion for every exact source; never assume32, treat an absent or
 skipped lane as passing, or substitute an old run. Library jobs run only when their own paths select; a workflow omitted by its
 path filter is not evidence for that source. No duplicate dispatch merely to recover visibility.
 

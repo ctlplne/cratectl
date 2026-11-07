@@ -1,0 +1,370 @@
+{
+  "schema_version": 1,
+  "owner": "imfeelingtheagi",
+  "updated_on": "2026-11-07",
+  "scope": "GOAL4.1 artifact export/offline/own access; all450capabilities/41families/later stages retained",
+  "state": "implementation and qualification incomplete",
+  "references": [
+    "GOAL.md",
+    "docs/adr/0049-hosted-go-offline-publication.md",
+    "docs/go-module-offline.md",
+    "docs/qualification/github-actions-plan.md"
+  ],
+  "current_implementation": {
+    "candidate": "d1792224f6fa8b1bc0981a6650c6990f054a1d27",
+    "state": "first both-Linux native dedicated store suites fail cleanup under DEFECT0128; fixture repair compile/vet only, fresh native replay required",
+    "development_evidence": "evidence/2026-11-07/go-hosted-offline-development.json",
+    "native_runs": {
+      "main": 42345098943,
+      "go": 42345098952,
+      "jvm": 42345098918,
+      "oci": 42345098942,
+      "upgrades": 42345098914
+    },
+    "current_registry_admission": false,
+    "checksum_authority_verified": false,
+    "durable_server_snapshot": false,
+    "physical_gc_qualified": false,
+    "dependency_closure": false,
+    "full_goal_complete": false,
+    "first_failure": "evidence/2026-11-07/go-hosted-offline-d179222-first-failure.json",
+    "repair_development": "evidence/2026-11-07/go-hosted-offline-cleanup-development.json"
+  },
+  "environment_profiles": {
+    "development-arm": {
+      "environment": "current ARM macOS workspace",
+      "allowed": [
+        "unit/race/build/lint",
+        "bounded parser fuzz",
+        "PostgreSQL normal/race compilation and tagged vet"
+      ],
+      "does_not_establish": [
+        "real PostgreSQL integration",
+        "external signer or stock SDK workflows",
+        "x86 behavior"
+      ]
+    },
+    "native-linux-amd64": {
+      "environment": "actual GitHub-hosted ubuntu-24.04",
+      "required": [
+        "disposable real PostgreSQL",
+        "exact clean candidate CLI/daemon",
+        "ordinary external OpenSSL3/4",
+        "pinned stock Go from go.mod",
+        "owned CAS and bounded owned fault stand-ins"
+      ],
+      "does_not_establish": [
+        "production primary maintenance",
+        "independent host topology",
+        "large-scale performance"
+      ]
+    },
+    "native-linux-arm64": {
+      "environment": "actual GitHub-hosted ubuntu-24.04-arm",
+      "required": [
+        "same full native profile as amd64 without emulation"
+      ],
+      "does_not_establish": [
+        "x86 behavior",
+        "production topology"
+      ]
+    },
+    "native-macos-arm64": {
+      "environment": "actual GitHub-hosted macOS ARM",
+      "required": [
+        "source/unit/race/lint/fuzz",
+        "actual file/ACL/directory durability and stock-client workflow when implemented"
+      ],
+      "does_not_establish": [
+        "Linux PostgreSQL or other-platform qualification"
+      ]
+    },
+    "browser-amd64": {
+      "environment": "actual GitHub-hosted Linux x86 Chromium",
+      "required": [
+        "loading/denied/error/expiry/resume/cancel/precision UI states",
+        "keyboard/accessibility checks"
+      ],
+      "does_not_establish": [
+        "database/cryptography from response stand-ins",
+        "full WCAG or assistive-technology conformance"
+      ]
+    },
+    "independent-hosts": {
+      "environment": "separate actual producer/consumer hosts when available",
+      "required": [
+        "transfer verified package/proof/policy closure",
+        "consumer with no registry/WAN dependency",
+        "retained exact source/binary/client/tool/data identities"
+      ],
+      "does_not_establish": [
+        "passes from two processes or containers on one host"
+      ]
+    },
+    "windows": {
+      "environment": "actual Windows host after private ACL/durability implementation",
+      "state": "unsupported by current command; required future scope",
+      "required": [
+        "regular-file/no-link/owner-private ACL and atomic durability semantics",
+        "actual stock client"
+      ],
+      "does_not_establish": [
+        "POSIX-mode checks as ACL proof"
+      ]
+    }
+  },
+  "acceptance_cases": [
+    {
+      "id": "GO.EXPORT.snapshot-atomicity",
+      "area": "producer",
+      "outcome": "Create one immutable package/proof/policy snapshot and durable session; manifest bytes are CAS-staged and synced before references; journal/idempotency/job intent commit together.",
+      "required_controls": [
+        "unassessed/missing scan evidence is explicit, never clean",
+        "transaction failure leaves no references, receipt or job intent",
+        "duplicate/lost response returns the original authorized receipt",
+        "bound SQL result counts and metadata bytes before loading payloads",
+        "saturated queues or uncertain/lost commit responses never justify deleting potentially referenced staged bytes"
+      ],
+      "profiles": [
+        "native-linux-amd64",
+        "native-linux-arm64"
+      ],
+      "state": "required; not accepted by this plan"
+    },
+    {
+      "id": "GO.EXPORT.snapshot-revalidation",
+      "area": "producer",
+      "outcome": "Recheck exact source epoch, byte identity and policy revisions after external storage I/O without keeping a long SQL transaction open.",
+      "required_controls": [
+        "deny/delete/source change between planning and commit rejects stale snapshot",
+        "unrelated events do not substitute for the selected byte/policy identity",
+        "current role/grant/token and repository state rechecked",
+        "export public trust/provider reference identities without credential values or source authority grants"
+      ],
+      "profiles": [
+        "native-linux-amd64",
+        "native-linux-arm64"
+      ],
+      "state": "required; not accepted by this plan"
+    },
+    {
+      "id": "GO.EXPORT.tenant-runtime",
+      "area": "producer",
+      "outcome": "Force PostgreSQL RLS on every export/item table; runtime is nonsuperuser/nonowner without BYPASSRLS.",
+      "required_controls": [
+        "cross-tenant collision/guessing reveals nothing",
+        "runtime cannot mutate immutable item/manifest identity",
+        "NOFORCE or unexpected schema/policy admission refuses"
+      ],
+      "profiles": [
+        "native-linux-amd64",
+        "native-linux-arm64"
+      ],
+      "state": "required; not accepted by this plan"
+    },
+    {
+      "id": "GO.EXPORT.session-resume",
+      "area": "producer",
+      "outcome": "Expose current-authorized preview/create/status/renew/resume/cancel with bounded lifetime and explicit terminal states.",
+      "required_controls": [
+        "restart/revocation/expiry/lease-loss cannot produce false completion",
+        "renewal and each accepted effect check current fence",
+        "limits/quota errors are actionable resource controls, not edition limits",
+        "use database-authoritative time and a bounded total renewal window; client timestamps cannot restart lifetime",
+        "current authorization and generation fence apply to idempotent replay and resumed effects"
+      ],
+      "profiles": [
+        "native-linux-amd64",
+        "native-linux-arm64",
+        "browser-amd64"
+      ],
+      "state": "required; not accepted by this plan"
+    },
+    {
+      "id": "GO.EXPORT.gc-pins",
+      "area": "lifecycle",
+      "outcome": "Pin manifest and all source/proof objects through the declared collecting/completed session lifetime.",
+      "required_controls": [
+        "mark/delete race rechecks under the same publication/export mutation fence",
+        "pending transfer/replica/release/restore/hold references protect bytes",
+        "expired or cancelled session does not invalidate unrelated protection",
+        "physical GC remains unavailable until every required protection is implemented and qualified"
+      ],
+      "profiles": [
+        "native-linux-amd64",
+        "native-linux-arm64"
+      ],
+      "state": "required; not accepted by this plan"
+    },
+    {
+      "id": "GO.EXPORT.manifest-bindings",
+      "area": "consumer",
+      "outcome": "Verify bounded canonical manifest, complete signed journal event binding and exact representation/proof identities before reporting success.",
+      "required_controls": [
+        "reject duplicate/null/case aliases, path escapes, oversized entries, trailing/partial input",
+        "do not accept a valid journal prefix or self-declared manifest hash",
+        "do not trust keys merely because the bundle contains them"
+      ],
+      "profiles": [
+        "development-arm",
+        "native-linux-amd64",
+        "native-linux-arm64"
+      ],
+      "state": "required; not accepted by this plan"
+    },
+    {
+      "id": "GO.EXPORT.hosted-offline",
+      "area": "consumer",
+      "outcome": "Prepare historical hosted package bytes and consume through one file GOPROXY with fresh private caches and pinned stock Go.",
+      "required_controls": [
+        "exact original ZIP/mod/info and native h1/extracted inert asset",
+        "path containing space and URL-escaped uppercase module",
+        "no credential helper, toolchain fetch, VCS/direct or checksum-network fallback",
+        "no product package execution or overwriting an existing output"
+      ],
+      "profiles": [
+        "native-linux-amd64",
+        "native-linux-arm64",
+        "native-macos-arm64"
+      ],
+      "state": "required; not accepted by this plan"
+    },
+    {
+      "id": "GO.EXPORT.proxy-authority",
+      "area": "consumer",
+      "outcome": "Retain and independently replay SumDB lookup/tile/checkpoint consistency evidence using a separately trusted authority and immutable history.",
+      "required_controls": [
+        "wrong/changed key or checkpoint/fork blocks fail",
+        "proof age/revocation and historical policy are explicit",
+        "strict checksum-on SDK failure DEFECT0126 remains failed until separately resolved; private-hosted GOSUMDB bypass is not its repair"
+      ],
+      "profiles": [
+        "native-linux-amd64",
+        "native-linux-arm64",
+        "native-macos-arm64"
+      ],
+      "state": "required; not accepted by this plan"
+    },
+    {
+      "id": "GO.EXPORT.dependency-closure",
+      "area": "consumer",
+      "outcome": "Resolve and bound the complete selected transitive package and platform closure before export.",
+      "required_controls": [
+        "missing/denied dependency does not silently become a complete bundle",
+        "cycles/count/bytes/metadata/concurrency budgets bound work",
+        "version/source precedence and replace/exclude/private module semantics have explicit qualification"
+      ],
+      "profiles": [
+        "native-linux-amd64",
+        "native-linux-arm64"
+      ],
+      "state": "required; not accepted by this plan"
+    },
+    {
+      "id": "GO.EXPORT.portable-proof",
+      "area": "consumer",
+      "outcome": "Transfer exact bytes, original proof and historical policy with independently authenticated journal trust to a disconnected consumer.",
+      "required_controls": [
+        "no registry/vendor/credential-provider dependency for verification",
+        "copied receipt booleans or adjacent public key alone do not supply trust",
+        "original observations remain inert; no deserialization/model/package execution"
+      ],
+      "profiles": [
+        "independent-hosts"
+      ],
+      "state": "required; not accepted by this plan"
+    },
+    {
+      "id": "GO.EXPORT.destination-import",
+      "area": "import",
+      "outcome": "Import through the destination normal authorization, immutable staging, scanning and current policy transaction.",
+      "required_controls": [
+        "old source approval cannot grant current destination access or scan cleanliness",
+        "conflicting coordinates reject without partial references",
+        "restart/replay/denial/tenant collision preserve original receipts"
+      ],
+      "profiles": [
+        "native-linux-amd64",
+        "native-linux-arm64"
+      ],
+      "state": "required; not accepted by this plan"
+    },
+    {
+      "id": "GO.EXPORT.migration",
+      "area": "upgrade",
+      "outcome": "Append any export schema after the fourteen frozen definitions and qualify historical native maintenance.",
+      "required_controls": [
+        "rebuild exact qualified schema14 baseline before testing next schema",
+        "all old bytes/receipts/holds/RLS retained through interrupted/no-op/rollback paths",
+        "primary11 and selected5483878b binaries stay untouched absent separate maintenance authority"
+      ],
+      "profiles": [
+        "native-linux-amd64",
+        "native-linux-arm64"
+      ],
+      "state": "required; not accepted by this plan"
+    },
+    {
+      "id": "GO.EXPORT.operator-surface",
+      "area": "operations",
+      "outcome": "Provide the complete API/CLI/console journey with current permissions, exact identities and bounded actionable progress/errors.",
+      "required_controls": [
+        "loading/denied/stale/expiry/lost receipt/retry/cancel/resume",
+        "integer precision guards for large journal/generation values",
+        "public summaries omit credentials and raw tenant bodies; preserve owner-encrypted first failure detail where needed"
+      ],
+      "profiles": [
+        "native-linux-amd64",
+        "native-linux-arm64",
+        "browser-amd64"
+      ],
+      "state": "required; not accepted by this plan"
+    },
+    {
+      "id": "GO.EXPORT.fault-scale-platform",
+      "area": "operations",
+      "outcome": "Qualify storage/full-disk/corruption/interruption/provider/large-directory and mixed-load bounds on appropriate actual environments.",
+      "required_controls": [
+        "measure transfer/memory/SQL result limits and recovery; no skips counted as passes",
+        "two containers are a topology stand-in, not independent-host evidence",
+        "explicitly retain unsupported platforms/providers and missing scale profiles"
+      ],
+      "profiles": [
+        "native-linux-amd64",
+        "native-linux-arm64",
+        "independent-hosts",
+        "windows"
+      ],
+      "state": "required; not accepted by this plan"
+    }
+  ],
+  "execution_order": [
+    "finish exact d179222 native consumer qualification and retain first failures",
+    "implement durable snapshot/manifest/session and same-fence protection paths",
+    "implement complete producer/API/CLI/UI and portable proof/policy/closure consumer",
+    "qualify interrupted/native historical upgrades, import and lifecycle/GC",
+    "qualify independent hosts, remaining platforms/providers/scale and broader committed formats"
+  ],
+  "evidence_contract": [
+    "Exact source/candidate and clean binary build identity, actual architecture and tool/client versions/hashes",
+    "Original terminal job/step results, typed safe report schema and original safe JSON hashes; skipped/unselected is not passed",
+    "Preserve first failed logs/bounded owner-encrypted observations before repairing source; no assertion removal or retry as defect repair",
+    "Separate response stand-ins, actual database, stock tool, independent host and large-profile claims",
+    "No signer/CA/vault/key custody platform; external signing keys and operations stay with customer tools/providers",
+    "No entitlement/telemetry dependency, customer/sibling changes or primary maintenance inferred from CI authority",
+    "Native SDK default read-only cache behavior stays enabled; clean only the test-owned cache with pinned go clean -modcache before temporary-directory cleanup, including failed assertions."
+  ],
+  "evaluation": {
+    "state": "refined required plan; implementation and acceptance remain incomplete",
+    "findings": [
+      "Hosted historical byte integrity is useful but cannot stand in for a consistent authorized server snapshot or policy transfer.",
+      "A manifest hash or copied receipt is insufficient trust; complete journal binding and independently selected key/head are separate gates.",
+      "Protection must participate in the same transaction/fence as publication and GC deletion; a background mark list or process-local lease cannot provide that guarantee.",
+      "Actual stock client behavior must be tested on each native architecture. A stand-in protocol or GOSUMDB bypass cannot erase DEFECT0126.",
+      "A reusable export must cover dependency/proof/policy closure, safe current-policy import and independent consumer recovery. A successful three-file install does not complete those outcomes.",
+      "Broad source/native regression cost is justified while shared store/authorization paths change; new native cases belong in existing architecture jobs before adding duplicate local campaigns."
+    ],
+    "next_implementation_boundary": "durable forced-RLS snapshot/session and manifest staging with revalidation, followed by complete producer and consumer surfaces",
+    "accepted_capability_states_changed": false
+  }
+}

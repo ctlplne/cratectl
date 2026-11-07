@@ -1,19 +1,18 @@
 # cratectl execution status
 
-Exact `a3d8df2fcc9ae809f262057a0690de9eee78c1b6` is the latest accepted selected
-GitHub campaign:27jobs/six workflows,20original safe summaries/81reports. Both
-actual Linux architectures pass all257PostgreSQL functions normally and under
-race, Go79/312stock checks,683baseline assertions and11external checkpoint
-controls using actual OpenSSL3.0.13. Source/unit/race/lint and50fuzz pass on three
-native hosts;13historical binaries/18upgrades each retain controlled schema2–13
-into14, including70schema13→14 assertions. Main x86 Chromium passes141checks/
-18workflows with no skips/flaky/unexpected:15existing workflows and three
-explicit checksum/journal UI response stand-ins. Their UI results are separate
-from real-PG/CLI/cryptographic proof. Native JVM/OCI and15focused browser trials
-pass; NuGet-library and strict checksum-client workflows were unselected. The
-three-host DEFECT0126 client trust-state failure and DEFECT0122 unexplained
-intermittent remain open. See `evidence/2026-11-07/github-a3d8df2-checkpoint.json`
-and named Go/upgrade checkpoints. This is scoped qualification, not readiness.
+Exact `809e826e1cc3af053e423daeea5fcccc74a9db4e` is the latest accepted selected
+GitHub campaign:24jobs/five workflows,17original safe summaries/66reports. Both
+actual Linux architectures pass all258PostgreSQL functions normally and under
+race, Go80/312stock,683baseline assertions and11external OpenSSL checkpoint
+controls. Source/unit/race/lint and52fuzz pass on three native hosts;
+13historical binaries/18upgrades each retain controlled schema2–13 into14,
+including70schema13→14 assertions. Main x86 Chromium passes142checks/18workflows
+with no skips/flaky/unexpected:15existing workflows and3declared checksum/journal
+UI response stand-ins, separate from actual PostgreSQL/CLI/crypto proof. JVM/OCI
+pass; focused browser, NuGet-library and strict checksum-client workflows were
+unselected. DEFECT0126's three-host client trust-state failure and0122unknown
+intermittent remain open. See `evidence/2026-11-07/github-809e826-checkpoint.json`
+and named Go/upgrade checkpoints. Readiness remains false.
 
 The two original ca56447 normal store fixture failures remain retained before
 the valid oversized-JSON repair. Its final snapshot contains27terminal jobs,
@@ -30,24 +29,32 @@ native Go profile on both GitHub Linux architectures:80functions normally/race
 and the original312stock checks. The new function uses real original database
 failure/journal bytes, actual external OpenSSL and the candidate offline CLI;
 changed context, wrong digest and incomplete suffix controls pass. Both named
-13historical/18upgrade profiles also pass. The main candidate campaigns are still
-running, so a3d8df2 remains the latest accepted whole selected campaign. See
+13historical/18upgrade profiles also pass. Its entire24-job selected campaign is now independently accepted. See
 `evidence/2026-11-07/go-module-809e826-native-checkpoint.json` and
 `evidence/2026-11-07/github-809e826-upgrades-checkpoint.json`.
 
-Hosted Go offline preparation is implemented but native unverified. The command
-requires a complete externally signed journal and exact original hosted
-publication identity; copies and hashes three bounded private files, checks the
-copied ZIP/mod/info and syncs a new private file GOPROXY/receipt. It reports
-historical publication integrity with current registry admission and checksum
-authority verification false. ARM development gates, binding fuzz and file/race
-checks pass. One new actual PostgreSQL/CAS/OpenSSL/candidate CLI/pinned SDK
-journey compiles normally/race and passes tagged vet only; GitHub must execute
-it. New source requires259PG/81Go/53fuzz; original312stock/683baseline/18main142
-browser profiles remain. See `evidence/2026-11-07/go-hosted-offline-development.json`,
-`docs/go-module-offline.md` and ADR0049. Durable snapshot/manifest staging/resume/
-GC protection and full policy/authority/dependency export/import remain open.
-All14frozen definitions and stopped primary11 remain preserved.
+Hosted Go offline preparation remains native unverified. Both actual d179222
+Linux dedicated Go normal store suites fail only the new fixture's TempDir
+cleanup: stock Go retains read-only extracted module-cache directories. Original
+failed logs, zero-report safe Go summaries and the partial24-job snapshot are
+retained in `evidence/2026-11-07/go-hosted-offline-d179222-first-failure.json` and
+`github-d179222-initial-checkpoint.json`. Skipped race/stock are not passes.
+DEFECT0128 registers the pinned SDK's own `go clean -modcache` on this test's
+fresh private cache before TempDir cleanup, including assertion failures. Default
+read-only SDK behavior and all original byte/journal/signature/extraction/no-
+overwrite/truncation assertions remain unchanged. Normal/race compile and tagged
+vet pass locally only; the new clean candidate must replay259PG/81Go/53fuzz and
+original312stock/683baseline/18main142browser profiles on GitHub.
+
+The command verifies historical hosted publication and prepares a bounded,
+private file GOPROXY; current registry admission and checksum-authority flags
+remain false. The durable [export plan](docs/qualification/go-export-plan.json)
+has14required acceptance cases across7environment profiles and an explicit
+review of snapshot/manifest staging, current authorization, resume/expiry/GC,
+independent trust, closure/import, upgrades and platform/scale limits. It does
+not count planned cases as passed. Full producer/policy/authority/dependency/
+backup/provider outcomes, all14frozen definitions and stopped primary11 remain
+preserved. See ADR0049 and both hosted-offline development records.
 
 Schema14 internal legacy recovery is qualified in that scope. It preserves
 unattributed old incidents without inventing proof or clearing authenticated
@@ -80,7 +87,8 @@ browser workflows were unselected. See
 six workflows are terminal:24 pass and the three client probes fail. The whole
 5567candidate is not green.
 
-Bounded journal export remains implemented but unverified. Atca56447 both
+Historical ca56447 journal-export failure (repaired and verified at a3d8df2,
+then retained in the accepted809e826 profile): both
 actual Linux normal store suites fail only the new oversize fixture: repeated
 non-JSON bytes are rejected during event INSERT before export code runs. Main
 full race/stock/native journal CLI/main18Chromium140 checks skip and are not
@@ -91,7 +99,8 @@ Go79/312stock and13historical/18upgrades pass on both Linux hosts. Focused brows
 trials are separate from the skipped main console. One SBT2 ARM job remains
 pending in that initial snapshot. DEFECT0127 repairs only the fixture to valid
 JSON above the same256KiB limit; its ErrJournalLimit assertion and all14 frozen
-migrations stay intact. Native replay remains required.
+migrations stay intact. Its original native replay now passes; this paragraph
+retains the failed initial snapshot, not the current qualification state.
 
 Externally signed checkpoint verification is qualified at a3d8df2 within the
 bounds above. The canonical profile/purpose/tenant/head statement is prepared

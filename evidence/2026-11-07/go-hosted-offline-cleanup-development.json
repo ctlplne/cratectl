@@ -1,0 +1,40 @@
+{
+  "source_parent": "d1792224f6fa8b1bc0981a6650c6990f054a1d27",
+  "source_dirty": true,
+  "observed_at": "2026-11-07T06:13:48.671947+00:00",
+  "state": "fixture cleanup repaired; native replay required",
+  "defect": "DEFECT.0128",
+  "first_failure": "evidence/2026-11-07/go-hosted-offline-d179222-first-failure.json",
+  "source_sha256": {
+    "internal/store/go_module_offline_integration_test.go": "4b60e88c368c213060f6ae5bb10ade24f1a13b1fbfdd6afbdb2ca5cc8f6fea29"
+  },
+  "repair": "Register pinned native go clean -modcache in testing.Cleanup before TempDir removal. Use the exact same fresh private cache environment, including failure paths. Keep standard Go read-only cache permissions and every original package/journal/signature/native extraction/no-overwrite/truncation assertion.",
+  "development": {
+    "normal_postgresql": "compile only",
+    "race_postgresql": "compile only",
+    "tagged_vet": "passed",
+    "native_pg_openssl_sdk_execution_locally": "not run",
+    "logs": {
+      ".cache/go-offline-cleanup-pg-compile.log": "dc9d480223fd9075c575a2bd058b260d23f52a520d791bac3a324fafeb83d16c",
+      ".cache/go-offline-cleanup-pg-race-compile.log": "ab0d8c53658656cc2d9b7d16f236d8ab1c69fb8b0654bb8085c6c34ab23ddb4d",
+      ".cache/go-offline-cleanup-pg-vet.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "expected_native": {
+    "pg_functions": 259,
+    "go_pg_functions": 81,
+    "fuzz_targets": 53,
+    "original_stock_go_checks": 312,
+    "original_baseline_checks": 683,
+    "original_main_browser_tests": 18,
+    "original_main_browser_checks": 142,
+    "historical_binaries_per_linux_arch": 13,
+    "upgrade_reports_per_linux_arch": 18
+  },
+  "limits": [
+    "Original both-Linux d179222 normal store suites remain failed; skipped race/stock do not pass. Fresh clean candidate must replay on both actual native hosts.",
+    "Fixture lifecycle only; no product/parser/protocol/migration/assertion changes and no shared Go cache cleanup. All14definitions and stopped primary11 unchanged.",
+    "Full server export snapshots, GC protection, policy/authority/dependency bundle/import/provider/backup/conditional refresh and all450/41/later GOAL outcomes remain incomplete.",
+    "Independent strict three-host SDK trust-state failure0126 and unknown intermittent0122 stay open. Latest accepted whole selected campaign is809e826."
+  ]
+}

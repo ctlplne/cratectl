@@ -1,0 +1,251 @@
+{
+  "candidate": "d1792224f6fa8b1bc0981a6650c6990f054a1d27",
+  "observed_at": "2026-11-07T06:11:31.046342+00:00",
+  "state": "original native failure retained before repair commit; replay required",
+  "defect": "DEFECT.0128",
+  "failures": [
+    {
+      "architecture": "linux/amd64",
+      "family": "go",
+      "id": 128321022140,
+      "run_id": 42345098952,
+      "name": "Stock Go hosted and group modules (amd64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42345098952/job/128321022140",
+      "status": "completed",
+      "conclusion": "failure",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare owned PostgreSQL and native binaries",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions with race detector",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Trusted TLS stock Go transitive downloads and policy recovery",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Encrypt bounded Go failure observations for owner diagnosis",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/d179222-campaign/128321022140.txt",
+        "bytes": 223951,
+        "sha256": "cac2f9ee9937d147949b0a799719ba16bd677f2f689c4bc91e0ac0a4a96f20b3"
+      },
+      "test": "TestGoModuleHostedOfflinePublicationPreparesExactStockClientBytes",
+      "failure_phase": "testing.TempDir cleanup of default read-only Go module cache after body",
+      "observed_fixed_error": "TempDir RemoveAll cleanup: unlinkat <owned temporary module cache>/assets/owned.txt: permission denied",
+      "skipped_not_passed": [
+        "Go PostgreSQL race",
+        "stock hosted/group312 profile"
+      ]
+    },
+    {
+      "architecture": "linux/arm64",
+      "family": "go",
+      "id": 128321022337,
+      "run_id": 42345098952,
+      "name": "Stock Go hosted and group modules (arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42345098952/job/128321022337",
+      "status": "completed",
+      "conclusion": "failure",
+      "labels": [
+        "ubuntu-24.04-arm"
+      ],
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare owned PostgreSQL and native binaries",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions with race detector",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Trusted TLS stock Go transitive downloads and policy recovery",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Encrypt bounded Go failure observations for owner diagnosis",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/d179222-campaign/128321022337.txt",
+        "bytes": 224003,
+        "sha256": "e16e880ac6a48d90a271f6d90effbf856583cca51f3485a9429975d7e726d124"
+      },
+      "test": "TestGoModuleHostedOfflinePublicationPreparesExactStockClientBytes",
+      "failure_phase": "testing.TempDir cleanup of default read-only Go module cache after body",
+      "observed_fixed_error": "TempDir RemoveAll cleanup: unlinkat <owned temporary module cache>/assets/owned.txt: permission denied",
+      "skipped_not_passed": [
+        "Go PostgreSQL race",
+        "stock hosted/group312 profile"
+      ]
+    }
+  ],
+  "initial_campaign": "evidence/2026-11-07/github-d179222-initial-checkpoint.json",
+  "cause": "Pinned stock Go creates read-only extracted module-cache directories. testing.TempDir uses ordinary RemoveAll and cannot unlink the fixture asset under those directories. Only cleanup failure is recorded; the test result remains failed.",
+  "repair": "Register actual pinned go clean -modcache through the same isolated private-cache environment before TempDir cleanup, including assertion failures. Keep default SDK read-only modes and every byte/hash/signature/journal/extraction/no-overwrite/truncation assertion unchanged.",
+  "development": "Normal/race tagged compile and vet only after repair; no local SDK/OpenSSL/PostgreSQL execution.",
+  "limits": [
+    "No native success until clean-source replay. Skipped race/stock never count as passed.",
+    "No product-code, protocol, parser, migration or assertion change. No shared cache or retained primary cleanup.",
+    "Full bundle/server snapshot/provider/policy/closure/GC/import/backup/conditional refresh and all later GOAL scope remain unfinished."
+  ]
+}

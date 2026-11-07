@@ -1358,6 +1358,16 @@
       "repair": "Marshal valid tenant/sequence/padding JSON with padding greater than256KiB; retain exact ErrJournalLimit assertion, product metadata-first byte bounds and all14 frozen migration definitions.",
       "limits": "Valid oversized JSON reaches the unchanged256KiB/ErrJournalLimit rejection. All257source-defined PG functions execute normally/race on both Linux hosts; no case removal, schema relaxation or product-bound change. New journal-to-Go bridge is separate uncommitted development and requires fresh native qualification.",
       "replay": "evidence/2026-11-07/github-a3d8df2-checkpoint.json"
+    },
+    {
+      "id": "DEFECT.0128",
+      "summary": "Stock Go offline fixture succeeds through its assertions but default read-only module-cache directories prevent testing.TempDir cleanup on both native Linux hosts",
+      "state": "Fixture repair implemented and normal/race compiled/vetted on ARM only; fresh native replay required. Original d179222 failures retained.",
+      "first_failure": "evidence/2026-11-07/go-hosted-offline-d179222-first-failure.json",
+      "campaign": "evidence/2026-11-07/github-d179222-initial-checkpoint.json",
+      "repair": "Register pinned native go clean -modcache in testing.Cleanup before TempDir removal. Use the exact same fresh private cache environment, including failure paths. Keep standard Go read-only cache permissions and every original package/journal/signature/native extraction/no-overwrite/truncation assertion.",
+      "development": "evidence/2026-11-07/go-hosted-offline-cleanup-development.json",
+      "limits": "Both dedicated normal store suites fail cleanup; race and original312stock stages skip and are not passes. No change to default SDK modes or any original assertion, and no local PostgreSQL/OpenSSL/SDK qualification. Entire450/41/later scope/readiness remains open."
     }
   ]
 }

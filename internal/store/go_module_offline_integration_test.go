@@ -215,6 +215,12 @@ func verifyNativeGoOffline(t *testing.T, private string, files [3]string, journa
 		t.Fatal("pinned actual native Go1.27.3 required")
 	}
 	env := []string{"GOENV=off", "GOWORK=off", "GOTOOLCHAIN=local", "GOTELEMETRY=off", "GOAUTH=off", "GOVCS=*:off", "GOPROXY=" + receipt.Proxy, "GOSUMDB=off", "GONOSUMDB=*", "GONOPROXY=none", "GOPRIVATE=", "GOFLAGS=", "GOCACHE=" + filepath.Join(private, "go-build"), "GOMODCACHE=" + filepath.Join(private, "go-mod"), "GOPATH=" + filepath.Join(private, "go-path")}
+	// The real SDK deliberately makes extracted cache directories read-only.
+	// Its native cleaner knows how to remove them. Run before TempDir cleanup,
+	// including on assertion failure, and keep the normal cache permissions and
+	// every byte/signature/journal assertion unchanged. This environment names
+	// only this test's new cache, never the runner's shared development cache.
+	t.Cleanup(func() { run(true, env, goBinary, "clean", "-modcache") })
 	var downloaded struct{ Path, Version, Sum, GoModSum, Dir, Error string }
 	if raw := run(true, env, goBinary, "mod", "download", "-json", module+"@"+version); json.Unmarshal(raw, &downloaded) != nil || downloaded.Path != module || downloaded.Version != version || downloaded.Sum != receipt.ZIPHash || downloaded.GoModSum != receipt.ModHash || downloaded.Error != "" || !strings.HasPrefix(downloaded.Dir, filepath.Join(private, "go-mod")+string(filepath.Separator)) {
 		t.Fatal("actual offline Go SDK did not consume exact original bytes")
