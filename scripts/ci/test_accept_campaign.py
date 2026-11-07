@@ -35,6 +35,59 @@ class Source:
         return b'owned-fixture'
 
 
+class HistoricalBaselineAdmission(unittest.TestCase):
+    def test_only_exact_frozen_summary_baseline_bound_change_is_compatible(self):
+        name = 'scripts/ci/evidence_summary.py'
+        old = (ROOT / 'scripts/ci/testdata/schema17-evidence-summary.py.txt').read_bytes()
+        current = (ROOT / name).read_bytes()
+        self.assertEqual(hashlib.sha256(old).hexdigest(), acceptance.SCHEMA17_SUMMARY_SHA256)
+        entry = acceptance.compatible_contract(name, old, current, 17)
+        self.assertEqual(entry['sha256'], hashlib.sha256(old).hexdigest())
+        self.assertEqual(entry['verifier_sha256'], hashlib.sha256(current).hexdigest())
+        for original, verifier, schema in [(old, current, 18), (old + b'\n', current, 17),
+                (old, current + b'\n', 17), (old, current.replace(b'*range(2, 18)', b'*range(2, 19)'), 17),
+                (old, current.replace(b"len(report['baselines']) > 17", b"len(report['baselines']) > 18"), 17),
+                (old, current.replace(b"'binary_sha256'", b"'unreviewed_field'"), 17)]:
+            with self.subTest(schema=schema), self.assertRaises(EvidenceError):
+                acceptance.compatible_contract(name, original, verifier, schema)
+
+    def test_only_exact_frozen_upgrade_workflow_has_cross_generation_compatibility(self):
+        name = '.github/workflows/upgrade-qualification.yml'
+        old = (ROOT / 'scripts/ci/testdata/schema17-upgrade-workflow.yml').read_bytes()
+        current = (ROOT / name).read_bytes()
+        self.assertEqual(hashlib.sha256(old).hexdigest(), acceptance.SCHEMA17_UPGRADE_WORKFLOW_SHA256)
+        entry = acceptance.compatible_contract(name, old, current, 17)
+        self.assertEqual(entry['sha256'], hashlib.sha256(old).hexdigest())
+        self.assertEqual(entry['verifier_sha256'], hashlib.sha256(current).hexdigest())
+        self.assertNotIn('compatibility', acceptance.compatible_contract(name, current, current, 18))
+        self.assertIn('every schema 2–16 upgrade', jobs('upgrades', 17)['Real PostgreSQL controlled upgrades (amd64)']['required'][2])
+        self.assertIn('every schema 2–17 upgrade', jobs('upgrades', 18)['Real PostgreSQL controlled upgrades (amd64)']['required'][2])
+        for original, verifier, path, schema in [
+                (old, current, name, 18), (old, current, '.github/workflows/ci.yml', 17),
+                (old + b'\n', current, name, 17), (old, current + b'\n', name, 17),
+                (old, current.replace(b'14 15 16 17; do', b'14 15 17; do'), name, 17),
+                (old, current.replace(b'ubuntu-24.04', b'ubuntu-latest'), name, 17)]:
+            with self.subTest(path=path, schema=schema), self.assertRaises(EvidenceError):
+                acceptance.compatible_contract(path, original, verifier, schema)
+
+    def test_schema18_requires_qualified17_and_every_previous_binary(self):
+        current = json.loads((ROOT / 'docs/qualification/upgrade-baselines.json').read_bytes())['baselines']
+        acceptance.validate_baselines(current, 18)
+        acceptance.validate_baselines(current[:-1], 17)
+        for change in ('missing17', 'wrong17source', 'wrong17path', 'missingold', 'duplicate', 'reordered', 'unreviewedtarget'):
+            rows = copy.deepcopy(current)
+            schema = 18
+            if change == 'missing17': rows.pop()
+            elif change == 'wrong17source': rows[-1]['source'] = 'f' * 40
+            elif change == 'wrong17path': rows[-1]['binary'] = '.cache/unqualified/cratectld'
+            elif change == 'missingold': rows.pop(3)
+            elif change == 'duplicate': rows[2] = copy.deepcopy(rows[1])
+            elif change == 'reordered': rows[2], rows[3] = rows[3], rows[2]
+            elif change == 'unreviewedtarget': schema = 19
+            with self.subTest(change=change), self.assertRaises(EvidenceError):
+                acceptance.validate_baselines(rows, schema)
+
+
 def run(identifier=11, path='ci.yml'):
     return {'id': identifier, 'head_sha': CANDIDATE, 'head_branch': 'main', 'event': 'push',
             'path': '.github/workflows/' + path, 'run_attempt': 1, 'status': 'completed', 'conclusion': 'success',

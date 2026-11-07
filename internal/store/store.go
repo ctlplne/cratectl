@@ -72,6 +72,10 @@ var goExportExpirySchema string
 
 //go:embed go_export_sets.sql
 var goExportSetSchema string
+
+//go:embed go_requirement_exports.sql
+var goRequirementExportSchema string
+
 var Name = regexp.MustCompile(`^[a-z][a-z0-9-]{0,62}$`)
 var ErrConflict = errors.New("conflict")
 var ErrDenied = errors.New("policy denied")
@@ -121,6 +125,8 @@ var schemaTablesV14 = append(append([]string(nil), schemaTablesV13...), "go_chec
 var schemaTablesV15 = append(append([]string(nil), schemaTablesV14...), "artifact_exports", "artifact_export_items")
 
 var schemaTablesV17 = append(append([]string(nil), schemaTablesV15...), "artifact_export_sets", "artifact_export_set_roots", "artifact_export_set_items")
+
+var schemaTablesV18 = append(append([]string(nil), schemaTablesV17...), "artifact_export_set_requirements", "artifact_export_set_requirement_sources")
 
 // legacySchemaSQL is migration 1. Freeze it and the five embedded SQL files;
 // subsequent schema changes belong in new checksummed steps.

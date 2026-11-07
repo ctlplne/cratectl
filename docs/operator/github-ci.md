@@ -1,5 +1,11 @@
 # GitHub CI
 
+Current qualification and required inventories are in the
+[GitHub Actions plan](../qualification/github-actions-plan.md) and STATUS.md.
+The older campaign descriptions below retain their historical scope. The new
+schema18 source requires17 historical native binaries/22 upgrade reports on each
+Linux architecture; its creation/upgrade evidence remains unverified.
+
 The public repository runs GitHub Actions on fresh Ubuntu 24.04 x86-64 and ARM64
 machines, plus a macOS ARM64 machine for build, unit, race, lint and console
 reproduction. A separate bounded fuzz job exercises every checked-in Go fuzz

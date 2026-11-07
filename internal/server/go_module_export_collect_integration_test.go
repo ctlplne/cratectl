@@ -31,6 +31,109 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
+// Actual candidate CLI over trusted TLS creates and reads the graph profile.
+// This case replays original metadata without claiming signed offline collection
+// or package/platform closure; those need their complete independent caller.
+func TestGoModuleRequirementExportNativeTLSCLICreationReplayAndOriginalGraph(t *testing.T) {
+	s, token, _, one, _ := exportServerFixture(t)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
+	defer cancel()
+	private := t.TempDir()
+	if err := os.Chmod(private, 0700); err != nil {
+		t.Fatal(err)
+	}
+	root, err := filepath.Abs("../..")
+	if err != nil {
+		t.Fatal(err)
+	}
+	binaries := os.Getenv("CRATECTL_QUALIFICATION_BIN_DIR")
+	if binaries == "" {
+		t.Fatal("actual candidate CLI directory required")
+	}
+	if !filepath.IsAbs(binaries) {
+		binaries = filepath.Join(root, binaries)
+	}
+	cli := filepath.Join(binaries, "cratectl")
+	write := func(name string, raw []byte) string {
+		t.Helper()
+		path := filepath.Join(private, name)
+		if err := os.WriteFile(path, raw, 0600); err != nil {
+			t.Fatal(err)
+		}
+		return path
+	}
+	identity, err := crypt.LocalIdentity("127.0.0.1", time.Now().UTC())
+	if err != nil {
+		t.Fatal(err)
+	}
+	ca, cert, key := write("server-ca.pem", []byte(identity.CA)), write("server.pem", []byte(identity.Certificate)), write("server-key.pem", []byte(identity.Key))
+	listener, err := net.Listen("tcp4", "127.0.0.1:38443")
+	if err != nil {
+		t.Fatal(err)
+	}
+	server := &http.Server{Handler: s, ReadHeaderTimeout: 10 * time.Second}
+	defer server.Close()
+	go func() { _ = server.ServeTLS(listener, cert, key) }()
+	tokenFile := write("admin.token", []byte(token))
+	config, _ := json.Marshal(configfile.Client{Version: 1, URL: "https://127.0.0.1:38443", TokenFile: tokenFile, CAFile: ca})
+	configPath := write("client.json", config)
+	run := func(arguments ...string) []byte {
+		t.Helper()
+		args := append([]string{"--config", configPath, "--timeout", "2m", "--response-limit", "16777216", "--raw-response"}, arguments...)
+		cmd := exec.CommandContext(ctx, cli, args...)
+		cmd.Dir, cmd.Env, cmd.WaitDelay = private, []string{"PATH=" + os.Getenv("PATH"), "HOME=" + private}, 2*time.Second
+		out, diagnostic := new(collectionCommandOutput), new(collectionCommandOutput)
+		cmd.Stdout, cmd.Stderr = out, diagnostic
+		if err := cmd.Run(); err != nil {
+			t.Fatalf("owned native requirement CLI: %v; bounded stdout=%q stderr=%q", err, out.Bytes(), diagnostic.Bytes())
+		}
+		return bytes.Clone(out.Bytes())
+	}
+	main := []byte("module owned/native-main\ngo 1.27.0\nrequire " + one.Module + " " + one.Version + "\n")
+	raw, _ := json.Marshal(goRequirementRequest{Repository: one.Repository, MainGoMod: string(main), LifetimeSeconds: 60, MaxArtifactBytes: 1 << 20})
+	request := write("requirement-request.json", raw)
+	const endpoint = "/api/v1/go/export-sets/requirements"
+	args := []string{"--method", "POST", "--path", endpoint, "--body-file", request, "--idempotency-key", "native-requirement-original"}
+	receipt := run(args...)
+	var v store.GoRequirementExportSession
+	if json.Unmarshal(receipt, &v) != nil || v.Profile != store.GoRequirementExportProfile || v.SourceCount != 1 || v.RootCount != 1 || v.DeliveryVerified {
+		t.Fatal("native TLS creation lost the complete graph identity")
+	}
+	if repeated := run(args...); !bytes.Equal(receipt, repeated) {
+		t.Fatal("native TLS CLI replay changed original receipt bytes")
+	}
+	path := endpoint + "/" + v.ID
+	get := func(suffix string) []byte { return run("--path", path+suffix+"?generation=1") }
+	parent, err := store.ParseGoRequirementExportManifest(get("/manifest"))
+	if err != nil || parent.Selection.DependencyClosure || parent.Selection.ChecksumAuthority || parent.Selection.CurrentRegistryAdmission {
+		t.Fatal("native graph parent changed metadata scope", err)
+	}
+	if _, err := store.BindGoRequirementSourceManifest(parent, 0, get("/inputs/0/manifest")); err != nil {
+		t.Fatal("native source reference no longer matches original parent", err)
+	}
+	proof := get("/proof")
+	if _, err := store.BindGoRequirementProof(parent, proof); err != nil {
+		t.Fatal("native original index changed source/selection identities", err)
+	}
+	mainRead, sourceRead := get("/main"), get("/inputs/0/mod")
+	if !bytes.Equal(main, mainRead) {
+		t.Fatal("native original project bytes changed")
+	}
+	if err := server.Close(); err != nil {
+		t.Fatal(err)
+	}
+	coordinate := gomodule.Coordinate{Module: one.Module, Version: one.Version}
+	graph, err := gomodule.VerifyRequirementProof(ctx, proof, mainRead, func(ctx context.Context, c gomodule.Coordinate, limit int64) ([]byte, error) {
+		if ctx.Err() != nil || c != coordinate || int64(len(sourceRead)) > limit {
+			return nil, gomodule.ErrRequirementProof
+		}
+		return sourceRead, nil
+	}, []gomodule.GraphSelection{{Logical: coordinate, Source: coordinate}})
+	if err != nil || len(graph.BuildList) != 1 {
+		t.Fatal("original metadata failed independent replay after registry shutdown", err)
+	}
+}
+
 // Real PostgreSQL/common snapshot/TLS collection/external signer, followed by
 // actual pinned stock Go inert downloads with the registry listener stopped.
 // The child records its empty network namespace before every offline command.

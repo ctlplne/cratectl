@@ -28,7 +28,7 @@ class SourceSchemaPlan(unittest.TestCase):
         with self.assertRaises(ValueError):
             read_plan(json.dumps(old).encode())
         # The target is explicitly committed source, never an observed DB value.
-        self.assertEqual(CURRENT_SCHEMA, 17)
+        self.assertEqual(CURRENT_SCHEMA, 18)
 
     def test_incomplete_unsafe_or_malformed_receipts_never_pass(self):
         for kind in ['future', 'pending', 'legacy', 'unsafe', 'truthy', 'state', 'missing-receipt',

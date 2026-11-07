@@ -226,6 +226,9 @@ func checkGoExportSetCurrent(ctx context.Context, tx pgx.Tx, i Identity, v GoExp
 	if v.State != "open" && v.State != "acknowledged" {
 		return nil, ErrGoExportExpired
 	}
+	if err := checkGoRequirementInputsCurrent(ctx, tx, i, v); err != nil {
+		return nil, err
+	}
 	current := make([][]GoExportArtifact, 0, len(roots))
 	var total int64
 	for _, root := range roots {

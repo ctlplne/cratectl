@@ -76,6 +76,11 @@ func (f goIntakeFixture) bundleAt(t *testing.T, c gomodule.Coordinate, payload s
 func (f goIntakeFixture) bundleAtPath(t *testing.T, c gomodule.Coordinate, asset, payload string) RetrievalResult {
 	t.Helper()
 	mod := []byte("module " + c.Module + "\n\ngo 1.26.0\n")
+	return f.bundleWithGoModAtPath(t, c, mod, asset, payload)
+}
+
+func (f goIntakeFixture) bundleWithGoModAtPath(t *testing.T, c gomodule.Coordinate, mod []byte, asset, payload string) RetrievalResult {
+	t.Helper()
 	instant := "2026-01-02T03:04:05Z"
 	if module.IsPseudoVersion(c.Version) {
 		timestamp, e := module.PseudoVersionTime(c.Version)

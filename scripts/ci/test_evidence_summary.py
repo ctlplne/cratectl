@@ -274,12 +274,12 @@ class EvidenceSummary(unittest.TestCase):
         self.assertEqual((record['baseline_version'], record['expected_schema']), (2, 11))
         self.assertNotIn('private-synthetic-value', json.dumps(record))
 
-    def test_historical_inventory_includes_schema_sixteen_and_remains_bounded(self):
-        baselines = [{'schema': schema, 'source': format(n, '040x'), 'binary_sha256': format(n, '064x')} for n, schema in enumerate([None, *range(2, 17)], start=1)]
+    def test_historical_inventory_includes_schema_seventeen_and_remains_bounded(self):
+        baselines = [{'schema': schema, 'source': format(n, '040x'), 'binary_sha256': format(n, '064x')} for n, schema in enumerate([None, *range(2, 18)], start=1)]
         report = {'candidate': 'a' * 40, 'status': 'passed', 'baselines': baselines}
         self.write('historical.json', report)
-        self.assertEqual(len(summarize(self.root, self.environment)['records'][0]['baselines']), 16)
-        for invalid in [baselines + [baselines[-1]], [{**baselines[-1], 'schema': 17}]]:
+        self.assertEqual(len(summarize(self.root, self.environment)['records'][0]['baselines']), 17)
+        for invalid in [baselines + [baselines[-1]], [{**baselines[-1], 'schema': 18}]]:
             self.write('historical.json', {**report, 'baselines': invalid})
             with self.assertRaises(SystemExit): summarize(self.root, self.environment)
 

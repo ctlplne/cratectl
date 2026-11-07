@@ -16,12 +16,12 @@ import uuid
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'scripts'))
-from qualification_contract import validate_historical_build
+from qualification_contract import CURRENT_SCHEMA, validate_historical_build
 
 
 def baselines():
     rows = json.loads((ROOT / 'docs/qualification/upgrade-baselines.json').read_text())['baselines']
-    if len(rows) != 16 or {row['schema'] for row in rows} != {None, *range(2, 17)}:
+    if len(rows) != CURRENT_SCHEMA - 1 or [row['schema'] for row in rows] != [None, *range(2, CURRENT_SCHEMA)]:
         raise ValueError('Historical schema inventory is incomplete')
     sources, outputs = set(), set()
     for row in rows:

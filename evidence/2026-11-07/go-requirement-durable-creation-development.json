@@ -1,0 +1,335 @@
+{
+  "source_parent": "9bbfb7954aea285075e487380e22b756146bfc03",
+  "source_state": "dirty local implementation prior to owner-identity commit; no clean candidate/native verdict implied",
+  "observed_at": "2026-11-07T22:02:05.950025+00:00",
+  "state": "implemented but unverified",
+  "scope": "atomic original hosted Go requirement evidence, shared lifecycle/current guards, inventory audit references and schema18/native CI contracts",
+  "source_files": [
+    {
+      "path": ".github/workflows/upgrade-qualification.yml",
+      "bytes": 4008,
+      "sha256": "b38fcc2ebdc90145b20f488417eb3bf0b0d6386dc28525e8490a27560881b2c8"
+    },
+    {
+      "path": "docs/qualification/go-export-plan.json",
+      "bytes": 46953,
+      "sha256": "a8b68f6105a3ebd11b776eaefcdfc0fc2d8ebdf5edafa8bf001dd8353d1a136f"
+    },
+    {
+      "path": "docs/qualification/upgrade-baselines.json",
+      "bytes": 3760,
+      "sha256": "fa47b9f98f071acc6e2a06bbc8d0aa2831e6e55632f4e94258514502200670a7"
+    },
+    {
+      "path": "internal/server/go_export_sets.go",
+      "bytes": 8333,
+      "sha256": "408e7f6d48b127bc5229f20178847ca3e10262565989e641e4a70ca5728e9ea4"
+    },
+    {
+      "path": "internal/server/go_module_export_collect_integration_test.go",
+      "bytes": 67565,
+      "sha256": "6d594f6c4a1fecd402bfd4a7aff3db2f69973a3e2a3707012e0f9c3aff63c97f"
+    },
+    {
+      "path": "internal/server/go_module_requirement_exports_integration_test.go",
+      "bytes": 6599,
+      "sha256": "28e02814e2c44cb8cc2a711bf0d29d7083c508447a9413c80ca3b064a5617d8f"
+    },
+    {
+      "path": "internal/server/go_requirement_exports.go",
+      "bytes": 6243,
+      "sha256": "a213fb1821ca62d2ac6a53f794d5224e3563704f0710c86841c23109e6989ce4"
+    },
+    {
+      "path": "internal/server/go_requirement_exports_test.go",
+      "bytes": 2789,
+      "sha256": "7fadda399179d29a6c0551b14bf79b6582804195c01c9bfd122d2cf44b5c9cf4"
+    },
+    {
+      "path": "internal/server/go_requirement_preview.go",
+      "bytes": 6691,
+      "sha256": "44131169d74871fc9f04847df838c040cf53bc129cc597763076548cc4f60504"
+    },
+    {
+      "path": "internal/store/go_export_set_sessions.go",
+      "bytes": 15156,
+      "sha256": "f0c3d9cfba1e26d0fbed733bd51c45c55a16755947fab950f5120661930ecc63"
+    },
+    {
+      "path": "internal/store/go_module_export_migration_integration_test.go",
+      "bytes": 13100,
+      "sha256": "3d7d6f8a9fb2dc8dcdc0918e92260a3ad55fff16b2b3b898974be480ac194413"
+    },
+    {
+      "path": "internal/store/go_module_legacy_migration_integration_test.go",
+      "bytes": 18942,
+      "sha256": "6ea9bdb1b7d3094f62d4f6dd03e5fba5d5d2bc1beee4aa235d6a933f63026623"
+    },
+    {
+      "path": "internal/store/go_module_requirement_sessions_integration_test.go",
+      "bytes": 12618,
+      "sha256": "e8732b3c444f5eb8a6ce2d2c19118f78165130e41b09aab0da5e972ea5703f06"
+    },
+    {
+      "path": "internal/store/go_module_retrieval_integration_test.go",
+      "bytes": 12399,
+      "sha256": "e0a8bf11ed880ee3e5017f5bbb8fd2d45ab82ff379f187018f442c8243e55ade"
+    },
+    {
+      "path": "internal/store/go_requirement_export_binding.go",
+      "bytes": 4536,
+      "sha256": "7031222cf09a0be08bb195f73cc46ccc282deffd38c5595280b4a8adac4bc2e1"
+    },
+    {
+      "path": "internal/store/go_requirement_export_binding_test.go",
+      "bytes": 4309,
+      "sha256": "82a7084e053e57b9979af98b61049f1b9d4e90c8b3d3103fd07145d6a28cd70f"
+    },
+    {
+      "path": "internal/store/go_requirement_export_sessions.go",
+      "bytes": 13173,
+      "sha256": "e90cfbf87afa7acc2b3e3cc056cb8d80c3ef646a331c0e55a1c40f821193938b"
+    },
+    {
+      "path": "internal/store/go_requirement_exports.sql",
+      "bytes": 3675,
+      "sha256": "c5d7cd35575cfbe613343d9dafd798204228c876f84aab6a2b25b3d1dd500204"
+    },
+    {
+      "path": "internal/store/inventory.go",
+      "bytes": 20054,
+      "sha256": "857f8f60b5c79fc3eaa0caaf094a88741198a2c43a551117453c717741838229"
+    },
+    {
+      "path": "internal/store/migrations.go",
+      "bytes": 24038,
+      "sha256": "674a44fd78bc1a25905cc134bb215633dcd392ba8034e4a9263429023571a75e"
+    },
+    {
+      "path": "internal/store/migrations_test.go",
+      "bytes": 2072,
+      "sha256": "7efe1f03c719877655dc4894e2d620123e138287f45e3b38a0a3ad7190a5959c"
+    },
+    {
+      "path": "internal/store/store.go",
+      "bytes": 21697,
+      "sha256": "650e792fb42470d3ae28524630fa55680349eee69b7d0411f77e0a03133b87f6"
+    },
+    {
+      "path": "scripts/ci/accept_campaign.py",
+      "bytes": 23815,
+      "sha256": "144af0dceca2a7042a440e3299f6031376cfc7ab435efdf9bc692aa54a0bc13c"
+    },
+    {
+      "path": "scripts/ci/build_upgrade_baselines.py",
+      "bytes": 5029,
+      "sha256": "4a158494ec706d1c33b7d9a2adb62fe882bf8b3fd4fc67e8727a7cffb6fce100"
+    },
+    {
+      "path": "scripts/ci/campaign_contract.py",
+      "bytes": 7008,
+      "sha256": "f0790c6ba5e7cf78d546f43d8a8b07ea9e19866d9566349f558a5a74032d5e46"
+    },
+    {
+      "path": "scripts/ci/campaign_reports.py",
+      "bytes": 19064,
+      "sha256": "800e231a0c2a065650ee2cdd6d3cdae6a351e5d809992117007559e4ab23bd31"
+    },
+    {
+      "path": "scripts/ci/evidence_summary.py",
+      "bytes": 22177,
+      "sha256": "83a701f11206c54c618614362e472fc13cbd2fa45466daa77bafef2eb184e3ca"
+    },
+    {
+      "path": "scripts/ci/test_accept_campaign.py",
+      "bytes": 18433,
+      "sha256": "0d3e9c6a70714887556a90df464954862b3803d73edf552d4b945c449930d488"
+    },
+    {
+      "path": "scripts/ci/test_campaign_reports.py",
+      "bytes": 13326,
+      "sha256": "d3551c60049a991bde39fe2f72e44eab9fd8f241a486836c68d1ed02a42c205f"
+    },
+    {
+      "path": "scripts/ci/test_check_schema_plan.py",
+      "bytes": 4234,
+      "sha256": "194bb4ca4ecf02de524a75ecce6792f295f137740198526fe0508c2f5dec54de"
+    },
+    {
+      "path": "scripts/ci/test_evidence_summary.py",
+      "bytes": 25806,
+      "sha256": "7a35e24c21768041a5d7e18eb0394e2d5ecd92313d4e3bebdf99f8d1dfbff57b"
+    },
+    {
+      "path": "scripts/ci/testdata/schema17-evidence-summary.py.txt",
+      "bytes": 22177,
+      "sha256": "fe806ef5b8712bee40c7c89e40ba3348a8640445518edaab228c7b26f9971fb3"
+    },
+    {
+      "path": "scripts/ci/testdata/schema17-upgrade-workflow.yml",
+      "bytes": 4005,
+      "sha256": "e4a0131a608b12834014c54df68dd35875dc15d7c05a4e66287fac3b4324db22"
+    },
+    {
+      "path": "scripts/conformance_lifecycle.py",
+      "bytes": 39058,
+      "sha256": "e16c90f2a5d5a3550b8db5e2af76e27a43e26e908badaf81c49cd3bef2eadc41"
+    },
+    {
+      "path": "scripts/qualification_contract.py",
+      "bytes": 2677,
+      "sha256": "4034407c5991de4d5ac122507f06f0c9e3c000fe8d7cc1fc0032f7dc0ede1826"
+    },
+    {
+      "path": "scripts/test_qualification_contract.py",
+      "bytes": 5538,
+      "sha256": "430cf3a76ac414079379ef7407298747e53f13afc709835b435cab3ced55907e"
+    }
+  ],
+  "goal": {
+    "path": "GOAL.md",
+    "bytes": 59572,
+    "sha256": "7b8ff58dcefd07a4818ab4c274a8950a7907a13ef36855e14ad6a797abfb8c78"
+  },
+  "migration": {
+    "version": 18,
+    "checksum": "6c60ac3e1228e57b54cdd99397ef4bccfb91cbd942b3437e41a63441b9ad1035",
+    "first17_definitions_unchanged": true,
+    "qualified17_pin": "bb6f7288f3ec9df94c3f3100b9a5b2df81df64d0",
+    "historical_native_rebuilds_and_upgrades": "required on GitHub; not executed locally"
+  },
+  "local_checks": {
+    "arm_build_unit_race_lint": "passed; owned stand-ins only",
+    "tagged_normal_race_compile_and_vet": "passed only; no integration execution",
+    "original_envelope_regression": "21 scoped cases pass after exact six-field production binding; no minimal four-field substitute",
+    "safe_summary_cases": 22,
+    "campaign_acceptance_cases": 13,
+    "historical_pins_readonly_reachable": 17,
+    "new_named_native_functions": 7,
+    "logs": [
+      {
+        "path": ".cache/go-requirement-durable-post-envelope-gates.log",
+        "bytes": 13949,
+        "sha256": "0b49938d07b744b8c5635fb544edefbd7e4c6229ce67d9373d5aa1ae8190218b"
+      },
+      {
+        "path": ".cache/go-requirement-durable-final-lint.log",
+        "bytes": 11607,
+        "sha256": "fdc2c300507c43c52c33a774d7bf0197d36d7635de09a51d2a55bee48927147f"
+      },
+      {
+        "path": ".cache/go-requirement-durable-post-envelope-tagged.log",
+        "bytes": 205,
+        "sha256": "33a8aae84e112a0cef22a00c3429eda611bb236c2aa914dc52a5bef94261d85c"
+      },
+      {
+        "path": ".cache/go-requirement-durable-post-envelope-tagged-race.log",
+        "bytes": 205,
+        "sha256": "6d106a616b425e05e69ce0de9dedb67fc1343fd3e00ed7fe8121957d5f0a07d5"
+      },
+      {
+        "path": ".cache/go-requirement-durable-post-envelope-tagged-vet.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": ".cache/go-requirement-durable-migration-hashes.log",
+        "bytes": 290,
+        "sha256": "e31fd8249d1c4175fdcf37b892c12d12bf3774a716b035cbaedb04c04dd83608"
+      },
+      {
+        "path": ".cache/go-requirement-actual-envelope-fixed.log",
+        "bytes": 48,
+        "sha256": "39fc3ee5b508ea3cda626b9ed43454ed7a8712e2a3c58157b94ca370016321ed"
+      },
+      {
+        "path": ".cache/go-requirement-durable-final-race.log",
+        "bytes": 97,
+        "sha256": "34cac4ee332cf9d0a5122fe6986c28bd60fdee5fd3e8c6c16c2a1a4a86dd471d"
+      },
+      {
+        "path": ".cache/go-requirement-schema18-summary-fixed.log",
+        "bytes": 121,
+        "sha256": "5e99f0774adc26c28c90793e8ae7c465154b68a69ba87ef16beb9a0351a36d73"
+      },
+      {
+        "path": ".cache/go-requirement-schema18-pins-reachable.log",
+        "bytes": 79,
+        "sha256": "9b603b6e353e9f15127f567fb00ee47808581cd8d2ee37165e8a8cdaf1685172"
+      },
+      {
+        "path": ".cache/go-requirement-durable-two-contracts.log",
+        "bytes": 174,
+        "sha256": "2add43b72f671570c3a7e1a4c75dc86c642ac060bc271174d15bfed886143bad"
+      }
+    ]
+  },
+  "retained_development_failures": [
+    {
+      "path": ".cache/go-requirement-actual-envelope-first.log",
+      "bytes": 632,
+      "sha256": "96ad9e8b5b31a61600d28545aa62f6c3420129020d202eeabc0ab8cd784104b4"
+    },
+    {
+      "path": ".cache/go-requirement-schema18-summary-first.log",
+      "bytes": 1072,
+      "sha256": "bac237b80c6851dd387475afcae987f1524ecdd0ea708c20f9fd8970bf5b50ef"
+    },
+    {
+      "path": ".cache/go-requirement-durable-gates-first.log",
+      "bytes": 4429,
+      "sha256": "ac15a5c47233f8a778384a403d65d8e961de9cae0cd2ef2be7cfba81dbea2ebd"
+    },
+    {
+      "path": ".cache/go-requirement-durable-acceptance-unit.log",
+      "bytes": 1574,
+      "sha256": "ba6e5b772c93260f0f59630db841e74a64d82e5ddafacedca791b9cc6a219541"
+    }
+  ],
+  "development_failure_explanations": [
+    "Original proof binder accepted a synthetic four-field creation envelope and refused the actual six-field appendEventIntent envelope. First regression fails both expected controls; fixed with exact production fields, matching actor and canonical time. This is not a native incident.",
+    "Historical safe exporter still capped at16/schema16 after adding qualified17. First17-record regression refused it; exact count/schema bound advanced to17,18 remains refused. Historical builder now binds ordered pins to committed CURRENT_SCHEMA before any resources.",
+    "First lint reached a stale CURRENT_SCHEMA=17 assertion; updated to18 with the appended migration.",
+    "Initial old-schema compatibility unit accidentally used a15-pin schema16 fixture as schema17; corrected to the real16-pin ancestor vector without changing the admission rule."
+  ],
+  "native_required_inventory": {
+    "integration_functions": 294,
+    "named_go_functions": 116,
+    "fuzz_targets": 65,
+    "inventory_sha256": "ce2672d94d5ddc317b778af6448bd743947dd1bd8292bdd639bf7706dfff6b5f"
+  },
+  "planned_selection": {
+    "jobs": 31,
+    "workflows": 8,
+    "safe_summaries": 24,
+    "safe_reports": 95,
+    "historical_binaries_per_linux": 17,
+    "upgrade_reports_per_linux": 22,
+    "go_stock_checks_per_linux": 312,
+    "baseline_checks_per_linux": 683,
+    "main_chromium_workflows": 19,
+    "main_chromium_checks": 151,
+    "portable_stages": 34,
+    "actual_api_inventory_controls": true
+  },
+  "compatibility": {
+    "source_schema17_only": [
+      "exact frozen upgrade workflow with only baseline loop/title increase",
+      "exact frozen summary extractor with only historical count/schema bound increase"
+    ],
+    "original_and_verifier_hashes_recorded": true,
+    "old_profiles_keep_original_16_pin_contract": true,
+    "schema18_requires_17_pins": true,
+    "all_other_closed_files_identical": true
+  },
+  "limits": [
+    "No actual local PostgreSQL/registry/stock SDK/signer/browser/network-namespace/PIDfd campaign; native cases compile and vet only.",
+    "No real native18 migration, old-daemon preservation, current guards or new creation outcome is qualified by this record.",
+    "Resumable requirement collection and independently signed offline caller are not implemented yet. Existing explicit-set collectors do not authenticate this new parent.",
+    "Package/platform closure, checksum authority and current destination admission remain false. No physical GC, provider/platform/installation/HA/scale or full450/41/laterGOAL readiness.",
+    "Original9bb campaign remains independent on its original handles. This record neither replaces its pending jobs nor grants a whole verdict.",
+    "Primary remains stopped at11/5483878b with ten receipts; local outputs remain.cache, .private0700 preserved."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

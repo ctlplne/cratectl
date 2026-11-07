@@ -155,6 +155,12 @@ func assertLegacyMigrationPolicies(t *testing.T, d testdb.Database, version int)
 	if version >= 15 {
 		tables = append(tables, "artifact_exports", "artifact_export_items")
 	}
+	if version >= 17 {
+		tables = append(tables, "artifact_export_sets", "artifact_export_set_roots", "artifact_export_set_items")
+	}
+	if version >= 18 {
+		tables = append(tables, "artifact_export_set_requirements", "artifact_export_set_requirement_sources")
+	}
 	for _, table := range tables {
 		var forced bool
 		var policies int
@@ -169,15 +175,15 @@ func TestGoModuleLegacyChecksumBackfillPreservesEveryTenantAndOriginalJournalUnd
 	before := seedLegacyChecksumSchema13(t, d)
 	ctx := context.Background()
 	plan, err := MigrationPlan(ctx, d.OwnerDSN)
-	if err != nil || len(plan.Applied) != 13 || !reflect.DeepEqual(plan.Pending, []int{14, 15, 16, 17}) {
+	if err != nil || len(plan.Applied) != 13 || !reflect.DeepEqual(plan.Pending, []int{14, 15, 16, 17, 18}) {
 		t.Fatal("prior schema13 plan", err)
 	}
 	if err = Migrate(ctx, d.OwnerDSN); err != nil {
 		t.Fatal("nonsuper cross-tenant backfill", err)
 	}
-	assertLegacyMigrationPolicies(t, d, 17)
+	assertLegacyMigrationPolicies(t, d, 18)
 	after, err := MigrationPlan(ctx, d.OwnerDSN)
-	if err != nil || len(after.Applied) != 17 || !reflect.DeepEqual(after.Applied[:13], plan.Applied) || !after.SafetyValid {
+	if err != nil || len(after.Applied) != 18 || !reflect.DeepEqual(after.Applied[:13], plan.Applied) || !after.SafetyValid {
 		t.Fatal("backfill changed old receipts or isolation", err)
 	}
 	s, err := Open(ctx, d.RuntimeDSN)
@@ -221,7 +227,7 @@ func TestGoModuleLegacyChecksumBackfillPreservesEveryTenantAndOriginalJournalUnd
 	if err = Migrate(ctx, d.OwnerDSN); err != nil {
 		t.Fatal("backfill no-op replay", err)
 	}
-	assertLegacyMigrationPolicies(t, d, 17)
+	assertLegacyMigrationPolicies(t, d, 18)
 	if err = checkOldLegacyRuntime(ctx, d, 13); !errors.Is(err, ErrSchemaIncompatible) {
 		t.Fatal("old runtime admitted schema17", err)
 	}
@@ -267,7 +273,7 @@ func TestGoModuleLegacyChecksumInterruptedBackfillRollsBackPoliciesRowsAndReceip
 	}
 	assertLegacyMigrationPolicies(t, d, 13)
 	plan, err := MigrationPlan(ctx, d.OwnerDSN)
-	if err != nil || len(plan.Applied) != 13 || !reflect.DeepEqual(plan.Pending, []int{14, 15, 16, 17}) || !plan.SafetyValid {
+	if err != nil || len(plan.Applied) != 13 || !reflect.DeepEqual(plan.Pending, []int{14, 15, 16, 17, 18}) || !plan.SafetyValid {
 		t.Fatal("interruption left a partial receipt or unsafe schema", err)
 	}
 	c, err := pgx.Connect(ctx, d.OwnerDSN)
@@ -298,7 +304,7 @@ func TestGoModuleLegacyChecksumInterruptedBackfillRollsBackPoliciesRowsAndReceip
 	if err = Migrate(ctx, d.OwnerDSN); err != nil {
 		t.Fatal("valid migration cannot resume after rolled-back fixture fault", err)
 	}
-	assertLegacyMigrationPolicies(t, d, 17)
+	assertLegacyMigrationPolicies(t, d, 18)
 }
 
 func TestGoModuleLegacyChecksumBackfillDistinguishesTypedForkFromOrphanedAttribution(t *testing.T) {
@@ -358,7 +364,7 @@ func TestGoModuleLegacyChecksumBackfillDistinguishesTypedForkFromOrphanedAttribu
 	if err = Migrate(ctx, d.OwnerDSN); err != nil {
 		t.Fatal(err)
 	}
-	assertLegacyMigrationPolicies(t, d, 17)
+	assertLegacyMigrationPolicies(t, d, 18)
 	s, err := Open(ctx, d.RuntimeDSN)
 	if err != nil {
 		t.Fatal(err)
@@ -406,7 +412,7 @@ func TestGoModuleLegacyChecksumDamagedOriginalHistoryRefusesMigrationAtomically(
 	}
 	assertLegacyMigrationPolicies(t, d, 13)
 	plan, err := MigrationPlan(ctx, d.OwnerDSN)
-	if err != nil || len(plan.Applied) != 13 || !reflect.DeepEqual(plan.Pending, []int{14, 15, 16, 17}) || !plan.SafetyValid {
+	if err != nil || len(plan.Applied) != 13 || !reflect.DeepEqual(plan.Pending, []int{14, 15, 16, 17, 18}) || !plan.SafetyValid {
 		t.Fatal("failed integrity check left partial schema14 receipt", err)
 	}
 	var absent bool

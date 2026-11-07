@@ -49,6 +49,10 @@ func (s *Server) goExportSetManagement(w http.ResponseWriter, r *http.Request, i
 		s.goRequirementPreview(w, r, i)
 		return true
 	}
+	if path == "go/export-sets/requirements" || strings.HasPrefix(path, "go/export-sets/requirements/") {
+		s.goRequirementManagement(w, r, i, path)
+		return true
+	}
 	parts := strings.Split(path, "/")
 	preview := len(parts) == 3 && parts[2] == "preview"
 	if len(parts) == 2 || preview {

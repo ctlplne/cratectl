@@ -79,12 +79,18 @@
       "schema": 16,
       "source": "ca44b3789f4d26530d71fa29c7097321f3a12687",
       "binary": ".cache/go-export-set-schema16-ca44b37-production/cratectld"
+    },
+    {
+      "schema": 17,
+      "source": "bb6f7288f3ec9df94c3f3100b9a5b2df81df64d0",
+      "binary": ".cache/go-requirement-schema17-bb6f728-production/cratectld"
     }
   ],
   "limits": [
     "These pins preserve the existing qualification drivers' historical sources, not supported rolling compatibility.",
     "CI rebuilds native binaries and verifies revision, clean tree and architecture; it never imports local cache bytes.",
     "The legacy pagination source predates versioned schema receipts and is used only for controlled adoption.",
-    "Schema16ca44 is whole-campaign qualified: evidence/2026-11-07/github-ca44b37-checkpoint.json. Its16checksummed migrations remain frozen before appending17; native historical binaries are rebuilt independently on both GitHub Linux hosts."
+    "Schema16ca44 is whole-campaign qualified: evidence/2026-11-07/github-ca44b37-checkpoint.json. Its16checksummed migrations remain frozen before appending17; native historical binaries are rebuilt independently on both GitHub Linux hosts.",
+    "Schema17bb6f728 is whole-campaign qualified: evidence/2026-11-07/github-bb6f728-checkpoint.json, actual read-only verifier42414571911. Preserve all17 migration definitions/checksums; independently rebuild its clean native historical server on both GitHub Linux hosts before18 upgrade qualification. No local historical binary substitutes for those native builds."
   ]
 }

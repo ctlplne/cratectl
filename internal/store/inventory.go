@@ -278,6 +278,11 @@ func currentDigestReferences(ctx context.Context, tx pgx.Tx, digests []string) (
  UNION ALL SELECT manifest_digest,0::bigint,0::bigint,count(*) FROM cratectl.artifact_exports WHERE manifest_digest=ANY($1::text[]) GROUP BY manifest_digest
  UNION ALL SELECT x.digest,0::bigint,0::bigint,count(*) FROM cratectl.artifact_export_items x JOIN cratectl.artifact_exports s ON (s.tenant,s.id)=(x.tenant,x.export_id) WHERE x.digest=ANY($1::text[]) AND s.state IN ('open','acknowledged') GROUP BY x.digest
  UNION ALL SELECT manifest_digest,0::bigint,0::bigint,count(*) FROM cratectl.artifact_export_sets WHERE manifest_digest=ANY($1::text[]) GROUP BY manifest_digest
+ UNION ALL SELECT manifest_digest,0::bigint,0::bigint,count(*) FROM cratectl.artifact_export_set_requirements WHERE manifest_digest=ANY($1::text[]) GROUP BY manifest_digest
+ UNION ALL SELECT main_digest,0::bigint,0::bigint,count(*) FROM cratectl.artifact_export_set_requirements WHERE main_digest=ANY($1::text[]) GROUP BY main_digest
+ UNION ALL SELECT proof_digest,0::bigint,0::bigint,count(*) FROM cratectl.artifact_export_set_requirements WHERE proof_digest=ANY($1::text[]) GROUP BY proof_digest
+ UNION ALL SELECT manifest_digest,0::bigint,0::bigint,count(*) FROM cratectl.artifact_export_set_requirement_sources WHERE manifest_digest=ANY($1::text[]) GROUP BY manifest_digest
+ UNION ALL SELECT mod_digest,0::bigint,0::bigint,count(*) FROM cratectl.artifact_export_set_requirement_sources WHERE mod_digest=ANY($1::text[]) GROUP BY mod_digest
  UNION ALL SELECT x.digest,0::bigint,0::bigint,count(*) FROM cratectl.artifact_export_set_items x JOIN cratectl.artifact_export_sets s ON (s.tenant,s.id)=(x.tenant,x.set_id) WHERE x.digest=ANY($1::text[]) AND s.state IN ('open','acknowledged') GROUP BY x.digest
  )r GROUP BY digest`, digests)
 	if e != nil {

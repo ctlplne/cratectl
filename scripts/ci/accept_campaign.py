@@ -19,6 +19,41 @@ sys.path.insert(0, str(ROOT / 'scripts'))
 from bounded_client import run_owned_client
 
 SHA = re.compile('[a-f0-9]{40}')
+SCHEMA17_UPGRADE_WORKFLOW_SHA256 = 'e4a0131a608b12834014c54df68dd35875dc15d7c05a4e66287fac3b4324db22'
+SCHEMA17_SUMMARY_SHA256 = 'fe806ef5b8712bee40c7c89e40ba3348a8640445518edaab228c7b26f9971fb3'
+
+
+def compatible_contract(name, original, current, schema):
+    digest = hashlib.sha256(original).hexdigest()
+    entry = {'path': name, 'sha256': digest}
+    if original == current:
+        return entry
+    # Two exact frozen boundaries only. Original jobs retain their original
+    # schema17 step/report/16-binary contract; the new bound never upgrades them
+    # into schema18 evidence. Arbitrary changed extractor/workflow bytes refuse.
+    approved, expected, label = None, None, None
+    if name == '.github/workflows/upgrade-qualification.yml':
+        expected, label = SCHEMA17_UPGRADE_WORKFLOW_SHA256, 'frozen-schema17-upgrade-workflow'
+        approved = original.replace('schema 2–16 upgrade'.encode(), 'schema 2–17 upgrade'.encode()).replace(b'14 15 16; do', b'14 15 16 17; do')
+    elif name == 'scripts/ci/evidence_summary.py':
+        expected, label = SCHEMA17_SUMMARY_SHA256, 'frozen-schema17-summary-baseline-bound'
+        approved = original.replace(b"len(report['baselines']) > 16", b"len(report['baselines']) > 17").replace(b'*range(2, 17)', b'*range(2, 18)')
+    require(schema == 17 and expected == digest and approved == current, 'unsupported_source_contract_revision')
+    entry.update(verifier_sha256=hashlib.sha256(current).hexdigest(), compatibility=label)
+    return entry
+
+
+def validate_baselines(baselines, schema):
+    # Explicit reviewed schema generations only. Adding a migration does not
+    # silently admit a missing historical daemon or a smaller older campaign.
+    require(schema in (17, 18) and isinstance(baselines, list)
+            and len(baselines) == schema - 1
+            and all(isinstance(row, dict) for row in baselines)
+            and [row.get('schema') for row in baselines] == [None, *range(2, schema)], 'unsupported_baseline_inventory')
+    if schema == 18:
+        require(baselines[-1] == {
+            'schema': 17, 'source': 'bb6f7288f3ec9df94c3f3100b9a5b2df81df64d0',
+            'binary': '.cache/go-requirement-schema17-bb6f728-production/cratectld'}, 'unqualified_schema17_baseline')
 
 
 def git_bytes(arguments):
@@ -46,13 +81,15 @@ class Source:
         require(0 < len(self.paths) <= 20000, 'candidate_file_inventory')
         self.cache = {}
         self.remaining = 64 << 20
+        targets = re.findall(rb'^CURRENT_SCHEMA = (\d+)$', self('scripts/qualification_contract.py'), re.M)
+        require(len(targets) == 1 and int(targets[0]) in (17, 18), 'unsupported_schema_target')
+        self.schema = int(targets[0])
         self.compatibility = []
         for name in COMPATIBLE_FILES:
             current = (ROOT / name).read_bytes()
-            require(self(name) == current, 'unsupported_source_contract_revision')
-            self.compatibility.append({'path': name, 'sha256': hashlib.sha256(current).hexdigest()})
+            self.compatibility.append(compatible_contract(name, self(name), current, self.schema))
         self.baselines = strict_json(self('docs/qualification/upgrade-baselines.json'))['baselines']
-        require(isinstance(self.baselines, list) and len(self.baselines) == 16, 'unsupported_baseline_inventory')
+        validate_baselines(self.baselines, self.schema)
         pg, go, fuzz = [], [], []
         for name in sorted(self.paths):
             if not name.endswith('_test.go') or not name.startswith(('internal/', 'cmd/')):
@@ -195,7 +232,7 @@ def accept(client, source, expected_ids):
                 common = by_artifact.get('cratectl-owned-go-common-export-fixture')
                 transfers.append({'run_id': run_id, 'profile': 'hosted-common-export-cross-runner-v1',
                                   **artifact_metadata(common, source.candidate, run_id, 2 << 20)})
-        specs = job_contracts(family)
+        specs = job_contracts(family, getattr(source, 'schema', 17))
         runtime = True
         used = set()
         if family == 'main':
@@ -263,7 +300,7 @@ def accept(client, source, expected_ids):
     require(discover(client, source.candidate) == runs, 'campaign_snapshot_changed')
     families = {f for f, _ in runs.values()}
     return {'schema': 1, 'profile': 'cratectl-ci-campaign-v1', 'status': 'passed',
-            'candidate': source.candidate, 'verifier': source.verifier, 'run_ids': sorted(runs),
+            'candidate': source.candidate, 'verifier': source.verifier, 'source_schema': getattr(source, 'schema', None), 'run_ids': sorted(runs),
             'jobs': accepted, 'unselected_runtime': unselected,
             'portable_transfer_artifacts': transfers,
             'unselected_workflows': sorted(set(WORKFLOWS.values()) - families),

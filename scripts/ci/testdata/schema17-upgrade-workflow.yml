@@ -1,0 +1,110 @@
+name: Controlled upgrade qualification
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cmd/**'
+      - 'internal/**'
+      - 'scripts/**'
+      - 'go.mod'
+      - 'go.sum'
+      - 'docs/qualification/upgrade-baselines.json'
+      - '.github/workflows/upgrade-qualification.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '17 8 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  upgrades:
+    concurrency:
+      group: cratectl-upgrades-${{ github.ref }}-${{ matrix.arch }}
+      # Preserve running main jobs; queue each native profile independently.
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    name: Real PostgreSQL controlled upgrades (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    env:
+      CRATECTL_CI_CLIENT_SET: upgrades
+      CRATECTL_CONFORMANCE_DATABASE_FILE: .private/ci-db.json
+      CRATECTL_DEV_DATABASE: native
+      CRATECTL_QUALIFICATION_BIN_DIR: .cache/ci-build
+      NPM_CONFIG_USERCONFIG: /dev/null
+    services:
+      cratectl-postgres:
+        image: postgres:16.15-alpine
+        env:
+          POSTGRES_USER: cratectl_owner
+          POSTGRES_DB: cratectl
+          POSTGRES_HOST_AUTH_METHOD: trust
+        options: >-
+          --publish 127.0.0.1:35432:5432
+          --health-cmd "pg_isready -U cratectl_owner -d cratectl"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '26'
+          package-manager-cache: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - name: Cache pinned public ORAS archive
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        timeout-minutes: 5
+        env:
+          SEGMENT_DOWNLOAD_TIMEOUT_MINS: '2'
+        with:
+          path: .cache/oras_1.3.6_linux_${{ matrix.arch }}.tar.gz
+          key: cratectl-tool-oras-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/ci/bootstrap_linux.sh', 'scripts/ci/fetch_archive.py') }}
+      - name: Prepare disposable native tools and database
+        env:
+          CRATECTL_CI_POSTGRES_CONTAINER_ID: ${{ job.services['cratectl-postgres'].id }}
+        run: bash scripts/ci/bootstrap_linux.sh
+      - name: Rebuild and verify every pinned historical native server
+        run: python3 scripts/ci/build_upgrade_baselines.py
+      - name: Legacy adoption with actual migration process interruption
+        run: python3 scripts/conformance_schema.py --require-clean-build
+      - name: Retained lifecycle through every schema 2–16 upgrade
+        run: |
+          for baseline in 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16; do
+            python3 scripts/conformance_lifecycle.py --baseline-version "$baseline" --require-clean-build
+          done
+      - name: Repair and recurring integrity upgrades
+        run: |
+          python3 scripts/conformance_repairs.py --require-clean-build
+          python3 scripts/conformance_schedules.py --require-clean-build
+      - name: Retention and scheduled-retirement upgrades
+        run: |
+          python3 scripts/conformance_retention.py --require-clean-build
+          python3 scripts/conformance_retention_schedules.py --require-clean-build
+      - name: Prepare bounded upgrade evidence summary
+        if: always()
+        run: python3 scripts/ci/evidence_summary.py
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: ci-summary-upgrades-${{ matrix.arch }}
+          path: .cache/ci-evidence-summary.json
+          if-no-files-found: error
+          retention-days: 30

@@ -142,6 +142,23 @@ try:
                 check(f'old schema{args.baseline_version} retains exact export object '+kind,status==200)
                 prior_objects[kind]=body
             prior_audit=json.loads(api('/api/v1/audit')[1])['items']
+        if args.baseline_version>=17:
+            prior_set_request={'entries':[{'repository':'export-source','module':go_module,'version':go_version,'expected_source_revision':0}], 'lifetime_seconds':3600,'max_artifact_bytes':1<<20}
+            prior_set_key='actual-schema17-set-'+RUN
+            status,prior_set_receipt,_=api('/api/v1/go/export-sets','POST',prior_set_request,key=prior_set_key);prior_set=json.loads(prior_set_receipt)
+            check('actual schema17 daemon creates common immutable set before18 migration',status==201 and prior_set['root_count']==1 and prior_set['generation']==1 and prior_set['payload_pins_retained'])
+            prior_set_change={'action':'acknowledge','expected_generation':1,'lifetime_seconds':0,'manifest_sha256':prior_set['manifest']['digest']}
+            prior_set_change_key='actual-schema17-set-ack-'+RUN
+            status,prior_set_change_receipt,_=api('/api/v1/go/export-sets/'+prior_set['id']+'/control','POST',prior_set_change,key=prior_set_change_key)
+            check('actual schema17 daemon acknowledges common set before18',status==200 and json.loads(prior_set_change_receipt)['generation']==2)
+            status,prior_set_session,_=api('/api/v1/go/export-sets/'+prior_set['id']);prior_set_session=json.loads(prior_set_session)
+            check('actual schema17 common session is readable',status==200)
+            prior_set_objects={}
+            for suffix in ['manifest','roots/0/zip','roots/0/mod','roots/0/info']:
+                status,body,_=api('/api/v1/go/export-sets/'+prior_set['id']+'/'+suffix+'?generation=2')
+                check('actual schema17 retains original common set object '+suffix,status==200)
+                prior_set_objects[suffix]=body
+            prior_audit=json.loads(api('/api/v1/audit')[1])['items']
     stop()
     plan=json.loads(run([NEW,'migrate','--plan']));check('new migrator safely plans only remaining immutable steps',plan['pending']==list(range(args.baseline_version+1,CURRENT_SCHEMA+1))and plan['safety_valid'])
     run([NEW,'migrate']);plan=json.loads(run([NEW,'migrate','--plan']));check('actual upgrade preserves every old receipt and adds safe remaining steps',plan['applied'][:args.baseline_version]==old_plan['applied']and plan['binary_version']==CURRENT_SCHEMA and len(plan['applied'])==CURRENT_SCHEMA and plan['safety_valid'])
@@ -161,6 +178,36 @@ try:
             status,replayed,headers=api('/api/v1/go/exports/'+prior_export['id'],'PATCH',prior_change,key=prior_change_key)
             check(f'schema{args.baseline_version} acknowledgment receipt replays byte for byte after{CURRENT_SCHEMA}',status==200 and replayed==prior_change_receipt and headers.get('Idempotent-Replayed')=='true')
             check(f'schema{args.baseline_version} original journal prefix survives{CURRENT_SCHEMA} without replayed events',json.loads(api('/api/v1/audit')[1])['items']==prior_audit)
+        if args.baseline_version>=17:
+            status,after_set,_=api('/api/v1/go/export-sets/'+prior_set['id']);after_set=json.loads(after_set)
+            check('schema18 preserves actual17 common session identity state deadlines and pins',status==200 and {k:v for k,v in after_set.items()if k!='server_time'}=={k:v for k,v in prior_set_session.items()if k!='server_time'})
+            for suffix,original in prior_set_objects.items():
+                status,body,_=api('/api/v1/go/export-sets/'+prior_set['id']+'/'+suffix+'?generation=2')
+                check('schema18 preserves actual17 original common set bytes '+suffix,status==200 and body==original)
+            status,replayed,headers=api('/api/v1/go/export-sets','POST',prior_set_request,key=prior_set_key)
+            check('actual17 common creation receipt replays byte for byte after18',status==201 and replayed==prior_set_receipt and headers.get('Idempotent-Replayed')=='true')
+            status,replayed,headers=api('/api/v1/go/export-sets/'+prior_set['id']+'/control','POST',prior_set_change,key=prior_set_change_key)
+            check('actual17 common acknowledgment receipt replays byte for byte after18',status==200 and replayed==prior_set_change_receipt and headers.get('Idempotent-Replayed')=='true')
+            check('actual17 common journal remains unchanged after18 receipt replays',json.loads(api('/api/v1/audit')[1])['items']==prior_audit)
+            graph_request={'repository':'export-source','expected_source_revision':0,'main_go_mod':'module owned/upgrade-main\ngo 1.27.0\nrequire '+go_module+' '+go_version+'\n','lifetime_seconds':3600,'max_artifact_bytes':1<<20}
+            graph_key='actual18-requirement-'+RUN
+            graph_endpoint='/api/v1/go/export-sets/requirements'
+            status,graph_receipt,_=api(graph_endpoint,'POST',graph_request,key=graph_key);graph=json.loads(graph_receipt)
+            check('upgraded native18 creates original requirement evidence and shared selected pins',status==201 and graph['profile']=='cratectl.go.hosted.requirement-export.v1' and graph['source_count']==1 and graph['root_count']==1 and graph['generation']==1 and graph['payload_pins_retained'] and not graph['delivery_verified'])
+            status,replayed,headers=api(graph_endpoint,'POST',graph_request,key=graph_key)
+            check('native18 original requirement receipt replays exactly',status==201 and replayed==graph_receipt and headers.get('Idempotent-Replayed')=='true')
+            status,parent_raw,_=api(graph_endpoint+'/'+graph['id']+'/manifest?generation=1');parent=json.loads(parent_raw)
+            check('native18 exact graph parent retains separate originals without trust grants',status==200 and hashlib.sha256(parent_raw).hexdigest()==graph['manifest']['digest'] and len(parent['sources'])==1 and not parent['selection']['dependency_closure'] and not parent['selection']['checksum_authority_verified'] and not parent['selection']['current_registry_admission'])
+            references={'main':graph['main_go_mod'],'proof':graph['requirement_proof'],'selection':graph['selection_manifest'],'inputs/0/manifest':parent['sources'][0]['manifest'],'inputs/0/mod':parent['sources'][0]['mod']}
+            for suffix,object_ref in references.items():
+                status,body,_=api(graph_endpoint+'/'+graph['id']+'/'+suffix+'?generation=1')
+                check('native18 retains exact staged original requirement object '+suffix,status==200 and len(body)==object_ref['size'] and hashlib.sha256(body).hexdigest()==object_ref['digest'])
+            status,body,_=api('/api/v1/go/export-sets/'+graph['id']+'/roots/0/zip?generation=1')
+            check('native18 graph selected payload uses shared guarded delivery',status==200 and body==prior_objects['zip'])
+            status,_,_=api('/api/v1/go/export-sets/'+graph['id']+'/control','POST',{'action':'cancel','expected_generation':1,'lifetime_seconds':0,'manifest_sha256':graph['selection_manifest']['digest']},key='actual18-graph-cancel-'+RUN)
+            check('native18 graph cancellation uses shared generation fence',status==200)
+            status,terminal,_=api(graph_endpoint+'/'+graph['id']);terminal=json.loads(terminal)
+            check('native18 terminal graph retains original evidence and releases payload pins',status==200 and terminal['state']=='cancelled' and terminal['manifest']==graph['manifest'] and terminal['manifest_retained'] and not terminal['payload_pins_retained'])
         request={'repository':'export-source','module':go_module,'version':go_version,'expected_source_revision':0,'lifetime_seconds':3600}
         export_key=f'native-schema{args.baseline_version}-export-'+RUN
         status,raw,_=api('/api/v1/go/exports','POST',request,key=export_key);export=json.loads(raw)

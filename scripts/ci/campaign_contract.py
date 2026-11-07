@@ -16,7 +16,9 @@ VALIDATOR_FILES = ['scripts/ci/' + name + '_evidence.py' for name in
 COMPATIBLE_FILES = ['.github/workflows/' + name for name in WORKFLOWS] + VALIDATOR_FILES + ['scripts/ci/evidence_summary.py', 'scripts/conformance_go.py']
 
 
-def jobs(family):
+def jobs(family, schema=17):
+    if schema not in (17, 18):
+        raise ValueError('Unreviewed schema job contract')
     result = {}
 
     def add(name, arch, required, artifact=None, kind=None):
@@ -61,7 +63,7 @@ def jobs(family):
         elif family == 'upgrades':
             add('Real PostgreSQL controlled upgrades (' + arch + ')', arch,
                 ['Rebuild and verify every pinned historical native server', 'Legacy adoption with actual migration process interruption',
-                 'Retained lifecycle through every schema 2–16 upgrade', 'Repair and recurring integrity upgrades',
+                 'Retained lifecycle through every schema 2–' + str(schema - 1) + ' upgrade', 'Repair and recurring integrity upgrades',
                  'Retention and scheduled-retirement upgrades', 'Prepare bounded upgrade evidence summary'], 'ci-summary-upgrades-' + arch, 'upgrades')
         elif family == 'library':
             add('Actual NuGet libraries versus Go (' + arch + ')', arch,

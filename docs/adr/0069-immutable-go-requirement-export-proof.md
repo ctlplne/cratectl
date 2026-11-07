@@ -1,8 +1,9 @@
 # 0069: Retain every original requirement input with an export
 
 Status: canonical proof, parent manifest, creation-event binding and store
-preparation implemented locally. Durable creation, retention, collection and
-offline caller integration remain required. Complete GOAL4.1 scope is unchanged.
+preparation implemented. Durable creation/current guards/audit retention are now
+implemented but unverified in ADR0070; collection and offline caller integration
+remain required. Complete GOAL4.1 scope is unchanged.
 
 The requirement preview checks metadata but creates no immutable graph record.
 A later automatic export must preserve the exact project and every examined

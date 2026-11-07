@@ -12,7 +12,7 @@ import (
 )
 
 func TestGoRequirementExportBindsExactOriginalCreationAndAllMetadataReferences(t *testing.T) {
-	for _, scenario := range []string{"original", "parent", "selection", "main", "proof", "sources", "root-count", "closure-shaped-field", "kind", "renewal", "tenant", "sequence", "delivery", "actor-control", "stale-creation"} {
+	for _, scenario := range []string{"original", "parent", "selection", "main", "proof", "sources", "root-count", "closure-shaped-field", "kind", "renewal", "tenant", "sequence", "delivery", "actor-control", "stale-creation", "missing-envelope-actor", "wrong-envelope-actor", "missing-envelope-time", "invalid-envelope-time", "unknown-envelope-field", "minimal-envelope"} {
 		t.Run(scenario, func(t *testing.T) {
 			m, _ := requirementExportManifestFixture(t)
 			raw, err := m.Bytes()
@@ -68,7 +68,25 @@ func TestGoRequirementExportBindsExactOriginalCreationAndAllMetadataReferences(t
 				value["dependency_closure"] = true
 				data, _ = json.Marshal(value)
 			}
-			payload, _ := json.Marshal(map[string]any{"tenant": tenant, "sequence": 7, "kind": kind, "data": json.RawMessage(data)})
+			// appendEventIntent emits these six original envelope fields. A
+			// synthetic four-field event is not the production creation shape.
+			envelope := map[string]any{"tenant": tenant, "sequence": 7, "kind": kind, "actor": s.Actor, "time": now.UTC().Format(time.RFC3339Nano), "data": json.RawMessage(data)}
+			switch scenario {
+			case "missing-envelope-actor":
+				delete(envelope, "actor")
+			case "wrong-envelope-actor":
+				envelope["actor"] = "another-operator"
+			case "missing-envelope-time":
+				delete(envelope, "time")
+			case "invalid-envelope-time":
+				envelope["time"] = "yesterday"
+			case "unknown-envelope-field":
+				envelope["delivery_verified"] = true
+			case "minimal-envelope":
+				delete(envelope, "actor")
+				delete(envelope, "time")
+			}
+			payload, _ := json.Marshal(envelope)
 			event := crypt.JournalEvent{Sequence: 7, PreviousHash: strings.Repeat("e", 64), Payload: string(payload)}
 			event.Hash = crypt.Digest([]byte(event.PreviousHash + "\n" + event.Payload))
 			bound, err := BindGoRequirementExportManifest(raw, m.Selection.Tenant, id, event)

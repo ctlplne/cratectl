@@ -1,8 +1,11 @@
 # Preview hosted Go requirement selection
 
-This preview is implemented with local unit/race evidence. Real PostgreSQL,
-original physical metadata, policy changes and trusted-TLS CLI comparisons have
-compiled native journeys; actual GitHub qualification is pending.
+This preview is qualified at source `44bc606`: all 26 selected native jobs and
+the actual read-only [verifier](https://github.com/ctlplne/cratectl/actions/runs/42416227577)
+pass. Both Linux hosts exercise real PostgreSQL/current policy and the actual
+TLS CLI comparison. See the [scoped checkpoint](../evidence/2026-11-07/github-44bc606-checkpoint.json).
+The newer [durable requirement export](go-requirement-exports.md) remains a
+separate implemented but unverified source change.
 
 Use a tenant administrator with current read access to the chosen hosted Go
 repository. Supply a single project's complete `go.mod` as a JSON string in a

@@ -1,113 +1,96 @@
 # cratectl execution status
 
-The full owner-amended GOAL4.1 stays active: all 450 capabilities, 41 format
-families, 14 export cases, seven environments and later stages remain required.
+The full owner-amended GOAL section 4.1 remains active: all 450 capabilities, 41 format
+families, 14 export cases, seven environments and later stages stay required.
 Broad readiness, security and packaging remain unqualified. Both commit identities
-are `imfeelingtheagi` on `main`. Public source/CI pushes are authorized; releases,
+are imfeelingtheagi on main. Public source/CI pushes are authorized; release,
 package/image publication and primary/customer/sibling changes remain outside work.
 
-## Latest accepted campaign
+## Latest accepted source
 
-[bb6f728](evidence/2026-11-07/github-bb6f728-checkpoint.json) passes all 26 selected
-native jobs across six workflows, with 19 unchanged safe summaries/76 reports.
-Actual read-only [verifier 42414571911](https://github.com/ctlplne/cratectl/actions/runs/42414571911)
-runs from compatible 44bc606 and accepts that exact older candidate. Every original
-log hash/byte count, safe member/report hash and 19 source-contract hashes match.
-No native test was restarted for acceptance.
+[44bc606](evidence/2026-11-07/github-44bc606-checkpoint.json) passes all 26 selected
+jobs/six workflows with 19 unchanged safe summaries/76 reports. Actual read-only
+[verifier42416227577](https://github.com/ctlplne/cratectl/actions/runs/42416227577)
+runs from 9bbfb79 and accepts that exact older candidate. All26 original log hashes/
+byte counts, safe member/report hashes and 19 source contracts independently match.
+No native tests were restarted. The unchanged verdict records its actual verifier
+head; its filename now reflects9bbfb79 as well as candidate44bc606.
 
-Both actual Linux hosts pass 284 PostgreSQL/106 named Go functions normally and
-under race, 312 stock Go checks and 683 baseline checks. Native Linux x86/ARM and
-macOS ARM source hosts pass 63 fuzz targets. Each Linux host passes 16 historical
-binaries/21 upgrades. Main Chromium passes 19 workflows/151 checks, including four
-declared management response stand-ins. Focused browser/library/strict profiles
-were unselected. Prior sources retain their own 15 focused/37 library observations.
+Both Linux hosts pass 286 PostgreSQL/108 named Go functions normally and under race,
+312 stock Go and 683 baseline checks. All three native source hosts pass 63 fuzz
+targets. Each Linux host passes16 historical binaries/21 upgrade reports. Main
+Chromium passes 19 workflows/151 checks, including four declared response stand-ins.
+Focused browser, library and strict profiles were unselected, never passes.
 
-Independent x86 producer/ARM consumer jobs pass all 34 portability stages: 16
-original plus 18 common. The owned common profile transfers exactly 31 original/
-proof/metadata files for eight roots through separate fingerprints and actual
-runner identities. Fourteen empty command networks, verified CLI PID/inode/UID/
-namespace/ancestry, process-descriptor SIGKILL, exact replay and eight refusal
-controls pass. Original signed proof, bytes/h1 and late-corruption refusals stay.
+The metadata preview and actual TLS CLI eight-module comparison are now qualified
+within that scope. Every examined input, including lower unselected versions,
+and selected root shares the final current read-only snapshot. Preview creates
+no session/pins/event/receipt/job. Closure, checksum authority and destination
+admission remain false. See [preview](docs/go-requirement-preview.md).
 
-This is a small owned private graph. The metadata resolver's modern eight-root
-comparison passes; broader version/replacement/exclusion/workspace/authority and
-package/platform cases remain required. Power loss, production providers, current
-checksum authority and destination admission remain unverified. Earlier 175 only
-observed an interrupted launcher/pipe; its evidence is not backdated to PID proof.
+Both independent portability jobs pass 34 stages:16 original plus18 common.
+The exact owned31-file/eight-root graph, three separate fingerprints, different
+actual API runner identities,14 empty command networks, verified CLI PID/inode/
+UID/namespace/ancestry, pidfd SIGKILL, replay and eight refusal controls pass.
+[bb6f728](evidence/2026-11-07/github-bb6f728-checkpoint.json) retains its own earlier
+accepted scope. No later result backdates175's weaker launcher/pipe observation.
+These small synthetic graphs do not establish power loss, production providers,
+full closure/authority/import/installation or broad platform/scale behavior.
 
-## Preview API and current campaign
+## Proof preparation campaign remains in flight
 
-Current 44bc606 runs main 42411971728, Go 42411971729, JVM 42411971764,
-OCI 42411971737, upgrades 42411971815 and portability 42411971787. Both Go jobs
-pass 108 named functions normally/race and stock clients. Both portability jobs
-pass, including the actual TLS CLI eight-module preview. OCI, upgrades and all
-JVM jobs pass. The last x86 full PostgreSQL/client job was still running; the
-whole 26-job verdict is pending. Source inventory is 286 PostgreSQL/108 Go/63 fuzz.
+Source 9bbfb79 uses main42415842289, Go42415842248, JVM42415842257,
+OCI42415842254, upgrades42415842283 and portability42415842226. The last observed
+inventory has24 successful jobs and two running full PostgreSQL/client jobs.
+All Go109 normal/race and stock-client, JVM, OCI, upgrade and portability jobs
+pass. Source/fuzz hosts pass 65 targets. Full287 PostgreSQL/26-job whole acceptance remains
+pending. Reuse the original handles; no redispatch for queue/observation delay.
 
-The [preview](docs/go-requirement-preview.md) reads original .mod bytes outside
-transactions, then rechecks every examined version, including unselected lower
-versions, and selected roots in one current read-only snapshot. It creates no
-session/pins/journal/receipt/job. See [ADR 0068](docs/adr/0068-go-requirement-preview-current-inputs.md)
-and its [local development record](evidence/2026-11-07/go-requirement-preview-development.json).
-Named native passes are distinct from the pending full campaign. Closure,
-checksum authority, physical-payload completeness and current admission stay false.
+## Durable requirement creation implemented but unverified
 
-## Immutable requirement proof preparation
+[ADR0070](docs/adr/0070-durable-go-requirement-creation.md) appends schema 18 with
+immutable forced-RLS graph/source references. All first 17 migrations remain frozen;
+new checksum6c60ac3e1228e57b54cdd99397ef4bccfb91cbd942b3437e41a63441b9ad1035.
+Qualified 17/bb6f728 is pinned for independent native historical rebuilds and
+actual 17-to-18 upgrade. The old selected-root manifest limit/row bytes stay intact.
 
-[ADR 0069](docs/adr/0069-immutable-go-requirement-export-proof.md) adds a canonical
-original-byte index, separate parent/source references, exact original creation-
-event binding and current store preparation. It retains examined lower versions
-and requires selected/examined repository, revision and .mod identities to agree.
-Distinct canonical +incompatible versions have a deterministic identity ordering.
+Creation stages all original metadata first and atomically commits the shared
+session/roots/items, graph/source refs, original event, exact receipt and job under
+the all-input mutation fence. Current legacy payload/renewal and graph metadata
+reads check every examined input. Terminal states release selected payload pins;
+original graph/project/index/source-manifest/.mod audit refs remain inventoried.
+See the [API/CLI usage](docs/go-requirement-exports.md) and
+[development record](evidence/2026-11-07/go-requirement-durable-creation-development.json).
 
-[Development](evidence/2026-11-07/go-requirement-export-proof-development.json):
-12 pure unit functions and normal/race/ARM build/test/lint gates pass. The bounded
-proof fuzz run observes 36,486 executions; the parent time smoke observes five,
-and a separate bounded 100-iteration check passes. No broad fuzz coverage claim.
-The new real-PostgreSQL preparation case compiles normally/race and passes vet
-only. Future native inventory is 287 PostgreSQL/109 Go/65 fuzz targets.
+Local ARM build/unit/race/lint pass. Tagged normal/race compilation and vet pass
+only. Real PostgreSQL, actual socket/TLS CLI, schema boundaries and old-daemon
+upgrades are unverified for this source. Required new inventory: 294 PostgreSQL/116 namedGo/
+65 fuzz;17 historical binaries/22 upgrade reports per Linux host. Changed shared
+schema inputs should select 31 jobs/eight workflows/24 safe summaries/95 reports;
+actual GitHub API inventory governs. Strict checksum lanes remain unselected.
 
-The planner emits private immutable main/index/source/selection/parent metadata
-for staging and syncing. It creates no durable graph session. Creation under the
-mutation fence, new forced-RLS graph references, current delivery guards, retention,
-resumable collection and independently signed offline caller integration remain
-required. No new migration or public creation route is implemented yet.
+The verifier allows two exact frozen schema-17 boundaries: the upgrade workflow's
+new baseline loop/title and the summary extractor's matching count/schema bound.
+It records original/verifier hashes and checks old jobs against their original
+16-pin contracts. New schema-18 sources require all 17 pins. Every other closed
+source file must match. Original 9bb jobs can finish without replay.
 
-## Retained original failures
+## Continue the complete goal
 
-[704 original](evidence/2026-11-07/github-704e81a-original-failure-checkpoint.json):
-27 passed, one failed and one skipped; 21 unchanged safe summaries/89 reports and
-all 28 executed-job logs retained. DEFECT.0142 exceeded the unchanged 300-second
-command bound before the common fixture started; its consumer was skipped.
+Retain/accept the original 9bb campaign, qualify the new durable creation source,
+then complete resumable graph collection and independently signed offline caller
+integration. Existing explicit-set collectors do not authenticate this new parent.
+Finish native SDK competing-version/replacement/exclusion/workspace differentials,
+package/platform closure, source precedence/authority, current scanning/import/
+server-session/operator/console outcomes, lifecycle/physical GC, providers/Windows,
+Compose/Helm/offline install, backup/HA/scale/soak and all remaining goal scope.
+External legal/licensed-comparator/capacity inputs block only their specific rows.
 
-[f780 original](evidence/2026-11-07/github-f7802a4-original-failure-checkpoint.json):
-all 18 jobs terminal, 16 passed/one failed/one skipped, ten safe summaries/66 reports
-and all 17 executed-job logs retained. Its repaired timeout exposed the wrong
-fixture tenant (DEFECT.0143). Exact bb replay repairs both; original failures and
-skips remain unqualified. Earlier partial observations are retained unchanged.
+Original704/f780/976 failures remain retained and failed; their later repairs have
+separate scoped acceptance. Strict Go1.27.3 DEFECT.0126 and unknown browser
+DEFECT.0122 remain open. Skipped/unselected gates never become passes.
 
-[976 original](evidence/2026-11-07/github-976e8c7-original-failure-checkpoint.json)
-retains its four graph-count failures. DEFECT.0141 was repaired and fully replayed
-at 175 without changing the SDK, directive, roots, assertions or budgets. Strict
-Go1.27.3 DEFECT.0126 and unknown browser DEFECT.0122 remain open.
-
-## Continue the full goal
-
-Finish 44's original campaign/verdict. Qualify the proof/preparation source, then
-complete immutable staged creation with all-input mutation-fence checks, atomic
-shared session/graph references/event/receipt/job intent, current renewal/delivery
-and inventory/retention rules, full signed collection and offline verification.
-Append schema 18 only with a qualified schema-17 historical binary/upgrade gate;
-preserve all existing definitions and old durable bytes.
-
-Continue package/platform closure, source precedence/authority, current scanning/
-import/server-session/console outcomes, lifecycle/physical GC, providers, Windows
-ACLs, Compose/Helm/offline installation, backup/HA/scale/soak and all remaining goal
-scope. External legal, licensed-comparator and capacity inputs block only their rows.
-
-All 17 migration definitions/checksums remain frozen. The primary stays stopped
-at schema 11/5483878b with ten original receipts. New binaries stay in `.cache/`;
-credentials stay in `.private/` (0700). Both directories remain ignored.
-
-[Previous status](docs/qualification/status-history-before-bb6f728-acceptance.md)
-is preserved byte for byte. SHA256: 796afb57ec2c12dcd5a96a9231e9ef4afb7f0255130d40e8e246eb7b39329baf.
+The primary remains stopped at 11/5483878b with ten original receipts. New binaries
+stay under.cache; .private remains0700. Both directories remain ignored. Preserve
+all original evidence and owner identity. [Previous status](docs/qualification/status-history-before-44bc606-acceptance.md)
+is unchanged, SHA256a4e3b939e08396a45e1532edfd33e02e5adb2eb56fbf4ea2705ecad1f0c26cd6.

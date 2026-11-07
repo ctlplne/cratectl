@@ -29,6 +29,10 @@ func TestGoModuleExportSetSchema16UpgradePreservesAllOldRowsReceiptsAndRLS(t *te
 	testGoExportOldSchemaUpgrade(t, 16)
 }
 
+func TestGoModuleRequirementExportSchema17UpgradePreservesEveryOldRowReceiptAndImmutableRLS(t *testing.T) {
+	testGoExportOldSchemaUpgrade(t, 17)
+}
+
 func testGoExportOldSchemaUpgrade(t *testing.T, baseline int) {
 	t.Helper()
 	d := testdb.New(t)
@@ -82,6 +86,17 @@ func testGoExportOldSchemaUpgrade(t *testing.T, baseline int) {
 			}
 		}
 	}
+	if baseline >= 17 {
+		for _, sql := range []string{
+			`INSERT INTO cratectl.artifact_export_sets(tenant,id,actor,manifest_digest,manifest_size,root_count,artifact_bytes,state,generation,created_sequence,change_sequence,created_at,changed_at,expires_at,max_expires_at)VALUES('schema14-export',repeat('d',64),'operator',repeat('e',64),37,1,7,'acknowledged',2,1,1,clock_timestamp(),clock_timestamp(),clock_timestamp()+interval '1 hour',clock_timestamp()+interval '23 hours')`,
+			`INSERT INTO cratectl.artifact_export_set_roots(tenant,set_id,ordinal,repository,source_revision,module,version)VALUES('schema14-export',repeat('d',64),0,'retained',0,'go.cratectl.invalid/Owned/fixture','v1.0.0')`,
+			`INSERT INTO cratectl.artifact_export_set_items(tenant,set_id,root_ordinal,ordinal,path,digest,size)VALUES('schema14-export',repeat('d',64),0,0,'original.bin',repeat('a',64),7)`,
+		} {
+			if _, err := tx.Exec(ctx, sql); err != nil {
+				t.Fatal("owned declared17 common export rows", err)
+			}
+		}
+	}
 	if err := tx.Commit(ctx); err != nil {
 		t.Fatal(err)
 	}
@@ -99,6 +114,9 @@ func testGoExportOldSchemaUpgrade(t *testing.T, baseline int) {
 		tables := []string{"tenants", "repositories", "artifacts", "events", "jobs", "mutations", "inventory_entries"}
 		if baseline >= 15 {
 			tables = schemaTablesV15
+		}
+		if baseline >= 17 {
+			tables = schemaTablesV17
 		}
 		for _, name := range tables {
 			expr := "to_jsonb(x)"
@@ -118,8 +136,8 @@ func testGoExportOldSchemaUpgrade(t *testing.T, baseline int) {
 		t.Fatal(err)
 	}
 	afterPlan, err := MigrationPlan(ctx, d.OwnerDSN)
-	if err != nil || len(afterPlan.Applied) != 17 || !afterPlan.SafetyValid || !reflect.DeepEqual(afterPlan.Applied[:baseline], beforePlan.Applied) || !reflect.DeepEqual(before, snapshot(true)) {
-		t.Fatal("schema17 changed old durable bytes or receipts", err)
+	if err != nil || len(afterPlan.Applied) != 18 || !afterPlan.SafetyValid || !reflect.DeepEqual(afterPlan.Applied[:baseline], beforePlan.Applied) || !reflect.DeepEqual(before, snapshot(true)) {
+		t.Fatal("schema18 changed old durable bytes or receipts", err)
 	}
 	runtime, err := pgx.Connect(ctx, d.RuntimeDSN)
 	if err != nil {
@@ -127,19 +145,19 @@ func testGoExportOldSchemaUpgrade(t *testing.T, baseline int) {
 	}
 	defer runtime.Close(ctx)
 	if err := checkSchemaPlan(ctx, runtime, steps[:baseline], true); !errors.Is(err, ErrSchemaIncompatible) {
-		t.Fatal("old runtime admitted17", err)
+		t.Fatal("old runtime admitted18", err)
 	}
 	if err := checkSchemaPlan(ctx, runtime, steps, true); err != nil {
-		t.Fatal("matching17 runtime refused", err)
+		t.Fatal("matching18 runtime refused", err)
 	}
-	for _, name := range []string{"artifact_exports", "artifact_export_items", "artifact_export_sets", "artifact_export_set_roots", "artifact_export_set_items"} {
+	for _, name := range []string{"artifact_exports", "artifact_export_items", "artifact_export_sets", "artifact_export_set_roots", "artifact_export_set_items", "artifact_export_set_requirements", "artifact_export_set_requirement_sources"} {
 		var n int
 		if err := runtime.QueryRow(ctx, `SELECT count(*) FROM cratectl.`+name).Scan(&n); err != nil || n != 0 {
 			t.Fatal("tenantless runtime exposed exports", name, err)
 		}
 	}
 	if err := Migrate(ctx, d.OwnerDSN); err != nil {
-		t.Fatal("schema16 no-op replay", err)
+		t.Fatal("schema18 no-op replay", err)
 	}
 	if baseline >= 15 {
 		for name, definition := range map[string]string{
@@ -215,6 +233,32 @@ func testGoExportOldSchemaUpgrade(t *testing.T, baseline int) {
 			if _, err := owner.Exec(ctx, `ALTER TABLE cratectl.`+name+` FORCE ROW LEVEL SECURITY`); err != nil {
 				t.Fatal(err)
 			}
+		}
+	}
+	if baseline == 17 {
+		for _, name := range []string{"artifact_export_set_requirements", "artifact_export_set_requirement_sources"} {
+			for _, statement := range []string{`UPDATE cratectl.` + name + ` SET manifest_digest=repeat('e',64)`, `DELETE FROM cratectl.` + name, `TRUNCATE cratectl.` + name} {
+				if _, err := runtime.Exec(ctx, statement); err == nil {
+					t.Fatal("runtime can rewrite immutable graph reference", statement)
+				}
+			}
+			for _, unsafe := range []string{`ALTER TABLE cratectl.` + name + ` NO FORCE ROW LEVEL SECURITY`, `GRANT UPDATE(manifest_digest) ON cratectl.` + name + ` TO cratectl_app`} {
+				if _, err := owner.Exec(ctx, unsafe); err != nil {
+					t.Fatal(err)
+				}
+				if _, err := MigrationPlan(ctx, d.OwnerDSN); !errors.Is(err, ErrSchemaIncompatible) {
+					t.Fatal("owner admitted unsafe requirement table", name, err)
+				}
+				if err := checkSchemaPlan(ctx, runtime, steps, true); !errors.Is(err, ErrSchemaIncompatible) {
+					t.Fatal("runtime admitted unsafe requirement table", name, err)
+				}
+				if _, err := owner.Exec(ctx, `ALTER TABLE cratectl.`+name+` FORCE ROW LEVEL SECURITY; REVOKE UPDATE(manifest_digest) ON cratectl.`+name+` FROM cratectl_app`); err != nil {
+					t.Fatal(err)
+				}
+			}
+		}
+		if plan, err := MigrationPlan(ctx, d.OwnerDSN); err != nil || !plan.SafetyValid || !reflect.DeepEqual(plan.Applied, afterPlan.Applied) || !reflect.DeepEqual(before, snapshot(true)) {
+			t.Fatal("restoring requirement boundary changed old rows or receipts", err)
 		}
 	}
 	if _, err := owner.Exec(ctx, `ALTER TABLE cratectl.artifact_exports NO FORCE ROW LEVEL SECURITY`); err != nil {
