@@ -122,6 +122,9 @@ func fail(w http.ResponseWriter, status int, code, action string) {
 }
 func respondErr(w http.ResponseWriter, e error) {
 	switch {
+	case errors.Is(e, store.ErrGoChecksumProofExpired):
+		w.Header().Set("Retry-After", "1")
+		fail(w, 503, "go_checksum_proof_expired", "This repository requires recent checksum verification. Retry when its configured module source and checksum authority are available; inspect the repository proof policy if this persists.")
 	case errors.Is(e, store.ErrGoModuleCacheExpired):
 		w.Header().Set("Retry-After", "1")
 		fail(w, 503, "go_module_cache_expired", "The Go source needs revalidation. Retry after the source is available; inspect repository jobs if this persists.")

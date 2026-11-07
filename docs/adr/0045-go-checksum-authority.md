@@ -5,8 +5,8 @@ proof collection qualified in named internal profiles. Durable timeline and
 atomic publication qualify in38native GoPGfunctions normally/race. Actual proof
 readback/current opaque admission qualifies in43native GoPGfunctions normally/
 race; configured renewable fills qualify in48at2da onboth Linuxhosts. Current
-bounded metadata discovery adds3PGfunctions pending native replay. Customer
-journeys stay open.
+bounded metadata discovery qualifies in51atc615 onboth Linuxhosts. Explicit proof
+reuse/age policy adds4PGfunctions pending native replay. Customer journeys stay open.
 This consumes an external verification service. It does not introduce a signing
 service, key custody, CA, vault or workload issuer; GOAL section 4.1 governs.
 
@@ -210,7 +210,7 @@ classification. Exact2da executes all48namedGoPGfunctions normally/race and
 312stock checks onboth native GitHub Linuxhosts. Its wider222PG campaign remains
 separate. Public repository creation/HTTP proxy routing stays gated.
 
-## Bounded checksum discovery, native replay pending
+## Bounded checksum discovery, qualified internally
 
 Version lists and latest selection apply the same repeatable-read group/source
 snapshot to a bounded receipt/proof-policy witness. One batch query per source
@@ -246,8 +246,63 @@ raw identity and proof policy fences, expired/refreshing/transient routing,
 permanent failures, group shadowing and namespace ownership, unknown hints,
 SQL/aggregate budgets, retained history and cross-epoch proof reuse. One8case
 unit function and a new metadata fuzz target cover shared proof metadata parsing.
-The45thtarget passed127595local ARM executions in11.262seconds. Current51Go/
-225fullPG compile normally/race; actual new-source native execution is required.
+The45thtarget passed127595local ARM executions in11.262seconds. Exactc615 runs
+all51namedGoPGfunctions normally/race and312stock checks onboth actual GitHub
+Linuxhosts. Its wider225fullPG/45fuzz campaign stays separately tracked.
+
+## Explicit proof reuse and age policy, native replay pending
+
+Each private checksum authority now requires an explicit `proof_policy` with
+one of these choices; there is no implicit proof-age default:
+
+- `{"mode":"retained"}`: no age requirement on a previously accepted proof.
+  Its exact current key/history, package cache, source epoch, review, decisions
+  and lifecycle still govern every read. This permits retained proof verification
+  without a network call on an otherwise admitted cache hit.
+- `{"mode":"max_age","max_age_seconds":86400}`: require a complete verification
+  accepted by cratectl within this window. The supported range is1second–1year.
+  This measures local acceptance time, not external log publication/content age,
+  online contact, scan freshness or a promise that the log supplied its newest head.
+
+The immutable checksum receipt supplies acceptance time and PostgreSQL supplies
+current time. Future observations and the exact expiry boundary fail closed.
+Policy validation rejects a missing policy, unknown mode, age on retained mode,
+zero/negative max-age and values beyond the declared bound. Test constructors
+explicitly choose retained mode; no private signing key or implicit public service
+is introduced. Source migrations1–12 and the retained primary stay unchanged.
+
+A fresh HTTP cache hit whose otherwise-admitted proof has expired triggers at
+most one complete governed bundle/proof refresh. Its observed retrieval generation
+is compared under the common tenant transaction and row lock. A delayed observer
+receives a newer state for re-evaluation instead of forcing a second fill after
+another request completed. Twelve concurrent expired reads share the same fill.
+Current proof denial/retirement and package policy are checked before age; these
+permanent blocks must not become refreshable errors that replace operator-blocked
+evidence. Origin stale permissions cannot override proof expiry. An unavailable
+checksum authority still fails as unverified evidence without stale admission.
+
+The opaque admission binds the exact proof-policy value. The final current
+readback witness rechecks current policy and database time after physical object
+reads; expiry or a same-epoch policy change denies bytes. Expiry returns a fixed
+503 `go_checksum_proof_expired`, Retry-After1 and a bounded operator action,
+without private error text or a not-found response that authorizes fallback.
+
+Normal configuration changes also advance the source epoch, so a new mode cannot
+silently approve the old source's receipts. The public Go proxy route/configuration
+remains gated; these are internal contracts pending complete customer journeys.
+Retained proof verification alone does not implement a disconnected cache,
+complete offline installation, intelligence updates or offline customer recovery.
+Those required product outcomes remain open, alongside original failed-proof/fork
+evidence and tenant/key-wide governance.
+
+Four new PostgreSQL functions/22fixed cases cover retained/recent/expired/future
+proofs, denial/retirement before expiry, ordinary stale refusal, post-readback
+policy/time changes, actual package readback then expiry, unavailable source/log,
+12concurrent callers and delayed-generation fencing with unchanged signed trust.
+Two new unit functions/15cases plus2expanded authority cases and a46thfuzz target
+cover explicit policy/time bounds and safe HTTP errors. The fuzzer passed204398
+ARM executions in10.887seconds. Current55Go/229fullPG compile normally/race;
+actual new-source native execution is required before qualification.
 
 ## Required integration, in dependency order
 

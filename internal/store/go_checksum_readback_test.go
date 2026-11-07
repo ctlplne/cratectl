@@ -21,7 +21,7 @@ func checksumReadbackFixture(t testing.TB) (checksumTimeline, GoModuleChecksumRe
 	if err != nil {
 		t.Fatal(err)
 	}
-	v := GoModuleChecksumReadback{key: f.Key, checkpoint: bytes.Clone(f.One), binding: goChecksumBinding{tenant: "proof-team", repository: "owned", rootPath: (gomodule.Coordinate{Module: f.Module, Version: "v1.0.0"}).Prefix() + ".zip", sourceRevision: 0, generation: 1, validationGeneration: 1, keyDigest: head.KeyDigest, checkpointDigest: crypt.Digest(f.One), checkpointRevision: 2, proofDigest: p.Object.Digest, proofSize: p.Object.Size, module: f.Module, version: "v1.0.0", zipHash: p.ZIPHash, modHash: p.ModHash, rawDigests: [3]string{strings.Repeat("a", 64), strings.Repeat("b", 64), strings.Repeat("c", 64)}}}
+	v := GoModuleChecksumReadback{key: f.Key, checkpoint: bytes.Clone(f.One), binding: goChecksumBinding{proofPolicy: GoChecksumProofPolicy{Mode: "retained"}, tenant: "proof-team", repository: "owned", rootPath: (gomodule.Coordinate{Module: f.Module, Version: "v1.0.0"}).Prefix() + ".zip", sourceRevision: 0, generation: 1, validationGeneration: 1, keyDigest: head.KeyDigest, checkpointDigest: crypt.Digest(f.One), checkpointRevision: 2, proofDigest: p.Object.Digest, proofSize: p.Object.Size, module: f.Module, version: "v1.0.0", zipHash: p.ZIPHash, modHash: p.ModHash, rawDigests: [3]string{strings.Repeat("a", 64), strings.Repeat("b", 64), strings.Repeat("c", 64)}}}
 	return f, v, p.Proof
 }
 

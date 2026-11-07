@@ -31,37 +31,39 @@ profiles. Its cause remains unknown. KeepDEFECT.0122 intermittent/open; new
 bounded encrypted assertion/process-log coverage is instrumentation, not proof
 of repair. No retry/deadline increase or original failure removal.
 
-The [whole b6 campaign](../../evidence/2026-11-06/github-b6bb53f-checkpoint.json)
+The [whole2da campaign](../../evidence/2026-11-06/github-2da6957-checkpoint.json)
 now accepts all24actually selected jobs/5workflows,17safe summaries/62reports,
-217fullPGnormally/race on bothLinuxhosts and44fuzz/source/unit/race/lint on3native
-hosts. Library/focused were unselected; retain their previous5ee source-specific
-results. Original5380jobs68failure remains unknown/intermittent, not repaired.
+222fullPGnormally/race onbothLinuxhosts and44fuzz/source/unit/race/lint on3native
+hosts. Library/focused were unselected; their previous5ee source-specific results
+remain. Original5380jobs68failure is still unknown/intermittent, not repaired.
 
-The [exact2da named Go checkpoint](../../evidence/2026-11-06/go-module-2da6957-native-checkpoint.json)
-qualifies48PGfunctions normally/race and all312stock checks onboth native Linux
-hosts. Configured renewable fill,12concurrent callers,8faults, held-proof lease
-renewal, one proof-only CAS recollection and known signed fork/no-stale are now
-observed. Its wider222PG/44fuzz campaign remains separately tracked.
+The [exactc615 named Go checkpoint](../../evidence/2026-11-06/go-module-c615c42-native-checkpoint.json)
+qualifies51PGfunctions normally/race and312stock checks onboth native Linuxhosts,
+including3bounded checksum discovery functions/39cases. Its wider225PG/45fuzz
+campaign remains separately tracked. No full Go/readiness inference follows.
 
-The [current discovery development](../../evidence/2026-11-06/go-checksum-discovery-development.json)
-adds3PGfunctions/39cases plus one8case unit function and a45thfuzz target.
-Current51Go/225fullPG must run normally/race onboth native GitHub Linuxhosts;
-45fuzz/source/unit/race/lint stays on3native hosts. Preserve312stockGo, all other
-actually selected client profiles and11historical native/16upgrade reportsperarch.
-No new workflow, duplicate dispatch, retry/deadline increase or case removal.
-Local ARM gates/tagged compile/vet pass; no localPG/JVM/SDK campaigns or emulatedx86.
+The [current proof policy development](../../evidence/2026-11-06/go-checksum-policy-development.json)
+adds4PGfunctions/22cases,2new unit functions/15cases plus2expanded authority
+cases and a46thfuzz target. Current55Go/229fullPG must run normally/race onboth
+native GitHub Linuxhosts;46fuzz/source/unit/race/lint stays on3native hosts.
+Preserve312stockGo, every actually selected client profile and11historical native/
+16upgrade reportsperarch. No new workflow, duplicate dispatch, retry/deadline
+increase or case removal; the existing selectors discover the new source tests.
+Local ARM gates/tagged compile/vet pass; no localPG/JVM/SDK or emulatedx86.
 
-Discovery now uses one bounded known-root receipt/proof-policy batch per source
-under the existing complete-view budget. Expired complete packages can still
-route for refresh, but missing receipts, current proof denial/retirement or
-permanent checksum failures retain first-source blocking. Catalog/unknown version
-advertisements never grant bytes; physical proof readback/current guards remain.
+Each configured checksum authority requires an explicit retained or max_age proof
+policy. Age is cratectl's verification acceptance time, not external log freshness.
+Expiry causes one generation-fenced governed refresh, never a stale override or
+replacement of denied/retired proof. Final current guards recheck time/policy after
+physical object reads;12concurrent requests must share one fill. Record the new
+exact-source normal/race results separately from earlier discovery qualification.
 
-Then complete explicit offline/freshness policy and original failure/fork evidence
-with tenant/key-wide governance; customer/export/backup/GC and checksum-on stock
-proxy/group journeys before public mode. Keep independent client GOSUMDB policy,
-original hosted/group checks and every original failure. Running main jobs remain
-preserved; the retained schema11 primary is outside disposable CI maintenance.
+Then complete original failed-proof/fork bytes and tenant/key-wide governance,
+disconnected-cache/installation policy, customer/export/backup/GC and checksum-on
+stock proxy/group journeys before public mode. Keep independent client GOSUMDB
+policy, original hosted/group checks and every original failure. Retained proof
+verification alone is not a complete offline result. Preserve all running main
+jobs; primary11 is outside disposable CI maintenance scope.
 
 Earlier source-specific observations below retain their historical limits; the
 newest exact checkpoint above governs current qualified scope.
@@ -438,7 +440,7 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 | `jvm-clients.yml`: Gradle / 2 | Both native Linux architectures; real PostgreSQL | Gradle9.8.2, exact JDK21 build, eight stages and24 publisher/reference/raw-HTTP digests. 60-minute job. Named v2 profile passes; broader JVM remains open. |
 | `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0 and exact JDK. Cache-v4 passes666checks/10stages/34wire+6cachebindings on both hosts at0edd, retaining all release/metadata/snapshot/SHA-2 cases. 60-minute job. Broader Ivy remains open. |
 | `jvm-clients.yml`: SBT / 4 | SBT1.13.0 and2.0.11, each on native Linux amd64/arm64; real PostgreSQL | Snapshot-v2 passes269checks/8stages/8snapshotcases/18bindings on all4cases at0cff, retaining every release case. Frozen tool-only boot cache/fresh project caches. Five-minute bootstrap, two-minute commands, 60-minute job. |
-| `go-modules.yml`: hosted/group and intake / 2 | Native Linux amd64/arm64; pinned Go, real PostgreSQL16.15, trusted loopback TLS | Current29PGfunctions are required normally/race; exact3b qualifies28plus the original312profile. Configured checksum collection needs a new exact replay. Exact4a passes both hosts with13PGfunctions and312checks/all9stages/24wire/16cache. Original1cfailures retained;Exact8f qualifies23PGnormal/race and full312check hosted-group-v2;2advertisement functions compile only. Original failures retained.45-minute job; public proxy remains rejected. |
+| `go-modules.yml`: hosted/group and private checksum foundation / 2 | Native Linux amd64/arm64; pinned Go, real PostgreSQL16.15, trusted loopback TLS | Exactc615 qualifies51PG normally/race and312stock checks/9stages24wire16cache onboth hosts, including bounded metadata discovery. Current55PG adds explicit proof reuse/age and generation-fenced expiry refresh; compile-only locally pending exact native replay. Preserve all original cases/failures;45-minute job. Public proxy remains gated until complete checksum-on customer journeys. |
 | `nuget-contract.yml`: libraries / 2 | Both native Linux architectures; exact SDK10.0.403 selection | Original37assertions/unchanged dense corpora pass both at1974, actual runtime10.0.14 and separate DLLhashes. 20-minute job. Does not replace actual NuGet HTTP/restore/restart proof. |
 | `oci-clients.yml`: native clients / 2 | Both native Linux architectures; Docker, Podman, Helm, real PostgreSQL | Actual publication/consumption and policy/tenant/recovery cases with inert owned data; 45-minute job. Do not execute the uploaded image. External-provider interoperability is separate. |
 | `browser-repair.yml`: focused / 3 on relevant pushes | Native x86 Chromium; five fresh PostgreSQL databases per selected journey | Repair, retention and NuGet each repeat five complete journeys; 45-minute job. Manual dispatch selects one. Stop on failure; no retries/skips count as acceptance. |

@@ -46,7 +46,7 @@ func checksumTimelineFixture(t testing.TB) checksumTimeline {
 }
 
 func (f checksumTimeline) authority() GoChecksumAuthority {
-	return GoChecksumAuthority{Endpoint: upstream.Config{URL: "http://127.0.0.1:38443/checksum/", Networks: []string{"127.0.0.1/32"}}, VerifierKey: f.Key, InitialCheckpoint: f.Initial}
+	return GoChecksumAuthority{Endpoint: upstream.Config{URL: "http://127.0.0.1:38443/checksum/", Networks: []string{"127.0.0.1/32"}}, VerifierKey: f.Key, InitialCheckpoint: f.Initial, ProofPolicy: &GoChecksumProofPolicy{Mode: "retained"}}
 }
 
 func (f checksumTimeline) publication(t testing.TB, version string, snapshot crypt.GoSumDBSnapshot, expected int64) GoModuleChecksumPublication {

@@ -14,12 +14,16 @@ import (
 // metadata. InitialCheckpoint bootstraps a new key, never resets a retained
 // timeline. Public Go proxy creation remains gated until durable integration.
 type GoChecksumAuthority struct {
-	Endpoint          upstream.Config `json:"endpoint"`
-	VerifierKey       string          `json:"verifier_key"`
-	InitialCheckpoint []byte          `json:"initial_checkpoint"`
+	Endpoint          upstream.Config        `json:"endpoint"`
+	VerifierKey       string                 `json:"verifier_key"`
+	InitialCheckpoint []byte                 `json:"initial_checkpoint"`
+	ProofPolicy       *GoChecksumProofPolicy `json:"proof_policy"`
 }
 
 func (a GoChecksumAuthority) Validate() error {
+	if a.ProofPolicy == nil || a.ProofPolicy.validate() != nil {
+		return crypt.ErrGoChecksumAuthority
+	}
 	if a.Endpoint.AllowSignedQuery || a.Endpoint.CredentialRef != "" && !Name.MatchString(a.Endpoint.CredentialRef) {
 		return crypt.ErrGoChecksumAuthority
 	}

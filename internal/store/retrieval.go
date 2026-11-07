@@ -81,6 +81,20 @@ func (s *Store) AcquireRetrieval(ctx context.Context, i Identity, repo, path, to
 	return s.AcquireRetrievalWithLease(ctx, i, repo, path, token, force, limit, 150*time.Second)
 }
 func (s *Store) AcquireRetrievalWithLease(ctx context.Context, i Identity, repo, path, token string, force bool, limit int, lease time.Duration, expected ...int64) (Retrieval, error) {
+	return s.acquireRetrievalWithLease(ctx, i, repo, path, token, force, limit, lease, expected, 0)
+}
+
+// AcquireRetrievalRefresh forces only the generation whose proof was observed
+// expired. If another caller already refreshed it, return the current state for
+// re-evaluation instead of starting a second forced fill from a stale observation.
+func (s *Store) AcquireRetrievalRefresh(ctx context.Context, i Identity, observed Retrieval, token string, limit int, lease time.Duration) (Retrieval, error) {
+	if observed.Generation <= 0 || observed.SourceRevision < 0 {
+		return Retrieval{}, ErrConflict
+	}
+	return s.acquireRetrievalWithLease(ctx, i, observed.Repository, observed.Path, token, true, limit, lease, []int64{observed.SourceRevision}, observed.Generation)
+}
+
+func (s *Store) acquireRetrievalWithLease(ctx context.Context, i Identity, repo, path, token string, force bool, limit int, lease time.Duration, expected []int64, generation int64) (Retrieval, error) {
 	if limit <= 0 || lease < time.Second || lease > 5*time.Minute || token == "" {
 		return Retrieval{}, ErrConflict
 	}
@@ -104,6 +118,9 @@ func (s *Store) AcquireRetrievalWithLease(ctx context.Context, i Identity, repo,
 			return e
 		}
 		if e == nil && r.SourceRevision == cfg.SourceRevision {
+			if generation > 0 && r.Generation != generation {
+				return nil
+			}
 			if r.State == "fetching" && r.LeaseUntil.After(r.Now) {
 				return ErrBusy
 			}

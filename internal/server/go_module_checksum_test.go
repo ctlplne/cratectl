@@ -55,7 +55,7 @@ func goChecksumServer(t *testing.T, url string, f publicGoChecksum) (*Server, st
 	s := New(nil, objects, "")
 	s.PrivateUpstreamNetworks = []string{"127.0.0.1/32"}
 	i := store.Identity{Tenant: "checksum-team", Actor: "operator", Role: "admin"}
-	r := store.Repository{Name: "source", Format: "go", Mode: "proxy", Settings: store.RepositorySettings{Upstream: &upstream.Config{URL: url + "/go/source/", Networks: []string{"127.0.0.1/32"}}, Cache: store.CacheSettings{FreshSeconds: 60}, GoChecksumAuthority: &store.GoChecksumAuthority{Endpoint: upstream.Config{URL: url + "/checksum/", Networks: []string{"127.0.0.1/32"}}, VerifierKey: f.Key, InitialCheckpoint: f.Initial}}}
+	r := store.Repository{Name: "source", Format: "go", Mode: "proxy", Settings: store.RepositorySettings{Upstream: &upstream.Config{URL: url + "/go/source/", Networks: []string{"127.0.0.1/32"}}, Cache: store.CacheSettings{FreshSeconds: 60}, GoChecksumAuthority: &store.GoChecksumAuthority{Endpoint: upstream.Config{URL: url + "/checksum/", Networks: []string{"127.0.0.1/32"}}, VerifierKey: f.Key, InitialCheckpoint: f.Initial, ProofPolicy: &store.GoChecksumProofPolicy{Mode: "retained"}}}}
 	return s, i, r
 }
 

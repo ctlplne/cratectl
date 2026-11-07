@@ -1,0 +1,124 @@
+{
+  "observed_at": "2026-11-07T00:10:23.597483+00:00",
+  "source_parent": "c615c4240f9b1bb4dfb7fca23b03b68b635639ab",
+  "source_dirty": true,
+  "state": "implemented internal explicit proof reuse/age policy; new native PostgreSQL replay pending",
+  "source_sha256": {
+    "internal/server/go_module_checksum_controller_integration_test.go": "ab14699feba85e9ce17e1a1854c814722d36483db1a6c0819ecbf716b64148c5",
+    "internal/server/go_module_checksum_readback_integration_test.go": "bc042782a6ba12b9362979b0f730e44698b3722ccbe3040869cd5074914c5d60",
+    "internal/server/go_module_checksum_test.go": "b6dfaa1785faee6f2d76c92f97262727b726b21a6abf09ec51c61801ec289a60",
+    "internal/server/go_module_proof_policy_integration_test.go": "0bea1049d13805d76f1c1cbfa13f244d2b2d5efb835322b6a9fdd8a2b231d2f2",
+    "internal/server/go_module_proof_policy_test.go": "54ac5354537360ffe16231a51f8e9c7e5b04f81595f953d03b6ee56a9235744f",
+    "internal/server/resolve.go": "f1c314b38327050c802a37799f8994c9144abb7af446ec3842683391765096cc",
+    "internal/server/server.go": "671df55686c6c98a4f82e12b3f2fa0ea2dca04364cc0d18ff1678b71f877810f",
+    "internal/store/go_checksum_checkpoint_test.go": "425bfa6cf6bd0cfd3b3dcf6c468dd0e8c3c97c382e8fc4e387e26cb1bf86605f",
+    "internal/store/go_checksum_policy.go": "137a41aa18f983bb79b9f2df18a1d5155c03458f3bd3104fd3c7675fd0a6a61c",
+    "internal/store/go_checksum_policy_test.go": "1273a3b04788530870ee365a7d81fd01d176b0d445852a617719838bcd4efea9",
+    "internal/store/go_checksum_readback.go": "a495ef8541ebe7d04f92d6471733e4e0addb8ea831fbb3d67324c1c1d65f6a8f",
+    "internal/store/go_checksum_readback_test.go": "1e27af053aa3142969c8df55930bd98fd479819c50a85a97ffbf580a0bf8a895",
+    "internal/store/go_module_checksum.go": "06f129606850ad39f5e19bf08a46c19f3fc48d5bd2364713d472b673591341b1",
+    "internal/store/go_module_checksum_test.go": "326fa7dfe33f228e40abf0841ca8a3fc45074108b41deb6bff63b7b0c5d97f96",
+    "internal/store/go_module_proof_policy_integration_test.go": "c220b2df6169d341693ee6d993aacdb1ced5ab4589e7f1d563846f9848c7812d",
+    "internal/store/retrieval.go": "a42af77015adc635aa6f77454a1107f3d26e23d669b5c21b27c54ab546560b3e"
+  },
+  "prior_native_checkpoint": "evidence/2026-11-06/go-module-c615c42-native-checkpoint.json",
+  "prior_whole_selected_checkpoint": "evidence/2026-11-06/github-2da6957-checkpoint.json",
+  "implementation": [
+    "Configured private authorities require explicit retained or max_age proof policy. Retained imposes no proof age; max_age allows1second\u20131year since local complete proof acceptance, not external log content/publication age, recent online contact or scan freshness. Package/source/cache/review/trust/lifecycle remain independent.",
+    "Receipt created_at and PostgreSQL current time reject future/exact-boundary/expired observations under max_age. Opaque admission binds exact policy and final current witness rechecks policy/time after physical object reads.",
+    "Expired otherwise-admitted fresh hits trigger at most one complete governed refresh. AcquireRetrievalRefresh compares observed source/generation in the common tenant transaction/row lock; delayed/concurrent observations re-evaluate a newer state without starting a second forced fill. Default acquisition behavior retained.",
+    "Proof denial/retirement and package decisions precede age; expiry cannot replace operator-blocked evidence. Ordinary-origin stale permission cannot override proof expiry. Unavailable checksum authority stays unverified/no-stale.",
+    "Fixed503/go_checksum_proof_expired/Retry-After1 and bounded operator action omit private errors. No new schema/signer/public service or primary mutation; public Go mode stays gated."
+  ],
+  "tests": {
+    "new_postgresql_functions": [
+      {
+        "file": "internal/store/go_module_proof_policy_integration_test.go",
+        "function": "TestGoModuleChecksumProofAgePolicyDoesNotGrantStaleOrHideRefreshableVersions"
+      },
+      {
+        "file": "internal/store/go_module_proof_policy_integration_test.go",
+        "function": "TestGoModuleChecksumProofPolicyIsRecheckedAfterPhysicalReadback"
+      },
+      {
+        "file": "internal/store/go_module_proof_policy_integration_test.go",
+        "function": "TestGoModuleChecksumExpiredProofRefreshFencesDelayedGeneration"
+      },
+      {
+        "file": "internal/server/go_module_proof_policy_integration_test.go",
+        "function": "TestGoModuleChecksumProofPolicyRefreshesExpiredHitWithoutServingExpiredStale"
+      }
+    ],
+    "new_postgresql_cases": 22,
+    "case_inventory": [
+      "9store policy/clock/stale/denial cases",
+      "4post-readback policy/time cases",
+      "1deterministic delayed-generation fence",
+      "8actual source/checksum/controller cases including12concurrent callers and expiry after physical package readback"
+    ],
+    "new_unit_functions": 2,
+    "new_unit_cases": 15,
+    "expanded_existing_authority_cases": 2,
+    "new_fuzz_target": "FuzzGoChecksumProofPolicy",
+    "current_go_postgresql_functions": 55,
+    "current_full_postgresql_functions": 229,
+    "full_postgresql_packages": [
+      "internal/store",
+      "internal/server",
+      "internal/conformance"
+    ],
+    "current_fuzz_targets": 46,
+    "local_postgresql_executed": false,
+    "local_gates": {
+      "build": {
+        "path": ".cache/go-checksum-policy-final-build.log",
+        "bytes": 422,
+        "sha256": "21a6aa4558254bcdb06ce7c6a1ff2d61473e825e4a6418e18eb60a7a2179b031",
+        "status": "passed"
+      },
+      "test": {
+        "path": ".cache/go-checksum-policy-final-test.log",
+        "bytes": 887,
+        "sha256": "892684a5e7eb2092ae7b26cee4ab1707eab81c6d3634019947f9400fdc9606fa",
+        "status": "passed"
+      },
+      "race": {
+        "path": ".cache/go-checksum-policy-final-race.log",
+        "bytes": 893,
+        "sha256": "84bdd53d66e6196c55bc8e23697294f3bd04d0918c18fa651a58c0bc82914369",
+        "status": "passed"
+      },
+      "lint": {
+        "path": ".cache/go-checksum-policy-final-lint.log",
+        "bytes": 9004,
+        "sha256": "5e706c2c754555a2216971b1283c45ad6eac13e63efe0b0e3d0e5efce6bef867",
+        "status": "passed"
+      },
+      "integration-compile": {
+        "path": ".cache/go-checksum-policy-final-integration-compile.log",
+        "bytes": 414,
+        "sha256": "1bf6badc3f215663b57adc5ce6daeeee144d80bec537e5867e6a0b3a81dca9a8",
+        "status": "passed; compile/race/vet only, no database executed"
+      },
+      "policy_fuzz": {
+        "path": ".cache/go-checksum-policy-fuzz.log",
+        "bytes": 526,
+        "sha256": "5c904f71706c3485695b0e77198f5b5d39b7c230c6b7fa6e72acc9e72ae0f49b",
+        "status": "passed",
+        "executions": 204398,
+        "seconds": 10.887,
+        "workers": 2
+      }
+    }
+  },
+  "native_plan": [
+    "Existing Go workflow:55named PGfunctions normally/race both actual GitHub Linux architectures plus312stock checks.",
+    "Existing main:229functions in3declared integration packages normally/race bothLinux;46fuzz/source/unit/race/lint3native hosts, all actually selected client/upgrade profiles/11historical sources. No duplicate dispatch/cancellation."
+  ],
+  "limits": [
+    "Current22PGcases compile only locally until new exact-source native replay. Earlierc61551Go/2dawhole qualify only their own source.",
+    "Local verification acceptance age does not prove log freshness or recent network contact. Retained proof verification alone does not qualify disconnected cache/installation/intelligence/recovery; those remain required.",
+    "Original failed-proof/fork bytes and tenant/key-wide governance, customer API/CLI/UI, export/backup/GC, conditional refresh and checksum-on stock proxy/group remain incomplete. All450capabilities/41families/later stages underGOAL4.1 retained; readiness/security/packaging false.",
+    "Source migrations1\u201312 frozen; primary11/selected5483878b binaries/tenreceipts/credentials stopped/preserved. No primary/customer/sibling/release/package/image change. Original5380jobs failure remains unknown/intermittent despite later passes."
+  ]
+}

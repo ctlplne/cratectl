@@ -107,6 +107,8 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 	result := resolvedArtifact{source: repo}
 	waits := 0
 	sourceRetries := 0
+	proofRetries := 0
+	var proofRefresh *store.Retrieval
 	for {
 		lease, e := s.DB.Retrieval(ctx, i, repo.Name, p, repo.SourceRevision)
 		if e != nil && !errors.Is(e, store.ErrNotFound) {
@@ -120,6 +122,14 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 				if errors.Is(e, store.ErrSourceChanged) && sourceRetries < 1 {
 					sourceRetries++
 					force = true
+					continue
+				}
+				if errors.Is(e, store.ErrGoChecksumProofExpired) && repo.Format == "go" && proofRetries < 1 {
+					proofRetries++
+					force = true
+					result.admissions = nil
+					observed := lease
+					proofRefresh = &observed
 					continue
 				}
 				return result, e
@@ -176,7 +186,12 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 			<-s.fillSlots
 			return result, e
 		}
-		lease, e = s.DB.AcquireRetrievalWithLease(ctx, i, repo.Name, p, token, force, s.TenantProxyLimit, s.ProxyLease, repo.SourceRevision)
+		if proofRefresh != nil {
+			lease, e = s.DB.AcquireRetrievalRefresh(ctx, i, *proofRefresh, token, s.TenantProxyLimit, s.ProxyLease)
+			proofRefresh = nil
+		} else {
+			lease, e = s.DB.AcquireRetrievalWithLease(ctx, i, repo.Name, p, token, force, s.TenantProxyLimit, s.ProxyLease, repo.SourceRevision)
+		}
 		if errors.Is(e, store.ErrBusy) {
 			<-s.fillSlots
 			force = false

@@ -30,7 +30,7 @@ func goChecksumCallerRepository(t *testing.T, s *Server, i store.Identity, url s
 	t.Helper()
 	s.PrivateUpstreamNetworks = []string{"127.0.0.1/32"}
 	r := goCallerRepository(t, s, i, url, store.CacheSettings{FreshSeconds: 60, StaleSeconds: 60, RequireChecksum: true}, review)
-	r.Settings.GoChecksumAuthority = &store.GoChecksumAuthority{Endpoint: upstream.Config{URL: url + "/checksum/", Networks: []string{"127.0.0.1/32"}}, VerifierKey: f.Key, InitialCheckpoint: f.Initial}
+	r.Settings.GoChecksumAuthority = &store.GoChecksumAuthority{Endpoint: upstream.Config{URL: url + "/checksum/", Networks: []string{"127.0.0.1/32"}}, VerifierKey: f.Key, InitialCheckpoint: f.Initial, ProofPolicy: &store.GoChecksumProofPolicy{Mode: "retained"}}
 	raw, err := json.Marshal(r.Settings)
 	if err != nil {
 		t.Fatal(err)

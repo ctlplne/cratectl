@@ -34,13 +34,13 @@ func checksumPublicFixture(t *testing.T) (GoChecksumAuthority, GoModuleChecksumP
 	if err := json.Unmarshal(raw, &f); err != nil {
 		t.Fatal(err)
 	}
-	a := GoChecksumAuthority{Endpoint: upstream.Config{URL: "http://127.0.0.1:38443/checksum/", Networks: []string{"127.0.0.1/32"}}, VerifierKey: f.Key, InitialCheckpoint: f.Initial}
+	a := GoChecksumAuthority{Endpoint: upstream.Config{URL: "http://127.0.0.1:38443/checksum/", Networks: []string{"127.0.0.1/32"}}, VerifierKey: f.Key, InitialCheckpoint: f.Initial, ProofPolicy: &GoChecksumProofPolicy{Mode: "retained"}}
 	p := GoModuleChecksumProof{Profile: GoModuleChecksumProfile, Module: f.Module, Version: f.Version, ZIPHash: f.ZIPHash, ModHash: f.ModHash, Snapshot: crypt.GoSumDBSnapshot{VerifierKey: f.Key, Checkpoint: f.Initial, Responses: f.Responses}}
 	return a, p, f.Advanced
 }
 
 func TestGoChecksumAuthorityRequiresExplicitTrustAndBoundedEndpoint(t *testing.T) {
-	for _, scenario := range []string{"valid", "missing-url", "public-http", "networks", "credential-ref", "signed-query", "key", "unsigned-bootstrap", "wrong-format", "hosted", "public-proxy-still-gated"} {
+	for _, scenario := range []string{"valid", "missing-url", "public-http", "networks", "credential-ref", "signed-query", "key", "unsigned-bootstrap", "missing-proof-policy", "unknown-proof-policy", "wrong-format", "hosted", "public-proxy-still-gated"} {
 		t.Run(scenario, func(t *testing.T) {
 			a, _, _ := checksumPublicFixture(t)
 			switch scenario {
@@ -58,6 +58,10 @@ func TestGoChecksumAuthorityRequiresExplicitTrustAndBoundedEndpoint(t *testing.T
 				a.VerifierKey += "bad"
 			case "unsigned-bootstrap":
 				a.InitialCheckpoint = nil
+			case "missing-proof-policy":
+				a.ProofPolicy = nil
+			case "unknown-proof-policy":
+				a.ProofPolicy.Mode = "automatic"
 			}
 			if scenario == "wrong-format" || scenario == "hosted" || scenario == "public-proxy-still-gated" {
 				r := Repository{Name: "source", Format: "go", Mode: "proxy", Settings: RepositorySettings{Upstream: &a.Endpoint, GoChecksumAuthority: &a}}

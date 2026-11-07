@@ -57,7 +57,7 @@ func TestGoModuleChecksumPhysicalReadbackAndCurrentGuard(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			a := store.GoChecksumAuthority{Endpoint: upstream.Config{URL: origin.URL + "/checksum/", Networks: []string{"127.0.0.1/32"}}, VerifierKey: f.Key, InitialCheckpoint: f.Initial}
+			a := store.GoChecksumAuthority{Endpoint: upstream.Config{URL: origin.URL + "/checksum/", Networks: []string{"127.0.0.1/32"}}, VerifierKey: f.Key, InitialCheckpoint: f.Initial, ProofPolicy: &store.GoChecksumProofPolicy{Mode: "retained"}}
 			patch, _ := json.Marshal(map[string]any{"go_checksum_authority": a})
 			if err = s.DB.Tx(ctx, i, true, func(tx pgx.Tx) error {
 				_, err := tx.Exec(ctx, `UPDATE cratectl.repositories SET settings=settings||$1::jsonb WHERE name='source'`, patch)

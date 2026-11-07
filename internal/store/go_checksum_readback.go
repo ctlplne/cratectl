@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"time"
 
 	"ctlplne.dev/cratectl/internal/blob"
 	crypt "ctlplne.dev/cratectl/internal/crypto"
@@ -28,6 +29,7 @@ type goChecksumBinding struct {
 	rawDigests                                       [3]string
 	rawSizes                                         [3]int64
 	stale                                            bool
+	proofPolicy                                      GoChecksumProofPolicy
 }
 
 type GoModuleChecksumReadback struct {
@@ -111,6 +113,7 @@ func goChecksumReadbackInTx(ctx context.Context, tx pgx.Tx, r Repository, p stri
 	b.rootPath = c.Prefix() + ".zip"
 	b.sourceRevision = r.SourceRevision
 	b.keyDigest = initial.KeyDigest
+	b.proofPolicy = *a.ProofPolicy
 	b.module = c.Module
 	b.version = c.Version
 	if err = tx.QueryRow(ctx, `SELECT generation,validation_generation,tenant FROM cratectl.retrievals WHERE repository=$1 AND path=$2`, r.Name, b.rootPath).Scan(&b.generation, &b.validationGeneration, &b.tenant); err != nil {
@@ -127,7 +130,8 @@ func goChecksumReadbackInTx(ctx context.Context, tx pgx.Tx, r Repository, p stri
 		b.stale = admission.Stale
 	}
 	var keyDigest, proofPath, module, version string
-	err = tx.QueryRow(ctx, `SELECT key_digest,checkpoint_revision,proof_path,proof_digest,proof_size,module,version,zip_h1,mod_h1,zip_digest,mod_digest,info_digest FROM cratectl.go_module_checksum_receipts WHERE repository=$1 AND root_path=$2 AND source_revision=$3 AND validation_generation=$4`, r.Name, b.rootPath, r.SourceRevision, b.validationGeneration).Scan(&keyDigest, &b.checkpointRevision, &proofPath, &b.proofDigest, &b.proofSize, &module, &version, &b.zipHash, &b.modHash, &b.rawDigests[0], &b.rawDigests[1], &b.rawDigests[2])
+	var accepted, now time.Time
+	err = tx.QueryRow(ctx, `SELECT key_digest,checkpoint_revision,proof_path,proof_digest,proof_size,module,version,zip_h1,mod_h1,zip_digest,mod_digest,info_digest,created_at,clock_timestamp() FROM cratectl.go_module_checksum_receipts WHERE repository=$1 AND root_path=$2 AND source_revision=$3 AND validation_generation=$4`, r.Name, b.rootPath, r.SourceRevision, b.validationGeneration).Scan(&keyDigest, &b.checkpointRevision, &proofPath, &b.proofDigest, &b.proofSize, &module, &version, &b.zipHash, &b.modHash, &b.rawDigests[0], &b.rawDigests[1], &b.rawDigests[2], &accepted, &now)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return GoModuleChecksumReadback{}, ErrGoModuleUnvalidated
 	}
@@ -171,6 +175,11 @@ func goChecksumReadbackInTx(ctx context.Context, tx pgx.Tx, r Repository, p stri
 	if err = validateGoChecksumReadback(v); err != nil {
 		return GoModuleChecksumReadback{}, err
 	}
+	// A current denial or retired proof must not be converted into a
+	// refreshable age error that could replace the operator-blocked evidence.
+	if err = b.proofPolicy.check(accepted, now); err != nil {
+		return GoModuleChecksumReadback{}, err
+	}
 	return v, nil
 }
 
@@ -179,6 +188,9 @@ func validateGoChecksumReadback(v GoModuleChecksumReadback) error {
 	c, err := gomodule.Canonical(b.module, b.version)
 	if err != nil || !Name.MatchString(b.tenant) || !Name.MatchString(b.repository) || b.rootPath != c.Prefix()+".zip" || b.sourceRevision < 0 || b.generation <= 0 || b.validationGeneration <= 0 || b.validationGeneration > b.generation || b.checkpointRevision <= 0 || b.proofSize <= 0 || b.proofSize > MaxGoModuleChecksumProof {
 		return ErrGoModuleUnvalidated
+	}
+	if err := b.proofPolicy.validate(); err != nil {
+		return err
 	}
 	if err = (IntegrityTarget{Repository: b.repository, Path: "go-checksum/" + b.proofDigest, Digest: b.proofDigest, Size: b.proofSize}).Validate(); err != nil {
 		return ErrGoModuleUnvalidated

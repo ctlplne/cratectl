@@ -14,48 +14,55 @@ The full goal is incomplete. All 450 capabilities / 41 families and every later
 stage remain committed. Broad readiness, full security and packaging remain
 negative. Both commit identities remain exactly `imfeelingtheagi` on main.
 
-Exact `b6bb53f` is now accepted across all24actually selected jobs in5workflows:
-17original safe summaries/62reports,217full PostgreSQL functions normally/race
-onboth native Linux hosts, source/unit/race/lint and44fuzz targets onLinuxamd64,
-Linuxarm64 andmacOSarm64. All original named client/upgrade profiles pass, including
-x86Chromium119checks/15tests with0flaky/skipped/unexpected and11historical native
-baselines/16upgrade reports perarch. Library/focused workflows were unselected;
-their previous5ee evidence stays source-specific. See
-`evidence/2026-11-06/github-b6bb53f-checkpoint.json`.
+Exact `2da6957` is now accepted across all24actually selected jobs in5workflows:
+17original safe summaries/62reports,222fullPGfunctions normally/race onboth actual
+GitHub Linuxhosts, source/unit/race/lint and44fuzz onLinuxamd64/arm64/macOSarm64.
+Original named clients/upgrade profiles pass, including x86Chromium119checks/
+15tests with0flaky/skipped/unexpected and11historical native baselines/16upgrade
+reportsperarch. Library/focused workflows were unselected; their prior5ee evidence
+remains source-specific. See `evidence/2026-11-06/github-2da6957-checkpoint.json`.
 
-Exact `2da6957` additionally qualifies configured coordinate fills on both actual
-GitHub Linux architectures:48named GoPGfunctions normally/race plus the original
-312stock checks/9stages24wire16cache. This covers12concurrent callers,8faults,
-actual lease renewal during proof transfer, one proof-only checkpoint recollection
-and known signed fork/no-stale classification. See
-`evidence/2026-11-06/go-module-2da6957-native-checkpoint.json`.
-Its wider222PG/44fuzz campaign is still tracked separately; no whole-candidate
-acceptance is inferred from the named Go results.
+Exact `c615c42` additionally qualifies checksum discovery onboth native Linuxhosts:
+51namedGoPGfunctions normally/race plus312stock checks/9stages24wire16cache.
+The3new functions/39cases prove current receipt/key/generation/raw identity/proof
+policy witnesses for list/latest, group shadowing/namespace ownership, unknown
+ads, refreshable expired/transient routing, permanent failure blocking, budgets
+and historical proof/source continuity. See
+`evidence/2026-11-06/go-module-c615c42-native-checkpoint.json`.
+Its wider225PG/45fuzz campaign is separately tracked; no whole-candidate inference.
 
-Current checksum discovery adds one bounded receipt/proof-policy batch per
-consulted source, using only known canonical roots and the shared complete-view
-budget. Exact current key/history, source/validation generation, all3raw identities,
-proof metadata/size and current digest decision/lifecycle are required. Expired
-complete packages remain routing metadata for refresh; discovery does not open
-proof blobs or grant bytes. Known blocked coordinates shadow catalog ads and
-lower sources. Permanent failures stay blocked even during a new fetch. Original
-physical proof verification and final current policy remain mandatory for bytes.
+Current private checksum authorities require an explicit proof policy: retained
+means no proof age requirement under current exact-key trust; max_age accepts
+1second–1year since cratectl last accepted a complete verified proof. This is a
+local verification time, not the external log's content age or a scan verdict.
+PostgreSQL supplies receipt/current times; future observations and exact expiry
+fail closed. Package cache/source/review/lifecycle remain separate requirements.
 
-Three new PGfunctions/39fixed cases and one8case unit function cover these
-witnesses, list/latest, ordered groups, namespace owners, unknown advertisements,
-proof SQL projection/aggregate budgets, history growth and cross-epoch proof reuse.
-A new metadata fuzz target passed127595executions in11.262seconds on ARM.
-ARM build/test/race/lint and normal/race tagged compilation/vet pass; no localPG.
-Current51Go/225fullPG and45fuzz require exact-source native replay. See
-`evidence/2026-11-06/go-checksum-discovery-development.json`.
+Expired otherwise-admitted fresh hits trigger at most one governed refresh;
+a generation fence prevents delayed/concurrent observations from starting a
+second forced fill. Proof denial/retirement precede age checks and cannot trigger
+automatic evidence replacement. Stale windows cannot override proof expiry.
+Opaque admissions bind the exact proof policy and recheck age/current policy
+after physical proof/package readback. Expiry reports a bounded503/retry action.
 
-Next: explicit offline/freshness policy, original failed-proof/fork evidence and
-tenant/key-wide governance, customer API/CLI/UI, export/backup/GC, conditional
-refresh and complete checksum-on stock proxy/group journeys. Public mode remains
+Four new PGfunctions/22fixed cases cover age/current/clock/stale/policy fences,
+proof-policy changes after readback, actual package readback then expiry, one
+refresh for12concurrent callers and deterministic delayed-generation fencing.
+Two new unit functions/15cases plus2expanded authority cases and46thfuzz target
+cover explicit policy, exact time bounds and safe HTTP errors. The new fuzzer
+passed204398ARM executions in10.887seconds. Final ARMbuild/test/race/lint and
+tagged normal/race compile/vet pass; no localPG. Current55Go/229fullPG/46fuzz need
+new exact-source native replay. See
+`evidence/2026-11-06/go-checksum-policy-development.json`.
+
+Next: original failed-proof/fork bytes and tenant/key-wide governance; complete
+disconnected-cache/installation policy, customer API/CLI/UI, export/backup/GC,
+conditional refresh and checksum-on stock proxy/group journeys. Retained proof
+verification alone does not qualify complete offline operation. Public mode stays
 gated. Primary11/selected5483878b binaries/tenreceipts/credentials remain stopped
 and preserved. All450capabilities/41families/later stages remain; readiness,
-security and packaging stay false. Original5380ARMjobs failure remains unknown
-and DEFECT.0122 intermittent/open despite later passing campaigns.
+security and packaging false. Original5380ARMjobs failure remains unknown and
+DEFECT.0122 intermittent/open despite subsequent passing campaigns.
 
 Earlier source-specific development/checkpoints follow with their original limits.
 
