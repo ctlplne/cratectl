@@ -21,6 +21,9 @@ import (
 )
 
 func run() error {
+	if len(os.Args) > 1 && os.Args[1] == "go-module-offline" {
+		return runGoModuleOffline(os.Args[2:], os.Stdout)
+	}
 	if len(os.Args) > 1 && os.Args[1] == "journal-checkpoint" {
 		return runJournalCheckpoint(os.Args[2:], os.Stdout)
 	}

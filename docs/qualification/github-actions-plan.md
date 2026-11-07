@@ -31,6 +31,36 @@ definitions are frozen and stopped primary11 is preserved. This accepts bounded
 signature/range profiles, not public/fullGo, provider requests, complete bundles,
 all450/41/laterGOAL scope/readiness/security/packaging.
 
+## Hosted Go offline preparation lane
+
+[ADR0049](../adr/0049-hosted-go-offline-publication.md) and the
+[operator path](../go-module-offline.md) add one exact hosted publication's
+consumer: complete externally signed journal verification, original three raw
+byte identities, bounded copied-byte archive inspection and a private file
+GOPROXY. It records historical publication integrity with current registry
+admission and checksum-authority verification explicitly false. It cannot close
+full export/dependency/policy/cache outcomes or the independent DEFECT0126.
+
+Use ARM unit/race/build/lint and bounded binding fuzz locally. Execute the actual
+PostgreSQL publication/current-policy/CAS, external OpenSSL, candidate CLI and
+pinned stock Go1.27.3 offline-download journey in the existing native GitHub Go
+normal/race jobs and full integration jobs. Give the SDK fresh private caches,
+GOENV/GOWORK/GOAUTH/toolchain/network-fallback controls and one exact file GOPROXY;
+never compile or run fixture code. The fixture uses a path containing a space,
+checks unchanged h1/original extracted inert bytes, no output overwrite and no
+success from a truncated signed history. Keep bounded inert fixture failures
+visible for diagnosis; no credential environment is passed to those processes.
+
+New source requires259fullPG/81namedGo/53fuzz; original312stockGo,683baseline,
+18main x86 browser workflows/142checks, JVM/OCI and13historical/18upgrades remain
+unchanged. Skipped/unselected runs are not passes. No local PostgreSQL, OpenSSL,
+SDK, stock registry or Chromium qualification is needed. A future server export
+producer must implement forced-RLS durable snapshots, CAS-staged manifest bytes,
+transactional journal/idempotency/job intent, resumable current-authorized
+transfers and fenced GC pins before claiming a consistent protected export.
+That work needs an append-only migration after the14frozen definitions and native
+historical upgrade evidence; the primary11 remains stopped and untouched.
+
 ## Checksum client investigation lane
 
 Named source14 [Go79/312](../../evidence/2026-11-07/go-module-5816b27-native-checkpoint.json)

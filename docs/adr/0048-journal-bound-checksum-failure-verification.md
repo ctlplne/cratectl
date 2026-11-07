@@ -1,9 +1,12 @@
 # Bind checksum failure verification to a signed journal range
 
-Status: implemented but native PostgreSQL/tool/CLI/browser unverified. Targeted
-ARM full build/unit/race/lint, crypto/store/CLI fixtures, bounded selection/binding
-fuzz and reproducible console pass. Real-PG/tool/CLI suites compile/vet only. a3d8df2 separately runs the preceding fixture repair and
-signature extension on GitHub. No complete Go proxy verdict is established.
+Status: verified in the named809e826 native Go profile on both actual GitHub
+Linux architectures:80Go PostgreSQL functions normally/race and the original
+312stock hosted/group checks. The added function uses real original database
+failure/journal bytes, actual external OpenSSL and the exact candidate offline
+CLI; prefix/digest/context controls pass. Whole-candidate acceptance is separate.
+See `evidence/2026-11-07/go-module-809e826-native-checkpoint.json`. Full Go/export
+and the independent DEFECT0126 client failure remain open.
 
 ## Missing customer step
 
@@ -65,7 +68,7 @@ Implementation adds one actual-PostgreSQL Go function which records a genuine
 typed failure, exports its immutable range, selects the exact original event,
 checks tenant/generation/digest binding, rejects a truncated suffix, and invokes
 the owned native CLI with an actual disposable OpenSSL checkpoint signature.
-It compiles only on the ARM development host; GitHub executes it normally/race.
+It compiles/vets only on the ARM development host; GitHub has executed it normally/race.
 No test signer process or private key is part of the product's HTTP runtime.
 
 No migration or retained primary maintenance is required. Full Go package/proof/

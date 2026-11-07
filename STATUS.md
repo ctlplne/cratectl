@@ -25,20 +25,29 @@ checkpoints are now qualified in the named profiles. Signature keys/operations
 remain external, and full bundles/provider adapters/latest-history/revocation/
 backup/GC/performance outcomes remain incomplete.
 
-Journal-bound Go failure attribution is implemented but native unverified. It
-requires a complete private journal, exact selected event and externally signed
-checkpoint before deriving a failure digest, then matches original typed
-repository/path/source/generation/state/classification and independently verifies
-the Go authority. Old labels without original digests remain unattributed;
-unverified observations stay nonzero and never admit package bytes. ARM full
-build/unit/race/lint, public joint fork/unverified CLI fixtures, both new bounded
-fuzz targets and console reproduction pass. The actual typed PostgreSQL/external
-OpenSSL/native CLI test compiles normally/race and passes tagged vet only. Next
-source requires258PG/80Go normal/race,52fuzz and18main x86 browser workflows/142
-checks; original312stockGo/683baseline profiles remain. See
-`evidence/2026-11-07/go-checksum-journal-development.json` and ADR0048. All first14
-migrations and stopped primary11 are preserved. Full bundles/provider adapters,
-offline cache/install/backup/GC/conditional refresh and all later scope stay open.
+Journal-bound Go failure attribution is now verified in the exact809e826 named
+native Go profile on both GitHub Linux architectures:80functions normally/race
+and the original312stock checks. The new function uses real original database
+failure/journal bytes, actual external OpenSSL and the candidate offline CLI;
+changed context, wrong digest and incomplete suffix controls pass. Both named
+13historical/18upgrade profiles also pass. The main candidate campaigns are still
+running, so a3d8df2 remains the latest accepted whole selected campaign. See
+`evidence/2026-11-07/go-module-809e826-native-checkpoint.json` and
+`evidence/2026-11-07/github-809e826-upgrades-checkpoint.json`.
+
+Hosted Go offline preparation is implemented but native unverified. The command
+requires a complete externally signed journal and exact original hosted
+publication identity; copies and hashes three bounded private files, checks the
+copied ZIP/mod/info and syncs a new private file GOPROXY/receipt. It reports
+historical publication integrity with current registry admission and checksum
+authority verification false. ARM development gates, binding fuzz and file/race
+checks pass. One new actual PostgreSQL/CAS/OpenSSL/candidate CLI/pinned SDK
+journey compiles normally/race and passes tagged vet only; GitHub must execute
+it. New source requires259PG/81Go/53fuzz; original312stock/683baseline/18main142
+browser profiles remain. See `evidence/2026-11-07/go-hosted-offline-development.json`,
+`docs/go-module-offline.md` and ADR0049. Durable snapshot/manifest staging/resume/
+GC protection and full policy/authority/dependency export/import remain open.
+All14frozen definitions and stopped primary11 remain preserved.
 
 Schema14 internal legacy recovery is qualified in that scope. It preserves
 unattributed old incidents without inventing proof or clearing authenticated

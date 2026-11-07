@@ -22,9 +22,9 @@ type checksumJournalFlags struct {
 
 func checksumJournalArguments(f *flag.FlagSet) checksumJournalFlags {
 	return checksumJournalFlags{
-		file:        f.String("journal-file", "", "private complete journal JSONL for automatic failure digest attribution"),
+		file:        f.String("journal-file", "", "private complete journal JSONL for original event attribution"),
 		tenant:      f.String("journal-tenant", "", "exact independently selected tenant"),
-		event:       f.String("journal-event-sequence", "", "exact original typed failure event sequence"),
+		event:       f.String("journal-event-sequence", "", "exact original event sequence"),
 		after:       f.String("journal-after", "0", "trusted prior sequence, zero for genesis"),
 		afterHash:   f.String("journal-after-hash", "", "trusted start hash, empty at genesis"),
 		through:     f.String("journal-through", "", "exact independently selected terminal sequence"),
@@ -83,7 +83,7 @@ func (j checksumJournalFlags) selectEvent(f *flag.FlagSet) (*checksumJournalAttr
 	defer cancel()
 	receipt, event, err := crypt.VerifyJournalExportEvent(ctx, input, start, head, *j.maxBytes, sequence)
 	if err != nil {
-		return nil, crypt.JournalEvent{}, errors.New("complete signed journal range and selected original event did not verify; no failure attribution was established")
+		return nil, crypt.JournalEvent{}, errors.New("complete signed journal range and selected original event did not verify; no event attribution was established")
 	}
 	return &checksumJournalAttribution{receipt, event.Sequence, event.Hash, *signature}, event, nil
 }

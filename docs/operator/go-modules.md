@@ -1,11 +1,16 @@
 # Go modules
 
-The hosted and ordered-group adapters are implemented but unverified. Local unit/race, parser and
-stand-in checks pass; real PostgreSQL and stock Go execution are assigned to
-native x86 and ARM GitHub jobs. No full format or production claim follows.
-Proxy retrieval, branch/revision queries, modules without root go.mod,
-warm caches, lifecycle, migration and broader fault/scale/platform cases remain
-required. See the [development record](../../evidence/2026-11-04/go-module-hosted-development.json).
+The named hosted and ordered-group profile is verified on both actual GitHub
+Linux architectures at809e826:312stock Go1.27.3 checks and80named PostgreSQL
+functions normally and under race. See the [native checkpoint](../../evidence/2026-11-07/go-module-809e826-native-checkpoint.json).
+This is a scoped result; no full format or production verdict follows. Public
+proxy creation/routing remain gated. The separate strict checksum-client profile
+fails under DEFECT0126 on three native hosts; the312hosted/group profile uses
+an explicit private-fixture GONOSUMDB bypass. Keep those claims separate.
+Branch/revision queries, modules without root go.mod, full warm/offline caches,
+lifecycle/GC, backup, migration and broader fault/scale/platform cases remain.
+The new [historically authenticated offline preparation](../go-module-offline.md)
+command passes ARM development checks but requires fresh native qualification.
 
 Create a `go` repository in hosted mode using the console or repository API.
 Its endpoint is `https://REGISTRY/go/REPOSITORY/`. A version is one immutable
@@ -23,8 +28,8 @@ cratectl --config /private/path/writer.json --method PUT \
 ```
 
 The CLI validates a canonical Go ZIP route, PUT, upload-file and matching
-timestamp before sending the request. This focused route repair has local
-configured-TLS stand-in proof; native replay remains required.
+timestamp before sending the request. The named native hosted/group profile includes real publication and consumption;
+its exact-source candidate evidence is linked above.
 
 Use a stable RFC3339 version creation time. A pseudo-version must carry that
 same timestamp. Retain it on retries. Identical retries return the original
@@ -36,8 +41,8 @@ key. Current write authority is checked before replaying a receipt.
 Latest discovery returns403when this module has retained versions but current
 review/policy leaves none readable. It keeps404for an absent module and never
 returns blocked version metadata. Continue to configure one explicit proxy.
-Go1.27also stops on the former empty-list response; broader client/fallback
-behavior and native registry replay remain unverified.
+The named native profile exercises empty/denied discovery; broader client and
+fallback behavior remains subject to separate qualification.
 
 The ZIP must contain paths beginning `MODULE@VERSION/`, using the original
 unescaped module name. Its root go.mod must declare that exact module. URLs use
