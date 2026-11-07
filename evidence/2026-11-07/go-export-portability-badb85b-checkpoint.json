@@ -1,0 +1,349 @@
+{
+  "candidate": "badb85b52bd8aa06f64e7937a5ce0969eda5190b",
+  "observed_at": "2026-11-07T12:29:24.913233+00:00",
+  "state": "verified named cross-runner signed hosted Go export; full amended goal active",
+  "run_id": 42369374223,
+  "url": "https://github.com/ctlplne/cratectl/actions/runs/42369374223",
+  "profile": "hosted-export-cross-runner-v1",
+  "jobs": [
+    {
+      "role": "producer",
+      "architecture": "linux/amd64",
+      "job_id": 128394122265,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42369374223/job/128394122265",
+      "runner_identity_sha256": "40a9f75eeb72b155112c69786809184c08c94db5a2c93432666f30f85310cd0e",
+      "mandatory_stages": [
+        "native_identity",
+        "native_postgresql_fixture",
+        "transport_bound"
+      ],
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare isolated PostgreSQL and exact native binaries",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare actual signed source fixture and independent trust-channel digests",
+          "conclusion": "success"
+        },
+        {
+          "name": "Transfer reviewed synthetic fixture only",
+          "conclusion": "success"
+        },
+        {
+          "name": "Seal bounded original command failure for owner",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded source evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "safe_summary": {
+        "path": "evidence/2026-11-07/ci-summary-export-portability-producer-badb85b.json",
+        "sha256": "b3a82738fe7d67dab48c8dbb1c0348eee77cf25fc507cde2d086301906641e46",
+        "github_artifact_id": 13573631082,
+        "github_artifact_digest": "sha256:27b9c00b757073bb0837449a812d3f37edbd1a2f01c56d14b23d805140b171ee",
+        "raw_report_sha256": "39bac7b5e251481b5b5061efed9628aba31e32a740a916829ac150c50342d96a"
+      },
+      "private_success_log": {
+        "path": ".private/ci-diagnostics/badb85b-campaign/128394122265.txt",
+        "bytes": 50916,
+        "sha256": "ffb8fc6bf75bf4520a191845391cacd664349e2689844887807b08dd1f529515"
+      },
+      "artifacts": [
+        {
+          "build": {
+            "GOARCH": "amd64",
+            "GOOS": "linux",
+            "vcs.modified": "false",
+            "vcs.revision": "badb85b52bd8aa06f64e7937a5ce0969eda5190b"
+          },
+          "path": ".cache/ci-build/cratectl",
+          "sha256": "fb91cb63880045c9b474a9bb8e52ea23597bdf86064e14277fb6db47d862ded4"
+        },
+        {
+          "build": {
+            "GOARCH": "amd64",
+            "GOOS": "linux",
+            "vcs.modified": "false",
+            "vcs.revision": "badb85b52bd8aa06f64e7937a5ce0969eda5190b"
+          },
+          "path": ".cache/ci-build/cratectld",
+          "sha256": "0c091ed265b92baecbeb135d2bf2257f2d1d91d0bc592ad406783b0d87593be5"
+        }
+      ]
+    },
+    {
+      "role": "consumer",
+      "architecture": "linux/arm64",
+      "job_id": 128397857802,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42369374223/job/128397857802",
+      "runner_identity_sha256": "9805e2b6df9e0059b933378c9f1b34224b30272c6069b888ad58f93062447c4b",
+      "mandatory_stages": [
+        "native_identity",
+        "transport_bound",
+        "network_isolation_observed",
+        "signed_export_verified",
+        "stock_go_exact_bytes",
+        "existing_output_rejected",
+        "changed_manifest_rejected",
+        "changed_zip_rejected",
+        "truncated_journal_rejected",
+        "changed_statement_rejected",
+        "changed_signature_rejected",
+        "wrong_key_rejected",
+        "wrong_export_rejected"
+      ],
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build exact native consumer without a database service",
+          "conclusion": "success"
+        },
+        {
+          "name": "Receive the exact source artifact",
+          "conclusion": "success"
+        },
+        {
+          "name": "Independently verify, install inert bytes and reject changed inputs",
+          "conclusion": "success"
+        },
+        {
+          "name": "Seal bounded original command failure for owner",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded destination evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "safe_summary": {
+        "path": "evidence/2026-11-07/ci-summary-export-portability-consumer-badb85b.json",
+        "sha256": "627687dfcfd4d893142a58507cd9cb05de9ffd62f3356d72ba59c96773544282",
+        "github_artifact_id": 13573831663,
+        "github_artifact_digest": "sha256:ed1a5816bb693b05b7aea14a7af8953b23d2eeb4f6c9376323fecab15265b91b",
+        "raw_report_sha256": "c5e65a1e0f3684ec9e8b4cbd5798a722d357d33641134f315557a66e07d50d29"
+      },
+      "private_success_log": {
+        "path": ".private/ci-diagnostics/badb85b-campaign/128397857802.txt",
+        "bytes": 36434,
+        "sha256": "67ede8e97e62084978c98553b53a4ff474abc40a748b04e9bbf95fa12d2d0261"
+      },
+      "artifacts": [
+        {
+          "build": {
+            "GOARCH": "arm64",
+            "GOOS": "linux",
+            "vcs.modified": "false",
+            "vcs.revision": "badb85b52bd8aa06f64e7937a5ce0969eda5190b"
+          },
+          "path": ".cache/ci-build/cratectl",
+          "sha256": "789f7d92ea35de43b55be36195d5e1c8e14759562596dfb13996e05b0e4d9440"
+        },
+        {
+          "build": {
+            "GOARCH": "arm64",
+            "GOOS": "linux",
+            "vcs.modified": "false",
+            "vcs.revision": "badb85b52bd8aa06f64e7937a5ce0969eda5190b"
+          },
+          "path": ".cache/ci-build/cratectld",
+          "sha256": "7799d59b1a4df2d0a126e662967533a48bd95d8536604f03d8c5100afe87db35"
+        }
+      ]
+    }
+  ],
+  "mandatory_stages": 16,
+  "source": {
+    "completed": [
+      "native_identity",
+      "native_postgresql_fixture",
+      "transport_bound"
+    ],
+    "destination_arch": null,
+    "destination_runner_sha256": null,
+    "files_sha256": {
+      "checkpoint.json": "17967941683581e8464eb0ca0857e8bb7f236e8b8ab583947b9cf8574671aec2",
+      "checkpoint.sig": "a55ea4e37e2515eae6859d5174078b595d1e891be5b0eb835d0562a4e59c4b04",
+      "journal.jsonl": "d60cc1c8f8d469c0aa5d57e5b6ff8c1575b0622535b4cf9b6c9d3908db2b5eb1",
+      "manifest.json": "9fd871c1b0bd315074a64f5438a70e0bacef0dca9abc7523fee5d4a7b2b00c0e",
+      "original.info": "aec02e6713545a44df5a75e3bd8af96542635b0adfa9f7e204ff99dff8feefaa",
+      "original.mod": "0921845f4b8d87e053f72f3785dabcef55637784d636606e292e39122fc38d05",
+      "original.zip": "56b647f75dc1ec2e2db24d0e88a0e1cb6e4f8a4f4ed3ee0bba9d62b6e562d0fb",
+      "signer-public.pem": "679f43765f7022ecb4adb4f6bce710b2f863068bdb57c2aaeec912b16aa5934f"
+    },
+    "fixture_sha256": "20cc7c57f6b3a1829bb5ed3f55411af41d746e5edad395a9f9f8fd922efa4cf3",
+    "fixture_source_sha256": "c06a0852c98c6a333fb477f642c15258988b98190f6391a7208e9a633762d51b",
+    "go_binary_sha256": "5f5eb6d0b2fb6aa0bb5d5f8c5f1c944e0de955c925f0111af92a9d8f79680b5b",
+    "go_version": "1.27.3",
+    "network_isolated": false,
+    "network_probe_sha256": null,
+    "network_tools_sha256": {},
+    "profile": "hosted-export-cross-runner-v1",
+    "public_key_sha256": "679f43765f7022ecb4adb4f6bce710b2f863068bdb57c2aaeec912b16aa5934f",
+    "role": "producer",
+    "script_sha256": "7f5679ed6a10de05adbacd23bbcb25dabd521405198913c46762170acc3b78ce",
+    "source_arch": "amd64",
+    "source_run_id": "42369374223",
+    "source_runner_sha256": "40a9f75eeb72b155112c69786809184c08c94db5a2c93432666f30f85310cd0e"
+  },
+  "consumer": {
+    "completed": [
+      "native_identity",
+      "transport_bound",
+      "network_isolation_observed",
+      "signed_export_verified",
+      "stock_go_exact_bytes",
+      "existing_output_rejected",
+      "changed_manifest_rejected",
+      "changed_zip_rejected",
+      "truncated_journal_rejected",
+      "changed_statement_rejected",
+      "changed_signature_rejected",
+      "wrong_key_rejected",
+      "wrong_export_rejected"
+    ],
+    "destination_arch": "arm64",
+    "destination_runner_sha256": "9805e2b6df9e0059b933378c9f1b34224b30272c6069b888ad58f93062447c4b",
+    "files_sha256": {
+      "checkpoint.json": "17967941683581e8464eb0ca0857e8bb7f236e8b8ab583947b9cf8574671aec2",
+      "checkpoint.sig": "a55ea4e37e2515eae6859d5174078b595d1e891be5b0eb835d0562a4e59c4b04",
+      "journal.jsonl": "d60cc1c8f8d469c0aa5d57e5b6ff8c1575b0622535b4cf9b6c9d3908db2b5eb1",
+      "manifest.json": "9fd871c1b0bd315074a64f5438a70e0bacef0dca9abc7523fee5d4a7b2b00c0e",
+      "original.info": "aec02e6713545a44df5a75e3bd8af96542635b0adfa9f7e204ff99dff8feefaa",
+      "original.mod": "0921845f4b8d87e053f72f3785dabcef55637784d636606e292e39122fc38d05",
+      "original.zip": "56b647f75dc1ec2e2db24d0e88a0e1cb6e4f8a4f4ed3ee0bba9d62b6e562d0fb",
+      "signer-public.pem": "679f43765f7022ecb4adb4f6bce710b2f863068bdb57c2aaeec912b16aa5934f"
+    },
+    "fixture_sha256": "20cc7c57f6b3a1829bb5ed3f55411af41d746e5edad395a9f9f8fd922efa4cf3",
+    "fixture_source_sha256": "c06a0852c98c6a333fb477f642c15258988b98190f6391a7208e9a633762d51b",
+    "go_binary_sha256": "d487fddb6939f3e78f7293fcbdeae610ba8ceae966d3faa4b2094a5688559230",
+    "go_version": "1.27.3",
+    "network_isolated": true,
+    "network_probe_sha256": "a8aca47bcf54f334bad2546648be1fe82ad1a3da446a83d66ad07cc0cf60dc25",
+    "network_tools_sha256": {
+      "setpriv": "9922bc8da40cd9f1024beae714aee76c2b7d2abac563391235f32e30141d35da",
+      "sudo": "0a6e94862dad3a28e5e2e73aeb41bb23c829f19817dbdc8caab8cb3bc561cb67",
+      "unshare": "e0c145c3d4c06686544b1362ed64da819539166a5e1e6fd96093aea4d2539b6a"
+    },
+    "profile": "hosted-export-cross-runner-v1",
+    "public_key_sha256": "679f43765f7022ecb4adb4f6bce710b2f863068bdb57c2aaeec912b16aa5934f",
+    "role": "consumer",
+    "script_sha256": "7f5679ed6a10de05adbacd23bbcb25dabd521405198913c46762170acc3b78ce",
+    "source_arch": "amd64",
+    "source_run_id": "42369374223",
+    "source_runner_sha256": "40a9f75eeb72b155112c69786809184c08c94db5a2c93432666f30f85310cd0e"
+  },
+  "transport": {
+    "artifact_name": "cratectl-owned-go-export-fixture",
+    "github_artifact_id": 13572868651,
+    "github_artifact_digest": "sha256:6c54d76271e9ca0ea8718cce501fae8fb00bc4e57c076df4b670179973ea5bcd",
+    "capsule_sha256": "20cc7c57f6b3a1829bb5ed3f55411af41d746e5edad395a9f9f8fd922efa4cf3",
+    "allowed_upload_members": [
+      "fixture.json"
+    ],
+    "public_fixture_only": true
+  },
+  "scope": [
+    "Actual separate native GitHub-hosted Linux x86 producer with real PostgreSQL and actual ARM consumer without a database service; original signer private key/configuration/credentials/logs/caches never transferred.",
+    "Exact artifact ID/action digest plus independent producer job-output capsule/public-key/runner bindings precede consumer trust; complete original journal/checkpoint signature/creation-event/manifest and both h1 identities verified.",
+    "All consumer body CLI/SDK/OpenSSL commands run in empty child kernel network namespaces under the original nonroot UID/GID. Actual probe observes different namespace, loopback only, no upstream routes; utility and probe hashes retained.",
+    "Pinned native Go1.27.3 consumes exact owned inert files from one verified private file proxy with fresh caches and external fallbacks disabled; no package scripts or code compiled/executed.",
+    "Existing output plus changed manifest/ZIP/journal/statement/signature/key/export-ID cases reject with no success receipt or new proxy. Native SDK read-only cache cleanup remains enabled."
+  ],
+  "limits": [
+    "Single owned hosted version and explicit owned trust-channel stand-in, not a customer-selected external trust provider or complete disconnected installation.",
+    "No full dependency/authority/permission/provenance closure, destination import/current-policy/scanning, physical GC, backup/restore, HA, arbitrary network faults, actual clock shift or large-scale claim.",
+    "The fullbadb85b selected campaign remains in progress and is not accepted. Original0130/0131/0132/0133/0135failures stay retained. Named96Go/312stock and historical upgrades require separate acceptance.",
+    "Schema16 indexed occupancy/default-planner,96namedGo normal/race/312stock and historical upgrade profile require their separate native acceptance; they cannot be inferred from this single-version fixture. All16source definitions remain frozen; primary11/selected5483878b/tenreceipts/credentials stay stopped/untouched.",
+    "All450capabilities/41families/later GOAL4.1 scope and readiness/security/packaging remain incomplete; DEFECT0126 strict SDK and0122 unknown browser intermittent remain open."
+  ]
+}
