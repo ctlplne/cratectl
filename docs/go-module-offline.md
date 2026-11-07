@@ -288,3 +288,19 @@ checksum authority and dependency closure fields remain false. This path accepts
 only exact normal hosted info bytes; unsupported original metadata is preserved
 and refused before upload. Full import/provenance/scan workflows, console progress,
 transitive closure and Windows/provider/backup/scale qualification remain open.
+
+The export console's **Destination import command** opens a separate instruction
+dialog. Enter the exact destination hosted Go repository, then set the command's
+required environment values on your machine: private destination config, stable
+nonsecret import key, new private attempt directory and independently trusted
+original journal identity. The browser receives no destination token/config and
+makes no destination request. It checks neither the existence nor permissions of
+that separate installation; the CLI and normal destination publication enforce
+them when you run the command.
+
+The instruction action remains available for exact historical sessions after
+expiry because already collected files can still be independently verified.
+This does not restore source download access. Missing/invalid source bindings,
+stale loading state and denied source administration withhold commands. The new
+dialog and malformed-record controls are implemented but their expanded Chromium
+response-stand-in assertions remain unverified until GitHub executes them.

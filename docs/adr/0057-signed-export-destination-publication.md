@@ -51,3 +51,20 @@ and every original selected stock/upgrade/portable profile. No new import browse
 workflow, complete scan integration, full closure, server import provenance,
 Windows, provider, backup/GC/HA or scale claim. All450capabilities/41families/later
 GOAL4.1 scope and broad readiness remain incomplete.
+
+The console now supplies an explicit destination-publication instruction dialog.
+It requires a valid destination repository before producing a copyable command;
+private destination config, stable mutation key and fresh attempt directory are
+chosen on the operator's machine. Use the independently selected original signer,
+never the adjacent bundled key by default. The browser contacts no destination.
+Completed historical files remain usable after source expiry without restoring
+download access or granting destination approval. This is an instruction surface,
+not a durable server import/provenance session or progress monitor.
+
+DEFECT0134's controlled JavaScript probe found null source coordinates accepted
+by the old binding guard and then rejected by a throwing command constructor.
+Strict bounded source types and safe rendering now withhold commands for invalid
+records/lists.35JavaScript and9shell/argv stand-in checks pass. The existing
+Chromium UI response-stand-in workflow adds import/invalid-record controls and
+retains every original assertion;19mainworkflows/151expected checks remain. Actual
+new Chromium qualification is pending, distinct from local build/lint/unit proof.

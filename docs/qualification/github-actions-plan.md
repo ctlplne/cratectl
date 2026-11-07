@@ -969,3 +969,17 @@ unselected. DEFECT0131 original failure stays retained. Whole812 fails its
 independent collector setup on both hosts; no race/stock skips or zero reports
 are accepted. The focused testCAS repaird186 and collector/metadata/import require
 separate exact-source native replay.
+
+## Destination instruction and malformed-source continuation
+
+The [console development record](../../evidence/2026-11-07/go-export-import-console-development.json)
+adds an explicit validated destination repository and separate private target
+config/stable key/new attempt/separately trusted original signer requirements.
+No browser destination request or source-approval grant. Local35JavaScript/9shell
+stand-ins, TypeScript/Vite, console unit/build/lint pass. Retained DEFECT0134 probe
+accepts six invalid committed source bindings, including three throwing null
+constructors; the new guard/display path refuses them. Expanded existing Chromium
+UI response-stand-in checks include malformed records/lists, role/stale/denial/
+expiry and source/target separation;19main151expected semantic checks unchanged.
+Actual new browser qualification is pending. All other native274/96/56/stock/
+upgrade/portable and full450/41/laterGOAL4.1requirements remain.

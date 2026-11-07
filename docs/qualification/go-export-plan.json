@@ -80,7 +80,13 @@
       "adr": "docs/adr/0057-signed-export-destination-publication.md",
       "development": "evidence/2026-11-07/go-export-import-development.json",
       "scope": "Independently signed original export, exact private inspectedZIP/mod/info, nonsecret durable intent, normal current-authorized hostedPUT, exact canonical destination tuple, atomic receipt; no source approval/grant copied, no auto retry",
-      "limits": "Single version, normal hosted info only; full scan/provenance/server-session/import-console/closure/platform/backup/scale incomplete"
+      "limits": "Single version, normal hosted info only; full scan/provenance/server-session/import-console/closure/platform/backup/scale incomplete",
+      "console_instructions": {
+        "state": "implemented but native Chromium unverified",
+        "development": "evidence/2026-11-07/go-export-import-console-development.json",
+        "scope": "Explicit valid destination repository, private target config/stable key/new attempt and separate original signer; source-safe/role/stale guards, historical expiry instructions, no browser target request or approval grant",
+        "limits": "Instruction surface only; durable server import/provenance/scan/session/progress and complete console workflows remain required"
+      }
     }
   },
   "environment_profiles": {
@@ -402,11 +408,12 @@
         "native-linux-arm64",
         "browser-amd64"
       ],
-      "state": "implementing; collector/console first/resume instructions added; exact-source native CLI and expanded existing UI stand-in assertions pending",
+      "state": "implementing; signed collector/destination instruction surfaces and malformed source guard added, actual new native/Chromium unverified",
       "accepted_scoped_evidence": [
         "evidence/2026-11-07/go-module-470ca74-native-checkpoint.json"
       ],
-      "development": "evidence/2026-11-07/go-export-collect-development.json"
+      "development": "evidence/2026-11-07/go-export-collect-development.json",
+      "console_development": "evidence/2026-11-07/go-export-import-console-development.json"
     },
     {
       "id": "GO.EXPORT.fault-scale-platform",

@@ -1,0 +1,56 @@
+{
+  "source_parent": "8710b41b3f3c2d7122e4429e81f4d7e1a1a11036",
+  "source_sha256": "d2522e6bbc96914ec9f926c6a39597940c2cf4c1585a507ec8900f8a8d2c5427",
+  "scope": "owned JavaScript predicate/command stand-in against committed source, no actual browser/registry/SDK",
+  "cases": [
+    {
+      "field": "module",
+      "invalid_kind": "null",
+      "accepted": true,
+      "command_throws": true
+    },
+    {
+      "field": "repository",
+      "invalid_kind": "null",
+      "accepted": true,
+      "command_throws": true
+    },
+    {
+      "field": "version",
+      "invalid_kind": "null",
+      "accepted": true,
+      "command_throws": true
+    },
+    {
+      "field": "module",
+      "invalid_kind": "empty",
+      "accepted": true,
+      "command_throws": false
+    },
+    {
+      "field": "repository",
+      "invalid_kind": "path",
+      "accepted": true,
+      "command_throws": false
+    },
+    {
+      "field": "version",
+      "invalid_kind": "empty",
+      "accepted": true,
+      "command_throws": false
+    }
+  ],
+  "observed_at": "2026-11-07T11:28:53.343039+00:00",
+  "state": "failed owned console source-binding guard regression",
+  "exit_code": 1,
+  "first_failure_log": {
+    "path": ".cache/go-export-console-source-first-failure.log",
+    "sha256": "be07d65349cb022774471a657b48c8dd33ccd0430eeee134a1b5bc47f7461a7d"
+  },
+  "observation": "Committed console exact-binding predicate accepts null module/repository/version and empty/invalid coordinates. Null values then throw in shell command constructor; this is a controlled JavaScript stand-in, not observed actual API/browser traffic.",
+  "repair": "Require string/bounded source module/version and valid repository before command surfaces; preserve shell quoting, exact integer/source/journal/generation guards and actual CLI/server validation.",
+  "limits": [
+    "No actual Chromium/API/registry/client failure claim. Native UI response stand-in must exercise invalid source field plus all original role/loading/denial/expiry/precision controls.",
+    "Full goal/capabilities/platform/readiness remain incomplete; no schema/primary/credential change."
+  ]
+}

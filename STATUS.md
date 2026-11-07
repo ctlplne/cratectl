@@ -41,6 +41,15 @@ campaign was run. The focused fixture repair has a local FS reproduction/staging
 check plus tagged compilation/vet. These records are linked by
 `docs/qualification/remaining.json` and the ADRs.
 
+Local continuation adds the console's explicit destination-import instruction
+handoff and DEFECT0134 source-binding/display repair.35owned JavaScript and9shell
+argv checks, TypeScript/Vite, Go console unit/build/lint pass. The existing
+Chromium response-stand-in adds import and malformed source/list controls with
+all original assertions; same19main151expected checks. This new UI is native
+unverified and has not yet been pushed over the active d186qualification.
+See `evidence/2026-11-07/go-export-import-console-development.json`; full durable
+server import/provenance/scan/progress and remaining console outcomes stay open.
+
 ## Native acceptance and live handles
 
 Latest fully accepted selected campaign: [4956197](evidence/2026-11-07/github-4956197-checkpoint.json),
