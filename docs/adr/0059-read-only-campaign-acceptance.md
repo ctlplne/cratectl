@@ -1,6 +1,6 @@
 # 0059: Accept exact-source CI campaigns on GitHub
 
-Date: 2026-11-07. State: implemented; local stand-ins/lint pass, actual GitHub acceptance pending.
+Date: 2026-11-07. State: first actual GitHub acceptance passes historical495atc1f40f3; binary-inventory negative hardening/replay remains separate.
 
 Move bounded campaign inspection from this ARM workspace to a manually
 dispatched GitHub job. Inputs are one full source SHA and the explicit run-ID
@@ -58,3 +58,10 @@ transport. Nineteen local unit functions cover owned API/archive/run/report
 boundaries. See `evidence/2026-11-07/campaign-acceptance-development.json`.
 The first real dispatch must independently inspect a complete actual campaign;
 retained report fixtures alone do not qualify API/source-reader/job execution.
+
+First actual GitHub proof: `evidence/2026-11-07/campaign-acceptance-4956197-c1f40f3-native-checkpoint.json`.
+All26original log hashes/19safe members/72reports match independently. Review
+subsequently found optional binary inventory could admit an owned omitted-field
+negative. Require the candidate pair and within-job hash consistency; preserve
+the legitimate first result and qualify the strengthened verifier separately.
+See `evidence/2026-11-07/campaign-binary-inventory-development.json`.

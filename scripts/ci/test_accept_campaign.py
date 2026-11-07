@@ -178,7 +178,7 @@ class CampaignAcceptance(unittest.TestCase):
         artifact = {'id': 301, 'size_in_bytes': 5000, 'expired': False,
                     'workflow_run': {'id': 11, 'head_sha': CANDIDATE}, 'digest': 'sha256:' + 'c' * 64}
         result = acceptance.artifact_metadata(artifact, CANDIDATE, 11, 26 << 20)
-        self.assertEqual(result, {'artifact_id': 301, 'archive_bytes': 5000, 'api_archive_sha256': 'c' * 64})
+        self.assertEqual(result, {'artifact_id': 301, 'archive_bytes': 5000, 'reported_archive_sha256': 'c' * 64})
         for change in [{'size_in_bytes': 27 << 20}, {'expired': True}, {'digest': None},
                        {'workflow_run': {'id': 12, 'head_sha': CANDIDATE}},
                        {'workflow_run': {'id': 11, 'head_sha': 'b' * 40}}]:

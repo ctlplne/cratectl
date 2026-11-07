@@ -117,6 +117,7 @@ def validate_summary(summary, candidate, run_id, spec, baselines, source=None):
     require(isinstance(records, list) and 0 < len(records) <= 100, 'summary_record_inventory')
     observed = []
     portable = None
+    candidate_binaries = None
     pins = {row['binary']: row['source'] for row in baselines}
     expected_baselines = {(row['schema'], row['source']) for row in baselines}
     _, os_name, arch_name = spec['platform']
@@ -152,6 +153,12 @@ def validate_summary(summary, candidate, run_id, spec, baselines, source=None):
             require(expected is not None and set(artifact) == {'path', 'sha256', 'build'}
                     and artifact['build'] == {'GOARCH': arch, 'GOOS': 'linux' if os_name == 'Linux' else 'darwin',
                                               'vcs.modified': 'false', 'vcs.revision': expected}, 'binary_source_identity')
+        if spec['kind'] != 'security' and not (spec['kind'] == 'upgrades' and name.startswith('historical-build-')):
+            required_binaries = {'.cache/ci-build/cratectl', '.cache/ci-build/cratectld'}
+            require(required_binaries <= seen, 'candidate_binary_inventory_missing')
+            current = {a['path']: a['sha256'] for a in artifacts if a['path'] in required_binaries}
+            require(candidate_binaries is None or candidate_binaries == current, 'candidate_binary_identity_changed')
+            candidate_binaries = current
         if artifacts:
             require(record['source_dirty'] is False and record['build_source_matches_candidate'] is True, 'binary_source_identity')
         if 'browser' in record:

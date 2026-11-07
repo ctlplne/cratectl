@@ -107,7 +107,7 @@ def artifact_metadata(artifact, candidate, run_id, maximum=2 << 20):
             and artifact['workflow_run'].get('head_sha') == candidate, 'artifact_identity')
     digest = artifact.get('digest')
     require(isinstance(digest, str) and re.fullmatch('sha256:[a-f0-9]{64}', digest), 'artifact_digest_missing')
-    return {'artifact_id': artifact['id'], 'api_archive_sha256': digest.removeprefix('sha256:'),
+    return {'artifact_id': artifact['id'], 'reported_archive_sha256': digest.removeprefix('sha256:'),
             'archive_bytes': artifact['size_in_bytes']}
 
 

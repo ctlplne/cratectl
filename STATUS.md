@@ -6,13 +6,35 @@ readiness, security and packaging are **not qualified**. No release/package/imag
 publication is authorized by the CI work.
 
 The [Actions plan](docs/qualification/github-actions-plan.md) assigns native
-qualification and remaining offloads. The manual read-only cross-workflow
-acceptance job is now implemented, with19local API/archive/report/run/receipt
-unit functions and required lint passing. Actual GitHub acceptance remains
-unverified; the first dispatch will inspect the retained complete495campaign
-without restarting native tests. See [development evidence](evidence/2026-11-07/campaign-acceptance-development.json).
+qualification and remaining offloads. The manual read-only acceptance job passed
+on actual GitHub x86 at verifierc1f40f3: all26historical495jobs/19safe72reports,
+with independently matching original log/member/report/source-contract hashes.
+See [native verifier evidence](evidence/2026-11-07/campaign-acceptance-4956197-c1f40f3-native-checkpoint.json).
+It restarted no native tests and does not qualify changed source/full readiness.
+Review then reproduced an owned omitted-binary negative (DEFECT0138); require
+the candidate binary pair and within-job hash consistency. Six report/seven
+API/dispatch tests pass locally; actual strengthened verifier replay is pending.
+See [hardening development](evidence/2026-11-07/campaign-binary-inventory-development.json).
 
-Current pushed source: `ae7d00ece68d45f953d53f1728169e00b6dbe608`, on `main`,
+Current active product candidate: `c1f40f37b26f4921004157a7e42ee705e70912a1` on
+`main`, with exact owner author/committer. Seven native workflows selected,
+expected29jobs including three focused browser journeys. All current handles:
+
+| Profile | GitHub run |
+| --- | --- |
+| main | [42380771620](https://github.com/ctlplne/cratectl/actions/runs/42380771620) |
+| go | [42380771697](https://github.com/ctlplne/cratectl/actions/runs/42380771697) |
+| jvm | [42380771777](https://github.com/ctlplne/cratectl/actions/runs/42380771777) |
+| oci | [42380771604](https://github.com/ctlplne/cratectl/actions/runs/42380771604) |
+| upgrades | [42380771757](https://github.com/ctlplne/cratectl/actions/runs/42380771757) |
+| portable | [42380771570](https://github.com/ctlplne/cratectl/actions/runs/42380771570) |
+| browser | [42380771666](https://github.com/ctlplne/cratectl/actions/runs/42380771666) |
+
+Qualification is pending; inspect exact handles without restarting queued work.
+The separate historical acceptance job is
+[42380833201](https://github.com/ctlplne/cratectl/actions/runs/42380833201).
+
+Previous pushed source: `ae7d00ece68d45f953d53f1728169e00b6dbe608`, on `main`,
 owner author/committer. Its [final campaign fails](evidence/2026-11-07/github-ae7d00e-final-checkpoint.json):
 25successful jobs/one x86 Chromium failure;19safe summaries/72reports retained.
 Both actual Linux hosts pass274PG normal/race,96namedGo/312stock and all earlier

@@ -15,7 +15,10 @@ audit afterward. Public repository and CI pushes/repairs are authorized. Release
 package/image publication, customer, primary and sibling changes need their own
 authority. No autonomous delegation.
 
-Current pushed qualification source: `ae7d00ece68d45f953d53f1728169e00b6dbe608`.
+Current product candidate: `c1f40f37b26f4921004157a7e42ee705e70912a1`, seven native
+workflows/expected29jobs, including focused browser. Actual new replay remains
+pending; inspect the exact handles in STATUS/remaining, never redispatch for
+queue time. Previous source: `ae7d00ece68d45f953d53f1728169e00b6dbe608`.
 Its six completed handles are in [STATUS.md](../../STATUS.md) and
 [remaining.json](remaining.json). [Final campaign](../../evidence/2026-11-07/github-ae7d00e-final-checkpoint.json):
 26jobs/25success1x86Chromiumfailure,19safe72reports. BothLinux274PG normal/race,
@@ -162,8 +165,9 @@ failed commands or the final assertion observation, validate source/inventory/
 owned paths/budgets, then encrypt.
 
 Manual read-only aggregation is implemented as `qualification-acceptance.yml`
-and `scripts/ci/accept_campaign.py` (ADR0059). Local19unit functions and required
-lint pass. It binds all observed selected runs to one clean owner-authored main
+and `scripts/ci/accept_campaign.py` (ADR0059). Initial19unit functions and required
+lint passed. Binary-inventory hardening adds one report test function, making20;
+updated13report/API functions pass locally, full native lint/replay pending. It binds all observed selected runs to one clean owner-authored main
 source; rejects pending/failed/canceled/rerun/skipped required/empty or changed
 inventories; checks34native job variants, exact native labels, required steps,
 source-compatible typed contracts, complete report/binary/tool/fixture inventories,
@@ -172,12 +176,16 @@ bounded GitHub API routes, token-free reviewed download redirects and digest-
 verified single-JSON archives are admitted. No downloaded artifact code executes.
 Only constructed labels/counts/hashes/IDs are uploaded; goal/readiness stayfalse.
 
-The actual workflow/source-reader/API path remains unqualified. First inspect
-the complete retained495six-workflow campaign in a manual main dispatch: candidate
-workflow/typed contract/script bytes match the current verifier, but actual Git
-and API inspection must confirm. No native test restart. Then independently
-accept the new repaired source only after its entire actual selected inventory
-finishes. Existing reviewed exact-source records remain authoritative. No
+The first actual workflow/source-reader/API path passed atc1f40f3, manual run
+42380833201: complete historical495six workflows/26jobs/19safe72reports. All
+original log/member/report and18source-contract hashes independently match.
+See [native evidence](../../evidence/2026-11-07/campaign-acceptance-4956197-c1f40f3-native-checkpoint.json).
+Review then found an owned missing-binary negative in the initial validator;
+required CLI/server inventory and within-job hash consistency now pass focused
+local mutations, actual strengthened verifier replay pending. The legitimate
+first495report has all correct binaries. Preserve it and the negative.
+No native test restart. Independently accept new product source only after its
+entire selected inventory finishes. Existing reviewed records retain authority. No
 workflow_run/PR privilege path, external message, publishing or implicit release.
 See [development evidence](../../evidence/2026-11-07/campaign-acceptance-development.json).
 

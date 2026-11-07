@@ -64,6 +64,27 @@ class CampaignReports(unittest.TestCase):
                 with self.assertRaises(EvidenceError):
                     validate_summary(report, original['candidate'], int(original['run_id']), SPECS['ci-summary-go-module-amd64'], self.baselines)
 
+    def test_runtime_reports_require_both_candidate_binaries_and_one_identity_per_job(self):
+        for name in ['ci-summary-go-module-amd64', 'ci-summary-amd64', 'ci-summary-export-portability-consumer', 'ci-summary-upgrades-amd64']:
+            original = self.report(name)
+            index = next(n for n, r in enumerate(original['records']) if r.get('artifacts'))
+            for mutation in ['missing', 'empty', 'one']:
+                report = copy.deepcopy(original)
+                record = report['records'][index]
+                if mutation == 'missing':
+                    record.pop('artifacts')
+                    record['source_dirty'] = record['build_source_matches_candidate'] = None
+                elif mutation == 'empty':
+                    record['artifacts'] = []
+                else:
+                    record['artifacts'] = [a for a in record['artifacts'] if a['path'] != '.cache/ci-build/cratectl']
+                with self.subTest(profile=name, mutation=mutation), self.assertRaises(EvidenceError):
+                    self.validate(name, report)
+        report = self.report('ci-summary-amd64')
+        report['records'][-1]['artifacts'][0]['sha256'] = '0' * 64
+        with self.assertRaisesRegex(EvidenceError, 'candidate_binary_identity_changed'):
+            self.validate('ci-summary-amd64', report)
+
     def test_historical_browser_and_native_report_inventories_are_complete(self):
         pinned = {row['binary'] for row in self.baselines}
         for name, mutation in [
