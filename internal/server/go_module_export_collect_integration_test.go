@@ -35,7 +35,7 @@ import (
 // This case replays original metadata without claiming signed offline collection
 // or package/platform closure; those need their complete independent caller.
 func TestGoModuleRequirementExportNativeTLSCLICreationReplayAndOriginalGraph(t *testing.T) {
-	s, token, _, one, _ := exportServerFixture(t)
+	s, token, _, one := requirementServerFixture(t)
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
 	defer cancel()
 	private := t.TempDir()
@@ -96,7 +96,7 @@ func TestGoModuleRequirementExportNativeTLSCLICreationReplayAndOriginalGraph(t *
 	args := []string{"--method", "POST", "--path", endpoint, "--body-file", request, "--idempotency-key", "native-requirement-original"}
 	receipt := run(args...)
 	var v store.GoRequirementExportSession
-	if json.Unmarshal(receipt, &v) != nil || v.Profile != store.GoRequirementExportProfile || v.SourceCount != 1 || v.RootCount != 1 || v.DeliveryVerified {
+	if json.Unmarshal(receipt, &v) != nil || v.Profile != store.GoRequirementExportProfile || v.SourceCount != 1 || v.RootCount != 2 || v.DeliveryVerified {
 		t.Fatal("native TLS creation lost the complete graph identity")
 	}
 	if repeated := run(args...); !bytes.Equal(receipt, repeated) {
@@ -123,13 +123,14 @@ func TestGoModuleRequirementExportNativeTLSCLICreationReplayAndOriginalGraph(t *
 		t.Fatal(err)
 	}
 	coordinate := gomodule.Coordinate{Module: one.Module, Version: one.Version}
+	dependency, _, _ := requirementDependencyFixture(t)
 	graph, err := gomodule.VerifyRequirementProof(ctx, proof, mainRead, func(ctx context.Context, c gomodule.Coordinate, limit int64) ([]byte, error) {
 		if ctx.Err() != nil || c != coordinate || int64(len(sourceRead)) > limit {
 			return nil, gomodule.ErrRequirementProof
 		}
 		return sourceRead, nil
-	}, []gomodule.GraphSelection{{Logical: coordinate, Source: coordinate}})
-	if err != nil || len(graph.BuildList) != 1 {
+	}, []gomodule.GraphSelection{{Logical: coordinate, Source: coordinate}, {Logical: dependency, Source: dependency}})
+	if err != nil || len(graph.BuildList) != 2 {
 		t.Fatal("original metadata failed independent replay after registry shutdown", err)
 	}
 }

@@ -7,29 +7,44 @@ packaging or release authority.
 
 ## Current evidence and next source
 
-[44bc606](../../evidence/2026-11-07/github-44bc606-checkpoint.json) is accepted by
-actual read-only [verifier42416227577](https://github.com/ctlplne/cratectl/actions/runs/42416227577):
-26 jobs/six workflows/19 unchanged summaries/76 reports, all original log/member/
-report hashes and 19 source contracts matched. Both Linux hosts pass 286 PostgreSQL/108 named
-Go normal/race,312 stock Go/683 baseline checks,16 historical binaries/21 upgrades.
-Three source hosts pass 63 fuzz targets; x86 Chromium passes 19 workflows/151 checks;
-independent x86/ARM portability passes34 stages. Four UI cases use declared response
-stand-ins. All31 common fixture files/eight roots, separate fingerprints, runner
-identities,14 empty networks and actual pidfd interruption retain their exact scope.
-Focused browser/library/strict inputs were unselected.
+[9bbfb79](../../evidence/2026-11-07/github-9bbfb79-checkpoint.json) is accepted by
+actual read-only [verifier42420490091](https://github.com/ctlplne/cratectl/actions/runs/42420490091)
+from compatible aaf3045: 26 original jobs/six workflows/19 unchanged safe members/
+76 reports. All original log/member/report hashes and 19 source contracts match.
+Both Linux hosts pass 287PG/109 named Go normal/race, 312 stock Go/683 baseline checks,
+16 historical binaries/21 upgrades. Three source hosts pass 65 fuzz targets.
+Main x86 Chromium passes 19 workflows/151 checks; independent x86/ARM portability
+passes 34 stages. Four UI cases use declared response stand-ins. Exact 31 common
+fixture files/eight roots, separate fingerprints, API runner identities, 14 empty
+networks and actual pidfd interruption retain their scope. Focused browser/library/
+strict profiles were unselected. The new real-PG planner stages original metadata
+without creating a graph session; real creation-envelope/signed offline caller
+qualification does not follow. All full goal scope remains active.
 
-Source 9bbfb79 proof preparation is still in flight on its six original handles in
-STATUS.md. Its287 PostgreSQL/109 named Go/65 fuzz inventory needs whole acceptance. No restart is
-needed for observation delay or a newer source push.
+The newer schema 18 source aaf3045 is failed, fully retained and never accepted:
+31 terminal jobs, 24 successful/seven failed/zero job skips, all 31 original logs and
+24 unchanged safe members/76 reports. Four safe members are empty. The failures
+cover three source jobs and both Go/full PostgreSQL jobs. Missing/skipped later
+stages are not passes. Both actual Linux upgrade jobs pass 17 historical binaries/
+22 reports; focused browser/library/JVM/OCI/portability retain scoped success.
+See the [original failure checkpoint](../../evidence/2026-11-07/github-aaf3045-original-failure-checkpoint.json).
 
-The next schema 18 source adds atomic original requirement evidence and current
-all-input delivery/renewal guards. It is implemented but unverified. Required
-inventory is294 PostgreSQL/116 named Go/65 fuzz,17 historical binaries/22 upgrades per Linux host.
-Shared schema inputs should select 31 jobs/eight workflows, 24 safe summaries/
-95 reports, including three focused browser jobs and both NuGet library jobs.
-Enumerate actual API jobs before acceptance. Strict inputs are unchanged.
-Full graph collection/signed offline callers, closure, authority, import/scanning,
-operator/platform/provider/GC/production outcomes remain unfinished.
+Local repairs address 0144 shallow-checkout ancestry unit assumptions,0145 missing
+published transitive fixture bytes and0146 modern pruning versus intended legacy
+three-input traversal. Keep the real dependency and both selected roots, original
+root Go 1.26/main Go 1.27/pinned SDK and every all-input/atomicity/policy/replay/count
+control. The new selector explicitly declares Go 1.16. Actual ancestry/native builds
+remain in the full-history upgrade jobs; generic unit tests use owned stand-ins.
+The production resolver/current policy path and all 18 migrations are unchanged.
+Local ARM build/unit/race/lint and tagged compile/vet pass only.
+
+Require full 294 PostgreSQL/116 named Go/65 fuzz on the repaired exact source, 17 historical binaries/
+22 upgrades per Linux host, and all actual selected workflows. Current changes
+should select six standard workflows/26 jobs/19 safe summaries/78 reports. Focused
+browser/library/strict paths are unchanged; no manual replay of unchanged optional
+profiles is needed. Enumerate actual expanded API inventory before acceptance.
+Complete graph collection/signed offline callers, closure, authority, import/
+scanning, operator/platform/provider/GC/production outcomes remain unfinished.
 
 ## Placement
 

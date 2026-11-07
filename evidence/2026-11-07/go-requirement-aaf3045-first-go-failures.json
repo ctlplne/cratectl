@@ -1,0 +1,127 @@
+{
+  "candidate": "aaf3045a9b3fd7dbd5dc64f0aa229c0f16e6dfe5",
+  "observed_at": "2026-11-07T22:27:51.232353+00:00",
+  "defects": [
+    "DEFECT.0145",
+    "DEFECT.0146"
+  ],
+  "state": "both original PostgreSQL Go normal jobs failed; race/stock and later summary stages do not count as passes",
+  "run_id": 42418827769,
+  "first_job_id": 128542650153,
+  "jobs": [
+    {
+      "id": 128542649904,
+      "conclusion": "failure",
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/aaf3045-first-go-failure/128542649904.txt",
+        "bytes": 249783,
+        "sha256": "5324217505b8fe763ea92c079d1e881ff5fa4fc510c12ceef9bd55e06b590901"
+      }
+    },
+    {
+      "id": 128542650153,
+      "conclusion": "failure",
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/aaf3045-first-go-failure/128542650153.txt",
+        "bytes": 250996,
+        "sha256": "a58b59b1b2c71a52777641b27171e3eb4511a0b8498c690684ebea807e94dad0"
+      }
+    }
+  ],
+  "candidate_sources": [
+    {
+      "path": "internal/server/go_module_integration_test.go",
+      "bytes": 20106,
+      "sha256": "fb26050ad0754d47c8c693532dfe9fe6004056cf190d8d4f676c11cc9f4e1ba9"
+    },
+    {
+      "path": "internal/server/go_module_exports_integration_test.go",
+      "bytes": 8413,
+      "sha256": "7d38547dfeeff48779c1bc3c7a6018327b570ef2a24e2492fc76d1ccf561d8cf"
+    },
+    {
+      "path": "internal/server/go_module_requirement_exports_integration_test.go",
+      "bytes": 6599,
+      "sha256": "28e02814e2c44cb8cc2a711bf0d29d7083c508447a9413c80ca3b064a5617d8f"
+    },
+    {
+      "path": "internal/server/go_module_export_collect_integration_test.go",
+      "bytes": 67565,
+      "sha256": "6d594f6c4a1fecd402bfd4a7aff3db2f69973a3e2a3707012e0f9c3aff63c97f"
+    },
+    {
+      "path": "internal/store/go_module_requirement_sessions_integration_test.go",
+      "bytes": 12618,
+      "sha256": "e8732b3c444f5eb8a6ce2d2c19118f78165130e41b09aab0da5e972ea5703f06"
+    },
+    {
+      "path": "internal/gomodule/graph.go",
+      "bytes": 9830,
+      "sha256": "cbfd3a141f1d3abd20f3305f355d1ea427fc8475c9471605d950cf7e5473e9fd"
+    }
+  ],
+  "observations": {
+    "DEFECT.0145": {
+      "functions": [
+        "TestGoModuleRequirementExportNativeTLSCLICreationReplayAndOriginalGraph",
+        "TestGoModuleRequirementExportActualHTTPOriginalMetadataRangeReplayAndCurrentFence"
+      ],
+      "observed": "Actual HTTP creation404 on both hosts; native CLI creation fails too.",
+      "source_bound_cause": "Shared root fixture go.mod requires go.cratectl.invalid/dependency v1.0.0, but the requirement tests publish only the explicit root and incorrectly expect one selected root. Correct all-input creation refuses the missing dependency.",
+      "repair": "Keep original root bytes/Go1.26 directive/dependency and publish actual approved dependency bytes. Require two selected roots, validate/deliver the actual transitive ZIP and replay both selections. Strengthen missing-physical negative with same-key201 after restoring bytes to exclude the original unrelated404."
+    },
+    "DEFECT.0146": {
+      "functions": [
+        "TestGoModuleRequirementExportAtomicGraphReplayOriginalEventAndAuditRetention",
+        "TestGoModuleRequirementExportUnselectedInputFencesCreationLegacyDeliveryAndRenewal",
+        "TestGoModuleRequirementExportQueueQuotaAndMissingStageRollbackAndConcurrentReplay"
+      ],
+      "observed": "Actual fixture reports two examined inputs/two selected roots, while three-input fixture guard refuses.",
+      "source_bound_cause": "Modern Go1.26 selector is pruned: it selects the higher dependency without examining that .mod. Fixture assumed unpruned traversal.",
+      "repair": "Keep mainGo1.27, pinned SDK, selected versions/payloads, both existing Go1.26 intake versions, all count/policy/atomicity controls. Explicitly declare the new selectorGo1.16 so its legacy subtree examines all three originals. Add shared-template local regression proving mixed legacy3 versus original modern2 with identical two-root selection. No resolver/pruning change."
+    }
+  },
+  "limits": [
+    "These are actual native fixture failures, not a demonstrated product resolver or policy-admission defect. Original logs/failures and skipped later stages remain retained.",
+    "Missing-physical negative alone could pass for the wrong missing-dependency404; the new positive restore/same-key control is required before qualifying it.",
+    "No current fixture repair native replay/whole acceptance yet. Full goal remains active; no closure/checksum/current-destination/readiness grant."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false,
+  "original_full_native_observations": [
+    {
+      "job_id": 128542697751,
+      "name": "Real PostgreSQL and stock clients (amd64)",
+      "conclusion": "failure",
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/aaf3045-campaign/128542697751.txt",
+        "bytes": 402250,
+        "sha256": "efcd3c203beb6130f31c34a2812550d31c3c6e064b6df50c6ffc42a4f9a52ca0"
+      },
+      "failed_functions": [
+        "TestGoModuleRequirementExportActualHTTPOriginalMetadataRangeReplayAndCurrentFence",
+        "TestGoModuleRequirementExportAtomicGraphReplayOriginalEventAndAuditRetention",
+        "TestGoModuleRequirementExportNativeTLSCLICreationReplayAndOriginalGraph",
+        "TestGoModuleRequirementExportQueueQuotaAndMissingStageRollbackAndConcurrentReplay",
+        "TestGoModuleRequirementExportUnselectedInputFencesCreationLegacyDeliveryAndRenewal"
+      ]
+    },
+    {
+      "job_id": 128542698165,
+      "name": "Real PostgreSQL and stock clients (arm64)",
+      "conclusion": "failure",
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/aaf3045-campaign/128542698165.txt",
+        "bytes": 401482,
+        "sha256": "5d6ba072268db9a014dbf3fedbc8317400f137659f91e5282c86432583374094"
+      },
+      "failed_functions": [
+        "TestGoModuleRequirementExportActualHTTPOriginalMetadataRangeReplayAndCurrentFence",
+        "TestGoModuleRequirementExportAtomicGraphReplayOriginalEventAndAuditRetention",
+        "TestGoModuleRequirementExportNativeTLSCLICreationReplayAndOriginalGraph",
+        "TestGoModuleRequirementExportQueueQuotaAndMissingStageRollbackAndConcurrentReplay",
+        "TestGoModuleRequirementExportUnselectedInputFencesCreationLegacyDeliveryAndRenewal"
+      ]
+    }
+  ]
+}

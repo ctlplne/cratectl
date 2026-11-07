@@ -22,7 +22,7 @@ func requirementExportFixture(t *testing.T) (goIntakeFixture, GoRequirementExpor
 	t.Helper()
 	f, set := hostedExportSetFixture(t)
 	c := gomodule.Coordinate{Module: "go.cratectl.invalid/Owned/selector", Version: "v1.0.0"}
-	mod := []byte("module " + c.Module + "\ngo 1.26.0\nrequire " + set.Entries[0].Module + " v1.1.0\n")
+	mod := requirementSelectorMod(c.Module, set.Entries[0].Module)
 	result := f.bundleWithGoModAtPath(t, c, mod, "assets/owned.txt", "inert selecting module")
 	ctx := context.Background()
 	if _, err := f.s.PublishGoModule(ctx, f.i, set.Entries[0].Repository, result.GoModule.Objects, "requirement-selector-publication"); err != nil {

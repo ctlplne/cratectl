@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -21,8 +22,29 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func TestGoModuleRequirementExportActualHTTPOriginalMetadataRangeReplayAndCurrentFence(t *testing.T) {
+func requirementServerFixture(t *testing.T) (*Server, string, store.Identity, store.GoExportRequest) {
+	t.Helper()
 	s, token, admin, one, _ := exportServerFixture(t)
+	c, archive, _ := requirementDependencyFixture(t)
+	if response := goHTTP(t, s, token, "PUT", "/go/"+one.Repository+"/"+c.Prefix()+".zip", archive); response.Code != 201 {
+		t.Fatal("publish actual referenced dependency", response.Code)
+	}
+	for _, a := range goInventory(t, s, admin, one.Repository) {
+		if !strings.HasPrefix(a.Path, c.Prefix()+".") {
+			continue
+		}
+		if err := s.DB.Tx(context.Background(), admin, true, func(tx pgx.Tx) error {
+			_, err := store.Decide(context.Background(), tx, admin, one.Repository, a.Path, a.Digest, "allowed")
+			return err
+		}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	return s, token, admin, one
+}
+
+func TestGoModuleRequirementExportActualHTTPOriginalMetadataRangeReplayAndCurrentFence(t *testing.T) {
+	s, token, admin, one := requirementServerFixture(t)
 	r := goRequirementRequest{Repository: one.Repository, MainGoMod: "module owned/main\ngo 1.27.0\nrequire " + one.Module + " " + one.Version + "\n", LifetimeSeconds: 60, MaxArtifactBytes: 1 << 20}
 	listener, err := net.Listen("tcp4", "127.0.0.1:38443")
 	if err != nil {
@@ -62,7 +84,7 @@ func TestGoModuleRequirementExportActualHTTPOriginalMetadataRangeReplayAndCurren
 	const endpoint = "/api/v1/go/export-sets/requirements"
 	code, receipt, _ := call("POST", endpoint, r, "Idempotency-Key", "http-requirement-original")
 	var v store.GoRequirementExportSession
-	if code != 201 || json.Unmarshal(receipt, &v) != nil || v.Profile != store.GoRequirementExportProfile || v.RootCount != 1 || v.SourceCount != 1 || v.Manifest == v.SelectionManifest || v.DeliveryVerified {
+	if code != 201 || json.Unmarshal(receipt, &v) != nil || v.Profile != store.GoRequirementExportProfile || v.RootCount != 2 || v.SourceCount != 1 || v.Manifest == v.SelectionManifest || v.DeliveryVerified {
 		t.Fatal("complete actual HTTP graph creation", code)
 	}
 	path := endpoint + "/" + v.ID
@@ -70,6 +92,10 @@ func TestGoModuleRequirementExportActualHTTPOriginalMetadataRangeReplayAndCurren
 	parent, err := store.ParseGoRequirementExportManifest(raw)
 	if code != 200 || err != nil || crypt.Digest(raw) != v.Manifest.Digest || parent.Selection.DependencyClosure || parent.Selection.ChecksumAuthority || parent.Selection.CurrentRegistryAdmission {
 		t.Fatal("original graph parent", code, err)
+	}
+	code, dependencyRaw, _ := call("GET", "/api/v1/go/export-sets/"+v.ID+"/roots/1/zip?generation=1", nil)
+	if code != 200 || crypt.Digest(dependencyRaw) != parent.Selection.Entries[1].Artifacts[0].Digest {
+		t.Fatal("actual selected transitive dependency was not delivered", code)
 	}
 	for suffix, object := range map[string]blob.Object{"/main": v.MainGoMod, "/proof": v.RequirementProof, "/selection": v.SelectionManifest, "/inputs/0/manifest": parent.Sources[0].Manifest, "/inputs/0/mod": parent.Sources[0].Mod} {
 		code, raw, h := call("GET", path+suffix+"?generation=1", nil)
@@ -109,7 +135,7 @@ func TestGoModuleRequirementExportActualHTTPOriginalMetadataRangeReplayAndCurren
 }
 
 func TestGoModuleRequirementExportMissingPhysicalSelectedPayloadCommitsNoGraph(t *testing.T) {
-	s, token, admin, one, _ := exportServerFixture(t)
+	s, token, admin, one := requirementServerFixture(t)
 	ctx := context.Background()
 	p, err := s.DB.PlanGoExport(ctx, admin, one)
 	if err != nil {
@@ -126,9 +152,12 @@ func TestGoModuleRequirementExportMissingPhysicalSelectedPayloadCommitsNoGraph(t
 	if err := os.Rename(path, missing); err != nil {
 		t.Fatal(err)
 	}
+	restored := false
 	defer func() {
-		if err := os.Rename(missing, path); err != nil {
-			t.Error(err)
+		if !restored {
+			if err := os.Rename(missing, path); err != nil {
+				t.Error(err)
+			}
 		}
 	}()
 	counts := func() [5]int {
@@ -146,5 +175,14 @@ func TestGoModuleRequirementExportMissingPhysicalSelectedPayloadCommitsNoGraph(t
 	response := goHTTP(t, s, token, "POST", "/api/v1/go/export-sets/requirements", raw, "Idempotency-Key", "missing-graph-zip")
 	if response.Code == 201 || response.Code == 200 || counts() != before {
 		t.Fatal("missing physical selected ZIP committed graph references/receipt/event/job", response.Code)
+	}
+	if err := os.Rename(missing, path); err != nil {
+		t.Fatal(err)
+	}
+	restored = true
+	response = goHTTP(t, s, token, "POST", "/api/v1/go/export-sets/requirements", raw, "Idempotency-Key", "missing-graph-zip")
+	var recovered store.GoRequirementExportSession
+	if response.Code != 201 || json.Unmarshal(response.Body.Bytes(), &recovered) != nil || recovered.RootCount != 2 {
+		t.Fatal("same request/key did not recover after physical bytes restored", response.Code)
 	}
 }

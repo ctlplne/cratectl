@@ -231,7 +231,7 @@
       "native_checkpoint": "evidence/2026-11-07/github-44bc606-checkpoint.json"
     },
     "requirement_proof_preparation": {
-      "state": "internalcanonicalproof/parent/eventbinding/currentstorepreparationimplementedlocally; no durablecaller yet",
+      "state": "scoped real PostgreSQL metadata preparation and pure proof/index qualified at9bbfb79; no durable creation/real original-envelope/signed offline caller",
       "adr": "docs/adr/0069-immutable-go-requirement-export-proof.md",
       "development": "evidence/2026-11-07/go-requirement-export-proof-development.json",
       "durable_graph_tables": false,
@@ -242,10 +242,11 @@
         "postgresql_functions": 287,
         "named_go_functions": 109,
         "fuzz_targets": 65
-      }
+      },
+      "native_checkpoint": "evidence/2026-11-07/github-9bbfb79-checkpoint.json"
     },
     "requirement_durable_creation": {
-      "state": "implemented but unverified",
+      "state": "implemented but unverified; originalaaf source/Go fixture failures retained; local0144/0145/0146 repair awaits native replay",
       "adr": "docs/adr/0070-durable-go-requirement-creation.md",
       "development": "evidence/2026-11-07/go-requirement-durable-creation-development.json",
       "schema": 18,
@@ -270,10 +271,15 @@
       },
       "historical_binaries_per_linux": 17,
       "upgrade_reports_per_linux": 22,
-      "expected_selected_jobs": 31,
-      "expected_workflows": 8,
-      "expected_safe_summaries": 24,
-      "expected_safe_reports": 95
+      "expected_selected_jobs": 26,
+      "expected_workflows": 6,
+      "expected_safe_summaries": 19,
+      "expected_safe_reports": 78,
+      "first_failures": [
+        "evidence/2026-11-07/go-requirement-aaf3045-first-native-failure.json",
+        "evidence/2026-11-07/go-requirement-aaf3045-first-go-failures.json"
+      ],
+      "fixture_repair": "evidence/2026-11-07/go-requirement-fixture-repair-development.json"
     }
   },
   "environment_profiles": {

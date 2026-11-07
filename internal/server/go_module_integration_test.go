@@ -4,7 +4,6 @@
 package server
 
 import (
-	"archive/zip"
 	"bytes"
 	"context"
 	"errors"
@@ -22,28 +21,6 @@ import (
 
 const goFixtureInstant = "2026-01-02T03:04:05Z"
 
-func goPublicationFixture(t testing.TB, c gomodule.Coordinate, payload string) ([]byte, []byte) {
-	t.Helper()
-	mod := []byte("module " + c.Module + "\n\ngo 1.26\nrequire go.cratectl.invalid/dependency v1.0.0\n")
-	var b bytes.Buffer
-	z := zip.NewWriter(&b)
-	for _, f := range []struct {
-		name string
-		data []byte
-	}{{"go.mod", mod}, {"assets/owned.txt", []byte(payload)}} {
-		w, e := z.Create(c.Module + "@" + c.Version + "/" + f.name)
-		if e != nil {
-			t.Fatal(e)
-		}
-		if _, e = w.Write(f.data); e != nil {
-			t.Fatal(e)
-		}
-	}
-	if e := z.Close(); e != nil {
-		t.Fatal(e)
-	}
-	return b.Bytes(), mod
-}
 func goHTTP(t testing.TB, s *Server, token, method, p string, data []byte, headers ...string) *httptest.ResponseRecorder {
 	t.Helper()
 	r := httptest.NewRequest(method, p, bytes.NewReader(data))

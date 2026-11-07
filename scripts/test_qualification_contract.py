@@ -16,11 +16,6 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class CandidateArtifacts(unittest.TestCase):
-    def test_every_current_historical_pin_is_reachable_without_native_build_or_resources(self):
-        result = subprocess.run([sys.executable, ROOT / 'scripts/ci/build_upgrade_baselines.py', '--check'], capture_output=True, timeout=30)
-        self.assertEqual(result.returncode, 0, result.stderr.decode())
-        self.assertIn(b'17 pinned historical sources are reachable; no build or worktree created', result.stdout)
-
     def test_every_pinned_historical_lifecycle_input_is_admitted_before_resource_setup(self):
         manifest=json.loads((ROOT/'docs/qualification/upgrade-baselines.json').read_text())
         # The real driver parses before loading binaries, credentials or opening

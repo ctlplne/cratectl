@@ -1,0 +1,78 @@
+{
+  "candidate": "aaf3045a9b3fd7dbd5dc64f0aa229c0f16e6dfe5",
+  "observed_at": "2026-11-07T22:12:32.062884+00:00",
+  "defect": "DEFECT.0144",
+  "state": "original source jobs failed on all three native source hosts; remaining campaign still running",
+  "run_id": 42418827547,
+  "first_job_id": 128542697721,
+  "failed_source_jobs": [
+    {
+      "job_id": 128542697715,
+      "name": "Source and unit (amd64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42418827547/job/128542697715",
+      "conclusion": "failure",
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/aaf3045-first-failure/128542697715.txt",
+        "bytes": 31909,
+        "sha256": "b7bbae8a84cf3ee1f517c07fb17806ffda4dda8657fcdacd6bf8f33e22ce981a"
+      },
+      "known_oldest_pin_missing_in_checkout": true
+    },
+    {
+      "job_id": 128542697721,
+      "name": "Source and unit (arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42418827547/job/128542697721",
+      "conclusion": "failure",
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/aaf3045-first-failure/128542697721.txt",
+        "bytes": 31994,
+        "sha256": "2f3502809e7463b93ab012aca9fdacd86613f59707fe39b77413442012348916"
+      },
+      "known_oldest_pin_missing_in_checkout": true
+    },
+    {
+      "job_id": 128542697981,
+      "name": "Source and unit (darwin-arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42418827547/job/128542697981",
+      "conclusion": "failure",
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/aaf3045-first-failure/128542697981.txt",
+        "bytes": 34109,
+        "sha256": "31b43bb326c547f1a8ec8067ee74e41de3694a4d506bc0f4b408a31002be45a5"
+      },
+      "known_oldest_pin_missing_in_checkout": true
+    }
+  ],
+  "private_api_snapshot": {
+    "path": ".cache/aaf3045-first-failure-jobs.json",
+    "bytes": 44483,
+    "sha256": "5494a5b34fda54c03743c436600a6a2923f78ee64a285a2410f17d5818719ac5"
+  },
+  "candidate_sources": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "bytes": 12177,
+      "sha256": "96cb455a04890139d448a8263f89ce82907be81554633b75729594e2dc807a80"
+    },
+    {
+      "path": "scripts/test_qualification_contract.py",
+      "bytes": 5538,
+      "sha256": "430cf3a76ac414079379ef7407298747e53f13afc709835b435cab3ced55907e"
+    },
+    {
+      "path": "scripts/ci/build_upgrade_baselines.py",
+      "bytes": 5029,
+      "sha256": "4a158494ec706d1c33b7d9a2adb62fe882bf8b3fd4fc67e8727a7cffb6fce100"
+    }
+  ],
+  "cause": "New generic lint test performs real historical ancestry in source-job depth1 checkout; the oldest pinned commit is absent. Dedicated upgrade jobs have full history and perform the actual native ancestry/build/upgrade controls.",
+  "repair": "Move coverage beside the historical builder, use declared Git/manifest stand-ins for environment-independent unit checks and assert all17 source queries plus refusal before native setup. Keep actual17-pin ancestry/native rebuild/upgrade checks unchanged in the dedicated workflow.",
+  "limits": [
+    "This is an actual CI test-topology failure, not a PostgreSQL/product creation defect claim.",
+    "All three original failures remain failed; no assertions or native historical checks are removed and no job is restarted.",
+    "Later still-running jobs are not passes; sourceaaf can never receive a whole green verdict with these original failures.",
+    "Full450/41/laterGOAL remains active; readiness and new creation qualification remain false."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

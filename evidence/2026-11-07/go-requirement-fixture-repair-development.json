@@ -1,0 +1,146 @@
+{
+  "source_parent": "aaf3045a9b3fd7dbd5dc64f0aa229c0f16e6dfe5",
+  "source_state": "dirty fixture repair prior to owner-identity commit",
+  "observed_at": "2026-11-07T22:27:51.234091+00:00",
+  "defects": [
+    "DEFECT.0144",
+    "DEFECT.0145",
+    "DEFECT.0146"
+  ],
+  "state": "local repair passed; native replay pending",
+  "first_failures": [
+    "evidence/2026-11-07/go-requirement-aaf3045-first-native-failure.json",
+    "evidence/2026-11-07/go-requirement-aaf3045-first-go-failures.json"
+  ],
+  "files": [
+    {
+      "path": "Makefile",
+      "bytes": 3439,
+      "sha256": "424ba9e18b3d31484bb6309cb2ec7774e50fb470ee4d7e50ae8299c90c06ee2a"
+    },
+    {
+      "path": "scripts/test_qualification_contract.py",
+      "bytes": 5114,
+      "sha256": "6db6021aa8e68beda6de5a18e0b5ea2aaf14aee61772ab25eae361263efbb3eb"
+    },
+    {
+      "path": "scripts/ci/test_historical_baselines.py",
+      "bytes": 3929,
+      "sha256": "cf4463697c7b9742c7e0ed83513085ee29335021b838cceefcc6c03c5e3d9ae0"
+    },
+    {
+      "path": "internal/server/go_module_fixture_test.go",
+      "bytes": 3219,
+      "sha256": "62b45887382ddf5fcf4408fd971e26bd54ef436cf000c53b88f4af464f8eb623"
+    },
+    {
+      "path": "internal/server/go_module_integration_test.go",
+      "bytes": 19487,
+      "sha256": "b9f2497f1f9a5657af19069a1c534cd237eb67dcbfd7ed5c1e4bb2bd87f13c3e"
+    },
+    {
+      "path": "internal/server/go_module_requirement_exports_integration_test.go",
+      "bytes": 8209,
+      "sha256": "99269a41c8300289936cc3340dfc273e90d2241c250eb1d21e104ea4d48d2e43"
+    },
+    {
+      "path": "internal/server/go_module_export_collect_integration_test.go",
+      "bytes": 67663,
+      "sha256": "7d407b93ebb4193144dc95f7857e5223badea21e4fe1fa6c5da0c7ea1d24e240"
+    },
+    {
+      "path": "internal/store/go_requirement_export_plan_test.go",
+      "bytes": 3295,
+      "sha256": "625a3f7a56e98b3a6279ea9ec04f5c230270417f80de682ee0de8fdc6cdf2a61"
+    },
+    {
+      "path": "internal/store/go_module_requirement_sessions_integration_test.go",
+      "bytes": 12581,
+      "sha256": "7aace9d5c592e45775cc08d77fcdd6108e79f4d939aa51673220eeb059dcb453"
+    }
+  ],
+  "repairs": {
+    "DEFECT.0145": "Keep original root bytes/Go1.26 directive/dependency and publish actual approved dependency bytes. Require two selected roots, validate/deliver the actual transitive ZIP and replay both selections. Strengthen missing-physical negative with same-key201 after restoring bytes to exclude the original unrelated404.",
+    "DEFECT.0146": "Keep mainGo1.27, pinned SDK, selected versions/payloads, both existing Go1.26 intake versions, all count/policy/atomicity controls. Explicitly declare the new selectorGo1.16 so its legacy subtree examines all three originals. Add shared-template local regression proving mixed legacy3 versus original modern2 with identical two-root selection. No resolver/pruning change."
+  },
+  "checks": {
+    "shared_original_representation_and_graph_unit_functions": 2,
+    "owned_git_manifest_unit_functions": 3,
+    "arm_build_test_race_lint": "passed; owned stand-ins/data only",
+    "tagged_normal_race_compilation_and_vet": "passed only; no actual local PostgreSQL or stock SDK",
+    "normal_and_race_units": [
+      {
+        "path": ".cache/go-requirement-native-fixture-repair-unit.log",
+        "bytes": 97,
+        "sha256": "4657a6c122f8b5249a5d77e2a825ca7fb683be1407862679e1e9a6b32ba9682f"
+      },
+      {
+        "path": ".cache/go-requirement-native-fixture-repair-race.log",
+        "bytes": 97,
+        "sha256": "bba7a0e21c1c17817bf44905de1e5f6e94a314760b391809d79c5ef05bd2dc53"
+      }
+    ],
+    "gate_logs": [
+      {
+        "path": ".cache/go-requirement-fixture-repair-gates.log",
+        "bytes": 14072,
+        "sha256": "7b9636d3ce6c9f5eb1a30ad8b1ff2b8ccbe3e4e27ae108129153f82095308338"
+      },
+      {
+        "path": ".cache/go-requirement-fixture-repair-tagged.log",
+        "bytes": 207,
+        "sha256": "70f255b081795c3900c785cd754c34c563582ab6dd8e8dba273140f398136d8f"
+      },
+      {
+        "path": ".cache/go-requirement-fixture-repair-tagged-race.log",
+        "bytes": 207,
+        "sha256": "22da092bd0deed92f70fd111523fc62f8489f602ffbef46aae4a884d5c91f9a6"
+      },
+      {
+        "path": ".cache/go-requirement-fixture-repair-tagged-vet.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "retained_first_modern_pruning_regression": {
+    "path": ".cache/go-requirement-pruning-fixture-first.log",
+    "bytes": 1021,
+    "sha256": "d86230a890cd40533226c7a9c7293df12bc02777a494639a4bdeb71826641c2b"
+  },
+  "unchanged": {
+    "production_resolver_and_current_policy_paths": true,
+    "all18_migration_definitions_checksums": true,
+    "main_go_directive": "1.27.0",
+    "stock_sdk": "1.27.3",
+    "original_shared_publication_fixture_root_go_directive": "1.26",
+    "original_shared_publication_fixture_dependency_preserved": true,
+    "store_existing_intake_go_directives": "1.26.0",
+    "store_selected_roots": 2,
+    "store_examined_inputs_required": 3,
+    "all_original_atomicity_policy_retention_replay_controls": true
+  },
+  "required_native_inventory": {
+    "postgresql_functions": 294,
+    "named_go_functions": 116,
+    "fuzz_targets": 65,
+    "historical_binaries_per_linux": 17,
+    "upgrade_reports_per_linux": 22
+  },
+  "expected_selection": {
+    "jobs": 26,
+    "workflows": 6,
+    "safe_summaries": 19,
+    "reports": 78,
+    "actual_api_inventory_controls": true
+  },
+  "limits": [
+    "Two-root HTTP/CLI and mixed legacy store fixtures remain real PostgreSQL/native CLI unverified after this repair. Unit stand-ins are not native passes.",
+    "Dedicated historical ancestry/native rebuild/upgrades remain actual on GitHub with full history; no native assertion removed.",
+    "Retain originalaaf31 selected jobs, three source failures and both Go failures plus any full native failures. No reruns or source mixing for whole acceptance.",
+    "Source9bb26 original jobs have passed and actual read-only verifier42420490091 passes fromcompatibleaaf; independent original retention/matching is separate from this new source.",
+    "Full signed graph collection/offline caller, closure/authority/current scan/import/admission, physicalGC/provider/platform/installation/HA/scale and all450/41/laterGOAL remain unfinished."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}
