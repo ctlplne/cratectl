@@ -25,6 +25,9 @@ func runJournalVerify(args []string, out io.Writer) error {
 	through := f.String("through", "", "exact terminal sequence from a separately trusted record or external signature")
 	throughHash := f.String("through-hash", "", "separately authenticated terminal SHA-256; empty only at genesis")
 	budget := f.Int64("max-bytes", 1<<30, "maximum export input bytes, 1–68719476736")
+	var sequences journalSequences
+	f.Var(&sequences, "select-event", "original event sequence; repeat for up to256distinct events, requires an external checkpoint signature")
+	selectedBytes := f.Int64("selection-bytes", 4<<20, "retained original selected payload bytes, 1–67108864; metadata output excludes payload text")
 	timeout := f.Duration("timeout", 5*time.Minute, "bounded offline verification time, greater than zero and at most 1h")
 	if err := f.Parse(args); err != nil {
 		return err
@@ -33,12 +36,15 @@ func runJournalVerify(args []string, out io.Writer) error {
 	headSequence, h := strconv.ParseInt(*through, 10, 64)
 	start := crypt.JournalAnchor{Tenant: *tenant, Sequence: startSequence, Hash: *afterHash}
 	head := crypt.JournalAnchor{Tenant: *tenant, Sequence: headSequence, Hash: *throughHash}
-	if f.NArg() != 0 || *file == "" || a != nil || h != nil || strconv.FormatInt(startSequence, 10) != *after || strconv.FormatInt(headSequence, 10) != *through || !start.Valid() || !head.Valid() || startSequence > headSequence || *budget < 1 || *budget > crypt.MaxJournalInputBytes || *timeout <= 0 || *timeout > time.Hour {
-		return errors.New("supply export-file, tenant and canonical after/through sequences with exact separately trusted hashes; keep max-bytes within 1–64 GiB and timeout within 1h")
+	if f.NArg() != 0 || *file == "" || a != nil || h != nil || strconv.FormatInt(startSequence, 10) != *after || strconv.FormatInt(headSequence, 10) != *through || !start.Valid() || !head.Valid() || startSequence > headSequence || *budget < 1 || *budget > crypt.MaxJournalInputBytes || *selectedBytes < 1 || *selectedBytes > crypt.MaxJournalSelectionBytes || *timeout <= 0 || *timeout > time.Hour {
+		return errors.New("supply export-file, tenant and canonical after/through sequences with exact separately trusted hashes; keep max-bytes within 1–64 GiB, selection-bytes within1–64MiB and timeout within 1h")
 	}
 	signature, err := checkpointFiles.verify(head)
 	if err != nil {
 		return err
+	}
+	if len(sequences) > 0 && signature == nil {
+		return errors.New("selected-event attribution requires the external checkpoint statement/signature and independently trusted public key")
 	}
 	input, err := configfile.OpenBounded(*file, *budget, true)
 	if err != nil {
@@ -47,6 +53,13 @@ func runJournalVerify(args []string, out io.Writer) error {
 	defer input.Close()
 	ctx, cancel := context.WithTimeout(context.Background(), *timeout)
 	defer cancel()
+	if len(sequences) > 0 {
+		receipt, events, err := crypt.VerifyJournalExportEvents(ctx, input, start, head, *budget, sequences, *selectedBytes)
+		if err != nil {
+			return errors.New("complete signed journal selection failed; no selected-event receipt was established")
+		}
+		return writeJournalReceipt(out, receipt, signature, journalSummaries(events)...)
+	}
 	receipt, err := crypt.VerifyJournalExport(ctx, input, start, head, *budget)
 	if err != nil {
 		return errors.New("journal export did not completely verify; preserve it and inspect the supplied tenant, checkpoints, page continuity and resource limits")

@@ -1,0 +1,321 @@
+{
+  "source_parent": "0f001a8367c66adc62cbebde66a00085671f2686",
+  "source_dirty": true,
+  "observed_at": "2026-11-07T12:27:33.963829+00:00",
+  "state": "Implemented; local ARM development passes, actual native selection/TLS/destination SDK qualification pending",
+  "adr": "docs/adr/0058-bounded-multiple-journal-selections.md",
+  "source": [
+    {
+      "path": "internal/crypto/journal.go",
+      "sha256": "21ac6d753b29509978559effeb5f495b1b73ea71f0360da0216d59306bc2881a"
+    },
+    {
+      "path": "internal/crypto/journal_selection_test.go",
+      "sha256": "525a2ceec2860bd1f023e9268fcd66c03763b14512b8c605b8c4ecc7f4013500"
+    },
+    {
+      "path": "cmd/cratectl/journal.go",
+      "sha256": "c135450c14c0a61cb4c5821597c8ec5d9b0ca0ef03e0dc574023fd04a1751b3e"
+    },
+    {
+      "path": "cmd/cratectl/journal_checkpoint.go",
+      "sha256": "3cde13696260bb160db968ecf2ca2b1090f8c0a88c2ab7ee52327120332995fa"
+    },
+    {
+      "path": "cmd/cratectl/journal_selection.go",
+      "sha256": "7634dec605cd155eff8528e46dd75fcae157b20022f217ef37dded3fdab9f245"
+    },
+    {
+      "path": "cmd/cratectl/journal_selection_test.go",
+      "sha256": "fa335c1dfc32f732afc8359ae451236655bf56207cfa81dc6f0ad362af17120a"
+    },
+    {
+      "path": "internal/server/go_module_export_collect_integration_test.go",
+      "sha256": "ef4a3f4dc9ea7da06fd4b72801cc1ba1fca7065e0ce892e7ca2d8c8ce3770cde"
+    }
+  ],
+  "development_logs": [
+    {
+      "path": ".cache/journal-multi-selection-unit.log",
+      "sha256": "8be4710ee05cc9db5c780133c77523da226f7f99a081128b2bbbdd96a6983062"
+    },
+    {
+      "path": ".cache/journal-multi-selection-local-validation.log",
+      "sha256": "7f85dfa28dc900726b7baf93b13bdce986801db58466e4dc85f05ef79ce3b4eb"
+    },
+    {
+      "path": ".cache/journal-multi-selection-fuzz.log",
+      "sha256": "0c13626fde579ea5da4d572529af972d71d49639ec28051539aec72fb5be0e97"
+    },
+    {
+      "path": ".cache/journal-multi-selection-pg-compile.log",
+      "sha256": "f7002c9c7e970d02697e7afb7cfd65bcfbb8ee5a9e4807b29ea5c229d6ffc0aa"
+    },
+    {
+      "path": ".cache/journal-multi-selection-pg-race-compile.log",
+      "sha256": "de73498464c138176079f7f7cdaa56a3de39500f7e53965ab7aff4e94abaec9f"
+    },
+    {
+      "path": ".cache/journal-multi-selection-pg-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/journal-multi-selection-cli-final-race.log",
+      "sha256": "831f382c8c4c7993b97340970196a1bb4b9bcda57d75ff277ab546b159b529a9"
+    }
+  ],
+  "development_scope": [
+    "One complete journal pass retains up to256distinct selected originals under caller payload budget1\u201364MiB; exact caller order. No selections or receipt on any late integrity/framing/read/context/budget failure. Old one-event API delegates without losing complete-range validation.",
+    "CLI repeated --select-event requires externally signed checkpoint and independently selected key. Output exposes five identity/size/hash metadata fields only, no original payload text. Existing unselected receipt fields/ordering are preserved.",
+    "17whole-range crypto scenarios, exact256selection/count/byte boundary and one-event compatibility;14signed public-fixture CLI scenarios plus canonical selector/count/duplicate tests. Full ARM build/unit/race/lint passes; new5second fuzz passes3118executions, not exhaustive proof.",
+    "Actual candidate CLI/external OpenSSL/real PG journal native fixture extended: two originals requested in reverse history order, exact identity/size/hash metadata and complete export digest; trailing frame refuses receipt. All prior collector/processkill/renewal/metadata/import/TLS/SDK assertions retained. Normal/race tagged compilation and tagged vet only locally."
+  ],
+  "native_required": {
+    "full_pg_normal_race": 274,
+    "named_go_normal_race": 96,
+    "fuzz_targets": 57,
+    "main_browser_workflows": 19,
+    "main_browser_checks": 151,
+    "stock_go_checks": 312,
+    "historical_binaries_per_host": 15,
+    "upgrade_reports_per_host": 20,
+    "portable_stages": 16
+  },
+  "integration_inventory_sha256": "30e8e704672d9c78523ecdb0fcff00fedc2f77e0198ce813f9b396901af4c0fe",
+  "fuzz_inventory": [
+    {
+      "file": "internal/blob/inventory_test.go",
+      "function": "FuzzInventoryFilenameCursor"
+    },
+    {
+      "file": "internal/crypto/cursor_test.go",
+      "function": "FuzzCursorRejectsMalformedInput"
+    },
+    {
+      "file": "internal/crypto/go_sumdb_collection_test.go",
+      "function": "FuzzGoChecksumCollectedProof"
+    },
+    {
+      "file": "internal/crypto/go_sumdb_test.go",
+      "function": "FuzzGoChecksumOfflineLookup"
+    },
+    {
+      "file": "internal/crypto/integrity_test.go",
+      "function": "FuzzSourceIntegrity"
+    },
+    {
+      "file": "internal/crypto/journal_checkpoint_test.go",
+      "function": "FuzzJournalCheckpointSignatureBindings"
+    },
+    {
+      "file": "internal/crypto/journal_selection_test.go",
+      "function": "FuzzJournalMultipleSelectionsDiscardIncompleteInput"
+    },
+    {
+      "file": "internal/crypto/journal_test.go",
+      "function": "FuzzJournalSelectionDiscardsIncompleteInput"
+    },
+    {
+      "file": "internal/crypto/journal_test.go",
+      "function": "FuzzJournalPageBindings"
+    },
+    {
+      "file": "internal/gomodule/module_test.go",
+      "function": "FuzzNativeRequest"
+    },
+    {
+      "file": "internal/gomodule/module_test.go",
+      "function": "FuzzModuleArchive"
+    },
+    {
+      "file": "internal/gomodule/representations_test.go",
+      "function": "FuzzLatestVersionInfo"
+    },
+    {
+      "file": "internal/gomodule/representations_test.go",
+      "function": "FuzzUpstreamVersionInfo"
+    },
+    {
+      "file": "internal/gomodule/versions_test.go",
+      "function": "FuzzUpstreamVersionList"
+    },
+    {
+      "file": "internal/nuget/archive_test.go",
+      "function": "FuzzArchiveIdentity"
+    },
+    {
+      "file": "internal/nuget/dependencies_test.go",
+      "function": "FuzzNuspecDependencies"
+    },
+    {
+      "file": "internal/nuget/id_test.go",
+      "function": "FuzzIDKey"
+    },
+    {
+      "file": "internal/nuget/nuspec_test.go",
+      "function": "FuzzNuspecIdentity"
+    },
+    {
+      "file": "internal/nuget/order_test.go",
+      "function": "FuzzVersionOrdering"
+    },
+    {
+      "file": "internal/nuget/properties_test.go",
+      "function": "FuzzNuspecProperties"
+    },
+    {
+      "file": "internal/nuget/range_test.go",
+      "function": "FuzzNuGetVersionRange"
+    },
+    {
+      "file": "internal/nuget/version_test.go",
+      "function": "FuzzVersionIdentity"
+    },
+    {
+      "file": "internal/nuget/xml_attributes_test.go",
+      "function": "FuzzNuspecXMLAttributeNormalization"
+    },
+    {
+      "file": "internal/server/go_exports_test.go",
+      "function": "FuzzGoExportRequest"
+    },
+    {
+      "file": "internal/server/integrity_schedules_test.go",
+      "function": "FuzzIntegritySchedulePlan"
+    },
+    {
+      "file": "internal/server/maven_checksum_test.go",
+      "function": "FuzzMavenChecksumParentBinding"
+    },
+    {
+      "file": "internal/server/maven_metadata_test.go",
+      "function": "FuzzMavenMetadata"
+    },
+    {
+      "file": "internal/server/npm_archive_test.go",
+      "function": "FuzzNPMArchive"
+    },
+    {
+      "file": "internal/server/npm_proxy_test.go",
+      "function": "FuzzNPMCatalog"
+    },
+    {
+      "file": "internal/server/npm_test.go",
+      "function": "FuzzNPMCoordinate"
+    },
+    {
+      "file": "internal/server/oci_manifest_test.go",
+      "function": "FuzzOCIAcceptFieldLines"
+    },
+    {
+      "file": "internal/server/oci_manifest_test.go",
+      "function": "FuzzOCIManifest"
+    },
+    {
+      "file": "internal/server/oci_pagination_test.go",
+      "function": "FuzzOCINextLink"
+    },
+    {
+      "file": "internal/server/oci_proxy_test.go",
+      "function": "FuzzOCIChallenge"
+    },
+    {
+      "file": "internal/server/paths_test.go",
+      "function": "FuzzPath"
+    },
+    {
+      "file": "internal/server/paths_test.go",
+      "function": "FuzzPythonNormalize"
+    },
+    {
+      "file": "internal/server/python_archive_test.go",
+      "function": "FuzzPythonArchive"
+    },
+    {
+      "file": "internal/server/python_index_test.go",
+      "function": "FuzzPythonIndex"
+    },
+    {
+      "file": "internal/server/repairs_test.go",
+      "function": "FuzzRepairPlan"
+    },
+    {
+      "file": "internal/server/retention_test.go",
+      "function": "FuzzRetentionJSONBounded"
+    },
+    {
+      "file": "internal/server/retention_test.go",
+      "function": "FuzzRetentionScheduleJSONBounded"
+    },
+    {
+      "file": "internal/server/uploads_test.go",
+      "function": "FuzzUploadContentRange"
+    },
+    {
+      "file": "internal/store/go_checksum_discovery_test.go",
+      "function": "FuzzGoChecksumProofArtifactMetadata"
+    },
+    {
+      "file": "internal/store/go_checksum_failure_test.go",
+      "function": "FuzzGoChecksumFailureEvidence"
+    },
+    {
+      "file": "internal/store/go_checksum_journal_test.go",
+      "function": "FuzzGoChecksumJournalBindings"
+    },
+    {
+      "file": "internal/store/go_checksum_legacy_test.go",
+      "function": "FuzzGoChecksumLegacyEvidenceBindings"
+    },
+    {
+      "file": "internal/store/go_checksum_policy_test.go",
+      "function": "FuzzGoChecksumProofPolicy"
+    },
+    {
+      "file": "internal/store/go_checksum_readback_test.go",
+      "function": "FuzzGoChecksumReadbackCanonicalProof"
+    },
+    {
+      "file": "internal/store/go_exports_test.go",
+      "function": "FuzzGoExportManifest"
+    },
+    {
+      "file": "internal/store/go_module_catalog_test.go",
+      "function": "FuzzGoModuleCatalogMetadata"
+    },
+    {
+      "file": "internal/store/go_module_offline_test.go",
+      "function": "FuzzGoHostedPublicationBindings"
+    },
+    {
+      "file": "internal/store/jobs_test.go",
+      "function": "FuzzJobID"
+    },
+    {
+      "file": "internal/store/literal_search_test.go",
+      "function": "FuzzLiteralSearchDoesNotTurnInputIntoOperators"
+    },
+    {
+      "file": "internal/store/maven_snapshot_test.go",
+      "function": "FuzzMavenNonuniqueSnapshotPath"
+    },
+    {
+      "file": "internal/upstream/registry_delivery_test.go",
+      "function": "FuzzRegistryDeliveryURL"
+    },
+    {
+      "file": "internal/upstream/upstream_test.go",
+      "function": "FuzzUpstreamPath"
+    },
+    {
+      "file": "cmd/cratectl/go_export_collect_test.go",
+      "function": "FuzzCollectionIdentityHeaders"
+    }
+  ],
+  "limits": [
+    "No local native PG/registry/external signer/stock-client campaign or Chromium execution. Development unit/lint suites include their existing standalone SDK/HTTP/FS/shell stand-ins; compilation is not integration proof.",
+    "Source badb85b remains qualified only for its original96Go normal/race/312stock profile. New TLS/manual destination SDK and multiple journal selections are outside that proof; old exact-source fuzz inventory56 is unchanged.",
+    "This does not yet implement multi-artifact bundles or dependency/authority/permission/provenance closure, current destination scanner/import provenance/session/progress, full offline installation or remaining provider/platform/GC/backup/HA/scale outcomes. All450capabilities/41families/later GOAL4.1scope and readiness remain incomplete.",
+    "No schema/signing-custody platform/primary11/5483878b/tenreceipt/credential/customer/sibling/release/package/image change."
+  ]
+}

@@ -7,7 +7,9 @@ host,50fuzz/source gates on three hosts and18main x86 browser workflows/141check
 with three declared UI response stand-ins. See the
 [exact-source checkpoint](../evidence/2026-11-07/github-a3d8df2-checkpoint.json).
 This does not declare complete export, signing-provider or release readiness.
-The later journal-to-Go attribution extension is separate native-unverified work.
+The later signed one-version Go collection/publication journey has separate
+[badb85b native Go evidence](../evidence/2026-11-07/go-module-badb85b-native-checkpoint.json).
+The multiple-event selection extension below still requires native qualification.
 
 The tenant journal retains original event payloads. Each event hash covers the
 previous hash, one newline and the exact original payload bytes. The new export
@@ -176,6 +178,41 @@ the external signer handles its private signing key. No signer/key generation,
 signing command, CA or timestamp service is added to cratectl. A historic signed
 checkpoint remains historic; this profile does not prove latest history,
 signature time, external delivery, event truth, key revocation or package safety.
+
+## Select several original events in one offline pass
+
+For an export containing several original events, repeat `--select-event` on
+`journal-verify`. Use exact sequence values from the artifact's source records
+and the same independently authenticated signed terminal checkpoint:
+
+```sh
+cratectl journal-verify --export-file ./cratectl-journal.jsonl \
+  --tenant "$CRATECTL_TRUSTED_TENANT" \
+  --through "$CRATECTL_TRUSTED_JOURNAL_SEQUENCE" \
+  --through-hash "$CRATECTL_TRUSTED_JOURNAL_HASH" \
+  --checkpoint-file ./checkpoint.json \
+  --checkpoint-signature-file ./checkpoint.sig \
+  --checkpoint-key-file "$CRATECTL_JOURNAL_TRUSTED_PUBLIC_KEY_FILE" \
+  --select-event "$CRATECTL_FIRST_EVENT_SEQUENCE" \
+  --select-event "$CRATECTL_SECOND_EVENT_SEQUENCE"
+```
+
+Each requested sequence must be distinct, after the range start and at or before
+the signed terminal sequence. Selection requires all three signature flags;
+ordinary unsigned verification continues to accept a separately trusted hash.
+A successful `selected_events` array preserves request order and contains only
+`sequence`, `hash`, `previous_hash`, `payload_bytes` and `payload_sha256`.
+Original payload text is never printed. The input journal itself contains
+private tenant payloads and must remain protected.
+
+The verifier reads the entire range once, including every later page and EOF.
+Truncation, corruption, trailing records or exhausted budgets return no selected
+events or success receipt, even when every requested event appeared earlier.
+At most256events may be selected. `--selection-bytes` bounds retained original
+payload bytes, defaults to4MiB and accepts1–64MiB; parser/page/input/time budgets
+still apply separately. This identifies historic original bytes. It does not
+establish package approval, current permission or complete dependency/provenance
+closure, and does not itself create a multi-artifact export bundle.
 
 ## Bounds and failure handling
 

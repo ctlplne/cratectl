@@ -9,6 +9,9 @@ Current inspected native qualification source: `badb85b52bd8aa06f64e7937a5ce0969
 on `main`, author and committer `imfeelingtheagi`. Both dedicated Go jobs pass
 96Go normal/race and312stock; full-campaign acceptance remains pending. New TLS/destination
 SDK test additions below are local and unverified, outside that source's proof.
+ADR0058 adds bounded multiple-event journal selection with passing local ARM
+development checks. It awaits native qualification; the new source inventory is
+274PG/96Go/57fuzz/19main151. Historical source counts retain their exact scope.
 
 ## Current implementation and first native failure
 
@@ -93,10 +96,21 @@ remain. Normal/race tagged compile/vet and lint pass; new cases have not run.
 See `evidence/2026-11-07/go-export-tls-destination-development.json`. One version,
 HTTP1/manual decision is not HTTP2/customer-PKI/scanner/full import qualification.
 
+[ADR0058](docs/adr/0058-bounded-multiple-journal-selections.md) selects up to256
+original events in one complete signed journal pass, with caller-order results
+and a1–64MiB retained-payload budget. CLI output contains only identity/size/hash
+metadata. Late corrupt/truncated/trailing input returns no selection or receipt.
+ARM build/unit/race/lint,17crypto/14signedCLI scenarios, selector boundary tests
+and5second fuzz pass. Normal/race PG compile/tagged vet pass. The existing native
+fixture adds real-journal/external-OpenSSL/candidate-CLI two-event selection and
+late trailing rejection; these new cases have not run. See the
+[development record](evidence/2026-11-07/journal-multiple-selection-development.json).
+This supports, and does not complete, multi-artifact/dependency/provenance export.
+
 ## Remaining work and protected local state
 
-First replay the preserved fixture failure and qualify the full collector/
-metadata/import path. Retain actual process kill/socket closure, renewal, metadata
+Preserve the named badb85b replay and qualify the expanded TLS/destination SDK,
+multiple-event selection, full main suite and browser path. Retain actual process kill/socket closure, renewal, metadata
 prefix/link recovery, byte-exact receipt replay, tenant/policy/grant/revocation,
 external OpenSSL and stock inert Go assertions. No pending/skipped/unselected pass.
 Then complete the full14-case/7-environment [Go export plan](docs/qualification/go-export-plan.json),

@@ -140,6 +140,7 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 		t.Fatal(err)
 	}
 	var journal bytes.Buffer
+	selectedOriginals := make(map[int64]crypt.JournalEvent)
 	query := store.JournalRange{Through: head.Sequence, ThroughHash: head.Hash, Limit: 1}
 	for {
 		page, err := s.DB.JournalPage(ctx, admin, query)
@@ -148,6 +149,11 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 		}
 		if err := json.NewEncoder(&journal).Encode(page); err != nil {
 			t.Fatal(err)
+		}
+		for _, event := range page.Items {
+			if event.Sequence == 1 || event.Sequence == session.CreatedSequence {
+				selectedOriginals[event.Sequence] = event
+			}
 		}
 		if !page.More {
 			break
@@ -171,6 +177,32 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 	run(true, nil, openssl, "pkey", "-in", privateKey, "-pubout", "-out", publicKey)
 	run(true, nil, openssl, "pkeyutl", "-sign", "-rawin", "-inkey", privateKey, "-in", statementPath, "-out", signature)
 	run(true, nil, openssl, "pkeyutl", "-verify", "-rawin", "-pubin", "-inkey", publicKey, "-in", statementPath, "-sigfile", signature)
+	// Select in reverse history order from the complete, externally signed real
+	// journal. Summaries identify exact original payload bytes without printing
+	// those tenant payloads; a late trailing frame must discard both selections.
+	if session.CreatedSequence <= 1 || len(selectedOriginals) != 2 {
+		t.Fatal("owned publication/export journal needs two distinct originals")
+	}
+	selectionArguments := []string{cli, "journal-verify", "--export-file", journalPath, "--tenant", admin.Tenant, "--through", strconv.FormatInt(head.Sequence, 10), "--through-hash", head.Hash, "--select-event", strconv.FormatInt(session.CreatedSequence, 10), "--select-event", "1", "--checkpoint-file", statementPath, "--checkpoint-signature-file", signature, "--checkpoint-key-file", publicKey}
+	selectedReceipt := run(true, nil, selectionArguments...)
+	var selection struct {
+		crypt.JournalVerification
+		CheckpointSignature *crypt.JournalCheckpointVerification `json:"checkpoint_signature"`
+		SelectedEvents      []map[string]json.RawMessage         `json:"selected_events"`
+	}
+	if json.Unmarshal(selectedReceipt, &selection) != nil || !selection.MatchesSuppliedCheckpoint || selection.ExportSHA256 != crypt.Digest(journal.Bytes()) || selection.CheckpointSignature == nil || !selection.CheckpointSignature.SignatureVerified || len(selection.SelectedEvents) != 2 {
+		t.Fatal("actual signed multiple-event CLI verification failed")
+	}
+	for n, sequence := range []int64{session.CreatedSequence, 1} {
+		event := selectedOriginals[sequence]
+		expected, _ := json.Marshal(map[string]any{"sequence": event.Sequence, "hash": event.Hash, "previous_hash": event.PreviousHash, "payload_bytes": len(event.Payload), "payload_sha256": crypt.Digest([]byte(event.Payload))})
+		observed, _ := json.Marshal(selection.SelectedEvents[n])
+		if !bytes.Equal(expected, observed) || len(selection.SelectedEvents[n]) != 5 {
+			t.Fatal("selected original identity/order changed or payload leaked")
+		}
+	}
+	trailingPath := write("journal-trailing.jsonl", append(bytes.Clone(journal.Bytes()), []byte("{}\n")...))
+	run(false, nil, append(selectionArguments, "--export-file", trailingPath)...)
 	reached, release := make(chan struct{}), make(chan struct{})
 	var barrier, lostImportResponse sync.Once
 	var applicationRequests atomic.Int64

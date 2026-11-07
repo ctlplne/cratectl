@@ -15,7 +15,8 @@
     "docs/adr/0053-indexed-export-expiry.md",
     "docs/adr/0055-resumable-signed-go-collection.md",
     "docs/adr/0056-atomic-collection-metadata.md",
-    "docs/adr/0057-signed-export-destination-publication.md"
+    "docs/adr/0057-signed-export-destination-publication.md",
+    "docs/adr/0058-bounded-multiple-journal-selections.md"
   ],
   "current_implementation": {
     "source_parent": "badb85b52bd8aa06f64e7937a5ce0969eda5190b",
@@ -98,7 +99,19 @@
       },
       "checkpoint": "evidence/2026-11-07/go-module-badb85b-native-checkpoint.json"
     },
-    "current_normal_step_observation": "evidence/2026-11-07/go-module-badb85b-step-observation.json"
+    "current_normal_step_observation": "evidence/2026-11-07/go-module-badb85b-step-observation.json",
+    "multiple_journal_selection": {
+      "state": "implemented; local development passes, native qualification pending",
+      "source_parent": "0f001a8367c66adc62cbebde66a00085671f2686",
+      "source_dirty": true,
+      "adr": "docs/adr/0058-bounded-multiple-journal-selections.md",
+      "development": "evidence/2026-11-07/journal-multiple-selection-development.json",
+      "scope": "Up to256original events from one completely verified signed range, caller order and bounded retained payload; CLI emits only original identity/size/hash metadata. Native real journal/OpenSSL/CLI extension compiled, not run locally.",
+      "does_not_complete": [
+        "multi-artifact bundle",
+        "dependency/authority/permission/provenance closure"
+      ]
+    }
   },
   "environment_profiles": {
     "development-arm": {
@@ -452,18 +465,12 @@
     }
   ],
   "execution_order": [
-    "Replay retained d186invalid-role fixture failures with existing writer role and unchanged current grant/revocation/assertions, plus new import console/sourcebinding checks. No race/stock skip or zero-report acceptance.",
-    "Replay DEFECT0133 owned testCAS budget repair before collector/metadata/import acceptance; retain original2MiB asset/all assertions and original native413/race-stock skips/zero reports.",
-    "Qualify signed CLI destination publication and real post-commit socket closure/replay/unassessed/currentgrant/conflict controls on both actual native Linux hosts. Preserve all original collector/metadata/stock assertions; full import/provenance/scanning/closure/operator/platform scope remains.",
-    "Qualify the new eight-member signed collector and actual process-death/renewed-resume/SDK/credential-policy journey on both native Linux hosts,96Go/274fullPG normal/race;56cmd+internal fuzz and expanded19main151 UI response stand-ins. Preserve every original assertion and all broader closure/import/operations/format requirements.",
-    "Preserve exact470ca74 named95Go normal/race/312stock,15historical20upgrades each and16stage portability proof. Complete full31job acceptance, retain original ARM Ant/Ivy bootstrap failure and repair its bounded pinned installation; then continue every closure/import/provider/platform/scale/other-format requirement.",
-    "Qualify schema16 indexed idle/due expiry and exact index admission on both actual Linux hosts:273PG/95Go normal/race,15historical20upgrades each; keep original assertions/clients/fuzz/browser/portable profiles. Replay DEFECT0130 narrow upgrade tools without unused Maven/JDK/PyPI dependency.",
-    "Preserve exact15a49d3 separate-native-runner16stage portable proof and original ARM upgrade bootstrap failure; full disconnected closure/import/provider/platform outcomes stay required.",
-    "Preserve qualified1a61120 historical consumer and original d179222 failures; qualify clean schema15 producer/manifest/CLI/console/upgrade source on actual native hosts.",
-    "Qualify dedicated background expiry reconciliation; then complete remaining producer policy/provenance/permission/authority/closure/GC protections and backlog throughput.",
-    "implement complete producer/API/CLI/UI and portable proof/policy/closure consumer",
-    "qualify interrupted/native historical upgrades, import and lifecycle/GC",
-    "qualify independent hosts, remaining platforms/providers/scale and broader committed formats"
+    "Preserve exactbadb85b96Go normal/race/312stock acceptance onbothLinux and original0132/0133/0135failures. Inspect remaining original main Linux/browser jobs; no pending/skipped/unselected pass or restart for elapsed observation.",
+    "Qualify new TLS/manual destination SDK and ADR0058 multiple journal selections on both actual GitHub Linux hosts;274PG/96Go normal/race,57product fuzz onthreehosts,19main151Chromium. Preserve all original selected JVM/OCI/stock/15historical20upgrade/16portable profiles and exact-source identities.",
+    "Complete bounded multi-artifact dependency/authority/permission/provenance closure and portable proof/policy consumption. The one-pass original-event selector is a foundation, not a complete bundle.",
+    "Complete current destination scanning/import provenance/server session/progress and full API/CLI/console/offline installation; source approval never supplies destination authority or scan cleanliness.",
+    "Complete remaining lifecycle/physicalGC/backup/HA/backlog/clock/scale protections, retaining transactional publication and protection fences.",
+    "Qualify actual independent hosts and remaining signing/storage providers, Windows/private ACL/durability and other required platforms, all41families and laterGOAL4.1scope."
   ],
   "evidence_contract": [
     "Exact source/candidate and clean binary build identity, actual architecture and tool/client versions/hashes",
@@ -482,9 +489,10 @@
       "Protection must participate in the same transaction/fence as publication and GC deletion; a background mark list or process-local lease cannot provide that guarantee.",
       "Actual stock client behavior must be tested on each native architecture. A stand-in protocol or GOSUMDB bypass cannot erase DEFECT0126.",
       "A reusable export must cover dependency/proof/policy closure, safe current-policy import and independent consumer recovery. A successful three-file install does not complete those outcomes.",
-      "Broad source/native regression cost is justified while shared store/authorization paths change; new native cases belong in existing architecture jobs before adding duplicate local campaigns."
+      "Broad source/native regression cost is justified while shared store/authorization paths change; new native cases belong in existing architecture jobs before adding duplicate local campaigns.",
+      "One complete signed journal pass can select up to256original events with bounded retained payload and no partial success. Metadata-only CLI output avoids printing original tenant payloads. This reduces repeated scans but does not qualify scale or implement artifact closure."
     ],
-    "next_implementation_boundary": "Qualify separate-host native-isolated export consumption, then complete dependency/authority/permission/provenance closure, destination import and full lifecycle/backlog/clock/platform/scale protections.",
+    "next_implementation_boundary": "Qualify the multiple-event signed selection foundation and new TLS/destination SDK cases; implement full bounded multi-artifact dependency/authority/permission/provenance closure and current destination import outcomes. Preserve all450/41/later scope.",
     "accepted_capability_states_changed": false
   }
 }

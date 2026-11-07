@@ -19,6 +19,22 @@ focused browser/NuGet-library/strict SDK were unselected. New collector/metadata
 work is outside that proof; all450/41/later scope/readiness remain incomplete.
 Earlier source-specific records below retain their historical scope.
 
+Current published candidate `badb85b` has separate named96Go normal/race and
+312stock acceptance on both actual Linux hosts. Its full main Linux/browser
+campaign remains pending; inspect the original handles in `STATUS.md`. Local
+continuation adds trusted TLS/manual destination SDK tests and
+[ADR0058](../adr/0058-bounded-multiple-journal-selections.md) multiple-event signed
+journal selection. ARM development passes; new native cases have only compiled.
+The next source requires274PG/96Go normal/race,57product fuzz onthreehosts,
+19main151Chromium and every actually selected original profile. Existing jobs
+discover the new fuzz target and extended native function; no duplicate local
+database/stock-client campaign or added runner job is needed. See the
+[development record](../../evidence/2026-11-07/journal-multiple-selection-development.json).
+Full multi-artifact/dependency/authority/permission/provenance closure, destination
+scan/import/server progress, remaining platforms/providers/operations and all
+450/41/later scope remain required. Historical inventories below apply only to
+their named sources.
+
 Exactfca2d4a [whole campaign](../../evidence/2026-11-07/github-fca2d4a-checkpoint.json)
 is now accepted:24jobs/five workflows,17safe68reports;271PG/93Go normal/race,
 312stock/683baseline per Linux host,55fuzz/source on three hosts,19main151 and
@@ -105,7 +121,7 @@ fetcher/installer/pin bytes unchanged, permitting a later real exact-key restore
 observation. Its new runtime cannot inherit source495's named95Go/upgrades/
 portable pass; inspect the actual selected matrix and every original result.
 
-## Current qualification state
+## Historical qualification state at1a61120
 
 Exact1a61120 [campaign checkpoint](../../evidence/2026-11-07/github-1a61120-checkpoint.json)
 accepts all24selected jobs/five workflows,17original safe summaries/66reports:

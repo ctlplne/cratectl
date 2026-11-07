@@ -50,7 +50,7 @@ func (files journalCheckpointFiles) verify(expected crypt.JournalAnchor) (*crypt
 	return &verified, nil
 }
 
-func writeJournalReceipt(out io.Writer, receipt crypt.JournalVerification, signature *crypt.JournalCheckpointVerification) error {
+func writeJournalReceipt(out io.Writer, receipt crypt.JournalVerification, signature *crypt.JournalCheckpointVerification, selected ...journalEventSummary) error {
 	trust := "Attribution depends on how the supplied checkpoint was authenticated outside this export; matching hashes do not prove event claims or approve package bytes."
 	if signature != nil {
 		trust = "The checkpoint signature verifies under the separately supplied public key. Attribution depends on independent trust in that key; this does not prove latest history, event claims, external delivery or package approval."
@@ -59,7 +59,8 @@ func writeJournalReceipt(out io.Writer, receipt crypt.JournalVerification, signa
 		crypt.JournalVerification
 		CheckpointSignature *crypt.JournalCheckpointVerification `json:"checkpoint_signature,omitempty"`
 		Trust               string                               `json:"trust"`
-	}{receipt, signature, trust})
+		SelectedEvents      []journalEventSummary                `json:"selected_events,omitempty"`
+	}{receipt, signature, trust, selected})
 }
 
 // Prepare a bounded unsigned statement for the customer's external signer.

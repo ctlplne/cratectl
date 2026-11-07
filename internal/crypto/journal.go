@@ -217,25 +217,51 @@ func VerifyJournalExport(ctx context.Context, input io.Reader, start, head Journ
 }
 
 type journalSelection struct {
-	sequence int64
-	event    JournalEvent
+	wanted   map[int64]bool
+	events   map[int64]JournalEvent
+	retained int64
+	maximum  int64
 }
+
+const MaxJournalSelectedEvents = 256
+const MaxJournalSelectionBytes int64 = MaxJournalSelectedEvents * MaxJournalPayload
 
 // Select one original event while verifying the complete immutable range. The
 // selection is never returned to a caller if any later page or EOF fails.
 func VerifyJournalExportEvent(ctx context.Context, input io.Reader, start, head JournalAnchor, maxBytes int64, sequence int64) (JournalVerification, JournalEvent, error) {
-	if sequence <= start.Sequence || sequence > head.Sequence {
-		return JournalVerification{}, JournalEvent{}, ErrJournalEvidence
-	}
-	selection := journalSelection{sequence: sequence}
-	receipt, err := verifyJournalExport(ctx, input, start, head, maxBytes, &selection)
+	receipt, events, err := VerifyJournalExportEvents(ctx, input, start, head, maxBytes, []int64{sequence}, MaxJournalPayload)
 	if err != nil {
 		return JournalVerification{}, JournalEvent{}, err
 	}
-	if selection.event.Sequence != sequence {
-		return JournalVerification{}, JournalEvent{}, ErrJournalEvidence
+	return receipt, events[0], nil
+}
+
+// Retain bounded original events in one complete-range pass. Nothing selected
+// escapes on any failure, including errors after all requested events appeared.
+// The caller must independently authenticate the supplied terminal anchor.
+func VerifyJournalExportEvents(ctx context.Context, input io.Reader, start, head JournalAnchor, maxBytes int64, sequences []int64, selectedBytes int64) (JournalVerification, []JournalEvent, error) {
+	if len(sequences) == 0 || len(sequences) > MaxJournalSelectedEvents || selectedBytes < 1 || selectedBytes > MaxJournalSelectionBytes {
+		return JournalVerification{}, nil, ErrJournalLimit
 	}
-	return receipt, selection.event, nil
+	selection := journalSelection{wanted: make(map[int64]bool, len(sequences)), events: make(map[int64]JournalEvent, len(sequences)), maximum: selectedBytes}
+	for _, sequence := range sequences {
+		if sequence <= start.Sequence || sequence > head.Sequence || selection.wanted[sequence] {
+			return JournalVerification{}, nil, ErrJournalEvidence
+		}
+		selection.wanted[sequence] = true
+	}
+	receipt, err := verifyJournalExport(ctx, input, start, head, maxBytes, &selection)
+	if err != nil {
+		return JournalVerification{}, nil, err
+	}
+	if len(selection.events) != len(sequences) {
+		return JournalVerification{}, nil, ErrJournalEvidence
+	}
+	result := make([]JournalEvent, 0, len(sequences))
+	for _, sequence := range sequences {
+		result = append(result, selection.events[sequence])
+	}
+	return receipt, result, nil
 }
 
 func verifyJournalExport(ctx context.Context, input io.Reader, start, head JournalAnchor, maxBytes int64, selection *journalSelection) (JournalVerification, error) {
@@ -296,11 +322,14 @@ func verifyJournalExport(ctx context.Context, input io.Reader, start, head Journ
 		if err != nil {
 			return JournalVerification{}, err
 		}
-		if selection != nil && selection.sequence > page.After && selection.sequence <= page.NextAfter {
+		if selection != nil {
 			for _, event := range page.Items {
-				if event.Sequence == selection.sequence {
-					selection.event = event
-					break
+				if selection.wanted[event.Sequence] {
+					if int64(len(event.Payload)) > selection.maximum-selection.retained {
+						return JournalVerification{}, ErrJournalLimit
+					}
+					selection.events[event.Sequence] = event
+					selection.retained += int64(len(event.Payload))
 				}
 			}
 		}
