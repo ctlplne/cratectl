@@ -1,0 +1,63 @@
+{
+  "source_parent": "b937fd924e1f51e0e2a3a188510b0f0d7952f653",
+  "observed_at": "2026-11-07T17:14:49.897560+00:00",
+  "defect": "DEFECT.0139",
+  "state": "CI guard repaired; four meaningful owned regression functions and lint pass; actual new native31job replay pending",
+  "original_failure": "evidence/2026-11-07/github-b937fd9-original-failure-checkpoint.json",
+  "source_files": [
+    {
+      "path": "scripts/ci/bootstrap_linux.sh",
+      "bytes": 4800,
+      "sha256": "9ffa85e786f200f16a1e10b2e21931f14408f48abf7530f7c81eaf7347482045"
+    },
+    {
+      "path": "scripts/ci/check_schema_plan.py",
+      "bytes": 2501,
+      "sha256": "a3e50d0761baca7f833b58ca6f514512a7ecf8a13379b7de9b1506d8e3ef6049"
+    },
+    {
+      "path": "scripts/ci/test_check_schema_plan.py",
+      "bytes": 4234,
+      "sha256": "573f8ad5231340c6704c1f94596857d3ce521dbd8438882013dd126d19ca015e"
+    },
+    {
+      "path": ".github/workflows/browser-repair.yml",
+      "bytes": 4341,
+      "sha256": "27135af62265bd0d5f545d52630efa15c3d8620d695be496ab955ccc46c8ee64"
+    },
+    {
+      "path": "Makefile",
+      "bytes": 3174,
+      "sha256": "22e57485ef477fd45e4ffdc1de1632aaee161c5fc8bf9dd2d6eb137f6682befd"
+    }
+  ],
+  "cause": "Migration source/qualification target advanced16to17, but bootstrap line82stillasserted binary_version16/applied16. All20failed jobs retain the same inline<string>line1/AssertionError trace after migration/provisioning. No registry client/integration/upgrade/browser failure is inferred from those skipped stages.",
+  "repair": [
+    "Pipe actual candidate migrate--plan into a bounded strict validator that imports the explicitly committed CURRENT_SCHEMA; never derive the expected target from observed database state.",
+    "Require current database state, exact source target, no pending/adoption, safety_valid=true and every ordered version/checksum receipt; refuse null/duplicate/alias/unknown/nonfinite/oversized/partial or unsafe data without echoing input.",
+    "Add4meaningful unit functions for current17vsold16, malformed/unsafe/partial data, exact bootstrap/helper/browser dependency wiring and bounded pipeline output/refusal. Include in make lint.",
+    "Focused browser push inputs now include shared bootstrap/schema guard/schema target; a bootstrap-only repair must not silently omit its real PG/Chromium replay.",
+    "Retain the existing fail-closed empty-summary behavior. Original failed jobs upload exact zero-report summaries and return failure, never successful empty evidence."
+  ],
+  "local_validation": {
+    "unit_functions": 4,
+    "lint": "make lint passes including all owned stand-ins; no real local PG/registry/client/browser/signing campaign",
+    "shell": "bash-n bootstrap passes; bootstrap was not executed locally",
+    "lint_log": {
+      "path": ".cache/schema17-bootstrap-guard-lint.log",
+      "bytes": 10967,
+      "sha256": "b47e1dbf2bb98b6f21c210360c9fc1bc8fb1b94ddba52cf0d2603c4228e5bcad"
+    }
+  },
+  "native_replay_plan": {
+    "automatic": "seven workflows/29native jobs: six existing standard families plus all3focused browser journeys because its dependency list changes",
+    "explicit": "dispatch existing nuget-contract.yml once on exact repaired main source for both native architectures, preserving every original b937selected profile",
+    "required_union": "31jobs/eight workflows;283PG/105Go normalrace/61fuzz/16historical21upgrades, original stock/browser/portable and two37checkNuGet-library reports. Inspect actual API inventory and source identities; no assumed counts/passes."
+  },
+  "limits": [
+    "This is a source-pinned CI admission repair, not new product functionality or native qualification. Allnew17common-set/collector effects and historical migration claims remain unverified until actual replay.",
+    "The original31job campaign is failed:10success20failure1skipped,23unchanged safe artifacts; all20bootstrap traces corroborate139. Preserve all30original non-skipped job logs and encrypted diagnostics. Unit/source/fuzz and library successes retain only their own scope.",
+    "No native job restarted, no failed evidence modified, no guard/assertion dropped and no schema source/checksum changed. First16definitions and17checksum7d786d8f03fa6ba8b75b2c114ff13ac2f288a1792856b94fc7e3e57a769ffead preserved.",
+    "Full450capabilities/41families/laterGOAL4.1 remain active; fullfileproxy/closure/currentscanner/import/provenance/operator/production and broadreadiness/security/packaging incomplete. Primary11/5483878b/tenreceipts/customer/sibling/credentials/releases/packages/images untouched."
+  ]
+}

@@ -297,3 +297,26 @@ After exact native collection qualification, complete the private native file
 proxy and full dependency/authority/permission/provenance closure with current
 scanner/import/operator/lifecycle/provider/platform/production proof. All14export
 cases/7environments and450capabilities/41families/laterGOAL4.1remain required.
+
+## Source-pinned bootstrap recovery
+
+Originalb937selects31native jobs/eight workflows and fails:10success20failure1skipped.
+All20failed bootstrap logs corroborate DEFECT0139, an old16literal after migration/
+provisioning of the17candidate. Retain the [original checkpoint](../../evidence/2026-11-07/github-b937fd9-original-failure-checkpoint.json),
+all30non-skipped original logs and23unchanged safe artifacts. Guarded zero-record
+summaries remain failures. The skipped portable consumer supplies no host proof.
+
+The [strict guard](../../scripts/ci/check_schema_plan.py) imports the committed
+CURRENT_SCHEMA and validates complete ordered current/safe/nonadopting/no-pending
+receipts. Four meaningful source/old-target/unsafe/malformed/pipeline regressions
+and lint pass locally. Actual native bootstrap/product replay remains required.
+Focused-browser inputs now include bootstrap/schema guard/schema target, so a
+shared admission change cannot silently omit its real PG/Chromium profile.
+
+The repair push automatically selects29jobs/seven families; dispatch the existing
+NuGet-library workflow once on that exact main source for both architectures.
+This restores all31original selected profiles without restarting old runs or
+changing their failures. Enumerate actual runs before acceptance. Keep every
+283PG/105Go/61fuzz/16historical21upgrade and original stock/browser/portable/library
+contract. Full fileproxy/closure/current scanner/import/provenance/operator/
+production and all450capabilities/41families/laterGOAL4.1scope remain required.

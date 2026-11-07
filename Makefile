@@ -26,6 +26,7 @@ lint:
 	python3 scripts/ci/test_browser_failure_summary.py
 	python3 scripts/ci/test_native_client_diagnostics.py
 	python3 scripts/ci/test_postgres_binding.py
+	python3 scripts/ci/test_check_schema_plan.py
 	python3 scripts/ci/test_campaign_transport.py
 	python3 scripts/ci/test_campaign_reports.py
 	python3 scripts/ci/test_accept_campaign.py

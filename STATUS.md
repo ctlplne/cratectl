@@ -30,6 +30,26 @@ This qualifies unsigned common metadata planning only. No package is physically
 opened/pinned and no durable set/session/event/job/receipt is created by preview.
 The newer schema17/common-set/collector source is outside that native result.
 
+## Current native failure and repair
+
+Pushed `b937fd924e1f51e0e2a3a188510b0f0d7952f653` is **not accepted**:
+[31 original jobs](evidence/2026-11-07/github-b937fd9-original-failure-checkpoint.json)
+finish10success/20failure/1skipped, with23unchanged safe artifacts. All20failed
+jobs corroborate DEFECT0139: shared bootstrap line82still asserts schema16after
+the candidate/migration target advanced to17. Migration/provisioning reached
+that inline assertion. Subsequent integration/client/browser/upgrade stages skip;
+the portable consumer skips after source failure. No such skipped stage passes.
+
+The [repair](evidence/2026-11-07/schema17-bootstrap-guard-development.json) replaces
+the stale literal with bounded strict validation of the committed CURRENT_SCHEMA,
+complete ordered receipts, current state, no pending/adoption and safety=true.
+Four meaningful regressions and lint pass locally. No actual local PG campaign
+runs. Focused browser inputs now include shared bootstrap/schema dependencies.
+Preserve every original failure and guarded empty summary; native replay remains
+required. Expect29automatic jobs plus one explicit two-architecture NuGet-library
+dispatch, retaining every original31job/eightworkflow profile on exactnewsource.
+No schema checksum, package assertion or empty-summary guard is relaxed.
+
 ## Current implementation and qualification boundary
 
 [ADR0063](docs/adr/0063-atomic-common-go-export-set.md) implements one durable
