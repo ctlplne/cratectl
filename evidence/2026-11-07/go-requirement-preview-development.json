@@ -1,0 +1,93 @@
+{
+  "source_parent": "bb6f7288f3ec9df94c3f3100b9a5b2df81df64d0",
+  "source_dirty": true,
+  "observed_at": "2026-11-07T20:35:37.636122+00:00",
+  "state": "implemented and locally checked; actual native qualification pending",
+  "files_sha256": {
+    "internal/server/go_export_sets.go": "80ba4e33ff764dfec850b3543242bec695c1b35da255862bac24f9fd643d8c15",
+    "internal/server/go_requirement_preview.go": "87a148afb27c275b3b508209480717bac2da627b61b27ca785638e85650092df",
+    "internal/server/go_requirement_preview_test.go": "22e9352e643153347150d0be0800615348fcfcbb3b8d0e5c8a4ebbf6231099aa",
+    "internal/server/go_module_export_collect_integration_test.go": "27299112c69d6beb648467ee0b5b0c576478719f7e0f3d44fa00f7a10549444b",
+    "internal/server/go_module_export_set_integration_test.go": "a716b94cfec82c411c697ada07e6f253fd8f74499a09c9025d71398db002bd4b",
+    "internal/store/go_export_set_reads.go": "540daee67a62f49ebb2099c5f22b376a844724af04f9f9b83e0ca47ff7d4049c",
+    "internal/store/go_export_set_reads_test.go": "176c6516cbd7c6f7537576301281ab9b568356aa53552f8c774ed1b29b37d0fb",
+    "internal/store/go_module_export_set_integration_test.go": "adbeab1e823148950c51710eaa7903f73a09a0a31eddccea9c729eff02fc4c50",
+    "docs/go-requirement-preview.md": "165cbcb2e99f8601f7dc86da779cd6e22d9f1e41116190daf1ca5fc7717eac6b",
+    "docs/go-export-sets.md": "e0c6a14b65aeaab371dbd51393422dfe0d860d36bec6d1b3b03f9e3b2455eb83",
+    "docs/adr/0068-go-requirement-preview-current-inputs.md": "acbe185d0d005b7a9053937d54c3044d9f8957e68a1baa29d145325fdacbed0e"
+  },
+  "checks": {
+    "unit_race": "4focused source/store admission functions pass, including explicit empty-project error; no actual local PG",
+    "arm_build_test_race_lint": "final pass after API request/empty-selection error refinement; owned stand-ins only; binaries under .cache/go-requirement-preview-final",
+    "tagged_normal_race_vet": "fresh normal/race compile and vet only after final source changes",
+    "future_inventory": {
+      "postgresql_functions": 286,
+      "named_go_functions": 108,
+      "fuzz_targets": 63
+    }
+  },
+  "logs": [
+    {
+      "path": ".cache/go-requirement-preview-final-unit.log",
+      "bytes": 97,
+      "sha256": "6da589c849d8622b98e2c52ace35db864e605f1849deec12c478cfe46917b8e3"
+    },
+    {
+      "path": ".cache/go-requirement-preview-final-race.log",
+      "bytes": 97,
+      "sha256": "9b4a8a0e037556d9a7625b3ce9dca226d4fa7fda2b1516e57dde35ab900a3e8a"
+    },
+    {
+      "path": ".cache/go-requirement-preview-final-gates.log",
+      "bytes": 13919,
+      "sha256": "bb727db54af49070dbfa22d1482298fd3960dbde3bb5449f9a0649c54acc51d0"
+    },
+    {
+      "path": ".cache/go-requirement-preview-final-tagged-compile.log",
+      "bytes": 135,
+      "sha256": "a0783f794ed378c9b7f0e712ce0c359f94a6caf248555453441cd49c88a227b3"
+    },
+    {
+      "path": ".cache/go-requirement-preview-final-tagged-race-compile.log",
+      "bytes": 135,
+      "sha256": "3dc99a2fa7fb58ce3a1c42ada697779559df4e79fdfe3fbd4e4fc7c0e084d110"
+    },
+    {
+      "path": ".cache/go-requirement-preview-final-tagged-vet.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "scope": [
+    "POST /api/v1/go/export-sets/requirements/preview, current administrator, one exact hosted repository/epoch, strict bounded main go.mod and scalar budgets.",
+    "Serial original .mod CAS size/SHA checks outside SQL transactions; typed metadata MVS graph; no package execution.",
+    "Store.PlanGoExportSetAfterReads revalidates all examined source manifests, including unselected lower versions, with every selected root in one current read-only repeatable-read snapshot. No references, journal, receipt, session or jobs.",
+    "Local native regressions onlycompile: unselectedlower ZIP denied/higher stillallowed, denialthennewallow changesinputdecisionversion, actualphysical.modmissing/currentlateprunedselecteddeny/noDBmutation, actualTLSgenericCLI8rootpreview matchesexistingnativeSDKselection/journalunchanged.",
+    "Generic managementCLI body-file/16MiBresponse interface and operator docs; no new dedicated command required for this preview."
+  ],
+  "limits": [
+    "This development record describes the dirty bb-parent API worktree with286PG108Go63fuzz. Published bb native evidence has284PG106Go63fuzz and cannot qualify the new API.",
+    "Full graph creation needs all-input commit fence/signed immutable graph proof; package/platform lazy closure, proxy/group/privateauthority/sourceprecedence/currentimport/scanning/console/all14cases/7environments/full450/41/laterGOAL4.1remainrequired.",
+    "Current dependency_closure/checksumauthority/destinationadmission flags stayfalse. Primary/schema/checksums/customer/sibling/credentials/releases unchanged."
+  ],
+  "next": [
+    "Finishallbb26nativejobs andread-only wholeexactsourceverifier beforeclaimingaccepted; currentruntime/API changesleaveall19closedverifiercontractsunchanged.",
+    "Native-qualify this API with286PG108Go63fuzz/allactuallyselectedprofiles/actualTLSCLI/nativeSDK/currentpolicy/CAScases.",
+    "Completeall-inputcreationfences/authenticatedimmutablegraphproof/packageplatform/authority/import/scanner/console/fullGOAL4.1."
+  ],
+  "adr": "docs/adr/0068-go-requirement-preview-current-inputs.md",
+  "goal_sha256": "7b8ff58dcefd07a4818ab4c274a8950a7907a13ef36855e14ad6a797abfb8c78",
+  "current_published_candidate": "bb6f7288f3ec9df94c3f3100b9a5b2df81df64d0",
+  "prior_campaign_observation": {
+    "candidate": "bb6f7288f3ec9df94c3f3100b9a5b2df81df64d0",
+    "state": "23nativejobs passed; only main nativeLinux2 andamd64fuzz stillrunning at last actual read. BothGo/OCI/upgrades/portable andall8JVMpass; no wholeacceptance.",
+    "runs": {
+      "main": 42409565683,
+      "go": 42409565682,
+      "jvm": 42409565692,
+      "oci": 42409565713,
+      "upgrades": 42409565724,
+      "portable": 42409565756
+    }
+  }
+}

@@ -180,6 +180,26 @@ func TestGoModuleCommonSetOfflineNativeGraphAndUncertainAcknowledgement(t *testi
 	tokenFile := write("admin.token", []byte(token))
 	config, _ := json.Marshal(configfile.Client{Version: 1, URL: "https://127.0.0.1:38443", TokenFile: tokenFile, CAFile: ca})
 	configPath := write("client.json", config)
+	previewRequest, _ := json.Marshal(goRequirementRequest{Repository: "graph", MainGoMod: string(mainMod),
+		LifetimeSeconds: selection.LifetimeSeconds, MaxArtifactBytes: selection.MaxArtifactBytes})
+	previewRaw := run(cli, "--config", configPath, "--method", "POST", "--path", "/api/v1/go/export-sets/requirements/preview",
+		"--body-file", write("requirement-preview-request.json", previewRequest), "--timeout", "2m", "--response-limit", "16777216", "--raw-response")
+	var preview struct {
+		Selection   store.GoExportSetRequest `json:"selection"`
+		Revalidated bool                     `json:"metadata_inputs_revalidated"`
+		Closure     bool                     `json:"dependency_closure"`
+		Durable     bool                     `json:"durable_session_created"`
+	}
+	if json.Unmarshal(previewRaw, &preview) != nil || !preview.Revalidated || preview.Closure || preview.Durable {
+		t.Fatal("actual TLS CLI requirement preview lost its bounded metadata scope")
+	}
+	previewSelection, _ := json.Marshal(preview.Selection)
+	if !bytes.Equal(previewSelection, body) {
+		t.Fatal("actual CLI/API and stock-SDK fixture derived different selections")
+	}
+	if afterPreview, err := s.DB.JournalCheckpoint(ctx, admin); err != nil || afterPreview != head {
+		t.Fatal("actual CLI requirement preview mutated its source journal", err)
+	}
 	run(cli, "go-export-set-collect", "--config", configPath, "--set-id", session.ID, "--generation", "1", "--output-directory", filepath.Join(private, "collection"), "--journal-file", journalPath, "--journal-tenant", admin.Tenant, "--journal-event-sequence", strconv.FormatInt(session.CreatedSequence, 10), "--journal-through", strconv.FormatInt(head.Sequence, 10), "--journal-through-hash", head.Hash, "--checkpoint-file", statementPath, "--checkpoint-signature-file", signature, "--checkpoint-key-file", publicKey)
 	if err := server.Close(); err != nil {
 		t.Fatal(err)

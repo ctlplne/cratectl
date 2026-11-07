@@ -24,7 +24,9 @@
     "docs/adr/0065-common-set-native-file-proxy.md",
     "docs/go-export-sets.md",
     "docs/adr/0066-independent-host-common-go-collection.md",
-    "docs/adr/0067-bounded-go-requirement-graph.md"
+    "docs/adr/0067-bounded-go-requirement-graph.md",
+    "docs/adr/0068-go-requirement-preview-current-inputs.md",
+    "docs/go-requirement-preview.md"
   ],
   "current_implementation": {
     "source_parent": "1756bb0034363c6a9d8672adf733b3ba50741a43",
@@ -206,6 +208,22 @@
       "package_platform_closure": false,
       "signed_automatic_selection_proof": false,
       "all_input_common_snapshot_revalidation": false
+    },
+    "requirement_preview": {
+      "state": "implemented but unverified on actual native environment",
+      "development": "evidence/2026-11-07/go-requirement-preview-development.json",
+      "adr": "docs/adr/0068-go-requirement-preview-current-inputs.md",
+      "api": "POST /api/v1/go/export-sets/requirements/preview",
+      "cli": "existing bounded management body-file interface",
+      "all_examined_metadata_inputs_final_common_snapshot": "implemented; nativepending",
+      "complete_automatic_creation": false,
+      "signed_graph_proof": false,
+      "dependency_closure": false,
+      "required_native_inventory": {
+        "postgresql_functions": 286,
+        "named_go_functions": 108,
+        "fuzz_targets": 63
+      }
     }
   },
   "environment_profiles": {

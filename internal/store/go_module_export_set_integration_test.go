@@ -32,6 +32,68 @@ func hostedExportSetFixture(t *testing.T) (goIntakeFixture, GoExportSetRequest) 
 	return f, GoExportSetRequest{Entries: []GoExportSetEntry{{Repository: one.Repository, Module: one.Module, Version: one.Version, ExpectedSourceRevision: one.ExpectedSourceRevision}, {Repository: one.Repository, Module: coordinate.Module, Version: coordinate.Version}}, LifetimeSeconds: 60, MaxArtifactBytes: 1 << 30}
 }
 
+func TestGoModuleExportSetRevalidatesUnselectedResolutionInputAfterExternalReads(t *testing.T) {
+	f, request := hostedExportSetFixture(t)
+	ctx := context.Background()
+	reads := make([]GoExportPlan, 0, len(request.Entries))
+	for _, e := range request.Entries {
+		p, err := f.s.PlanGoExport(ctx, f.i, GoExportRequest{Repository: e.Repository, Module: e.Module,
+			Version: e.Version, ExpectedSourceRevision: e.ExpectedSourceRevision, LifetimeSeconds: 60})
+		if err != nil {
+			t.Fatal(err)
+		}
+		// Actual immutable source reads happen after each planning transaction has
+		// closed. The selected higher version must not hide the lower input later.
+		object := p.Objects()[1]
+		file, err := f.objects.OpenVerified(ctx, f.i.Tenant, object.Digest, object.Size)
+		if err != nil {
+			t.Fatal(err)
+		}
+		file.Close()
+		reads = append(reads, p)
+	}
+	request.Entries = request.Entries[1:]
+	before := exportCounts(t, f, "requirement-input-preview-unused")
+	plan, err := f.s.PlanGoExportSetAfterReads(ctx, f.i, request, reads)
+	if err != nil {
+		t.Fatal(err)
+	}
+	m, err := ParseGoExportSetManifest(plan.Bytes())
+	if err != nil || len(m.Entries) != 1 || m.Entries[0].Version != request.Entries[0].Version || m.DependencyClosure {
+		t.Fatal("input revalidation changed the selected unsigned result", err)
+	}
+	if after := exportCounts(t, f, "requirement-input-preview-unused"); after != before {
+		t.Fatal("input planning mutated durable records", before, after)
+	}
+	// These two versions share their .mod bytes, but their original ZIPs differ.
+	// Native metadata serving admits the complete bundle's policy, so deny only
+	// the lower version's distinct ZIP to preserve the higher-version control.
+	unselected := reads[0].manifest.Artifacts[0]
+	if err := f.s.Tx(ctx, f.i, true, func(tx pgx.Tx) error {
+		_, err := Decide(ctx, tx, f.i, reads[0].request.Repository, unselected.Path, unselected.Digest, "denied")
+		return err
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := f.s.PlanGoExportSet(ctx, f.i, request); err != nil {
+		t.Fatal("control: selected higher version should remain allowed", err)
+	}
+	got, err := f.s.PlanGoExportSetAfterReads(ctx, f.i, request, reads)
+	if !errors.Is(err, ErrDenied) || len(got.Bytes()) != 0 || len(got.Objects()) != 0 {
+		t.Fatal("denied unselected input escaped the common snapshot", err)
+	}
+	if err := f.s.Tx(ctx, f.i, true, func(tx pgx.Tx) error {
+		_, err := Decide(ctx, tx, f.i, reads[0].request.Repository, unselected.Path, unselected.Digest, "allowed")
+		return err
+	}); err != nil {
+		t.Fatal(err)
+	}
+	got, err = f.s.PlanGoExportSetAfterReads(ctx, f.i, request, reads)
+	if !errors.Is(err, ErrGoExportSetChanged) || len(got.Bytes()) != 0 {
+		t.Fatal("later allowance silently refreshed the original input decision", err)
+	}
+}
+
 func TestGoModuleExportSetPlansEveryOriginalOrReturnsNoPartialMetadata(t *testing.T) {
 	f, request := hostedExportSetFixture(t)
 	ctx := context.Background()

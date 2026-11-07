@@ -1,10 +1,17 @@
 # Create and control one common hosted Go export set
 
 The set API creates one immutable selection of up to 256 exact hosted Go versions
-from one common database observation. The implementation is present; actual
-native qualification of this new path is pending. See
+from one common database observation. The explicit selection, collection and
+private file-proxy controls pass the scoped native
+[175 campaign](../evidence/2026-11-07/github-1756bb0-checkpoint.json). Complete
+dependency/platform closure and current destination admission remain required. See
 [ADR0063](adr/0063-atomic-common-go-export-set.md) and the
 [complete export plan](qualification/go-export-plan.json).
+
+To derive a proposed selection from project metadata, use the separate
+[requirement preview](go-requirement-preview.md). That new API has local evidence
+and pending native qualification; complete package/platform closure and immutable
+graph proof remain required.
 
 Use a current tenant administrator credential with read access to every selected
 repository. Start with the private request body in the
@@ -37,8 +44,8 @@ extra output newline. Save them only to private regular files. GET/HEAD, ranges
 and conditionals recheck every selected source before delivery. A denied later
 member also fences earlier members. Current generation and ETag bind resumption.
 Individual downloads do not record whole-collection completion. The collector
-below is implemented with native qualification pending; a complete servable
-offline proxy remains required.
+below retains the complete explicitly selected originals. Its private file proxy
+passes the scoped 175 campaign; automatic closure and broader qualification remain.
 
 To renew, acknowledge, cancel or expire, POST all four fields to
 `/api/v1/go/export-sets/{set}/control` with a new explicit idempotency key:
@@ -97,7 +104,7 @@ qualification remain required.
 
 ## Retain every selected original with explicit resume
 
-`go-export-set-collect` is implemented with actual new native qualification pending.
+`go-export-set-collect` passes the scoped native 175 campaign.
 It verifies the complete original signed journal before contacting the source,
 then binds and downloads the original common manifest and every selected
 ZIP/mod/info. Use a current serving generation from set status and the same
@@ -187,4 +194,6 @@ prove automatic dependency/permission/provenance closure or destination scanning
 For the declared private download profile, select exactly this file proxy and
 disable VCS/toolchain/network fallback. Public checksum authority, full closure,
 independent host/platform/scale and destination admission require their own proof.
-The new native journey is not qualified until the exact source passes GitHub.
+The 175 campaign qualifies this explicit private graph and interrupted-launch/
+acknowledgement replay. Independent-host/PID-descriptor controls belong to the
+newer bb source, whose whole campaign acceptance remains pending.
