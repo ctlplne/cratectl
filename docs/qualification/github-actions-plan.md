@@ -78,6 +78,40 @@ cache/install, consistent backup/restore, export/GC leases and all later GOAL
 stages remain open. CI placement accelerates qualification; it cannot substitute
 for implementing those outcomes.
 
+## Native journal failure and external signature extension
+
+The [initial ca56447 campaign](../../evidence/2026-11-07/github-ca56447-initial-checkpoint.json) preserves both actual Linux
+normal store failures. The new oversize fixture inserts non-JSON bytes and is
+rejected during event INSERT. The two empty safe summaries correctly fail closed;
+full race/stock/main18browser140checks are skipped, never passes. Source/unit/race/
+lint and49fuzz pass on three hosts; namedGo79/312stock and13historical/18upgrades
+are accepted on both Linux hosts. Three focused browser jobs remain separate
+from the main console; the initial snapshot retains one pending SBT2 ARM job.
+
+DEFECT0127 changes only fixture setup to valid oversized JSON. Preserve the same
+256KiB bound, ErrJournalLimit assertion, original failed source/logs/summaries and
+all14 frozen definitions. Replay the whole required native profile on new source;
+no manual duplicate run or gate/permission relaxation is needed.
+
+ADR0047 adds unsigned canonical statement preparation and verification of an
+external Ed25519 signature under a separately trusted public key. All signing
+operations/private keys stay with customer tools. ARM development gates pass;
+actual OpenSSL interoperability remains unverified. The existing real-registry
+profile adds11native OpenSSL/CLI controls, including correctly signed wrong-purpose
+statements, wrong public key/signature/head, incomplete flags and private-key
+rejection. Reviewed safe summaries retain exact tool version/binary and statement,
+signature, PEM/DER public key and export hashes with fixed control identifiers;
+raw signing context/private keys never become artifacts.
+
+Next-source expectations are257PG normal/race,50fuzz targets on three native
+hosts,683baseline conformance assertions and18main x86 browser workflows/141checks
+(three explicit UI response stand-ins). Keep every existing Go/JVM/OCI/upgrade/
+focused/source gate and derive actual selection from runs. Earlier672/49/140
+expectations describe ca56447, not the extension. No local PostgreSQL/OpenSSL/
+SDK/JVM/stock-registry/Chromium campaign substitutes for native GitHub evidence.
+This is not a durable external signing-request adapter, signed full export bundle,
+Sigstore/Cosign/Notation, freshness/revocation or later-stage readiness verdict.
+
 ## Earlier source-specific qualification
 
 The following records describe earlier candidates and their limits; old

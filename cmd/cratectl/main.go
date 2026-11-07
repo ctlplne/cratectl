@@ -21,6 +21,9 @@ import (
 )
 
 func run() error {
+	if len(os.Args) > 1 && os.Args[1] == "journal-checkpoint" {
+		return runJournalCheckpoint(os.Args[2:], os.Stdout)
+	}
 	if len(os.Args) > 1 && os.Args[1] == "journal-export" {
 		return runJournalExport(os.Args[2:], os.Stdout)
 	}

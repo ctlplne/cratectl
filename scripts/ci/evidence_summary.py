@@ -16,6 +16,7 @@ from gradle_evidence import safe_gradle_contract
 from ivy_evidence import safe_ivy_contract
 from sbt_evidence import safe_sbt_contract
 from go_module_evidence import safe_go_module_contract
+from journal_evidence import safe_journal_checkpoint_contract
 
 
 def summarize(root, environment):
@@ -227,6 +228,11 @@ def summarize(root, environment):
         if 'ivy_contract' in report:
             try:
                 entry['ivy_contract'] = safe_ivy_contract(report['ivy_contract'], status)
+            except ValueError as error:
+                raise SystemExit(str(error)) from error
+        if 'journal_checkpoint_contract' in report:
+            try:
+                entry['journal_checkpoint_contract'] = safe_journal_checkpoint_contract(report['journal_checkpoint_contract'], status)
             except ValueError as error:
                 raise SystemExit(str(error)) from error
         if 'go_module_contract' in report:

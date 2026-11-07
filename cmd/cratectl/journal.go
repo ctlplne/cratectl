@@ -3,7 +3,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"flag"
 	"io"
@@ -18,6 +17,7 @@ import (
 // This command never asks the same untrusted export to supply its own trust.
 func runJournalVerify(args []string, out io.Writer) error {
 	f := flag.NewFlagSet("journal-verify", flag.ContinueOnError)
+	checkpointFiles := journalCheckpointFlags(f)
 	file := f.String("export-file", "", "owner-private canonical journal JSONL export")
 	tenant := f.String("tenant", "", "tenant from the separately trusted checkpoint")
 	after := f.String("after", "0", "exact start sequence, or zero for genesis")
@@ -36,6 +36,10 @@ func runJournalVerify(args []string, out io.Writer) error {
 	if f.NArg() != 0 || *file == "" || a != nil || h != nil || strconv.FormatInt(startSequence, 10) != *after || strconv.FormatInt(headSequence, 10) != *through || !start.Valid() || !head.Valid() || startSequence > headSequence || *budget < 1 || *budget > crypt.MaxJournalInputBytes || *timeout <= 0 || *timeout > time.Hour {
 		return errors.New("supply export-file, tenant and canonical after/through sequences with exact separately trusted hashes; keep max-bytes within 1–64 GiB and timeout within 1h")
 	}
+	signature, err := checkpointFiles.verify(head)
+	if err != nil {
+		return err
+	}
 	input, err := configfile.OpenBounded(*file, *budget, true)
 	if err != nil {
 		return errors.New("cannot open bounded private journal export; use a regular owner-private file within max-bytes")
@@ -47,8 +51,5 @@ func runJournalVerify(args []string, out io.Writer) error {
 	if err != nil {
 		return errors.New("journal export did not completely verify; preserve it and inspect the supplied tenant, checkpoints, page continuity and resource limits")
 	}
-	return json.NewEncoder(out).Encode(struct {
-		crypt.JournalVerification
-		Trust string `json:"trust"`
-	}{receipt, "Attribution depends on how the supplied checkpoint was authenticated outside this export; matching hashes do not prove event claims or approve package bytes."})
+	return writeJournalReceipt(out, receipt, signature)
 }

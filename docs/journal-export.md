@@ -108,6 +108,71 @@ JSON followed by LF. Preserve exact response bytes. One optional blank line
 between records is accepted for the generic management CLI's terminal newline;
 pretty-printing or normalizing JSON is not accepted.
 
+## Verify a checkpoint signed with an external tool
+
+This additional profile is implemented with unit fixtures; actual OpenSSL and
+native registry qualification is pending. Keep its result separate from a
+manual supplied-hash match. It adds offline Ed25519 signature verification;
+external provider requests/adapters and other signing formats remain required.
+
+Prepare the exact selected tenant/head for your external signer. Preparation is
+unsigned and does not read a signing key:
+
+```sh
+umask 077
+cratectl journal-checkpoint --tenant "$CRATECTL_TRUSTED_TENANT" \
+  --through "$CRATECTL_TRUSTED_JOURNAL_SEQUENCE" \
+  --through-hash "$CRATECTL_TRUSTED_JOURNAL_HASH" > checkpoint.json
+```
+
+The small version-1 statement binds its profile, journal-integrity purpose,
+tenant, sequence and hash. Its canonical JSON includes a final LF. Preserve
+those exact bytes. Have your own signer sign them, using its existing key or
+provider reference. For example, an independently configured OpenSSL 3 Ed25519
+signer uses raw input with no separate digest option. Its signing key stays
+outside cratectl. [OpenSSL command specification](https://docs.openssl.org/3.0/man1/openssl-pkeyutl/).
+
+```sh
+openssl pkeyutl -sign -rawin \
+  -inkey "$CRATECTL_EXTERNAL_SIGNER_KEY_REFERENCE" \
+  -in checkpoint.json -out checkpoint.sig
+```
+
+Obtain the Ed25519 `PUBLIC KEY` SPKI PEM through an independent trusted channel
+and set `CRATECTL_JOURNAL_TRUSTED_PUBLIC_KEY_FILE` to its path. A key bundled
+with an untrusted export does not establish issuer trust. Optionally verify the
+raw signature with the independent external tool:
+
+```sh
+openssl pkeyutl -verify -rawin -pubin \
+  -inkey "$CRATECTL_JOURNAL_TRUSTED_PUBLIC_KEY_FILE" \
+  -in checkpoint.json -sigfile checkpoint.sig
+```
+
+Both `journal-export` and `journal-verify` accept these three additional flags
+together:
+
+```sh
+--checkpoint-file ./checkpoint.json \
+--checkpoint-signature-file ./checkpoint.sig \
+--checkpoint-key-file "$CRATECTL_JOURNAL_TRUSTED_PUBLIC_KEY_FILE"
+```
+
+Retain the original tenant/through/through-hash arguments. They must match the
+verified signed statement exactly. Signature verification occurs before new
+output creation or journal processing. A complete verified range receipt also
+contains `checkpoint_signature.signature_verified`, the statement SHA-256 and
+the trusted public key's SPKI DER SHA-256. Manual mode omits this field and does
+not claim an external signature. A signature failure, wrong purpose/key/head,
+partial flag set, private-key input or incomplete range emits no success receipt.
+
+Statements are at most 2 KiB, signatures are exactly 64 raw bytes and the single
+public-key PEM is at most 4 KiB. The statement file must be owner-private. Only
+the external signer handles its private signing key. No signer/key generation,
+signing command, CA or timestamp service is added to cratectl. A historic signed
+checkpoint remains historic; this profile does not prove latest history,
+signature time, external delivery, event truth, key revocation or package safety.
+
 ## Bounds and failure handling
 
 - API pages contain at most 1,000 events and 2 MiB including framing. Original

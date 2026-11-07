@@ -12,11 +12,24 @@ from test_gradle_evidence import complete_contract
 from test_ivy_evidence import complete_contract as complete_ivy_contract, metadata_contract, snapshot_contract, cache_contract
 from test_sbt_evidence import complete_contract as complete_sbt_contract, snapshot_contract as sbt_snapshot_contract
 from test_maven_evidence import complete_contract as complete_maven_cache_contract
+from test_journal_evidence import complete as complete_journal_checkpoint_contract
 
 ROOT = Path(__file__).resolve().parents[2]
 
 
 class EvidenceSummary(unittest.TestCase):
+    def test_external_checkpoint_summary_requires_every_control_and_excludes_signing_context(self):
+        contract = complete_journal_checkpoint_contract()
+        report = {'candidate':'a'*40, 'status':'passed', 'journal_checkpoint_contract':contract,
+                  'private_key':'private-synthetic-signing-context', 'commands':[{'output':'private-synthetic-signing-context'}]}
+        self.write('journal.json', report)
+        record = summarize(self.root, self.environment)['records'][0]
+        self.assertEqual(record['journal_checkpoint_contract'], contract)
+        self.assertNotIn('private-synthetic-signing-context', json.dumps(record))
+        for change in [{'completed':contract['completed'][:-1]}, {'private_key':'private-synthetic-signing-context'}, {'openssl_version':'3.0.16 private-synthetic-signing-context'}]:
+            self.write('journal.json', {**report, 'journal_checkpoint_contract':{**contract, **change}})
+            with self.assertRaises(SystemExit):summarize(self.root, self.environment)
+
     def test_maven_warm_cache_requires_exact_safe_before_after_bytes(self):
         contract=complete_maven_cache_contract()
         report={'candidate':'a'*40,'status':'passed','maven_cache_contract':contract,

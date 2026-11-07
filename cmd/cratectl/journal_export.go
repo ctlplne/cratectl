@@ -4,7 +4,6 @@ package main
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
 	"flag"
 	"io"
@@ -24,6 +23,7 @@ import (
 // No checkpoint fetched from this server is silently promoted into trust.
 func runJournalExport(args []string, out io.Writer) error {
 	f := flag.NewFlagSet("journal-export", flag.ContinueOnError)
+	checkpointFiles := journalCheckpointFlags(f)
 	configuration := f.String("config", "", "owner-private cratectl client JSON")
 	output := f.String("output", "", "new owner-private JSONL file; existing files are never replaced")
 	tenant := f.String("tenant", "", "tenant from the independently authenticated checkpoint")
@@ -43,6 +43,10 @@ func runJournalExport(args []string, out io.Writer) error {
 	head := crypt.JournalAnchor{Tenant: *tenant, Sequence: h, Hash: *throughHash}
 	if f.NArg() != 0 || *configuration == "" || *output == "" || ae != nil || he != nil || strconv.FormatInt(a, 10) != *after || strconv.FormatInt(h, 10) != *through || !start.Valid() || !head.Valid() || a > h || *limit < 1 || *limit > crypt.MaxJournalPageEvents || *budget < 1 || *budget > crypt.MaxJournalInputBytes || *timeout <= 0 || *timeout > time.Hour {
 		return errors.New("supply config, new output, tenant and exact separately trusted after/through bindings, limit 1–1000, max-bytes 1–64 GiB and timeout within 1h")
+	}
+	signature, err := checkpointFiles.verify(head)
+	if err != nil {
+		return err
 	}
 	var c configfile.Client
 	if err := configfile.Read(*configuration, &c); err != nil {
@@ -87,7 +91,7 @@ func runJournalExport(args []string, out io.Writer) error {
 	if err != nil {
 		return errors.New("journal collection failed; output is incomplete and has no success receipt. Preserve it, inspect current access, supplied checkpoints and limits, then retry into a new file with the same trusted bindings")
 	}
-	return json.NewEncoder(out).Encode(receipt)
+	return writeJournalReceipt(out, receipt, signature)
 }
 
 func collectJournal(ctx context.Context, client *http.Client, base, token string, file *os.File, start, head crypt.JournalAnchor, limit int, budget int64) (crypt.JournalVerification, error) {

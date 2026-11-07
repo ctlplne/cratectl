@@ -6246,7 +6246,10 @@
         "evidence/2026-10-28/jobs-184a346769.json",
         "evidence/2026-10-28/conformance-04e22aa966.json",
         "evidence/2026-10-28/worker-clean-postgres-race.txt",
-        "evidence/2026-11-07/journal-export-development.json"
+        "evidence/2026-11-07/journal-export-development.json",
+        "evidence/2026-11-07/journal-export-ca56447-first-failure.json",
+        "evidence/2026-11-07/github-ca56447-initial-checkpoint.json",
+        "evidence/2026-11-07/journal-checkpoint-signature-development.json"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -6254,8 +6257,9 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Dedicated tenant-purpose workers execute event projections and exact-byte storage-integrity checks with admission/running budgets, separate lane slots, local round robin, fenced renewable leases, durable retry/cancellation and immutable attempt observations. Real PostgreSQL and two-tenant actual-process API/CLI proof covers crashes, corruption/repair, credential rollover, policy independence, out-of-order activity and source capacity recovery. Full multi-host scheduling, scanners/external adapters, S3, orphan/retrieval/upload reapers, retention, restore, production and full security remain required; storage integrity does not approve content. Bounded journal range API/private collector/offline verifier implemented with ARM gates passed; four new actual-PG functions compile/vet only and x86 browser work remains unverified. Unsigned server hashes require independent checkpoint authentication. Full signed export adapters, large-history/event support, Go bundles, backup/restore and export/GC leases remain required.",
-      "journal_export_development": "evidence/2026-11-07/journal-export-development.json"
+      "limits": "Dedicated tenant-purpose workers execute event projections and exact-byte storage-integrity checks with admission/running budgets, separate lane slots, local round robin, fenced renewable leases, durable retry/cancellation and immutable attempt observations. Real PostgreSQL and two-tenant actual-process API/CLI proof covers crashes, corruption/repair, credential rollover, policy independence, out-of-order activity and source capacity recovery. Full multi-host scheduling, scanners/external adapters, S3, orphan/retrieval/upload reapers, retention, restore, production and full security remain required; storage integrity does not approve content. Bounded journal range API/private collector/offline verifier implemented with ARM gates passed; four new actual-PG functions compile/vet only and x86 browser work remains unverified. Unsigned server hashes require independent checkpoint authentication. Full signed export adapters, large-history/event support, Go bundles, backup/restore and export/GC leases remain required. First native ca56447 normal store suites fail invalid-JSON oversize fixture setup; main race/stock/browser skip. Fixture repaired with valid oversized JSON, same bound/assertion. External checkpoint signature verifier and unsigned preparation pass ARM development only; actual OpenSSL/repaired native replay is pending. Signing requests/providers, latest history/freshness/revocation, event truth and full export remain unqualified.",
+      "journal_export_development": "evidence/2026-11-07/journal-export-development.json",
+      "journal_signature_development": "evidence/2026-11-07/journal-checkpoint-signature-development.json"
     },
     {
       "id": "J.STATE.PUBLICATION",
@@ -6410,7 +6414,10 @@
         "evidence/2026-10-28/jobs-184a346769.json",
         "evidence/2026-10-28/conformance-04e22aa966.json",
         "evidence/2026-10-28/worker-clean-postgres-race.txt",
-        "evidence/2026-11-07/journal-export-development.json"
+        "evidence/2026-11-07/journal-export-development.json",
+        "evidence/2026-11-07/journal-export-ca56447-first-failure.json",
+        "evidence/2026-11-07/github-ca56447-initial-checkpoint.json",
+        "evidence/2026-11-07/journal-checkpoint-signature-development.json"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -6418,10 +6425,11 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Dedicated tenant-purpose workers execute event projections and exact-byte storage-integrity checks with admission/running budgets, separate lane slots, local round robin, fenced renewable leases, durable retry/cancellation and immutable attempt observations. Real PostgreSQL and two-tenant actual-process API/CLI proof covers crashes, corruption/repair, credential rollover, policy independence, out-of-order activity and source capacity recovery. Full multi-host scheduling, scanners/external adapters, S3, orphan/retrieval/upload reapers, retention, restore, production and full security remain required; storage integrity does not approve content. Bounded journal range API/private collector/offline verifier implemented with ARM gates passed; four new actual-PG functions compile/vet only and x86 browser work remains unverified. Unsigned server hashes require independent checkpoint authentication. Full signed export adapters, large-history/event support, Go bundles, backup/restore and export/GC leases remain required.",
+      "limits": "Dedicated tenant-purpose workers execute event projections and exact-byte storage-integrity checks with admission/running budgets, separate lane slots, local round robin, fenced renewable leases, durable retry/cancellation and immutable attempt observations. Real PostgreSQL and two-tenant actual-process API/CLI proof covers crashes, corruption/repair, credential rollover, policy independence, out-of-order activity and source capacity recovery. Full multi-host scheduling, scanners/external adapters, S3, orphan/retrieval/upload reapers, retention, restore, production and full security remain required; storage integrity does not approve content. Bounded journal range API/private collector/offline verifier implemented with ARM gates passed; four new actual-PG functions compile/vet only and x86 browser work remains unverified. Unsigned server hashes require independent checkpoint authentication. Full signed export adapters, large-history/event support, Go bundles, backup/restore and export/GC leases remain required. First native ca56447 normal store suites fail invalid-JSON oversize fixture setup; main race/stock/browser skip. Fixture repaired with valid oversized JSON, same bound/assertion. External checkpoint signature verifier and unsigned preparation pass ARM development only; actual OpenSSL/repaired native replay is pending. Signing requests/providers, latest history/freshness/revocation, event truth and full export remain unqualified.",
       "scope_boundary": "Tamper-evident cratectl artifact/administrative events and offline verification; signing through external providers, not an estate-wide trust or signing service.",
       "scope_contract": "GOAL.md#41-owner-directed-exclusion-of-trstctl-2026-11-04",
-      "journal_export_development": "evidence/2026-11-07/journal-export-development.json"
+      "journal_export_development": "evidence/2026-11-07/journal-export-development.json",
+      "journal_signature_development": "evidence/2026-11-07/journal-checkpoint-signature-development.json"
     },
     {
       "id": "J.STORE.FILESYSTEM",
@@ -7906,5 +7914,8 @@
   "go_checksum_client_development": "evidence/2026-11-07/go-checksum-client-development.json",
   "go_checksum_client_native_reproduction": "evidence/2026-11-07/go-checksum-client-5567d24-native-reproduction.json",
   "journal_export_development": "evidence/2026-11-07/journal-export-development.json",
-  "go_checksum_client_repository_profile_checkpoint": "evidence/2026-11-07/github-5567d24-checkpoint.json"
+  "go_checksum_client_repository_profile_checkpoint": "evidence/2026-11-07/github-5567d24-checkpoint.json",
+  "journal_export_native_first_failure": "evidence/2026-11-07/journal-export-ca56447-first-failure.json",
+  "journal_export_native_initial_checkpoint": "evidence/2026-11-07/github-ca56447-initial-checkpoint.json",
+  "journal_checkpoint_signature_development": "evidence/2026-11-07/journal-checkpoint-signature-development.json"
 }

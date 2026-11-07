@@ -1,0 +1,191 @@
+{
+  "observed_at": "2026-11-07T04:47:22.513397+00:00",
+  "state": "implemented but native external-tool and repaired journal PostgreSQL/CLI/browser unverified",
+  "source_parent": "ca56447dc22b0d343de9b97e63e1ed08202ffcc8",
+  "source_dirty": true,
+  "source_schema": 14,
+  "source_files": [
+    {
+      "path": "Makefile",
+      "sha256": "c344bc9ace837e3d53caaa60eaa1f60794a6f9b09f2afd7b9c61301f2974fa09"
+    },
+    {
+      "path": "cmd/cratectl/journal.go",
+      "sha256": "08a028648803db137dcd752f25abdfddc97d67e1d667bc1310f108afa6559a0e"
+    },
+    {
+      "path": "cmd/cratectl/journal_checkpoint.go",
+      "sha256": "9cc90601d5e8f2646a70a74ff965edd5aca0d7c7aed5459816a25e9e307b8ff0"
+    },
+    {
+      "path": "cmd/cratectl/journal_checkpoint_test.go",
+      "sha256": "744590fee8b8e21f2dbe5db41d4e554d4ae850b9456c42ea095667ea9244970a"
+    },
+    {
+      "path": "cmd/cratectl/journal_export.go",
+      "sha256": "c116bf0b690f9d8a8d73ed77ce8837427f9e946181892ad4d4db4917334fed39"
+    },
+    {
+      "path": "cmd/cratectl/main.go",
+      "sha256": "7c9fa644443b4dbb280e2ae4955a5344e83bf220df34f1c86dd601000c1c3031"
+    },
+    {
+      "path": "internal/consoleui/dist/assets/index-DJ6ew2Yf.js",
+      "sha256": "a61e7278037601e00767eb82093f000093f707ce1f8f92e9d2f7a4d5b31b3c03"
+    },
+    {
+      "path": "internal/consoleui/dist/index.html",
+      "sha256": "1fda743e22da07dae4ff163ae3da60532b8850e36948b6b75c44b8957be35733"
+    },
+    {
+      "path": "internal/crypto/journal_checkpoint.go",
+      "sha256": "7190c88064dc210dfcf3b0791475e8eff51e15f5519514bd9cc2b23966ae533e"
+    },
+    {
+      "path": "internal/crypto/journal_checkpoint_test.go",
+      "sha256": "59ca9812dbbf49429e21dbc2192690af1d8b803255d69ef482927fbd391244dd"
+    },
+    {
+      "path": "internal/crypto/testdata/journal-checkpoint-public.json",
+      "sha256": "ff0523d27ea62da8e00c6d24c023cdfbfa1228c60e187ee3ea90b54bfa26a42b"
+    },
+    {
+      "path": "internal/store/journal_integration_test.go",
+      "sha256": "fd0d4657ce45e9c929306415ea5a0a335a57389698f661385808cd2d6e813c33"
+    },
+    {
+      "path": "scripts/ci/evidence_summary.py",
+      "sha256": "c05278ede6b19976d02667707e06c11630b9124e11cea101b1c4243db2f342a5"
+    },
+    {
+      "path": "scripts/ci/journal_evidence.py",
+      "sha256": "debdd00638f5568b94e4f3c27ba1555a3714e85db6aed4fda45be0ca51f1659a"
+    },
+    {
+      "path": "scripts/ci/test_evidence_summary.py",
+      "sha256": "68a277676d89f9b47044eec375da57aee3c2a51ffd3605bc5808cb1c7d0fd41d"
+    },
+    {
+      "path": "scripts/ci/test_journal_evidence.py",
+      "sha256": "35b911ccf465a2dc40d1280cf92adfe9d709ff18b98cfa4129a68b44009d7edf"
+    },
+    {
+      "path": "scripts/conformance.py",
+      "sha256": "bdbd9dfc8c600376422e0692d1aafc6f0a59d7f4654a645acdb43af67928008a"
+    },
+    {
+      "path": "web/build-manifest.json",
+      "sha256": "c3a3244896f6a12804abf63608a0151683c757ad64c861c96ac51c72afbcf3d1"
+    },
+    {
+      "path": "web/src/journal-export.tsx",
+      "sha256": "7cb0a90d0d18dde8711dee438a1f6250423ad1f9e92be3244f20a47a189d4f03"
+    },
+    {
+      "path": "web/tests/journal-export.spec.mjs",
+      "sha256": "97092c1bae8952a80aa770f58618336adfdf518e998450d40240666f75dc2bd9"
+    }
+  ],
+  "binaries": [
+    {
+      "path": ".cache/journal-signed-development-build/cratectl",
+      "sha256": "4f717ac47904200f2db69bc2b5d9a3881fcedc69ef38f4c36908e33fde7f75ab",
+      "source_parent": "ca56447dc22b0d343de9b97e63e1ed08202ffcc8",
+      "source_dirty": true,
+      "native": "darwin/arm64"
+    },
+    {
+      "path": ".cache/journal-signed-development-build/cratectld",
+      "sha256": "47d50faea4abb9429e596d1ad6204d3dabf2178f381aeb29643c6ce3b1c1e882",
+      "source_parent": "ca56447dc22b0d343de9b97e63e1ed08202ffcc8",
+      "source_dirty": true,
+      "native": "darwin/arm64"
+    }
+  ],
+  "local_gates": {
+    "make_build_test_race_lint": "passed on ARM with existing owned response stand-ins only",
+    "final_fingerprint_and_evidence_regressions": "targeted crypto/CLI race, three safe contract units and20 actual-index exporter units passed",
+    "postgresql": "repaired suites compile normally/race and tagged vet passes only; no local DB execution",
+    "new_signature_fuzz": "passed 5 seconds, two workers,36499 inputs;50 source targets reserved for native GitHub campaign",
+    "console": "TypeScript/Vite, embedded manifest and byte-for-byte reproduction pass; no local Chromium"
+  },
+  "private_logs": [
+    {
+      "path": ".cache/journal-signed-development-gates.log",
+      "bytes": 11492,
+      "sha256": "ee9afb5099490244494d3ab282fa8cee38ac3a711cfd0936dacf12ed36e6ac22"
+    },
+    {
+      "path": ".cache/journal-signed-final-build.log",
+      "bytes": 446,
+      "sha256": "3dc7728f6861e0ba69eb8d1639a03037c9d2409e87c6fba94f20aa9a959cf1bf"
+    },
+    {
+      "path": ".cache/journal-signature-final-targeted-race.log",
+      "bytes": 95,
+      "sha256": "5186a99917ba9f83b1964c60d2fd6b312d35784186d1cf5380d16bd128c5f54d"
+    },
+    {
+      "path": ".cache/journal-signature-contract-final-unit.log",
+      "bytes": 101,
+      "sha256": "921b60a7fd52e978fbb551cacd29df2d6708879400278e1fcc70fceeb0c6f8e0"
+    },
+    {
+      "path": ".cache/journal-signature-summary-final-unit.log",
+      "bytes": 119,
+      "sha256": "a32182b9bc3c53e8fb997dce45ae0dde4fd881e2106240b468ba6d803d12fe19"
+    },
+    {
+      "path": ".cache/journal-signed-repaired-pg-normal-compile.log",
+      "bytes": 205,
+      "sha256": "7a031cceeb9509b6591bee016bc28521cc445b0b9f0909691e1f4f0844dfde6a"
+    },
+    {
+      "path": ".cache/journal-signed-repaired-pg-race-compile.log",
+      "bytes": 205,
+      "sha256": "b5e3702dc22d9dbd228cd9aa8e1322d78700bab07f20e85d787af1dec202e7b5"
+    },
+    {
+      "path": ".cache/journal-signed-repaired-pg-vet.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache/journal-checkpoint-fuzz.log",
+      "bytes": 358,
+      "sha256": "bbb4a269779c6735c295139a38a695cf037c806a8d317a938ebfc62e0c233c0d"
+    },
+    {
+      "path": ".cache/journal-signed-console-final-reproduction.log",
+      "bytes": 1011,
+      "sha256": "8c11348c0b2a460f8f0fd23608e5d247a2d92edbc0c28afe4b8aee4c8a30facc"
+    }
+  ],
+  "native_expected": {
+    "postgresql_functions": 257,
+    "named_go_functions": 79,
+    "stock_go_checks": 312,
+    "source_fuzz_targets": 50,
+    "baseline_conformance_checks": 683,
+    "external_signature_stages": 11,
+    "main_chromium_workflows": 18,
+    "main_chromium_checks": 141,
+    "explicit_ui_standin_workflows": 3
+  },
+  "first_failed_native_candidate": "evidence/2026-11-07/github-ca56447-initial-checkpoint.json",
+  "original_first_failure": "evidence/2026-11-07/journal-export-ca56447-first-failure.json",
+  "outcomes": [
+    "Canonical unsigned checkpoint preparation binds profile/purpose/tenant/terminal sequence/hash; exact2KiB JSONL statement,4KiB single trusted Ed25519 SPKI PUBLIC KEY PEM and64raw signature bytes; no customer signer or signing key in product.",
+    "Both collector/offline verifier require all three optional signature files together, verify exact independent tenant/head before output/journal access, and emit signature proof only after complete original range verification and EOF. Manual hash mode remains explicitly distinct.",
+    "Meaningful unit controls include correctly signed wrong-purpose/noncanonical statements, other keys/algorithms, changed signature/tenant/head, private-key/duplicate-PEM/partial-file/refused-output cases and exact DER fingerprint binding. Public Go-generated fixture is not OpenSSL interoperability proof.",
+    "Existing GitHub real-registry profile adds11actual OpenSSL signing/verification/native CLI controls and six exact public/tool byte hashes with fixed safe summary fields. No local SDK/OpenSSL/registry/browser campaign ran.",
+    "Original ca56447 oversize fixture failure retained before repair. Fixture now inserts valid JSON above the same256KiB budget; unchanged ErrJournalLimit assertion, frozen migrations and product bounds."
+  ],
+  "limits": [
+    "Actual native OpenSSL, full repaired257PG normal/race, main CLI683 and18Chromium141 checks pending. ca56447 failed both native normal store suites and skipped full race/stock/main browser; source/fuzz/namedGo/upgrades/focused browser proof remains separate.",
+    "Signatures establish integrity under the independently trusted public key, not latest history, trusted signature time, event truth, external delivery, key revocation or package admission.",
+    "No CA, vault, signing/identity/custody/timestamp service or general provider credential lifecycle. External durable signing requests/adapters, Sigstore/Cosign/Notation, full export bundles/Go offline install/backup/GC/conditional refresh and all450capabilities/41families/laterGOAL scope remain required.",
+    "Primary11stopped/5483878b selected binaries/tenreceipts/credentials, all14source definitions and customer/sibling/release/package/image state remain unchanged. Broad readiness/security/packaging remain false.",
+    "DEFECT0126 stockGo1.27.3 strict ZIP trust-state failure remains reproduced on all three named native hosts; no assertion removed or external maintainer report sent."
+  ]
+}

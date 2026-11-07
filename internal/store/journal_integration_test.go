@@ -179,7 +179,13 @@ func TestJournalExportRejectsOversizedGappedAndCorruptRetainedHistory(t *testing
 			sequence, previous := int64(1), ""
 			switch scenario {
 			case "oversize":
-				payload = strings.Repeat("x", crypt.MaxJournalPayload+1)
+				// The retained event INSERT path requires JSON. Exceed the
+				// export payload budget without failing that earlier invariant.
+				raw, err := json.Marshal(map[string]any{"tenant": i.Tenant, "sequence": 1, "padding": strings.Repeat("x", crypt.MaxJournalPayload+1)})
+				if err != nil {
+					t.Fatal(err)
+				}
+				payload = string(raw)
 			case "gap":
 				sequence = 2
 			case "payload-tenant":

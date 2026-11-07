@@ -1,0 +1,174 @@
+{
+  "candidate": "ca56447dc22b0d343de9b97e63e1ed08202ffcc8",
+  "observed_at": "2026-11-07T04:41:54.358332+00:00",
+  "state": "failed first actual Linuxamd64 normal PostgreSQL store suite; repaired source and native replay pending",
+  "run_id": 42338417730,
+  "job_id": 128300739686,
+  "url": "https://github.com/ctlplne/cratectl/actions/runs/42338417730/job/128300739686",
+  "job_steps": [
+    {
+      "name": "Set up job",
+      "conclusion": "success"
+    },
+    {
+      "name": "Initialize containers",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/checkout@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-go@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-node@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-python@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-java@v5",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-dotnet@v6",
+      "conclusion": "success"
+    },
+    {
+      "name": "Install stock-client and console dependencies",
+      "conclusion": "success"
+    },
+    {
+      "name": "Cache pinned public ORAS archive",
+      "conclusion": "success"
+    },
+    {
+      "name": "Prepare checked stock clients and fresh database",
+      "conclusion": "success"
+    },
+    {
+      "name": "Real PostgreSQL integration and timing",
+      "conclusion": "failure"
+    },
+    {
+      "name": "Real PostgreSQL integration with Go race detector",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Stock client compatibility on real registry",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Native lifecycle with curl, npm, pip, twine and Maven",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Blank database initialization and trusted TLS client journey",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Durable jobs and interrupted upload leases",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Filesystem inventory and integrity sweeps",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Cross-reference legal-hold matters",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Chromium console workflows and accessibility",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Safe Chromium failure locations",
+      "conclusion": "success"
+    },
+    {
+      "name": "Encrypt bounded native failure observations for owner diagnosis",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/upload-artifact@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Prepare bounded native evidence summary",
+      "conclusion": "failure"
+    },
+    {
+      "name": "Run actions/upload-artifact@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Cache pinned public ORAS archive",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Run actions/setup-dotnet@v6",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Run actions/setup-java@v5",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/setup-python@v7",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Run actions/setup-node@v7",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Run actions/setup-go@v7",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Run actions/checkout@v7",
+      "conclusion": "success"
+    },
+    {
+      "name": "Stop containers",
+      "conclusion": "success"
+    },
+    {
+      "name": "Complete job",
+      "conclusion": "success"
+    }
+  ],
+  "failure": {
+    "function": "TestJournalExportRejectsOversizedGappedAndCorruptRetainedHistory",
+    "case": "oversize",
+    "file": "internal/store/journal_integration_test.go",
+    "line": 203,
+    "sqlstate": "22P02",
+    "classification": "owned fixture invalid before product export path; event INSERT trigger requires valid JSON",
+    "scope": "One new oversize fixture inserts repeated x bytes rather than valid oversized JSON. Keep the same greater-than-256KiB bound and ErrJournalLimit assertion; use tenant/sequence/padding JSON. Frozen migrations/production checks remain unchanged."
+  },
+  "original_safe_summary": {
+    "path": "evidence/2026-11-07/github-ca56447-first-failure/ci-summary-amd64.json",
+    "bytes": 559,
+    "sha256": "e417115d51a32ef7e4d76c2ae84b482bdd6ac3a7341f06c62ab51fd4d5d6d48f",
+    "github_artifact_id": 13560742118,
+    "github_artifact_digest": "sha256:8cf063a04af686064f838e301a1275e6bb04e5ccdb4d137d08bb6e772d882821",
+    "records": 0,
+    "empty_summary_exit": "failed closed; empty output is not a pass"
+  },
+  "private_log": {
+    "path": ".private/ci-diagnostics/ca56447-campaign/128300739686.txt",
+    "bytes": 607117,
+    "sha256": "f7ef72f068f6920ee9a0836b5273a26e0c8c2ac7f28bb841bbe0f248b40ef883"
+  },
+  "limits": [
+    "Normal store package failed. Server and conformance package success records do not qualify the full suite; normal/race/stock/console source-specific replay remains required.",
+    "Original failed job/log and zero-report safe summary preserved before fixture change; no workflow rerun, cancellation, case removal or schema relaxation. ARM normal and remaining JVM job still pending at this snapshot.",
+    "Earlier5567 repository-profile24pass/3failedclient split remains preserved. DEFECT0126 strict three-host SDK client failure is separate and open. All450capabilities/41families/laterGOAL scope and readiness remain incomplete."
+  ]
+}

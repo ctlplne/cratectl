@@ -145,10 +145,58 @@ def generic():
  wrong=[*arguments];wrong[-1]='0'*64
  rejected=run([BIN/'cratectl','journal-verify','--export-file',export,*wrong],expect_failure=True)
  check('native offline verifier requires the separately supplied terminal hash','matches_supplied_checkpoint'not in rejected)
+ journal_signatures(head,client,export,arguments)
  object_path=PRIVATE/'objects'/tenants['admin']/'sha256'/obj['digest'][:2]/obj['digest']
  object_path.write_bytes(b'X'*len(payload))
  check('same-length storage corruption is never served',req('/r/raw/object')[0]==503)
  object_path.write_bytes(payload)
+
+def journal_signatures(head,client,export,arguments):
+ from ci.journal_evidence import STAGES,safe_journal_checkpoint_contract
+ completed=[]
+ def passed(stage,label,value=True):
+  check(label,value);completed.append(stage)
+  if completed!=STAGES[:len(completed)]:raise AssertionError('journal signature control order changed')
+ executable=Path(shutil.which('openssl')or'')
+ if not executable.is_file()or executable.stat().st_size>128<<20:raise AssertionError('bounded actual OpenSSL binary is required')
+ version=run([executable,'version']);match=re.match(r'^OpenSSL ((?:3|4)\.[0-9]{1,3}\.[0-9]{1,3}[a-z]?)\b',version)
+ if not match:raise AssertionError('native OpenSSL3 or4 version required')
+ statement=PRIVATE/'journal-checkpoint.json';signature=PRIVATE/'journal-checkpoint.sig';private=PRIVATE/'journal-signer-private.pem';public=PRIVATE/'journal-signer-public.pem'
+ prepared=run([BIN/'cratectl','journal-checkpoint',*arguments])
+ expected=json.dumps({'profile':'cratectl.journal.checkpoint.v1','purpose':'tenant-journal-integrity',**head},separators=(',',':'))+'\n'
+ passed('prepare_exact_unsigned','native checkpoint preparation preserves exact domain, purpose, tenant/head and final LF without signing',prepared==expected and not private.exists())
+ statement.write_bytes(prepared.encode());statement.chmod(0o600)
+ run([executable,'genpkey','-algorithm','ED25519','-out',private]);private.chmod(0o600)
+ run([executable,'pkey','-in',private,'-pubout','-out',public])
+ public_der=PRIVATE/'journal-signer-public.der';run([executable,'pkey','-pubin','-in',public,'-pubout','-outform','DER','-out',public_der])
+ run([executable,'pkeyutl','-sign','-rawin','-inkey',private,'-in',statement,'-out',signature])
+ passed('openssl_sign_exact_bytes','actual external OpenSSL signs the exact small checkpoint with a disposable private test key',signature.stat().st_size==64 and private.stat().st_mode&0o077==0)
+ run([executable,'pkeyutl','-verify','-rawin','-pubin','-inkey',public,'-in',statement,'-sigfile',signature])
+ passed('openssl_verify_exact_bytes','actual OpenSSL independently verifies its raw checkpoint signature')
+ flags=['--checkpoint-file',statement,'--checkpoint-signature-file',signature,'--checkpoint-key-file',public]
+ verify=[BIN/'cratectl','journal-verify','--export-file',export,*arguments]
+ receipt=json.loads(run([*verify,*flags]))
+ proof=receipt.get('checkpoint_signature',{})
+ passed('offline_signature_verify','native offline journal verifier authenticates external statement signature and complete saved range',receipt['matches_supplied_checkpoint']and proof.get('signature_verified')is True and proof.get('checkpoint')==head and proof.get('statement_sha256')==hashlib.sha256(statement.read_bytes()).hexdigest()and proof.get('public_key_sha256')==hashlib.sha256(public_der.read_bytes()).hexdigest())
+ signed_export=PRIVATE/'journal-signed-export.jsonl'
+ collected=json.loads(run([BIN/'cratectl','journal-export','--config',client,'--output',signed_export,'--limit','2',*arguments,*flags]))
+ passed('collector_signature_verify','native collector verifies the external checkpoint before collecting an identical private fixed range',collected.get('checkpoint_signature')==proof and signed_export.read_bytes()==export.read_bytes())
+ def refused(stage,label,argv):
+  output=run(argv,expect_failure=True);passed(stage,label,'matches_supplied_checkpoint'not in output and 'signature_verified'not in output)
+ altered=PRIVATE/'journal-wrong-purpose.json';altered.write_bytes(statement.read_bytes().replace(b'tenant-journal-integrity',b'artifact-approval'));altered.chmod(0o600)
+ altered_sig=PRIVATE/'journal-wrong-purpose.sig';run([executable,'pkeyutl','-sign','-rawin','-inkey',private,'-in',altered,'-out',altered_sig])
+ run([executable,'pkeyutl','-verify','-rawin','-pubin','-inkey',public,'-in',altered,'-sigfile',altered_sig])
+ refused('changed_statement_rejected','native verifier rejects an otherwise valid external signature for a different purpose',[*verify,'--checkpoint-file',altered,'--checkpoint-signature-file',altered_sig,'--checkpoint-key-file',public])
+ other=PRIVATE/'journal-untrusted-private.pem';other_public=PRIVATE/'journal-untrusted-public.pem';run([executable,'genpkey','-algorithm','ED25519','-out',other]);other.chmod(0o600);run([executable,'pkey','-in',other,'-pubout','-out',other_public])
+ refused('wrong_key_rejected','native verifier rejects a different actual Ed25519 public key',[*verify,*flags[:-1],other_public])
+ damaged=PRIVATE/'journal-damaged-signature.bin';changed=bytearray(signature.read_bytes());changed[0]^=1;damaged.write_bytes(changed)
+ refused('changed_signature_rejected','native verifier rejects a changed external signature without a partial receipt',[*verify,'--checkpoint-file',statement,'--checkpoint-signature-file',damaged,'--checkpoint-key-file',public])
+ wrong=[*verify];wrong[wrong.index('--through-hash')+1]='0'*64
+ refused('changed_head_rejected','native signature verification requires the exact independently selected terminal binding',[*wrong,*flags])
+ refused('partial_signature_flags_rejected','native signature verification refuses incomplete statement/signature/trusted-key inputs',[*verify,'--checkpoint-file',statement])
+ refused('private_key_rejected','native verification rejects a signing private key in the public trust input',[*verify,*flags[:-1],private])
+ contract={'profile':'journal-checkpoint-openssl-v1','openssl_version':match[1],'openssl_binary_sha256':hashlib.sha256(executable.read_bytes()).hexdigest(),'statement_sha256':hashlib.sha256(statement.read_bytes()).hexdigest(),'signature_sha256':hashlib.sha256(signature.read_bytes()).hexdigest(),'public_key_pem_sha256':hashlib.sha256(public.read_bytes()).hexdigest(),'public_key_der_sha256':hashlib.sha256(public_der.read_bytes()).hexdigest(),'journal_export_sha256':hashlib.sha256(export.read_bytes()).hexdigest(),'completed':completed}
+ result['journal_checkpoint_contract']=safe_journal_checkpoint_contract(contract,'passed')
 
 def npm():
  repository('js','npm')

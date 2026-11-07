@@ -46,19 +46,34 @@ browser workflows were unselected. See
 six workflows are terminal:24 pass and the three client probes fail. The whole
 5567candidate is not green.
 
-Bounded journal export is implemented but native PostgreSQL/CLI/browser
-unverified. ARM build/unit/race/lint, a five-second parser fuzz run (48,072 inputs),
-TypeScript/Vite and byte-for-byte console reproduction pass; four new PostgreSQL
-functions compile normally/race and pass tagged vet only. The checkpoint is
-explicitly unsigned; offline attribution requires a separately authenticated
-exact tenant/start/head. Metadata-first pages, private serial collection,
-streaming EOF verification and explicit audit cursors preserve original payloads
-without new migration. See `docs/journal-export.md`, ADR0046 and
-`evidence/2026-11-07/journal-export-development.json`. Native acceptance must run
-all257PG functions normal/race,49fuzz and18x86 browser workflows (three declared
-UI stand-ins) without treating those stand-ins as database/cryptographic proof.
-Full export/signing adapters, Go bundles, offline install, backup/GC leases,
-conditional refresh and every other committed GOAL outcome remain required.
+Bounded journal export remains implemented but unverified. Atca56447 both
+actual Linux normal store suites fail only the new oversize fixture: repeated
+non-JSON bytes are rejected during event INSERT before export code runs. Main
+full race/stock/native journal CLI/main18Chromium140 checks skip and are not
+passes. Original failed logs and zero-report safe summaries are retained in
+`evidence/2026-11-07/journal-export-ca56447-first-failure.json` and the initial
+campaign checkpoint. Source/unit/race/lint and49fuzz pass on three hosts; named
+Go79/312stock and13historical/18upgrades pass on both Linux hosts. Focused browser
+trials are separate from the skipped main console. One SBT2 ARM job remains
+pending in that initial snapshot. DEFECT0127 repairs only the fixture to valid
+JSON above the same256KiB limit; its ErrJournalLimit assertion and all14 frozen
+migrations stay intact. Native replay remains required.
+
+Externally signed checkpoint verification is implemented but native-tool
+unverified. The CLI prepares unsigned canonical profile/purpose/tenant/head
+statements; customer tools perform signing outside cratectl. Both collector and
+offline verifier optionally require all three statement/signature/independently
+trusted public-key files, verify them before output/journal access and emit proof
+only after complete range verification. No signing key/service is added. ARM
+build/unit/race/lint, a five-second signature parser fuzz run (36,499 inputs),
+exact public-key fingerprint/exporter regressions and console reproduction pass.
+Repaired PostgreSQL suites compile normally/race and pass tagged vet only. See
+`evidence/2026-11-07/journal-checkpoint-signature-development.json`, ADR0047 and
+`docs/journal-export.md`. Next native acceptance requires257PG normal/race,
+50fuzz,683baseline CLI checks including11actual OpenSSL controls and18main x86
+browser workflows/141 checks. Three browser workflows use declared response
+stand-ins. Full external request/provider adapters, Go bundles/offline install,
+backup/GC leases, conditional refresh and every other GOAL outcome remain open.
 
 The full amended GOAL remains active: all450artifactcapabilities,41families and
 later stages remain under section4.1. Full/offline Go, independently anchored
