@@ -400,7 +400,7 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := store.Provision(ctx, d.OwnerDSN, admin.Tenant, "export-importer", "publisher", importToken, time.Now().Add(time.Hour)); err != nil {
+	if err := store.Provision(ctx, d.OwnerDSN, admin.Tenant, "export-importer", "writer", importToken, time.Now().Add(time.Hour)); err != nil {
 		t.Fatal(err)
 	}
 	grantImport := func(allowed bool) {

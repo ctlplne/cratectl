@@ -5,7 +5,7 @@ artifact capabilities,41format families and later stages remain required. Broad
 readiness, security and packaging are **not qualified**. No release/package/image
 publication is authorized by the CI work.
 
-Current native qualification candidate: `d186dd0014dbb7bc67bba193b56d2e71ed0b07a4`
+Last inspected native qualification candidate (failed; new source replay required): `d186dd0014dbb7bc67bba193b56d2e71ed0b07a4`
 on `main`, author and committer `imfeelingtheagi` with the owner's noreply address.
 Local evidence documentation may be ahead of that candidate. Preserve the exact
 source distinctions below; local checks and selected profiles do not prove the
@@ -46,7 +46,7 @@ handoff and DEFECT0134 source-binding/display repair.35owned JavaScript and9shel
 argv checks, TypeScript/Vite, Go console unit/build/lint pass. The existing
 Chromium response-stand-in adds import and malformed source/list controls with
 all original assertions; same19main151expected checks. This new UI is native
-unverified and has not yet been pushed over the active d186qualification.
+unverified and awaits a new source campaign after the retained d186failure.
 See `evidence/2026-11-07/go-export-import-console-development.json`; full durable
 server import/provenance/scan/progress and remaining console outcomes stay open.
 
@@ -68,7 +68,12 @@ zero-report summary fails. Original965Go jobs were cancelled while pending.
 
 The d186candidate requires274fullPG/96namedGo normal/race,56cmd+internal fuzz on
 three hosts,19main151browser and every original selected profile. Its native Go
-jobs128387838848(ARM)/128387838901(x86) were confirmed pending at this update.
+jobs128387838848(ARM)/128387838901(x86) now both fail at import fixture role
+provisioning: `publisher` is unsupported; the existing scoped role is `writer`.
+DEFECT0135 and original logs/zero reports/race-stock skips are retained. The
+one-literal writer repair compiles normally/race and passes tagged vet; actual
+new-source replay remains required. Earlier setup413does not recur atd186, but
+the whole collector/import function is still failed.
 Inspect actual handles before resuming; never restart because observation expired.
 
 | Profile | GitHub run |

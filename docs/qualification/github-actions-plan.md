@@ -983,3 +983,15 @@ UI response-stand-in checks include malformed records/lists, role/stale/denial/
 expiry and source/target separation;19main151expected semantic checks unchanged.
 Actual new browser qualification is pending. All other native274/96/56/stock/
 upgrade/portable and full450/41/laterGOAL4.1requirements remain.
+
+## Import fixture role first native failure
+
+Both d186native normal GoPG suites get past the original413publication setup,
+then fail at import credential provisioning: the fixture used `publisher`, while
+the existing role is `writer` with repository grants (DEFECT0135). Retain the
+[original both-host failures](../../evidence/2026-11-07/go-export-d186dd0-import-role-first-failure.json),
+skipped race/stock stages and zero-report summary failures. Change only that role
+literal; all current grant/revocation/replay/denial/conflict and collector/metadata/
+OpenSSL/SDK assertions remain. Normal/race tagged compilation and vet pass; no
+local native campaign. Require actual new274PG/96Go/56fuzz/19main151 and every
+selected profile before accepting collector/import or expanded UI instructions.
