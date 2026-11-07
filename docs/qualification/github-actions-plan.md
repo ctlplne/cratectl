@@ -9,6 +9,16 @@ A selected CI campaign is a scoped result, not full product parity.
 
 ## Current accepted replay and next source
 
+The subsequent `976e8c7` offline-proxy campaign has an actual native failure:
+both Linux normal Go jobs fail the eight-root download-count assertion. Preserve
+[both originals](../../evidence/2026-11-07/go-common-graph-976e8c7-first-native-failure.json)
+and their empty guarded summaries; race and stock stages skip. The owned fixture
+was missing modern indirect requirements. An import-derived local regression now
+rejects that hole; the repair preserves the SDK, modern module directive, all roots,
+byte/proof/namespace/acknowledgement/corruption assertions and budgets. Local gates
+pass; actual native replay remains required. Do not replace still-queued original
+profiles when pushing the repair. Full 976 campaign retention remains pending.
+
 Exact `a331612316ef77186055ca61da92cc8f06eb0a87` replays all31original native jobs
 successfully across eight workflows after the source-pinned schema guard repair.
 Actual read-only [verifier42400756971](https://github.com/ctlplne/cratectl/actions/runs/42400756971)

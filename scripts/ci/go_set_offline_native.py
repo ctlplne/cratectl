@@ -130,7 +130,9 @@ def main(path):
             values.append(value)
             text = text.lstrip()[end:]
         expected = {(r['module'], r['version']): r for r in receipt['roots']}
-        checked(len(values) == len(expected) == 8, 'Stock Go did not download the complete transitive graph')
+        checked(len(values) == len(expected) == 8,
+                'Stock Go did not download the complete transitive graph (observed=%d, expected=%d)'
+                % (len(values), len(expected)))
         for value in values:
             root = expected.pop((value['Path'], value['Version']))
             checked(not value.get('Error') and value['Sum'] == root['zip_h1'] and value['GoModSum'] == root['mod_h1'],

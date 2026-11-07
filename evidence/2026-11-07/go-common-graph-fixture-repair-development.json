@@ -1,0 +1,67 @@
+{
+  "candidate_parent": "976e8c74b51eaa0a8db50ace1acd09d244667ff8",
+  "source_dirty": true,
+  "observed_at": "2026-11-07T18:37:04.598164+00:00",
+  "state": "owned modern graph fixture repaired; local unit/build/race/lint pass; actual native replay pending",
+  "first_failure": "evidence/2026-11-07/go-common-graph-976e8c7-first-native-failure.json",
+  "defect": "DEFECT.0141",
+  "change": "Every synthetic module now contains inert never-executed Go source importing the next node, and Go1.26.0metadata explicitly requires the next node directly and each remaining imported node indirectly. Preserve all8roots, pinnedGo1.27.3, fileproxy-only/empty-network/originalUID, independent complete proof, actual h1/asset checks, uncertain-ack exact receipt replay and late corruption refusals. Add bounded observed/expected count to anyfuture error, without printing customer/SDK bodies.",
+  "regression": "Parse the actual generated ZIP source imports with go/parser, derive transitive closure independently, parse each actual embedded go.mod with x/mod/modfile and compare direct/indirect/version declarations. A deliberately dropped late indirect requirement must fail, reproducing the original hole. No SDK command or package compilation/execution runs locally.",
+  "implementation": [
+    {
+      "path": "internal/server/go_common_graph_fixture_test.go",
+      "bytes": 4644,
+      "sha256": "e91ae590daa67a3a13d84caff963e1e6c743437cae8739092660e2fbc01d0e76"
+    },
+    {
+      "path": "internal/server/go_module_export_collect_integration_test.go",
+      "bytes": 59771,
+      "sha256": "5ba71be447195ba0b90df05aca51da6573229e911cd50858e59f21380191b0bc"
+    },
+    {
+      "path": "scripts/ci/go_set_offline_native.py",
+      "bytes": 8635,
+      "sha256": "c098313f5ca8cd19c5fb23377b73045268cfe0cced9084b5dd1efaf17768a36a"
+    }
+  ],
+  "local_checks": {
+    "focused_regression": {
+      "path": ".cache/go-common-graph-fixture-unit.log",
+      "bytes": 49,
+      "sha256": "25cf323aa4847e264916a3b62766c16ca061fc17da508b8de3d5c7fa42143636"
+    },
+    "build_unit_race_lint": {
+      "path": ".cache/go-common-graph-repair-gates.log",
+      "bytes": 13267,
+      "sha256": "f5a97504ac326dbdc958fd330f011759680515b0028da9a08faba2e781530986"
+    },
+    "tagged_race_compile_only": {
+      "path": ".cache/go-common-graph-fixture-tagged-race.log",
+      "bytes": 67,
+      "sha256": "3a56f96b9c93cc8dd360cd2a51ce939909effb37ab89fb19457288b91c94ad62"
+    },
+    "tagged_normal_compile_only": {
+      "path": ".cache/go-common-graph-fixture-tagged-normal.log",
+      "bytes": 67,
+      "sha256": "e902c811cdf84b89a0d08446bab5de59ec5777a19105bfae15518075fb7c4254"
+    },
+    "tagged_vet_only": {
+      "path": ".cache/go-common-graph-fixture-tagged-vet.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "native_required": {
+    "postgresql_functions": 284,
+    "named_go_functions": 106,
+    "fuzz_targets": 62,
+    "scope": "Both actualLinux normal/race plus originalstockGo312/683baseline,16historical21upgrade reports andallactuallyselectedoriginalprofiles; queued/running/skipped/failed neverpass."
+  },
+  "limits": [
+    "The assertion failure is corroborated on both actualLinux normalGo jobs; neither observedselectedcount nor full976campaign conclusion is invented. Remaining976jobs mustbe retained fromactualAPI.",
+    "This is a fixture correction, not an asserted SDK defect or a production proxy-byte repair. Complete eight-module consumer outcome remainsunverified until actual replay.",
+    "Latestwholea33131nativejobs/24safe91reports staysaccepted; new commonofflinegraph liesoutsideit. Strict0126andunknown0122stayopen.",
+    "No SDK downgrade, oldGo directive, removed graph/root assertion, fallback/network access, alteredbudget or automaticclosure/destinationadmission flag. All450/41/laterGOAL4.1 remainsactive.",
+    "Independent-host commonfixture work is preserved under.cache/common-portability-progress; no workflow/report contract waschanged orpushed beforeoriginalcampaign retention."
+  ]
+}

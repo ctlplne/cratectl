@@ -59,8 +59,16 @@ The new native journey creates and collects an eight-module transitive graph
 through PostgreSQL, TLS and external OpenSSL. It stops the registry, then runs the
 CLI and pinned Go 1.27.3 in observed empty network namespaces under the original
 ordinary UID. A 4096-byte pipe blocks final acknowledgement for SIGKILL and exact
-receipt replay; later source corruption must fail. This journey is **compiled
-only**. The next source requires 284 PostgreSQL/106 named Go functions and 62 fuzz
+receipt replay; later source corruption must fail. Its first native run at
+`976e8c7` fails on both Linux hosts at the eight-module download-count assertion.
+[Original logs and safe artifacts](evidence/2026-11-07/go-common-graph-976e8c7-first-native-failure.json)
+are retained. The owned fixture omitted the indirect requirements expected by
+modern Go graph pruning. The [repair](evidence/2026-11-07/go-common-graph-fixture-repair-development.json)
+keeps Go 1.26.0 metadata, pinned SDK 1.27.3, all eight roots and all original
+assertions. Inert source imports and complete modern requirements are now checked
+by an independent import-derived local regression. ARM build/unit/race/lint pass;
+tagged normal/race compilation and vet pass only. **Native replay remains required.**
+The source requires 284 PostgreSQL/106 named Go functions and 62 fuzz
 targets. Expect six selected workflows, 26 jobs, 19 safe summaries and 74 reports;
 the actual API inventory governs. Unchanged optional profiles retain their a331 scope.
 

@@ -1,0 +1,106 @@
+{
+  "candidate": "976e8c74b51eaa0a8db50ace1acd09d244667ff8",
+  "observed_at": "2026-11-07T18:35:28.507865+00:00",
+  "run_id": 42401126376,
+  "defect": "DEFECT.0141",
+  "state": "both original native Linux normal Go jobs fail; never accepted",
+  "jobs": [
+    {
+      "job_id": 128488879881,
+      "name": "Stock Go hosted and group modules (arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42401126376/job/128488879881",
+      "head_sha": "976e8c74b51eaa0a8db50ace1acd09d244667ff8",
+      "conclusion": "failure",
+      "original_log": {
+        "path": ".private/ci-diagnostics/976e8c7-first-failure/128488879881.txt",
+        "bytes": 242530,
+        "sha256": "310781e57fbd2a9464dee0150d947585f81d95857048d11b17e9b051a24d36a2"
+      },
+      "same_graph_count_assertion": true,
+      "failed_steps": [
+        "Real PostgreSQL Go module regressions",
+        "Prepare bounded native evidence summary"
+      ],
+      "skipped_steps": [
+        "Real PostgreSQL Go module regressions with race detector",
+        "Trusted TLS stock Go transitive downloads and policy recovery",
+        "Post Run actions/setup-python@v7",
+        "Post Run actions/setup-go@v7"
+      ]
+    },
+    {
+      "job_id": 128488880146,
+      "name": "Stock Go hosted and group modules (amd64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42401126376/job/128488880146",
+      "head_sha": "976e8c74b51eaa0a8db50ace1acd09d244667ff8",
+      "conclusion": "failure",
+      "original_log": {
+        "path": ".private/ci-diagnostics/976e8c7-first-failure/128488880146.txt",
+        "bytes": 243233,
+        "sha256": "86024795390775ce82d686e6cd9f220b7654e1708a0e7dbcaf272947b9d3df93"
+      },
+      "same_graph_count_assertion": true,
+      "failed_steps": [
+        "Real PostgreSQL Go module regressions",
+        "Prepare bounded native evidence summary"
+      ],
+      "skipped_steps": [
+        "Real PostgreSQL Go module regressions with race detector",
+        "Trusted TLS stock Go transitive downloads and policy recovery",
+        "Post Run actions/setup-python@v7",
+        "Post Run actions/setup-go@v7"
+      ]
+    }
+  ],
+  "safe_summaries": [
+    {
+      "path": "evidence/2026-11-07/976e8c7-first-go-failure/ci-summary-go-module-arm64.json",
+      "bytes": 561,
+      "sha256": "27d62b8078474c6f19252c68693272d17e13d08aea19ec5cb73a5ee43dbd509d",
+      "records": 0,
+      "github_artifact_id": 13586000205,
+      "github_artifact_digest": "sha256:8e431352d28770f34bfd9327403995c86f490138302c4a133dd7abbe1a5df75e",
+      "archive_sha256": "8e431352d28770f34bfd9327403995c86f490138302c4a133dd7abbe1a5df75e"
+    },
+    {
+      "path": "evidence/2026-11-07/976e8c7-first-go-failure/ci-summary-go-module-amd64.json",
+      "bytes": 559,
+      "sha256": "3a84d5ab7df51bce89ed5ee505eab829bce7fc170042892bb04a0b5af66aca8e",
+      "records": 0,
+      "github_artifact_id": 13585960801,
+      "github_artifact_digest": "sha256:6f95795d79e77d60110cc06d5825b1742975da08562ae704f2d0f0284c86e4ff",
+      "archive_sha256": "6f95795d79e77d60110cc06d5825b1742975da08562ae704f2d0f0284c86e4ff"
+    }
+  ],
+  "encrypted_originals": [
+    {
+      "path": ".private/ci-diagnostics/976e8c7-first-failure/encrypted/13585926015-encrypted-go-diagnostics-amd64.zip",
+      "bytes": 324,
+      "sha256": "4febdd2ad9fa11ac67960590737024c7b48b9338ba549261b6e6e94153030ec1",
+      "github_artifact_id": 13585926015,
+      "github_artifact_digest": "sha256:4febdd2ad9fa11ac67960590737024c7b48b9338ba549261b6e6e94153030ec1"
+    },
+    {
+      "path": ".private/ci-diagnostics/976e8c7-first-failure/encrypted/13585149803-encrypted-go-diagnostics-arm64.zip",
+      "bytes": 327,
+      "sha256": "e74855e05eddbe235c3a2b86b8efa27499db4937ab36bc2524d0a5bc46a73eac",
+      "github_artifact_id": 13585149803,
+      "github_artifact_digest": "sha256:e74855e05eddbe235c3a2b86b8efa27499db4937ab36bc2524d0a5bc46a73eac"
+    }
+  ],
+  "first_observation": "ARM128488879881fails at actual stockGo1.27.3eight-root download-count assertion after offline preparation, signed proof checks and uncertainack replay. AMD128488880146corroborates the exact assertion. Raw stdout does not retain the actual selected count; do not invent it.",
+  "source_diagnosis": {
+    "pinned_sdk": "Go1.27.3",
+    "fixture_go_directive": "1.26.0",
+    "fixture": "only immediate require, assets only, no explicit modern indirect closure",
+    "inference": "Pinned Go source cmd/go/internal/modload/buildlist.go and official graph-pruning reference explain the incomplete expectation: modern graph loading includes immediate requirements of dependencies, and relies on complete explicit indirect requirements for their imported graph. The fixture omits those requirements. This is an owned fixture defect, not an asserted SDK bug.",
+    "official_reference": "https://go.dev/ref/mod#graph-pruning"
+  },
+  "repair_required": "Keep pinned SDK/directive, all8root assertions/h1/proof/currentdenial/corruption/empty-network/ack controls. Add inert never-executed source import chain and complete modern direct/indirect requirements for every module. Add import-derived local regression that rejects the original missing indirect requirement. Then replay exactoriginalnativeprofiles onrepaired source.",
+  "limits": [
+    "Both normal Go package suites fail; race/stock stages skip and summaryguardfails, never passes. Product assembly alone is not whole journey qualification.",
+    "Whole976campaign remains live, not yet a final26job verdict. Preserve remainingactualjobs and anyotherfirstfailure; no queue-basedrestart/cancel.",
+    "Previousa331whole31jobs24safe91reports remains accepted. New commonofflinegraph/source outside it, incomplete until actualreplay.",
+    "FullGOAL4.1/450capabilities/41families/14exportcases/7environments/laterstages remainrequired; no primary/customer/sibling/release/package/image changes."
+  ]
+}

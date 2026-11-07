@@ -4,7 +4,6 @@
 package server
 
 import (
-	"archive/zip"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -86,28 +85,8 @@ func TestGoModuleCommonSetOfflineNativeGraphAndUncertainAcknowledgement(t *testi
 	selection := store.GoExportSetRequest{LifetimeSeconds: 3600, MaxArtifactBytes: 32 << 20}
 	for n, name := range modules {
 		coordinate := gomodule.Coordinate{Module: name, Version: "v1.0.0"}
-		mod := []byte("module " + name + "\n\ngo 1.26.0\n")
-		if n+1 < len(modules) {
-			mod = append(mod, []byte("require "+modules[n+1]+" v1.0.0\n")...)
-		}
-		var archive bytes.Buffer
-		z := zip.NewWriter(&archive)
-		for _, item := range []struct {
-			name string
-			raw  []byte
-		}{{"go.mod", mod}, {"assets/owned.txt", []byte("owned inert graph asset")}} {
-			w, err := z.Create(name + "@v1.0.0/" + item.name)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if _, err := w.Write(item.raw); err != nil {
-				t.Fatal(err)
-			}
-		}
-		if err := z.Close(); err != nil {
-			t.Fatal(err)
-		}
-		if response := goHTTP(t, s, token, "PUT", "/go/graph/"+coordinate.Prefix()+".zip", archive.Bytes()); response.Code != 201 {
+		archive := nativeCommonGraphZIP(t, modules, n)
+		if response := goHTTP(t, s, token, "PUT", "/go/graph/"+coordinate.Prefix()+".zip", archive); response.Code != 201 {
 			t.Fatal("owned graph publication", n, response.Code)
 		}
 		selection.Entries = append(selection.Entries, store.GoExportSetEntry{Repository: "graph", Module: name, Version: "v1.0.0"})
