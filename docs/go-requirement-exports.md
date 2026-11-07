@@ -1,9 +1,11 @@
 # Retain a hosted Go requirement graph
 
-Implemented but unverified. Local ARM build/unit/race/lint and tagged compilation
-do not qualify real PostgreSQL, the native CLI, upgrades or the complete export
-journey. Resumable graph collection and the independently signed offline caller
-remain required. All 14 cases/seven environments in the export plan stay open.
+Collection/offline caller implemented but native unverified. Local ARM
+build/unit/race/lint and tagged compilation do not qualify that caller's real
+PostgreSQL, external signer, stock SDK or complete export journey. The separate
+durable-creation source 52dca42 has passed its dedicated native Go/upgrade jobs;
+whole-campaign acceptance remains pending. All 14 cases/seven environments in the
+export plan remain required.
 
 Use the same private request as the [preview](go-requirement-preview.md). A tenant
 administrator needs current access to one hosted repository at its exact source
@@ -68,8 +70,66 @@ Project files can contain private comments and dependency paths. Keep downloaded
 metadata and request/receipt files private. The export appends no runtime config,
 credential value or signing key. It creates no signing service, CA or vault.
 
-The immutable index can reproduce metadata version selection. It establishes no
-package/platform closure, current checksum authority, current destination grant
-or complete signed offline collection. Those grants remain false. The full
-independently selected key/head and original journal must authenticate the exact
-creation before any future offline caller trusts these references.
+Collect every original with the new requirement-specific command. Independently
+select the tenant, full journal range/head, original creation sequence and trusted
+external public key. The bundled public key is retained evidence; its presence
+does not make it trusted. Substitute your exact reviewed values below:
+
+```sh
+cratectl go-requirement-export-collect \
+  --config /private/path/client.json --set-id "$SET_ID" --generation "$GENERATION" \
+  --output-directory /private/path/requirement-collection \
+  --journal-file /private/path/journal.jsonl --journal-tenant "$TENANT" \
+  --journal-event-sequence "$CREATED_SEQUENCE" \
+  --journal-through "$HEAD_SEQUENCE" --journal-through-hash "$HEAD_HASH" \
+  --checkpoint-file /private/path/checkpoint.json \
+  --checkpoint-signature-file /private/path/checkpoint.sig \
+  --checkpoint-key-file /independent/trust/signer-public.pem
+```
+
+For a range starting above zero, also supply `--journal-after` and
+`--journal-after-hash`. The directory's parent must already be owner-private.
+Add `--resume` only for the same immutable collection and explicitly current
+generation. Each original range checks current complete-input source authority.
+Partial bytes remain private on interruption; corrupt prefixes are refused and
+preserved. Renewal uses the existing control route and selection digest; the
+first completed local receipt retains its original generation/bytes on replay.
+
+After transfer, independently select that same original trust before verification
+or assembly. The source registry is unnecessary for these historical checks:
+
+```sh
+cratectl go-requirement-export-verify \
+  --collection-directory /private/path/requirement-collection --set-id "$SET_ID" \
+  --journal-tenant "$TENANT" --journal-event-sequence "$CREATED_SEQUENCE" \
+  --journal-through "$HEAD_SEQUENCE" --journal-through-hash "$HEAD_HASH" \
+  --checkpoint-key-file /independent/trust/signer-public.pem
+
+cratectl go-requirement-export-offline \
+  --collection-directory /private/path/requirement-collection --set-id "$SET_ID" \
+  --output-directory /private/path/requirement-offline \
+  --journal-tenant "$TENANT" --journal-event-sequence "$CREATED_SEQUENCE" \
+  --journal-through "$HEAD_SEQUENCE" --journal-through-hash "$HEAD_HASH" \
+  --checkpoint-key-file /independent/trust/signer-public.pem
+```
+
+These commands bind the complete original signed journal to the actual creation,
+verify every indexed original, replay metadata version selection and inspect all
+selected native representations. The offline receipt returns a private `file:`
+`goproxy` after the complete bundle is synced/published. Its proof directory
+retains all originals. Examined lower versions supply `.mod` metadata for native
+selection replay; version lists/latest and ZIP/info advertise selected roots only.
+Existing output requires explicit `--resume`; changed published bytes are refused.
+
+Both commands accept bounded `--max-bytes` (default 2 GiB, maximum 65 GiB) and
+`--timeout` (default five minutes, maximum one hour). Collection/assembly chunk
+sizes range from 64 KiB to 8 MiB. The collector also caps requests at 16,384.
+Bindings/completions remain at most 512 KiB. Linux/macOS private-file locking/sync
+semantics are required; Windows qualification remains open.
+
+The immutable index can reproduce metadata version selection. Receipt flags for
+package/platform closure, checksum authority and current destination admission
+remain false. Historical offline proof does not bypass a new destination's
+permissions or scanning policy. No package script or downloaded code is executed.
+See [the caller decision](adr/0071-signed-go-requirement-collection-and-offline.md)
+for the precise implementation and remaining qualification boundaries.

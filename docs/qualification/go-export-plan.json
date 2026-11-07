@@ -29,15 +29,16 @@
     "docs/go-requirement-preview.md",
     "docs/adr/0069-immutable-go-requirement-export-proof.md",
     "docs/go-requirement-exports.md",
-    "docs/adr/0070-durable-go-requirement-creation.md"
+    "docs/adr/0070-durable-go-requirement-creation.md",
+    "docs/adr/0071-signed-go-requirement-collection-and-offline.md"
   ],
   "current_implementation": {
-    "source_parent": "1756bb0034363c6a9d8672adf733b3ba50741a43",
+    "source_parent": "52dca4289c82026d8467aaacfba7250e60dc8383",
     "source_dirty": true,
-    "state": "Exact175whole26jobs/19safe74reports accepted;284PG/106Go normalrace/62fuzz/16historical21upgrades/allselectedprofilespass. Newcommon independenthost34stage/pidfd scope localimplemented butnativepending. Full450/41/laterGOAL4.1 remainsactive.",
+    "state": "Source52dedicated116Go/upgrades andothercomponents pass; fullnative jobs live,wholepending. Newrequirementcollection/offline localimplemented nativeunverified; fullGOAL active.",
     "qualified_historical_consumer": "evidence/2026-11-07/github-1a61120-checkpoint.json",
     "producer_development": "evidence/2026-11-07/go-durable-export-development.json",
-    "schema": 17,
+    "schema": 18,
     "current_registry_admission": false,
     "checksum_authority_verified": false,
     "durable_server_snapshot": "verified in exact fbe3bf9 90namedGo real-PostgreSQL normal/race profile on both Linux architectures; broader acceptance remains incomplete",
@@ -131,14 +132,14 @@
       ],
       "checkpoint": "evidence/2026-11-07/go-module-b5cfb5d-native-checkpoint.json"
     },
-    "active_candidate": "1756bb0034363c6a9d8672adf733b3ba50741a43",
+    "active_candidate": "52dca4289c82026d8467aaacfba7250e60dc8383",
     "active_runs": {
-      "main": 42402578115,
-      "go": 42402578179,
-      "jvm": 42402578196,
-      "oci": 42402578136,
-      "upgrades": 42402578194,
-      "portable": 42402578191
+      "main": 42422860911,
+      "go": 42422860895,
+      "jvm": 42422860897,
+      "oci": 42422861011,
+      "upgrades": 42422861014,
+      "portable": 42422860978
     },
     "native_upgrade_checkpoint": "evidence/2026-11-07/github-badb85b-upgrades-checkpoint.json",
     "native_portability_checkpoint": "evidence/2026-11-07/go-export-portability-b5cfb5d-checkpoint.json",
@@ -246,7 +247,7 @@
       "native_checkpoint": "evidence/2026-11-07/github-9bbfb79-checkpoint.json"
     },
     "requirement_durable_creation": {
-      "state": "implemented but unverified; originalaaf source/Go fixture failures retained; local0144/0145/0146 repair awaits native replay",
+      "state": "Repaired52dedicated116Go normal/race/stock and17historical22upgrades pass bothLinux; fullnative campaign/wholeacceptance pending. Originalaaf failures remainfailed.",
       "adr": "docs/adr/0070-durable-go-requirement-creation.md",
       "development": "evidence/2026-11-07/go-requirement-durable-creation-development.json",
       "schema": 18,
@@ -280,6 +281,25 @@
         "evidence/2026-11-07/go-requirement-aaf3045-first-go-failures.json"
       ],
       "fixture_repair": "evidence/2026-11-07/go-requirement-fixture-repair-development.json"
+    },
+    "requirement_collection_offline": {
+      "state": "implemented but native unverified",
+      "adr": "docs/adr/0071-signed-go-requirement-collection-and-offline.md",
+      "development": "evidence/2026-11-07/go-requirement-collection-development.json",
+      "required_native_inventory": {
+        "integration_functions": 295,
+        "named_go_functions": 117,
+        "fuzz_targets": 66,
+        "inventory_sha256": "f57e16b35a819df29e9e1c1e15cb9b710fc406432cfefb1f2e98acebb80be79b"
+      },
+      "selected_original_inputs": true,
+      "signed_outer_caller": "implemented; nativepending",
+      "native_proxy_examined_mods": "implemented, selected discovery only; nativepending",
+      "dependency_closure": false,
+      "checksum_authority_verified": false,
+      "current_registry_admission": false,
+      "independent_host_requirement_profile": false,
+      "process_interruption_and_renewal_requirement_profile": false
     }
   },
   "environment_profiles": {
@@ -664,9 +684,10 @@
       "The bounded canonical index passes actual96Go normal/race/312stock onbothLinux atca44; whole26job/19safe72campaign accepted, including58fuzz/source3hosts. It authenticates historical manifests, not common package/closure/admission. The new one-transaction common-snapshot preview is locally qualified but native PostgreSQL unverified.",
       "One atomic common-set implementation now shares publication fencing, tenant RLS, immutable refs, original journal/receipt/job intent, current complete-member delivery authority and expiry/inventory accounting. Its original statement verifier is bounded and preserves unsupported trust flags. Localqualification is not native PostgreSQL/external signer/CLI/upgrade proof.",
       "The exact166common metadata preview passes all3new native PostgreSQL/API cases normally/race onbothLinux; whole26job campaign accepted. New all-member collector reuses private-file durable publication with separate bounded metadata/directory limits and original-generation replay. Its native processkill/renewal/late-denial/corruptresume controls are compiled only.",
-      "Firstschema17native campaign b937fails20bootstrap jobs at an overlooked16literal after migration/provisioning;31jobs total10success20failure1skipped. Originalzero summaries remain failures. Replace with strict committed source target and4meaningful regressions, wire browser shared dependencies and replayalloriginal31profiles. New collector native behavior remains unverified."
+      "Firstschema17native campaign b937fails20bootstrap jobs at an overlooked16literal after migration/provisioning;31jobs total10success20failure1skipped. Originalzero summaries remain failures. Replace with strict committed source target and4meaningful regressions, wire browser shared dependencies and replayalloriginal31profiles. New collector native behavior remains unverified.",
+      "Examined lower go.mod originals must be available to the native metadata algorithm even when their versions are unselected. Retain their exact metadata paths while advertising ZIP/info/list/latest only for selected roots; prove actual SDK consumption in the native requirement-profile case."
     ],
-    "next_implementation_boundary": "Replay repaired committed-schema bootstrap and every original31nativeprofile, retaining139firstfailures. Then complete private native fileproxy/fullclosure/currentscanner/import/provenance/operator/production and all14cases/7environments/450capabilities/41families/laterGOAL4.1scope.",
+    "next_implementation_boundary": "Finish original52fullnative campaign and actual read-only acceptance; qualify new295PG117Go66fuzz requirement collector/offline/15empty-network competing-version and refusal scope. Then requirement-profile separate hosts/processkill/renewal, broader native graphs, full closure/currentscan/import/operator/GC/provider/platform/install/backup/HA/scale andall450/41/14cases/7environments/laterGOAL4.1.",
     "accepted_capability_states_changed": false,
     "execution_sequence": [
       {

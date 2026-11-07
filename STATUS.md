@@ -67,7 +67,7 @@ It records original/verifier hashes and checks old jobs against their original
 16-pin contracts. New schema-18 sources require all 17 pins. Every other closed
 source file must match. Original 9bb jobs can finish without replay.
 
-## Original schema-18 campaign failed; local repairs await native replay
+## Original schema-18 campaign failed; repaired native campaign is running
 
 Source aaf3045 selected all 31 jobs/eight workflows. All three source hosts failed
 the full-history ancestry assertion in shallow checkouts (DEFECT.0144).
@@ -102,11 +102,41 @@ PostgreSQL jobs; skipped later steps never count as passes. Both upgrade jobs
 pass 22 reports; focused browser/library/JVM/OCI/portable components retain their
 own success. None repairs the failed source or qualifies the current fixtures.
 
+Repaired source 52dca42 has six fixed original run handles: main42422860911,
+Go42422860895, JVM42422860897, OCI42422861011, upgrades42422861014 and
+portable42422860978. Both dedicated Go jobs pass all116 functions normally/race
+and312 stock checks; both upgrades pass17 historical binaries/22 reports.
+JVM/OCI/portability, all three source/fuzz jobs and scoped security pass. The two
+full native jobs remain live; whole26-job/19safe78-report acceptance is pending.
+Preserve the original handles without restarting for observation delays.
+
+## Requirement collection/offline caller implemented but native unverified
+
+[ADR0071](docs/adr/0071-signed-go-requirement-collection-and-offline.md) adds explicit
+collect/verify/offline commands. They bind the complete independently selected
+signed journal to the production creation/graph parent, retain every examined
+original, independently replay metadata selection and inspect selected native
+bytes/h1 before private proxy publication. Lower unselected .mods remain available
+for native selection; discovery/ZIP/info advertise selected roots only. Exact
+immutable resume, corrupt-prefix refusal and original completion replay preserve
+private state. No database migration changes accompany this work.
+
+Local ARM build/unit/race/lint pass, tagged normal/race compilation and vet pass
+only, and bounded local parser fuzz passes. The new native case requires real
+PostgreSQL/TLS/CLI/external signer plus stock Go competing-version replay/downloads
+after source shutdown in observed empty command networks, with wrong key/head/
+event, budget, current-denial, corruption and unknown-member refusal controls.
+New source inventory is295 PostgreSQL/117 named Go/66 fuzz. See the
+[development record](evidence/2026-11-07/go-requirement-collection-development.json).
+The requirement profile's independent-host transfer, process kill/renewal and
+full fourteen-case/seven-environment qualification remain required; older common-set
+proof does not qualify them. Closure/authority/current-admission flags stay false.
+
 ## Continue the complete goal
 
-Retain all original aaf failures, qualify the corrected durable creation source,
-then complete resumable graph collection and independently signed offline caller
-integration. Existing explicit-set collectors do not authenticate this new parent.
+Retain all original aaf failures, accept the corrected durable creation source,
+then qualify the new graph collector/offline caller and finish its independent-host
+interruption/renewal controls. Existing explicit-set collectors do not authenticate this new parent.
 Finish native SDK competing-version/replacement/exclusion/workspace differentials,
 package/platform closure, source precedence/authority, current scanning/import/
 server-session/operator/console outcomes, lifecycle/physical GC, providers/Windows,

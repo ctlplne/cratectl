@@ -54,6 +54,7 @@ type collectionHTTP struct {
 	base, token, id   string
 	generation, chunk int64
 	commonSet         bool
+	requirementSet    bool
 	requests          int
 }
 
@@ -63,8 +64,17 @@ func (c *collectionHTTP) get(ctx context.Context, kind, method string, start, en
 	}
 	c.requests++
 	path := "/api/v1/go/exports/" + c.id
+	if c.commonSet && c.requirementSet {
+		return nil, errors.New("ambiguous export collection profile")
+	}
 	if c.commonSet {
 		path = "/api/v1/go/export-sets/" + c.id
+	}
+	if c.requirementSet {
+		path = "/api/v1/go/export-sets/requirements/" + c.id
+		if strings.HasPrefix(kind, "roots/") {
+			path = "/api/v1/go/export-sets/" + c.id
+		}
 	}
 	if kind != "" {
 		path += "/" + kind + "?generation=" + strconv.FormatInt(c.generation, 10)
@@ -120,6 +130,11 @@ func (c *collectionHTTP) download(ctx context.Context, root *os.Root, name, kind
 	st, err := f.Stat()
 	if err != nil || st.Size() > object.Size {
 		return errors.New("partial export file exceeds its authenticated size")
+	}
+	if c.requirementSet && st.Size() > 0 && st.Size() < object.Size {
+		if err := c.verifyRequirementPrefix(ctx, f, kind, object); err != nil {
+			return err
+		}
 	}
 	for offset := st.Size(); offset < object.Size; {
 		if err := ctx.Err(); err != nil {

@@ -36,6 +36,10 @@ func collectionEntries(root *os.Root, bounds ...int) ([]os.DirEntry, error) {
 	if len(bounds) == 1 {
 		maximum = bounds[0]
 	}
+	return readCollectionEntries(root, maximum)
+}
+
+func readCollectionEntries(root *os.Root, maximum int) ([]os.DirEntry, error) {
 	directory, err := root.Open(".")
 	if err != nil {
 		return nil, err

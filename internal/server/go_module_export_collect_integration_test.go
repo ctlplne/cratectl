@@ -135,6 +135,195 @@ func TestGoModuleRequirementExportNativeTLSCLICreationReplayAndOriginalGraph(t *
 	}
 }
 
+// Real PostgreSQL/TLS/CLI and an external signer authenticate the production
+// creation. The separate helper runs stock Go and refusal controls in observed
+// empty command networks after the source listener has stopped.
+func TestGoModuleRequirementCollectionNativeSignedCompetingVersionsAndOffline(t *testing.T) {
+	s, _, token, admin := schemaServer(t)
+	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Minute)
+	defer cancel()
+	private := t.TempDir()
+	if err := os.Chmod(private, 0700); err != nil {
+		t.Fatal(err)
+	}
+	root, err := filepath.Abs("../..")
+	if err != nil {
+		t.Fatal(err)
+	}
+	binaries := os.Getenv("CRATECTL_QUALIFICATION_BIN_DIR")
+	if binaries == "" {
+		t.Fatal("actual candidate CLI directory required")
+	}
+	if !filepath.IsAbs(binaries) {
+		binaries = filepath.Join(root, binaries)
+	}
+	cli := filepath.Join(binaries, "cratectl")
+	write := func(name string, raw []byte) string {
+		t.Helper()
+		path := filepath.Join(private, name)
+		if err := os.WriteFile(path, raw, 0600); err != nil {
+			t.Fatal(err)
+		}
+		return path
+	}
+	run := func(ok bool, arguments ...string) []byte {
+		t.Helper()
+		cmd := exec.CommandContext(ctx, arguments[0], arguments[1:]...)
+		cmd.Dir, cmd.Env, cmd.WaitDelay = private, []string{"PATH=" + os.Getenv("PATH"), "HOME=" + private}, 2*time.Second
+		out, diagnostic := new(collectionCommandOutput), new(collectionCommandOutput)
+		cmd.Stdout, cmd.Stderr = out, diagnostic
+		err := cmd.Run()
+		if (err == nil) != ok || !ok && out.Len() != 0 {
+			t.Fatalf("owned requirement command %s: %v; bounded stdout=%q stderr=%q", filepath.Base(arguments[0]), err, out.Bytes(), diagnostic.Bytes())
+		}
+		return bytes.Clone(out.Bytes())
+	}
+	mavenRepositories(t, s, admin, store.Repository{Name: "requirements", Format: "go", Access: "restricted", RequireReview: true})
+	module, selector := "go.cratectl.invalid/Owned/competing", "go.cratectl.invalid/Owned/selector"
+	coordinates := []gomodule.Coordinate{{Module: module, Version: "v1.0.0"}, {Module: module, Version: "v1.1.0"}, {Module: selector, Version: "v1.0.0"}}
+	mods := [][]byte{[]byte("module " + module + "\ngo 1.26\n"), []byte("module " + module + "\ngo 1.26\n"), []byte("module " + selector + "\ngo 1.16\nrequire " + module + " v1.1.0\n")}
+	for n, c := range coordinates {
+		archive := goPublicationFixtureMod(t, c, "owned inert requirement asset", mods[n])
+		if response := goHTTP(t, s, token, "PUT", "/go/requirements/"+c.Prefix()+".zip", archive); response.Code != 201 {
+			t.Fatal("owned original publication", n, response.Code)
+		}
+	}
+	for _, a := range goInventory(t, s, admin, "requirements") {
+		if err := s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
+			_, err := store.Decide(ctx, tx, admin, "requirements", a.Path, a.Digest, "allowed")
+			return err
+		}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	mainMod := []byte("module go.cratectl.invalid/owned-consumer\ngo 1.27.0\nrequire (\n" + module + " v1.0.0\n" + selector + " v1.0.0\n)\n")
+	request, _ := json.Marshal(goRequirementRequest{Repository: "requirements", MainGoMod: string(mainMod), LifetimeSeconds: 3600, MaxArtifactBytes: 1 << 20})
+	created := goHTTP(t, s, token, "POST", "/api/v1/go/export-sets/requirements", request, "Idempotency-Key", "owned-signed-requirement-graph")
+	var session store.GoRequirementExportSession
+	if created.Code != 201 || json.Unmarshal(created.Body.Bytes(), &session) != nil || session.SourceCount != 3 || session.RootCount != 2 {
+		t.Fatal("competing versions did not retain all three examined originals", created.Code)
+	}
+	replay := goHTTP(t, s, token, "POST", "/api/v1/go/export-sets/requirements", request, "Idempotency-Key", "owned-signed-requirement-graph")
+	if replay.Code != 201 || !bytes.Equal(created.Body.Bytes(), replay.Body.Bytes()) {
+		t.Fatal("signed original creation replay changed")
+	}
+	head, err := s.DB.JournalCheckpoint(ctx, admin)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var journal bytes.Buffer
+	query := store.JournalRange{Through: head.Sequence, ThroughHash: head.Hash, Limit: 7}
+	for {
+		page, err := s.DB.JournalPage(ctx, admin, query)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := json.NewEncoder(&journal).Encode(page); err != nil {
+			t.Fatal(err)
+		}
+		if !page.More {
+			break
+		}
+		query.After, query.AfterHash = page.NextAfter, page.NextHash
+	}
+	statement, err := crypt.JournalCheckpointBytes(head)
+	if err != nil {
+		t.Fatal(err)
+	}
+	journalPath, statementPath := write("journal.jsonl", journal.Bytes()), write("checkpoint.json", statement)
+	privateKey, publicKey, signature := filepath.Join(private, "external-private.pem"), filepath.Join(private, "independent-public.pem"), filepath.Join(private, "external.sig")
+	openssl, err := exec.LookPath("openssl")
+	if err != nil {
+		t.Fatal("external OpenSSL required")
+	}
+	run(true, openssl, "genpkey", "-algorithm", "ED25519", "-out", privateKey)
+	if err := os.Chmod(privateKey, 0600); err != nil {
+		t.Fatal(err)
+	}
+	run(true, openssl, "pkey", "-in", privateKey, "-pubout", "-out", publicKey)
+	run(true, openssl, "pkeyutl", "-sign", "-rawin", "-inkey", privateKey, "-in", statementPath, "-out", signature)
+	run(true, openssl, "pkeyutl", "-verify", "-rawin", "-pubin", "-inkey", publicKey, "-in", statementPath, "-sigfile", signature)
+	otherPrivate := filepath.Join(private, "unrelated-private.pem")
+	run(true, openssl, "genpkey", "-algorithm", "ED25519", "-out", otherPrivate)
+	if err := os.Chmod(otherPrivate, 0600); err != nil {
+		t.Fatal(err)
+	}
+	run(true, openssl, "pkey", "-in", otherPrivate, "-pubout", "-out", filepath.Join(private, "unrelated-public.pem"))
+	identity, err := crypt.LocalIdentity("127.0.0.1", time.Now().UTC())
+	if err != nil {
+		t.Fatal(err)
+	}
+	ca, cert, key := write("server-ca.pem", []byte(identity.CA)), write("server.pem", []byte(identity.Certificate)), write("server-key.pem", []byte(identity.Key))
+	listener, err := net.Listen("tcp4", "127.0.0.1:38443")
+	if err != nil {
+		t.Fatal(err)
+	}
+	server := &http.Server{Handler: s, ReadHeaderTimeout: 10 * time.Second}
+	defer server.Close()
+	done := make(chan error, 1)
+	go func() { done <- server.ServeTLS(listener, cert, key) }()
+	config, _ := json.Marshal(configfile.Client{Version: 1, URL: "https://127.0.0.1:38443", TokenFile: write("admin.token", []byte(token)), CAFile: ca})
+	configPath := write("client.json", config)
+	collection := filepath.Join(private, "collection")
+	arguments := []string{cli, "go-requirement-export-collect", "--config", configPath, "--set-id", session.ID, "--generation", "1", "--output-directory", collection, "--chunk-bytes", "65536", "--journal-file", journalPath, "--journal-tenant", admin.Tenant, "--journal-event-sequence", strconv.FormatInt(session.CreatedSequence, 10), "--journal-through", strconv.FormatInt(head.Sequence, 10), "--journal-through-hash", head.Hash, "--checkpoint-file", statementPath, "--checkpoint-signature-file", signature, "--checkpoint-key-file", publicKey}
+	completion := run(true, arguments...)
+	if repeated := run(true, append(append([]string{}, arguments...), "--resume")...); !bytes.Equal(completion, repeated) {
+		t.Fatal("complete requirement collection replay changed original receipt")
+	}
+	parentRaw, err := os.ReadFile(filepath.Join(collection, "manifest.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	parent, err := store.ParseGoRequirementExportManifest(parentRaw)
+	if err != nil || len(parent.Sources) != 3 || len(parent.Selection.Entries) != 2 {
+		t.Fatal("complete collection lost original graph", err)
+	}
+	lowerInput := ""
+	for n, source := range parent.Sources {
+		if source.Module == module && source.Version == "v1.0.0" {
+			lowerInput = fmt.Sprintf("input.%04d.mod", n)
+		}
+	}
+	if lowerInput == "" {
+		t.Fatal("unselected original missing from complete collection")
+	}
+	for _, a := range goInventory(t, s, admin, "requirements") {
+		if a.Path != coordinates[0].Prefix()+".mod" {
+			continue
+		}
+		if err := s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
+			_, err := store.Decide(ctx, tx, admin, "requirements", a.Path, a.Digest, "denied")
+			return err
+		}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	run(false, append(append([]string{}, arguments...), "--resume")...)
+	if saved, err := os.ReadFile(filepath.Join(collection, "receipt.json")); err != nil || !bytes.Equal(saved, completion) {
+		t.Fatal("current denial rewrote retained historical collection")
+	}
+	if err := server.Close(); err != nil {
+		t.Fatal(err)
+	}
+	select {
+	case err := <-done:
+		if !errors.Is(err, http.ErrServerClosed) {
+			t.Fatal("owned requirement source did not stop", err)
+		}
+	case <-ctx.Done():
+		t.Fatal("owned requirement source stop timed out")
+	}
+	fixture, _ := json.Marshal(map[string]any{"cli": cli, "go": filepath.Join(root, ".cache/go/bin/go"), "set_id": session.ID, "tenant": admin.Tenant, "created_sequence": session.CreatedSequence, "through": head, "module": module, "selector": selector, "lower_input": lowerInput})
+	write("fixture.json", fixture)
+	python, err := exec.LookPath("python3")
+	if err != nil {
+		t.Fatal("native Python required")
+	}
+	if output := run(true, python, filepath.Join(root, "scripts/ci/go_requirement_offline_native.py"), private); !bytes.Contains(output, []byte("Requirement offline native competing versions")) {
+		t.Fatal("native requirement journey omitted completion")
+	}
+}
+
 // Real PostgreSQL/common snapshot/TLS collection/external signer, followed by
 // actual pinned stock Go inert downloads with the registry listener stopped.
 // The child records its empty network namespace before every offline command.

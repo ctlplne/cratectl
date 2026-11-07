@@ -41,29 +41,31 @@ type goSetOfflineRoot struct {
 	ModHash    string `json:"mod_h1"`
 }
 type goSetOfflineReceipt struct {
-	Profile                  string                     `json:"profile"`
-	SetID                    string                     `json:"set_id"`
-	Manifest                 blob.Object                `json:"manifest"`
-	CollectionReceipt        blob.Object                `json:"collection_receipt"`
-	CollectedGeneration      int64                      `json:"collected_generation"`
-	Journal                  checksumJournalAttribution `json:"journal_attribution"`
-	Roots                    []goSetOfflineRoot         `json:"roots"`
-	Proxy                    string                     `json:"goproxy"`
-	BytesVerified            bool                       `json:"bytes_verified"`
-	SelectedRootsComplete    bool                       `json:"selected_roots_complete"`
-	NativeProxyPrepared      bool                       `json:"native_proxy_prepared"`
-	CurrentRegistryAdmission bool                       `json:"current_registry_admission"`
-	ChecksumAuthority        bool                       `json:"checksum_authority_verified"`
-	DependencyClosure        bool                       `json:"dependency_closure"`
-	Trust                    string                     `json:"trust"`
+	Profile                  string                        `json:"profile"`
+	SetID                    string                        `json:"set_id"`
+	Manifest                 blob.Object                   `json:"manifest"`
+	CollectionReceipt        blob.Object                   `json:"collection_receipt"`
+	CollectedGeneration      int64                         `json:"collected_generation"`
+	Journal                  checksumJournalAttribution    `json:"journal_attribution"`
+	Roots                    []goSetOfflineRoot            `json:"roots"`
+	Proxy                    string                        `json:"goproxy"`
+	BytesVerified            bool                          `json:"bytes_verified"`
+	SelectedRootsComplete    bool                          `json:"selected_roots_complete"`
+	NativeProxyPrepared      bool                          `json:"native_proxy_prepared"`
+	CurrentRegistryAdmission bool                          `json:"current_registry_admission"`
+	ChecksumAuthority        bool                          `json:"checksum_authority_verified"`
+	DependencyClosure        bool                          `json:"dependency_closure"`
+	Trust                    string                        `json:"trust"`
+	RequirementEvidence      *goRequirementOfflineEvidence `json:"requirement_evidence,omitempty"`
 }
 type goSetOfflineIntent struct {
-	Profile           string      `json:"profile"`
-	SetID             string      `json:"set_id"`
-	Manifest          blob.Object `json:"manifest"`
-	CollectionBinding blob.Object `json:"collection_binding"`
-	CollectionReceipt blob.Object `json:"collection_receipt"`
-	Proxy             string      `json:"goproxy"`
+	Profile             string                        `json:"profile"`
+	SetID               string                        `json:"set_id"`
+	Manifest            blob.Object                   `json:"manifest"`
+	CollectionBinding   blob.Object                   `json:"collection_binding"`
+	CollectionReceipt   blob.Object                   `json:"collection_receipt"`
+	Proxy               string                        `json:"goproxy"`
+	RequirementEvidence *goRequirementOfflineEvidence `json:"requirement_evidence,omitempty"`
 }
 type offlineSetInput struct {
 	manifest               store.GoExportSetManifest
@@ -72,6 +74,7 @@ type offlineSetInput struct {
 	binding                goSetCollectionBinding
 	receipt                goSetCollectionReceipt
 	bindingRaw, receiptRaw []byte
+	requirement            *requirementOfflineInput
 }
 
 func offlineObject(raw []byte) blob.Object {
@@ -276,7 +279,7 @@ func loadOfflineSetInput(root *os.Root, j checksumJournalFlags, f *flag.FlagSet,
 	if len(entries) != len(expected.Members)+2 {
 		return empty, errors.New("collection has missing or extra originals")
 	}
-	return offlineSetInput{manifest, raw, *attribution, expected, receipt, bindingRaw, receiptRaw}, nil
+	return offlineSetInput{manifest: manifest, raw: raw, attribution: *attribution, binding: expected, receipt: receipt, bindingRaw: bindingRaw, receiptRaw: receiptRaw}, nil
 }
 
 type offlineSetLayout struct {
@@ -682,8 +685,32 @@ func rejectNestedOfflineOutput(source *os.Root, destination string) error {
 	return nil
 }
 func assembleOfflineSet(ctx context.Context, source *os.Root, input offlineSetInput, destination string, resume bool, chunk, budget int64) ([]byte, error) {
+	profile, intentProfile := goSetOfflineProfile, "cratectl.go.hosted.set-offline.intent.v1"
+	outerRaw := input.raw
+	proofCount := 5
+	var requirementEvidence *goRequirementOfflineEvidence
+	if input.requirement != nil {
+		// Reauthenticate the complete retained chain/proof and replay originals,
+		// rather than treating an internal boolean as a graph authority grant.
+		verified, err := loadRequirementInput(ctx, source, input.attribution, input.binding.SetID, crypt.MaxJournalInputBytes, budget)
+		if err != nil {
+			return nil, err
+		}
+		if !bytes.Equal(input.bindingRaw, verified.bindingRaw) || !bytes.Equal(input.receiptRaw, verified.receiptRaw) || !bytes.Equal(input.raw, verified.raw) {
+			return nil, errors.New("requirement input changed before offline assembly")
+		}
+		input = verified
+		profile, intentProfile = goRequirementOfflineProfile, "cratectl.go.hosted.requirement-offline.intent.v1"
+		outerRaw = input.requirement.raw
+		proofCount = 8 + 2*len(input.requirement.parent.Sources)
+		requirementEvidence = &goRequirementOfflineEvidence{SelectionManifest: offlineObject(input.raw), MainGoMod: input.requirement.parent.MainGoMod, RequirementProof: input.requirement.parent.RequirementProof, ExaminedSources: len(input.requirement.parent.Sources), OriginalInputsComplete: true, RequirementsReplayed: true, MetadataInputsAvailable: true}
+	}
 	m, err := store.ParseGoExportSetManifest(input.raw)
-	if err != nil || !reflect.DeepEqual(m, input.manifest) || input.binding.Profile != goSetCollectionProfile || !store.ValidGoExportID(input.binding.SetID) || !input.attribution.CheckpointSignature.SignatureVerified || !input.attribution.Journal.MatchesSuppliedCheckpoint || len(input.binding.Members) != 5+3*len(m.Entries) || chunk < 64<<10 || chunk > 8<<20 || budget < 1 || budget > 65<<30 {
+	wantCollectionProfile := goSetCollectionProfile
+	if input.requirement != nil {
+		wantCollectionProfile = goRequirementCollectionProfile
+	}
+	if err != nil || !reflect.DeepEqual(m, input.manifest) || input.binding.Profile != wantCollectionProfile || !store.ValidGoExportID(input.binding.SetID) || !input.attribution.CheckpointSignature.SignatureVerified || !input.attribution.Journal.MatchesSuppliedCheckpoint || len(input.binding.Members) != proofCount+3*len(m.Entries) || chunk < 64<<10 || chunk > 8<<20 || budget < 1 || budget > 65<<30 {
 		return nil, errors.New("invalid complete bounded offline selection")
 	}
 	var total int64
@@ -703,6 +730,14 @@ func assembleOfflineSet(ctx context.Context, source *os.Root, input offlineSetIn
 	if err != nil {
 		return nil, err
 	}
+	if requirementEvidence != nil {
+		if err := addRequirementMetadataPaths(&layout, input.requirement.parent); err != nil {
+			return nil, err
+		}
+		for _, member := range input.binding.Members[:proofCount] {
+			layout.paths["proof/"+member.Name] = false
+		}
+	}
 	destination, err = filepath.Abs(destination)
 	if err != nil {
 		return nil, err
@@ -714,7 +749,7 @@ func assembleOfflineSet(ctx context.Context, source *os.Root, input offlineSetIn
 		return nil, err
 	}
 	proxy := (&url.URL{Scheme: "file", Path: filepath.Join(destination, "bundle", "proxy")}).String()
-	intent := goSetOfflineIntent{Profile: "cratectl.go.hosted.set-offline.intent.v1", SetID: input.binding.SetID, Manifest: offlineObject(input.raw), CollectionBinding: offlineObject(input.bindingRaw), CollectionReceipt: offlineObject(input.receiptRaw), Proxy: proxy}
+	intent := goSetOfflineIntent{Profile: intentProfile, SetID: input.binding.SetID, Manifest: offlineObject(outerRaw), CollectionBinding: offlineObject(input.bindingRaw), CollectionReceipt: offlineObject(input.receiptRaw), Proxy: proxy, RequirementEvidence: requirementEvidence}
 	output, lock, err := openCollectionDirectoryChecked(destination, resume, offlineSetOutputDirectory)
 	if err != nil {
 		return nil, err
@@ -752,7 +787,7 @@ func assembleOfflineSet(ctx context.Context, source *os.Root, input offlineSetIn
 		return fail(err)
 	}
 	// Every original proof byte remains independently usable at the destination.
-	for _, member := range input.binding.Members[:5] {
+	for _, member := range input.binding.Members[:proofCount] {
 		if err = copyOfflineSetMember(ctx, source, tree, member.Name, "proof/"+member.Name, member.Object, chunk, published); err != nil {
 			return fail(err)
 		}
@@ -765,7 +800,10 @@ func assembleOfflineSet(ctx context.Context, source *os.Root, input offlineSetIn
 			return fail(err)
 		}
 	}
-	receipt := goSetOfflineReceipt{Profile: goSetOfflineProfile, SetID: input.binding.SetID, Manifest: offlineObject(input.raw), CollectionReceipt: offlineObject(input.receiptRaw), CollectedGeneration: input.receipt.CollectedGeneration, Journal: input.attribution, Proxy: proxy, BytesVerified: true, SelectedRootsComplete: true, NativeProxyPrepared: true, Trust: "Every explicitly selected original and complete retained proof was independently reverified before this native file proxy was published. Discovery covers this selected set only. This grants no current or destination admission, public checksum authority, automatically selected dependency/permission/provenance closure or history beyond the independently selected signed head."}
+	receipt := goSetOfflineReceipt{Profile: profile, SetID: input.binding.SetID, Manifest: offlineObject(outerRaw), CollectionReceipt: offlineObject(input.receiptRaw), CollectedGeneration: input.receipt.CollectedGeneration, Journal: input.attribution, Proxy: proxy, BytesVerified: true, SelectedRootsComplete: true, NativeProxyPrepared: true, RequirementEvidence: requirementEvidence, Trust: "Every explicitly selected original and complete retained proof was independently reverified before this native file proxy was published. Discovery covers this selected set only. This grants no current or destination admission, public checksum authority, automatically selected dependency/permission/provenance closure or history beyond the independently selected signed head."}
+	if requirementEvidence != nil {
+		receipt.Trust = "The complete independently selected signed journal binds the exact original requirement creation and parent. Every indexed original was retained, verified and replayed before all selected native representations/h1 were verified and this file proxy was published. This proves metadata version selection, not package/platform closure, checksum authority, current source/destination admission or history beyond the supplied head."
+	}
 	for n, entry := range m.Entries {
 		coordinate := gomodule.Coordinate{Module: entry.Module, Version: entry.Version}
 		for k, kind := range []string{"zip", "mod", "info"} {
@@ -779,6 +817,17 @@ func assembleOfflineSet(ctx context.Context, source *os.Root, input offlineSetIn
 			return fail(err)
 		}
 		receipt.Roots = append(receipt.Roots, verified)
+	}
+	if input.requirement != nil {
+		// A native client may need a lower unselected go.mod while reconstructing
+		// MVS. Retain that metadata without advertising unavailable ZIP/info or
+		// promoting it into the selected version list/@latest response.
+		for n, original := range input.requirement.parent.Sources {
+			coordinate := gomodule.Coordinate{Module: original.Module, Version: original.Version}
+			if err := copyOfflineSetMember(ctx, source, tree, requirementInputName(n, "mod"), "proxy/"+coordinate.Prefix()+".mod", original.Mod, chunk, published); err != nil {
+				return fail(err)
+			}
+		}
 	}
 	modules := []string{}
 	for name := range layout.versions {

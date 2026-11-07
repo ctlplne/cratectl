@@ -21,6 +21,15 @@ import (
 )
 
 func run() error {
+	if len(os.Args) > 1 && os.Args[1] == "go-requirement-export-collect" {
+		return runGoRequirementCollect(os.Args[2:], os.Stdout)
+	}
+	if len(os.Args) > 1 && os.Args[1] == "go-requirement-export-offline" {
+		return runGoRequirementOffline(os.Args[2:], os.Stdout, false)
+	}
+	if len(os.Args) > 1 && os.Args[1] == "go-requirement-export-verify" {
+		return runGoRequirementOffline(os.Args[2:], os.Stdout, true)
+	}
 	if len(os.Args) > 1 && os.Args[1] == "go-export-set-offline" {
 		return runGoExportSetOffline(os.Args[2:], os.Stdout)
 	}

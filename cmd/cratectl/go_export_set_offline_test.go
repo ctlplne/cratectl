@@ -182,7 +182,7 @@ func TestCommonOfflineProxyResumesOnlyExactUnpublishedPrefixes(t *testing.T) {
 			source, parent, input, originals := offlineSetFixture(t)
 			output := filepath.Join(parent, "offline")
 			proxy := (&url.URL{Scheme: "file", Path: filepath.Join(output, "bundle", "proxy")}).String()
-			intent := goSetOfflineIntent{"cratectl.go.hosted.set-offline.intent.v1", input.binding.SetID, offlineObject(input.raw), offlineObject(input.bindingRaw), offlineObject(input.receiptRaw), proxy}
+			intent := goSetOfflineIntent{Profile: "cratectl.go.hosted.set-offline.intent.v1", SetID: input.binding.SetID, Manifest: offlineObject(input.raw), CollectionBinding: offlineObject(input.bindingRaw), CollectionReceipt: offlineObject(input.receiptRaw), Proxy: proxy}
 			root, lock, err := openCollectionDirectoryChecked(output, false, offlineSetOutputDirectory)
 			if err != nil {
 				t.Fatal(err)
