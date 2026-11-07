@@ -956,3 +956,16 @@ a fresh4MiB CAS; all original asset/range/process/metadata/import/SDK assertions
 and shared/production limits remain. Local filesystem probe and tagged normal/
 race compilation/vet pass; native full274/96/56/19main151 and every selected profile
 remain required. This failed setup supplies no collector product qualification.
+
+## Native cold and warm Apache archive acceptance
+
+The [4956197 cold/save checkpoint](../../evidence/2026-11-07/apache-archive-4956197-native-checkpoint.json)
+and [812bd58 warm checkpoint](../../evidence/2026-11-07/apache-archive-812bd58-warm-native-checkpoint.json)
+now prove both actual native Linux architectures with original666Ivy checks each.
+The unchanged fetcher/installer/pin/workflow bytes restore exactly the keys saved
+by the cold run and recheck both original SHA512 pins before use. No cache
+speedup/Apache availability claim; real official-archive fallback remains
+unselected. DEFECT0131 original failure stays retained. Whole812 fails its
+independent collector setup on both hosts; no race/stock skips or zero reports
+are accepted. The focused testCAS repaird186 and collector/metadata/import require
+separate exact-source native replay.
