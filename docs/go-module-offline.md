@@ -240,3 +240,51 @@ the ten documented files. The implemented local filesystem path requires atomic
 hard links, directory sync and locking; unsupported filesystem behavior fails
 without replacing an existing final record. See
 [ADR0056](adr/0056-atomic-collection-metadata.md) for the qualification limits.
+
+## Publish verified historical bytes at a destination
+
+`cratectl go-export-import` is implemented; exact-source native qualification is
+pending. It verifies the same complete signed export and prepares private copies
+before contacting the destination. It publishes one exact hosted version through
+normal destination permissions and policy. It does not approve it for serving.
+See [ADR0057](adr/0057-signed-export-destination-publication.md).
+
+Using the trusted identities selected for collection above:
+
+```sh
+cratectl go-export-import \
+  --config "$CRATECTL_DESTINATION_CLIENT_CONFIG" \
+  --destination-repository imported \
+  --repository hosted --module go.cratectl.invalid/Owned/offline --version v1.0.0 \
+  --export-id "$CRATECTL_EXPORT_ID" \
+  --manifest-file ./cratectl-export-input/collected/manifest.json \
+  --zip-file ./cratectl-export-input/collected/original.zip \
+  --mod-file ./cratectl-export-input/collected/original.mod \
+  --info-file ./cratectl-export-input/collected/original.info \
+  --output-directory ./cratectl-export-input/import-attempt-001 \
+  --idempotency-key "$CRATECTL_DESTINATION_IMPORT_KEY" \
+  --journal-file ./cratectl-export-input/collected/journal.jsonl \
+  --journal-tenant "$CRATECTL_TRUSTED_TENANT" \
+  --journal-event-sequence "$CRATECTL_EXPORT_CREATED_SEQUENCE" \
+  --journal-through "$CRATECTL_TRUSTED_JOURNAL_SEQUENCE" \
+  --journal-through-hash "$CRATECTL_TRUSTED_JOURNAL_HASH" \
+  --checkpoint-file ./cratectl-export-input/collected/checkpoint.json \
+  --checkpoint-signature-file ./cratectl-export-input/collected/checkpoint.sig \
+  --checkpoint-key-file "$CRATECTL_JOURNAL_TRUSTED_PUBLIC_KEY_FILE"
+```
+
+Keep the same nonempty mutation key for identical retries. A failed response may
+follow a committed publication: preserve the attempt directory, inspect current
+destination access/state, then repeat explicitly with the same inputs/key and a
+new private output directory. The tool never retries automatically. Its synced
+`import-intent.json` precedes the request; `import-receipt.json` exists only after
+an exact canonical destination publication response. No client configuration or
+token is copied. The attempt also retains the verified source proxy and manifest.
+
+Destination scan evidence remains unassessed when absent. Source approval never
+grants destination approval; a review-required destination continues to refuse
+serving until its own current policy is satisfied. The receipt's current admission,
+checksum authority and dependency closure fields remain false. This path accepts
+only exact normal hosted info bytes; unsupported original metadata is preserved
+and refused before upload. Full import/provenance/scan workflows, console progress,
+transitive closure and Windows/provider/backup/scale qualification remain open.

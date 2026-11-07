@@ -14,12 +14,13 @@
     "docs/adr/0052-cross-runner-go-export-qualification.md",
     "docs/adr/0053-indexed-export-expiry.md",
     "docs/adr/0055-resumable-signed-go-collection.md",
-    "docs/adr/0056-atomic-collection-metadata.md"
+    "docs/adr/0056-atomic-collection-metadata.md",
+    "docs/adr/0057-signed-export-destination-publication.md"
   ],
   "current_implementation": {
-    "source_parent": "812bd5814d69fbe8f8ebf22f49ad3fac62db9462",
+    "source_parent": "9654224a81909e6b043325db7d69bc4260eb3042",
     "source_dirty": true,
-    "state": "Source495 named proof retained; source812 collector native queued/unaccepted; atomic metadata repair locally verified, native unverified; fullGOAL incomplete",
+    "state": "Exact495whole selected campaign accepted; collector/atomic metadata965native queued/unaccepted; new signed single-version destination publication locally verified/native unverified; fullGOAL incomplete",
     "qualified_historical_consumer": "evidence/2026-11-07/github-1a61120-checkpoint.json",
     "producer_development": "evidence/2026-11-07/go-durable-export-development.json",
     "schema": 16,
@@ -70,6 +71,13 @@
         "scope": "Bound64KiB pending canonical prefix; fsync, exclusive link, directory sync, owned alias removal and sync; recover only exact two-link metadata pair, preserve original generation after renewal; all original checks retained",
         "limits": "Owned child128byte kernel limit and declared FS states; not power-loss/full-disk/provider/Windows/scale proof"
       }
+    },
+    "destination_import": {
+      "state": "implemented but native unverified",
+      "adr": "docs/adr/0057-signed-export-destination-publication.md",
+      "development": "evidence/2026-11-07/go-export-import-development.json",
+      "scope": "Independently signed original export, exact private inspectedZIP/mod/info, nonsecret durable intent, normal current-authorized hostedPUT, exact canonical destination tuple, atomic receipt; no source approval/grant copied, no auto retry",
+      "limits": "Single version, normal hosted info only; full scan/provenance/server-session/import-console/closure/platform/backup/scale incomplete"
     }
   },
   "environment_profiles": {
@@ -355,7 +363,8 @@
         "native-linux-amd64",
         "native-linux-arm64"
       ],
-      "state": "required; not accepted by this plan"
+      "state": "implementing; new signed CLI normal destination publication implemented, actual native unverified; full case remains required",
+      "development": "evidence/2026-11-07/go-export-import-development.json"
     },
     {
       "id": "GO.EXPORT.migration",
@@ -416,6 +425,7 @@
     }
   ],
   "execution_order": [
+    "Qualify signed CLI destination publication and real post-commit socket closure/replay/unassessed/currentgrant/conflict controls on both actual native Linux hosts. Preserve all original collector/metadata/stock assertions; full import/provenance/scanning/closure/operator/platform scope remains.",
     "Qualify the new eight-member signed collector and actual process-death/renewed-resume/SDK/credential-policy journey on both native Linux hosts,96Go/274fullPG normal/race;56cmd+internal fuzz and expanded19main151 UI response stand-ins. Preserve every original assertion and all broader closure/import/operations/format requirements.",
     "Preserve exact470ca74 named95Go normal/race/312stock,15historical20upgrades each and16stage portability proof. Complete full31job acceptance, retain original ARM Ant/Ivy bootstrap failure and repair its bounded pinned installation; then continue every closure/import/provider/platform/scale/other-format requirement.",
     "Qualify schema16 indexed idle/due expiry and exact index admission on both actual Linux hosts:273PG/95Go normal/race,15historical20upgrades each; keep original assertions/clients/fuzz/browser/portable profiles. Replay DEFECT0130 narrow upgrade tools without unused Maven/JDK/PyPI dependency.",

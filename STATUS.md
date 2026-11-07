@@ -1,5 +1,29 @@
 # cratectl execution status
 
+Current development parent is `9654224`. ADR0057 and
+`evidence/2026-11-07/go-export-import-development.json` define the new signed
+single-version destination publication command. It independently verifies source
+proof, privately stages/inspects all three representations, saves nonsecret intent, then
+uses normal current-authorized hosted PUT. Only an exact canonical destination
+publication tuple creates an atomic local import receipt. Source approval never
+becomes destination scan evidence or a grant. Unknown responses preserve intent;
+explicit same-key retry uses a new private directory. No automatic retry/approval.
+
+Sixteen HTTP/FS unit subcases and ARM build/unit/race/lint/final normal/race tagged
+compile/vet pass. The existing native function now includes real post-commit
+socket closure, original replay without another event, three unassessed/unserved
+references, revoked write grant and coordinate conflict preservation. These new
+native cases are compiled only locally. Source965 actual GitHub jobs are queued/
+pending and have no accepted native result. Still require274PG/96Go normal/race,
+56fuzz/19main151 and every selected stock/upgrade/portable profile. All16schemas,
+primary11/5483878b/tenreceipts unchanged. Full scan/provenance/server-import-session/
+console/closure/platform/backup/GC/scale, all450/41/laterGOAL4.1 scope and readiness
+remain incomplete. Latest whole selected proof remains4956197.
+
+Observed GitHub records retain812bd58:26materialized jobs,6success/7running/13queued;9654224:17materialized jobs,13pending/4queued. These are observations, not candidate passes. Inspect the recorded exact runs before further acceptance.
+
+Earlier source-specific records follow; current exact-source records govern.
+
 Current development parent is `812bd58`. ADR0056 repairs DEFECT0132: an owned
 128-byte child file limit reproduced a failed binding write exposing partial
 `bindings.json`. The original failure is retained. Canonical metadata now stages

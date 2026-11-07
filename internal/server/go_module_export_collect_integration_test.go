@@ -38,8 +38,8 @@ func (b *collectionCommandOutput) Write(raw []byte) (int, error) {
 	return b.Buffer.Write(raw)
 }
 
-// Real PG/CAS/socket/CLI/OpenSSL/stock Go. The only HTTP fault is an explicit
-// barrier before the second ZIP range; the test kills the actual collector.
+// Real PG/CAS/socket/CLI/OpenSSL/stock Go. Owned faults stop the collector at a
+// second-range barrier and close one import socket after its real DB commit.
 func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testing.T) {
 	s, d, token, admin := schemaServer(t)
 	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Minute)
@@ -162,12 +162,34 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 	run(true, nil, openssl, "pkeyutl", "-sign", "-rawin", "-inkey", privateKey, "-in", statementPath, "-out", signature)
 	run(true, nil, openssl, "pkeyutl", "-verify", "-rawin", "-pubin", "-inkey", publicKey, "-in", statementPath, "-sigfile", signature)
 	reached, release := make(chan struct{}), make(chan struct{})
-	var barrier sync.Once
+	var barrier, lostImportResponse sync.Once
 	listener, err := net.Listen("tcp4", "127.0.0.1:38443")
 	if err != nil {
 		t.Fatal("owned collector loopback port", err)
 	}
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "PUT" && strings.HasPrefix(r.URL.Path, "/go/imported/") {
+			dropped := false
+			lostImportResponse.Do(func() {
+				// Execute the real publication transaction, then deliberately close
+				// its actual socket before any response reaches the CLI.
+				result := httptest.NewRecorder()
+				s.ServeHTTP(result, r)
+				if result.Code != 201 {
+					t.Errorf("owned lost-response publication returned %d", result.Code)
+				}
+				connection, _, err := w.(http.Hijacker).Hijack()
+				if err != nil {
+					t.Error("owned lost-response socket", err)
+				} else {
+					connection.Close()
+				}
+				dropped = true
+			})
+			if dropped {
+				return
+			}
+		}
 		if strings.HasSuffix(r.URL.Path, "/zip") && r.URL.Query().Get("generation") == "1" && r.Header.Get("Range") == "bytes=65536-131071" {
 			barrier.Do(func() { close(reached) })
 			select {
@@ -361,6 +383,86 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 	extracted, err := os.ReadFile(filepath.Join(installed.Dir, "assets/owned.txt"))
 	if err != nil || !bytes.Equal(extracted, asset.Bytes()) {
 		t.Fatal("stock SDK extracted different inert bytes", err)
+	}
+	// Source approval never grants destination admission. A scoped publisher
+	// imports only through the existing current-authorized publication path.
+	mavenRepositories(t, s, admin, store.Repository{Name: "imported", Format: "go", Access: "restricted", RequireReview: true})
+	importToken, err := crypt.Token()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := store.Provision(ctx, d.OwnerDSN, admin.Tenant, "export-importer", "publisher", importToken, time.Now().Add(time.Hour)); err != nil {
+		t.Fatal(err)
+	}
+	grantImport := func(allowed bool) {
+		t.Helper()
+		if err := s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
+			_, err := tx.Exec(ctx, `INSERT INTO cratectl.repository_grants(tenant,repository,actor,can_read,can_write) VALUES($1,'imported','export-importer',true,$2) ON CONFLICT(tenant,repository,actor) DO UPDATE SET can_write=$2`, admin.Tenant, allowed)
+			return err
+		}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	grantImport(true)
+	importConfig, _ := json.Marshal(configfile.Client{Version: 1, URL: server.URL, TokenFile: write("import.token", []byte(importToken))})
+	importConfigPath := write("import-client.json", importConfig)
+	importArgs := append([]string{cli, "go-export-import"}, offlineArgs[2:]...)
+	importArgs = append(importArgs, "--config", importConfigPath, "--destination-repository", "imported", "--idempotency-key", "native-signed-import-v1")
+	attempt := func(name string) []string {
+		return append(append([]string{}, importArgs...), "--output-directory", filepath.Join(private, name))
+	}
+	lost := "import-lost-response"
+	run(false, nil, attempt(lost)...)
+	if _, err := os.Stat(filepath.Join(private, lost, "import-intent.json")); err != nil {
+		t.Fatal("unconfirmed import lost its durable intent", err)
+	}
+	if _, err := os.Stat(filepath.Join(private, lost, "import-receipt.json")); !os.IsNotExist(err) {
+		t.Fatal("unconfirmed import claimed completion")
+	}
+	imported := goInventory(t, s, admin, "imported")
+	if len(imported) != 3 {
+		t.Fatal("actual committed import did not retain all three references")
+	}
+	for _, a := range imported {
+		if a.Decision != "unassessed" {
+			t.Fatal("source approval became destination scan evidence", a.Decision)
+		}
+		if denied := goHTTP(t, s, token, "GET", "/go/imported/"+a.Path, nil); denied.Code != 403 {
+			t.Fatal("unassessed destination content served", denied.Code)
+		}
+	}
+	importEvents := beforeEvents()
+	confirmed := run(true, nil, attempt("import-confirmed-replay")...)
+	var importedReceipt struct {
+		Recorded  bool `json:"destination_publication_recorded"`
+		Current   bool `json:"current_registry_admission"`
+		Authority bool `json:"checksum_authority_verified"`
+		Closure   bool `json:"dependency_closure"`
+	}
+	if json.Unmarshal(confirmed, &importedReceipt) != nil || !importedReceipt.Recorded || importedReceipt.Current || importedReceipt.Authority || importedReceipt.Closure || beforeEvents() != importEvents {
+		t.Fatal("destination replay changed original effect or admission scope")
+	}
+	grantImport(false)
+	run(false, nil, attempt("import-current-grant-denied")...)
+	if beforeEvents() != importEvents {
+		t.Fatal("denied durable replay created an effect")
+	}
+	mavenRepositories(t, s, admin, store.Repository{Name: "import-conflict", Format: "go", Access: "restricted", RequireReview: true})
+	conflictingZIP, _ := goPublicationFixture(t, coordinate, "different destination bytes")
+	if seeded := goHTTP(t, s, token, "PUT", "/go/import-conflict/"+coordinate.Prefix()+".zip", conflictingZIP); seeded.Code != 201 {
+		t.Fatal("owned conflicting destination setup", seeded.Code)
+	}
+	conflictBefore := beforeEvents()
+	conflictArgs := append(attempt("import-coordinate-conflict"), "--config", configPath, "--destination-repository", "import-conflict", "--idempotency-key", "native-import-conflict-v1")
+	run(false, nil, conflictArgs...)
+	conflictAfter := goInventory(t, s, admin, "import-conflict")
+	if len(conflictAfter) != 3 || beforeEvents() != conflictBefore {
+		t.Fatal("conflicting import changed references or journal")
+	}
+	for _, a := range conflictAfter {
+		if strings.HasSuffix(a.Path, ".zip") && a.Digest != crypt.Digest(conflictingZIP) {
+			t.Fatal("conflicting import replaced original ZIP")
+		}
 	}
 	// A local receipt is not allowed to invent a future completed generation.
 	corrupt := bytes.Replace(receipt, []byte(`"collected_generation":2`), []byte(`"collected_generation":4`), 1)

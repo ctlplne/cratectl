@@ -21,6 +21,9 @@ import (
 )
 
 func run() error {
+	if len(os.Args) > 1 && os.Args[1] == "go-export-import" {
+		return runGoExportImport(os.Args[2:], os.Stdout)
+	}
 	if len(os.Args) > 1 && os.Args[1] == "go-export-collect" {
 		return runGoExportCollect(os.Args[2:], os.Stdout)
 	}

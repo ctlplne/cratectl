@@ -933,3 +933,15 @@ real renewal; these are not actual power-loss/full-disk/provider fault proof.
 Require exact-source274PG/96Go normal/race on both Linux hosts,56fuzz onthreehosts,
 19main151browser and all original stock/upgrade/portable selected profiles. All
 16schemas, primary11/5483878b/tenreceipts and full450/41/later scope remain.
+
+## Signed destination publication continuation
+
+[ADR0057](../adr/0057-signed-export-destination-publication.md) adds a CLI path
+through normal destination publication after independent source proof and private
+byte inspection. Sixteen local HTTP/FS cases and ARM build/unit/race/lint pass;
+actual native qualification remains required. The existing native collector test
+adds an actual post-commit socket close, explicit original replay, unassessed/
+unserved destination references, current write-grant revocation and coordinate
+conflict preservation. No local PG/signer/stock import campaign and no new import
+browser proof. Preserve274PG/96Go/56fuzz/19main151 and allselectedprofiles. Full
+scan/provenance/import-console/closure/platform/backup/scale scope remains open.
