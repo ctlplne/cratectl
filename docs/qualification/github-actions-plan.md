@@ -17,8 +17,8 @@ authority. No autonomous delegation.
 
 Current product candidate: `ca44b3789f4d26530d71fa29c7097321f3a12687`, six native
 workflows/26jobs. Named96Go normal/race/312stock including two-export index controls pass bothLinux.
-Main274PG/19main151/58fuzz/allselectedprofile acceptance remains pending. Actual handles are in STATUS/remaining. Previousc1has seven workflows/
-29jobs;15focused trials pass, while new export-keyboard/main19/151remains required.
+Main274PG/19main151/58fuzz/allselectedprofile acceptance remains pending. Actual handles are in STATUS/remaining. Previousc1is now accepted across seven workflows/29jobs, including new export-
+keyboard/main19/151and15focused trials.
 Both campaigns are preserved; no redispatch for queue time. Earlier failed
 source: `ae7d00ece68d45f953d53f1728169e00b6dbe608`.
 Its six completed handles are in [STATUS.md](../../STATUS.md) and
@@ -31,11 +31,16 @@ Originalb5serious Axe scrollable-region-focusable is retained. Six focus fixes
 and keyboard/Axe regression pass local build/reproduction/console race/lint;
 actual new browser replay remains required. Wholeb5/ae7are not accepted.
 
-Latest whole selected acceptance: [4956197](../../evidence/2026-11-07/github-4956197-checkpoint.json),
-26jobs/six workflows,19safe summaries/72reports. Its exact inventory is273fullPG,
-95namedGo normal/race,55fuzz onthreehosts and19main151Chromium. Four UI workflows
-use declared response stand-ins. Focused browser/NuGet-library/strict SDK were
-unselected, never passes.
+Latest whole selected acceptance: [c1f40f3](../../evidence/2026-11-07/github-c1f40f3-checkpoint.json),
+29 native jobs/seven workflows,22 unchanged safe summaries/87 reports, accepted
+by strengthened read-only GitHub [run42383991192](https://github.com/ctlplne/cratectl/actions/runs/42383991192).
+All29log/22member/87report/18source-contract hashes independently match originals.
+274fullPG/96namedGo normal/race and312stock/683baseline perLinux host;57fuzz/source
+on three native hosts;19main151Chromium and15focused trials;15historical20upgrades
+perhost/16portable stages. Four main UI workflows use declared response stand-ins.
+NuGet-library/strict SDK remain unselected. The0134source/0137keyboard/Axe repairs
+pass their actual UI scope. Full console/WCAG/server import/closure/readiness do
+not follow. Historical495acceptance and all first failures remain retained.
 
 Later `badb85b` has separate accepted profiles:
 

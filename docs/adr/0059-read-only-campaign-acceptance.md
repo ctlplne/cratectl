@@ -70,3 +70,8 @@ Strengthened actual proof: `evidence/2026-11-07/campaign-acceptance-4956197-ca44
 Twenty component functions and all26original jobs/19safe72reports pass with
 independently matching hashes. This accepts the historical495source and the
 verifier boundary only; current product qualification remains separate.
+
+The strengthened job also accepts the actual complete c1seven-workflow campaign,
+29native jobs/22safe87reports, in run42383991192. Original hashes match independent
+retained data. See `evidence/2026-11-07/github-c1f40f3-checkpoint.json`. No native
+test restart or new product/readiness inference.
