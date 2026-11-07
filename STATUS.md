@@ -1,5 +1,13 @@
 # cratectl execution status
 
+Current development parent is1857c79. ADR0054 and
+`evidence/2026-11-07/apache-archive-development.json` define the implemented,
+native-unverified DEFECT0131 repair: same Ant/Ivy versions/SHA512/size ceilings,
+bounded primary/official-archive requests, fail-closed completed mismatch/cache
+and two exact public archives cached on GitHub. Sixteen owned fetch/kernel tests
+pass; new native download/cache/client proof remains required. No product schema,
+primary/binary/tenreceipt or original client assertion changes.
+
 Exact `470ca74` now qualifies all 95 named Go PostgreSQL functions normally and
 under race, plus the original 312 stock-client checks on both actual GitHub Linux
 architectures. The new index regression requires the default planner, nonowner/

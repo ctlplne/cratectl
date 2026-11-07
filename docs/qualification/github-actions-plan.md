@@ -58,6 +58,21 @@ proof does not qualify schema 16. All broader GOAL work remains required.
 Earlier source-specific qualification statements below retain their historical
 scope; exact-source checkpoints govern present acceptance.
 
+## Bounded Ant/Ivy installation continuation
+
+[ADR0054](../adr/0054-bounded-apache-tool-archives.md) addresses original
+[DEFECT0131](../../evidence/2026-11-07/github-470ca74-ivy-first-failure.json):
+ARM Ant/Ivy bootstrap times out before its stock-client stage, with no reports.
+New SHA-512-only Apache support retains the original versions, pins, 64-MiB
+ceilings, extraction and all Ivy assertions. It uses bounded exact official
+primary/archive sources and caches only the two verified public archives.
+Completed mismatches, corrupt cache and local write/size/output errors never
+select another source. Original SHA-256 fetch contracts remain unchanged.
+Sixteen owned stand-in/kernel tests pass; actual native fetch/cold-save/warm-cache
+and full client replay remain pending. No local Ant/Ivy/database journey.
+Continue every actually selected native profile and preserve all pending,
+cancelled or skipped original stages without counting them as passes.
+
 ## Current qualification state
 
 Exact1a61120 [campaign checkpoint](../../evidence/2026-11-07/github-1a61120-checkpoint.json)

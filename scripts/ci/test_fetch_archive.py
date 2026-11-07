@@ -40,6 +40,8 @@ if mode=='overflow':
   Path('kernel.json').write_text(json.dumps({'bytes':destination.stat().st_size,'errno':error.errno,'limits':resource.getrlimit(resource.RLIMIT_FSIZE)}));sys.exit(1)
 elif mode=='hang':
  destination.write_bytes(b'partial');time.sleep(30)
+elif mode=='primary-transport' and a[-1].startswith('https://downloads.apache.org/'):
+ destination.write_bytes(b'partial');sys.exit(28)
 elif mode=='transport':
  destination.write_bytes(b'partial');sys.exit(28)
 elif mode=='http':
@@ -170,6 +172,69 @@ else:
                        {'maximum':'0'},{'maximum':'1025'},{'maximum':str((64<<20)+1024)}]:
             with self.subTest(change=change):self.assertNotEqual(self.run_fetch(**change).returncode,0)
         self.assertEqual(self.requests(),[])
+
+    def run_apache(self, mode='good', *, name='apache-ivy-2.6.0-bin.tar.gz', primary=None, fallback=None, pin=None, flag='--sha512'):
+        path=fetch_archive.APACHE_ARCHIVES.get(name,'/ant/ivy/2.6.0/'+name)
+        return subprocess.run([sys.executable,str(FETCH),'--archive',name,'--url',primary or 'https://downloads.apache.org'+path,
+                               '--fallback-url',fallback or 'https://archive.apache.org/dist'+path,flag,pin or hashlib.sha512(PAYLOAD).hexdigest(),
+                               '--max-bytes','4096'],cwd=self.root,env=self.environment(mode),capture_output=True,text=True,timeout=15)
+
+    def test_apache_preserves_sha512_and_reverifies_each_exact_cached_archive(self):
+        for name in fetch_archive.APACHE_ARCHIVES:
+            result=self.run_apache(name=name)
+            self.assertEqual(result.returncode,0,result.stderr)
+            target=self.root/'.cache'/name
+            self.assertEqual(target.read_bytes(),PAYLOAD)
+            self.assertEqual(target.stat().st_mode&0o777,0o600)
+            cached=self.run_apache('transport',name=name)
+            self.assertEqual(cached.returncode,0,cached.stderr)
+            self.assertIn('(cache-hit)',cached.stdout)
+        self.assertEqual(len(self.requests()),2)
+        self.assert_no_partial()
+
+    def test_apache_primary_transport_failure_uses_only_reviewed_same_archive(self):
+        result=self.run_apache('primary-transport')
+        self.assertEqual(result.returncode,0,result.stderr)
+        self.assertEqual([r[-1]for r in self.requests()],['https://downloads.apache.org/ant/ivy/2.6.0/apache-ivy-2.6.0-bin.tar.gz','https://archive.apache.org/dist/ant/ivy/2.6.0/apache-ivy-2.6.0-bin.tar.gz'])
+        for r in self.requests():
+            for key,value in [('--connect-timeout','15'),('--max-time','180'),('--max-redirs','5'),('--max-filesize','4096')]:
+                self.assertEqual(r[r.index(key)+1],value)
+        self.assertEqual((self.root/'.cache'/'apache-ivy-2.6.0-bin.tar.gz').read_bytes(),PAYLOAD)
+        self.assert_no_partial()
+
+    def test_apache_completed_mismatch_and_corrupt_cache_never_fallback_or_overwrite(self):
+        result=self.run_apache('mismatch')
+        self.assertNotEqual(result.returncode,0)
+        self.assertEqual(len(self.requests()),1)
+        self.assertFalse((self.root/'.cache'/'apache-ivy-2.6.0-bin.tar.gz').exists())
+        self.assertEqual(self.run_apache().returncode,0)
+        target=self.root/'.cache'/'apache-ivy-2.6.0-bin.tar.gz';target.write_bytes(b'preserved corrupt cache')
+        self.assertNotEqual(self.run_apache('primary-transport').returncode,0)
+        self.assertEqual(len(self.requests()),2)
+        self.assertEqual(target.read_bytes(),b'preserved corrupt cache')
+        self.assert_no_partial()
+
+    def test_apache_wrong_source_version_or_digest_algorithm_fails_before_network(self):
+        for change in [{'fallback':'https://example.invalid/dist/ant/ivy/2.6.0/apache-ivy-2.6.0-bin.tar.gz'},
+                       {'name':'apache-ivy-2.6.1-bin.tar.gz'},
+                       {'fallback':'https://archive.apache.org/dist/ant/ivy/2.6.0/apache-ivy-2.6.0-bin-with-deps.tar.gz'},
+                       {'primary':'https://archive.apache.org/dist/ant/ivy/2.6.0/apache-ivy-2.6.0-bin.tar.gz'},
+                       {'flag':'--sha256','pin':hashlib.sha256(PAYLOAD).hexdigest()},
+                       {'pin':'1'*64}]:
+            with self.subTest(change=change):self.assertNotEqual(self.run_apache(**change).returncode,0)
+        self.assertEqual(self.requests(),[])
+        self.assertFalse((self.root/'.cache').exists())
+
+    def test_apache_kernel_write_limit_is_fatal_without_fallback(self):
+        before=resource.getrlimit(resource.RLIMIT_FSIZE)
+        self.assertNotEqual(self.run_apache('overflow').returncode,0)
+        self.assertEqual(resource.getrlimit(resource.RLIMIT_FSIZE),before)
+        self.assertEqual(len(self.requests()),1)
+        observed=json.loads((self.root/'kernel.json').read_text())
+        self.assertEqual(observed['errno'],errno.EFBIG)
+        self.assertLessEqual(observed['bytes'],4096)
+        self.assertFalse((self.root/'.cache'/'apache-ivy-2.6.0-bin.tar.gz').exists())
+        self.assert_no_partial()
 
     def test_nonhosted_guard_has_no_network_or_cache_side_effect(self):
         self.assertNotEqual(self.run_fetch(hosted=False).returncode,0)

@@ -20,7 +20,9 @@ PY
 test "${#cratectl_ivy_pins[@]}" -eq 4
 for cratectl_pin_index in 0 2; do
   cratectl_archive=".cache/${cratectl_ivy_pins[$cratectl_pin_index]##*/}"
-  curl --proto '=https' --tlsv1.2 --fail --location --silent --show-error --max-time 300 --max-filesize 67108864 --output "$cratectl_archive" "${cratectl_ivy_pins[$cratectl_pin_index]}"
+  cratectl_primary="${cratectl_ivy_pins[$cratectl_pin_index]}"
+  cratectl_fallback="https://archive.apache.org/dist${cratectl_primary#https://downloads.apache.org}"
+  python3 scripts/ci/fetch_archive.py --archive "${cratectl_archive##*/}" --url "$cratectl_primary" --fallback-url "$cratectl_fallback" --sha512 "${cratectl_ivy_pins[$((cratectl_pin_index+1))]}" --max-bytes 67108864
   printf '%s  %s\n' "${cratectl_ivy_pins[$((cratectl_pin_index+1))]}" "$cratectl_archive" | sha512sum --check --status
   tar -xzf "$cratectl_archive" -C .cache
 done

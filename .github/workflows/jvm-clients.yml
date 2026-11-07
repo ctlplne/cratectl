@@ -143,6 +143,16 @@ jobs:
           # Temurin's API advertises this OpenJDK build with its LTS suffix.
           # The client profile independently checks JAVA_RUNTIME_VERSION.
           java-version: '21.0.13+9.0.LTS'
+      - name: Cache pinned public Ant and Ivy archives
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        timeout-minutes: 5
+        env:
+          SEGMENT_DOWNLOAD_TIMEOUT_MINS: '2'
+        with:
+          path: |
+            .cache/apache-ivy-2.6.0-bin.tar.gz
+            .cache/apache-ant-1.10.18-bin.tar.gz
+          key: cratectl-tool-ant-ivy-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/ci/install_ivy.sh', 'scripts/ci/fetch_archive.py', 'docs/qualification/jvm-clients.json') }}
       - name: Prepare native registry, PostgreSQL and pinned Ant/Ivy
         env:
           CRATECTL_CI_POSTGRES_CONTAINER_ID: ${{ job.services['cratectl-postgres'].id }}
