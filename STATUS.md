@@ -8,58 +8,55 @@ All work and both commit identities remain `imfeelingtheagi` on `main`.
 
 ## Latest whole selected qualification
 
-[`c1f40f3`](evidence/2026-11-07/github-c1f40f3-checkpoint.json) is accepted:
-29 successful native jobs across seven workflows, 22 unchanged safe summaries
-and 87 reports. The strengthened read-only GitHub verifier accepted the complete
-inventory in [run 42383991192](https://github.com/ctlplne/cratectl/actions/runs/42383991192).
-All original job-log/member/report and 18 source-contract hashes independently
-match the retained originals. Acceptance restarted no native tests.
+[`ca44b37`](evidence/2026-11-07/github-ca44b37-checkpoint.json) is accepted:
+26 successful native jobs across six workflows, 19 unchanged safe summaries and
+72 reports. The strengthened read-only GitHub verifier accepted the complete
+inventory in [run42388375407](https://github.com/ctlplne/cratectl/actions/runs/42388375407).
+All26original log hashes/byte counts,19member/72report hashes and18source-contract
+hashes independently match retained originals. Acceptance restarted no native test.
 
-- Both actual Linux architectures: 274 full PostgreSQL functions and 96 named
-  Go functions, normally and under race; 683 baseline and 312 Go stock checks.
-- Source/unit/race/lint and 57 bounded fuzz targets on actual Linux x86, Linux
-  ARM and macOS ARM. Historical native binaries: 15, with 20 upgrade reports
-  per Linux architecture. Separate x86 producer/ARM consumer: 16 stages.
-- Main x86 Chromium: 19 workflows/151 checks, zero unexpected/skipped/flaky.
-  Four management journeys use declared response stand-ins. Three focused
-  journeys each pass five fresh-database trials, 15 total.
-- JVM and native OCI profiles pass their exact typed contracts. Focused browser
-  is selected; NuGet-library and strict checksum-client profiles are unselected,
-  never passes. No full format/provider/platform/scale/readiness claim follows.
+- Both actual Linux architectures:274full PostgreSQL functions and96named Go
+  functions normally/race;683baseline and312Go stock checks, including the
+  two-export index/reverse-order/hash/signature/late-member refusal controls.
+- Source/unit/race/lint and58bounded fuzz targets on actual Linux x86, Linux ARM
+  and macOS ARM.15historical binaries/20upgrade reports per Linux architecture;
+  actual separate x86 producer/ARM consumer16stages.
+- Main x86 Chromium19workflows/151checks, four declared management response
+  stand-ins. Focused browser, NuGet-library and strict checksum profiles unselected.
+  The separately accepted c1candidate retains15focused Chromium trials and the
+  actual DEFECT0134/0137keyboard/source-binding repair proof; no evidence substitution.
+- Full450/41/laterGOAL, broad readiness/security/packaging, strict checksum
+  DEFECT0126and unknown browser intermittentDEFECT0122remain incomplete/open.
 
-The [keyboard checkpoint](evidence/2026-11-07/go-export-keyboard-c1f40f3-native-checkpoint.json)
-qualifies DEFECT0137 and the earlier DEFECT0134 source-binding repair in their
-actual UI scope. Six scrollable blocks receive keyboard focus; all original
-assertions remain, with collection-dialog Axe and actual Tab/ArrowDown scrolling.
-The new destination dialog, malformed source, current role/loading/denial/expiry,
-no-target-request and credential-storage guards pass. This is not full WCAG,
-assistive technology or destination server import/scanning/provenance proof.
-Original b5/ae7 failures remain preserved. DEFECT0122's unrelated unknown browser
-intermittent stays open.
+The documentation-only6c9run is independently
+[accepted](evidence/2026-11-07/documentation-6c9f307-acceptance-checkpoint.json):
+selector/security are2active successful jobs;3unexpanded runtime templates are
+skipped. No PostgreSQL/stock-client/fuzz/browser runtime passed on that docs source.
 
-## Current candidate and live handles
+## Current implementation and qualification boundary
 
-Pushed implementation: `ca44b3789f4d26530d71fa29c7097321f3a12687`.
-Its six selected native workflows contain 26 jobs. The named Go profile is
-[accepted](evidence/2026-11-07/go-module-ca44b37-native-checkpoint.json): 96
-functions normally/race and 312 stock checks on both actual Linux hosts,
-including the new two-export index CLI. Full main jobs are running; this newer
-whole campaign remains unaccepted. Source/fuzz jobs are green; complete acceptance
-must retain the exact 58-target inventory and all selected originals.
+[ADR0062](docs/adr/0062-common-go-export-set-metadata.md) adds a bounded
+common-snapshot metadata planner and `POST /api/v1/go/export-sets/preview`, usable
+through the management CLI. Every selected root uses one tenant-scoped
+repeatable-read/read-only transaction, DB clock and journal head. Late denial,
+missing/changed member, cancellation or byte-budget failure returns no partial set.
+The streaming canonical parser bounds typed roots before allocation. This remains
+unsigned metadata: no package is opened/verified/staged/pinned and no session,
+journal, job or receipt is created. Durable all-member creation remains required.
 
-| Profile | GitHub run |
-| --- | --- |
-| Main CI | [42382364147](https://github.com/ctlplne/cratectl/actions/runs/42382364147) |
-| Go modules | [42382364038](https://github.com/ctlplne/cratectl/actions/runs/42382364038) |
-| JVM | [42382364030](https://github.com/ctlplne/cratectl/actions/runs/42382364030) |
-| OCI clients | [42382363968](https://github.com/ctlplne/cratectl/actions/runs/42382363968) |
-| Historical upgrades | [42382363984](https://github.com/ctlplne/cratectl/actions/runs/42382363984) |
-| Cross-runner export | [42382364209](https://github.com/ctlplne/cratectl/actions/runs/42382364209) |
+Local ARM build/unit/race/lint and two bounded fuzz targets pass; tagged normal
+and race PostgreSQL compilation/vet pass. Three new meaningful native tests cover
+an actual second-connection policy commit across a repeatable-read snapshot,
+no-effect/late-member controls and actual publication/approval/API semantics.
+Their execution is pending GitHub:277full PostgreSQL/99named Go/60fuzz inventory.
+See the [development record](evidence/2026-11-07/go-export-set-preview-development.json)
+and [operator preview](docs/go-export-set-preview.md). Compile-only and owned
+HTTP/filesystem stand-ins never qualify real PostgreSQL or x86 behavior.
 
-Inspect these handles before further pushes. Running main jobs are preserved;
-pending slots can still be replaced by a later runtime push. Queue time never
-justifies restarting a native test. Documentation-only evidence pushes must keep
-runtime lanes explicitly unselected and cannot qualify changed runtime source.
+All16migrations stay frozen. Freeze an actually qualified schema16historical
+baseline before appending durable-set migration17. The stopped primary remains
+schema11with5483878bqualified binaries and ten original receipts. Continue the
+complete six-step export outcome and every later GOAL requirement.
 
 ## Implemented export foundations and remaining outcome
 

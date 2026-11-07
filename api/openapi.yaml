@@ -1037,6 +1037,44 @@ paths:
         '403': {description: "Tenant admin required."}
         '404': {description: "Exact coordinate and digest not found."}
         '409': {description: "Idempotency conflict."}
+  /api/v1/go/export-sets/preview:
+    post:
+      summary: Preview one bounded set of hosted Go versions from a common metadata snapshot
+      description: Current tenant administrator and read access to every selected hosted repository are required. All entries are read in one PostgreSQL repeatable-read and read-only transaction, so concurrent changes cannot mix metadata views between members. Each source revision is the repository configuration counter selected by the caller. Duplicate module/version pairs are rejected even across repositories. This endpoint opens no package object and creates no export session, reference, journal event, idempotency receipt or job. The manifest and its object hash are unsigned preview data, not proof of physical bytes, dependency closure, checksum authority or destination admission. A durable common-snapshot creation path with immutable staging and current-policy revalidation remains required before collection. Planning is bounded to 30 seconds, 256 entries and 8 MiB of canonical manifest metadata; the ordinary server request/concurrency limits also apply. The embedded manifest is JSON data; object identifies its canonical encoding including a final newline.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [entries, lifetime_seconds, max_artifact_bytes]
+              properties:
+                entries:
+                  type: array
+                  minItems: 1
+                  maxItems: 256
+                  description: Exact distinct source selections in returned order. Unknown, duplicate, case-aliased or null fields refuse the entire request.
+                  items:
+                    type: object
+                    additionalProperties: false
+                    required: [repository, module, version, expected_source_revision]
+                    properties:
+                      repository: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$'}
+                      module: {type: string, maxLength: 512}
+                      version: {type: string, maxLength: 128}
+                      expected_source_revision: {type: integer, format: int64, minimum: 0}
+                lifetime_seconds: {type: integer, minimum: 60, maximum: 3600, description: "Requested common lifetime for the later durable operation; preview starts no lifetime or session."}
+                max_artifact_bytes: {type: integer, format: int64, minimum: 1, maximum: 68719476736, description: "Caller resource budget for the sum of declared ZIP/mod/info sizes. Repeated bytes count separately; no object is read."}
+      responses:
+        '200': {description: "Complete unsigned metadata preview and canonical object identity, physical_objects_verified=false and durable_session_created=false. No partial set, dependency closure or admission grant."}
+        '400': {description: "Body exceeds 256 KiB or contains invalid, duplicate, ambiguous or missing selections or budgets."}
+        '401': {description: "Current tenant credential required."}
+        '403': {description: "Administrator or any selected source access/policy denied; no members returned."}
+        '405': {description: "Use POST; no state changes occur."}
+        '409': {description: "A selected repository source revision changed; refresh every selected revision and preview the complete set again."}
+        '413': {description: "Declared bytes exceed max_artifact_bytes or canonical metadata exceeds 8 MiB; no partial preview returned."}
+        '503': {description: "Database, schema, concurrency or planning deadline unavailable; no inferred complete snapshot."}
   /api/v1/go/exports:
     get:
       summary: List retained hosted Go export sessions

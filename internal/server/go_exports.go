@@ -18,7 +18,11 @@ import (
 )
 
 func decodeGoExport(raw []byte, out any, required ...string) bool {
-	if len(raw) == 0 || len(raw) > 4096 {
+	return decodeBoundedGoExport(raw, 4096, out, required...)
+}
+
+func decodeBoundedGoExport(raw []byte, limit int, out any, required ...string) bool {
+	if len(raw) == 0 || len(raw) > limit {
 		return false
 	}
 	d := json.NewDecoder(bytes.NewReader(raw))

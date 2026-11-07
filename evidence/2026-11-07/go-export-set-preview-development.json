@@ -1,0 +1,132 @@
+{
+  "source_parent": "6c9f3074724c6e958a73552cd39d16191b6270d0",
+  "source_state": "uncommitted common-snapshot preview source at this development observation; source hashes identify exact inputs",
+  "observed_at": "2026-11-07T15:58:06.463980+00:00",
+  "state": "implemented; local development gates pass; actual new native PostgreSQL qualification pending",
+  "source_files": [
+    {
+      "path": "internal/store/go_export_sets.go",
+      "bytes": 11224,
+      "sha256": "8473dd0127a5eef24c075b8a977666ebfce46cf73182318ca5ff6a1ffaf943a3"
+    },
+    {
+      "path": "internal/store/go_export_sets_test.go",
+      "bytes": 7909,
+      "sha256": "7a3c336fec3c44a603824a1c9cafc34cd99e3caf8964bafe56af39ef568ff83d"
+    },
+    {
+      "path": "internal/store/go_module_export_set_integration_test.go",
+      "bytes": 6600,
+      "sha256": "9eea9bbcd58d52a5b0ab35a7a2b7c9e0a1b600550c5bd4d5fd4bbdf2cb71aa66"
+    },
+    {
+      "path": "internal/server/go_export_sets.go",
+      "bytes": 2481,
+      "sha256": "1bde3e384d0f320d97309a43bc74c881375bf9f37711f37ab37b4043f5b31dbf"
+    },
+    {
+      "path": "internal/server/go_export_sets_test.go",
+      "bytes": 5680,
+      "sha256": "8563aafe800af750d1b7e1ccf0e7ff20e99d52b7b57af1b22f687ab087dddfa0"
+    },
+    {
+      "path": "internal/server/go_module_export_set_integration_test.go",
+      "bytes": 4553,
+      "sha256": "67843c0f6683273d74ac5a2d20f011bc3ecc40416ec2bffb1f7acfbd6fedfbca"
+    },
+    {
+      "path": "internal/server/go_exports.go",
+      "bytes": 9911,
+      "sha256": "4d554977db9869bf7a7b9f382fc565c463774602694a8ba2459e86b5a99a1bc8"
+    },
+    {
+      "path": "internal/server/server.go",
+      "bytes": 41610,
+      "sha256": "a3c2e307c9ca183b13a66e53e9ca9e1723e85b784cee376e600c1c9e5358ecd6"
+    },
+    {
+      "path": "api/openapi.yaml",
+      "bytes": 144918,
+      "sha256": "510ec92360e7017e97a56309dff4facc4ea87d8a1b37a7e87456024af474a581"
+    }
+  ],
+  "source_inventory": {
+    "integration_functions": 277,
+    "named_go_functions": 99,
+    "fuzz_targets": 60
+  },
+  "implemented": [
+    "Bounded1to256distinct original hosted coordinates in one tenant-scoped repeatable-read/read-only transaction, one DB clock/journal head, same current authorization/policy/source path.",
+    "Unsigned POST/api/v1/go/export-sets/preview and management CLI access; late denial/missing/epoch/budget/cancel returns no partial plan and creates no durable effects.",
+    "256KiBrequest/32KiBchild/8MiBmanifest/64GiBdeclaredartifact/30secondwholetransaction limits; streaming typed-root cardinality bounds, exact canonical encoding, null/alias/duplicate/unknown rejection.",
+    "Three meaningful native functions added: actual second-connection policy change across one repeatable-read snapshot; exact original/root/byte/no-effect controls; actual publication/manual approval/API semantics. Compiled normally/race and vetted, not executed locally."
+  ],
+  "local_validation": {
+    "standard_gates": "make BINDIR=.cache/go-export-set-preview-build build test race lint passed; existing owned loopback/FS/HTTP stand-ins",
+    "tagged_postgresql": "normal and race compile-only plus vet passed; no real PostgreSQL run locally",
+    "fuzz": [
+      {
+        "target": "FuzzGoExportSetCanonicalManifest",
+        "executions": 278,
+        "requested_seconds": 5,
+        "workers": 2
+      },
+      {
+        "target": "FuzzGoExportSetRequest",
+        "executions": 53163,
+        "requested_seconds": 5,
+        "workers": 2
+      }
+    ],
+    "openapi_descriptions": "passed",
+    "logs": [
+      {
+        "path": ".cache/go-export-set-preview-standard-gates.log",
+        "bytes": 13122,
+        "sha256": "36f738840bcb2c47f48b1cef6ba5cf8f5d62d7aafcc2fb626c9e9a2de5bdd6e7"
+      },
+      {
+        "path": ".cache/go-export-set-preview-unit-race-final.log",
+        "bytes": 97,
+        "sha256": "34aee6cabe394ac94e002dae28572b01e1664349649d02a8e935c1b60d6504e3"
+      },
+      {
+        "path": ".cache/go-export-set-preview-pg-compile-final.log",
+        "bytes": 205,
+        "sha256": "c49831e4a9b1ffe07055c67b6708013d95ffb0e9e91bfdba557bffa266bf3c5a"
+      },
+      {
+        "path": ".cache/go-export-set-preview-pg-race-compile.log",
+        "bytes": 205,
+        "sha256": "9663f073027226b15c9338101f463e29e16b43a28bbf7aa8b0a7cb4437c084d0"
+      },
+      {
+        "path": ".cache/go-export-set-preview-pg-vet.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": ".cache/go-export-set-manifest-fuzz.log",
+        "bytes": 413,
+        "sha256": "05324db055e7c5b1992d67bf9d60f7abdd13696a98b6c4591c59ef0fcb844f19"
+      },
+      {
+        "path": ".cache/go-export-set-request-fuzz.log",
+        "bytes": 426,
+        "sha256": "2af85b974c22e7452df0501b189dcac7c0d52bb72ad46e57eb2ca145d9d52762"
+      }
+    ]
+  },
+  "preserved_first_development_failure": {
+    "path": ".cache/go-export-set-preview-unit-first.log",
+    "bytes": 461,
+    "sha256": "9958d341d41e13a1ca0c7d2981ff60f818b3a0b1b2190acb021789b9dc3a272e",
+    "reason": "test-only invalid bytes.Repeat[][]byte construction; corrected bounded slices/bytes.Join before final passing gates; not a native product failure"
+  },
+  "limits": [
+    "No package opened/physically verified/staged; no reference/session/event/job/idempotency receipt created. Unsigned metadata is not authenticated export/download.",
+    "Durable common-set creation/revalidation/pins/lifecycle/resume, package/proof/permission/dependency/authority closure, offline proxy, current destination scanner/import/provenance and operator/production workflows remain required.",
+    "Current admission/checksum authority/dependency closure flags false. All16migrations frozen; primary11/5483878b/tenreceipts and sibling/customer/publication state unchanged.",
+    "All450capabilities/41families/laterGOAL4.1 scope remain active. Local development checks do not qualify real PostgreSQL, stock native clients or x86 behavior."
+  ]
+}

@@ -258,6 +258,12 @@ func respondErr(w http.ResponseWriter, e error) {
 		fail(w, 404, "not_found", "Check the repository and package coordinate.")
 	case errors.Is(e, store.ErrDenied):
 		fail(w, 403, "policy_denied", "Check repository grants, the exact digest and current policy; group access also requires source access.")
+	case errors.Is(e, store.ErrGoExportSetInput):
+		fail(w, 400, "invalid_go_export_set", "Select distinct exact hosted Go coordinates and source revisions, a lifetime from 60 through 3600 seconds and a positive declared byte budget through 64 GiB.")
+	case errors.Is(e, store.ErrGoExportSetChanged):
+		fail(w, 409, "go_export_set_changed", "Refresh every selected repository source revision and prepare a new complete preview; no partial selection was accepted.")
+	case errors.Is(e, store.ErrGoExportSetBudget):
+		fail(w, 413, "go_export_set_budget", "Choose fewer or smaller members, or raise max_artifact_bytes within the 64 GiB ceiling. Metadata remains bounded to 8 MiB; no partial preview was returned.")
 	case errors.Is(e, store.ErrGoExportInput):
 		fail(w, 400, "invalid_go_export", "Use an exact hosted Go coordinate, source epoch, complete documented fields and bounded lifetime; creation and changes require an idempotency key.")
 	case errors.Is(e, store.ErrGoExportChanged):
@@ -394,6 +400,9 @@ func readJSON(w http.ResponseWriter, r *http.Request, v any, limit int64) bool {
 }
 func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Identity) {
 	p := strings.TrimPrefix(r.URL.Path, "/api/v1/")
+	if s.goExportSetManagement(w, r, i, p) {
+		return
+	}
 	if s.goExportManagement(w, r, i, p) {
 		return
 	}

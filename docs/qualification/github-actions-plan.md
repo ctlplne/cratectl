@@ -15,32 +15,37 @@ audit afterward. Public repository and CI pushes/repairs are authorized. Release
 package/image publication, customer, primary and sibling changes need their own
 authority. No autonomous delegation.
 
-Current product candidate: `ca44b3789f4d26530d71fa29c7097321f3a12687`, six native
-workflows/26jobs. Named96Go normal/race/312stock including two-export index controls pass bothLinux.
-Main274PG/19main151/58fuzz/allselectedprofile acceptance remains pending. Actual handles are in STATUS/remaining. Previousc1is now accepted across seven workflows/29jobs, including new export-
-keyboard/main19/151and15focused trials.
-Both campaigns are preserved; no redispatch for queue time. Earlier failed
-source: `ae7d00ece68d45f953d53f1728169e00b6dbe608`.
-Its six completed handles are in [STATUS.md](../../STATUS.md) and
-[remaining.json](remaining.json). [Final campaign](../../evidence/2026-11-07/github-ae7d00e-final-checkpoint.json):
-26jobs/25success1x86Chromiumfailure,19safe72reports. BothLinux274PG normal/race,
-96namedGo/312stock and other native main stages pass;57fuzz/source passes three
-native hosts and JVM/OCI/upgrades/portable pass. Kernel controls and original
-full-race replay pass bothLinux; historical socket cause remains unknown.
-Originalb5serious Axe scrollable-region-focusable is retained. Six focus fixes
-and keyboard/Axe regression pass local build/reproduction/console race/lint;
-actual new browser replay remains required. Wholeb5/ae7are not accepted.
+Latest accepted runtime: `ca44b3789f4d26530d71fa29c7097321f3a12687`.
+Its six selected workflows pass all 26 native jobs. The strengthened read-only
+[verifier42388375407](https://github.com/ctlplne/cratectl/actions/runs/42388375407)
+accepts the complete inventory; all 26 original log hashes/byte counts, 19 safe
+members, 72 raw report hashes and 18 source contracts independently match.
+See the [whole checkpoint](../../evidence/2026-11-07/github-ca44b37-checkpoint.json).
+Both Linux hosts pass 274 full PostgreSQL and 96 named Go functions normally/race,
+312 Go stock/683 baseline checks, 15 historical binaries/20 upgrade reports each.
+Source/fuzz passes 58 targets on three native hosts; Chromium passes 19 main
+workflows/151 checks; separate x86 producer/ARM consumer passes 16 stages.
+Focused browser, NuGet-library and strict SDK are unselected, never passes.
 
-Latest whole selected acceptance: [c1f40f3](../../evidence/2026-11-07/github-c1f40f3-checkpoint.json),
-29 native jobs/seven workflows,22 unchanged safe summaries/87 reports, accepted
-by strengthened read-only GitHub [run42383991192](https://github.com/ctlplne/cratectl/actions/runs/42383991192).
-All29log/22member/87report/18source-contract hashes independently match originals.
-274fullPG/96namedGo normal/race and312stock/683baseline perLinux host;57fuzz/source
-on three native hosts;19main151Chromium and15focused trials;15historical20upgrades
-perhost/16portable stages. Four main UI workflows use declared response stand-ins.
-NuGet-library/strict SDK remain unselected. The0134source/0137keyboard/Axe repairs
-pass their actual UI scope. Full console/WCAG/server import/closure/readiness do
-not follow. Historical495acceptance and all first failures remain retained.
+The earlier accepted [c1 campaign](../../evidence/2026-11-07/github-c1f40f3-checkpoint.json)
+retains its separate 29-job/22-safe/87-report scope, including 15 focused Chromium
+trials and actual DEFECT0134/0137 source-binding/keyboard repairs. Four main UI
+journeys use declared response stand-ins. Full console, WCAG, server import,
+closure and production readiness do not follow. Original failed b5/ae7 campaigns
+and unknown browser intermittent0122 remain preserved. Strict SDK0126 stays open.
+
+New ADR0062 common-snapshot preview is locally implemented and qualified against
+development/owned stand-ins. Its three actual PostgreSQL/API cases are compiled
+normally/race and vetted, not executed locally. The next exact-source native
+inventory is 277 PostgreSQL/99 named Go/60 fuzz. Keep the existing architecture
+jobs, original assertions and all selected profile contracts; do not add a
+parallel local PostgreSQL/client campaign. Continue durable creation, collection,
+offline proxy, current scanner/import/provenance and the full six-step export plan.
+
+The [documentation-only6c9 checkpoint](../../evidence/2026-11-07/documentation-6c9f307-acceptance-checkpoint.json)
+qualifies the selector/security placement and actual read-only unselected-runtime
+branch: two active jobs pass, three unexpanded runtime templates skip. It qualifies
+no PostgreSQL/stock-client/fuzz/browser runtime. Acceptance restarts no native job.
 
 Later `badb85b` has separate accepted profiles:
 
@@ -65,11 +70,13 @@ stand-ins. Normal/race PostgreSQL compilation and tagged vet prove compilation
 only. Real PostgreSQL/registry/external signer/stock-client campaigns and Chromium
 run on GitHub. Local emulation/cross-compilation never qualifies x86 behavior.
 
-Index source now requires274fullPG/96namedGo normal/race onboth Linux hosts,
-58checked-in product fuzz targets onthreehosts (currentc1has57and no index),19main151Chromium, original312Go/
-683baseline checks,15historical20upgrades perhost,16portable stages and every
-other actually selected profile. Existing jobs discover the new fuzz target and
-extended native function; no duplicate local integration campaign is needed.
+The accepted index source contains 274 PostgreSQL/96 named Go/58 fuzz targets.
+The new common-snapshot preview requires 277 full PostgreSQL/99 named Go functions
+normally and under race on both Linux hosts, plus 60 product fuzz targets on three
+hosts. Preserve main 19/151 Chromium, 312 Go/683 baseline checks, 15 historical
+binaries/20 upgrades per host, 16 portable stages and every other selected profile.
+Existing jobs discover the new functions and targets; a source-defined inventory
+change never authorizes skipping the original regressions.
 
 | Workflow / jobs | Actual placement | Work and budget |
 | --- | --- | --- |
@@ -87,7 +94,7 @@ extended native function; no duplicate local integration campaign is needed.
 | `go-export-portability.yml` /2 | x86 PostgreSQL producer; separate ARM consumer without DB | Exact synthetic signed capsule, separate trust fingerprints, CLI/SDK in observed empty child network namespaces;30/25minutes. |
 | `nuget-contract.yml` /2 | Both Linux architectures | Actual pinned SDK10.0.403/NuGet-library differential corpus;20minutes. Separate from HTTP feed/restore journeys. |
 | `browser-repair.yml` /up to3 | x86 Chromium, fresh PostgreSQL per replay | Repair/retention/NuGet, five full repetitions per selected journey;45minutes. Stop on failure. |
-| `qualification-acceptance.yml` /1 | Linux x86, manual main dispatch | Contents/actions read only; bounded exact-source API/log/archive/report inspection,19stand-in tests, scoped counts/hash verdict;20minutes. Starts no native tests. |
+| `qualification-acceptance.yml` /1 | Linux x86, manual main dispatch | Contents/actions read only; bounded exact-source API/log/archive/report inspection,20component test functions, scoped counts/hash verdict;20minutes. Starts no native tests. |
 | `go-checksum-client.yml` /3 | Linux x86/ARM and macOS ARM | Seven strict Go1.27.3 controls perhost, owned authority stand-ins. Altered-ZIP assertion fails onallthreehosts; six other controls pass each. |
 
 Native test union:34possible matrix jobs/nine workflows. The new manual
