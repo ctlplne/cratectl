@@ -8,73 +8,66 @@ All work and both commit identities remain `imfeelingtheagi` on `main`.
 
 ## Latest whole selected qualification
 
-[`ca44b37`](evidence/2026-11-07/github-ca44b37-checkpoint.json) is accepted:
+[`1664c7c`](evidence/2026-11-07/github-1664c7c-checkpoint.json) is accepted:
 26 successful native jobs across six workflows, 19 unchanged safe summaries and
-72 reports. The strengthened read-only GitHub verifier accepted the complete
-inventory in [run42388375407](https://github.com/ctlplne/cratectl/actions/runs/42388375407).
-All26original log hashes/byte counts,19member/72report hashes and18source-contract
-hashes independently match retained originals. Acceptance restarted no native test.
+72 reports. Actual read-only [verifier42392247746](https://github.com/ctlplne/cratectl/actions/runs/42392247746)
+accepts the exact complete inventory. All26original log hashes/byte counts,
+19member/72report hashes and18source contracts independently match originals.
+No native test was restarted for acceptance.
 
-- Both actual Linux architectures:274full PostgreSQL functions and96named Go
-  functions normally/race;683baseline and312Go stock checks, including the
-  two-export index/reverse-order/hash/signature/late-member refusal controls.
-- Source/unit/race/lint and58bounded fuzz targets on actual Linux x86, Linux ARM
-  and macOS ARM.15historical binaries/20upgrade reports per Linux architecture;
-  actual separate x86 producer/ARM consumer16stages.
-- Main x86 Chromium19workflows/151checks, four declared management response
-  stand-ins. Focused browser, NuGet-library and strict checksum profiles unselected.
-  The separately accepted c1candidate retains15focused Chromium trials and the
-  actual DEFECT0134/0137keyboard/source-binding repair proof; no evidence substitution.
-- Full450/41/laterGOAL, broad readiness/security/packaging, strict checksum
-  DEFECT0126and unknown browser intermittentDEFECT0122remain incomplete/open.
+- Both actual Linux hosts:277full PostgreSQL/99named Go functions normally/race,
+  312Go stock and683baseline checks. All three common metadata preview functions
+  pass: one real repeatable-read view across a second-connection policy commit,
+  original/budget/no-effect/late-failure controls and actual API intake/approval.
+- Source/unit/race/lint and60fuzz targets on actual Linux x86/ARM and macOS ARM;
+  15historical binaries/20upgrade reports per Linux host;16separate x86/ARM stages.
+- Main x86 Chromium19workflows/151checks; four declared management response
+  stand-ins. Focused/NuGet-library/strict profiles unselected. Separate c1proof
+  retains15focused trials and actual0134/0137source/keyboard repairs. Strict0126
+  and unknown browser0122stayopen; no broad readiness/security/packaging verdict.
 
-The documentation-only6c9run is independently
-[accepted](evidence/2026-11-07/documentation-6c9f307-acceptance-checkpoint.json):
-selector/security are2active successful jobs;3unexpanded runtime templates are
-skipped. No PostgreSQL/stock-client/fuzz/browser runtime passed on that docs source.
+This qualifies unsigned common metadata planning only. No package is physically
+opened/pinned and no durable set/session/event/job/receipt is created by preview.
+The newer schema17/common-set/collector source is outside that native result.
 
 ## Current implementation and qualification boundary
 
-Pushed preview source: `1664c7c77191a5cc97313d7a2f924de0b6c5a053`.
-Its six existing native workflows remain active. Main CI42389001092 has8of10
-successful jobs and two full integration/race jobs running; Go42389001082,
-JVM42389001057, OCI42389001081, upgrades42389001085 and portable42389001071
-jobs succeed. Exact count/log/hash and whole-campaign acceptance remain pending.
-No restart or later evidence substitution is permitted. Its source inventory is
-277 PostgreSQL/99 named Go/60 fuzz, not the new durable implementation below.
+[ADR0063](docs/adr/0063-atomic-common-go-export-set.md) implements one durable
+common selection: physical original-byte inspection, synced manifest, atomic
+parent/root/item refs/journal/original receipt/job intent, current whole-member
+range/HEAD/conditional authority, generation controls, worker expiry and inventory
+roots. The signed-statement verifier binds exact original creation under an
+independently selected external signer/head. New schema17native proof is pending.
 
-[ADR0063](docs/adr/0063-atomic-common-go-export-set.md) now implements one
-fenced durable common set over explicitly selected hosted Go versions: physical
-original-package inspection, synced common manifest, atomic parent/root/item
-refs/journal/original receipt/job intent, current whole-member authorization for
-ranges/HEAD/conditionals, generation controls, shared legacy/set session budget,
-worker expiry and inventory roots. A denied late member fences the first root.
-Cancellation/expiry releases all payload pins durably and retains the manifest.
-Acknowledgment keeps delivery_verified=false. Current source decisions grant no
-destination permission or scan cleanliness.
+[ADR0064](docs/adr/0064-common-set-resumable-collection.md) now implements
+`go-export-set-collect`: bind every original/proof before output, retain private
+synced prefixes, explicit renewed-generation resume, inspect every ZIP/mod/info
+and publish one complete original-generation receipt. Its bounded metadata/file
+helpers preserve the single-version limits. No current admission, authority,
+automatic closure or delivery is inferred. See the [operator workflow](docs/go-export-sets.md).
 
-The new `go-export-set-verify` authenticates the original common-manifest creation
-statement through a complete journal under an independently selected external
-signer/head. It outputs only bounded identities/counts/attribution. Physical
-package-byte verification, automatic closure, checksum authority and current
-admission remain false. See the [operator workflow](docs/go-export-sets.md).
-The complete durable all-member collector/private offline proxy, full closure,
-current destination scanner/import/provenance and console progress remain required.
+Local ARM build/unit/race/lint pass. Five new meaningful filesystem/parser tests
+and the original CLI race suite pass. Tagged normal/race PostgreSQL compilation
+and vet pass; no actual local integration runs. The extended native PG/TLS/CLI/
+OpenSSL journey adds independent common-set processkill/prefix/renewal/all11members/
+byteexact replay/late denial/recovery/corruptresume checks with original controls
+preserved. These new effects are compiled only. See the
+[development record](evidence/2026-11-07/go-export-set-collection-development.json).
 
-Local ARM build/unit/race/lint, focused final route race and215bounded binding
-fuzz executions pass. Tagged normal/race PostgreSQL compilation and vet pass.
-The six new meaningful native functions and extended actual CLI/OpenSSL collector
-case are compiled only. New source requires283PostgreSQL/105namedGo/61fuzz,
-16historical native binaries and21upgrade reports per Linux host. See the
-[development record](evidence/2026-11-07/go-export-set-durable-development.json).
+The new source requires283PostgreSQL/105named Go/61fuzz,16historical binaries and
+21upgrade reports per actual Linux architecture. Shared schema/evidence changes
+also select NuGet-library2and focused-browser3jobs: expect31nativejobs/eight
+workflows, but actual API inventory governs acceptance. Original166is fully
+retained before the new push; there are no remaining running166native jobs.
 
-The actually qualified schema16ca44baseline is pinned before appended migration17
-(checksum7d786d8f03fa6ba8b75b2c114ff13ac2f288a1792856b94fc7e3e57a769ffead).
-All first16definitions are unchanged. New17has three forced-RLS tenant tables,
-immutable identities and an exact expiry-index admission contract; real native
-migration/receipt/old-byte/rights/index proof remains pending. The stopped primary
-stays schema11with5483878bqualified binaries and ten original receipts. Continue
-the full six-step export outcome and all450/41/laterGOAL4.1requirements.
+The qualified schema16ca44baseline and all16prior checksums stay frozen. New17
+checksum7d786d8f03fa6ba8b75b2c114ff13ac2f288a1792856b94fc7e3e57a769ffeadhas
+forced-RLS immutable tenant roots and exact expiry-index admission. Native old-byte/
+receipt/rights/index/worker/delivery/collection proof remains required. The stopped
+primary remains schema11with5483878bqualified binaries and ten original receipts.
+Complete the private native fileproxy/fullclosure/current destination scanner/
+import/provenance/console/lifecycle/provider/platform/production outcome, every
+export case/environment and all450capabilities/41families/laterGOAL4.1scope.
 
 ## Implemented export foundations and remaining outcome
 

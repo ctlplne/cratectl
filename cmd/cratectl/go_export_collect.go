@@ -53,6 +53,7 @@ type collectionHTTP struct {
 	client            *http.Client
 	base, token, id   string
 	generation, chunk int64
+	commonSet         bool
 	requests          int
 }
 
@@ -62,6 +63,9 @@ func (c *collectionHTTP) get(ctx context.Context, kind, method string, start, en
 	}
 	c.requests++
 	path := "/api/v1/go/exports/" + c.id
+	if c.commonSet {
+		path = "/api/v1/go/export-sets/" + c.id
+	}
 	if kind != "" {
 		path += "/" + kind + "?generation=" + strconv.FormatInt(c.generation, 10)
 	}
@@ -245,6 +249,18 @@ func copyCollectionLocal(ctx context.Context, root *os.Root, name string, source
 }
 func collectionJSON(value any) []byte { raw, _ := json.Marshal(value); return append(raw, '\n') }
 func openCollectionDirectory(path string, resume bool) (*os.Root, *os.File, error) {
+	return openCollectionDirectoryChecked(path, resume, func(root *os.Root) error {
+		entries, err := collectionEntries(root)
+		if err != nil {
+			return err
+		}
+		return validateCollectionEntries(entries)
+	})
+}
+func openCollectionDirectoryChecked(path string, resume bool, check func(*os.Root) error) (*os.Root, *os.File, error) {
+	if check == nil {
+		return nil, nil, errors.New("directory admission check required")
+	}
 	path, err := filepath.Abs(path)
 	if err != nil {
 		return nil, nil, err
@@ -303,11 +319,7 @@ func openCollectionDirectory(path string, resume bool) (*os.Root, *os.File, erro
 			return nil, nil, se
 		}
 	}
-	entries, err := collectionEntries(root)
-	if err == nil {
-		err = validateCollectionEntries(entries)
-	}
-	if err != nil {
+	if err = check(root); err != nil {
 		dir.Close()
 		root.Close()
 		return nil, nil, err

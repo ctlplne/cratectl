@@ -378,6 +378,10 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 	}
 	changedLast[1]["manifest_file"] = write("index-changed-last.json", append(bytes.Clone(indexManifests["index-primary-manifest.json"]), []byte("{}")...))
 	run(false, nil, append(indexArguments, "--index-file", write("index-changed.json", encodeIndex(changedLast)))...)
+	commonReached, commonRelease := make(chan struct{}), make(chan struct{})
+	commonLateReached, commonLateRelease := make(chan struct{}), make(chan struct{})
+	var commonTransferBarrier, commonLateBarrier sync.Once
+	var commonTransferActive, commonLateActive atomic.Bool
 	reached, release := make(chan struct{}), make(chan struct{})
 	var barrier, lostImportResponse sync.Once
 	var applicationRequests atomic.Int64
@@ -410,7 +414,23 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 				return
 			}
 		}
-		if strings.HasSuffix(r.URL.Path, "/zip") && r.URL.Query().Get("generation") == "1" && r.Header.Get("Range") == "bytes=65536-131071" {
+		if commonTransferActive.Load() && r.URL.Path == "/api/v1/go/export-sets/"+commonSession.ID+"/roots/0/zip" && r.URL.Query().Get("generation") == "1" && r.Header.Get("Range") == "bytes=65536-131071" {
+			commonTransferBarrier.Do(func() { close(commonReached) })
+			select {
+			case <-commonRelease:
+			case <-r.Context().Done():
+				return
+			}
+		}
+		if commonLateActive.Load() && r.URL.Path == "/api/v1/go/export-sets/"+commonSession.ID+"/roots/1/zip" && r.Method == "GET" {
+			commonLateBarrier.Do(func() { close(commonLateReached) })
+			select {
+			case <-commonLateRelease:
+			case <-r.Context().Done():
+				return
+			}
+		}
+		if strings.HasPrefix(r.URL.Path, "/api/v1/go/exports/") && strings.HasSuffix(r.URL.Path, "/zip") && r.URL.Query().Get("generation") == "1" && r.Header.Get("Range") == "bytes=65536-131071" {
 			barrier.Do(func() { close(reached) })
 			select {
 			case <-release:
@@ -449,6 +469,139 @@ func TestGoModuleExportCollectorNativeSocketKillRenewalReplayAndOffline(t *testi
 	tokenPath := write("admin.token", []byte(token))
 	configRaw, _ := json.Marshal(configfile.Client{Version: 1, URL: serverURL, TokenFile: tokenPath, CAFile: caPath})
 	configPath := write("client.json", configRaw)
+
+	// Collect all original common roots under one exact signed binding. Faults
+	// use separate channels from the original single-export journey below.
+	commonOutput := filepath.Join(private, "common collected package")
+	commonJournalArguments := []string{"--journal-file", journalPath, "--journal-tenant", admin.Tenant, "--journal-event-sequence", strconv.FormatInt(commonSession.CreatedSequence, 10), "--journal-through", strconv.FormatInt(head.Sequence, 10), "--journal-through-hash", head.Hash, "--checkpoint-file", statementPath, "--checkpoint-signature-file", signature, "--checkpoint-key-file", publicKey}
+	commonCollectArguments := append([]string{cli, "go-export-set-collect", "--config", configPath, "--set-id", commonSession.ID, "--generation", "1", "--output-directory", commonOutput, "--chunk-bytes", "65536"}, commonJournalArguments...)
+	commonTransferActive.Store(true)
+	commonChild, commonOut, commonDiagnostic := command(commonCollectArguments, nil)
+	if err := commonChild.Start(); err != nil {
+		t.Fatal(err)
+	}
+	commonDone := make(chan error, 1)
+	go func() { commonDone <- commonChild.Wait() }()
+	select {
+	case <-commonReached:
+	case err := <-commonDone:
+		t.Fatalf("common collector exited before second range: %v; bounded diagnostic=%q", err, commonDiagnostic.Bytes())
+	case <-ctx.Done():
+		t.Fatal("common transfer barrier timeout")
+	}
+	if err := commonChild.Process.Kill(); err != nil {
+		t.Fatal(err)
+	}
+	if err := <-commonDone; err == nil || commonOut.Len() != 0 {
+		t.Fatal("killed common collector emitted completion", err)
+	}
+	commonTransferActive.Store(false)
+	close(commonRelease)
+	prefix, err := os.ReadFile(filepath.Join(commonOutput, "root.000.zip"))
+	if err != nil || len(prefix) != 65536 || !bytes.Equal(prefix, zip[:65536]) {
+		t.Fatal("common kill lost exact synced prefix", err, len(prefix))
+	}
+	if _, err := os.Stat(filepath.Join(commonOutput, "receipt.json")); !os.IsNotExist(err) {
+		t.Fatal("partial common collection published receipt")
+	}
+	commonRenew := store.GoExportChange{Action: "renew", ExpectedGeneration: 1, LifetimeSeconds: 3600, ManifestSHA256: commonSession.Manifest.Digest}
+	changeBody, _ := json.Marshal(commonRenew)
+	if response := goHTTP(t, s, token, "POST", "/api/v1/go/export-sets/"+commonSession.ID+"/control", changeBody, "Idempotency-Key", "native-common-collector-renew"); response.Code != 200 {
+		t.Fatal("common explicit renewal", response.Code)
+	}
+	commonResumedArguments := append(append([]string{}, commonCollectArguments...), "--generation", "2", "--resume")
+	commonCollected := run(true, nil, commonResumedArguments...)
+	var collectedCommon struct {
+		Binding struct {
+			Profile string `json:"profile"`
+			SetID   string `json:"set_id"`
+			Members []struct {
+				Name   string      `json:"name"`
+				Object blob.Object `json:"object"`
+			} `json:"members"`
+		} `json:"binding"`
+		CollectedGeneration int64 `json:"collected_generation"`
+		BytesVerified       bool  `json:"bytes_verified"`
+		CurrentAdmission    bool  `json:"current_registry_admission"`
+		Authority           bool  `json:"checksum_authority_verified"`
+		Closure             bool  `json:"dependency_closure"`
+		Delivery            bool  `json:"delivery_verified"`
+	}
+	if json.Unmarshal(commonCollected, &collectedCommon) != nil || collectedCommon.Binding.Profile != "cratectl.go.hosted.set-collection.v1" || collectedCommon.Binding.SetID != commonSession.ID || len(collectedCommon.Binding.Members) != 11 || collectedCommon.CollectedGeneration != 2 || !collectedCommon.BytesVerified || collectedCommon.CurrentAdmission || collectedCommon.Authority || collectedCommon.Closure || collectedCommon.Delivery {
+		t.Fatal("complete common collection receipt/bounds changed")
+	}
+	for _, member := range collectedCommon.Binding.Members {
+		raw, err := os.ReadFile(filepath.Join(commonOutput, member.Name))
+		if err != nil || crypt.Digest(raw) != member.Object.Digest || int64(len(raw)) != member.Object.Size {
+			t.Fatal("retained original common member", member.Name, err)
+		}
+	}
+	commonRenew.ExpectedGeneration = 2
+	changeBody, _ = json.Marshal(commonRenew)
+	if response := goHTTP(t, s, token, "POST", "/api/v1/go/export-sets/"+commonSession.ID+"/control", changeBody, "Idempotency-Key", "native-common-collector-renew-again"); response.Code != 200 {
+		t.Fatal("second common renewal", response.Code)
+	}
+	if replay := run(true, nil, append(commonResumedArguments, "--generation", "3")...); !bytes.Equal(replay, commonCollected) {
+		t.Fatal("renewed common replay rewrote original completion receipt")
+	}
+	// A current late-root policy denial happens after the first root has been
+	// collected. Preserve those bytes, but emit neither receipt nor stdout.
+	lateOutput := filepath.Join(private, "common denied late member")
+	lateArguments := append(append([]string{}, commonCollectArguments...), "--generation", "3", "--output-directory", lateOutput)
+	commonLateActive.Store(true)
+	lateChild, lateOut, lateDiagnostic := command(lateArguments, nil)
+	if err := lateChild.Start(); err != nil {
+		t.Fatal(err)
+	}
+	lateDone := make(chan error, 1)
+	go func() { lateDone <- lateChild.Wait() }()
+	select {
+	case <-commonLateReached:
+	case err := <-lateDone:
+		t.Fatalf("common collector exited before late root: %v; bounded diagnostic=%q", err, lateDiagnostic.Bytes())
+	case <-ctx.Done():
+		t.Fatal("common late-root barrier timeout")
+	}
+	lateArtifact := commonManifest.Entries[1].Artifacts[0]
+	if err := s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
+		_, err := store.Decide(ctx, tx, admin, "index-extra", lateArtifact.Path, lateArtifact.Digest, "denied")
+		return err
+	}); err != nil {
+		t.Fatal(err)
+	}
+	commonLateActive.Store(false)
+	close(commonLateRelease)
+	if err := <-lateDone; err == nil || lateOut.Len() != 0 {
+		t.Fatal("late denied common member emitted completion", err)
+	}
+	firstRetained, err := os.ReadFile(filepath.Join(lateOutput, "root.000.zip"))
+	if err != nil || crypt.Digest(firstRetained) != commonManifest.Entries[0].Artifacts[0].Digest {
+		t.Fatal("late failure lost retained first original", err)
+	}
+	if _, err := os.Stat(filepath.Join(lateOutput, "receipt.json")); !os.IsNotExist(err) {
+		t.Fatal("late denied member published partial common receipt")
+	}
+	if err := s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
+		_, err := store.Decide(ctx, tx, admin, "index-extra", lateArtifact.Path, lateArtifact.Digest, "allowed")
+		return err
+	}); err != nil {
+		t.Fatal(err)
+	}
+	run(true, nil, append(lateArguments, "--resume")...)
+	originalInfo, err := os.ReadFile(filepath.Join(commonOutput, "root.001.info"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	corruptInfo := bytes.Clone(originalInfo)
+	corruptInfo[len(corruptInfo)/2] ^= 1
+	if err := os.WriteFile(filepath.Join(commonOutput, "root.001.info"), corruptInfo, 0600); err != nil {
+		t.Fatal(err)
+	}
+	run(false, nil, append(commonResumedArguments, "--generation", "3")...)
+	originalCommonReceipt, err := os.ReadFile(filepath.Join(commonOutput, "receipt.json"))
+	if err != nil || !bytes.Equal(originalCommonReceipt, commonCollected) {
+		t.Fatal("corrupt resumed member rewrote historical receipt", err)
+	}
 	output := filepath.Join(private, "collected package")
 	journalArguments := []string{"--journal-file", journalPath, "--journal-tenant", admin.Tenant, "--journal-event-sequence", strconv.FormatInt(session.CreatedSequence, 10), "--journal-through", strconv.FormatInt(head.Sequence, 10), "--journal-through-hash", head.Hash, "--checkpoint-file", statementPath, "--checkpoint-signature-file", signature, "--checkpoint-key-file", publicKey}
 	args := []string{cli, "go-export-collect", "--config", configPath, "--export-id", session.ID, "--generation", "1", "--repository", req.Repository, "--module", req.Module, "--version", req.Version, "--output-directory", output, "--chunk-bytes", "65536"}

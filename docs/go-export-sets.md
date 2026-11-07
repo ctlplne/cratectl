@@ -36,8 +36,9 @@ Use the CLI's `--raw-response` when retaining hashed bytes; it suppresses the
 extra output newline. Save them only to private regular files. GET/HEAD, ranges
 and conditionals recheck every selected source before delivery. A denied later
 member also fences earlier members. Current generation and ETag bind resumption.
-Individual downloads do not provide a durable all-member collector or complete
-servable offline proxy; both remain under implementation.
+Individual downloads do not record whole-collection completion. The collector
+below is implemented with native qualification pending; a complete servable
+offline proxy remains required.
 
 To renew, acknowledge, cancel or expire, POST all four fields to
 `/api/v1/go/export-sets/{set}/control` with a new explicit idempotency key:
@@ -82,8 +83,8 @@ historical common-snapshot statement. It opens no package bytes and leaves
 `artifact_bytes_verified`, `dependency_closure`, `checksum_authority_verified`
 and `current_registry_admission` false. It cannot establish latest or revoked
 history beyond your supplied head. A failed complete pass emits no result.
-The existing `go-export-collect`, `go-export-index-verify` and one-version import
-profiles retain their original formats; they do not collect or import this set.
+Use `go-export-set-collect` below for this set format. The existing single-version
+collector, index verifier and import profiles retain their original formats.
 
 Limits are 256 entries, 256 KiB request, 32 KiB per child, 8 MiB common manifest and 64 GiB
 of declared representations. Creation has 2 minutes, store operations 30 seconds,
@@ -93,3 +94,52 @@ adjust the explicitly relevant operator budget after a capacity refusal; never
 interpret a missing or failed member as a complete bundle. Current destination
 scanning/import/provenance, full closure, operator progress and production
 qualification remain required.
+
+## Retain every selected original with explicit resume
+
+`go-export-set-collect` is implemented with actual new native qualification pending.
+It verifies the complete original signed journal before contacting the source,
+then binds and downloads the original common manifest and every selected
+ZIP/mod/info. Use a current serving generation from set status and the same
+independently trusted journal inputs used for verification:
+
+```sh
+cratectl go-export-set-collect \
+  --config /private/path/client.json --set-id <exact-set-id> --generation 1 \
+  --output-directory '/private/path/collected common set' \
+  --journal-file /private/path/journal.jsonl \
+  --journal-tenant <tenant> --journal-event-sequence <creation-sequence> \
+  --journal-through <exact-head-sequence> --journal-through-hash <exact-head-hash> \
+  --checkpoint-file /private/path/checkpoint.json \
+  --checkpoint-signature-file /private/path/checkpoint.sig \
+  --checkpoint-key-file /private/path/separately-trusted-public.pem
+```
+
+The output's parent must already be owner-private. Keep tokens and client config
+outside the collection. Retained files are manifest.json, checkpoint.json,
+checkpoint.sig, signer-public.pem, journal.jsonl and root.NNN.zip/mod/info for
+every zero-based original root, plus immutable bindings.json and final receipt.json.
+The directory is flat retained input for the future complete native file proxy;
+it supplies no current destination admission or automatic dependency selection.
+
+An interruption keeps private checkpointed bytes and emits no new success result.
+Read current set status, explicitly renew if needed, then repeat with the same
+original inputs, the new `--generation` and `--resume`. Retained bytes are rehashed.
+Corrupt bytes require another directory; the collector preserves the original.
+A completed collection resumed under a later generation returns the same original
+receipt bytes after current source and content checks. A copied receipt alone
+cannot establish current byte integrity or independent signer trust.
+
+The final receipt sets bytes_verified only after every proof and package member
+passes its original digest and bounded ZIP/mod/info consistency checks. Current
+admission, checksum authority, dependency closure and delivery remain false. A
+late denied or missing member leaves earlier retained files without a new complete
+receipt. Existing original receipts remain historical records when a later resume
+fails. The single-version collector keeps its original independent format.
+
+Choose `--chunk-bytes` from 65536 through 8388608, `--max-bytes` through 65 GiB and
+`--timeout` through 1h. Default chunks are 4 MiB; use 8 MiB when needed to stay within
+the 16,384 network-request ceiling. The separate journal byte/time budgets apply
+before the HTTP/copy/inspection deadline. Source expiry and 90-second transfer
+leases still apply. Metadata is bounded to 512 KiB and directory enumeration to 780
+entries. Actual throughput/large-volume/Windows qualification remains required.

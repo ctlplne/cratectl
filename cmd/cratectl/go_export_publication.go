@@ -28,17 +28,24 @@ func receiptPendingGeneration(name string) (int64, bool) {
 	n, err := strconv.ParseInt(value, 10, 64)
 	return n, err == nil && n > 0 && strconv.FormatInt(n, 10) == value
 }
-func collectionEntries(root *os.Root) ([]os.DirEntry, error) {
+func collectionEntries(root *os.Root, bounds ...int) ([]os.DirEntry, error) {
+	maximum := 12
+	if len(bounds) > 1 || len(bounds) == 1 && (bounds[0] < 1 || bounds[0] > 780) {
+		return nil, errors.New("invalid directory entry bound")
+	}
+	if len(bounds) == 1 {
+		maximum = bounds[0]
+	}
 	directory, err := root.Open(".")
 	if err != nil {
 		return nil, err
 	}
 	defer directory.Close()
-	entries, err := directory.ReadDir(13)
+	entries, err := directory.ReadDir(maximum + 1)
 	if err != nil && err != io.EOF {
 		return nil, err
 	}
-	if len(entries) > 12 {
+	if len(entries) > maximum {
 		return nil, errors.New("collection member budget exceeded")
 	}
 	return entries, nil
@@ -94,7 +101,20 @@ func publicationPair(root *os.Root, final, pending string) (os.FileInfo, os.File
 	}
 	return a, b, nil
 }
-func readCollectionPublication(root *os.Root, name string, expected os.FileInfo) ([]byte, error) {
+func collectionPublicationLimit(bounds []int) (int, error) {
+	if len(bounds) == 0 {
+		return collectionJSONLimit, nil
+	}
+	if len(bounds) != 1 || bounds[0] < 1 || bounds[0] > 512<<10 {
+		return 0, errors.New("invalid metadata publication bound")
+	}
+	return bounds[0], nil
+}
+func readCollectionPublication(root *os.Root, name string, expected os.FileInfo, bounds ...int) ([]byte, error) {
+	maximum, err := collectionPublicationLimit(bounds)
+	if err != nil {
+		return nil, err
+	}
 	f, err := root.OpenFile(name, os.O_RDONLY|collectionOpenFlags(), 0)
 	if err != nil {
 		return nil, err
@@ -104,9 +124,9 @@ func readCollectionPublication(root *os.Root, name string, expected os.FileInfo)
 	if err != nil || !os.SameFile(before, expected) || collectionFileLinks(before) != collectionFileLinks(expected) {
 		return nil, errors.New("metadata file changed")
 	}
-	raw, err := io.ReadAll(io.LimitReader(f, collectionJSONLimit+1))
+	raw, err := io.ReadAll(io.LimitReader(f, int64(maximum)+1))
 	after, se := f.Stat()
-	if err != nil || se != nil || len(raw) > collectionJSONLimit || !os.SameFile(before, after) || before.Size() != after.Size() || !before.ModTime().Equal(after.ModTime()) || collectionFileLinks(before) != collectionFileLinks(after) {
+	if err != nil || se != nil || len(raw) > maximum || !os.SameFile(before, after) || before.Size() != after.Size() || !before.ModTime().Equal(after.ModTime()) || collectionFileLinks(before) != collectionFileLinks(after) {
 		return nil, errors.New("metadata is incomplete, changed or exceeds its byte budget")
 	}
 	mapped, err := root.Lstat(name)
@@ -119,8 +139,12 @@ func readCollectionPublication(root *os.Root, name string, expected os.FileInfo)
 // The caller holds the directory lock. Never replace a final name: the hard
 // link publishes only fully written and synced bytes, and directory sync makes
 // that link durable before removing its recoverable pending alias.
-func publishCollectionJSON(root *os.Root, final, pending string, expected []byte, resume bool) error {
-	if len(expected) == 0 || len(expected) > collectionJSONLimit || final == pending || pending == "" {
+func publishCollectionJSON(root *os.Root, final, pending string, expected []byte, resume bool, bounds ...int) error {
+	maximum, err := collectionPublicationLimit(bounds)
+	if err != nil {
+		return err
+	}
+	if len(expected) == 0 || len(expected) > maximum || final == pending || pending == "" {
 		return errors.New("invalid bounded metadata publication")
 	}
 	complete, staged, err := publicationPair(root, final, pending)
@@ -131,7 +155,7 @@ func publishCollectionJSON(root *os.Root, final, pending string, expected []byte
 		if !resume {
 			return errors.New("completed metadata already exists; explicit resume is required")
 		}
-		raw, err := readCollectionPublication(root, final, complete)
+		raw, err := readCollectionPublication(root, final, complete, maximum)
 		if err != nil {
 			return err
 		}
@@ -186,7 +210,7 @@ func publishCollectionJSON(root *os.Root, final, pending string, expected []byte
 	if err != nil || collectionFileLinks(info) != 1 {
 		return errors.New("pending metadata changed before publication")
 	}
-	raw, err := readCollectionPublication(root, pending, info)
+	raw, err := readCollectionPublication(root, pending, info, maximum)
 	if err != nil || !bytes.Equal(raw, expected) {
 		return errors.New("pending metadata readback differs from the complete record")
 	}

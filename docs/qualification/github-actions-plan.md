@@ -15,17 +15,19 @@ audit afterward. Public repository and CI pushes/repairs are authorized. Release
 package/image publication, customer, primary and sibling changes need their own
 authority. No autonomous delegation.
 
-Latest accepted runtime: `ca44b3789f4d26530d71fa29c7097321f3a12687`.
-Its six selected workflows pass all 26 native jobs. The strengthened read-only
-[verifier42388375407](https://github.com/ctlplne/cratectl/actions/runs/42388375407)
-accepts the complete inventory; all 26 original log hashes/byte counts, 19 safe
-members, 72 raw report hashes and 18 source contracts independently match.
-See the [whole checkpoint](../../evidence/2026-11-07/github-ca44b37-checkpoint.json).
-Both Linux hosts pass 274 full PostgreSQL and 96 named Go functions normally/race,
-312 Go stock/683 baseline checks, 15 historical binaries/20 upgrade reports each.
-Source/fuzz passes 58 targets on three native hosts; Chromium passes 19 main
-workflows/151 checks; separate x86 producer/ARM consumer passes 16 stages.
-Focused browser, NuGet-library and strict SDK are unselected, never passes.
+Latest accepted runtime: `1664c7c77191a5cc97313d7a2f924de0b6c5a053`.
+Its six selected workflows pass all26native jobs. Actual read-only
+[verifier42392247746](https://github.com/ctlplne/cratectl/actions/runs/42392247746)
+accepts the complete inventory. All26original log hashes/byte counts,19safe
+members/72report hashes and18source contracts independently match originals.
+See the [whole checkpoint](../../evidence/2026-11-07/github-1664c7c-checkpoint.json).
+Both Linux hosts pass277full PostgreSQL/99named Go functions normally/race,
+312Go stock/683baseline checks,15historical binaries/20upgrade reports each.
+Source/fuzz passes60targets onthree native hosts; Chromium passes19main151checks;
+actual separate x86 producer/ARM consumer passes16stages. Focused browser,
+NuGet-library and strict SDK are unselected, never passes. Allthree new common
+metadata preview functions pass real PostgreSQL/API tests. This is metadata-only;
+new schema17durability and collector code remain outside that accepted source.
 
 The earlier accepted [c1 campaign](../../evidence/2026-11-07/github-c1f40f3-checkpoint.json)
 retains its separate 29-job/22-safe/87-report scope, including 15 focused Chromium
@@ -34,15 +36,14 @@ journeys use declared response stand-ins. Full console, WCAG, server import,
 closure and production readiness do not follow. Original failed b5/ae7 campaigns
 and unknown browser intermittent0122 remain preserved. Strict SDK0126 stays open.
 
-New ADR0062 common-snapshot preview is locally implemented and qualified against
-development/owned stand-ins. Its three actual PostgreSQL/API cases are compiled
-normally/race and vetted, not executed locally. That pushed preview inventory is 277 PostgreSQL/99 named Go/60 fuzz.
-The subsequent ADR0063 durable common-set/schema17/original signed binding source
-requires 283 PostgreSQL/105 named Go/61 fuzz and16 historical binaries/21 upgrade
-reports per actual Linux architecture; local gates/compile are not native proof. Keep the existing architecture
-jobs, original assertions and all selected profile contracts; do not add a
-parallel local PostgreSQL/client campaign. Continue durable creation, collection,
-offline proxy, current scanner/import/provenance and the full six-step export plan.
+ADR0062 common-snapshot preview now passes its three actual PostgreSQL/API cases
+normally and under race on both Linux hosts, within the accepted 277 PostgreSQL/
+99 Go/60 fuzz campaign. ADR0063/0064 durable common-set/schema17/original signed
+binding and all-member collection remain native unverified. Their new source
+requires 283 PostgreSQL/105 named Go/61 fuzz, 16 historical binaries and 21 upgrade
+reports per actual Linux architecture, plus every other selected profile. Keep
+the existing architecture jobs and original assertions. Continue the complete
+file proxy, current scanner/import/provenance and full six-step export outcome.
 
 The [documentation-only6c9 checkpoint](../../evidence/2026-11-07/documentation-6c9f307-acceptance-checkpoint.json)
 qualifies the selector/security placement and actual read-only unselected-runtime
@@ -274,3 +275,25 @@ new workflow is needed. Preserve the running166preview campaign and accept it
 before pushing incompatible schema17closed contracts. Full all-member collection,
 offlineproxy/closure/currentscanner/import/provenance/operator/production and every
 GOAL4.1requirement remain open; scoped green CI cannot close them.
+
+## Common-set collector qualification
+
+ADR0064 extends the existing real PG/CAS/TLS/CLI/OpenSSL journey with independent
+common-set processkill/renewal/all-member/replay/late-denial/corruptresume controls.
+Local build/unit/race/lint and normal/race tagged compilation/vet pass; these are
+not native integration proof. Keep full283PG/105Go/61fuzz,16historical21upgrades,
+all original stock/browser/portable contracts and unchanged first16migrations.
+
+The next combined push also changes scripts/qualification_contract.py and
+scripts/ci/evidence_summary.py. Their existing path rules select two native
+NuGet-library jobs and three focused Chromium jobs as well as the six standard
+workflow families. Expect31nativejobs/eight workflows,24safe artifacts and91
+report records including custom library reports. Enumerate actual GitHub API
+runs before acceptance; a green subset cannot stand in for that selected union.
+Strict checksum remains unselected unless its own inputs change;0126staysopen.
+No new local native campaign or duplicate Actions workflow is added.
+
+After exact native collection qualification, complete the private native file
+proxy and full dependency/authority/permission/provenance closure with current
+scanner/import/operator/lifecycle/provider/platform/production proof. All14export
+cases/7environments and450capabilities/41families/laterGOAL4.1remain required.
