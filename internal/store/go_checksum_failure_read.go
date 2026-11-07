@@ -22,7 +22,7 @@ type GoChecksumAuthorityState struct {
 func (s *Store) GoChecksumState(ctx context.Context, i Identity, repo string, revision int64) (GoChecksumAuthorityState, error) {
 	var out GoChecksumAuthorityState
 	err := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
-		r, err := repositoryInTx(ctx, tx, i, repo, "read")
+		r, err := repositoryRecordInTx(ctx, tx, i, repo, "read")
 		if err != nil {
 			return err
 		}
@@ -102,7 +102,7 @@ func (s *Store) GoChecksumFailureEvidence(ctx context.Context, i Identity, repo,
 	var raw []byte
 	var digest string
 	err = s.Tx(ctx, i, false, func(tx pgx.Tx) error {
-		r, err := repositoryInTx(ctx, tx, i, repo, "read")
+		r, err := repositoryRecordInTx(ctx, tx, i, repo, "read")
 		if err != nil {
 			return err
 		}

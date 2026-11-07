@@ -64,9 +64,6 @@ func (s *Store) Retrieval(ctx context.Context, i Identity, repo, path string, ex
 		if len(expected) > 0 && cfg.SourceRevision != expected[0] {
 			return ErrSourceChanged
 		}
-		if e := goChecksumRepositoryUsable(ctx, tx, cfg); e != nil {
-			return e
-		}
 		e = scanRetrieval(tx.QueryRow(ctx, `SELECT `+retrievalColumns+` FROM cratectl.retrievals WHERE repository=$1 AND path=$2`, repo, path), &r)
 		r.SourceChanged = r.SourceRevision != cfg.SourceRevision
 		return e
@@ -112,6 +109,9 @@ func (s *Store) acquireRetrievalWithLease(ctx context.Context, i Identity, repo,
 		}
 		if len(expected) > 0 && cfg.SourceRevision != expected[0] {
 			return ErrSourceChanged
+		}
+		if e := goChecksumRepositoryUsable(ctx, tx, cfg); e != nil {
+			return e
 		}
 		if e = notDeletedInTx(ctx, tx, repo, path); e != nil {
 			return e

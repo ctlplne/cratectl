@@ -1,5 +1,44 @@
 # cratectl execution status
 
+Current continuation preserves the first exact `2d29380` native failures in
+`evidence/2026-11-07/go-checksum-2d29380-first-failures.json`. BothGo normal suites
+expose a misplaced guard: acquisition can start new work after a proved key fork,
+while read-only failed-state inspection is blocked. Earlier cache errors also
+precede key diagnosis. Bothupgrade jobs rebuild12historical native binaries but
+reject baseline12 in the driver. DEFECT.0123/0124 remain unqualified pending replay.
+No original assertion or profile is removed. Exact20d2 remains the latest fully
+accepted selected campaign; source13 has no whole-campaign pass.
+
+The repair moves enforcement into common acquisition before generation/fresh/busy/
+new-root branches, preserves failure inspection, and checks blocked keys before
+checksum cache and fresh-negative fallback. Four extra acquisition branches and
+one new real-PG negative-fallback function extend the existing regression.
+
+New read-only management endpoints expose safe current key/checkpoint state,
+admin-only bounded failure summaries and exact canonical evidence attachments.
+Historical evidence remains inspectable after suspension/removal under current
+credentials and repository access. Offline `cratectl go-checksum-verify` requires
+a separately supplied public key and journal/manifest digest, private2MiB file,
+canonical encoding and independent original-proof replay. Success means a proved
+fork only; unverified observations return nonzero. Neither result admits packages.
+New `--raw-response` preserves hashed download bytes without a terminal newline.
+The console explains trust limits, pages summaries, refuses rounded identifiers,
+clears denied history and provides private export commands without automatic raw
+body download or trust mutation. See `docs/go-checksum-inspection.md`.
+
+Current67Go/241fullPG/47fuzz need exact native replay. Three new PGfunctions cover
+summary traversal/retired evidence, actual API auth/exact download/expiry, and fresh
+negative fallback. Four new unit functions cover14offline CLI cases, exact raw
+response and22invalid-query/10route-method cases. One added Chromium workflow uses
+explicit owned management response stand-ins; all15existing browser workflows
+remain,16total/125checks expected. Database/key enforcement is a separate real-PG
+claim. Schema13 and all13migration checksums remain unchanged; primary11/selected
+5483878b binaries/tenreceipts/credentials remain stopped/preserved. All450artifact
+capabilities/41families/later stages stay committed, with legacy12incident handling,
+full offline/export/backup/GC/conditionalrefresh/stockchecksum-on/publicGo open.
+
+Earlier source-specific implementation and qualification records follow.
+
 Owner amended the goal on 2026-11-04 to explicitly exclude trstctl's feature
 suite. `GOAL.md` section 4.1 governs: no CA/PKI platform, secrets vault or
 external credential lifecycle, signing/custody service, workload/agent identity

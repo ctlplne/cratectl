@@ -370,6 +370,9 @@ func readJSON(w http.ResponseWriter, r *http.Request, v any, limit int64) bool {
 }
 func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Identity) {
 	p := strings.TrimPrefix(r.URL.Path, "/api/v1/")
+	if s.goChecksumManagement(w, r, i, p) {
+		return
+	}
 	if s.nugetCatalogManagement(w, r, i, p) {
 		return
 	}

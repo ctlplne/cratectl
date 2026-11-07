@@ -227,6 +227,19 @@ func TestGoModuleChecksumForkBlocksTenantKeyAcrossRepositoriesPublicationAndSour
 	if _, err = f.s.AcquireRetrieval(ctx, f.i, "sibling", alias.Path, "blocked-new-fill", true); !errors.Is(err, ErrGoChecksumAuthorityBlocked) {
 		t.Fatal("blocked key acquired new upstream work", err)
 	}
+	for _, request := range []struct {
+		path  string
+		force bool
+	}{{alias.Path, false}, {next.GoModule.Objects[0].Path, false}, {"go.cratectl.invalid/!owned/checksum/@v/v9.9.9.zip", true}} {
+		if lease, err := f.s.AcquireRetrieval(ctx, f.i, "sibling", request.path, "blocked-all-acquisitions", request.force); !errors.Is(err, ErrGoChecksumAuthorityBlocked) || lease.Acquired {
+			t.Fatal("key block must precede fresh-cache, busy and new-root acquisition", err)
+		}
+	}
+	observed := alias
+	observed.Generation++
+	if lease, err := f.s.AcquireRetrievalRefresh(ctx, f.i, observed, "blocked-observed-refresh", 32, time.Minute); !errors.Is(err, ErrGoChecksumAuthorityBlocked) || lease.Acquired {
+		t.Fatal("generation-coalesced refresh bypassed key block", err)
+	}
 	if err = f.s.Tx(ctx, f.i, false, func(tx pgx.Tx) error {
 		var refs int
 		err := tx.QueryRow(ctx, `SELECT count(*) FROM cratectl.artifacts WHERE repository='sibling' AND path=$1`, inflight.Path).Scan(&refs)

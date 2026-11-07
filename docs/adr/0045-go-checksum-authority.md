@@ -466,3 +466,34 @@ contract](https://pkg.go.dev/golang.org/x/mod/sumdb/dirhash), and [standard chec
 client operations](https://pkg.go.dev/golang.org/x/mod/sumdb#ClientOps).
 Implementation uses the already pinned BSD-3-Clause x/mod v0.42.0 dependency;
 no new dependency, automatic upgrade or external service is introduced.
+
+
+## Failure inspection and native first-failure repair, replay pending
+
+The exact2d29380 native normal suites exposed a guard attached to read-only
+retrieval inspection instead of acquisition. Move it before every acquisition
+branch, including fresh/coalesced/busy/new-root attempts. Keep failed state
+inspectable and enforce the key before bundle cache and fresh negative fallback.
+All original failing assertions remain; extra acquisition branches and negative
+fallback need normal/race execution onboth native Linuxhosts. Upgrade driver
+baseline parsing now follows the explicit schema target; native schema12 into13
+and skipped later profiles still require replay. The first13migrations are frozen.
+
+Retained-record inspection uses current repository/credential authorization even
+for suspended/removed records; it never authorizes package serving. Safe key
+state exposes no observing module/repository. Admin-only summaries are bounded
+to100rows/one lookahead and exclude raw upstream bodies/pins. Exact raw exports
+check their stored digest and add no newline; independent attribution still
+requires a trusted journal/manifest anchor. History query results are bounded,
+not a large-history latency/index/scale qualification.
+
+Offline CLI verification requires a private regular2MiB evidence file, separately
+trusted public key and exact trusted evidence digest. Invalid inputs emit no
+partial record; unverified observations produce a nonzero result and never a
+fork/clean/package approval. The console is read-only, does not automatically
+fetch bodies, refuses unsafe numeric identifiers and provides private CLI export
+instructions. Its new browser workflow uses explicit owned response stand-ins
+while public proxy creation remains gated. Actual database authorization, exact
+byte download and tenant/key enforcement require the separate real-PG regressions.
+Legacy source12 incident discovery/quarantine/review remains open; no fabricated
+proof, implicit trust reset or retroactive original response reconstruction.

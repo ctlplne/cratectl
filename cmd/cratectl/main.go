@@ -21,6 +21,9 @@ import (
 )
 
 func run() error {
+	if len(os.Args) > 1 && os.Args[1] == "go-checksum-verify" {
+		return runGoChecksumVerify(os.Args[2:], os.Stdout)
+	}
 	if len(os.Args) > 1 && os.Args[1] == "npm-config" {
 		return runNPMConfig(os.Args[2:])
 	}
@@ -36,6 +39,7 @@ func run() error {
 	upload := f.String("upload-file", "", "stream exact publication or repair bytes from this regular file")
 	timeout := f.Duration("timeout", 30*time.Second, "request timeout, 1s–24h; increase explicitly for large repair sources")
 	responseLimit := f.Int64("response-limit", 4<<20, "maximum management response bytes, 1–1073741824; increase explicitly for complete large previews")
+	rawResponse := f.Bool("raw-response", false, "write exact response bytes without an added newline; use for hashed evidence downloads")
 	key := f.String("idempotency-key", "", "durable mutation key")
 	if e := f.Parse(os.Args[1:]); e != nil {
 		return e
@@ -144,7 +148,9 @@ func run() error {
 	if e = copyManagementResponse(os.Stdout, resp.Body, *responseLimit); e != nil {
 		return e
 	}
-	fmt.Println()
+	if !*rawResponse {
+		fmt.Println()
+	}
 	if resp.StatusCode >= 300 {
 		return fmt.Errorf("management request returned HTTP %d", resp.StatusCode)
 	}

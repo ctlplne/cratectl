@@ -31,6 +31,9 @@ func goModuleNegativeAdmitted(state Retrieval, admissions []NativeAdmission) boo
 // version. A group may skip a proxy only after a fresh negative version intake
 // with no prior publication witness; all other states require current intake.
 func goModuleProxyAbsentInTx(ctx context.Context, tx pgx.Tx, r Repository, c gomodule.Coordinate, admissions []NativeAdmission) (bool, error) {
+	if err := goChecksumRepositoryUsable(ctx, tx, r); err != nil {
+		return false, err
+	}
 	p := c.Prefix() + ".zip"
 	var state Retrieval
 	e := scanRetrieval(tx.QueryRow(ctx, `SELECT `+retrievalColumns+` FROM cratectl.retrievals WHERE repository=$1 AND path=$2`, r.Name, p), &state)

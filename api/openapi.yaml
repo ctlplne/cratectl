@@ -351,6 +351,80 @@ components:
         recorded_at: {type: string, format: date-time}
         event_hash: {type: string, pattern: '^[a-f0-9]{64}$'}
 paths:
+  /api/v1/repositories/{repository}/go/checksum:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+    get:
+      summary: Inspect the retained checksum checkpoint and authenticated key block
+      description: Current repository read authorization required. Supply the exact observed source revision. Inspection remains available for suspended or removed records and grants no package admission. A false blocked value means no authenticated fork is recorded; it is not an authority health or recent-contact verdict. The response omits the observing repository and module coordinates of any tenant-wide key block.
+      parameters:
+        - in: query
+          name: source_revision
+          required: true
+          schema: {type: integer, format: int64, minimum: 0}
+      responses:
+        '200': {description: Source revision and authority with retained checkpoint and blocked boolean; package_admission is always false}
+        '400': {description: Missing or noncanonical query; repeated and unknown fields are refused}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current repository access required}
+        '404': {description: Repository not found in this tenant}
+        '409': {description: Repository is not a configured Go proxy}
+        '503': {description: Source revision changed or database unavailable}
+  /api/v1/repositories/{repository}/go/checksum/failures:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+    get:
+      summary: Page retained checksum failure summaries
+      description: Current tenant administrator and repository authorization required. Returns at most 100 fixed-size summaries in increasing tenant journal sequence with one lookahead. Raw upstream bodies and signed pins are excluded. Follow next_after only while more is true; restart after zero for earlier observations. Historical source epochs and inactive repository records remain inspectable. Original prototype failures without retained observations are not reconstructed or resolved by this page. All queries are bounded to 8192 bytes with one canonical value per documented field.
+      parameters:
+        - in: query
+          name: after
+          schema: {type: integer, format: int64, minimum: 0, default: 0}
+        - in: query
+          name: limit
+          schema: {type: integer, minimum: 1, maximum: 100, default: 25}
+      responses:
+        '200': {description: 'items with root_path, source_revision, generation, key_digest, expected_checkpoint_revision, classification (fork or unverified), evidence_sha256, sequence and created_at; more, next_after and limit'}
+        '400': {description: Noncanonical or out-of-range query; repeated and unknown fields are refused}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current tenant administrator access required}
+        '404': {description: Repository not found in this tenant}
+        '409': {description: Repository is not a Go proxy}
+  /api/v1/repositories/{repository}/go/checksum/failures/evidence:
+    parameters:
+      - {$ref: '#/components/parameters/Repository'}
+    get:
+      summary: Download exact original retained failure evidence
+      description: Current tenant administrator and repository authorization required. Select the exact historical ZIP root/source/generation from failure history. Original upstream bytes can be sensitive. Returns an attachment with private no-store caching and the exact canonical bytes without an added newline. X-Cratectl-Evidence-SHA256 identifies these bytes; separately trusted journal or export manifest attribution and a separately trusted public key are still needed for independent verification. The offline cratectl go-checksum-verify command returns success only for an authenticated fork and never grants package admission. Query length is at most 8192 bytes; unknown and repeated fields fail.
+      parameters:
+        - in: query
+          name: root_path
+          required: true
+          schema: {type: string, maxLength: 2048}
+          description: Canonical module ZIP path recorded by the failed attempt
+        - in: query
+          name: source_revision
+          required: true
+          schema: {type: integer, format: int64, minimum: 0}
+        - in: query
+          name: generation
+          required: true
+          schema: {type: integer, format: int64, minimum: 1}
+      responses:
+        '200':
+          description: Exact canonical GoChecksumFailureRecord of at most 2 MiB; save to an owner-private file
+          headers:
+            X-Cratectl-Evidence-SHA256:
+              description: SHA-256 of the exact attachment; does not independently authenticate attribution
+              schema: {type: string, pattern: '^[a-f0-9]{64}$'}
+          content:
+            application/json:
+              schema: {type: object}
+        '400': {description: Missing or noncanonical selector; repeated and unknown fields are refused}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current tenant administrator access required}
+        '404': {description: Repository or exact retained failure not found in this tenant}
+        '409': {description: Retained bytes fail their stored digest or repository is not a Go proxy}
   /api/v1/hold-matters:
     get:
       summary: Discover tenant-wide cross-reference preservation matters

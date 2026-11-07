@@ -5,15 +5,31 @@ import os
 import json
 from pathlib import Path
 import tempfile
+import subprocess
+import sys
 import unittest
 from unittest.mock import patch
 
-from qualification_contract import candidate_artifact_names, candidate_binary_directory, validate_historical_build, dotnet_sdk_pin
+from qualification_contract import CURRENT_SCHEMA, candidate_artifact_names, candidate_binary_directory, validate_historical_build, dotnet_sdk_pin
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 class CandidateArtifacts(unittest.TestCase):
+    def test_every_pinned_historical_lifecycle_input_is_admitted_before_resource_setup(self):
+        manifest=json.loads((ROOT/'docs/qualification/upgrade-baselines.json').read_text())
+        # The real driver parses before loading binaries, credentials or opening
+        # a database. --help makes this a local, resource-free CLI contract test.
+        for baseline in [row['schema'] for row in manifest['baselines'] if row['schema'] is not None]:
+            with self.subTest(baseline=baseline):
+                result=subprocess.run([sys.executable,ROOT/'scripts/conformance_lifecycle.py','--baseline-version',str(baseline),'--help'],capture_output=True,timeout=5)
+                self.assertEqual(result.returncode,0,result.stderr.decode())
+        for baseline in [0,1,CURRENT_SCHEMA,CURRENT_SCHEMA+1]:
+            with self.subTest(rejected=baseline):
+                result=subprocess.run([sys.executable,ROOT/'scripts/conformance_lifecycle.py','--baseline-version',str(baseline),'--help'],capture_output=True,timeout=5)
+                self.assertEqual(result.returncode,2)
+                self.assertIn(b'invalid choice',result.stderr)
+
     def test_dotnet_sdk_selection_requires_an_exact_stable_pin(self):
         with tempfile.TemporaryDirectory(prefix='cratectl-sdk-pin-',dir=ROOT/'.cache') as temporary:
             root=Path(temporary);path=root/'global.json'

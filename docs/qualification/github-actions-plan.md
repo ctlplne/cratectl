@@ -13,6 +13,24 @@ outside this CI authority. No autonomous delegation.
 
 ## Current qualification state
 
+The first source13 candidate2d29380 has a retained failure record:
+[evidence](../../evidence/2026-11-07/go-checksum-2d29380-first-failures.json).
+BothGo normal suites expose the misplaced acquisition/inspection guard; both
+upgrade drivers reject newly pinned schema12. Native repairs must replay all
+original assertions, not treat skipped race/stock/upgrade stages as passes.
+Exact20d2 remains the latest fully accepted selected campaign.
+
+Current inspection/repair source requires67Go/241fullPG normally/race onboth
+actual Linuxhosts and47fuzz/source/unit/race/lint on3native hosts. Retain all312Go
+stock checks,12historical binaries and17upgrade reportsperarch. Mainx86Chromium
+adds one explicit owned-response-stand-in checksum UI workflow to the existing15,
+16total/125checks expected. Its UI assertions do not establish real PostgreSQL,
+authenticated key enforcement, raw evidence download or publicproxy support;
+three new Go integration functions separately cover those internal boundaries.
+No localPG/JVM/SDK/emulatedx86 or localChromium campaign. Compile/list checks and
+TypeScript/embedded asset reproduction run onARM; actual browsers run onGitHub.
+
+
 Exact5ee [campaign checkpoint](../../evidence/2026-11-06/github-5ee4fbc-checkpoint.json)
 accepts all29actually selected jobs in7workflows:22safe summaries/79reports.
 All212PGfunctions run normally/race onbothLinuxhosts, source/unit/race/lint and

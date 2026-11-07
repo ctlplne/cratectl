@@ -1,0 +1,78 @@
+{
+  "candidate": "2d293800fbe53a43b9f95928fb475bfe57bab474",
+  "observed_at": "2026-11-07T01:30:48.341383+00:00",
+  "state": "first native failures retained; repairs implemented locally, native replay not yet qualified",
+  "jobs": [
+    {
+      "job_id": 128252207596,
+      "architecture": "linux/amd64",
+      "family": "upgrade",
+      "run_id": 42323156019,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42323156019/job/128252207596",
+      "conclusion": "failure",
+      "private_log": {
+        "path": ".private/ci-diagnostics/2d29380-first-failure/128252207596.txt",
+        "bytes": 74418,
+        "sha256": "ef0d32bb3b170b3cdd852866250062593dbf3a9ba5aa6ea36a041461a4d3b28e"
+      }
+    },
+    {
+      "job_id": 128252207836,
+      "architecture": "linux/arm64",
+      "family": "upgrade",
+      "run_id": 42323156019,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42323156019/job/128252207836",
+      "conclusion": "failure",
+      "private_log": {
+        "path": ".private/ci-diagnostics/2d29380-first-failure/128252207836.txt",
+        "bytes": 75717,
+        "sha256": "543c081e37ccfdd45baf014102fd5a3c917505fd65e81000a4bd704bd6b3743b"
+      }
+    },
+    {
+      "job_id": 128252207527,
+      "architecture": "linux/amd64",
+      "family": "go",
+      "run_id": 42323156048,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42323156048/job/128252207527",
+      "conclusion": "failure",
+      "private_log": {
+        "path": ".private/ci-diagnostics/2d29380-first-failure/128252207527.txt",
+        "bytes": 212759,
+        "sha256": "1d86eea7fc5fbce22ec0da9470f10b40002cf214034bb960ff0a9e2cc0d7a7f6"
+      }
+    },
+    {
+      "job_id": 128252207957,
+      "architecture": "linux/arm64",
+      "family": "go",
+      "run_id": 42323156048,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42323156048/job/128252207957",
+      "conclusion": "failure",
+      "private_log": {
+        "path": ".private/ci-diagnostics/2d29380-first-failure/128252207957.txt",
+        "bytes": 212461,
+        "sha256": "6113a7900252aeb6dfe6de7ec106edd9737a40a2f36127f5b8ed566b2a4912af"
+      }
+    }
+  ],
+  "observations": [
+    {
+      "defect": "DEFECT.0123",
+      "summary": "Both upgrade jobs rebuild all12 historical clean native binaries and complete schema2-11 retained lifecycle profiles, but conformance_lifecycle.py rejects schema12 at argument parsing. Schema12 maintenance and subsequent repair/schedule/retention stages did not run.",
+      "failed_step": "Retained lifecycle through every schema 2\u201312 upgrade",
+      "repair": "Use shared explicit CURRENT_SCHEMA as the upper exclusive historical CLI bound. Actual-driver resource-free CLI tests admit every pinned historical schema and reject legacy1/current/future values."
+    },
+    {
+      "defect": "DEFECT.0124",
+      "summary": "Both named Go normal suites fail the same four functions. Two server functions cannot inspect the failed retrieval because the key guard was attached to read-only Retrieval. Three subcases of atomic evidence see an earlier cache-expired refusal instead of key-block error. Cross-repository governance catches a real acquisition bypass: AcquireRetrieval starts work with the key already blocked.",
+      "failed_step": "Real PostgreSQL Go module regressions",
+      "repair": "Move the key guard from read-only Retrieval to common acquisition before generation/fresh/busy/new-root branches. Check the key before bundle cache admission, and also before fresh negative fallback. Keep all original assertions; expand acquisition regression branches and add a fresh-negative fallback regression."
+    }
+  ],
+  "limits": [
+    "No failed or skipped stage is a pass. Named Go race/stock checks did not run after normal regression failures. Source13 key enforcement remains native-unqualified.",
+    "Other selected source13 workflows continue independently; this is not a whole-candidate verdict. Original5380 intermittent jobs failure remains separate and unresolved.",
+    "No local PostgreSQL, primary migration, selected runtime, customer/sibling or release/package/image change. All450capabilities/41families/later stages remain underGOAL4.1; readiness/security/packaging false."
+  ]
+}

@@ -92,6 +92,13 @@ func goChecksumReadbackInTx(ctx context.Context, tx pgx.Tx, r Repository, p stri
 	if err := a.Validate(); err != nil {
 		return GoModuleChecksumReadback{}, err
 	}
+	initial, err := crypt.ParseGoSumDBCheckpoint(a.VerifierKey, a.InitialCheckpoint)
+	if err != nil {
+		return GoModuleChecksumReadback{}, err
+	}
+	if err := goChecksumAuthorityUsable(ctx, tx, initial.KeyDigest); err != nil {
+		return GoModuleChecksumReadback{}, err
+	}
 	selected, err := goModuleProxyBundleInTx(ctx, tx, r, p, c, review, admissions)
 	if err != nil {
 		return GoModuleChecksumReadback{}, err
@@ -102,13 +109,6 @@ func goChecksumReadbackInTx(ctx context.Context, tx pgx.Tx, r Repository, p stri
 	}
 	if m.Module != c.Module || m.Version != c.Version {
 		return GoModuleChecksumReadback{}, ErrGoModuleUnvalidated
-	}
-	initial, err := crypt.ParseGoSumDBCheckpoint(a.VerifierKey, a.InitialCheckpoint)
-	if err != nil {
-		return GoModuleChecksumReadback{}, err
-	}
-	if err := goChecksumAuthorityUsable(ctx, tx, initial.KeyDigest); err != nil {
-		return GoModuleChecksumReadback{}, err
 	}
 	v := GoModuleChecksumReadback{key: a.VerifierKey, artifact: selected}
 	b := &v.binding
