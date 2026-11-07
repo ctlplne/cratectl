@@ -1,9 +1,12 @@
 # Recover unattributed checksum incidents without inventing proof
 
-Status: implementation plan, not an implemented or qualified recovery feature.
-The source-13 admission/inspection repairs at `31a4dd3` must first pass native
-normal/race qualification. All 450 artifact capabilities, 41 families and later
-GOAL stages remain committed under section 4.1. Public Go proxy mode stays gated.
+Status: schema-14 implementation under qualification. Exact source-13 candidate
+`92ec23f9358c0dabbd86a7091f229d0769d554e5` passes all 24 selected GitHub jobs,
+including normal/race Go and full PostgreSQL suites on both native Linux hosts.
+See `evidence/2026-11-07/github-92ec23f-checkpoint.json`. That result does not
+qualify the new migration/recovery implementation. All 450 capabilities, 41
+families and later GOAL stages remain committed under section 4.1. Public Go proxy
+creation and routing stay gated. Primary 11 remains untouched.
 
 Source-12 prototypes retained a failed-attempt label and journal entry, without
 the original authority responses. The label alone cannot authenticate a fork.
@@ -32,15 +35,24 @@ retains it. Malformed retained data must fail migration explicitly; it cannot be
 silently skipped or treated as clean. Missing source events require an explicit
 repair path rather than a fabricated event/hash or a success-shaped receipt.
 
-The backfill must work for a schema owner without runtime BYPASSRLS. Determine
-and test its cross-tenant migration access explicitly. If temporary owner-only
-unforcing of the source event table is needed, it must stay inside the existing
-exclusive schema transaction, with every runtime transaction drained by the
-schema gate, FORCE restored before final admission, and full rollback on any
-error/interruption. No unforced state may become committed or runtime-admissible.
-Do not grant the runtime role wider migration privileges. Large histories can
-require controlled maintenance; exceeding existing time/work bounds must roll
-back rather than partially seed incidents or relax enforcement.
+The backfill must work for a schema owner without BYPASSRLS. Keep every source
+and new tenant table forced throughout maintenance. PostgreSQL supports
+role-scoped policies and an explicit current-user role target; use temporary
+owner-only SELECT policies for the source event/failure/fork tables and a narrowly
+scoped owner INSERT policy for the new incident table. The implementation uses
+those mechanisms under cratectl's existing exclusive schema transaction; native
+verification remains pending. See PostgreSQL 16's [row security](https://www.postgresql.org/docs/16/ddl-rowsecurity.html)
+and [policy definition](https://www.postgresql.org/docs/16/sql-createpolicy.html).
+
+Create those temporary policies only after runtime transactions drain through
+the schema gate. Remove every temporary policy before final schema admission;
+the permanent single tenant policy and all FORCE flags must remain exact. Runtime
+roles must never gain owner membership or migration privileges. Test a genuine
+nonsuperuser/non-BYPASSRLS migration owner, scoped runtime access while admission
+waits, and rollback after an error/interruption between policy creation and
+cleanup. Large histories can require controlled maintenance; exceeding existing
+time/work bounds must roll back rather than partially seed incidents or relax
+enforcement.
 
 ## Conservative enforcement and explicit trust review
 
@@ -107,3 +119,32 @@ and arm64. Keep x86 Chromium and the broader three-host source/fuzz lanes on
 GitHub. Source-13 qualification, this plan and compilation alone are not passes
 for the new migration or recovery path. The stopped primary remains schema 11
 on its selected binaries unless the owner separately authorizes maintenance.
+
+
+## Implemented candidate and acceptance limits
+
+The draft appends immutable forced-RLS incident/review tables in schema 14 and
+uses the current common key guard for all existing admission paths. Bare new
+labels are also captured synchronously, independent of ordinary queue capacity.
+Migration validates original tenant/sequence/hash links in 64-row pages with
+64 KiB/event and 100,000-label bounds before removing temporary owner policies.
+No database hashing extension or unforced interval is used. First thirteen
+migration definitions remain frozen. Schema 14 is frozen as
+`b1900b2f1e3fd96955b5a40e52e9dd0f37eb0303bfda513dd77f518dac25bcb5`.
+
+The admin API, existing CLI transport and console support original incident
+inspection, exact-current-state external trust preview/apply, lost-response
+replay and immutable historical review/key/checkpoint retrieval. Retained Go
+proxy configuration can choose a separately trusted key under mandatory checksum
+enforcement; new creation and public protocol routing remain gated. See
+[operator workflow](../go-checksum-inspection.md). Browser stand-ins exercise the
+customer controls only; real PostgreSQL tests exercise authorization and durable
+state separately.
+
+Native acceptance must include nonsuperuser/non-BYPASS owner backfill across two
+tenants, removed original source/no retrieval context, typed source-13 fork
+exclusion, orphaned attribution, damaged-link and post-backfill rollback, runtime
+immutability/forced-RLS refusal, review/source/key/checkpoint/credential fences,
+concurrent review/fork and lost-response behavior. Broader full-chain journal
+anchor export, large-history migration, full stock checksum-on proxy/group,
+offline cache/install/export/backup/GC and all later goal outcomes remain open.

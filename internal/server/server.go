@@ -122,6 +122,12 @@ func fail(w http.ResponseWriter, status int, code, action string) {
 }
 func respondErr(w http.ResponseWriter, e error) {
 	switch {
+	case errors.Is(e, store.ErrGoChecksumLegacyInput):
+		fail(w, 400, "invalid_checksum_legacy_review", "Supply the exact incident hash, repository source/key/checkpoint, bounded review reason, external review reference SHA-256 and explicit acceptance of unattributed history.")
+	case errors.Is(e, store.ErrGoChecksumLegacyChanged):
+		fail(w, 409, "go_checksum_legacy_review_changed", "Read the original incident and current authority, then preview again. The incident, source, key or checkpoint no longer matches; no trust reset is permitted.")
+	case errors.Is(e, store.ErrGoChecksumLegacyReview):
+		fail(w, 409, "go_checksum_legacy_review_required", "A retained checksum incident lacks original proof and key attribution. A tenant administrator must inspect the original journal and explicitly review a separately trusted external authority key. Retrying or changing sources cannot clear this incident.")
 	case errors.Is(e, store.ErrGoChecksumAuthorityBlocked):
 		fail(w, 409, "go_checksum_authority_blocked", "This checksum authority has authenticated conflicting history. Inspect retained failure evidence and choose a separately trusted authority key; retrying cannot reset retained trust.")
 	case errors.Is(e, store.ErrGoChecksumProofExpired):
@@ -370,6 +376,9 @@ func readJSON(w http.ResponseWriter, r *http.Request, v any, limit int64) bool {
 }
 func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Identity) {
 	p := strings.TrimPrefix(r.URL.Path, "/api/v1/")
+	if s.goChecksumLegacyManagement(w, r, i, p) {
+		return
+	}
 	if s.goChecksumManagement(w, r, i, p) {
 		return
 	}

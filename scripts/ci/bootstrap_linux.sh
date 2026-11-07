@@ -73,7 +73,7 @@ psql -h 127.0.0.1 -p 35432 -U cratectl_owner -d cratectl -v ON_ERROR_STOP=1 -c "
 for tenant in test-a test-b; do
   .cache/ci-build/cratectld provision --tenant "$tenant" --actor operator --role admin --token-file ".private/ci-$tenant.token"
 done
-.cache/ci-build/cratectld migrate --plan | python -c 'import json,sys; p=json.load(sys.stdin); assert p["binary_version"]==13 and p["safety_valid"] and len(p["applied"])==13 and not p["pending"]'
+.cache/ci-build/cratectld migrate --plan | python -c 'import json,sys; p=json.load(sys.stdin); assert p["binary_version"]==14 and p["safety_valid"] and len(p["applied"])==14 and not p["pending"]'
 uname -sm
 go version
 python --version

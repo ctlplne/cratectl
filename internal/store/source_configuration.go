@@ -67,7 +67,7 @@ func configurationPreview(ctx context.Context, tx pgx.Tx, i Identity, repo strin
 	proposed := r
 	proposed.SourceRevision = 0
 	proposed.Settings = *input.Settings
-	if ValidateRepository(&proposed) != nil {
+	if validateRepository(&proposed, r.Format == "go" && r.Mode == "proxy") != nil {
 		return out, nil, ErrConfigurationInput
 	}
 	if r.SourceRevision == int64(1<<63-1) {

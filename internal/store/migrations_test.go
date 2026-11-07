@@ -20,8 +20,10 @@ func TestAppliedMigrationDefinitionsStayImmutable(t *testing.T) {
 		"9fadadf954d8c0cdc5c905c367e49e1cffc31c82e72205f21a0e690653802feb",
 		"2ba151f1b80253fbca009c157f5c72dbb68481ffdefe9dacf18f9e14a3069f71",
 		"40eaf4d68b7cb6b867dba8451e001401a942014acf478bd03d5f4264cecb7daa",
+		"b1900b2f1e3fd96955b5a40e52e9dd0f37eb0303bfda513dd77f518dac25bcb5",
 	}
 	steps := currentMigrations()
+	t.Logf("current schema %d checksum %s", steps[len(steps)-1].Version, hashMigration(steps[len(steps)-1]))
 	for n, checksum := range expected {
 		if len(steps) <= n || steps[n].Version != n+1 || hashMigration(steps[n]) != checksum {
 			t.Fatalf("applied migration %d changed; append a new immutable step", n+1)

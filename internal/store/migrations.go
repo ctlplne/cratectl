@@ -61,9 +61,13 @@ var holdCasesSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationS
 var holdMattersSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationSafetySQL(), migrationSafetySQLFor(schemaTablesV11), 1)
 var goChecksumSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationSafetySQL(), migrationSafetySQLFor(schemaTablesV12), 1)
 var goChecksumFailureSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationSafetySQL(), migrationSafetySQLFor(schemaTablesV13), 1)
+var goChecksumLegacySchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationSafetySQL(), migrationSafetySQLFor(schemaTablesV14), 1)
 
 func schemaStateBody() string { return frozenSchemaStateBody }
 func schemaStateBodyForVersion(version int) string {
+	if version >= 14 {
+		return goChecksumLegacySchemaStateBody
+	}
 	if version >= 13 {
 		return goChecksumFailureSchemaStateBody
 	}
@@ -144,7 +148,8 @@ func buildMigrations() []migrationStep {
 		failures += `ALTER TABLE ` + q + ` ENABLE ROW LEVEL SECURITY; ALTER TABLE ` + q + ` FORCE ROW LEVEL SECURITY; CREATE POLICY tenant_scope ON ` + q + ` USING (tenant=current_setting('cratectl.tenant',true)) WITH CHECK (tenant=current_setting('cratectl.tenant',true)); GRANT SELECT,INSERT ON ` + q + ` TO cratectl_app;`
 	}
 	failures += schemaStateSQL(goChecksumFailureSchemaStateBody)
-	return []migrationStep{{1, "legacy baseline", legacySchemaSQL()}, {2, "schema state and runtime coordination", migrationLedgerSQL + "\n" + state}, {3, "retained artifact and repository lifecycle", lifecycle}, {4, "versioned repository source configuration", sourceConfigurationSchema + schemaStateSQL(sourceSchemaStateBody)}, {5, "fenced exact-byte repair jobs", schemaStateSQL(sourceSchemaStateBody)}, {6, "recurring bounded integrity sampling", schedules}, {7, "policy-driven retained retirement", retention}, {8, "explicitly authorized scheduled retirement", retentionSchedules}, {9, "bounded hold inventory and immutable lifecycle history", holdManagementSchema + schemaStateSQL(retentionScheduleSchemaStateBody)}, {10, "independent immutable-reference hold cases", holdCases}, {11, "cross-reference hold matters and reviewed bulk preservation", matters}, {12, "retained Go checksum timelines and atomic proof receipts", checksums}, {13, "immutable checksum failure evidence and tenant key fork blocks", failures}}
+	legacy := goChecksumLegacySchema + schemaStateSQL(goChecksumLegacySchemaStateBody)
+	return []migrationStep{{1, "legacy baseline", legacySchemaSQL()}, {2, "schema state and runtime coordination", migrationLedgerSQL + "\n" + state}, {3, "retained artifact and repository lifecycle", lifecycle}, {4, "versioned repository source configuration", sourceConfigurationSchema + schemaStateSQL(sourceSchemaStateBody)}, {5, "fenced exact-byte repair jobs", schemaStateSQL(sourceSchemaStateBody)}, {6, "recurring bounded integrity sampling", schedules}, {7, "policy-driven retained retirement", retention}, {8, "explicitly authorized scheduled retirement", retentionSchedules}, {9, "bounded hold inventory and immutable lifecycle history", holdManagementSchema + schemaStateSQL(retentionScheduleSchemaStateBody)}, {10, "independent immutable-reference hold cases", holdCases}, {11, "cross-reference hold matters and reviewed bulk preservation", matters}, {12, "retained Go checksum timelines and atomic proof receipts", checksums}, {13, "immutable checksum failure evidence and tenant key fork blocks", failures}, {14, "retained unattributed checksum incidents and explicit external trust reviews", legacy}}
 }
 
 var frozenMigrations = buildMigrations()
@@ -362,7 +367,7 @@ func migrateSteps(ctx context.Context, dsn string, options MigrationOptions, ste
 	}
 	for n := len(plan.Applied); n < len(steps); n++ {
 		step := steps[n]
-		if _, e = tx.Exec(ctx, step.SQL); e != nil {
+		if e = executeMigrationStep(ctx, tx, step); e != nil {
 			return e
 		}
 		if _, e = tx.Exec(ctx, `INSERT INTO cratectl_private.schema_migrations(version,checksum)VALUES($1,$2)`, step.Version, migrationChecksum(step)); e != nil {
@@ -373,4 +378,24 @@ func migrateSteps(ctx context.Context, dsn string, options MigrationOptions, ste
 		return e
 	}
 	return tx.Commit(ctx)
+}
+
+func executeMigrationStep(ctx context.Context, tx pgx.Tx, step migrationStep) error {
+	if step.Version != 14 {
+		_, err := tx.Exec(ctx, step.SQL)
+		return err
+	}
+	const marker = "-- Validate retained original event bindings before removing owner policies."
+	if strings.Count(step.SQL, marker) != 1 {
+		return ErrSchemaIncompatible
+	}
+	before, after, _ := strings.Cut(step.SQL, marker)
+	if _, err := tx.Exec(ctx, before); err != nil {
+		return err
+	}
+	if err := validateLegacyChecksumMigration(ctx, tx); err != nil {
+		return err
+	}
+	_, err := tx.Exec(ctx, after)
+	return err
 }

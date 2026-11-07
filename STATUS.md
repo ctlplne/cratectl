@@ -1,31 +1,53 @@
 # cratectl execution status
 
-Exact31a4dd3 now qualifies both native upgrade workflows:12historical clean native
-binaries and17reportsperarch, including70assertions for schema12into13. See
-`evidence/2026-11-07/github-31a4dd3-upgrades-checkpoint.json`. DEFECT.0123 has a
-named native replay; no whole-candidate pass follows. Clean nativeARM CLI entry
-also confirms fork exit0/unverified exit1 using only public signed fixtures and
-synthetic attribution, without database/client/browser execution.
+Exact `92ec23f9358c0dabbd86a7091f229d0769d554e5` is the latest accepted selected
+GitHub campaign: 24 jobs in five workflows, 17 unchanged safe summaries and 64
+reports. Both native Linux hosts pass all 241 source-defined database tests
+normally/under race and all 67 Go tests plus 312 stock Go checks. Three native
+hosts pass source/unit/race/lint and 47 fuzz targets. Twelve clean historical
+native binaries and 17 upgrade reports per architecture qualify schema 2–12 into
+13. x86 Chromium passes 125 checks/16 workflows with zero skips/flaky/unexpected:
+15 existing workflows plus one explicit checksum inspection UI response stand-in.
+That stand-in does not prove database/auth/key enforcement. See
+`evidence/2026-11-07/github-92ec23f-checkpoint.json` and the named Go/upgrade
+checkpoints. Library/focused workflows were unselected. DEFECT.0123/0124/0125
+have named native repair replay; complete original 2d/31 failed campaigns remain
+retained. DEFECT.0122 remains unexplained/intermittent, not a repaired defect.
 
-Both31Go normal suites now fail only the new negative-fallback control: the test
-usedv9.9.9 without a/v9module path, so the canonical parser correctly rejected it.
-The correction validatesv1.9.9 for both negative and new-root controls. Production
-code and all before/after-fork assertions remain unchanged. Original2dfourfailures
-do not recur normally, but race/stock stages are skipped. Retain first failure
-`evidence/2026-11-07/go-checksum-31a4dd3-negative-fixture-first-failure.json` and
-require complete67Go/241fullPG/47fuzz/16browser replay. Latest fully accepted
-whole selected campaign remains20d2. See the canonical fixture development record.
+Schema 14 is implemented but native-unverified. It preserves unattributed old
+checksum incidents and requires per-incident/exact-key external trust review
+without inventing proof or clearing authenticated fork blocks. Backfill keeps
+forced tenant RLS on under exclusive maintenance, uses temporary owner-only
+policies and checks original event links before removing them. Review, journal
+and idempotency receipt commit synchronously without ordinary queue capacity.
+Admin API/CLI/console supports original context, exact-state preview,
+acknowledgment, replay and immutable historical review/key/checkpoint outcomes.
+Retained Go proxy trust configuration enforces checksums and exact credential
+authority; new creation/public routing stay gated.
 
-The durable legacy plan is `docs/qualification/go-checksum-legacy-plan.md`:
-unknown old key attribution remains an incident, never fabricated fork proof;
-conservative tenant/key review cannot clear authenticated fork blocks. A new
-migration would append14only after qualification, preserving all13definitions,
-forced RLS/exclusive maintenance, original journal bytes and explicit external
-trust review. This is a plan, not implemented recovery or a primary migration.
-All450artifact capabilities/41families/later stages and every remaining limit
-below remain. Primary11/selected5483878b binaries/tenreceipts/credentials preserved.
+All fourteen source migration definitions are frozen. Source 14 checksum is
+`b1900b2f1e3fd96955b5a40e52e9dd0f37eb0303bfda513dd77f518dac25bcb5`.
+Twelve new PG functions bring required inventories to 79 Go / 253 full PG,
+48 fuzz targets, 17 x86 Chromium workflows (15 existing plus two explicit checksum
+UI response stand-ins), 13 historical native binaries and 18 upgrade reports per
+architecture. ARM build/unit/race/lint, three PG packages' normal/race compile and
+tagged vet, console reproduction, new bounded fuzz and browser list pass.
+No new PG/stock-client/JVM/SDK/Chromium campaign ran locally. Local checks do not
+qualify durable behavior. See
+`evidence/2026-11-07/go-checksum-legacy-development.json` and
+`docs/qualification/go-checksum-legacy-plan.md`.
+
+The full amended GOAL remains active: all 450 artifact capabilities, 41 families
+and later stages remain under section 4.1. Full/offline Go, independently anchored
+journal export, backup/GC/conditional refresh and stock checksum-on proxy/group
+remain open. Readiness/security/packaging remain false. Stopped primary schema 11,
+selected 5483878b binaries, ten receipts and ignored credentials are preserved.
+No customer/sibling/release/package/image change.
 
 Earlier source-specific implementation and qualification records follow.
+Their then-current status statements remain historical; the exact-source records
+above determine present qualification.
+
 
 Current continuation preserves the first exact `2d29380` native failures in
 `evidence/2026-11-07/go-checksum-2d29380-first-failures.json`. BothGo normal suites

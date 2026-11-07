@@ -48,7 +48,29 @@ func goModuleAdvertisementPath(p string) bool {
 	return strings.HasPrefix(p, "go-catalog/") || strings.HasPrefix(p, "go-latest/")
 }
 
+// Historical labels alone cannot establish an authenticated fork. Current key
+// governance decides the error; a cleared incident still grants no bundle admission.
+func (s *Server) goChecksumFailedState(ctx context.Context, i store.Identity, repo store.Repository) error {
+	if repo.Format != "go" || repo.Settings.GoChecksumAuthority == nil {
+		return store.ErrGoModuleUnvalidated
+	}
+	state, err := s.DB.GoChecksumState(ctx, i, repo.Name, repo.SourceRevision)
+	if err != nil {
+		return err
+	}
+	if state.Blocked {
+		return store.ErrGoChecksumAuthorityBlocked
+	}
+	if state.LegacyReviewRequired {
+		return store.ErrGoChecksumLegacyReview
+	}
+	return store.ErrGoModuleUnvalidated
+}
+
 func goModuleFillFailure(e error) string {
+	if errors.Is(e, store.ErrGoChecksumLegacyReview) {
+		return "upstream_checksum_legacy_review"
+	}
 	if errors.Is(e, store.ErrGoChecksumAuthorityBlocked) {
 		return "upstream_checksum_authority_blocked"
 	}
@@ -174,7 +196,7 @@ func (s *Server) fillGoModuleProxy(parent context.Context, i store.Identity, rep
 		cleanup, cancel := context.WithTimeout(context.WithoutCancel(parent), 3*time.Second)
 		defer cancel()
 		failure := "retrieval_commit_rejected"
-		if errors.Is(e, crypt.ErrGoChecksumAuthority) || errors.Is(e, store.ErrGoChecksumCheckpointChanged) || errors.Is(e, store.ErrGoChecksumAuthorityBlocked) {
+		if errors.Is(e, crypt.ErrGoChecksumAuthority) || errors.Is(e, store.ErrGoChecksumCheckpointChanged) || errors.Is(e, store.ErrGoChecksumAuthorityBlocked) || errors.Is(e, store.ErrGoChecksumLegacyReview) {
 			failure = goModuleFillFailure(e)
 		}
 		failed := store.RetrievalResult{Failure: failure, GoChecksumFailure: result.GoChecksumFailure}

@@ -351,6 +351,99 @@ components:
         recorded_at: {type: string, format: date-time}
         event_hash: {type: string, pattern: '^[a-f0-9]{64}$'}
 paths:
+  /api/v1/go/checksum/legacy-incidents:
+    get:
+      summary: List retained unattributed checksum incidents
+      description: Current tenant administrator required. An old fork label without matching original failure/key-block evidence has unknown historical key attribution. These immutable tenant-wide incidents require an explicit external trust review per incident and exact key. The label is not authenticated fork proof. Bound queries to 8192 bytes and one canonical value per documented field. No package admission follows from inspection or review.
+      parameters:
+        - in: query
+          name: after
+          schema: {type: integer, format: int64, minimum: 0, default: 0}
+        - in: query
+          name: limit
+          schema: {type: integer, minimum: 1, maximum: 100, default: 25}
+        - in: query
+          name: key_digest
+          schema: {type: string, pattern: '^[a-f0-9]{64}$'}
+          description: Optional exact public verifier key digest used only to report reviewed_for_key
+      responses:
+        '200': {description: 'Bounded items with original sequence/hash and reviewed_for_key; more/next_after cursor and package_admission false'}
+        '400': {description: Invalid or ambiguous query}
+        '401': {description: Current credential required}
+        '403': {description: Current tenant administrator required}
+  /api/v1/go/checksum/legacy-incidents/{sequence}:
+    parameters:
+      - in: path
+        name: sequence
+        required: true
+        schema: {type: integer, format: int64, minimum: 1}
+    get:
+      summary: Inspect original unattributed incident context
+      description: Current tenant administrator required. Returns original journal payload and previous/current hash with incident sequence/hash; payload is limited to 64 KiB. No query is accepted. The local hash link is checked but an independently trusted journal/export anchor is still required for attribution. The original label remains unattributed. Historical source removal does not hide this context. Responses are private and no-store.
+      responses:
+        '200': {description: Original event and immutable incident with unattributed_fork_label classification}
+        '400': {description: Noncanonical incident sequence or unexpected query}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current tenant administrator required}
+        '404': {description: Incident does not exist in this tenant}
+        '409': {description: Original event binding is damaged or changed}
+        '503': {description: Original payload exceeds the inspection budget or database unavailable}
+  /api/v1/go/checksum/legacy-incidents/{sequence}/reviews:
+    parameters:
+      - in: path
+        name: sequence
+        required: true
+        schema: {type: integer, format: int64, minimum: 1}
+    get:
+      summary: Read an immutable historical external trust review
+      description: Current tenant administrator required. Supply exactly one key_digest query. Returns the original review and retained public verifier/signed checkpoint even after source changes or repository removal. A receipt describes a historical decision and never reports current key usability or package admission.
+      parameters:
+        - in: query
+          name: key_digest
+          required: true
+          schema: {type: string, pattern: '^[a-f0-9]{64}$'}
+      responses:
+        '200': {description: 'Review with incident/source/key/checkpoint bindings and separate review reference; verifier_key/checkpoint and package_admission false'}
+        '400': {description: Invalid or ambiguous exact key selector}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current tenant administrator required}
+        '404': {description: This incident/key review does not exist in this tenant}
+    post:
+      summary: Preview or record explicit external trust despite unknown old attribution
+      description: Current tenant administrator and active repository read authorization required. Preview is read-only. Apply requires dry_run false and explicit accept_unattributed_history true; exact current source/key/checkpoint and original incident hash must match. Refuses authenticated blocked keys. Records an immutable incident/key disposition with external review digest/reason/actor and synchronous journal/idempotency receipt in one tenant transaction independent of ordinary queues. It never clears a true fork or resets checkpoints or approves package bytes. Other incidents continue to require review. Exact replay returns the original receipt under current credentials and administrator/repository authorization; it cannot undo a future fork. No query is accepted. JSON is at most 64 KiB; duplicate/unknown/case-alias/missing/null binding fields are refused.
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          description: Required for apply; repeat only with identical request bytes
+          schema: {type: string, minLength: 8, maxLength: 128}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [repository, dry_run, incident_hash, expected_source_revision, key_digest, expected_checkpoint_revision, checkpoint_sha256, review_reference_sha256, reason]
+              properties:
+                repository: {type: string, maxLength: 63}
+                dry_run: {type: boolean}
+                accept_unattributed_history: {type: boolean, default: false}
+                incident_hash: {type: string, pattern: '^[a-f0-9]{64}$'}
+                expected_source_revision: {type: integer, format: int64, minimum: 0}
+                key_digest: {type: string, pattern: '^[a-f0-9]{64}$'}
+                expected_checkpoint_revision: {type: integer, format: int64, minimum: 0}
+                checkpoint_sha256: {type: string, pattern: '^[a-f0-9]{64}$'}
+                review_reference_sha256: {type: string, pattern: '^[a-f0-9]{64}$'}
+                reason: {type: string, minLength: 1, maxLength: 1024}
+      responses:
+        '200': {description: 'Read-only exact impact preview or immutable review receipt; package_admission is always false'}
+        '400': {description: Invalid input or missing explicit acknowledgment/idempotency key}
+        '401': {description: Expired or revoked credential}
+        '403': {description: Current administrator/repository access required}
+        '404': {description: Incident or selected repository absent in this tenant}
+        '409': {description: 'Incident/source/key/checkpoint changed; duplicate review or different replay fingerprint; authenticated key fork cannot be overridden'}
+        '413': {description: Review JSON exceeds 64 KiB}
+        '503': {description: Database unavailable or state inspection exceeds its bounded work budget}
   /api/v1/repositories/{repository}/go/checksum:
     parameters:
       - {$ref: '#/components/parameters/Repository'}
@@ -363,7 +456,7 @@ paths:
           required: true
           schema: {type: integer, format: int64, minimum: 0}
       responses:
-        '200': {description: Source revision and authority with retained checkpoint and blocked boolean; package_admission is always false}
+        '200': {description: Source revision and authority with retained checkpoint/checkpoint_sha256 and blocked/legacy_review_required booleans; package_admission is always false}
         '400': {description: Missing or noncanonical query; repeated and unknown fields are refused}
         '401': {description: Expired or revoked credential}
         '403': {description: Current repository access required}

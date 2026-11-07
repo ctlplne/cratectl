@@ -21,7 +21,9 @@ still apply to serving.
 In the console, open **Checksum inspection** on a retained Go proxy repository.
 Readers with repository access can inspect the safe checkpoint/key state. Current
 tenant administrators can page failure summaries and obtain private export
-commands. The view does not automatically download raw bodies or mutate trust.
+commands. Inspection does not automatically download raw bodies or mutate trust.
+Administrators can explicitly open the separate legacy incident recovery flow
+described below; preview and acknowledgment are required before recording review.
 It refuses commands and pagination when an identifier exceeds JavaScript's exact
 integer range; use the CLI/API for exact 64-bit values. Refresh observations after
 source changes. A stale source revision must not select different trust silently.
@@ -86,3 +88,109 @@ empty new history page nor an upgrade manufactures proof, clears such an inciden
 or establishes safe recovery. Legacy incident discovery, conservative quarantine
 and a separately reviewed recovery path remain required before public Go proxy
 mode is enabled.
+
+
+## Recover an unattributed historical incident
+
+Schema 14 adds a recovery path for old journal entries labelled
+`upstream_checksum_fork` without matching original signed observations and a
+retained key-block witness. Their original key may be unknown because settings,
+source epochs and repository state can have changed. cratectl preserves each
+original event and its hash. It does **not** call the old label a proved fork.
+Until reviewed, each such incident blocks every checksum key in that tenant.
+Another tenant remains independent.
+
+Use a current tenant administrator credential. In **Checksum inspection**, open
+**Inspect retained legacy incidents**. Inspect the original journal context.
+Obtain a separate external trust assessment of the exact selected public key;
+enter the SHA-256 of that review document and an explanation. **Preview external
+trust review** binds the decision to the original event/hash and the exact current
+repository source revision, key, signed checkpoint revision and checkpoint hash.
+Check the explicit acknowledgment before **Record external trust review**. This
+is your decision to trust an external key despite unknown old attribution. It is
+not a claim that missing historical proof has been recovered.
+
+The response retains the disposition and its synchronous journal sequence. The
+console keeps the original bytes/idempotency key if a response is not confirmed;
+**Retry same request** confirms the original result. Read the historical outcome
+with **Read retained review**. Refresh current state separately: a receipt never
+proves that the key is still usable. Every other unresolved incident still needs
+review. Packages require a new normal proof/publication and current policy.
+An authenticated fork always blocks its key and cannot be cleared by review.
+
+The same bounded workflow is available through the CLI:
+
+```sh
+cratectl --config "$CRATECTL_CLIENT_CONFIG" \
+  --path '/api/v1/go/checksum/legacy-incidents?limit=25&after=0'
+cratectl --config "$CRATECTL_CLIENT_CONFIG" \
+  --path '/api/v1/go/checksum/legacy-incidents/SEQUENCE'
+```
+
+Replace `SEQUENCE` with the exact original journal position, preserving all 64-bit
+precision. Query the repository checksum state with its current source revision.
+Prepare an owner-private JSON file containing these exact fields:
+
+```json
+{
+  "repository": "REPOSITORY",
+  "dry_run": true,
+  "accept_unattributed_history": false,
+  "incident_hash": "ORIGINAL_EVENT_SHA256",
+  "expected_source_revision": 0,
+  "key_digest": "SELECTED_VERIFIER_KEY_SHA256",
+  "expected_checkpoint_revision": 0,
+  "checkpoint_sha256": "CURRENT_SIGNED_CHECKPOINT_SHA256",
+  "review_reference_sha256": "SEPARATE_EXTERNAL_REVIEW_DOCUMENT_SHA256",
+  "reason": "Explain the external key trust decision and unknown old attribution"
+}
+```
+
+Replace every placeholder and both revisions with the actual inspected values.
+Hashes must be 64 lowercase hexadecimal characters. Submit the preview:
+
+```sh
+cratectl --config "$CRATECTL_CLIENT_CONFIG" --method POST \
+  --path '/api/v1/go/checksum/legacy-incidents/SEQUENCE/reviews' \
+  --body-file ./legacy-review-preview.json
+```
+
+After assessing that exact preview, save a separate apply file with the same
+bindings, `dry_run: false` and `accept_unattributed_history: true`. Supply a new
+8–128-character idempotency key. Preserve the exact file/key until confirmed:
+
+```sh
+cratectl --config "$CRATECTL_CLIENT_CONFIG" --method POST \
+  --path '/api/v1/go/checksum/legacy-incidents/SEQUENCE/reviews' \
+  --body-file ./legacy-review-apply.json \
+  --idempotency-key "$CRATECTL_LEGACY_REVIEW_REQUEST_ID"
+cratectl --config "$CRATECTL_CLIENT_CONFIG" \
+  --path '/api/v1/go/checksum/legacy-incidents/SEQUENCE/reviews?key_digest=EXACT_KEY_DIGEST'
+```
+
+A new review with stale source/key/checkpoint or incident bindings returns 409;
+inspect and preview again. A different body cannot reuse a committed key.
+Authenticated fork blocks also return 409. Readers and expired administrators
+cannot inspect original context or apply/replay decisions. All responses are
+private/no-store. Pages contain at most 100 incidents; original journal payloads
+are at most 64 KiB. The local event hash link alone is not an independently
+trusted journal/export anchor.
+
+For a retained Go proxy, **Repository configuration** can replace the explicitly
+supplied checksum verifier/bootstrap through the existing complete settings
+replacement and source-revision preview. It requires valid checksum authority and
+mandatory checksum enforcement, and checks any endpoint credential against its
+exact approved URL. This does not enable new Go proxy creation or public routing,
+reset a previously accepted key timeline, transfer an old review to a new key,
+or bypass missing incident review. A key with a genuine authenticated fork stays
+blocked even if configured again later.
+
+Schema-14 maintenance preserves all thirteen earlier receipts and original
+journal bytes under the exclusive schema gate. Forced tenant RLS stays on;
+temporary owner-only source/insert policies are removed before runtime admission.
+Original label links are checked in 64-row pages, with at most 100,000 labels and
+64 KiB per event. Damaged links or exceeded bounds roll back the whole migration;
+large-history qualification and a broader maintenance path remain open. Do not
+apply this source migration to the retained primary without separate maintenance
+authority. The new recovery/migration behavior remains unverified until its exact
+native PostgreSQL normal/race and browser campaigns pass.

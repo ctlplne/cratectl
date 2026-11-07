@@ -103,6 +103,13 @@ func (s *Store) AuthorizeWrite(ctx context.Context, i Identity, name string) err
 	return s.Tx(ctx, i, false, func(tx pgx.Tx) error { _, e := repositoryInTx(ctx, tx, i, name, "write"); return e })
 }
 func ValidateRepository(r *Repository) error {
+	return validateRepository(r, false)
+}
+
+// Retained Go proxy records need an administrative trust-recovery path while
+// new proxy creation and public protocol routing remain unqualified and gated.
+// Only configurationPreview may select this path after reading the actual row.
+func validateRepository(r *Repository, retainedGoProxy bool) error {
 	if r.SourceRevision != 0 {
 		return errors.New("source_revision is read-only")
 	}
@@ -132,7 +139,10 @@ func ValidateRepository(r *Repository) error {
 			return e
 		}
 	}
-	if r.Mode != "hosted" && r.Format != "generic" && r.Format != "maven" && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" && !(r.Format == "go" && r.Mode == "group") {
+	if retainedGoProxy && (r.Format != "go" || r.Mode != "proxy" || r.Settings.GoChecksumAuthority == nil || !r.Settings.Cache.RequireChecksum) {
+		return errors.New("retained Go proxy configuration requires explicit checksum authority and checksum enforcement")
+	}
+	if r.Mode != "hosted" && r.Format != "generic" && r.Format != "maven" && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" && !(r.Format == "go" && (r.Mode == "group" || r.Mode == "proxy" && retainedGoProxy)) {
 		return errors.New("proxy/group native adapters not yet implemented for this format")
 	}
 	if r.Settings.OCITokenEndpoint != nil {

@@ -497,3 +497,36 @@ while public proxy creation remains gated. Actual database authorization, exact
 byte download and tenant/key enforcement require the separate real-PG regressions.
 Legacy source12 incident discovery/quarantine/review remains open; no fabricated
 proof, implicit trust reset or retroactive original response reconstruction.
+
+
+## Unattributed historical incidents and explicit external trust
+
+Schema 14 appends immutable tenant/event/hash incidents and per-incident/exact-key
+external trust dispositions. Old fork labels cannot identify their old key from
+today's source settings or authenticate missing original proof. They conservatively
+require review for all keys in that tenant until the selected key has a disposition
+for every retained incident. Genuine signed fork blocks remain monotone and take
+precedence over administrative dispositions.
+
+Maintenance retains original journal bytes and thirteen earlier receipts. Temporary
+owner-only SELECT/INSERT policies permit cross-tenant backfill under exclusive
+schema admission without turning FORCE off or giving runtime roles migration
+privileges. Bounded internal-crypto link verification precedes removing those
+policies; faults roll back data, DDL/policies and receipt. This checks local links,
+not an independently anchored whole journal export.
+
+Review binds current repository/source/key/signed checkpoint, original incident
+hash, separate review-document digest, reason, actor and journal sequence. Current
+admin authorization, acknowledgment and exact-state fences are required. Journal,
+immutable review and idempotency receipt share one transaction independent of
+ordinary queues. Historical receipts do not report current health or approve
+packages; concurrent/future forks still block the key. Retained proxy configuration
+can select external trust under mandatory checksum enforcement; new creation and
+public routing stay gated.
+
+See [durable plan](../qualification/go-checksum-legacy-plan.md) and
+[operator workflow](../go-checksum-inspection.md). This is external artifact
+verification trust configuration, not a key issuer, signer, CA, vault or credential
+lifecycle service. Source13 qualification does not qualify the new migration.
+Native PostgreSQL normal/race and browser evidence remain required; stand-in UI
+behavior is distinct from actual database enforcement.

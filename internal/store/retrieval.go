@@ -436,6 +436,12 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 			// queue capacity is required and no worker/delivery is promised.
 			return appendEventIntent(ctx, tx, i, "proxy.retrieval."+state, data, false)
 		}
+		if repo.Format == "go" && result.Failure == "upstream_checksum_fork" {
+			if err := appendEventIntent(ctx, tx, i, "proxy.retrieval."+state, data, false); err != nil {
+				return err
+			}
+			return appendGoChecksumLegacyIncident(ctx, tx, i, sequence)
+		}
 		return appendEvent(ctx, tx, i, "proxy.retrieval."+state, data)
 	})
 	if e == nil && rejectedPublication != nil {

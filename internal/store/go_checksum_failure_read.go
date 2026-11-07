@@ -13,8 +13,10 @@ import (
 )
 
 type GoChecksumAuthorityState struct {
-	Checkpoint GoChecksumCheckpoint `json:"checkpoint"`
-	Blocked    bool                 `json:"blocked"`
+	Checkpoint           GoChecksumCheckpoint `json:"checkpoint"`
+	CheckpointSHA256     string               `json:"checkpoint_sha256"`
+	Blocked              bool                 `json:"blocked"`
+	LegacyReviewRequired bool                 `json:"legacy_review_required"`
 }
 
 // Inspection does not authorize serving or expose another repository's module
@@ -43,7 +45,13 @@ func (s *Store) GoChecksumState(ctx context.Context, i Identity, repo string, re
 		} else if err != nil {
 			return err
 		}
-		return tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM cratectl.go_checksum_forks WHERE key_digest=$1)`, initial.KeyDigest).Scan(&out.Blocked)
+		out.CheckpointSHA256 = crypt.Digest(out.Checkpoint.Checkpoint)
+		out.Blocked, err = goChecksumKeyForked(ctx, tx, initial.KeyDigest)
+		if err != nil {
+			return err
+		}
+		out.LegacyReviewRequired, err = goChecksumLegacyReviewRequired(ctx, tx, initial.KeyDigest)
+		return err
 	})
 	if err != nil {
 		return GoChecksumAuthorityState{}, err

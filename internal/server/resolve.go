@@ -136,8 +136,8 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 			case "negative":
 				return result, s.proxyAbsence(ctx, i, repo, p)
 			case "failed":
-				if lease.LastError == "upstream_checksum_fork" || lease.LastError == "upstream_checksum_authority_blocked" {
-					return result, store.ErrGoChecksumAuthorityBlocked
+				if lease.LastError == "upstream_checksum_fork" || lease.LastError == "upstream_checksum_authority_blocked" || lease.LastError == "upstream_checksum_legacy_review" {
+					return result, s.goChecksumFailedState(ctx, i, repo)
 				}
 				if lease.StalePermitted() {
 					if repo.Format == "oci" || repo.Format == "go" {
@@ -252,8 +252,8 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 			}
 			return result, s.proxyAbsence(ctx, i, repo, p, result.admissions...)
 		case "failed":
-			if refreshed.LastError == "upstream_checksum_fork" || refreshed.LastError == "upstream_checksum_authority_blocked" {
-				return result, store.ErrGoChecksumAuthorityBlocked
+			if refreshed.LastError == "upstream_checksum_fork" || refreshed.LastError == "upstream_checksum_authority_blocked" || refreshed.LastError == "upstream_checksum_legacy_review" {
+				return result, s.goChecksumFailedState(ctx, i, repo)
 			}
 			if refreshed.StalePermitted() {
 				if repo.Format == "oci" || repo.Format == "go" {

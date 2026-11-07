@@ -60,6 +60,9 @@ var goChecksumSchema string
 
 //go:embed go_checksum_failures.sql
 var goChecksumFailureSchema string
+
+//go:embed go_checksum_legacy.sql
+var goChecksumLegacySchema string
 var Name = regexp.MustCompile(`^[a-z][a-z0-9-]{0,62}$`)
 var ErrConflict = errors.New("conflict")
 var ErrDenied = errors.New("policy denied")
@@ -105,6 +108,7 @@ var schemaTablesV10 = append(append([]string(nil), schemaTablesV8...), "artifact
 var schemaTablesV11 = append(append([]string(nil), schemaTablesV10...), "hold_matters", "hold_matter_members", "hold_matter_operations", "hold_matter_targets", "hold_matter_outcomes")
 var schemaTablesV12 = append(append([]string(nil), schemaTablesV11...), "go_checksum_checkpoint_revisions", "go_checksum_checkpoints", "go_module_checksum_receipts")
 var schemaTablesV13 = append(append([]string(nil), schemaTablesV12...), "go_checksum_failures", "go_checksum_forks")
+var schemaTablesV14 = append(append([]string(nil), schemaTablesV13...), "go_checksum_legacy_incidents", "go_checksum_legacy_reviews")
 
 // legacySchemaSQL is migration 1. Freeze it and the five embedded SQL files;
 // subsequent schema changes belong in new checksummed steps.

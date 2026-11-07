@@ -153,12 +153,19 @@ func classifyGoChecksumFailure(ctx context.Context, r GoChecksumFailureReport, k
 }
 
 func goChecksumAuthorityUsable(ctx context.Context, tx pgx.Tx, digest string) error {
-	var blocked bool
-	if err := tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM cratectl.go_checksum_forks WHERE key_digest=$1)`, digest).Scan(&blocked); err != nil {
+	blocked, err := goChecksumKeyForked(ctx, tx, digest)
+	if err != nil {
 		return err
 	}
 	if blocked {
 		return ErrGoChecksumAuthorityBlocked
+	}
+	pending, err := goChecksumLegacyReviewRequired(ctx, tx, digest)
+	if err != nil {
+		return err
+	}
+	if pending {
+		return ErrGoChecksumLegacyReview
 	}
 	return nil
 }

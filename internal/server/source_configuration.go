@@ -130,6 +130,11 @@ func (s *Server) configurationManagement(w http.ResponseWriter, r *http.Request,
 	return true
 }
 func (s *Server) validateConfigurationCredentials(i store.Identity, settings store.RepositorySettings) error {
+	if settings.GoChecksumAuthority != nil {
+		if _, e := s.credential(i.Tenant, settings.GoChecksumAuthority.Endpoint); e != nil {
+			return e
+		}
+	}
 	if settings.Upstream != nil {
 		if _, e := s.credential(i.Tenant, *settings.Upstream); e != nil {
 			return e

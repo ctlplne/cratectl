@@ -1,6 +1,6 @@
 # GitHub Actions qualification plan
 
-Updated: 2026-11-06. Owner: `imfeelingtheagi`. The complete `GOAL.md`, all
+Updated: 2026-11-07. Owner: `imfeelingtheagi`. The complete `GOAL.md`, all
 450 capabilities / 41 families and all later stages remain committed scope.
 This plan places work on suitable hosts and describes how to accept evidence.
 It does not turn an unfinished feature or absent test into a pass.
@@ -13,37 +13,40 @@ outside this CI authority. No autonomous delegation.
 
 ## Current qualification state
 
-Exact31a4dd3 now accepts the [two native upgrade jobs](../../evidence/2026-11-07/github-31a4dd3-upgrades-checkpoint.json):
-12historical binaries and17reportsperarch, including schema12into13/70checks each.
-Its Go normal suites fail the new noncanonicalv9negative-control fixture, with
-race/stock skipped. Preserve [both failures](../../evidence/2026-11-07/go-checksum-31a4dd3-negative-fixture-first-failure.json);
-validatev1.9.9 controls and replay unchanged67Go/241PG/47fuzz/16browser requirements.
-No production parser/admission relaxation or removed assertion. Wholecampaign
-qualification remains20d2; the cleanARM offline CLI smoke is separately scoped.
+Exact92ec23f [campaign checkpoint](../../evidence/2026-11-07/github-92ec23f-checkpoint.json)
+accepts all24selectedjobs/5workflows,17safe summaries/64reports:67Go and241fullPG
+normally/race onbothLinuxhosts,312stockGo checks perhost,47fuzz andsource/unit/race/
+lint on3nativehosts,12clean historical builds/17upgrades perarch and125checks/
+16x86Chromium workflows. One checksum UI workflow uses explicit response stand-ins;
+actual database/auth/key/evidence behavior is separately covered by Go PG tests.
+Library/focused workflows were unselected. Original2d/31 failed campaigns are
+retained unchanged. DEFECT0122 remains unknown/intermittent.
 
-Follow the [legacy incident plan](go-checksum-legacy-plan.md) after repair replay.
-It preserves unattributed incidents and immutable original journal bindings,
-requires explicit external-trust review and cannot clear authenticated key forks.
-No implementation, source14migration or primary maintenance follows from the plan.
+Schema14 [development](../../evidence/2026-11-07/go-checksum-legacy-development.json)
+requires79Go/253fullPG normally/race onbothactualGitHubLinuxhosts,48fuzz/source/
+unit/race/lint on3nativehosts,all312Go/originalselectedprofiles,13clean native
+historical rebuilds and18upgrade reports perarch. A qualified clean92source13 pin
+is added without changing older pins. Seventeen x86 Chromium workflows comprise
+15existing and2explicit checksum UI response-stand-in workflows; their UI results
+must not become actual migration/auth/signature claims. Native14qualification is
+pending; localARMcompile/vet/list/build/unit/race/lint/fuzz passes are distinct.
 
+The [legacy recovery contract](go-checksum-legacy-plan.md) preserves unknown
+historical key attribution, immutable original events and explicit external trust
+reviews. It never clears an authenticated key fork or resets a checkpoint. All14
+source definitions are frozen. Primary11 remains outside CI maintenance.
 
-The first source13 candidate2d29380 has a retained failure record:
-[evidence](../../evidence/2026-11-07/go-checksum-2d29380-first-failures.json).
-BothGo normal suites expose the misplaced acquisition/inspection guard; both
-upgrade drivers reject newly pinned schema12. Native repairs must replay all
-original assertions, not treat skipped race/stock/upgrade stages as passes.
-Exact20d2 remains the latest fully accepted selected campaign.
+Inventory and serializer/CLI bounds advance together. Accept exact native source,
+platform/build hashes and original safe artifact hashes only when all actually
+selected jobs are terminal. No reruns, assertion removal or skipped stage counted
+as a pass. Preserve first failures and repair/replay at a new exact candidate.
+No local PostgreSQL/JVM/SDK/emulatedx86/Chromium campaign. Actual x86 and both
+native Linux database/client profiles run on GitHub-hosted runners.
 
-Current inspection/repair source requires67Go/241fullPG normally/race onboth
-actual Linuxhosts and47fuzz/source/unit/race/lint on3native hosts. Retain all312Go
-stock checks,12historical binaries and17upgrade reportsperarch. Mainx86Chromium
-adds one explicit owned-response-stand-in checksum UI workflow to the existing15,
-16total/125checks expected. Its UI assertions do not establish real PostgreSQL,
-authenticated key enforcement, raw evidence download or publicproxy support;
-three new Go integration functions separately cover those internal boundaries.
-No localPG/JVM/SDK/emulatedx86 or localChromium campaign. Compile/list checks and
-TypeScript/embedded asset reproduction run onARM; actual browsers run onGitHub.
+## Earlier source-specific qualification
 
+The following records describe earlier candidates and their limits; old
+then-current pointers do not supersede exact92acceptance or pending14work.
 
 Exact5ee [campaign checkpoint](../../evidence/2026-11-06/github-5ee4fbc-checkpoint.json)
 accepts all29actually selected jobs in7workflows:22safe summaries/79reports.
