@@ -1,6 +1,6 @@
 # 0059: Accept exact-source CI campaigns on GitHub
 
-Date: 2026-11-07. State: implementation and qualification in progress.
+Date: 2026-11-07. State: implemented; local stand-ins/lint pass, actual GitHub acceptance pending.
 
 Move bounded campaign inspection from this ARM workspace to a manually
 dispatched GitHub job. Inputs are one full source SHA and the explicit run-ID
@@ -51,3 +51,10 @@ Official contracts checked2026-11-07:
 Manual dispatch avoids that completion-event privilege path and makes the
 reviewable expected inventory explicit. Automatic triggering can be evaluated
 later without weakening the same acceptance contract.
+
+Implementation: `.github/workflows/qualification-acceptance.yml` and
+`scripts/ci/accept_campaign.py`, with versioned job/report contracts and bounded
+transport. Nineteen local unit functions cover owned API/archive/run/report
+boundaries. See `evidence/2026-11-07/campaign-acceptance-development.json`.
+The first real dispatch must independently inspect a complete actual campaign;
+retained report fixtures alone do not qualify API/source-reader/job execution.

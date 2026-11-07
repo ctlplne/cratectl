@@ -1,0 +1,53 @@
+name: Exact-source campaign acceptance
+
+on:
+  workflow_dispatch:
+    inputs:
+      candidate:
+        description: Exact 40-character source SHA in the owner-authored main history
+        required: true
+        type: string
+      run_ids:
+        description: JSON array of every selected main-branch test run ID for this source
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  accept:
+    if: github.ref == 'refs/heads/main' && github.repository == 'ctlplne/cratectl'
+    name: Read-only exact-source evidence acceptance
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    concurrency:
+      group: cratectl-campaign-verdict-${{ github.run_id }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - name: Exercise API archive report and acceptance boundaries
+        run: |
+          python3 scripts/ci/test_campaign_transport.py
+          python3 scripts/ci/test_campaign_reports.py
+          python3 scripts/ci/test_accept_campaign.py
+      - name: Accept exact observed campaign
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CRATECTL_CAMPAIGN_CANDIDATE: ${{ inputs.candidate }}
+          CRATECTL_CAMPAIGN_RUN_IDS: ${{ inputs.run_ids }}
+        run: python3 scripts/ci/accept_campaign.py
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: ci-campaign-verdict-${{ github.run_id }}
+          path: .cache/ci-campaign-verdict.json
+          if-no-files-found: error
+          retention-days: 30

@@ -27,6 +27,8 @@ lint:
 	python3 scripts/ci/test_native_client_diagnostics.py
 	python3 scripts/ci/test_postgres_binding.py
 	python3 scripts/ci/test_campaign_transport.py
+	python3 scripts/ci/test_campaign_reports.py
+	python3 scripts/ci/test_accept_campaign.py
 	python3 scripts/ci/test_prepare_owned_ports.py
 	python3 scripts/ci/test_maven_install.py
 	python3 scripts/ci/test_fetch_archive.py
