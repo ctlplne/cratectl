@@ -15,10 +15,12 @@ audit afterward. Public repository and CI pushes/repairs are authorized. Release
 package/image publication, customer, primary and sibling changes need their own
 authority. No autonomous delegation.
 
-Current product candidate: `c1f40f37b26f4921004157a7e42ee705e70912a1`, seven native
-workflows/expected29jobs, including focused browser. Actual new replay remains
-pending; inspect the exact handles in STATUS/remaining, never redispatch for
-queue time. Previous source: `ae7d00ece68d45f953d53f1728169e00b6dbe608`.
+Current product candidate: `ca44b3789f4d26530d71fa29c7097321f3a12687`, six native
+workflows/26jobs. Two-export index/58fuzz and all selected profile qualification
+are pending. Actual handles are in STATUS/remaining. Previousc1has seven workflows/
+29jobs;15focused trials pass, while new export-keyboard/main19/151remains required.
+Both campaigns are preserved; no redispatch for queue time. Earlier failed
+source: `ae7d00ece68d45f953d53f1728169e00b6dbe608`.
 Its six completed handles are in [STATUS.md](../../STATUS.md) and
 [remaining.json](remaining.json). [Final campaign](../../evidence/2026-11-07/github-ae7d00e-final-checkpoint.json):
 26jobs/25success1x86Chromiumfailure,19safe72reports. BothLinux274PG normal/race,
@@ -167,7 +169,7 @@ owned paths/budgets, then encrypt.
 Manual read-only aggregation is implemented as `qualification-acceptance.yml`
 and `scripts/ci/accept_campaign.py` (ADR0059). Initial19unit functions and required
 lint passed. Binary-inventory hardening adds one report test function, making20;
-updated13report/API functions pass locally, full native lint/replay pending. It binds all observed selected runs to one clean owner-authored main
+all20component functions and the real stronger verifier pass on GitHub atca44. It binds all observed selected runs to one clean owner-authored main
 source; rejects pending/failed/canceled/rerun/skipped required/empty or changed
 inventories; checks34native job variants, exact native labels, required steps,
 source-compatible typed contracts, complete report/binary/tool/fixture inventories,
@@ -181,8 +183,10 @@ The first actual workflow/source-reader/API path passed atc1f40f3, manual run
 original log/member/report and18source-contract hashes independently match.
 See [native evidence](../../evidence/2026-11-07/campaign-acceptance-4956197-c1f40f3-native-checkpoint.json).
 Review then found an owned missing-binary negative in the initial validator;
-required CLI/server inventory and within-job hash consistency now pass focused
-local mutations, actual strengthened verifier replay pending. The legitimate
+required CLI/server inventory and within-job hash consistency now pass all20
+component functions and actual GitHub verifier42382397175atca44. All original
+26job/19safe72report hashes independently match; see the
+[stronger checkpoint](../../evidence/2026-11-07/campaign-acceptance-4956197-ca44b37-native-checkpoint.json). The legitimate
 first495report has all correct binaries. Preserve it and the negative.
 No native test restart. Independently accept new product source only after its
 entire selected inventory finishes. Existing reviewed records retain authority. No

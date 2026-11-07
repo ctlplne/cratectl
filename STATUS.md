@@ -11,12 +11,33 @@ on actual GitHub x86 at verifierc1f40f3: all26historical495jobs/19safe72reports,
 with independently matching original log/member/report/source-contract hashes.
 See [native verifier evidence](evidence/2026-11-07/campaign-acceptance-4956197-c1f40f3-native-checkpoint.json).
 It restarted no native tests and does not qualify changed source/full readiness.
-Review then reproduced an owned omitted-binary negative (DEFECT0138); require
-the candidate binary pair and within-job hash consistency. Six report/seven
-API/dispatch tests pass locally; actual strengthened verifier replay is pending.
-See [hardening development](evidence/2026-11-07/campaign-binary-inventory-development.json).
+Review reproduced an owned omitted-binary negative (DEFECT0138). Required
+candidate binary pair/within-job hash consistency is now qualified: strengthened
+verifierca44, run42382397175, passes all20component functions and the same actual
+26jobs/19safe72reports with matching originals. See the
+[stronger verifier checkpoint](evidence/2026-11-07/campaign-acceptance-4956197-ca44b37-native-checkpoint.json).
+Neither verifier restarted native tests or qualified newer product source.
 
-Current active product candidate: `c1f40f37b26f4921004157a7e42ee705e70912a1` on
+Current active product candidate: `ca44b3789f4d26530d71fa29c7097321f3a12687`,
+six native workflows/26jobs. Index two-export normal/race/58fuzz and every other
+selected profile remain pending. Actual handles:
+
+| Profile | GitHub run |
+| --- | --- |
+| main | [42382364147](https://github.com/ctlplne/cratectl/actions/runs/42382364147) |
+| go | [42382364038](https://github.com/ctlplne/cratectl/actions/runs/42382364038) |
+| jvm | [42382364030](https://github.com/ctlplne/cratectl/actions/runs/42382364030) |
+| oci | [42382363968](https://github.com/ctlplne/cratectl/actions/runs/42382363968) |
+| upgrades | [42382363984](https://github.com/ctlplne/cratectl/actions/runs/42382363984) |
+| portable | [42382364209](https://github.com/ctlplne/cratectl/actions/runs/42382364209) |
+
+The earlier c1campaign remains running, preserved through this push. Three
+focused x86 Chromium journeys pass five fresh-database trials each,15total:
+[focused checkpoint](evidence/2026-11-07/browser-focused-c1f40f3-native-checkpoint.json).
+Those trials do not include the new export-dialog keyboard case, which remains
+required in main19/151. Latest whole acceptance remains495below.
+
+Previous active product candidate: `c1f40f37b26f4921004157a7e42ee705e70912a1` on
 `main`, with exact owner author/committer. Seven native workflows selected,
 expected29jobs including three focused browser journeys. All current handles:
 

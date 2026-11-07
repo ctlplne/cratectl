@@ -1,6 +1,6 @@
 # 0059: Accept exact-source CI campaigns on GitHub
 
-Date: 2026-11-07. State: first actual GitHub acceptance passes historical495atc1f40f3; binary-inventory negative hardening/replay remains separate.
+Date: 2026-11-07. State: first actual GitHub acceptance passes historical495atc1f40f3; binary-inventory hardening and actual stronger verifier pass atca44.
 
 Move bounded campaign inspection from this ARM workspace to a manually
 dispatched GitHub job. Inputs are one full source SHA and the explicit run-ID
@@ -65,3 +65,8 @@ subsequently found optional binary inventory could admit an owned omitted-field
 negative. Require the candidate pair and within-job hash consistency; preserve
 the legitimate first result and qualify the strengthened verifier separately.
 See `evidence/2026-11-07/campaign-binary-inventory-development.json`.
+
+Strengthened actual proof: `evidence/2026-11-07/campaign-acceptance-4956197-ca44b37-native-checkpoint.json`.
+Twenty component functions and all26original jobs/19safe72reports pass with
+independently matching hashes. This accepts the historical495source and the
+verifier boundary only; current product qualification remains separate.
