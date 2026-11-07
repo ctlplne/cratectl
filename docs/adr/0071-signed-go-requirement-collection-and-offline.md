@@ -58,10 +58,22 @@ the same versions and extracts the exact inert bytes with matching native hashes
 Wrong key/head/event, insufficient budget, corrupt original and unknown member
 must refuse without success output or repair of retained state.
 
+A subsequent recovery extension adds an inert padding member while preserving
+the selected module's original go.mod and asset. The real second64KiB ZIP range
+provides a socket barrier for killing/reaping only the spawned candidate CLI.
+The native test must retain exactly the synced first range and no completion,
+renew the real session, reject stale generation and unchanged corrupt prefix,
+then complete valid generation2 bytes. Another renewal to3 must replay the exact
+original generation2 receipt. The later source-denial control uses current3 so
+it cannot pass through an unrelated stale-generation rejection. These recovery
+assertions pass local fixture/unit/race checks and tagged compilation only; the
+older f320 normal/race native proof does not contain them. See the
+[recovery development record](../../evidence/2026-11-07/go-requirement-recovery-development.json).
+
 This is a metadata-selection and original-byte proof. Dependency/package/platform
 closure, checksum authority, current source/destination admission, import/scanning,
 workspace/replacement/exclusion/source-precedence breadth, independent-host
-requirement-profile transfer, process interruption/renewal for this new profile,
+requirement-profile transfer, native qualification of interruption/renewal for this profile,
 Windows/providers/installation/GC/backup/HA/scale and full product scope remain
 unfinished. Existing explicit-set independent-host/process proofs retain their
 own scope and do not automatically qualify this new profile.

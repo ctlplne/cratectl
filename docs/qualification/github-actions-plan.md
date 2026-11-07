@@ -34,8 +34,8 @@ resolver/pruning/policy/migrations or removing original native assertions.
 
 Pushed f32031b adds the independently signed requirement collect/verify/offline
 caller and one actual native competing-version/refusal case. All three native
-source/unit jobs and both Linux normal Go steps are observed successful; race,
-full client/fuzz/campaign proof remains incomplete. Local ARM build/unit/race/lint,
+source/unit/fuzz jobs and both Linux Go normal/race/stock jobs succeed:24of26jobs
+pass. Both full native client jobs remain live; whole acceptance is incomplete. Local ARM build/unit/race/lint,
 tagged normal/race compile/vet and bounded parser fuzz pass. Require exact295
 PostgreSQL/117 named Go/66 fuzz,17 historical binaries/22 upgrades per Linux host,
 all26 jobs/six workflows/19 safe members/78 reports and actual read-only acceptance.
@@ -46,6 +46,13 @@ Then complete requirement-profile separate hosts/processkill/renewal, broader
 workspace/replacement/exclusion/source-authority and package/platform closure,
 current scanning/import/operator/provider/GC/platform/production outcomes and
 all owner-amended450/41/14-case/seven-environment/later goal scope.
+
+The subsequent recovery extension adds a real second-range socket barrier,owned
+CLI kill/reap,exact synced prefix/no receipt,actual renewal,stale-generation and
+corrupt-prefix refusals,then valid generation2 resume and original receipt replay
+after renewal to3. Its ARM fixture/build/unit/race/lint/tagged compile/vet pass
+only; it is absent from f320 and requires its own exact native replay with the
+same295/117/66 function inventory. No production,workflow or migration changed.
 
 ## Placement
 

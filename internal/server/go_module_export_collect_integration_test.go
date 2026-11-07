@@ -182,8 +182,13 @@ func TestGoModuleRequirementCollectionNativeSignedCompetingVersionsAndOffline(t 
 	module, selector := "go.cratectl.invalid/Owned/competing", "go.cratectl.invalid/Owned/selector"
 	coordinates := []gomodule.Coordinate{{Module: module, Version: "v1.0.0"}, {Module: module, Version: "v1.1.0"}, {Module: selector, Version: "v1.0.0"}}
 	mods := [][]byte{[]byte("module " + module + "\ngo 1.26\n"), []byte("module " + module + "\ngo 1.26\n"), []byte("module " + selector + "\ngo 1.16\nrequire " + module + " v1.1.0\n")}
+	var paddedZIP []byte
 	for n, c := range coordinates {
 		archive := goPublicationFixtureMod(t, c, "owned inert requirement asset", mods[n])
+		if n == 1 {
+			archive = goPublicationFixturePaddedMod(t, c, "owned inert requirement asset", mods[n])
+			paddedZIP = bytes.Clone(archive)
+		}
 		if response := goHTTP(t, s, token, "PUT", "/go/requirements/"+c.Prefix()+".zip", archive); response.Code != 201 {
 			t.Fatal("owned original publication", n, response.Code)
 		}
@@ -206,6 +211,11 @@ func TestGoModuleRequirementCollectionNativeSignedCompetingVersionsAndOffline(t 
 	replay := goHTTP(t, s, token, "POST", "/api/v1/go/export-sets/requirements", request, "Idempotency-Key", "owned-signed-requirement-graph")
 	if replay.Code != 201 || !bytes.Equal(created.Body.Bytes(), replay.Body.Bytes()) {
 		t.Fatal("signed original creation replay changed")
+	}
+	planned := goHTTP(t, s, token, "GET", "/api/v1/go/export-sets/requirements/"+session.ID+"/manifest?generation=1", nil)
+	planParent, err := store.ParseGoRequirementExportManifest(planned.Body.Bytes())
+	if planned.Code != 200 || err != nil || len(paddedZIP) <= 2*65536 || len(planParent.Selection.Entries) != 2 || planParent.Selection.Entries[0].Module != module || planParent.Selection.Entries[0].Version != "v1.1.0" {
+		t.Fatal("actual selected ZIP no longer reaches the second-range barrier", planned.Code, err)
 	}
 	head, err := s.DB.JournalCheckpoint(ctx, admin)
 	if err != nil {
@@ -258,7 +268,22 @@ func TestGoModuleRequirementCollectionNativeSignedCompetingVersionsAndOffline(t 
 	if err != nil {
 		t.Fatal(err)
 	}
-	server := &http.Server{Handler: s, ReadHeaderTimeout: 10 * time.Second}
+	reached, release := make(chan struct{}), make(chan struct{})
+	var reachedOnce, releaseOnce sync.Once
+	var barrierActive atomic.Bool
+	defer releaseOnce.Do(func() { close(release) })
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if barrierActive.Load() && r.URL.Path == "/api/v1/go/export-sets/"+session.ID+"/roots/0/zip" && r.URL.Query().Get("generation") == "1" && r.Header.Get("Range") == "bytes=65536-131071" {
+			reachedOnce.Do(func() { close(reached) })
+			select {
+			case <-release:
+			case <-r.Context().Done():
+				return
+			}
+		}
+		s.ServeHTTP(w, r)
+	})
+	server := &http.Server{Handler: handler, ReadHeaderTimeout: 10 * time.Second}
 	defer server.Close()
 	done := make(chan error, 1)
 	go func() { done <- server.ServeTLS(listener, cert, key) }()
@@ -266,9 +291,95 @@ func TestGoModuleRequirementCollectionNativeSignedCompetingVersionsAndOffline(t 
 	configPath := write("client.json", config)
 	collection := filepath.Join(private, "collection")
 	arguments := []string{cli, "go-requirement-export-collect", "--config", configPath, "--set-id", session.ID, "--generation", "1", "--output-directory", collection, "--chunk-bytes", "65536", "--journal-file", journalPath, "--journal-tenant", admin.Tenant, "--journal-event-sequence", strconv.FormatInt(session.CreatedSequence, 10), "--journal-through", strconv.FormatInt(head.Sequence, 10), "--journal-through-hash", head.Hash, "--checkpoint-file", statementPath, "--checkpoint-signature-file", signature, "--checkpoint-key-file", publicKey}
-	completion := run(true, arguments...)
-	if repeated := run(true, append(append([]string{}, arguments...), "--resume")...); !bytes.Equal(completion, repeated) {
+	barrierActive.Store(true)
+	child := exec.CommandContext(ctx, arguments[0], arguments[1:]...)
+	child.Dir, child.Env, child.WaitDelay = private, []string{"PATH=" + os.Getenv("PATH"), "HOME=" + private}, 2*time.Second
+	childOut, childDiagnostic := new(collectionCommandOutput), new(collectionCommandOutput)
+	child.Stdout, child.Stderr = childOut, childDiagnostic
+	if err := child.Start(); err != nil {
+		t.Fatal(err)
+	}
+	childDone, reaped := make(chan error, 1), false
+	go func() { childDone <- child.Wait() }()
+	defer func() {
+		if !reaped {
+			_ = child.Process.Kill()
+			<-childDone
+		}
+	}()
+	select {
+	case <-reached:
+	case err := <-childDone:
+		reaped = true
+		t.Fatalf("requirement collector exited before second range: %v; bounded stdout=%q stderr=%q", err, childOut.Bytes(), childDiagnostic.Bytes())
+	case <-ctx.Done():
+		t.Fatal("owned requirement collector barrier timed out")
+	}
+	if err := child.Process.Kill(); err != nil {
+		t.Fatal(err)
+	}
+	err = <-childDone
+	reaped = true
+	if err == nil || childOut.Len() != 0 {
+		t.Fatal("killed requirement collector reported completion", err)
+	}
+	barrierActive.Store(false)
+	releaseOnce.Do(func() { close(release) })
+	partial := filepath.Join(collection, "root.000.zip")
+	prefix, err := os.ReadFile(partial)
+	if err != nil || len(prefix) != 65536 || !bytes.Equal(prefix, paddedZIP[:65536]) {
+		t.Fatal("owned collector kill lost the exact synced first range", err)
+	}
+	if _, err := os.Stat(filepath.Join(collection, "receipt.json")); !os.IsNotExist(err) {
+		t.Fatal("killed requirement collector published completion")
+	}
+	renew := store.GoExportChange{Action: "renew", ExpectedGeneration: 1, LifetimeSeconds: 3600, ManifestSHA256: session.SelectionManifest.Digest}
+	renewBody, _ := json.Marshal(renew)
+	if response := goHTTP(t, s, token, "POST", "/api/v1/go/export-sets/"+session.ID+"/control", renewBody, "Idempotency-Key", "owned-requirement-renew-after-kill"); response.Code != 200 {
+		t.Fatal("requirement renewal after actual collector kill", response.Code)
+	}
+	run(false, append(append([]string{}, arguments...), "--resume")...)
+	if saved, err := os.ReadFile(partial); err != nil || !bytes.Equal(saved, prefix) {
+		t.Fatal("stale-generation refusal changed retained prefix", err)
+	}
+	resumed := append(append([]string{}, arguments...), "--generation", "2", "--resume")
+	corrupt := bytes.Clone(prefix)
+	corrupt[len(corrupt)/2] ^= 1
+	if err := os.WriteFile(partial, corrupt, 0600); err != nil {
+		t.Fatal(err)
+	}
+	run(false, resumed...)
+	if saved, err := os.ReadFile(partial); err != nil || !bytes.Equal(saved, corrupt) {
+		t.Fatal("corrupt requirement prefix was extended or repaired", err)
+	}
+	if _, err := os.Stat(filepath.Join(collection, "receipt.json")); !os.IsNotExist(err) {
+		t.Fatal("corrupt requirement prefix published completion")
+	}
+	// Only this owned test restores the intentionally corrupted original prefix.
+	if err := os.WriteFile(partial, prefix, 0600); err != nil {
+		t.Fatal(err)
+	}
+	completion := run(true, resumed...)
+	var completionStatus struct {
+		Generation int64 `json:"collected_generation"`
+		Verified   bool  `json:"bytes_verified"`
+		Inputs     bool  `json:"original_inputs_complete"`
+		Replayed   bool  `json:"requirements_replayed"`
+	}
+	if json.Unmarshal(completion, &completionStatus) != nil || completionStatus.Generation != 2 || !completionStatus.Verified || !completionStatus.Inputs || !completionStatus.Replayed {
+		t.Fatal("resumed requirement collector lost original completion scope")
+	}
+	if repeated := run(true, resumed...); !bytes.Equal(completion, repeated) {
 		t.Fatal("complete requirement collection replay changed original receipt")
+	}
+	renew.ExpectedGeneration = 2
+	renewBody, _ = json.Marshal(renew)
+	if response := goHTTP(t, s, token, "POST", "/api/v1/go/export-sets/"+session.ID+"/control", renewBody, "Idempotency-Key", "owned-requirement-renew-complete"); response.Code != 200 {
+		t.Fatal("requirement renewal after complete collection", response.Code)
+	}
+	currentResume := append(append([]string{}, resumed...), "--generation", "3")
+	if repeated := run(true, currentResume...); !bytes.Equal(completion, repeated) {
+		t.Fatal("renewed requirement collector rewrote original generation2 completion")
 	}
 	parentRaw, err := os.ReadFile(filepath.Join(collection, "manifest.json"))
 	if err != nil {
@@ -298,7 +409,7 @@ func TestGoModuleRequirementCollectionNativeSignedCompetingVersionsAndOffline(t 
 			t.Fatal(err)
 		}
 	}
-	run(false, append(append([]string{}, arguments...), "--resume")...)
+	run(false, currentResume...)
 	if saved, err := os.ReadFile(filepath.Join(collection, "receipt.json")); err != nil || !bytes.Equal(saved, completion) {
 		t.Fatal("current denial rewrote retained historical collection")
 	}

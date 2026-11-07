@@ -80,9 +80,10 @@ ARM build/unit/race/lint,tagged normal/race compilation and vet,and bounded pars
 fuzz pass locally. Its new native case uses real PostgreSQL/TLS/CLI/OpenSSL and
 stock Go competing-version selection/downloads after source shutdown,with15
 observed empty command networks and wrong-key/head/event,budget,current-denial,
-corrupt-original and unknown-member controls. All three native source/unit jobs
-and both Linux Go normal steps now succeed; race/full-client/fuzz/campaign proof
-remains incomplete. No whole f320 acceptance is claimed.
+corrupt-original and unknown-member controls. All three native source/unit and
+fuzz jobs,and both Linux Go normal/race/stock-client jobs succeed. JVM/OCI/upgrade/
+portability jobs succeed too:24 of26 selected jobs pass. The two full native
+client jobs remain live. No whole f320 acceptance is claimed.
 
 Fixed original runs: main42425695414,Go42425695417,JVM42425695455,OCI42425695341,
 upgrades42425695485,portable42425695567. Required inventory is295 PostgreSQL/
@@ -90,10 +91,19 @@ upgrades42425695485,portable42425695567. Required inventory is295 PostgreSQL/
 19 safe summaries/78 reports. Actual API inventory controls. Preserve original
 handles; queue or observation delay never warrants a replacement run.
 
+The [recovery extension](evidence/2026-11-07/go-requirement-recovery-development.json)
+adds actual second-range collector kill/reap,exact synced prefix/no completion,
+real renewal,stale-generation and corrupt-prefix refusal,valid generation2 resume
+and exact original receipt replay after renewal to3. Original module/asset bytes,
+the three-input/two-root graph and all15 offline network/refusal controls remain.
+Local ARM build/unit/race/lint,fixture bounds and tagged normal/race compile/vet
+pass only. This extension is absent from f320 and needs its own exact native
+replay; its function inventory stays295/117/66. No production or migration changed.
+
 ## Continue the complete goal
 
-Finish the exact f320 campaign and actual read-only acceptance,then complete the
-requirement profile's independent-host transfer/process interruption/renewal and
+Finish the exact f320 campaign and actual read-only acceptance,qualify the new
+collector recovery extension,then complete requirement-profile independent-host transfer and
 broader native replacement/exclusion/workspace/local immutable input differentials.
 Old explicit/common-set proofs retain their own scope and do not qualify this new
 profile. Closure/authority/current-admission flags stay false.
