@@ -12,36 +12,49 @@ const hash=(v:string)=>/^[a-f0-9]{64}$/.test(v);
 const integer=(v:number,min=0)=>Number.isSafeInteger(v)&&v>=min;
 function exact(v:Session){return hash(v.id)&&hash(v.manifest?.digest??'')&&integer(v.manifest?.size,1)&&v.manifest.size<=32768&&integer(v.source_revision)&&integer(v.generation,1)&&integer(v.created_sequence,1)&&integer(v.change_sequence,v.created_sequence)&&v.delivery_verified===false&&v.manifest_retained===true&&['open','acknowledged','cancelled','expired','expired_unreconciled'].includes(v.state)&&Number.isFinite(Date.parse(v.expires_at))&&Number.isFinite(Date.parse(v.server_time))}
 const sh=(v:string)=>"'"+v.replace(/'/g,"'\\''")+"'";
-function commands(v:Session){const base='/api/v1/go/exports/'+v.id;return `# Use a fresh directory and your private administrator client configuration.
-# Downloads check this session generation and current policy on every request.
-(
-set -euC
-umask 077
-: "\${CRATECTL_CLIENT_CONFIG:?Set your private client JSON path}"
-mkdir -m 700 ./cratectl-export-input
-cratectl --config "$CRATECTL_CLIENT_CONFIG" --raw-response --response-limit 32768 \\
-  --path ${sh(base+'/manifest?generation='+v.generation)} > ./cratectl-export-input/manifest.json
-cratectl --config "$CRATECTL_CLIENT_CONFIG" --raw-response --response-limit 536870912 \\
-  --path ${sh(base+'/zip?generation='+v.generation)} > ./cratectl-export-input/package.zip
-cratectl --config "$CRATECTL_CLIENT_CONFIG" --raw-response --response-limit 1048576 \\
-  --path ${sh(base+'/mod?generation='+v.generation)} > ./cratectl-export-input/package.mod
-cratectl --config "$CRATECTL_CLIENT_CONFIG" --raw-response --response-limit 65536 \\
-  --path ${sh(base+'/info?generation='+v.generation)} > ./cratectl-export-input/package.info
-# Collect a complete journal through a checkpoint authenticated by your external
-# signer, including export creation event ${v.created_sequence}. Keep its public key independently trusted.
+function commands(v:Session,resume=false){
+ const required=`: "\${CRATECTL_CLIENT_CONFIG:?Set your private client JSON path}"
 : "\${CRATECTL_TRUSTED_TENANT:?Set the independently authenticated tenant}"
 : "\${CRATECTL_TRUSTED_JOURNAL_SEQUENCE:?Set the authenticated terminal sequence}"
 : "\${CRATECTL_TRUSTED_JOURNAL_HASH:?Set the authenticated terminal SHA-256}"
-: "\${CRATECTL_JOURNAL_TRUSTED_PUBLIC_KEY_FILE:?Set the separately trusted public key path}"
-cratectl go-module-offline --repository ${sh(v.repository)} --module ${sh(v.module)} --version ${sh(v.version)} \\
-  --export-id ${sh(v.id)} --manifest-file ./cratectl-export-input/manifest.json \\
-  --zip-file ./cratectl-export-input/package.zip --mod-file ./cratectl-export-input/package.mod \\
-  --info-file ./cratectl-export-input/package.info --output-directory ./cratectl-export-input/offline \\
+: "\${CRATECTL_JOURNAL_TRUSTED_PUBLIC_KEY_FILE:?Set the separately trusted public key path}"`;
+ const collect=`cratectl go-export-collect --config "$CRATECTL_CLIENT_CONFIG" ${resume?'--resume ':''}\\
+  --export-id ${sh(v.id)} --generation ${v.generation} \\
+  --repository ${sh(v.repository)} --module ${sh(v.module)} --version ${sh(v.version)} \\
+  --output-directory ./cratectl-export-input/collected \\
   --journal-file ./cratectl-journal.jsonl --journal-tenant "$CRATECTL_TRUSTED_TENANT" \\
   --journal-event-sequence ${v.created_sequence} --journal-through "$CRATECTL_TRUSTED_JOURNAL_SEQUENCE" \\
   --journal-through-hash "$CRATECTL_TRUSTED_JOURNAL_HASH" --checkpoint-file ./checkpoint.json \\
-  --checkpoint-signature-file ./checkpoint.sig --checkpoint-key-file "$CRATECTL_JOURNAL_TRUSTED_PUBLIC_KEY_FILE"
-)`}
+  --checkpoint-signature-file ./checkpoint.sig --checkpoint-key-file "$CRATECTL_JOURNAL_TRUSTED_PUBLIC_KEY_FILE"`;
+ if(resume)return `# Refresh the session first. This resumes its same signed immutable snapshot.
+# Existing partial files are retained; a renewed generation is explicit above.
+(
+set -euC
+umask 077
+${required}
+${collect}
+)`;
+ return `# Obtain the complete independently signed journal and checkpoint first.
+# Creation event ${v.created_sequence} must be inside that range; trust its key separately.
+# First collection only: choose a fresh owner-private parent directory.
+(
+set -euC
+umask 077
+${required}
+mkdir -m 700 ./cratectl-export-input
+${collect}
+# If interrupted, keep the directory. Refresh and copy the --resume command.
+# Completion proves historical bytes, not current destination or checksum trust.
+cratectl go-module-offline --repository ${sh(v.repository)} --module ${sh(v.module)} --version ${sh(v.version)} \\
+  --export-id ${sh(v.id)} --manifest-file ./cratectl-export-input/collected/manifest.json \\
+  --zip-file ./cratectl-export-input/collected/original.zip --mod-file ./cratectl-export-input/collected/original.mod \\
+  --info-file ./cratectl-export-input/collected/original.info --output-directory ./cratectl-export-input/offline \\
+  --journal-file ./cratectl-export-input/collected/journal.jsonl --journal-tenant "$CRATECTL_TRUSTED_TENANT" \\
+  --journal-event-sequence ${v.created_sequence} --journal-through "$CRATECTL_TRUSTED_JOURNAL_SEQUENCE" \\
+  --journal-through-hash "$CRATECTL_TRUSTED_JOURNAL_HASH" --checkpoint-file ./cratectl-export-input/collected/checkpoint.json \\
+  --checkpoint-signature-file ./cratectl-export-input/collected/checkpoint.sig --checkpoint-key-file "$CRATECTL_JOURNAL_TRUSTED_PUBLIC_KEY_FILE"
+)`
+}
 
 export function GoExports(p:Common){return p.identity.role==='admin'?<ExportAdmin {...p}/>:<><Heading eyebrow="Artifact exit"title="Hosted Go exports"description="Export exact package bytes with their historical source policy and journal context."/><p className="message warning"role="status">An administrator is required to export retained policy and journal context.</p></>}
 function ExportAdmin(p:Common){
@@ -54,7 +67,7 @@ function ExportAdmin(p:Common){
  <div className="view-toolbar"><Freshness at={data.at}loading={data.loading}/><button onClick={data.refresh}>Refresh exports</button><button onClick={()=>p.open('Journal export and external verification',<JournalExport {...p}/>)}>Journal and separate trust</button></div>
  <p>Each session preserves one version’s ZIP, go.mod, info and source decisions. Approve packages for the disconnected environment separately. Dependency closure, checksum-authority approval and destination permissions are separate requirements.</p>
  {data.loading&&<p role="status">Loading export sessions…</p>}{data.error&&<ErrorBox error={data.error}retry={data.refresh}stale={!!data.data}/>}
- <Panel title="Retained export sessions">{data.data&&!data.error&&(rows.length?<div className="table-wrap"role="region"aria-label="Hosted Go export sessions"tabIndex={0}><table><thead><tr><th>Package / session</th><th>State / expiry</th><th>Manifest and actions</th></tr></thead><tbody>{rows.map(v=>{const valid=exact(v),active=v.state==='open'||v.state==='acknowledged';return <tr key={v.id}><td><strong>{v.module}@{v.version}</strong><span className="block muted">{v.repository}</span><code className="break block">{v.id}</code></td><td><strong>{v.state}</strong><time className="block"dateTime={v.expires_at}>{new Date(v.expires_at).toLocaleString()}</time><span className="small block">Package pins: {v.payload_pins_retained?'retained':'released'} · Manifest retained</span></td><td><code className="break block">{v.manifest?.digest??'Invalid manifest binding'}</code>{!valid?<p role="alert"className="message error">This session exceeds exact console precision or has invalid bindings. Use the API and CLI with exact values.</p>:<><span className="small block">Generation {v.generation} · Creation event #{v.created_sequence}</span><div className="actions"><button disabled={!fresh}onClick={()=>p.open('Historical export receipt',<Json value={v}/>)}>Inspect session</button>{active&&<><button disabled={!fresh}onClick={()=>p.open('Collect and verify hosted export',<><p>Refresh the session before resuming. Creation event #{v.created_sequence} must be inside the complete independently authenticated journal. These commands preserve existing local files and never export your credential.</p><pre className="json">{commands(v)}</pre><Copy text={commands(v)}label="Copy export collection commands"/></>)}>Collection commands</button><button disabled={!fresh}onClick={()=>action(v,'renew')}>Renew</button><button disabled={!fresh}onClick={()=>action(v,'acknowledge')}>Acknowledge collection</button></>}{v.state==='expired_unreconciled'&&<button disabled={!fresh}onClick={()=>action(v,'expire')}>Reconcile expiry</button>}{v.payload_pins_retained&&<button disabled={!fresh}onClick={()=>action(v,'cancel')}>Cancel</button>}</div></>}</td></tr>})}</tbody></table></div>:<Empty title="No export sessions">Create a hosted export after publishing and approving the exact package version.</Empty>)}</Panel>
+ <Panel title="Retained export sessions">{data.data&&!data.error&&(rows.length?<div className="table-wrap"role="region"aria-label="Hosted Go export sessions"tabIndex={0}><table><thead><tr><th>Package / session</th><th>State / expiry</th><th>Manifest and actions</th></tr></thead><tbody>{rows.map(v=>{const valid=exact(v),active=v.state==='open'||v.state==='acknowledged';return <tr key={v.id}><td><strong>{v.module}@{v.version}</strong><span className="block muted">{v.repository}</span><code className="break block">{v.id}</code></td><td><strong>{v.state}</strong><time className="block"dateTime={v.expires_at}>{new Date(v.expires_at).toLocaleString()}</time><span className="small block">Package pins: {v.payload_pins_retained?'retained':'released'} · Manifest retained</span></td><td><code className="break block">{v.manifest?.digest??'Invalid manifest binding'}</code>{!valid?<p role="alert"className="message error">This session exceeds exact console precision or has invalid bindings. Use the API and CLI with exact values.</p>:<><span className="small block">Generation {v.generation} · Creation event #{v.created_sequence}</span><div className="actions"><button disabled={!fresh}onClick={()=>p.open('Historical export receipt',<Json value={v}/>)}>Inspect session</button>{active&&<><button disabled={!fresh}onClick={()=>p.open('Collect and verify hosted export',<><p>Refresh the session before resuming. Creation event #{v.created_sequence} must be inside the complete independently authenticated journal. The collector keeps interrupted private files for explicit resume and verifies every completed file. A local receipt does not grant destination access. Credentials and signing private keys stay outside the collection.</p><pre className="json">{commands(v)}</pre><Copy text={commands(v)}label="Copy export collection commands"/><Copy text={commands(v,true)}label="Copy resume collection command"/></>)}>Collection commands</button><button disabled={!fresh}onClick={()=>action(v,'renew')}>Renew</button><button disabled={!fresh}onClick={()=>action(v,'acknowledge')}>Acknowledge collection</button></>}{v.state==='expired_unreconciled'&&<button disabled={!fresh}onClick={()=>action(v,'expire')}>Reconcile expiry</button>}{v.payload_pins_retained&&<button disabled={!fresh}onClick={()=>action(v,'cancel')}>Cancel</button>}</div></>}</td></tr>})}</tbody></table></div>:<Empty title="No export sessions">Create a hosted export after publishing and approving the exact package version.</Empty>)}</Panel>
  {data.data&&!cursorOK&&<p role="alert"className="message error">The export cursor exceeds exact console precision. Continue through the API or CLI.</p>}<CursorPages after={after}next={fresh&&cursorOK&&data.data?.more?String(next):''}setAfter={setAfter}label="Export session pages"/>
  <p className="small muted">Expiry blocks serving. Pins remain until the terminal expiry transition commits; queue failure keeps them retained. Acknowledgment records your statement and does not certify external delivery.</p></>
 }

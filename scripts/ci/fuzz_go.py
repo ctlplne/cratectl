@@ -12,9 +12,10 @@ root = Path(__file__).resolve().parents[2]
 go = root / '.cache/go/bin/go'
 executable = str(go) if go.exists() else 'go'
 targets = []
-for path in sorted((root / 'internal').rglob('*_test.go')):
-    for match in re.finditer(r'^func\s+(Fuzz[A-Za-z0-9_]+)\s*\(', path.read_text(), re.MULTILINE):
-        targets.append((f'./{path.parent.relative_to(root)}', match.group(1)))
+for directory in ('internal', 'cmd'):
+    for path in sorted((root / directory).rglob('*_test.go')):
+        for match in re.finditer(r'^func\s+(Fuzz[A-Za-z0-9_]+)\s*\(', path.read_text(), re.MULTILINE):
+            targets.append((f'./{path.parent.relative_to(root)}', match.group(1)))
 if not targets or len(targets) > 100:
     raise SystemExit('Go fuzz target inventory is empty or exceeds its CI bound')
 

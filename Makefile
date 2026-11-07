@@ -18,6 +18,7 @@ race:
 lint:
 	$(GO) vet ./...
 	python3 scripts/check_architecture.py
+	python3 scripts/test_architecture.py
 	python3 scripts/check_console_assets.py
 	python3 scripts/check_openapi_descriptions.py
 	python3 scripts/test_qualification_contract.py

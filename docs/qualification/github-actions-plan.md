@@ -73,6 +73,30 @@ and full client replay remain pending. No local Ant/Ivy/database journey.
 Continue every actually selected native profile and preserve all pending,
 cancelled or skipped original stages without counting them as passes.
 
+## Resumable signed collection continuation
+
+[ADR0055](../adr/0055-resumable-signed-go-collection.md) adds the implemented,
+native-unverified collector, OS directory lock and fixed eight-member signed
+historical bundle. Local ARM stand-in/unit/race/build/lint and tagged compile/vet
+pass. Actual process SIGKILL at an explicitly owned second-range socket barrier,
+renewed-generation resume, original receipt replay, corrupted receipt/tenant/
+policy/revocation refusal and stock inert Go consumption must run on GitHub.
+New exact-source inventory:274fullPG/96namedGo normal/race bothLinux,56product fuzz
+targets onthreehosts (all55internal plus the first CLI target),19mainChromium/
+151checks with expanded existing export UI response-stand-in assertions. Keep
+15historical20upgrades perhost, original312Go/683baseline and16portable stages.
+The architecture rule's exact integration-test exception has three source-fixture
+regressions; no production HTTP file gains process execution permission.
+
+Source4956197 Ant/Ivy cold misses, both unchanged SHA512 verified archives,
+post-success save and all666originalchecks now pass onboth actual Linux hosts.
+See the [named checkpoint](../../evidence/2026-11-07/apache-archive-4956197-native-checkpoint.json).
+Primary sources succeed in both jobs: archive fallback is stand-in-only, warm
+restore still unverified, no outage/rootcause/speedup claim. The collector leaves
+fetcher/installer/pin bytes unchanged, permitting a later real exact-key restore
+observation. Its new runtime cannot inherit source495's named95Go/upgrades/
+portable pass; inspect the actual selected matrix and every original result.
+
 ## Current qualification state
 
 Exact1a61120 [campaign checkpoint](../../evidence/2026-11-07/github-1a61120-checkpoint.json)

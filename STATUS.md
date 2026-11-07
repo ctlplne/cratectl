@@ -1,5 +1,44 @@
 # cratectl execution status
 
+Current development parent is `4956197`. ADR0055 and
+`evidence/2026-11-07/go-export-collect-development.json` define the implemented,
+native-unverified resumable signed Go collector and console commands. It verifies
+the supplied complete signed journal and independently selected signer before
+contacting the registry, binds its canonical manifest to the original event,
+then retains eight exact private members with immutable bindings and checkpointed
+ranges. Explicit resume may use a renewed generation of the same snapshot;
+corrupt prefixes/receipts, links, concurrent writers and changed identities fail.
+The local completion receipt never grants destination/checksum/closure/delivery
+trust. No automatic acknowledgment or new schema is introduced.
+
+ARM build/unit/race/lint, seven collector units, three architecture-rule source
+fixtures, bounded CLI fuzz, TypeScript/assets/shell syntax and normal/race tagged
+compilation/vet pass. Initial loopback bind denial and architecture test-file
+false positive are retained. The production exec/crypto/EE/RLS boundaries remain;
+only the exact integration-only collector fixture may invoke owned native tools.
+The new native test is compiled, not run locally: actual collector process kill
+at an explicit second-range socket barrier, renewed resume, replay, changed receipt,
+tenant/policy/credential refusal, external OpenSSL and stock Go offline readback.
+New-source 274 full PG/96 named Go normal/race, 56 product fuzz targets on three
+hosts, 19 main Chromium/151 checks, 15 historical/20 upgrades each and16 portable
+stages must execute on GitHub. The first CLI fuzz target is now included alongside
+all55existing internal targets. New browser assertions remain declared UI stand-ins.
+
+Exact `4956197` now accepts 95 Go normal/race/312 stock checks on both Linux hosts,
+15 historical binaries/20 upgrades each (96 old15-to16 checks) and the16stage
+separate native x86/ARM portable profile. Both native Ivy jobs also pass666checks
+with unchanged Ant/Ivy/SHA512 pins: cold misses, verified downloads and post-success
+archive saves are observed on both hosts. Original DEFECT0131 is retained and
+replayed; actual official-archive fallback was unselected in those jobs, and warm
+exact-key restore still requires its own observation. See named checkpoints.
+The whole26job/six-workflow source495 campaign remains unaccepted while fullmain
+PostgreSQL/browser work is incomplete. Later green named jobs do not repair
+original0131/0130 failures retroactively. All450capabilities/41families/laterGOAL4.1
+scope and readiness/security/packaging remain incomplete. Primary11/5483878b/
+tenreceipts untouched; all16migrations frozen;0126strictSDK/0122unknownbrowser open.
+
+Earlier source-specific records follow; current exact-source records above govern.
+
 Current development parent is1857c79. ADR0054 and
 `evidence/2026-11-07/apache-archive-development.json` define the implemented,
 native-unverified DEFECT0131 repair: same Ant/Ivy versions/SHA512/size ceilings,

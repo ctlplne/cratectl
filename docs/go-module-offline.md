@@ -158,3 +158,73 @@ binaries; its named native proof is retained at470ca74; broad operations/clock/s
 manifest/package bytes, deadlines and payload roots must survive unchanged. The
 primary schema-11 environment has not been migrated or switched. See
 [ADR0053](adr/0053-indexed-export-expiry.md).
+
+## Resume collection through the CLI
+
+`cratectl go-export-collect` collects one durable hosted export plus its complete
+signed journal, checkpoint, signature and public key into a private directory.
+The new command is implemented; its new native process-interruption journey must
+still pass on the exact source. See [ADR0055](adr/0055-resumable-signed-go-collection.md).
+The previously qualified API/offline commands do not by themselves qualify this
+collector.
+
+First obtain the complete journal and externally signed checkpoint using the
+[journal workflow](journal-export.md). Independently select the tenant, terminal
+sequence/hash, signer public key and the original export-created event. Read the
+current session for its exact serving generation. Then collect:
+
+```sh
+umask 077
+mkdir -m 700 ./cratectl-export-input
+cratectl go-export-collect \
+  --config "$CRATECTL_CLIENT_CONFIG" \
+  --export-id "$CRATECTL_EXPORT_ID" --generation "$CRATECTL_EXPORT_GENERATION" \
+  --repository hosted --module go.cratectl.invalid/Owned/offline --version v1.0.0 \
+  --output-directory ./cratectl-export-input/collected \
+  --journal-file ./cratectl-journal.jsonl \
+  --journal-tenant "$CRATECTL_TRUSTED_TENANT" \
+  --journal-event-sequence "$CRATECTL_EXPORT_CREATED_SEQUENCE" \
+  --journal-through "$CRATECTL_TRUSTED_JOURNAL_SEQUENCE" \
+  --journal-through-hash "$CRATECTL_TRUSTED_JOURNAL_HASH" \
+  --checkpoint-file ./checkpoint.json --checkpoint-signature-file ./checkpoint.sig \
+  --checkpoint-key-file "$CRATECTL_JOURNAL_TRUSTED_PUBLIC_KEY_FILE"
+```
+
+If collection stops, preserve the directory. Inspect current access, policy,
+network/TLS and session state. Rerun only the collector command with `--resume`,
+the same signed inputs and directory. If you renewed the session, explicitly
+supply its new generation. A changed authority, export, manifest or proof refuses
+resume. The collector never truncates a bad prefix or replaces a corrupt receipt;
+preserve those files and choose a fresh directory when their identities differ.
+Completed receipt replay rehashes the files and rechecks current serving access,
+then returns the original receipt bytes. It does not renew or acknowledge the
+session. Current denial/revocation prevents a new successful collector response;
+already collected bytes and historical receipts remain local.
+
+The directory contains `manifest.json`, `original.zip`, `original.mod`,
+`original.info`, `journal.jsonl`, `checkpoint.json`, `checkpoint.sig`,
+`signer-public.pem`, immutable `bindings.json` and a final `receipt.json`.
+Credentials, client configuration and signing private keys are excluded. Until a
+complete receipt verifies, files may be partial. The receipt proves collected
+historical bytes; current registry/destination admission, checksum authority,
+dependency closure and remote delivery acknowledgment remain false.
+
+Requests are serial, refuse redirects/compressed responses, and use exact
+HTTP ranges, digests and generation headers. `--chunk-bytes` defaults to 4 MiB
+(64 KiB–8 MiB); files are synced at checkpoints. Combined retained bytes default
+to 2 GiB with `--max-bytes` (at most 65 GiB, still subject to every smaller
+manifest/journal/format limit). `--timeout` bounds the collection phase to five
+minutes by default, at most one hour. Independent journal verification keeps its
+existing `--journal-timeout` and `--journal-max-bytes` budgets. Response headers
+are capped at 32 KiB; each request has a one-minute deadline. These are resource
+bounds, not license limits.
+
+Use the copied journal/checkpoint/signature and three original representations
+with `go-module-offline`. Keep `--checkpoint-key-file` pointed at your separately
+trusted original key or authenticate the copied key's identity independently;
+an adjacent `signer-public.pem` is not its own trust source. The console provides
+first-collection and resume commands with the selected exact session generation.
+Its browser checks are UI response stand-ins, distinct from native collector
+and stock-client evidence. Linux/macOS private files and directory locks are the
+implemented path; Windows ACL/durability qualification and complete disconnected
+closure, installation, provider integration and destination import remain open.
