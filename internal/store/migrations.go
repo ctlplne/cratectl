@@ -62,9 +62,13 @@ var holdMattersSchemaStateBody = strings.Replace(frozenSchemaStateBody, migratio
 var goChecksumSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationSafetySQL(), migrationSafetySQLFor(schemaTablesV12), 1)
 var goChecksumFailureSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationSafetySQL(), migrationSafetySQLFor(schemaTablesV13), 1)
 var goChecksumLegacySchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationSafetySQL(), migrationSafetySQLFor(schemaTablesV14), 1)
+var goExportSchemaStateBody = strings.Replace(frozenSchemaStateBody, migrationSafetySQL(), migrationSafetySQLFor(schemaTablesV15), 1)
 
 func schemaStateBody() string { return frozenSchemaStateBody }
 func schemaStateBodyForVersion(version int) string {
+	if version >= 15 {
+		return goExportSchemaStateBody
+	}
 	if version >= 14 {
 		return goChecksumLegacySchemaStateBody
 	}
@@ -149,7 +153,8 @@ func buildMigrations() []migrationStep {
 	}
 	failures += schemaStateSQL(goChecksumFailureSchemaStateBody)
 	legacy := goChecksumLegacySchema + schemaStateSQL(goChecksumLegacySchemaStateBody)
-	return []migrationStep{{1, "legacy baseline", legacySchemaSQL()}, {2, "schema state and runtime coordination", migrationLedgerSQL + "\n" + state}, {3, "retained artifact and repository lifecycle", lifecycle}, {4, "versioned repository source configuration", sourceConfigurationSchema + schemaStateSQL(sourceSchemaStateBody)}, {5, "fenced exact-byte repair jobs", schemaStateSQL(sourceSchemaStateBody)}, {6, "recurring bounded integrity sampling", schedules}, {7, "policy-driven retained retirement", retention}, {8, "explicitly authorized scheduled retirement", retentionSchedules}, {9, "bounded hold inventory and immutable lifecycle history", holdManagementSchema + schemaStateSQL(retentionScheduleSchemaStateBody)}, {10, "independent immutable-reference hold cases", holdCases}, {11, "cross-reference hold matters and reviewed bulk preservation", matters}, {12, "retained Go checksum timelines and atomic proof receipts", checksums}, {13, "immutable checksum failure evidence and tenant key fork blocks", failures}, {14, "retained unattributed checksum incidents and explicit external trust reviews", legacy}}
+	exports := goExportSchema + schemaStateSQL(goExportSchemaStateBody)
+	return []migrationStep{{1, "legacy baseline", legacySchemaSQL()}, {2, "schema state and runtime coordination", migrationLedgerSQL + "\n" + state}, {3, "retained artifact and repository lifecycle", lifecycle}, {4, "versioned repository source configuration", sourceConfigurationSchema + schemaStateSQL(sourceSchemaStateBody)}, {5, "fenced exact-byte repair jobs", schemaStateSQL(sourceSchemaStateBody)}, {6, "recurring bounded integrity sampling", schedules}, {7, "policy-driven retained retirement", retention}, {8, "explicitly authorized scheduled retirement", retentionSchedules}, {9, "bounded hold inventory and immutable lifecycle history", holdManagementSchema + schemaStateSQL(retentionScheduleSchemaStateBody)}, {10, "independent immutable-reference hold cases", holdCases}, {11, "cross-reference hold matters and reviewed bulk preservation", matters}, {12, "retained Go checksum timelines and atomic proof receipts", checksums}, {13, "immutable checksum failure evidence and tenant key fork blocks", failures}, {14, "retained unattributed checksum incidents and explicit external trust reviews", legacy}, {15, "durable immutable hosted Go export snapshots and object references", exports}}
 }
 
 var frozenMigrations = buildMigrations()

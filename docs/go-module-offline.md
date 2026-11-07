@@ -1,12 +1,12 @@
 # Prepare a hosted Go package for a disconnected client
 
 `go-module-offline` prepares one exact hosted module/version as a private file
-GOPROXY. It is implemented but native unverified. Local ARM checks pass. The
-first d179222 attempt fails native fixture cleanup on both Linux
-hosts after Go creates its standard read-only module cache. DEFECT0128 uses the
-pinned SDK cleaner for only that fresh test cache; native replay is required.
-Original race/stock stages skipped and are not passes. The original failures
-are retained in `evidence/2026-11-07/go-hosted-offline-d179222-first-failure.json`.
+GOPROXY. Its original publication mode is qualified on both native GitHub Linux
+architectures at1a61120:81named Go PostgreSQL functions normally/race and312stock
+checks. Both original d179222 cache-cleanup failures and skipped stages remain
+retained; the exact fixture repair replays with standard SDK read-only cache
+behavior. The new schema15 producer and manifest mode below remain native
+unverified. See ADR0050 and the source-specific native checkpoint.
 
 You need the original ZIP, `go.mod` and `.info` bytes, the exact original
 `go.module.published` event sequence, a complete journal containing that event,
@@ -19,8 +19,9 @@ The journal signer authenticates historical publication. Approve these exact
 packages for your disconnected environment first. This command cannot determine
 current server permissions, scan approval, revoked/latest history or whether you
 have every dependency. It does not supply a SumDB approval or import into a live
-registry. Full server export sessions and policy/proof/dependency bundles remain
-open in [ADR0049](adr/0049-hosted-go-offline-publication.md).
+registry. The new single-version durable producer is implemented but native unverified;
+complete policy/proof/permission/dependency bundles remain open in
+[ADR0050](adr/0050-durable-hosted-go-export.md).
 
 For example, after independently selecting the exact original event and signed
 terminal checkpoint:
@@ -71,3 +72,56 @@ separate strict Go client trust-state failure. The command itself never runs
 the SDK, extracts/builds code, fetches a dependency, signs data or reads a signing
 private key. Missing dependencies fail against the sole file proxy; complete
 closure and multi-package exports remain required work.
+
+## Collect a durable export snapshot
+
+An administrator can now preview and create one hosted version through
+`POST /api/v1/go/exports/preview` and `POST /api/v1/go/exports`. Both take a
+4096-byte JSON object containing `repository`, `module`, `version`,
+`expected_source_revision` and `lifetime_seconds` (60–3600). Creation requires a
+nonempty Idempotency-Key. The Exports console provides this path and private
+collection commands; the standard management CLI supports the same requests.
+Creation verifies original physical bytes, stages/syncs the canonical manifest,
+then rechecks exact source/policy/byte state before committing session, item
+references, event, receipt and job together. A preview's hash remains unsigned.
+
+Read `GET /api/v1/go/exports/ID` before resuming. Download `manifest`, `zip`, `mod`
+and `info` at `/api/v1/go/exports/ID/KIND?generation=GENERATION`. Each request
+checks current source, all bundle policy, generation and expiry. One bounded
+HTTP Range and ordinary conditional requests are supported. Hash and verify the
+complete copied bytes before accepting them. A transfer is bounded to90seconds;
+interrupted large transfers need a current-generation range request. Keep files
+private and use fresh output paths; preserve incomplete files as diagnostics.
+
+Renew, acknowledge, cancel or reconcile expiry with `PATCH /api/v1/go/exports/ID`
+and a new Idempotency-Key. Supply all four fields: `action`,
+`expected_generation`, `lifetime_seconds`, `manifest_sha256`. Renew takes60–3600
+seconds and stays within the original24hours; other actions use zero seconds.
+Each transition changes generation. Acknowledgment records your statement with
+`delivery_verified=false`. Expiry blocks serving and retains pins until its
+terminal transaction commits. Queue failure preserves protection. Cancellation
+or durable expiry releases package pins and retains the historical manifest.
+The operator controls retained-session capacity with `--export-session-limit`.
+This adds no physical-GC deletion permission.
+
+For independent offline verification, collect a complete journal that includes
+this session's **created_sequence**. Authenticate its terminal checkpoint through
+your external signer and separately trusted public key as described above.
+Add both flags to the existing `go-module-offline` invocation:
+
+```sh
+  --export-id EXACT_SESSION_ID \
+  --manifest-file /private/path/downloaded-manifest.json
+```
+
+Set `--journal-event-sequence` to the export's original `created_sequence`.
+The command verifies the complete signed range, original `go.export.created`
+event and exact canonical manifest identity before using its three digests.
+It preserves that original manifest as `export-manifest.json` next to the new
+file GOPROXY. The receipt identifies the export and manifest; source policy is
+historical context and does not approve the destination or supply SumDB trust.
+
+This profile still exports one hosted version. Complete dependency closure,
+source permission/authority/provenance bundles, destination current-policy
+import, background expiry maintenance, physical GC, provider/independent-host/
+Windows/scale and backup outcomes remain open in the export acceptance plan.

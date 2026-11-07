@@ -8,27 +8,22 @@
     "GOAL.md",
     "docs/adr/0049-hosted-go-offline-publication.md",
     "docs/go-module-offline.md",
-    "docs/qualification/github-actions-plan.md"
+    "docs/qualification/github-actions-plan.md",
+    "docs/adr/0050-durable-hosted-go-export.md"
   ],
   "current_implementation": {
-    "candidate": "d1792224f6fa8b1bc0981a6650c6990f054a1d27",
-    "state": "first both-Linux native dedicated store suites fail cleanup under DEFECT0128; fixture repair compile/vet only, fresh native replay required",
-    "development_evidence": "evidence/2026-11-07/go-hosted-offline-development.json",
-    "native_runs": {
-      "main": 42345098943,
-      "go": 42345098952,
-      "jvm": 42345098918,
-      "oci": 42345098942,
-      "upgrades": 42345098914
-    },
+    "source_parent": "1a611201b20f3e6a58b8377d151e7c92425a79db",
+    "source_dirty": true,
+    "state": "schema15 hosted snapshot/session/manifest/API/CLI/console implemented but native unverified",
+    "qualified_historical_consumer": "evidence/2026-11-07/github-1a61120-checkpoint.json",
+    "producer_development": "evidence/2026-11-07/go-durable-export-development.json",
+    "schema": 15,
     "current_registry_admission": false,
     "checksum_authority_verified": false,
-    "durable_server_snapshot": false,
+    "durable_server_snapshot": "implemented but native unverified",
     "physical_gc_qualified": false,
     "dependency_closure": false,
-    "full_goal_complete": false,
-    "first_failure": "evidence/2026-11-07/go-hosted-offline-d179222-first-failure.json",
-    "repair_development": "evidence/2026-11-07/go-hosted-offline-cleanup-development.json"
+    "full_goal_complete": false
   },
   "environment_profiles": {
     "development-arm": {
@@ -129,7 +124,7 @@
         "native-linux-amd64",
         "native-linux-arm64"
       ],
-      "state": "required; not accepted by this plan"
+      "state": "implementing; new-source native qualification required"
     },
     {
       "id": "GO.EXPORT.snapshot-revalidation",
@@ -145,7 +140,7 @@
         "native-linux-amd64",
         "native-linux-arm64"
       ],
-      "state": "required; not accepted by this plan"
+      "state": "implementing; new-source native qualification required"
     },
     {
       "id": "GO.EXPORT.tenant-runtime",
@@ -160,7 +155,7 @@
         "native-linux-amd64",
         "native-linux-arm64"
       ],
-      "state": "required; not accepted by this plan"
+      "state": "implementing; new-source native qualification required"
     },
     {
       "id": "GO.EXPORT.session-resume",
@@ -178,7 +173,7 @@
         "native-linux-arm64",
         "browser-amd64"
       ],
-      "state": "required; not accepted by this plan"
+      "state": "implementing; new-source native qualification required"
     },
     {
       "id": "GO.EXPORT.gc-pins",
@@ -194,7 +189,7 @@
         "native-linux-amd64",
         "native-linux-arm64"
       ],
-      "state": "required; not accepted by this plan"
+      "state": "durable item/manifest roots and inventory references implemented but native unverified; physical GC and other protections unfinished"
     },
     {
       "id": "GO.EXPORT.manifest-bindings",
@@ -210,7 +205,7 @@
         "native-linux-amd64",
         "native-linux-arm64"
       ],
-      "state": "required; not accepted by this plan"
+      "state": "implementing; new-source native qualification required"
     },
     {
       "id": "GO.EXPORT.hosted-offline",
@@ -227,7 +222,8 @@
         "native-linux-arm64",
         "native-macos-arm64"
       ],
-      "state": "required; not accepted by this plan"
+      "state": "historical publication mode verified on both Linux hosts at1a61120; new manifest mode and remaining platforms required",
+      "evidence": "evidence/2026-11-07/go-module-1a61120-native-checkpoint.json"
     },
     {
       "id": "GO.EXPORT.proxy-authority",
@@ -302,7 +298,7 @@
         "native-linux-amd64",
         "native-linux-arm64"
       ],
-      "state": "required; not accepted by this plan"
+      "state": "implementing; new-source native qualification required"
     },
     {
       "id": "GO.EXPORT.operator-surface",
@@ -318,7 +314,7 @@
         "native-linux-arm64",
         "browser-amd64"
       ],
-      "state": "required; not accepted by this plan"
+      "state": "implementing; new-source native qualification required"
     },
     {
       "id": "GO.EXPORT.fault-scale-platform",
@@ -339,8 +335,8 @@
     }
   ],
   "execution_order": [
-    "finish exact d179222 native consumer qualification and retain first failures",
-    "implement durable snapshot/manifest/session and same-fence protection paths",
+    "Preserve qualified1a61120 historical consumer and original d179222 failures; qualify clean schema15 producer/manifest/CLI/console/upgrade source on actual native hosts.",
+    "Finish background expiry janitor and complete remaining producer policy/provenance/permission/authority/closure/GC protections.",
     "implement complete producer/API/CLI/UI and portable proof/policy/closure consumer",
     "qualify interrupted/native historical upgrades, import and lifecycle/GC",
     "qualify independent hosts, remaining platforms/providers/scale and broader committed formats"
@@ -364,7 +360,7 @@
       "A reusable export must cover dependency/proof/policy closure, safe current-policy import and independent consumer recovery. A successful three-file install does not complete those outcomes.",
       "Broad source/native regression cost is justified while shared store/authorization paths change; new native cases belong in existing architecture jobs before adding duplicate local campaigns."
     ],
-    "next_implementation_boundary": "durable forced-RLS snapshot/session and manifest staging with revalidation, followed by complete producer and consumer surfaces",
+    "next_implementation_boundary": "qualify source15 exact snapshot/session and manifest consumer; then complete closure/authority/permission/provenance/import/background expiry/full lifecycle protections",
     "accepted_capability_states_changed": false
   }
 }

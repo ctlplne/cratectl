@@ -1037,6 +1037,140 @@ paths:
         '403': {description: "Tenant admin required."}
         '404': {description: "Exact coordinate and digest not found."}
         '409': {description: "Idempotency conflict."}
+  /api/v1/go/exports:
+    get:
+      summary: List retained hosted Go export sessions
+      description: Current tenant administrator required. Bounded immutable creation-sequence pagination. Expired but unreconciled sessions retain package pins until a terminal state, journal event and job intent commit together. Historical manifests remain referenced after cancellation or expiry. A session receipt does not certify external delivery or grant current package admission.
+      parameters:
+        - {in: query, name: after, schema: {type: integer, format: int64, minimum: 0, default: 0}}
+        - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
+      responses:
+        '200': {description: "Bounded sessions, more flag and exact next_after creation sequence."}
+        '400': {description: "Unknown, repeated, noncanonical or oversized query."}
+        '401': {description: "Current credential required."}
+        '403': {description: "Administrator access required."}
+        '503': {description: "Schema, metadata or database unavailable; no inferred completeness."}
+    post:
+      summary: Create a durable single-version hosted Go export
+      description: Current tenant administrator and source authorization required. Only hosted Go versions are supported in this profile. Verify original CAS bytes and native ZIP/mod/info consistency, stage and sync canonical manifest bytes, then recheck the complete source epoch, byte identities and policy revisions under the tenant mutation fence. Session/items, creation journal event, idempotency receipt and job intent commit together. An idempotent replay returns the original authorized receipt; read current status separately before resuming. Source policy is historical context, never destination permission, checksum authority trust, security cleanliness or dependency closure. The operator configures retained-session capacity with export-session-limit. A creation stage may retain unreferenced CAS bytes after failed or uncertain admission; they are never deleted by this request.
+      parameters:
+        - {in: header, name: Idempotency-Key, required: true, schema: {type: string, minLength: 1, maxLength: 200}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [repository, module, version, expected_source_revision, lifetime_seconds]
+              properties:
+                repository: {type: string, pattern: '^[a-z][a-z0-9-]{0,62}$'}
+                module: {type: string, maxLength: 512}
+                version: {type: string, maxLength: 128}
+                expected_source_revision: {type: integer, format: int64, minimum: 0}
+                lifetime_seconds: {type: integer, minimum: 60, maximum: 3600}
+      responses:
+        '201': {description: "Original durable session receipt with immutable manifest digest/size, creation event, generation, serving deadline, 24-hour maximum window and delivery_verified=false."}
+        '400': {description: "Malformed, missing, null, duplicate, aliased, unsupported or unbounded input."}
+        '401': {description: "Current credential required."}
+        '403': {description: "Current administrator, repository or byte policy denied."}
+        '409': {description: "Source or exact staged snapshot changed, or idempotency key conflicts."}
+        '503': {description: "Queue/session capacity, stored integrity, schema or database unavailable; no partial durable export admitted."}
+  /api/v1/go/exports/preview:
+    post:
+      summary: Preview the current hosted Go source snapshot
+      description: Current tenant administrator required. Accepts the same five required request fields as creation, within 4096 bytes, without an idempotency key. Returns a bounded unsigned metadata/policy manifest preview with physical_objects_verified=false. Preview does not stage or pin bytes. Creation independently checks current state and physical objects again; it does not treat the preview hash as trust or approval.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [repository, module, version, expected_source_revision, lifetime_seconds]
+              properties:
+                repository: {type: string}
+                module: {type: string, maxLength: 512}
+                version: {type: string, maxLength: 128}
+                expected_source_revision: {type: integer, format: int64, minimum: 0}
+                lifetime_seconds: {type: integer, minimum: 60, maximum: 3600}
+      responses:
+        '200': {description: "Unsigned bounded current metadata snapshot and expected canonical object identity; physical bytes not yet verified or pinned."}
+        '400': {description: "Invalid bounded typed input."}
+        '401': {description: "Current credential required."}
+        '403': {description: "Current source or policy denied."}
+        '409': {description: "Source epoch or native package metadata changed."}
+        '503': {description: "Required schema or metadata unavailable."}
+  /api/v1/go/exports/{export}:
+    parameters:
+      - {in: path, name: export, required: true, schema: {type: string, pattern: '^[a-f0-9]{64}$'}}
+    get:
+      summary: Read or resume the current export session
+      description: Current tenant administrator required, including for retained repositories. Returns the current generation and manifest identity. A due session is reconciled through a durable terminal expiry transaction before releasing its package pins; queue failure keeps them retained. Manifest references remain for historical audit. This metadata response does not authorize a package download; every object request applies current source and byte policy separately.
+      responses:
+        '200': {description: "Current session, source identity, generation, serving deadline and explicit payload/manifest retention flags; delivery_verified remains false."}
+        '400': {description: "Invalid export identity or query."}
+        '401': {description: "Current credential required."}
+        '403': {description: "Current administrator required."}
+        '404': {description: "No session in this authorized tenant."}
+        '409': {description: "A concurrent transition changed the session."}
+        '503': {description: "Expiry intent could not commit; pins remain retained."}
+    patch:
+      summary: Renew, acknowledge, cancel or reconcile expiry
+      description: Current tenant administrator and exact generation/manifest binding required. All four fields are mandatory and duplicate/null/unknown fields fail. Renew and acknowledge additionally recheck current source and package policy. Renewal is 60–3600 seconds, never beyond the original 24-hour window. Other actions require lifetime_seconds=0. Each accepted transition changes generation, fencing old transfers. Acknowledge records the caller's collection statement with delivery_verified=false. Cancellation and durable expiry release package pins, retain the manifest and cannot be reopened by a clock/expiry-field rewrite. Lost-response retry returns the original receipt under current administrative authority.
+      parameters:
+        - {in: header, name: Idempotency-Key, required: true, schema: {type: string, minLength: 1, maxLength: 200}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [action, expected_generation, lifetime_seconds, manifest_sha256]
+              properties:
+                action: {type: string, enum: [renew, acknowledge, cancel, expire]}
+                expected_generation: {type: integer, format: int64, minimum: 1}
+                lifetime_seconds: {type: integer, minimum: 0, maximum: 3600}
+                manifest_sha256: {type: string, pattern: '^[a-f0-9]{64}$'}
+      responses:
+        '200': {description: "Original transactional state-transition receipt."}
+        '400': {description: "Invalid complete request or idempotency key."}
+        '401': {description: "Current credential required."}
+        '403': {description: "Current administrative or source/byte policy denied."}
+        '409': {description: "Generation, digest, source, deadline condition or idempotency fingerprint changed."}
+        '410': {description: "Expired/cancelled sessions cannot be renewed or acknowledged."}
+        '503': {description: "Intent could not commit; no partial transition or pin release."}
+  /api/v1/go/exports/{export}/{kind}:
+    parameters:
+      - {in: path, name: export, required: true, schema: {type: string, pattern: '^[a-f0-9]{64}$'}}
+      - {in: path, name: kind, required: true, schema: {type: string, enum: [manifest, zip, mod, info]}}
+      - {in: query, name: generation, required: true, schema: {type: integer, format: int64, minimum: 1}}
+    get:
+      summary: Download or resume an exact protected export object
+      description: Current administrator/source/all-three-representation policy, exact generation and nonterminal deadline required. Verify the exact immutable stored object before headers and recheck after readback. Long responses recheck the SQL authority/generation fence every second, use a deadline no later than 90 seconds, and abort on loss; interrupted clients must verify exact digest and resume with current status. One bounded HTTP byte range is supported; multi-range requests are rejected. Conditional and HEAD requests still authorize before answering. Responses are private/no-store, with exact SHA-256 ETag and checksum header. No delivered bytes constitute an acknowledgment or independent signature. Use a complete externally authenticated journal creation event to verify the private canonical manifest offline.
+      responses:
+        '200': {description: "Exact immutable canonical manifest or original native representation bytes."}
+        '206': {description: "Single authorized byte range of the same object/generation."}
+        '304': {description: "Conditional match after current authorization."}
+        '400': {description: "Invalid exact generation, query or unbounded/multiple range."}
+        '401': {description: "Current credential required."}
+        '403': {description: "Current source or package policy denied, including conditional requests."}
+        '409': {description: "Old generation, source epoch or byte identity fenced."}
+        '410': {description: "Terminal or expired session does not admit downloads."}
+        '416': {description: "Unsatisfiable single byte range."}
+        '503': {description: "Storage integrity, schema or database unavailable; no clean result inferred."}
+    head:
+      summary: Inspect an authorized export object's exact HTTP identity
+      description: Applies the same current policy, generation, byte-integrity and deadline checks as GET, including before conditional responses. Returns size, native media type, ETag and SHA-256 without a response body.
+      responses:
+        '200': {description: "Authorized object headers with exact length and digest."}
+        '304': {description: "Authorized conditional match."}
+        '401': {description: "Current credential required."}
+        '403': {description: "Current policy denied."}
+        '409': {description: "Generation or source changed."}
+        '410': {description: "Session no longer serves objects."}
+        '503': {description: "Stored integrity or database unavailable."}
   /api/v1/audit:
     get:
       operationId: listAuditEvents

@@ -48,11 +48,14 @@ type RepositoryState struct {
 
 func artifactStateInTx(ctx context.Context, tx pgx.Tx, repo, p string) (ArtifactState, error) {
 	s := ArtifactState{Repository: repo, Path: p}
-	e := tx.QueryRow(ctx, `SELECT digest,deleted,hold_reason<>'' AND (hold_until IS NULL OR hold_until>clock_timestamp()),revision,hold_reason,hold_until,reason,actor,changed_at,change_sequence,
+	e := tx.QueryRow(ctx, `SELECT digest,deleted,hold_reason<>'' AND (hold_until IS NULL OR hold_until>clock_timestamp()),revision,hold_reason,hold_until,reason,left(actor,257),changed_at,change_sequence,
  EXISTS(SELECT 1 FROM cratectl.artifact_hold_cases c WHERE (c.tenant,c.repository,c.path)=(l.tenant,l.repository,l.path) AND NOT c.released AND (c.hold_until IS NULL OR c.hold_until>clock_timestamp())),
  EXISTS(SELECT 1 FROM cratectl.hold_matter_members m WHERE (m.tenant,m.repository,m.path)=(l.tenant,l.repository,l.path) AND NOT m.released AND (m.hold_until IS NULL OR m.hold_until>clock_timestamp()))
  FROM cratectl.artifact_lifecycle l WHERE repository=$1 AND path=$2`, repo, p).Scan(&s.Digest, &s.Deleted, &s.LegacyHeld, &s.Revision, &s.HoldReason, &s.HoldUntil, &s.Reason, &s.Actor, &s.ChangedAt, &s.ChangeSequence, &s.CaseHeld, &s.MatterHeld)
 	s.Held = s.LegacyHeld || s.CaseHeld || s.MatterHeld
+	if len(s.Actor) > 256 {
+		return ArtifactState{}, ErrMetadataLimit
+	}
 	if errors.Is(e, pgx.ErrNoRows) {
 		return s, nil
 	}

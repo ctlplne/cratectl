@@ -10,7 +10,7 @@ import json
 import re
 from pathlib import Path
 
-CURRENT_SCHEMA = 14
+CURRENT_SCHEMA = 15
 
 
 def dotnet_sdk_pin(root=None):

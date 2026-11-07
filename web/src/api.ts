@@ -5,8 +5,8 @@ export type Artifact={lifecycle?:{deleted:boolean;held:boolean;revision:number};
 export type Job={sequence:number;task:string;handler:string;kind:string;queue:string;state:string;attempts:number;generation:number;last_error:string;updated_at:string;target:Record<string,unknown>};
 export type Audit={sequence:number;payload:string;hash:string;previous_hash:string;created_at:string};
 export type Page<T>={items:T[];next?:string;previous?:string;more?:boolean;limit?:number;scope?:string};
-export type RequestSpec={method:'POST'|'PUT';path:string;body:unknown};
-export type PendingRequest={method:'POST'|'PUT';path:string;body:string;key:string};
+export type RequestSpec={method:'POST'|'PUT'|'PATCH';path:string;body:unknown};
+export type PendingRequest={method:'POST'|'PUT'|'PATCH';path:string;body:string;key:string};
 export class ApiError extends Error {
   constructor(public status:number,public code:string,message:string){super(message)}
 }

@@ -174,6 +174,7 @@ func run() error {
 		ociURLBytes := f.Int("oci-delivery-url-bytes", 16384, "maximum ephemeral OCI delivery URL bytes, within the response-header ceiling")
 		ociQueryBytes := f.Int("oci-delivery-query-bytes", 8192, "maximum opaque query bytes on explicitly approved OCI sources")
 		ociQueryPairs := f.Int("oci-delivery-query-pairs", 64, "maximum opaque OCI delivery query parameter pairs")
+		exportSessions := f.Int("export-session-limit", 1024, "maximum retained open or acknowledged export sessions per tenant, including unreconciled expiry")
 
 		credentials := f.String("upstream-credentials", "", "private JSON map of named upstream tokens; values never enter repository configuration")
 		if e := f.Parse(os.Args[2:]); e != nil {
@@ -245,6 +246,10 @@ func run() error {
 			return errors.New("management-metadata-bytes must be 1024–67108864")
 		}
 		h.ManagementMetadataBytes = *managementBytes
+		if *exportSessions < 1 || *exportSessions > 1000000 {
+			return errors.New("export-session-limit must be 1–1000000")
+		}
+		h.ExportSessionLimit = *exportSessions
 		if *paginationKey == "" {
 			absolute, e := filepath.Abs(*root)
 			if e != nil {

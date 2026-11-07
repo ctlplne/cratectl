@@ -1,60 +1,56 @@
 # cratectl execution status
 
-Exact `809e826e1cc3af053e423daeea5fcccc74a9db4e` is the latest accepted selected
-GitHub campaign:24jobs/five workflows,17original safe summaries/66reports. Both
-actual Linux architectures pass all258PostgreSQL functions normally and under
-race, Go80/312stock,683baseline assertions and11external OpenSSL checkpoint
-controls. Source/unit/race/lint and52fuzz pass on three native hosts;
-13historical binaries/18upgrades each retain controlled schema2–13 into14,
-including70schema13→14 assertions. Main x86 Chromium passes142checks/18workflows
-with no skips/flaky/unexpected:15existing workflows and3declared checksum/journal
-UI response stand-ins, separate from actual PostgreSQL/CLI/crypto proof. JVM/OCI
-pass; focused browser, NuGet-library and strict checksum-client workflows were
-unselected. DEFECT0126's three-host client trust-state failure and0122unknown
-intermittent remain open. See `evidence/2026-11-07/github-809e826-checkpoint.json`
-and named Go/upgrade checkpoints. Readiness remains false.
+Exact `1a611201b20f3e6a58b8377d151e7c92425a79db` is the latest accepted
+selected GitHub campaign: 24 jobs/five workflows, 17 original safe summaries/
+66 reports. Both actual Linux architectures pass 259 PostgreSQL functions
+normally and under race, 81 named Go functions and 312 stock Go checks, 683
+baseline assertions and 11 external OpenSSL checkpoint controls. Source/unit/
+race/lint and 53 fuzz targets pass on three native hosts; 13 historical native
+binaries/18 upgrade reports per Linux host and 18 main x86 Chromium workflows/
+142 checks pass. The three additional checksum/journal browser workflows use
+explicit owned UI response stand-ins. Focused browser, NuGet-library and strict
+checksum-client workflows were unselected. See
+`evidence/2026-11-07/github-1a61120-checkpoint.json` and named Go/upgrade records.
 
-The two original ca56447 normal store fixture failures remain retained before
-the valid oversized-JSON repair. Its final snapshot contains27terminal jobs,
-25pass/2fail,20safe summaries/64reports. a3d8df2 replays the original limit
-assertion on both native hosts normally/race; no schema or product-bound
-relaxation was needed. Bounded immutable range collection, private-file offline
-verification, unsigned preparation and verification of externally signed
-checkpoints are now qualified in the named profiles. Signature keys/operations
-remain external, and full bundles/provider adapters/latest-history/revocation/
-backup/GC/performance outcomes remain incomplete.
+Hosted offline Go publication is verified in that historical single-version
+profile: actual PostgreSQL/CAS/current source approval, original journal bytes,
+external OpenSSL signature, candidate CLI private file proxy and pinned native
+Go1.27.3 exact h1/inert extraction. DEFECT0128's fixture cleanup repair passes all
+four normal/race native profiles. The final original d179222 campaign is retained:
+24 terminal jobs, 20 pass/four fail, 17 original safe summaries/47 reports. Both
+full and both dedicated normal store suites fail only read-only SDK cache cleanup;
+their skipped stages are not passes. The pinned cleaner changes no default SDK
+permissions, assertion or product bound.
 
-Journal-bound Go failure attribution is now verified in the exact809e826 named
-native Go profile on both GitHub Linux architectures:80functions normally/race
-and the original312stock checks. The new function uses real original database
-failure/journal bytes, actual external OpenSSL and the candidate offline CLI;
-changed context, wrong digest and incomplete suffix controls pass. Both named
-13historical/18upgrade profiles also pass. Its entire24-job selected campaign is now independently accepted. See
-`evidence/2026-11-07/go-module-809e826-native-checkpoint.json` and
-`evidence/2026-11-07/github-809e826-upgrades-checkpoint.json`.
+New source schema15 adds a durable hosted Go export producer, manifest verifier,
+CLI collection path and console. It is **implemented but native unverified**.
+Canonical policy/byte snapshots are staged in CAS before immutable RLS references;
+event/idempotency/job intent share the transaction. Current credentials/policy,
+source epoch, generation and expiry fence bounded single-range downloads.
+Renewal, caller acknowledgment, cancellation and durable expiry retain explicit
+historical trust limits. Inventory counts retained manifests and nonterminal
+payload pins. No physical deletion or delivery-proof claim is added.
 
-Hosted Go offline preparation remains native unverified. Both actual d179222
-Linux dedicated Go normal store suites fail only the new fixture's TempDir
-cleanup: stock Go retains read-only extracted module-cache directories. Original
-failed logs, zero-report safe Go summaries and the partial24-job snapshot are
-retained in `evidence/2026-11-07/go-hosted-offline-d179222-first-failure.json` and
-`github-d179222-initial-checkpoint.json`. Skipped race/stock are not passes.
-DEFECT0128 registers the pinned SDK's own `go clean -modcache` on this test's
-fresh private cache before TempDir cleanup, including assertion failures. Default
-read-only SDK behavior and all original byte/journal/signature/extraction/no-
-overwrite/truncation assertions remain unchanged. Normal/race compile and tagged
-vet pass locally only; the new clean candidate must replay259PG/81Go/53fuzz and
-original312stock/683baseline/18main142browser profiles on GitHub.
+Local ARM build/unit/race/lint, two bounded fuzz targets, console reproduction,
+normal/race PostgreSQL compile and tagged vet pass. Actual PostgreSQL/SDK/CLI/
+OpenSSL/Chromium/historical upgrade qualification belongs on GitHub: 268 full PG,
+90 named Go, 55 fuzz, 19 main browser workflows/151 checks (four declared UI
+response stand-ins), 14 native historical binaries/19 upgrade reports per Linux
+host. Expected selected campaign is six workflows/27 jobs including three focused
+browser jobs; enumerate actual results rather than infer success. All first14
+migration definitions remain frozen. New15 is frozen before publication at
+`e09da69fe6a5c3a653a3d3e86d85c2a08250b05fd099ac9bef73e11d74d9d325`.
+See ADR0050, `evidence/2026-11-07/go-durable-export-development.json` and the
+14-case/seven-environment `docs/qualification/go-export-plan.json`.
 
-The command verifies historical hosted publication and prepares a bounded,
-private file GOPROXY; current registry admission and checksum-authority flags
-remain false. The durable [export plan](docs/qualification/go-export-plan.json)
-has14required acceptance cases across7environment profiles and an explicit
-review of snapshot/manifest staging, current authorization, resume/expiry/GC,
-independent trust, closure/import, upgrades and platform/scale limits. It does
-not count planned cases as passed. Full producer/policy/authority/dependency/
-backup/provider outcomes, all14frozen definitions and stopped primary11 remain
-preserved. See ADR0049 and both hosted-offline development records.
+Full dependency/authority/provenance/source-permission closure, policy/scanning
+import, background expiry, protected physical GC, backup/provider/platform/scale
+and every remaining GOAL requirement remain open. Independent DEFECT0126's
+three-host strict Go client trust-state failure and DEFECT0122's unknown browser
+intermittent remain open. All450 capabilities/41 families/later stages remain
+required under section4.1. Readiness/security/packaging remain false. Primary11,
+selected qualified5483878b binaries, ten receipts and ignored credentials stay
+stopped/preserved. No customer/sibling/release/package/image change.
 
 Schema14 internal legacy recovery is qualified in that scope. It preserves
 unattributed old incidents without inventing proof or clearing authenticated

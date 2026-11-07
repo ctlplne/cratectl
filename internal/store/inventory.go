@@ -265,14 +265,19 @@ func (s *Store) applyInventory(ctx context.Context, i WorkerIdentity, j Job, kin
 	return outcome, e
 }
 
-type digestReferences struct{ Artifacts, Parts int64 }
+type digestReferences struct{ Artifacts, Parts, Exports int64 }
 
 func currentDigestReferences(ctx context.Context, tx pgx.Tx, digests []string) (map[string]digestReferences, error) {
 	out := map[string]digestReferences{}
 	if len(digests) == 0 {
 		return out, nil
 	}
-	rows, e := tx.Query(ctx, `SELECT digest,sum(a)::bigint,sum(p)::bigint FROM (SELECT digest,count(*) a,0::bigint p FROM cratectl.artifacts WHERE digest=ANY($1::text[]) GROUP BY digest UNION ALL SELECT digest,0::bigint,count(*) FROM cratectl.upload_parts WHERE digest=ANY($1::text[]) GROUP BY digest)r GROUP BY digest`, digests)
+	rows, e := tx.Query(ctx, `SELECT digest,sum(a)::bigint,sum(p)::bigint,sum(e)::bigint FROM (
+ SELECT digest,count(*) a,0::bigint p,0::bigint e FROM cratectl.artifacts WHERE digest=ANY($1::text[]) GROUP BY digest
+ UNION ALL SELECT digest,0::bigint,count(*),0::bigint FROM cratectl.upload_parts WHERE digest=ANY($1::text[]) GROUP BY digest
+ UNION ALL SELECT manifest_digest,0::bigint,0::bigint,count(*) FROM cratectl.artifact_exports WHERE manifest_digest=ANY($1::text[]) GROUP BY manifest_digest
+ UNION ALL SELECT x.digest,0::bigint,0::bigint,count(*) FROM cratectl.artifact_export_items x JOIN cratectl.artifact_exports s ON (s.tenant,s.id)=(x.tenant,x.export_id) WHERE x.digest=ANY($1::text[]) AND s.state IN ('open','acknowledged') GROUP BY x.digest
+ )r GROUP BY digest`, digests)
 	if e != nil {
 		return out, e
 	}
@@ -280,7 +285,7 @@ func currentDigestReferences(ctx context.Context, tx pgx.Tx, digests []string) (
 	for rows.Next() {
 		var digest string
 		var r digestReferences
-		if e = rows.Scan(&digest, &r.Artifacts, &r.Parts); e != nil {
+		if e = rows.Scan(&digest, &r.Artifacts, &r.Parts, &r.Exports); e != nil {
 			return out, e
 		}
 		out[digest] = r
@@ -333,7 +338,7 @@ func (s *Store) FinishInventoryPage(ctx context.Context, i WorkerIdentity, j Job
 				}
 			}
 			p.Entries++
-			if _, e = tx.Exec(ctx, `INSERT INTO cratectl.inventory_entries(tenant,sequence,task,ordinal,area,bucket,name_b64,display_name,entry_type,size,modified_ns,file_identity,expected_layout,digest,artifact_references,upload_parts,upload_state,acknowledged_bytes) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18)`, i.Tenant, j.Sequence, j.Task, p.Entries, page.Area, bucket, entry.NameB64, entry.Name, entry.Type, entry.Size, entry.ModifiedNS, entry.FileIdentity, entry.Expected, entry.Digest, r.Artifacts, r.Parts, uploadState, acknowledged); e != nil {
+			if _, e = tx.Exec(ctx, `INSERT INTO cratectl.inventory_entries(tenant,sequence,task,ordinal,area,bucket,name_b64,display_name,entry_type,size,modified_ns,file_identity,expected_layout,digest,artifact_references,upload_parts,upload_state,acknowledged_bytes,export_references) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)`, i.Tenant, j.Sequence, j.Task, p.Entries, page.Area, bucket, entry.NameB64, entry.Name, entry.Type, entry.Size, entry.ModifiedNS, entry.FileIdentity, entry.Expected, entry.Digest, r.Artifacts, r.Parts, uploadState, acknowledged, r.Exports); e != nil {
 				return e
 			}
 			if !entry.Expected {
@@ -351,7 +356,7 @@ func (s *Store) FinishInventoryPage(ctx context.Context, i WorkerIdentity, j Job
 			}
 			if page.Area == "cas" && entry.Expected {
 				p.CASFiles++
-				if r.Artifacts+r.Parts == 0 {
+				if r.Artifacts+r.Parts+r.Exports == 0 {
 					p.UnreferencedCASAtWalk++
 				}
 			}

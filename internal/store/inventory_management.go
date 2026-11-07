@@ -30,9 +30,11 @@ func (s *Store) Inventory(ctx context.Context, i Identity, id string) (map[strin
 }
 
 type InventoryItem struct {
-	Ordinal int64  `json:"ordinal"`
-	Area    string `json:"area"`
-	Bucket  string `json:"bucket"`
+	ExportReferencesAtWalk  int64  `json:"export_references_at_walk,omitempty"`
+	CurrentExportReferences int64  `json:"current_export_references,omitempty"`
+	Ordinal                 int64  `json:"ordinal"`
+	Area                    string `json:"area"`
+	Bucket                  string `json:"bucket"`
 	blob.InventoryEntry
 	ArtifactReferencesAtWalk  int64      `json:"artifact_references_at_walk"`
 	UploadPartsAtWalk         int64      `json:"upload_parts_at_walk"`
@@ -67,14 +69,14 @@ func (s *Store) InventoryItems(ctx context.Context, i Identity, id, area string,
 		if e != nil {
 			return e
 		}
-		rows, e := tx.Query(ctx, `SELECT e.ordinal,e.area,e.bucket,e.display_name,e.name_b64,e.entry_type,e.size,e.modified_ns,e.file_identity,e.expected_layout,e.digest,e.artifact_references,e.upload_parts,e.upload_state,e.acknowledged_bytes,e.observed_at,COALESCE(o.status,CASE WHEN NOT e.expected_layout THEN CASE WHEN e.entry_type='disappeared' THEN 'disappeared' ELSE 'unsupported' END WHEN e.area='cas' THEN 'pending' WHEN e.area='staged' THEN 'temporary_retained' WHEN e.area='uploads' THEN 'legacy_retained' ELSE 'directory' END),o.observed_at,COALESCE(o.generation,0) FROM cratectl.inventory_entries e LEFT JOIN LATERAL(SELECT status,observed_at,generation FROM cratectl.inventory_observations WHERE sequence=e.sequence AND task=e.task AND pass=$1 AND ordinal=e.ordinal ORDER BY generation DESC LIMIT 1)o ON true WHERE e.sequence=$2 AND e.task=$3 AND e.ordinal>$4 AND ($5='' OR e.area=$5) ORDER BY e.ordinal LIMIT $6`, p.Pass, seq, task, after, area, limit+1)
+		rows, e := tx.Query(ctx, `SELECT e.ordinal,e.area,e.bucket,e.display_name,e.name_b64,e.entry_type,e.size,e.modified_ns,e.file_identity,e.expected_layout,e.digest,e.artifact_references,e.upload_parts,e.export_references,e.upload_state,e.acknowledged_bytes,e.observed_at,COALESCE(o.status,CASE WHEN NOT e.expected_layout THEN CASE WHEN e.entry_type='disappeared' THEN 'disappeared' ELSE 'unsupported' END WHEN e.area='cas' THEN 'pending' WHEN e.area='staged' THEN 'temporary_retained' WHEN e.area='uploads' THEN 'legacy_retained' ELSE 'directory' END),o.observed_at,COALESCE(o.generation,0) FROM cratectl.inventory_entries e LEFT JOIN LATERAL(SELECT status,observed_at,generation FROM cratectl.inventory_observations WHERE sequence=e.sequence AND task=e.task AND pass=$1 AND ordinal=e.ordinal ORDER BY generation DESC LIMIT 1)o ON true WHERE e.sequence=$2 AND e.task=$3 AND e.ordinal>$4 AND ($5='' OR e.area=$5) ORDER BY e.ordinal LIMIT $6`, p.Pass, seq, task, after, area, limit+1)
 		if e != nil {
 			return e
 		}
 		digests := []string{}
 		for rows.Next() {
 			var item InventoryItem
-			if e = rows.Scan(&item.Ordinal, &item.Area, &item.Bucket, &item.Name, &item.NameB64, &item.Type, &item.Size, &item.ModifiedNS, &item.FileIdentity, &item.Expected, &item.Digest, &item.ArtifactReferencesAtWalk, &item.UploadPartsAtWalk, &item.UploadStateAtWalk, &item.AcknowledgedBytesAtWalk, &item.ObservedAt, &item.Status, &item.HashObservedAt, &item.Generation); e != nil {
+			if e = rows.Scan(&item.Ordinal, &item.Area, &item.Bucket, &item.Name, &item.NameB64, &item.Type, &item.Size, &item.ModifiedNS, &item.FileIdentity, &item.Expected, &item.Digest, &item.ArtifactReferencesAtWalk, &item.UploadPartsAtWalk, &item.ExportReferencesAtWalk, &item.UploadStateAtWalk, &item.AcknowledgedBytesAtWalk, &item.ObservedAt, &item.Status, &item.HashObservedAt, &item.Generation); e != nil {
 				rows.Close()
 				return e
 			}
@@ -94,7 +96,7 @@ func (s *Store) InventoryItems(ctx context.Context, i Identity, id, area string,
 		}
 		for n := range out {
 			r := refs[out[n].Digest]
-			out[n].CurrentArtifactReferences, out[n].CurrentUploadParts = r.Artifacts, r.Parts
+			out[n].CurrentArtifactReferences, out[n].CurrentUploadParts, out[n].CurrentExportReferences = r.Artifacts, r.Parts, r.Exports
 		}
 		return nil
 	})

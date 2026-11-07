@@ -22,7 +22,7 @@ scope=['cmd','internal','scripts','web','api','go.mod','go.sum','Makefile']
 result={'run':RUN,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_scope':scope,'source_dirty':bool(subprocess.check_output(['git','status','--porcelain','--',*scope],text=True).strip()),'artifact_digests':{n:hashlib.sha256((ROOT/n).read_bytes()).hexdigest()for n in ARTIFACTS},'build_identity':{n:settings(n)for n in ARTIFACTS},'checks':checks,'topology':'Real Chromium, native registry/worker and nonowner forced-RLS PostgreSQL. An empty owned database and two newly provisioned tenants; explicit loopback-only HTTP development profile on port 38443.','limits':['This browser run exercises the explicit loopback HTTP test profile. Normal native TLS trust remains separately qualified; browser CA deployment and network/production PKI are not established by this run.','Only tested views and named interactions are qualified. Full console, all WCAG behavior/assistive technologies/native browsers, production packaging and complete product scope remain open.','Management repository/artifact pages use current grants/policy, scoped encrypted scan cursors, bounded live traversal and server search. This is not a multi-page snapshot or full native-format index qualification.']}
 result['build_source_matches_candidate']=all(s.get('vcs.modified')=='false'and s.get('vcs.revision')==result['candidate']for s in result['build_identity'].values())
 result['workflow']=args.workflow
-if args.workflow!='all':result['limits'].append('Only the '+args.workflow+' browser workflow is selected; the complete console remains a separate 18-workflow gate.')
+if args.workflow!='all':result['limits'].append('Only the '+args.workflow+' browser workflow is selected; the complete console remains a separate 19-workflow gate.')
 if args.workflow=='all':result['limits'].append('The journal export and two checksum inspection/recovery browser workflows use explicitly owned management response stand-ins while public Go proxy creation remains gated. They verify rendering, explicit review, replay, privacy, pagination and precision behavior only. Actual database authorization, migration, durable fork/review state and exact evidence downloads have separate Go integration tests.')
 def check(label,value):
     if not value:raise AssertionError(label)
@@ -114,8 +114,9 @@ try:
     browser_env=dict(runtime_env,CRATECTL_CONSOLE_FIXTURE_JSON=str(fixture_path),PLAYWRIGHT_BROWSERS_PATH=str(ROOT/'.cache/playwright-browsers'),PLAYWRIGHT_JSON_OUTPUT_NAME=str(PRIVATE/'browser-results.json'))
     selected={'repair':['zzzz-repair.spec.mjs'],'retention':['zzzzzz-retention.spec.mjs'],'nuget':['zzzzzzzzzzzz-nuget.spec.mjs']}.get(args.workflow,[])
     command([ROOT/'web/node_modules/.bin/playwright','test','--config',ROOT/'web/playwright.config.mjs',*selected],browser_env)
-    report=json.loads((PRIVATE/'browser-results.json').read_text());result['browser_stats']=report['stats'];check('selected real-browser workflows passed without skips or flaky results',report['stats']['unexpected']==0 and report['stats']['skipped']==0 and report['stats']['flaky']==0 and report['stats']['expected']==(18 if args.workflow=='all' else 1))
+    report=json.loads((PRIVATE/'browser-results.json').read_text());result['browser_stats']=report['stats'];check('selected real-browser workflows passed without skips or flaky results',report['stats']['unexpected']==0 and report['stats']['skipped']==0 and report['stats']['flaky']==0 and report['stats']['expected']==(19 if args.workflow=='all' else 1))
     proofs=[(args.workflow+'_browser',args.workflow+'-browser-proof.json')] if args.workflow!='all' else [
+        ('go_export_browser','go-export-browser-proof.json'),
         ('journal_export_browser','journal-export-browser-proof.json'),
         ('go_checksum_browser','go-checksum-browser-proof.json'),
         ('go_checksum_legacy_browser','go-checksum-legacy-browser-proof.json'),

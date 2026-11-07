@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
 """Owned historical upgrades and stock ORAS retained deletion/recovery, on real PostgreSQL."""
-import argparse,datetime,hashlib,json,os,platform,subprocess,time,urllib.error,urllib.parse,urllib.request,uuid
+import argparse,datetime,hashlib,io,json,os,platform,subprocess,time,urllib.error,urllib.parse,urllib.request,uuid,zipfile
 from pathlib import Path
 from qualification_contract import CURRENT_SCHEMA, candidate_binary_directory, candidate_artifact_names
 
@@ -55,7 +55,7 @@ def start(binary):
 def api(path,method='GET',value=None,role='admin',key=None,headers=None):
     h={'Authorization':'Bearer '+tokens[role],**(headers or {})}
     if value is not None:h['Content-Type']='application/json'
-    if method in ('POST','PUT'):h['Idempotency-Key']=key or uuid.uuid4().hex
+    if method in ('POST','PUT','PATCH'):h['Idempotency-Key']=key or uuid.uuid4().hex
     request=urllib.request.Request(BASE+path,data=json.dumps(value).encode()if value is not None else None,method=method,headers=h)
     try:r=urllib.request.urlopen(request,timeout=30)
     except urllib.error.HTTPError as e:r=e
@@ -111,11 +111,40 @@ try:
     else:
         check(f'schema-{args.baseline_version} baseline creates a governed proxy',api('/api/v1/repositories','POST',{'name':'legacy-proxy','format':'oci','mode':'proxy','settings':{'upstream':{'url':BASE+'/v2/containers/','networks':['127.0.0.1/32'],'credential_ref':'self'},'cache':{'fresh_seconds':3600,'stale_seconds':0,'allow_no_store':True}}})[0]==201)
         legacy=PRIVATE/'legacy-pull';legacy.mkdir();oras('pull','127.0.0.1:38443/legacy-proxy/proof:v1',cwd=legacy,reader=True);check(f'actual schema-{args.baseline_version} binary caches stock OCI graph',(legacy/'payload.txt').read_bytes()==payload)
+    if args.baseline_version==14:
+        check('actual schema14 creates reviewed hosted Go source before export migration',api('/api/v1/repositories','POST',{'name':'export-source','format':'go','require_review':True,'access':'restricted'})[0]==201)
+        go_module='go.cratectl.invalid/Owned/export-upgrade';go_version='v1.0.0';go_path='go.cratectl.invalid/!owned/export-upgrade/@v/v1.0.0';go_payload=b'original Go bytes before schema15'
+        go_zip=io.BytesIO()
+        with zipfile.ZipFile(go_zip,'w',zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr(go_module+'@'+go_version+'/go.mod','module '+go_module+'\n\ngo 1.26.0\n')
+            archive.writestr(go_module+'@'+go_version+'/assets/owned.txt',go_payload)
+        go_zip_file=private('go-before-upgrade.zip',go_zip.getvalue())
+        run([BIN/'cratectl','--url',BASE,'--token-file',PRIVATE/'admin.token','--method','PUT','--path','/go/export-source/'+go_path+'.zip','--upload-file',go_zip_file,'--go-module-time','2026-01-02T03:04:05Z'],runenv={k:v for k,v in env.items()if k not in ['CRATECTL_OWNER_DSN','CRATECTL_DSN']})
+        go_before=json.loads(api('/api/v1/repositories/export-source/artifacts')[1])['items']
+        check('actual schema14 retains complete hosted Go bundle',len(go_before)==3)
+        for artifact in go_before:
+            check('schema14 approves exact old Go representation '+artifact['path'],api('/api/v1/repositories/export-source/decisions','PUT',{'path':artifact['path'],'digest':artifact['digest'],'decision':'allowed'})[0]==200)
+        go_before=json.loads(api('/api/v1/repositories/export-source/artifacts')[1])['items']
     stop()
     plan=json.loads(run([NEW,'migrate','--plan']));check('new migrator safely plans only remaining immutable steps',plan['pending']==list(range(args.baseline_version+1,CURRENT_SCHEMA+1))and plan['safety_valid'])
     run([NEW,'migrate']);plan=json.loads(run([NEW,'migrate','--plan']));check('actual upgrade preserves every old receipt and adds safe remaining steps',plan['applied'][:args.baseline_version]==old_plan['applied']and plan['binary_version']==CURRENT_SCHEMA and len(plan['applied'])==CURRENT_SCHEMA and plan['safety_valid'])
     run([OLD,'migrate','--plan'],ok=False);check('old binary refuses the upgraded database',True)
     start(NEW)
+    if args.baseline_version==14:
+        go_after=json.loads(api('/api/v1/repositories/export-source/artifacts')[1])['items']
+        check('actual schema14 to15 preserves Go bytes metadata timestamps and approvals',go_after==go_before)
+        request={'repository':'export-source','module':go_module,'version':go_version,'expected_source_revision':0,'lifetime_seconds':3600}
+        export_key='native-schema14-export-'+RUN
+        status,raw,_=api('/api/v1/go/exports','POST',request,key=export_key);export=json.loads(raw)
+        check('upgraded native runtime commits original Go snapshot manifest and pins',status==201 and export['generation']==1 and export['payload_pins_retained'] and export['manifest_retained'] and export['delivery_verified'] is False)
+        status,again,headers=api('/api/v1/go/exports','POST',request,key=export_key)
+        check('new export lost acknowledgment recovers same immutable native receipt',status==201 and again==raw and headers.get('Idempotent-Replayed')=='true')
+        status,manifest_raw,_=api('/api/v1/go/exports/'+export['id']+'/manifest?generation=1');manifest=json.loads(manifest_raw)
+        check('new schema manifest retains all original pre-upgrade representation digests',status==200 and hashlib.sha256(manifest_raw).hexdigest()==export['manifest']['digest'] and {a['path']:a['digest']for a in manifest['artifacts']}=={a['path']:a['digest']for a in go_before})
+        check('export historical policy does not manufacture current or destination trust',manifest['require_review'] and all(a['decision']=='allowed' for a in manifest['artifacts']) and manifest['current_registry_admission'] is False and manifest['checksum_authority_verified'] is False and manifest['dependency_closure'] is False)
+        run([NEW,'migrate'])
+        status,retained,_=api('/api/v1/go/exports/'+export['id'])
+        check('schema15 live no-op replay preserves new export identity and pins',status==200 and json.loads(retained)['manifest']==export['manifest'] and json.loads(retained)['generation']==1)
     if args.baseline_version>=3:
         upgraded=PRIVATE/'upgraded-proxy-pull';upgraded.mkdir();oras('pull','127.0.0.1:38443/legacy-proxy/proof:v1',cwd=upgraded,reader=True);check(f'schema-{CURRENT_SCHEMA} keeps valid baseline cached graph at source revision zero',(upgraded/'payload.txt').read_bytes()==payload and json.loads(api('/api/v1/repositories/legacy-proxy/configuration')[1])['source_revision']==0)
     pull=PRIVATE/'initial-pull';pull.mkdir();oras('pull',ref,cwd=pull,reader=True);check('stock ORAS installs retained bytes after actual upgrade',(pull/'payload.txt').read_bytes()==payload)

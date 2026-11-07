@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	crypt "ctlplne.dev/cratectl/internal/crypto"
 	"ctlplne.dev/cratectl/internal/gomodule"
@@ -168,5 +169,70 @@ func TestOfflineGoCommandRequiresSignedOriginalPublicationBeforeOutput(t *testin
 		if err := runGoModuleOffline(args, &out); err == nil || out.Len() != 0 {
 			t.Fatal("incomplete offline input produced receipt", err)
 		}
+	}
+}
+
+func TestOfflineGoRetainsExactHistoricalExportManifestWithPrivateBytes(t *testing.T) {
+	for _, scenario := range []string{"original", "changed-policy", "claimed-admission", "wrong-id", "wrong-bytes", "no-newline", "extra-manifest"} {
+		t.Run(scenario, func(t *testing.T) {
+			p, files := offlineGoFiles(t)
+			m := store.GoExportManifest{Profile: store.GoExportProfile, Tenant: p.Tenant, Repository: p.Repository, Module: p.Coordinate.Module, Version: p.Coordinate.Version, RequireReview: true, Access: "restricted", PreparedAt: time.Date(2026, 1, 2, 3, 4, 5, 0, time.UTC), ObservedJournal: crypt.JournalAnchor{Tenant: p.Tenant}, PolicyScope: "historical source decisions; not destination admission"}
+			metadata, _ := json.Marshal(store.GoModuleMetadata{Profile: store.GoModuleProfile, Module: m.Module, Version: m.Version, Digests: map[string]string{"zip": p.ZIP, "mod": p.Mod, "info": p.Info}})
+			media := []string{"application/zip", "text/plain; charset=utf-8", "application/json"}
+			for n, kind := range []string{"zip", "mod", "info"} {
+				path := p.Coordinate.Prefix() + "." + kind
+				m.Artifacts = append(m.Artifacts, store.GoExportArtifact{Path: path, Digest: crypt.Digest(files[n]), Size: int64(len(files[n])), MediaType: media[n], Metadata: metadata, CreatedAt: m.PreparedAt, Decision: "allowed", DecisionVersion: 1, Lifecycle: store.ArtifactState{Repository: m.Repository, Path: path}})
+			}
+			raw, err := m.Bytes()
+			if err != nil {
+				t.Fatal(err)
+			}
+			snapshot := goOfflineSnapshot{crypt.Digest([]byte("owned-export-id")), raw}
+			switch scenario {
+			case "changed-policy":
+				snapshot.raw = bytes.Replace(raw, []byte(`"decision":"allowed"`), []byte(`"decision":"denied"`), 1)
+			case "claimed-admission":
+				snapshot.raw = bytes.Replace(raw, []byte(`"current_registry_admission":false`), []byte(`"current_registry_admission":true`), 1)
+			case "wrong-id":
+				snapshot.id = "bad"
+			case "wrong-bytes":
+				files[1] = append(files[1], []byte("// changed\n")...)
+			case "no-newline":
+				snapshot.raw = bytes.TrimSuffix(raw, []byte("\n"))
+			}
+			dir := t.TempDir()
+			if err := os.Chmod(dir, 0700); err != nil {
+				t.Fatal(err)
+			}
+			var inputs [3]string
+			for n, kind := range []string{"zip", "mod", "info"} {
+				inputs[n] = filepath.Join(dir, "original."+kind)
+				if err := os.WriteFile(inputs[n], files[n], 0600); err != nil {
+					t.Fatal(err)
+				}
+			}
+			snapshots := []goOfflineSnapshot{snapshot}
+			if scenario == "extra-manifest" {
+				snapshots = append(snapshots, snapshot)
+			}
+			output := filepath.Join(dir, "output")
+			receipt, err := prepareOfflineGo(context.Background(), p, nil, inputs, output, snapshots...)
+			if scenario != "original" {
+				if err == nil || receipt.Profile != "" {
+					t.Fatal("invalid export snapshot accepted", err)
+				}
+				if _, err := os.Stat(output); !os.IsNotExist(err) {
+					t.Fatal("failed snapshot exposed proxy", err)
+				}
+				return
+			}
+			if err != nil || receipt.ExportSnapshot == nil || receipt.ExportSnapshot.ManifestSHA256 != crypt.Digest(raw) || receipt.CurrentRegistryAdmission || receipt.ChecksumAuthority {
+				t.Fatal("historical snapshot changed or became admission", err)
+			}
+			copied, err := os.ReadFile(filepath.Join(output, "export-manifest.json"))
+			if err != nil || !bytes.Equal(copied, raw) {
+				t.Fatal("original manifest not retained", err)
+			}
+		})
 	}
 }

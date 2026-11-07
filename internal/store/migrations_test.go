@@ -21,6 +21,7 @@ func TestAppliedMigrationDefinitionsStayImmutable(t *testing.T) {
 		"2ba151f1b80253fbca009c157f5c72dbb68481ffdefe9dacf18f9e14a3069f71",
 		"40eaf4d68b7cb6b867dba8451e001401a942014acf478bd03d5f4264cecb7daa",
 		"b1900b2f1e3fd96955b5a40e52e9dd0f37eb0303bfda513dd77f518dac25bcb5",
+		"e09da69fe6a5c3a653a3d3e86d85c2a08250b05fd099ac9bef73e11d74d9d325",
 	}
 	steps := currentMigrations()
 	t.Logf("current schema %d checksum %s", steps[len(steps)-1].Version, hashMigration(steps[len(steps)-1]))

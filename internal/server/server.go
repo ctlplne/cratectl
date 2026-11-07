@@ -72,6 +72,7 @@ type Server struct {
 	OCIDescriptorURLs            int
 	OCIDescriptorParents         int
 	UploadLimit, UploadPartLimit int
+	ExportSessionLimit           int
 	UploadMetadataBytes          int64
 	SweepTargetBudget            int
 	InventoryLimits              store.InventoryLimits
@@ -84,6 +85,7 @@ type Server struct {
 func New(db *store.Store, b *blob.Local, public string) *Server {
 	s := &Server{DB: db, Blobs: b, PublicURL: strings.TrimRight(public, "/"), slots: make(chan struct{}, 16), fillSlots: make(chan struct{}, 4), TenantProxyLimit: 32, NativeVersionLimit: 10000, NativeTagLimit: 128, NativeMetadataBytes: 8 << 20, UpstreamCredentials: map[string]UpstreamCredential{}, adapters: map[string]Adapter{}}
 	s.ManagementMetadataBytes = 8 << 20
+	s.ExportSessionLimit = 1024
 	s.NPMPublishBytes, s.NPMExpandedBytes, s.NPMFileLimit, s.NPMPackageJSONBytes = 24<<20, 64<<20, 10000, 1<<20
 	s.PythonUploadBytes, s.PythonExpandedBytes, s.PythonFileLimit, s.PythonMetadataBytes = 64<<20, 256<<20, 10000, 1<<20
 	s.GoModuleUploadBytes, s.GoModuleExpandedBytes, s.GoModuleDirectoryBytes, s.GoModuleFileLimit = 64<<20, 256<<20, 4<<20, 10000
@@ -256,6 +258,15 @@ func respondErr(w http.ResponseWriter, e error) {
 		fail(w, 404, "not_found", "Check the repository and package coordinate.")
 	case errors.Is(e, store.ErrDenied):
 		fail(w, 403, "policy_denied", "Check repository grants, the exact digest and current policy; group access also requires source access.")
+	case errors.Is(e, store.ErrGoExportInput):
+		fail(w, 400, "invalid_go_export", "Use an exact hosted Go coordinate, source epoch, complete documented fields and bounded lifetime; creation and changes require an idempotency key.")
+	case errors.Is(e, store.ErrGoExportChanged):
+		fail(w, 409, "go_export_changed", "Read the current session generation or prepare a fresh snapshot; the old byte or policy identity cannot be accepted.")
+	case errors.Is(e, store.ErrGoExportExpired):
+		fail(w, 410, "go_export_expired", "This session is expired or cancelled. Create a fresh authorized export; a retained historical receipt does not reopen downloads.")
+	case errors.Is(e, store.ErrGoExportLimit):
+		w.Header().Set("Retry-After", "5")
+		fail(w, 503, "go_export_session_budget", "Inspect retained export sessions, reconcile expiry or cancel finished sessions, or adjust the operator session budget. Unreconciled expiry retains object protection.")
 	case errors.Is(e, store.ErrConflict):
 		fail(w, 409, "conflict", "Use a new coordinate or idempotency key for different content.")
 	case errors.Is(e, blob.ErrLimit):
@@ -383,6 +394,9 @@ func readJSON(w http.ResponseWriter, r *http.Request, v any, limit int64) bool {
 }
 func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Identity) {
 	p := strings.TrimPrefix(r.URL.Path, "/api/v1/")
+	if s.goExportManagement(w, r, i, p) {
+		return
+	}
 	if s.journalManagement(w, r, i, p) {
 		return
 	}

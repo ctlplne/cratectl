@@ -126,7 +126,12 @@ func TestGoModuleHostedOfflinePublicationPreparesExactStockClientBytes(t *testin
 	verifyNativeGoOffline(t, private, files, journal.Bytes(), head, sequence, repo, metadata.Module, metadata.Version)
 }
 
-func verifyNativeGoOffline(t *testing.T, private string, files [3]string, journal []byte, head crypt.JournalAnchor, sequence int64, repo, module, version string) {
+type nativeGoExportSnapshot struct {
+	id  string
+	raw []byte
+}
+
+func verifyNativeGoOffline(t *testing.T, private string, files [3]string, journal []byte, head crypt.JournalAnchor, sequence int64, repo, module, version string, snapshots ...nativeGoExportSnapshot) {
 	t.Helper()
 	root, err := filepath.Abs("../..")
 	if err != nil {
@@ -194,7 +199,17 @@ func verifyNativeGoOffline(t *testing.T, private string, files [3]string, journa
 	run(true, nil, openssl, "pkeyutl", "-verify", "-rawin", "-pubin", "-inkey", publicKey, "-in", statementFile, "-sigfile", signature)
 	output := filepath.Join(private, "offline package")
 	args := []string{cli, "go-module-offline", "--repository", repo, "--module", module, "--version", version, "--zip-file", files[0], "--mod-file", files[1], "--info-file", files[2], "--output-directory", output, "--journal-file", journalFile, "--journal-tenant", head.Tenant, "--journal-event-sequence", strconv.FormatInt(sequence, 10), "--journal-through", strconv.FormatInt(head.Sequence, 10), "--journal-through-hash", head.Hash, "--checkpoint-file", statementFile, "--checkpoint-signature-file", signature, "--checkpoint-key-file", publicKey}
+	if len(snapshots) > 1 {
+		t.Fatal("fixture requires one exact snapshot")
+	}
+	if len(snapshots) == 1 {
+		args = append(args, "--manifest-file", write("export-manifest.json", snapshots[0].raw), "--export-id", snapshots[0].id)
+	}
 	var receipt struct {
+		ExportSnapshot struct {
+			ID     string `json:"id"`
+			Digest string `json:"manifest_sha256"`
+		} `json:"export_snapshot"`
 		Profile   string
 		Proxy     string `json:"goproxy"`
 		ZIPHash   string `json:"zip_h1"`
@@ -210,6 +225,16 @@ func verifyNativeGoOffline(t *testing.T, private string, files [3]string, journa
 	if raw := run(true, nil, args...); json.Unmarshal(raw, &receipt) != nil || receipt.Profile != "cratectl.go.hosted.offline.v1" || receipt.Proxy == "" || receipt.Current || receipt.Authority || receipt.Journal.Sequence != sequence || !receipt.Journal.Range.MatchesSuppliedCheckpoint || receipt.Journal.Range.ExportSHA256 != crypt.Digest(journal) || !receipt.Journal.Signature.SignatureVerified {
 		t.Fatal("native CLI did not bind complete historical publication")
 	}
+	if len(snapshots) == 1 {
+		if receipt.ExportSnapshot.ID != snapshots[0].id || receipt.ExportSnapshot.Digest != crypt.Digest(snapshots[0].raw) {
+			t.Fatal("native CLI detached manifest snapshot")
+		}
+		saved, err := os.ReadFile(filepath.Join(output, "export-manifest.json"))
+		if err != nil || !bytes.Equal(saved, snapshots[0].raw) {
+			t.Fatal("native CLI lost original policy manifest", err)
+		}
+	}
+
 	goBinary := filepath.Join(runtime.GOROOT(), "bin", "go")
 	if !strings.Contains(string(run(true, nil, goBinary, "version")), "go1.27.3 ") {
 		t.Fatal("pinned actual native Go1.27.3 required")
@@ -253,4 +278,15 @@ func verifyNativeGoOffline(t *testing.T, private string, files [3]string, journa
 	if _, err := os.Stat(filepath.Join(private, "rejected")); !os.IsNotExist(err) {
 		t.Fatal("incomplete history created native proxy")
 	}
+	if len(snapshots) == 1 {
+		wrong := append([]string(nil), args...)
+		wrong = append(wrong, "--export-id", strings.Repeat("0", 64), "--output-directory", filepath.Join(private, "wrong-export"))
+		if raw := run(false, nil, wrong...); len(raw) != 0 {
+			t.Fatal("wrong export identity emitted receipt")
+		}
+		if _, err := os.Stat(filepath.Join(private, "wrong-export")); !os.IsNotExist(err) {
+			t.Fatal("wrong export identity exposed proxy")
+		}
+	}
+
 }

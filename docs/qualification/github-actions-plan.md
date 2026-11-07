@@ -13,55 +13,60 @@ outside this CI authority. No autonomous delegation.
 
 ## Current qualification state
 
-Exact809e826 [campaign checkpoint](../../evidence/2026-11-07/github-809e826-checkpoint.json) independently accepts
-all24selected jobs/five workflows,17original safe summaries/66reports:258PG and
-80Go normally/race both actual Linux hosts,312stockGo/683baseline each,
-52fuzz/source/unit/race/lint on three native hosts,13historical builds/18upgrades
-each and142checks/18main x86 Chromium workflows (15existing+3declared UI response
-stand-ins). Eleven actual external OpenSSL checkpoint controls pass per Linux
-host. JVM/OCI pass; focused browser, NuGet-library and strict checksum-client
-were unselected. All original failures remain retained. DEFECT0126's three-host
-strict client trust-state failure and0122unknown intermittent remain open.
-All14frozen definitions and stopped primary11 stay unchanged; full readiness is
-false.
+Exact1a61120 [campaign checkpoint](../../evidence/2026-11-07/github-1a61120-checkpoint.json)
+accepts all24selected jobs/five workflows,17original safe summaries/66reports:
+259fullPG/81namedGo normally/race both actual Linux hosts,312stockGo/683baseline,
+53fuzz/source on three native hosts,13historical/18upgrades each and18main x86
+Chromium workflows/142checks. Three declared UI response stand-ins remain separate
+from actual PostgreSQL/CLI/external OpenSSL proof. Focused browser, NuGet-library
+and strict checksum-client were unselected;0126/0122 remain open. Broad readiness
+is false; primary11/selected5483878b/ten receipts stay stopped and untouched.
 
-## Hosted Go offline preparation lane
+## Durable hosted Go export lane
 
-The [machine-readable export plan](go-export-plan.json),
-[ADR0049](../adr/0049-hosted-go-offline-publication.md) and the
-[operator path](../go-module-offline.md) add one exact hosted publication's
-consumer: complete externally signed journal verification, original three raw
-byte identities, bounded copied-byte archive inspection and a private file
-GOPROXY. It records historical publication integrity with current registry
-admission and checksum-authority verification explicitly false. It cannot close
-full export/dependency/policy/cache outcomes or the independent DEFECT0126.
+[ADR0050](../adr/0050-durable-hosted-go-export.md), the
+[14-case/seven-environment plan](go-export-plan.json) and
+[operator path](../go-module-offline.md) define the implemented but native
+unverified schema15 producer. Its canonical historical policy manifest is
+CAS-staged before immutable forced-RLS references. Source/byte/policy revalidation,
+transactional event/receipt/job intent, session budgets, current-authorized
+single-range/conditional downloads, generation/expiry fencing and inventory
+roots require actual PostgreSQL proof. Download authority is checked every second
+and bounded to90seconds/request. Caller acknowledgment is not delivery proof.
+Expired-unreconciled sessions retain payload pins until durable terminal change;
+manifest references persist. Physical GC remains unfinished.
 
-Use ARM unit/race/build/lint and bounded binding fuzz locally. Execute the actual
-PostgreSQL publication/current-policy/CAS, external OpenSSL, candidate CLI and
-pinned stock Go1.27.3 offline-download journey in the existing native GitHub Go
-normal/race jobs and full integration jobs. Give the SDK fresh private caches,
-GOENV/GOWORK/GOAUTH/toolchain/network-fallback controls and one exact file GOPROXY;
-never compile or run fixture code. The fixture uses a path containing a space,
-checks unchanged h1/original extracted inert bytes, no output overwrite and no
-success from a truncated signed history. Keep bounded inert fixture failures
-visible for diagnosis; no credential environment is passed to those processes.
+Use local ARM build/unit/race/lint, bounded fuzz and compile/vet only. Run actual
+PostgreSQL/CAS/API/OpenSSL/candidateCLI/pinned Go1.27.3 on both GitHub Linux
+architectures. Run all55fuzz/source on the three native hosts,19main Chromium
+workflows/151checks on x86, and14immutable historical native binaries/19upgrade
+reports on each Linux host. Preserve the original312stock and683baseline checks.
+The new export browser workflow is a declared owned UI response stand-in, the
+fourth such workflow. The actual blocked-writer API case is also explicitly a
+response-writer stand-in backed by real PostgreSQL/CAS. Neither is an independent
+host, socket-interruption, clock-shift or scale claim.
 
-The first d179222 native attempt fails both dedicated Linux normal store suites
-only during TempDir cleanup of Go's ordinary read-only module cache; race/stock
-skip. [Original failures](../../evidence/2026-11-07/go-hosted-offline-d179222-first-failure.json)
-and the partial campaign are retained. DEFECT0128 adds the pinned SDK's own
-cleaner for only this fresh private cache, with no mode/assertion/product/schema
-relaxation. Compile/vet passes locally; fresh-source native replay is required.
+The actual historical upgrade lane adds the qualified809e826 schema14 binary:
+seed publication and approval under that old daemon, stop it, maintain to15,
+verify original artifact/metadata/policy bytes, create/replay the export, then
+verify live no-op preservation. Keep all old baseline cases and first14 frozen
+checksums. A separate declared14 SQL fixture regression does not replace native
+historical binary proof.
 
-New source requires259fullPG/81namedGo/53fuzz; original312stockGo,683baseline,
-18main x86 browser workflows/142checks, JVM/OCI and13historical/18upgrades remain
-unchanged. Skipped/unselected runs are not passes. No local PostgreSQL, OpenSSL,
-SDK, stock registry or Chromium qualification is needed. A future server export
-producer must implement forced-RLS durable snapshots, CAS-staged manifest bytes,
-transactional journal/idempotency/job intent, resumable current-authorized
-transfers and fenced GC pins before claiming a consistent protected export.
-That work needs an append-only migration after the14frozen definitions and native
-historical upgrade evidence; the primary11 remains stopped and untouched.
+Expected source15 placement is six workflows/27jobs,20safe summaries/83reports,
+including the three path-selected focused browser jobs. Enumerate actual expanded
+jobs, accept exact-source original summaries and preserve the first failures.
+NuGet-library and strict checksum-client remain separately selected. No local
+PostgreSQL/SDK/OpenSSL/stock registry/Chromium campaign is required.
+
+The historical one-version consumer is independently qualified at1a61120.
+DEFECT0128's pinned private-cache cleaner repair passes both dedicated/full
+normal/race native profiles with default SDK modes and original assertions
+unchanged. [Original d179222 final campaign](../../evidence/2026-11-07/github-d179222-final-checkpoint.json)
+retains24terminal/20pass/four cleanup failures,17safe47reports and skipped stages.
+This repair does not close full dependency/authority/provenance/permission closure,
+current destination admission/scanning/import, background expiry, physicalGC,
+backup/providers/Windows/macOSserver/independenthost/mixedload/scale or DEFECT0126.
 
 ## Checksum client investigation lane
 
@@ -614,18 +619,19 @@ scope. The [remaining record](remaining.json), [parity](parity.json) and
 | `jvm-clients.yml`: Gradle / 2 | Both native Linux architectures; real PostgreSQL | Gradle9.8.2, exact JDK21 build, eight stages and24 publisher/reference/raw-HTTP digests. 60-minute job. Named v2 profile passes; broader JVM remains open. |
 | `jvm-clients.yml`: Ant/Ivy / 2 | Both native Linux architectures; real PostgreSQL | Ant1.10.18/Ivy2.6.0 and exact JDK. Cache-v4 passes666checks/10stages/34wire+6cachebindings on both hosts at0edd, retaining all release/metadata/snapshot/SHA-2 cases. 60-minute job. Broader Ivy remains open. |
 | `jvm-clients.yml`: SBT / 4 | SBT1.13.0 and2.0.11, each on native Linux amd64/arm64; real PostgreSQL | Snapshot-v2 passes269checks/8stages/8snapshotcases/18bindings on all4cases at0cff, retaining every release case. Frozen tool-only boot cache/fresh project caches. Five-minute bootstrap, two-minute commands, 60-minute job. |
-| `go-modules.yml`: hosted/group and private checksum foundation / 2 | Native Linux amd64/arm64; pinned Go1.27.3, real PostgreSQL16.15, trusted loopback TLS | Exact809e826 qualifies80PG normally/race and312stock checks/9stages24wire16cache on both hosts. New d179222 adds the81st historical offline publication/SDK journey but both normal store suites fail only read-only cache TempDir cleanup; race/stock skip. DEFECT0128 uses the pinned cleaner only on the test cache; fresh native replay required. All original assertions/default SDK behavior retained;45-minute job. Public proxy remains gated and strict-client DEFECT0126 remains failed. |
+| `go-modules.yml`: hosted/group and private checksum foundation / 2 | Native Linux amd64/arm64; pinned Go1.27.3, real PostgreSQL16.15, trusted loopback TLS | Exact1a61120 qualifies81PG normally/race and312stock checks/9stages24wire16cache on both hosts, including historical offline preparation and DEFECT0128 replay. New source15 requires90namedGo plus original312stock; producer/manifest/API/expiry/CLI native proof remains unverified.45-minute job. Public proxy remains gated and independent strict-client DEFECT0126 remains failed. |
 | `nuget-contract.yml`: libraries / 2 | Both native Linux architectures; exact SDK10.0.403 selection | Original37assertions/unchanged dense corpora pass both at1974, actual runtime10.0.14 and separate DLLhashes. 20-minute job. Does not replace actual NuGet HTTP/restore/restart proof. |
 | `oci-clients.yml`: native clients / 2 | Both native Linux architectures; Docker, Podman, Helm, real PostgreSQL | Actual publication/consumption and policy/tenant/recovery cases with inert owned data; 45-minute job. Do not execute the uploaded image. External-provider interoperability is separate. |
 | `browser-repair.yml`: focused / 3 on relevant pushes | Native x86 Chromium; five fresh PostgreSQL databases per selected journey | Repair, retention and NuGet each repeat five complete journeys; 45-minute job. Manual dispatch selects one. Stop on failure; no retries/skips count as acceptance. |
-| `upgrade-qualification.yml`: controlled upgrades / 2 | Both native Linux architectures; fresh PostgreSQL | Rebuild13immutable historical pins and require18reports each; 120-minute job. Relevant pushes, manual dispatch and Monday08:17UTC. Not rolling upgrade, downgrade or backup/restore proof. |
+| `upgrade-qualification.yml`: controlled upgrades / 2 | Both native Linux architectures; fresh PostgreSQL | Rebuild14immutable historical pins and require19reports each; 120-minute job. Relevant pushes, manual dispatch and Monday08:17UTC. Not rolling upgrade, downgrade or backup/restore proof. |
 
 | `go-checksum-client.yml`: strict SDK / 3 on its own selected inputs | Actual Linux amd64/arm64 and macOS arm64; Go1.27.3 with owned authority/response stand-ins, no registry/database | Seven mandatory controls per host. The altered-ZIP trust-state assertion fails on all3hosts at5567d24 (DEFECT0126); six other controls pass each. Preserve original first-failure/encrypted evidence. No private-hosted GONOSUMDB bypass or later unrelated green run repairs this failure. |
 
 The current union is32jobs across eight workflows, including the selector and
 the separately selected three-host checksum-client lane.
-Exact809e826 and d179222 each select five workflows/24jobs. Focused browser,
-NuGet library and strict checksum-client paths were unchanged/unselected. A documentation-only commit can select just the planner and scoped
+Exact1a61120 selects five workflows/24jobs; focused browser, NuGet library and
+strict checksum-client paths were unchanged/unselected. Source15 is expected to
+select six workflows/27jobs with focused browser; enumerate actual jobs. A documentation-only commit can select just the planner and scoped
 security, with dependent logical jobs skipped. Enumerate actual jobs after
 matrix expansion for every exact source; never assume32, treat an absent or
 skipped lane as passing, or substitute an old run. Library jobs run only when their own paths select; a workflow omitted by its
