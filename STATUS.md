@@ -63,24 +63,29 @@ two exact frozen schema17 workflow/extractor boundaries;52/f320 contracts match
 without exceptions. Original failures704/f780/976 remain retained and failed.
 Strict Go1.27.3 DEFECT0126 and unknown browser DEFECT0122 remain open.
 
-## New independent-host profile requires native qualification
+## Independent-host profile has initial native passes
 
 Local owner-authored c35590d implements
 [ADR0072](docs/adr/0072-independent-host-go-requirement-proof.md); see its
 [development record](evidence/2026-11-07/go-requirement-portability-development.json).
-The old19-contract f9 campaign is now accepted and retained,so this20-contract
-boundary is ready for publication without changing an in-flight verifier.
+The old19-contract f9 campaign is accepted and retained. The20-contract boundary
+is published as12c6c49 with seven original fixed workflow handles. Its
+[immutable first-retention snapshot](evidence/2026-11-07/github-12c6c49-partial-checkpoint.json)
+records17 successful jobs/12 live,14 unchanged safe summaries/68 reports and all17
+original completed-job logs retained privately. Later states are not inferred.
 
 Extend the existing x86 producer/ARM consumer with22 fixed original members,
 three separate fingerprint outputs,distinct actual API runner IDs and18 additional
 stages. Original16+18 stages remain,total52. Native helperv2 adds real SIGPIPE after
 synced publication and exact acknowledgement-loss replay;17 helper commands plus
-eight fresh refusals require25 observed empty command networks. No native pass
-is inferred yet. Artifact/bootstrap transport and job-output trust are owned online
+eight fresh refusals require25 observed empty command networks. Both original
+producer128578934683 and consumer128580591253 passed. Their closed contracts,
+22 original member hashes,three fingerprint outputs,nine candidate source hashes
+and distinct actual API runner identities independently match. Whole campaign
+acceptance remains pending. Artifact/bootstrap transport and job-output trust are owned online
 stand-ins,not a production issuer/signing platform or offline installer.
 
-ARM build/unit/race/lint,tagged normal/race compile/vet and bounded FS/API/process/
-signal stand-ins pass only. Clean committed source preflight passes20 contracts,
+Clean12c6 committed source preflight passes20 contracts,
 17 pins and295/117/66 inventory without compatibility exceptions. New source
 requires three source-bound reports per portability job. Expected actual union:
 29jobs/seven workflows/22safe95reports,including automatically selected focused
@@ -92,9 +97,27 @@ extractor bytes and reject the newer extractor for old sources. No compatibility
 exception is widened. All18 migrations and production implementation remain
 unchanged. Broad export/capability states stay implementing.
 
+## Replacement and exclusion comparisons are implemented locally
+
+[ADR0073](docs/adr/0073-native-go-replacement-and-exclusion-differentials.md)
+adds five explicit native SDK comparisons: specific and wildcard replacements,
+excluded transitive edges with a higher alternative,with no alternative,and with
+a lower direct root. Physical inputs deliberately sort differently from logical
+replacement selections. Actual PostgreSQL/TLS/CLI/external signature/collection
+precedes source shutdown; native SDK compares logical/physical selections,original
+h1 and inert bytes in31 observed empty command networks. No package runs.
+
+ARM build/unit/race/lint,three bounded SDK-response/filesystem stand-in functions,
+pure graph/proof regressions and tagged normal/race compile/vet pass. New inventory
+is296 PostgreSQL/118 named Go functions/66 fuzz targets. These comparisons remain
+implemented but native unverified and are absent from12c6. No production resolver,
+migration or20 closed campaign contract changes. Excluded-edge filtering agrees
+with pinned Go metadata semantics; package discovery can still need new inputs.
+
 ## Continue the complete goal
 
-Publish and qualify the new requirement independent-host/acknowledgement profile.
+Finish the fixed12c6 original jobs and actual read-only acceptance without
+restarting them. Then publish/qualify the new replacement/exclusion comparisons.
 Complete
 broader native replacement/exclusion/workspace/local immutable input differentials.
 Old explicit/common-set proofs retain their own scope and do not qualify this new

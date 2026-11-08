@@ -61,6 +61,14 @@ immutable local replacements remain required work. Local filesystem replacements
 are refused. Dependencies' own replace/exclude directives do not override the
 project's main directives.
 
+An exclusion removes that exact dependency edge from this metadata build list.
+It does not search for a replacement version or prove that every imported package
+is available. A separately required lower version can remain selected after a
+higher transitive version is excluded. Review package and platform closure before
+treating this list as a complete project export. The
+[native comparison plan](adr/0073-native-go-replacement-and-exclusion-differentials.md)
+tracks exact replacement identities and these exclusion cases separately.
+
 Budgets: 2 MiB encoded request, 1 MiB original main or dependency go.mod, 256
 selected modules, 1,024 examined versions, 16,384 requirement edges, 32 MiB combined
 metadata and 16 MiB encoded response. Reads are serial with a two-minute request

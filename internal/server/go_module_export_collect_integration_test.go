@@ -16,6 +16,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -30,6 +31,223 @@ import (
 	"ctlplne.dev/cratectl/internal/store"
 	"github.com/jackc/pgx/v5"
 )
+
+// Compare fixed metadata selections with the actual pinned SDK after authentic
+// PostgreSQL creation, external signing and TLS collection. Replacement logical
+// names deliberately disagree with physical source ordering. No package runs.
+func TestGoModuleRequirementNativeReplacementAndExclusionDifferentials(t *testing.T) {
+	s, _, token, admin := schemaServer(t)
+	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Minute)
+	defer cancel()
+	private := t.TempDir()
+	if err := os.Chmod(private, 0700); err != nil {
+		t.Fatal(err)
+	}
+	root, err := filepath.Abs("../..")
+	if err != nil {
+		t.Fatal(err)
+	}
+	binaries := os.Getenv("CRATECTL_QUALIFICATION_BIN_DIR")
+	if binaries == "" {
+		t.Fatal("actual candidate CLI directory required")
+	}
+	if !filepath.IsAbs(binaries) {
+		binaries = filepath.Join(root, binaries)
+	}
+	cli := filepath.Join(binaries, "cratectl")
+	write := func(name string, raw []byte) string {
+		t.Helper()
+		path := filepath.Join(private, name)
+		if err := os.WriteFile(path, raw, 0600); err != nil {
+			t.Fatal(err)
+		}
+		return path
+	}
+	run := func(arguments ...string) []byte {
+		t.Helper()
+		cmd := exec.CommandContext(ctx, arguments[0], arguments[1:]...)
+		cmd.Dir, cmd.Env, cmd.WaitDelay = private, []string{"PATH=" + os.Getenv("PATH"), "HOME=" + private}, 2*time.Second
+		out, diagnostic := new(collectionCommandOutput), new(collectionCommandOutput)
+		cmd.Stdout, cmd.Stderr = out, diagnostic
+		if err := cmd.Run(); err != nil {
+			t.Fatalf("owned differential command %s: %v; bounded stdout=%q stderr=%q", filepath.Base(arguments[0]), err, out.Bytes(), diagnostic.Bytes())
+		}
+		return bytes.Clone(out.Bytes())
+	}
+	identity, err := crypt.LocalIdentity("127.0.0.1", time.Now().UTC())
+	if err != nil {
+		t.Fatal(err)
+	}
+	ca, cert, key := write("server-ca.pem", []byte(identity.CA)), write("server.pem", []byte(identity.Certificate)), write("server-key.pem", []byte(identity.Key))
+	listener, err := net.Listen("tcp4", "127.0.0.1:38443")
+	if err != nil {
+		t.Fatal(err)
+	}
+	server := &http.Server{Handler: s, ReadHeaderTimeout: 10 * time.Second}
+	defer server.Close()
+	done := make(chan error, 1)
+	go func() { done <- server.ServeTLS(listener, cert, key) }()
+	config, err := json.Marshal(configfile.Client{Version: 1, URL: "https://127.0.0.1:38443", TokenFile: write("admin.token", []byte(token)), CAFile: ca})
+	if err != nil {
+		t.Fatal(err)
+	}
+	configPath := write("client.json", config)
+	fixtures := nativeRequirementDifferentials()
+	sessions := make([]store.GoRequirementExportSession, len(fixtures))
+	for n, fixture := range fixtures {
+		repository := "differential-" + fixture.Name
+		mavenRepositories(t, s, admin, store.Repository{Name: repository, Format: "go", Access: "restricted", RequireReview: true})
+		for _, input := range fixture.Inputs {
+			archive := goPublicationFixtureMod(t, input.Source, "owned inert differential asset", input.Mod)
+			if response := goHTTP(t, s, token, "PUT", "/go/"+repository+"/"+input.Source.Prefix()+".zip", archive); response.Code != 201 {
+				t.Fatal("differential original publication", fixture.Name, input.Source, response.Code)
+			}
+		}
+		for _, a := range goInventory(t, s, admin, repository) {
+			if err := s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
+				_, err := store.Decide(ctx, tx, admin, repository, a.Path, a.Digest, "allowed")
+				return err
+			}); err != nil {
+				t.Fatal(err)
+			}
+		}
+		request, err := json.Marshal(goRequirementRequest{Repository: repository, MainGoMod: string(fixture.Main), LifetimeSeconds: 3600, MaxArtifactBytes: 1 << 20})
+		if err != nil {
+			t.Fatal(err)
+		}
+		requestPath := write(fixture.Name+"-request.json", request)
+		arguments := []string{cli, "--config", configPath, "--method", "POST", "--path", "/api/v1/go/export-sets/requirements", "--body-file", requestPath,
+			"--idempotency-key", "native-differential-" + fixture.Name, "--timeout", "2m", "--response-limit", "16777216", "--raw-response"}
+		created := run(arguments...)
+		if json.Unmarshal(created, &sessions[n]) != nil || sessions[n].Profile != store.GoRequirementExportProfile ||
+			sessions[n].SourceCount != len(fixture.Inputs) || sessions[n].RootCount != len(fixture.Expected) || sessions[n].DeliveryVerified {
+			t.Fatal("native differential creation changed its exact original scope", fixture.Name)
+		}
+		if replay := run(arguments...); !bytes.Equal(created, replay) {
+			t.Fatal("native differential creation replay changed", fixture.Name)
+		}
+	}
+	head, err := s.DB.JournalCheckpoint(ctx, admin)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var journal bytes.Buffer
+	query := store.JournalRange{Through: head.Sequence, ThroughHash: head.Hash, Limit: 7}
+	for {
+		page, err := s.DB.JournalPage(ctx, admin, query)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := json.NewEncoder(&journal).Encode(page); err != nil {
+			t.Fatal(err)
+		}
+		if !page.More {
+			break
+		}
+		query.After, query.AfterHash = page.NextAfter, page.NextHash
+	}
+	statement, err := crypt.JournalCheckpointBytes(head)
+	if err != nil {
+		t.Fatal(err)
+	}
+	journalPath, statementPath := write("journal.jsonl", journal.Bytes()), write("checkpoint.json", statement)
+	privateKey, publicKey, signature := filepath.Join(private, "external-private.pem"), filepath.Join(private, "independent-public.pem"), filepath.Join(private, "external.sig")
+	openssl, err := exec.LookPath("openssl")
+	if err != nil {
+		t.Fatal("external OpenSSL required")
+	}
+	run(openssl, "genpkey", "-algorithm", "ED25519", "-out", privateKey)
+	if err := os.Chmod(privateKey, 0600); err != nil {
+		t.Fatal(err)
+	}
+	run(openssl, "pkey", "-in", privateKey, "-pubout", "-out", publicKey)
+	run(openssl, "pkeyutl", "-sign", "-rawin", "-inkey", privateKey, "-in", statementPath, "-out", signature)
+	run(openssl, "pkeyutl", "-verify", "-rawin", "-pubin", "-inkey", publicKey, "-in", statementPath, "-sigfile", signature)
+	values := make([]map[string]any, 0, len(fixtures))
+	for n, fixture := range fixtures {
+		session := sessions[n]
+		collection := filepath.Join(private, fixture.Name+"-collection")
+		arguments := []string{cli, "go-requirement-export-collect", "--config", configPath, "--set-id", session.ID, "--generation", "1", "--output-directory", collection,
+			"--chunk-bytes", "65536", "--journal-file", journalPath, "--journal-tenant", admin.Tenant, "--journal-event-sequence", strconv.FormatInt(session.CreatedSequence, 10),
+			"--journal-through", strconv.FormatInt(head.Sequence, 10), "--journal-through-hash", head.Hash, "--checkpoint-file", statementPath,
+			"--checkpoint-signature-file", signature, "--checkpoint-key-file", publicKey}
+		completion := run(arguments...)
+		if replay := run(append(slices.Clone(arguments), "--resume")...); !bytes.Equal(completion, replay) {
+			t.Fatal("native differential collection replay changed", fixture.Name)
+		}
+		read := func(name string) []byte {
+			t.Helper()
+			raw, err := os.ReadFile(filepath.Join(collection, name))
+			if err != nil {
+				t.Fatal(err)
+			}
+			return raw
+		}
+		parent, err := store.ParseGoRequirementExportManifest(read("manifest.json"))
+		if err != nil || parent.Selection.DependencyClosure || parent.Selection.ChecksumAuthority || parent.Selection.CurrentRegistryAdmission {
+			t.Fatal("native differential parent changed its original scope", fixture.Name, err)
+		}
+		proof := read("requirements.json")
+		if _, err := store.BindGoRequirementProof(parent, proof); err != nil {
+			t.Fatal("logical replacement order no longer binds physical roots", fixture.Name, err)
+		}
+		originals := map[gomodule.Coordinate][]byte{}
+		for ordinal, source := range parent.Sources {
+			if _, err := store.BindGoRequirementSourceManifest(parent, ordinal, read(fmt.Sprintf("input.%04d.manifest.json", ordinal))); err != nil {
+				t.Fatal(err)
+			}
+			originals[gomodule.Coordinate{Module: source.Module, Version: source.Version}] = read(fmt.Sprintf("input.%04d.mod", ordinal))
+		}
+		if !bytes.Equal(read("main.mod"), fixture.Main) || len(originals) != len(fixture.Inputs) {
+			t.Fatal("native differential changed original project or metadata input count", fixture.Name)
+		}
+		for _, input := range fixture.Inputs {
+			if !bytes.Equal(originals[input.Source], input.Mod) {
+				t.Fatal("native differential changed an original metadata byte", fixture.Name, input.Source)
+			}
+		}
+		graph, err := gomodule.VerifyRequirementProof(ctx, proof, fixture.Main, func(ctx context.Context, c gomodule.Coordinate, maximum int64) ([]byte, error) {
+			raw, ok := originals[c]
+			if ctx.Err() != nil || !ok || int64(len(raw)) > maximum {
+				return nil, gomodule.ErrRequirementProof
+			}
+			return raw, nil
+		}, fixture.Expected)
+		if err != nil || !slices.Equal(graph.BuildList, fixture.Expected) {
+			t.Fatal("native original metadata disagrees with the explicit differential oracle", fixture.Name, err)
+		}
+		expected := make([]map[string]string, 0, len(fixture.Expected))
+		for _, selected := range fixture.Expected {
+			expected = append(expected, map[string]string{"module": selected.Logical.Module, "version": selected.Logical.Version,
+				"source_module": selected.Source.Module, "source_version": selected.Source.Version})
+		}
+		values = append(values, map[string]any{"name": fixture.Name, "set_id": session.ID, "created_sequence": session.CreatedSequence,
+			"examined_sources": len(fixture.Inputs), "expected": expected, "main_sha256": crypt.Digest(fixture.Main)})
+	}
+	if err := server.Close(); err != nil {
+		t.Fatal(err)
+	}
+	select {
+	case err := <-done:
+		if !errors.Is(err, http.ErrServerClosed) {
+			t.Fatal("owned differential source did not stop", err)
+		}
+	case <-ctx.Done():
+		t.Fatal("owned differential source stop timed out")
+	}
+	fixture, err := json.Marshal(map[string]any{"cli": cli, "go": filepath.Join(root, ".cache/go/bin/go"), "tenant": admin.Tenant, "through": head, "cases": values})
+	if err != nil {
+		t.Fatal(err)
+	}
+	write("differentials.json", fixture)
+	python, err := exec.LookPath("python3")
+	if err != nil {
+		t.Fatal("native Python required")
+	}
+	if output := run(python, filepath.Join(root, "scripts/ci/go_requirement_differential_native.py"), private); !bytes.Contains(output, []byte("Requirement native replacement and exclusion differentials passed")) {
+		t.Fatal("actual SDK differential helper omitted completion")
+	}
+}
 
 // Actual candidate CLI over trusted TLS creates and reads the graph profile.
 // This case replays original metadata without claiming signed offline collection

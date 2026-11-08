@@ -1,0 +1,104 @@
+{
+  "source_parent": "12c6c49f7e02cbdb10342db2953730ae6a0e0ee6",
+  "source_dirty": true,
+  "observed_at": "2026-11-08T00:59:44.417415+00:00",
+  "state": "implemented but native unverified",
+  "adr": "docs/adr/0073-native-go-replacement-and-exclusion-differentials.md",
+  "source_files": [
+    {
+      "path": "Makefile",
+      "bytes": 3744,
+      "sha256": "49b40e2daf3fccf15ff82d77ba51dedcdd2f3837eb28a7fd6a694e48535e495e"
+    },
+    {
+      "path": "internal/gomodule/graph_test.go",
+      "bytes": 11083,
+      "sha256": "90972a8142f4faae7bdc4467091568e0db76b2110bf0cbe7df1f57601f9bf3e8"
+    },
+    {
+      "path": "internal/gomodule/requirement_proof_test.go",
+      "bytes": 10314,
+      "sha256": "23108bc3c9877f66ca79e12f253b031a4e46461157718b144006d4e97839ab5e"
+    },
+    {
+      "path": "internal/server/go_module_export_collect_integration_test.go",
+      "bytes": 92450,
+      "sha256": "55417b69c57e082beaacc8c2fdfb7c17cbc7405b70569c0432a347293dee10be"
+    },
+    {
+      "path": "internal/server/go_module_requirement_differential_integration_test.go",
+      "bytes": 3579,
+      "sha256": "9dd49e84a8abdb8cce3623e124f8138fe9cfc82c7e8b644ff67d72d188352201"
+    },
+    {
+      "path": "scripts/ci/go_requirement_differential_native.py",
+      "bytes": 9831,
+      "sha256": "863804b69d98b67da8ec54873f0a0fad1a49df2c2c8ed949c19cf96c426f6705"
+    },
+    {
+      "path": "scripts/ci/test_go_requirement_differential_native.py",
+      "bytes": 4872,
+      "sha256": "8e88a63d8244a0f366fc33d48e786d396bac3826d953abd0b4373420d5f22657"
+    }
+  ],
+  "source_snapshot_sha256": "f0b36dcc282af1399129398b13eef401511c97c81f02aaf29f1dd8a5bb31032b",
+  "native_function": "TestGoModuleRequirementNativeReplacementAndExclusionDifferentials",
+  "case_count": 5,
+  "cases": [
+    "specific",
+    "wildcard",
+    "exclusion",
+    "excluded-only",
+    "excluded-lower"
+  ],
+  "required_empty_command_networks": 31,
+  "native_inventory": {
+    "integration_functions": 296,
+    "named_go_functions": 118,
+    "fuzz_targets": 66,
+    "inventory_sha256": "aef52a94acddd22d4373600dd21d5be91e90507aa26c08cb4ce39b3468848850"
+  },
+  "local_qualification": {
+    "build_unit_race_lint": "passed on ARM macOS; owned loopback/FS/process and SDK JSON response stand-ins only",
+    "tagged_normal_race_compile_vet": "passed; native suites not executed locally",
+    "new_python_response_standin_functions": 3,
+    "native_claims": false,
+    "logs": [
+      {
+        "path": ".cache/go-requirement-differentials-gates.log",
+        "bytes": 14902,
+        "sha256": "7d18f16fd5d1024e5ab24737801393d378af83c9da2d24e4f47d76a80d1572a7"
+      },
+      {
+        "path": ".cache/go-requirement-differentials-tagged.log",
+        "bytes": 211,
+        "sha256": "1c8f8cfb3508fee56e0ae1ec8e7b5e876ae1f66b911feacbd766665297b9c87d"
+      },
+      {
+        "path": ".cache/go-requirement-differentials-tagged-race.log",
+        "bytes": 209,
+        "sha256": "35ae01c20c7e9023781e4608dbfc14204926806a3b2343352b93ccb261322926"
+      },
+      {
+        "path": ".cache/go-requirement-differentials-tagged-vet.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "production_resolver_changed": false,
+  "database_definition_changed": false,
+  "closed_source_contracts_changed": false,
+  "closed_source_contracts": 20,
+  "latest_whole_accepted": "evidence/2026-11-07/github-f9fa987-checkpoint.json",
+  "original_inflight_candidate": "12c6c49f7e02cbdb10342db2953730ae6a0e0ee6",
+  "original_inflight_first_snapshot": "evidence/2026-11-07/github-12c6c49-partial-checkpoint.json",
+  "limits": [
+    "Native PostgreSQL/TLS/CLI/OpenSSL/SDK and observed empty Linux command networks require original GitHub jobs; compile-only never passes those gates.",
+    "Explicit logical/physical selections are independent oracles; physical inputs deliberately sort differently from logical replacement selections. Exclusion filtering agrees with pinned SDK metadata; no speculative version floor or mutable catalog query added.",
+    "No package is compiled or run. Metadata equality does not establish package/platform closure,workspace/local immutable inputs,private/proxy/group precedence,checksum authority,current destination scanning/import/admission or operator outcomes.",
+    "Full450capabilities/41families/14exportcases/7environments/all later GOAL4.1 remain required. All18 migrations,stopped primary11/5483878b/tenreceipts,selectedbin/private0700/cache/customer/sibling/release/package/image preserved."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

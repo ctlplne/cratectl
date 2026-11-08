@@ -51,6 +51,34 @@ func TestRequirementProofRetainsLowerVersionsAndRebuildsOnlyExactOriginals(t *te
 	}
 }
 
+func TestRequirementProofReplacementPreservesLogicalOrderAndExactPhysicalOriginals(t *testing.T) {
+	original := Coordinate{"example.invalid/aa-original", "v1.0.0"}
+	fork := Coordinate{"example.invalid/zz-fork", "v1.2.0"}
+	leaf := Coordinate{"example.invalid/mm-leaf", "v1.0.0"}
+	main := append(graphMod("owned/main", "1.27.0", original.Module+" "+original.Version),
+		[]byte("replace "+original.Module+" => example.invalid/unused v1.0.0\nreplace "+original.Module+" "+original.Version+" => "+fork.Module+" "+fork.Version+"\n")...)
+	files := map[Coordinate][]byte{
+		fork: append(graphMod(fork.Module, "1.16", leaf.Module+" "+leaf.Version),
+			[]byte("replace "+leaf.Module+" => /never/read/this/path\nexclude "+leaf.Module+" "+leaf.Version+"\n")...),
+		leaf: graphMod(leaf.Module, "1.26.0"),
+	}
+	raw, graph, err := BuildRequirementProof(context.Background(), main, []RequirementInput{{fork, files[fork]}, {leaf, files[leaf]}})
+	want := []GraphSelection{{original, fork}, {leaf, leaf}}
+	if err != nil || !slices.Equal(graph.BuildList, want) {
+		t.Fatal("replacement or dependency-local directives changed logical selection", graph, err)
+	}
+	proof, err := ParseRequirementProof(raw)
+	if err != nil || len(proof.Sources) != 2 || proof.Sources[0].Module != leaf.Module || proof.Sources[1].Module != fork.Module ||
+		len(proof.Selected) != 2 || proof.Selected[0].Module != original.Module || proof.Selected[0].SourceModule != fork.Module || proof.Selected[1].Module != leaf.Module {
+		t.Fatal("physical input ordering was confused with logical selected ordering", proof, err)
+	}
+	load, loaded := graphFixture(t, files)
+	verified, err := VerifyRequirementProof(context.Background(), raw, main, load, want)
+	if err != nil || !slices.Equal(verified.BuildList, want) || !slices.Equal(*loaded, []Coordinate{fork, leaf}) {
+		t.Fatal("replacement proof read logical/unused/local paths or lost exact originals", verified, *loaded, err)
+	}
+}
+
 func TestRequirementProofRetainsDistinctCanonicalBuildSuffixVersions(t *testing.T) {
 	a := Coordinate{"example.invalid/a", "v1.0.0"}
 	compat := Coordinate{a.Module, "v1.0.0+incompatible"}

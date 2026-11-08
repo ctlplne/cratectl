@@ -153,6 +153,37 @@ func TestRequirementGraphMainExclusionFiltersTransitiveEdges(t *testing.T) {
 	}
 }
 
+func TestRequirementGraphExcludedTransitiveEdgeDoesNotInventAReplacementVersion(t *testing.T) {
+	a := Coordinate{"example.invalid/a", "v1.0.0"}
+	b := Coordinate{"example.invalid/b", "v1.0.0"}
+	lower := Coordinate{b.Module, "v0.9.0"}
+	for _, keepLowerRoot := range []bool{false, true} {
+		t.Run(fmt.Sprint(keepLowerRoot), func(t *testing.T) {
+			main := graphMod("owned/main", "1.27.0", a.Module+" "+a.Version)
+			files := map[Coordinate][]byte{a: graphMod(a.Module, "1.16", b.Module+" "+b.Version)}
+			want := []GraphSelection{{a, a}}
+			if keepLowerRoot {
+				main = append(main, []byte("require "+lower.Module+" "+lower.Version+"\n")...)
+				files[lower] = graphMod(lower.Module, "1.26.0")
+				want = append(want, GraphSelection{lower, lower})
+			}
+			main = append(main, []byte("exclude "+b.Module+" "+b.Version+"\n")...)
+			load, loaded := graphFixture(t, files)
+			graph, err := ResolveRequirements(context.Background(), main, load, DefaultGraphLimits())
+			if err != nil || !reflect.DeepEqual(graph.BuildList, want) || len(*loaded) != len(want) {
+				t.Fatal("excluded metadata edge invented a catalog query or version floor", graph, *loaded, err)
+			}
+			// Metadata selection removes the excluded edge. Package discovery may
+			// still require another version; this graph never asserts that closure.
+			for _, c := range *loaded {
+				if c == b {
+					t.Fatal("excluded original was read")
+				}
+			}
+		})
+	}
+}
+
 func TestRequirementGraphDeniedMissingCancelledAndWorkLimitsNeverReturnPartial(t *testing.T) {
 	a, b := Coordinate{"example.invalid/a", "v1.0.0"}, Coordinate{"example.invalid/b", "v1.0.0"}
 	main := graphMod("owned/main", "1.16", a.Module+" "+a.Version)

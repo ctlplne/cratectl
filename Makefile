@@ -56,6 +56,7 @@ lint:
 	python3 scripts/ci/test_go_common_export_portability_evidence.py
 	python3 scripts/ci/test_go_requirement_export_portability_evidence.py
 	python3 scripts/ci/test_go_requirement_acknowledgement.py
+	python3 scripts/ci/test_go_requirement_differential_native.py
 	python3 scripts/ci/test_owned_child_process.py
 	python3 scripts/ci/test_go_export_portable_diagnostics.py
 	python3 scripts/test_go_export_portable.py

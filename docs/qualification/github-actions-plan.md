@@ -36,7 +36,7 @@ collector second-range SIGKILL/reap/exact synced prefix/no completion,real renew
 stale-generation/corrupt-prefix refusal and original generation2 receipt replay
 following renewal to3 pass normally/race onbothLinux. No original was restarted.
 
-The next local implementation is
+The published12c6c49 implementation is
 [ADR0072](../adr/0072-independent-host-go-requirement-proof.md): preserve the
 original16+18 portability stages and add18 requirement stages,total52. Transfer
 exactly22 owned original members and bind three separate fingerprint outputs and
@@ -44,8 +44,13 @@ distinct actual API runner IDs. Native helperv2 requires17 empty command network
 including real SIGPIPE after synced publication and exact acknowledgement-loss
 replay; eight fresh refusals make25 consumer observations. It adds a third report
 per portability job and20 closed source contracts. ARM build/unit/race/lint/tagged
-compile/vet and bounded FS/API/process/signal stand-ins pass only. Native proof is
-still required on the exact published source.
+compile/vet and bounded FS/API/process/signal stand-ins pass. Both original x86
+producer and independent ARM consumer have initial native passes. The
+[first retained snapshot](../../evidence/2026-11-07/github-12c6c49-partial-checkpoint.json)
+contains17 successful jobs/12 live,14 safe summaries/68 reports. Both closed
+requirement contracts,22 original member hashes,three fingerprints,nine source
+hashes and distinct actual API runner identities independently match. Whole
+campaign acceptance is still required; no original job was restarted.
 
 The safe extractor change selects focused browser regression too. Expected union:
 29jobs/seven workflows/22safe95reports,including the original26 base jobs/80reports
@@ -53,11 +58,20 @@ and three browser jobs/15reports. Keep295PG117Go66fuzz/17pins22upgrades and ever
 old native assertion. Unchanged library/strict profiles need no manual replay and
 provide no pass. Actual expanded API inventory controls.
 
-Both old19-contract f320/f9 verdicts are now accepted and fully retained. Publish
-and qualify the new20-contract boundary against its own expanded native inventory. The historical schema17 summary exception now has its exact
+Both old19-contract f320/f9 verdicts are accepted and fully retained. Finish
+the fixed12c6 original campaign and read-only verifier. The historical schema17 summary exception now has its exact
 schema18 verifier bytes retained as data; tests reject the newer extractor for
 those old sources. No compatibility exception is widened to hide a workflow or
 report change. Continue all owner-amended450/41/14case/7environment/later scope.
+
+The next local [ADR0073](../adr/0073-native-go-replacement-and-exclusion-differentials.md)
+adds five actual SDK replacement/exclusion comparisons through signed original
+collections and31 observed empty command networks. It adds one integration
+function:296PG/118namedGo/66fuzz. ARM build/unit/race/lint,tagged compile/vet and
+SDK-response stand-ins pass; native execution is pending. Reuse existing full
+and Go-only normal/race Linux suites; no new job or closed-contract exception.
+Preserve12c6 handles and complete their original qualification before replacing
+the branch's pending profiles. These later cases cannot inherit12c6 passes.
 
 ## Placement
 
