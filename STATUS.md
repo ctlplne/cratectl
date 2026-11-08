@@ -1,10 +1,14 @@
 # cratectl execution status
 
-The full owner-amended GOAL4.1 remains active:450 capabilities,41 format families,
+The full owner-amended GOAL4.1 remains committed:450 capabilities,41 format families,
 14 export cases,seven environments and all later stages remain required. Broad
 readiness,security and packaging stay unqualified. Both commit identities are
 imfeelingtheagi on main. Public source/CI pushes are authorized; release/package/
 image publication and primary/customer/sibling changes remain outside this work.
+
+Execution is paused at the owner's request after the current implementation
+commit/push closeout. See the [pause handoff](evidence/2026-11-07/owner-halt-4092e78.json).
+The existing78a verifier remains queued; no native run was restarted or cancelled.
 
 ## Latest whole accepted source
 
