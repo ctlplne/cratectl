@@ -1,11 +1,11 @@
 # Retain a hosted Go requirement graph
 
-Collection/offline caller implemented but native unverified. Local ARM
-build/unit/race/lint and tagged compilation do not qualify that caller's real
-PostgreSQL, external signer, stock SDK or complete export journey. The separate
-durable-creation source52dca42 is whole-campaign accepted by actual read-only
-verifier42426208635:26 original jobs/19 unchanged safe summaries/78 reports. All 14 cases/seven environments in the
-export plan remain required.
+The scoped private hosted collector/offline caller is verified atf32031b:
+26 original jobs/19 unchanged safe summaries/78 reports accepted by actual
+read-only verifier42428870441. Its15-command owned native journey passes real
+PostgreSQL,external signer,actual CLI and stock Go normally/race onbothLinux.
+Later collector recovery and independent-host/SIGPIPE extensions remain separate
+qualification work. All14 export cases/seven environments remain required.
 
 Use the same private request as the [preview](go-requirement-preview.md). A tenant
 administrator needs current access to one hosted repository at its exact source

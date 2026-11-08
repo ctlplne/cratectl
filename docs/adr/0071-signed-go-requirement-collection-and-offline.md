@@ -1,9 +1,12 @@
 # 0071: Retain and independently replay every original requirement input
 
-Status: implemented but unverified on native PostgreSQL/SDK hosts. Local ARM
-build/unit/race/lint and tagged compilation establish their stated scopes only.
-All owner-amended GOAL4.1 requirements, 14 export cases and seven environments
-remain required. No migration changes accompany this caller implementation.
+Status: original collector/offline/15-command native scope verified within exact
+f32031b whole26-job campaign,actual read-only verifier42428870441 fromf9fa987.
+Both Linux hosts pass295PG/117Go normal/race. The later f9 recovery case passes
+both Go profiles but its whole campaign remains incomplete. Native helperv2
+SIGPIPE and independent-host requirement profile in ADR0072 are separate and
+native unverified. All450/41/14cases/seven environments/laterGOAL4.1 stay required.
+No migration changes accompany these callers.
 
 The schema-18 parent binds both selected payloads and every examined metadata
 input. A selected-root collector cannot authenticate that different creation

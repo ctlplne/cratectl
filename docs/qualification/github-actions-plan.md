@@ -7,52 +7,58 @@ packaging or release authority.
 
 ## Current evidence and next source
 
-[52dca42](../../evidence/2026-11-07/github-52dca42-checkpoint.json) is accepted by
-actual read-only [verifier42426208635](https://github.com/ctlplne/cratectl/actions/runs/42426208635)
-from compatible f32031b:26 original jobs/six workflows/19 unchanged safe members/
+[f32031b](../../evidence/2026-11-07/github-f32031b-checkpoint.json) is accepted by
+actual read-only [verifier42428870441](https://github.com/ctlplne/cratectl/actions/runs/42428870441)
+from compatible f9fa987:26 original jobs/six workflows/19 unchanged safe summaries/
 78 reports. All26 original log hashes/byte counts,19 member/78 raw report hashes
-and19 source contracts independently match. The original verifier log records
-30 component functions:7+10+13. No native tests were restarted.
+and19 source contracts independently match. The original verifier records30
+component functions:7+10+13. Both Linux hosts pass295 PostgreSQL/117 named Go
+normally/race,312 stock Go/683 baseline checks and17 historical binaries/22 upgrade
+reports. Three native source hosts pass66 fuzz targets. Main x86 Chromium passes
+19 workflows/151 checks with four declared response stand-ins. Focused browser/
+library/strict profiles were unselected. Skipped or unselected gates never pass.
 
-Both Linux hosts pass294 PostgreSQL/116 named Go functions normally/race,
-312 stock Go/683 baseline checks and17 independently rebuilt historical binaries/
-22 upgrade reports. All three source hosts pass65 fuzz targets. Main x86 Chromium
-passes19 workflows/151 checks with four declared response stand-ins. Separate
-x86/ARM portability retains34 stages, exact owned common31-file/eight-root proof,
-independent fingerprints/API runner identities,14 empty networks and pidfd
-interruption. Focused browser/library/strict profiles were unselected.
+The signed requirement caller qualifies original production creation/parent,
+complete external key/journal/head/event,every indexed input,MVS replay,selected
+native bytes/h1 and a private file proxy. Actual SDK reads the lower unselected
+.mod,selects the higher version and downloads exact inert assets. Fifteen offline
+commands observe empty networks with original refusal/replay/current-denial
+controls. This is private hosted metadata/original-byte proof,not full closure,
+public authority,current destination scanning/import or production readiness.
+[52dca42](../../evidence/2026-11-07/github-52dca42-checkpoint.json) retains its durable
+schema18 creation/RLS/current guards/audit accounting/actual17-to18 upgrade scope.
+All original aaf/704/f780/976 failures remain retained and failed.
 
-This qualifies durable schema18 requirement creation, actual six-field original
-creation binding,current all-input guards,immutable RLS references/audit inventory
-and actual17-to18 old-session/receipt/byte preservation. It does not qualify the
-new requirement collector/offline caller or full closure/authority/current import.
-Original aaf3045 stays failed:31 terminal jobs/24 successful/seven failed/zero job
-skips,all31 original logs and24 unchanged safe members/76 reports,four empty.
-[Original failures](../../evidence/2026-11-07/github-aaf3045-original-failure-checkpoint.json)
-remain retained. Repairs0144/0145/0146 replay at52 without changing production
-resolver/pruning/policy/migrations or removing original native assertions.
+Original f9fa987 recovery campaign is still live. Both117Go normal/race/stock jobs
+pass actual collector second-range SIGKILL/reap/exact synced prefix,no completion,
+real renewal,stale generation/corrupt-prefix refusal and original generation2
+completion replay after renewal to3. At the last poll,two full native jobs and ARM
+SBT2 remain live; other23jobs succeed. Fixed original runs: main42427244116,
+Go42427244113,JVM42427244121,OCI42427244128,upgrades42427244123,portable42427244115.
+Require all26 originals/19safe78reports and an actual read-only verdict.
 
-Pushed f32031b adds the independently signed requirement collect/verify/offline
-caller and one actual native competing-version/refusal case. All three native
-source/unit/fuzz jobs and both Linux Go normal/race/stock jobs succeed:24of26jobs
-pass. Both full native client jobs remain live; whole acceptance is incomplete. Local ARM build/unit/race/lint,
-tagged normal/race compile/vet and bounded parser fuzz pass. Require exact295
-PostgreSQL/117 named Go/66 fuzz,17 historical binaries/22 upgrades per Linux host,
-all26 jobs/six workflows/19 safe members/78 reports and actual read-only acceptance.
-Fixed original runs: main42425695414,Go42425695417,JVM42425695455,OCI42425695341,
-upgrades42425695485,portable42425695567. Actual API inventory controls.
+The next local implementation is
+[ADR0072](../adr/0072-independent-host-go-requirement-proof.md): preserve the
+original16+18 portability stages and add18 requirement stages,total52. Transfer
+exactly22 owned original members and bind three separate fingerprint outputs and
+distinct actual API runner IDs. Native helperv2 requires17 empty command networks,
+including real SIGPIPE after synced publication and exact acknowledgement-loss
+replay; eight fresh refusals make25 consumer observations. It adds a third report
+per portability job and20 closed source contracts. ARM build/unit/race/lint/tagged
+compile/vet and bounded FS/API/process/signal stand-ins pass only. Native proof is
+still required on the exact published source.
 
-Then complete requirement-profile separate hosts/processkill/renewal, broader
-workspace/replacement/exclusion/source-authority and package/platform closure,
-current scanning/import/operator/provider/GC/platform/production outcomes and
-all owner-amended450/41/14-case/seven-environment/later goal scope.
+The safe extractor change selects focused browser regression too. Expected union:
+29jobs/seven workflows/22safe95reports,including the original26 base jobs/80reports
+and three browser jobs/15reports. Keep295PG117Go66fuzz/17pins22upgrades and every
+old native assertion. Unchanged library/strict profiles need no manual replay and
+provide no pass. Actual expanded API inventory controls.
 
-The subsequent recovery extension adds a real second-range socket barrier,owned
-CLI kill/reap,exact synced prefix/no receipt,actual renewal,stale-generation and
-corrupt-prefix refusals,then valid generation2 resume and original receipt replay
-after renewal to3. Its ARM fixture/build/unit/race/lint/tagged compile/vet pass
-only; it is absent from f320 and requires its own exact native replay with the
-same295/117/66 function inventory. No production,workflow or migration changed.
+Finish and retain the actual old19-contract f9 verdict before publishing the new
+20-contract boundary. The historical schema17 summary exception now has its exact
+schema18 verifier bytes retained as data; tests reject the newer extractor for
+those old sources. No compatibility exception is widened to hide a workflow or
+report change. Continue all owner-amended450/41/14case/7environment/later scope.
 
 ## Placement
 
@@ -70,7 +76,7 @@ and emulation never qualify x86 runtime behavior.
 | Stock package clients | Both Linux architectures;312 Go and 683 baseline checks, pinned real JVM/OCI and other existing format journeys, current authorization/policy/fault/restart. |
 | Chromium | x86 main19 workflows/151 checks; focused repair/retention/NuGet five independent fresh-database replays each when selected. No skips/flaky passes. |
 | Historical upgrades | Both Linux architectures; clean native rebuild of every qualified pin, actual old daemon/data/receipts, controlled interruption/adoption and exact current receipts/RLS. New18 requires qualified17/bb plus all older pins. |
-| Portability | Separate x86 PostgreSQL/TLS/external-signing producer and ARM consumer; retain original 16 stages and common18 stages, exact artifacts/fingerprints/API runner identity/native inert bytes/h1/observed empty child networks and process-descriptor interruption. |
+| Portability | Separate x86 PostgreSQL/TLS/external-signing producer and ARM consumer; original16/common18 qualified. New requirement18 stages/22originals/25emptycommands/real acknowledgement loss pending native proof. Preserve exact artifacts/fingerprints/API runner identity/native bytes/h1 and all original controls. |
 | NuGet library comparison | Native Linux x86/ARM, pinned SDK/library differential corpus. Separate from feed restore/package workflows. |
 | Strict Go checksum controls | Native Linux x86/ARM/macOS ARM; six controls pass and altered-ZIP trust-state assertion fails in original DEFECT.0126. Other greens do not repair it. |
 | Exact-source acceptance | Manual main read-only verifier; fixed original run inventory, source/job/platform/step/log/report/archive/binary identity checks. Starts no native tests. |
@@ -92,7 +98,7 @@ that result cannot qualify changed runtime code.
   with emulation, another source, a canceled job or a fresh green run.
 - Existing main source/fuzz/security/native concurrency keys include source SHA.
   Other profiles retain per-platform slots; finish/retain their original cases
-  before a push could replace required unstarted work. Running original f320 jobs
+  before a push could replace required unstarted work. Running original f9 jobs
   remain on their recorded handles. Independent matrices keep fail-fast disabled.
 - Use read-only tokens, checkout without persisted credentials, pinned tools,
   project-owned cratectl resources and loopback38443/35432. Runtime PostgreSQL is
@@ -118,7 +124,7 @@ that result cannot qualify changed runtime code.
   allows only schema 17's exact frozen workflow SHA and precisely those edits;
   record both hashes and apply the original 16-pin step/report contract. New18
   requires17 pins/22 reports. Only the exact frozen summary count/schema bound increase is also allowed;
-  every other closed contract stays byte-identical.
+  every other closed contract stayed byte-identical at those historical verdicts. The new requirement boundary closes20 files and requires its own native campaign; old19-contract verdicts remain original immutable evidence.
   Arbitrary changed workflow/runner/step/loop, missing baseline or target fails.
 
 ## Remaining offload work
@@ -139,7 +145,7 @@ that result cannot qualify changed runtime code.
 Original failures and limits remain intact; strict Go DEFECT.0126 and unknown
 browser DEFECT.0122 remain open. Prior accepted campaigns retain their own exact
 scope. A skipped, unselected or compile-only case never becomes verified.
-All18 migrations remain frozen;18 is qualified within the exact52 scope.
+All18 migrations remain frozen;18 is qualified within exact52/f320 scope.
 Primary stays stopped at 11/5483878b/ten original receipts. New binaries stay.cache;
 .private remains0700 and ignored. No autonomous delegation.
 
