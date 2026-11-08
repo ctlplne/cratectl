@@ -1,0 +1,144 @@
+{
+  "candidate": "78a59834904af5555c239209cdcde439ce5c4f5a",
+  "observed_at": "2026-11-08T01:27:37.283017+00:00",
+  "state": "Named Go normal/race and312stock profile verified on both actual Linux hosts; whole selected campaign still pending",
+  "run_id": 42432348703,
+  "jobs": [
+    {
+      "arch": "amd64",
+      "run_id": 42432348703,
+      "job_id": 128583791232,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42432348703/job/128583791232",
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/78a5983-campaign/128583791232.txt",
+        "bytes": 444126,
+        "sha256": "36f4b9a8b8fc474f71d425f4ba7713346314691052aaa4b1747858f710030e44"
+      },
+      "safe_summary": {
+        "family": "go",
+        "path": "evidence/2026-11-07/github-78a5983/ci-summary-go-module-amd64.json",
+        "bytes": 11285,
+        "sha256": "b676f94f10b6ba9cf2a7b779b3f09c7b891807af493456d14f4fe0926e380f25",
+        "github_artifact_id": 13598213357,
+        "github_artifact_digest": "sha256:acadd3eb51614c2051100054fff793c473352e17176d8e51109c1480ddd6ff6f",
+        "archive_sha256": "acadd3eb51614c2051100054fff793c473352e17176d8e51109c1480ddd6ff6f",
+        "records": 1
+      },
+      "package_passes_normal_then_race": [
+        {
+          "package": "server",
+          "seconds": "205.152"
+        },
+        {
+          "package": "store",
+          "seconds": "279.611"
+        },
+        {
+          "package": "server",
+          "seconds": "217.787"
+        },
+        {
+          "package": "store",
+          "seconds": "290.058"
+        }
+      ],
+      "required_steps": [
+        "Real PostgreSQL Go module regressions",
+        "Real PostgreSQL Go module regressions with race detector",
+        "Trusted TLS stock Go transitive downloads and policy recovery"
+      ]
+    },
+    {
+      "arch": "arm64",
+      "run_id": 42432348703,
+      "job_id": 128583791029,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/42432348703/job/128583791029",
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/78a5983-campaign/128583791029.txt",
+        "bytes": 444900,
+        "sha256": "8fa8ba3a20860fab4c8fe04cec6cbba5176a2d2b12fa8b0de564862f4d940f92"
+      },
+      "safe_summary": {
+        "family": "go",
+        "path": "evidence/2026-11-07/github-78a5983/ci-summary-go-module-arm64.json",
+        "bytes": 11287,
+        "sha256": "cdc134f3719625f25444fc7bb2d46b6e745a89f6ab4b98f539181d6c7f9bb515",
+        "github_artifact_id": 13598068430,
+        "github_artifact_digest": "sha256:017cd72af6f15e665c95f9013540e1e14397806f3aabaa2c8d13cd81022892d4",
+        "archive_sha256": "017cd72af6f15e665c95f9013540e1e14397806f3aabaa2c8d13cd81022892d4",
+        "records": 1
+      },
+      "package_passes_normal_then_race": [
+        {
+          "package": "server",
+          "seconds": "188.326"
+        },
+        {
+          "package": "store",
+          "seconds": "252.243"
+        },
+        {
+          "package": "server",
+          "seconds": "199.189"
+        },
+        {
+          "package": "store",
+          "seconds": "259.805"
+        }
+      ],
+      "required_steps": [
+        "Real PostgreSQL Go module regressions",
+        "Real PostgreSQL Go module regressions with race detector",
+        "Trusted TLS stock Go transitive downloads and policy recovery"
+      ]
+    }
+  ],
+  "native_inventory": {
+    "integration_functions": 296,
+    "named_go_functions": 118,
+    "fuzz_targets": 66,
+    "inventory_sha256": "aef52a94acddd22d4373600dd21d5be91e90507aa26c08cb4ce39b3468848850"
+  },
+  "new_function": "TestGoModuleRequirementNativeReplacementAndExclusionDifferentials",
+  "source_hashes": {
+    "internal/server/go_module_export_collect_integration_test.go": "55417b69c57e082beaacc8c2fdfb7c17cbc7405b70569c0432a347293dee10be",
+    "internal/server/go_module_requirement_differential_integration_test.go": "9dd49e84a8abdb8cce3623e124f8138fe9cfc82c7e8b644ff67d72d188352201",
+    "scripts/ci/go_requirement_differential_native.py": "863804b69d98b67da8ec54873f0a0fad1a49df2c2c8ed949c19cf96c426f6705"
+  },
+  "differential_cases": [
+    "specific",
+    "wildcard",
+    "exclusion",
+    "excluded-only",
+    "excluded-lower"
+  ],
+  "empty_command_networks_required_by_each_function_invocation": 31,
+  "checks": [
+    "actual PostgreSQL publication and current allowed decisions",
+    "actual candidate TLS CLI creation and exact replay",
+    "external OpenSSL signed whole journal checkpoint",
+    "original graph collection and completion replay",
+    "logical replacement order distinct from physical source order",
+    "version-specific replacement beats unpublished wildcard",
+    "dependency-local replace/exclude directives ignored",
+    "exclusion with separate higher alternative",
+    "excluded-only metadata edge removes requirement without querying another version",
+    "excluded edge does not impose floor on separately required lower root",
+    "independent original graph replay and signed parent binding",
+    "source listener stopped before offline CLI/SDK commands",
+    "pinned stock SDK logical/physical build list,exact h1 and inert assets",
+    "original collection main and receipt unchanged",
+    "31 observed empty command networks,ordinary Linux UID,no package execution"
+  ],
+  "original_partial_checkpoint": "evidence/2026-11-07/github-78a5983-partial-checkpoint.json",
+  "limits": [
+    "Original job logs contain aggregate Go package pass results,not separate per-case reports. The exact noncached command selector ^TestGoModule,unconditional integration source and candidate118-function inventory establish the new function coverage; no individual case report/hash is invented.",
+    "Full296PG/other selected jobs and actual read-only whole-campaign acceptance remain separate and incomplete. No pass is backdated into12c6 or earlier sources.",
+    "Later Windows configuration work is absent from this source. Full closure/authority/current destination scan/import/operator/provider/platform/physicalGC/production and every remaining450/41/later requirement stay open."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false,
+  "dependency_closure": false,
+  "checksum_authority_verified": false,
+  "current_registry_admission": false
+}

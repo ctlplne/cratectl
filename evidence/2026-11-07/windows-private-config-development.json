@@ -1,0 +1,173 @@
+{
+  "source_parent": "78a59834904af5555c239209cdcde439ce5c4f5a",
+  "source_dirty": true,
+  "observed_at": "2026-11-08T01:38:25.179529+00:00",
+  "state": "Windows protection implementation; native Windows runtime unverified. Read-budget overflow repaired locally.",
+  "adr": "docs/adr/0074-windows-private-configuration-handles.md",
+  "source_files": [
+    {
+      "path": "go.mod",
+      "bytes": 631,
+      "sha256": "66372255365796f3486bebab9c889588d0cd3f07362570022c864291c006bdd4"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 3546,
+      "sha256": "d0d1ecad19532ff247235eb62f99780093ead4679c958d9eb83d6dcc8d5b5fb1"
+    },
+    {
+      "path": "internal/configfile/config.go",
+      "bytes": 3768,
+      "sha256": "21f6edd2ba1cc53df6a20e555d691eefeacb1c1cd1c0c1bdc674ce3ff2515e43"
+    },
+    {
+      "path": "internal/configfile/config_test.go",
+      "bytes": 1783,
+      "sha256": "693e3b77cf5ea40ea3ec240f8308f88bf32e8e94eaa2eeb966aa6709ea84a926"
+    },
+    {
+      "path": "internal/configfile/read_unix.go",
+      "bytes": 278,
+      "sha256": "ab2953d7d4d26f4caec4077c15033c55259ec1434b9ac6b5671331159627032d"
+    },
+    {
+      "path": "internal/configfile/read_other.go",
+      "bytes": 240,
+      "sha256": "3270d6fafff7fcbe895cc67bf52b427429ad04616d8998b78a589e8c840db15f"
+    },
+    {
+      "path": "internal/configfile/private_acl.go",
+      "bytes": 1321,
+      "sha256": "83cac69636be4110183ba271dd5317be9f4f2efa5a59da4a13afb9bcb1353d40"
+    },
+    {
+      "path": "internal/configfile/private_acl_test.go",
+      "bytes": 2877,
+      "sha256": "ebfe2d9a4aaa27a2a3d479151cd769fee60e429f1f7c6dfc831bbd248f0763a6"
+    },
+    {
+      "path": "internal/configfile/read_windows.go",
+      "bytes": 5197,
+      "sha256": "f6b1a765884a898dfd8e78ecadea31a37f018a60e5a6bb0446107dc6d9b3419c"
+    },
+    {
+      "path": "internal/configfile/read_windows_test.go",
+      "bytes": 11015,
+      "sha256": "c9325092713125f5eed1337cdd9bc93043f4bb1ecc388106b2cb210a22af40c0"
+    }
+  ],
+  "source_snapshot_sha256": "56fe92ed0e2aae03fdc760451f60bc01add725e5b8b3ff46522527c93084e9b6",
+  "dependency": {
+    "module": "golang.org/x/sys",
+    "version": "v0.49.0",
+    "license": "BSD-3-Clause",
+    "checksum_entries": [
+      "golang.org/x/sys v0.49.0 h1:XbzkgYJHdqh/8m2Uu0W/dQv8nktxx4BFHp1M0gROTXA=",
+      "golang.org/x/sys v0.49.0/go.mod h1:hNLxWAXmnKAxqDtdwIYC4bM9oQPEecfsnNMuSxOs3og="
+    ]
+  },
+  "local_qualification": {
+    "arm_build_unit_race_lint": "passed; bounded owned HTTP/FS/process and metadata stand-ins only",
+    "windows_amd64_cli_and_test_compile_vet": "passed; not executed",
+    "windows_arm64_cli_and_test_compile_vet": "passed; not executed",
+    "tagged_normal_race_compile_vet": "passed; no actual local PostgreSQL campaign",
+    "pure_acl_functions": 2,
+    "native_windows_functions_implemented_not_executed": 6,
+    "read_budget_overflow_regression_functions": 1,
+    "logs": [
+      {
+        "path": ".cache/windows-config-final-local-gates.log",
+        "bytes": 14875,
+        "sha256": "506c686713fe626b47a97f5131ed897f0232c170b8cd1be78e6eff0feba932be"
+      },
+      {
+        "path": ".cache/windows-config-final-unit.log",
+        "bytes": 53,
+        "sha256": "4d9b022a609fb4714b67518f727100777a08e46e6df82c2617b20218ef41a1a7"
+      },
+      {
+        "path": ".cache/windows-config-final-race.log",
+        "bytes": 53,
+        "sha256": "d62121ce9fe5746a43d8cefe3ac670c11a859a841ef2977f443ca0c95aeb1e22"
+      },
+      {
+        "path": ".cache/windows-config-final-amd64-compile.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": ".cache/windows-config-final-arm64-compile.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": ".cache/windows-config-final-amd64-vet.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": ".cache/windows-config-final-arm64-vet.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": ".cache/windows-cli-final-amd64-compile.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": ".cache/windows-cli-final-arm64-compile.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": ".cache/windows-config-final-tagged.log",
+        "bytes": 209,
+        "sha256": "a469e65adfc2784809155922c5b08a692f8b37b0df4963f1b9cc1378812c533f"
+      },
+      {
+        "path": ".cache/windows-config-final-tagged-race.log",
+        "bytes": 209,
+        "sha256": "577855e7bd2a42f7699958b4da4e8466fbfce48ebdf1c5f0058ed262d238c7a8"
+      },
+      {
+        "path": ".cache/windows-config-final-tagged-vet.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": ".cache/config-sentinel-budget-first-failure.log",
+        "bytes": 218,
+        "sha256": "f8ed3944b250fb341b3677ce522bde529782de0f86fca1d655e1ed2c9cd9794f"
+      }
+    ]
+  },
+  "closed_source_contracts_changed": false,
+  "closed_source_contracts": 20,
+  "database_definitions_changed": false,
+  "native_windows_claim": false,
+  "read_budget_defect": {
+    "id": "DEFECT.0147",
+    "reproduced": "MaxInt64 budget overflows limit+1 and returns empty successful bytes for a nonempty owned file",
+    "first_failure": ".cache/config-sentinel-budget-first-failure.log",
+    "first_failure_source_parent": "78a59834904af5555c239209cdcde439ce5c4f5a",
+    "first_failure_source_dirty": true,
+    "repair": "Reject unsupported budget before opening the file; MaxInt64-1 retains exact original bytes",
+    "local_normal_race": "passed",
+    "native_remote_regression": "pending in future source; absent from78a and12c6",
+    "external_exploit_claim": false
+  },
+  "next": [
+    "Finish and retain actual20-contract12c6 and78a original campaign verdicts before publishing a new Windows workflow/validator boundary. Existing native jobs are not restarted.",
+    "Implement actual GitHub Windows x64/ARM64 private-file/CLI qualification with native Go/Python architecture, exact embedded candidate identity,bounded owned processes/output and closed safe evidence. Run all six native functions,two metadata decision functions and the overflow regression; no skips count as passes.",
+    "Module-file changes select existing NuGet/strict profiles. Preserve strict Go1.27.3 DEFECT0126 observations; do not hide or weaken its failing strong trust-state assertion.",
+    "Complete Windows collection/directory locks,exclusive publication,ACL write/bootstrap and every remaining platform/provider/installer/closure/450-capability/41-family/later GOAL outcome."
+  ],
+  "limits": [
+    "Local compilation is not native ACL,reparse,NTFS sharing or Windows CLI evidence. The actual Windows candidate CLI test uses a declared owned TLS management-response stand-in,not real PostgreSQL/registry/stock-client qualification.",
+    "Reader validates only already-provisioned files. It writes no credentials,repairs no user ACLs,enables no privileges and does not qualify Windows server/offline export/installation.",
+    "All18 frozen migrations/stopped primary11/5483878b/tenreceipts/selectedbin/private0700/cache/customer/sibling/release/package/image preserved. Full GOAL4.1 remains active; no autonomous delegation."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

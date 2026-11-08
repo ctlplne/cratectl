@@ -66,6 +66,9 @@ func Read(path string, value any) error {
 	return nil
 }
 func ReadBytes(path string, limit int64, private bool) ([]byte, error) {
+	if limit < 1 || limit > 1<<63-2 {
+		return nil, errors.New("file byte budget must be positive and leave room for one extra byte")
+	}
 	f, e := OpenBounded(path, limit, private)
 	if e != nil {
 		return nil, e
@@ -86,11 +89,17 @@ func OpenBounded(path string, limit int64, private bool) (*os.File, error) {
 	if limit < 1 {
 		return nil, errors.New("file byte budget must be positive")
 	}
+	return openBounded(path, limit, private)
+}
+
+// POSIX permission bits are meaningful on these platforms. Windows uses a
+// handle-bound DACL/owner check instead; its synthesized mode bits are not ACLs.
+func openModeBounded(path string, limit int64, private bool, flags int) (*os.File, error) {
 	before, e := os.Lstat(path)
 	if e != nil || !before.Mode().IsRegular() || private && before.Mode().Perm()&0077 != 0 {
 		return nil, errors.New("configuration must be a regular file with appropriate private permissions")
 	}
-	f, e := os.OpenFile(path, os.O_RDONLY|readFlags(), 0)
+	f, e := os.OpenFile(path, os.O_RDONLY|flags, 0)
 	if e != nil {
 		return nil, errors.New("cannot open configuration file")
 	}

@@ -1590,6 +1590,14 @@
         }
       ],
       "replay": "evidence/2026-11-07/github-52dca42-checkpoint.json"
+    },
+    {
+      "id": "DEFECT.0147",
+      "summary": "Bounded config ReadBytes overflows its extra-byte check at MaxInt64 and returns empty successful bytes for a nonempty file",
+      "state": "repaired locally; normal/race regression passes; remote native source/Windows execution pending",
+      "first_failure": "evidence/2026-11-07/windows-private-config-development.json",
+      "repair": "Reject unsupported sentinel budget before opening input; retain exact bytes at largest safe budget. Unix permission behavior unchanged.",
+      "limits": "Owned local file counterexample only; no external exploit claimed. Absent from12c6/78a qualified scopes and not backdated into their native passes."
     }
   ]
 }

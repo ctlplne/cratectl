@@ -1,7 +1,8 @@
 # 0067: Bound Go requirement selection before export planning
 
-Status: metadata resolver implemented; native comparison pending; complete
-dependency export remains required. Full GOAL4.1 scope is unchanged.
+Status: bounded metadata resolver/signed caller qualified within scoped12c6;
+replacement/exclusion comparisons pass both named78a Go jobs. Complete dependency
+export remains required. Full GOAL4.1 scope is unchanged.
 
 The existing common export accepts explicit coordinates. An operator should
 eventually supply a project and receive its complete governed package/platform
@@ -42,10 +43,12 @@ The actual eight-module PostgreSQL/TLS/signed-collection journey now derives its
 selection from authorized original .mod bytes through this resolver. The final
 common snapshot still checks all eight ZIP/mod/info representations and current
 grants; the stock SDK independently downloads exactly that selected set and
-checks its original bytes and h1 values. That changed journey is compiled locally
-only; actual GitHub x86/ARM normal/race and portability runs are still required.
-Competing-version/pruning/replacement/exclusion cases currently have unit and
-fuzz evidence only, not stock-SDK differential qualification.
+checks its original bytes and h1 values. The whole12c6 campaign qualifies that
+common/requirement caller scope. Later78a named118Go normal/race jobs on both Linux
+hosts compare five replacement/exclusion cases with the actual pinned SDK after
+signed collection/source shutdown in31 empty command networks. See ADR0073 and
+evidence/2026-11-07/go-module-78a5983-native-checkpoint.json. Whole78a acceptance,
+workspace/local immutable inputs and full package/platform closure remain separate.
 
 Before exposing a complete automatic export, integrate the resolver with the
 common source/authorization path and bounded CAS inspection. After all external

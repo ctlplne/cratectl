@@ -7,71 +7,50 @@ packaging or release authority.
 
 ## Current evidence and next source
 
-[f32031b](../../evidence/2026-11-07/github-f32031b-checkpoint.json) is accepted by
-actual read-only [verifier42428870441](https://github.com/ctlplne/cratectl/actions/runs/42428870441)
-from compatible f9fa987:26 original jobs/six workflows/19 unchanged safe summaries/
-78 reports. All26 original log hashes/byte counts,19 member/78 raw report hashes
-and19 source contracts independently match. The original verifier records30
-component functions:7+10+13. Both Linux hosts pass295 PostgreSQL/117 named Go
-normally/race,312 stock Go/683 baseline checks and17 historical binaries/22 upgrade
-reports. Three native source hosts pass66 fuzz targets. Main x86 Chromium passes
-19 workflows/151 checks with four declared response stand-ins. Focused browser/
-library/strict profiles were unselected. Skipped or unselected gates never pass.
+[12c6c49](../../evidence/2026-11-07/github-12c6c49-checkpoint.json) passes all29
+original jobs/seven workflows/22 unchanged safe summaries/95 reports through
+actual [verifier42434888210](https://github.com/ctlplne/cratectl/actions/runs/42434888210)
+from compatible78a. All original log/member/raw-report/20-contract hashes
+independently match;35 actual component functions7+12+16. No native job restarted.
+Both Linux hosts pass295PG/117Go normal/race,312 stock Go/683 baseline checks,
+17 historical binaries/22 upgrades;three source hosts pass66 fuzz targets. Main
+Chromium passes19/151 with four declared response stand-ins;focused browser adds
+15 fresh database trials. Library/strict were unselected,never passes.
 
-The signed requirement caller qualifies original production creation/parent,
-complete external key/journal/head/event,every indexed input,MVS replay,selected
-native bytes/h1 and a private file proxy. Actual SDK reads the lower unselected
-.mod,selects the higher version and downloads exact inert assets. Fifteen offline
-commands observe empty networks with original refusal/replay/current-denial
-controls. This is private hosted metadata/original-byte proof,not full closure,
-public authority,current destination scanning/import or production readiness.
-[52dca42](../../evidence/2026-11-07/github-52dca42-checkpoint.json) retains its durable
-schema18 creation/RLS/current guards/audit accounting/actual17-to18 upgrade scope.
-All original aaf/704/f780/976 failures remain retained and failed.
+The [ADR0072](../adr/0072-independent-host-go-requirement-proof.md) requirement
+transfer now qualifies22 originals/three separate fingerprints/distinct actual API
+runner identities and18 added stages,total52 with original16/common18. Native
+helperv2 requires real SIGPIPE after synced publication and original acknowledgement
+replay,17 empty commands plus eight consumer refusals,total25. External trust/job
+outputs remain owned transport stand-ins,not a production issuer/offline installer.
+Full package/platform/permission/provenance closure,public checksum authority,
+current destination scanning/import/operator and readiness remain required.
 
-[f9fa987](../../evidence/2026-11-07/github-f9fa987-checkpoint.json) now accepts all26
-original jobs/19safe78reports through actual read-only verifier42430273914 from
-8b90c62. All log/member/report/19-contract hashes independently match. Actual
-collector second-range SIGKILL/reap/exact synced prefix/no completion,real renewal,
-stale-generation/corrupt-prefix refusal and original generation2 receipt replay
-following renewal to3 pass normally/race onbothLinux. No original was restarted.
+Earlier [f9](../../evidence/2026-11-07/github-f9fa987-checkpoint.json) recovery,
+[f320](../../evidence/2026-11-07/github-f32031b-checkpoint.json) signed caller and
+[52](../../evidence/2026-11-07/github-52dca42-checkpoint.json) durable18 creation/
+17-to18 upgrade proofs retain only their original scope. Failed aaf/704/f780/976
+runs stay failed. Only two exact frozen schema17 exceptions exist;none is widened.
 
-The published12c6c49 implementation is
-[ADR0072](../adr/0072-independent-host-go-requirement-proof.md): preserve the
-original16+18 portability stages and add18 requirement stages,total52. Transfer
-exactly22 owned original members and bind three separate fingerprint outputs and
-distinct actual API runner IDs. Native helperv2 requires17 empty command networks,
-including real SIGPIPE after synced publication and exact acknowledgement-loss
-replay; eight fresh refusals make25 consumer observations. It adds a third report
-per portability job and20 closed source contracts. ARM build/unit/race/lint/tagged
-compile/vet and bounded FS/API/process/signal stand-ins pass. Both original x86
-producer and independent ARM consumer have initial native passes. The
-[first retained snapshot](../../evidence/2026-11-07/github-12c6c49-partial-checkpoint.json)
-contains17 successful jobs/12 live,14 safe summaries/68 reports. Both closed
-requirement contracts,22 original member hashes,three fingerprints,nine source
-hashes and distinct actual API runner identities independently match. Whole
-campaign acceptance is still required; no original job was restarted.
+[78a named Go proof](../../evidence/2026-11-07/go-module-78a5983-native-checkpoint.json)
+passes118 Go functions normally/race and312 stock checks on both Linux hosts,
+including five [ADR0073](../adr/0073-native-go-replacement-and-exclusion-differentials.md)
+replacement/exclusion SDK cases and31 empty command networks. Its immutable second
+snapshot23success/3live/16safe62reports is historical. Finish its fixed original
+26-job/19safe80report/296PG campaign and actual read-only verifier before publishing
+new closed contracts. Preserve every original handle;no restart for queue/timeout.
 
-The safe extractor change selects focused browser regression too. Expected union:
-29jobs/seven workflows/22safe95reports,including the original26 base jobs/80reports
-and three browser jobs/15reports. Keep295PG117Go66fuzz/17pins22upgrades and every
-old native assertion. Unchanged library/strict profiles need no manual replay and
-provide no pass. Actual expanded API inventory controls.
-
-Both old19-contract f320/f9 verdicts are accepted and fully retained. Finish
-the fixed12c6 original campaign and read-only verifier. The historical schema17 summary exception now has its exact
-schema18 verifier bytes retained as data; tests reject the newer extractor for
-those old sources. No compatibility exception is widened to hide a workflow or
-report change. Continue all owner-amended450/41/14case/7environment/later scope.
-
-The next local [ADR0073](../adr/0073-native-go-replacement-and-exclusion-differentials.md)
-adds five actual SDK replacement/exclusion comparisons through signed original
-collections and31 observed empty command networks. It adds one integration
-function:296PG/118namedGo/66fuzz. ARM build/unit/race/lint,tagged compile/vet and
-SDK-response stand-ins pass; native execution is pending. Reuse existing full
-and Go-only normal/race Linux suites; no new job or closed-contract exception.
-Preserve12c6 handles and complete their original qualification before replacing
-the branch's pending profiles. These later cases cannot inherit12c6 passes.
+[ADR0074](../adr/0074-windows-private-configuration-handles.md) implements Windows
+private-config owner/protected-DACL/handle checks with six native functions,two
+pure ACL functions and the0147 read-budget regression. ARM full local gates,
+Windows x64/ARM64 CLI/test compile/vet and tagged compile/vet pass only. Implement
+actual Windows execution,bounded owned processes/output and closed safe evidence
+after retaining both20-contract verdicts;no Windows runtime pass exists. Standard
+public labels windows-2025/windows-11-arm require verified native SDK/interpreter
+architecture. The x/sys module pin selects existing library/strict profiles:
+preserve0126's failing strong trust-state assertion;no exclusion or retry is a pass.
+Windows ACL write/bootstrap,collection/publication locks and full client/install/
+provider workflows and every remaining450/41/14case/7environment/later scope remain.
 
 ## Placement
 
@@ -89,7 +68,7 @@ and emulation never qualify x86 runtime behavior.
 | Stock package clients | Both Linux architectures;312 Go and 683 baseline checks, pinned real JVM/OCI and other existing format journeys, current authorization/policy/fault/restart. |
 | Chromium | x86 main19 workflows/151 checks; focused repair/retention/NuGet five independent fresh-database replays each when selected. No skips/flaky passes. |
 | Historical upgrades | Both Linux architectures; clean native rebuild of every qualified pin, actual old daemon/data/receipts, controlled interruption/adoption and exact current receipts/RLS. New18 requires qualified17/bb plus all older pins. |
-| Portability | Separate x86 PostgreSQL/TLS/external-signing producer and ARM consumer; original16/common18 qualified. New requirement18 stages/22originals/25emptycommands/real acknowledgement loss pending native proof. Preserve exact artifacts/fingerprints/API runner identity/native bytes/h1 and all original controls. |
+| Portability | Separate x86 PostgreSQL/TLS/external-signing producer and ARM consumer; original16/common18 qualified. Requirement18 stages/22originals/25emptycommands/real acknowledgement loss qualified at12c6; Windows/full project closure remain. Preserve exact artifacts/fingerprints/API runner identity/native bytes/h1 and all original controls. |
 | NuGet library comparison | Native Linux x86/ARM, pinned SDK/library differential corpus. Separate from feed restore/package workflows. |
 | Strict Go checksum controls | Native Linux x86/ARM/macOS ARM; six controls pass and altered-ZIP trust-state assertion fails in original DEFECT.0126. Other greens do not repair it. |
 | Exact-source acceptance | Manual main read-only verifier; fixed original run inventory, source/job/platform/step/log/report/archive/binary identity checks. Starts no native tests. |

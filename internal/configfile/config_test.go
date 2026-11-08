@@ -2,10 +2,26 @@
 package configfile
 
 import (
+	"bytes"
 	"os"
 	"path/filepath"
 	"testing"
 )
+
+func TestReadBytesRejectsOverflowingSentinelBudget(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "cratectl-bounded-input")
+	raw := []byte("owned original bytes")
+	if err := os.WriteFile(path, raw, 0600); err != nil {
+		t.Fatal(err)
+	}
+	const largest int64 = 1<<63 - 1
+	if got, err := ReadBytes(path, largest, false); err == nil || got != nil {
+		t.Fatal("overflowing sentinel budget returned a success-shaped input", len(got), err)
+	}
+	if got, err := ReadBytes(path, largest-1, false); err != nil || !bytes.Equal(got, raw) {
+		t.Fatal("largest safe sentinel budget changed original bytes", err)
+	}
+}
 
 func TestConfigurationRejectsUnsafeOrAmbiguousInput(t *testing.T) {
 	d := t.TempDir()
