@@ -196,6 +196,10 @@ def validate_portable_pairs(portable, runners):
         if key[0] == 'hosted-common-export-cross-runner-v1':
             fields += ['capsule_source_sha256', 'graph_fixture_source_sha256', 'native_helper_sha256',
                        'process_helper_sha256', 'decoder_sha256', 'explicit_roots', 'automatic_closure', 'destination_admission']
+        if key[0] == 'hosted-requirement-export-cross-runner-v1':
+            fields += ['capsule_source_sha256', 'graph_fixture_source_sha256', 'native_helper_sha256',
+                       'probe_helper_sha256', 'process_helper_sha256', 'decoder_sha256', 'reader_source_sha256',
+                       'examined_sources', 'selected_roots', 'automatic_closure', 'checksum_authority', 'destination_admission']
         require(all(a[field] == b[field] for field in fields), 'portable_pair_identity')
         require(b['network_isolated'] is True and b['source_runner_sha256'] != b['destination_runner_sha256']
                 and runners[key]['producer'] != runners[key]['consumer'], 'portable_pair_isolation')
@@ -232,7 +236,12 @@ def accept(client, source, expected_ids):
                 common = by_artifact.get('cratectl-owned-go-common-export-fixture')
                 transfers.append({'run_id': run_id, 'profile': 'hosted-common-export-cross-runner-v1',
                                   **artifact_metadata(common, source.candidate, run_id, 2 << 20)})
-        specs = job_contracts(family, getattr(source, 'schema', 17))
+            if 'scripts/conformance_go_requirement_export_portable.py' in source.paths:
+                requirement = by_artifact.get('cratectl-owned-go-requirement-export-fixture')
+                transfers.append({'run_id': run_id, 'profile': 'hosted-requirement-export-cross-runner-v1',
+                                  **artifact_metadata(requirement, source.candidate, run_id, 2 << 20)})
+        specs = job_contracts(family, getattr(source, 'schema', 17),
+                             requirement_portability='scripts/conformance_go_requirement_export_portable.py' in source.paths)
         runtime = True
         used = set()
         if family == 'main':

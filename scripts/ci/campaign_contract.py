@@ -12,13 +12,15 @@ PLATFORMS = {'amd64': ('ubuntu-24.04', 'Linux', 'X64'),
              'arm64': ('ubuntu-24.04-arm', 'Linux', 'ARM64'),
              'darwin-arm64': ('macos-15', 'macOS', 'ARM64')}
 VALIDATOR_FILES = ['scripts/ci/' + name + '_evidence.py' for name in
-                   ['maven', 'gradle', 'ivy', 'sbt', 'go_module', 'journal', 'go_export_portability', 'go_common_export_portability']]
+                   ['maven', 'gradle', 'ivy', 'sbt', 'go_module', 'journal', 'go_export_portability', 'go_common_export_portability', 'go_requirement_export_portability']]
 COMPATIBLE_FILES = ['.github/workflows/' + name for name in WORKFLOWS] + VALIDATOR_FILES + ['scripts/ci/evidence_summary.py', 'scripts/conformance_go.py']
 
 
-def jobs(family, schema=17):
+def jobs(family, schema=17, requirement_portability=False):
     if schema not in (17, 18):
         raise ValueError('Unreviewed schema job contract')
+    if type(requirement_portability) is not bool or requirement_portability and schema != 18:
+        raise ValueError('Requirement portability needs its reviewed schema18 contract')
     result = {}
 
     def add(name, arch, required, artifact=None, kind=None):
@@ -79,6 +81,13 @@ def jobs(family, schema=17):
              'Receive the exact common collection artifact', 'Independently verify complete common graph and native interruption controls',
              'Prepare bounded destination evidence summary'],
             'ci-summary-export-portability-consumer', 'consumer')
+        if requirement_portability:
+            result['Real PostgreSQL signed export source (amd64)']['required'] += [
+                'Prepare signed requirement collection and separate trust-channel digests',
+                'Transfer reviewed requirement collection fixture only']
+            result['Independent signed export consumer (arm64)']['required'] += [
+                'Receive the exact requirement collection artifact',
+                'Independently replay requirement originals and native acknowledgement loss']
     if family == 'browser':
         for journey in ('repair', 'retention', 'nuget'):
             add('Real x86 Chromium ' + journey + ' replay', 'amd64',

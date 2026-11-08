@@ -433,6 +433,7 @@ func TestGoModuleRequirementCollectionNativeSignedCompetingVersionsAndOffline(t 
 	if output := run(true, python, filepath.Join(root, "scripts/ci/go_requirement_offline_native.py"), private); !bytes.Contains(output, []byte("Requirement offline native competing versions")) {
 		t.Fatal("native requirement journey omitted completion")
 	}
+	writeNativeGoRequirementPortableFixture(t, root, collection, session, head, module, selector, lowerInput)
 }
 
 // Real PostgreSQL/common snapshot/TLS collection/external signer, followed by

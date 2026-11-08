@@ -15,11 +15,31 @@ from test_maven_evidence import complete_contract as complete_maven_cache_contra
 from test_journal_evidence import complete as complete_journal_checkpoint_contract
 from test_go_export_portability_evidence import complete as complete_portable_contract
 from test_go_common_export_portability_evidence import complete as complete_common_contract
+from test_go_requirement_export_portability_evidence import complete as complete_requirement_contract
 
 ROOT = Path(__file__).resolve().parents[2]
 
 
 class EvidenceSummary(unittest.TestCase):
+    def test_requirement_summary_binds_native_run_and_strips_originals_and_private_context(self):
+        self.environment['GITHUB_RUN_ID'] = '123'
+        contract = complete_requirement_contract('producer')
+        report = {'candidate': 'a' * 40, 'status': 'passed', 'go_requirement_export_portability_contract': contract,
+                  'raw_fixture': 'private-synthetic-value', 'commands': [{'output': 'private-synthetic-value'}],
+                  'signer_private': 'private-synthetic-value'}
+        self.write('requirement-portable.json', report)
+        exported = summarize(self.root, self.environment)['records'][0]
+        self.assertEqual(exported['go_requirement_export_portability_contract'], contract)
+        self.assertNotIn('private-synthetic-value', json.dumps(exported))
+        for change in [{'source_run_id': '124'}, {'completed': []}, {'checksum_authority': True},
+                       {'examined_sources': True}, {'selected_roots': 1}, {'raw_input': 'private-synthetic-value'}]:
+            self.write('requirement-portable.json', {**report, 'go_requirement_export_portability_contract': {**contract, **change}})
+            with self.subTest(change=change), self.assertRaises(SystemExit):
+                summarize(self.root, self.environment)
+        self.write('requirement-portable.json', report)
+        with self.assertRaises(SystemExit):
+            summarize(self.root, {**self.environment, 'RUNNER_ARCH': 'ARM64'})
+
     def test_common_summary_exports_closed_hashes_and_never_raw_pid_or_inputs(self):
         self.environment['GITHUB_RUN_ID'] = '123'
         report = {'candidate': 'a' * 40, 'status': 'passed',

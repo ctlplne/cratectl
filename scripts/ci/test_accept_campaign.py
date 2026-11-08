@@ -16,6 +16,7 @@ import zipfile
 import accept_campaign as acceptance
 from test_go_export_portability_evidence import complete as complete_legacy_contract
 from test_go_common_export_portability_evidence import complete as complete_common_contract
+from test_go_requirement_export_portability_evidence import complete as complete_requirement_contract
 from campaign_contract import WORKFLOWS, jobs
 from campaign_transport import EvidenceError, REPOSITORY
 
@@ -39,7 +40,7 @@ class HistoricalBaselineAdmission(unittest.TestCase):
     def test_only_exact_frozen_summary_baseline_bound_change_is_compatible(self):
         name = 'scripts/ci/evidence_summary.py'
         old = (ROOT / 'scripts/ci/testdata/schema17-evidence-summary.py.txt').read_bytes()
-        current = (ROOT / name).read_bytes()
+        current = (ROOT / 'scripts/ci/testdata/schema18-before-requirement-evidence-summary.py.txt').read_bytes()
         self.assertEqual(hashlib.sha256(old).hexdigest(), acceptance.SCHEMA17_SUMMARY_SHA256)
         entry = acceptance.compatible_contract(name, old, current, 17)
         self.assertEqual(entry['sha256'], hashlib.sha256(old).hexdigest())
@@ -50,6 +51,10 @@ class HistoricalBaselineAdmission(unittest.TestCase):
                 (old, current.replace(b"'binary_sha256'", b"'unreviewed_field'"), 17)]:
             with self.subTest(schema=schema), self.assertRaises(EvidenceError):
                 acceptance.compatible_contract(name, original, verifier, schema)
+        # New requirement-report extraction is a different contract. The exact
+        # old exception cannot be widened to accept it for historical sources.
+        with self.assertRaises(EvidenceError):
+            acceptance.compatible_contract(name, old, (ROOT / name).read_bytes(), 17)
 
     def test_only_exact_frozen_upgrade_workflow_has_cross_generation_compatibility(self):
         name = '.github/workflows/upgrade-qualification.yml'
@@ -147,7 +152,7 @@ class API:
 class CampaignAcceptance(unittest.TestCase):
     def pairs(self):
         pairs, runners = {}, {}
-        for factory in [complete_legacy_contract, complete_common_contract]:
+        for factory in [complete_legacy_contract, complete_common_contract, complete_requirement_contract]:
             producer, consumer = factory('producer'), factory('consumer')
             key = (producer['profile'], 123)
             pairs[key] = {'producer': producer, 'consumer': consumer}
@@ -180,6 +185,75 @@ class CampaignAcceptance(unittest.TestCase):
                 value['consumer']['automatic_closure'] = True
             with self.subTest(mode=mode), self.assertRaises(EvidenceError):
                 acceptance.validate_portable_pairs(pairs, runners)
+
+    def test_requirement_pair_binds_all_inputs_helpers_scope_and_actual_runner_id(self):
+        for field in ['fixture_sha256', 'public_key_sha256', 'reader_source_sha256', 'probe_helper_sha256',
+                      'capsule_source_sha256', 'graph_fixture_source_sha256', 'native_helper_sha256',
+                      'process_helper_sha256', 'decoder_sha256', 'script_sha256', 'examined_sources',
+                      'selected_roots', 'automatic_closure', 'checksum_authority', 'destination_admission', 'runner']:
+            pairs, runners = self.pairs()
+            key = ('hosted-requirement-export-cross-runner-v1', 123)
+            consumer = pairs[key]['consumer']
+            if field == 'runner':
+                runners[key]['consumer'] = runners[key]['producer']
+            elif type(consumer[field]) is bool:
+                consumer[field] = not consumer[field]
+            elif type(consumer[field]) is int:
+                consumer[field] += 1
+            else:
+                consumer[field] = 'e' * 64
+            with self.subTest(field=field), self.assertRaises(EvidenceError):
+                acceptance.validate_portable_pairs(pairs, runners)
+
+    def test_requirement_source_presence_adds_mandatory_workflow_steps_only_to_schema18(self):
+        old = jobs('portable', 18)
+        current = jobs('portable', 18, requirement_portability=True)
+        for name in current:
+            self.assertEqual(len(current[name]['required']), len(old[name]['required']) + 2)
+            for step in current[name]['required'][-2:]:
+                self.assertIn(step, (ROOT / '.github/workflows/go-export-portability.yml').read_text())
+        for schema, flag in [(17, True), (18, 'true')]:
+            with self.subTest(schema=schema, flag=flag), self.assertRaises(ValueError):
+                jobs('portable', schema, requirement_portability=flag)
+
+    def test_false_success_requirement_producer_refuses_missing_transfer_or_skipped_execution_before_logs(self):
+        source = Source()
+        source.schema = 18
+        source.paths = {'scripts/conformance_go_common_export_portable.py', 'scripts/conformance_go_requirement_export_portable.py'}
+
+        class RequirementAPI(API):
+            def __init__(self, mode):
+                super().__init__()
+                self.runs.append(run(12, 'go-export-portability.yml'))
+                self.portable_jobs = []
+                for n, (name, spec) in enumerate(jobs('portable', 18, requirement_portability=True).items()):
+                    steps = [{'name': step, 'status': 'completed', 'conclusion': 'success'} for step in spec['required']]
+                    if n == 0 and mode.startswith('missing-step'):
+                        del steps[-1 if mode.endswith('1') else -2]
+                    if n == 0 and mode == 'skipped-step':
+                        steps[-2]['conclusion'] = 'skipped'
+                    self.portable_jobs.append({'id': 400+n, 'name': name, 'run_id': 12, 'head_sha': CANDIDATE,
+                                               'head_branch': 'main', 'status': 'completed', 'conclusion': 'success',
+                                               'labels': [spec['platform'][0]], 'steps': steps})
+                self.portable_artifacts = [
+                    {'id': 500+n, 'name': name, 'size_in_bytes': 100, 'expired': False,
+                     'workflow_run': {'id': 12, 'head_sha': CANDIDATE}, 'digest': 'sha256:'+'c'*64}
+                    for n, name in enumerate(['cratectl-owned-go-export-fixture', 'cratectl-owned-go-common-export-fixture',
+                                              'cratectl-owned-go-requirement-export-fixture'])]
+                if mode == 'missing-transfer':
+                    self.portable_artifacts.pop()
+
+            def listing(self, route, key):
+                if route.startswith('runs/12/'):
+                    return copy.deepcopy(self.portable_jobs if key == 'jobs' else self.portable_artifacts)
+                return super().listing(route, key)
+
+        for mode in ['missing-transfer', 'missing-step0', 'missing-step1', 'skipped-step']:
+            api = RequirementAPI(mode)
+            category = 'artifact_identity' if mode == 'missing-transfer' else 'required_step_not_passed'
+            with self.subTest(mode=mode), self.assertRaisesRegex(EvidenceError, category):
+                acceptance.accept(api, source, [11, 12])
+            self.assertNotIn('jobs/400/logs', api.transfers)
 
     def test_runner_name_fingerprint_alone_cannot_replace_distinct_api_runner_ids(self):
         for mode in ['same-id', 'same-fingerprint']:

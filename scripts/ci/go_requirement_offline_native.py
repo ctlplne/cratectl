@@ -9,12 +9,21 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import signal
+import subprocess
 import sys
 import urllib.parse
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from conformance_go_export_portable import NETWORK_PROBE, run_capture, verify_network_probe
+from conformance_go_export_portable import NETWORK_PROBE, network_prefix, run_capture, verify_network_probe
 from ci.go_set_offline_native import PROBE_EXEC
+
+# Python starts with SIGPIPE ignored. Reset it before exec for this particular
+# real stdout-loss control, so the native CLI observes the normal OS contract.
+_EXEC = 'os.execvpe(args[0],args,os.environ)'
+if PROBE_EXEC.count(_EXEC) != 1:
+    raise ValueError('Owned probe exec boundary changed')
+ACK_PROBE_EXEC = PROBE_EXEC.replace(_EXEC, "__import__('signal').signal(__import__('signal').SIGPIPE,__import__('signal').SIG_DFL)\n" + _EXEC)
 
 
 def checked(condition, message):
@@ -81,6 +90,45 @@ def main(path):
     receipt_raw = isolated(offline)
     checked(isolated(offline + ['--resume']) == receipt_raw, 'Original offline completion changed on replay')
     receipt = json.loads(receipt_raw)
+    # Real stdout reader loss terminates the CLI with SIGPIPE after the synced
+    # bundle/receipt publication. This works for small receipts too; no invented
+    # minimum pipe capacity or production fault seam is involved.
+    acknowledgement_output = private / 'requirement lost acknowledgement'
+    checked(not acknowledgement_output.exists(), 'Acknowledgement fault needs new owned output')
+    acknowledgement_args = list(offline)
+    acknowledgement_args[acknowledgement_args.index('--output-directory') + 1] = str(acknowledgement_output)
+    count += 1
+    acknowledgement_probe = private / ('requirement-network-%02d.json' % count)
+    prefix, _ = network_prefix(env)
+    read_fd, write_fd = os.pipe()
+    os.close(read_fd)
+    child = None
+    try:
+        fd = os.open(private / 'acknowledgement-loss.stderr', os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW, 0o600)
+        with os.fdopen(fd, 'wb') as diagnostic:
+            child = subprocess.Popen(prefix + [sys.executable, '-c', ACK_PROBE_EXEC, str(acknowledgement_probe), NETWORK_PROBE,
+                                               *acknowledgement_args], cwd=private, env=env, stdin=subprocess.DEVNULL,
+                                     stdout=write_fd, stderr=diagnostic, start_new_session=True)
+            os.close(write_fd)
+            write_fd = -1
+            code = child.wait(timeout=90)
+        checked(code in (-signal.SIGPIPE, 128 + signal.SIGPIPE), 'CLI did not lose its actual stdout acknowledgement (exit=%d)' % code)
+        verify_network_probe(acknowledgement_probe.read_bytes(), host_ns, os.getuid(), os.getgid())
+    finally:
+        if child is not None and child.poll() is None:
+            # Only the new session created above belongs to this fixture.
+            os.killpg(child.pid, signal.SIGKILL)
+            child.wait(timeout=10)
+        if write_fd >= 0:
+            os.close(write_fd)
+    acknowledgement_raw = (acknowledgement_output / 'bundle' / 'receipt.json').read_bytes()
+    checked(0 < len(acknowledgement_raw) <= 512 << 10, 'Lost acknowledgement had no complete bounded publication')
+    checked(isolated(acknowledgement_args + ['--resume']) == acknowledgement_raw,
+            'Lost acknowledgement replay changed the original completion')
+    acknowledgement = json.loads(acknowledgement_raw)
+    checked({k: v for k, v in acknowledgement.items() if k != 'goproxy'}
+            == {k: v for k, v in receipt.items() if k != 'goproxy'},
+            'Acknowledgement fault changed original proof, scope or native roots')
     evidence = receipt['requirement_evidence']
     checked(receipt['profile'] == 'cratectl.go.hosted.requirement-offline.v1'
             and len(receipt['roots']) == 2 and receipt['bytes_verified'] is True
@@ -158,16 +206,20 @@ def main(path):
         body = path.read_bytes()
         verify_network_probe(body, host_ns, os.getuid(), os.getgid())
         probes[path.name] = hashlib.sha256(body).hexdigest()
-    checked(len(probes) == count == 15, 'Requirement journey omitted an observed empty network')
-    report = {'profile': 'cratectl.go.requirement-offline.native.v1', 'status': 'passed',
+    checked(len(probes) == count == 17, 'Requirement journey omitted an observed empty network')
+    report = {'profile': 'cratectl.go.requirement-offline.native.v2', 'status': 'passed',
               'examined_sources': 3, 'selected_roots': 2, 'go_version': '1.27.3',
               'receipt_sha256': hashlib.sha256(receipt_raw).hexdigest(),
+              'acknowledgement_signal': 'SIGPIPE',
+              'acknowledgement_exit': code,
+              'acknowledgement_receipt_sha256': hashlib.sha256(acknowledgement_raw).hexdigest(),
               'download_sha256': hashlib.sha256(downloaded).hexdigest(), 'network_probes': probes,
               'checks': ['production_creation_signature', 'all_original_inputs', 'independent_mvs_replay',
                          'native_competing_versions', 'actual_unselected_mod_read', 'selected_discovery_only',
-                         'current_source_denial_preserves_history', 'independent_key_head_event_refusals',
+                         'historical_verification_without_registry', 'independent_key_head_event_refusals',
                          'budget_before_output', 'immutable_completion_replay', 'corrupt_original_refusal',
-                         'unknown_input_refusal', 'every_empty_command_network']}
+                         'unknown_input_refusal', 'every_empty_command_network', 'actual_acknowledgement_sigpipe',
+                         'acknowledgement_original_completion_replay']}
     fd = os.open(private / 'requirement-offline-journey.json', os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW, 0o600)
     with os.fdopen(fd, 'wb') as handle:
         handle.write((json.dumps(report, sort_keys=True) + '\n').encode())

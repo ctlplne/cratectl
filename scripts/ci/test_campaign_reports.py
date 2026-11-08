@@ -11,12 +11,56 @@ from campaign_contract import WORKFLOWS, jobs
 from campaign_reports import validate_custom, validate_summary
 from campaign_transport import EvidenceError
 from test_go_common_export_portability_evidence import complete as complete_common_contract
+from test_go_requirement_export_portability_evidence import complete as complete_requirement_contract
 
 ROOT = Path(__file__).resolve().parents[2]
 SPECS = {spec['artifact']: spec for family in WORKFLOWS.values() for spec in jobs(family).values() if spec['artifact']}
 
 
 class CampaignReports(unittest.TestCase):
+    def requirement_pair(self, role):
+        summary, source = self.common_pair(role)
+        code_hash = hashlib.sha256(source('owned')).hexdigest()
+        requirement = copy.deepcopy(summary['records'][1])
+        del requirement['go_common_export_portability_contract']
+        contract = complete_requirement_contract(role)
+        contract['source_run_id'] = str(summary['run_id'])
+        for key in ['script_sha256', 'fixture_source_sha256', 'capsule_source_sha256', 'graph_fixture_source_sha256',
+                    'native_helper_sha256', 'probe_helper_sha256', 'process_helper_sha256', 'decoder_sha256', 'reader_source_sha256']:
+            contract[key] = code_hash
+        requirement.update(report='owned-requirement-portability.json', raw_report_sha256='f' * 64,
+                           checks=4 if role == 'producer' else 14, go_requirement_export_portability_contract=contract)
+        summary['records'].append(requirement)
+        source.paths = set(source.paths) | {'scripts/conformance_go_requirement_export_portable.py'}
+        return summary, source
+
+    def test_requirement_profile_keeps_all_three_separate_source_bound_reports(self):
+        for role in ['producer', 'consumer']:
+            summary, source = self.requirement_pair(role)
+            spec = SPECS['ci-summary-export-portability-' + role]
+            counts, contracts = validate_summary(summary, summary['candidate'], int(summary['run_id']), spec, self.baselines, source)
+            self.assertEqual(counts['records'], 3)
+            self.assertEqual(len(contracts), 3)
+            self.assertEqual(counts['checks'], 11 if role == 'producer' else 41)
+            for index in range(3):
+                changed = copy.deepcopy(summary)
+                del changed['records'][index]
+                with self.subTest(role=role, missing=index), self.assertRaisesRegex(EvidenceError, 'requirement_profile_report_inventory'):
+                    validate_summary(changed, changed['candidate'], int(changed['run_id']), spec, self.baselines, source)
+
+    def test_requirement_profile_binds_each_source_dependency_and_rejects_collapsed_record(self):
+        summary, source = self.requirement_pair('producer')
+        spec = SPECS['ci-summary-export-portability-producer']
+        for key in ['probe_helper_sha256', 'reader_source_sha256', 'capsule_source_sha256', 'graph_fixture_source_sha256']:
+            changed = copy.deepcopy(summary)
+            changed['records'][2]['go_requirement_export_portability_contract'][key] = '0' * 64
+            with self.subTest(key=key), self.assertRaisesRegex(EvidenceError, 'requirement_portable_source_identity'):
+                validate_summary(changed, changed['candidate'], int(changed['run_id']), spec, self.baselines, source)
+        changed = copy.deepcopy(summary)
+        changed['records'][1]['go_requirement_export_portability_contract'] = changed['records'][2].pop('go_requirement_export_portability_contract')
+        with self.assertRaisesRegex(EvidenceError, 'requirement_profile_report_inventory'):
+            validate_summary(changed, changed['candidate'], int(changed['run_id']), spec, self.baselines, source)
+
     def common_pair(self, role='producer'):
         summary = self.report('ci-summary-export-portability-' + role)
         code = b'owned frozen source data, never executed'

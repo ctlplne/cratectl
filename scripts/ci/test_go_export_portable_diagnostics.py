@@ -96,6 +96,44 @@ class DiagnosticTests(unittest.TestCase):
         report.write_text(json.dumps(value))
         return folder, report, value
 
+    def requirement(self):
+        folder = self.root / '.private/go-requirement-export-portability' / self.run
+        folder.mkdir(parents=True, mode=0o700)
+        log = folder / ('command-' + 'd' * 32 + '.log')
+        log.write_bytes(b'owned-requirement-stderr')
+        log.chmod(0o600)
+        Path(str(log) + '.stdout').write_bytes(b'owned-requirement-stdout')
+        Path(str(log) + '.stdout').chmod(0o600)
+        report = self.report.with_name('go-requirement-export-portability-' + self.run + '.json')
+        value = {**self.value, 'go_requirement_export_portability_contract':
+                 {'profile': 'hosted-requirement-export-cross-runner-v1', 'role': 'consumer', 'source_run_id': '123'},
+                 'commands': [{'exit': 1, 'private_log': str(log.relative_to(self.root))}]}
+        del value['go_export_portability_contract']
+        report.write_text(json.dumps(value))
+        return folder, report, value
+
+    def test_requirement_and_all_three_profiles_preserve_only_bounded_command_streams(self):
+        self.save()
+        self.common()
+        folder, _, _ = self.requirement()
+        (folder / 'fixture.json').write_text('private-synthetic-fixture-must-not-escape')
+        payload = collect(self.root, 'a' * 40, '123', 'consumer')
+        self.assertEqual(payload['schema'], 3)
+        self.assertEqual(payload['profile'], 'hosted-export-command-diagnostics-v3')
+        self.assertEqual(len(payload['failures']), 3)
+        requirement = next(x for x in payload['failures'] if x['profile'] == 'hosted-requirement-export-cross-runner-v1')
+        self.assertEqual([base64.b64decode(x['head_b64']) for x in requirement['commands'][0]['streams']],
+                         [b'owned-requirement-stderr', b'owned-requirement-stdout'])
+        self.assertNotIn('private-synthetic-fixture-must-not-escape', json.dumps(payload))
+
+    def test_requirement_namespace_cannot_select_other_profile_logs_or_private_inputs(self):
+        folder, report, value = self.requirement()
+        for path in [self.log, folder / 'fixture.json', folder / 'signer-private.pem']:
+            value['commands'][0]['private_log'] = str(path.relative_to(self.root))
+            report.write_text(json.dumps(value))
+            with self.subTest(path=path), self.assertRaises(ValueError):
+                collect(self.root, 'a' * 40, '123', 'consumer')
+
     def test_common_command_capture_excludes_inputs_and_private_pid(self):
         folder, _, _ = self.common()
         (folder / 'ack-cli.pid').write_text('12345\n')

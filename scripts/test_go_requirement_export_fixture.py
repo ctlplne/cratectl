@@ -1,0 +1,136 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: BUSL-1.1
+"""Owned transport stand-ins only; no package SDK or signature is authenticated."""
+import base64
+import json
+from pathlib import Path
+import re
+import tempfile
+import unittest
+
+from go_requirement_export_fixture import (CAPSULE_LIMIT, MEMBER_LIMIT, MODULE, SELECTOR,
+                                      decode_requirement_fixture, read_requirement_capsule)
+from ci.go_requirement_export_portability_evidence import FILES
+
+
+def fixture():
+    files = {name: base64.b64encode(b'owned-inert-data').decode() for name in FILES}
+    files['checkpoint.sig'] = base64.b64encode(b'x' * 64).decode()
+    files['signer-public.pem'] = base64.b64encode(b'-----BEGIN PUBLIC KEY-----\nowned\n-----END PUBLIC KEY-----\n').decode()
+    return {'profile': 'cratectl.go.requirement-export.portable.fixture.v1', 'candidate': 'a' * 40,
+            'source_run_id': '123', 'source_job': 'produce', 'source_runner_sha256': 'b' * 64,
+            'source_os': 'linux', 'source_arch': 'amd64', 'tenant': 'schema-http',
+            'set_id': 'c' * 64, 'created_sequence': 7,
+            'through': {'tenant': 'schema-http', 'sequence': 8, 'hash': 'd' * 64},
+            'examined_sources': 3, 'selected_roots': 2, 'module': MODULE, 'selector': SELECTOR, 'lower_input': 'input.0000.mod', 'files': files}
+
+
+class FixtureTests(unittest.TestCase):
+    def test_tenant_binding_matches_actual_native_server_fixture_and_refuses_old_tenant(self):
+        # Cross-language fixture contract: the shared PG fixture provisions this
+        # tenant, while both the Go capsule guard and Python decoder must retain
+        # its exact identity. The former copied store-fixture tenant must refuse.
+        root = Path(__file__).resolve().parents[1]
+        source = (root / 'internal/server/schema_integration_test.go').read_text()
+        tenant = re.search(r'store\.Provision\(ctx, d\.OwnerDSN, "([a-z0-9-]+)", "operator", "admin"', source)
+        self.assertIsNotNone(tenant)
+        native = (root / 'internal/server/go_module_export_requirement_portable_integration_test.go').read_text()
+        guard = re.search(r'head\.Tenant != "([a-z0-9-]+)"', native)
+        self.assertIsNotNone(guard)
+        value, _ = self.decode(fixture())
+        self.assertEqual(value['tenant'], tenant[1])
+        self.assertEqual(value['through']['tenant'], tenant[1])
+        self.assertEqual(guard[1], tenant[1])
+        old = fixture()
+        old['tenant'] = old['through']['tenant'] = 'schema-team'
+        with self.assertRaises(ValueError):
+            self.decode(old)
+
+    def decode(self, value):
+        return decode_requirement_fixture(json.dumps(value).encode(), 'a' * 40, '123')
+
+    def test_exact_owned_original_inventory_decodes_without_conveying_authenticity(self):
+        value, members = self.decode(fixture())
+        self.assertEqual(set(members), FILES)
+        self.assertEqual(len(members), 22)
+        self.assertEqual(value['created_sequence'], 7)
+
+    def test_wrong_context_private_or_unexpected_members_are_refused(self):
+        changes = [{'candidate': 'b' * 40}, {'source_run_id': '124'}, {'source_job': 'consume'},
+                   {'source_os': 'darwin'}, {'source_arch': 'arm64'}, {'examined_sources': True}, {'examined_sources': 2}, {'lower_input':'input.0001.mod'}, {'selector':MODULE}, {'selected_roots': True},
+                   {'selected_roots': 1}, {'module': 'customer.invalid/private'}, {'tenant': 'customer'},
+                   {'created_sequence': True}, {'created_sequence': 9}, {'set_id': []},
+                   {'source_runner_sha256': 'not-a-hash'}, {'api_token': 'private-synthetic-value'}]
+        for change in changes:
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                self.decode({**fixture(), **change})
+        for name in ['admin.token', 'external-private.pem', '../root.000.zip', 'root.008.zip']:
+            value = fixture()
+            value['files'][name] = base64.b64encode(b'private-synthetic-data').decode()
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                self.decode(value)
+        for name in FILES:
+            value = fixture()
+            del value['files'][name]
+            with self.subTest(missing=name), self.assertRaises(ValueError):
+                self.decode(value)
+
+    def test_ambiguous_json_and_checkpoint_bindings_refuse(self):
+        raw = json.dumps(fixture()).encode().replace(b'"selected_roots": 2', b'"selected_roots": 2, "selected_roots": 2')
+        with self.assertRaises(ValueError):
+            decode_requirement_fixture(raw, 'a' * 40, '123')
+        for change in [{'sequence': True}, {'sequence': 6}, {'sequence': 1 << 63},
+                       {'hash': 'wrong'}, {'tenant': 'other'}, {'unknown': True}]:
+            value = fixture()
+            value['through'].update(change)
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                self.decode(value)
+        for bad in [b'null', b'[]', json.dumps(fixture()).encode() + b'{}', b' ' * (CAPSULE_LIMIT + 1)]:
+            with self.subTest(size=len(bad)), self.assertRaises(ValueError):
+                decode_requirement_fixture(bad, 'a' * 40, '123')
+
+    def test_base64_private_key_and_per_member_bounds_refuse(self):
+        for encoded in ['', None, True, 'invalid!', 'YR==', base64.b64encode(b'PRIVATE KEY').decode(),
+                        base64.b64encode(b'x' * (MEMBER_LIMIT + 1)).decode()]:
+            value = fixture()
+            value['files']['root.001.info'] = encoded
+            with self.subTest(size=len(encoded) if isinstance(encoded, str) else None), self.assertRaises(ValueError):
+                self.decode(value)
+        for name, raw in [('checkpoint.sig', b'x' * 63), ('signer-public.pem', b'not-a-public-key-envelope')]:
+            value = fixture()
+            value['files'][name] = base64.b64encode(raw).decode()
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                self.decode(value)
+
+    def test_combined_limit_refuses_even_when_every_member_and_capsule_fit(self):
+        value = fixture()
+        for name in ['root.000.zip','root.001.zip','input.0002.mod']:
+            value['files'][name] = base64.b64encode(b'x' * (360 << 10)).decode()
+        self.assertLess(len(json.dumps(value).encode()), CAPSULE_LIMIT)
+        with self.assertRaises(ValueError):
+            self.decode(value)
+
+    def test_capsule_reader_refuses_symlinks_links_oversize_and_preserves_original(self):
+        with tempfile.TemporaryDirectory(prefix='cratectl-requirement-capsule-') as directory:
+            path = Path(directory) / 'fixture.json'
+            raw = json.dumps(fixture()).encode()
+            path.write_bytes(raw)
+            self.assertEqual(read_requirement_capsule(path), raw)
+            alias = Path(directory) / 'alias'
+            alias.symlink_to(path)
+            with self.assertRaises(ValueError):
+                read_requirement_capsule(alias)
+            alias.unlink()
+            alias.hardlink_to(path)
+            with self.assertRaises(ValueError):
+                read_requirement_capsule(path)
+            alias.unlink()
+            self.assertEqual(path.read_bytes(), raw)
+            with path.open('wb') as output:
+                output.truncate(CAPSULE_LIMIT + 1)
+            with self.assertRaises(ValueError):
+                read_requirement_capsule(path)
+
+
+if __name__ == '__main__':
+    unittest.main()
