@@ -29,13 +29,12 @@ public authority,current destination scanning/import or production readiness.
 schema18 creation/RLS/current guards/audit accounting/actual17-to18 upgrade scope.
 All original aaf/704/f780/976 failures remain retained and failed.
 
-Original f9fa987 recovery campaign is still live. Both117Go normal/race/stock jobs
-pass actual collector second-range SIGKILL/reap/exact synced prefix,no completion,
-real renewal,stale generation/corrupt-prefix refusal and original generation2
-completion replay after renewal to3. At the last poll,two full native jobs and ARM
-SBT2 remain live; other23jobs succeed. Fixed original runs: main42427244116,
-Go42427244113,JVM42427244121,OCI42427244128,upgrades42427244123,portable42427244115.
-Require all26 originals/19safe78reports and an actual read-only verdict.
+[f9fa987](../../evidence/2026-11-07/github-f9fa987-checkpoint.json) now accepts all26
+original jobs/19safe78reports through actual read-only verifier42430273914 from
+8b90c62. All log/member/report/19-contract hashes independently match. Actual
+collector second-range SIGKILL/reap/exact synced prefix/no completion,real renewal,
+stale-generation/corrupt-prefix refusal and original generation2 receipt replay
+following renewal to3 pass normally/race onbothLinux. No original was restarted.
 
 The next local implementation is
 [ADR0072](../adr/0072-independent-host-go-requirement-proof.md): preserve the
@@ -54,8 +53,8 @@ and three browser jobs/15reports. Keep295PG117Go66fuzz/17pins22upgrades and ever
 old native assertion. Unchanged library/strict profiles need no manual replay and
 provide no pass. Actual expanded API inventory controls.
 
-Finish and retain the actual old19-contract f9 verdict before publishing the new
-20-contract boundary. The historical schema17 summary exception now has its exact
+Both old19-contract f320/f9 verdicts are now accepted and fully retained. Publish
+and qualify the new20-contract boundary against its own expanded native inventory. The historical schema17 summary exception now has its exact
 schema18 verifier bytes retained as data; tests reject the newer extractor for
 those old sources. No compatibility exception is widened to hide a workflow or
 report change. Continue all owner-amended450/41/14case/7environment/later scope.

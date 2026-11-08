@@ -2,8 +2,8 @@
 
 Status: original collector/offline/15-command native scope verified within exact
 f32031b whole26-job campaign,actual read-only verifier42428870441 fromf9fa987.
-Both Linux hosts pass295PG/117Go normal/race. The later f9 recovery case passes
-both Go profiles but its whole campaign remains incomplete. Native helperv2
+Both Linux hosts pass295PG/117Go normal/race. The later f9 recovery case is whole-campaign accepted by actual read-only
+verifier42430273914 from8b90c62,with all26 originals/19safe78reports matched. Native helperv2
 SIGPIPE and independent-host requirement profile in ADR0072 are separate and
 native unverified. All450/41/14cases/seven environments/laterGOAL4.1 stay required.
 No migration changes accompany these callers.

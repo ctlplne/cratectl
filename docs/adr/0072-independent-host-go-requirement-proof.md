@@ -70,8 +70,8 @@ reports. The changed safe extractor also selects focused browser regression;
 expected union is29 jobs/seven workflows/22 safe summaries/95 reports. Actual
 expanded API inventory controls; unchanged library/strict profiles are not passes.
 
-Complete the in-flight f320/f9 campaigns and retain their actual19-contract verdicts
-before publishing this20-contract boundary. Historical schema17 exception tests
+The actual f320/f9 19-contract campaigns are now accepted and fully retained
+(verifiers42428870441/42430273914) before this20-contract boundary is published. Historical schema17 exception tests
 retain the exact schema18 extractor bytes that originally qualified that exception.
 They reject the newer requirement extractor for those old sources. No exception
 is widened and no later profile is backdated into an earlier proof.
