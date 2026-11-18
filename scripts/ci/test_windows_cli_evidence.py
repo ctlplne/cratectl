@@ -100,7 +100,6 @@ class WindowsEvidence(unittest.TestCase):
         functions = re.findall(r'^func (Test\w+)\(', bodies, re.M)
         for name in sum(TESTS.values(), []):
             self.assertEqual(functions.count(name), 1, name)
-        self.assertEqual(len(COMPATIBLE_FILES), 22)
         self.assertIn('scripts/ci/windows_cli_evidence.py', COMPATIBLE_FILES)
         self.assertIn('.github/workflows/windows-cli.yml', COMPATIBLE_FILES)
         self.assertEqual(len(sum(TESTS.values(), [])), 15)

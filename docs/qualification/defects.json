@@ -1724,6 +1724,13 @@
       "first_failure": "evidence/2026-11-18/linux-install-1bba4eb-read-only-fixture.json",
       "replay": "evidence/2026-11-18/linux-install-08436af-arm64-local.json",
       "repair": "Run the installer and binaries from the private temporary directory, keeping the archive inputs mounted read-only. Check the actual npm-config and migrate help text and the documented flag parser exit status."
+    },
+    {
+      "id": "DEFECT.0162",
+      "summary": "Windows evidence lint freezes the global campaign catalog length before the Compose workflow is added",
+      "state": "Five original hosted failures retained. The repair removes the obsolete cross-profile count, preserves both Windows file bindings and checks the complete catalog separately.",
+      "first_failure": "evidence/2026-11-18/campaign-catalog-lint-original.json",
+      "repair": "Compare exact workflow and evidence-validator names and keep the Windows-specific inventory checks. Reject duplicate compatibility paths and require every catalogued file to exist."
     }
   ]
 }

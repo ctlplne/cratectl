@@ -17,7 +17,7 @@ import accept_campaign as acceptance
 from test_go_export_portability_evidence import complete as complete_legacy_contract
 from test_go_common_export_portability_evidence import complete as complete_common_contract
 from test_go_requirement_export_portability_evidence import complete as complete_requirement_contract
-from campaign_contract import WORKFLOWS, jobs
+from campaign_contract import COMPATIBLE_FILES, LINUX_INSTALL_CONTRACT, VALIDATOR_FILES, WORKFLOWS, jobs
 from campaign_transport import EvidenceError, REPOSITORY
 from test_windows_cli_evidence import complete as complete_windows
 
@@ -325,6 +325,14 @@ class CampaignAcceptance(unittest.TestCase):
             expanded = [re.escape(re.sub(r'\$\{\{[^}]+\}\}', 'OWNED_MATRIX', value)).replace('OWNED_MATRIX', '.+') for value in patterns]
             for name in specs:
                 self.assertTrue(any(re.fullmatch(p, name) for p in expanded), (filename, name))
+
+    def test_campaign_binds_each_catalog_workflow_and_evidence_validator_once(self):
+        paths = [*COMPATIBLE_FILES, *LINUX_INSTALL_CONTRACT]
+        self.assertEqual(len(paths), len(set(paths)))
+        expected = {'.github/workflows/' + name for name in WORKFLOWS} | set(VALIDATOR_FILES) | {
+            'scripts/ci/linux_install_evidence.py', 'scripts/ci/evidence_summary.py', 'scripts/conformance_go.py'}
+        self.assertEqual(set(paths), expected)
+        self.assertTrue(all((ROOT / path).is_file() for path in paths))
 
     def test_documentation_scope_keeps_runtime_skips_unselected_and_raw_context_private(self):
         api = API()
