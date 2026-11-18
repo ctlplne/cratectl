@@ -526,9 +526,18 @@ after a current absence if it has never retained the crate. A withdrawn or
 unavailable preferred source fences lower copies. An independent PostgreSQL
 test proved that a newly present source invalidates an earlier lower-source
 selection before headers. All four bounded Cargo parser fuzz targets passed.
-Native Linux mixed groups, legacy Git discovery, cross-repository search,
-replication and broader scale require further work.
+Both original `383b444` Linux architectures passed the same 71 Cargo and 19
+declarative checks with installed PostgreSQL 16.15 and 46 matched source hashes.
 [Native mixed Cargo group and parser evidence](evidence/2026-11-19/cargo-2833181-mixed-native.json)
+[Original Linux mixed group evidence](evidence/2026-11-19/github-383b444-cargo-mixed-native.json)
+
+The exact `2af9921` candidate passed 78 stock Cargo and 19 declarative checks
+on macOS ARM64 with PostgreSQL 16.16. Seven new search checks cover cached
+proxy and group releases. Search uses local state and follows source order,
+review, yanks and current grants. It returns the selected crate's packaged
+description when available. Linux search, uncached upstream search, legacy Git
+discovery, replication and broader scale require further work.
+[Native Cargo proxy and group search evidence](evidence/2026-11-19/cargo-2af9921-search-native.json)
 
 The independent `b88d397` schema 18 daemon and stock ORAS 1.3.6 passed
 122 controlled upgrade checks against `910359d` on macOS ARM64 with

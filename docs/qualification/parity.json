@@ -4671,16 +4671,17 @@
         "delete/restore"
       ],
       "state": "implementing",
-      "candidate": "283318160bf4bb8ec91d87a3f195094019245c43",
+      "candidate": "383b44455e3d7352447f214426bccb284ea95bcd",
       "evidence": [
+        "evidence/2026-11-19/github-383b444-cargo-mixed-native.json",
         "evidence/2026-11-19/cargo-2833181-mixed-native.json",
         "evidence/2026-11-19/cargo-a2b2283-expanded-proxy-native.json",
         "evidence/2026-11-19/github-ab6e559-cargo-proxy-native.json",
         "evidence/2026-11-19/cargo-04e2ba0-proxy-native.json",
         "evidence/2026-11-19/cargo-4a5c542-ipv6-fixture-failure.json"
       ],
-      "limits": "Native macOS ARM64 passes stock Cargo source revision, stale cache, interrupted transfer, and mixed group scenarios against PostgreSQL 16.16. The preceding 14 proxy checks also pass on both native Linux architectures. Public origins and representative scale remain open.",
-      "next_action": "Qualify the updated native Linux proxy and mixed group profile and exercise public origin and broad workload limits."
+      "limits": "Native macOS ARM64 and native Linux x64 and ARM64 pass the expanded stock sparse proxy profile. Coverage includes source revision, stale policy, interrupted and six simultaneous transfers, and mixed groups. Public origin and representative scale remain open.",
+      "next_action": "Exercise public sparse origins and broader workload, tenant boundary, and transfer fault limits."
     },
     {
       "id": "FMT.CARGO.GROUP",
@@ -4750,14 +4751,15 @@
         "delete/restore"
       ],
       "state": "implementing",
-      "candidate": "283318160bf4bb8ec91d87a3f195094019245c43",
+      "candidate": "383b44455e3d7352447f214426bccb284ea95bcd",
       "evidence": [
+        "evidence/2026-11-19/github-383b444-cargo-mixed-native.json",
         "evidence/2026-11-19/cargo-2833181-mixed-native.json",
         "evidence/2026-11-19/github-c55ccda-cargo-groups-native.json",
         "evidence/2026-11-19/cargo-139041d-groups-native.json"
       ],
-      "limits": "Nine hosted group checks pass on macOS ARM64 and both native Linux architectures. Seven mixed hosted/proxy checks and three PostgreSQL source-change cases pass on macOS ARM64. Mixed-group native Linux, cross-tenant duplicate and scale coverage remain open.",
-      "next_action": "Qualify mixed groups on both native Linux architectures, cross-tenant duplicates, concurrent policy changes and representative transfer workloads."
+      "limits": "Stock hosted and mixed-group checks pass on macOS ARM64 and both native Linux architectures. Three separate PostgreSQL source-change cases pass on macOS ARM64. Cross-tenant duplicates and further scale and transfer cases remain open.",
+      "next_action": "Complete cross-tenant duplicates, platform and workload qualification and integrate uncached search."
     },
     {
       "id": "FMT.CARGO.REPLICATION",
@@ -4863,7 +4865,7 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "Bounded hosted Cargo name search returns the highest currently permitted non-yanked version and its packaged description.",
+      "implementation": "Bounded Cargo name search returns the highest visible non-yanked version and its packaged description. Ordered groups use only the current selected source. Proxy and group search never fetch upstream content.",
       "surfaces": {
         "api": "/cargo/{repository}/api/v1/crates",
         "cli": "cargo search --registry",
@@ -4882,7 +4884,7 @@
       "client_versions": {
         "cargo": "1.100.0"
       },
-      "test_data": "Two nontrivial versions plus a dependency package; same coordinates in two tenants.",
+      "test_data": "Two hosted stock versions, a locally cached proxy graph, approved lower duplicates, changed source revision, and explicit namespace grants.",
       "permission_cases": [
         "reader denial on publish",
         "revoked token",
@@ -4898,12 +4900,13 @@
         "delete/restore"
       ],
       "state": "implementing",
-      "candidate": "35c3708616c9847f6cd5636a6e86858eb82e571b",
+      "candidate": "2af992118f738d35a4c0f56a53c747a5df45311c",
       "evidence": [
+        "evidence/2026-11-19/cargo-2af9921-search-native.json",
         "evidence/2026-11-19/cargo-35c3708-search-native.json"
       ],
-      "limits": "Stock Cargo 1.100.0 on macOS ARM64 with two versions in one authorized hosted repository. Search omits unassessed and yanked releases under current policy.",
-      "next_action": "Qualify both Linux architectures, search across authorized repositories, and performance with a large version inventory."
+      "limits": "Stock Cargo 1.100.0 against native PostgreSQL 16.16 qualifies hosted search and seven locally cached proxy and group checks. Permission, pending review, source revision, yank, and explicit namespace controls apply to results. Native Linux search and uncached upstream coverage remain open.",
+      "next_action": "Qualify proxy and group search on both Linux architectures and complete cross-tenant, uncached, and broad workload cases."
     },
     {
       "id": "FMT.CARGO.AUTHORIZATION",

@@ -310,10 +310,12 @@
         "group": true
       },
       "jfrog_modes": "per-format documentation review required",
-      "native_limitations": "Stock Cargo sparse hosted, proxy, and mixed group profiles pass on macOS ARM64. Native Linux passed the earlier hosted group and 14-check proxy profiles. Legacy Git discovery, mixed-group Linux, cross-repository search, replication, and complete platform and workload qualification remain open.",
+      "native_limitations": "Stock Cargo sparse hosted, proxy and mixed-group profiles pass on native macOS ARM64 and both Linux architectures. Locally cached proxy and group search pass on macOS ARM64. Uncached search, legacy Git discovery, replication, and complete platform and workload coverage remain open.",
       "state": "implementing",
-      "candidate": "283318160bf4bb8ec91d87a3f195094019245c43",
+      "candidate": "2af992118f738d35a4c0f56a53c747a5df45311c",
       "evidence": [
+        "evidence/2026-11-19/cargo-2af9921-search-native.json",
+        "evidence/2026-11-19/github-383b444-cargo-mixed-native.json",
         "evidence/2026-11-19/cargo-2833181-mixed-native.json"
       ]
     },
