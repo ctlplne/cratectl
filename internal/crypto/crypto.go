@@ -8,6 +8,7 @@ import (
 	"crypto/sha1" // npm's legacy shasum is a compatibility checksum, never an authority.
 	"crypto/sha256"
 	"crypto/sha512"
+	"crypto/subtle"
 	"encoding/base64"
 	"encoding/hex"
 	"hash"
@@ -15,6 +16,15 @@ import (
 )
 
 func SHA256() hash.Hash { return sha256.New() }
+
+type TokenDigest [sha256.Size]byte
+
+func DigestToken(token []byte) TokenDigest { return sha256.Sum256(token) }
+
+func (d TokenDigest) Matches(token string) bool {
+	supplied := sha256.Sum256([]byte(token))
+	return subtle.ConstantTimeCompare(d[:], supplied[:]) == 1
+}
 
 // ZIPCRC32 is a ZIP compatibility checksum, never a content authority.
 func ZIPCRC32() hash.Hash32  { return crc32.NewIEEE() }

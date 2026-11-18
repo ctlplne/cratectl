@@ -13,6 +13,7 @@ import (
 type Runtime struct {
 	TransferTimeoutSeconds int64  `json:"transfer_timeout_seconds,omitempty"`
 	PaginationKeyFile      string `json:"pagination_key_file,omitempty"`
+	MetricsTokenFile       string `json:"metrics_token_file,omitempty"`
 	Version                int    `json:"version"`
 	DSN                    string `json:"database_dsn"`
 	Listen                 string `json:"listen"`
@@ -32,6 +33,9 @@ func (c Runtime) Validate() error {
 	}
 	if c.PaginationKeyFile != "" && !filepath.IsAbs(c.PaginationKeyFile) {
 		return errors.New("pagination key path must be absolute")
+	}
+	if c.MetricsTokenFile != "" && !filepath.IsAbs(c.MetricsTokenFile) {
+		return errors.New("metrics token path must be absolute")
 	}
 	for _, p := range []string{c.Objects, c.TLSCert, c.TLSKey, c.WorkerIdentities} {
 		if !filepath.IsAbs(p) {

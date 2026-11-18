@@ -12,6 +12,7 @@ import (
 	"net/url"
 	"path"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	"ctlplne.dev/cratectl/internal/blob"
@@ -79,6 +80,7 @@ type Server struct {
 	UploadLease, UploadTTL       time.Duration
 	fillSlots                    chan struct{}
 	slots                        chan struct{}
+	transferSaturated            atomic.Uint64
 	adapters                     map[string]Adapter
 }
 
@@ -319,6 +321,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case s.slots <- struct{}{}:
 		defer func() { <-s.slots }()
 	default:
+		s.transferSaturated.Add(1)
 		w.Header().Set("Retry-After", "1")
 		fail(w, 503, "transfer_saturated", "Retry after the admission queue has capacity.")
 		return
@@ -382,6 +385,10 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	a.Serve(w, r, i, repo, p)
+}
+
+func (s *Server) TransferAdmission() (inUse, capacity int, rejected uint64) {
+	return len(s.slots), cap(s.slots), s.transferSaturated.Load()
 }
 func readJSON(w http.ResponseWriter, r *http.Request, v any, limit int64) bool {
 	r.Body = http.MaxBytesReader(w, r.Body, limit)

@@ -51,6 +51,7 @@ def evaluate(args):
     client, daemon = binary / 'cratectl', binary / 'cratectld'
     postgres = args.pg_bin.resolve()
     app = work / 'installation'
+    runtime_config = app / 'runtime.json'
     data = work / 'postgres'
     public_env = {key: value for key, value in os.environ.items()
                   if not key.startswith(('CRATECTL_', 'PG', 'npm_config_', 'NPM_CONFIG_'))
@@ -63,10 +64,11 @@ def evaluate(args):
             raise ValueError(name)
         checks.append(name)
 
-    def call(label, *command, cwd=ROOT, environment=public_env, status=0, timeout=35):
+    def call(label, *command, cwd=ROOT, environment=public_env, status=0, timeout=35, input_text=None):
         with (work / (label + '.log')).open('wb') as log:
             code, output = run_owned_client(command, cwd, environment, timeout=timeout,
-                                            output_limit=2 << 20, capture_limit=256 << 10, output_sink=log)
+                                            output_limit=2 << 20, capture_limit=256 << 10, output_sink=log,
+                                            input_text=input_text)
         if status is not None and code != status:
             raise ValueError(f'{label} returned {code}, expected {status}')
         return code, output
@@ -88,7 +90,7 @@ def evaluate(args):
         return json.loads(output) if status == 0 else output
 
     def start_server():
-        process = subprocess.Popen([daemon, 'serve', '--config', app / 'runtime.json'], env=public_env,
+        process = subprocess.Popen([daemon, 'serve', '--config', runtime_config], env=public_env,
                                    stdout=server_log, stderr=subprocess.STDOUT)
         trust = ssl.create_default_context(cafile=str(app / 'ca.crt'))
         local_http = urllib.request.build_opener(urllib.request.ProxyHandler({}), urllib.request.HTTPSHandler(context=trust))
@@ -171,6 +173,51 @@ def evaluate(args):
                  '--role', role, '--token-file', token, environment=owner_env)
             write(label + '.json', {'version': 1, 'url': BASE, 'token_file': str(token), 'ca_file': str(app / 'ca.crt')})
         server = start_server()
+        if args.promtool:
+            promtool = args.promtool.resolve()
+            prometheus = call('stock-promtool-version', promtool, '--version')[1].splitlines()[0]
+            check('stock Prometheus 3.16.0 metric parser', prometheus.startswith('promtool, version 3.16.0'))
+            trust = ssl.create_default_context(cafile=str(app / 'ca.crt'))
+            scrape_http = urllib.request.build_opener(urllib.request.ProxyHandler({}), urllib.request.HTTPSHandler(context=trust))
+            metrics_token = secrets.token_hex(32)
+
+            def scrape(credential=None):
+                headers = {} if credential is None else {'Authorization': 'Bearer ' + credential}
+                request = urllib.request.Request(BASE + '/metrics', headers=headers)
+                try:
+                    with scrape_http.open(request, timeout=5) as response:
+                        data = response.read((64 << 10) + 1)
+                        if len(data) > 64 << 10:
+                            raise ValueError('metrics escaped the fixed process output budget')
+                        return response.status, response.headers['Content-Type'], data.decode('ascii')
+                except urllib.error.HTTPError as error:
+                    error.close()
+                    return error.code, '', ''
+
+            check('metrics are absent until explicitly enabled', scrape(metrics_token)[0] in (401, 404))
+            stop_server(server)
+            server = None
+            token_input = work / 'metrics.token'
+            token_input.write_text(metrics_token + '\n')
+            runtime_config = write('metrics-runtime.json', {**json.loads(runtime_config.read_text()),
+                                                            'metrics_token_file': str(token_input)})
+            server = start_server()
+            status, content_type, text = scrape(metrics_token)
+            check('dedicated credential reads metrics over trusted TLS', status == 200 and
+                  content_type == 'text/plain; version=0.0.4; charset=utf-8' and text.endswith('\n'))
+            admin_token = (app / 'admin.token').read_text().strip()
+            check('anonymous and ordinary tenant credentials cannot scrape', scrape()[0] == scrape(admin_token)[0] == 401)
+            seen_metrics = []
+
+            def metrics_values(label):
+                status, _, scrape_text = scrape(metrics_token)
+                if status != 200:
+                    raise ValueError('authorized metrics scrape did not complete')
+                call(label + '-check-metrics', promtool, 'check', 'metrics', input_text=scrape_text)
+                (work / (label + '.prom')).write_text(scrape_text)
+                seen_metrics.append({'phase': label, 'sha256': hashlib.sha256(scrape_text.encode()).hexdigest(),
+                                     'bytes': len(scrape_text.encode())})
+                return {line.rsplit(' ', 1)[0]: line.rsplit(' ', 1)[1] for line in scrape_text.splitlines() if not line.startswith('#')}
         desired = {'version': 1, 'tenant': TENANT, 'name': NAME, 'format': 'npm',
                    'access': 'restricted', 'require_review': True}
         manifest = write('manifest.json', desired)
@@ -259,6 +306,14 @@ def evaluate(args):
             mcp_phase('other-tenant', work / 'other.json')
         api('approve', REPOSITORY + '/decisions', 'PUT',
             {'path': artifacts[0]['path'], 'digest': artifacts[0]['digest'], 'decision': 'allowed'})
+        if args.promtool:
+            denied = cli('metrics-real-grant-denial', '--path', REPOSITORY, config=work / 'reader.json', status=1)
+            check('actual restricted repository produced HTTP 403 before restart', 'HTTP 403' in denied[1])
+            metrics = metrics_values('stock-publication')
+            check('Prometheus parses real publication, denial and admission observations',
+                  int(metrics['cratectl_http_request_body_bytes_total{protocol="npm"}']) >= tarball.stat().st_size
+                  and int(metrics['cratectl_http_requests_total{protocol="management",outcome="auth_denied"}']) >= 1
+                  and metrics['cratectl_transfer_capacity'] == '16')
         stop_server(server)
         server = None
         server = start_server()
@@ -269,6 +324,17 @@ def evaluate(args):
         check('fresh stock npm downloads the exact approved archive after restart',
               sha(download / restored[0]['filename']) == sha(tarball))
         report['archive_sha256'] = sha(tarball)
+        if args.promtool:
+            metrics = metrics_values('stock-download-after-restart')
+            check('stock npm download contributes bytes and a complete latency histogram',
+                  int(metrics['cratectl_http_response_body_bytes_total{protocol="npm"}']) >= tarball.stat().st_size
+                  and metrics['cratectl_http_request_duration_seconds_bucket{protocol="npm",le="+Inf"}'] ==
+                      metrics['cratectl_http_request_duration_seconds_count{protocol="npm"}']
+                  and int(metrics['cratectl_http_request_duration_seconds_count{protocol="npm"}']) > 0)
+            combined = ''.join((work / (entry['phase'] + '.prom')).read_text() for entry in seen_metrics)
+            check('metrics contain fixed labels and omit tenant, artifact and credential values',
+                  not any(value in combined for value in (TENANT, NAME, artifact_name, metrics_token, admin_token, artifacts[0]['digest'])))
+            report['metrics'] = {'tool': prometheus, 'tool_sha256': sha(promtool), 'scrapes': seen_metrics}
         if args.mcp_binary:
             mcp_phase('reader-approved', work / 'reader.json')
             call('revoke-mcp-reader', daemon, 'revoke', '--token-file', work / 'reader.token', environment=owner_env)
@@ -349,6 +415,7 @@ if __name__ == '__main__':
     parser.add_argument('--ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--mcp-binary', type=Path)
     parser.add_argument('--mcp-client', type=Path)
+    parser.add_argument('--promtool', type=Path)
     options = parser.parse_args()
     if len([value for value in (options.provider_binary, options.terraform, options.tofu) if value]) not in (0, 3):
         parser.error('provide the local provider and both stock clients together')
@@ -356,4 +423,6 @@ if __name__ == '__main__':
         parser.error('the hosted evidence profile requires both stock clients and the provider')
     if bool(options.mcp_binary) != bool(options.mcp_client) or options.ci_architecture and options.mcp_binary:
         parser.error('the local MCP profile requires both candidate MCP binaries')
+    if options.ci_architecture and options.promtool:
+        parser.error('the native Prometheus profile runs separately from hosted provider qualification')
     evaluate(options)

@@ -21,6 +21,7 @@ import (
 	"ctlplne.dev/cratectl/internal/blob"
 	"ctlplne.dev/cratectl/internal/configfile"
 	crypt "ctlplne.dev/cratectl/internal/crypto"
+	"ctlplne.dev/cratectl/internal/observability"
 	"ctlplne.dev/cratectl/internal/server"
 	"ctlplne.dev/cratectl/internal/store"
 	"ctlplne.dev/cratectl/internal/upstream"
@@ -117,6 +118,7 @@ func run() error {
 		cert := f.String("tls-cert", "", "TLS certificate")
 		key := f.String("tls-key", "", "TLS key file")
 		paginationKey := f.String("pagination-key-file", "", "private shared cursor key; created atomically if missing")
+		metricsToken := f.String("metrics-token-file", "", "private credential for opt-in TLS process metrics")
 		dev := f.Bool("dev-loopback-http", false, "explicit development HTTP exception")
 		max := f.Int64("max-object-bytes", 1<<30, "per-object byte limit")
 		privateNetworks := f.String("allow-private-upstreams", "", "operator-authorized private upstream CIDRs, comma separated")
@@ -200,6 +202,9 @@ func run() error {
 			if !set["tls-key"] {
 				*key = c.TLSKey
 			}
+			if !set["metrics-token-file"] {
+				*metricsToken = c.MetricsTokenFile
+			}
 		}
 		if *transferTimeout < time.Second || *transferTimeout > 24*time.Hour {
 			return errors.New("transfer-timeout must be 1 second–24 hours")
@@ -219,6 +224,17 @@ func run() error {
 			}
 		} else if *cert == "" || *key == "" || u.Scheme != "https" {
 			return errors.New("TLS certificate/key and HTTPS public URL required")
+		}
+		var metricsCredential []byte
+		if *metricsToken != "" {
+			if *dev {
+				return errors.New("process metrics require the TLS registry listener")
+			}
+			metricsCredential, e = configfile.ReadBytes(*metricsToken, 257, true)
+			if e != nil {
+				return errors.New("process metrics require a private regular token file within 257 bytes")
+			}
+			defer clear(metricsCredential)
 		}
 		var upstreamCredentials map[string]server.UpstreamCredential
 		if *credentials != "" {
@@ -328,7 +344,16 @@ func run() error {
 				return e
 			}
 		}
-		srv := &http.Server{Addr: *listen, Handler: h, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: *transferTimeout, WriteTimeout: *transferTimeout, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 32 << 10}
+		var handler http.Handler = h
+		if *metricsToken != "" {
+			metrics, err := observability.NewHTTP(h, metricsCredential, h.TransferAdmission)
+			clear(metricsCredential)
+			if err != nil {
+				return err
+			}
+			handler = metrics
+		}
+		srv := &http.Server{Addr: *listen, Handler: handler, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: *transferTimeout, WriteTimeout: *transferTimeout, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 32 << 10}
 		stop, cancel := signal.NotifyContext(ctx, syscall.SIGINT, syscall.SIGTERM)
 		defer cancel()
 		go func() {
