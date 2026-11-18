@@ -5,7 +5,7 @@ from go_module_evidence import STAGES,FIXTURES,CACHED_FIXTURES,GROUP_STAGES,GROU
 
 def complete_contract():
  hashes={k:hashlib.sha256(k.encode()).hexdigest()for k in FIXTURES}
- return {'profile':'hosted-module-v1','version':'1.27.3','go_binary_sha256':'a'*64,'fixture_source_sha256':'b'*64,'completed':list(STAGES),'publisher_sha256':hashes,'reference_sha256':dict(hashes),'wire_sha256':dict(hashes),'cached_sha256':{k:v for k,v in hashes.items()if k in CACHED_FIXTURES}}
+ return {'profile':'hosted-module-v1','version':'1.27.4','go_binary_sha256':'a'*64,'fixture_source_sha256':'b'*64,'completed':list(STAGES),'publisher_sha256':hashes,'reference_sha256':dict(hashes),'wire_sha256':dict(hashes),'cached_sha256':{k:v for k,v in hashes.items()if k in CACHED_FIXTURES}}
 def complete_group_contract():
  hashes={k:hashlib.sha256(k.encode()).hexdigest()for k in GROUP_FIXTURES}
  return {**complete_contract(),'profile':'hosted-group-module-v2','completed':list(GROUP_STAGES),'publisher_sha256':hashes,'reference_sha256':dict(hashes),'wire_sha256':dict(hashes),'cached_sha256':{k:v for k,v in hashes.items()if k in GROUP_CACHED_FIXTURES}}
@@ -16,7 +16,7 @@ class GoModuleEvidence(unittest.TestCase):
   self.assertEqual(safe_go_module_contract(failed,'failed'),failed)
   with self.assertRaises(ValueError):safe_go_module_contract(failed,'passed')
  def test_unknown_fields_and_private_observations_fail(self):
-  for change in [{'credential':'private-value'},{'profile':None},{'profile':[]},{'profile':'generic'},{'version':'go1.27.3'},{'completed':STAGES[::-1]},{'go_binary_sha256':'not-a-hash'}]:
+  for change in [{'credential':'private-value'},{'profile':None},{'profile':[]},{'profile':'generic'},{'version':'go1.27.4'},{'completed':STAGES[::-1]},{'go_binary_sha256':'not-a-hash'}]:
    with self.subTest(change=change),self.assertRaises(ValueError):safe_go_module_contract({**complete_contract(),**change},'passed')
  def test_missing_and_mismatched_representation_fails(self):
   for field in ['publisher_sha256','reference_sha256','wire_sha256','cached_sha256']:

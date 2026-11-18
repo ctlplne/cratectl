@@ -133,7 +133,7 @@ def main(path):
                   + fixture['root_module'] + ' v1.0.0\n')
     try:
         version = isolated([go, 'version'], cwd=consumer)
-        checked(b'go1.27.3 ' in version, 'Pinned stock Go1.27.3 required')
+        checked(b'go1.27.4 ' in version, 'Pinned stock Go1.27.4 required')
         downloaded = isolated([go, 'mod', 'download', '-json', 'all'], cwd=consumer)
         values, decoder, text = [], json.JSONDecoder(), downloaded.decode()
         while text.strip():
@@ -169,7 +169,7 @@ def main(path):
         probes[path.name] = hashlib.sha256(body).hexdigest()
     checked(len(probes) == 6, 'Offline native journey omitted an observed command network')
     journey = {'profile': 'cratectl.go.common-offline.native.v1', 'status': 'passed',
-               'roots': 8, 'go_version': '1.27.3', 'killed_verified_cli': True,
+               'roots': 8, 'go_version': '1.27.4', 'killed_verified_cli': True,
                'killed_cli_pid': killed_pid, 'signal': 'SIGKILL',
                'receipt_sha256': hashlib.sha256(receipt_raw).hexdigest(),
                'download_sha256': hashlib.sha256(downloaded).hexdigest(),

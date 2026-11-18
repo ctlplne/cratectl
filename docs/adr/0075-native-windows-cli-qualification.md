@@ -9,7 +9,7 @@ disabled and running jobs are never cancelled by a later push. Only owner main
 source runs this profile, with a read-only token and checkout credentials disabled.
 Disable automatic CRLF conversion before checkout so working source hashes equal
 the original Git blobs. The jobs build the actual native CLI and a Go qualifier
-with the pinned Go1.27.3 SDK. No Python interpreter or x86 emulation is needed for
+with the pinned Go1.27.4 SDK. No Python interpreter or x86 emulation is needed for
 the ARM64 qualification.
 
 The qualifier checks actual runtime and SDK platform, clean checkout and embedded

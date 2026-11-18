@@ -219,7 +219,7 @@ func TestWindowsNativeCLIUsesPrivateConfigurationAndRefusesBroadCredentialsBefor
 		t.Fatal("absolute actual Windows candidate CLI required")
 	}
 	identity, err := buildinfo.ReadFile(cli)
-	if err != nil || identity.GoVersion != "go1.27.3" || identity.Path != "ctlplne.dev/cratectl/cmd/cratectl" {
+	if err != nil || identity.GoVersion != "go1.27.4" || identity.Path != "ctlplne.dev/cratectl/cmd/cratectl" {
 		t.Fatal("actual pinned Windows candidate CLI build identity required", err)
 	}
 	settings := map[string]string{}

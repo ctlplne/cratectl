@@ -42,7 +42,7 @@ def safe_go_common_export_portability_contract(value, status):
         h = value[name]
         if h is not None and (not isinstance(h, str) or not re.fullmatch('[a-f0-9]{64}', h)):
             raise ValueError('Common portability identity must be an exact SHA256')
-    if value['go_version'] not in (None, '1.27.3'):
+    if value['go_version'] not in (None, '1.27.4'):
         raise ValueError('Common portability requires the pinned stock Go version')
     hashes, tools = value['files_sha256'], value['network_tools_sha256']
     if (not isinstance(hashes, dict) or not set(hashes) <= FILES
@@ -54,7 +54,7 @@ def safe_go_common_export_portability_contract(value, status):
         raise ValueError('Common portability byte inventory or isolation is outside its reviewed bounds')
     if status == 'passed':
         optional = {'destination_runner_sha256', 'network_probe_sha256', 'native_journey_sha256'} if role == 'producer' else set()
-        if (completed != stages or value['go_version'] != '1.27.3' or set(hashes) != FILES
+        if (completed != stages or value['go_version'] != '1.27.4' or set(hashes) != FILES
                 or any(value[h] is None for h in HASHES - optional)
                 or hashes['signer-public.pem'] != value['public_key_sha256']):
             raise ValueError('Passed common portability requires every control and exact original member')

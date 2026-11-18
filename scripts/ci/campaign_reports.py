@@ -114,7 +114,7 @@ def validate_custom(report, candidate, run_id, spec, source):
                 'mod-mismatch', 'invalid-signature', 'authority-unavailable']
     require(type(report.get('schema')) is int and report['schema'] == 1 and report.get('required_controls') == controls
             and report.get('controls') == dict.fromkeys(controls, 'passed')
-            and report.get('go_version') == '1.27.3' and hash_value(report.get('go_binary_sha256')), 'strict_client_controls')
+            and report.get('go_version') == '1.27.4' and hash_value(report.get('go_binary_sha256')), 'strict_client_controls')
     require(report.get('script_sha256') == hashlib.sha256(source('scripts/test_go_checksum_client.py')).hexdigest()
             and report.get('fixture_sha256') == hashlib.sha256(source('internal/server/testdata/go-checksum-public.json')).hexdigest(), 'strict_client_byte_identity')
     require(report.get('zip_rejected_first') is True and report.get('untrusted_zip_sum_retained') is False

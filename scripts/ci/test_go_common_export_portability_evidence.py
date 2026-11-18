@@ -8,7 +8,7 @@ from go_common_export_portability_evidence import (FILES, HASHES, STAGES,
 def complete(role='consumer'):
     value = {key: 'a' * 64 for key in HASHES}
     value.update(profile='hosted-common-export-cross-runner-v1', role=role, completed=list(STAGES[role]),
-                 go_version='1.27.3', source_run_id='123', source_arch='amd64',
+                 go_version='1.27.4', source_run_id='123', source_arch='amd64',
                  destination_arch='arm64' if role == 'consumer' else None,
                  destination_runner_sha256='b' * 64 if role == 'consumer' else None,
                  network_isolated=role == 'consumer', namespace_commands=14 if role == 'consumer' else 0,
@@ -37,7 +37,7 @@ class EvidenceTests(unittest.TestCase):
                 safe_go_common_export_portability_contract(value, 'passed')
 
     def test_partial_wrong_version_scope_counts_and_reused_host_refuse(self):
-        changes = [{'go_version': '1.27.4'}, {'role': []}, {'source_run_id': '01'}, {'namespace_commands': 13},
+        changes = [{'go_version': '1.27.3'}, {'role': []}, {'source_run_id': '01'}, {'namespace_commands': 13},
                    {'namespace_commands': True}, {'explicit_roots': True}, {'explicit_roots': 7},
                    {'automatic_closure': True}, {'destination_admission': True}, {'network_isolated': False},
                    {'network_tools_sha256': {}}, {'source_runner_sha256': 'b' * 64}, {'public_key_sha256': 'b' * 64},

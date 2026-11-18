@@ -116,7 +116,7 @@ def consume(private, cli, go, value, files, command, stage, contract):
     require(set(report) == {'profile', 'status', 'examined_sources', 'selected_roots', 'go_version', 'receipt_sha256',
                            'acknowledgement_signal', 'acknowledgement_exit', 'acknowledgement_receipt_sha256', 'download_sha256', 'network_probes', 'checks'}
             and report['profile'] == 'cratectl.go.requirement-offline.native.v2' and report['status'] == 'passed'
-            and report['examined_sources'] == 3 and report['selected_roots'] == 2 and report['go_version'] == '1.27.3'
+            and report['examined_sources'] == 3 and report['selected_roots'] == 2 and report['go_version'] == '1.27.4'
             and report['acknowledgement_signal'] == 'SIGPIPE' and report['acknowledgement_exit'] in (-signal.SIGPIPE,128+signal.SIGPIPE)
             and report['checks'] == checks,
             'Requirement native journey omitted a mandatory control')
@@ -255,8 +255,8 @@ def main(role):
                 'Clean exact native requirement CLI/server binaries required')
         go = Path(shutil.which('go')).resolve()
         version = command([go, 'version']).decode().strip()
-        require(version.startswith('go version go1.27.3 linux/' + ('amd64' if role == 'producer' else 'arm64')), 'Pinned native Go1.27.3 required')
-        contract.update(go_version='1.27.3', go_binary_sha256=digest(go.read_bytes()))
+        require(version.startswith('go version go1.27.4 linux/' + ('amd64' if role == 'producer' else 'arm64')), 'Pinned native Go1.27.4 required')
+        contract.update(go_version='1.27.4', go_binary_sha256=digest(go.read_bytes()))
         stage('native_identity')
         if role == 'producer':
             fixture_dir = root / '.cache/go-requirement-export-portable-upload'

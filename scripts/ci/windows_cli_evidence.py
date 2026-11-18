@@ -47,7 +47,7 @@ def safe_windows_cli_contract(value):
     if (not isinstance(value, dict) or set(value) != FIELDS
             or type(value['schema']) is not int or value['schema'] != 1
             or value['profile'] != 'cratectl.windows.private-configuration.v1'
-            or value['status'] != 'passed' or value['go_version'] != '1.27.3'
+            or value['status'] != 'passed' or value['go_version'] != '1.27.4'
             or value['runner_os'] != 'Windows' or value['runner_arch'] not in ('X64', 'ARM64')
             or not isinstance(value['candidate'], str) or not re.fullmatch('[a-f0-9]{40}', value['candidate'])
             or not isinstance(value['run_id'], str) or not re.fullmatch('[1-9][0-9]{0,19}', value['run_id'])):

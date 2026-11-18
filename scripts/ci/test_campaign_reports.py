@@ -116,22 +116,35 @@ class CampaignReports(unittest.TestCase):
         self.baselines = json.loads((ROOT / 'scripts/ci/testdata/schema16-historical-baselines.json').read_text())['baselines']
 
     def report(self, name):
-        return json.loads((ROOT / 'evidence/2026-11-07/github-4956197' / (name + '.json')).read_text())
+        report = json.loads((ROOT / 'evidence/2026-11-07/github-4956197' / (name + '.json')).read_text())
+        for record in report['records']:
+            if 'go_export_portability_contract' in record:
+                # Exercise today's validator using the archived report shape.
+                # These in-memory fixtures are not campaign evidence.
+                record['go_export_portability_contract']['go_version'] = '1.27.4'
+        return report
 
     def validate(self, name, report):
         return validate_summary(report, report['candidate'], int(report['run_id']), SPECS[name], self.baselines)
 
-    def test_every_retained_original_safe_report_profile_is_understood(self):
+    def test_every_retained_report_shape_is_understood_with_the_current_sdk(self):
         paths = list((ROOT / 'evidence/2026-11-07/github-4956197').glob('*.json'))
         self.assertEqual(len(paths), 19)
         records = 0
         for path in paths:
             with self.subTest(profile=path.stem):
-                report = json.loads(path.read_text())
+                report = self.report(path.stem)
                 summary, _ = self.validate(path.stem, report)
                 records += summary['records']
                 self.assertNotIn('candidate', summary)
         self.assertEqual(records, 72)
+
+    def test_archived_portability_result_does_not_qualify_current_sdk(self):
+        name = 'ci-summary-export-portability-consumer'
+        path = ROOT / 'evidence/2026-11-07/github-4956197' / (name + '.json')
+        original = json.loads(path.read_text())
+        with self.assertRaisesRegex(EvidenceError, 'typed_report_contract'):
+            self.validate(name, original)
 
     def test_new_schema17_contract_refuses_old15_baseline_campaign(self):
         current = json.loads((ROOT / 'docs/qualification/upgrade-baselines.json').read_text())['baselines'][:-1]
@@ -239,13 +252,14 @@ class CampaignReports(unittest.TestCase):
         source = lambda _: b'owned-public-fixture'
         strict = {'schema': 1, 'candidate': 'a' * 40, 'run_id': '1', 'runner_os': 'Linux', 'runner_arch': 'x86_64',
                   'status': 'passed', 'source_dirty': False, 'required_controls': controls,
-                  'controls': dict.fromkeys(controls, 'passed'), 'go_version': '1.27.3', 'go_binary_sha256': 'b' * 64,
+                  'controls': dict.fromkeys(controls, 'passed'), 'go_version': '1.27.4', 'go_binary_sha256': 'b' * 64,
                   'script_sha256': hashlib.sha256(source('')).hexdigest(), 'fixture_sha256': hashlib.sha256(source('')).hexdigest(),
                   'zip_rejected_first': True, 'untrusted_zip_sum_retained': False,
                   'retry_succeeded': False, 'altered_inert_file_extracted': False}
         spec = SPECS['ci-summary-checksum-client-linux-amd64']
         self.assertEqual(validate_custom(strict, 'a' * 40, 1, spec, source), {'checks': 7, 'records': 1})
         for mutation in [lambda r: r['controls'].pop('zip-mismatch'), lambda r: r.update(status='failed'),
+                         lambda r: r.update(go_version='1.27.3'),
                          lambda r: r.update(retry_succeeded=True), lambda r: r.update(altered_inert_file_extracted=True)]:
             report = copy.deepcopy(strict)
             mutation(report)

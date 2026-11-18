@@ -7,7 +7,7 @@ from go_export_portability_evidence import FILES, HASHES, STAGES, safe_go_export
 def complete(role='consumer'):
     out = {key: 'a' * 64 for key in HASHES}
     out.update(profile='hosted-export-cross-runner-v1', role=role, completed=list(STAGES[role]),
-               go_version='1.27.3', source_run_id='123', source_arch='amd64',
+               go_version='1.27.4', source_run_id='123', source_arch='amd64',
                destination_arch='arm64' if role == 'consumer' else None,
                destination_runner_sha256='b' * 64 if role == 'consumer' else None,
                network_isolated=role == 'consumer', network_probe_sha256='c' * 64 if role == 'consumer' else None,
@@ -33,7 +33,7 @@ class EvidenceTests(unittest.TestCase):
                 safe_go_export_portability_contract(value, 'passed')
 
     def test_unknown_fields_wrong_versions_partial_controls_and_reused_runner_reject(self):
-        mutations = [{'credential': 'private-synthetic-value'}, {'go_version': '1.27.4'},
+        mutations = [{'credential': 'private-synthetic-value'}, {'go_version': '1.27.3'},
                      {'role': 'unknown'}, {'role': []}, {'source_arch': 'arm64'}, {'destination_arch': 'amd64'},
                      {'source_run_id': 'unbounded'}, {'source_runner_sha256': 'b' * 64},
                      {'completed': STAGES['consumer'][:-1]}, {'completed': STAGES['consumer'][::-1]},

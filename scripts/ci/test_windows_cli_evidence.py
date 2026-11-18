@@ -20,7 +20,7 @@ def complete(candidate='a' * 40, run_id='12', arch='X64', source=lambda _: b'own
     identity = {'GOOS': 'windows', 'GOARCH': {'X64': 'amd64', 'ARM64': 'arm64'}[arch],
                 'vcs.revision': candidate, 'vcs.modified': 'false'}
     return {'schema': 1, 'profile': 'cratectl.windows.private-configuration.v1', 'candidate': candidate,
-            'run_id': run_id, 'runner_os': 'Windows', 'runner_arch': arch, 'status': 'passed', 'go_version': '1.27.3',
+            'run_id': run_id, 'runner_os': 'Windows', 'runner_arch': arch, 'status': 'passed', 'go_version': '1.27.4',
             'binary_sha256': dict(zip(('cli', 'driver', 'go'), (c * 64 for c in 'bcd'))),
             'build_identity': {'cli': dict(identity), 'driver': dict(identity)},
             'source_sha256': {p: hashlib.sha256(source(p)).hexdigest() for p in SOURCES},
@@ -60,6 +60,7 @@ class WindowsEvidence(unittest.TestCase):
         mutations = [
             lambda r: r.update(private_path='owned-private-synthetic'),
             lambda r: r.update(schema=True), lambda r: r.update(status='skipped'),
+            lambda r: r.update(go_version='1.27.3'),
             lambda r: r.update(run_id='012'), lambda r: r.update(managed_commands=True),
             lambda r: r.update(managed_commands=4), lambda r: r.update(all_owned_jobs_empty=False),
             lambda r: r.update(management_response_standin=False),

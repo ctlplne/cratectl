@@ -1,0 +1,356 @@
+{
+  "source_parent": "f8074216ee40c665ae71d554da3d9dfe8ec07b0f",
+  "source_dirty": true,
+  "observed_at": "2026-11-18T11:09:37.490188+00:00",
+  "state": "Adopt patched SDK. Local before/after scanner replay confirms the targeted finding clears. Native campaign awaits execution.",
+  "advisory": {
+    "id": "GO-2026-6859",
+    "cve": "CVE-2026-97054",
+    "url": "https://pkg.go.dev/vuln/GO-2026-6859",
+    "affected": "Go standard library net/http",
+    "first_fixed_in_series": "1.27.4"
+  },
+  "sdk": {
+    "path": ".cache/cratectl-go-sdk-1.27.4/go1.27.4.darwin-arm64.tar.gz",
+    "bytes": 68231011,
+    "sha256": "91a44a2b8a716600ad94a4f143e156116620db8828086a6e3602291be9bd0bb4",
+    "download": "https://go.dev/dl/go1.27.4.darwin-arm64.tar.gz",
+    "official_digest": "91a44a2b8a716600ad94a4f143e156116620db8828086a6e3602291be9bd0bb4",
+    "host": "Darwin ARM64"
+  },
+  "scanner": {
+    "name": "govulncheck",
+    "version": "1.9.0",
+    "database": "https://vuln.go.dev",
+    "database_snapshot": "2026-11-11T02:51:11Z",
+    "source_candidate_both_runs": "f8074216ee40c665ae71d554da3d9dfe8ec07b0f",
+    "old": {
+      "sdk": "1.27.3",
+      "reports": {
+        "source": {
+          "path": ".cache/cratectl-f807421-govulncheck-source.json",
+          "bytes": 851498,
+          "sha256": "48a3efeb3e232e6bba6d1069426eca7f7cb8ef4b0b8d8e4c75be304404677e45",
+          "scan_mode": "source",
+          "database_snapshot": "2026-11-11T02:51:11Z",
+          "advisory_records": {
+            "module": 1,
+            "package": 1,
+            "symbol": 54
+          }
+        },
+        "cratectl": {
+          "path": ".cache/cratectl-f807421-govulncheck-cratectl.json",
+          "bytes": 627582,
+          "sha256": "eb18a33d379782fa1da032d9a680915cc6ed57604f34393c054a71c704ed28d0",
+          "scan_mode": "binary",
+          "database_snapshot": "2026-11-11T02:51:11Z",
+          "advisory_records": {
+            "module": 1,
+            "package": 1,
+            "symbol": 44
+          }
+        },
+        "cratectld": {
+          "path": ".cache/cratectl-f807421-govulncheck-cratectld.json",
+          "bytes": 809043,
+          "sha256": "55c4714cfd3a0b6f332b6c31c2e5085143d6a95c7f40a1eae841fb139c36e0fd",
+          "scan_mode": "binary",
+          "database_snapshot": "2026-11-11T02:51:11Z",
+          "advisory_records": {
+            "module": 1,
+            "package": 1,
+            "symbol": 83
+          }
+        }
+      },
+      "binaries": [
+        {
+          "path": ".cache/cratectl-f807421/cratectl",
+          "bytes": 11874434,
+          "sha256": "cb2271bbf041d77e5592e7370b6eaceffc858eded09b826c22db26dcc6b99f9e"
+        },
+        {
+          "path": ".cache/cratectl-f807421/cratectld",
+          "bytes": 22542674,
+          "sha256": "ec7acdbc2fe00b5a582b955a95a16d9d24e48d0139c11ed7bd1a177b49ee6ce0"
+        }
+      ]
+    },
+    "patched": {
+      "sdk": "1.27.4",
+      "reports": {
+        "source": {
+          "path": ".cache/cratectl-f807421-go1274-govulncheck-source.json",
+          "bytes": 786877,
+          "sha256": "52d5560b14ee37b73166df912997a9d9cb9bf4312a19a62d9aafc4351d627231",
+          "scan_mode": "source",
+          "database_snapshot": "2026-11-11T02:51:11Z",
+          "advisory_records": {
+            "module": 0,
+            "package": 0,
+            "symbol": 0
+          }
+        },
+        "cratectl": {
+          "path": ".cache/cratectl-f807421-go1274-govulncheck-cratectl.json",
+          "bytes": 615356,
+          "sha256": "a7294340bd7ab8a114d04e86c1745e9ba85bd27b2968b0731b26c682fe022677",
+          "scan_mode": "binary",
+          "database_snapshot": "2026-11-11T02:51:11Z",
+          "advisory_records": {
+            "module": 0,
+            "package": 0,
+            "symbol": 0
+          }
+        },
+        "cratectld": {
+          "path": ".cache/cratectl-f807421-go1274-govulncheck-cratectld.json",
+          "bytes": 786211,
+          "sha256": "8d6d4b016ce35fad607bc749c716ea58efd886119e9d51acb88c9b9dd5fb6d16",
+          "scan_mode": "binary",
+          "database_snapshot": "2026-11-11T02:51:11Z",
+          "advisory_records": {
+            "module": 0,
+            "package": 0,
+            "symbol": 0
+          }
+        }
+      },
+      "binaries": [
+        {
+          "path": ".cache/cratectl-f807421-go1274/cratectl",
+          "bytes": 11890962,
+          "sha256": "7273451e66f377022e7496496d8812441758e30637db2d096a521b94e2b7e2da"
+        },
+        {
+          "path": ".cache/cratectl-f807421-go1274/cratectld",
+          "bytes": 22542738,
+          "sha256": "a3548d5f54f553d3210ff772bcbd4c8dd871ca09d214ed9c5f7560d2a16d62e3"
+        }
+      ]
+    }
+  },
+  "secret_scans": {
+    "gitleaks": "8.30.1",
+    "candidate": "f8074216ee40c665ae71d554da3d9dfe8ec07b0f",
+    "tracked_tree_leaks": 0,
+    "reachable_history_leaks": 0,
+    "history_commits_scanned": 254,
+    "rule_fixture_cases": 324,
+    "rule_evidence": "evidence/2026-11-18/gitleaks-rule-fixtures.json"
+  },
+  "first_local_fixture_observations": [
+    {
+      "state": "retained older development schema refused",
+      "raw_log": {
+        "path": ".cache/cratectl-windows-handoff-integration.log",
+        "bytes": 14244,
+        "sha256": "b19ef1bf162068fc04006200468692ffed5e8b69fac0d29b39bb3b4c672faaef"
+      }
+    },
+    {
+      "state": "fresh schema-18 fixture lacked the two preprovisioned CI tenants",
+      "raw_log": {
+        "path": ".cache/cratectl-f807421-integration.log",
+        "bytes": 11618,
+        "sha256": "189c35018ff58d03d73eb9adac0874c7c7bf344535b01ddee9876774306955b7"
+      }
+    },
+    {
+      "state": "baseline conformance stopped at missing local .NET 10.0.403 after successfully completing earlier assertions",
+      "candidate": "f8074216ee40c665ae71d554da3d9dfe8ec07b0f",
+      "completed_before_failure": 397,
+      "raw_report": {
+        "path": ".cache/cratectl-f807421-conformance-8707b21a3f.json",
+        "bytes": 310837,
+        "sha256": "4d2e5f2e5836166e0f9e7d7b18c6274d1b890fff5244b89e08bf690dff36c611"
+      }
+    },
+    {
+      "state": "private umask made the synthetic file private. The test now explicitly sets its expected public mode.",
+      "raw_log": {
+        "path": ".cache/cratectl-go1274-unit-loopback.log",
+        "bytes": 5300,
+        "sha256": "594c282593fcac6ae5b0c5fa88270ac14b2279e0606d7e0aa01aefff2988ba9b"
+      }
+    }
+  ],
+  "source_files": [
+    {
+      "path": "README.md",
+      "bytes": 8816,
+      "sha256": "225d9d255d57f9c71aaa6ba50d2f98ed2dd8d47c7706862919851ee1f16df029"
+    },
+    {
+      "path": "cmd/cratectl/go_export_collect_test.go",
+      "bytes": 19387,
+      "sha256": "7ba2402e00e8d339024286ce10f6bc9f3980830e2fd1fb9d26c82547a8f4e383"
+    },
+    {
+      "path": "docs/adr/0075-native-windows-cli-qualification.md",
+      "bytes": 5148,
+      "sha256": "ec37a1b4eb0192fac0ede0305bc2361612ea1a15e11dcd23930cf88d89c7052a"
+    },
+    {
+      "path": "go.mod",
+      "bytes": 631,
+      "sha256": "241101cea898478bbd0206b23e305695d5de2cb780747120d172d96e1e4eb99e"
+    },
+    {
+      "path": "internal/configfile/read_windows_test.go",
+      "bytes": 11022,
+      "sha256": "2a4aea5fd584098285f276fda628ef0e784979b6ba85986a2bd9e75aebee5547"
+    },
+    {
+      "path": "internal/store/go_module_offline_integration_test.go",
+      "bytes": 16470,
+      "sha256": "36c95155d5bda2b6e1218512614e1ba37d88acbce0d5ed80d08f8ea1eb21d52a"
+    },
+    {
+      "path": "scripts/ci/campaign_reports.py",
+      "bytes": 22381,
+      "sha256": "736f07077b2ec7c89c0424d6b840e2d97dda3b522f1746051c460eeb5db3e38b"
+    },
+    {
+      "path": "scripts/ci/go_common_export_portability_evidence.py",
+      "bytes": 5204,
+      "sha256": "03bddf4963e98e7e0437522cd11c9b5021944f5ce73e42ab7def26f47e676a04"
+    },
+    {
+      "path": "scripts/ci/go_export_portability_evidence.py",
+      "bytes": 4793,
+      "sha256": "abf8ba7e281ad7a9b6bc63643caffcc886f1ae9edd0daf4213d12006be38fb22"
+    },
+    {
+      "path": "scripts/ci/go_requirement_differential_native.py",
+      "bytes": 9831,
+      "sha256": "ee5661be27542f7ee1d54928dfc1ff70499f09f4cc1a87dbb9edd42a54c9542b"
+    },
+    {
+      "path": "scripts/ci/go_requirement_export_portability_evidence.py",
+      "bytes": 5617,
+      "sha256": "0b9e9ada752083efceb6bbc3600701260eaaf98a6f06c23aa39c6b2cc542755b"
+    },
+    {
+      "path": "scripts/ci/go_requirement_offline_native.py",
+      "bytes": 14216,
+      "sha256": "f59b5db1a77ed495a808aa2ea9c3eb5bc50d4acf41f49cc034e6be02782c9e08"
+    },
+    {
+      "path": "scripts/ci/go_set_offline_native.py",
+      "bytes": 10402,
+      "sha256": "77fdfd48a16c156d770f366d31de56dc86374966dab5d98b31aa69ed7f79c8b4"
+    },
+    {
+      "path": "scripts/ci/test_campaign_reports.py",
+      "bytes": 17390,
+      "sha256": "0ed62a7de23320fbbeeaf7b7c017c94b59c6f2c3adcb77f1778df72327c78069"
+    },
+    {
+      "path": "scripts/ci/test_go_common_export_portability_evidence.py",
+      "bytes": 4173,
+      "sha256": "a28a74597a48193b7be728cf21e9327ef5fdd983a7bd9c6d2590fc64396cbc80"
+    },
+    {
+      "path": "scripts/ci/test_go_export_portability_evidence.py",
+      "bytes": 2870,
+      "sha256": "a6128d688f4e4374a792980808ea346de89e8fddd5befdda06df2a5f9122f9f5"
+    },
+    {
+      "path": "scripts/ci/test_go_module_evidence.py",
+      "bytes": 4037,
+      "sha256": "4363d9f13328a02e47e78211ca95127f6dbfb587afcbc1bbaf5344b412df1745"
+    },
+    {
+      "path": "scripts/ci/test_go_requirement_export_portability_evidence.py",
+      "bytes": 4349,
+      "sha256": "28ea0d24ac6c933f8fa38cfc684b721bd255df7aad69b6996a162496366898a3"
+    },
+    {
+      "path": "scripts/ci/test_windows_cli_evidence.py",
+      "bytes": 6857,
+      "sha256": "62de24f54c73f390c95b747d0da9e45a29e5939721049945d177893d75b01568"
+    },
+    {
+      "path": "scripts/ci/windows_cli_evidence.py",
+      "bytes": 4348,
+      "sha256": "5fa3d17e9e9fdf1b70c8556155a0eb006d2a68becc9fe18dd5f097d1782d1b36"
+    },
+    {
+      "path": "scripts/ci/windowscli/main.go",
+      "bytes": 9816,
+      "sha256": "79be65d554ddbeca34e42ec7e28de709e1720fb8ec808e6b1b2a57d6ef47d27f"
+    },
+    {
+      "path": "scripts/conformance_go_common_export_portable.py",
+      "bytes": 18633,
+      "sha256": "393a6c1bcccf3902d5cf331e996b253b0c42285e3e4186db5dafd6a23649146f"
+    },
+    {
+      "path": "scripts/conformance_go_export_portable.py",
+      "bytes": 26822,
+      "sha256": "f9c1f4bc28b90a302d810ec83c29494a12b6266e9c78f04e03412de09237261d"
+    },
+    {
+      "path": "scripts/conformance_go_requirement_export_portable.py",
+      "bytes": 20418,
+      "sha256": "e9977737e23220dc500a6d544d1a7e8a3987162f748b1175a26197b88ea6d3c6"
+    },
+    {
+      "path": "scripts/test_go_checksum_client_report.py",
+      "bytes": 4934,
+      "sha256": "c441977546457566621dd7cc71fdb02b0ed17836c5e294ca675efe93e461aeb6"
+    }
+  ],
+  "source_snapshot_sha256": "6dada74f3eb4a66bc390f7767d854c98fecd18a219b8e05abe8c67baede81a2f",
+  "windows_artifact_upload_scope": "The retained static regression addressed the documented hidden-file rule. No native upload failure was observed.",
+  "limits": [
+    "No live vulnerability reproduction was performed. The comparative scanner result covers the named upstream advisory and the local toolchain/binaries.",
+    "The Go 1.27.3 selected strict failures remain failures. A new SDK does not qualify the checksum-client, Windows or broad release gates without their actual runs.",
+    "The original two fixture failures and the incomplete conformance attempt remain retained."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false,
+  "local_checks": {
+    "passed": [
+      "build",
+      "unit",
+      "race",
+      "lint",
+      "actionlint",
+      "tagged normal/race compile and vet",
+      "Windows x64/ARM64 CLI and qualifier cross-build, test compilation and vet"
+    ],
+    "logs": {
+      "build": {
+        "path": ".cache/cratectl-go1274-build.log",
+        "sha256": "cbffc73e32e5fd02b64bd0f534af657054a2f3c528463a486ddcc2e5f11a2a61",
+        "bytes": 413
+      },
+      "unit": {
+        "path": ".cache/cratectl-go1274-unit-loopback-final.log",
+        "sha256": "b338a10239a0ad2ce405729307efba2ab77a7567e73a0408985ad05ad15fd22f",
+        "bytes": 996
+      },
+      "race": {
+        "path": ".cache/cratectl-go1274-race-loopback-final.log",
+        "sha256": "1776ab1217e8a5ee70524a57fb47645a4f7630d657b271cdc8d372fa918f1e5f",
+        "bytes": 999
+      },
+      "lint": {
+        "path": ".cache/cratectl-go1274-lint.log",
+        "sha256": "7f8942c8ef3d88b82299b5f594020f090f11911bcc9152ea7984df4e61bc37b9",
+        "bytes": 12725
+      },
+      "windows_cross": {
+        "path": ".cache/cratectl-go1274-cross.log",
+        "sha256": "c37dc9dad1232fef4b6b0d010883d73a0966fdf568b3291a615f1a79822160a8",
+        "bytes": 118
+      }
+    },
+    "windows_runtime_verified": false,
+    "integration": "Requires the fresh seeded database replay with the candidate.",
+    "conformance": "Requires the verified pinned .NET SDK and candidate replay."
+  }
+}

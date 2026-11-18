@@ -94,7 +94,7 @@ def main(path):
         checked(code == 0, 'Actual native differential command failed')
         return output
 
-    checked(b'go1.27.3 ' in isolated([go, 'version']), 'Pinned stock Go1.27.3 required')
+    checked(b'go1.27.4 ' in isolated([go, 'version']), 'Pinned stock Go1.27.4 required')
     reports = []
     for case in fixture['cases']:
         name = case['name']
@@ -148,7 +148,7 @@ def main(path):
               for p in sorted(private.glob('differential-network-*.json'))}
     checked(len(probes) == count == 31, 'Differential journey omitted an observed empty command network')
     report = {'profile': 'cratectl.go.requirement-differentials.native.v1', 'status': 'passed',
-              'go_version': '1.27.3', 'cases': reports, 'network_probes': probes,
+              'go_version': '1.27.4', 'cases': reports, 'network_probes': probes,
               'dependency_closure': False, 'checksum_authority_verified': False, 'current_registry_admission': False}
     fd = os.open(private / 'requirement-differentials-report.json', os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW, 0o600)
     with os.fdopen(fd, 'wb') as handle:

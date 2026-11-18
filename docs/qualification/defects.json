@@ -1598,6 +1598,15 @@
       "first_failure": "evidence/2026-11-07/windows-private-config-development.json",
       "repair": "Reject unsupported sentinel budget before opening input; retain exact bytes at largest safe budget. Unix permission behavior unchanged.",
       "limits": "Owned local file counterexample only; no external exploit claimed. Absent from12c6/78a qualified scopes and not backdated into their native passes."
+    },
+    {
+      "id": "DEFECT.0148",
+      "summary": "Pinned Go 1.27.3 includes the standard-library advisory GO-2026-6859 (CVE-2026-97054)",
+      "candidate": "f8074216ee40c665ae71d554da3d9dfe8ec07b0f",
+      "state": "Patched SDK and local scanner replay verified. Native replay pending.",
+      "first_failure": "evidence/2026-11-18/go-1.27.4-security-development.json",
+      "repair": "Pin Go 1.27.4 for current builds and qualification. Keep historical results tied to their original SDK and retain the strict client assertions.",
+      "limits": "Govulncheck compared local source and both macOS ARM64 binaries against one official feed snapshot. Native Windows and Linux replay and the broad security gate remain open."
     }
   ]
 }

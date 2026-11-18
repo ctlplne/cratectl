@@ -53,11 +53,12 @@ native CLI/driver/Go SDK on windows-2025/windows-11-arm with exact source bytes,
 fourteen functions/five owned-job commands, bounded output/deadlines and actual
 owned descendant cleanup. The workflow and closed custom validator establish a
 new22-file boundary after retaining both old20-contract campaigns' original
-results. Local builds/stand-ins and Windows compile/vet do not establish runtime
-success. Expected next selection is28jobs/seven workflows/21safe82reports; the
-actual API inventory controls. No optional library/strict/browser profile is
-selected merely to obtain a green replacement. All remaining Windows writer/
-bootstrap/collection locks/install/server/provider and450/41/later scope remains.
+results. Local Windows compile/vet leaves runtime success pending. The updated
+Go 1.27.4 build pin also selects the NuGet library and strict Go workflows.
+Expect 33 jobs across nine workflows, with 26 safe members and 87 reports if all
+selected jobs pass. The actual API inventory controls. The strict assertions and
+the original Go 1.27.3 failures remain intact. Windows writer, bootstrap,
+collection locks, install, server and provider scope remains open.
 
 ## Placement
 

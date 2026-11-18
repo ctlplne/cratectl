@@ -98,7 +98,7 @@ def consume(private, cli, go, value, files, command, stage, contract):
     report_raw = report_path.read_bytes()
     report = strict_json(report_raw)
     require(report['profile'] == 'cratectl.go.common-offline.native.v1' and report['status'] == 'passed'
-            and report['roots'] == 8 and report['go_version'] == '1.27.3'
+            and report['roots'] == 8 and report['go_version'] == '1.27.4'
             and report['killed_verified_cli'] is True and report['signal'] == 'SIGKILL'
             and type(report['killed_cli_pid']) is int and report['killed_cli_pid'] > 1
             and report['checks'] == ['complete_proxy', 'stock_go_exact_graph', 'verified_cli_sigkill',
@@ -238,8 +238,8 @@ def main(role):
                 'Clean exact native common CLI/server binaries required')
         go = Path(shutil.which('go')).resolve()
         version = command([go, 'version']).decode().strip()
-        require(version.startswith('go version go1.27.3 linux/' + ('amd64' if role == 'producer' else 'arm64')), 'Pinned native Go1.27.3 required')
-        contract.update(go_version='1.27.3', go_binary_sha256=digest(go.read_bytes()))
+        require(version.startswith('go version go1.27.4 linux/' + ('amd64' if role == 'producer' else 'arm64')), 'Pinned native Go1.27.4 required')
+        contract.update(go_version='1.27.4', go_binary_sha256=digest(go.read_bytes()))
         stage('native_identity')
         if role == 'producer':
             fixture_dir = root / '.cache/go-common-export-portable-upload'

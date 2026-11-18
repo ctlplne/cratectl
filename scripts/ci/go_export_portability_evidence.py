@@ -40,7 +40,7 @@ def safe_go_export_portability_contract(value, status):
         raise ValueError('Portability requires the declared native source and destination architectures')
     if not isinstance(value['source_run_id'], str) or not re.fullmatch(r'[1-9][0-9]{0,19}', value['source_run_id']):
         raise ValueError('Portability requires a bounded original workflow identity')
-    if value['go_version'] not in (None, '1.27.3'):
+    if value['go_version'] not in (None, '1.27.4'):
         raise ValueError('Portability uses the exact pinned native Go runtime')
     for key in HASHES:
         if value[key] is not None and (not isinstance(value[key], str) or not re.fullmatch('[a-f0-9]{64}', value[key])):
@@ -51,7 +51,7 @@ def safe_go_export_portability_contract(value, status):
         raise ValueError('Portability file inventory exceeds the reviewed synthetic fixture')
     if status == 'passed':
         required = HASHES - ({'destination_runner_sha256', 'network_probe_sha256'} if role == 'producer' else set())
-        if (completed != stages or value['go_version'] != '1.27.3'
+        if (completed != stages or value['go_version'] != '1.27.4'
                 or any(value[k] is None for k in required) or set(hashes) != FILES
                 or hashes['signer-public.pem'] != value['public_key_sha256']):
             raise ValueError('Passed portability requires every control and exact public input identity')

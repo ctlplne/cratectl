@@ -77,10 +77,23 @@ collection/credential writer/bootstrap/install claim follows.
 
 The workflow plus custom validator close22 files. Both original20-contract
 records above were retained and checked against their original logs and members.
-After an authorized push, the expected source selection is28 jobs/seven workflows
-and21 safe members/82 reports: base26 plus two Windows. Actual API selection
-controls; optional library/strict/focused browser remain separate. Source/unit
-counts remain296PG/118Go/66fuzz. Skips and compile-only checks never count as passes.
+Source test inventories remain296PG/118Go/66fuzz. Skips and compile-only checks
+never count as passes.
+
+## Go security patch
+
+Govulncheck reported GO-2026-6859 against the Go 1.27.3 source configuration
+and both local binaries. Go 1.27.4 contains the upstream `net/http` fix. The
+build, stock-client checks and evidence validators now require Go 1.27.4. The
+same scanner and feed found no match for this advisory after the rebuild. See
+the [local security record](evidence/2026-11-18/go-1.27.4-security-development.json).
+
+The changed `go.mod` selects the strict Go and NuGet library jobs alongside
+the Windows and baseline jobs. Expect 33 jobs across nine workflows, with 26
+safe members and 87 reports if every selected job passes. Use the actual API
+inventory. The three original strict failures keep DEFECT0126 open until a
+patched native campaign runs the unchanged assertions. Full security and
+packaging qualification remain open.
 
 ## Durable state and remaining scope
 

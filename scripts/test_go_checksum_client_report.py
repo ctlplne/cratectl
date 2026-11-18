@@ -22,7 +22,7 @@ class ChecksumReportBoundary(unittest.TestCase):
         certificate = self.root / 'docs/qualification/ci-diagnostics-recipient.pem'
         certificate.parent.mkdir(parents=True)
         certificate.write_text('owned public recipient stand-in')
-        self.progress = {**probe.PROGRESS, 'controls': dict.fromkeys(probe.CONTROLS, 'passed'), 'go_version':'1.27.3', 'go_binary_sha256':'b'*64}
+        self.progress = {**probe.PROGRESS, 'controls': dict.fromkeys(probe.CONTROLS, 'passed'), 'go_version':'1.27.4', 'go_binary_sha256':'b'*64}
         self.records = []
         for name, value in [('ROOT', self.root), ('PUBLIC', public), ('PROGRESS', self.progress), ('PRIVATE_RECORDS', self.records)]:
             p = patch.object(probe, name, value)

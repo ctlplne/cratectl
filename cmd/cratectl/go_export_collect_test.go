@@ -211,7 +211,10 @@ func TestCollectionDirectoryLockBindingsAndFileOwnership(t *testing.T) {
 				t.Fatal(err)
 			}
 		case "public":
-			if err := os.WriteFile(target, []byte("public"), 0644); err != nil {
+			if err := os.WriteFile(target, []byte("public"), 0600); err != nil {
+				t.Fatal(err)
+			}
+			if err := os.Chmod(target, 0644); err != nil {
 				t.Fatal(err)
 			}
 		}

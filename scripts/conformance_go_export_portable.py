@@ -290,9 +290,9 @@ def main(role):
             raise ValueError('Portability requires clean matching native CLI/server artifacts')
         go = Path(shutil.which('go')).resolve()
         version = command([go, 'version']).decode().strip()
-        if not version.startswith('go version go1.27.3 linux/' + ('amd64' if role == 'producer' else 'arm64')):
-            raise ValueError('Exact native Go1.27.3 required')
-        contract['go_version'], contract['go_binary_sha256'] = '1.27.3', digest(go.read_bytes())
+        if not version.startswith('go version go1.27.4 linux/' + ('amd64' if role == 'producer' else 'arm64')):
+            raise ValueError('Exact native Go1.27.4 required')
+        contract['go_version'], contract['go_binary_sha256'] = '1.27.4', digest(go.read_bytes())
         stage('native_identity')
         if role == 'producer':
             fixture_dir = root / '.cache/go-export-portable-upload'

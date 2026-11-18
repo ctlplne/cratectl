@@ -154,7 +154,7 @@ def main(path):
     (consumer / 'go.mod').write_bytes((collection / 'main.mod').read_bytes())
     env['GOPROXY'] = receipt['goproxy']
     try:
-        checked(b'go1.27.3 ' in isolated([go, 'version'], cwd=consumer), 'Pinned stock Go1.27.3 required')
+        checked(b'go1.27.4 ' in isolated([go, 'version'], cwd=consumer), 'Pinned stock Go1.27.4 required')
         listed = isolated([go, 'list', '-mod=mod', '-m', '-json', 'all'], cwd=consumer)
         downloaded = isolated([go, 'mod', 'download', '-json', 'all'], cwd=consumer)
 
@@ -208,7 +208,7 @@ def main(path):
         probes[path.name] = hashlib.sha256(body).hexdigest()
     checked(len(probes) == count == 17, 'Requirement journey omitted an observed empty network')
     report = {'profile': 'cratectl.go.requirement-offline.native.v2', 'status': 'passed',
-              'examined_sources': 3, 'selected_roots': 2, 'go_version': '1.27.3',
+              'examined_sources': 3, 'selected_roots': 2, 'go_version': '1.27.4',
               'receipt_sha256': hashlib.sha256(receipt_raw).hexdigest(),
               'acknowledgement_signal': 'SIGPIPE',
               'acknowledgement_exit': code,

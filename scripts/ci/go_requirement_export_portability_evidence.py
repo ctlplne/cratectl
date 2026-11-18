@@ -47,8 +47,8 @@ def safe_go_requirement_export_portability_contract(value, status):
         h = value[name]
         if h is not None and (not isinstance(h, str) or not re.fullmatch('[a-f0-9]{64}', h)):
             raise ValueError('Requirement portability identity must be exact SHA256')
-    if value['go_version'] not in (None, '1.27.3'):
-        raise ValueError('Requirement portability needs pinned stock Go1.27.3')
+    if value['go_version'] not in (None, '1.27.4'):
+        raise ValueError('Requirement portability needs pinned stock Go1.27.4')
     hashes, tools = value['files_sha256'], value['network_tools_sha256']
     if (not isinstance(hashes, dict) or not set(hashes) <= FILES
             or any(not isinstance(h, str) or not re.fullmatch('[a-f0-9]{64}', h) for h in hashes.values())
@@ -59,7 +59,7 @@ def safe_go_requirement_export_portability_contract(value, status):
         raise ValueError('Requirement original-byte inventory or isolation exceeds bounds')
     if status == 'passed':
         optional = {'destination_runner_sha256', 'network_probe_sha256', 'native_journey_sha256'} if role == 'producer' else set()
-        if (completed != stages or value['go_version'] != '1.27.3' or set(hashes) != FILES
+        if (completed != stages or value['go_version'] != '1.27.4' or set(hashes) != FILES
                 or any(value[h] is None for h in HASHES - optional)
                 or hashes['signer-public.pem'] != value['public_key_sha256']):
             raise ValueError('Passed requirement portability needs every original and control')

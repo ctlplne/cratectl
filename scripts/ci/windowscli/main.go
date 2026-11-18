@@ -50,7 +50,7 @@ func digestFile(path string, maximum int64) (string, error) {
 
 func binaryIdentity(path, candidate, packagePath string) (map[string]string, error) {
 	info, err := buildinfo.ReadFile(path)
-	if err != nil || info.GoVersion != "go1.27.3" || info.Path != packagePath {
+	if err != nil || info.GoVersion != "go1.27.4" || info.Path != packagePath {
 		return nil, errors.New("qualification binary is not the pinned native candidate")
 	}
 	settings := map[string]string{}
@@ -165,7 +165,7 @@ func qualify() error {
 		return err
 	}
 	goInfo, err := buildinfo.ReadFile(goexe)
-	if err != nil || goInfo.GoVersion != "go1.27.3" || goInfo.Path != "cmd/go" {
+	if err != nil || goInfo.GoVersion != "go1.27.4" || goInfo.Path != "cmd/go" {
 		return errors.New("actual pinned Go SDK required")
 	}
 	platform, err := command([]string{goexe, "env", "GOHOSTOS", "GOHOSTARCH", "GOOS", "GOARCH"})
@@ -209,7 +209,7 @@ func qualify() error {
 		return errors.New("native qualification command inventory incomplete")
 	}
 	report := map[string]any{"schema": 1, "profile": "cratectl.windows.private-configuration.v1", "candidate": candidate,
-		"run_id": run, "runner_os": "Windows", "runner_arch": os.Getenv("RUNNER_ARCH"), "status": "passed", "go_version": "1.27.3",
+		"run_id": run, "runner_os": "Windows", "runner_arch": os.Getenv("RUNNER_ARCH"), "status": "passed", "go_version": "1.27.4",
 		"binary_sha256": hashes, "build_identity": identities, "source_sha256": sources, "tests": observations, "events_sha256": events,
 		"managed_commands": commands, "all_owned_jobs_empty": true, "management_response_standin": true,
 		"windows_server_qualified": false, "offline_collection_qualified": false, "goal_complete": false, "broad_readiness": false}

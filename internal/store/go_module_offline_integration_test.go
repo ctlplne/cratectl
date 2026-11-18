@@ -236,8 +236,8 @@ func verifyNativeGoOffline(t *testing.T, private string, files [3]string, journa
 	}
 
 	goBinary := filepath.Join(runtime.GOROOT(), "bin", "go")
-	if !strings.Contains(string(run(true, nil, goBinary, "version")), "go1.27.3 ") {
-		t.Fatal("pinned actual native Go1.27.3 required")
+	if !strings.Contains(string(run(true, nil, goBinary, "version")), "go1.27.4 ") {
+		t.Fatal("pinned actual native Go1.27.4 required")
 	}
 	env := []string{"GOENV=off", "GOWORK=off", "GOTOOLCHAIN=local", "GOTELEMETRY=off", "GOAUTH=off", "GOVCS=*:off", "GOPROXY=" + receipt.Proxy, "GOSUMDB=off", "GONOSUMDB=*", "GONOPROXY=none", "GOPRIVATE=", "GOFLAGS=", "GOCACHE=" + filepath.Join(private, "go-build"), "GOMODCACHE=" + filepath.Join(private, "go-mod"), "GOPATH=" + filepath.Join(private, "go-path")}
 	// The real SDK deliberately makes extracted cache directories read-only.

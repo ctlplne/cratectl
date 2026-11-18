@@ -40,7 +40,7 @@ the console and full platform/security qualification remain unfinished.
 
 ## Build and run the local engineering profile
 
-Use Go 1.27.3, Docker, Python 3.10+, Node/npm. This is a single Mac/Linux development
+Use Go 1.27.4, Docker, Python 3.10+, Node/npm. This is a single Mac/Linux development
 profile. The commands below create only `cratectl-dev-postgres` and its retained
 volume on loopback port 35432. Generated credentials stay in ignored `.private/`.
 There is no vendor account, entitlement check, or telemetry dependency.
