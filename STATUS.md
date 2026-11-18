@@ -708,9 +708,11 @@ with stock ORAS 1.3.6 and PostgreSQL 16.15. Each matched 34 exact source files.
 19 declarative checks on macOS ARM64 with PostgreSQL 16.16. The full hosted
 index covered exact release JAR and POM admission, two independent tenants
 at the same coordinates, restart and grant revocation. The real PostgreSQL
-index regression and the build, unit, race and lint gates passed. Native
-Linux has separate qualification jobs.
+index regression and the build, unit, race and lint gates passed. Both
+original `541ea5d` Linux jobs passed all 27 hosted checks with PostgreSQL
+16.15 and matched 20 exact source files per architecture.
 [Native Maven repository index evidence](evidence/2026-11-19/maven-0cba518-hosted-index-native.json)
+[Original Linux hosted Maven index evidence](evidence/2026-11-19/github-541ea5d-maven-hosted-index-native.json)
 
 `8bc2ea1` passed 34 combined native checks on macOS ARM64, including seven
 cached Maven index checks. A controlled origin served exact JAR and POM

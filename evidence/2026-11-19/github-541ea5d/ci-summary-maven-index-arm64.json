@@ -1,0 +1,143 @@
+{
+  "candidate": "541ea5d021955cb0e10d8a017e95b6c9b78451ee",
+  "status": "passed",
+  "checks": [
+    "clean exact source",
+    "cratectl matches the clean candidate",
+    "cratectld matches the clean candidate",
+    "real reviewed PostgreSQL 16 patch release",
+    "absent repository has an authority and tenant bound creation plan",
+    "plan, wrong approval and denied callers leave the tenant journal unchanged",
+    "concurrent approved requests produce one creation or a safe retry",
+    "retry after successful creation returns unchanged",
+    "one repository creation event despite concurrent retry",
+    "second tenant can plan an independent same-name repository",
+    "import returns the exact active hosted fields",
+    "plan exposes review drift without writing",
+    "stock npm published its exact bytes and unassessed input was denied",
+    "registry restart preserves the declared state",
+    "fresh stock npm downloads the exact approved archive after restart",
+    "stale approval leaves suspended repository retained",
+    "suspended repository cannot be imported as active",
+    "revoked administrator cannot plan",
+    "schema 19 with all 59 tenant tables forced RLS and a restricted runtime role"
+  ],
+  "binary_sha256": {
+    "cratectl": "17aacdbd1541367e231761f3d2a1ae0c8e3e1c06b7dda741d8447870c0e4b635",
+    "cratectld": "ea14b759c4166ea01abf86f71668c484e57dcabccc0ce95d8bcf006dcc4a20a3"
+  },
+  "archive_sha256": "eb88cfbb43de75bcfb7e6ec35e9cf45e90e0288fcdcf1f05d76e4b3b5f3f6b28",
+  "postgres": "postgres (PostgreSQL) 16.15 (Ubuntu 16.15-1.pgdg24.04+2)",
+  "npm": "10.9.9",
+  "maven_index": {
+    "checks": [
+      "an ungranted same-tenant reader is forbidden from the native index",
+      "stock Maven Indexer reads an empty full index while the POM awaits review",
+      "stock Maven Indexer finds only the first fully admitted release",
+      "stock Maven Indexer preserves both version and digest identities in repository order",
+      "stock Maven Indexer holds independent same-coordinate tenant inventories",
+      "the stock index and its exact JAR bytes recover after registry restart",
+      "current POM denial removes that coordinate from the stock full index",
+      "a conditional native index request honors read grant revocation"
+    ],
+    "reader": "7.1.6",
+    "reader_sha256": "7aebdcebb934f1e4f1b9583348a8a0cb4881862ac7263b40e5122b7c5ec1c3aa",
+    "java": "openjdk 21.0.13 2026-10-20 LTS",
+    "archive_sha256": "109c549b97ac871694011a3e2c7ae030210fe1a1d9ab297a2bd34ec64c0e70dc",
+    "jar_sha256": [
+      "5936f711d79b7323c1c3b3c14e10150aa4332b71b0ac95a4345d55f9bcc5363f",
+      "ad71dec48f1e41af7d3ea7d8c597d7434c3c5caa9440a106002f9a3149889d41",
+      "4c8dd9dafa2044d379cd6f0fbfcc66996f16f806ffd9dbd698f4e0b481cec720"
+    ]
+  },
+  "goal_complete": false,
+  "broad_readiness": false,
+  "schema": 1,
+  "profile": "cratectl-native-maven-hosted-index-v1",
+  "runner_os": "Linux",
+  "runner_arch": "ARM64",
+  "run_id": "44418151604",
+  "source_dirty": false,
+  "source_sha256": [
+    {
+      "path": ".github/workflows/maven-index.yml",
+      "sha256": "7496b38aa321791f55ac5636a9551857dd9b2fee88434c854f6cdcf3b814842d"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "12f2a8b5cfbc2f322822b82e4446f51ff017374acab1f3a8921db8cc8e833bf6"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "1d4aecc2732cd54db4534e0afc862ffe14d5c24890f106008682fd9bbc8e5ba9"
+    },
+    {
+      "path": "go.sum",
+      "sha256": "5e364e4e1eff09d8d39617427d7775012304b09a7be26778dc2b46fdabae3f15"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "590f333422cdd86b18b29da82ee3b9ba5c9536b94f1ccdc45e0ff4a0e631d8e6"
+    },
+    {
+      "path": "scripts/maven_index_fixture.py",
+      "sha256": "535ad892770f42ad61d4b6b56ec47cd6b936242a9cf2f4375e0e5ab9399e904a"
+    },
+    {
+      "path": "scripts/fixtures/maven-index/MavenIndexStock.java",
+      "sha256": "c80bab7d8e61fd3d5206952e4356e2b44501c373d1f051a81ea9c7023805cc7d"
+    },
+    {
+      "path": "scripts/ci/maven_index_evidence.py",
+      "sha256": "4ca42c939c7b31e5044d4ae8ceadfea5d168c73cf914398d40540978bb7a6a21"
+    },
+    {
+      "path": "scripts/ci/terraform_provider_evidence.py",
+      "sha256": "130de2ec92ed288a6fa6c744c67003a76cafa2dfb9835e48f653abccda1a50ca"
+    },
+    {
+      "path": "scripts/qualification_contract.py",
+      "sha256": "c40a9d0209a9dc1fb9838f49cdb316ad5a762d45c0359b97fce156746564e5ba"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "1e1ac5a8ee3659d09a74e127ca3e2ab5e6687bc0cc896d5d9b671e0f664f7498"
+    },
+    {
+      "path": "internal/server/maven_index.go",
+      "sha256": "1bc3742ecefb9ae025bcac563df36f013031a3f23ba97d7d72c201927499745b"
+    },
+    {
+      "path": "internal/server/maven_metadata.go",
+      "sha256": "3e1003d1b4cdff9630ac93c357eeb1c2ae6cb8bd3b797da033e34134f7f21fc7"
+    },
+    {
+      "path": "internal/store/maven_index.go",
+      "sha256": "f6a9a015331ca04f3424573aa79f5ed7555291da9a6f41f72169545f624e5057"
+    },
+    {
+      "path": "internal/store/decision.go",
+      "sha256": "3f9c785f2da56ee4678ef9a49418ab4eb794eb9ba2556dd32d88229b18427db4"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "54412aeffd3ed0708a7ac7fccb69184f6413aec87522c34abc1d0ab9fa9f9529"
+    },
+    {
+      "path": "internal/store/lifecycle.go",
+      "sha256": "1ee74e65136c7d5a9fde27378afb1c99e0fd76d376e2e67bafd1fe95ea6892a6"
+    },
+    {
+      "path": "internal/store/store.go",
+      "sha256": "371c857dcfe658ca4a73fef52077f85b5636c44e636d534f3e3a576c16aa074e"
+    },
+    {
+      "path": "internal/store/migrations.go",
+      "sha256": "59f3478fbc77b7c969e43719f7eea92844a5bb1b2cd5b0d63ec2f356e368594b"
+    }
+  ]
+}
