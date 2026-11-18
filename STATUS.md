@@ -578,6 +578,19 @@ fetched both identical archives through the authenticated cratectl sparse
 replacement and left the lockfile byte-for-byte unchanged.
 [Canonical lockfile replacement evidence](evidence/2026-11-19/cargo-3917c48-source-replacement-native.json)
 
+GitHub selected the separate public Cargo lane for both Linux architectures
+at `9b70578`. The initial run inventory binds that lane and eight other
+first-attempt workflows to the exact commit.
+[Original workflow inventory](evidence/2026-11-19/github-9b70578-started.json)
+
+The exact `1fcfc66` candidate adds hosted name search through stock npm 11.16.0.
+Nine checks passed on macOS ARM64 with PostgreSQL 16.16. They cover current
+review decisions and tags, two tenants at the same coordinate, grant
+revocation, retirement and exact-byte recovery after restart. The separate
+HTTP integration test covered page offsets and the metadata budget. Cached
+proxy, group, alternate client and further platform searches remain open.
+[Hosted npm search evidence](evidence/2026-11-19/npm-1fcfc66-hosted-search-native.json)
+
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities
 published and pulled two exact chart archives, including a build-metadata

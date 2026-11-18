@@ -1,0 +1,97 @@
+{
+  "candidate": "1fcfc6675276b3d7e2d01ffbd2cb0d67b60fc401",
+  "observed_at": "2026-11-19T02:41:29.823549+05:30",
+  "status": "passed",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "npm": "11.16.0",
+  "declarative_checks": [
+    "clean exact source",
+    "cratectl matches the clean candidate",
+    "cratectld matches the clean candidate",
+    "real reviewed PostgreSQL 16 patch release",
+    "absent repository has an authority and tenant bound creation plan",
+    "plan, wrong approval and denied callers leave the tenant journal unchanged",
+    "concurrent approved requests produce one creation or a safe retry",
+    "retry after successful creation returns unchanged",
+    "one repository creation event despite concurrent retry",
+    "second tenant can plan an independent same-name repository",
+    "import returns the exact active hosted fields",
+    "plan exposes review drift without writing",
+    "stock npm published its exact bytes and unassessed input was denied",
+    "registry restart preserves the declared state",
+    "fresh stock npm downloads the exact approved archive after restart",
+    "stale approval leaves suspended repository retained",
+    "suspended repository cannot be imported as active",
+    "revoked administrator cannot plan",
+    "schema 19 with all 59 tenant tables forced RLS and a restricted runtime role"
+  ],
+  "npm_search": {
+    "checks": [
+      "unassessed versions are absent from stock npm search",
+      "stock npm returns approved scoped and unscoped names while hiding the pending latest version",
+      "the npm search limit returns only the highest ranked package",
+      "the second tenant sees its own description at the same coordinate",
+      "approving the latest version replaces the search projection",
+      "stock npm searches the current latest tag even when it points at an earlier allowed version",
+      "retirement removes the tagged version from stock search",
+      "stock npm sees the restored tag and exact original archive after restart",
+      "an existing stock npm client loses search access after grant revocation"
+    ],
+    "archive_sha256": [
+      "236c504ef5d219e34137c3cd8cf8f6b0c32aa86c6a1d5eb4c1a0acf9f47ef56a",
+      "1d2fe2fa2d44e2dafdb85e06f68fc39df350ca05289a361802c0a2ce79408415",
+      "13663d1d38f729f95d14ec34ee60bc4741326eb7d89a2d9cc2691441f6073b7b",
+      "6fd92ebe1233b51f32277d92c4a277b3965dc16cdb3ad2376dfd2ff76db9bd2e"
+    ]
+  },
+  "binary_sha256": {
+    "cratectl": "f3132981a1667ee4bd058c8dafd0271f4110f3585abd58d79bf5bba3a3df57ec",
+    "cratectld": "0601ebd52cab0768f7f267a9c7411828c79f3657018ea22419f77505e989fcb8"
+  },
+  "private_report_sha256": "af14693076e9db9bd172af13ca3d2017779dce9f2a6ac1831548887c375993a4",
+  "integration": {
+    "function": "TestNPMHostedSearchUsesCurrentVersionsPolicyGrantsAndTenants",
+    "log_sha256": "61011f58dfd840ef7d94c75b33b5cba0fd99861f6818fc2a2f1859655a418d5c",
+    "status": "passed"
+  },
+  "source_sha256": [
+    {
+      "path": "internal/store/npm_search.go",
+      "sha256": "02d993ad30d61cfce9b3cb780b0be485fd29bff4e5ec552af3ad2ecf85196562"
+    },
+    {
+      "path": "internal/server/npm_search.go",
+      "sha256": "a4f148e2c7d15b8ced8f3f993495e7924ae3888a04f15c8d2f2c18db53e2720b"
+    },
+    {
+      "path": "internal/server/npm.go",
+      "sha256": "54716594f158f44c96fdb324b28907155e82a16644fea04f6ed8600570e9fa43"
+    },
+    {
+      "path": "internal/server/npm_search_test.go",
+      "sha256": "f091fdb9235757bc3d09ae001986b0cae6877cfb48f6334e3179a4863a7b8b3b"
+    },
+    {
+      "path": "internal/server/npm_search_integration_test.go",
+      "sha256": "6dc4dbb99851c290098761f593e428606a787f7f2e4a8b1a2baeebf2e934a0d9"
+    },
+    {
+      "path": "scripts/npm_search_fixture.py",
+      "sha256": "0a53b6ec586b5d6b933b576ba0fde192ad81de4c9d9696f06b04abde8f767d49"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "370bd819f487a3afc519678c459063998009e192b2becd3216180a685415420b"
+    }
+  ],
+  "references": [
+    "https://docs.npmjs.com/cli/v11/commands/npm-search"
+  ],
+  "limits": [
+    "Hosted npm and package-name queries with native PostgreSQL on macOS ARM64.",
+    "All published inputs were inert npm archives. Source coverage for proxy and group search, alternate clients and native Linux remains open."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

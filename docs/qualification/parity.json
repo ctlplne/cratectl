@@ -1901,10 +1901,10 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "Bounded hosted npm name search with current digest decisions, retained lifecycle rules and repository grants. It selects the visible latest tag or highest visible semantic version.",
       "surfaces": {
-        "api": null,
-        "cli": null,
+        "api": "/npm/{repository}/-/v1/search",
+        "cli": "npm search --json",
         "ui": null
       },
       "core": true,
@@ -1919,7 +1919,9 @@
         "pnpm",
         "yarn"
       ],
-      "client_versions": {},
+      "client_versions": {
+        "npm": "11.16.0"
+      },
       "test_data": "Two nontrivial versions plus a dependency package; same coordinates in two tenants.",
       "permission_cases": [
         "reader denial on publish",
@@ -1935,11 +1937,13 @@
         "upstream outage",
         "delete/restore"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "No implementation or native-client proof yet.",
-      "next_action": "Implement npm search and execute the complete stock-client journey."
+      "state": "implementing",
+      "candidate": "1fcfc6675276b3d7e2d01ffbd2cb0d67b60fc401",
+      "evidence": [
+        "evidence/2026-11-19/npm-1fcfc66-hosted-search-native.json"
+      ],
+      "limits": "Stock npm 11.16.0 on macOS ARM64 with native PostgreSQL 16.16 passed nine hosted name-search checks, with current policy, pagination, tags, exact-byte restart recovery, withdrawal, and same-coordinate tenant isolation.",
+      "next_action": "Qualify native Linux, cached proxy and group search, alternate clients, broader query fields and larger workloads."
     },
     {
       "id": "FMT.NPM.AUTHORIZATION",
