@@ -726,8 +726,9 @@
       "id": "J.NPM.SEARCH",
       "capability": "FMT.NPM.SEARCH",
       "state": "implementing",
-      "candidate": "1fcfc6675276b3d7e2d01ffbd2cb0d67b60fc401",
+      "candidate": "e2eb4328b9d2bfaf223fe4fc9f39d2e4ee836f26",
       "evidence": [
+        "evidence/2026-11-19/npm-e2eb432-cached-search-native.json",
         "evidence/2026-11-19/npm-1fcfc66-hosted-search-native.json"
       ],
       "required": [
@@ -736,8 +737,8 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Stock npm 11.16.0 on macOS ARM64 with native PostgreSQL 16.16 passed nine hosted name-search checks, with current policy, pagination, tags, exact-byte restart recovery, withdrawal, and same-coordinate tenant isolation.",
-      "next_action": "Qualify native Linux, cached proxy and group search, alternate clients, broader query fields and larger workloads."
+      "limits": "Stock npm 11.16.0 with native PostgreSQL 16.16 on macOS ARM64 passed nine hosted and nine cached proxy and mixed-group name-search checks. It covers current grants, review and tags, tenant isolation, exact bytes after restart, and preferred-source fencing or authoritative absence.",
+      "next_action": "Run the original native Linux lanes and qualify uncached discovery, alternate clients, additional query fields, and larger workloads."
     },
     {
       "id": "J.NPM.AUTHORIZATION",

@@ -1,0 +1,111 @@
+{
+  "candidate": "e2eb4328b9d2bfaf223fe4fc9f39d2e4ee836f26",
+  "status": "passed",
+  "observed_at": "2026-11-19T03:05:56.080507+05:30",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "npm": "11.16.0",
+  "declarative_checks": 19,
+  "hosted_npm_search": {
+    "checks": [
+      "unassessed versions are absent from stock npm search",
+      "stock npm returns approved scoped and unscoped names while hiding the pending latest version",
+      "the npm search limit returns only the highest ranked package",
+      "the second tenant sees its own description at the same coordinate",
+      "approving the latest version replaces the search projection",
+      "stock npm searches the current latest tag even when it points at an earlier allowed version",
+      "retirement removes the tagged version from stock search",
+      "stock npm sees the restored tag and exact original archive after restart",
+      "an existing stock npm client loses search access after grant revocation"
+    ],
+    "archive_sha256": [
+      "236c504ef5d219e34137c3cd8cf8f6b0c32aa86c6a1d5eb4c1a0acf9f47ef56a",
+      "1d2fe2fa2d44e2dafdb85e06f68fc39df350ca05289a361802c0a2ce79408415",
+      "13663d1d38f729f95d14ec34ee60bc4741326eb7d89a2d9cc2691441f6073b7b",
+      "6fd92ebe1233b51f32277d92c4a277b3965dc16cdb3ad2376dfd2ff76db9bd2e"
+    ]
+  },
+  "cached_npm_search": {
+    "checks": [
+      "stock npm cached search makes no network fill and fences an unknown preferred source",
+      "stock search omits a catalog-only proxy version and its lower duplicate",
+      "stock proxy search uses the exact fetched archive description",
+      "mixed group review fences the lower duplicate while the preferred bytes await approval",
+      "stock group search selects the approved preferred proxy bytes",
+      "current proxy absence admits the hosted package in stock group search",
+      "stock search replays the same source after restart without upstream requests",
+      "invalidating the preferred catalog hides the cached result and its lower duplicate",
+      "revoking a selected member grant hides the cached and lower group results"
+    ],
+    "preferred_archive_sha256": "39753c4b9b0c35f9866d7076605ddc8ce4b8d29ebf78eb5992f2524f4cff9185"
+  },
+  "binary_sha256": {
+    "cratectl": "57f97b910b99a90ad07b556e4ac9349f45fe89a9615835edf84d32b3e76901c5",
+    "cratectld": "9c5d1dfc55263f8037dfea9f7a454e5059d636d0f2b0de8c356038ba5f4a462e"
+  },
+  "private_report_sha256": "b4122dca879f06dca4f3e4f09c4da5abb51787b43f0438383b7d3ad62bdbd8ed",
+  "integration": {
+    "functions": [
+      "TestNPMSourcePublicationIsFencedAndAtomic",
+      "TestNPMCachedSearchPreservesReviewAndCurrentSourceOrder",
+      "TestNPMHostedSearchUsesCurrentVersionsPolicyGrantsAndTenants"
+    ],
+    "log_sha256": "21ebe7d4b5393254667b0c84852204c35f52817ba710f8ba9a9e2eebf28f8e42",
+    "status": "passed"
+  },
+  "first_development_fixture": {
+    "phase": "repository setup",
+    "reason": "The disposable cluster was missing the standard test-a tenant.",
+    "log_sha256": "68915477923808e1dde84b78ff6ec7e1d4534ac60aa7cbd8acbe7a34015ef872"
+  },
+  "source_gates": [
+    "make build",
+    "make test",
+    "make race",
+    "make lint"
+  ],
+  "source_sha256": [
+    {
+      "path": "internal/store/npm_proxy.go",
+      "sha256": "9808b5c6c374d2259d3bb7f85e5f91ff9a4c694ee661a49a839c4235b403ea35"
+    },
+    {
+      "path": "internal/store/npm_search.go",
+      "sha256": "dbfbe07395841802712bdab73908f53e3f1cace8ebd1ba43bca2ee09624b0f23"
+    },
+    {
+      "path": "internal/server/npm_remote.go",
+      "sha256": "27417c92eb06e042fea805ef097437a4347cc8bb24f9e68e1b48f766af5aa855"
+    },
+    {
+      "path": "internal/server/npm.go",
+      "sha256": "b1a8b70f1020aa7dd196ef9a975d6f18e7bfe6f63992dfcbac9c5e1b752b30c0"
+    },
+    {
+      "path": "internal/server/npm_search.go",
+      "sha256": "4d6489963246f53f3db2d553b1171cae1298dd711b39722d3bb47d203895fb9e"
+    },
+    {
+      "path": "internal/store/npm_proxy_integration_test.go",
+      "sha256": "1be63ae959aaa548880de5e6182efa51644a6d4463db848552f74f6c2fa6816c"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "2186f7839f366a74c41dbd78583606c7c5d0540e1796a22156917e2b02175606"
+    },
+    {
+      "path": "scripts/npm_search_fixture.py",
+      "sha256": "246243c58a1221e619745ec83edcfd63cfa947db992721af722a34647c90f9fc"
+    },
+    {
+      "path": "scripts/cargo_proxy_fixture.py",
+      "sha256": "c780300b59344662d7381dde29cee5093adf5ae4ea9b82ccd0071f38994c838a"
+    }
+  ],
+  "limits": [
+    "Hosted, cached proxy and cached mixed-group name search with stock npm against native PostgreSQL on macOS ARM64.",
+    "The cached group profile uses owned HTTP IPv6 origin bytes through trusted downstream TLS. Uncached discovery, alternate clients, wider graphs and remaining environments require additional qualification."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

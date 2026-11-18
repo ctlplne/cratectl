@@ -481,6 +481,8 @@ def evaluate(args):
         record_ci(report, args.ci_architecture)
     if args.cargo_ci_architecture:
         record_cargo_ci(report, args.cargo_ci_architecture)
+    if args.npm_search_ci_architecture:
+        record_npm_search_ci(report, args.npm_search_ci_architecture)
 
 
 def hosted_runner(report, architecture):
@@ -530,6 +532,21 @@ def record_cargo_ci(report, architecture):
         stream.write('\n')
 
 
+def record_npm_search_ci(report, architecture):
+    from ci.npm_search_evidence import SOURCE_PATHS as npm_sources, validate as validate_npm
+
+    runner = hosted_runner(report, architecture)
+    projection = {key: report[key] for key in ('candidate', 'status', 'checks', 'binary_sha256', 'archive_sha256',
+                                                'postgres', 'npm', 'npm_search', 'npm_cached_search', 'goal_complete', 'broad_readiness')}
+    projection.update(schema=1, profile='cratectl-native-npm-search-v1', runner_os='Linux', runner_arch=runner,
+                      run_id=os.environ.get('GITHUB_RUN_ID'), source_dirty=False,
+                      source_sha256={name: sha(ROOT / name) for name in npm_sources})
+    validate_npm(projection)
+    with (ROOT / '.cache/ci-npm-search.json').open('x') as stream:
+        json.dump(projection, stream, indent=2)
+        stream.write('\n')
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--binary-directory', type=Path)
@@ -543,6 +560,7 @@ if __name__ == '__main__':
     parser.add_argument('--promtool', type=Path)
     parser.add_argument('--npm-search', action='store_true',
                         help='also verify npm hosted and cached search using stock clients')
+    parser.add_argument('--npm-search-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--cargo-toolchain', type=Path)
     parser.add_argument('--cargo-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--cargo-public-origin', action='store_true',
@@ -564,7 +582,10 @@ if __name__ == '__main__':
     if options.cargo_public_origin and not options.cargo_toolchain:
         parser.error('the public origin check requires the stock Cargo profile')
     if options.npm_search and (options.ci_architecture or options.cargo_ci_architecture):
-        parser.error('npm search uses the local stock npm evidence profile')
+        parser.error('npm search uses its own stock npm evidence profile')
+    if options.npm_search_ci_architecture and (not options.npm_search or options.cargo_toolchain
+                                                or options.promtool or options.mcp_binary or options.provider_binary):
+        parser.error('hosted npm search evidence requires the isolated stock npm search profile')
     if options.legacy_cargo_daemon and (not options.cargo_toolchain or options.cargo_ci_architecture):
         parser.error('historical Cargo adoption requires the local stock Cargo profile and reviewed schema 18 daemon')
     evaluate(options)

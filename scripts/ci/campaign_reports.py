@@ -23,6 +23,7 @@ from offline_media_evidence import CHECKS as OFFLINE_CHECKS, PHASES as OFFLINE_P
 from terraform_provider_evidence import BASE_CHECKS as IAC_BASE, CLIENT_CHECKS as IAC_CHECKS, CLIENTS as IAC_CLIENTS, validate as validate_provider
 from cargo_evidence import CHECKS as CARGO_CHECKS, validate as validate_cargo
 from cargo_public_evidence import CHECKS as CARGO_PUBLIC_CHECKS, validate as validate_cargo_public
+from npm_search_evidence import HOSTED_CHECKS as NPM_HOSTED, CACHED_CHECKS as NPM_CACHED, validate as validate_npm_search
 
 CONTRACTS = {'maven_cache_contract': safe_maven_cache_contract, 'gradle_contract': safe_gradle_contract,
              'ivy_contract': safe_ivy_contract, 'sbt_contract': safe_sbt_contract,
@@ -109,6 +110,7 @@ def validate_custom(report, candidate, run_id, spec, source):
         'terraform-provider': (validate_provider, len(IAC_BASE) + len(IAC_CLIENTS) * len(IAC_CHECKS)),
         'cargo': (validate_cargo, len(IAC_BASE) - 1 + len(CARGO_CHECKS)),
         'cargo-public': (validate_cargo_public, len(IAC_BASE) - 1 + len(CARGO_CHECKS) + len(CARGO_PUBLIC_CHECKS)),
+        'npm-search': (validate_npm_search, len(IAC_BASE) - 1 + len(NPM_HOSTED) + len(NPM_CACHED)),
     }
     if spec['kind'] in source_contracts:
         kind = spec['kind'].replace('-', '_')

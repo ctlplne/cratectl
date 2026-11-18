@@ -12,6 +12,7 @@ from campaign_reports import validate_custom, validate_summary
 from campaign_transport import EvidenceError
 from compose_evidence import CHECKS as COMPOSE_CHECKS, SOURCE_PATHS as COMPOSE_FILES
 from linux_install_evidence import CHECKS as INSTALL_CHECKS, IMAGE as INSTALL_IMAGE, SOURCE_PATHS as INSTALL_FILES
+from npm_search_evidence import BASE_CHECKS as NPM_BASE, HOSTED_CHECKS as NPM_HOSTED, CACHED_CHECKS as NPM_CACHED, SOURCE_PATHS as NPM_FILES
 from offline_media_evidence import CHECKS as OFFLINE_CHECKS, PHASES as OFFLINE_PHASES, SOURCE_PATHS as OFFLINE_FILES
 from test_go_common_export_portability_evidence import complete as complete_common_contract
 from test_go_requirement_export_portability_evidence import complete as complete_requirement_contract
@@ -21,6 +22,26 @@ SPECS = {spec['artifact']: spec for family in WORKFLOWS.values() for spec in job
 
 
 class CampaignReports(unittest.TestCase):
+    def test_npm_search_report_binds_both_scopes_and_exact_sources(self):
+        source = lambda path: path.encode()
+        candidate = 'a' * 40
+        report = {'schema': 1, 'profile': 'cratectl-native-npm-search-v1', 'candidate': candidate,
+                  'runner_os': 'Linux', 'runner_arch': 'X64', 'run_id': '12', 'status': 'passed', 'source_dirty': False,
+                  'source_sha256': {path: hashlib.sha256(source(path)).hexdigest() for path in NPM_FILES},
+                  'binary_sha256': {'cratectl': 'a' * 64, 'cratectld': 'b' * 64}, 'archive_sha256': 'c' * 64,
+                  'postgres': 'postgres (PostgreSQL) 16.15', 'npm': '10.9.9', 'checks': list(NPM_BASE),
+                  'npm_search': {'checks': list(NPM_HOSTED), 'archive_sha256': [letter * 64 for letter in 'def0']},
+                  'npm_cached_search': {'checks': list(NPM_CACHED), 'preferred_archive_sha256': '1' * 64},
+                  'goal_complete': False, 'broad_readiness': False}
+        spec = SPECS['ci-summary-npm-search-amd64']
+        self.assertEqual(validate_custom(report, candidate, 12, spec, source), {'checks': 37, 'records': 1})
+        for changed in ({'npm_search': {'checks': [], 'archive_sha256': report['npm_search']['archive_sha256']}},
+                        {'npm_cached_search': {'checks': list(NPM_CACHED), 'preferred_archive_sha256': 'd' * 64}},
+                        {'npm_cached_search': {**report['npm_cached_search'], 'private_output': 'owned stand-in'}},
+                        {'runner_arch': 'ARM64'}, {'source_sha256': dict.fromkeys(NPM_FILES, 'd' * 64)}):
+            with self.subTest(change=list(changed)), self.assertRaises(EvidenceError):
+                validate_custom({**report, **changed}, candidate, 12, spec, source)
+
     def test_oci_check_inventory_tracks_the_selected_source_fixture(self):
         class Source:
             path = 'scripts/conformance_oci_clients.py'

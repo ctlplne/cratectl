@@ -606,9 +606,16 @@ The exact `1fcfc66` candidate adds hosted name search through stock npm 11.16.0.
 Nine checks passed on macOS ARM64 with PostgreSQL 16.16. They cover current
 review decisions and tags, two tenants at the same coordinate, grant
 revocation, retirement and exact-byte recovery after restart. The separate
-HTTP integration test covered page offsets and the metadata budget. Cached
-proxy, group, alternate client and further platform searches remain open.
+HTTP integration test covered page offsets and the metadata budget.
 [Hosted npm search evidence](evidence/2026-11-19/npm-1fcfc66-hosted-search-native.json)
+
+`e2eb432` passed another nine stock npm checks for cached proxy and mixed
+group search on macOS ARM64 with PostgreSQL 16.16. The fixture verified
+archive-derived descriptions, preferred-source fencing, current proxy
+absence, grant changes and restart without an upstream search request.
+Three real PostgreSQL integration tests and the build, unit, race and lint
+gates passed. The dedicated native Linux workflow is ready for its first run.
+[Cached npm search evidence](evidence/2026-11-19/npm-e2eb432-cached-search-native.json)
 
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities

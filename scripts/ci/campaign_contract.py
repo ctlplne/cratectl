@@ -9,6 +9,7 @@ WORKFLOWS = {
     'browser-repair.yml': 'browser', 'go-checksum-client.yml': 'strict', 'windows-cli.yml': 'windows',
     'compose-evaluation.yml': 'compose', 'linux-install.yml': 'linux-install', 'offline-media.yml': 'offline-media',
     'terraform-provider.yml': 'terraform-provider', 'cargo.yml': 'cargo', 'cargo-public.yml': 'cargo-public',
+    'npm-search.yml': 'npm-search',
 }
 PLATFORMS = {'amd64': ('ubuntu-24.04', 'Linux', 'X64'),
              'arm64': ('ubuntu-24.04-arm', 'Linux', 'ARM64'),
@@ -20,8 +21,9 @@ OFFLINE_MEDIA_CONTRACT = {'.github/workflows/offline-media.yml', 'scripts/ci/off
 TERRAFORM_PROVIDER_CONTRACT = {'.github/workflows/terraform-provider.yml', 'scripts/ci/terraform_provider_evidence.py'}
 CARGO_CONTRACT = {'.github/workflows/cargo.yml', 'scripts/ci/cargo_evidence.py', 'scripts/ci/bootstrap_cargo.py'}
 CARGO_PUBLIC_CONTRACT = {'.github/workflows/cargo-public.yml', 'scripts/ci/cargo_public_evidence.py'}
+NPM_SEARCH_CONTRACT = {'.github/workflows/npm-search.yml', 'scripts/ci/npm_search_evidence.py'}
 OPTIONAL_CONTRACTS = (LINUX_INSTALL_CONTRACT, OFFLINE_MEDIA_CONTRACT, TERRAFORM_PROVIDER_CONTRACT,
-                      CARGO_CONTRACT, CARGO_PUBLIC_CONTRACT)
+                      CARGO_CONTRACT, CARGO_PUBLIC_CONTRACT, NPM_SEARCH_CONTRACT)
 OPTIONAL_FILES = set.union(*OPTIONAL_CONTRACTS)
 COMPATIBLE_FILES = ['.github/workflows/' + name for name in WORKFLOWS
                     if '.github/workflows/' + name not in OPTIONAL_FILES
@@ -110,6 +112,10 @@ def jobs(family, schema=17, requirement_portability=False):
                 ['Prepare the digest-pinned stock Cargo SDK', 'Build the clean cratectl candidate',
                  'Replay the actual public Cargo graph and canonical lockfile'],
                 'ci-summary-cargo-public-' + arch, 'cargo-public')
+        elif family == 'npm-search':
+            add('Stock npm search and real PostgreSQL (' + arch + ')', arch,
+                ['Build the clean cratectl candidate', 'Replay hosted and cached search with stock npm'],
+                'ci-summary-npm-search-' + arch, 'npm-search')
     if family == 'portable':
         add('Real PostgreSQL signed export source (amd64)', 'amd64',
             ['Prepare actual signed source fixture and independent trust-channel digests', 'Transfer reviewed synthetic fixture only',
