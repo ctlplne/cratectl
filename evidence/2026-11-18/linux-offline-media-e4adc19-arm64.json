@@ -1,0 +1,330 @@
+{
+  "schema": 1,
+  "candidate": "e4adc190caa621fd46a35312242fdc029f787f73",
+  "observed_at": "2026-11-18T15:39:59.218068+00:00",
+  "status": "passed",
+  "platform": "Linux ARM64 Docker engine on macOS",
+  "source_dirty": false,
+  "original_safe_report": {
+    "path": ".private/cratectl-imported-33b47b3ea8/safe-report.json",
+    "bytes": 5275,
+    "sha256": "522cf2f16bb8fe67d6b7b257a1321b8473b2c7477af7f623498cc6dabd52ecaa"
+  },
+  "named_runtime_checks": [
+    [
+      "only-loopback-in-imported-image-namespace",
+      "native-linux-arch-nonroot-client",
+      "verified-native-cli-archive",
+      "imported-registry-trusted-tls",
+      "registry-empty-after-imported-bootstrap",
+      "private-stock-npm-input",
+      "stock-npm-published-to-imported-image",
+      "unassessed-package-refused",
+      "exact-approved-package-downloaded",
+      "imported-worker-completed-durable-intents"
+    ],
+    [
+      "only-loopback-in-imported-image-namespace",
+      "native-linux-arch-nonroot-client",
+      "verified-native-cli-archive",
+      "imported-registry-trusted-tls",
+      "private-stock-npm-input",
+      "registry-restart-retains-approved-reference",
+      "fresh-cache-installs-identical-bytes-after-restart"
+    ]
+  ],
+  "media_and_deployment_controls": [
+    "verified-signed-media",
+    "wrong-trust-refused",
+    "changed-image-refused",
+    "both-tags-absent-before-load",
+    "both-loaded-image-ids-exact",
+    "blank-imported-database",
+    "imported-bootstrap",
+    "scoped-imported-runtime",
+    "deployed-image-ids-exact",
+    "no-published-ports"
+  ],
+  "artifact_digest": "23a9755ef0cbc6433cf0ed504222d1be8341a022a5d12efe4d97fb5c06357abd",
+  "database_schema": 18,
+  "forced_rls_tenant_tables": 57,
+  "media_members": {
+    "compose.yaml": {
+      "bytes": 3343,
+      "sha256": "770ddc19390a91466185db231de12c24cf99b15f602c137f7875cc7af2325124"
+    },
+    "console-third-party-notices.txt": {
+      "bytes": 3493,
+      "sha256": "fa81bac0f3ca351d2b864d51f9374d43d0daf3182f6390a8d23dccd83d3c2eb3"
+    },
+    "cratectl-0.1.0.tgz": {
+      "bytes": 2710,
+      "sha256": "8a7b785f5573b79b7587814d273f780460ed917fdcf81cc4632fc50486dc5e80"
+    },
+    "cratectl-linux-arm64.cdx.json": {
+      "bytes": 10246,
+      "sha256": "44d0e998bdd6185d1017ed6e4c864d48ab57409bc59c38fbc467a21f65456f5f"
+    },
+    "cratectl-linux-arm64.spdx.json": {
+      "bytes": 17642,
+      "sha256": "16fae7e84e04ec1476d2b412098181ac6dce6c74f490ff506d7660b29b67d2ed"
+    },
+    "cratectl-linux-arm64.tar.gz": {
+      "bytes": 16932537,
+      "sha256": "b382d54f35243d670277de3ea6b9ff35d27f69e6276c021c5815160382565761"
+    },
+    "helm.md": {
+      "bytes": 3741,
+      "sha256": "d458bfd45d7d6ab32920efb0292b34a75dde618c0dd4b41708cbd28b8ffd28f2"
+    },
+    "init-database.sql": {
+      "bytes": 546,
+      "sha256": "961493f009c9722cc3b048a7c7cf1e22a5f31d31cd352853fbcb034a55db3ba1"
+    },
+    "install_linux_candidate.py": {
+      "bytes": 2776,
+      "sha256": "e842079260344fe1716a6554a41b15bde1e9d5baa2d1f3fd200d022d6dc92d82"
+    },
+    "licensing.md": {
+      "bytes": 2105,
+      "sha256": "122d50592f15b57bfb10a359f84182cd2a1d096e6a439e25a65d9e4e022c9511"
+    },
+    "linux-candidate.md": {
+      "bytes": 4478,
+      "sha256": "1398ada106b522ac413324b10c63a3519df1e002b32fbfebf5ddfdfa7ed327bb"
+    },
+    "native-install.md": {
+      "bytes": 8129,
+      "sha256": "a0e8ae5f61fc2ba6c919aea5fb13f99563898a36bba6d0f8d6d56d9dcbc83b1e"
+    },
+    "offline-media.md": {
+      "bytes": 2898,
+      "sha256": "c2271f8d107e286854fa826fad1d543ed95fc157e344d1a978cf320632b5f187"
+    },
+    "package_linux.py": {
+      "bytes": 6872,
+      "sha256": "eec3c6b3aa3e8b363eff31904a05e0167b034fe5e521b008b905b235158ad40f"
+    },
+    "postgres-image.tar": {
+      "bytes": 114558464,
+      "sha256": "e7ea07eb048131a997141f2ab9ba8ef4fe206718b9d6606f2179e6cd779f0811"
+    },
+    "registry-image.tar": {
+      "bytes": 17361920,
+      "sha256": "ab7c274b6ca72ffa468bfb9a6730684f22d743e86f0398a3874cbcffaffe83eb"
+    },
+    "verify_linux_candidate.py": {
+      "bytes": 7291,
+      "sha256": "546e7f27f9a0b516030ec2953ff2dc952f5d3972510d29c9b1f2794cf45ab29b"
+    }
+  },
+  "image_bindings": {
+    "postgres": {
+      "id": "sha256:9f5be6795d4e9dfc0dca4c8a46eb858a9ddef631fc6b57953960f578d3fb1f9b",
+      "source": "docker.io/library/postgres:16.15-alpine@sha256:aa6cb33cf4c19c765cefcf48d96176258800870a9a1e930ad126200f9d825139",
+      "tag": "cratectl-offline-postgres:e4adc190caa621fd46a35312242fdc029f787f73-arm64"
+    },
+    "registry": {
+      "id": "sha256:91aaccf9003f5b1f847c9c1fc71d3aea85a70f6e44cbc574bd1063ef2289992e",
+      "tag": "cratectl-offline-registry:e4adc190caa621fd46a35312242fdc029f787f73-arm64"
+    }
+  },
+  "independent_image_archive_binary_digests": {
+    "cratectl": "4e06b1bbc5fbb721293a16ead7981ddec72daf921b39b2dd6aab107c6e47cc2f",
+    "cratectld": "87d3bf3d85aa052e129edc0201e26a964ef56c998f4c482a0615f0ad1ac7c684"
+  },
+  "original_signature_parts": [
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/operator-public.pem",
+      "bytes": 113,
+      "sha256": "b6b1e54796ed1eddc986b57642357c71712916d31b0814d0fecaf403ad64e476"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/release-manifest.json",
+      "bytes": 3130,
+      "sha256": "142f9e311c539c9273e07229291c2a2df705ea081bd84cf04822551e5a6e00f6"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/release-manifest.sig",
+      "bytes": 64,
+      "sha256": "53162bfd3fa3e775d2533dc0d3897b7379e8aaec3f53fa73a63643a1df60f3c7"
+    }
+  ],
+  "private_logs": [
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/confirm-absent-tag-postgres.log",
+      "bytes": 119,
+      "sha256": "6f994a3d7e49bed4cbf3f89aa5eb1568741291a8e50f9d48cbf3dbe47a501c3f"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/confirm-absent-tag-registry.log",
+      "bytes": 119,
+      "sha256": "b3ec796e78604d84a605675d270e0753ba27d3d30ebcc610a90d454c9f5e253b"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/container-scope-cratectl-imported-33b47b3ea8-pg.log",
+      "bytes": 80,
+      "sha256": "c1ec29cf1e34c69f1fdfee1e8f7d7f66cdc3f1c49c6b9a969b3a85685888f922"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/container-scope-cratectl-imported-33b47b3ea8-registry.log",
+      "bytes": 150,
+      "sha256": "a0d734e80831933f14e5c9bf16cc9e188b570cecb43a50cb927a6cf2a3f4c11f"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/container-scope-cratectl-imported-33b47b3ea8-worker.log",
+      "bytes": 150,
+      "sha256": "a0d734e80831933f14e5c9bf16cc9e188b570cecb43a50cb927a6cf2a3f4c11f"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/independent-image-binaries.log",
+      "bytes": 149,
+      "sha256": "fad8be70ed0a338bc56aec725a843e25f801365913ef31cbf3f7a78c216e0c99"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/independent-signature.log",
+      "bytes": 32,
+      "sha256": "0fd23954193f64e60f5b4b5f381cd1ea9d580aece00a6bbbc98e664302ce6b79"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/inspected-cratectl-offline-postgres.log",
+      "bytes": 84,
+      "sha256": "81a2087a178ac3f162f65d3f2e67e447313ffeb4415def841d79816c46131ac4"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/inspected-cratectl-offline-registry.log",
+      "bytes": 84,
+      "sha256": "fc917ce31c9eefafe35e1df85f105a0255343c12a1cd3964e87d9944d5e33cfb"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/load-postgres.log",
+      "bytes": 87,
+      "sha256": "eedbdac93d801a32265b8559f606b537bfde37900b1e17caccfccd7f14d55591"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/load-registry.log",
+      "bytes": 87,
+      "sha256": "69bb94abefe3efea5940137e068dcfc17301af1801658b77c453e53f4bd80c29"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/pre-bootstrap-schema.log",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/refuse-changed-registry-image.log",
+      "bytes": 74,
+      "sha256": "b3631c75f87cef45cf300fe7b790b0865869ca102a05b1f9e81b87e664f7c58c"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/refuse-wrong-trust.log",
+      "bytes": 63,
+      "sha256": "b9a2cf721d41a85e5eb6cb6a3cb12764065fbf96960eb03f708ffeafd8fad699"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/remove-only-assembly-tag-postgres.log",
+      "bytes": 83,
+      "sha256": "44c9f8180fdb35baff42d3dfe77d6b41167e7fe4f4f2955cac6839b9336be300"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/remove-only-assembly-tag-registry.log",
+      "bytes": 164,
+      "sha256": "6c3cdf6a23d261881fee1581b4f41a014d87a36ae40d0bdd78668fa6e4038588"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/restart-imported-processes.log",
+      "bytes": 74,
+      "sha256": "d83cf046f62d5061b3c1a62f7f91ddba6aba27e0f1ab6b1c53c8daf0195b5a00"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/sign-key.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/sign-manifest.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/sign-public.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/start-imported-postgres.log",
+      "bytes": 65,
+      "sha256": "095427626253e8507c5ab1dd307bccc998c0c74f21e0292eb450ed83c76cc7b4"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/start-imported-registry.log",
+      "bytes": 65,
+      "sha256": "9495d299bea992c73e8930ff4128e9a0ac10a0e005bee04d3314bb4f3aa7102f"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/start-imported-worker.log",
+      "bytes": 65,
+      "sha256": "8ac76aa3e4576efa4ffa19d847e9452a2aa070947216a2026c85879613b9c80e"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/stock-client-fresh.log",
+      "bytes": 503,
+      "sha256": "969217bcd91ad647e38579927d86489f6fcf9c5a58d74c4aff8ead15aee4b3b7"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/stock-client-restarted.log",
+      "bytes": 412,
+      "sha256": "4359d50f21fb6dc249fc98d3df85bb57ece6e2aa5549637c7584b7202cb6b5c4"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/verified-imported-rls.log",
+      "bytes": 8,
+      "sha256": "fa91e4bd73721e728965ff45cec84296e5628b097bf5c62e1e28f3841bb644a3"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/verified-imported-schema.log",
+      "bytes": 3,
+      "sha256": "7ee29791fc17e986b97128845622b077fb45e349fdb80523fac9dba879b4ad60"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/verify-complete-media.log",
+      "bytes": 3130,
+      "sha256": "142f9e311c539c9273e07229291c2a2df705ea081bd84cf04822551e5a6e00f6"
+    },
+    {
+      "path": ".private/cratectl-imported-33b47b3ea8/verify-imported-bootstrap.log",
+      "bytes": 387,
+      "sha256": "fa60b73d33844a09bbad48b520e7f9c1f80fc46f7e6c35339ce0a7866230919d"
+    }
+  ],
+  "assembly_logs": [
+    {
+      "path": ".private/cratectl-offline-media-e4adc19/assembly.log",
+      "bytes": 2805,
+      "sha256": "aac22bf909dcf1786b6db100b9e882a0d61847f64def9faf6452b39d52d801e8"
+    },
+    {
+      "path": ".private/cratectl-offline-media-e4adc19/media.log",
+      "bytes": 117,
+      "sha256": "d221c943da68026ce124c920a25cc4944656af783b2b313c06a53228de3bbcb5"
+    }
+  ],
+  "replay_drivers": [
+    {
+      "path": ".cache/cratectl-loaded-media-run.py",
+      "bytes": 11489,
+      "sha256": "a66b0e5ac5801fe1558a2c8a1716ba5c307d25a325bd7325bbcf1ac04f99c411"
+    },
+    {
+      "path": ".cache/cratectl-loaded-media-target.py",
+      "bytes": 6297,
+      "sha256": "d4e1e51ed730ab8f4ca9849b63306007d3be40cfa21a7cb4de36dd7f5a215f68"
+    }
+  ],
+  "limits": [
+    "Native Linux ARM64 Docker engine with provided tools and stock npm harness. Docker and Node were already installed before this qualification.",
+    "No production signing authority, redistribution, scanner intelligence, x64 imported-stack execution or disaster recovery is qualified."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

@@ -251,6 +251,13 @@ The authorized push of `b88d397` selected six baseline workflows and the
 native Linux archive lane. It includes the audited console, campaign lint
 repair and pinned stock NuGet credential handling.
 [Original GitHub run inventory](evidence/2026-11-18/github-b88d397-started.json)
+The two original `b88d397` Linux installer jobs both passed. Each hosted
+archive matched its independently built local counterpart. Eight original
+jobs at `22f2cec` and 18 at `08436af` also reached terminal passes across
+the observed families. Their main CI campaigns remain separate.
+[Current native installer](evidence/2026-11-18/github-b88d397-linux-install-native.json)
+[Helm candidate terminal families](evidence/2026-11-18/github-22f2cec-original-terminal-families.json)
+[Installer candidate terminal families](evidence/2026-11-18/github-08436af-original-terminal-families.json)
 
 On `b88d397`, native macOS ARM64 stock NuGet completed the publish, unlist,
 relist, isolation and restart checks against a fresh real database. The
@@ -303,6 +310,16 @@ the registry and worker preserved the approved bytes after restart. The run
 used already supplied container dependencies. Installing the complete
 distribution bundle on a fresh disconnected machine remains open.
 [Disconnected target evidence](evidence/2026-11-18/linux-disconnected-stack-f2bc59e-arm64.json)
+
+The repaired `e4adc19` ARM64 media authenticated 17 members, including both
+saved runtime images. It refused an incorrect trust digest and a changed
+image. Both exact image IDs returned after importing the saved archives into
+the local Docker engine. The imported containers and stock npm passed
+17 runtime checks and ten media and deployment controls. The registry
+image's two executable digests independently matched the native archive.
+Preinstalled operator tooling, x64 runtime, scanner import and production
+recovery still need their respective qualification.
+[Imported-media result](evidence/2026-11-18/linux-offline-media-e4adc19-arm64.json)
 
 The packaged Helm chart passed 13 deployment checks at `f245757` on an
 isolated ARM64 Kubernetes 1.35 cluster. Restricted Pod Security admitted the

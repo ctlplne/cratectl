@@ -1747,8 +1747,9 @@
     {
       "id": "DEFECT.0164",
       "summary": "Docker platform inspection returns a PostgreSQL image configuration ID that cannot be used as the image-tag source",
-      "state": "Original ARM64 offline media assembly failure retained. Tagging the pinned registry reference under a cratectl-owned alias resolves to the same inspected platform ID.",
+      "state": "Original ARM64 assembly error retained. The repaired e4adc19 media verified both platform-specific image exports, loaded them after removing their owned tags and ran the isolated registry and worker.",
       "first_failure": "evidence/2026-11-18/linux-offline-media-b88d397-first-attempt.json",
+      "replay": "evidence/2026-11-18/linux-offline-media-e4adc19-arm64.json",
       "repair": "Use the digest-pinned upstream reference to create the local alias. Re-inspect the exact architecture and configuration ID before exporting the image."
     }
   ]
