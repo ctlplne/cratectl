@@ -7,12 +7,13 @@ WORKFLOWS = {
     'oci-clients.yml': 'oci', 'upgrade-qualification.yml': 'upgrades',
     'go-export-portability.yml': 'portable', 'nuget-contract.yml': 'library',
     'browser-repair.yml': 'browser', 'go-checksum-client.yml': 'strict', 'windows-cli.yml': 'windows',
+    'compose-evaluation.yml': 'compose',
 }
 PLATFORMS = {'amd64': ('ubuntu-24.04', 'Linux', 'X64'),
              'arm64': ('ubuntu-24.04-arm', 'Linux', 'ARM64'),
              'darwin-arm64': ('macos-15', 'macOS', 'ARM64')}
 VALIDATOR_FILES = ['scripts/ci/' + name + '_evidence.py' for name in
-                   ['maven', 'gradle', 'ivy', 'sbt', 'go_module', 'journal', 'go_export_portability', 'go_common_export_portability', 'go_requirement_export_portability', 'windows_cli']]
+                   ['maven', 'gradle', 'ivy', 'sbt', 'go_module', 'journal', 'go_export_portability', 'go_common_export_portability', 'go_requirement_export_portability', 'windows_cli', 'compose']]
 COMPATIBLE_FILES = ['.github/workflows/' + name for name in WORKFLOWS] + VALIDATOR_FILES + ['scripts/ci/evidence_summary.py', 'scripts/conformance_go.py']
 
 
@@ -70,6 +71,9 @@ def jobs(family, schema=17, requirement_portability=False):
         elif family == 'library':
             add('Actual NuGet libraries versus Go (' + arch + ')', arch,
                 ['Compare actual native libraries without remote package restore'], 'ci-summary-nuget-version-' + arch, 'library')
+        elif family == 'compose':
+            add('Blank Compose registry and stock npm (' + arch + ')', arch,
+                ['Replay blank Compose with real PostgreSQL, TLS and stock npm'], 'ci-summary-compose-' + arch, 'compose')
     if family == 'portable':
         add('Real PostgreSQL signed export source (amd64)', 'amd64',
             ['Prepare actual signed source fixture and independent trust-channel digests', 'Transfer reviewed synthetic fixture only',

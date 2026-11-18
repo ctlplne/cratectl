@@ -39,8 +39,8 @@ using `$CRATECTL_EVAL/client.json` for `--config`. Keep `--ignore-scripts` for
 the inert evaluation package. Initial administrator and worker credentials
 expire after 24 hours. The local TLS certificate expires after 30 days.
 
-To see the Compose configuration with private environment files kept as path
-references, run:
+To render the Compose configuration as JSON with private environment files kept
+as path references, run:
 
 ```sh
 python3 scripts/compose_evaluation.py config
@@ -65,3 +65,11 @@ npm, worker processing and restart at `498a078`. Linux x64 execution, production
 Helm, controlled upgrades, backup and recovery, replicated storage and
 disconnected installation have separate qualification.
 [ARM64 qualification](../../evidence/2026-11-18/compose-498a078-arm64.json)
+
+Run the complete owned qualification from a clean commit with the host's native
+architecture. It creates and stops a separate Compose project, retains its
+database volume and keeps raw logs private.
+
+```sh
+python3 scripts/conformance_compose.py --architecture arm64
+```

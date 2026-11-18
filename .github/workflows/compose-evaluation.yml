@@ -1,0 +1,60 @@
+name: Native Compose evaluation
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'deploy/compose/**'
+      - 'scripts/compose_evaluation.py'
+      - 'scripts/conformance_compose.py'
+      - 'scripts/ci/compose_evidence.py'
+      - '.github/workflows/compose-evaluation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  evaluation:
+    if: github.ref == 'refs/heads/main' && github.repository == 'ctlplne/cratectl'
+    name: Blank Compose registry and stock npm (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 25
+    concurrency:
+      group: cratectl-compose-${{ github.ref }}-${{ matrix.arch }}-${{ github.sha }}
+      cancel-in-progress: false
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    env:
+      GOENV: 'off'
+      GOTOOLCHAIN: local
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '26'
+          package-manager-cache: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - name: Replay blank Compose with real PostgreSQL, TLS and stock npm
+        run: python3 scripts/conformance_compose.py --architecture '${{ matrix.arch }}' --ci-report
+      - uses: actions/upload-artifact@v7
+        if: success()
+        with:
+          name: ci-summary-compose-${{ matrix.arch }}
+          path: .cache/ci-compose-evaluation.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14

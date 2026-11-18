@@ -315,8 +315,8 @@ class CampaignAcceptance(unittest.TestCase):
                 acceptance.validate_portable_pairs(pairs, runners)
 
     def test_catalog_covers_every_existing_native_job_template(self):
-        expected = {'main': 10, 'go': 2, 'jvm': 8, 'oci': 2, 'upgrades': 2, 'portable': 2, 'library': 2, 'browser': 3, 'strict': 3, 'windows': 2}
-        self.assertEqual(sum(expected.values()), 36)
+        expected = {'main': 10, 'go': 2, 'jvm': 8, 'oci': 2, 'upgrades': 2, 'portable': 2, 'library': 2, 'browser': 3, 'strict': 3, 'windows': 2, 'compose': 2}
+        self.assertEqual(sum(expected.values()), 38)
         for filename, family in WORKFLOWS.items():
             specs = jobs(family)
             self.assertEqual(len(specs), expected[family])
@@ -333,7 +333,7 @@ class CampaignAcceptance(unittest.TestCase):
         self.assertFalse(result['broad_readiness'])
         self.assertEqual(len(result['jobs']), 2)
         self.assertEqual(result['unselected_runtime'], [{'run_id': 11, 'scope': 'runtime', 'jobs': 3}])
-        self.assertEqual(len(result['unselected_workflows']), 9)
+        self.assertEqual(len(result['unselected_workflows']), 10)
         self.assertNotIn('owned-private-synthetic', json.dumps(result))
         self.assertEqual(api.snapshots, 2)
 

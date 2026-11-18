@@ -10,6 +10,7 @@ import unittest
 from campaign_contract import WORKFLOWS, jobs
 from campaign_reports import validate_custom, validate_summary
 from campaign_transport import EvidenceError
+from compose_evidence import CHECKS as COMPOSE_CHECKS, SOURCE_PATHS as COMPOSE_FILES
 from test_go_common_export_portability_evidence import complete as complete_common_contract
 from test_go_requirement_export_portability_evidence import complete as complete_requirement_contract
 
@@ -18,6 +19,29 @@ SPECS = {spec['artifact']: spec for family in WORKFLOWS.values() for spec in job
 
 
 class CampaignReports(unittest.TestCase):
+    def test_compose_requires_complete_private_free_exact_source_report(self):
+        source = lambda path: path.encode()
+        candidate = 'a' * 40
+        report = {'schema': 1, 'profile': 'cratectl-compose-evaluation-v1', 'candidate': candidate,
+                  'run_id': '12', 'runner_os': 'Linux', 'runner_arch': 'ARM64', 'status': 'passed',
+                  'source_dirty': False, 'checks': list(COMPOSE_CHECKS), 'compose_version': 'v5.7.0',
+                  'npm_version': '11.16.0', 'go_version': '1.27.4', 'database_schema': 18,
+                  'forced_rls_tenant_tables': 57, 'runtime_image_id': 'sha256:' + '0' * 64,
+                  'binary_sha256': {'cratectl': '1' * 64, 'cratectld': '2' * 64},
+                  'source_sha256': {path: hashlib.sha256(source(path)).hexdigest() for path in COMPOSE_FILES},
+                  'goal_complete': False, 'broad_readiness': False}
+        spec = SPECS['ci-summary-compose-arm64']
+        self.assertEqual(validate_custom(report, candidate, 12, spec, source), {'checks': 20, 'records': 1})
+        for changed in ({'checks': report['checks'][:-1]}, {'source_dirty': True},
+                        {'runner_arch': 'X64'}, {'owner_password': 'owned inert stand-in'},
+                        {'broad_readiness': True}, {'forced_rls_tenant_tables': 0}):
+            with self.subTest(changed=list(changed)), self.assertRaises(EvidenceError):
+                validate_custom({**report, **changed}, candidate, 12, spec, source)
+        altered = copy.deepcopy(report)
+        altered['source_sha256']['deploy/compose/Dockerfile'] = '9' * 64
+        with self.assertRaisesRegex(EvidenceError, 'compose_source_identity'):
+            validate_custom(altered, candidate, 12, spec, source)
+
     def requirement_pair(self, role):
         summary, source = self.common_pair(role)
         code_hash = hashlib.sha256(source('owned')).hexdigest()

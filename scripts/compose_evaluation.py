@@ -47,6 +47,11 @@ def private_save(path, data):
             file.flush()
             os.fsync(file.fileno())
             os.replace(temporary, path)
+            parent = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+            try:
+                os.fsync(parent)
+            finally:
+                os.close(parent)
         finally:
             temporary.unlink(missing_ok=True)
 
@@ -157,7 +162,7 @@ def main():
                'CRATECTL_COMPOSE_BUILD': str(output), 'CRATECTL_COMPOSE_STATE': str(directory)}
         base = ('docker', 'compose', '--env-file', '/dev/null', '-f', str(DEPLOY / 'compose.yaml'), '-p', args.project)
         if args.action == 'config':
-            command(*base, '--profile', 'bootstrap', 'config', '--no-env-resolution', env=env)
+            command(*base, '--profile', 'bootstrap', 'config', '--no-env-resolution', '--format', 'json', env=env)
         elif args.action == 'down':
             command(*base, 'down', env=env, timeout=90)
         else:

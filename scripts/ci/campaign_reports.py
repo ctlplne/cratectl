@@ -17,6 +17,7 @@ from go_export_portability_evidence import safe_go_export_portability_contract
 from go_common_export_portability_evidence import safe_go_common_export_portability_contract
 from go_requirement_export_portability_evidence import safe_go_requirement_export_portability_contract
 from windows_cli_evidence import safe_windows_cli_contract
+from compose_evidence import CHECKS as COMPOSE_CHECKS, safe_compose_contract
 
 CONTRACTS = {'maven_cache_contract': safe_maven_cache_contract, 'gradle_contract': safe_gradle_contract,
              'ivy_contract': safe_ivy_contract, 'sbt_contract': safe_sbt_contract,
@@ -96,6 +97,14 @@ def validate_custom(report, candidate, run_id, spec, source):
         require(all(digest == hashlib.sha256(source(path)).hexdigest()
                     for path, digest in report['source_sha256'].items()), 'windows_source_identity')
         return {'checks': 15, 'records': 1}
+    if spec['kind'] == 'compose':
+        try:
+            require(safe_compose_contract(report) == report, 'compose_report_contract')
+        except (ValueError, TypeError, KeyError):
+            require(False, 'compose_report_contract')
+        require(all(digest == hashlib.sha256(source(path)).hexdigest()
+                    for path, digest in report['source_sha256'].items()), 'compose_source_identity')
+        return {'checks': len(COMPOSE_CHECKS), 'records': 1}
     require(report.get('status') == 'passed' and report.get('source_dirty') is False, 'custom_report_incomplete')
     if spec['kind'] == 'library':
         require(report.get('phase') == 'complete' and isinstance(report.get('checks'), list)
