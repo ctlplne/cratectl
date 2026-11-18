@@ -114,6 +114,9 @@ jobs and all three npm audits.
 The `b00aa94` push started nine first-attempt workflows for the Chromium
 deadline and private credential file changes. The earlier `a0e646d` jobs
 continue under their original IDs. [Replay run inventory](evidence/2026-11-18/github-b00aa94-started.json)
+Both native Windows jobs at `b00aa94` passed the same 15 CLI functions and five
+managed commands. The original logs, reports and 23 source hashes per job
+matched. [Replay Windows evidence](evidence/2026-11-18/github-b00aa94-windows-native.json)
 
 ## Go security patch
 

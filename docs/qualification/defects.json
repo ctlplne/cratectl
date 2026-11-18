@@ -1673,9 +1673,16 @@
     {
       "id": "DEFECT.0156",
       "summary": "Compose image copies root-owned executables with the host's private 0700 mode",
-      "state": "First owned ARM64 Docker launch failed before initializer startup. The image inputs now specify their final modes. Native replay pending.",
+      "state": "The first owned ARM64 Docker launch failed. The initializer starts under its nonroot UID at 4458f24, then encounters the separate resolver failure DEFECT.0157.",
       "first_failure": "evidence/2026-11-18/compose-72e2967-first-attempt.json",
       "repair": "Set explicit executable and public CA file modes in the image. Preserve the operator's private umask and the nonroot service UID."
+    },
+    {
+      "id": "DEFECT.0157",
+      "summary": "A public CA file copy creates untraversable /etc directories in the scratch image",
+      "state": "The original ARM64 Docker failure and a credential-redacted resolver probe are retained. Fresh replay pending.",
+      "first_failure": "evidence/2026-11-18/compose-4458f24-dns-failure.json",
+      "repair": "Copy the public trust bundle directly under the image root and select it with SSL_CERT_FILE. Let Docker create its own /etc resolver paths."
     }
   ]
 }

@@ -1,0 +1,37 @@
+{
+  "candidate": "4458f24ee7fd6f26b27b7822241ba05a8a44cd79",
+  "observed_at": "2026-11-18T12:49:41.052126+00:00",
+  "source_dirty": false,
+  "project": "cratectl-compose-4458f24",
+  "platform": "macOS ARM64 with local Linux ARM64 Docker engine",
+  "compose": "5.7.0",
+  "go": "1.27.4",
+  "umask": "0077",
+  "status": "failed",
+  "checks_before_failure": [
+    "The explicit executable mode allowed the nonroot initializer to start.",
+    "The pinned database started at port 35432, created the scoped roles and accepted both private logins from a disposable same-network PostgreSQL client.",
+    "The exact scratch image under its configured UID had mode 0644 on /etc. Go could not read the Docker-generated resolver file and fell back to loopback DNS."
+  ],
+  "failure": "The scratch image added the CA bundle under /etc using COPY --chmod=0644. BuildKit applied that mode to the implicit /etc directories and prevented traversal. The initializer failed before owner database access.",
+  "repair": "Copy the public bundle as a single root-level file and point SSL_CERT_FILE to it. Docker can create its own traversable /etc directory and resolver files.",
+  "diagnostics": [
+    {
+      "path": ".private/cratectl-compose-4458f24-launch.log",
+      "bytes": 3880,
+      "sha256": "04d1b47d63cedf4c0050af08e9c8c46a9d0e668905b6548c59a659ce131f4290"
+    },
+    {
+      "path": ".private/cratectl-compose-4458f24-postgres.log",
+      "bytes": 3294,
+      "sha256": "bf339fc2a256b263841a901d811c5fc583f49c8b104ba43585977999112f5623"
+    },
+    {
+      "path": ".private/cratectl-compose-4458f24-pgx-permission.log",
+      "bytes": 636,
+      "sha256": "48c9cf5bb59fda20d24538a44067ede0d771a3b31fd2fdd83dcc93198afb4f7b"
+    }
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}
