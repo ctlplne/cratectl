@@ -8,6 +8,13 @@ Broad readiness,security and packaging remain unqualified.
 
 ## Latest whole accepted source
 
+`8ddda89` passed all 32 original jobs across nine workflows. Its unchanged
+local verifier accepted 88 reports. Independent comparison matched 25 safe
+job summaries, the selection summary, 37 exact source contracts and three
+transfer records. The two native Linux npm jobs and both main stock-client
+jobs passed at their original attempts.
+[Exact npm search campaign evidence](evidence/2026-11-19/github-8ddda89-exact-local-accepted.json)
+
 `56a9d40` passed all 32 original jobs across nine workflows. Its unchanged
 local verifier accepted 88 reports. Independent comparison matched 25 safe
 job summaries, the selection summary, 35 exact source contracts and three
