@@ -10,15 +10,10 @@ import urllib.error
 import urllib.request
 
 from cargo_hosted_fixture import cargo_home, new_project, stock_cargo_environment
+from ci.cargo_public_evidence import DOWNLOAD, INDEX, PACKAGES
 
 
 REPOSITORY = 'cratectl-public-cargo'
-INDEX = 'https://index.crates.io'
-DOWNLOAD = 'https://static.crates.io/crates'
-PACKAGES = {
-    'form_urlencoded': ('1.2.1', 'e13624c2627564efccf4934284bdd98cbaa14e79b0b5a141218e507b3a823456'),
-    'percent-encoding': ('2.3.1', 'e3148f5046208a5d56bcfc03053e3ca6334e51da8dfb19b6cdc8b306fae3283e'),
-}
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):

@@ -15,6 +15,7 @@ from compose_evidence import CHECKS as COMPOSE_CHECKS
 from linux_install_evidence import CHECKS as LINUX_INSTALL_CHECKS
 from terraform_provider_evidence import BASE_CHECKS as IAC_BASE, CLIENT_CHECKS as IAC_CHECKS
 from cargo_evidence import CHECKS as CARGO_CHECKS
+from cargo_public_evidence import CHECKS as CARGO_PUBLIC_CHECKS
 from campaign_transport import (EvidenceError, GitHubEvidenceClient, LOG_BYTES,
                                 REPOSITORY, artifact_json, require, strict_json)
 
@@ -193,10 +194,13 @@ def check_log(raw, spec, source):
         require(text.count(f'PASS: {len(IAC_BASE)} native declarative repository checks') == 1
                 and text.count(f'PASS: Terraform {len(IAC_CHECKS)} and OpenTofu {len(IAC_CHECKS)} scoped provider checks') == 1,
                 'terraform_provider_native_inventory')
-    if kind == 'cargo':
+    if kind in ('cargo', 'cargo-public'):
         require(text.count(f'PASS: {len(IAC_BASE) - 1} native declarative repository checks') == 1
                 and text.count(f'PASS: {len(CARGO_CHECKS)} scoped stock Cargo checks') == 1,
                 'stock_cargo_native_inventory')
+    if kind == 'cargo-public':
+        require(text.count(f'PASS: {len(CARGO_PUBLIC_CHECKS)} stock Cargo public-origin checks') == 1,
+                'public_cargo_native_inventory')
     if kind in ('native', 'go'):
         pattern = r'\bok\s+ctlplne.dev/cratectl/internal/(?:server|store' + ('|conformance' if kind == 'native' else '') + r')\s'
         require(len(re.findall(pattern, text)) == (6 if kind == 'native' else 4), 'native_package_success_inventory')
@@ -330,9 +334,10 @@ def accept(client, source, expected_ids):
                           'linux-install': 'ci-linux-install.json',
                           'offline-media': 'ci-offline-media.json',
                           'terraform-provider': 'ci-terraform-provider.json',
-                          'cargo': 'ci-cargo.json'}.get(spec['kind'], 'ci-evidence-summary.json')
+                          'cargo': 'ci-cargo.json', 'cargo-public': 'ci-cargo-public.json'}.get(spec['kind'], 'ci-evidence-summary.json')
                 report, reference = safe_artifact(client, by_artifact[artifact_name], source.candidate, run_id, member)
-                if spec['kind'] in ('library', 'strict', 'windows', 'compose', 'linux-install', 'offline-media', 'terraform-provider', 'cargo'):
+                if spec['kind'] in ('library', 'strict', 'windows', 'compose', 'linux-install', 'offline-media', 'terraform-provider',
+                                    'cargo', 'cargo-public'):
                     counts = validate_custom(report, source.candidate, run_id, spec, source)
                 else:
                     counts, contract = validate_summary(report, source.candidate, run_id, spec, source.baselines, source)

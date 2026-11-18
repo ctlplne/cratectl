@@ -505,8 +505,17 @@ def record_cargo_ci(report, architecture):
                       runner_arch=runner, run_id=os.environ.get('GITHUB_RUN_ID'), source_dirty=False,
                       source_sha256={name: sha(ROOT / name) for name in CARGO_SOURCE_PATHS},
                       sdk_archives_sha256=CARGO_PINS[architecture], base_checks=report['checks'])
-    validate_cargo(projection)
-    with (ROOT / '.cache/ci-cargo.json').open('x') as stream:
+    output = '.cache/ci-cargo.json'
+    if 'cargo_public_origin' in report:
+        from ci.cargo_public_evidence import SOURCE_PATHS as public_sources, validate as validate_public
+
+        output = '.cache/ci-cargo-public.json'
+        projection.update(profile='cratectl-native-cargo-public-v1', public_origin=report['cargo_public_origin'],
+                          public_source_sha256={name: sha(ROOT / name) for name in public_sources})
+        validate_public(projection)
+    else:
+        validate_cargo(projection)
+    with (ROOT / output).open('x') as stream:
         json.dump(projection, stream, indent=2)
         stream.write('\n')
 
@@ -540,8 +549,8 @@ if __name__ == '__main__':
         parser.error('the native Cargo profile runs separately from hosted provider qualification')
     if options.cargo_ci_architecture and (not options.cargo_toolchain or options.promtool or options.mcp_binary or options.provider_binary):
         parser.error('hosted Cargo evidence requires the stock toolchain in the isolated Cargo profile')
-    if options.cargo_public_origin and (not options.cargo_toolchain or options.cargo_ci_architecture):
-        parser.error('the public origin check requires the local stock Cargo profile')
+    if options.cargo_public_origin and not options.cargo_toolchain:
+        parser.error('the public origin check requires the stock Cargo profile')
     if options.legacy_cargo_daemon and (not options.cargo_toolchain or options.cargo_ci_architecture):
         parser.error('historical Cargo adoption requires the local stock Cargo profile and reviewed schema 18 daemon')
     evaluate(options)

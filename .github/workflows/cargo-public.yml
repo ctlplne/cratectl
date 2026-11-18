@@ -1,0 +1,73 @@
+name: Native public Cargo sparse replacement
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/cargo-public.yml'
+      - 'internal/cargo/**'
+      - 'internal/server/cargo*.go'
+      - 'internal/store/cargo*.go'
+      - 'scripts/cargo_public_fixture.py'
+      - 'scripts/ci/cargo_public_evidence.py'
+
+permissions:
+  contents: read
+
+jobs:
+  cargo-public:
+    if: github.ref == 'refs/heads/main' && github.repository == 'ctlplne/cratectl'
+    name: Stock Cargo canonical lockfile replacement (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 18
+    concurrency:
+      group: cratectl-cargo-public-${{ github.ref }}-${{ matrix.arch }}-${{ github.sha }}
+      cancel-in-progress: false
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    env:
+      GOENV: 'off'
+      GOTOOLCHAIN: local
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22.23.4'
+      - name: Prepare the digest-pinned stock Cargo SDK
+        run: |
+          umask 077
+          mkdir -p .private
+          sdk="$(python3 scripts/ci/bootstrap_cargo.py '${{ matrix.arch }}')"
+          printf 'CRATECTL_CARGO_SDK=%s\n' "$sdk" >> "$GITHUB_ENV"
+      - name: Build the clean cratectl candidate
+        run: make build BINDIR=.cache/cratectl-cargo-bin
+      - name: Replay the actual public Cargo graph and canonical lockfile
+        run: |
+          umask 077
+          python3 scripts/conformance_repository_manifest.py \
+            --pg-bin /usr/lib/postgresql/16/bin --binary-directory .cache/cratectl-cargo-bin \
+            --cargo-toolchain "$CRATECTL_CARGO_SDK" --cargo-ci-architecture '${{ matrix.arch }}' --cargo-public-origin
+      - uses: actions/upload-artifact@v7
+        if: success()
+        with:
+          name: ci-summary-cargo-public-${{ matrix.arch }}
+          path: .cache/ci-cargo-public.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
