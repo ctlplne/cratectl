@@ -46,7 +46,9 @@ def validate(name, url, digest, maximum, algorithm='sha256'):
     rust = parsed.hostname == 'static.rust-lang.org' and re.fullmatch(
         r'/dist/2026-11-12/(cargo|rustc|rust-std)-1\.100\.0-(?:x86_64-unknown-linux-gnu|aarch64-unknown-linux-gnu|aarch64-apple-darwin)\.tar\.xz',
         parsed.path)
-    apache = (name in APACHE_ARCHIVES and ((parsed.hostname == 'downloads.apache.org' and parsed.path == APACHE_ARCHIVES[name]) or (parsed.hostname == 'archive.apache.org' and parsed.path == '/dist'+APACHE_ARCHIVES[name])))
+    apache = (name in APACHE_ARCHIVES and (
+        (parsed.hostname in ('dlcdn.apache.org', 'downloads.apache.org') and parsed.path == APACHE_ARCHIVES[name])
+        or (parsed.hostname == 'archive.apache.org' and parsed.path == '/dist'+APACHE_ARCHIVES[name])))
     allowed = (algorithm == 'sha256' and (oras or helm or gitleaks or terraform or opentofu or postgres or rust)
                or algorithm == 'sha512' and apache)
     cap = 128 if rust and rust[1] == 'rustc' else 32 if oras or gitleaks else 64
@@ -134,15 +136,16 @@ def fetch_apache(root, name, primary, fallback, digest, maximum, environment):
     path = APACHE_ARCHIVES.get(name)
     if path is None or primary != 'https://downloads.apache.org'+path or fallback != 'https://archive.apache.org/dist'+path:
         raise ValueError('Apache fallback must be the reviewed original archive on the official archive host')
-    validate(name, primary, digest, maximum, 'sha512')
-    validate(name, fallback, digest, maximum, 'sha512')
-    try:
-        return fetch(root, name, primary, digest, maximum, environment, 'sha512')
-    except ArchiveTransferError:
-        # A completed mismatch, corrupt cache, unsafe path or local I/O error is
-        # never retried or overwritten. This fixed public URL has no credentials.
-        print('Approved Apache primary transfer failed: '+primary, flush=True)
-        return fetch(root, name, fallback, digest, maximum, environment, 'sha512')
+    mirrors = ('https://dlcdn.apache.org'+path, primary, fallback)
+    for source in mirrors:
+        validate(name, source, digest, maximum, 'sha512')
+    for source in mirrors[:-1]:
+        try:
+            return fetch(root, name, source, digest, maximum, environment, 'sha512')
+        except ArchiveTransferError:
+            # Mismatches, corrupt cache files and local I/O errors stay fatal.
+            print('Approved Apache archive transfer failed: '+source, flush=True)
+    return fetch(root, name, fallback, digest, maximum, environment, 'sha512')
 
 
 def main():

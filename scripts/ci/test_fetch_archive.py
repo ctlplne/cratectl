@@ -40,7 +40,7 @@ if mode=='overflow':
   Path('kernel.json').write_text(json.dumps({'bytes':destination.stat().st_size,'errno':error.errno,'limits':resource.getrlimit(resource.RLIMIT_FSIZE)}));sys.exit(1)
 elif mode=='hang':
  destination.write_bytes(b'partial');time.sleep(30)
-elif mode=='primary-transport' and a[-1].startswith('https://downloads.apache.org/'):
+elif mode=='primary-transport' and a[-1].startswith(('https://dlcdn.apache.org/','https://downloads.apache.org/')):
  destination.write_bytes(b'partial');sys.exit(28)
 elif mode=='transport':
  destination.write_bytes(b'partial');sys.exit(28)
@@ -234,7 +234,9 @@ else:
     def test_apache_primary_transport_failure_uses_only_reviewed_same_archive(self):
         result=self.run_apache('primary-transport')
         self.assertEqual(result.returncode,0,result.stderr)
-        self.assertEqual([r[-1]for r in self.requests()],['https://downloads.apache.org/ant/ivy/2.6.0/apache-ivy-2.6.0-bin.tar.gz','https://archive.apache.org/dist/ant/ivy/2.6.0/apache-ivy-2.6.0-bin.tar.gz'])
+        root='/ant/ivy/2.6.0/apache-ivy-2.6.0-bin.tar.gz'
+        self.assertEqual([r[-1]for r in self.requests()],
+                         ['https://dlcdn.apache.org'+root,'https://downloads.apache.org'+root,'https://archive.apache.org/dist'+root])
         for r in self.requests():
             for key,value in [('--connect-timeout','15'),('--max-time','180'),('--max-redirs','5'),('--max-filesize','4096')]:
                 self.assertEqual(r[r.index(key)+1],value)

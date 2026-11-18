@@ -1813,6 +1813,13 @@
       "first_failure": "evidence/2026-11-18/cargo-e809cfb-native-fixture-failure.json",
       "replay": "evidence/2026-11-18/cargo-1b4d38e-native.json",
       "repair": "Read the pinned client’s retained tmp-crate files and compare them independently with durable references and later consumer downloads."
+    },
+    {
+      "id": "DEFECT.0173",
+      "summary": "Both approved Ivy distribution hosts timed out in an original hosted ARM64 job",
+      "state": "The original job stopped before stock Ivy replay. The Apache CDN delivered the pinned Ivy and Ant byte streams locally.",
+      "first_failure": "evidence/2026-11-18/github-3639a74-arm64-ivy-bootstrap-failure.json",
+      "repair": "Try the official Apache CDN first. Keep both existing exact archive mirrors as transfer-only fallbacks."
     }
   ]
 }
