@@ -20,6 +20,7 @@ var configurationTests = []string{
 	"TestWindowsPrivateConfigurationRejectsBroadInheritedAndNullACLs",
 	"TestWindowsPrivateConfigurationRejectsHardLinkAliasesAndAlternateStreams",
 	"TestWindowsPrivateConfigurationUsesActualProtectedOwnerACL",
+	"TestWriteNewPrivateKeepsExactBytesAndRefusesConcurrentOverwrite",
 }
 
 var driverTests = []string{

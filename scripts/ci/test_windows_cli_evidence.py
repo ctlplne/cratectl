@@ -49,7 +49,7 @@ class WindowsEvidence(unittest.TestCase):
             source = lambda p: ('owned source: ' + p).encode()
             report = complete(arch=spec['platform'][2], source=source)
             self.assertEqual(safe_windows_cli_contract(report), report)
-            self.assertEqual(validate_custom(report, report['candidate'], 12, spec, source), {'checks': 14, 'records': 1})
+            self.assertEqual(validate_custom(report, report['candidate'], 12, spec, source), {'checks': 15, 'records': 1})
             for path in SOURCES:
                 changed = copy.deepcopy(report)
                 changed['source_sha256'][path] = '0' * 64
@@ -103,7 +103,7 @@ class WindowsEvidence(unittest.TestCase):
         self.assertEqual(len(COMPATIBLE_FILES), 22)
         self.assertIn('scripts/ci/windows_cli_evidence.py', COMPATIBLE_FILES)
         self.assertIn('.github/workflows/windows-cli.yml', COMPATIBLE_FILES)
-        self.assertEqual(len(sum(TESTS.values(), [])), 14)
+        self.assertEqual(len(sum(TESTS.values(), [])), 15)
         self.assertNotIn('owned-private-synthetic', json.dumps(safe_windows_cli_contract(complete())))
 
 

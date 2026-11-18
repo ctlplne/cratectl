@@ -178,7 +178,7 @@ class CampaignAcceptance(unittest.TestCase):
                     artifact['workflow_run']['id'] = 12
                     self.native_artifacts.append(artifact)
                     self.native_jobs.append(job)
-                    self.bodies['jobs/' + str(400+n) + '/logs'] = b'Native Windows private configuration and owned-job controls passed (14 functions,5 managed commands)\n'
+                    self.bodies['jobs/' + str(400+n) + '/logs'] = b'Native Windows private configuration and owned-job controls passed (15 functions,5 managed commands)\n'
                     if mode == 'missing-marker':
                         self.bodies['jobs/' + str(400+n) + '/logs'] = b'No native observation\n'
                 if mode == 'missing-platform':
@@ -192,7 +192,7 @@ class CampaignAcceptance(unittest.TestCase):
         result = acceptance.accept(WindowsAPI('valid'), Source(), [11, 12])
         self.assertEqual(len(result['jobs']), 4)
         self.assertEqual([j['report_counts'] for j in result['jobs'] if j['family'] == 'windows'],
-                         [{'checks': 14, 'records': 1}] * 2)
+                         [{'checks': 15, 'records': 1}] * 2)
         self.assertNotIn('owned-private-synthetic', json.dumps(result))
         for mode in ['skipped-step', 'wrong-platform', 'wrong-helper', 'private-field', 'missing-test', 'wrong-member', 'missing-platform', 'missing-marker']:
             with self.subTest(mode=mode), self.assertRaises(EvidenceError):

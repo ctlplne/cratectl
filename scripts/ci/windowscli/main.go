@@ -20,11 +20,13 @@ import (
 )
 
 var sourcePaths = []string{
-	"go.mod", "go.sum", "cmd/cratectl/main.go",
+	"go.mod", "go.sum", "cmd/cratectl/main.go", "cmd/cratectl/npm.go",
 	"internal/configfile/config.go", "internal/configfile/config_test.go",
 	"internal/configfile/read_unix.go", "internal/configfile/read_other.go",
 	"internal/configfile/private_acl.go", "internal/configfile/private_acl_test.go",
 	"internal/configfile/read_windows.go", "internal/configfile/read_windows_test.go",
+	"internal/configfile/write.go", "internal/configfile/write_other.go",
+	"internal/configfile/write_windows.go", "internal/configfile/write_test.go",
 	"scripts/ci/windowscli/main.go", "scripts/ci/windowscli/events.go", "scripts/ci/windowscli/events_test.go",
 	"scripts/ci/windowscli/process.go", "scripts/ci/windowscli/process_windows.go",
 	"scripts/ci/windowscli/process_other.go", "scripts/ci/windowscli/process_windows_test.go",
@@ -229,7 +231,7 @@ func qualify() error {
 	if err := f.Sync(); err != nil {
 		return err
 	}
-	fmt.Println("Native Windows private configuration and owned-job controls passed (14 functions,5 managed commands)")
+	fmt.Printf("Native Windows private configuration and owned-job controls passed (%d functions,%d managed commands)\n", len(configurationTests)+len(driverTests), commands)
 	return nil
 }
 

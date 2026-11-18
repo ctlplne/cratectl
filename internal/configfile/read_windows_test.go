@@ -167,6 +167,9 @@ func TestWindowsPrivateConfigurationRejectsHardLinkAliasesAndAlternateStreams(t 
 			t.Fatal("alternate representation accepted as named configuration")
 		}
 	}
+	if err := WriteNewPrivate(path+":unwritten-stream", []byte("owned output")); err == nil {
+		t.Fatal("private output accepted an alternate stream")
+	}
 }
 
 func TestWindowsConfigurationRejectsActualReparsePoint(t *testing.T) {
@@ -282,5 +285,33 @@ func TestWindowsNativeCLIUsesPrivateConfigurationAndRefusesBroadCredentialsBefor
 		} else if err == nil || requests.Load() != before || stdout.Len() != 0 {
 			t.Fatal("unsafe native CLI input reached HTTP or emitted a success body", scenario, err)
 		}
+	}
+	output := filepath.Join(directory, "cratectl-npmrc")
+	createNPMConfig := func(config, path string) error {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+		cmd := exec.CommandContext(ctx, cli, "npm-config", "--config", filepath.Join(directory, config),
+			"--repository", "packages", "--output", path)
+		var stdout, stderr windowsCLIOutput
+		cmd.Stdout, cmd.Stderr, cmd.WaitDelay = &stdout, &stderr, 2*time.Second
+		return cmd.Run()
+	}
+	if err := createNPMConfig("cratectl-private.json", output); err != nil {
+		t.Fatal("actual Windows CLI failed to create private npm configuration", err)
+	}
+	private, err := ReadBytes(output, 2048, true)
+	if err != nil || !bytes.Contains(private, []byte("registry="+server.URL+"/npm/packages/\nstrict-ssl=true\n")) ||
+		!bytes.HasSuffix(private, []byte("//127.0.0.1:38443/npm/packages/:_authToken="+token+"\n")) {
+		t.Fatal("actual Windows CLI did not write the expected private scoped npm configuration", err)
+	}
+	if err := createNPMConfig("cratectl-private.json", output); err == nil {
+		t.Fatal("actual Windows CLI accepted an existing npm output")
+	}
+	denied := filepath.Join(directory, "cratectl-denied-npmrc")
+	if err := createNPMConfig("cratectl-broad-token.json", denied); err == nil {
+		t.Fatal("actual Windows CLI created npm configuration from broad credentials")
+	}
+	if _, err := os.Lstat(denied); !errors.Is(err, os.ErrNotExist) {
+		t.Fatal("denied npm configuration created an output file", err)
 	}
 }

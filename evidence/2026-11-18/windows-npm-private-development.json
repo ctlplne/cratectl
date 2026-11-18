@@ -1,0 +1,177 @@
+{
+  "source_parent": "12b19684b47210dc485b6aea362de6537c7c5031",
+  "source_dirty": true,
+  "observed_at": "2026-11-18T11:24:12.094926+00:00",
+  "state": "Protected npm configuration output and shared native diagnostic writer implemented. Native Windows passage remains required.",
+  "workflow": "docs/adr/0075-native-windows-cli-qualification.md",
+  "preceding_profile": "evidence/2026-11-18/windows-cli-ci-development.json",
+  "source_files": [
+    {
+      "path": "go.mod",
+      "bytes": 631,
+      "sha256": "241101cea898478bbd0206b23e305695d5de2cb780747120d172d96e1e4eb99e"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 3546,
+      "sha256": "d0d1ecad19532ff247235eb62f99780093ead4679c958d9eb83d6dcc8d5b5fb1"
+    },
+    {
+      "path": "cmd/cratectl/main.go",
+      "bytes": 8470,
+      "sha256": "04544e6b0113fe3d853313b89b44966b34f5cc93a7e87522f2e8cf36403d6970"
+    },
+    {
+      "path": "cmd/cratectl/npm.go",
+      "bytes": 2304,
+      "sha256": "68978f824798b6fabfeb00f29d9ff664b20deddb20ac092db34c1ef98db0173b"
+    },
+    {
+      "path": "internal/configfile/config.go",
+      "bytes": 3768,
+      "sha256": "21f6edd2ba1cc53df6a20e555d691eefeacb1c1cd1c0c1bdc674ce3ff2515e43"
+    },
+    {
+      "path": "internal/configfile/config_test.go",
+      "bytes": 1783,
+      "sha256": "693e3b77cf5ea40ea3ec240f8308f88bf32e8e94eaa2eeb966aa6709ea84a926"
+    },
+    {
+      "path": "internal/configfile/read_unix.go",
+      "bytes": 278,
+      "sha256": "ab2953d7d4d26f4caec4077c15033c55259ec1434b9ac6b5671331159627032d"
+    },
+    {
+      "path": "internal/configfile/read_other.go",
+      "bytes": 240,
+      "sha256": "3270d6fafff7fcbe895cc67bf52b427429ad04616d8998b78a589e8c840db15f"
+    },
+    {
+      "path": "internal/configfile/private_acl.go",
+      "bytes": 1321,
+      "sha256": "83cac69636be4110183ba271dd5317be9f4f2efa5a59da4a13afb9bcb1353d40"
+    },
+    {
+      "path": "internal/configfile/private_acl_test.go",
+      "bytes": 2877,
+      "sha256": "ebfe2d9a4aaa27a2a3d479151cd769fee60e429f1f7c6dfc831bbd248f0763a6"
+    },
+    {
+      "path": "internal/configfile/read_windows.go",
+      "bytes": 5363,
+      "sha256": "d969e29a2463460882139f8c58083e07ed4f407fb357efa25f90656e676be9fa"
+    },
+    {
+      "path": "internal/configfile/read_windows_test.go",
+      "bytes": 12668,
+      "sha256": "90a3df1995332d8d35c85c1bb8809bee6e416e6aa27c27a6f3504a1f8f5ae79f"
+    },
+    {
+      "path": "internal/configfile/write.go",
+      "bytes": 590,
+      "sha256": "0475e0afea5273ff39263f88086c429cef1566cb54191bf12dc58099f069f3dd"
+    },
+    {
+      "path": "internal/configfile/write_other.go",
+      "bytes": 340,
+      "sha256": "1f3c460809857d669584d19be5c731077bc6bf154bd23f705afdfc3032f5d8e2"
+    },
+    {
+      "path": "internal/configfile/write_windows.go",
+      "bytes": 2198,
+      "sha256": "c2d6d1baf68bad7e06376662f60938be4e2e2664b58e95e0681bf6625d7ebda9"
+    },
+    {
+      "path": "internal/configfile/write_test.go",
+      "bytes": 1069,
+      "sha256": "26c235bc3bbb29f366b49ed9102430206b120a5f4658db789ca4c053e34f1136"
+    },
+    {
+      "path": "scripts/ci/windowscli/main.go",
+      "bytes": 10042,
+      "sha256": "220c17345134f3565b276204525c35b3f1a75ce69cd15b1e5a6fe41b3b48705f"
+    },
+    {
+      "path": "scripts/ci/windowscli/events.go",
+      "bytes": 3680,
+      "sha256": "d7a2ec4fb2bc4762e96465fbf8cc593f11c91113606e27a97f12f1f976da71d4"
+    },
+    {
+      "path": "scripts/ci/windowscli/events_test.go",
+      "bytes": 1961,
+      "sha256": "27b56d4b683af1da7b4f630024aca4f273378dce7bdc4ac09deedf364b48e1a6"
+    },
+    {
+      "path": "scripts/ci/windowscli/process.go",
+      "bytes": 1271,
+      "sha256": "e223df11ccfaee31d8e20540b4db82f67fa83cd09cf704ce30e92decc16c1962"
+    },
+    {
+      "path": "scripts/ci/windowscli/process_windows.go",
+      "bytes": 8339,
+      "sha256": "60081ca59a252ef63fab33f01c07f6a3ec4ef22935c3bb6c16440952fdda0867"
+    },
+    {
+      "path": "scripts/ci/windowscli/process_other.go",
+      "bytes": 434,
+      "sha256": "0abce7583c454abc5997700828cc5df608ae6537eeddc9712f11bac04d304127"
+    },
+    {
+      "path": "scripts/ci/windowscli/process_windows_test.go",
+      "bytes": 4376,
+      "sha256": "c9485775a98f39965189889ae3400a9526de3e92c93f63149c021111124ca750"
+    }
+  ],
+  "source_snapshot_sha256": "12d5b05dce3caa64bb3f853790c28be9fdbb1d73c337e6eb2c5c179bd525df04",
+  "local": {
+    "host": "Darwin ARM64",
+    "go": "1.27.4",
+    "passed": [
+      "build",
+      "unit",
+      "race",
+      "lint",
+      "closed Windows report and campaign verification fixtures",
+      "Windows x64 and ARM64 cross-build, test compile and vet"
+    ],
+    "logs": [
+      {
+        "path": ".cache/cratectl-npm-private-build.log",
+        "bytes": 428,
+        "sha256": "928df6b75554d31cae5990a7f5ee7df23754e09e5e0ac5f2d2bd25d405e72210"
+      },
+      {
+        "path": ".cache/cratectl-npm-private-unit.log",
+        "bytes": 992,
+        "sha256": "8b034ca934d18124e62922181c5293e63d1809d68ea74b2f8736ec98228bbf79"
+      },
+      {
+        "path": ".cache/cratectl-npm-private-race.log",
+        "bytes": 999,
+        "sha256": "86d189bd16964fa7f3e8db53d5b048b1da6ec5f6fc14407713df160cbd7d30fa"
+      },
+      {
+        "path": ".cache/cratectl-npm-private-lint.log",
+        "bytes": 12725,
+        "sha256": "c76ba6b5741fd58041ea0a7313982077762b444a142ed523ed05652b6be40f3d"
+      },
+      {
+        "path": ".cache/cratectl-npm-private-cross.log",
+        "bytes": 118,
+        "sha256": "2bbece6f852af6cb554dcfce8e64e88e3e4607b8a735b53cc62abd89b222abc6"
+      }
+    ]
+  },
+  "windows_evidence_inventory": {
+    "functions": 15,
+    "managed_commands": 5,
+    "source_hashes": 23
+  },
+  "windows_native_verified": false,
+  "goal_complete": false,
+  "broad_readiness": false,
+  "limits": [
+    "POSIX tests verify first-writer behavior and exact private output bytes. Actual Windows DACL creation, reparse and stream refusals, and the actual npm-config CLI must run on both Windows runners.",
+    "The Windows CLI profile uses a trusted-TLS response stand-in. It leaves Windows server credential provisioning, native npm install, and disconnected installation outside its scope."
+  ]
+}

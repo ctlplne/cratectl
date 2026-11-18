@@ -95,7 +95,7 @@ def validate_custom(report, candidate, run_id, spec, source):
             require(False, 'windows_report_contract')
         require(all(digest == hashlib.sha256(source(path)).hexdigest()
                     for path, digest in report['source_sha256'].items()), 'windows_source_identity')
-        return {'checks': 14, 'records': 1}
+        return {'checks': 15, 'records': 1}
     require(report.get('status') == 'passed' and report.get('source_dirty') is False, 'custom_report_incomplete')
     if spec['kind'] == 'library':
         require(report.get('phase') == 'complete' and isinstance(report.get('checks'), list)

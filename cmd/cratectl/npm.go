@@ -2,17 +2,18 @@
 package main
 
 import (
-	"ctlplne.dev/cratectl/internal/configfile"
+	"bytes"
 	"encoding/json"
 	"errors"
 	"flag"
-	"fmt"
 	"net/url"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"ctlplne.dev/cratectl/internal/configfile"
 )
 
 func runNPMConfig(args []string) error {
@@ -39,8 +40,8 @@ func runNPMConfig(args []string) error {
 		return e
 	}
 	defer clear(token)
-	value := strings.TrimSpace(string(token))
-	if !regexp.MustCompile(`^[A-Za-z0-9_-]{32,256}$`).MatchString(value) {
+	value := bytes.TrimSpace(token)
+	if !regexp.MustCompile(`^[A-Za-z0-9_-]{32,256}$`).Match(value) {
 		return errors.New("credential is not a valid native npm token")
 	}
 	registry := strings.TrimRight(c.URL, "/") + "/npm/" + *repo + "/"
@@ -55,27 +56,14 @@ func runNPMConfig(args []string) error {
 		}
 		text += "cafile=" + strconv.Quote(ca) + "\n"
 	}
-	text += "//" + u.Host + "/npm/" + *repo + "/:_authToken=" + value + "\n"
-	file, e := os.OpenFile(*output, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
-	if e != nil {
+	text += "//" + u.Host + "/npm/" + *repo + "/:_authToken="
+	contents := make([]byte, 0, len(text)+len(value)+1)
+	contents = append(contents, text...)
+	contents = append(contents, value...)
+	contents = append(contents, '\n')
+	defer clear(contents)
+	if e := configfile.WriteNewPrivate(*output, contents); e != nil {
 		return errors.New("npm output must be a new file in an existing private directory")
 	}
-	complete := false
-	defer func() {
-		file.Close()
-		if !complete {
-			os.Remove(*output)
-		}
-	}()
-	if _, e = fmt.Fprint(file, text); e != nil {
-		return e
-	}
-	if e = file.Sync(); e != nil {
-		return e
-	}
-	if e = file.Close(); e != nil {
-		return e
-	}
-	complete = true
 	return json.NewEncoder(os.Stdout).Encode(map[string]any{"path": *output, "registry": registry, "tls_verification": true})
 }

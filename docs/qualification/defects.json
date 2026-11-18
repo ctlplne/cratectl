@@ -1607,6 +1607,24 @@
       "first_failure": "evidence/2026-11-18/go-1.27.4-security-development.json",
       "repair": "Pin Go 1.27.4 for current builds and qualification. Keep historical results tied to their original SDK and retain the strict client assertions.",
       "limits": "Govulncheck compared local source and both macOS ARM64 binaries against one official feed snapshot. Native Windows and Linux replay and the broad security gate remain open."
+    },
+    {
+      "id": "DEFECT.0149",
+      "summary": "macOS ARM64 NuGet SDK reads a different number of dependencies from HTTP registration and the original Nuspec for a supplementary Unicode flag case",
+      "candidate": "12b19684b47210dc485b6aea362de6537c7c5031",
+      "state": "Open. Original failure retained.",
+      "first_failure": "evidence/2026-11-18/local-12b1968-qualification.json",
+      "next": "Compare the original 56-case corpus across native SDKs and determine a stable registration representation that preserves the observed dependency semantics before changing deduplication.",
+      "limits": "Observed with actual .NET SDK 10.0.403 on macOS ARM64 after 677 successful local conformance assertions. Established Linux observations retain their original scope."
+    },
+    {
+      "id": "DEFECT.0150",
+      "summary": "Console build lockfile includes picomatch 4.0.7 affected by GHSA-fc5q-39xc-vjpf (CVE-2026-112366)",
+      "candidate": "12b19684b47210dc485b6aea362de6537c7c5031",
+      "state": "Open. Upstream advisory lists no patched release at observation.",
+      "first_failure": "evidence/2026-11-18/local-12b1968-qualification.json",
+      "next": "Recheck upstream remediation and replay audit and reproducible console build after a verified update.",
+      "limits": "The reported chain is development-only. The application serves embedded assets and no use of picomatch was found in console application sources. The audit remains a failure."
     }
   ]
 }

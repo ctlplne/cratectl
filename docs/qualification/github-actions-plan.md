@@ -50,15 +50,16 @@ sum and retry extracts altered inert bytes. No whole acceptance or retry is clai
 implemented; native Windows runtime remains unverified. New
 [ADR0075](../adr/0075-native-windows-cli-qualification.md) profiles run the actual
 native CLI/driver/Go SDK on windows-2025/windows-11-arm with exact source bytes,
-fourteen functions/five owned-job commands, bounded output/deadlines and actual
+fifteen functions/five owned-job commands, bounded output/deadlines and actual
 owned descendant cleanup. The workflow and closed custom validator establish a
 new22-file boundary after retaining both old20-contract campaigns' original
 results. Local Windows compile/vet leaves runtime success pending. The updated
 Go 1.27.4 build pin also selects the NuGet library and strict Go workflows.
 Expect 33 jobs across nine workflows, with 26 safe members and 87 reports if all
 selected jobs pass. The actual API inventory controls. The strict assertions and
-the original Go 1.27.3 failures remain intact. Windows writer, bootstrap,
-collection locks, install, server and provider scope remains open.
+the original Go 1.27.3 failures remain intact. The Windows npm configuration
+writer awaits native replay. Bootstrap, collection locks, install, server and
+provider scope remains open.
 
 ## Placement
 
@@ -79,7 +80,7 @@ and emulation never qualify x86 runtime behavior.
 | Portability | Separate x86 PostgreSQL/TLS/external-signing producer and ARM consumer; original16/common18 qualified. Requirement18 stages/22originals/25emptycommands/real acknowledgement loss qualified at12c6; Windows/full project closure remain. Preserve exact artifacts/fingerprints/API runner identity/native bytes/h1 and all original controls. |
 | NuGet library comparison | Native Linux x86/ARM, pinned SDK/library differential corpus. Separate from feed restore/package workflows. |
 | Strict Go checksum controls | Native Linux x86/ARM/macOS ARM; six controls pass and altered-ZIP trust-state assertion fails in original DEFECT.0126. Other greens do not repair it. |
-| Windows private configuration | Native Windows x64/ARM64; fourteen exact functions, actual CLI over a declared trusted-TLS management stand-in, NTFS/ACL/sharing/reparse and owned-job cancellation controls. Native runtime pending; no server/offline claim. |
+| Windows private configuration | Native Windows x64/ARM64 with fifteen exact functions. The actual CLI reads private configuration over a trusted-TLS management stand-in and creates protected npm configuration. The profile checks NTFS, ACLs, sharing, reparse points and owned-job cancellation. Native runtime is pending. |
 | Exact-source acceptance | Manual main read-only verifier; fixed original run inventory, source/job/platform/step/log/report/archive/binary identity checks. Starts no native tests. |
 
 Workflow files own actual triggers, tools, permissions and timeouts. Standard native

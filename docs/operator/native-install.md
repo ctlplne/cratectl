@@ -79,8 +79,10 @@ JSON
 "$CRATECTL_BIN/cratectl" npm-config --config "$CRATECTL_INSTALL/client.json" --repository packages --output "$CRATECTL_INSTALL/npmrc"
 ```
 
-`npm-config` writes an owner-readable file containing the scoped credential and
-verified TLS settings. It refuses to overwrite an existing file. Set
+`npm-config` writes a new private file containing the scoped credential and
+verified TLS settings. On Windows it creates the file with a protected owner
+DACL so it cannot inherit grants from the parent. Native Windows execution is
+pending. It refuses to overwrite an existing file. Set
 `NPM_CONFIG_USERCONFIG` to that file's absolute path, then use stock npm:
 
 ```sh

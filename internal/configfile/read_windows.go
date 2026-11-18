@@ -16,7 +16,7 @@ import (
 
 var errWindowsPrivate = errors.New("configuration must have the current Windows owner and a protected DACL granting access only to that owner, SYSTEM or Administrators")
 
-func openBounded(path string, limit int64, private bool) (*os.File, error) {
+func windowsConfigurationPath(path string) (*uint16, error) {
 	if path == "" || len(path) > 128<<10 {
 		return nil, errors.New("configuration path exceeds the Windows input budget")
 	}
@@ -25,13 +25,21 @@ func openBounded(path string, limit int64, private bool) (*os.File, error) {
 	if strings.Contains(strings.TrimPrefix(path, filepath.VolumeName(path)), ":") {
 		return nil, errors.New("configuration alternate data streams are unsupported")
 	}
-	before, err := os.Lstat(path)
-	if err != nil || !before.Mode().IsRegular() || before.Size() < 0 || before.Size() > limit {
-		return nil, errors.New("configuration must be a bounded regular file")
-	}
 	name, err := windows.UTF16PtrFromString(path)
 	if err != nil {
 		return nil, errors.New("invalid configuration path")
+	}
+	return name, nil
+}
+
+func openBounded(path string, limit int64, private bool) (*os.File, error) {
+	name, err := windowsConfigurationPath(path)
+	if err != nil {
+		return nil, err
+	}
+	before, err := os.Lstat(path)
+	if err != nil || !before.Mode().IsRegular() || before.Size() < 0 || before.Size() > limit {
+		return nil, errors.New("configuration must be a bounded regular file")
 	}
 	// No final reparse traversal, no writes/deletes through other handles while
 	// this reader is open, and no privilege elevation or backup-semantics bypass.

@@ -14,6 +14,7 @@ import (
 	"time"
 	"unsafe"
 
+	"ctlplne.dev/cratectl/internal/configfile"
 	"golang.org/x/sys/windows"
 )
 
@@ -22,33 +23,10 @@ import (
 const procThreadAttributeJobList = 0x0002000d
 
 func writePrivateDiagnostic(path string, raw []byte) error {
-	user, err := windows.GetCurrentThreadEffectiveToken().GetTokenUser()
-	if err != nil || len(raw) > 8<<20 {
-		return errors.New("private diagnostic owner/byte bound")
+	if len(raw) > 8<<20 {
+		return errors.New("private diagnostic byte bound")
 	}
-	descriptor, err := windows.SecurityDescriptorFromString("O:" + user.User.Sid.String() + "D:P(A;;FA;;;" + user.User.Sid.String() + ")")
-	if err != nil {
-		return err
-	}
-	attributes := windows.SecurityAttributes{Length: uint32(unsafe.Sizeof(windows.SecurityAttributes{})), SecurityDescriptor: descriptor}
-	name, err := windows.UTF16PtrFromString(path)
-	if err != nil {
-		return err
-	}
-	handle, err := windows.CreateFile(name, windows.GENERIC_WRITE, 0, &attributes, windows.CREATE_NEW, windows.FILE_ATTRIBUTE_NORMAL, 0)
-	if err != nil {
-		return err
-	}
-	f := os.NewFile(uintptr(handle), path)
-	if f == nil {
-		windows.CloseHandle(handle)
-		return errors.New("private diagnostic handle unavailable")
-	}
-	defer f.Close()
-	if _, err := f.Write(raw); err != nil {
-		return err
-	}
-	return f.Sync()
+	return configfile.WriteNewPrivate(path, raw)
 }
 
 type jobAccounting struct {

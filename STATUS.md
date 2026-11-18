@@ -61,19 +61,19 @@ three native non-Windows hosts passed. Actual Windows runtime is absent from
 ## Native Windows CI implementation awaits its actual jobs
 
 [ADR0075](docs/adr/0075-native-windows-cli-qualification.md) and its
-[development record](evidence/2026-11-18/windows-cli-ci-development.json) add two
+[development records](evidence/2026-11-18/windows-npm-private-development.json) add two
 GitHub-hosted native x64/ARM64 profiles, exact clean CLI/driver/SDK identities,
-fourteen required functions and five bounded managed commands. Each command is
+fifteen required functions and five bounded managed commands. Each command is
 assigned at creation to an owned Windows Job Object before its initial thread
 resumes. Output/time bounds, actual descendant cancellation and zero remaining
-owned processes are mandatory. Closed safe evidence binds eighteen source hashes;
+owned processes are mandatory. Closed safe evidence binds twenty-three source hashes;
 first-failure output has protected ACLs and encrypted-only diagnostic retention.
 
-Local ARM build/unit/race/lint, tagged normal/race compile/vet and Windows x64/
-ARM64 driver/test compile/vet pass only. Native Windows ACL/NTFS/sharing/CLI/job
-controls remain unverified until the actual jobs finish. The management endpoint
-is an explicitly owned trusted-TLS response stand-in. No Windows server/offline
-collection/credential writer/bootstrap/install claim follows.
+Local ARM build/unit/race/lint and Windows x64/ARM64 cross-build and vet pass.
+Native ACL, NTFS, sharing, protected npm configuration output, and process controls
+await actual Windows jobs. The read journey uses an owned trusted-TLS management
+stand-in. Windows server operation, offline collection, bootstrap and installation
+remain open.
 
 The workflow plus custom validator close22 files. Both original20-contract
 records above were retained and checked against their original logs and members.
@@ -94,6 +94,16 @@ safe members and 87 reports if every selected job passes. Use the actual API
 inventory. The three original strict failures keep DEFECT0126 open until a
 patched native campaign runs the unchanged assertions. Full security and
 packaging qualification remain open.
+
+## Local candidate qualification
+
+At `12b1968`, the real PostgreSQL store and OCI conformance packages passed.
+The server package failed three checks that require Linux network namespaces.
+Stock-client conformance reached 677 assertions and failed at NuGet metadata
+case 46 with the actual macOS .NET 10.0.403 SDK. The exact source and outcomes
+are in the [local candidate evidence](evidence/2026-11-18/local-12b1968-qualification.json).
+The same record retains the open build-tool npm advisory and the limits of the
+older Trivy database used for the Linux ARM64 binary scan.
 
 ## Durable state and remaining scope
 

@@ -160,7 +160,7 @@ def check_log(raw, spec, source):
     require('--- FAIL:' not in text and '--- SKIP:' not in text, 'native_test_failure_or_skip')
     kind = spec['kind']
     if kind == 'windows':
-        require(text.count('Native Windows private configuration and owned-job controls passed (14 functions,5 managed commands)') == 1,
+        require(text.count('Native Windows private configuration and owned-job controls passed (15 functions,5 managed commands)') == 1,
                 'windows_native_inventory')
     if kind in ('native', 'go'):
         pattern = r'\bok\s+ctlplne.dev/cratectl/internal/(?:server|store' + ('|conformance' if kind == 'native' else '') + r')\s'

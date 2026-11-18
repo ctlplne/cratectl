@@ -1,0 +1,174 @@
+{
+  "candidate": "12b19684b47210dc485b6aea362de6537c7c5031",
+  "observed_at": "2026-11-18T11:24:11.857273+00:00",
+  "clean_build": true,
+  "platform": "Darwin ARM64",
+  "artifacts": [
+    {
+      "path": ".cache/cratectl-12b1968/cratectl",
+      "bytes": 11890962,
+      "sha256": "6d2e88b098a10c4acb3c934ed6d4f56ea4f7524ca1564ff20d9e4a47ff6c99ff"
+    },
+    {
+      "path": ".cache/cratectl-12b1968/cratectld",
+      "bytes": 22542738,
+      "sha256": "02b1b0a583f2475e7dba3f2eefe7ff600de38d2730273b11538d123911b0a3d7"
+    }
+  ],
+  "integration": {
+    "gate": "make integration",
+    "result": "failed",
+    "passed_packages": [
+      "internal/store",
+      "internal/conformance"
+    ],
+    "failed_package": "internal/server",
+    "failure_reason": "These three SDK isolation checks require native Linux ordinary-user network namespaces.",
+    "failed_tests": [
+      "TestGoModuleRequirementNativeReplacementAndExclusionDifferentials",
+      "TestGoModuleRequirementCollectionNativeSignedCompetingVersionsAndOffline",
+      "TestGoModuleCommonSetOfflineNativeGraphAndUncertainAcknowledgement"
+    ],
+    "raw_log": {
+      "path": ".cache/cratectl-12b1968-integration.log",
+      "bytes": 3905,
+      "sha256": "cdb96206fd9e7d29f1702e9a6ea9afadfdeb20defb306379f4a93219cf937b52"
+    },
+    "separate_sql_timing": {
+      "result": "passed",
+      "checks": 6,
+      "raw_log": {
+        "path": ".cache/cratectl-12b1968-sql-timing.log",
+        "bytes": 1090,
+        "sha256": "08f97640183f8d7d822a484c4b34c1089f4c15bf0ba2f50bf0d8641f7beab40d"
+      }
+    }
+  },
+  "baseline_conformance": {
+    "gate": "make conformance",
+    "result": "failed",
+    "assertions_before_failure": 677,
+    "failed_assertion": "actual SDK HTTP framework/range/preference/list semantics match original Nuspec published",
+    "raw_report": {
+      "path": ".cache/cratectl-12b1968-conformance-d09943e73c.json",
+      "bytes": 368015,
+      "sha256": "3f1897a0b36d95b41887a614887057f760316b512683c39ee3014df8eb20954d"
+    },
+    "dotnet_sdk": "10.0.403",
+    "dotnet_platform": "macOS ARM64",
+    "sdk_archive": {
+      "path": ".cache/cratectl-dotnet-sdk-10.0.403/dotnet-sdk-10.0.403-osx-arm64.tar.gz",
+      "bytes": 230759804,
+      "sha512": "5893c66b48ea3674c7da18501059d606e96f3672fabe4d5e41762e692c7c83df3ee0b2b9dc5a0786191da2dc413d7335158101c14c935ab217f31ac2529770f3"
+    },
+    "sdk_source": "https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-10.0.403-macos-arm64-binaries-targz",
+    "nuget_metadata_contract": {
+      "cases": 56,
+      "fixture_sha256": "dfb0cda92ab9ab13314cd74cb162b3f336dd79c64d729d068fc3dfba406f1b9d",
+      "observations_sha256": "24f00b7c4f5f2501a753757f86cee7dcd63d9dac5314b5a4bc974cfa2c24b064",
+      "mismatch_indexes": [
+        46
+      ],
+      "phase": "published"
+    },
+    "metadata_diagnostics": [
+      {
+        "index": 46,
+        "failed": false,
+        "paths": [
+          "groups[0].packages._length"
+        ]
+      }
+    ],
+    "mismatch": {
+      "case": "flags-supplementary",
+      "original_nuspec_dependency_count": 1,
+      "http_dependency_count": 2
+    }
+  },
+  "security_observations": {
+    "govulncheck": {
+      "version": "1.9.0",
+      "feed": "https://vuln.go.dev",
+      "feed_snapshot": "2026-11-11T02:51:11Z",
+      "GO-2026-6859_matches": 0,
+      "raw_reports": [
+        {
+          "path": ".cache/cratectl-12b1968-govulncheck-source.json",
+          "bytes": 786877,
+          "sha256": "52d5560b14ee37b73166df912997a9d9cb9bf4312a19a62d9aafc4351d627231"
+        },
+        {
+          "path": ".cache/cratectl-12b1968-govulncheck-cratectl.json",
+          "bytes": 615356,
+          "sha256": "625e655a83738663ffece20f5e8a405652d351ae3816bde640639c420d357a53"
+        },
+        {
+          "path": ".cache/cratectl-12b1968-govulncheck-cratectld.json",
+          "bytes": 786211,
+          "sha256": "ec9030b0b7891fbc31b4c4026248fe99481ca71f749ff11e3c98a96c60c14f1a"
+        }
+      ]
+    },
+    "npm_audit": {
+      "node": "26.0.0",
+      "npm": "11.16.0",
+      "exit_code": 1,
+      "result": "five reported high-severity nodes affected by one advisory",
+      "advisory": "https://github.com/advisories/GHSA-fc5q-39xc-vjpf",
+      "affected_development_nodes": [
+        "@vitejs/plugin-react",
+        "fdir",
+        "picomatch",
+        "tinyglobby",
+        "vite"
+      ],
+      "root_dependency": "picomatch@4.0.7",
+      "upstream_patched_version": null,
+      "raw_report": {
+        "path": ".cache/cratectl-12b1968-npm-audit.json",
+        "bytes": 2689,
+        "sha256": "7b59fb2e93b3094b981b02aa5166b76c8b8714275d48ebaafacd6df58b7b653e"
+      }
+    },
+    "trivy": {
+      "version": "0.72.0",
+      "platform": "Linux ARM64 cross-build scanned offline on macOS",
+      "db_updated": "2026-10-30T19:07:50.77378237Z",
+      "raw_report": {
+        "path": ".cache/cratectl-12b1968-trivy-rootfs.json",
+        "bytes": 9620,
+        "sha256": "51ff2ae6116fbf2e6a2b6f9cd44d863b44544001a8606c6972e55bff4dbc45ba"
+      },
+      "observed_targets": [
+        {
+          "name": "cratectl",
+          "dependencies": 9,
+          "findings": 0,
+          "binary": {
+            "path": ".cache/cratectl-12b1968-linux-arm64/cratectl",
+            "bytes": 11554185,
+            "sha256": "d6b1386bfa0b988ed8b71f9d1bb5c0c141f5dd477cd4cf08729a98d8796a6f86"
+          }
+        },
+        {
+          "name": "cratectld",
+          "dependencies": 14,
+          "findings": 0,
+          "binary": {
+            "path": ".cache/cratectl-12b1968-linux-arm64/cratectld",
+            "bytes": 21880590,
+            "sha256": "7a389b1e46bf8fb99cc3ef3840471ebe70ca74eb8c55b272b9f42f1ebc4c4d3e"
+          }
+        }
+      ]
+    }
+  },
+  "goal_complete": false,
+  "broad_readiness": false,
+  "limits": [
+    "The native PostgreSQL profile uses an owned loopback PostgreSQL 16.15 instance and filesystem bytes. The selected primary was outside this run.",
+    "The complete integration and baseline stock-client gates failed. TLS and stock-client observations before the first failure retain their exact candidate and scope.",
+    "Go and Trivy observations do not qualify release security. The Trivy feed was stale, and no production container image was scanned."
+  ]
+}

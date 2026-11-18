@@ -14,14 +14,15 @@ the ARM64 qualification.
 
 The qualifier checks actual runtime and SDK platform, clean checkout and embedded
 CLI/driver source revision, modification flag, package and Go version. It records
-three executable hashes and eighteen exact source hashes. Five managed commands
+three executable hashes and twenty-three exact source hashes. Five managed commands
 check Git revision/cleanliness, native SDK host and target, and two noncached test
 suites.
-The fourteen required functions are nine configuration controls (six actual
-Windows functions, two pure ACL policy functions and the read-budget overflow
-regression) and five driver controls (two event-parser and three native process
-functions). The actual CLI talks to an owned trusted-TLS management-response
-stand-in on127.0.0.1:38443; this is not a Windows PostgreSQL/server journey.
+The fifteen required functions include ten configuration controls and five driver
+controls. The configuration tests cover the Windows handle reader, pure ACL
+policy, read budgets and concurrent first-writer behavior. The actual CLI tests
+read private input over an owned TLS management stand-in on `127.0.0.1:38443`
+and write a protected npm configuration, with refusal of an existing output and
+a broad source credential.
 
 Each command gets a fresh unnamed Windows Job Object with kill-on-close. The
 process is assigned to that job by the process-creation attribute and starts
@@ -45,8 +46,10 @@ Upload one closed safe report per successful job, retained14days. It contains
 fixed identities, hashes, the exact sorted function names and explicit scope
 flags, without raw test output, user SIDs, private paths or credential values.
 Both upload steps enable hidden files for their exact paths under `.cache`.
-Failure output is created with a protected owner-only Windows DACL and bounded
-to8MiB. Seal the first observation with the existing public diagnostic recipient
+Windows creates npm configuration and failure output with a protected owner
+DACL before the first write. Failed writes attempt removal through the same file
+handle. Failure output is bounded to 8 MiB. Seal the first observation with the
+existing public diagnostic recipient
 using OpenSSL CMS AES-256-GCM/RSA-OAEP-SHA256. Retain only ciphertext and closed
 hash/absence metadata for30days. Failed/unavailable encryption has no plaintext
 fallback and cannot erase the first failure. Diagnostic encryption is not proof
@@ -61,10 +64,10 @@ Adding the workflow and validator closes22 files rather than20. The original
 78a5983 whole acceptance and2a0268c's completed failed strict campaign are retained
 before publishing this boundary; historical results are never upgraded by it.
 
-This profile qualifies only private configuration reads, the scoped actual CLI
-stand-in request and owned Windows process controls once the actual jobs pass.
-Windows server operation, credential creation/bootstrap, collection directory
-locks, disconnected installation and every other GOAL requirement stay open.
+The actual jobs are required for private configuration reads, npm configuration
+output, the scoped CLI request and owned Windows process controls. Windows server
+operation, server-issued credential creation and bootstrap, collection directory
+locks, disconnected installation and the other GOAL requirements stay open.
 No primary/customer/sibling service or selected local binary is changed.
 
 References: [GitHub standard native runner labels](https://docs.github.com/en/actions/reference/runners/github-hosted-runners),
