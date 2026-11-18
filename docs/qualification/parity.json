@@ -29094,7 +29094,8 @@
         "evidence/2026-11-18/helm-f245757-arm64-kind.json",
         "evidence/2026-11-18/github-08436af-linux-install-native-amd64.json",
         "evidence/2026-11-18/linux-install-08436af-arm64-local.json",
-        "evidence/2026-11-18/linux-sbom-f2bc59e.json"
+        "evidence/2026-11-18/linux-sbom-f2bc59e.json",
+        "evidence/2026-11-18/linux-disconnected-stack-f2bc59e-arm64.json"
       ],
       "limits": "Scoped blank Compose, single-node Helm and offline binary installation successes. Production distribution licensing, signing authority, full disconnected stack and production release/recovery remain open.",
       "next_action": "Stage the reviewed component set and qualify a full disconnected target and production storage, bootstrap, controlled upgrade and recovery."
@@ -29218,7 +29219,8 @@
       "state": "implementing",
       "candidate": null,
       "evidence": [
-        "evidence/2026-11-18/linux-install-08436af-arm64-local.json"
+        "evidence/2026-11-18/linux-install-08436af-arm64-local.json",
+        "evidence/2026-11-18/github-08436af-linux-install-native.json"
       ],
       "limits": "Named CI slices are observed in the scoped checkpoint. The complete capability is unfinished; recurring browser, remaining platforms, deeper campaigns and all product requirements remain open.",
       "next_action": "Repair and replay the open CI defects, then complete every applicable GOAL.md acceptance case for this gate.",
@@ -29375,7 +29377,7 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "scripts/install_linux_candidate.py; scoped signed native archive and isolated runtime fixture",
       "surfaces": {
         "api": null,
         "cli": null,
@@ -29398,11 +29400,13 @@
         "partial failure",
         "recovery"
       ],
-      "state": "planned",
+      "state": "implementing",
       "candidate": null,
-      "evidence": [],
-      "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "evidence": [
+        "evidence/2026-11-18/linux-disconnected-stack-f2bc59e-arm64.json"
+      ],
+      "limits": "The verified ARM64 archive installed in a loopback-only Docker namespace with real PostgreSQL 16.15, stock npm and matching approved bytes after restart. Container dependencies were supplied before isolation.",
+      "next_action": "Assemble the complete externally signed media with pinned images and applicable scanner data, then install and recover it on a fresh disconnected target."
     },
     {
       "id": "QUAL.STANDARD-PROFILE",

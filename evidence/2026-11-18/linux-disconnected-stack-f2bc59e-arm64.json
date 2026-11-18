@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "candidate": "f2bc59ed06a9c20565db262c714424d6981b5925",
+  "observed_at": "2026-11-18T15:10:40.891615+00:00",
+  "status": "passed",
+  "architectures": [
+    "linux/arm64"
+  ],
+  "source_references": [
+    {
+      "path": ".cache/cratectl-disconnected-run.py",
+      "bytes": 8969,
+      "sha256": "45b5db2bab8b41e94f6572412ac12d7180518634707043004902e98df74516e1"
+    },
+    {
+      "path": ".cache/cratectl-disconnected-target.py",
+      "bytes": 11219,
+      "sha256": "d62d911476b52d03a48e6f60a9148bbdea1cc08d4836d8965f994befd1fed957"
+    }
+  ],
+  "original_observation": {
+    "path": ".private/cratectl-disconnected-0ea11296ba/safe-report.json",
+    "bytes": 2989,
+    "sha256": "c73e1e22164204190378798aae80ebcb5ff31b7414f1024d3bfba793d1aebf4b"
+  },
+  "original_checks": [
+    "target-network-only-loopback",
+    "target-native-arm64-nonroot",
+    "independently-pinned-public-trust",
+    "external-ed25519-binding",
+    "authenticated-release-slice",
+    "trusted-native-archive-installed",
+    "bootstrap-owner-input-scoped",
+    "tls-refusal-and-explicit-trust",
+    "blank-registry",
+    "private-npm-config",
+    "stock-npm-published-unassessed",
+    "policy-refused-unassessed",
+    "approved-stock-install-exact-bytes",
+    "durable-worker-receipts",
+    "runtime-restart-retains-approved-bytes",
+    "network-still-loopback-after-restart"
+  ],
+  "full_replay": {
+    "path": ".private/cratectl-disconnected-83bce413cd/safe-report.json",
+    "bytes": 3029,
+    "sha256": "e303724d4a10e9a35ae1dd932482315fc24632f71140dd802879d318fd590e1f"
+  },
+  "checks": [
+    "target-network-only-loopback",
+    "target-native-arm64-nonroot",
+    "independently-pinned-public-trust",
+    "external-ed25519-binding",
+    "signed-manifest-change-refused",
+    "authenticated-release-slice",
+    "trusted-native-archive-installed",
+    "bootstrap-owner-input-scoped",
+    "tls-refusal-and-explicit-trust",
+    "blank-registry",
+    "private-npm-config",
+    "stock-npm-published-unassessed",
+    "policy-refused-unassessed",
+    "approved-stock-install-exact-bytes",
+    "durable-worker-receipts",
+    "runtime-restart-retains-approved-bytes",
+    "network-still-loopback-after-restart"
+  ],
+  "postgres": {
+    "schema": 18,
+    "roles": "false/false/false",
+    "tenant_tables": "57/57/0"
+  },
+  "tool_identity": {
+    "postgres": "docker.io/library/postgres:16.15-alpine@sha256:aa6cb33cf4c19c765cefcf48d96176258800870a9a1e930ad126200f9d825139",
+    "stock_node_test_harness": "node:22-bookworm@sha256:363e1587494626837fa7f9a23bdb453d13b0ff3c67c705c2805cfc69c2d2fad7"
+  },
+  "npm_version": "10.9.9",
+  "signed_member_sha256": {
+    "cratectl-0.1.0.tgz": "8a7b785f5573b79b7587814d273f780460ed917fdcf81cc4632fc50486dc5e80",
+    "cratectl-linux-arm64.cdx.json": "8ec6d2b1fcbab1f04f8d260024e5e55cb9f1037e16881639e49856b849026818",
+    "cratectl-linux-arm64.spdx.json": "4f87efec379ed6ea04f6135c594a0570d9fe65ac257593017560b517dcc453be",
+    "cratectl-linux-arm64.tar.gz": "c3c275606628ed69491a4a07f66d34dc7605eba0e70111ac9b5d71099f9d37a8",
+    "helm.md": "d458bfd45d7d6ab32920efb0292b34a75dde618c0dd4b41708cbd28b8ffd28f2",
+    "linux-candidate.md": "1398ada106b522ac413324b10c63a3519df1e002b32fbfebf5ddfdfa7ed327bb",
+    "native-install.md": "a0e8ae5f61fc2ba6c919aea5fb13f99563898a36bba6d0f8d6d56d9dcbc83b1e"
+  },
+  "independent_public_verification": {
+    "scope": "The exact signature was replayed with a second external OpenSSL verification outside the isolated runtime.",
+    "public_material": [
+      {
+        "path": ".private/cratectl-disconnected-83bce413cd/authenticated-inputs/approved.pem",
+        "bytes": 113,
+        "sha256": "f88881655e694bf5399d3345c0b55aaedce2a9d73ca58c0865af381422b67741"
+      },
+      {
+        "path": ".private/cratectl-disconnected-83bce413cd/authenticated-inputs/release-manifest.json",
+        "bytes": 840,
+        "sha256": "089df624bc2172565489838f1c07ea518f69eac0b40ae9556201036028f87b14"
+      },
+      {
+        "path": ".private/cratectl-disconnected-83bce413cd/authenticated-inputs/release-manifest.sig",
+        "bytes": 64,
+        "sha256": "85206609dc50d8dddc72e34d6456f7e66681b88602d4af6db03c96790fd6f7f6"
+      }
+    ],
+    "verification_log": {
+      "path": ".private/cratectl-disconnected-83bce413cd/independent-signature.log",
+      "bytes": 32,
+      "sha256": "0fd23954193f64e60f5b4b5f381cd1ea9d580aece00a6bbbc98e664302ce6b79"
+    }
+  },
+  "limits": [
+    "This ARM64 fixture authenticated and installed the exact binary archive, used stock npm and real PostgreSQL with only loopback active, and checked exact approved bytes after registry and worker restart.",
+    "Container dependencies were already present on the host. The database and fixture were disposable. This does not yet qualify provisioning a blank machine from a complete offline bundle, supported production images, imported scanner intelligence, upgrade, disaster recovery or release distribution."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false,
+  "original_fixture_source": {
+    "path": ".cache/cratectl-disconnected-target-original.py",
+    "sha256": "d6d5dd641e692e7c82bb5bac1089cebf28ad7977ce93e5db0f509004336fccea",
+    "bytes": 10801
+  }
+}

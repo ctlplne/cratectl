@@ -274,11 +274,20 @@ target and refused the test bridge with an active Ethernet device.
 The exact `08436af` ARM64 Linux replay passed all 12 checks in a nonroot
 container with networking disabled. Both installed binaries ran, their digests
 matched the archive, and the installer refused changed checksums, the other
-architecture and unsafe destinations. The original GitHub x64 job passed all
-12 checks, with its 10 source hashes independently matched. The hosted ARM64
-job remains queued. Full disconnected stack installation remains open.
+architecture and unsafe destinations. Both original GitHub jobs passed all
+12 checks. Each report matched 10 source hashes, and each hosted archive
+matched the local archive byte-for-byte.
 [Local ARM64 result](evidence/2026-11-18/linux-install-08436af-arm64-local.json)
-[Hosted x64 result](evidence/2026-11-18/github-08436af-linux-install-native-amd64.json)
+[Hosted x64 and ARM64 results](evidence/2026-11-18/github-08436af-linux-install-native.json)
+
+On ARM64 at `f2bc59e`, the disconnected registry fixture checked a signed
+manifest against a separately pinned public key and refused a changed
+manifest. The native archive installed in the loopback-only target. Stock npm
+published over trusted TLS, exact policy approval permitted installation and
+the registry and worker preserved the approved bytes after restart. The run
+used already supplied container dependencies. Installing the complete
+distribution bundle on a fresh disconnected machine remains open.
+[Disconnected target evidence](evidence/2026-11-18/linux-disconnected-stack-f2bc59e-arm64.json)
 
 The packaged Helm chart passed 13 deployment checks at `f245757` on an
 isolated ARM64 Kubernetes 1.35 cluster. Restricted Pod Security admitted the
