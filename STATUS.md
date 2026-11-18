@@ -8,6 +8,18 @@ Broad readiness,security and packaging remain unqualified.
 
 ## Latest whole accepted source
 
+`f65b296` passed all 28 original jobs across seven workflows. Its unchanged
+local verifier accepted 84 reports, with 33 exact source contracts and three
+transfer records independently matched. Both native Linux stock Cargo jobs
+qualify bounded cached search across hosted, proxy and group repositories.
+[Exact Cargo search campaign evidence](evidence/2026-11-19/github-f65b296-exact-local-accepted.json)
+
+`383b444` passed all 31 original jobs across eight workflows. Its unchanged
+local verifier accepted 99 reports, including the mixed Cargo group and
+three focused Chromium workflows. All original job logs, safe summaries,
+33 source contracts and three transfer records independently match.
+[Exact mixed-group campaign evidence](evidence/2026-11-19/github-383b444-exact-local-accepted.json)
+
 `ab6e559` passed all 33 original jobs across nine workflows. Its unchanged
 read-only verifier ran locally at the same exact schema 19 commit and
 accepted 101 reports. Independent comparison matched 33 original job logs,
