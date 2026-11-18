@@ -1,0 +1,27 @@
+{
+  "development_base": "edb46e712f50cb5b45e680c01b48e306d0f99b13",
+  "observed_at": "2026-11-18T13:23:13.211727+00:00",
+  "platform": "macOS ARM64",
+  "go_version": "1.27.4",
+  "changed_source_sha256": {
+    "cmd/cratectld/worker.go": "d3ec310e208bdbf86a6e05a63dc3c6449f08fbccaa26389b1ada9dd3571d0b51",
+    "cmd/cratectld/worker_test.go": "7b5c8fe0ba194f2305198252859e536e14c55ff43de8982320472ff07f7627d0",
+    "internal/configfile/config.go": "21f6edd2ba1cc53df6a20e555d691eefeacb1c1cd1c0c1bdc674ce3ff2515e43",
+    "internal/configfile/read_unix.go": "ab2953d7d4d26f4caec4077c15033c55259ec1434b9ac6b5671331159627032d",
+    "internal/configfile/read_windows.go": "d969e29a2463460882139f8c58083e07ed4f407fb357efa25f90656e676be9fa"
+  },
+  "first_failure": "A directory was handed to JSON decoding by the original worker command instead of being refused as a nonregular input.",
+  "replay": [
+    "Native Go normal and race tests pass for ./cmd/cratectld and ./internal/configfile.",
+    "Go vet passes both packages.",
+    "The worker accepts the exact private JSON byte limit and refuses one extra byte, a second JSON value and an unknown field.",
+    "The worker command rejects a nonregular identity configuration before opening the database.",
+    "Windows x64 and ARM64 server test binaries compile."
+  ],
+  "limits": [
+    "The local development checks cover worker input. The Windows build results are compile-only.",
+    "Native positive worker replay and broad qualification lack evidence at this source."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

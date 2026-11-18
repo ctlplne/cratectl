@@ -117,6 +117,9 @@ deadline and private credential file changes.
 Both native Windows jobs at `b00aa94` passed the same 15 CLI functions and five
 managed commands. The original logs, reports and 23 source hashes per job
 matched. [Replay Windows evidence](evidence/2026-11-18/github-b00aa94-windows-native.json)
+All three focused Chromium jobs passed at that source. Repair, retention and
+NuGet ran five fresh database repetitions each and completed 160 assertions in
+total. [Focused Chromium evidence](evidence/2026-11-18/github-b00aa94-focused-browser.json)
 
 The earlier `a0e646d` campaign closed with 25 passing jobs and three npm audit
 failures. Its Linux x64 Chromium step completed all 19 workflows and 151
@@ -173,6 +176,12 @@ input and authentication before and after revocation.
 credentials. Normal and race tests and vet passed on macOS ARM64. The positive
 proxy and stock-client replay requires the exact source in GitHub CI.
 [Development evidence](evidence/2026-11-18/upstream-private-input-development.json)
+
+The worker now requires private regular files for its identity configuration
+and tokens. Local normal and race tests and vet passed. The worker rejects
+nonregular identity input before database setup, and its JSON parser accepts
+only one object within the configured budget.
+[Worker input evidence](evidence/2026-11-18/worker-private-input-development.json)
 
 The blank Compose evaluation passed 20 checks at `498a078` on a Linux ARM64
 Docker engine on macOS. The empty database reached schema 18 with forced RLS

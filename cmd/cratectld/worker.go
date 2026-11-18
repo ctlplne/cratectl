@@ -14,9 +14,32 @@ import (
 	"time"
 
 	"ctlplne.dev/cratectl/internal/blob"
+	"ctlplne.dev/cratectl/internal/configfile"
 	"ctlplne.dev/cratectl/internal/store"
 	"ctlplne.dev/cratectl/internal/worker"
 )
+
+func workerTokenFiles(path string, maximum int64) ([]string, error) {
+	file, err := configfile.OpenBounded(path, maximum, true)
+	if err != nil {
+		return nil, errors.New("worker identity configuration requires a bounded private regular file")
+	}
+	defer file.Close()
+	var config struct {
+		TokenFiles []string `json:"token_files"`
+	}
+	bounded := &io.LimitedReader{R: file, N: maximum + 1}
+	decoder := json.NewDecoder(bounded)
+	decoder.DisallowUnknownFields()
+	if decoder.Decode(&config) != nil {
+		return nil, errors.New("invalid worker identity configuration")
+	}
+	var rest any
+	if decoder.Decode(&rest) != io.EOF || bounded.N == 0 {
+		return nil, errors.New("worker identity configuration must contain one object within its byte budget")
+	}
+	return config.TokenFiles, nil
+}
 
 func runWorker() error {
 	f := flag.NewFlagSet("worker", flag.ContinueOnError)
@@ -55,26 +78,9 @@ func runWorker() error {
 	if *budget < 1 || *budget > 1<<30 {
 		return errors.New("identity configuration budget must be positive and at most 1 GiB")
 	}
-	file, e := os.Open(*identities)
+	tokenFiles, e := workerTokenFiles(*identities, *budget)
 	if e != nil {
-		return errors.New("open private worker identity configuration")
-	}
-	defer file.Close()
-	info, e := file.Stat()
-	if e != nil || info.Mode().Perm()&0077 != 0 || info.Size() > *budget {
-		return errors.New("worker identity configuration must be bounded and readable only by its owner")
-	}
-	var config struct {
-		TokenFiles []string `json:"token_files"`
-	}
-	decoder := json.NewDecoder(io.LimitReader(file, *budget+1))
-	decoder.DisallowUnknownFields()
-	if e = decoder.Decode(&config); e != nil {
-		return errors.New("invalid worker identity configuration")
-	}
-	var rest any
-	if decoder.Decode(&rest) != io.EOF {
-		return errors.New("send one worker identity object")
+		return e
 	}
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
@@ -84,20 +90,10 @@ func runWorker() error {
 	}
 	defer db.Pool.Close()
 	opts := worker.Options{Name: *name, EventConcurrency: *events, IntegrityConcurrency: *integrity, MaintenanceConcurrency: *maintenance, Lease: *lease, Poll: *poll, Timeout: *timeout, MaxObjectBytes: *maxBytes, MaxEventBytes: *maxEvent, BytesPerSecond: *rate}
-	for _, path := range config.TokenFiles {
-		file, e := os.Open(path)
+	for _, path := range tokenFiles {
+		token, e := configfile.ReadBytes(path, 257, true)
 		if e != nil {
-			return errors.New("open a configured worker token file")
-		}
-		info, e := file.Stat()
-		if e != nil || info.Mode().Perm()&0077 != 0 || info.Size() > 257 {
-			file.Close()
-			return errors.New("worker token files must be bounded and readable only by their owner")
-		}
-		token, e := io.ReadAll(io.LimitReader(file, 258))
-		file.Close()
-		if e != nil {
-			return errors.New("read a configured worker token")
+			return errors.New("worker token requires a private regular file within 257 bytes")
 		}
 		identity, e := db.AuthenticateWorker(ctx, strings.TrimSpace(string(token)))
 		clear(token)

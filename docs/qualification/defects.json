@@ -1686,6 +1686,13 @@
       "first_failure": "evidence/2026-11-18/compose-4458f24-dns-failure.json",
       "replay": "evidence/2026-11-18/compose-498a078-arm64.json",
       "repair": "Copy the public trust bundle directly under the image root and select it with SSL_CERT_FILE. Let Docker create its own /etc resolver paths."
+    },
+    {
+      "id": "DEFECT.0158",
+      "summary": "Worker startup opens identity inputs before confirming regular private file semantics",
+      "state": "Repaired. Focused normal and race tests and vet pass. Native positive replay pending.",
+      "first_failure": "evidence/2026-11-18/worker-private-input-development.json",
+      "repair": "Read identity configuration through a verified private regular handle. Keep one structured object under the configured byte limit. Read worker tokens through the shared 257-byte private reader."
     }
   ]
 }

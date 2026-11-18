@@ -123,8 +123,9 @@ after a database commit before the ready runtime file was written. Modified
 files and conflicting parameters are rejected rather than overwritten. Keep
 `prepare.json` private: it contains recovery credentials and the server key.
 For an expired or revoked credential, use the existing owner `provision` command
-to create a new scoped token, then update the relevant client/worker token path;
-restart the worker after changing its identity configuration. Rerunning init
+to create a new scoped token, then update the relevant client or worker token path.
+The worker identity configuration and token inputs must be private regular files.
+Restart the worker after changing its identity configuration. Rerunning init
 does not extend or rotate credentials.
 
 For emergency revocation, `cratectld revoke --token-file` reads the original
