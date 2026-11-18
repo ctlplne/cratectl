@@ -149,6 +149,56 @@ def evaluate_cargo(work, installation, authority, toolchain, environment, call, 
           set(exact) == set(published) and all(exact[name]['checksum'] == sha(archive) and
           exact[name]['source'] == index_url and fetched.get(archive.name) == sha(archive)
           for name, archive in published.items()))
+
+    package_endpoint = '/api/v1/crates/' + ROOT_PACKAGE + '/' + VERSION
+    reference = {key: artifacts[ROOT_PACKAGE][key] for key in ('path', 'digest')}
+    lifecycle = repo + '/artifacts/lifecycle'
+    api('cargo-hold', lifecycle, 'PUT', {**reference, 'action': 'hold', 'expected_revision': 0,
+                                        'reason': 'Retain approved crate lifecycle evidence'})
+    check('reader and active hold block yank without changing the index',
+          request(package_endpoint + '/yank', reader, method='DELETE')[0] == 403
+          and request(package_endpoint + '/yank', admin, method='DELETE')[0] == 409
+          and json.loads(request(index(ROOT_PACKAGE), reader)[1])['yanked'] is False)
+    api('cargo-release-hold', lifecycle, 'PUT', {**reference, 'action': 'release_hold', 'expected_revision': 1,
+                                                'reason': 'Release the owned fixture hold'})
+    yank = (cargo, 'yank', '--registry', 'cratectl', '--version', VERSION, ROOT_PACKAGE)
+    original_entry = json.loads(request(index(ROOT_PACKAGE), reader)[1])
+    call('stock-cargo-yank', *yank, cwd=work/'cargo-root', environment=publisher)
+    status, yanked = request(index(ROOT_PACKAGE), reader)
+    checkpoint = api('cargo-yank-checkpoint', '/api/v1/audit/checkpoint')
+    check('stock Cargo yank changes only discovery and repeated yank leaves the journal unchanged',
+          status == 200 and json.loads(yanked) == {**original_entry, 'yanked': True}
+          and request(package_endpoint+'/yank', admin, method='DELETE')[0] == 200
+          and api('cargo-yank-retry-checkpoint', '/api/v1/audit/checkpoint') == checkpoint)
+
+    alternative = work/'cargo-unlocked'
+    new_project(alternative, 'cratectl-cargo-unlocked', '\n[dependencies]\n'+ROOT_PACKAGE+
+                ' = {version = "=1.0.0", registry = "cratectl", features = ["wire"]}\n')
+    _, unlocked = cargo_env('cargo-unlocked-home', reader)
+    _, output = call('cargo-yank-fresh-resolution', cargo, 'fetch', cwd=alternative, environment=unlocked, status=101)
+    check('stock Cargo rejects a yanked version during fresh resolution', 'version 1.0.0 is yanked' in output)
+
+    locked_cache, locked = cargo_env('cargo-locked-home', reader)
+    call('cargo-yank-locked-fetch', cargo, 'fetch', '--locked', cwd=consumer, environment=locked)
+    locked_archives = {archive.name: sha(archive) for archive in (locked_cache/'registry/cache').glob('*/*.crate')}
+    check('stock Cargo lockfile still fetches both exact approved archives while yanked', locked_archives == fetched)
+    call('stock-cargo-unyank', *yank, '--undo', cwd=work/'cargo-root', environment=publisher)
+    restart()
+    _, restored = cargo_env('cargo-unyanked-home', reader)
+    call('cargo-unyank-fresh-resolution', cargo, 'fetch', cwd=alternative, environment=restored)
+    check('stock Cargo unyank restores fresh resolution after restart with the original index entry',
+          json.loads(request(index(ROOT_PACKAGE), reader)[1]) == original_entry)
+
+    api('cargo-retain-deleted', lifecycle, 'PUT', {**reference, 'action': 'delete', 'expected_revision': 2,
+                                                  'reason': 'Retain the original crate bytes during deletion'})
+    check('common deletion removes discovery and blocks even exact pinned byte access',
+          request(index(ROOT_PACKAGE), reader)[0] == request(download, reader)[0] == 404)
+    api('cargo-restore-deleted', lifecycle, 'PUT', {**reference, 'action': 'restore', 'expected_revision': 3,
+                                                   'reason': 'Restore the verified original crate bytes'})
+    status, restored_bytes = request(download, reader)
+    check('common restoration restores the original index and exact approved archive',
+          status == 200 and restored_bytes == published[ROOT_PACKAGE].read_bytes()
+          and json.loads(request(index(ROOT_PACKAGE), reader)[1]) == original_entry)
     check('protected download still honors both grant revocation and tenant binding',
           request(download, other)[0] == 404 and request(download, reader)[0] == 200)
     api('cargo-revoke-grant', repo+'/grants', 'PUT', {'actor': 'cratectl-reader', 'read': False, 'write': False})

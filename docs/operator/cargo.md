@@ -38,6 +38,14 @@ waits for the version to appear. If its wait expires, inspect the repository's
 artifact inventory and approve the original digest. The same authenticated
 publication can be retried with identical bytes.
 
+An authorized repository writer can run
+`cargo yank example-lib --version 1.0.0 --registry cratectl` to exclude a
+version from fresh dependency resolution. Existing lockfiles can still use
+the version when policy allows the exact archive. Add `--undo` to make the
+version available for new resolutions again. An active artifact hold blocks
+these state changes. To remove even existing lockfile access, use the common
+review policy or the artifact's lifecycle controls.
+
 The current profile covers a single hosted sparse registry and same-registry
-dependencies. Cargo ownership, yanking, legacy Git indexes, upstream proxying,
+dependencies. Per-crate ownership, legacy Git indexes, upstream proxying,
 groups, and native search remain open.

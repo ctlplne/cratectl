@@ -50,6 +50,8 @@ func (s *Server) cargo(w http.ResponseWriter, r *http.Request, i store.Identity,
 			return
 		}
 		s.cargoPublish(w, r, i, repo, "sparse+"+root+"/index/")
+	case strings.HasPrefix(p, "api/v1/crates/"):
+		s.cargoYank(w, r, i, repo, strings.TrimPrefix(p, "api/v1/crates/"))
 	case r.Method != http.MethodGet && r.Method != http.MethodHead:
 		w.Header().Set("Allow", "GET, HEAD")
 		fail(w, 405, "method_not_allowed", "Read the sparse index and crate archives with GET or HEAD.")
@@ -64,6 +66,34 @@ func (s *Server) cargo(w http.ResponseWriter, r *http.Request, i store.Identity,
 	default:
 		respondErr(w, store.ErrNotFound)
 	}
+}
+
+func (s *Server) cargoYank(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, p string) {
+	parts := strings.Split(p, "/")
+	if len(parts) != 3 || (parts[2] != "yank" && parts[2] != "unyank") {
+		respondErr(w, store.ErrNotFound)
+		return
+	}
+	yanked := parts[2] == "yank"
+	method := http.MethodPut
+	if yanked {
+		method = http.MethodDelete
+	}
+	if r.Method != method {
+		w.Header().Set("Allow", method)
+		fail(w, 405, "method_not_allowed", "Use cargo yank or cargo yank --undo.")
+		return
+	}
+	if _, err := io.Copy(io.Discard, http.MaxBytesReader(w, r.Body, 0)); err != nil {
+		fail(w, 400, "cargo_yank_body", "Send the package and version in the endpoint with an empty body.")
+		return
+	}
+	err := s.DB.SetCargoYanked(r.Context(), i, repo.Name, parts[0], parts[1], yanked)
+	if err != nil {
+		respondErr(w, err)
+		return
+	}
+	writeJSON(w, 200, map[string]bool{"ok": true})
 }
 
 func (s *Server) cargoPublicAuthority(w http.ResponseWriter) bool {

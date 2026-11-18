@@ -16,6 +16,7 @@ function hasReferenceLifecycle(format:string|undefined,a:Artifact){
   if(format==='maven')return a.path.split('/').at(-1)!=='maven-metadata.xml';
   if(format==='npm')return !a.path.startsWith('npm-catalog/')&&a.media_type!=='application/vnd.cratectl.npm-catalog+json';
   if(format==='nuget')return a.path.startsWith('nuget-packages/')&&a.path.endsWith('.nupkg');
+  if(format==='cargo')return a.path.startsWith('crates/')&&a.path.endsWith('.crate');
   if(format==='pypi')return !a.path.startsWith('pypi-catalog/')&&a.media_type!=='application/vnd.cratectl.python-catalog+json';
   return false;
 }

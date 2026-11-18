@@ -147,3 +147,63 @@ AND (NOT $4::boolean OR COALESCE(d.decision,a.decision)='allowed') ORDER BY a.pa
 	}
 	return out, nil
 }
+
+// SetCargoYanked changes resolution metadata while retaining the exact archive.
+// Cargo lockfiles can still fetch a yanked version through normal byte policy.
+func (s *Store) SetCargoYanked(ctx context.Context, i Identity, repo, name, version string, yanked bool) error {
+	key, err := cargo.ArtifactPath(name, version)
+	if err != nil {
+		return ErrNotFound
+	}
+	return s.Tx(ctx, i, true, func(tx pgx.Tx) error {
+		r, err := repositoryInTx(ctx, tx, i, repo, "write")
+		if err != nil {
+			return err
+		}
+		if r.Format != "cargo" || r.Mode != "hosted" {
+			return ErrConflict
+		}
+		a := Artifact{Repository: repo, Path: key}
+		err = tx.QueryRow(ctx, `SELECT left(digest,65),size,left(media_type,129),
+CASE WHEN octet_length(metadata::text)<=$4 THEN metadata ELSE NULL END
+FROM cratectl.artifacts WHERE tenant=$1 AND repository=$2 AND path=$3`,
+			i.Tenant, repo, key, 2*cargo.MaxIndexBytes).Scan(&a.Digest, &a.Size, &a.MediaType, &a.Metadata)
+		if errors.Is(err, pgx.ErrNoRows) {
+			return ErrNotFound
+		}
+		if err != nil {
+			return err
+		}
+		entry, err := CargoArtifactEntry(a)
+		if err != nil {
+			return err
+		}
+		if !strings.EqualFold(entry.Name, name) || entry.Version != version {
+			return ErrNotFound
+		}
+		state, err := artifactStateInTx(ctx, tx, repo, key)
+		if err != nil {
+			return err
+		}
+		if state.Deleted {
+			return ErrDeleted
+		}
+		if entry.Yanked == yanked {
+			return nil
+		}
+		if state.Held {
+			return ErrHeld
+		}
+		update, err := tx.Exec(ctx, `UPDATE cratectl.artifacts SET metadata=jsonb_set(metadata,'{yanked}',to_jsonb($5::boolean))
+WHERE tenant=$1 AND repository=$2 AND path=$3 AND digest=$4`, i.Tenant, repo, key, a.Digest, yanked)
+		if err != nil {
+			return err
+		}
+		if update.RowsAffected() != 1 {
+			return ErrConflict
+		}
+		return appendEvent(ctx, tx, i, "cargo.crate.yank.changed", map[string]any{
+			"repository": repo, "path": key, "digest": a.Digest, "yanked": yanked,
+		})
+	})
+}
