@@ -634,6 +634,15 @@ repository grants and exact wheel recovery after restart. The real
 PostgreSQL HTTP check and source, race and lint gates passed.
 [Hosted Python search evidence](evidence/2026-11-19/python-c583ad5-hosted-search-native.json)
 
+The exact `6efab30` macOS ARM64 candidate passed all 146 combined checks,
+including eight hosted and ten cached Python search checks with pip 26.1.2,
+Twine 7.0.0 and PostgreSQL 16.16. Cached search exercised current source
+authority, exact wheel metadata, ordered group collisions, review, yanks,
+grant changes and restart with zero upstream search requests. Five real
+PostgreSQL integration tests and the build, unit, race and lint gates passed.
+The native Linux Python jobs have a separate 37-check evidence profile.
+[Combined native search evidence](evidence/2026-11-19/python-6efab30-cached-search-native.json)
+
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities
 published and pulled two exact chart archives, including a build-metadata

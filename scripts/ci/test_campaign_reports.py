@@ -13,6 +13,7 @@ from campaign_transport import EvidenceError
 from compose_evidence import CHECKS as COMPOSE_CHECKS, SOURCE_PATHS as COMPOSE_FILES
 from linux_install_evidence import CHECKS as INSTALL_CHECKS, IMAGE as INSTALL_IMAGE, SOURCE_PATHS as INSTALL_FILES
 from npm_search_evidence import BASE_CHECKS as NPM_BASE, HOSTED_CHECKS as NPM_HOSTED, CACHED_CHECKS as NPM_CACHED, SOURCE_PATHS as NPM_FILES
+from python_search_evidence import BASE_CHECKS as PYTHON_BASE, HOSTED_CHECKS as PYTHON_HOSTED, CACHED_CHECKS as PYTHON_CACHED, SOURCE_PATHS as PYTHON_FILES
 from offline_media_evidence import CHECKS as OFFLINE_CHECKS, PHASES as OFFLINE_PHASES, SOURCE_PATHS as OFFLINE_FILES
 from test_go_common_export_portability_evidence import complete as complete_common_contract
 from test_go_requirement_export_portability_evidence import complete as complete_requirement_contract
@@ -22,6 +23,30 @@ SPECS = {spec['artifact']: spec for family in WORKFLOWS.values() for spec in job
 
 
 class CampaignReports(unittest.TestCase):
+    def test_python_search_report_binds_exact_pip_and_twine_and_cached_scope(self):
+        source = lambda path: path.encode()
+        candidate = 'a' * 40
+        report = {'schema': 1, 'profile': 'cratectl-native-python-search-v1', 'candidate': candidate,
+                  'runner_os': 'Linux', 'runner_arch': 'ARM64', 'run_id': '12', 'status': 'passed', 'source_dirty': False,
+                  'source_sha256': {path: hashlib.sha256(source(path)).hexdigest() for path in PYTHON_FILES},
+                  'binary_sha256': {'cratectl': 'a' * 64, 'cratectld': 'b' * 64}, 'archive_sha256': 'c' * 64,
+                  'postgres': 'postgres (PostgreSQL) 16.15', 'npm': '10.9.9', 'checks': list(PYTHON_BASE),
+                  'python_search': {'checks': list(PYTHON_HOSTED), 'archive_sha256': [letter * 64 for letter in 'def'],
+                                    'pip': '26.1.2', 'twine': '7.0.0'},
+                  'python_cached_search': {'checks': list(PYTHON_CACHED), 'preferred_archive_sha256': '1' * 64},
+                  'goal_complete': False, 'broad_readiness': False}
+        spec = SPECS['ci-summary-python-search-arm64']
+        self.assertEqual(validate_custom(report, candidate, 12, spec, source), {'checks': 37, 'records': 1})
+        for scope, override in (
+                ('python_search', {'pip': '26.0.1'}), ('python_search', {'twine': '6.2.0'}),
+                ('python_cached_search', {'checks': list(PYTHON_CACHED)[:-1]}),
+                ('python_cached_search', {'preferred_archive_sha256': 'd' * 64}),
+                ('python_cached_search', {'private_output': 'inert stand-in'})):
+            with self.subTest(scope=scope, change=list(override)), self.assertRaises(EvidenceError):
+                validate_custom({**report, scope: {**report[scope], **override}}, candidate, 12, spec, source)
+        with self.assertRaisesRegex(EvidenceError, 'python_search_source_identity'):
+            validate_custom(report, candidate, 12, spec, lambda path: b'changed')
+
     def test_npm_search_report_binds_both_scopes_and_exact_sources(self):
         source = lambda path: path.encode()
         candidate = 'a' * 40

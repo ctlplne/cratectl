@@ -1908,6 +1908,7 @@
       "summary": "Stock npm's update notifier introduces an unrelated upstream request during the cold search fixture",
       "state": "Both original 19e5a87 searches returned empty arrays. An exact-source diagnostic replay observed a request for the npm package on the configured origin. The stock npm update notifier checks that package through the configured registry.",
       "first_failure": "evidence/2026-11-19/npm-19e5a87-update-notifier-first-failure.json",
+      "replay": "evidence/2026-11-19/python-6efab30-cached-search-native.json",
       "repair": "Disable the stock npm update notifier in the isolated fixture and keep the zero-upstream-request search assertion."
     },
     {
@@ -1922,6 +1923,7 @@
       "summary": "The first cached Python search fixture omits the required size from its Simple API 1.1 response",
       "state": "The original 8cc78aa fixture reached the first stock pip index request. The exact-source diagnostic observed HTTP 200 from the origin and an upstream_metadata_invalid catalog state. The fixture used Simple API 1.1 with a missing per-file size.",
       "first_failure": "evidence/2026-11-19/python-8cc78aa-cached-index-size-first-failure.json",
+      "replay": "evidence/2026-11-19/python-6efab30-cached-search-native.json",
       "repair": "Publish the exact packaged wheel byte size in the owned Simple API 1.1 response and replay the stock client."
     }
   ]

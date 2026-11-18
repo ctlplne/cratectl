@@ -493,6 +493,8 @@ def evaluate(args):
         record_cargo_ci(report, args.cargo_ci_architecture)
     if args.npm_search_ci_architecture:
         record_npm_search_ci(report, args.npm_search_ci_architecture)
+    if args.python_search_ci_architecture:
+        record_python_search_ci(report, args.python_search_ci_architecture)
 
 
 def hosted_runner(report, architecture):
@@ -557,6 +559,22 @@ def record_npm_search_ci(report, architecture):
         stream.write('\n')
 
 
+def record_python_search_ci(report, architecture):
+    from ci.python_search_evidence import SOURCE_PATHS as python_sources, validate as validate_python
+
+    runner = hosted_runner(report, architecture)
+    projection = {key: report[key] for key in ('candidate', 'status', 'checks', 'binary_sha256', 'archive_sha256',
+                                                'postgres', 'npm', 'python_search', 'python_cached_search',
+                                                'goal_complete', 'broad_readiness')}
+    projection.update(schema=1, profile='cratectl-native-python-search-v1', runner_os='Linux', runner_arch=runner,
+                      run_id=os.environ.get('GITHUB_RUN_ID'), source_dirty=False,
+                      source_sha256={name: sha(ROOT / name) for name in python_sources})
+    validate_python(projection)
+    with (ROOT / '.cache/ci-python-search.json').open('x') as stream:
+        json.dump(projection, stream, indent=2)
+        stream.write('\n')
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--binary-directory', type=Path)
@@ -573,6 +591,7 @@ if __name__ == '__main__':
     parser.add_argument('--npm-search-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--python-search-client', type=Path,
                         help='also verify hosted and cached search with a Python environment containing stock pip and Twine')
+    parser.add_argument('--python-search-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--cargo-toolchain', type=Path)
     parser.add_argument('--cargo-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--cargo-public-origin', action='store_true',
@@ -600,7 +619,11 @@ if __name__ == '__main__':
         parser.error('hosted npm search evidence requires the isolated stock npm search profile')
     if options.python_search_client and (options.ci_architecture or options.cargo_ci_architecture
                                          or options.npm_search_ci_architecture):
-        parser.error('Python search uses the local stock Python evidence profile')
+        parser.error('Python search uses its own stock evidence profile')
+    if options.python_search_ci_architecture and (not options.python_search_client or options.cargo_toolchain
+                                                   or options.npm_search or options.promtool
+                                                   or options.mcp_binary or options.provider_binary):
+        parser.error('hosted Python evidence requires the isolated stock Python search profile')
     if options.legacy_cargo_daemon and (not options.cargo_toolchain or options.cargo_ci_architecture):
         parser.error('historical Cargo adoption requires the local stock Cargo profile and reviewed schema 18 daemon')
     evaluate(options)

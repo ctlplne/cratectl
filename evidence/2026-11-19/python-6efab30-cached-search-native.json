@@ -1,0 +1,212 @@
+{
+  "candidate": "6efab30739c97ed90a2a0a60eac9519ca8a6e88b",
+  "status": "passed",
+  "observed_at": "2026-11-18T22:06:01.825520+00:00",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "npm": "11.16.0",
+  "cargo_version": "cargo 1.100.0 (3acc79c0c 2026-11-05)",
+  "assertions_total": 146,
+  "counts": {
+    "declarative": 19,
+    "npm_search": 9,
+    "npm_cached_search": 9,
+    "python_search": 8,
+    "python_cached_search": 10,
+    "cargo": 80,
+    "cargo_public_origin": 11
+  },
+  "python_search": {
+    "checks": [
+      "stock pip search hides hosted files awaiting review",
+      "stock pip normalizes the package name and returns the allowed original summary",
+      "stock pip finds a package by its archive-derived summary",
+      "the independently authorized tenant sees its own package at the same coordinate",
+      "stock pip search uses PEP 440 ordering for visible releases",
+      "stock pip search only returns a release with a non-yanked visible file",
+      "stock pip search and exact wheel download recover after restart",
+      "stock pip search respects revocation of its repository read grant"
+    ],
+    "pip": "26.1.2",
+    "twine": "7.0.0",
+    "archive_sha256": [
+      "e95e81895797b6f05d711b7f8b0082ad1c1616fc9885fa04a9873ab43858cd7b",
+      "d76a054b37554488c7dd6a548f9ae85370cf6750e997daa55bf9a42d9dd6475e",
+      "53efa0489309593bb636c48df7533250cdb33f2cb75838a27be54dd976595375"
+    ]
+  },
+  "python_cached_search": {
+    "checks": [
+      "cold Python search makes no upstream request and hides an unknown preferred source",
+      "Python search omits an index-only source and its lower filename collision",
+      "stock pip search recognizes the exact cached wheel and its embedded summary",
+      "mixed group review hides the pending preferred wheel and its lower collision",
+      "stock group search selects the approved cached wheel",
+      "a current proxy absence permits stock discovery of a different hosted project",
+      "current upstream yanks hide a preferred cached wheel without selecting its lower collision",
+      "restored catalog discovery survives restart without contacting the origin during search",
+      "expired catalog authority fences both cached and lower search results",
+      "stock Python group search honors selected member grant changes"
+    ],
+    "preferred_archive_sha256": "00de12d1298211e9e88a1f2e08d0b4bc3ba33e7358a771297157038863477523"
+  },
+  "binary_sha256": {
+    "cratectl": "a3feba5897c4287b0806ef9d5b0c7adbee43812cab398dd800b4ab8e78c978f2",
+    "cratectld": "2304787da7042792acde599e7e40dd76f7cb69e988bae7ca4c323d70d6af7f74"
+  },
+  "private_report_sha256": "fd172abba797f7c64dbf96fb1f9b55c91c71a4b9b8bf5ba9b9c780ca3c91795b",
+  "integration": {
+    "functions": [
+      "TestNPMHostedSearchUsesCurrentVersionsPolicyGrantsAndTenants",
+      "TestNPMCachedSearchPreservesReviewAndCurrentSourceOrder",
+      "TestNPMSourcePublicationIsFencedAndAtomic",
+      "TestPythonHostedSearchReadsCurrentValidatedPackages",
+      "TestPythonSourceFencingPolicyAndRLS"
+    ],
+    "log_sha256": "79388d55aa5d6140dddaca83929b186538f04e7797614522998c911cb3a5d0d7",
+    "status": "passed"
+  },
+  "source_gates": [
+    "make build",
+    "make test",
+    "make race",
+    "make lint"
+  ],
+  "source_sha256": [
+    {
+      "path": "Makefile",
+      "sha256": "12f2a8b5cfbc2f322822b82e4446f51ff017374acab1f3a8921db8cc8e833bf6"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "1d4aecc2732cd54db4534e0afc862ffe14d5c24890f106008682fd9bbc8e5ba9"
+    },
+    {
+      "path": "go.sum",
+      "sha256": "5e364e4e1eff09d8d39617427d7775012304b09a7be26778dc2b46fdabae3f15"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "73c1d9631f3b119ecb8257c8c0e7e30888c93ea5ed9434405128030e0fbf4f88"
+    },
+    {
+      "path": "scripts/python_search_fixture.py",
+      "sha256": "111a5619231276dc227a46546900436923b27dd08cbbe047e3a604d09456e525"
+    },
+    {
+      "path": "scripts/cargo_proxy_fixture.py",
+      "sha256": "fc82019995b97ea97dc3a3f6ec0fe728e781f33e01e06229a169cea8e0a74a57"
+    },
+    {
+      "path": "scripts/ci/terraform_provider_evidence.py",
+      "sha256": "130de2ec92ed288a6fa6c744c67003a76cafa2dfb9835e48f653abccda1a50ca"
+    },
+    {
+      "path": "scripts/qualification_contract.py",
+      "sha256": "c40a9d0209a9dc1fb9838f49cdb316ad5a762d45c0359b97fce156746564e5ba"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "82cb7bc295a210d40f3b3a43d9976611983b78f03d910635b5b70d5b8c5c1aca"
+    },
+    {
+      "path": "internal/server/pypi.go",
+      "sha256": "df04e10e77f8333e49375c35a6b78af0e6b06681944181ccac605a5a92aa8a5f"
+    },
+    {
+      "path": "internal/server/python_search.go",
+      "sha256": "28b0838afa4add2d7e36b39a16b75aafdcbfc59080760085d4a4cfc2cdb653ce"
+    },
+    {
+      "path": "internal/server/python_read.go",
+      "sha256": "03143718d069fa30895d118c75d080b8ee8bcee56a3118e64abbb51fc9dcba7a"
+    },
+    {
+      "path": "internal/server/python_index.go",
+      "sha256": "954478958a1c5668e58216e8ca939bd709dc3a62ef294e3e593795e8fc66f047"
+    },
+    {
+      "path": "internal/server/python_archive.go",
+      "sha256": "815d121826fb2de38daff279f19f216b21bbaede69d54a04534a47ae5078dba7"
+    },
+    {
+      "path": "internal/server/python_proxy.go",
+      "sha256": "69e54b09fa8dbc66929f1a17a7fcbfe431cb12b0ff81820a9483f44d2ca1f2c6"
+    },
+    {
+      "path": "internal/store/python.go",
+      "sha256": "e59873ede71f62d74cbb650e6dd7d065d6149540ce66d1e4f20955a93988bc7a"
+    },
+    {
+      "path": "internal/store/python_search.go",
+      "sha256": "8f3b5fe22a27fd7031a68240a547476679cd77923ddbd4c52d664f6afe5ebb3b"
+    },
+    {
+      "path": "internal/store/literal_search.go",
+      "sha256": "c9fc480909345fee380894e6b315bc9c2c1af9a38e9cd52b8a4faae8b9ed13fe"
+    },
+    {
+      "path": "internal/store/native_source.go",
+      "sha256": "4b22b0c593713304a9808f4a5a9a11aeec0da41a652892a9b48cd21ff395297e"
+    },
+    {
+      "path": "internal/store/retrieval.go",
+      "sha256": "360c7804b8a95ff01939bbf03f4d3c1b86f63300a9014ea528db4ac4f05d6a68"
+    },
+    {
+      "path": "internal/store/artifact_read.go",
+      "sha256": "aba845ceb45aff4503adb12c7a10330a7a7154f9a048b15ee3fa34b9153ac11e"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "54412aeffd3ed0708a7ac7fccb69184f6413aec87522c34abc1d0ab9fa9f9529"
+    },
+    {
+      "path": "internal/store/decision.go",
+      "sha256": "3f9c785f2da56ee4678ef9a49418ab4eb794eb9ba2556dd32d88229b18427db4"
+    },
+    {
+      "path": "internal/store/lifecycle_artifact.go",
+      "sha256": "167073e909bbf51f201227ce740bdf2999088aab52af7f48ad93c9773f530651"
+    },
+    {
+      "path": "internal/store/migrations.go",
+      "sha256": "59f3478fbc77b7c969e43719f7eea92844a5bb1b2cd5b0d63ec2f356e368594b"
+    },
+    {
+      "path": "internal/server/python_search_integration_test.go",
+      "sha256": "b2f8d6f87e9cc57f1c10781225b70cf4693d420a1aa712508ccd5ea933dccec9"
+    },
+    {
+      "path": "internal/store/python_integration_test.go",
+      "sha256": "977b035de63dfa117536172862c32203b7b3e6805ed80727452de36e5c38adc9"
+    },
+    {
+      "path": "internal/server/npm_search_integration_test.go",
+      "sha256": "6dc4dbb99851c290098761f593e428606a787f7f2e4a8b1a2baeebf2e934a0d9"
+    },
+    {
+      "path": "internal/store/npm_integration_test.go",
+      "sha256": "ab052d22cd5c9ec2d823152a76efc47d665ba011ede1d22ea8e322bf57199b75"
+    },
+    {
+      "path": "scripts/npm_search_fixture.py",
+      "sha256": "5bfab889e17c1cf87c804a432686a84bbb9f2fac74fdd23d9dd1d4008a16a472"
+    }
+  ],
+  "references": [
+    "https://pip.pypa.io/en/stable/cli/pip_search/",
+    "https://packaging.python.org/en/latest/specifications/simple-repository-api/"
+  ],
+  "limits": [
+    "Exact native macOS ARM64 with real PostgreSQL and trusted loopback TLS. Stock pip and Twine cover controlled hosted, cached proxy and ordered group wheels.",
+    "Search uses current admitted sources and validated wheel metadata without fetching the origin. Cold or expired authority, index-only entries, lower collisions and pending or yanked files are omitted.",
+    "Additional native environments, alternate clients, uncached discovery, public Python origins and scale remain open."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}
