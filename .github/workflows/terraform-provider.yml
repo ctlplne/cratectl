@@ -65,6 +65,7 @@ jobs:
       - name: Replay stock saved plans, imports and drift with real PostgreSQL
         run: |
           umask 077
+          /usr/lib/postgresql/16/bin/postgres --version
           python3 scripts/conformance_repository_manifest.py \
             --pg-bin /usr/lib/postgresql/16/bin --binary-directory .cache/cratectl-provider-bin \
             --provider-binary .cache/cratectl-provider-bin/terraform-provider-cratectl \

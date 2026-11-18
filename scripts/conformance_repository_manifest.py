@@ -140,7 +140,8 @@ def evaluate(args):
             check(program.name + ' matches the clean candidate', f'vcs.revision={candidate}' in build and 'vcs.modified=false' in build)
             report['binary_sha256'][program.name] = sha(program)
         report['postgres'] = call('postgres-version', postgres / 'postgres', '--version')[1].strip()
-        check('real PostgreSQL 16.15', postgres_version(report['postgres']))
+        check('real reviewed PostgreSQL 16 patch release', postgres_version(report['postgres']))
+        print('Reviewed native PostgreSQL version', report['postgres'].split()[2], flush=True)
         report['npm'] = call('stock-npm-version', 'npm', '--version')[1].strip()
         owner, runtime = secrets.token_hex(24), secrets.token_hex(24)
         password = work / 'pg-init-password'

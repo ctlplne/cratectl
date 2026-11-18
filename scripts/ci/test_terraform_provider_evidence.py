@@ -40,7 +40,7 @@ class TerraformProviderEvidence(unittest.TestCase):
         for alter in (
             lambda report: report.update(runner_arch='X64'),
             lambda report: report.update(goal_complete=True),
-            lambda report: report.update(postgres='postgres (PostgreSQL) 16.16'),
+            lambda report: report.update(postgres='postgres (PostgreSQL) 16.17'),
             lambda report: report['clients'].pop(),
             lambda report: report['clients'].reverse(),
             lambda report: report['clients'][0].update(version='1.17.1'),
@@ -52,6 +52,11 @@ class TerraformProviderEvidence(unittest.TestCase):
             alter(report)
             with self.assertRaises(ValueError):
                 validate(report)
+
+    def test_reviewed_patched_database_release_preserves_actual_version_evidence(self):
+        report = complete()
+        report['postgres'] = 'postgres (PostgreSQL) 16.16 (Ubuntu 16.16-0ubuntu0.24.04.1)'
+        self.assertEqual(validate(report)['postgres'], report['postgres'])
 
 
 if __name__ == '__main__':

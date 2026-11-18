@@ -1798,6 +1798,13 @@
       "state": "The original 4821316 job stopped before runtime tests. Maven Central served the identical pinned 3.10.0 archive locally. The fallback regression passes.",
       "first_failure": "evidence/2026-11-18/github-4821316-arm64-maven-bootstrap-failure.json",
       "repair": "Start with the exact pinned Apache Maven artifact from Maven Central, then try the original Apache distribution and archives on transfer failure. Stop immediately on a digest mismatch."
+    },
+    {
+      "id": "DEFECT.0171",
+      "summary": "The provider fixture requires an older hosted PostgreSQL patch version",
+      "state": "The original x64 and ARM64 runs were refused by the version assertion before database creation. The original logs omit the installed version. PostgreSQL 16.16 is the reviewed patch release.",
+      "first_failure": "evidence/2026-11-18/github-a79d016-provider-pg-patch-refusals.json",
+      "repair": "Admit the two reviewed PostgreSQL 16 patch releases in the fixture, print the hosted binary version before running it and retain the exact observed version in the safe result."
     }
   ]
 }

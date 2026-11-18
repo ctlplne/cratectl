@@ -12,7 +12,7 @@ ARCHIVE_PINS = {
 }
 BASE_CHECKS = (
     'clean exact source', 'cratectl matches the clean candidate', 'cratectld matches the clean candidate',
-    'real PostgreSQL 16.15', 'absent repository has an authority and tenant bound creation plan',
+    'real reviewed PostgreSQL 16 patch release', 'absent repository has an authority and tenant bound creation plan',
     'plan, wrong approval and denied callers leave the tenant journal unchanged',
     'concurrent approved requests produce one creation or a safe retry',
     'retry after successful creation returns unchanged', 'one repository creation event despite concurrent retry',
@@ -53,7 +53,7 @@ def hashes(value, names):
 
 
 def postgres_version(value):
-    return matches(value, r'postgres \(PostgreSQL\) 16\.15(?: \([^\r\n]{1,100}\))?')
+    return matches(value, r'postgres \(PostgreSQL\) 16\.(?:15|16)(?: \([^\r\n]{1,100}\))?')
 
 
 def validate(report):
