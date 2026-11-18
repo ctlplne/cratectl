@@ -45,7 +45,7 @@ def sha(file):
 def evaluate(args):
     os.umask(0o077)
     authority = ('https://127.0.0.1:38443' if args.cargo_toolchain or args.npm_search or args.python_search_client
-                 or args.oci_catalog_cached else BASE)
+                 or args.oci_catalog_cached or args.maven_index_cached else BASE)
     private = ROOT / '.private'
     if private.is_symlink() or private.stat().st_mode & 0o077:
         raise ValueError('use the existing owner-only .private directory')
@@ -196,7 +196,7 @@ def evaluate(args):
         call('initialize-registry', bootstrap, 'init', '--tenant', TENANT, '--directory', app,
              '--public-url', authority, environment=owner_env)
         actors = [('reader', TENANT, 'reader'), ('other', OTHER, 'admin')]
-        if args.cargo_toolchain or args.npm_search or args.python_search_client or args.oci_catalog_cached:
+        if args.cargo_toolchain or args.npm_search or args.python_search_client or args.oci_catalog_cached or args.maven_index_cached:
             server_flags.extend(('--allow-private-upstreams', '::1/128'))
         if args.cargo_toolchain:
             actors.extend([('writer', TENANT, 'writer'), ('maintainer', TENANT, 'writer')])
@@ -401,7 +401,8 @@ def evaluate(args):
             from maven_index_fixture import hosted_maven_index
 
             report['maven_index'] = hosted_maven_index(work, app, authority, args.maven_index_java.absolute(),
-                                                      args.maven_index_reader.absolute(), public_env, call, api, restart_server, sha)
+                                                      args.maven_index_reader.absolute(), public_env, call, api, restart_server, sha,
+                                                      cached=args.maven_index_cached)
         if args.npm_search:
             from npm_search_fixture import evaluate_cached_search, evaluate_search
 
@@ -491,6 +492,8 @@ def evaluate(args):
         print(f"PASS: {len(report['oci_repository_catalog']['cached']['groups']['checks'])} stock ORAS ordered group catalog checks")
     if args.maven_index_reader:
         print(f"PASS: {len(report['maven_index']['checks'])} stock Apache Maven Indexer checks")
+    if args.maven_index_cached:
+        print(f"PASS: {len(report['maven_index']['cached']['checks'])} stock Apache cached Maven index checks")
     if args.npm_search:
         print(f"PASS: {len(report['npm_search']['checks'])} stock hosted npm search checks")
         print(f"PASS: {len(report['npm_cached_search']['checks'])} stock cached npm search checks")
@@ -651,6 +654,7 @@ if __name__ == '__main__':
     parser.add_argument('--maven-index-reader', type=Path, help='the pinned Apache Maven Indexer Reader JAR')
     parser.add_argument('--maven-index-java', type=Path, help='the JDK 21 executable for the stock index reader')
     parser.add_argument('--maven-index-ci-architecture', choices=('amd64', 'arm64'))
+    parser.add_argument('--maven-index-cached', action='store_true', help='also verify the controlled cached Maven proxy index')
     parser.add_argument('--npm-search', action='store_true',
                         help='also verify npm hosted and cached search using stock clients')
     parser.add_argument('--npm-search-ci-architecture', choices=('amd64', 'arm64'))
@@ -665,12 +669,14 @@ if __name__ == '__main__':
     options = parser.parse_args()
     if bool(options.maven_index_reader) != bool(options.maven_index_java):
         parser.error('the Maven index profile requires both the JDK and stock index reader')
+    if options.maven_index_cached and not options.maven_index_reader:
+        parser.error('cached Maven index requires the stock Apache reader')
     if options.maven_index_reader and (options.ci_architecture or options.cargo_ci_architecture or options.npm_search_ci_architecture
                                         or options.python_search_ci_architecture or options.oci_catalog_ci_architecture):
         parser.error('Maven index evidence uses its own stock profile')
     if options.maven_index_ci_architecture and (not options.maven_index_reader or options.provider_binary
                                                or options.npm_search or options.python_search_client or options.cargo_toolchain
-                                               or options.oci_catalog_client or options.mcp_binary or options.promtool):
+                                               or options.oci_catalog_client or options.mcp_binary or options.promtool or options.maven_index_cached):
         parser.error('native Maven index evidence requires the isolated stock Apache reader profile')
     if options.oci_catalog_client and (options.ci_architecture or options.cargo_ci_architecture
                                        or options.npm_search_ci_architecture or options.python_search_ci_architecture):

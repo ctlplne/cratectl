@@ -1,10 +1,14 @@
 # SPDX-License-Identifier: BUSL-1.1
 """Verify the registry's hosted search index with the stock ASF Indexer Reader."""
 
+from contextlib import contextmanager
 import hashlib
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import io
 from pathlib import Path
+import socket
 import ssl
+import threading
 import urllib.error
 import urllib.request
 import zipfile
@@ -16,7 +20,7 @@ REPO = 'cratectl-maven-index'
 API = '/api/v1/repositories/' + REPO
 
 
-def hosted_maven_index(work, app, authority, java, indexer, environment, call, api, restart, sha):
+def hosted_maven_index(work, app, authority, java, indexer, environment, call, api, restart, sha, *, cached=False):
     if sha(indexer) != INDEXER_SHA256:
         raise ValueError('the pinned Apache Indexer Reader 7.1.6 JAR is required')
     scope = work / 'maven-index'
@@ -34,12 +38,12 @@ def hosted_maven_index(work, app, authority, java, indexer, environment, call, a
             raise ValueError(label)
         checks.append(label)
 
-    def request(part, who='reader', method='GET', body=None, headers=None):
+    def request(part, who='reader', method='GET', body=None, headers=None, *, repository=REPO):
         fields = {} if headers is None else dict(headers)
         fields['Authorization'] = 'Bearer ' + tokens[who].read_text().strip()
         if body is not None:
             fields['Content-Type'] = 'application/octet-stream'
-        req = urllib.request.Request(authority + '/r/' + REPO + '/' + part, method=method, data=body, headers=fields)
+        req = urllib.request.Request(authority + '/r/' + repository + '/' + part, method=method, data=body, headers=fields)
         try:
             with opener.open(req, timeout=8) as response:
                 value = response.read((1 << 20) + 1)
@@ -79,19 +83,19 @@ def hosted_maven_index(work, app, authority, java, indexer, environment, call, a
     source = Path(__file__).resolve().parent / 'fixtures/maven-index/MavenIndexStock.java'
     gz = '.index/' + INDEX + '.gz'
 
-    def index(label, who):
+    def index(label, who, repository=REPO):
         destination = scope / label
         destination.mkdir(mode=0o700)
         for suffix in ('.properties', '.gz'):
-            status, body, headers = request('.index/' + INDEX + suffix, who)
+            status, body, headers = request('.index/' + INDEX + suffix, who, repository=repository)
             if status != 200 or headers.get('Cache-Control') != 'private, no-store':
                 raise ValueError('authenticated Maven index download failed')
             (destination / (INDEX + suffix)).write_bytes(body)
         digest = sha(destination / (INDEX + '.gz'))
         properties = (destination / (INDEX + '.properties')).read_text()
-        if 'cratectl.index.sha256=' + digest + '\n' not in properties or request(gz + '.sha256', who)[:2] != (200, digest.encode()):
+        if 'cratectl.index.sha256=' + digest + '\n' not in properties or request(gz + '.sha256', who, repository=repository)[:2] != (200, digest.encode()):
             raise ValueError('the Maven index and checksum representations differ')
-        _, output = call('maven-index-stock-' + label, java, '--class-path', indexer, source, destination, REPO,
+        _, output = call('maven-index-stock-' + label, java, '--class-path', indexer, source, destination, repository,
                          environment=environment, timeout=25)
         return output.splitlines(), digest, headers.get('ETag')
 
@@ -123,5 +127,98 @@ def hosted_maven_index(work, app, authority, java, indexer, environment, call, a
     check('current POM denial removes that coordinate from the stock full index', index('after-denial', 'reader')[0] == [expected_row(two)])
     grant('revoke', False)
     check('a conditional native index request honors read grant revocation', request(gz, headers={'If-None-Match': etag})[0] == 403)
-    return {'checks': checks, 'reader': '7.1.6', 'reader_sha256': sha(indexer), 'java': version, 'archive_sha256': archive_sha,
-            'jar_sha256': [item['digest'] for item in (one, two, isolated)]}
+    report = {'checks': checks, 'reader': '7.1.6', 'reader_sha256': sha(indexer), 'java': version, 'archive_sha256': archive_sha,
+              'jar_sha256': [item['digest'] for item in (one, two, isolated)]}
+    if cached:
+        report['cached'] = cached_maven_index(second, two['digest'], pom_two, expected_row(two), index, request, api, restart)
+    return report
+
+
+@contextmanager
+def maven_index_origin(files):
+    class Origin(ThreadingHTTPServer):
+        address_family = socket.AF_INET6
+
+        def server_bind(self):
+            self.socket.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 1)
+            super().server_bind()
+
+    class Handler(BaseHTTPRequestHandler):
+        def log_message(self, *_):
+            pass
+
+        def do_GET(self):
+            requests.append(self.path)
+            data = files.get(self.path)
+            if data is None:
+                self.send_error(404)
+                return
+            self.send_response(200)
+            self.send_header('Content-Length', str(len(data)))
+            self.send_header('Content-Type', 'application/octet-stream')
+            self.send_header('Cache-Control', 'max-age=180')
+            self.end_headers()
+            self.wfile.write(data)
+
+    requests = []
+    with Origin(('::1', 38443), Handler) as origin:
+        thread = threading.Thread(target=origin.serve_forever, name='cratectl-maven-index-origin')
+        thread.start()
+        try:
+            yield requests
+        finally:
+            origin.shutdown()
+            thread.join(5)
+            if thread.is_alive():
+                raise ValueError('owned Maven index origin did not stop')
+
+
+def cached_maven_index(coordinate, jar_digest, pom_digest, row, index, request, api, restart):
+    repository = 'cratectl-maven-index-cached'
+    endpoint = '/api/v1/repositories/' + repository
+    origin = '/cratectl-maven-index-origin/'
+    checks = []
+    files = {}
+    for extension, digest in (('.jar', jar_digest), ('.pom', pom_digest)):
+        source = coordinate + extension
+        status, body, _ = request(source, 'admin')
+        if status != 200 or hashlib.sha256(body).hexdigest() != digest:
+            raise ValueError('the controlled Maven origin requires the exact hosted fixture bytes')
+        files[origin + source] = body
+        files[origin + source + '.sha256'] = digest.encode()
+
+    def check(label, condition):
+        if not condition:
+            raise ValueError(label)
+        checks.append(label)
+
+    def pull(extension, digest):
+        status, raw, _ = request(coordinate + extension, repository=repository)
+        return status == 200 and hashlib.sha256(raw).hexdigest() == digest
+
+    with maven_index_origin(files) as requests:
+        api('maven-index-create-proxy', '/api/v1/repositories', 'POST', {'name': repository, 'format': 'maven', 'mode': 'proxy',
+            'settings': {'upstream': {'url': 'http://[::1]:38443' + origin, 'networks': ['::1/128']},
+                         'cache': {'fresh_seconds': 180, 'negative_seconds': 30, 'require_checksum': True}}})
+
+        def visible(phase, expected):
+            before = len(requests)
+            rows, digest, _ = index('cached-' + phase, 'reader', repository)
+            return rows == expected and before == len(requests), digest
+
+        check('stock Maven Indexer reads a cold proxy index without contacting its origin', visible('cold', [])[0] and not requests)
+        check('an exact cached JAR alone cannot advertise a release without its POM',
+              pull('.jar', jar_digest) and visible('jar-only', [])[0])
+        check('stock Maven Indexer lists the exact checksum-validated pair without an upstream search',
+              pull('.pom', pom_digest) and visible('complete', [row])[0]
+              and all(origin + coordinate + extension + '.sha256' in requests for extension in ('.jar', '.pom')))
+        api('maven-index-expire-proxy-pom', endpoint + '/cache', 'PUT', {'path': coordinate + '.pom'})
+        check('an invalidated POM hides the cached release without consulting the origin', visible('invalidated', [])[0])
+        check('an explicit POM fetch restores the current stock index record', pull('.pom', pom_digest) and visible('revalidated', [row])[0])
+        restart()
+        recovered, archive_sha = visible('restart', [row])
+        check('stock cached Maven discovery and exact JAR bytes survive restart', recovered and pull('.jar', jar_digest))
+        api('maven-index-deny-cached-pom', endpoint + '/decisions', 'PUT',
+            {'path': coordinate + '.pom', 'digest': pom_digest, 'decision': 'denied'})
+        check('current POM policy hides the cached pair without a source result leak', visible('denied', [])[0])
+        return {'checks': checks, 'archive_sha256': archive_sha, 'jar_sha256': jar_digest, 'pom_sha256': pom_digest}

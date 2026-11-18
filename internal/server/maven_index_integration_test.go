@@ -8,12 +8,16 @@ import (
 	"compress/gzip"
 	"io"
 	"net/http"
+	"net/http/httptest"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 
 	crypt "ctlplne.dev/cratectl/internal/crypto"
 	"ctlplne.dev/cratectl/internal/store"
+	"ctlplne.dev/cratectl/internal/testnet"
+	"ctlplne.dev/cratectl/internal/upstream"
 )
 
 func TestMavenHostedIndexBindsCurrentJARAndPOMPolicyAcrossTenants(t *testing.T) {
@@ -136,4 +140,81 @@ func TestMavenHostedIndexBindsCurrentJARAndPOMPolicyAcrossTenants(t *testing.T) 
 	if w := mavenHTTP(t, s, token, http.MethodPut, endpoint+mavenIndexChunk, "private fixture cannot publish the generated resource"); w.Code != http.StatusMethodNotAllowed {
 		t.Fatal("reserved generated file", w.Code)
 	}
+}
+
+func TestMavenProxyIndexRequiresBothCurrentSourceReceipts(t *testing.T) {
+	s, _, token, i := schemaServer(t)
+	s.PrivateUpstreamNetworks = []string{"127.0.0.1/32"}
+	const repo = "cratectl-maven-index-proxy"
+	const artifact = "dev/ctlplne/cratectl-index/1.0.0/cratectl-index-1.0.0"
+	const originBase = "/cratectl-maven-index-origin/"
+	const jar = "owned immutable Maven payload"
+	const pom = `<project><artifactId>cratectl-index</artifactId></project>`
+	var requests atomic.Int64
+	listener, err := testnet.ListenOwned()
+	if err != nil {
+		t.Fatal(err)
+	}
+	origin := &httptest.Server{Listener: listener, Config: &http.Server{Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requests.Add(1)
+		var body string
+		switch strings.TrimSuffix(r.URL.Path, ".sha256") {
+		case originBase + artifact + ".jar":
+			body = jar
+		case originBase + artifact + ".pom":
+			body = pom
+		default:
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+		if strings.HasSuffix(r.URL.Path, ".sha256") {
+			body = crypt.Digest([]byte(body))
+		}
+		w.Header().Set("Cache-Control", "max-age=120")
+		_, _ = io.WriteString(w, body)
+	})}}
+	origin.Start()
+	defer origin.Close()
+	mavenRepositories(t, s, i, store.Repository{Name: repo, Format: "maven", Mode: "proxy", Settings: store.RepositorySettings{
+		Upstream: &upstream.Config{URL: origin.URL + originBase, Networks: []string{"127.0.0.1/32"}},
+		Cache:    store.CacheSettings{FreshSeconds: 120, RequireChecksum: true},
+	}})
+	const endpoint = "/r/" + repo + "/"
+	read := func(expected bool) {
+		t.Helper()
+		before := requests.Load()
+		w := mavenHTTP(t, s, token, http.MethodGet, endpoint+mavenIndexChunk, "")
+		if w.Code != http.StatusOK {
+			t.Fatal("cached index response", w.Code, w.Body.String())
+		}
+		gz, err := gzip.NewReader(w.Body)
+		if err != nil {
+			t.Fatal(err)
+		}
+		data, err := io.ReadAll(io.LimitReader(gz, 4096))
+		if err != nil || gz.Close() != nil || bytes.Contains(data, []byte("dev.ctlplne|cratectl-index|1.0.0|NA")) != expected || requests.Load() != before {
+			t.Fatal("cached native index did not match the authorized origin-independent view", expected, err)
+		}
+	}
+	pull := func(ext, expected string) {
+		t.Helper()
+		w := mavenHTTP(t, s, token, http.MethodGet, endpoint+artifact+ext, "")
+		if w.Code != http.StatusOK || w.Body.String() != expected {
+			t.Fatal("ordinary proxy pull", w.Code, w.Body.String())
+		}
+	}
+	read(false)
+	pull(".jar", jar)
+	read(false)
+	pull(".pom", pom)
+	read(true)
+	api := lifecycleHTTP(t, s, token)
+	if w := api(http.MethodPut, "/api/v1/repositories/"+repo+"/cache", map[string]string{"path": artifact + ".pom"}, "expire-index-proxy-pom"); w.Code != http.StatusOK {
+		t.Fatal("expire the POM receipt", w.Code, w.Body.String())
+	}
+	read(false)
+	pull(".pom", pom)
+	read(true)
+	mavenDeny(t, s, i, repo, artifact+".jar")
+	read(false)
 }
