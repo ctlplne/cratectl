@@ -3,8 +3,7 @@
 Execution is active following the owner's2026-11-18 resume. The full amended
 GOAL4.1 remains committed:450 capabilities,41 format families,14 export cases,
 seven environments and every later stage. Both commit identities must be
-imfeelingtheagi on main. This work is local. A new source push or CI dispatch
-requires owner authority under GOAL section 20.
+imfeelingtheagi on main. The owner authorized using GitHub CI for this work.
 Broad readiness,security and packaging remain unqualified.
 
 ## Latest whole accepted source
@@ -58,7 +57,7 @@ and DEFECT0147's bounded-read overflow repair. The normal/race source gates on
 three native non-Windows hosts passed. Actual Windows runtime is absent from
 2a and78a. The0147 first local failure and all earlier failed campaigns remain.
 
-## Native Windows CI implementation awaits its actual jobs
+## Native Windows CI is running on the patched candidate
 
 [ADR0075](docs/adr/0075-native-windows-cli-qualification.md) and its
 [development records](evidence/2026-11-18/windows-npm-private-development.json) add two
@@ -79,6 +78,10 @@ The workflow plus custom validator close22 files. Both original20-contract
 records above were retained and checked against their original logs and members.
 Source test inventories remain296PG/118Go/66fuzz. Skips and compile-only checks
 never count as passes.
+
+The push of `6d41573` started nine workflows, including the [native Windows
+workflow](https://github.com/ctlplne/cratectl/actions/runs/44295026661). All run
+IDs bind to the first attempt in the [campaign start record](evidence/2026-11-18/github-6d41573-started.json).
 
 ## Go security patch
 
@@ -104,6 +107,13 @@ case 46 with the actual macOS .NET 10.0.403 SDK. The exact source and outcomes
 are in the [local candidate evidence](evidence/2026-11-18/local-12b1968-qualification.json).
 The same record retains the open build-tool npm advisory and the limits of the
 older Trivy database used for the Linux ARM64 binary scan.
+
+At `6d41573`, the clean macOS ARM64 candidate passed all 30 assertions in the
+blank native installation journey. It created a private npm configuration,
+refused overwrite, published with stock npm over independently trusted TLS, and
+kept the artifact and policy through restart. This scope uses one owned
+PostgreSQL instance and a filesystem store.
+[Installation evidence](evidence/2026-11-18/installation-b19d3ac0ac.json)
 
 ## Durable state and remaining scope
 
