@@ -1912,15 +1912,19 @@
     {
       "id": "J.CARGO.HOSTED",
       "capability": "FMT.CARGO.HOSTED",
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
+      "state": "implementing",
+      "candidate": "1b4d38ecd6dfee861757e7a21d59017a28e17b39",
+      "evidence": [
+        "evidence/2026-11-18/cargo-1b4d38e-native.json"
+      ],
       "required": [
         "publish/consume exact bytes where applicable",
         "permissions/tenant isolation",
         "policy denial",
         "failure/recovery"
-      ]
+      ],
+      "limits": "Two same-registry packages and one version per package passed stock publish, policy denial, exact bytes after restart, and current grants on macOS ARM64. Wider hosted and legacy behavior remains open.",
+      "next_action": "Qualify Linux x64 and ARM64, conflicting coordinates, multiple versions, interrupted transfer, and retained package lifecycle."
     },
     {
       "id": "J.CARGO.PROXY",

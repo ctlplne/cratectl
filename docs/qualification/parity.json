@@ -4556,10 +4556,10 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "Authenticated hosted sparse Cargo publication, index and verified byte download through the common storage and policy path.",
       "surfaces": {
-        "api": null,
-        "cli": null,
+        "api": "/cargo/{repository}/index/, /cargo/{repository}/api/v1/crates/new and /cargo/{repository}/download/",
+        "cli": "Stock Cargo with the sparse registry alias",
         "ui": null
       },
       "core": true,
@@ -4572,7 +4572,9 @@
       "clients": [
         "cargo"
       ],
-      "client_versions": {},
+      "client_versions": {
+        "cargo": "1.100.0"
+      },
       "test_data": "Two nontrivial versions plus a dependency package; same coordinates in two tenants.",
       "permission_cases": [
         "reader denial on publish",
@@ -4588,11 +4590,13 @@
         "upstream outage",
         "delete/restore"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "No implementation or native-client proof yet.",
-      "next_action": "Implement cargo hosted and execute the complete stock-client journey."
+      "state": "implementing",
+      "candidate": "1b4d38ecd6dfee861757e7a21d59017a28e17b39",
+      "evidence": [
+        "evidence/2026-11-18/cargo-1b4d38e-native.json"
+      ],
+      "limits": "Two same-registry packages and one version per package passed stock publish, policy denial, exact bytes after restart, and current grants on macOS ARM64. Wider hosted and legacy behavior remains open.",
+      "next_action": "Qualify Linux x64 and ARM64, conflicting coordinates, multiple versions, interrupted transfer, and retained package lifecycle."
     },
     {
       "id": "FMT.CARGO.PROXY",

@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "candidate": "6c4d583ee48cd16b7f9cd3dd88d473ee72896fe0",
+  "observed_at": "2026-11-18T18:03:59.422144+00:00",
+  "status": "passed",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "postgres_source_sha256": "9d5cd8633043b75740d5d59749c6b7365e6aeb53c47098b1a5e80bb18f87881a",
+  "local_platform": "macOS ARM64 with native Linux ARM64 Docker and native macOS provider",
+  "offline_media": {
+    "postgres_pin": "docker.io/library/postgres:16.16-alpine@sha256:81e77a4833487b8132fe4b00bedd39dc3f74b8641e387f19312a48f7de218c2e",
+    "postgres_server_version_num": 160016,
+    "original_safe_summary": {
+      "path": "evidence/2026-11-18/postgres-16.16-6c4d583-offline-media-summary.json",
+      "bytes": 5141,
+      "sha256": "bb383d4a60ca2b3160f8c848258e8bc8aaa8dec86e3beda4b343c20df2ff9ff6"
+    },
+    "runtime_checks": 17,
+    "media_controls": 10,
+    "forced_tenant_tables": 57,
+    "matched_source_hashes": 27
+  },
+  "native_provider": {
+    "original_safe_summary": {
+      "path": "evidence/2026-11-18/postgres-16.16-6c4d583-provider-summary.json",
+      "bytes": 3761,
+      "sha256": "dd0a29a1a7f279d8f98380522ca65a38757c6516e6615d2edbe3da1bd4569c04"
+    },
+    "base_checks": 20,
+    "terraform_checks": 9,
+    "opentofu_checks": 9,
+    "forced_tenant_tables": 57,
+    "postgres_bin_sha256": "e97882a6cc72e1fa643602b28f4827b35be2adc1e9c15405d6fb374778dcc803"
+  },
+  "limits": [
+    "Fresh owned PostgreSQL instances and inert stock clients.",
+    "The native provider setup initially lacked its private directory and exited before starting PostgreSQL. The replay used the same candidate with its required owner-only directory.",
+    "No production data, release signing authority, or public distribution was used."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

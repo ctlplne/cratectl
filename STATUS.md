@@ -426,6 +426,31 @@ credential and fixed labels. Wider observability and collector qualification
 remain open.
 [Native Prometheus evidence](evidence/2026-11-18/metrics-a79d016-native.json)
 
+Exact source `6c4d583` pinned the Compose and signed-media PostgreSQL image
+to 16.16. Both original Linux architectures passed 20 Compose checks and
+27 media checks. The same candidate passed 38 provider checks per architecture.
+The provider runners recorded PostgreSQL 16.16 on x64 and 16.15 on ARM64.
+An independent local ARM64 replay passed the media and provider profiles on
+16.16. Earlier source failures remain recorded separately.
+[Hosted PostgreSQL evidence](evidence/2026-11-18/github-6c4d583-postgres-16.16-native.json)
+[Local PostgreSQL evidence](evidence/2026-11-18/postgres-16.16-6c4d583-native.json)
+
+Stock Cargo 1.100.0 passed 11 hosted sparse-registry checks at `1b4d38e` on
+macOS ARM64 with PostgreSQL 16.16. It published two dependent crates, observed
+review denial, and fetched both approved archives with their original SHA-256
+after restart. The fixture also exercised current tenant grants and an exact
+publication retry. Ownership, yanking, legacy Git discovery, proxy and group
+operations, and wider hosted cases remain open.
+[Native Cargo evidence](evidence/2026-11-18/cargo-1b4d38e-native.json)
+[Hosted Cargo setup](docs/operator/cargo.md)
+
+The original `4821316` campaign ended with 30 passes, one Maven bootstrap
+failure, and one cancelled macOS job. The original `3639a74` campaign ended
+with 28 passes, one Ivy bootstrap failure, and one cancelled macOS job.
+Both cancelled jobs had no assigned runner or retrievable log.
+[Original `4821316` observations](evidence/2026-11-18/github-4821316-original-completed.json)
+[Original `3639a74` observations](evidence/2026-11-18/github-3639a74-original-terminal-families.json)
+
 The cold `e4adc19` recovery fixture passed 17 runtime checks and 12 backup
 controls. With registry and worker stopped, stock PostgreSQL 16.15 captured
 and verified a physical backup. A fresh database volume preserved the journal

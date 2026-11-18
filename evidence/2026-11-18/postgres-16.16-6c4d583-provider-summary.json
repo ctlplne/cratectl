@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "profile": "cratectl-repository-manifest-native-v1",
+  "status": "passed",
+  "checks": [
+    "clean exact source",
+    "cratectl matches the clean candidate",
+    "cratectld matches the clean candidate",
+    "real reviewed PostgreSQL 16 patch release",
+    "absent repository has an authority and tenant bound creation plan",
+    "plan, wrong approval and denied callers leave the tenant journal unchanged",
+    "concurrent approved requests produce one creation or a safe retry",
+    "retry after successful creation returns unchanged",
+    "one repository creation event despite concurrent retry",
+    "second tenant can plan an independent same-name repository",
+    "import returns the exact active hosted fields",
+    "plan exposes review drift without writing",
+    "stock npm published its exact bytes and unassessed input was denied",
+    "registry restart preserves the declared state",
+    "fresh stock npm downloads the exact approved archive after restart",
+    "stale approval leaves suspended repository retained",
+    "suspended repository cannot be imported as active",
+    "provider matches the clean candidate",
+    "revoked administrator cannot plan",
+    "schema 18 with all 57 tenant tables forced RLS and a restricted runtime role"
+  ],
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "goal_complete": false,
+  "broad_readiness": false,
+  "private_fixture": ".private/cratectl-manifest-1tdbylr4",
+  "limits": [
+    "Hosted npm and the version 1 manifest fields on one native server.",
+    "Broader source configuration and production provider distribution remain open."
+  ],
+  "candidate": "6c4d583ee48cd16b7f9cd3dd88d473ee72896fe0",
+  "binary_sha256": {
+    "cratectl": "7ca577d69a38f730f615b226dfa7fc1ab4fde592ba4e611793b61702efe8f3f2",
+    "cratectld": "6a62ba2e968e646d0077c70d3bc4ddcfe5c6f12508c15c53a7bbb00a6d1f6723"
+  },
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "npm": "11.16.0",
+  "archive_sha256": "a2694827c507c96f5fa663bf6216761bb74777d84f49d9b0d9ab8cc6c58e58de",
+  "provider": {
+    "provider_sha256": "e52bb0516f64f120264325699295c9fe24e773e1473e2983b744bc56d9009fb7",
+    "provider_source": "ctlplne.dev/ctlplne/cratectl",
+    "provider_version": "0.1.0",
+    "clients": [
+      {
+        "client": "terraform",
+        "version": "1.17.2",
+        "client_sha256": "eeaa5652e0ccb6426360655725d3bafe8bbc2081fb42b2cd531733588039b347",
+        "checks": [
+          "saved stock plan binds tenant and registry authority",
+          "plan left the registry unchanged",
+          "saved plan cannot apply to another bound authority",
+          "retry plan keeps the same reviewed repository identity",
+          "stock apply created the exact hosted review configuration",
+          "competing creation is not silently adopted",
+          "explicit import reads the exact existing repository",
+          "read-only refresh exposes exact lifecycle drift",
+          "destroy fails and leaves the repository retained"
+        ]
+      },
+      {
+        "client": "tofu",
+        "version": "1.13.9",
+        "client_sha256": "650a88f830c7e46975eb6aa8e36c0df7ff66e040a3a1914ba195ee722b0b913e",
+        "checks": [
+          "saved stock plan binds tenant and registry authority",
+          "plan left the registry unchanged",
+          "saved plan cannot apply to another bound authority",
+          "retry plan keeps the same reviewed repository identity",
+          "stock apply created the exact hosted review configuration",
+          "competing creation is not silently adopted",
+          "explicit import reads the exact existing repository",
+          "read-only refresh exposes exact lifecycle drift",
+          "destroy fails and leaves the repository retained"
+        ]
+      }
+    ]
+  }
+}

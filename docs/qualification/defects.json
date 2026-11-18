@@ -1805,6 +1805,14 @@
       "state": "The original x64 and ARM64 runs were refused by the version assertion before database creation. The original logs omit the installed version. PostgreSQL 16.16 is the reviewed patch release.",
       "first_failure": "evidence/2026-11-18/github-a79d016-provider-pg-patch-refusals.json",
       "repair": "Admit the two reviewed PostgreSQL 16 patch releases in the fixture, print the hosted binary version before running it and retain the exact observed version in the safe result."
+    },
+    {
+      "id": "DEFECT.0172",
+      "summary": "Cargo 1.100 places publish archives below the fixture’s expected target directory",
+      "state": "Both stock publish commands succeeded in the original local run. Archive location stopped the fixture before policy and recovery checks. The corrected exact source passes all 11 Cargo checks.",
+      "first_failure": "evidence/2026-11-18/cargo-e809cfb-native-fixture-failure.json",
+      "replay": "evidence/2026-11-18/cargo-1b4d38e-native.json",
+      "repair": "Read the pinned client’s retained tmp-crate files and compare them independently with durable references and later consumer downloads."
     }
   ]
 }
