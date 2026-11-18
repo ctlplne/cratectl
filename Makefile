@@ -5,7 +5,7 @@ export CRATECTL_QUALIFICATION_BIN_DIR := $(abspath $(BINDIR))
 export GOCACHE := $(CURDIR)/.cache/go-build
 export GOMODCACHE := $(CURDIR)/.cache/go-mod
 export GOTOOLCHAIN := local
-.PHONY: build test race lint integration integration-race conformance security packaging console console-check
+.PHONY: build test race lint integration integration-race conformance security packaging package-linux console console-check
 build:
 	python3 scripts/check_console_assets.py
 	mkdir -p "$(BINDIR)"
@@ -41,6 +41,7 @@ lint:
 	python3 scripts/test_nuget_feed_cases.py
 	python3 scripts/test_bounded_client.py
 	python3 scripts/test_compose_evaluation.py
+	python3 scripts/test_package_linux.py
 	python3 scripts/test_conformance_profile.py
 	python3 scripts/test_go_module_profile.py
 	python3 scripts/test_go_file_proxy.py
@@ -83,3 +84,5 @@ security:
 	@echo 'Security campaign is not yet complete; see docs/qualification/remaining.json'; exit 1
 packaging:
 	@echo 'Release packaging is not yet qualified; see docs/qualification/remaining.json'; exit 1
+package-linux:
+	python3 scripts/package_linux.py
