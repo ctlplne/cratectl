@@ -57,6 +57,14 @@ class CargoEvidenceTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'source digest inventory'):
             public.validate(report)
 
+    def test_public_cargo_failure_outputs_only_fixed_categories(self):
+        self.assertEqual(cargo_public_evidence.failure_categories(
+            'Failed to get successful HTTP response from https://example.invalid/private-token, got 503'),
+            ['http_503'])
+        self.assertEqual(cargo_public_evidence.failure_categories('TLS handshake: certificate expired'), ['tls'])
+        self.assertEqual(cargo_public_evidence.failure_categories('no matching package named cratectl-owned'), ['missing_package'])
+        self.assertEqual(cargo_public_evidence.failure_categories('raw unknown credential value'), ['unclassified'])
+
 
 if __name__ == '__main__':
     unittest.main()

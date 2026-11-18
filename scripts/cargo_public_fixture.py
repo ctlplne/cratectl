@@ -7,10 +7,11 @@ import socket
 import ssl
 import tomllib
 import urllib.error
+import urllib.parse
 import urllib.request
 
 from cargo_hosted_fixture import cargo_home, new_project, stock_cargo_environment
-from ci.cargo_public_evidence import DOWNLOAD, INDEX, PACKAGES
+from ci.cargo_public_evidence import CACHE_FAILURES, DOWNLOAD, INDEX, PACKAGES, failure_categories
 
 
 REPOSITORY = 'cratectl-public-cargo'
@@ -78,10 +79,35 @@ def evaluate_public_origin(work, installation, authority, toolchain, environment
     env = stock_cargo_environment(installation, toolchain / 'rustc', environment)
     cargo = toolchain / 'cargo'
 
+    def cache_diagnostics():
+        result = {}
+        for name in PACKAGES:
+            path = urllib.parse.urlencode({'path': 'cargo-catalog/' + name})
+            try:
+                state = api('cargo-public-failure-' + name, management + '/cache?' + path)
+            except ValueError:
+                result[name] = {'state': 'unobserved'}
+                continue
+            label, last_error, status = (state.get(field) for field in ('state', 'last_error', 'last_status'))
+            result[name] = {
+                'state': label if label in ('ready', 'negative', 'fetching', 'failed') else 'other',
+                'last_error': last_error if last_error in CACHE_FAILURES else '',
+                'last_status': status if type(status) is int and 100 <= status <= 599 else None,
+            }
+        return result
+
+    def cargo_command(label, directory, child, *command):
+        code, output = call('cargo-public-' + label, cargo, *command, cwd=directory, environment=child, status=None, timeout=60)
+        if code != 0:
+            safe = {'phase': label, 'exit_status': code, 'categories': failure_categories(output)}
+            if directory == project or label == 'fetch-replacement':
+                safe['cached_catalogs'] = cache_diagnostics()
+            print('Public Cargo failure ' + json.dumps(safe, sort_keys=True), flush=True)
+            raise ValueError(f'cargo-public-{label} returned {code}, expected 0')
+
     def lock_graph(label, directory, child):
-        call('cargo-public-resolve-' + label, cargo, 'generate-lockfile', cwd=directory, environment=child, timeout=60)
-        call('cargo-public-pin-leaf-' + label, cargo, 'update', '-p', 'percent-encoding', '--precise', PACKAGES['percent-encoding'][0],
-             cwd=directory, environment=child, timeout=60)
+        cargo_command('resolve-' + label, directory, child, 'generate-lockfile')
+        cargo_command('pin-leaf-' + label, directory, child, 'update', '-p', 'percent-encoding', '--precise', PACKAGES['percent-encoding'][0])
 
     def fetch(label, directory=project, resolve=False, replace=False):
         home, child = cargo_home(work, 'cargo-public-home-' + label, 'sparse+' + root + '/index/', env, reader)
@@ -90,7 +116,7 @@ def evaluate_public_origin(work, installation, authority, toolchain, environment
                 stream.write('\n[source.crates-io]\nreplace-with = "cratectl"\n')
         if resolve:
             lock_graph(label, directory, child)
-        call('cargo-public-fetch-' + label, cargo, 'fetch', '--locked', cwd=directory, environment=child, timeout=60)
+        cargo_command('fetch-' + label, directory, child, 'fetch', '--locked')
         archives = list(home.glob('registry/cache/*/*.crate'))
         return {archive.name: sha(archive) for archive in archives}
 

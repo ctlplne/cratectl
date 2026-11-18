@@ -594,6 +594,9 @@ GitHub selected the separate public Cargo lane for both Linux architectures
 at `9b70578`. The initial run inventory binds that lane and eight other
 first-attempt workflows to the exact commit.
 [Original workflow inventory](evidence/2026-11-19/github-9b70578-started.json)
+Both original public Cargo jobs failed during initial dependency resolution.
+The next candidate adds bounded client and catalog failure categories.
+[Original Linux public Cargo failure](evidence/2026-11-19/github-9b70578-public-cargo-first-failure.json)
 
 The exact `1fcfc66` candidate adds hosted name search through stock npm 11.16.0.
 Nine checks passed on macOS ARM64 with PostgreSQL 16.16. They cover current

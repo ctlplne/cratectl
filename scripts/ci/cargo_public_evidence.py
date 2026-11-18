@@ -31,6 +31,25 @@ CHECKS = (
 SOURCE_PATHS = ('.github/workflows/cargo-public.yml', 'scripts/cargo_public_fixture.py',
                 'scripts/ci/cargo_public_evidence.py')
 
+CLIENT_FAILURES = {
+    'authentication': r'credential provider|no token found|authorization required',
+    'tls': r'certificate|ssl connect|tls handshake',
+    'dns': r'could not resolve (?:host|proxy)|name resolution',
+    'timeout': r'timed out|timeout was reached',
+    'connection': r'could not connect|failed to connect|connection reset',
+    'missing_package': r'no matching package named|failed to select a version',
+}
+CACHE_FAILURES = frozenset(('upstream_metadata_invalid', 'upstream_cargo_binding_changed', 'upstream_cargo_coordinate_changed',
+                            'upstream_authority_failure', 'upstream_credential_authority', 'upstream_cache_policy_failure',
+                            'unexpected_upstream_encoding', 'upstream_header_limit', 'upstream_rejected_request',
+                            'transient_upstream_failure', 'upstream_transfer_failure', 'upstream_integrity_failure'))
+
+
+def failure_categories(output):
+    categories = {name for name, pattern in CLIENT_FAILURES.items() if re.search(pattern, output, re.I)}
+    categories.update('http_' + status for status in re.findall(r'\b(?:got|status(?: code)?[: ]?)\s+([45]\d\d)\b', output))
+    return sorted(categories) or ['unclassified']
+
 
 def hash_value(value):
     return isinstance(value, str) and re.fullmatch('[a-f0-9]{64}', value) is not None
