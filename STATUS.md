@@ -400,6 +400,14 @@ explicit import, and refresh exposed retained suspension. A destroy plan
 left the repository in place. The provider currently manages hosted creation
 and import. Additional resources and release distribution remain open.
 [Native Terraform and OpenTofu evidence](evidence/2026-11-18/terraform-provider-5429b9a-native.json)
+The original `3639a74` native x64 and ARM64 provider jobs each passed 38
+checks on PostgreSQL 16.15, including the 18 stock infrastructure client
+checks. Their unchanged artifacts and all 20 source hashes per report were
+independently verified. The earlier `e4b1408` campaign closed with 28 passes
+and two original media failures across eight workflows.
+[Native Linux Terraform and OpenTofu evidence](evidence/2026-11-18/github-3639a74-terraform-provider-native.json)
+[Original 3639a74 campaign inventory](evidence/2026-11-18/github-3639a74-started.json)
+[Original e4b1408 campaign](evidence/2026-11-18/github-e4b1408-original-completed.json)
 
 The cold `e4adc19` recovery fixture passed 17 runtime checks and 12 backup
 controls. With registry and worker stopped, stock PostgreSQL 16.15 captured
