@@ -1,0 +1,71 @@
+{
+  "candidate": "f21dc28d2ba05452a8f99043e89619e138645933",
+  "observed_at": "2026-11-19T01:59:25.524346+05:30",
+  "status": "passed",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "cargo": "cargo 1.100.0 (3acc79c0c 2026-11-05)",
+  "cargo_checks": 80,
+  "declarative_checks": 19,
+  "new_checks": [
+    "same Cargo group and coordinate names resolve distinct stock archives for two tenants",
+    "stock group search returns only the selected tenant description at an identical coordinate"
+  ],
+  "archive_digests": 10,
+  "binary_sha256": {
+    "cratectl": "ac065d84b34c10c1daa6ece3c06d35c8eeb392c7f37b5043a3f712070507f4a9",
+    "cratectld": "66719dfca8480b5a1e0f9b6c37464fbb4db1f26fb7944d5b5290a2846d74d815"
+  },
+  "safe_summary": {
+    "path": "evidence/2026-11-19/cargo-f21dc28-tenants-native-summary.json",
+    "bytes": 10094,
+    "sha256": "aaccd0b4dfd165862dba9076f15371955d51c945afd99b373adff4f3b6c7ecca",
+    "original_sha256": "d03642640646da47566a36d626d1ca9c3db77491ac3f32eda0ce43481ddd0a04",
+    "redaction": "Omitted the private fixture directory."
+  },
+  "source_sha256": [
+    {
+      "path": "scripts/cargo_hosted_fixture.py",
+      "sha256": "8feaede986a4b8990c7cc5aa2464137d3c24aaac859aa58ce030eed4eda55020"
+    },
+    {
+      "path": "scripts/cargo_group_fixture.py",
+      "sha256": "76087f9dcbf1977cc2c1008fe58da1ccb56819f45bd2a3ce1c7bfa7398c592d6"
+    },
+    {
+      "path": "scripts/cargo_proxy_fixture.py",
+      "sha256": "c780300b59344662d7381dde29cee5093adf5ae4ea9b82ccd0071f38994c838a"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "004e3c9cb498e84269a97d3384b76cd61789ba122e1c6f77d74fc9f0bf742cd0"
+    },
+    {
+      "path": "scripts/ci/cargo_evidence.py",
+      "sha256": "de7322f902ee73df51a8639ae54c143c3c1e6b09d12c2b4dcda6cdc8e8a8afee"
+    },
+    {
+      "path": "internal/store/cargo_selection.go",
+      "sha256": "ada87b816b801d89d2a144def7770aa6d14f5619ac2ebd2a50b5b1b8c783aef3"
+    },
+    {
+      "path": "internal/store/cargo_search.go",
+      "sha256": "458e4f2f166252ccbfa5f57b13f6060223ceed2f6c1012e30f8c72e3fddefd2e"
+    },
+    {
+      "path": "internal/server/cargo_group.go",
+      "sha256": "5e58c5d91fe08371623d949d91953674ed233003d519b5864ce371b5619ab5dd"
+    },
+    {
+      "path": "internal/server/cargo.go",
+      "sha256": "39be743fbcebd510745693e2651da851ebf318f8e372f54bf0457e2106b291f4"
+    }
+  ],
+  "limits": [
+    "Two isolated tenants used identical group, repository, package and version names and separate grants and Cargo homes.",
+    "Both archived digests and both search descriptions matched the respective independent publication.",
+    "This exercise used one native macOS installation and controlled origins. Linux coverage for these two cases is pending."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

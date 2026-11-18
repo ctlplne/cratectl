@@ -535,9 +535,25 @@ The exact `2af9921` candidate passed 78 stock Cargo and 19 declarative checks
 on macOS ARM64 with PostgreSQL 16.16. Seven new search checks cover cached
 proxy and group releases. Search uses local state and follows source order,
 review, yanks and current grants. It returns the selected crate's packaged
-description when available. Linux search, uncached upstream search, legacy Git
-discovery, replication and broader scale require further work.
+description when available. Both original `f65b296` Linux architectures
+passed the same 78 Cargo and 19 declarative checks with PostgreSQL 16.15.
+Each report matched 46 source hashes. The exact `f21dc28` macOS ARM64
+candidate passed 80 Cargo and 19 declarative checks. Two independent tenants
+used identical group, repository and crate coordinates and received their
+own archive bytes and search descriptions. Linux replay of those two cases,
+uncached upstream search, legacy Git discovery, replication and broader
+scale remain open.
 [Native Cargo proxy and group search evidence](evidence/2026-11-19/cargo-2af9921-search-native.json)
+[Original Linux Cargo search evidence](evidence/2026-11-19/github-f65b296-cargo-search-native.json)
+[Original workflow inventory](evidence/2026-11-19/github-f65b296-started.json)
+[Native cross-tenant evidence](evidence/2026-11-19/cargo-f21dc28-tenants-native.json)
+
+The same `f21dc28` macOS ARM64 candidate passed six checks against the public
+crates.io sparse index and its separate HTTPS CDN. Stock Cargo fetched the
+exact `itoa 1.0.15` archive pinned by the upstream index. A fresh Cargo home
+received the stored archive after registry restart, and grant revocation
+denied further access. The optional dependency remained disabled.
+[Public sparse registry evidence](evidence/2026-11-19/cargo-f21dc28-public-sparse-native.json)
 
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities

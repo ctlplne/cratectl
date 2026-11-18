@@ -1936,8 +1936,9 @@
       "id": "J.CARGO.PROXY",
       "capability": "FMT.CARGO.PROXY",
       "state": "implementing",
-      "candidate": "383b44455e3d7352447f214426bccb284ea95bcd",
+      "candidate": "f21dc28d2ba05452a8f99043e89619e138645933",
       "evidence": [
+        "evidence/2026-11-19/cargo-f21dc28-public-sparse-native.json",
         "evidence/2026-11-19/github-383b444-cargo-mixed-native.json",
         "evidence/2026-11-19/cargo-2833181-mixed-native.json",
         "evidence/2026-11-19/cargo-a2b2283-expanded-proxy-native.json",
@@ -1951,15 +1952,16 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Native macOS ARM64 and native Linux x64 and ARM64 pass the expanded stock sparse proxy profile. Coverage includes source revision, stale policy, interrupted and six simultaneous transfers, and mixed groups. Public origin and representative scale remain open.",
-      "next_action": "Exercise public sparse origins and broader workload, tenant boundary, and transfer fault limits."
+      "limits": "Native macOS ARM64 and native Linux x64 and ARM64 pass the expanded stock sparse proxy profile. Coverage includes source revision, stale policy, interrupted and six simultaneous transfers, and mixed groups. Public origin and representative scale remain open. The independent macOS ARM64 profile fetched the exact public crates.io itoa 1.0.15 archive from its distinct HTTPS CDN and replayed it after restart.",
+      "next_action": "Qualify public origins on additional native architectures and cover broader workloads, transfer faults, and dependency graphs."
     },
     {
       "id": "J.CARGO.GROUP",
       "capability": "FMT.CARGO.GROUP",
       "state": "implementing",
-      "candidate": "383b44455e3d7352447f214426bccb284ea95bcd",
+      "candidate": "f21dc28d2ba05452a8f99043e89619e138645933",
       "evidence": [
+        "evidence/2026-11-19/cargo-f21dc28-tenants-native.json",
         "evidence/2026-11-19/github-383b444-cargo-mixed-native.json",
         "evidence/2026-11-19/cargo-2833181-mixed-native.json",
         "evidence/2026-11-19/github-c55ccda-cargo-groups-native.json",
@@ -1971,8 +1973,8 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Stock hosted and mixed-group checks pass on macOS ARM64 and both native Linux architectures. Three separate PostgreSQL source-change cases pass on macOS ARM64. Cross-tenant duplicates and further scale and transfer cases remain open.",
-      "next_action": "Complete cross-tenant duplicates, platform and workload qualification and integrate uncached search."
+      "limits": "Stock hosted and mixed-group checks pass on macOS ARM64 and both native Linux architectures. Three separate PostgreSQL source-change cases pass on macOS ARM64. Two independent tenants with identical coordinates fetched distinct archived bytes on macOS ARM64.",
+      "next_action": "Replay the cross-tenant group checks on Linux and qualify broader platform, scale, and transfer cases."
     },
     {
       "id": "J.CARGO.REPLICATION",
@@ -1991,8 +1993,10 @@
       "id": "J.CARGO.SEARCH",
       "capability": "FMT.CARGO.SEARCH",
       "state": "implementing",
-      "candidate": "2af992118f738d35a4c0f56a53c747a5df45311c",
+      "candidate": "f21dc28d2ba05452a8f99043e89619e138645933",
       "evidence": [
+        "evidence/2026-11-19/cargo-f21dc28-tenants-native.json",
+        "evidence/2026-11-19/github-f65b296-cargo-search-native.json",
         "evidence/2026-11-19/cargo-2af9921-search-native.json",
         "evidence/2026-11-19/cargo-35c3708-search-native.json"
       ],
@@ -2002,15 +2006,17 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Stock Cargo 1.100.0 against native PostgreSQL 16.16 qualifies hosted search and seven locally cached proxy and group checks. Permission, pending review, source revision, yank, and explicit namespace controls apply to results. Native Linux search and uncached upstream coverage remain open.",
-      "next_action": "Qualify proxy and group search on both Linux architectures and complete cross-tenant, uncached, and broad workload cases."
+      "limits": "Stock Cargo 1.100.0 verified hosted and locally cached proxy and group search on macOS ARM64 and both Linux architectures with native PostgreSQL. macOS also verified distinct descriptions at the same coordinate in two independent tenants.",
+      "next_action": "Replay the cross-tenant search checks on Linux and qualify uncached origin search and broader workloads."
     },
     {
       "id": "J.CARGO.AUTHORIZATION",
       "capability": "FMT.CARGO.AUTHORIZATION",
       "state": "implementing",
-      "candidate": "910359d7e5f8dc72059724b5e61c4d377a42630c",
+      "candidate": "f21dc28d2ba05452a8f99043e89619e138645933",
       "evidence": [
+        "evidence/2026-11-19/cargo-f21dc28-tenants-native.json",
+        "evidence/2026-11-19/github-f65b296-cargo-search-native.json",
         "evidence/2026-11-19/cargo-910359d-historical-adoption-native.json",
         "evidence/2026-11-19/cargo-fa6b4f7-ownership-native.json",
         "evidence/2026-11-18/cargo-a39c952-native.json"
@@ -2021,8 +2027,8 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Scoped stock Cargo 1.100.0 schema 19 ownership evidence on macOS ARM64 with PostgreSQL 16.16. Repository grants apply on every mutation and the last owner remains protected.",
-      "next_action": "Qualify schema 19 with both native Linux architectures and complete remaining platform, scaling, and format cases."
+      "limits": "Stock Cargo 1.100.0 schema 19 ownership and grants have native PostgreSQL evidence on macOS ARM64 and both Linux architectures. macOS additionally exercises the same Cargo group and coordinate names in two independent tenants with distinct archive bytes and search results.",
+      "next_action": "Replay the cross-tenant group and search cases on Linux and qualify remaining platform, scaling, and format cases."
     },
     {
       "id": "J.CARGO.LIFECYCLE",
