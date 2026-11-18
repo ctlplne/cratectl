@@ -9,7 +9,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from cold_snapshot import MIGRATION_18, REQUIRED, SNAPSHOT, capture, check_restored_database, verify
+from cold_snapshot import MIGRATION_18, REQUIRED, SNAPSHOT, capture, check_restored_database, materialize, verify
 
 
 class ColdSnapshotTests(unittest.TestCase):
@@ -52,6 +52,22 @@ class ColdSnapshotTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'snapshot manifest SHA-256 differs'):
             verify(self.output, '0' * 64)
         self.assertEqual(self.postgres.call_count, 2)
+
+    def test_materialization_never_publishes_changed_or_partial_inputs(self):
+        digest = self.create()
+        target = self.root / 'restored'
+        self.assertEqual(materialize(self.output, digest, target), target)
+        self.assertEqual(verify(target, digest), verify(self.output, digest))
+        with self.assertRaisesRegex(ValueError, 'snapshot output already exists'):
+            materialize(self.output, digest, target)
+        with self.assertRaisesRegex(ValueError, 'restore output must be outside'):
+            materialize(self.output, digest, self.output / 'child')
+        (self.output / 'installation/server.key').write_bytes(b'changed')
+        refused = self.root / 'refused'
+        with self.assertRaisesRegex(ValueError, 'snapshot file or directory inventory differs'):
+            materialize(self.output, digest, refused)
+        self.assertFalse(refused.exists())
+        self.assertEqual((target/SNAPSHOT).read_bytes(), (self.output/SNAPSHOT).read_bytes())
 
     def test_refuses_an_incomplete_or_mismatched_snapshot_before_postgres(self):
         digest = self.create()

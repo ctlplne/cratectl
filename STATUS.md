@@ -262,6 +262,9 @@ the observed families. Their main CI campaigns remain separate.
 [Current native installer](evidence/2026-11-18/github-b88d397-linux-install-native.json)
 [Helm candidate terminal families](evidence/2026-11-18/github-22f2cec-original-terminal-families.json)
 [Installer candidate terminal families](evidence/2026-11-18/github-08436af-original-terminal-families.json)
+The whole original `22f2cec` campaign closed with 15 passes and three source
+lint failures. Its 72 safe reports retain the individual job outcomes.
+[Complete Helm-candidate campaign](evidence/2026-11-18/github-22f2cec-original-completed.json)
 
 On `b88d397`, native macOS ARM64 stock NuGet completed the publish, unlist,
 relist, isolation and restart checks against a fresh real database. The
@@ -336,6 +339,10 @@ The `f9c0032` pairing tool sealed and verified 1,573 files from a separate
 stock PostgreSQL backup and the stopped runtime. A fresh test volume restored
 directly from this sealed copy and passed the same stock-client checks.
 [Sealed snapshot result](evidence/2026-11-18/cold-snapshot-f9c0032-arm64-native.json)
+The pre-start check at `255326b` accepted the exact restored database and
+refused a separate snapshot missing a referenced object. After a real
+registry mutation advanced the journal, it refused the earlier checkpoint.
+[Native restore check](evidence/2026-11-18/cold-restore-guard-255326b-arm64.json)
 
 The packaged Helm chart passed 13 deployment checks at `f245757` on an
 isolated ARM64 Kubernetes 1.35 cluster. Restricted Pod Security admitted the

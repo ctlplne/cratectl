@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "candidate": "255326b1294a53999b1ee11852143b16d50b93c9",
+  "runtime_candidate": "e4adc190caa621fd46a35312242fdc029f787f73",
+  "observed_at": "2026-11-18T16:07:26.903872+00:00",
+  "status": "passed",
+  "platform": "linux/arm64",
+  "guard_result": {
+    "schema": 18,
+    "forced_tenant_tables": 57,
+    "journal_heads": 1,
+    "matched_object_references": 1
+  },
+  "runtime_assertions": 25,
+  "cold_controls": 15,
+  "live_guard_refusals": [
+    "Independently sealed file tree lacking a referenced object",
+    "Journal advanced by a later real managed mutation"
+  ],
+  "original_report": {
+    "path": ".private/cratectl-recovery-c86f2ede91/safe-report.json",
+    "bytes": 6512,
+    "sha256": "09c1e4b5d64e1e424deb378e385f0063ac5258e47413ebbb15a3617706cac7b5"
+  },
+  "logs": [
+    {
+      "path": ".private/cratectl-recovery-c86f2ede91/guard-match-before-serving.log",
+      "bytes": 95,
+      "sha256": "7c8aa14f43efcca84b60e451f08c290fcf302ac6a085e2135aff13584d26d523"
+    },
+    {
+      "path": ".private/cratectl-recovery-c86f2ede91/guard-refuse-absent-reference.log",
+      "bytes": 93,
+      "sha256": "4263910dfc922a669733e56524e9ee8667e7d410b4cd325c76f7500acde111fc"
+    },
+    {
+      "path": ".private/cratectl-recovery-c86f2ede91/guard-refuse-advanced-journal.log",
+      "bytes": 88,
+      "sha256": "7eb5e919ece9f346d7539293f4172d61474de2ac5d228a5cd9a88db5f8bfdfe1"
+    },
+    {
+      "path": ".private/cratectl-recovery-c86f2ede91/advanced-journal-head.log",
+      "bytes": 151,
+      "sha256": "5c759f3da5167afea4bddae9fa6e27f4e8b03612b164b1c65852cc1873220dc7"
+    }
+  ],
+  "drivers": [
+    {
+      "path": ".cache/cratectl-cold-guard-native.py",
+      "bytes": 20300,
+      "sha256": "c0973d49acec1eac367cc1a97826ba0a9e9463b73cc11ff644b8dd44458afa36"
+    },
+    {
+      "path": ".cache/cratectl-cold-guard-target.py",
+      "bytes": 6494,
+      "sha256": "0a32f5394f25ea315b43c2613ae5c33a758a658c379abf63650121f9baa424ed"
+    }
+  ],
+  "limits": [
+    "Scoped cold single-node filesystem and physical PostgreSQL 16.15 recovery on the same Linux ARM64 Docker engine. Applications were stopped before paired capture.",
+    "Docker volumes were newly allocated and namespaced. Mixed-version recovery, live production backups, independent-host HA, preservation under storage outages and RPO/RTO budgets remain open."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

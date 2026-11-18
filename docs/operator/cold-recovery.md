@@ -50,8 +50,15 @@ PostgreSQL's native backup manifest before reporting success.
 python3 scripts/cold_snapshot.py verify "$SNAPSHOT" --sha256 "$TRUSTED_SNAPSHOT_SHA256"
 ```
 
-Restore the validated database to a new PostgreSQL data directory and the
-installation files to a separate private destination. Supply the same
+Materialize the complete copy in a new private directory. The command stages
+and verifies the files and publishes the destination only after it is ready.
+
+```sh
+python3 scripts/cold_snapshot.py materialize "$SNAPSHOT" --sha256 "$TRUSTED_SNAPSHOT_SHA256" \
+  --output "$RECOVERY_COPY"
+```
+
+Use the copied database and installation files in the new runtime. Supply the same
 absolute application paths through the new runtime's mounts. Start the
 database first and point the stock PostgreSQL client environment at that
 restored database using an authorized maintenance connection. Before starting

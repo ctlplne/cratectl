@@ -237,7 +237,21 @@ def check_supported_inputs(root):
     require(code == 0 and 'backup successfully verified' in output, 'stock pg_verifybackup failed')
 
 
+def publish_snapshot(staging, output, encoded):
+    require(len(encoded) <= MAX_MANIFEST, 'snapshot manifest exceeds its size bound')
+    with (staging / SNAPSHOT).open('xb') as handle:
+        handle.write(encoded)
+        handle.flush()
+        os.fsync(handle.fileno())
+    sync_dir(staging)
+    require(not output.exists() and not output.is_symlink(), 'snapshot output already exists')
+    staging.rename(output)
+    sync_dir(output.parent)
+
+
 def capture(database, installation, pagination, journal, output):
+    require(not any(output.parent.resolve().is_relative_to(source.resolve()) for source in (database, installation)),
+            'snapshot output must be outside the source directories')
     with tempfile.TemporaryDirectory(prefix='cratectl-cold-snapshot-', dir=output.parent) as work:
         staging = Path(work) / 'snapshot'
         staging.mkdir(mode=0o700)
@@ -253,19 +267,11 @@ def capture(database, installation, pagination, journal, output):
         prepared = inventory.manifest()
         check_supported_inputs(staging)
         encoded = encode(prepared)
-        require(len(encoded) <= MAX_MANIFEST, 'snapshot manifest exceeds its size bound')
-        with (staging / SNAPSHOT).open('xb') as handle:
-            handle.write(encoded)
-            handle.flush()
-            os.fsync(handle.fileno())
-        sync_dir(staging)
-        require(not output.exists() and not output.is_symlink(), 'snapshot output already exists')
-        staging.rename(output)
-        sync_dir(output.parent)
+        publish_snapshot(staging, output, encoded)
         return hashlib.sha256(encoded).hexdigest()
 
 
-def verify(root, expected):
+def verify(root, expected, *, staged_files=None):
     require(type(expected) is str and SHA256.fullmatch(expected), 'independently trusted snapshot SHA-256 required')
     fd = os.open(root, DIR)
     try:
@@ -273,14 +279,25 @@ def verify(root, expected):
         raw = read_small(SNAPSHOT, MAX_MANIFEST, directory=fd)
         require(hashlib.sha256(raw).hexdigest() == expected, 'snapshot manifest SHA-256 differs')
         inventory = Inventory()
-        inventory.tree(fd, '', None)
+        inventory.tree(fd, '', staged_files)
         observed = inventory.manifest()
         require(encode(observed) == raw, 'captured snapshot file or directory inventory differs')
-        check_supported_inputs(root)
+        check_supported_inputs(root if staged_files is None else staged_files)
         require(os.path.samestat(os.stat(root, follow_symlinks=False), os.fstat(fd)), 'snapshot directory changed during verification')
         return observed
     finally:
         os.close(fd)
+
+
+def materialize(root, expected, output):
+    require(not output.parent.resolve().is_relative_to(root.resolve()), 'restore output must be outside the sealed source')
+    require(not output.exists() and not output.is_symlink(), 'snapshot output already exists')
+    with tempfile.TemporaryDirectory(prefix='cratectl-cold-restore-', dir=output.parent) as work:
+        staging = Path(work) / 'snapshot'
+        staging.mkdir(mode=0o700)
+        observed = verify(root, expected, staged_files=staging)
+        publish_snapshot(staging, output, encode(observed))
+    return output
 
 
 def check_restored_database(root, expected):
@@ -321,10 +338,12 @@ def main():
     pair = actions.add_parser('capture')
     for name in ('database', 'installation', 'pagination-key', 'journal-checkpoint', 'directory'):
         pair.add_argument('--' + name, type=Path, required=True)
-    for action in ('verify', 'check-restore'):
+    for action in ('verify', 'check-restore', 'materialize'):
         check = actions.add_parser(action)
         check.add_argument('directory', type=Path)
         check.add_argument('--sha256', required=True)
+        if action == 'materialize':
+            check.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     os.umask(0o077)
     try:
@@ -335,12 +354,16 @@ def main():
             print(json.dumps({'files': len(observed['files']), 'bytes': observed['bytes'],
                               'verified_cas_files': observed['verified_cas_files']}))
         else:
-            fd = os.open(args.directory.parent, DIR)
+            output = args.output if args.action == 'materialize' else args.directory
+            fd = os.open(output.parent, DIR)
             try:
                 private_directory(fd)
                 fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                print(capture(args.database, args.installation, args.pagination_key,
-                              args.journal_checkpoint, args.directory))
+                if args.action == 'materialize':
+                    print(materialize(args.directory, args.sha256, output))
+                else:
+                    print(capture(args.database, args.installation, args.pagination_key,
+                                  args.journal_checkpoint, output))
             finally:
                 os.close(fd)
     except (OSError, ValueError, RuntimeError, RecursionError, TypeError, KeyError) as error:
