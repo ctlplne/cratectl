@@ -195,7 +195,7 @@ def evaluate_cached_python_search(work, installation, authority, python, environ
     package_path = path + 'packages/' + preferred.name
     document = {'meta': {'api-version': '1.1'}, 'name': NAME, 'files': [
         {'filename': preferred.name, 'url': origin + 'packages/' + preferred.name,
-         'hashes': {'sha256': sha(preferred)}, 'yanked': False},
+         'hashes': {'sha256': sha(preferred)}, 'size': preferred.stat().st_size, 'yanked': False},
     ]}
     content = {catalog_path: json.dumps(document).encode(), package_path: preferred.read_bytes()}
     media = {catalog_path: 'application/vnd.pypi.simple.v1+json', package_path: 'application/octet-stream'}
