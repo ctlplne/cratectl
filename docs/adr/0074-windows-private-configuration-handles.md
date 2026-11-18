@@ -43,7 +43,7 @@ The management server is a declared stand-in, not a real PostgreSQL registry.
 Missing native fixture capabilities fail; no skip becomes a pass.
 
 The first Windows CI profile must run these functions plus the pure decision and
-read-budget regression on actual x64 and ARM64 Windows hosts. Pinned Go/Python
+read-budget regression on actual x64 and ARM64 Windows hosts. Pinned native Go
 architecture, embedded clean candidate identity, bounded execution/output and
 closed safe evidence remain required before a native claim. Existing20-contract
 12c6/78a campaigns must finish their original qualification before a new mandatory

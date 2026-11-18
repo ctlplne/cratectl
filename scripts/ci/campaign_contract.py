@@ -6,13 +6,13 @@ WORKFLOWS = {
     'ci.yml': 'main', 'go-modules.yml': 'go', 'jvm-clients.yml': 'jvm',
     'oci-clients.yml': 'oci', 'upgrade-qualification.yml': 'upgrades',
     'go-export-portability.yml': 'portable', 'nuget-contract.yml': 'library',
-    'browser-repair.yml': 'browser', 'go-checksum-client.yml': 'strict',
+    'browser-repair.yml': 'browser', 'go-checksum-client.yml': 'strict', 'windows-cli.yml': 'windows',
 }
 PLATFORMS = {'amd64': ('ubuntu-24.04', 'Linux', 'X64'),
              'arm64': ('ubuntu-24.04-arm', 'Linux', 'ARM64'),
              'darwin-arm64': ('macos-15', 'macOS', 'ARM64')}
 VALIDATOR_FILES = ['scripts/ci/' + name + '_evidence.py' for name in
-                   ['maven', 'gradle', 'ivy', 'sbt', 'go_module', 'journal', 'go_export_portability', 'go_common_export_portability', 'go_requirement_export_portability']]
+                   ['maven', 'gradle', 'ivy', 'sbt', 'go_module', 'journal', 'go_export_portability', 'go_common_export_portability', 'go_requirement_export_portability', 'windows_cli']]
 COMPATIBLE_FILES = ['.github/workflows/' + name for name in WORKFLOWS] + VALIDATOR_FILES + ['scripts/ci/evidence_summary.py', 'scripts/conformance_go.py']
 
 
@@ -99,4 +99,11 @@ def jobs(family, schema=17, requirement_portability=False):
             add('Stock Go checksum-on trust-state controls (' + label + ')', arch,
                 ['Check bounded evidence export with stand-ins', 'Check actual stock Go checksum and failed-cache behavior'],
                 'ci-summary-checksum-client-' + label, 'strict')
+    if family == 'windows':
+        for arch, runner, machine in [('amd64', 'windows-2025', 'X64'), ('arm64', 'windows-11-arm', 'ARM64')]:
+            result['Native Windows private configuration (' + arch + ')'] = {
+                'platform': (runner, 'Windows', machine), 'arch': arch,
+                'required': ['Preserve exact Git source bytes', 'Build exact native CLI and qualification driver',
+                             'Run native private-file CLI and owned-job regressions'],
+                'artifact': 'ci-summary-windows-cli-' + arch, 'kind': 'windows'}
     return result

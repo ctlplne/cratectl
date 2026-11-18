@@ -1,0 +1,86 @@
+name: Native Windows CLI configuration
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'internal/configfile/**'
+      - 'cmd/cratectl/**'
+      - 'scripts/ci/windowscli/**'
+      - 'scripts/ci/windows_cli_evidence.py'
+      - 'docs/qualification/ci-diagnostics-recipient.pem'
+      - 'go.mod'
+      - 'go.sum'
+      - '.github/workflows/windows-cli.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  native:
+    if: github.ref == 'refs/heads/main' && github.repository == 'ctlplne/cratectl'
+    name: Native Windows private configuration (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 20
+    concurrency:
+      group: cratectl-windows-cli-${{ github.ref }}-${{ matrix.arch }}-${{ github.sha }}
+      cancel-in-progress: false
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: windows-2025
+            sdk-arch: x64
+          - arch: arm64
+            runner: windows-11-arm
+            sdk-arch: arm64
+    env:
+      CGO_ENABLED: '0'
+      GOENV: 'off'
+      GOTOOLCHAIN: local
+    steps:
+      - name: Preserve exact Git source bytes
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          architecture: ${{ matrix.sdk-arch }}
+      - name: Build exact native CLI and qualification driver
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force .cache/ci-windows | Out-Null
+          go build -o .cache/ci-windows/cratectl.exe ./cmd/cratectl
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          go build -o .cache/ci-windows/qualify.exe ./scripts/ci/windowscli
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Run native private-file CLI and owned-job regressions
+        shell: pwsh
+        run: |
+          ./.cache/ci-windows/qualify.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - uses: actions/upload-artifact@v7
+        if: success()
+        with:
+          name: ci-summary-windows-cli-${{ matrix.arch }}
+          path: .cache/ci-windows-cli-summary.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: encrypted-windows-cli-${{ matrix.arch }}
+          path: |
+            .cache/ci-windows-diagnostics.cms
+            .cache/ci-windows-diagnostics.json
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 30

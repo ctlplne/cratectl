@@ -1,119 +1,104 @@
 # cratectl execution status
 
-The full owner-amended GOAL4.1 remains committed:450 capabilities,41 format families,
-14 export cases,seven environments and all later stages remain required. Broad
-readiness,security and packaging stay unqualified. Both commit identities are
-imfeelingtheagi on main. Public source/CI pushes are authorized; release/package/
-image publication and primary/customer/sibling changes remain outside this work.
-
-Execution is paused at the owner's request after the current implementation
-commit/push closeout. See the [pause handoff](evidence/2026-11-07/owner-halt-4092e78.json).
-The existing78a verifier remains queued; no native run was restarted or cancelled.
+Execution is active following the owner's2026-11-18 resume. The full amended
+GOAL4.1 remains committed:450 capabilities,41 format families,14 export cases,
+seven environments and every later stage. Both commit identities must be
+imfeelingtheagi on main. This work is local. A new source push or CI dispatch
+requires owner authority under GOAL section 20.
+Broad readiness,security and packaging remain unqualified.
 
 ## Latest whole accepted source
 
-[12c6c49](evidence/2026-11-07/github-12c6c49-checkpoint.json) passes all29 original
-jobs/seven workflows,22 unchanged safe summaries and95 reports. Actual read-only
-[verifier42434888210](https://github.com/ctlplne/cratectl/actions/runs/42434888210)
-runs from compatible78a5983. Every original log hash/byte count,22 member/95 raw
-report hashes and20 source contracts independently match. The actual verifier
-records35 component functions:7+12+16. No native job was restarted.
+[78a5983](evidence/2026-11-07/github-78a5983-checkpoint.json) passes all26 original
+jobs/six workflows,19 unchanged safe members and80 reports. Actual read-only
+[verifier42435561789](https://github.com/ctlplne/cratectl/actions/runs/42435561789),
+job128593534916, runs from78a itself. All26 original log hashes/byte counts,
+19 member/80 raw-report hashes and20 source contracts independently match.
+Its actual component inventory is35 functions:7 transport+12 report+16 acceptance.
+The earlier23success/3live partial snapshot remains an immutable historical record.
+No native job was restarted, cancelled or replaced.
 
-Both Linux hosts pass295 PostgreSQL/117 named Go functions normally/race,312 stock
-Go/683 baseline checks,17 historical binaries/22 upgrade reports. Three native
-source hosts pass66 fuzz targets. Main x86 Chromium passes19 workflows/151 checks
-with four declared response stand-ins; focused browser adds15 fresh database
-trials. Library/strict profiles were unselected,never passes.
+Both Linux hosts pass296 PostgreSQL/118 named Go functions normally/race,
+312 stock Go/683 baseline checks and17 historical binaries/22 upgrade reports.
+Three source hosts pass66 fuzz targets. Main x86 Chromium passes19 workflows/
+151 checks with four declared response stand-ins. Focused browser/library/strict
+were unselected in this source and provide no pass.
 
-The new requirement transfer retains22 original members,three separate fingerprint
-outputs,distinct actual API runner identities and18 added stages. Original16 and
-common18 stages remain,total52. Native helperv2 proves actual SIGPIPE after synced
-publication and exact acknowledgement-loss replay,17 empty command networks;
-eight fresh refusals make25 ARM consumer observations. Source/consumer file and
-helper hashes pair. Job-output/bootstrap transport remains an owned online stand-in,
-not a production trust issuer/signing platform or disconnected installer.
+[ADR0073](docs/adr/0073-native-go-replacement-and-exclusion-differentials.md)
+qualifies five SDK replacement/exclusion comparisons after actual PostgreSQL,
+trusted TLS, candidate CLI, external signing and signed collection, followed by
+source shutdown and31 empty command networks per function invocation. Logical/
+physical ordering, dependency-local directives and excluded-only/lower-direct-root
+behavior retain exact h1/inert bytes. No package execution or full closure claim.
 
-Original signed creation/parent/whole journal/all inputs/MVS/native h1/SDK and
-collector SIGKILL/synced-prefix/renewal/stale-generation/corrupt-prefix/original
-receipt controls remain. Package/platform/permission/provenance closure,public
-authority,current destination admission and physicalGC are not established.
+The52 portable stages retain original16/common18/requirement18 controls. The
+requirement transfer binds22 originals/three separate fingerprints/distinct actual
+API runners,17 helper and25 consumer empty command networks and actual SIGPIPE
+acknowledgement-loss replay. Original collector SIGKILL/renewal/stale-generation/
+corrupt-prefix/original-receipt controls remain. Transport/bootstrap responses
+are owned stand-ins, not a production trust issuer or disconnected installer.
+[12c6](evidence/2026-11-07/github-12c6c49-checkpoint.json),
+[f9](evidence/2026-11-07/github-f9fa987-checkpoint.json),
+[f320](evidence/2026-11-07/github-f32031b-checkpoint.json) and
+[52](evidence/2026-11-07/github-52dca42-checkpoint.json) retain their own exact scope.
 
-[f9fa987](evidence/2026-11-07/github-f9fa987-checkpoint.json) retains its original
-19-contract recovery scope;[f32031b](evidence/2026-11-07/github-f32031b-checkpoint.json)
-retains its original15-command signed caller scope.
-[52dca42](evidence/2026-11-07/github-52dca42-checkpoint.json) retains durable schema18
-creation/current all-input guards/RLS/audit references and actual17-to18 old-session/
-receipt/byte preservation. New assertions are never backdated into those sources.
+## Later original source completed with strict failures
 
-## Later SDK comparisons have named native proof
+[2a0268c](evidence/2026-11-18/github-2a0268c-original-failure-checkpoint.json)
+finished31 original jobs/eight workflows:28 success,three strict failures,zero
+job skips. All31 original logs and24 unchanged safe members/85 reports are
+retained. The base26 and two NuGet-library jobs passed. All three actual native
+Go1.27.3 strict profiles fail the original altered-ZIP trust-state assertion:
+six controls pass, initial ZIP rejection occurs, an untrusted sum remains and
+retry extracts altered inert bytes. DEFECT0126 remains open. This is a failed
+selected campaign, with no whole acceptance; nothing was rerun or weakened.
 
-[78a5983](evidence/2026-11-07/go-module-78a5983-native-checkpoint.json) passes both
-original Linux Go jobs normally/race,118 named functions and312 stock-client checks.
-[ADR0073](docs/adr/0073-native-go-replacement-and-exclusion-differentials.md) adds
-five explicit comparisons: specific/wildcard replacement,excluded edge with a
-higher alternative,excluded-only edge and excluded edge with a lower direct root.
-Physical inputs sort differently from logical replacement selections. Actual
-PostgreSQL/TLS/CLI/external signature/collection precedes source shutdown; the
-pinned SDK compares logical/physical lists,original h1 and inert bytes in31 empty
-command networks. No package runs. Metadata exclusion does not prove package closure.
+That source includes [ADR0074](docs/adr/0074-windows-private-configuration-handles.md)
+and DEFECT0147's bounded-read overflow repair. The normal/race source gates on
+three native non-Windows hosts passed. Actual Windows runtime is absent from
+2a and78a. The0147 first local failure and all earlier failed campaigns remain.
 
-Original logs contain aggregate package results. Exact noncached test selectors,
-candidate source and inventory establish function coverage; no per-case artifact
-hash is invented. Its immutable
-[second-retention snapshot](evidence/2026-11-07/github-78a5983-partial-checkpoint.json)
-records23 successful jobs/3 live,16 unchanged safe members/62 reports. Whole26-job
-acceptance remains pending. Expected full inventory is296PG/118Go/66fuzz with
-19 safe summaries/80 reports and20 unchanged contracts. Actual APIs control.
+## Native Windows CI implementation awaits its actual jobs
 
-## Windows private configuration is locally implemented
+[ADR0075](docs/adr/0075-native-windows-cli-qualification.md) and its
+[development record](evidence/2026-11-18/windows-cli-ci-development.json) add two
+GitHub-hosted native x64/ARM64 profiles, exact clean CLI/driver/SDK identities,
+fourteen required functions and five bounded managed commands. Each command is
+assigned at creation to an owned Windows Job Object before its initial thread
+resumes. Output/time bounds, actual descendant cancellation and zero remaining
+owned processes are mandatory. Closed safe evidence binds eighteen source hashes;
+first-failure output has protected ACLs and encrypted-only diagnostic retention.
 
-[ADR0074](docs/adr/0074-windows-private-configuration-handles.md) and its
-[development record](evidence/2026-11-07/windows-private-config-development.json)
-replace Windows mode-bit assumptions with opened-handle owner/protected-DACL,
-reparse/stream/hard-link/identity and sharing checks before returning private bytes.
-Unix permission semantics stay unchanged. Two pure ACL decision functions and
-six Windows native functions are implemented,including actual candidate CLI TLS
-against a declared management-response stand-in and refusal before HTTP.
+Local ARM build/unit/race/lint, tagged normal/race compile/vet and Windows x64/
+ARM64 driver/test compile/vet pass only. Native Windows ACL/NTFS/sharing/CLI/job
+controls remain unverified until the actual jobs finish. The management endpoint
+is an explicitly owned trusted-TLS response stand-in. No Windows server/offline
+collection/credential writer/bootstrap/install claim follows.
 
-ARM build/unit/race/lint,Windows x64/ARM64 CLI/test compile/vet and tagged normal/
-race compile/vet pass only. Native Windows ACL/NTFS/CLI execution stays unverified.
-No new Windows workflow or closed contract is published. Complete/retain both
-20-contract original campaigns before publishing its native runner/validator boundary.
-Module changes also select existing NuGet/strict profiles; strict0126 stays open.
+The workflow plus custom validator close22 files. Both original20-contract
+records above were retained and checked against their original logs and members.
+After an authorized push, the expected source selection is28 jobs/seven workflows
+and21 safe members/82 reports: base26 plus two Windows. Actual API selection
+controls; optional library/strict/focused browser remain separate. Source/unit
+counts remain296PG/118Go/66fuzz. Skips and compile-only checks never count as passes.
 
-DEFECT0147 reproduces MaxInt64+1 read-budget overflow returning empty successful
-bytes for nonempty input. The first local failure is retained; reject that budget
-before opening input and retain exact bytes at MaxInt64-1. Local normal/race passes;
-the remote regression is absent from12c6/78a and needs its own native source.
+## Durable state and remaining scope
 
-## Failures, durable state and remaining scope
-
-Original aaf3045 remains failed:31 terminal jobs,24 successful/seven failed/zero
-job skips,all31 private logs and24 unchanged safe members/76 reports. Four empty
-members provide no pass. Original704/f780/976 failures stay retained and failed.
-DEFECT0144/45/46 fixtures are repaired and replayed at52; production resolver/
-pruning/policy/migrations were not weakened. Strict Go1.27.3 DEFECT0126 and the
-unresolved original durable-jobs failure DEFECT0122 remain open.
-
-All18 migration definitions stay frozen;18 checksum is
+All18 migration definitions remain frozen. Schema18 checksum is
 6c60ac3e1228e57b54cdd99397ef4bccfb91cbd942b3437e41a63441b9ad1035.
-Qualified17/bb6f728 remains the historical pin. Only two exact frozen schema17
-workflow/extractor exceptions exist. Current20-contract campaigns need no exception.
+Qualified17/bb6f728 remains the native historical pin. Only the two exact frozen
+schema17 exceptions exist; new22-contract source requires its own native campaign.
+Primary remains stopped at11/5483878b with ten receipts and unchanged selected
+binaries. New binaries stay.cache; ignored.private0700/.cache and originals remain.
 
-Finish78a's fixed original full profiles and actual read-only acceptance,then the
-Windows native qualification boundary. Complete workspace/local immutable inputs,
-package/platform closure,private hosted/proxy/group precedence and authority,
-current scanning/import/server-session/operator/console outcomes,lifecycle/physical
-GC,providers/Windows ACL write/bootstrap/collection locks,Compose/Helm/disconnected
-installation,backup/HA/scale/soak and every remaining450/41/later requirement.
-External legal/licensed-comparator/capacity inputs block only their specific rows.
-Skipped,unselected,compile-only or empty records never become native passes.
+Complete remaining workspace/local immutable inputs, package/platform/permission/
+provenance closure, private hosted/proxy/group precedence and authority, current
+scan/import/server-session/operator/console outcomes, lifecycle/physical GC,
+providers/Windows writes and collection locks, Compose/Helm/disconnected install,
+backup/HA/scale/soak and all450/41/14case/7environment/later scope. External legal,
+licensed-comparator and capacity inputs block only their rows. Strict0126 and
+original unresolved durable-jobs0122 remain open. No autonomous delegation.
 
-Primary remains stopped at11/5483878b with ten original receipts. Selected binaries
-are unchanged; new binaries stay.cache. Ignored.private0700/.cache and all original
-evidence stay preserved. No autonomous delegation.
-
-The exact status before this acceptance is retained in
-[status history](docs/qualification/status-history-before-12c6c49-acceptance.md),
-SHA256 9e73dbb6c8363da31da8f4d63be50b3146a962df275647ae1b12d52e938a8133.
-It also links the unchanged earlier histories.
+The exact preceding status is retained in
+[status history](docs/qualification/status-history-before-windows-ci.md), SHA256
+2d0e3df0301c05e9e79ddc3076354f5dfb3b0a366564697f6026455bba628ed6.

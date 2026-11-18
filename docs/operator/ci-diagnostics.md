@@ -71,3 +71,14 @@ Raw logs have no plaintext upload fallback. The owner-held recipient and all CMS
 size/authentication limits remain unchanged. PostgreSQL-step/bootstrap failures
 before a Go campaign report still require their separate job observations; a
 missing private record is never reconstructed as an encrypted diagnostic pass.
+
+
+Native Windows private-configuration jobs use a separate bounded profile. On the
+first command failure, the Go qualifier writes at most8MiB through an owner-only
+protected DACL at file creation, seals it using the same public CMS recipient and
+uploads only `ci-windows-diagnostics.cms` and closed hash/absence metadata as
+`encrypted-windows-cli-amd64` or `encrypted-windows-cli-arm64` for30days. Main and
+assertion failures preserve the first command observation. No raw output is printed
+or uploaded, and missing/failed encryption is explicit. Inspect with the existing
+owner-held key and authenticated CMS decryption procedure. Actual Windows
+execution is still required; local cross-compilation is not encryption proof.

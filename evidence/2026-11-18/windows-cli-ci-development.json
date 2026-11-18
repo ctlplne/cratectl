@@ -1,0 +1,272 @@
+{
+  "source_parent": "1ba2230f829842b7f68caa6d9cb3813f7f59b35e",
+  "source_dirty": true,
+  "observed_at": "2026-11-18T10:54:39.043677+00:00",
+  "host": {
+    "os": "Darwin",
+    "arch": "arm64",
+    "go": "1.27.3"
+  },
+  "state": "Native Windows profile implemented. Both Windows runtime jobs await an authorized candidate campaign.",
+  "adr": "docs/adr/0075-native-windows-cli-qualification.md",
+  "source_files": [
+    {
+      "path": ".github/workflows/windows-cli.yml",
+      "bytes": 2770,
+      "sha256": "9a49064b1b7534634675981d2269515638b1f10438a65dd8d6fc6b6d83bbcf49"
+    },
+    {
+      "path": "Makefile",
+      "bytes": 3793,
+      "sha256": "ca39b4cbf0fcb58763500e356593b8510eb4db2b6a8fb84a05c5daa0ffb8cbbc"
+    },
+    {
+      "path": "go.mod",
+      "bytes": 631,
+      "sha256": "66372255365796f3486bebab9c889588d0cd3f07362570022c864291c006bdd4"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 3546,
+      "sha256": "d0d1ecad19532ff247235eb62f99780093ead4679c958d9eb83d6dcc8d5b5fb1"
+    },
+    {
+      "path": "cmd/cratectl/main.go",
+      "bytes": 8470,
+      "sha256": "04544e6b0113fe3d853313b89b44966b34f5cc93a7e87522f2e8cf36403d6970"
+    },
+    {
+      "path": "docs/qualification/ci-diagnostics-recipient.pem",
+      "bytes": 1452,
+      "sha256": "c8d71045bbd45288ba426e4cad940ae4a2f3e33388f15b090a76c54a5b46173e"
+    },
+    {
+      "path": "internal/configfile/config.go",
+      "bytes": 3768,
+      "sha256": "21f6edd2ba1cc53df6a20e555d691eefeacb1c1cd1c0c1bdc674ce3ff2515e43"
+    },
+    {
+      "path": "internal/configfile/config_test.go",
+      "bytes": 1783,
+      "sha256": "693e3b77cf5ea40ea3ec240f8308f88bf32e8e94eaa2eeb966aa6709ea84a926"
+    },
+    {
+      "path": "internal/configfile/pagination.go",
+      "bytes": 1503,
+      "sha256": "b6a26dbaf285af7847113fd5b78a5e8be9d79c13a4051c29b938616ff85bcc44"
+    },
+    {
+      "path": "internal/configfile/pagination_test.go",
+      "bytes": 1405,
+      "sha256": "36277fcb6d40242e2fe2e0acbade8305688de261900c2aa7db3f3dbb4bd57e97"
+    },
+    {
+      "path": "internal/configfile/private_acl.go",
+      "bytes": 1321,
+      "sha256": "83cac69636be4110183ba271dd5317be9f4f2efa5a59da4a13afb9bcb1353d40"
+    },
+    {
+      "path": "internal/configfile/private_acl_test.go",
+      "bytes": 2877,
+      "sha256": "ebfe2d9a4aaa27a2a3d479151cd769fee60e429f1f7c6dfc831bbd248f0763a6"
+    },
+    {
+      "path": "internal/configfile/read_other.go",
+      "bytes": 240,
+      "sha256": "3270d6fafff7fcbe895cc67bf52b427429ad04616d8998b78a589e8c840db15f"
+    },
+    {
+      "path": "internal/configfile/read_unix.go",
+      "bytes": 278,
+      "sha256": "ab2953d7d4d26f4caec4077c15033c55259ec1434b9ac6b5671331159627032d"
+    },
+    {
+      "path": "internal/configfile/read_windows.go",
+      "bytes": 5197,
+      "sha256": "f6b1a765884a898dfd8e78ecadea31a37f018a60e5a6bb0446107dc6d9b3419c"
+    },
+    {
+      "path": "internal/configfile/read_windows_test.go",
+      "bytes": 11022,
+      "sha256": "c9db6a3497a48ee13dbc9e8468004664e12cb0def0f4d132375bd8a6b5b425ba"
+    },
+    {
+      "path": "scripts/ci/accept_campaign.py",
+      "bytes": 25008,
+      "sha256": "e5c2774ae73a3c5a38987887d319a8eafe520223e37c5e72d8edf8fa2099bf36"
+    },
+    {
+      "path": "scripts/ci/campaign_contract.py",
+      "bytes": 8406,
+      "sha256": "94b9f868b790cd7b18d5c4ecf0feef653e400bda28ca49a10a8681a13169fb4a"
+    },
+    {
+      "path": "scripts/ci/campaign_reports.py",
+      "bytes": 22381,
+      "sha256": "957d1d02243ad023fc14ea4ac2e3f27a24baa893fba48cdb38b706ac0b9d98c7"
+    },
+    {
+      "path": "scripts/ci/test_accept_campaign.py",
+      "bytes": 26665,
+      "sha256": "b4fa49227e93154b8fe5bd7a2bcb6d5b34e82b436593cfcae9414fa82df9cabf"
+    },
+    {
+      "path": "scripts/ci/test_windows_cli_evidence.py",
+      "bytes": 6804,
+      "sha256": "c89f49a26f2eb72bf9d97777686e5733901d2c324c7cdbbab34bc573b5dfd14a"
+    },
+    {
+      "path": "scripts/ci/windows_cli_evidence.py",
+      "bytes": 4348,
+      "sha256": "c97c84693542f6f4b0ef2491c4f96137cb0f5d72bd43c51af707b1e3fdd4adcb"
+    },
+    {
+      "path": "scripts/ci/windowscli/events.go",
+      "bytes": 3612,
+      "sha256": "d7573b7b08fee1afd5a01464df7e13648387470291d470a65d363fb3e44d9a9e"
+    },
+    {
+      "path": "scripts/ci/windowscli/events_test.go",
+      "bytes": 1961,
+      "sha256": "27b56d4b683af1da7b4f630024aca4f273378dce7bdc4ac09deedf364b48e1a6"
+    },
+    {
+      "path": "scripts/ci/windowscli/main.go",
+      "bytes": 9816,
+      "sha256": "0644e928416f4cfb2d32cd5ed2f6368d144d9717a8ca878e873c5d44ad925352"
+    },
+    {
+      "path": "scripts/ci/windowscli/process.go",
+      "bytes": 1271,
+      "sha256": "e223df11ccfaee31d8e20540b4db82f67fa83cd09cf704ce30e92decc16c1962"
+    },
+    {
+      "path": "scripts/ci/windowscli/process_other.go",
+      "bytes": 434,
+      "sha256": "0abce7583c454abc5997700828cc5df608ae6537eeddc9712f11bac04d304127"
+    },
+    {
+      "path": "scripts/ci/windowscli/process_windows.go",
+      "bytes": 9130,
+      "sha256": "218df95e0b729cc03a855e7e3fccfd48bc7e5bb704ffbe6fae4b4d6217306eb8"
+    },
+    {
+      "path": "scripts/ci/windowscli/process_windows_test.go",
+      "bytes": 4376,
+      "sha256": "c9485775a98f39965189889ae3400a9526de3e92c93f63149c021111124ca750"
+    }
+  ],
+  "source_snapshot_sha256": "58b98b0dda325d98fada096c543382e68c9525735680e0969e73b4b4f3e8c255",
+  "first_observations": [
+    {
+      "area": "report upload",
+      "failure": "Exact paths under .cache were omitted by the upload action default. The focused contract test failed before adding include-hidden-files to the two exact allowlists and passed after the change."
+    },
+    {
+      "area": "local integration fixture",
+      "failure": "The first local integration gate used a retained development database on an older schema. It refused that schema. The rerun requires a separate schema-18 fixture.",
+      "private_log": {
+        "path": ".cache/cratectl-windows-handoff-integration.log",
+        "bytes": 14244,
+        "sha256": "b19ef1bf162068fc04006200468692ffed5e8b69fac0d29b39bb3b4c672faaef"
+      }
+    }
+  ],
+  "local_checks": {
+    "build": "passed",
+    "unit": "passed",
+    "race": "passed",
+    "lint": "passed with owned loopback networking",
+    "tagged_normal_race_compile_and_vet": "passed, compile/vet only",
+    "windows_amd64_cli_driver_and_tests": "cross-build, test compile and vet passed",
+    "windows_arm64_cli_driver_and_tests": "cross-build, test compile and vet passed",
+    "actionlint": "passed for .github/workflows/windows-cli.yml",
+    "focused_python_tests": {
+      "windows_evidence": 5,
+      "campaign_acceptance": 17
+    },
+    "retained_original_evidence": [
+      {
+        "source": "78a59834904af5555c239209cdcde439ce5c4f5a",
+        "job_logs_checked": 26,
+        "safe_members_checked": 19,
+        "reports": 80,
+        "source_contract_hashes_checked": 20
+      },
+      {
+        "source": "2a0268c0c0c8be8bed7dbf1f229ad768d512669e",
+        "job_logs_checked": 31,
+        "safe_members_checked": 24,
+        "reports": 85,
+        "selected_strict_failures": 3
+      }
+    ],
+    "security": "make security exited nonzero because the full campaign remains open",
+    "packaging": "make packaging exited nonzero because release packaging remains unqualified"
+  },
+  "binaries": [
+    {
+      "path": ".cache/cratectl-windows-handoff/cratectl",
+      "bytes": 11874434,
+      "sha256": "c47044d42b5815b7ec162f8a4c00ede7e905468e59ff5009ea3d8c5425067928"
+    },
+    {
+      "path": ".cache/cratectl-windows-handoff/cratectld",
+      "bytes": 22542674,
+      "sha256": "5debe52e86e8306cf6cb991abce7887f9024266218ec60df3b4363c080a0e07c"
+    },
+    {
+      "path": ".cache/cratectl-cli-handoff-amd64.exe",
+      "bytes": 11883008,
+      "sha256": "c912e218cd632c80c716d05aa194371514e457ff750bafe3fec4a973c76c9813"
+    },
+    {
+      "path": ".cache/cratectl-windows-handoff-amd64.exe",
+      "bytes": 8263680,
+      "sha256": "ac7098f0f06c15941b8b3c5c0d11ba89fa0b64b556284c01bade9800da421d7e"
+    },
+    {
+      "path": ".cache/cratectl-windows-handoff-amd64.test.exe",
+      "bytes": 8785920,
+      "sha256": "cf9b680899dd75ffe6e7c664d3334590eb4dc7dd1c5293da9f43ae52dacb89a7"
+    },
+    {
+      "path": ".cache/cratectl-configfile-handoff-amd64.test.exe",
+      "bytes": 13398016,
+      "sha256": "513d3d9aacd11f0104b1804a7c732de79250e50e9f46affafbf55eb4f15fba9b"
+    },
+    {
+      "path": ".cache/cratectl-cli-handoff-arm64.exe",
+      "bytes": 10890240,
+      "sha256": "ab2cc21f257b77a6d6fc9fe1e0a24aebcbd4c28517c3c540f6e1e09c434a0eec"
+    },
+    {
+      "path": ".cache/cratectl-windows-handoff-arm64.exe",
+      "bytes": 7588864,
+      "sha256": "6ab7b9a2065629c290f1cf30565436a8f40f0e73086865ea3a4a41daea5b5576"
+    },
+    {
+      "path": ".cache/cratectl-windows-handoff-arm64.test.exe",
+      "bytes": 8059392,
+      "sha256": "c64dc47e9d0e0af5f177d7ae0a6618415f76c309a1a099af86006c80fa1242a3"
+    },
+    {
+      "path": ".cache/cratectl-configfile-handoff-arm64.test.exe",
+      "bytes": 12288000,
+      "sha256": "40b579d6f5631d64bc3c7d1b3bc979aec2c1a250225ee4b2a1722d437b47c706"
+    }
+  ],
+  "expected_windows_report": {
+    "native_jobs": 2,
+    "functions_per_job": 14,
+    "managed_commands_per_job": 5,
+    "source_hashes_per_job": 18
+  },
+  "native_windows_verified": false,
+  "goal_complete": false,
+  "broad_readiness": false,
+  "limits": [
+    "The Windows executable identities are from cross-builds on Darwin. Only native hosted Windows runners can qualify the Windows ACL, file and Job Object behaviors.",
+    "The CLI test uses an owned trusted-TLS management response fixture. Windows server, private file creation, collection locks and disconnected installation remain open."
+  ]
+}

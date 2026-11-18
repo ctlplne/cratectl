@@ -159,6 +159,9 @@ def check_log(raw, spec, source):
     text = raw.decode('utf-8', errors='replace')
     require('--- FAIL:' not in text and '--- SKIP:' not in text, 'native_test_failure_or_skip')
     kind = spec['kind']
+    if kind == 'windows':
+        require(text.count('Native Windows private configuration and owned-job controls passed (14 functions,5 managed commands)') == 1,
+                'windows_native_inventory')
     if kind in ('native', 'go'):
         pattern = r'\bok\s+ctlplne.dev/cratectl/internal/(?:server|store' + ('|conformance' if kind == 'native' else '') + r')\s'
         require(len(re.findall(pattern, text)) == (6 if kind == 'native' else 4), 'native_package_success_inventory')
@@ -287,9 +290,10 @@ def accept(client, source, expected_ids):
             if artifact_name and spec['kind'] != 'selection':
                 require(artifact_name in by_artifact, 'required_artifact_missing')
                 used.add(artifact_name)
-                member = 'nuget-version-summary.json' if spec['kind'] == 'library' else 'ci-go-checksum-client-summary.json' if spec['kind'] == 'strict' else 'ci-evidence-summary.json'
+                member = {'library': 'nuget-version-summary.json', 'strict': 'ci-go-checksum-client-summary.json',
+                          'windows': 'ci-windows-cli-summary.json'}.get(spec['kind'], 'ci-evidence-summary.json')
                 report, reference = safe_artifact(client, by_artifact[artifact_name], source.candidate, run_id, member)
-                if spec['kind'] in ('library', 'strict'):
+                if spec['kind'] in ('library', 'strict', 'windows'):
                     counts = validate_custom(report, source.candidate, run_id, spec, source)
                 else:
                     counts, contract = validate_summary(report, source.candidate, run_id, spec, source.baselines, source)

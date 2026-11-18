@@ -16,6 +16,7 @@ from journal_evidence import safe_journal_checkpoint_contract
 from go_export_portability_evidence import safe_go_export_portability_contract
 from go_common_export_portability_evidence import safe_go_common_export_portability_contract
 from go_requirement_export_portability_evidence import safe_go_requirement_export_portability_contract
+from windows_cli_evidence import safe_windows_cli_contract
 
 CONTRACTS = {'maven_cache_contract': safe_maven_cache_contract, 'gradle_contract': safe_gradle_contract,
              'ivy_contract': safe_ivy_contract, 'sbt_contract': safe_sbt_contract,
@@ -87,6 +88,14 @@ def go_deterministic_bindings(raw):
 
 def validate_custom(report, candidate, run_id, spec, source):
     identity(report, candidate, run_id, spec)
+    if spec['kind'] == 'windows':
+        try:
+            require(safe_windows_cli_contract(report) == report, 'windows_report_contract')
+        except (ValueError, TypeError, KeyError):
+            require(False, 'windows_report_contract')
+        require(all(digest == hashlib.sha256(source(path)).hexdigest()
+                    for path, digest in report['source_sha256'].items()), 'windows_source_identity')
+        return {'checks': 14, 'records': 1}
     require(report.get('status') == 'passed' and report.get('source_dirty') is False, 'custom_report_incomplete')
     if spec['kind'] == 'library':
         require(report.get('phase') == 'complete' and isinstance(report.get('checks'), list)

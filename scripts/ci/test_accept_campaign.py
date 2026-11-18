@@ -19,6 +19,7 @@ from test_go_common_export_portability_evidence import complete as complete_comm
 from test_go_requirement_export_portability_evidence import complete as complete_requirement_contract
 from campaign_contract import WORKFLOWS, jobs
 from campaign_transport import EvidenceError, REPOSITORY
+from test_windows_cli_evidence import complete as complete_windows
 
 ROOT = Path(__file__).resolve().parents[2]
 CANDIDATE = 'a' * 40
@@ -150,6 +151,53 @@ class API:
 
 
 class CampaignAcceptance(unittest.TestCase):
+    def test_native_windows_jobs_require_both_platforms_exact_steps_and_closed_safe_members(self):
+        class WindowsAPI(API):
+            def __init__(self, mode):
+                super().__init__()
+                self.runs.append(run(12, 'windows-cli.yml'))
+                self.native_jobs, self.native_artifacts = [], []
+                for n, (name, spec) in enumerate(jobs('windows').items()):
+                    job = {'id': 400+n, 'name': name, 'run_id': 12, 'head_sha': CANDIDATE, 'head_branch': 'main',
+                           'status': 'completed', 'conclusion': 'success', 'labels': [spec['platform'][0]],
+                           'steps': [{'name': s, 'status': 'completed', 'conclusion': 'success'} for s in spec['required']]}
+                    if n == 0 and mode == 'skipped-step':
+                        job['steps'][-1]['conclusion'] = 'skipped'
+                    if n == 0 and mode == 'wrong-platform':
+                        job['labels'] = ['ubuntu-24.04']
+                    report = complete_windows(arch=spec['platform'][2])
+                    if n == 0 and mode == 'wrong-helper':
+                        report['source_sha256']['scripts/ci/windowscli/process_windows.go'] = '0' * 64
+                    if n == 0 and mode == 'private-field':
+                        report['owner_sid'] = 'owned-private-synthetic'
+                    if n == 0 and mode == 'missing-test':
+                        report['tests']['configuration'].pop()
+                    member = 'ci-evidence-summary.json' if mode == 'wrong-member' else 'ci-windows-cli-summary.json'
+                    self.add_artifact(500+n, spec['artifact'], member, report)
+                    artifact = self.artifacts.pop()
+                    artifact['workflow_run']['id'] = 12
+                    self.native_artifacts.append(artifact)
+                    self.native_jobs.append(job)
+                    self.bodies['jobs/' + str(400+n) + '/logs'] = b'Native Windows private configuration and owned-job controls passed (14 functions,5 managed commands)\n'
+                    if mode == 'missing-marker':
+                        self.bodies['jobs/' + str(400+n) + '/logs'] = b'No native observation\n'
+                if mode == 'missing-platform':
+                    self.native_jobs.pop()
+
+            def listing(self, route, key):
+                if route.startswith('runs/12/'):
+                    return copy.deepcopy(self.native_jobs if key == 'jobs' else self.native_artifacts)
+                return super().listing(route, key)
+
+        result = acceptance.accept(WindowsAPI('valid'), Source(), [11, 12])
+        self.assertEqual(len(result['jobs']), 4)
+        self.assertEqual([j['report_counts'] for j in result['jobs'] if j['family'] == 'windows'],
+                         [{'checks': 14, 'records': 1}] * 2)
+        self.assertNotIn('owned-private-synthetic', json.dumps(result))
+        for mode in ['skipped-step', 'wrong-platform', 'wrong-helper', 'private-field', 'missing-test', 'wrong-member', 'missing-platform', 'missing-marker']:
+            with self.subTest(mode=mode), self.assertRaises(EvidenceError):
+                acceptance.accept(WindowsAPI(mode), Source(), [11, 12])
+
     def pairs(self):
         pairs, runners = {}, {}
         for factory in [complete_legacy_contract, complete_common_contract, complete_requirement_contract]:
@@ -267,8 +315,8 @@ class CampaignAcceptance(unittest.TestCase):
                 acceptance.validate_portable_pairs(pairs, runners)
 
     def test_catalog_covers_every_existing_native_job_template(self):
-        expected = {'main': 10, 'go': 2, 'jvm': 8, 'oci': 2, 'upgrades': 2, 'portable': 2, 'library': 2, 'browser': 3, 'strict': 3}
-        self.assertEqual(sum(expected.values()), 34)
+        expected = {'main': 10, 'go': 2, 'jvm': 8, 'oci': 2, 'upgrades': 2, 'portable': 2, 'library': 2, 'browser': 3, 'strict': 3, 'windows': 2}
+        self.assertEqual(sum(expected.values()), 36)
         for filename, family in WORKFLOWS.items():
             specs = jobs(family)
             self.assertEqual(len(specs), expected[family])
@@ -285,7 +333,7 @@ class CampaignAcceptance(unittest.TestCase):
         self.assertFalse(result['broad_readiness'])
         self.assertEqual(len(result['jobs']), 2)
         self.assertEqual(result['unselected_runtime'], [{'run_id': 11, 'scope': 'runtime', 'jobs': 3}])
-        self.assertEqual(len(result['unselected_workflows']), 8)
+        self.assertEqual(len(result['unselected_workflows']), 9)
         self.assertNotIn('owned-private-synthetic', json.dumps(result))
         self.assertEqual(api.snapshots, 2)
 

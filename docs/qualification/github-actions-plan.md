@@ -1,6 +1,6 @@
 # GitHub Actions qualification plan
 
-Updated2026-11-07. Owner imfeelingtheagi. Complete owner-amended GOAL section 4.1 remains
+Updated2026-11-18. Owner imfeelingtheagi. Complete owner-amended GOAL section 4.1 remains
 active:450 capabilities/41 families,14 export cases/seven environments and later
 stages. Scoped native acceptance never establishes broad readiness, security,
 packaging or release authority.
@@ -32,25 +32,32 @@ Earlier [f9](../../evidence/2026-11-07/github-f9fa987-checkpoint.json) recovery,
 17-to18 upgrade proofs retain only their original scope. Failed aaf/704/f780/976
 runs stay failed. Only two exact frozen schema17 exceptions exist;none is widened.
 
-[78a named Go proof](../../evidence/2026-11-07/go-module-78a5983-native-checkpoint.json)
-passes118 Go functions normally/race and312 stock checks on both Linux hosts,
-including five [ADR0073](../adr/0073-native-go-replacement-and-exclusion-differentials.md)
-replacement/exclusion SDK cases and31 empty command networks. Its immutable second
-snapshot23success/3live/16safe62reports is historical. Finish its fixed original
-26-job/19safe80report/296PG campaign and actual read-only verifier before publishing
-new closed contracts. Preserve every original handle;no restart for queue/timeout.
+[78a whole acceptance](../../evidence/2026-11-07/github-78a5983-checkpoint.json)
+now retains all26 original jobs/six workflows/19safe80reports/20contracts through
+actual verifier42435561789 from78a itself;35 component functions7+12+16. Both
+296PG/118Go normal/race,312 stock checks,66 fuzz and all52 portable stages pass.
+Five ADR0073 replacement/exclusion SDK comparisons require31 empty command
+networks per function. The earlier partial snapshot remains historical.
 
-[ADR0074](../adr/0074-windows-private-configuration-handles.md) implements Windows
-private-config owner/protected-DACL/handle checks with six native functions,two
-pure ACL functions and the0147 read-budget regression. ARM full local gates,
-Windows x64/ARM64 CLI/test compile/vet and tagged compile/vet pass only. Implement
-actual Windows execution,bounded owned processes/output and closed safe evidence
-after retaining both20-contract verdicts;no Windows runtime pass exists. Standard
-public labels windows-2025/windows-11-arm require verified native SDK/interpreter
-architecture. The x/sys module pin selects existing library/strict profiles:
-preserve0126's failing strong trust-state assertion;no exclusion or retry is a pass.
-Windows ACL write/bootstrap,collection/publication locks and full client/install/
-provider workflows and every remaining450/41/14case/7environment/later scope remain.
+[2a original campaign](../../evidence/2026-11-18/github-2a0268c-original-failure-checkpoint.json)
+is completed and failed:31 jobs/eight workflows,28success/three strict failures/
+zero job skips,all31 original logs and24safe85reports retained. Base26 plus two
+NuGet-library jobs pass. The unchanged strict0126 trust-state assertion fails on
+all three actual hosts: six other controls pass; ZIP rejection retains an untrusted
+sum and retry extracts altered inert bytes. No whole acceptance or retry is claimed.
+
+[ADR0074](../adr/0074-windows-private-configuration-handles.md) Windows reader is
+implemented; native Windows runtime remains unverified. New
+[ADR0075](../adr/0075-native-windows-cli-qualification.md) profiles run the actual
+native CLI/driver/Go SDK on windows-2025/windows-11-arm with exact source bytes,
+fourteen functions/five owned-job commands, bounded output/deadlines and actual
+owned descendant cleanup. The workflow and closed custom validator establish a
+new22-file boundary after retaining both old20-contract campaigns' original
+results. Local builds/stand-ins and Windows compile/vet do not establish runtime
+success. Expected next selection is28jobs/seven workflows/21safe82reports; the
+actual API inventory controls. No optional library/strict/browser profile is
+selected merely to obtain a green replacement. All remaining Windows writer/
+bootstrap/collection locks/install/server/provider and450/41/later scope remains.
 
 ## Placement
 
@@ -71,11 +78,12 @@ and emulation never qualify x86 runtime behavior.
 | Portability | Separate x86 PostgreSQL/TLS/external-signing producer and ARM consumer; original16/common18 qualified. Requirement18 stages/22originals/25emptycommands/real acknowledgement loss qualified at12c6; Windows/full project closure remain. Preserve exact artifacts/fingerprints/API runner identity/native bytes/h1 and all original controls. |
 | NuGet library comparison | Native Linux x86/ARM, pinned SDK/library differential corpus. Separate from feed restore/package workflows. |
 | Strict Go checksum controls | Native Linux x86/ARM/macOS ARM; six controls pass and altered-ZIP trust-state assertion fails in original DEFECT.0126. Other greens do not repair it. |
+| Windows private configuration | Native Windows x64/ARM64; fourteen exact functions, actual CLI over a declared trusted-TLS management stand-in, NTFS/ACL/sharing/reparse and owned-job cancellation controls. Native runtime pending; no server/offline claim. |
 | Exact-source acceptance | Manual main read-only verifier; fixed original run inventory, source/job/platform/step/log/report/archive/binary identity checks. Starts no native tests. |
 
 Workflow files own actual triggers, tools, permissions and timeouts. Standard native
 source has26 jobs/six workflows; shared input paths can select more. Possible
-matrix union is34 native jobs/nine workflows, plus one separate acceptance job.
+matrix union is36 native jobs/ten workflows, plus one separate acceptance job.
 Actual selected API inventory controls each verdict; omitted profiles provide no
 evidence. Documentation-only source can run selector/security with runtime skips;
 that result cannot qualify changed runtime code.
@@ -90,8 +98,8 @@ that result cannot qualify changed runtime code.
   with emulation, another source, a canceled job or a fresh green run.
 - Existing main source/fuzz/security/native concurrency keys include source SHA.
   Other profiles retain per-platform slots; finish/retain their original cases
-  before a push could replace required unstarted work. Running original f9 jobs
-  remain on their recorded handles. Independent matrices keep fail-fast disabled.
+  before a push could replace required unstarted work. Original jobs
+  remain on their recorded handles. Windows keys also bind the exact source SHA. Independent matrices keep fail-fast disabled.
 - Use read-only tokens, checkout without persisted credentials, pinned tools,
   project-owned cratectl resources and loopback38443/35432. Runtime PostgreSQL is
   nonsuperuser/nonowner/no BYPASSRLS with forced tenant policies. No primary or
@@ -116,14 +124,14 @@ that result cannot qualify changed runtime code.
   allows only schema 17's exact frozen workflow SHA and precisely those edits;
   record both hashes and apply the original 16-pin step/report contract. New18
   requires17 pins/22 reports. Only the exact frozen summary count/schema bound increase is also allowed;
-  every other closed contract stayed byte-identical at those historical verdicts. The new requirement boundary closes20 files and requires its own native campaign; old19-contract verdicts remain original immutable evidence.
+  every other closed contract stayed byte-identical at those historical verdicts. The new requirement boundary closes20 files and requires its own native campaign; old19-contract verdicts remain original immutable evidence. Windows adds its workflow and validator for22 closed files, with exact two-platform safe-member/source/function contracts. No historical exception admits the new files for an older source.
   Arbitrary changed workflow/runner/step/loop, missing baseline or target fails.
 
 ## Remaining offload work
 
 | Required outcome | Next native work |
 | --- | --- |
-| Full export/import/disconnected operation | Qualify the new requirement collector/offline caller, then its separate-host/interruption/renewal controls, native MVS/package/platform/workspace/source authority differentials, current scan/import session/operator journeys and every14-case/7-environment acceptance row. |
+| Full export/import/disconnected operation | Retain the qualified signed requirement caller/recovery/separate-host scope and complete remaining native MVS/package/platform/workspace/source authority differentials, current scan/import session/operator journeys and every14-case/7-environment acceptance row. |
 | JVM breadth and41 format families | Native stock clients/restricted PostgreSQL; hosted/proxy/group, nontrivial dependencies, exact bytes, policy/tenant/fault/restart/freshness/lifecycle/migration. |
 | OCI/upstream/provider interoperability | Owned compatible registries/realms, production-compatible source/blob/scanner/external adapters and controlled faults. Keep changing external providers distinct from deterministic gates. |
 | Own TLS/access/external identity | Real compatible customer-selected IdPs/trust services, tenant permissions, expiry/revocation/rotation/recovery. No CA/vault/issuer/signing service feature suite. |
@@ -134,8 +142,8 @@ that result cannot qualify changed runtime code.
 
 ## Limits and preserved history
 
-Original failures and limits remain intact; strict Go DEFECT.0126 and unknown
-browser DEFECT.0122 remain open. Prior accepted campaigns retain their own exact
+Original failures and limits remain intact; strict Go DEFECT.0126 and unresolved original
+durable-jobs DEFECT.0122 remain open. Prior accepted campaigns retain their own exact
 scope. A skipped, unselected or compile-only case never becomes verified.
 All18 migrations remain frozen;18 is qualified within exact52/f320 scope.
 Primary stays stopped at 11/5483878b/ten original receipts. New binaries stay.cache;

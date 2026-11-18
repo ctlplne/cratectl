@@ -238,16 +238,15 @@ func TestWindowsNativeCLIUsesPrivateConfigurationAndRefusesBroadCredentialsBefor
 	directory := t.TempDir()
 	const token = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" // Owned inert credential only.
 	var requests atomic.Int64
-	server := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requests.Add(1)
 		if r.Header.Get("Authorization") != "Bearer "+token || r.URL.Path != "/api/v1/repositories" || r.Method != "GET" {
 			t.Error("actual CLI changed its scoped credential or management request")
 		}
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = io.WriteString(w, `{"repositories":[],"owned_standin":true}`)
-	}))
-	server.Listener.Close()
-	server.Listener = listener
+	})
+	server := &httptest.Server{Listener: listener, Config: &http.Server{Handler: handler}}
 	server.StartTLS()
 	defer server.Close()
 	credential, broadCredential := filepath.Join(directory, "cratectl.token"), filepath.Join(directory, "cratectl-broad.token")
