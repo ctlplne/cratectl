@@ -194,9 +194,10 @@
       "id": "J.OCI.SEARCH",
       "capability": "FMT.OCI.SEARCH",
       "state": "implementing",
-      "candidate": "8c9915c6c58fe87f94b0336f435a484296475e3f",
+      "candidate": "586eb5d983b9f599db753506ba0d73c674ef6e95",
       "evidence": [
-        "evidence/2026-11-19/oci-8c9915c-hosted-catalog-native.json"
+        "evidence/2026-11-19/oci-8c9915c-hosted-catalog-native.json",
+        "evidence/2026-11-19/github-586eb5d-oci-hosted-catalog-native.json"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -204,8 +205,8 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Nine stock ORAS 1.3.6 catalog checks and 19 declarative checks passed on macOS ARM64 with PostgreSQL 16.16 and trusted TLS. Real PostgreSQL verified digest-only and nested names, duplicate suppression, grants, tenant isolation, graph policy, current retirement and bounded pagination. Stock pulls recovered exact tenant-specific bytes after restart.",
-      "next_action": "Qualify native Linux, cached proxy and ordered group catalogs, alternate clients and larger workloads."
+      "limits": "Nine stock ORAS 1.3.6 catalog and 19 declarative checks passed on macOS ARM64, Linux x64 and Linux ARM64 with PostgreSQL 16.16 and trusted TLS. Real PostgreSQL verified digest-only and nested names, duplicate suppression, grants, tenant isolation, graph policy, current retirement and bounded pagination. Stock pulls recovered exact tenant-specific bytes after restart.",
+      "next_action": "Qualify cached proxy and ordered group catalogs, alternate clients, additional platforms and larger workloads."
     },
     {
       "id": "J.OCI.AUTHORIZATION",
