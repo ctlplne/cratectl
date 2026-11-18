@@ -466,7 +466,7 @@ declarative checks on schema 19 with 32 independently matched source hashes
 each. The x64 runner used PostgreSQL 16.16. The ARM64 runner used 16.15.
 Both original Compose and signed-media jobs independently asserted PostgreSQL
 16.16 on each architecture. This checkpoint retains eight original jobs across
-Cargo, Compose, signed media and the provider. Whole-campaign acceptance is pending.
+Cargo, Compose, signed media and the provider.
 [Native Cargo ownership evidence](evidence/2026-11-19/cargo-fa6b4f7-ownership-native.json)
 [Stock Cargo historical adoption evidence](evidence/2026-11-19/cargo-910359d-historical-adoption-native.json)
 [Original expanded Linux Cargo evidence](evidence/2026-11-19/github-51b0953-cargo-expanded-native.json)
@@ -478,11 +478,12 @@ retains a crate controls its whole namespace. Current member grants and the
 group review policy apply. Two independent PostgreSQL cases exercised the
 last source check before delivery when a new preferred source appeared.
 Both original `c55ccda` Linux architectures passed all 41 Cargo and 19
-declarative checks. Each report binds 36 source files. Proxy members, tenant
-collision, interrupted transfers, broader concurrency, legacy Git discovery
-and cross-repository search remain open.
+declarative checks. Each report binds 36 source files. The broader campaign
+retains 32 logs and 84 reports across 33 jobs. It ended with 30 passes, two
+console inventory fixture failures and one unassigned macOS cancellation.
 [Native hosted group evidence](evidence/2026-11-19/cargo-139041d-groups-native.json)
 [Original Linux group evidence](evidence/2026-11-19/github-c55ccda-cargo-groups-native.json)
+[Original group campaign](evidence/2026-11-19/github-c55ccda-original-completed.json)
 
 Two original general PostgreSQL jobs at `d2ee434` failed the same console
 session assertion. The fixture expected the pre-Cargo format list after it
@@ -517,6 +518,17 @@ an interrupted response, six readers sharing one cold transfer, and a new
 source revision that replaced bytes only after a new local digest decision.
 [Original native Linux proxy evidence](evidence/2026-11-19/github-ab6e559-cargo-proxy-native.json)
 [Expanded native Cargo evidence](evidence/2026-11-19/cargo-a2b2283-expanded-proxy-native.json)
+
+The exact `2833181` candidate passed 71 Cargo checks and 19 declarative
+checks on macOS ARM64 with PostgreSQL 16.16. Seven new mixed-group checks
+covered an authenticated sparse proxy and hosted members. A source may yield
+after a current absence if it has never retained the crate. A withdrawn or
+unavailable preferred source fences lower copies. An independent PostgreSQL
+test proved that a newly present source invalidates an earlier lower-source
+selection before headers. All four bounded Cargo parser fuzz targets passed.
+Native Linux mixed groups, legacy Git discovery, cross-repository search,
+replication and broader scale require further work.
+[Native mixed Cargo group and parser evidence](evidence/2026-11-19/cargo-2833181-mixed-native.json)
 
 The independent `b88d397` schema 18 daemon and stock ORAS 1.3.6 passed
 122 controlled upgrade checks against `910359d` on macOS ARM64 with

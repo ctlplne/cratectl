@@ -106,3 +106,8 @@ Use artifact lifecycle controls to retire or explicitly restore a cached referen
 The current proxy handles sparse indexes with same-registry dependencies and
 explicit download authorities. Legacy Git indexes and cross-repository search
 remain open.
+
+Set a positive stale window to permit a previously validated archive during a
+transient upstream outage. The index and archive each need a current admission
+under that window. A changed checksum or source binding blocks stale delivery.
+Setting `stale_seconds` to zero disables this fallback during revalidation.

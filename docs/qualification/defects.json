@@ -1856,15 +1856,17 @@
     {
       "id": "DEFECT.0178",
       "summary": "Cargo forced revalidation can inherit the old freshness deadline when the accepted stale duration is zero",
-      "state": "The original mixed proxy and hosted group fixture failed the expected forced-outage refusal. The Cargo-specific stale admission check now also requires a positive stale window. Native replay pending.",
+      "state": "The original mixed proxy and hosted group fixture failed the expected forced-outage refusal. The Cargo-specific stale admission check now also requires a positive stale window. The exact 2833181 stock replay passed including a forced outage refusal.",
       "first_failure": "evidence/2026-11-19/cargo-a99f53c-zero-stale-first-failure.json",
+      "replay": "evidence/2026-11-19/cargo-2833181-mixed-native.json",
       "repair": "Enforce accepted source stale duration during both proxy resolution and the final Cargo policy snapshot."
     },
     {
       "id": "DEFECT.0179",
       "summary": "Cargo download template fuzzing found unsupported URL syntax in a normalized result",
-      "state": "The first local Cargo template fuzz session failed a URL normalization invariant. The original input remains private. Bounded corrected replay pending.",
+      "state": "The first local Cargo template fuzz session failed a URL normalization invariant. The original input remains private. The exact 2833181 bounded replay passed all four Cargo parsers.",
       "first_failure": "evidence/2026-11-19/cargo-template-first-fuzz-failure.json",
+      "replay": "evidence/2026-11-19/cargo-2833181-mixed-native.json",
       "repair": "Reject fragment delimiters in the sparse download template before marker expansion."
     }
   ]

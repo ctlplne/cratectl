@@ -296,7 +296,9 @@
       "clients": [
         "cargo"
       ],
-      "client_versions": {},
+      "client_versions": {
+        "cargo": "1.100.0"
+      },
       "source_ids": [
         "jfrog-formats",
         "nexus-formats",
@@ -308,8 +310,12 @@
         "group": true
       },
       "jfrog_modes": "per-format documentation review required",
-      "native_limitations": "Mode-specific limits must be established before claiming coverage.",
-      "state": "planned"
+      "native_limitations": "Stock Cargo sparse hosted, proxy, and mixed group profiles pass on macOS ARM64. Native Linux passed the earlier hosted group and 14-check proxy profiles. Legacy Git discovery, mixed-group Linux, cross-repository search, replication, and complete platform and workload qualification remain open.",
+      "state": "implementing",
+      "candidate": "283318160bf4bb8ec91d87a3f195094019245c43",
+      "evidence": [
+        "evidence/2026-11-19/cargo-2833181-mixed-native.json"
+      ]
     },
     {
       "id": "apt",

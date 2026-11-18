@@ -1,0 +1,102 @@
+{
+  "candidate": "c55ccdae8a76ad54cbd4d3302d094a5303194276",
+  "status": "passed",
+  "checks": [
+    "clean exact source",
+    "cratectl matches the clean candidate",
+    "cratectld matches the clean candidate",
+    "real reviewed PostgreSQL 16 patch release",
+    "absent repository has an authority and tenant bound creation plan",
+    "plan, wrong approval and denied callers leave the tenant journal unchanged",
+    "concurrent approved requests produce one creation or a safe retry",
+    "retry after successful creation returns unchanged",
+    "one repository creation event despite concurrent retry",
+    "second tenant can plan an independent same-name repository",
+    "import returns the exact active hosted fields",
+    "plan exposes review drift without writing",
+    "stock npm published its exact bytes and unassessed input was denied",
+    "registry restart preserves the declared state",
+    "fresh stock npm downloads the exact approved archive after restart",
+    "stale approval leaves suspended repository retained",
+    "suspended repository cannot be imported as active",
+    "provider matches the clean candidate",
+    "revoked administrator cannot plan",
+    "schema 19 with all 59 tenant tables forced RLS and a restricted runtime role"
+  ],
+  "binary_sha256": {
+    "cratectl": "ccfcbd2a4296be148a9e0332f40b376310592f3d5274a858d368320cc800d12d",
+    "cratectld": "2e54f485819a1a9b6337d3eda74f2f71596f75ae61a1e074879b2a8ad9d4c620"
+  },
+  "archive_sha256": "eb88cfbb43de75bcfb7e6ec35e9cf45e90e0288fcdcf1f05d76e4b3b5f3f6b28",
+  "postgres": "postgres (PostgreSQL) 16.15 (Ubuntu 16.15-1.pgdg24.04+2)",
+  "npm": "10.9.9",
+  "goal_complete": false,
+  "broad_readiness": false,
+  "schema": 1,
+  "profile": "cratectl-native-terraform-provider-v1",
+  "runner_os": "Linux",
+  "runner_arch": "X64",
+  "run_id": "44378260035",
+  "source_dirty": false,
+  "client_archives": {
+    "terraform": "e6f16b2f0b137ee5729caa8c4e79a3bae4ee261acd198a1fcfa8584a6296605b",
+    "tofu": "bc44eb6b06446ba83bd4072114891987f590f66cca712737a7f1147c50c539ce"
+  },
+  "clients": [
+    {
+      "client": "terraform",
+      "version": "1.17.2",
+      "client_sha256": "dbfef0be43ba2117481be510d3b83a2d8cdfa6ae7ec69c5aeb04b3947956ff7e",
+      "checks": [
+        "saved stock plan binds tenant and registry authority",
+        "plan left the registry unchanged",
+        "saved plan cannot apply to another bound authority",
+        "retry plan keeps the same reviewed repository identity",
+        "stock apply created the exact hosted review configuration",
+        "competing creation is not silently adopted",
+        "explicit import reads the exact existing repository",
+        "read-only refresh exposes exact lifecycle drift",
+        "destroy fails and leaves the repository retained"
+      ]
+    },
+    {
+      "client": "tofu",
+      "version": "1.13.9",
+      "client_sha256": "9ce9173bf161f6466ef57dab7edebe8f55089fdf81caa967415323c25d004990",
+      "checks": [
+        "saved stock plan binds tenant and registry authority",
+        "plan left the registry unchanged",
+        "saved plan cannot apply to another bound authority",
+        "retry plan keeps the same reviewed repository identity",
+        "stock apply created the exact hosted review configuration",
+        "competing creation is not silently adopted",
+        "explicit import reads the exact existing repository",
+        "read-only refresh exposes exact lifecycle drift",
+        "destroy fails and leaves the repository retained"
+      ]
+    }
+  ],
+  "provider_sha256": "fa010eadde2b37be35142b642548d6fc7c52790974e4025d6c3b49436fe0910c",
+  "source_sha256": {
+    ".github/workflows/terraform-provider.yml": "e74d27b5bf522b1ed3f2f5cc8ab77e25cc17951cdb85ab69652fff8bde0f2c21",
+    "Makefile": "12f2a8b5cfbc2f322822b82e4446f51ff017374acab1f3a8921db8cc8e833bf6",
+    "go.mod": "1d4aecc2732cd54db4534e0afc862ffe14d5c24890f106008682fd9bbc8e5ba9",
+    "go.sum": "5e364e4e1eff09d8d39617427d7775012304b09a7be26778dc2b46fdabae3f15",
+    "integrations/terraform/go.mod": "0883c250bf8bc4405ce9e2b64fa1107fef477cd2056dc66c99953571a7b79ade",
+    "integrations/terraform/go.sum": "089131cf332937cedc0d19e0acbbdb41bc01be7e16e67450daff1ad0b6e65d9e",
+    "integrations/terraform/main.go": "b9d336e60c5034d007f05015ca3c2dbd172e7789c9b1ede7eb5e493d96e93235",
+    "integrations/terraform/provider.go": "4d0a16e11cd53775b10ca46d87521725aa1269309a756da86ac405dd9604bb0a",
+    "integrations/terraform/repository.go": "6cc1b9e17f7d44eacf515bfcc03b5afc13cf63cbd08a1ce3aaeaef9a0af0c900",
+    "integrations/terraform/repository_test.go": "4e03f3ea67e50d6f2209af7bdff73182379dbdc353c3206abc64c4e31bf9e55c",
+    "internal/management/client.go": "693f0e05db1ad7168acd400ea5f9fb273404888290d9f80caa886da60217a0ca",
+    "internal/management/repositories.go": "7690cc0ea1d409b3b292706b461f1bb74211dd7260054ea247cf320c25c69fa4",
+    "cmd/cratectl/repository_manifest.go": "beac5488240d2a42e41df0f98d2f2a96cdb47c0b1b6938d10128781b1582112d",
+    "scripts/ci/bootstrap_iac_clients.py": "c77c9acf019b40dc6bc47489d09233d5b37a954c0cc298f1afadede78cbc0dc5",
+    "scripts/ci/fetch_archive.py": "d0fde9da29964255004e6e71ecdac1a807fb60fe2c211520576dfca9d96f747a",
+    "scripts/ci/terraform_provider_evidence.py": "130de2ec92ed288a6fa6c744c67003a76cafa2dfb9835e48f653abccda1a50ca",
+    "scripts/conformance_repository_manifest.py": "ec53354de9a9fb25c2f6ceaa3b7bc27f01297643c7ce50f1aa3dd5b6943358c9",
+    "scripts/terraform_repository_fixture.py": "e9bb8a7aacf30280d58afaca2b231a51e345a38331766bf453c3b0a599e6a8b2",
+    "scripts/qualification_contract.py": "c40a9d0209a9dc1fb9838f49cdb316ad5a762d45c0359b97fce156746564e5ba",
+    "scripts/bounded_client.py": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+  }
+}

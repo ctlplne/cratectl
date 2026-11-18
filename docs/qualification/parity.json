@@ -4671,15 +4671,16 @@
         "delete/restore"
       ],
       "state": "implementing",
-      "candidate": "a2b22830e05e16b88891bf87611062ef2b1d104b",
+      "candidate": "283318160bf4bb8ec91d87a3f195094019245c43",
       "evidence": [
+        "evidence/2026-11-19/cargo-2833181-mixed-native.json",
         "evidence/2026-11-19/cargo-a2b2283-expanded-proxy-native.json",
         "evidence/2026-11-19/github-ab6e559-cargo-proxy-native.json",
         "evidence/2026-11-19/cargo-04e2ba0-proxy-native.json",
         "evidence/2026-11-19/cargo-4a5c542-ipv6-fixture-failure.json"
       ],
-      "limits": "Twenty-three stock Cargo proxy checks pass with PostgreSQL 16.16 on macOS ARM64. Fourteen proxy checks also pass on both original Linux architectures. The expanded source revision, stale policy and interruption tests remain pending on Linux. Public origins and representative scale remain open.",
-      "next_action": "Run the expanded Linux profiles and add authenticated proxy source precedence to Cargo groups."
+      "limits": "Native macOS ARM64 passes stock Cargo source revision, stale cache, interrupted transfer, and mixed group scenarios against PostgreSQL 16.16. The preceding 14 proxy checks also pass on both native Linux architectures. Public origins and representative scale remain open.",
+      "next_action": "Qualify the updated native Linux proxy and mixed group profile and exercise public origin and broad workload limits."
     },
     {
       "id": "FMT.CARGO.GROUP",
@@ -4714,7 +4715,7 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "Read-only sparse index and exact download of the first member retaining the entire crate namespace. Applies root and member policy, current member grants and explicit namespace selections. Rechecks the source before sending bytes.",
+      "implementation": "Current sparse index and archive routing across ordered hosted or proxy members, with per-crate explicit namespace owners, repo grants and review, and withdrawal fencing. Checks selection again at delivery.",
       "surfaces": {
         "api": "/cargo/{group}/index/ and /cargo/{group}/download/{crate}/{version}; repository management API configures selection.",
         "cli": "Stock Cargo registry configuration and cargo fetch.",
@@ -4749,13 +4750,14 @@
         "delete/restore"
       ],
       "state": "implementing",
-      "candidate": "c55ccdae8a76ad54cbd4d3302d094a5303194276",
+      "candidate": "283318160bf4bb8ec91d87a3f195094019245c43",
       "evidence": [
+        "evidence/2026-11-19/cargo-2833181-mixed-native.json",
         "evidence/2026-11-19/github-c55ccda-cargo-groups-native.json",
         "evidence/2026-11-19/cargo-139041d-groups-native.json"
       ],
-      "limits": "Nine hosted group journeys pass on macOS ARM64 and both native Linux architectures with stock Cargo 1.100.0 and live PostgreSQL. Two separate PostgreSQL cases check source changes before sending response headers. Proxy members, cross-tenant duplicates and broad transfer fault/concurrency coverage remain open.",
-      "next_action": "Qualify proxy source precedence, cross-tenant duplicates and interrupted or concurrent group transfers."
+      "limits": "Nine hosted group checks pass on macOS ARM64 and both native Linux architectures. Seven mixed hosted/proxy checks and three PostgreSQL source-change cases pass on macOS ARM64. Mixed-group native Linux, cross-tenant duplicate and scale coverage remain open.",
+      "next_action": "Qualify mixed groups on both native Linux architectures, cross-tenant duplicates, concurrent policy changes and representative transfer workloads."
     },
     {
       "id": "FMT.CARGO.REPLICATION",

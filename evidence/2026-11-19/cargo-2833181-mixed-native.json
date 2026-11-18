@@ -1,0 +1,284 @@
+{
+  "candidate": "283318160bf4bb8ec91d87a3f195094019245c43",
+  "observed_at": "2026-11-19T01:33:48.583216+05:30",
+  "status": "passed",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "declarative_checks": 19,
+  "cargo_checks": 71,
+  "new_mixed_group_checks": 7,
+  "binaries": {
+    "cratectl": "27eefb6d630a4d6d2f9f2f7702ddccd4b9889d7239fd41b65c77a7ea05699a28",
+    "cratectld": "f6d0921b7678b9b2ce513212d9c557a9538fcbb3c9f5b3e1ac20a88e87ee151e",
+    "cargo": "ad0566b5b484db86c6787b2c77d96c753c31193b23f36d121a334ecadaf6c788",
+    "rustc": "574f8ce13814c332aa5e63445f68ce7fee7c506f802d6135194731d2ae8370ad"
+  },
+  "stock_client_summary": {
+    "path": "evidence/2026-11-19/cargo-2833181-mixed-native-summary.json",
+    "size": 9155,
+    "sha256": "bf9193ef6fc62f7911e168079a85fa7231e41f98fcc2b64047936525c83cb9b7",
+    "original_sha256": "9135e58720fc3b981495499b415b3c968f5484a3b8dcde7f8f0e879494fa8b64",
+    "redaction": "Omitted the private fixture directory."
+  },
+  "postgresql_assertions": {
+    "passed": [
+      "TestCargoGroupServingRechecksFirstMemberBeforeHeaders/new-servable-source",
+      "TestCargoGroupServingRechecksFirstMemberBeforeHeaders/new-unassessed-source",
+      "TestCargoGroupRechecksProxyAbsenceBeforeLowerDelivery",
+      "TestConsoleSessionUsesCurrentCredentialAndDoesNotExposeSecrets"
+    ],
+    "skipped": 0,
+    "private_log": {
+      "path": ".cache/cratectl-cargo-native-2833181.9E87jj/.private/cratectl-mixed-group-integration-omsq2yyh/native-replay.log",
+      "size": 844,
+      "sha256": "6151c70b670ed38384b01251f9f5c0d5971314bb5ce80c21dc0cda700cc98fb7"
+    }
+  },
+  "bounded_parser_fuzz": [
+    {
+      "target": "FuzzCargoDownloadTemplate",
+      "budget_seconds": 5,
+      "executions": 187866,
+      "output": {
+        "path": ".cache/cratectl-cargo-native-2833181.9E87jj/.private/cratectl-parser-fuzz-2833181.MFcehJ/FuzzCargoDownloadTemplate.log",
+        "size": 367,
+        "sha256": "846b395c492753cdda90bcf3aaf43f99d3f2df140c500bea0c233ea71a355a22"
+      }
+    },
+    {
+      "target": "FuzzCargoNormalizedArchive",
+      "budget_seconds": 5,
+      "executions": 196119,
+      "output": {
+        "path": ".cache/cratectl-cargo-native-2833181.9E87jj/.private/cratectl-parser-fuzz-2833181.MFcehJ/FuzzCargoNormalizedArchive.log",
+        "size": 366,
+        "sha256": "3801cf73e95babffac55a133d982ea8c774a96b365ee09e50d6e0ac8571cc7c6"
+      }
+    },
+    {
+      "target": "FuzzCargoPublishFrame",
+      "budget_seconds": 5,
+      "executions": 231416,
+      "output": {
+        "path": ".cache/cratectl-cargo-native-2833181.9E87jj/.private/cratectl-parser-fuzz-2833181.MFcehJ/FuzzCargoPublishFrame.log",
+        "size": 369,
+        "sha256": "0bdb2a9d78c6da354a9621eb2c0ab6be7117cdb4eb5563f0dbce19f874a1f7b6"
+      }
+    },
+    {
+      "target": "FuzzCargoSparseIndex",
+      "budget_seconds": 5,
+      "executions": 142892,
+      "output": {
+        "path": ".cache/cratectl-cargo-native-2833181.9E87jj/.private/cratectl-parser-fuzz-2833181.MFcehJ/FuzzCargoSparseIndex.log",
+        "size": 365,
+        "sha256": "28c00258a89026cf28a5b01e2fc44616adf7230367645cdd25296a1496b8f9e0"
+      }
+    }
+  ],
+  "source_sha256": [
+    {
+      "path": ".github/workflows/cargo.yml",
+      "sha256": "599a88989eb1ebbcb45222f9bc0b7d4b100b91ce6ecf200f28aa992edebcad62"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "1d4aecc2732cd54db4534e0afc862ffe14d5c24890f106008682fd9bbc8e5ba9"
+    },
+    {
+      "path": "go.sum",
+      "sha256": "5e364e4e1eff09d8d39617427d7775012304b09a7be26778dc2b46fdabae3f15"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "12f2a8b5cfbc2f322822b82e4446f51ff017374acab1f3a8921db8cc8e833bf6"
+    },
+    {
+      "path": "internal/cargo/coordinates.go",
+      "sha256": "7cb6cae3699762ec2f6246ed0a562e100e43e12416217170225ee34f5e1a3e56"
+    },
+    {
+      "path": "internal/cargo/index.go",
+      "sha256": "52fea83aa2d72a423382a477ec209ea979bc58f942ff403e47cccd1156a84ff5"
+    },
+    {
+      "path": "internal/cargo/publish.go",
+      "sha256": "8b1100f0d6e28dfa246c90198a35351c9a3ea635c965e6c448266efab9a7cf58"
+    },
+    {
+      "path": "internal/server/cargo.go",
+      "sha256": "4160135413b75a15a2c93a066634d0d0a6ca372583bc07e7e9c87d9a11e49e52"
+    },
+    {
+      "path": "internal/server/nuget.go",
+      "sha256": "fd79a030b9fc27dbe1377c3d1f56932a1784063a387d9e987cd4b2da94d1e7b8"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "9c2e99c6943c31559f9c0930142d992b4c290a6dfcd748d859b0dd7de499ccc2"
+    },
+    {
+      "path": "internal/store/cargo.go",
+      "sha256": "be3480f1ca057adc75d827896489883d91c746ce59355e77b3c152f9190ab97a"
+    },
+    {
+      "path": "internal/store/cargo_search.go",
+      "sha256": "5537964b37b8dafe27bee0a3f3ca8f4d599157d67457eb00d93d9e9ee21ced0a"
+    },
+    {
+      "path": "internal/store/store.go",
+      "sha256": "371c857dcfe658ca4a73fef52077f85b5636c44e636d534f3e3a576c16aa074e"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "54412aeffd3ed0708a7ac7fccb69184f6413aec87522c34abc1d0ab9fa9f9529"
+    },
+    {
+      "path": "internal/store/artifact_read.go",
+      "sha256": "aba845ceb45aff4503adb12c7a10330a7a7154f9a048b15ee3fa34b9153ac11e"
+    },
+    {
+      "path": "internal/blob/local.go",
+      "sha256": "3cdbb9ecd323808a6f0d6d866fe66260fbcb355c6cda416bf5b4e11f19cb9e37"
+    },
+    {
+      "path": "internal/crypto/crypto.go",
+      "sha256": "657b8651c9f7db4921eb8d6390b588675d6315d82c40c77f7d1a449e4481ef41"
+    },
+    {
+      "path": "internal/store/lifecycle_artifact.go",
+      "sha256": "167073e909bbf51f201227ce740bdf2999088aab52af7f48ad93c9773f530651"
+    },
+    {
+      "path": "internal/store/lifecycle.go",
+      "sha256": "1ee74e65136c7d5a9fde27378afb1c99e0fd76d376e2e67bafd1fe95ea6892a6"
+    },
+    {
+      "path": "internal/server/lifecycle.go",
+      "sha256": "0097a57efb37f30f6f52093c503b15526afb100779e1ad6ea547638a798e4ce5"
+    },
+    {
+      "path": "internal/store/cargo_owners.go",
+      "sha256": "279c50369618e0b9053fdea05059fb6417c6c5b9c0f5bf76f1ce48407260b6db"
+    },
+    {
+      "path": "internal/store/cargo_ownership_schema.go",
+      "sha256": "fd7513c2816bb43b210e578d54df4a2319b9aae7e4cff8163b01575c89892d27"
+    },
+    {
+      "path": "internal/store/migrations.go",
+      "sha256": "59f3478fbc77b7c969e43719f7eea92844a5bb1b2cd5b0d63ec2f356e368594b"
+    },
+    {
+      "path": "internal/store/cargo_selection.go",
+      "sha256": "ada87b816b801d89d2a144def7770aa6d14f5619ac2ebd2a50b5b1b8c783aef3"
+    },
+    {
+      "path": "internal/store/native_source.go",
+      "sha256": "9020d58cedc9b41b203de33dc18e81ce6b0f297b997389dbcab0eb9383a51063"
+    },
+    {
+      "path": "internal/server/resolve.go",
+      "sha256": "be996014511b408e24dc2a9374e807cfa9cd7f5fbcc8a662179aba52c9e1039b"
+    },
+    {
+      "path": "scripts/cargo_hosted_fixture.py",
+      "sha256": "8feaede986a4b8990c7cc5aa2464137d3c24aaac859aa58ce030eed4eda55020"
+    },
+    {
+      "path": "scripts/cargo_group_fixture.py",
+      "sha256": "e6e736d8df516fea151d96364137b0197c501d5aa3aede38276cca8e248c0508"
+    },
+    {
+      "path": "scripts/cargo_ownership_upgrade_fixture.py",
+      "sha256": "2cac4d171b73be8a601b8c36a54da32cd048d9559c629b60ae3945c05afaba91"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "f7cb7c3238bf01bb1c59815d98136c3a84890f1dd7e5856da8f4d50e09999d7f"
+    },
+    {
+      "path": "scripts/ci/cargo_evidence.py",
+      "sha256": "b07015a57e998fa8c2089474336beafde1e7534dc8fb47995d98eb0d9bbc0954"
+    },
+    {
+      "path": "scripts/ci/bootstrap_cargo.py",
+      "sha256": "2e1460a56a6343a0f0375e60c32fe8c528d739406272f085bf14cd71db44c42d"
+    },
+    {
+      "path": "scripts/ci/fetch_archive.py",
+      "sha256": "d0fde9da29964255004e6e71ecdac1a807fb60fe2c211520576dfca9d96f747a"
+    },
+    {
+      "path": "scripts/ci/terraform_provider_evidence.py",
+      "sha256": "130de2ec92ed288a6fa6c744c67003a76cafa2dfb9835e48f653abccda1a50ca"
+    },
+    {
+      "path": "scripts/qualification_contract.py",
+      "sha256": "c40a9d0209a9dc1fb9838f49cdb316ad5a762d45c0359b97fce156746564e5ba"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+    },
+    {
+      "path": "internal/cargo/sparse.go",
+      "sha256": "1407111ba1fb9cb88019c293537875a1fba9a3869de7c7fe699aacc0a48a4068"
+    },
+    {
+      "path": "internal/server/cargo_proxy.go",
+      "sha256": "721156d1eaecb6e1c92870ce8e0b4ca7625d63c4215752e7443f62ef2bb53811"
+    },
+    {
+      "path": "internal/store/cargo_proxy.go",
+      "sha256": "7a9b4c78faa737efda3b23b300b9290790866f84bba4f8fb0dea0437e6abacf3"
+    },
+    {
+      "path": "internal/store/cargo_retrieval.go",
+      "sha256": "baa4fcbbfcea31b60e55c06e1fc691524fdf9c1dd89f332c2d0f5ba09461a9d7"
+    },
+    {
+      "path": "internal/store/retrieval.go",
+      "sha256": "360c7804b8a95ff01939bbf03f4d3c1b86f63300a9014ea528db4ac4f05d6a68"
+    },
+    {
+      "path": "internal/store/source_configuration.go",
+      "sha256": "604126662853821e35c2b259b00c2535795daa555d4a9003c30ae7b19844acac"
+    },
+    {
+      "path": "internal/upstream/upstream.go",
+      "sha256": "d96fab63d134fde71828f873f3e11c92fc9423b93b6f3f3bbd9a261e46db1e0f"
+    },
+    {
+      "path": "internal/server/credentials.go",
+      "sha256": "8e44024b96cb3017e21c5b5995f6b102bc6780950ac7340ce29f7a00a839604f"
+    },
+    {
+      "path": "scripts/cargo_proxy_fixture.py",
+      "sha256": "04f17a6798f15bcb80fbc901c8795227077cfe2c38d367805d6bd56628cfee9d"
+    },
+    {
+      "path": "internal/server/cargo_group.go",
+      "sha256": "5e58c5d91fe08371623d949d91953674ed233003d519b5864ce371b5619ab5dd"
+    },
+    {
+      "path": "internal/cargo/fuzz_test.go",
+      "sha256": "5df4ad39e0592cec7abfee9ac87de9dba4a848777dd91b90026dc66f16c513ac"
+    },
+    {
+      "path": "internal/server/cargo_group_integration_test.go",
+      "sha256": "8d838fa021f28e1981627bdb8c3e0110164bded481391cb8b76b7099fe431f57"
+    }
+  ],
+  "first_attempts": [
+    "evidence/2026-11-19/cargo-a99f53c-zero-stale-first-failure.json",
+    "evidence/2026-11-19/cargo-template-first-fuzz-failure.json"
+  ],
+  "limits": [
+    "Native macOS ARM64 with installed PostgreSQL 16.16 and stock Cargo 1.100.0. The upstream is an inert private IPv6 loopback sparse origin.",
+    "The mixed group profile qualifies explicit member grants, review, exact source precedence, untouched versus withdrawn absence, outage, and returned byte identity.",
+    "Mixed-group Linux, cross-tenant colliding registries, broad scale, and legacy Git discovery remain open. Bounded smoke fuzzing covers four selected parser boundaries."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}
