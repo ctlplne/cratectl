@@ -1,0 +1,1325 @@
+{
+  "run": "ff877bcfb6",
+  "candidate": "7bc1f6995f29113cbcf7050936869ba5b47bc39e",
+  "source_scope": [
+    "cmd",
+    "internal",
+    "scripts",
+    "web",
+    "api",
+    "go.mod",
+    "go.sum",
+    "Makefile"
+  ],
+  "source_dirty": false,
+  "artifact_digests": {
+    ".cache/cratectl-console-7bc1f69/bin/cratectld": "8cca6f8a15f228c4f5672d8fe5f8dac90d32b59fc4053c3e1b0be2e3e27429d4",
+    ".cache/cratectl-console-7bc1f69/bin/cratectl": "e78a908ab34ee4a54920e68cfd36fcaa5b8ec53cd940379953051044c0cf3a35"
+  },
+  "build_identity": {
+    ".cache/cratectl-console-7bc1f69/bin/cratectld": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "7bc1f6995f29113cbcf7050936869ba5b47bc39e",
+      "vcs.time": "2026-11-18T14:45:55Z",
+      "vcs.modified": "false"
+    },
+    ".cache/cratectl-console-7bc1f69/bin/cratectl": {
+      "-buildmode": "exe",
+      "-compiler": "gc",
+      "-trimpath": "true",
+      "CGO_ENABLED": "1",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "GOARM64": "v8.0",
+      "vcs": "git",
+      "vcs.revision": "7bc1f6995f29113cbcf7050936869ba5b47bc39e",
+      "vcs.time": "2026-11-18T14:45:55Z",
+      "vcs.modified": "false"
+    }
+  },
+  "checks": [
+    "console source and binaries match a clean candidate",
+    "packaged console shell is public and contains no tenant credential",
+    "selected real-browser workflows passed without skips or flaky results",
+    "export UI stand-in identifies immutable creation event and retained package/manifest references without claiming destination trust",
+    "export UI stand-in exposes exact first/resume/offline commands and explicit destination import with repository validation, separate config/signer, stable key/new attempt and no requests or source-approval grant",
+    "export UI stand-in previews explicit hosted source epoch and submits one idempotent typed create, retaining the confirmed creation event",
+    "export UI stand-in withholds commands and mutations for unsafe generation or missing source coordinate bindings",
+    "export UI stand-in disables stale generation actions while current state is loading",
+    "export UI stand-in denial hides previous session commands and disables creation",
+    "export UI stand-in explicitly reconciles expiry with exact generation/manifest and retains the historical manifest",
+    "export UI stand-in avoids policy or export requests for readers",
+    "export UI stand-ins retain no credential in page or persistent browser storage and emit no page errors",
+    "journal UI stand-in advances from a short byte-bounded audit page using the explicit cursor",
+    "journal UI stand-in explicitly identifies the observed head as unsigned and requires separate external authentication",
+    "journal UI stand-in commands require separately supplied trusted bindings rather than promoting the displayed hash into trust",
+    "journal UI stand-in separates unsigned preparation, external signing and verification with an independently trusted public key",
+    "journal UI stand-in explains incomplete collection and limits of successful chain verification",
+    "journal UI stand-in refuses copy commands for terminal sequence values outside exact browser precision",
+    "journal UI stand-in explains the empty genesis range without inventing a history",
+    "journal UI stand-in denial removes the old checkpoint and its commands",
+    "journal UI stand-ins perform only explicit reads and keep reader requests and credentials out of journal export and persistent storage",
+    "checksum UI stand-ins preserve the observed source epoch and distinguish authenticated fork from unverified observation",
+    "checksum UI stand-ins require private exact-byte download plus separately supplied offline key and journal digest",
+    "checksum UI stand-ins bind the exact original event and require a complete signed range with independently trusted signer and checksum authority keys",
+    "checksum UI stand-ins traverse a bounded advancing journal cursor and explicitly restart at the first page",
+    "checksum UI stand-in denial removes previously rendered sensitive history",
+    "checksum UI stand-ins fail closed for journal and generation values outside exact browser integer precision",
+    "checksum UI stand-ins make no mutation or automatic raw download and keep reader credentials out of DOM and persistent storage",
+    "legacy UI stand-ins distinguish missing original proof from authenticated fork and make no automatic trust mutation",
+    "legacy UI stand-ins bind preview to exact incident key source and checkpoint plus separate external review",
+    "legacy UI stand-ins require explicit acknowledgment and replay exact retained bytes and idempotency key after unconfirmed response",
+    "legacy UI stand-ins show retained trust review separately from current key and package admission",
+    "legacy UI stand-ins prioritize authenticated fork and refuse its review form",
+    "legacy UI stand-in denial clears previously rendered sensitive original context",
+    "legacy UI stand-ins refuse rounded incident selectors and keep credentials out of rendered or persistent storage",
+    "console creates only the implemented NuGet hosted mode with explicit restricted access and review",
+    "NuGet configuration uses the exact service index and private credential placeholders",
+    "fresh native metadata and both byte paths obey restricted grants and required review",
+    "console approval permits exact immutable nupkg and original Nuspec bytes under a current complete version index",
+    "real two-package batch cursors, committed lost-response replay with identical body/key, reader denial, retained immutable bytes and explicit repeat-from-start recovery",
+    "fresh native reads honor the console denial and later exact approval",
+    "NuGet hold blocks deletion and reviewed retained restore recovers the exact permitted package",
+    "revoking the restricted NuGet reader grant blocks service metadata, versions, package and Nuspec",
+    "NuGet operator journey exposes no active credential in DOM or persistent browser storage",
+    "late native hold rejects an already displayed destructive preview without a partial transition",
+    "generic console holds, blocks deletion, retains a discoverable tombstone and retries verified native-byte restoration",
+    "generic console and server preserve current reader/writer/admin boundaries without credential persistence",
+    "maven console holds, blocks deletion, retains a discoverable tombstone and retries verified native-byte restoration",
+    "maven console and server preserve current reader/writer/admin boundaries without credential persistence",
+    "npm console holds, blocks deletion, retains a discoverable tombstone and retries verified native-byte restoration",
+    "npm console and server preserve current reader/writer/admin boundaries without credential persistence",
+    "pypi console holds, blocks deletion, retains a discoverable tombstone and retries verified native-byte restoration",
+    "pypi console and server preserve current reader/writer/admin boundaries without credential persistence",
+    "console admits one complete cross-repository placement and confirms a lost response with identical bytes and idempotency key",
+    "stock ORAS publishes and consumes both exact packages while matter enforcement rejects native deletion",
+    "requester sees pending approval and cannot approve their own manifest",
+    "independent approval releases only this matter and preserves the original hold slot",
+    "operator can inspect immutable progress and history without credentials in DOM or browser storage",
+    "two console placements coexist with safely rendered reasons and independent revision-zero admission",
+    "console release of case A preserves case B and the original hold slot",
+    "releasing the original hold slot also preserves case B",
+    "case history retains the original placement and release with aggregate protection still true",
+    "real elapsed expiry preserves original receipts and leaves the other active case enforced",
+    "revocation clears the workspace while case B remains enforced for the independent recovery administrator",
+    "last case release permits native deletion only after the timed case has actually expired",
+    "released and expired cases remain inspectable without credential values in DOM or browser storage",
+    "console places an exact hold and actual native OCI deletion is blocked",
+    "bounded hold inventory and immutable history expose exact reference and safely rendered original reason",
+    "administrator releases a discovered hold while repository remains removed and native serving stays fenced",
+    "real elapsed expiry changes the current list while the original timed-hold journal snapshot remains held",
+    "revoked authority clears the workspace; an independent current administrator recovers the persistent hold without credential exposure",
+    "required fresh future consent; read-only preview; lost actual 201 reply retries identical request bytes/key and retains one approval without worker admission",
+    "real worker defers an oversized complete capture without advancing its due slot; new bounded approval retires one target and preserves current tag/hold with zero reclaimed bytes",
+    "owned SQL timing backend is absent before the browser resumes worker recovery",
+    "paused schedule permits exact native restore; owned SQL timing barrier exposes actual pending automatic capture; process stop plus explicit pause fences it with retention_schedule_changed and zero effects",
+    "revoked credential logs out the browser and blocks admission; replacement administrator supplies a fresh future approval; previous failed capture stays immutable",
+    "changed policy blocks old future authority; console binds the current exact policy/source revisions and demands fresh consent",
+    "53 real schedule revisions page forward/backward; copying historical settings keeps current bindings and requires new future consent",
+    "actual concurrent schedule replacement rejects an older browser preview with 409 and preserves the newer paused revision",
+    "actual source replacement blocks an empty proxy schedule; console reapproval binds current source revision without fetching upstream content or claiming byte verification",
+    "credentials remain absent from console DOM and persistent browser storage",
+    "policy preview leaves no durable policy; exact revision apply retains complete settings",
+    "owned synthetic oversized preview reply is rejected by the browser byte budget with an explicit CLI recovery action; no server scale claim",
+    "preview shows the full 105-target set in bounded pages and preserves native serving and run history",
+    "lost successful admission retries identical request bytes/key and creates one job; 106 outcomes complete beyond the retry-attempt budget",
+    "committed outcomes support real forward/backward server pages without changing approved target identities",
+    "retired target restores through current lifecycle and exact readback; active hold remains effective",
+    "owned worker pause exposes true pending state; explicit cancellation records no target effects",
+    "real worker restart fails revoked authority without effects; replacement administrator supplies a new approved run",
+    "run inspection uses immutable approval and committed outcomes despite an owned mutable job projection fault",
+    "retention workflow keeps original and replacement credentials out of DOM and persistent browser storage",
+    "schedule preview explains bounded cadence and leaves no durable schedule",
+    "real worker admits a sample and records actual corrupt bytes without a clean verdict",
+    "later supported recovery and clean sample preserve the original immutable finding",
+    "pause changes future admission while retaining existing runs",
+    "actual future due slot 2026-11-18T20:18:17.513825+05:30 blocks after original credential revocation",
+    "replacement administrator reauthorizes at a new revision and retains configuration history",
+    "mutable progress cannot replace immutable run identity; console labels prior observations after rejected refresh",
+    "job selector uses supported uncertain state and the real server accepts its filter",
+    "schedule workflows keep credentials out of DOM and persistent browser storage",
+    "repair preview reports shared scope and leaves corrupt bytes unavailable",
+    "waiting repair can be resumed through its durable job after closing the original dialog",
+    "browser supplies exact source bytes; real worker verifies and repairs the corrupt shared object",
+    "repair keeps credentials out of the DOM and persistent browser storage",
+    "preview preserves native selection; apply selects only the newly configured group member",
+    "historical settings discard an unsaved advanced draft and restore selection using revision 2",
+    "closing advanced source settings preserves valid JSON edits in the structured form",
+    "proxy source and cache settings can be previewed and cancelled without changing the source",
+    "Maven creation defaults to immutable; preview cannot authorize replacement and apply enables only base-version snapshot updates",
+    "turning snapshot replacement off preserves current bytes and blocks the next changed publication",
+    "source configuration exposes no credential value in DOM or persistent browser storage",
+    "administrator previews and suspends an actual repository",
+    "removed repository remains discoverable for explicit retained restore",
+    "hold protects actual native deletion and console blocks its previewed apply",
+    "administrator deletes and verifies restoration of exact retained OCI bytes",
+    "lifecycle workflow exposes no credential in DOM or persistent browser storage",
+    "real database maintenance returns 503 and browser keeps the active credential",
+    "browser retry succeeds with its original credential after maintenance releases admission",
+    "maintenance recovery retains no credential in DOM or browser persistent storage",
+    "browser traverses 1107 repositories without accumulating them in a selector or losing late records",
+    "server-provided reverse and first-page navigation work",
+    "repository search reaches a match beyond the original thousand-row ceiling",
+    "repository creation stays actionable even when the current list search excludes the new name",
+    "deep-linked repository stays selected outside the chooser first page",
+    "package paging reverses and server search finds a reference beyond the first thousand",
+    "summary lists fetch current full metadata separately and render hostile metadata as text",
+    "global package search matches Unicode case independently of the database locale",
+    "reader sees a granted late repository after 1105 inaccessible names",
+    "reader traverses empty authorized pages to reach a late visible artifact without hidden paths entering the DOM",
+    "packaged login shell makes only same-origin requests",
+    "keyboard skip link reaches content and native dialog returns focus",
+    "lost response after actual commit retries the original request and does not duplicate a repository",
+    "native configuration templates omit the active credential",
+    "console binds manual approval to the observed exact path and digest",
+    "stock npm publishes, review policy denies, then exact approval permits a real install",
+    "current console denial blocks a fresh native-client install",
+    "durable jobs and recorded observations are accessible from the console",
+    "UI admits and inspects a real completed inventory without security/deletion approval",
+    "audit export contains this tenant and explicitly states its page scope",
+    "hostile package path is rendered as text and cannot inject DOM/script",
+    "reader grant changes clear stale package data and administrative jobs remain denied",
+    "stale response and service recovery states remain explicit",
+    "late prior-tenant responses cannot populate a newly connected tenant",
+    "actual credential revocation clears the workspace and requires reconnect",
+    "unauthorized responses clear the session even when an intermediary returns a non-JSON body",
+    "credentials are absent from browser storage, cookies, URLs and templates",
+    "no uncaught browser errors",
+    "all named accessibility states have zero automated WCAG A/AA findings",
+    "pagination key is a private durable file outside the artifact root",
+    "native management first page has a continuation beyond the page bound",
+    "actual registry restart preserves key and accepts the earlier opaque cursor"
+  ],
+  "topology": "Real Chromium, native registry/worker and nonowner forced-RLS PostgreSQL. An empty owned database and two newly provisioned tenants; explicit loopback-only HTTP development profile on port 38443.",
+  "limits": [
+    "This browser run exercises the explicit loopback HTTP test profile. Normal native TLS trust remains separately qualified; browser CA deployment and network/production PKI are not established by this run.",
+    "Only tested views and named interactions are qualified. Full console, all WCAG behavior/assistive technologies/native browsers, production packaging and complete product scope remain open.",
+    "Management repository/artifact pages use current grants/policy, scoped encrypted scan cursors, bounded live traversal and server search. This is not a multi-page snapshot or full native-format index qualification.",
+    "The journal export and two checksum inspection/recovery browser workflows use explicitly owned management response stand-ins while public Go proxy creation remains gated. They verify rendering, explicit review, replay, privacy, pagination and precision behavior only. Actual database authorization, migration, durable fork/review state and exact evidence downloads have separate Go integration tests."
+  ],
+  "build_source_matches_candidate": true,
+  "workflow": "all",
+  "browser_stats": {
+    "expected": 19,
+    "unexpected": 0,
+    "skipped": 0,
+    "flaky": 0
+  },
+  "go_export_browser": {
+    "phase": "complete",
+    "checks": [
+      "export UI stand-in identifies immutable creation event and retained package/manifest references without claiming destination trust",
+      "export UI stand-in exposes exact first/resume/offline commands and explicit destination import with repository validation, separate config/signer, stable key/new attempt and no requests or source-approval grant",
+      "export UI stand-in previews explicit hosted source epoch and submits one idempotent typed create, retaining the confirmed creation event",
+      "export UI stand-in withholds commands and mutations for unsafe generation or missing source coordinate bindings",
+      "export UI stand-in disables stale generation actions while current state is loading",
+      "export UI stand-in denial hides previous session commands and disables creation",
+      "export UI stand-in explicitly reconciles expiry with exact generation/manifest and retains the historical manifest",
+      "export UI stand-in avoids policy or export requests for readers",
+      "export UI stand-ins retain no credential in page or persistent browser storage and emit no page errors"
+    ],
+    "accessibility": [
+      {
+        "state": "export historical source list",
+        "violations": 0,
+        "findings": []
+      },
+      {
+        "state": "export collection command scroll region",
+        "violations": 0,
+        "findings": []
+      },
+      {
+        "state": "export explicit destination import instructions",
+        "violations": 0,
+        "findings": []
+      },
+      {
+        "state": "export unsigned preview and current recheck",
+        "violations": 0,
+        "findings": []
+      },
+      {
+        "state": "export unsafe generation",
+        "violations": 0,
+        "findings": []
+      },
+      {
+        "state": "export unreconciled expiry",
+        "violations": 0,
+        "findings": []
+      },
+      {
+        "state": "export reader denied",
+        "violations": 0,
+        "findings": []
+      }
+    ],
+    "browser": "156.0.8078.4",
+    "scope": "Actual x86 Chromium and embedded console with explicit owned management response stand-ins. UI requests, role rendering, exact generation, loading/denial/expiry and collection/import instructions only. Actual PostgreSQL/CAS/auth/policy/manifest/signature/SDK and historical upgrade proof are separate. No full console/WCAG/export/GC/readiness verdict."
+  },
+  "journal_export_browser": {
+    "phase": "complete",
+    "checks": [
+      "journal UI stand-in advances from a short byte-bounded audit page using the explicit cursor",
+      "journal UI stand-in explicitly identifies the observed head as unsigned and requires separate external authentication",
+      "journal UI stand-in commands require separately supplied trusted bindings rather than promoting the displayed hash into trust",
+      "journal UI stand-in separates unsigned preparation, external signing and verification with an independently trusted public key",
+      "journal UI stand-in explains incomplete collection and limits of successful chain verification",
+      "journal UI stand-in refuses copy commands for terminal sequence values outside exact browser precision",
+      "journal UI stand-in explains the empty genesis range without inventing a history",
+      "journal UI stand-in denial removes the old checkpoint and its commands",
+      "journal UI stand-ins perform only explicit reads and keep reader requests and credentials out of journal export and persistent storage"
+    ],
+    "accessibility": [
+      {
+        "state": "journal unsigned checkpoint and separate trust",
+        "violations": 0
+      },
+      {
+        "state": "journal external checkpoint instructions",
+        "violations": 0
+      },
+      {
+        "state": "journal unsafe sequence precision",
+        "violations": 0
+      },
+      {
+        "state": "journal empty genesis",
+        "violations": 0
+      },
+      {
+        "state": "journal denied checkpoint clears prior observation",
+        "violations": 0
+      },
+      {
+        "state": "journal reader denied",
+        "violations": 0
+      }
+    ],
+    "browser": "156.0.8078.4",
+    "scope": "Real x86 Chromium against embedded console with explicitly owned management response stand-ins. UI language, pagination, permissions rendering and precision only. No actual database authentication, independently authenticated checkpoint, cryptographic chain or network export claim; separate PostgreSQL and native CLI journeys cover those. Full console/WCAG/readiness remains unqualified."
+  },
+  "go_checksum_browser": {
+    "phase": "complete",
+    "checks": [
+      "checksum UI stand-ins preserve the observed source epoch and distinguish authenticated fork from unverified observation",
+      "checksum UI stand-ins require private exact-byte download plus separately supplied offline key and journal digest",
+      "checksum UI stand-ins bind the exact original event and require a complete signed range with independently trusted signer and checksum authority keys",
+      "checksum UI stand-ins traverse a bounded advancing journal cursor and explicitly restart at the first page",
+      "checksum UI stand-in denial removes previously rendered sensitive history",
+      "checksum UI stand-ins fail closed for journal and generation values outside exact browser integer precision",
+      "checksum UI stand-ins make no mutation or automatic raw download and keep reader credentials out of DOM and persistent storage"
+    ],
+    "accessibility": [
+      {
+        "state": "checksum blocked authority and bounded summaries",
+        "violations": 0
+      },
+      {
+        "state": "checksum private offline evidence commands",
+        "violations": 0
+      },
+      {
+        "state": "checksum signed journal attribution instructions",
+        "violations": 0
+      },
+      {
+        "state": "checksum revoked history access clears old summaries",
+        "violations": 0
+      },
+      {
+        "state": "checksum unsafe integer refuses commands and pagination",
+        "violations": 0
+      },
+      {
+        "state": "checksum reader safe state only",
+        "violations": 0
+      }
+    ],
+    "browser": "156.0.8078.4",
+    "scope": "Real x86 Chromium and embedded console with explicitly owned management response stand-ins only. No actual Go proxy creation, PostgreSQL authentication, key enforcement or exact download claim from this UI test; separate Go integration tests cover those. No full Go, browser, WCAG or readiness verdict."
+  },
+  "go_checksum_legacy_browser": {
+    "phase": "complete",
+    "checks": [
+      "legacy UI stand-ins distinguish missing original proof from authenticated fork and make no automatic trust mutation",
+      "legacy UI stand-ins bind preview to exact incident key source and checkpoint plus separate external review",
+      "legacy UI stand-ins require explicit acknowledgment and replay exact retained bytes and idempotency key after unconfirmed response",
+      "legacy UI stand-ins show retained trust review separately from current key and package admission",
+      "legacy UI stand-ins prioritize authenticated fork and refuse its review form",
+      "legacy UI stand-in denial clears previously rendered sensitive original context",
+      "legacy UI stand-ins refuse rounded incident selectors and keep credentials out of rendered or persistent storage"
+    ],
+    "accessibility": [
+      {
+        "state": "legacy incident remains unattributed and pending",
+        "violations": 0
+      },
+      {
+        "state": "legacy external trust preview and explicit acknowledgment",
+        "violations": 0
+      },
+      {
+        "state": "legacy lost-response request retains exact identity",
+        "violations": 0
+      },
+      {
+        "state": "legacy immutable historical review outcome",
+        "violations": 0
+      },
+      {
+        "state": "legacy review cannot override authenticated fork",
+        "violations": 0
+      },
+      {
+        "state": "legacy revoked inspection clears original context",
+        "violations": 0
+      },
+      {
+        "state": "legacy unsafe incident sequence refuses review",
+        "violations": 0
+      }
+    ],
+    "browser": "156.0.8078.4",
+    "scope": "Real x86 Chromium with explicitly owned management response stand-ins. No actual PostgreSQL, authorization, migration, signature or package-admission claim from this UI test; those have separate Go integration tests."
+  },
+  "nuget_browser": {
+    "phase": "complete",
+    "checks": [
+      "console creates only the implemented NuGet hosted mode with explicit restricted access and review",
+      "NuGet configuration uses the exact service index and private credential placeholders",
+      "fresh native metadata and both byte paths obey restricted grants and required review",
+      "console approval permits exact immutable nupkg and original Nuspec bytes under a current complete version index",
+      "real two-package batch cursors, committed lost-response replay with identical body/key, reader denial, retained immutable bytes and explicit repeat-from-start recovery",
+      "fresh native reads honor the console denial and later exact approval",
+      "NuGet hold blocks deletion and reviewed retained restore recovers the exact permitted package",
+      "revoking the restricted NuGet reader grant blocks service metadata, versions, package and Nuspec",
+      "NuGet operator journey exposes no active credential in DOM or persistent browser storage"
+    ],
+    "accessibility": [
+      {
+        "state": "NuGet hosted repository creation",
+        "violations": 0
+      },
+      {
+        "state": "NuGet private client configuration",
+        "violations": 0
+      },
+      {
+        "state": "NuGet exact-digest review",
+        "violations": 0
+      },
+      {
+        "state": "NuGet discovery batch preview",
+        "violations": 0
+      },
+      {
+        "state": "NuGet rebuild lost response retains retry identity",
+        "violations": 0
+      },
+      {
+        "state": "NuGet confirmed replay receipt",
+        "violations": 0
+      },
+      {
+        "state": "NuGet next batch confirmed at end of inventory",
+        "violations": 0
+      },
+      {
+        "state": "held NuGet reference blocks deletion",
+        "violations": 0
+      },
+      {
+        "state": "restored NuGet reference",
+        "violations": 0
+      }
+    ],
+    "browser": "156.0.8078.4",
+    "package_sha256": "b2987fdda3cb453291e4bad3619cda3e6e65320089a4d9d2bd22a8893c99061a",
+    "nuspec_sha256": "d6c1ca5a2e0929d6bd632eafffa4dea5a36fdb6b76c08bd31567c91d9edfad9c",
+    "scope": "One real PostgreSQL/Chromium hosted NuGet operator journey and direct native protocol byte observations. Stock dotnet push/restore is a separate journey. Discovery maintenance includes real synchronous rebuild/replay with one intentionally lost browser response. No proxy/group, native unlisting/search/symbol, other browser/platform, production TLS or full-format/readiness claim."
+  },
+  "native_lifecycle_browser": {
+    "checks": [
+      "late native hold rejects an already displayed destructive preview without a partial transition",
+      "generic console holds, blocks deletion, retains a discoverable tombstone and retries verified native-byte restoration",
+      "generic console and server preserve current reader/writer/admin boundaries without credential persistence",
+      "maven console holds, blocks deletion, retains a discoverable tombstone and retries verified native-byte restoration",
+      "maven console and server preserve current reader/writer/admin boundaries without credential persistence",
+      "npm console holds, blocks deletion, retains a discoverable tombstone and retries verified native-byte restoration",
+      "npm console and server preserve current reader/writer/admin boundaries without credential persistence",
+      "pypi console holds, blocks deletion, retains a discoverable tombstone and retries verified native-byte restoration",
+      "pypi console and server preserve current reader/writer/admin boundaries without credential persistence"
+    ],
+    "accessibility": [
+      {
+        "state": "generic materialized package inventory",
+        "violations": 0
+      },
+      {
+        "state": "generic exact native hold preview",
+        "violations": 0
+      },
+      {
+        "state": "generic held deletion blocked",
+        "violations": 0
+      },
+      {
+        "state": "native stale destructive preview rejected",
+        "violations": 0
+      },
+      {
+        "state": "generic retained byte restore preview",
+        "violations": 0
+      },
+      {
+        "state": "generic corrupt retained object recovery",
+        "violations": 0
+      },
+      {
+        "state": "generic native byte restore confirmed",
+        "violations": 0
+      },
+      {
+        "state": "generic writer has no administrator hold action",
+        "violations": 0
+      },
+      {
+        "state": "generic reader package view has no lifecycle mutation",
+        "violations": 0
+      },
+      {
+        "state": "maven materialized package inventory",
+        "violations": 0
+      },
+      {
+        "state": "maven exact native hold preview",
+        "violations": 0
+      },
+      {
+        "state": "maven held deletion blocked",
+        "violations": 0
+      },
+      {
+        "state": "maven retained byte restore preview",
+        "violations": 0
+      },
+      {
+        "state": "maven corrupt retained object recovery",
+        "violations": 0
+      },
+      {
+        "state": "maven native byte restore confirmed",
+        "violations": 0
+      },
+      {
+        "state": "maven writer has no administrator hold action",
+        "violations": 0
+      },
+      {
+        "state": "maven reader package view has no lifecycle mutation",
+        "violations": 0
+      },
+      {
+        "state": "npm materialized package inventory",
+        "violations": 0
+      },
+      {
+        "state": "npm exact native hold preview",
+        "violations": 0
+      },
+      {
+        "state": "npm held deletion blocked",
+        "violations": 0
+      },
+      {
+        "state": "npm retained byte restore preview",
+        "violations": 0
+      },
+      {
+        "state": "npm corrupt retained object recovery",
+        "violations": 0
+      },
+      {
+        "state": "npm native byte restore confirmed",
+        "violations": 0
+      },
+      {
+        "state": "npm writer has no administrator hold action",
+        "violations": 0
+      },
+      {
+        "state": "npm reader package view has no lifecycle mutation",
+        "violations": 0
+      },
+      {
+        "state": "pypi materialized package inventory",
+        "violations": 0
+      },
+      {
+        "state": "pypi exact native hold preview",
+        "violations": 0
+      },
+      {
+        "state": "pypi held deletion blocked",
+        "violations": 0
+      },
+      {
+        "state": "pypi retained byte restore preview",
+        "violations": 0
+      },
+      {
+        "state": "pypi corrupt retained object recovery",
+        "violations": 0
+      },
+      {
+        "state": "pypi native byte restore confirmed",
+        "violations": 0
+      },
+      {
+        "state": "pypi writer has no administrator hold action",
+        "violations": 0
+      },
+      {
+        "state": "pypi reader package view has no lifecycle mutation",
+        "violations": 0
+      },
+      {
+        "state": "narrow native lifecycle administration",
+        "violations": 0
+      }
+    ],
+    "browser": "156.0.8078.4",
+    "scope": "Named generic/Maven/npm/PyPI materialized reference console actions, actual native HTTP bytes, corruption retry, stale revision and reader/writer boundaries in Chromium. Stock-client proof is separate. Full format lifecycle, legal/bulk/GC, assistive technology, other browsers/providers/platforms and production recovery remain required."
+  },
+  "hold_matters_browser": {
+    "checks": [
+      "console admits one complete cross-repository placement and confirms a lost response with identical bytes and idempotency key",
+      "stock ORAS publishes and consumes both exact packages while matter enforcement rejects native deletion",
+      "requester sees pending approval and cannot approve their own manifest",
+      "independent approval releases only this matter and preserves the original hold slot",
+      "operator can inspect immutable progress and history without credentials in DOM or browser storage"
+    ],
+    "accessibility": [
+      {
+        "state": "new matter metadata",
+        "violations": 0
+      },
+      {
+        "state": "complete cross-repository placement preview",
+        "violations": 0
+      },
+      {
+        "state": "uncertain admission retains exact request",
+        "violations": 0
+      },
+      {
+        "state": "release manifest before independent approval",
+        "violations": 0
+      },
+      {
+        "state": "requester cannot self-approve",
+        "violations": 0
+      },
+      {
+        "state": "independent target review and approval",
+        "violations": 0
+      },
+      {
+        "state": "durable complete per-target outcomes",
+        "violations": 0
+      },
+      {
+        "state": "immutable matter history",
+        "violations": 0
+      },
+      {
+        "state": "narrow matter inventory",
+        "violations": 0
+      }
+    ],
+    "browser": "156.0.8078.4",
+    "scope": "Development canonical OCI cross-reference placement, lost-response retry, independent release review, original-slot coexistence, native DELETE and stock ORAS publish/pull. Other formats, broader legal policy, physical GC, assistive technology, scale and production recovery remain open."
+  },
+  "hold_cases_browser": {
+    "checks": [
+      "two console placements coexist with safely rendered reasons and independent revision-zero admission",
+      "console release of case A preserves case B and the original hold slot",
+      "releasing the original hold slot also preserves case B",
+      "case history retains the original placement and release with aggregate protection still true",
+      "real elapsed expiry preserves original receipts and leaves the other active case enforced",
+      "revocation clears the workspace while case B remains enforced for the independent recovery administrator",
+      "last case release permits native deletion only after the timed case has actually expired",
+      "released and expired cases remain inspectable without credential values in DOM or browser storage"
+    ],
+    "accessibility": [
+      {
+        "state": "empty case inventory",
+        "violations": 0
+      },
+      {
+        "state": "review-a independent placement preview",
+        "violations": 0
+      },
+      {
+        "state": "review-b independent placement preview",
+        "violations": 0
+      },
+      {
+        "state": "two independent active cases",
+        "violations": 0
+      },
+      {
+        "state": "release one case preview",
+        "violations": 0
+      },
+      {
+        "state": "case-specific immutable history",
+        "violations": 0
+      },
+      {
+        "state": "expired case while another remains active",
+        "violations": 0
+      },
+      {
+        "state": "revoked case administrator reconnect",
+        "violations": 0
+      },
+      {
+        "state": "independent current case administrator recovery",
+        "violations": 0
+      },
+      {
+        "state": "narrow independent case inventory",
+        "violations": 0
+      }
+    ],
+    "browser": "156.0.8078.4",
+    "scope": "Independent canonical OCI reference cases and legacy coexistence through console/API/native DELETE, original receipts and real elapsed expiry. Bulk/legal processes, other formats, physical GC, assistive technology, scale and production recovery remain required."
+  },
+  "hold_browser": {
+    "checks": [
+      "console places an exact hold and actual native OCI deletion is blocked",
+      "bounded hold inventory and immutable history expose exact reference and safely rendered original reason",
+      "administrator releases a discovered hold while repository remains removed and native serving stays fenced",
+      "real elapsed expiry changes the current list while the original timed-hold journal snapshot remains held",
+      "revoked authority clears the workspace; an independent current administrator recovers the persistent hold without credential exposure"
+    ],
+    "accessibility": [
+      {
+        "state": "hold placement preview",
+        "violations": 0
+      },
+      {
+        "state": "active tenant hold inventory",
+        "violations": 0
+      },
+      {
+        "state": "original hold journal receipt",
+        "violations": 0
+      },
+      {
+        "state": "retained repository hold release preview",
+        "violations": 0
+      },
+      {
+        "state": "released hold retained inventory",
+        "violations": 0
+      },
+      {
+        "state": "actual-time expired hold inventory",
+        "violations": 0
+      },
+      {
+        "state": "revoked hold administrator reconnect",
+        "violations": 0
+      },
+      {
+        "state": "current administrator hold recovery",
+        "violations": 0
+      },
+      {
+        "state": "recovery release preserves held-reference history",
+        "violations": 0
+      },
+      {
+        "state": "narrow hold administration inventory",
+        "violations": 0
+      }
+    ],
+    "browser": "156.0.8078.4",
+    "scope": "Existing per-reference OCI holds: native denial, tenant inventory, original history, retained-repository recovery, actual expiry and revoked-actor recovery in Chromium. Multiple independent cases, bulk/legal workflow, other formats, assistive technology, scale and production recovery remain required."
+  },
+  "retention_schedule_browser": {
+    "checks": [
+      "required fresh future consent; read-only preview; lost actual 201 reply retries identical request bytes/key and retains one approval without worker admission",
+      "real worker defers an oversized complete capture without advancing its due slot; new bounded approval retires one target and preserves current tag/hold with zero reclaimed bytes",
+      "owned SQL timing backend is absent before the browser resumes worker recovery",
+      "paused schedule permits exact native restore; owned SQL timing barrier exposes actual pending automatic capture; process stop plus explicit pause fences it with retention_schedule_changed and zero effects",
+      "revoked credential logs out the browser and blocks admission; replacement administrator supplies a fresh future approval; previous failed capture stays immutable",
+      "changed policy blocks old future authority; console binds the current exact policy/source revisions and demands fresh consent",
+      "53 real schedule revisions page forward/backward; copying historical settings keeps current bindings and requires new future consent",
+      "actual concurrent schedule replacement rejects an older browser preview with 409 and preserves the newer paused revision",
+      "actual source replacement blocks an empty proxy schedule; console reapproval binds current source revision without fetching upstream content or claiming byte verification",
+      "credentials remain absent from console DOM and persistent browser storage"
+    ],
+    "accessibility": [
+      {
+        "state": "automatic retirement absent with explicit future authority explanation",
+        "violations": 0
+      },
+      {
+        "state": "future-capture consent starts unchecked and is required",
+        "violations": 0
+      },
+      {
+        "state": "future-capture configuration preview has no durable effects",
+        "violations": 0
+      },
+      {
+        "state": "uncertain future approval freezes original request and key",
+        "violations": 0
+      },
+      {
+        "state": "complete-set budget deferral admits no partial automatic run",
+        "violations": 0
+      },
+      {
+        "state": "automatic capture provenance and immutable native outcomes",
+        "violations": 0
+      },
+      {
+        "state": "automatic retirement paused with retained outcomes",
+        "violations": 0
+      },
+      {
+        "state": "paused automatic retirement at a narrow Chromium viewport",
+        "violations": 0
+      },
+      {
+        "state": "paused schedule fences a real pending capture and directs new approval",
+        "violations": 0
+      },
+      {
+        "state": "revoked authorizing credential blocks future captures",
+        "violations": 0
+      },
+      {
+        "state": "changed policy binding requires explicit future reapproval",
+        "violations": 0
+      },
+      {
+        "state": "automatic configuration history final server page",
+        "violations": 0
+      },
+      {
+        "state": "historical settings copy uses current bindings and unchecked future consent",
+        "violations": 0
+      },
+      {
+        "state": "stale exact schedule revision rejects future approval without effects",
+        "violations": 0
+      },
+      {
+        "state": "changed source binding blocks future captures",
+        "violations": 0
+      }
+    ],
+    "timing_helpers": [
+      {
+        "kind": "cratectl-owned-advisory-barrier-v1",
+        "status": "closed",
+        "application_name": "cratectl-barrier-browser-ff877bcfb6-60118",
+        "database": "cratectl_console_ff877bcfb6",
+        "user": "cratectl_owner",
+        "lock": 17746363,
+        "seconds": 180,
+        "helper_pid": 60118,
+        "client_pid": 60121,
+        "backend": {
+          "pid": 60123,
+          "backend_start": "2026-11-18T09:48:41.677183-05:00"
+        },
+        "cleanup": {
+          "backend_absent": true,
+          "termination_wait_ms": 5000,
+          "termination_requested": true
+        }
+      }
+    ],
+    "browser": "156.0.8078.4",
+    "scope": "Real PostgreSQL, Chromium and owned registry/worker. Future-authority consent, exact lost-response retry, complete-set deferral, scheduled native retirement/restore, process-stop pause fence using a declared owned SQL claim timing barrier, revoked-credential/changed-policy/empty-proxy-source reapproval, concurrent revision rejection and immutable configuration pages. Artifact age and claim timing are owned SQL fixtures. Empty proxy source administration performs no upstream fetch or byte verification. Real scheduled-retirement cadence, other browsers/assistive technology, physical GC, scale and broad readiness are not established."
+  },
+  "retention_browser": {
+    "checks": [
+      "policy preview leaves no durable policy; exact revision apply retains complete settings",
+      "owned synthetic oversized preview reply is rejected by the browser byte budget with an explicit CLI recovery action; no server scale claim",
+      "preview shows the full 105-target set in bounded pages and preserves native serving and run history",
+      "lost successful admission retries identical request bytes/key and creates one job; 106 outcomes complete beyond the retry-attempt budget",
+      "committed outcomes support real forward/backward server pages without changing approved target identities",
+      "retired target restores through current lifecycle and exact readback; active hold remains effective",
+      "owned worker pause exposes true pending state; explicit cancellation records no target effects",
+      "real worker restart fails revoked authority without effects; replacement administrator supplies a new approved run",
+      "run inspection uses immutable approval and committed outcomes despite an owned mutable job projection fault",
+      "retention workflow keeps original and replacement credentials out of DOM and persistent browser storage"
+    ],
+    "accessibility": [
+      {
+        "state": "retention empty policy state",
+        "violations": 0
+      },
+      {
+        "state": "retention policy configuration",
+        "violations": 0
+      },
+      {
+        "state": "retention policy preview without effects",
+        "violations": 0
+      },
+      {
+        "state": "oversized preview response gives an explicit CLI recovery action",
+        "violations": 0
+      },
+      {
+        "state": "bounded retirement target preview first page",
+        "violations": 0
+      },
+      {
+        "state": "retirement preview final target page with incoming reference",
+        "violations": 0
+      },
+      {
+        "state": "changed retirement selection requires new preview",
+        "violations": 0
+      },
+      {
+        "state": "uncertain retirement admission retains exact retry",
+        "violations": 0
+      },
+      {
+        "state": "retirement outcomes with exact progress and retained bytes",
+        "violations": 0
+      },
+      {
+        "state": "retention target verified restore preview",
+        "violations": 0
+      },
+      {
+        "state": "pending retirement with explicit cancellation",
+        "violations": 0
+      },
+      {
+        "state": "revoked requester requires new retention approval",
+        "violations": 0
+      },
+      {
+        "state": "disabled retention policy and immutable configuration history",
+        "violations": 0
+      }
+    ],
+    "browser": "156.0.8078.4",
+    "scope": "Named real PostgreSQL and Chromium policy/105-plus-target preview/outcome pages, exact-request lost-admission recovery, current lifecycle restore, controlled owned worker stop/restart, cancellation and revoked-requester/new-approval recovery. Mutable projection fault is reset from the immutable fixture receipt; product metadata repair and physical GC are not claimed. Other retention rules/formats, scale, assistive technologies and broad readiness remain open."
+  },
+  "schedule_browser": {
+    "checks": [
+      "schedule preview explains bounded cadence and leaves no durable schedule",
+      "real worker admits a sample and records actual corrupt bytes without a clean verdict",
+      "later supported recovery and clean sample preserve the original immutable finding",
+      "pause changes future admission while retaining existing runs",
+      "actual future due slot 2026-11-18T20:18:17.513825+05:30 blocks after original credential revocation",
+      "replacement administrator reauthorizes at a new revision and retains configuration history",
+      "mutable progress cannot replace immutable run identity; console labels prior observations after rejected refresh",
+      "job selector uses supported uncertain state and the real server accepts its filter",
+      "schedule workflows keep credentials out of DOM and persistent browser storage"
+    ],
+    "accessibility": [
+      {
+        "state": "recurring integrity empty state",
+        "violations": 0
+      },
+      {
+        "state": "recurring integrity configuration form",
+        "violations": 0
+      },
+      {
+        "state": "recurring integrity impact preview",
+        "violations": 0
+      },
+      {
+        "state": "recurring sample findings",
+        "violations": 0
+      },
+      {
+        "state": "captured sample target observations",
+        "violations": 0
+      },
+      {
+        "state": "paused recurring schedule",
+        "violations": 0
+      },
+      {
+        "state": "recurring authorization blocked with recovery action",
+        "violations": 0
+      },
+      {
+        "state": "immutable schedule configuration history",
+        "violations": 0
+      },
+      {
+        "state": "schedule receipt drift rejects current evidence and labels retained observations",
+        "violations": 0
+      }
+    ],
+    "browser": "156.0.8078.4",
+    "scope": "Named bounded recurring samples, actual corrupt readback and supported repair, real 60-second due-slot credential revocation, pause/reauthorization/history and job-state filter in Chromium. Owned mutable-progress drift was rejected and the fixture reset that fault from its immutable receipt; product metadata repair is not claimed. Full production schedules, other providers/platforms and assistive technology remain unqualified."
+  },
+  "repair_browser": {
+    "phase": "complete",
+    "checks": [
+      "repair preview reports shared scope and leaves corrupt bytes unavailable",
+      "waiting repair can be resumed through its durable job after closing the original dialog",
+      "browser supplies exact source bytes; real worker verifies and repairs the corrupt shared object",
+      "repair keeps credentials out of the DOM and persistent browser storage"
+    ],
+    "accessibility": [
+      {
+        "state": "exact byte repair form",
+        "violations": 0,
+        "findings": []
+      },
+      {
+        "state": "byte repair impact preview",
+        "violations": 0,
+        "findings": []
+      },
+      {
+        "state": "repair awaiting source",
+        "violations": 0,
+        "findings": []
+      },
+      {
+        "state": "repair rejects incorrect source digest",
+        "violations": 0,
+        "findings": []
+      },
+      {
+        "state": "repair verified with immutable observation",
+        "violations": 0,
+        "findings": []
+      }
+    ],
+    "browser": "156.0.8078.4",
+    "scope": "Named local-file byte repair, wrong-source recovery, durable job resume and real worker verification in Chromium. Full storage/backups/platform/assistive technology qualification remains open."
+  },
+  "source_configuration_browser": {
+    "checks": [
+      "preview preserves native selection; apply selects only the newly configured group member",
+      "historical settings discard an unsaved advanced draft and restore selection using revision 2",
+      "closing advanced source settings preserves valid JSON edits in the structured form",
+      "proxy source and cache settings can be previewed and cancelled without changing the source",
+      "Maven creation defaults to immutable; preview cannot authorize replacement and apply enables only base-version snapshot updates",
+      "turning snapshot replacement off preserves current bytes and blocks the next changed publication",
+      "source configuration exposes no credential value in DOM or persistent browser storage"
+    ],
+    "accessibility": [
+      {
+        "state": "group source configuration form",
+        "violations": 0
+      },
+      {
+        "state": "group source change impact preview",
+        "violations": 0
+      },
+      {
+        "state": "historical source settings prepared for monotonic rollback",
+        "violations": 0
+      },
+      {
+        "state": "proxy source configuration fields",
+        "violations": 0
+      },
+      {
+        "state": "proxy source and cache revalidation preview",
+        "violations": 0
+      },
+      {
+        "state": "hosted Maven snapshot replacement policy form",
+        "violations": 0
+      },
+      {
+        "state": "hosted Maven snapshot policy impact preview",
+        "violations": 0
+      }
+    ],
+    "browser": "156.0.8078.4",
+    "scope": "Named group/proxy source and hosted Maven snapshot policy administration workflows in Chromium. Proxy connectivity is not claimed by preview; full client, provider, platform and assistive-technology qualification remains open."
+  },
+  "lifecycle_browser": {
+    "checks": [
+      "administrator previews and suspends an actual repository",
+      "removed repository remains discoverable for explicit retained restore",
+      "hold protects actual native deletion and console blocks its previewed apply",
+      "administrator deletes and verifies restoration of exact retained OCI bytes",
+      "lifecycle workflow exposes no credential in DOM or persistent browser storage"
+    ],
+    "accessibility": [
+      {
+        "state": "repository lifecycle action",
+        "violations": 0
+      },
+      {
+        "state": "repository suspension impact preview",
+        "violations": 0
+      },
+      {
+        "state": "removed repository restoration preview",
+        "violations": 0
+      },
+      {
+        "state": "held artifact deletion blocked",
+        "violations": 0
+      },
+      {
+        "state": "deleted artifact verified restore preview",
+        "violations": 0
+      }
+    ],
+    "browser": "156.0.8078.4",
+    "scope": "Named repository/reference lifecycle workflows in Chromium. Full lifecycle, assistive technologies, native browsers, scale and production recovery remain open."
+  },
+  "schema_browser": {
+    "checks": [
+      "real database maintenance returns 503 and browser keeps the active credential",
+      "browser retry succeeds with its original credential after maintenance releases admission",
+      "maintenance recovery retains no credential in DOM or browser persistent storage"
+    ],
+    "accessibility": [
+      {
+        "state": "schema maintenance with stale repository data",
+        "violations": 0
+      }
+    ],
+    "browser": "156.0.8078.4",
+    "scope": "One real database admission interruption and credential-preserving retry in Chromium. Full rolling-upgrade and accessibility qualification remain open."
+  },
+  "pagination_browser": {
+    "checks": [
+      "browser traverses 1107 repositories without accumulating them in a selector or losing late records",
+      "server-provided reverse and first-page navigation work",
+      "repository search reaches a match beyond the original thousand-row ceiling",
+      "repository creation stays actionable even when the current list search excludes the new name",
+      "deep-linked repository stays selected outside the chooser first page",
+      "package paging reverses and server search finds a reference beyond the first thousand",
+      "summary lists fetch current full metadata separately and render hostile metadata as text",
+      "global package search matches Unicode case independently of the database locale",
+      "reader sees a granted late repository after 1105 inaccessible names",
+      "reader traverses empty authorized pages to reach a late visible artifact without hidden paths entering the DOM"
+    ],
+    "accessibility": [
+      {
+        "state": "server search beyond first thousand",
+        "violations": []
+      },
+      {
+        "state": "paged reference detail",
+        "violations": []
+      },
+      {
+        "state": "mobile package pagination",
+        "violations": []
+      },
+      {
+        "state": "empty page of hidden OCI roots",
+        "violations": []
+      }
+    ],
+    "browser": "156.0.8078.4",
+    "fixture_setup": "Bulk owned SQL metadata fixtures only; publication and content-byte policy remain covered by the separate stock npm journey.",
+    "scope": "Complete bounded live management traversal and named Chromium states. Not a full native format, scale/performance or WCAG result."
+  },
+  "browser": {
+    "checks": [
+      "packaged login shell makes only same-origin requests",
+      "keyboard skip link reaches content and native dialog returns focus",
+      "lost response after actual commit retries the original request and does not duplicate a repository",
+      "native configuration templates omit the active credential",
+      "console binds manual approval to the observed exact path and digest",
+      "stock npm publishes, review policy denies, then exact approval permits a real install",
+      "current console denial blocks a fresh native-client install",
+      "durable jobs and recorded observations are accessible from the console",
+      "UI admits and inspects a real completed inventory without security/deletion approval",
+      "audit export contains this tenant and explicitly states its page scope",
+      "hostile package path is rendered as text and cannot inject DOM/script",
+      "reader grant changes clear stale package data and administrative jobs remain denied",
+      "stale response and service recovery states remain explicit",
+      "late prior-tenant responses cannot populate a newly connected tenant",
+      "actual credential revocation clears the workspace and requires reconnect",
+      "unauthorized responses clear the session even when an intermediary returns a non-JSON body",
+      "credentials are absent from browser storage, cookies, URLs and templates",
+      "no uncaught browser errors",
+      "all named accessibility states have zero automated WCAG A/AA findings"
+    ],
+    "accessibility": [
+      {
+        "state": "empty connection",
+        "violations": []
+      },
+      {
+        "state": "blank tenant",
+        "violations": []
+      },
+      {
+        "state": "repository creation dialog",
+        "violations": []
+      },
+      {
+        "state": "exact-digest approval dialog",
+        "violations": []
+      },
+      {
+        "state": "populated package table",
+        "violations": []
+      },
+      {
+        "state": "jobs",
+        "violations": []
+      },
+      {
+        "state": "job detail",
+        "violations": []
+      },
+      {
+        "state": "empty storage",
+        "violations": []
+      },
+      {
+        "state": "completed inventory",
+        "violations": []
+      },
+      {
+        "state": "reference sweep preview",
+        "violations": []
+      },
+      {
+        "state": "lease preview",
+        "violations": []
+      },
+      {
+        "state": "audit",
+        "violations": []
+      },
+      {
+        "state": "reader permission removed",
+        "violations": []
+      },
+      {
+        "state": "mobile repository view",
+        "violations": []
+      }
+    ],
+    "uncaught_errors": [],
+    "browser": "156.0.8078.4",
+    "automated_accessibility_scope": "axe WCAG 2/2.1/2.2 A/AA tags on named states, supplemented by tested keyboard actions; not a full WCAG conformance result.",
+    "controlled_faults": [
+      "response dropped after actual repository commit",
+      "503 stale-data recovery",
+      "delayed response across tenant reconnect"
+    ],
+    "screenshots": [
+      "console-repositories.png",
+      "console-mobile.png"
+    ]
+  },
+  "database": "cratectl_console_ff877bcfb6",
+  "worker_controls": [
+    {
+      "id": "c6400365-3e39-4589-a7af-b22c0d8510b8",
+      "action": "pause",
+      "state": "stopped"
+    },
+    {
+      "id": "69687e89-0763-4d5d-9684-c9bc52783ceb",
+      "action": "resume",
+      "state": "running"
+    },
+    {
+      "id": "7b82d373-372a-40b1-9200-153c39185f06",
+      "action": "pause",
+      "state": "stopped"
+    },
+    {
+      "id": "469b18e3-53f4-4992-9549-b01d1a436b37",
+      "action": "resume",
+      "state": "running"
+    },
+    {
+      "id": "d5669361-d599-46dd-92d3-b1f7cf32775c",
+      "action": "pause",
+      "state": "stopped"
+    },
+    {
+      "id": "c237783b-76ac-4179-b135-b3abb31c6b2e",
+      "action": "resume",
+      "state": "running"
+    },
+    {
+      "id": "e0c5dcaf-d759-4946-b654-56c2f4b6035e",
+      "action": "pause",
+      "state": "stopped"
+    },
+    {
+      "id": "44fa3896-2789-4894-91d3-49ddc465a0af",
+      "action": "resume",
+      "state": "running"
+    },
+    {
+      "id": "bf52e925-bbb6-483c-8d96-f8933590d52b",
+      "action": "pause",
+      "state": "stopped"
+    },
+    {
+      "id": "a3e0af12-6469-472b-8ee3-45432e0ec841",
+      "action": "resume",
+      "state": "running"
+    },
+    {
+      "id": "2c3a7ab3-89e9-466f-bc67-f62d3b4bec62",
+      "action": "pause",
+      "state": "stopped"
+    },
+    {
+      "id": "20b51e76-849d-4683-b860-606e61e10984",
+      "action": "resume",
+      "state": "running"
+    },
+    {
+      "id": "db61cbe8-3a4b-445b-b601-5857a0fd3e46",
+      "action": "pause",
+      "state": "stopped"
+    },
+    {
+      "id": "30c93a8f-1b6f-4fd2-abc6-599d00806fd4",
+      "action": "resume",
+      "state": "running"
+    },
+    {
+      "id": "48114a60-40c6-4337-9df5-8390d054a59e",
+      "action": "pause",
+      "state": "stopped"
+    },
+    {
+      "id": "1fa57ba4-2485-4d85-b995-0dcdc5130b02",
+      "action": "resume",
+      "state": "running"
+    }
+  ],
+  "status": "passed"
+}

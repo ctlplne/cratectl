@@ -149,6 +149,13 @@ inventory. The strict Go 1.27.4 jobs on both Linux architectures and macOS
 reproduced DEFECT0126. The three source jobs also failed the npm build-tool
 audit. Full security and packaging qualification remain open.
 
+At `7bc1f69` the console build removed Vite and its affected picomatch
+dependency. The original high-severity npm audit returned zero findings for
+the rebuilt lockfile. The pinned assets reproduced byte-for-byte, and native
+macOS ARM64 Chromium with real PostgreSQL passed 19 workflows and 151
+assertions with zero skips, flakes or unexpected results.
+[Audit and browser replay](evidence/2026-11-18/console-esbuild-7bc1f69-native.json)
+
 ## Local candidate qualification
 
 At `12b1968`, the real PostgreSQL store and OCI conformance packages passed.

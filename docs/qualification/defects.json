@@ -1623,10 +1623,11 @@
       "id": "DEFECT.0150",
       "summary": "Console build lockfile includes picomatch 4.0.7 affected by GHSA-fc5q-39xc-vjpf (CVE-2026-112366)",
       "candidate": "12b19684b47210dc485b6aea362de6537c7c5031",
-      "state": "Open. Upstream advisory lists no patched release at observation.",
+      "state": "Repaired by removing the affected development dependency chain in 7bc1f69. The unchanged npm audit reports zero findings for the exact replacement lockfile. The full native macOS ARM64 browser replay passes.",
       "first_failure": "evidence/2026-11-18/local-12b1968-qualification.json",
-      "next": "Recheck upstream remediation and replay audit and reproducible console build after a verified update.",
-      "limits": "The reported chain is development-only. The application serves embedded assets and no use of picomatch was found in console application sources. The audit remains a failure."
+      "repair": "Use pinned esbuild directly for the embedded assets. Preserve the TypeScript check, compiler targets, notice generation and lockfile audit.",
+      "replay": "evidence/2026-11-18/console-esbuild-7bc1f69-native.json",
+      "limits": "The original build-tool audits retain their failure. Hosted replay and broad security qualification require their own evidence."
     },
     {
       "id": "DEFECT.0151",
