@@ -7125,7 +7125,8 @@
       "candidate": "b19d1ae393320a2adc051f61db24693fec62591a",
       "evidence": [
         "evidence/2026-10-31/schedule-checkpoint.json",
-        "evidence/2026-10-31/schedule-clean-postgres-race.txt"
+        "evidence/2026-10-31/schedule-clean-postgres-race.txt",
+        "evidence/2026-11-18/metrics-a79d016-native.json"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -7134,7 +7135,12 @@
         "failure/recovery"
       ],
       "limits": "Named clean recurring referenced-byte rotation, immutable run receipts, authorization/capacity/nonoverlap/rollback fences, real 60-second cadence, original findings after supported exact-byte repair, stock ORAS/CLI and Chromium workflows pass. Corrupted progress cannot replace admission identity or produce worker observations. Full-volume/unreferenced/randomized/calendar/provider/platform scheduling, alerts, global fairness, metadata repair, retention/GC, scale and production recovery remain required.",
-      "next_action": "Complete remaining scheduling/observation/metadata/provider/platform/clock/fault/scale and production recovery outcomes; retain all later-stage requirements."
+      "next_action": "Complete remaining scheduling/observation/metadata/provider/platform/clock/fault/scale and production recovery outcomes; retain all later-stage requirements.",
+      "scoped_process_metrics": {
+        "candidate": "a79d016c06dd3626358d069f5f6600b6e9a34243",
+        "evidence": "evidence/2026-11-18/metrics-a79d016-native.json",
+        "scope": "Two authorized TLS scrapes parsed by Prometheus 3.16.0 during real stock npm traffic. Fixed labels cover HTTP outcomes, latency, application body bytes and local admission. Broader observability remains open."
+      }
     },
     {
       "id": "J.OPS.OTEL",

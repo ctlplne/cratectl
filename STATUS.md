@@ -418,6 +418,14 @@ local operator consent. Further evidence resources and native hosts remain
 open.
 [Native MCP evidence](evidence/2026-11-18/mcp-2b1ec79-native.json)
 
+The opt-in HTTPS metrics endpoint at `a79d016` passed eight scoped checks
+with stock Prometheus 3.16.0, npm and real PostgreSQL 16.15. Two original
+scrapes recorded publication, grant denial and approved download after
+restart. Both parse with stock `promtool`. Scrapes use a separate operator
+credential and fixed labels. Wider observability and collector qualification
+remain open.
+[Native Prometheus evidence](evidence/2026-11-18/metrics-a79d016-native.json)
+
 The cold `e4adc19` recovery fixture passed 17 runtime checks and 12 backup
 controls. With registry and worker stopped, stock PostgreSQL 16.15 captured
 and verified a physical backup. A fresh database volume preserved the journal

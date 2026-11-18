@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "profile": "cratectl-repository-manifest-native-v1",
+  "status": "passed",
+  "checks": [
+    "clean exact source",
+    "cratectl matches the clean candidate",
+    "cratectld matches the clean candidate",
+    "real PostgreSQL 16.15",
+    "stock Prometheus 3.16.0 metric parser",
+    "metrics are absent until explicitly enabled",
+    "dedicated credential reads metrics over trusted TLS",
+    "anonymous and ordinary tenant credentials cannot scrape",
+    "absent repository has an authority and tenant bound creation plan",
+    "plan, wrong approval and denied callers leave the tenant journal unchanged",
+    "concurrent approved requests produce one creation or a safe retry",
+    "retry after successful creation returns unchanged",
+    "one repository creation event despite concurrent retry",
+    "second tenant can plan an independent same-name repository",
+    "import returns the exact active hosted fields",
+    "plan exposes review drift without writing",
+    "stock npm published its exact bytes and unassessed input was denied",
+    "actual restricted repository produced HTTP 403 before restart",
+    "Prometheus parses real publication, denial and admission observations",
+    "registry restart preserves the declared state",
+    "fresh stock npm downloads the exact approved archive after restart",
+    "stock npm download contributes bytes and a complete latency histogram",
+    "metrics contain fixed labels and omit tenant, artifact and credential values",
+    "stale approval leaves suspended repository retained",
+    "suspended repository cannot be imported as active",
+    "revoked administrator cannot plan",
+    "schema 18 with all 57 tenant tables forced RLS and a restricted runtime role"
+  ],
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "goal_complete": false,
+  "broad_readiness": false,
+  "private_fixture": ".private/cratectl-manifest-97pz0ola",
+  "limits": [
+    "Hosted npm and the version 1 manifest fields on one native server.",
+    "Broader source configuration and production provider distribution remain open."
+  ],
+  "candidate": "a79d016c06dd3626358d069f5f6600b6e9a34243",
+  "binary_sha256": {
+    "cratectl": "a809dcb601a02b14882e14ceada8f6da84dc31c1bcf0ecbf2133c11026cac408",
+    "cratectld": "c3578e844a15ce01bf009934b19a05b1740a291215d29098e9333dc0898c6b59"
+  },
+  "postgres": "postgres (PostgreSQL) 16.15",
+  "npm": "11.16.0",
+  "archive_sha256": "a2694827c507c96f5fa663bf6216761bb74777d84f49d9b0d9ab8cc6c58e58de",
+  "metrics": {
+    "tool": "promtool, version 3.16.0 (branch: HEAD, revision: e2e28adeee2c5883d000fc82aca6008cfbf7e96d)",
+    "tool_sha256": "8b8a5eb76da6e9a737cbb0d56f6a767399f19c28b1f84b00e55029f3b4751158",
+    "scrapes": [
+      {
+        "phase": "stock-publication",
+        "sha256": "412ae497bbdc9ffbd096d9dcec91b5ab9c8a0a63eba890aae30595f83428a558",
+        "bytes": 16659
+      },
+      {
+        "phase": "stock-download-after-restart",
+        "sha256": "4028a1d934dc7b9fee092c92a696ed4919762516f59f7d708180b87052453dcf",
+        "bytes": 16650
+      }
+    ]
+  }
+}

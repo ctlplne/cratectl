@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "observed_at": "2026-11-18T17:40:25+00:00",
+  "candidate": "a79d016c06dd3626358d069f5f6600b6e9a34243",
+  "status": "passed",
+  "postgres": "postgres (PostgreSQL) 16.15",
+  "npm": "11.16.0",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "promtool_version": "3.16.0",
+  "prometheus_package_sha256": "f7c71b553316f822bdd860a3ea527ebefb2f8e944e5b7dfd419ae2653cf3ba01",
+  "scope_checks": 8,
+  "original_safe_summary": {
+    "path": "evidence/2026-11-18/metrics-a79d016-native-summary.json",
+    "bytes": 3064,
+    "sha256": "4fd8e95e72bd2895476256862b2785b3c81bc689d22228159d1e37996172bff7"
+  },
+  "revalidated_scrapes": [
+    {
+      "phase": "stock-publication",
+      "sha256": "412ae497bbdc9ffbd096d9dcec91b5ab9c8a0a63eba890aae30595f83428a558",
+      "bytes": 16659,
+      "original_prometheus_scrape": "evidence/2026-11-18/metrics-a79d016-stock-publication.prom"
+    },
+    {
+      "phase": "stock-download-after-restart",
+      "sha256": "4028a1d934dc7b9fee092c92a696ed4919762516f59f7d708180b87052453dcf",
+      "bytes": 16650,
+      "original_prometheus_scrape": "evidence/2026-11-18/metrics-a79d016-stock-download-after-restart.prom"
+    }
+  ],
+  "limits": [
+    "Single native macOS ARM64 registry process and two Prometheus text scrapes.",
+    "Promtool parsed actual stock npm traffic. The fixture did not start a long-lived collector or establish production metrics performance.",
+    "Outcomes and body counts are deployment aggregates. Queue fairness, cache, feed and projection measurements remain open."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}
