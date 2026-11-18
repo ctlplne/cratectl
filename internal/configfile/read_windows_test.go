@@ -45,14 +45,10 @@ func windowsFixtureUser(t *testing.T) string {
 	return user.User.Sid.String()
 }
 
-func windowsFixtureFile(t *testing.T, path string, raw []byte, broad, unprotected bool) {
+func windowsFixtureFile(t *testing.T, path string, raw []byte, broad bool) {
 	t.Helper()
 	user := windowsFixtureUser(t)
-	protection := "P"
-	if unprotected {
-		protection = ""
-	}
-	text := "O:" + user + "D:" + protection + "(A;;FA;;;" + user + ")"
+	text := "O:" + user + "D:P(A;;FA;;;" + user + ")"
 	if broad {
 		text += "(A;;FR;;;WD)"
 	}
@@ -83,10 +79,34 @@ func windowsFixtureFile(t *testing.T, path string, raw []byte, broad, unprotecte
 	}
 }
 
+func unprotectWindowsFixtureDACL(t *testing.T, path string) {
+	t.Helper()
+	descriptor, err := windows.GetNamedSecurityInfo(path, windows.SE_FILE_OBJECT, windows.DACL_SECURITY_INFORMATION)
+	if err != nil {
+		t.Fatal("inspect owned fixture DACL", err)
+	}
+	acl, _, err := descriptor.DACL()
+	if err != nil || acl == nil {
+		t.Fatal("owned fixture DACL required", err)
+	}
+	if err := windows.SetNamedSecurityInfo(path, windows.SE_FILE_OBJECT,
+		windows.DACL_SECURITY_INFORMATION|windows.UNPROTECTED_DACL_SECURITY_INFORMATION, nil, nil, acl, nil); err != nil {
+		t.Fatal("explicitly unprotect owned fixture DACL", err)
+	}
+	actual, err := windows.GetNamedSecurityInfo(path, windows.SE_FILE_OBJECT, windows.DACL_SECURITY_INFORMATION)
+	if err != nil {
+		t.Fatal("inspect explicitly unprotected fixture DACL", err)
+	}
+	control, _, err := actual.Control()
+	if err != nil || control&windows.SE_DACL_PRESENT == 0 || control&windows.SE_DACL_PROTECTED != 0 {
+		t.Fatal("the OS did not install the requested unprotected DACL", err)
+	}
+}
+
 func TestWindowsPrivateConfigurationUsesActualProtectedOwnerACL(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "cratectl-private.json")
 	raw := []byte(`{"version":1,"url":"https://127.0.0.1:38443"}`)
-	windowsFixtureFile(t, path, raw, false, false)
+	windowsFixtureFile(t, path, raw, false)
 	got, err := ReadBytes(path, int64(len(raw)), true)
 	if err != nil || !bytes.Equal(got, raw) {
 		t.Fatal("protected native owner-only file refused", err)
@@ -123,7 +143,10 @@ func TestWindowsPrivateConfigurationRejectsBroadInheritedAndNullACLs(t *testing.
 	for _, scenario := range []string{"everyone", "inheritance", "null"} {
 		t.Run(scenario, func(t *testing.T) {
 			path := filepath.Join(t.TempDir(), "cratectl-unsafe.token")
-			windowsFixtureFile(t, path, []byte("owned synthetic credential"), scenario == "everyone", scenario == "inheritance")
+			windowsFixtureFile(t, path, []byte("owned synthetic credential"), scenario == "everyone")
+			if scenario == "inheritance" {
+				unprotectWindowsFixtureDACL(t, path)
+			}
 			if scenario == "null" {
 				if err := windows.SetNamedSecurityInfo(path, windows.SE_FILE_OBJECT,
 					windows.DACL_SECURITY_INFORMATION|windows.PROTECTED_DACL_SECURITY_INFORMATION, nil, nil, nil, nil); err != nil {
@@ -143,7 +166,7 @@ func TestWindowsPrivateConfigurationRejectsBroadInheritedAndNullACLs(t *testing.
 func TestWindowsPrivateConfigurationRejectsHardLinkAliasesAndAlternateStreams(t *testing.T) {
 	directory := t.TempDir()
 	path, alias := filepath.Join(directory, "cratectl-owned.token"), filepath.Join(directory, "cratectl-alias.token")
-	windowsFixtureFile(t, path, []byte("owned original"), false, false)
+	windowsFixtureFile(t, path, []byte("owned original"), false)
 	if err := os.Link(path, alias); err != nil {
 		t.Fatal("native NTFS hard-link fixture required", err)
 	}
@@ -175,7 +198,7 @@ func TestWindowsPrivateConfigurationRejectsHardLinkAliasesAndAlternateStreams(t 
 func TestWindowsConfigurationRejectsActualReparsePoint(t *testing.T) {
 	directory := t.TempDir()
 	path, alias := filepath.Join(directory, "cratectl-owned.token"), filepath.Join(directory, "cratectl-reparse.token")
-	windowsFixtureFile(t, path, []byte("owned original"), false, false)
+	windowsFixtureFile(t, path, []byte("owned original"), false)
 	if err := os.Symlink(path, alias); err != nil {
 		t.Fatal("native Windows symlink fixture required; no skip counts as a pass", err)
 	}
@@ -188,7 +211,7 @@ func TestWindowsConfigurationRejectsActualReparsePoint(t *testing.T) {
 
 func TestWindowsConfigurationHandleDeniesConcurrentWriteAndRename(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "cratectl-stable.token")
-	windowsFixtureFile(t, path, []byte("owned original"), false, false)
+	windowsFixtureFile(t, path, []byte("owned original"), false)
 	f, err := OpenBounded(path, 128, true)
 	if err != nil {
 		t.Fatal(err)
@@ -253,10 +276,10 @@ func TestWindowsNativeCLIUsesPrivateConfigurationAndRefusesBroadCredentialsBefor
 	server.StartTLS()
 	defer server.Close()
 	credential, broadCredential := filepath.Join(directory, "cratectl.token"), filepath.Join(directory, "cratectl-broad.token")
-	windowsFixtureFile(t, credential, []byte(token), false, false)
-	windowsFixtureFile(t, broadCredential, []byte(token), true, false)
+	windowsFixtureFile(t, credential, []byte(token), false)
+	windowsFixtureFile(t, broadCredential, []byte(token), true)
 	ca := filepath.Join(directory, "cratectl-ca.pem")
-	windowsFixtureFile(t, ca, pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: server.Certificate().Raw}), false, false)
+	windowsFixtureFile(t, ca, pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: server.Certificate().Raw}), false)
 	for _, scenario := range []string{"private", "broad-config", "broad-token", "unknown-field"} {
 		config := filepath.Join(directory, "cratectl-"+scenario+".json")
 		selectedToken := credential
@@ -270,7 +293,7 @@ func TestWindowsNativeCLIUsesPrivateConfigurationAndRefusesBroadCredentialsBefor
 		if scenario == "unknown-field" {
 			raw = append(bytes.TrimSuffix(raw, []byte("}")), []byte(`,"owned_unknown":true}`)...)
 		}
-		windowsFixtureFile(t, config, raw, scenario == "broad-config", false)
+		windowsFixtureFile(t, config, raw, scenario == "broad-config")
 		before := requests.Load()
 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 		cmd := exec.CommandContext(ctx, cli, "--config", config, "--path", "/api/v1/repositories", "--raw-response", "--timeout", "10s")

@@ -83,12 +83,13 @@ The push of `6d41573` started nine workflows, including the [native Windows
 workflow](https://github.com/ctlplne/cratectl/actions/runs/44295026661). All run
 IDs bind to the first attempt in the [campaign start record](evidence/2026-11-18/github-6d41573-started.json).
 
-Both Windows jobs failed during the process-control suite. Their authenticated
-diagnostics showed that cleanup waited for an output result it had already
-received. The x64 test also observed that an empty job and a signaled process
-handle can arrive separately. The repair preserves the output-limit result and
-bounds the native handle wait. Windows configuration tests await the repaired
-candidate. [First failures and repair](evidence/2026-11-18/github-6d41573-first-failures.json)
+Both `6d41573` Windows jobs failed during process cleanup. The native replay at
+`5551f52` passed the process suite and nine configuration functions on both hosts,
+including protected npm output. Both jobs failed the DACL inheritance fixture.
+The fixture repair explicitly unprotects the DACL and verifies the installed
+control bits before checking refusal. Full Windows qualification requires the
+repaired native replay. [Original process failures](evidence/2026-11-18/github-6d41573-first-failures.json)
+[Native replay and fixture repair](evidence/2026-11-18/github-5551f52-windows-fixture-failure.json)
 
 ## Go security patch
 

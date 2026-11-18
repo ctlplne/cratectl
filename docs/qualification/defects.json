@@ -1630,9 +1630,18 @@
       "id": "DEFECT.0151",
       "summary": "Windows output overflow cleanup waits twice for one reader result and the descendant test assumes simultaneous OS signals",
       "candidate": "6d415738669eecf70b6b1b0f0891387331ce002c",
-      "state": "First native x64 and ARM64 failures retained. Repair implemented and local compile/vet passed. Native replay pending.",
+      "state": "Original failures retained. The repaired process suite completed on both native Windows hosts at 5551f52.",
       "first_failure": "evidence/2026-11-18/github-6d41573-first-failures.json",
-      "repair": "Mark the one-shot reader joined on receipt, including an output limit error. Require the retained descendant handle to signal within the cleanup deadline, in addition to zero active job processes."
+      "repair": "Mark the one-shot reader joined on receipt, including an output limit error. Require the retained descendant handle to signal within the cleanup deadline, in addition to zero active job processes.",
+      "replay": "evidence/2026-11-18/github-5551f52-windows-fixture-failure.json"
+    },
+    {
+      "id": "DEFECT.0152",
+      "summary": "Native Windows inheritance test assumed initial file creation installed an unprotected DACL",
+      "candidate": "5551f528586b3198023ae26ff3b3dda56d7ea544",
+      "state": "Both original native Windows failures retained. Fixture repair cross-compiled and vetted. Native replay pending.",
+      "first_failure": "evidence/2026-11-18/github-5551f52-windows-fixture-failure.json",
+      "repair": "Explicitly install an unprotected DACL using the Windows API. Confirm the installed control flags before verifying that the reader refuses private input."
     }
   ]
 }

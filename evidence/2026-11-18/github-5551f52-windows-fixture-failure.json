@@ -1,0 +1,132 @@
+{
+  "schema": 1,
+  "candidate": "5551f528586b3198023ae26ff3b3dda56d7ea544",
+  "observed_at": "2026-11-18T11:45:49.338579+00:00",
+  "runs": {
+    "upgrade-qualification.yml": {
+      "run_id": 44296605594,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/44296605594",
+      "run_attempt": 1
+    },
+    "oci-clients.yml": {
+      "run_id": 44296605543,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/44296605543",
+      "run_attempt": 1
+    },
+    "go-export-portability.yml": {
+      "run_id": 44296605592,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/44296605592",
+      "run_attempt": 1
+    },
+    "go-modules.yml": {
+      "run_id": 44296605601,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/44296605601",
+      "run_attempt": 1
+    },
+    "jvm-clients.yml": {
+      "run_id": 44296605568,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/44296605568",
+      "run_attempt": 1
+    },
+    "windows-cli.yml": {
+      "run_id": 44296605692,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/44296605692",
+      "run_attempt": 1
+    },
+    "ci.yml": {
+      "run_id": 44296605544,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/44296605544",
+      "run_attempt": 1
+    }
+  },
+  "state": "Both first-attempt Windows jobs advanced through the fixed native process suite and failed the same ACL fixture. Other selected jobs remain independent.",
+  "windows": [
+    {
+      "arch": "arm64",
+      "job_id": 134775155012,
+      "conclusion": "failure",
+      "artifact_id": 14424156680,
+      "archive": {
+        "path": ".private/ci-diagnostics/5551f52-first-observation/encrypted-windows-cli-arm64.zip",
+        "bytes": 37150,
+        "sha256": "014be74b97b84d00b0a5ab5f5d1910ff6a7bb61543892215f186e7619110092e"
+      },
+      "log": {
+        "path": ".private/ci-diagnostics/5551f52-first-observation/134775155012.txt",
+        "bytes": 31343,
+        "sha256": "ceff0aeee17b3b9bd4f9d5c6aec664099f27179ab767c69c6fc39476a94115ca"
+      },
+      "authenticated_private_output": {
+        "path": ".private/ci-diagnostics/5551f52-first-observation/encrypted-windows-cli-arm64.private.jsonl",
+        "bytes": 35998,
+        "sha256": "8215e4d496b5296212b0d53113965f780b92ef2e12cd70c0ef798d4c032a9b01"
+      },
+      "native_process_controls_completed_before_configuration": 5,
+      "passed_top_level_configuration_controls": [
+        "TestReadBytesRejectsOverflowingSentinelBudget",
+        "TestPrivateWindowsACLRestrictsEveryEffectiveGrantToOwnerAndOSAdministrators",
+        "TestPrivateWindowsACLRejectsBroadComplexUnprotectedAndUnboundedMetadata",
+        "TestWindowsPrivateConfigurationUsesActualProtectedOwnerACL",
+        "TestWindowsPrivateConfigurationRejectsHardLinkAliasesAndAlternateStreams",
+        "TestWindowsConfigurationRejectsActualReparsePoint",
+        "TestWindowsConfigurationHandleDeniesConcurrentWriteAndRename",
+        "TestWindowsNativeCLIUsesPrivateConfigurationAndRefusesBroadCredentialsBeforeHTTP",
+        "TestWriteNewPrivateKeepsExactBytesAndRefusesConcurrentOverwrite"
+      ],
+      "failed_configuration_controls": [
+        "TestWindowsPrivateConfigurationRejectsBroadInheritedAndNullACLs/inheritance",
+        "TestWindowsPrivateConfigurationRejectsBroadInheritedAndNullACLs"
+      ]
+    },
+    {
+      "arch": "amd64",
+      "job_id": 134775154092,
+      "conclusion": "failure",
+      "artifact_id": 14422759388,
+      "archive": {
+        "path": ".private/ci-diagnostics/5551f52-first-observation/encrypted-windows-cli-amd64.zip",
+        "bytes": 36475,
+        "sha256": "89fc3325410b79cf2ea79e6c5dc1b669be14c7c5c422468466f3a28fd798ba5a"
+      },
+      "log": {
+        "path": ".private/ci-diagnostics/5551f52-first-observation/134775154092.txt",
+        "bytes": 26166,
+        "sha256": "ad877fb61a04c7f5fc65f38966ff55ed4f7b17427466d72d100d6c229c992c2f"
+      },
+      "authenticated_private_output": {
+        "path": ".private/ci-diagnostics/5551f52-first-observation/encrypted-windows-cli-amd64.private.jsonl",
+        "bytes": 35325,
+        "sha256": "81e744a71883c0d2e998ca32eec95dbd19960a26962f952504d979923fdd5af9"
+      },
+      "native_process_controls_completed_before_configuration": 5,
+      "passed_top_level_configuration_controls": [
+        "TestReadBytesRejectsOverflowingSentinelBudget",
+        "TestPrivateWindowsACLRestrictsEveryEffectiveGrantToOwnerAndOSAdministrators",
+        "TestPrivateWindowsACLRejectsBroadComplexUnprotectedAndUnboundedMetadata",
+        "TestWindowsPrivateConfigurationUsesActualProtectedOwnerACL",
+        "TestWindowsPrivateConfigurationRejectsHardLinkAliasesAndAlternateStreams",
+        "TestWindowsConfigurationRejectsActualReparsePoint",
+        "TestWindowsConfigurationHandleDeniesConcurrentWriteAndRename",
+        "TestWindowsNativeCLIUsesPrivateConfigurationAndRefusesBroadCredentialsBeforeHTTP",
+        "TestWriteNewPrivateKeepsExactBytesAndRefusesConcurrentOverwrite"
+      ],
+      "failed_configuration_controls": [
+        "TestWindowsPrivateConfigurationRejectsBroadInheritedAndNullACLs/inheritance",
+        "TestWindowsPrivateConfigurationRejectsBroadInheritedAndNullACLs"
+      ]
+    }
+  ],
+  "next_repair": {
+    "source_parent": "5551f528586b3198023ae26ff3b3dda56d7ea544",
+    "source": {
+      "path": "internal/configfile/read_windows_test.go",
+      "bytes": 13598,
+      "sha256": "a88c290885b5fdb233a1636678ea20c73c851edc50883340b3185a42289442b7"
+    },
+    "mechanism": "Apply the unprotected DACL flag explicitly with SetNamedSecurityInfo. Independently read the installed security descriptor and verify its protection bit is clear before checking that private reading refuses the file.",
+    "local": "Windows x64/ARM64 cross test compile and vet; closed verifier and qualification tests passed.",
+    "native": "pending"
+  },
+  "goal_complete": false,
+  "broad_readiness": false
+}
