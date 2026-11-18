@@ -144,6 +144,7 @@ func validateRepository(r *Repository, retainedGoProxy bool) error {
 		return errors.New("retained Go proxy configuration requires explicit checksum authority and checksum enforcement")
 	}
 	if r.Mode != "hosted" && r.Format != "generic" && r.Format != "maven" && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" && r.Format != "cargo" &&
+		!(r.Format == "nuget" && r.Mode == "proxy") &&
 		!(r.Format == "go" && (r.Mode == "group" || r.Mode == "proxy" && retainedGoProxy)) {
 		return errors.New("proxy/group native adapters not yet implemented for this format")
 	}

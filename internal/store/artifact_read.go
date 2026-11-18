@@ -174,8 +174,12 @@ func (s *Store) artifact(ctx context.Context, i Identity, repo, path string, int
 			e = checkGoModuleBundle(ctx, tx, repo, a, review && !intake, repositoryReadBudget(r))
 		}
 		if e == nil && r.Format == "nuget" {
-			if _, e = ValidateNuGetArtifact(ctx, a); e != nil {
+			var metadata NuGetPackage
+			if metadata, e = ValidateNuGetArtifact(ctx, a); e != nil {
 				return e
+			}
+			if r.Mode == "proxy" && (r.Settings.Upstream == nil || metadata.SourceAuthority != r.Settings.Upstream.URL) {
+				return ErrSourceChanged
 			}
 		}
 		if e == nil && len(snapshots) > 0 {

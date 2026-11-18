@@ -1,4 +1,4 @@
-# Hosted NuGet development path
+# NuGet development path
 
 Hosted NuGet push, version indexes and package/Nuspec retrieval are implemented.
 Actual native Linux PostgreSQL/race and stock dotnet journeys pass on clean
@@ -42,6 +42,33 @@ dotnet restore --configfile /private/path/NuGet.Config
 NUGET_API_KEY="$CRATECTL_WRITER_TOKEN" dotnet nuget push PACKAGE.nupkg \
   --source https://REGISTRY/nuget/REPOSITORY/index.json --skip-duplicate
 ```
+
+## Flat-container proxy
+
+Set `format` to `nuget` and `mode` to `proxy`. Set `settings.upstream.url` to
+the upstream's `PackageBaseAddress/3.0.0` base URL from its service index. Then
+point `dotnet restore` at the cratectl feed URL above. The cratectl service index
+advertises its own flat-container URLs. Search, registration, symbols and
+automatic upstream service-index discovery remain open in this proxy scope.
+[NuGet PackageBaseAddress](https://learn.microsoft.com/nuget/api/package-base-address-resource)
+
+With `settings.cache.require_checksum` enabled, the upstream must supply a
+base64 SHA-512 sidecar at the package URL plus `.sha512`. The proxy bounds and
+validates each package, checks the archive's package ID and normalized version,
+and serves the Nuspec embedded in the retained package. An integrity failure or
+an attempt by the same source revision to replace an admitted coordinate blocks
+that transfer. An upstream checksum confirms content integrity for transport.
+Archive and checksum validation leave the digest unassessed for review.
+
+For a repository requiring review, request the exact native `.nupkg` URL to
+stage a cold package for review. The request is denied until an authorized
+operator approves that digest. A version is advertised only while its catalog
+and approved package receipts are current. Current cached denials, retired
+references and known failed or missing package coordinates are omitted from the
+projected index. The common cache and digest-decision APIs apply to proxy
+references.
+
+## Hosted publication and discovery
 
 The API key is authoritative for native push and unlist/relist, even when the client's source
 configuration also supplies Basic credentials. It is ignored on read and

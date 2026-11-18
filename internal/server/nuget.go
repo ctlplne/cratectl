@@ -57,8 +57,8 @@ func requestCredential(r *http.Request) (string, error) {
 }
 
 func (s *Server) nuget(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, p string) {
-	if repo.Mode != "hosted" {
-		fail(w, 405, "nuget_mode_unavailable", "Publish and read through a hosted NuGet repository. Proxy and group support remain unfinished.")
+	if repo.Mode != "hosted" && repo.Mode != "proxy" {
+		fail(w, 405, "nuget_mode_unavailable", "Use a hosted NuGet repository or a flat-container proxy.")
 		return
 	}
 	if strings.TrimSuffix(p, "/") == nugetPublishEndpoint {
@@ -104,6 +104,16 @@ func (s *Server) nuget(w http.ResponseWriter, r *http.Request, i store.Identity,
 			fail(w, 503, "public_url_required", "Configure the server's public HTTP(S) URL before using NuGet discovery.")
 			return
 		}
+		if repo.Mode == "proxy" {
+			if p != "index.json" {
+				respondErr(w, store.ErrNotFound)
+				return
+			}
+			s.nugetJSON(w, r, map[string]any{"version": "3.0.0", "resources": []map[string]string{
+				{"@id": root + "flat/", "@type": "PackageBaseAddress/3.0.0"},
+			}})
+			return
+		}
 		if p == "query" {
 			s.nugetSearch(w, r, i, repo, root)
 			return
@@ -135,7 +145,21 @@ func (s *Server) nuget(w http.ResponseWriter, r *http.Request, i store.Identity,
 		return
 	}
 	if len(parts) == 2 && parts[1] == "index.json" {
-		versions, e := s.DB.NuGetVersions(r.Context(), i, repo.Name, id, s.NativeVersionLimit, s.NativeMetadataBytes)
+		var versions []string
+		if repo.Mode == "proxy" {
+			resolved, err := s.resolveProxy(r.Context(), i, repo, store.NuGetProxyCatalogPath(id), forceRefresh(r))
+			if err != nil {
+				respondErr(w, err)
+				return
+			}
+			if len(resolved.admissions) != 1 {
+				respondErr(w, store.ErrBusy)
+				return
+			}
+			versions, e = s.DB.NuGetProxyVersions(r.Context(), i, repo.Name, id, resolved.artifact, resolved.admissions[0].Generation, s.NativeVersionLimit, s.NativeMetadataBytes)
+		} else {
+			versions, e = s.DB.NuGetVersions(r.Context(), i, repo.Name, id, s.NativeVersionLimit, s.NativeMetadataBytes)
+		}
 		if e != nil {
 			respondErr(w, e)
 			return
@@ -159,7 +183,7 @@ func (s *Server) nuget(w http.ResponseWriter, r *http.Request, i store.Identity,
 	ctx, cancel := context.WithTimeout(r.Context(), 120*time.Second)
 	defer cancel()
 	r = r.WithContext(ctx)
-	resolved, e := s.resolve(ctx, i, repo, store.NuGetPath(id, version), false)
+	resolved, e := s.resolve(ctx, i, repo, store.NuGetPath(id, version), forceRefresh(r))
 	if e != nil {
 		respondErr(w, e)
 		return

@@ -20,17 +20,18 @@ const MaxNuGetMetadataBytes = 4*nuget.MaxNuspecBytes + 32768
 // NuGetPackage binds the original manifest bytes to one immutable parent nupkg.
 // Validated denotes bounded archive inspection, not signature or scan approval.
 type NuGetPackage struct {
-	ID           string         `json:"id"`
-	IDKey        string         `json:"id_key"`
-	IDProfile    string         `json:"id_profile"`
-	RawVersion   string         `json:"raw_version"`
-	VersionKey   string         `json:"version_key"`
-	NuspecPath   string         `json:"nuspec_path"`
-	Nuspec       []byte         `json:"nuspec"`
-	NuspecSHA256 string         `json:"nuspec_sha256"`
-	Validated    bool           `json:"archive_validated"`
-	Listed       *bool          `json:"listed,omitempty"`
-	Catalog      *nuget.Catalog `json:"catalog,omitempty"`
+	ID              string         `json:"id"`
+	IDKey           string         `json:"id_key"`
+	IDProfile       string         `json:"id_profile"`
+	RawVersion      string         `json:"raw_version"`
+	VersionKey      string         `json:"version_key"`
+	NuspecPath      string         `json:"nuspec_path"`
+	Nuspec          []byte         `json:"nuspec"`
+	NuspecSHA256    string         `json:"nuspec_sha256"`
+	Validated       bool           `json:"archive_validated"`
+	Listed          *bool          `json:"listed,omitempty"`
+	Catalog         *nuget.Catalog `json:"catalog,omitempty"`
+	SourceAuthority string         `json:"source_authority,omitempty"`
 }
 
 // Existing immutable packages predate listing state and are listed by default.

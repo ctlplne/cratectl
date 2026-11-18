@@ -253,6 +253,22 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 		if e = notDeletedInTx(ctx, tx, lease.Repository, lease.Path); e != nil {
 			return e
 		}
+		if repo.Format == "nuget" && result.Failure == "" && (result.Status == 200 || result.Status == 304) {
+			if e = validateNuGetRetrieval(ctx, repo, lease, result); e != nil {
+				return e
+			}
+			if strings.HasPrefix(lease.Path, "nuget-packages/") {
+				var changed bool
+				e = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM cratectl.artifacts WHERE repository=$1 AND path=$2 AND source_revision=$3 AND digest<>$4)`,
+					lease.Repository, lease.Path, lease.SourceRevision, result.Object.Digest).Scan(&changed)
+				if e != nil {
+					return e
+				}
+				if changed {
+					result = RetrievalResult{Status: result.Status, Failure: "upstream_nuget_coordinate_changed"}
+				}
+			}
+		}
 		if result.Status == 304 && result.Failure == "" {
 			var bound bool
 			if e = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM cratectl.artifacts WHERE repository=$1 AND path=$2 AND source_revision=$3)`, lease.Repository, lease.Path, lease.SourceRevision).Scan(&bound); e != nil {

@@ -106,9 +106,10 @@ func (s *Server) resolve(ctx context.Context, i store.Identity, repo store.Repos
 }
 func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.Repository, p string, force bool) (resolvedArtifact, error) {
 	result := resolvedArtifact{source: repo}
-	admitGeneration := repo.Format == "oci" || repo.Format == "go" || repo.Format == "cargo"
+	nugetCatalog := repo.Format == "nuget" && strings.HasPrefix(p, "nuget-catalog/")
+	admitGeneration := repo.Format == "oci" || repo.Format == "go" || repo.Format == "cargo" || nugetCatalog
 	allowStale := func(entry store.Retrieval) bool {
-		return entry.StalePermitted() && (repo.Format != "cargo" || entry.SourceStale > 0)
+		return !nugetCatalog && entry.StalePermitted() && (repo.Format != "cargo" || entry.SourceStale > 0)
 	}
 	waits := 0
 	sourceRetries := 0
@@ -122,6 +123,9 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 		if e == nil && lease.State != "fetching" && lease.Fresh() && !force {
 			switch lease.State {
 			case "ready":
+				if nugetCatalog {
+					result.admissions = []store.NativeAdmission{{Repository: repo.Name, Path: p, Generation: lease.Generation}}
+				}
 				result.cache = "hit"
 				e = s.readProxyArtifact(ctx, i, repo, p, &result)
 				if errors.Is(e, store.ErrSourceChanged) && sourceRetries < 1 {
@@ -339,6 +343,9 @@ func (s *Server) proxyArtifact(ctx context.Context, i store.Identity, repo store
 	if repo.Format == "cargo" && strings.HasPrefix(p, "cargo-catalog/") {
 		return s.DB.NativeCatalogArtifact(ctx, i, repo.Name, strings.TrimPrefix(p, "cargo-catalog/"), "cargo", store.CargoCatalogMedia)
 	}
+	if repo.Format == "nuget" && strings.HasPrefix(p, "nuget-catalog/") {
+		return s.DB.NativeCatalogArtifact(ctx, i, repo.Name, strings.TrimPrefix(p, "nuget-catalog/"), "nuget", store.NuGetProxyCatalogMedia)
+	}
 	return s.DB.Artifact(ctx, i, repo.Name, p)
 }
 func cachePolicy(h http.Header, repo store.Repository, lease store.Retrieval, status int) (int, int, error) {
@@ -427,6 +434,16 @@ func (s *Server) fillProxyOnce(parent context.Context, i store.Identity, repo st
 	if config == nil {
 		return store.ErrConflict
 	}
+	remotePath := lease.Path
+	var nugetCoordinate store.NuGetProxyCoordinate
+	if repo.Format == "nuget" {
+		var err error
+		nugetCoordinate, err = store.ParseNuGetProxyCoordinate(lease.Path)
+		if err != nil {
+			return s.DB.CompleteRetrieval(ctx, i, lease, store.RetrievalResult{Failure: "upstream_metadata_invalid"})
+		}
+		remotePath = nugetUpstreamPath(nugetCoordinate)
+	}
 	credential, e := s.credential(i.Tenant, *config)
 	if e != nil {
 		return s.DB.CompleteRetrieval(ctx, i, lease, store.RetrievalResult{Failure: "upstream_credential_authority"})
@@ -439,13 +456,13 @@ func (s *Server) fillProxyOnce(parent context.Context, i store.Identity, repo st
 	defer endpoint.Close()
 	result := store.RetrievalResult{FreshSeconds: repo.Settings.Cache.NegativeSeconds}
 	validators := http.Header{}
-	if lease.ETag != "" {
+	if repo.Format != "nuget" && lease.ETag != "" {
 		validators.Set("If-None-Match", lease.ETag)
 	}
-	if lease.Modified != "" {
+	if repo.Format != "nuget" && lease.Modified != "" {
 		validators.Set("If-Modified-Since", lease.Modified)
 	}
-	response, e := endpoint.Get(ctx, lease.Path, validators)
+	response, e := endpoint.Get(ctx, remotePath, validators)
 	if e != nil {
 		result.Failure = "transient_upstream_failure"
 		if errors.Is(e, upstream.ErrDestination) || errors.Is(e, upstream.ErrRedirect) || errors.Is(e, upstream.ErrPath) {
@@ -474,6 +491,13 @@ func (s *Server) fillProxyOnce(parent context.Context, i store.Identity, repo st
 			result.ETag = response.Header.Get("ETag")
 			result.Modified = response.Header.Get("Last-Modified")
 			if response.StatusCode == 304 {
+				if repo.Format == "nuget" {
+					result.Failure = "upstream_revalidation_rejected"
+				}
+				break
+			}
+			if repo.Format == "nuget" {
+				s.materializeNuGetProxy(ctx, i, repo, nugetCoordinate, endpoint, remotePath, response, &result)
 				break
 			}
 			metadataRequest := repo.Format == "maven" && path.Base(lease.Path) == "maven-metadata.xml"
