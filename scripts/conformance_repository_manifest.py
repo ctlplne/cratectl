@@ -44,7 +44,8 @@ def sha(file):
 
 def evaluate(args):
     os.umask(0o077)
-    authority = 'https://127.0.0.1:38443' if args.cargo_toolchain or args.npm_search or args.python_search_client else BASE
+    authority = ('https://127.0.0.1:38443' if args.cargo_toolchain or args.npm_search or args.python_search_client
+                 or args.oci_catalog_cached else BASE)
     private = ROOT / '.private'
     if private.is_symlink() or private.stat().st_mode & 0o077:
         raise ValueError('use the existing owner-only .private directory')
