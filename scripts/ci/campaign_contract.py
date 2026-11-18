@@ -8,7 +8,7 @@ WORKFLOWS = {
     'go-export-portability.yml': 'portable', 'nuget-contract.yml': 'library',
     'browser-repair.yml': 'browser', 'go-checksum-client.yml': 'strict', 'windows-cli.yml': 'windows',
     'compose-evaluation.yml': 'compose', 'linux-install.yml': 'linux-install', 'offline-media.yml': 'offline-media',
-    'terraform-provider.yml': 'terraform-provider',
+    'terraform-provider.yml': 'terraform-provider', 'cargo.yml': 'cargo',
 }
 PLATFORMS = {'amd64': ('ubuntu-24.04', 'Linux', 'X64'),
              'arm64': ('ubuntu-24.04-arm', 'Linux', 'ARM64'),
@@ -18,8 +18,12 @@ VALIDATOR_FILES = ['scripts/ci/' + name + '_evidence.py' for name in
 LINUX_INSTALL_CONTRACT = {'.github/workflows/linux-install.yml', 'scripts/ci/linux_install_evidence.py'}
 OFFLINE_MEDIA_CONTRACT = {'.github/workflows/offline-media.yml', 'scripts/ci/offline_media_evidence.py'}
 TERRAFORM_PROVIDER_CONTRACT = {'.github/workflows/terraform-provider.yml', 'scripts/ci/terraform_provider_evidence.py'}
-OPTIONAL_CONTRACTS = (LINUX_INSTALL_CONTRACT, OFFLINE_MEDIA_CONTRACT, TERRAFORM_PROVIDER_CONTRACT)
-COMPATIBLE_FILES = ['.github/workflows/' + name for name in WORKFLOWS if name not in ('linux-install.yml', 'offline-media.yml', 'terraform-provider.yml')] + VALIDATOR_FILES + ['scripts/ci/evidence_summary.py', 'scripts/conformance_go.py']
+CARGO_CONTRACT = {'.github/workflows/cargo.yml', 'scripts/ci/cargo_evidence.py', 'scripts/ci/bootstrap_cargo.py'}
+OPTIONAL_CONTRACTS = (LINUX_INSTALL_CONTRACT, OFFLINE_MEDIA_CONTRACT, TERRAFORM_PROVIDER_CONTRACT, CARGO_CONTRACT)
+OPTIONAL_FILES = set.union(*OPTIONAL_CONTRACTS)
+COMPATIBLE_FILES = ['.github/workflows/' + name for name in WORKFLOWS
+                    if '.github/workflows/' + name not in OPTIONAL_FILES
+                    ] + VALIDATOR_FILES + ['scripts/ci/evidence_summary.py', 'scripts/conformance_go.py']
 
 
 def jobs(family, schema=17, requirement_portability=False):
@@ -94,6 +98,11 @@ def jobs(family, schema=17, requirement_portability=False):
                 ['Prepare pinned stock infrastructure clients', 'Build and test the isolated provider module',
                  'Replay stock saved plans, imports and drift with real PostgreSQL'],
                 'ci-summary-terraform-provider-' + arch, 'terraform-provider')
+        elif family == 'cargo':
+            add('Stock Cargo and real PostgreSQL (' + arch + ')', arch,
+                ['Prepare the digest-pinned stock Cargo SDK', 'Build the clean cratectl candidate',
+                 'Replay authenticated Cargo publish and fetch against real PostgreSQL'],
+                'ci-summary-cargo-' + arch, 'cargo')
     if family == 'portable':
         add('Real PostgreSQL signed export source (amd64)', 'amd64',
             ['Prepare actual signed source fixture and independent trust-channel digests', 'Transfer reviewed synthetic fixture only',

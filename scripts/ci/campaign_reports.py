@@ -21,6 +21,7 @@ from compose_evidence import CHECKS as COMPOSE_CHECKS, safe_compose_contract
 from linux_install_evidence import CHECKS as LINUX_INSTALL_CHECKS, validate as validate_linux_install
 from offline_media_evidence import CHECKS as OFFLINE_CHECKS, PHASES as OFFLINE_PHASES, validate as validate_offline_media
 from terraform_provider_evidence import BASE_CHECKS as IAC_BASE, CLIENT_CHECKS as IAC_CHECKS, CLIENTS as IAC_CLIENTS, validate as validate_provider
+from cargo_evidence import CHECKS as CARGO_CHECKS, validate as validate_cargo
 
 CONTRACTS = {'maven_cache_contract': safe_maven_cache_contract, 'gradle_contract': safe_gradle_contract,
              'ivy_contract': safe_ivy_contract, 'sbt_contract': safe_sbt_contract,
@@ -105,6 +106,7 @@ def validate_custom(report, candidate, run_id, spec, source):
         'linux-install': (validate_linux_install, len(LINUX_INSTALL_CHECKS)),
         'offline-media': (validate_offline_media, len(OFFLINE_CHECKS) + sum(map(len, OFFLINE_PHASES.values()))),
         'terraform-provider': (validate_provider, len(IAC_BASE) + len(IAC_CLIENTS) * len(IAC_CHECKS)),
+        'cargo': (validate_cargo, len(IAC_BASE) - 1 + len(CARGO_CHECKS)),
     }
     if spec['kind'] in source_contracts:
         kind = spec['kind'].replace('-', '_')

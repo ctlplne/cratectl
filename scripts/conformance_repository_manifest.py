@@ -20,6 +20,7 @@ import urllib.request
 
 from bounded_client import run_owned_client
 from cargo_hosted_fixture import evaluate_cargo
+from ci.cargo_evidence import PINS as CARGO_PINS, SOURCE_PATHS as CARGO_SOURCE_PATHS, validate as validate_cargo
 from ci.terraform_provider_evidence import ARCHIVE_PINS, SOURCE_PATHS, postgres_version, validate
 from qualification_contract import candidate_binary_directory
 from terraform_repository_fixture import evaluate_tools
@@ -395,15 +396,22 @@ def evaluate(args):
         print(f"PASS: {len(report['cargo']['checks'])} scoped stock Cargo checks")
     if args.ci_architecture:
         record_ci(report, args.ci_architecture)
+    if args.cargo_ci_architecture:
+        record_cargo_ci(report, args.cargo_ci_architecture)
 
 
-def record_ci(report, architecture):
+def hosted_runner(report, architecture):
     runner, host = {'amd64': ('X64', 'x86_64'), 'arm64': ('ARM64', 'aarch64')}[architecture]
     if (platform.system() != 'Linux' or platform.machine() != host or os.environ.get('GITHUB_ACTIONS') != 'true'
             or os.environ.get('GITHUB_REPOSITORY') != 'ctlplne/cratectl' or os.environ.get('GITHUB_REF') != 'refs/heads/main'
             or os.environ.get('RUNNER_ARCH') != runner or os.environ.get('GITHUB_RUN_ATTEMPT') != '1'
             or os.environ.get('GITHUB_SHA') != report['candidate']):
         raise ValueError('exact first native hosted source required')
+    return runner
+
+
+def record_ci(report, architecture):
+    runner = hosted_runner(report, architecture)
     projection = {key: report[key] for key in ('candidate', 'status', 'checks', 'binary_sha256',
                                                 'archive_sha256', 'postgres', 'npm', 'goal_complete', 'broad_readiness')}
     projection.update(schema=1, profile='cratectl-native-terraform-provider-v1', runner_os='Linux', runner_arch=runner,
@@ -412,6 +420,20 @@ def record_ci(report, architecture):
                       source_sha256={name: sha(ROOT / name) for name in SOURCE_PATHS})
     validate(projection)
     with (ROOT / '.cache/ci-terraform-provider.json').open('x') as stream:
+        json.dump(projection, stream, indent=2)
+        stream.write('\n')
+
+
+def record_cargo_ci(report, architecture):
+    runner = hosted_runner(report, architecture)
+    projection = {key: report[key] for key in ('candidate', 'status', 'binary_sha256', 'postgres',
+                                                'goal_complete', 'broad_readiness')}
+    projection.update(report['cargo'], schema=1, profile='cratectl-native-cargo-v1', runner_os='Linux',
+                      runner_arch=runner, run_id=os.environ.get('GITHUB_RUN_ID'), source_dirty=False,
+                      source_sha256={name: sha(ROOT / name) for name in CARGO_SOURCE_PATHS},
+                      sdk_archives_sha256=CARGO_PINS[architecture], base_checks=report['checks'])
+    validate_cargo(projection)
+    with (ROOT / '.cache/ci-cargo.json').open('x') as stream:
         json.dump(projection, stream, indent=2)
         stream.write('\n')
 
@@ -428,6 +450,7 @@ if __name__ == '__main__':
     parser.add_argument('--mcp-client', type=Path)
     parser.add_argument('--promtool', type=Path)
     parser.add_argument('--cargo-toolchain', type=Path)
+    parser.add_argument('--cargo-ci-architecture', choices=('amd64', 'arm64'))
     options = parser.parse_args()
     if len([value for value in (options.provider_binary, options.terraform, options.tofu) if value]) not in (0, 3):
         parser.error('provide the local provider and both stock clients together')
@@ -439,4 +462,6 @@ if __name__ == '__main__':
         parser.error('the native Prometheus profile runs separately from hosted provider qualification')
     if options.ci_architecture and options.cargo_toolchain:
         parser.error('the native Cargo profile runs separately from hosted provider qualification')
+    if options.cargo_ci_architecture and (not options.cargo_toolchain or options.promtool or options.mcp_binary or options.provider_binary):
+        parser.error('hosted Cargo evidence requires the stock toolchain in the isolated Cargo profile')
     evaluate(options)

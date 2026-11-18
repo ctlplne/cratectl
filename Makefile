@@ -42,6 +42,7 @@ lint:
 	python3 scripts/ci/test_campaign_reports.py
 	python3 scripts/ci/test_windows_cli_evidence.py
 	python3 scripts/ci/test_terraform_provider_evidence.py
+	python3 scripts/ci/test_cargo_evidence.py
 	python3 scripts/ci/test_accept_campaign.py
 	python3 scripts/ci/test_prepare_owned_ports.py
 	python3 scripts/ci/test_maven_install.py

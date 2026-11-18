@@ -30,8 +30,8 @@ def validate(name, url, digest, maximum, algorithm='sha256'):
         raise ValueError('Tool archive must have one bounded filename')
     if algorithm not in ('sha256', 'sha512') or not isinstance(digest, str) or not re.fullmatch('[0-9a-f]{'+str({'sha256':64,'sha512':128}.get(algorithm,0))+'}', digest):
         raise ValueError('Tool archive requires its reviewed exact digest algorithm and pin')
-    if type(maximum) is not int or not 1024 <= maximum <= 64 << 20 or maximum % 1024:
-        raise ValueError('Tool archive budget must be whole KiB within 64MiB')
+    if type(maximum) is not int or not 1024 <= maximum <= 128 << 20 or maximum % 1024:
+        raise ValueError('Tool archive budget must be whole KiB within 128MiB')
     if not isinstance(url, str) or len(url) > 2048 or any(ord(c) < 33 or ord(c) > 126 for c in url) or '?' in url or '#' in url:
         raise ValueError('Tool archive URL is outside the reviewed sources')
     parsed = urlsplit(url)
@@ -43,8 +43,14 @@ def validate(name, url, digest, maximum, algorithm='sha256'):
     terraform = parsed.hostname == 'releases.hashicorp.com' and re.fullmatch(r'/terraform/1\.17\.2/terraform_1\.17\.2_linux_(amd64|arm64)\.zip', parsed.path)
     opentofu = parsed.hostname == 'github.com' and re.fullmatch(r'/opentofu/opentofu/releases/download/v1\.13\.9/tofu_1\.13\.9_linux_(amd64|arm64)\.zip', parsed.path)
     postgres = parsed.hostname == 'ftp.postgresql.org' and re.fullmatch(r'/pub/source/v(16\.(?:15|16))/postgresql-\1\.tar\.bz2', parsed.path)
+    rust = parsed.hostname == 'static.rust-lang.org' and re.fullmatch(
+        r'/dist/2026-11-12/(cargo|rustc|rust-std)-1\.100\.0-(?:x86_64-unknown-linux-gnu|aarch64-unknown-linux-gnu|aarch64-apple-darwin)\.tar\.xz',
+        parsed.path)
     apache = (name in APACHE_ARCHIVES and ((parsed.hostname == 'downloads.apache.org' and parsed.path == APACHE_ARCHIVES[name]) or (parsed.hostname == 'archive.apache.org' and parsed.path == '/dist'+APACHE_ARCHIVES[name])))
-    if not ((algorithm == 'sha256' and (oras or helm or gitleaks or terraform or opentofu or postgres)) or (algorithm == 'sha512' and apache)) or (oras or gitleaks) and maximum > 32 << 20:
+    allowed = (algorithm == 'sha256' and (oras or helm or gitleaks or terraform or opentofu or postgres or rust)
+               or algorithm == 'sha512' and apache)
+    cap = 128 if rust and rust[1] == 'rustc' else 32 if oras or gitleaks else 64
+    if not allowed or maximum > cap << 20:
         raise ValueError('Tool archive source or byte budget is not approved')
 
 

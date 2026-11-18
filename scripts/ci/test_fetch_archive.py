@@ -96,6 +96,21 @@ else:
             self.assertNotEqual(self.run_fetch(archive=archive, url=f'{base}v{folder}/{archive}').returncode, 0)
         self.assertEqual(len(self.requests()), 2)
 
+    def test_only_reviewed_rustc_may_use_the_extended_archive_budget(self):
+        root = 'https://static.rust-lang.org/dist/2026-11-12/'
+        filename = 'rustc-1.100.0-x86_64-unknown-linux-gnu.tar.xz'
+        cargo = filename.replace('rustc', 'cargo')
+        for name, url in (
+            ('tool.tar.xz', root+'tool.tar.xz'),
+            (cargo, root+cargo),
+            (filename, root.replace('2026-11-12', '2026-11-13')+filename),
+        ):
+            result = self.run_fetch(archive=name, url=url, maximum=str(128 << 20))
+            self.assertNotEqual(result.returncode, 0)
+        result = self.run_fetch(archive=filename, url=root+filename, maximum=str(128 << 20))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(len(self.requests()), 1)
+
     def test_approved_sources_are_bounded_pinned_and_published_without_executing_payload(self):
         for archive,url in [(ORAS,ORAS_URL),('helm-v4.3.1-linux-arm64.tar.gz','https://get.helm.sh/helm-v4.3.1-linux-arm64.tar.gz'),('gitleaks_8.30.1_linux_x64.tar.gz','https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz')]:
             result=self.run_fetch(archive=archive,url=url)

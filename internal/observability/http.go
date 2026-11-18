@@ -17,7 +17,7 @@ import (
 
 var tokenPattern = regexp.MustCompile(`^[A-Za-z0-9_-]{32,256}$`)
 
-var protocols = [...]string{"management", "files", "npm", "pypi", "oci", "nuget", "go", "health", "console", "other"}
+var protocols = [...]string{"management", "files", "npm", "pypi", "oci", "nuget", "go", "health", "console", "other", "cargo"}
 var outcomes = [...]string{"success", "redirect", "auth_denied", "client_error", "server_error", "aborted"}
 var upperBounds = [...]time.Duration{
 	5 * time.Millisecond, 10 * time.Millisecond, 25 * time.Millisecond, 50 * time.Millisecond,
@@ -75,6 +75,8 @@ func protocol(path string) int {
 		return 7
 	case "console", "":
 		return 8
+	case "cargo":
+		return 10
 	default:
 		return 9
 	}
