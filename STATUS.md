@@ -253,6 +253,13 @@ in an owner-only directory. Its first isolated test stopped on administratively
 down kernel tunnel devices. The corrected network check accepted the isolated
 target and refused the test bridge with an active Ethernet device.
 [Original isolation check](evidence/2026-11-18/linux-install-36d9db1-network-first-failure.json)
+The exact `08436af` ARM64 Linux replay passed all 12 checks in a nonroot
+container with networking disabled. Both installed binaries ran, their digests
+matched the archive, and the installer refused changed checksums, the other
+architecture and unsafe destinations. The original hosted x64 and ARM64 jobs
+are queued. Full disconnected stack installation remains open.
+[Local ARM64 result](evidence/2026-11-18/linux-install-08436af-arm64-local.json)
+[Hosted Linux installation](https://github.com/ctlplne/cratectl/actions/runs/44326766888)
 
 The packaged Helm chart passed 13 deployment checks at `f245757` on an
 isolated ARM64 Kubernetes 1.35 cluster. Restricted Pod Security admitted the

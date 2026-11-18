@@ -1711,16 +1711,18 @@
     {
       "id": "DEFECT.0160",
       "summary": "The disconnected Linux installation fixture treats administratively down kernel tunnels as active links",
-      "state": "Original ARM64 fixture refusal retained. A scope-matched Docker comparison passed with only loopback active and refused a separate internal bridge with active Ethernet.",
+      "state": "Original ARM64 fixture refusal retained. The repaired control passes in isolation and rejects a separate bridge. The exact 08436af ARM64 Docker installation completed all 12 checks.",
       "first_failure": "evidence/2026-11-18/linux-install-36d9db1-network-first-failure.json",
       "repair": "Require only the loopback interface to be administratively up and require all IPv4 and IPv6 route entries to use that interface.",
+      "replay": "evidence/2026-11-18/linux-install-08436af-arm64-local.json",
       "limits": "The original fixture stops before running the installer. Separate native installation replays are required."
     },
     {
       "id": "DEFECT.0161",
       "summary": "The isolated test's bounded subprocess driver tries to stage empty standard input on the read-only archive mount",
-      "state": "Original exact ARM64 fixture error retained. With a private writable working directory, the development test crossed the mount boundary and completed all 12 checks against the original ARM64 archives.",
+      "state": "Original exact ARM64 fixture error retained. The corrected exact 08436af ARM64 Docker installation completed all 12 checks with the input mount kept read-only.",
       "first_failure": "evidence/2026-11-18/linux-install-1bba4eb-read-only-fixture.json",
+      "replay": "evidence/2026-11-18/linux-install-08436af-arm64-local.json",
       "repair": "Run the installer and binaries from the private temporary directory, keeping the archive inputs mounted read-only. Check the actual npm-config and migrate help text and the documented flag parser exit status."
     }
   ]

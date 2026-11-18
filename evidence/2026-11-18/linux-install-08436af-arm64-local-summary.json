@@ -1,0 +1,44 @@
+{
+  "runner_arch": "ARM64",
+  "checks": [
+    "nonroot-native-linux",
+    "only-loopback",
+    "empty-target",
+    "trusted-install",
+    "manifest-and-modes",
+    "installed-digests",
+    "cli-execution",
+    "server-execution",
+    "bad-digest-cleanup",
+    "other-platform-cleanup",
+    "existing-candidate-preserved",
+    "unsafe-target-refused"
+  ],
+  "binary_sha256": {
+    "cratectl": "5dca171ba8de1ca4de4a00648ad54ccc375cd1faf92434512843eb9337325c5a",
+    "cratectld": "b49f9f1c8d93b4bdcb0670a360dd8837eff84f2f85316d53036b731cc975cbd1"
+  },
+  "schema": 1,
+  "profile": "cratectl-native-linux-install-v1",
+  "candidate": "08436aff934df4395b274d909bfa44c4f0d64b3d",
+  "run_id": null,
+  "runner_os": "Linux",
+  "status": "passed",
+  "source_dirty": false,
+  "python_image": "docker.io/library/python:3.14.10-slim-bookworm@sha256:3fe1a0b6c2d6b2ebb572906cdabeca75aeb558c0c17db5ffefbcf8094871c32b",
+  "archive_sha256": "0aad311cc57a2bdf2a2d5c19d81398121037e15a78cfa9e225c1f9de8a95ad9b",
+  "source_sha256": {
+    "scripts/ci/qualify_linux_install.py": "a1d30aab25028fe7a2f648394888cbc06d8234df5a207b074f1043aafe85b08f",
+    "scripts/ci/linux_install_evidence.py": "02d8f071e536ac4123b03225aaa779a77a642e1b007d5c495a29afbefa64c226",
+    "scripts/install_linux_candidate.py": "e842079260344fe1716a6554a41b15bde1e9d5baa2d1f3fd200d022d6dc92d82",
+    "scripts/verify_linux_candidate.py": "546e7f27f9a0b516030ec2953ff2dc952f5d3972510d29c9b1f2794cf45ab29b",
+    "scripts/package_linux.py": "eec3c6b3aa3e8b363eff31904a05e0167b034fe5e521b008b905b235158ad40f",
+    "scripts/bounded_client.py": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098",
+    ".github/workflows/linux-install.yml": "d1f1aeae96e2796fed52cec8ae5b09349b24fbc6c01af0dfd7b7d9ac1dcdf211",
+    "Makefile": "d75005b5f1e9d9568ff82c151dd6a94807b7f8dfbb3fa14f8f9093457d392a7e",
+    "go.mod": "241101cea898478bbd0206b23e305695d5de2cb780747120d172d96e1e4eb99e",
+    "go.sum": "d0d1ecad19532ff247235eb62f99780093ead4679c958d9eb83d6dcc8d5b5fb1"
+  },
+  "goal_complete": false,
+  "broad_readiness": false
+}
