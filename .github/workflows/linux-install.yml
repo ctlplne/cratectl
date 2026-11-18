@@ -1,0 +1,67 @@
+name: Native Linux archive installation
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/linux-install.yml'
+      - 'scripts/ci/linux_install_evidence.py'
+      - 'scripts/ci/qualify_linux_install.py'
+      - 'scripts/install_linux_candidate.py'
+      - 'scripts/package_linux.py'
+      - 'scripts/verify_linux_candidate.py'
+      - 'scripts/bounded_client.py'
+      - 'go.mod'
+      - 'go.sum'
+      - 'Makefile'
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    if: github.ref == 'refs/heads/main' && github.repository == 'ctlplne/cratectl'
+    name: Network-isolated Linux binary installation (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 25
+    concurrency:
+      group: cratectl-linux-install-${{ github.ref }}-${{ matrix.arch }}-${{ github.sha }}
+      cancel-in-progress: false
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    env:
+      GOENV: 'off'
+      GOTOOLCHAIN: local
+      GOMODCACHE: ${{ github.workspace }}/.cache/go-mod
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - name: Prepare reviewed inputs before the isolated installation
+        run: |
+          go mod download
+          docker pull --platform 'linux/${{ matrix.arch }}' docker.io/library/python:3.14.10-slim-bookworm@sha256:3fe1a0b6c2d6b2ebb572906cdabeca75aeb558c0c17db5ffefbcf8094871c32b
+      - name: Verify and install both executables in a network-isolated target
+        run: python3 scripts/ci/qualify_linux_install.py '${{ matrix.arch }}'
+      - uses: actions/upload-artifact@v7
+        if: success()
+        with:
+          name: ci-summary-linux-install-${{ matrix.arch }}
+          path: .cache/ci-linux-install.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14

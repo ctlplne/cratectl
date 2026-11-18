@@ -3,6 +3,7 @@
 """Check a Linux candidate archive against a separately trusted SHA-256."""
 
 import argparse
+from contextlib import nullcontext
 import gzip
 import hashlib
 import json
@@ -84,21 +85,25 @@ def padding(stream, size):
     require(stream.read(count) == bytes(count), 'archive member has invalid padding')
 
 
-def elf_digest(stream, size, machine):
+def elf_digest(stream, size, machine, output=None):
     header = stream.read(64)
     require(len(header) == 64 and header[:7] == b'\x7fELF\x02\x01\x01' and struct.unpack_from('<H', header, 18)[0] == machine,
             'executable ELF class or architecture differs')
     digest = hashlib.sha256(header)
+    if output is not None:
+        output.write(header)
     remaining = size - len(header)
     while remaining:
         block = stream.read(min(remaining, 128 << 10))
         require(block, 'executable member is truncated')
         remaining -= len(block)
         digest.update(block)
+        if output is not None:
+            output.write(block)
     return digest.hexdigest()
 
 
-def verify(path, expected):
+def verify(path, expected, *, install_for=None, staging=None):
     require(isinstance(expected, str) and SHA256.fullmatch(expected), 'a separately trusted lowercase SHA-256 is required')
     flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
     with (os.fdopen(os.open(path, flags), 'rb') as source, tempfile.TemporaryFile() as snapshot,
@@ -109,17 +114,33 @@ def verify(path, expected):
         with gzip.GzipFile(fileobj=snapshot, mode='rb') as zipped:
             copy_bounded(zipped, unpacked, MAX_ARCHIVE)
         manifest_entry = entry(unpacked, 'manifest.json', 0o644, MAX_MANIFEST)
-        manifest = manifest_from(unpacked.read(manifest_entry.size))
+        manifest_bytes = unpacked.read(manifest_entry.size)
+        manifest = manifest_from(manifest_bytes)
         padding(unpacked, manifest_entry.size)
+        if install_for is not None:
+            require(manifest['platform'] == install_for, 'archive platform differs from this Linux target')
         for name in BINARIES:
             ref = manifest['binaries'][name]
             item = entry(unpacked, name, 0o755, MAX_BINARY)
-            require(item.size == ref['bytes'] and elf_digest(unpacked, item.size, MACHINES[manifest['platform']]) == ref['sha256'],
-                    'archive executable bytes differ: ' + name)
+            target = (staging / name).open('xb') if staging is not None else nullcontext()
+            with target as binary:
+                require(item.size == ref['bytes']
+                        and elf_digest(unpacked, item.size, MACHINES[manifest['platform']], binary) == ref['sha256'],
+                        'archive executable bytes differ: ' + name)
+                if binary is not None:
+                    binary.flush()
+                    os.fchmod(binary.fileno(), 0o755)
+                    os.fsync(binary.fileno())
             padding(unpacked, item.size)
         terminator = 2 * tarfile.BLOCKSIZE
         trailer = terminator + (-(unpacked.tell() + terminator) % tarfile.RECORDSIZE)
         require(unpacked.read(trailer) == bytes(trailer) and not unpacked.read(1), 'archive terminator or trailing members differ')
+        if staging is not None:
+            with (staging / 'manifest.json').open('xb') as metadata:
+                metadata.write(manifest_bytes)
+                metadata.flush()
+                os.fchmod(metadata.fileno(), 0o644)
+                os.fsync(metadata.fileno())
     return manifest
 
 

@@ -9,9 +9,10 @@ from pathlib import Path
 import re
 import sys
 
-from campaign_contract import COMPATIBLE_FILES, WORKFLOWS, jobs as job_contracts
+from campaign_contract import COMPATIBLE_FILES, LINUX_INSTALL_CONTRACT, WORKFLOWS, jobs as job_contracts
 from campaign_reports import validate_custom, validate_summary
 from compose_evidence import CHECKS as COMPOSE_CHECKS
+from linux_install_evidence import CHECKS as LINUX_INSTALL_CHECKS
 from campaign_transport import (EvidenceError, GitHubEvidenceClient, LOG_BYTES,
                                 REPOSITORY, artifact_json, require, strict_json)
 
@@ -86,7 +87,9 @@ class Source:
         require(len(targets) == 1 and int(targets[0]) in (17, 18), 'unsupported_schema_target')
         self.schema = int(targets[0])
         self.compatibility = []
-        for name in COMPATIBLE_FILES:
+        linux_install_files = LINUX_INSTALL_CONTRACT & self.paths
+        require(not linux_install_files or linux_install_files == LINUX_INSTALL_CONTRACT, 'incomplete_linux_install_contract')
+        for name in [*COMPATIBLE_FILES, *sorted(linux_install_files)]:
             current = (ROOT / name).read_bytes()
             self.compatibility.append(compatible_contract(name, self(name), current, self.schema))
         self.baselines = strict_json(self('docs/qualification/upgrade-baselines.json'))['baselines']
@@ -165,6 +168,9 @@ def check_log(raw, spec, source):
                 'windows_native_inventory')
     if kind == 'compose':
         require(text.count(f'PASS: {len(COMPOSE_CHECKS)} scoped Compose checks') == 1, 'compose_native_inventory')
+    if kind == 'linux-install':
+        require(text.count(f'PASS: {len(LINUX_INSTALL_CHECKS)} scoped native Linux installation checks') == 1,
+                'linux_install_native_inventory')
     if kind in ('native', 'go'):
         pattern = r'\bok\s+ctlplne.dev/cratectl/internal/(?:server|store' + ('|conformance' if kind == 'native' else '') + r')\s'
         require(len(re.findall(pattern, text)) == (6 if kind == 'native' else 4), 'native_package_success_inventory')
@@ -294,9 +300,10 @@ def accept(client, source, expected_ids):
                 require(artifact_name in by_artifact, 'required_artifact_missing')
                 used.add(artifact_name)
                 member = {'library': 'nuget-version-summary.json', 'strict': 'ci-go-checksum-client-summary.json',
-                          'windows': 'ci-windows-cli-summary.json', 'compose': 'ci-compose-evaluation.json'}.get(spec['kind'], 'ci-evidence-summary.json')
+                          'windows': 'ci-windows-cli-summary.json', 'compose': 'ci-compose-evaluation.json',
+                          'linux-install': 'ci-linux-install.json'}.get(spec['kind'], 'ci-evidence-summary.json')
                 report, reference = safe_artifact(client, by_artifact[artifact_name], source.candidate, run_id, member)
-                if spec['kind'] in ('library', 'strict', 'windows', 'compose'):
+                if spec['kind'] in ('library', 'strict', 'windows', 'compose', 'linux-install'):
                     counts = validate_custom(report, source.candidate, run_id, spec, source)
                 else:
                     counts, contract = validate_summary(report, source.candidate, run_id, spec, source.baselines, source)

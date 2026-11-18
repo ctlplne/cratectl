@@ -43,6 +43,25 @@ The verifier checks the compressed bytes first. It then confirms the manifest,
 member names, normalized metadata, both ELF architectures and executable
 digests without extracting or running either program.
 
+To install on Linux x64 or ARM64, carry the archive and the trusted checkout's
+`scripts/install_linux_candidate.py`, `scripts/verify_linux_candidate.py` and
+`scripts/package_linux.py` to the target. The installer needs Python 3.10 or
+newer and the normal Linux `/proc` filesystem. Create a private, existing
+directory as the installing user and pass the independently authenticated
+digest.
+
+```sh
+mkdir -m 0700 /path/to/installations
+python3 scripts/install_linux_candidate.py /path/to/cratectl-linux-arm64.tar.gz \
+  --directory /path/to/installations --sha256 "$EXPECTED_SHA256"
+```
+
+The installer checks the compressed bytes, platform and executable digests.
+It stages and syncs both executables and their original manifest before
+publishing a new directory named for the exact commit and architecture.
+It refuses to replace an existing installation. The installation reads only
+local inputs and makes no network calls.
+
 To assemble a single architecture, pass `--architecture amd64` or
 `--architecture arm64` to `scripts/package_linux.py` with Python 3.10 or newer.
 The package build disables Go module proxy access and expects the modules already
@@ -50,8 +69,8 @@ in `.cache/go-mod`.
 
 These bundles serve local engineering. Owner-approved license terms and complete
 distribution notices are required before shipping. Release signing authority,
-software bills of materials, native installation from the packages and
-network-isolated installation of the full stack remain separate qualification work.
+software bills of materials and network-isolated installation of the full
+stack remain separate qualification work.
 [Licensing record](../licensing.md)
 
 Two builds of `b910da7` produced byte-identical Linux x64 and ARM64 archives.

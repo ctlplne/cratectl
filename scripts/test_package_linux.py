@@ -72,6 +72,20 @@ class LinuxCandidateTests(unittest.TestCase):
                         'binaries': {name: {'bytes': len(header), 'sha256': digest(root / name)} for name in BINARIES}}
             archive_candidate(output, root, manifest)
             self.assertEqual(verify(output, digest(output)), manifest)
+            staged = root / 'staged'
+            staged.mkdir()
+            with self.assertRaisesRegex(ValueError, 'archive platform differs'):
+                verify(output, digest(output), install_for='linux/amd64', staging=staged)
+            self.assertEqual(list(staged.iterdir()), [])
+            with self.assertRaisesRegex(ValueError, 'compressed archive SHA-256 differs'):
+                verify(output, 'c' * 64, install_for='linux/arm64', staging=staged)
+            self.assertEqual(list(staged.iterdir()), [])
+            self.assertEqual(verify(output, digest(output), install_for='linux/arm64', staging=staged), manifest)
+            self.assertEqual({p.name for p in staged.iterdir()}, {'manifest.json', *BINARIES})
+            self.assertEqual(json.loads((staged / 'manifest.json').read_text()), manifest)
+            for name in BINARIES:
+                self.assertEqual((staged / name).read_bytes(), header)
+                self.assertEqual((staged / name).stat().st_mode & 0o777, 0o755)
             with self.assertRaisesRegex(ValueError, 'compressed archive SHA-256 differs'):
                 verify(output, 'c' * 64)
             bad = root / 'different-machine.tar.gz'

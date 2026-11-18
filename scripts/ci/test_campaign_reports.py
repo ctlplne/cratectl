@@ -11,6 +11,7 @@ from campaign_contract import WORKFLOWS, jobs
 from campaign_reports import validate_custom, validate_summary
 from campaign_transport import EvidenceError
 from compose_evidence import CHECKS as COMPOSE_CHECKS, SOURCE_PATHS as COMPOSE_FILES
+from linux_install_evidence import CHECKS as INSTALL_CHECKS, IMAGE as INSTALL_IMAGE, SOURCE_PATHS as INSTALL_FILES
 from test_go_common_export_portability_evidence import complete as complete_common_contract
 from test_go_requirement_export_portability_evidence import complete as complete_requirement_contract
 
@@ -19,6 +20,27 @@ SPECS = {spec['artifact']: spec for family in WORKFLOWS.values() for spec in job
 
 
 class CampaignReports(unittest.TestCase):
+    def test_linux_install_requires_exact_safe_native_result(self):
+        source = lambda path: path.encode()
+        candidate = 'a' * 40
+        report = {'schema': 1, 'profile': 'cratectl-native-linux-install-v1', 'candidate': candidate,
+                  'run_id': '12', 'runner_os': 'Linux', 'runner_arch': 'ARM64', 'status': 'passed',
+                  'source_dirty': False, 'checks': list(INSTALL_CHECKS), 'python_image': INSTALL_IMAGE,
+                  'archive_sha256': '0' * 64, 'binary_sha256': {'cratectl': '1' * 64, 'cratectld': '2' * 64},
+                  'source_sha256': {path: hashlib.sha256(source(path)).hexdigest() for path in INSTALL_FILES},
+                  'goal_complete': False, 'broad_readiness': False}
+        spec = SPECS['ci-summary-linux-install-arm64']
+        self.assertEqual(validate_custom(report, candidate, 12, spec, source), {'checks': 12, 'records': 1})
+        for altered in ({'checks': report['checks'][:-1]}, {'runner_arch': 'X64'}, {'run_id': None},
+                        {'python_image': INSTALL_IMAGE.split('@')[0]}, {'archive_sha256': 'x' * 64},
+                        {'broad_readiness': True}, {'private_path': '/private/fixture'}):
+            with self.subTest(altered=altered), self.assertRaises(EvidenceError):
+                validate_custom({**report, **altered}, candidate, 12, spec, source)
+        altered = copy.deepcopy(report)
+        altered['source_sha256']['scripts/install_linux_candidate.py'] = '9' * 64
+        with self.assertRaisesRegex(EvidenceError, 'linux_install_source_identity'):
+            validate_custom(altered, candidate, 12, spec, source)
+
     def test_compose_requires_complete_private_free_exact_source_report(self):
         source = lambda path: path.encode()
         candidate = 'a' * 40
