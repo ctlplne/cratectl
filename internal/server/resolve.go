@@ -249,7 +249,7 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 			}
 			return result, e
 		case "negative":
-			if repo.Format == "go" {
+			if repo.Format == "go" || repo.Format == "cargo" {
 				result.admissions = []store.NativeAdmission{{Repository: repo.Name, Path: p, Generation: refreshed.Generation}}
 			}
 			return result, s.proxyAbsence(ctx, i, repo, p, result.admissions...)
@@ -581,9 +581,9 @@ func (s *Server) guardResolved(ctx context.Context, i store.Identity, a resolved
 	if a.cargo != nil {
 		if a.cargo.proxy != nil {
 			return s.DB.CargoProxyDownload(ctx, i, a.source.Name, a.cargo.name, a.cargo.version,
-				a.source.SourceRevision, *a.cargo.proxy, a.admissions...)
+				a.source.SourceRevision, *a.cargo.proxy, a.cargo.group, a.admissions...)
 		}
-		current, source, err := s.DB.CargoDownload(ctx, i, a.cargo.repository, a.cargo.name, a.cargo.version)
+		current, source, err := s.DB.CargoDownload(ctx, i, a.cargo.repository, a.cargo.name, a.cargo.version, a.cargo.group)
 		if err != nil {
 			return current, err
 		}

@@ -94,16 +94,23 @@ WHERE tenant=$1 AND repository=$2 AND starts_with(path,$3) ORDER BY path LIMIT 1
 
 // CargoIndex builds one complete newline-delimited index file in a current
 // repository-grant and policy snapshot. Oversized results fail as a unit.
-func (s *Store) CargoIndex(ctx context.Context, i Identity, repo, name string, limit int, maxBytes int64) ([]byte, error) {
+func (s *Store) CargoIndex(ctx context.Context, i Identity, repo, name string, limit int, maxBytes int64, routes ...*CargoGroupRoute) ([]byte, error) {
 	prefix, err := cargo.ArtifactPrefix(name)
 	if err != nil || limit < 1 || limit > 10000 || maxBytes < 1 || maxBytes > 32<<20 {
 		return nil, ErrMetadataLimit
 	}
 	var out []byte
+	var route *CargoGroupRoute
+	if len(routes) > 0 {
+		route = routes[0]
+	}
 	err = s.Tx(ctx, i, false, func(tx pgx.Tx) error {
-		source, review, err := cargoRepositoryInTx(ctx, tx, i, repo, name, prefix)
+		source, review, err := cargoRepositoryInTx(ctx, tx, i, repo, name, prefix, route, nil)
 		if err != nil {
 			return err
+		}
+		if source.Mode != "hosted" {
+			return ErrConflict
 		}
 		rows, err := tx.Query(ctx, `SELECT a.path,a.digest,a.size,a.media_type,
 CASE WHEN octet_length(a.metadata::text)<=$5 THEN a.metadata ELSE NULL END,a.created_at

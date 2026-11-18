@@ -269,7 +269,7 @@ func CreateRepository(ctx context.Context, tx pgx.Tx, i Identity, r Repository) 
 		if e != nil {
 			return e
 		}
-		if source.Format != r.Format || source.Mode == "group" || (r.Format == "cargo" && source.Mode != "hosted") {
+		if source.Format != r.Format || source.Mode == "group" {
 			return ErrConflict
 		}
 	}

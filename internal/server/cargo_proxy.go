@@ -17,7 +17,7 @@ import (
 	"ctlplne.dev/cratectl/internal/upstream"
 )
 
-func (s *Server) cargoProxyDownload(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, name, version string) {
+func (s *Server) cargoProxyDownload(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, name, version string, route *store.CargoGroupRoute) {
 	ctx := r.Context()
 	key, err := cargo.NameKey(name)
 	if err != nil {
@@ -29,8 +29,7 @@ func (s *Server) cargoProxyDownload(w http.ResponseWriter, r *http.Request, i st
 		respondErr(w, store.ErrNotFound)
 		return
 	}
-	force := forceRefresh(r)
-	catalog, err := s.resolveProxy(ctx, i, repo, store.CargoCatalogPath(key), force)
+	catalog, err := s.resolveCargoCatalog(r, i, repo, key, route)
 	if err != nil {
 		respondErr(w, err)
 		return
@@ -48,12 +47,12 @@ func (s *Server) cargoProxyDownload(w http.ResponseWriter, r *http.Request, i st
 		respondErr(w, store.ErrSourceChanged)
 		return
 	}
-	resolved, err := s.resolveProxy(ctx, i, repo, p, force)
+	resolved, err := s.resolveProxy(ctx, i, repo, p, forceRefresh(r))
 	if err != nil {
 		respondErr(w, err)
 		return
 	}
-	resolved.cargo = &cargoRead{repository: repo.Name, name: key, version: version, proxy: &binding}
+	resolved.cargo = &cargoRead{repository: repo.Name, name: key, version: version, proxy: &binding, group: route}
 	resolved.admissions = append(resolved.admissions, catalog.admissions...)
 	s.serveResolvedArtifact(w, r, i, resolved)
 }

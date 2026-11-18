@@ -14,6 +14,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 from cargo_hosted_fixture import (BASE_PACKAGE, REPOSITORY, ROOT_PACKAGE, VERSION,
                                   cargo_home, new_project, stock_cargo_environment)
+from cargo_group_fixture import LOW, LOW_ONLY
 
 
 INDEX_PATH = '/cratectl-cargo-origin/index/'
@@ -24,6 +25,8 @@ PROXY = 'cratectl-cargo-proxy'
 CHECKSUM_PROXY = 'cratectl-cargo-checksum'
 SHORT_PROXY = 'cratectl-cargo-short'
 STALE_PROXY = 'cratectl-cargo-stale'
+MIXED = 'cratectl-cargo-mixed'
+EXPLICIT = 'cratectl-cargo-mixed-explicit'
 
 
 def index_file(name):
@@ -140,11 +143,21 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
     for label, repo in (('main', PROXY), ('checksum', CHECKSUM_PROXY), ('short', SHORT_PROXY), ('stale', STALE_PROXY)):
         selected = settings
         if repo == STALE_PROXY:
-            selected = {**settings, 'cache': {**settings['cache'], 'fresh_seconds': 0, 'stale_seconds': 60}}
+            selected = {**settings, 'cache': {**settings['cache'], 'fresh_seconds': 0,
+                                             'negative_seconds': 0, 'stale_seconds': 60}}
         api('cargo-proxy-create-' + label, '/api/v1/repositories', 'POST',
             {'name': repo, 'format': 'cargo', 'mode': 'proxy', 'access': 'restricted',
              'require_review': repo == CHECKSUM_PROXY, 'settings': selected})
         grant(repo, label, True)
+    grant(REPOSITORY, 'restore-hosted-reader', True)
+    for label, group, members, owners, review in (
+        ('ordered', MIXED, [PROXY, REPOSITORY, LOW], {}, True),
+        ('explicit', EXPLICIT, [STALE_PROXY, LOW, PROXY, REPOSITORY], {ROOT_PACKAGE+'/': PROXY}, False),
+    ):
+        api('cargo-mixed-create-' + label, '/api/v1/repositories', 'POST',
+            {'name': group, 'format': 'cargo', 'mode': 'group', 'access': 'restricted', 'require_review': review,
+             'settings': {'members': members, 'namespace_owners': owners}})
+        grant(group, 'mixed-' + label, True)
 
     metadata, archives, contents = {}, {}, {}
     for name in (ROOT_PACKAGE, BASE_PACKAGE):
@@ -163,11 +176,12 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
     index = '/index/' + index_file(ROOT_PACKAGE)
     package = '/download/' + download_file(ROOT_PACKAGE)
 
-    def stock(label):
+    def stock(label, repo=PROXY, crate=ROOT_PACKAGE):
         project = work / ('cargo-proxy-project-' + label)
-        new_project(project, 'cratectl-proxy-consumer', '\n[dependencies]\n' + ROOT_PACKAGE +
-                    ' = {version = "=1.0.0", registry = "cratectl", features = ["wire"]}\n')
-        cache, env = cargo_home(work, 'cargo-proxy-home-' + label, 'sparse+' + registry(PROXY) + '/index/', shared, reader)
+        feature = ', features = ["wire"]' if crate == ROOT_PACKAGE else ''
+        new_project(project, 'cratectl-proxy-consumer', '\n[dependencies]\n' + crate +
+                    ' = {version = "=1.0.0", registry = "cratectl"' + feature + '}\n')
+        cache, env = cargo_home(work, 'cargo-proxy-home-' + label, 'sparse+' + registry(repo) + '/index/', shared, reader)
         call('cargo-proxy-stock-fetch-' + label, cargo, 'fetch', cwd=project, environment=env, timeout=45)
         return sorted(sha(item) for item in (cache / 'registry/cache').glob('*/*.crate'))
 
@@ -220,6 +234,10 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
               status == 200 and body == archives[ROOT_PACKAGE] and response_headers.get('X-Cratectl-Cache') == 'revalidated'
               and conditional == [(INDEX_PATH + index_file(ROOT_PACKAGE), True, True),
                                   (DOWNLOAD_PATH + download_file(ROOT_PACKAGE), True, True)])
+
+        check('mixed group review hides the pending first proxy even with an approved hosted duplicate',
+              request(MIXED, index)[0] == 404 and request(MIXED, package)[0] == 403
+              and request(REPOSITORY, package)[0] == 200 and request(PROXY, package)[0] == 200)
 
         offline.set()
         with lock:
@@ -354,10 +372,39 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
         check('fresh stock Cargo resolves the new approved source revision and exact leaf',
               stock('revised-source') == sorted((revised_digest, metadata[BASE_PACKAGE]['cksum'])))
 
+        check('mixed group stock Cargo receives the preferred proxy graph and exact revised archive',
+              stock('mixed-proxy', MIXED) == sorted((revised_digest, metadata[BASE_PACKAGE]['cksum'])))
+        lower_archive = work/'cargo-group-publish-lower-only'/'target/package/tmp-crate'/f'{LOW_ONLY}-{VERSION}.crate'
+        lower_only = '/download/' + download_file(LOW_ONLY)
+        check('mixed group can use a hosted crate after a request-scoped zero-freshness proxy absence',
+              stock('mixed-lower', EXPLICIT, LOW_ONLY) == [sha(lower_archive)]
+              and request(EXPLICIT, lower_only)[2].get('X-Cratectl-Repository') == LOW)
+        grant(STALE_PROXY, 'explicit-unused-source', False)
+        check('explicit Cargo namespace selects one proxy without unselected source grants',
+              request(EXPLICIT, package)[1] == revised_data and request(EXPLICIT, lower_only)[0] == 403)
+        grant(STALE_PROXY, 'restore-explicit-unused-source', True)
+
+        with lock:
+            revised_index = contents.pop(path)
+        check('withdrawn proxy crate fences the approved hosted duplicate in a mixed group',
+              request(MIXED, index, refresh=True)[0] == 404 and request(MIXED, package)[0] == 404
+              and request(REPOSITORY, package)[0] == 200)
+        with lock:
+            contents[path] = revised_index
+        if request(MIXED, package, refresh=True)[1] != revised_data:
+            raise ValueError('restored origin did not recover the original group selection')
+        offline.set()
+        refused = request(MIXED, index, refresh=True)[0]
+        offline.clear()
+        check('mixed group refuses to substitute another source during a preferred origin outage',
+              refused == 502 and request(MIXED, package, refresh=True)[1] == revised_data)
+
         grant(PROXY, 'revoke', False)
         check('current grants and tenant isolation fence a previously filled Cargo proxy',
               request(PROXY, package)[0] == 403 and request(PROXY, index)[0] == 403 and
               request(PROXY, package, other)[0] == 404)
+        check('revoked preferred proxy access also fences the mixed group',
+              request(MIXED, index)[0] == request(MIXED, package)[0] == 403)
 
     return {'checks': checks, 'archive_sha256': {'proxy-root': metadata[ROOT_PACKAGE]['cksum'],
                                                'proxy-leaf': metadata[BASE_PACKAGE]['cksum'],

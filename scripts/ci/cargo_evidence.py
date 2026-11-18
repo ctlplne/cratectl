@@ -56,6 +56,7 @@ CHECKS = (
     'fresh stock Cargo proxies a transitive graph and both original archives',
     'configured index and download credentials remain bound to separate upstream paths',
     'conditional sparse and archive validation preserves the original bytes',
+    'mixed group review hides the pending first proxy even with an approved hosted duplicate',
     'fresh stock Cargo recovers both exact cached bytes across restart during upstream outage',
     'current review hides an upstream checksum pending local authorization',
     'local approval restores stock Cargo discovery and exact byte delivery',
@@ -74,7 +75,13 @@ CHECKS = (
     'advancing the Cargo source revision clears inherited validators and requires a new exact-digest decision',
     'an unchanged approved dependency must rebind its exact bytes before discovery in the new source revision',
     'fresh stock Cargo resolves the new approved source revision and exact leaf',
+    'mixed group stock Cargo receives the preferred proxy graph and exact revised archive',
+    'mixed group can use a hosted crate after a request-scoped zero-freshness proxy absence',
+    'explicit Cargo namespace selects one proxy without unselected source grants',
+    'withdrawn proxy crate fences the approved hosted duplicate in a mixed group',
+    'mixed group refuses to substitute another source during a preferred origin outage',
     'current grants and tenant isolation fence a previously filled Cargo proxy',
+    'revoked preferred proxy access also fences the mixed group',
 )
 ARCHIVES = ('cratectl-cargo-leaf', 'cratectl-cargo-root', 'cratectl-cargo-root-1.10.0',
             'group-preferred', 'group-duplicate', 'group-lower-only', 'proxy-root', 'proxy-leaf', 'proxy-revised-root')
@@ -94,6 +101,7 @@ SOURCE_PATHS = (
     'internal/cargo/sparse.go', 'internal/server/cargo_proxy.go', 'internal/store/cargo_proxy.go',
     'internal/store/cargo_retrieval.go', 'internal/store/retrieval.go', 'internal/store/source_configuration.go',
     'internal/upstream/upstream.go', 'internal/server/credentials.go', 'scripts/cargo_proxy_fixture.py',
+    'internal/server/cargo_group.go',
 )
 
 

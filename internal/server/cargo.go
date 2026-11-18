@@ -29,6 +29,7 @@ func (w cargoProtocolResponse) Unwrap() http.ResponseWriter { return w.ResponseW
 type cargoRead struct {
 	repository, name, version string
 	proxy                     *store.CargoArchiveBinding
+	group                     *store.CargoGroupRoute
 }
 
 func cargoCredential(r *http.Request) (string, error) {
@@ -204,15 +205,20 @@ func (s *Server) cargoIndex(w http.ResponseWriter, r *http.Request, i store.Iden
 		return
 	}
 	var data []byte
-	if repo.Mode == "proxy" {
+	source, route, err := s.cargoReadRoute(r, i, repo, name)
+	if err != nil {
+		respondErr(w, err)
+		return
+	}
+	if source.Mode == "proxy" {
 		var catalog resolvedArtifact
-		catalog, err = s.resolveProxy(r.Context(), i, repo, store.CargoCatalogPath(name), forceRefresh(r))
+		catalog, err = s.resolveCargoCatalog(r, i, source, name, route)
 		if err == nil {
-			data, err = s.DB.CargoProxyIndex(r.Context(), i, repo.Name, name, repo.SourceRevision, catalog.artifact.Digest,
-				s.NativeVersionLimit, s.NativeMetadataBytes, catalog.admissions...)
+			data, err = s.DB.CargoProxyIndex(r.Context(), i, source.Name, name, source.SourceRevision, catalog.artifact.Digest,
+				s.NativeVersionLimit, s.NativeMetadataBytes, route, catalog.admissions...)
 		}
 	} else {
-		data, err = s.DB.CargoIndex(r.Context(), i, repo.Name, name, s.NativeVersionLimit, s.NativeMetadataBytes)
+		data, err = s.DB.CargoIndex(r.Context(), i, repo.Name, name, s.NativeVersionLimit, s.NativeMetadataBytes, route)
 	}
 	if err != nil {
 		respondErr(w, err)
@@ -229,17 +235,22 @@ func (s *Server) cargoDownload(w http.ResponseWriter, r *http.Request, i store.I
 		respondErr(w, store.ErrNotFound)
 		return
 	}
-	if repo.Mode == "proxy" {
-		s.cargoProxyDownload(w, r, i, repo, name, version)
+	source, route, err := s.cargoReadRoute(r, i, repo, name)
+	if err != nil {
+		respondErr(w, err)
 		return
 	}
-	artifact, source, err := s.DB.CargoDownload(r.Context(), i, repo.Name, name, version)
+	if source.Mode == "proxy" {
+		s.cargoProxyDownload(w, r, i, source, name, version, route)
+		return
+	}
+	artifact, source, err := s.DB.CargoDownload(r.Context(), i, repo.Name, name, version, route)
 	if err != nil {
 		respondErr(w, err)
 		return
 	}
 	s.serveResolvedArtifact(w, r, i, resolvedArtifact{artifact: artifact, source: source,
-		cargo: &cargoRead{repository: repo.Name, name: name, version: version}})
+		cargo: &cargoRead{repository: repo.Name, name: name, version: version, group: route}})
 }
 
 func (s *Server) cargoPublish(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, sparseIndex string) {

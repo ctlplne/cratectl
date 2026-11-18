@@ -68,6 +68,25 @@ func cargoProxyRepository(ctx context.Context, tx pgx.Tx, i Identity, name strin
 	return r, nil
 }
 
+func cargoProxyReadRepository(ctx context.Context, tx pgx.Tx, i Identity, repo, name string, revision int64, route *CargoGroupRoute) (Repository, error) {
+	if route == nil {
+		return cargoProxyRepository(ctx, tx, i, repo, revision)
+	}
+	prefix, err := cargo.ArtifactPrefix(name)
+	if err != nil {
+		return Repository{}, ErrNotFound
+	}
+	r, review, err := cargoRepositoryInTx(ctx, tx, i, route.Repository, name, prefix, route, nil)
+	if err != nil {
+		return r, err
+	}
+	if r.Name != repo || r.Mode != "proxy" || r.SourceRevision != revision {
+		return r, ErrSourceChanged
+	}
+	r.RequireReview = review
+	return r, nil
+}
+
 func cargoCatalogInTx(ctx context.Context, tx pgx.Tx, repo Repository, name string) (Artifact, CargoCatalog, error) {
 	var catalog CargoCatalog
 	budget := repositoryReadBudget(repo)
@@ -83,42 +102,52 @@ func cargoCatalogInTx(ctx context.Context, tx pgx.Tx, repo Repository, name stri
 	return a, catalog, nil
 }
 
-func cargoCacheInTx(ctx context.Context, tx pgx.Tx, repo Repository, path string, admissions []NativeAdmission) error {
+func cargoCacheState(ctx context.Context, tx pgx.Tx, repo Repository, path string) (Retrieval, error) {
 	var state Retrieval
 	e := scanRetrieval(tx.QueryRow(ctx, `SELECT `+retrievalColumns+` FROM cratectl.retrievals WHERE repository=$1 AND path=$2`, repo.Name, path), &state)
 	if errors.Is(e, pgx.ErrNoRows) {
-		return ErrNotFound
+		return state, ErrNotFound
 	}
 	if e != nil {
-		return e
+		return state, e
 	}
 	if state.SourceRevision != repo.SourceRevision {
-		return ErrSourceChanged
+		return state, ErrSourceChanged
+	}
+	return state, nil
+}
+
+func cargoCacheAllowed(ctx context.Context, tx pgx.Tx, repo Repository, state Retrieval, admissions []NativeAdmission) (bool, error) {
+	if state.State == "ready" && state.Fresh() {
+		return true, nil
+	}
+	if state.State == "ready" || (state.State == "failed" && state.StalePermitted()) {
+		return ociCacheAdmission(ctx, tx, repo.Name, state, admissions)
+	}
+	return false, nil
+}
+
+func cargoCacheInTx(ctx context.Context, tx pgx.Tx, repo Repository, path string, admissions []NativeAdmission) error {
+	state, err := cargoCacheState(ctx, tx, repo, path)
+	if err != nil {
+		return err
 	}
 	if state.State == "negative" {
 		return ErrNotFound
 	}
-	if state.State == "ready" && state.Fresh() {
-		return nil
-	}
-	if state.State == "ready" || (state.State == "failed" && state.StalePermitted()) {
-		admitted, e := ociCacheAdmission(ctx, tx, repo.Name, state, admissions)
-		if e != nil {
-			return e
-		}
-		if admitted {
-			return nil
-		}
+	admitted, err := cargoCacheAllowed(ctx, tx, repo, state, admissions)
+	if err != nil || admitted {
+		return err
 	}
 	return ErrBusy
 }
 
 // CargoProxyIndex rebuilds the advertised rows from one current snapshot of
 // the pin and local byte policy. Pending index metadata cannot approve a crate.
-func (s *Store) CargoProxyIndex(ctx context.Context, i Identity, repo, name string, revision int64, expectedDigest string, limit int, budget int64, admissions ...NativeAdmission) ([]byte, error) {
+func (s *Store) CargoProxyIndex(ctx context.Context, i Identity, repo, name string, revision int64, expectedDigest string, limit int, budget int64, route *CargoGroupRoute, admissions ...NativeAdmission) ([]byte, error) {
 	var data []byte
 	err := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
-		r, e := cargoProxyRepository(ctx, tx, i, repo, revision)
+		r, e := cargoProxyReadRepository(ctx, tx, i, repo, name, revision, route)
 		if e != nil {
 			return e
 		}
@@ -230,10 +259,10 @@ func (s *Store) CargoProxyBinding(ctx context.Context, i Identity, repo, name, v
 	return binding, metadata, e
 }
 
-func (s *Store) CargoProxyDownload(ctx context.Context, i Identity, repo, name, version string, revision int64, expected CargoArchiveBinding, admissions ...NativeAdmission) (Artifact, error) {
+func (s *Store) CargoProxyDownload(ctx context.Context, i Identity, repo, name, version string, revision int64, expected CargoArchiveBinding, route *CargoGroupRoute, admissions ...NativeAdmission) (Artifact, error) {
 	var a Artifact
 	e := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
-		r, e := cargoProxyRepository(ctx, tx, i, repo, revision)
+		r, e := cargoProxyReadRepository(ctx, tx, i, repo, name, revision, route)
 		if e != nil {
 			return e
 		}
