@@ -96,7 +96,8 @@ A normal `make build` checks committed source/asset hashes and builds the Go
 binaries without Node. To modify the interface, install the exact pinned frontend
 dependencies with `npm --prefix web ci --ignore-scripts`, run `make console`, review
 both source and generated `internal/consoleui/dist` files, then run `make console-check`
-for a byte-for-byte rebuild comparison. Bundled dependency notices are served at
+for a byte-for-byte rebuild comparison. The build runs the pinned TypeScript
+compiler and esbuild directly. Bundled dependency notices are served at
 `/console/third-party-notices.txt`. Keep the lockfile and `web/build-manifest.json`
 with source changes.
 

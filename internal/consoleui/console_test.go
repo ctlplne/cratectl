@@ -38,6 +38,14 @@ func TestPackagedConsoleHasStrictScopeAndNoHTMLAssetFallback(t *testing.T) {
 	if w.Code != 200 || !strings.HasPrefix(w.Header().Get("Content-Type"), "text/javascript") || !strings.Contains(w.Header().Get("Cache-Control"), "immutable") {
 		t.Fatal("asset MIME/cache contract")
 	}
+	stylesheet := regexp.MustCompile(`href="(/console/assets/[^"]+\.css)"`).FindStringSubmatch(page.Body.String())
+	if len(stylesheet) != 2 {
+		t.Fatal("missing packaged stylesheet")
+	}
+	w = get("GET", stylesheet[1])
+	if w.Code != 200 || !strings.HasPrefix(w.Header().Get("Content-Type"), "text/css") || !strings.Contains(w.Header().Get("Cache-Control"), "immutable") {
+		t.Fatal("stylesheet MIME/cache contract")
+	}
 	if w = get("POST", "/console/"); w.Code != 405 {
 		t.Fatal("static mutation accepted")
 	}
