@@ -1,0 +1,84 @@
+{
+  "candidate": "a2b22830e05e16b88891bf87611062ef2b1d104b",
+  "status": "passed",
+  "observed_at": "2026-11-19T01:15:43.693097+05:30",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "binary_sha256": {
+    "cratectld": "1a556ddb787ee9d960ce50b1d4e98a6b0a2be6875c6b62f14c9cfaca4fe1495a",
+    "cratectl": "c2908db8bb2241368288b11b69dfcf3f0dccb0fb661db4bc60be47172ae71054",
+    "cargo": "ad0566b5b484db86c6787b2c77d96c753c31193b23f36d121a334ecadaf6c788",
+    "rustc": "574f8ce13814c332aa5e63445f68ce7fee7c506f802d6135194731d2ae8370ad",
+    "postgres": "e97882a6cc72e1fa643602b28f4827b35be2adc1e9c15405d6fb374778dcc803",
+    "pg_verifybackup": "ca0d673dc6569df7a185c09dfd4bbd25e73a1035b9069c3e4f759d594a178e86"
+  },
+  "sealed_snapshot_sha256": "45712ffec635a1ceebde239629999e3253c7135ea6096b6b6c8d7e621eaf4da7",
+  "captured": {
+    "files": 1285,
+    "bytes": 43552739,
+    "verified_cas_files": 1
+  },
+  "restored": {
+    "schema": 19,
+    "forced_tenant_tables": 59,
+    "journal_heads": 1,
+    "matched_object_references": 1
+  },
+  "archive_sha256": "34e94fbb319de35d8384527cf98a22e3a8448afce3290436ba43fdbe44ecc44b",
+  "checks": [
+    "source is an isolated stock PostgreSQL 16.16 cluster",
+    "stock Cargo published exact reviewed bytes",
+    "first publisher received a tenant-local owner ID",
+    "source registry is stopped and no runtime role remains connected",
+    "stock pg_verifybackup verifies the physical source",
+    "sealed backup verifies all captured files and package bytes",
+    "materialized backup bears the same manifest",
+    "restored PostgreSQL has the same journal, exact bytes and 59 forced-RLS tables",
+    "registry restore still trusts the original TLS certificate and retained pagination key",
+    "restored restricted runtime returns the same Cargo owner ID",
+    "fresh stock Cargo fetches the restored exact approved archive under original grants"
+  ],
+  "goal_complete": false,
+  "broad_readiness": false,
+  "original_private_summary": {
+    "path": ".cache/cratectl-cargo-native-a2b2283.1vJus0/.private/cratectl-schema19-cold-2r62f92q/safe-report.json",
+    "sha256": "dde5d0dfcc9b15af92026c12d2513822588e63bbc2611e2e030ad33e36fe5e53",
+    "bytes": 1965
+  },
+  "local_driver": {
+    "path": ".cache/cratectl-schema19-cold-native.py",
+    "sha256": "4581b7304d181dc8e6cd737add734affd04858edb548582e8dda7bea6a6f12c5",
+    "bytes": 13406
+  },
+  "source_sha256": [
+    {
+      "path": "scripts/cold_snapshot.py",
+      "sha256": "b71e9aca02a7a3129d12b873d2ff68d31ccaffbca131dadd052fd548d45d77bd"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+    },
+    {
+      "path": "scripts/cargo_hosted_fixture.py",
+      "sha256": "8feaede986a4b8990c7cc5aa2464137d3c24aaac859aa58ce030eed4eda55020"
+    },
+    {
+      "path": "scripts/verify_linux_candidate.py",
+      "sha256": "546e7f27f9a0b516030ec2953ff2dc952f5d3972510d29c9b1f2794cf45ab29b"
+    },
+    {
+      "path": "internal/store/cargo_ownership_schema.go",
+      "sha256": "fd7513c2816bb43b210e578d54df4a2319b9aae7e4cff8163b01575c89892d27"
+    },
+    {
+      "path": "cmd/cratectld/init.go",
+      "sha256": "c96f6629a7a1050779cf79f0f77a43b038adedcbdb5a577f1f9a9ccc32738966"
+    }
+  ],
+  "limits": [
+    "Controlled cold single-host physical backup with the registry stopped and the source PostgreSQL stopped before starting the restored database.",
+    "The restored working copy rebinds its private installation paths. The verified source and sealed snapshot remain independent.",
+    "One Cargo package, one tenant, same PostgreSQL patch release. Live backup, PostgreSQL point-in-time recovery, independent hosts, object stores and recovery budgets remain open."
+  ]
+}

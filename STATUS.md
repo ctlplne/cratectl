@@ -506,9 +506,17 @@ PostgreSQL 16.16 on macOS ARM64, plus all 41 hosted and group checks and 19
 declarative checks. Stock Cargo fetched both exact archives after restart
 during an upstream outage. Current local review withheld both discovery and
 byte delivery. A changed digest for the same source revision was refused.
-The native Linux proxy, explicit source revision changes, stale windows and
-interrupted or concurrent transfers require further qualification.
 [Native proxy and console evidence](evidence/2026-11-19/cargo-04e2ba0-proxy-native.json)
+
+Both original `ab6e559` Linux architectures passed that 14-check proxy profile
+and all 60 hosted, group and declarative checks. Each job binds 45 source
+hashes and installed PostgreSQL 16.15. The later exact `a2b2283` macOS ARM64
+replay passed 23 proxy and 60 existing checks on PostgreSQL 16.16. It covered
+bounded stale serving during a transient outage, refusal on a changed pin,
+an interrupted response, six readers sharing one cold transfer, and a new
+source revision that replaced bytes only after a new local digest decision.
+[Original native Linux proxy evidence](evidence/2026-11-19/github-ab6e559-cargo-proxy-native.json)
+[Expanded native Cargo evidence](evidence/2026-11-19/cargo-a2b2283-expanded-proxy-native.json)
 
 The independent `b88d397` schema 18 daemon and stock ORAS 1.3.6 passed
 122 controlled upgrade checks against `910359d` on macOS ARM64 with
@@ -552,6 +560,14 @@ At `c066084`, an actual interrupted materialization left only private
 provisional files. The verifier refused that partial tree. A retry to the
 same destination completed and independently reverified 1,573 files.
 [Cold copy interruption and retry](evidence/2026-11-18/cold-snapshot-materialize-c066084.json)
+
+The exact `a2b2283` native replay passed 11 cold recovery checks with stock
+PostgreSQL 16.16 on macOS ARM64. The sealed pair held 1,285 files. The fresh
+database retained one tenant journal head, all 59 forced-RLS tenant tables,
+the original Cargo owner ID and its exact approved archive. A fresh stock
+Cargo consumer fetched the restored bytes with the original grant and TLS
+trust. Live backups, point-in-time restore and independent hosts remain open.
+[Schema 19 native cold recovery evidence](evidence/2026-11-19/cold-schema19-a2b2283-native.json)
 
 The packaged Helm chart passed 13 deployment checks at `f245757` on an
 isolated ARM64 Kubernetes 1.35 cluster. Restricted Pod Security admitted the

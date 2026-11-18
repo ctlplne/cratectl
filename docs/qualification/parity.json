@@ -4671,13 +4671,15 @@
         "delete/restore"
       ],
       "state": "implementing",
-      "candidate": "04e2ba02b146226cb942a353704020bd6ebf66b8",
+      "candidate": "a2b22830e05e16b88891bf87611062ef2b1d104b",
       "evidence": [
+        "evidence/2026-11-19/cargo-a2b2283-expanded-proxy-native.json",
+        "evidence/2026-11-19/github-ab6e559-cargo-proxy-native.json",
         "evidence/2026-11-19/cargo-04e2ba0-proxy-native.json",
         "evidence/2026-11-19/cargo-4a5c542-ipv6-fixture-failure.json"
       ],
-      "limits": "Fourteen stock Cargo 1.100.0 proxy checks pass on macOS ARM64 and PostgreSQL 16.16. The owned origin has two independently authenticated paths. Public origin, native Linux, stale windows and interrupted/concurrent transfers remain open.",
-      "next_action": "Qualify the proxy on both native Linux architectures, source revision changes, stale-window and interrupted/concurrent transfers, then support proxy members in ordered Cargo groups."
+      "limits": "Twenty-three stock Cargo proxy checks pass with PostgreSQL 16.16 on macOS ARM64. Fourteen proxy checks also pass on both original Linux architectures. The expanded source revision, stale policy and interruption tests remain pending on Linux. Public origins and representative scale remain open.",
+      "next_action": "Run the expanded Linux profiles and add authenticated proxy source precedence to Cargo groups."
     },
     {
       "id": "FMT.CARGO.GROUP",
@@ -26373,12 +26375,13 @@
         "recovery"
       ],
       "state": "implementing",
-      "candidate": null,
+      "candidate": "a2b22830e05e16b88891bf87611062ef2b1d104b",
       "evidence": [
+        "evidence/2026-11-19/cold-schema19-a2b2283-native.json",
         "evidence/2026-11-18/cold-recovery-e4adc19-arm64.json"
       ],
-      "limits": "Named cold single-node ARM64 recovery matched the journal and exact approved bytes in a fresh physical database volume. Live capture, external object storage, independent hosts and recovery budgets remain open.",
-      "next_action": "Reproduce the named pair verifier on a real physical backup and qualify interruption, restore-point mismatch, object-store failures and recovery budgets."
+      "limits": "Native schema 19 PostgreSQL 16.16 recovery preserved exact pinned bytes, Cargo owner identity, the tenant journal and 59 forced-RLS tables across a separate physical restore. Live capture, point-in-time recovery, external object storage, independent hosts and timing budgets remain open.",
+      "next_action": "Qualify live and point-in-time recovery, storage faults, independent hosts and recovery budgets."
     },
     {
       "id": "STORE.RESTORE",
@@ -26422,12 +26425,13 @@
         "recovery"
       ],
       "state": "implementing",
-      "candidate": null,
+      "candidate": "a2b22830e05e16b88891bf87611062ef2b1d104b",
       "evidence": [
+        "evidence/2026-11-19/cold-schema19-a2b2283-native.json",
         "evidence/2026-11-18/cold-recovery-e4adc19-arm64.json"
       ],
-      "limits": "Named cold single-node ARM64 recovery matched the journal and exact approved bytes in a fresh physical database volume. Live capture, external object storage, independent hosts and recovery budgets remain open.",
-      "next_action": "Reproduce the named pair verifier on a real physical backup and qualify interruption, restore-point mismatch, object-store failures and recovery budgets."
+      "limits": "Native schema 19 PostgreSQL 16.16 recovery preserved exact pinned bytes, Cargo owner identity, the tenant journal and 59 forced-RLS tables across a separate physical restore. Live capture, point-in-time recovery, external object storage, independent hosts and timing budgets remain open.",
+      "next_action": "Qualify live and point-in-time recovery, storage faults, independent hosts and recovery budgets."
     },
     {
       "id": "STORE.GC-SAFETY",

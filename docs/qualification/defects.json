@@ -1848,8 +1848,9 @@
     {
       "id": "DEFECT.0177",
       "summary": "The expanded Cargo test omitted same-digest dependency revalidation after a source revision change",
-      "state": "The original fixture reached the postapproval stock resolve on source revision 1. Cargo refused to resolve the unchanged leaf until the proxy proved its bytes under the current revision.",
+      "state": "The original fixture reached the postapproval stock resolve on source revision 1. Cargo refused to resolve the unchanged leaf until the proxy proved its bytes under the current revision. The exact a2b2283 replay passed.",
       "first_failure": "evidence/2026-11-19/cargo-34fbff6-revision-fixture-failure.json",
+      "replay": "evidence/2026-11-19/cargo-a2b2283-expanded-proxy-native.json",
       "repair": "Observe the pending discovery response, fetch the exact leaf through the registry, and require the prior unchanged digest before repeating the complete stock fetch."
     }
   ]
