@@ -10,11 +10,14 @@ import (
 	"net/http/httptest"
 	"slices"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 
 	crypt "ctlplne.dev/cratectl/internal/crypto"
 	"ctlplne.dev/cratectl/internal/store"
+	"ctlplne.dev/cratectl/internal/testnet"
+	"ctlplne.dev/cratectl/internal/upstream"
 )
 
 func TestOCIRepositoryCatalogUsesCurrentGraphPolicyAndTenantGrants(t *testing.T) {
@@ -136,4 +139,85 @@ func TestOCIRepositoryCatalogUsesCurrentGraphPolicyAndTenantGrants(t *testing.T)
 		t.Fatal("retire digest-only manifest", w.Code, w.Body.String())
 	}
 	list(reader, endpoint, public+"/nested/app")
+}
+
+func TestOCIRepositoryCatalogUsesOnlyFreshCachedGraphs(t *testing.T) {
+	s, _, token, _ := schemaServer(t)
+	s.PrivateUpstreamNetworks = []string{"127.0.0.1/32"}
+	const child = `{}`
+	const configMedia = "application/vnd.oci.image.config.v1+json"
+	childDigest := "sha256:" + crypt.Digest([]byte(child))
+	root := fmt.Sprintf(`{"schemaVersion":2,"mediaType":%q,"config":{"mediaType":%q,"digest":%q,"size":%d},"layers":[]}`,
+		testOCIImage, configMedia, childDigest, len(child))
+	rootDigest := "sha256:" + crypt.Digest([]byte(root))
+	const repo = "cratectl-catalog-cached"
+	const image = "cached/app"
+	const base = "/v2/cratectl-catalog-origin/" + image + "/"
+	var requests atomic.Int64
+	listener, err := testnet.ListenOwned()
+	if err != nil {
+		t.Fatal(err)
+	}
+	origin := &httptest.Server{Listener: listener, Config: &http.Server{Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requests.Add(1)
+		var document, digest, media string
+		switch r.URL.Path {
+		case base + "manifests/" + rootDigest, base + "manifests/latest":
+			document, digest, media = root, rootDigest, testOCIImage
+		case base + "blobs/" + childDigest:
+			document, digest, media = child, childDigest, configMedia
+		default:
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+		w.Header().Set("Cache-Control", "max-age=90")
+		w.Header().Set("Content-Type", media)
+		w.Header().Set("Docker-Content-Digest", digest)
+		_, _ = w.Write([]byte(document))
+	})}}
+	origin.Start()
+	defer origin.Close()
+	admin := lifecycleHTTP(t, s, token)
+	proxy := store.Repository{Name: repo, Format: "oci", Mode: "proxy", Settings: store.RepositorySettings{
+		Upstream: &upstream.Config{URL: origin.URL + "/v2/cratectl-catalog-origin/", Networks: []string{"127.0.0.1/32"}},
+		Cache:    store.CacheSettings{FreshSeconds: 90, NegativeSeconds: 30},
+	}}
+	if w := admin(http.MethodPost, "/api/v1/repositories", proxy, "create-cratectl-catalog-cached"); w.Code != http.StatusCreated {
+		t.Fatal("register OCI proxy", w.Code, w.Body.String())
+	}
+	list := func(want ...string) {
+		t.Helper()
+		before := requests.Load()
+		w := admin(http.MethodGet, "/v2/_catalog", nil, "")
+		var body struct{ Repositories []string }
+		if w.Code != http.StatusOK || json.Unmarshal(w.Body.Bytes(), &body) != nil || !slices.Equal(body.Repositories, want) {
+			t.Fatalf("cached catalog status %d, body %s, expected %v", w.Code, w.Body.String(), want)
+		}
+		if requests.Load() != before {
+			t.Fatal("catalog unexpectedly made an upstream request")
+		}
+	}
+	pull := func() {
+		t.Helper()
+		w := mavenHTTP(t, s, token, http.MethodGet, "/v2/"+repo+"/"+image+"/manifests/latest", "", "Accept", testOCIImage)
+		if w.Code != http.StatusOK || w.Body.String() != root || w.Header().Get("Docker-Content-Digest") != rootDigest {
+			t.Fatal("cached graph resolution", w.Code, w.Body.String())
+		}
+	}
+	list()
+	pull()
+	list(repo + "/" + image)
+	member := image + "/blobs/" + childDigest
+	if w := admin(http.MethodPut, "/api/v1/repositories/"+repo+"/cache", map[string]string{"path": member}, "expire-catalog-member"); w.Code != http.StatusOK {
+		t.Fatal("expire graph dependency", w.Code, w.Body.String())
+	}
+	list()
+	pull()
+	list(repo + "/" + image)
+	if w := admin(http.MethodPut, "/api/v1/repositories/"+repo+"/decisions", map[string]string{
+		"path": member, "digest": strings.TrimPrefix(childDigest, "sha256:"), "decision": "denied",
+	}, "deny-cratectl-catalog-child"); w.Code != http.StatusOK {
+		t.Fatal("deny graph dependency", w.Code, w.Body.String())
+	}
+	list()
 }

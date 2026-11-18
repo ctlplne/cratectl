@@ -195,7 +195,7 @@ def evaluate(args):
         call('initialize-registry', bootstrap, 'init', '--tenant', TENANT, '--directory', app,
              '--public-url', authority, environment=owner_env)
         actors = [('reader', TENANT, 'reader'), ('other', OTHER, 'admin')]
-        if args.cargo_toolchain or args.npm_search or args.python_search_client:
+        if args.cargo_toolchain or args.npm_search or args.python_search_client or args.oci_catalog_cached:
             server_flags.extend(('--allow-private-upstreams', '::1/128'))
         if args.cargo_toolchain:
             actors.extend([('writer', TENANT, 'writer'), ('maintainer', TENANT, 'writer')])
@@ -394,7 +394,8 @@ def evaluate(args):
             from oci_repository_catalog_fixture import evaluate_oci_catalog
 
             report['oci_repository_catalog'] = evaluate_oci_catalog(
-                work, app, authority, args.oci_catalog_client.absolute(), public_env, call, api, restart_server, sha)
+                work, app, authority, args.oci_catalog_client.absolute(), public_env, call, api, restart_server, sha,
+                cached=args.oci_catalog_cached)
         if args.npm_search:
             from npm_search_fixture import evaluate_cached_search, evaluate_search
 
@@ -479,6 +480,8 @@ def evaluate(args):
     print(f'PASS: {len(checks)} native declarative repository checks')
     if args.oci_catalog_client:
         print(f"PASS: {len(report['oci_repository_catalog']['checks'])} stock ORAS repository catalog checks")
+    if args.oci_catalog_cached:
+        print(f"PASS: {len(report['oci_repository_catalog']['cached']['checks'])} stock ORAS cached repository catalog checks")
     if args.npm_search:
         print(f"PASS: {len(report['npm_search']['checks'])} stock hosted npm search checks")
         print(f"PASS: {len(report['npm_cached_search']['checks'])} stock cached npm search checks")
@@ -616,6 +619,8 @@ if __name__ == '__main__':
     parser.add_argument('--oci-catalog-client', type=Path,
                         help='also verify the hosted OCI repository catalog using stock ORAS')
     parser.add_argument('--oci-catalog-ci-architecture', choices=('amd64', 'arm64'))
+    parser.add_argument('--oci-catalog-cached', action='store_true',
+                        help='also exercise the scoped cached OCI proxy discovery fixture')
     parser.add_argument('--npm-search', action='store_true',
                         help='also verify npm hosted and cached search using stock clients')
     parser.add_argument('--npm-search-ci-architecture', choices=('amd64', 'arm64'))
@@ -633,8 +638,10 @@ if __name__ == '__main__':
         parser.error('OCI repository catalog uses its own stock evidence profile')
     if options.oci_catalog_ci_architecture and (not options.oci_catalog_client or options.provider_binary
                                                or options.npm_search or options.python_search_client or options.cargo_toolchain
-                                               or options.mcp_binary or options.promtool):
+                                               or options.mcp_binary or options.promtool or options.oci_catalog_cached):
         parser.error('hosted OCI catalog evidence requires the isolated stock ORAS catalog profile')
+    if options.oci_catalog_cached and not options.oci_catalog_client:
+        parser.error('cached OCI catalog requires stock ORAS')
     if len([value for value in (options.provider_binary, options.terraform, options.tofu) if value]) not in (0, 3):
         parser.error('provide the local provider and both stock clients together')
     if options.ci_architecture and not options.provider_binary:

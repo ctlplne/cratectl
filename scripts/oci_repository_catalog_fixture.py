@@ -1,12 +1,16 @@
 # SPDX-License-Identifier: BUSL-1.1
 """Exercise authenticated hosted repository discovery over trusted TLS with stock ORAS."""
 
+from contextlib import contextmanager
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
+import socket
 import ssl
+import threading
 import urllib.request
 
 
-def evaluate_oci_catalog(work, app, authority, oras, environment, call, api, restart, sha):
+def evaluate_oci_catalog(work, app, authority, oras, environment, call, api, restart, sha, *, cached=False):
     scope = work / 'oci-catalog'
     scope.mkdir(mode=0o700)
     registry = authority.removeprefix('https://')
@@ -61,7 +65,7 @@ def evaluate_oci_catalog(work, app, authority, oras, environment, call, api, res
                registry + '/' + target + ':1.0.0', 'payload.txt:text/plain', cwd=source)
         return sha(payload), sha(manifest), json.loads(manifest.read_bytes())
 
-    primary_payload, primary_manifest, _ = publish('first', 'admin', first, b'Owned first tenant OCI bytes.\n')
+    primary_payload, primary_manifest, primary_graph = publish('first', 'admin', first, b'Owned first tenant OCI bytes.\n')
     publish('second', 'admin', second, b'Owned nested OCI discovery payload.\n')
     other_payload, other_manifest, _ = publish('other-same-coordinate', 'other', first, b'Owned second tenant OCI bytes.\n')
     publish('other-only', 'other', other_only, b'Visible only to the second tenant.\n')
@@ -128,6 +132,111 @@ def evaluate_oci_catalog(work, app, authority, oras, environment, call, api, res
         {'action': 'suspend', 'expected_revision': 0, 'reason': 'Suspend the owned catalog fixture'})
     check('stock ORAS catalog excludes suspended repositories and retains the other tenant’s listings',
           listing('suspended', 'reader') == [] and listing('second-tenant-unchanged', 'other') == [first, other_only])
-    return {'oras': '1.3.6', 'oras_sha256': sha(oras), 'checks': checks,
-            'manifest_sha256': [primary_manifest, other_manifest, reviewed_manifest],
-            'payload_sha256': [primary_payload, other_payload]}
+    report = {'oras': '1.3.6', 'oras_sha256': sha(oras), 'checks': checks,
+              'manifest_sha256': [primary_manifest, other_manifest, reviewed_manifest],
+              'payload_sha256': [primary_payload, other_payload]}
+    if cached:
+        report['cached'] = evaluate_cached_catalog(scope, registry, primary_graph, primary_manifest, primary_payload,
+                                                   native, listing, add_repo, api, restart, sha)
+    return report
+
+
+@contextmanager
+def cached_catalog_origin(objects):
+    class Origin(ThreadingHTTPServer):
+        address_family = socket.AF_INET6
+
+        def server_bind(self):
+            self.socket.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 1)
+            super().server_bind()
+
+    class Handler(BaseHTTPRequestHandler):
+        def log_message(self, *_):
+            pass
+
+        def do_GET(self):
+            requests.append(self.path)
+            item = objects.get(self.path)
+            if item is None:
+                self.send_error(404)
+                return
+            digest, media, content = item
+            self.send_response(200)
+            self.send_header('Content-Length', str(len(content)))
+            self.send_header('Content-Type', media)
+            self.send_header('Docker-Content-Digest', digest)
+            self.send_header('Cache-Control', 'max-age=180')
+            self.end_headers()
+            self.wfile.write(content)
+
+    requests = []
+    with Origin(('::1', 38443), Handler) as origin:
+        thread = threading.Thread(target=origin.serve_forever, name='cratectl-oci-catalog-origin')
+        thread.start()
+        try:
+            yield requests
+        finally:
+            origin.shutdown()
+            thread.join(5)
+            if thread.is_alive():
+                raise ValueError('owned OCI catalog origin did not stop')
+
+
+def evaluate_cached_catalog(scope, registry, graph, manifest_sha, payload_sha, native, listing, add_repo, api, restart, sha):
+    repo = 'cratectl-discovery-cached'
+    image = 'cached/app'
+    endpoint = '/api/v1/repositories/' + repo
+    base = '/v2/cratectl-discovery-origin/'
+    path = base + image
+    manifest = 'sha256:' + manifest_sha
+    payload = 'sha256:' + payload_sha
+    config = graph['config']
+    if len(graph['layers']) != 1 or graph['layers'][0]['digest'] != payload or config['data'] != 'e30=':
+        raise ValueError('stock ORAS wrote an unexpected controlled graph')
+    source = scope / 'push-first'
+    objects = {path + '/manifests/' + marker: (manifest, graph['mediaType'], (source / 'manifest.json').read_bytes())
+               for marker in ('1.0.0', manifest)}
+    objects.update({path + '/blobs/' + payload: (payload, 'text/plain', (source / 'payload.txt').read_bytes()),
+                    path + '/blobs/' + config['digest']: (config['digest'], config['mediaType'], b'{}')})
+    checks = []
+
+    def check(name, condition):
+        if not condition:
+            raise ValueError(name)
+        checks.append(name)
+
+    def pull(stage):
+        destination = scope / ('cached-pull-' + stage)
+        destination.mkdir(mode=0o700)
+        native('cached-pull-' + stage, 'reader', ('pull',), '--output', destination,
+               registry + '/' + repo + '/' + image + '@' + manifest)
+        return sha(destination / 'payload.txt') == payload_sha
+
+    with cached_catalog_origin(objects) as requests:
+        add_repo('cached', 'admin', repo, mode='proxy', settings={
+            'upstream': {'url': 'http://[::1]:38443' + base, 'networks': ['::1/128']},
+            'cache': {'fresh_seconds': 180, 'negative_seconds': 30}})
+
+        def search(stage, expected):
+            before = len(requests)
+            result = listing('cached-' + stage, 'reader')
+            return result == expected and len(requests) == before
+
+        name = [repo + '/' + image]
+        check('cold stock ORAS catalog does not enumerate or contact its proxy origin', search('cold', []) and not requests)
+        check('stock ORAS retrieves an exact admitted graph from the controlled proxy',
+              pull('cold') and path + '/blobs/' + payload in requests)
+        check('stock ORAS catalog lists a fresh cached proxy graph without contacting its origin', search('warm', name))
+        api('oci-cached-expire-layer', endpoint + '/cache', 'PUT', {'path': image + '/blobs/' + payload})
+        check('an invalidated cached layer hides the name without contacting its origin', search('expired', []))
+        check('an explicit stock ORAS pull revalidates the exact graph and restores catalog visibility',
+              pull('refresh') and search('refreshed', name))
+        api('oci-cached-deny-layer', endpoint + '/decisions', 'PUT',
+            {'path': image + '/blobs/' + payload, 'digest': payload_sha, 'decision': 'denied'})
+        check('current policy denial hides the cached proxy name without contacting its origin', search('denied', []))
+        api('oci-cached-restore-layer', endpoint + '/decisions', 'PUT',
+            {'path': image + '/blobs/' + payload, 'digest': payload_sha, 'decision': 'allowed'})
+        restart()
+        check('fresh cached catalog authority and exact bytes survive restart',
+              search('restart', name) and pull('restart'))
+        return {'checks': checks, 'manifest_sha256': manifest_sha, 'payload_sha256': payload_sha}
