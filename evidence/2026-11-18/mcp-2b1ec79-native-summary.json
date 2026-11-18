@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "profile": "cratectl-repository-manifest-native-v1",
+  "status": "passed",
+  "checks": [
+    "clean exact source",
+    "cratectl matches the clean candidate",
+    "cratectld matches the clean candidate",
+    "real PostgreSQL 16.15",
+    "absent repository has an authority and tenant bound creation plan",
+    "plan, wrong approval and denied callers leave the tenant journal unchanged",
+    "concurrent approved requests produce one creation or a safe retry",
+    "retry after successful creation returns unchanged",
+    "one repository creation event despite concurrent retry",
+    "second tenant can plan an independent same-name repository",
+    "import returns the exact active hosted fields",
+    "plan exposes review drift without writing",
+    "stock npm published its exact bytes and unassessed input was denied",
+    "cratectl-mcp matches the clean candidate",
+    "cratectl-mcp-qualify matches the clean candidate",
+    "MCP binary requires explicit scoped metadata consent",
+    "registry restart preserves the declared state",
+    "fresh stock npm downloads the exact approved archive after restart",
+    "stale approval leaves suspended repository retained",
+    "suspended repository cannot be imported as active",
+    "revoked administrator cannot plan",
+    "schema 18 with all 57 tenant tables forced RLS and a restricted runtime role"
+  ],
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "goal_complete": false,
+  "broad_readiness": false,
+  "private_fixture": ".private/cratectl-manifest-reiqm_qd",
+  "limits": [
+    "Hosted npm and the version 1 manifest fields on one native server.",
+    "Broader source configuration and production provider distribution remain open."
+  ],
+  "candidate": "2b1ec795f0f672d2287de4c080109ea418c45fc8",
+  "binary_sha256": {
+    "cratectl": "57f826ba4f5d4743ea34f42e07a0ebef055a93607495b8c28a2156b24af95df8",
+    "cratectld": "a37a31f1d0af39bc7274b6e18715f97fe20292fa4e91bc6d1cd178777c3f05b2"
+  },
+  "postgres": "postgres (PostgreSQL) 16.15",
+  "npm": "11.16.0",
+  "archive_sha256": "a2694827c507c96f5fa663bf6216761bb74777d84f49d9b0d9ab8cc6c58e58de",
+  "mcp": {
+    "server_sha256": "baed22920d49dfe02bcde558474e49c84788fdb0be2dc9a9e3fa6992d07355dc",
+    "client_sha256": "24320cb708785679d135008a43caee52c6bb86f9a546eece48f3ab8fca398aa9",
+    "phases": [
+      {
+        "phase": "admin-pending",
+        "protocol": "2026-07-28",
+        "checks": [
+          "native candidate stdio over MCP 2026-07-28",
+          "exact inventory of five read-only tools",
+          "authorized repository cursor returns the next distinct repository",
+          "administrator sees the exact unassessed artifact digest"
+        ]
+      },
+      {
+        "phase": "reader-ungranted",
+        "protocol": "2026-07-28",
+        "checks": [
+          "native candidate stdio over MCP 2026-07-28",
+          "current repository grant denies the reader"
+        ]
+      },
+      {
+        "phase": "reader-pending",
+        "protocol": "2026-07-28",
+        "checks": [
+          "native candidate stdio over MCP 2026-07-28",
+          "granted reader can inspect repository review settings",
+          "unassessed digest is withheld by current policy",
+          "pending references stay outside the reader inventory"
+        ]
+      },
+      {
+        "phase": "other-tenant",
+        "protocol": "2026-07-28",
+        "checks": [
+          "native candidate stdio over MCP 2026-07-28",
+          "different live tenant credential is refused by the adapter"
+        ]
+      },
+      {
+        "phase": "reader-approved",
+        "protocol": "2026-07-28",
+        "checks": [
+          "native candidate stdio over MCP 2026-07-28",
+          "approved artifact identity survives restart under the same reader grant"
+        ]
+      },
+      {
+        "phase": "revoked",
+        "protocol": "2026-07-28",
+        "checks": [
+          "native candidate stdio over MCP 2026-07-28",
+          "currently revoked credential cannot return registry metadata"
+        ]
+      }
+    ]
+  }
+}

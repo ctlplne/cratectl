@@ -409,6 +409,15 @@ and two original media failures across eight workflows.
 [Original 3639a74 campaign inventory](evidence/2026-11-18/github-3639a74-started.json)
 [Original e4b1408 campaign](evidence/2026-11-18/github-e4b1408-original-completed.json)
 
+The standalone MCP adapter at `2b1ec79` passed 16 scoped checks with the
+official SDK over stdio, using MCP 2026-07-28 against real PostgreSQL 16.15.
+The fixture checked tenant and repository grants, pending artifact denial,
+the exact approved digest after restart, and current credential revocation.
+The five tools expose bounded read-only registry metadata after explicit
+local operator consent. Further evidence resources and native hosts remain
+open.
+[Native MCP evidence](evidence/2026-11-18/mcp-2b1ec79-native.json)
+
 The cold `e4adc19` recovery fixture passed 17 runtime checks and 12 backup
 controls. With registry and worker stopped, stock PostgreSQL 16.15 captured
 and verified a physical backup. A fresh database volume preserved the journal

@@ -28147,17 +28147,17 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "integrations/mcp/",
       "surfaces": {
-        "api": null,
-        "cli": null,
+        "api": "Scoped read-only management APIs over authenticated HTTPS",
+        "cli": "cratectl-mcp and the official Go SDK stdio client",
         "ui": null
       },
       "core": true,
       "dependencies": [],
       "acceptance_journey": "J.UX.MCP",
-      "clients": [],
-      "client_versions": {},
+      "clients": ["Official MCP Go SDK"],
+      "client_versions": {"Official MCP Go SDK": "1.8.0", "MCP protocol": "2026-07-28"},
       "test_data": "Defined by the corresponding GOAL.md acceptance requirement.",
       "permission_cases": [
         "least privilege",
@@ -28170,11 +28170,11 @@
         "partial failure",
         "recovery"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "state": "implemented",
+      "candidate": "2b1ec795f0f672d2287de4c080109ea418c45fc8",
+      "evidence": ["evidence/2026-11-18/mcp-2b1ec79-native.json"],
+      "limits": "Five read-only tools passed 16 scoped checks on macOS ARM64 with the official SDK, PostgreSQL 16.15, TLS and stock npm. Scope includes tenant, grant, policy, digest evidence, restart and revocation. Additional evidence resources and native host coverage remain open.",
+      "next_action": "Qualify the local adapter on supported native hosts and extend scoped evidence operations."
     },
     {
       "id": "UX.ACCESSIBILITY",
