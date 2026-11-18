@@ -359,6 +359,11 @@ showed that the pinned index, loaded manifest and native image configuration
 have distinct digests. The replay now reads the native configuration from the
 saved archive and compares it with a fresh platform-filtered export after load.
 [Original post-import identity failure](evidence/2026-11-18/offline-media-43dc8f4-api148-first-failure.json)
+The corrected `27b33f9` candidate passed all 27 checks on the local ARM64
+engine through Docker API 1.48. Each re-export matched the configuration
+digest in the signed manifest. The unchanged report matches all 27 source
+hashes and records 57 forced-RLS tables on the imported database.
+[Local Docker API 1.48 replay](evidence/2026-11-18/offline-media-27b33f9-api148-arm64.json)
 
 The cold `e4adc19` recovery fixture passed 17 runtime checks and 12 backup
 controls. With registry and worker stopped, stock PostgreSQL 16.15 captured

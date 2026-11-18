@@ -1762,8 +1762,9 @@
     {
       "id": "DEFECT.0166",
       "summary": "Docker API 1.48 reports an image index or manifest digest in ordinary inspection",
-      "state": "The native ARM64 replay at 43dc8f4 reached import and retained the original digest mismatch. Focused checks pass for both saved archive layouts.",
+      "state": "The native ARM64 replay at 43dc8f4 reached import and retained the original digest mismatch. Focused checks pass for both saved archive layouts. All 27 local checks passed on 27b33f9 using Docker API 1.48.",
       "first_failure": "evidence/2026-11-18/offline-media-43dc8f4-api148-first-failure.json",
+      "local_replay": "evidence/2026-11-18/offline-media-27b33f9-api148-arm64.json",
       "repair": "Read and hash the exact native configuration from the platform-filtered archive. Re-export the imported tag and compare the configuration digest. Bind launched containers to the independently observed loaded daemon image identity."
     }
   ]
