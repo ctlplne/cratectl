@@ -1729,8 +1729,9 @@
     {
       "id": "DEFECT.0162",
       "summary": "Windows evidence lint freezes the global campaign catalog length before the Compose workflow is added",
-      "state": "Five original hosted failures retained. The repair removes the obsolete cross-profile count, preserves both Windows file bindings and checks the complete catalog separately.",
+      "state": "Five original hosted failures retained. The exact 9563f96 local build, unit, race, full lint and reproducibility run passed with the corrected catalog assertion.",
       "first_failure": "evidence/2026-11-18/campaign-catalog-lint-original.json",
+      "replay": "evidence/2026-11-18/local-gates-9563f96.json",
       "repair": "Compare exact workflow and evidence-validator names and keep the Windows-specific inventory checks. Reject duplicate compatibility paths and require every catalogued file to exist."
     }
   ]

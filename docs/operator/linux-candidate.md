@@ -69,9 +69,19 @@ in `.cache/go-mod`.
 
 These bundles serve local engineering. Owner-approved license terms and complete
 distribution notices are required before shipping. Release signing authority,
-software bills of materials and network-isolated installation of the full
-stack remain separate qualification work.
+operating system and image inventories, and network-isolated installation of the
+full stack remain separate qualification work.
 [Licensing record](../licensing.md)
+
+Run `make package-linux-sbom` to generate separate SPDX 2.3 and CycloneDX 1.6
+documents beside each archive. The generator matches the compressed and
+executable SHA-256 values, reads the exact linked Go module inventory from
+each executable, and checks the embedded browser dependencies against the
+lockfile and notices. Each document covers one archive and its contents.
+Operating system packages, build-only dependencies, CVE verdicts and full
+license review are outside this inventory.
+[SPDX package information](https://spdx.github.io/spdx-spec/v2.3/package-information/)
+[CycloneDX BOM guide](https://cyclonedx.org/guides/sbom/bom)
 
 Two builds of `b910da7` produced byte-identical Linux x64 and ARM64 archives.
 The extracted ARM64 binaries also ran their expected help commands with
