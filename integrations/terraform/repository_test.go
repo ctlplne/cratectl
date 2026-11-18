@@ -26,7 +26,7 @@ func TestRepositoryAuthorityMismatchRefusesBeforeConnecting(t *testing.T) {
 	if err := configfile.WriteNewPrivate(config, content); err != nil {
 		t.Fatal(err)
 	}
-	r := &hostedRepository{configPath: config}
+	r := &hostedRepository{providerSettings: providerSettings{configPath: config, stateScope: "owned-test"}}
 	remote, _, err := r.open(context.Background(), "cratectl-test", "https://127.0.0.1:38443")
 	if remote != nil {
 		remote.Close()

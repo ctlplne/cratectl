@@ -62,8 +62,10 @@ def evaluate_tools(work, clients, provider, env, config, registry_call, sha):
 }}
 provider "cratectl" {{
   client_config = {json.dumps(str(client_config))}
+  state_scope   = "cratectl-{name}-provider"
 }}
 resource "cratectl_hosted_repository" "owned" {{
+  authority      = "https://localhost:38443"
   tenant         = "cratectl-manifest"
   name           = "{repository}"
   format         = "npm"
@@ -86,7 +88,7 @@ output "lifecycle" {{
         check('saved stock plan binds tenant and registry authority', len(changes) == 1
               and create['actions'] == ['create'] and create['after']['authority'] == 'https://localhost:38443'
               and create['after']['id'] == 'cratectl-manifest/' + current_name
-              and len(create['after']['creation_key']) == 43)
+              and create['after']['state_scope'] == 'cratectl-' + name + '-provider')
         endpoint = '/api/v1/repositories/' + current_name
         registry_call(name + '-absent-after-plan', endpoint + '/configuration', status=1)
         check('plan left the registry unchanged', True)

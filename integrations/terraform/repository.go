@@ -26,7 +26,7 @@ var (
 )
 
 type hostedRepository struct {
-	configPath string
+	providerSettings
 }
 
 type repositoryState struct {
@@ -37,7 +37,7 @@ type repositoryState struct {
 	Access        types.String `tfsdk:"access"`
 	RequireReview types.Bool   `tfsdk:"require_review"`
 	Authority     types.String `tfsdk:"authority"`
-	CreationKey   types.String `tfsdk:"creation_key"`
+	StateScope    types.String `tfsdk:"state_scope"`
 	State         types.String `tfsdk:"lifecycle_state"`
 	StateRevision types.Int64  `tfsdk:"lifecycle_revision"`
 }
@@ -51,11 +51,11 @@ func (s repositoryState) spec() management.RepositorySpec {
 
 func (s repositoryState) inputsKnown() bool {
 	return !s.Tenant.IsUnknown() && !s.Name.IsUnknown() && !s.Format.IsUnknown() &&
-		!s.Access.IsUnknown() && !s.RequireReview.IsUnknown()
+		!s.Access.IsUnknown() && !s.RequireReview.IsUnknown() && !s.Authority.IsUnknown()
 }
 
 func (s repositoryState) valid() bool {
-	return management.ValidRepositoryName(s.Tenant.ValueString()) && s.spec().Valid() && !s.RequireReview.IsNull()
+	return management.ValidRepositoryName(s.Tenant.ValueString()) && s.spec().Valid() && !s.RequireReview.IsNull() && s.Authority.ValueString() != ""
 }
 
 func (s *repositoryState) observe(current *management.RepositoryObservation) {
@@ -94,10 +94,10 @@ func (*hostedRepository) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Required: true, Description: "Require an artifact decision before delivery.",
 			},
 			"authority": schema.StringAttribute{
-				Computed: true, PlanModifiers: reuse, Description: "Authority bound to the approved plan and saved state.",
+				Required: true, Description: "Exact configured registry authority, including the HTTPS scheme and any explicit port.",
 			},
-			"creation_key": schema.StringAttribute{
-				Computed: true, Sensitive: true, PlanModifiers: reuse, Description: "Request identity retained for a retry of the same saved plan.",
+			"state_scope": schema.StringAttribute{
+				Computed: true, PlanModifiers: reuse, Description: "Provider state scope used to bind creation retries.",
 			},
 			"lifecycle_state": schema.StringAttribute{
 				Computed: true, Description: "Current retained repository state, including suspended or removed.",
@@ -113,12 +113,12 @@ func (r *hostedRepository) Configure(_ context.Context, req resource.ConfigureRe
 	if req.ProviderData == nil {
 		return
 	}
-	config, ok := req.ProviderData.(string)
+	config, ok := req.ProviderData.(providerSettings)
 	if !ok {
 		resp.Diagnostics.AddError("Invalid provider configuration", "The cratectl provider did not supply a private client configuration path.")
 		return
 	}
-	r.configPath = config
+	r.providerSettings = config
 }
 
 func (r *hostedRepository) open(ctx context.Context, tenant, expectedAuthority string) (*management.Repositories, []string, error) {
@@ -165,7 +165,7 @@ func (r *hostedRepository) ModifyPlan(ctx context.Context, req resource.ModifyPl
 	if !req.State.Raw.IsNull() {
 		var prior repositoryState
 		resp.Diagnostics.Append(req.State.Get(ctx, &prior)...)
-		if !resp.Diagnostics.HasError() && (prior.Tenant != planned.Tenant || prior.spec() != planned.spec()) {
+		if !resp.Diagnostics.HasError() && (prior.Tenant != planned.Tenant || prior.Authority != planned.Authority || prior.spec() != planned.spec()) {
 			r.immutable(&resp.Diagnostics)
 		}
 		return
@@ -182,24 +182,15 @@ func (r *hostedRepository) ModifyPlan(ctx context.Context, req resource.ModifyPl
 		resp.Diagnostics.AddError("Hosted format unavailable", "The authenticated registry does not serve the configured format.")
 		return
 	}
-	if planned.CreationKey.IsUnknown() || planned.CreationKey.IsNull() {
-		current, err := remote.Inspect(ctx, planned.Name.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddError("Unable to inspect hosted repository", err.Error())
-			return
-		}
-		if current != nil {
-			resp.Diagnostics.AddError("Repository already retained", "Review the existing repository and explicitly import its tenant/name identity.")
-			return
-		}
-		token, err := crypto.Token()
-		if err != nil {
-			resp.Diagnostics.AddError("Unable to prepare repository request", "A secure request identifier could not be generated.")
-			return
-		}
-		planned.CreationKey = types.StringValue(token)
+	current, err := remote.Inspect(ctx, planned.Name.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("Unable to inspect hosted repository", err.Error())
+		return
 	}
-	planned.Authority = types.StringValue(remote.Authority())
+	if current != nil {
+		resp.Diagnostics.AddWarning("Repository already retained", "Review the existing repository. An unrelated prior creation requires explicit tenant/name import.")
+	}
+	planned.StateScope = types.StringValue(r.stateScope)
 	planned.ID = types.StringValue(planned.Tenant.ValueString() + "/" + planned.Name.ValueString())
 	resp.Diagnostics.Append(resp.Plan.Set(ctx, &planned)...)
 }
@@ -212,8 +203,8 @@ func (r *hostedRepository) Create(ctx context.Context, req resource.CreateReques
 	}
 	spec := planned.spec()
 	tenant := planned.Tenant.ValueString()
-	if !planned.inputsKnown() || !planned.valid() || planned.Authority.ValueString() == "" ||
-		len(planned.CreationKey.ValueString()) != 43 || planned.ID.ValueString() != tenant+"/"+spec.Name {
+	if !planned.inputsKnown() || !planned.valid() || !management.ValidRepositoryName(r.stateScope) ||
+		planned.StateScope.ValueString() != r.stateScope || planned.ID.ValueString() != tenant+"/"+spec.Name {
 		resp.Diagnostics.AddError("Invalid hosted repository plan", "Review a new plan before creating the repository.")
 		return
 	}
@@ -229,7 +220,8 @@ func (r *hostedRepository) Create(ctx context.Context, req resource.CreateReques
 		resp.Diagnostics.AddError("Hosted format unavailable", "The authenticated registry does not serve the planned format.")
 		return
 	}
-	if err := remote.Create(ctx, spec, "terraform-repository-"+planned.CreationKey.ValueString()); err != nil {
+	key := crypto.Digest([]byte(strings.Join([]string{r.stateScope, planned.Authority.ValueString(), tenant, spec.Name}, "\n")))
+	if err := remote.Create(ctx, spec, "terraform-repository-"+key); err != nil {
 		resp.Diagnostics.AddError("Repository creation was not confirmed", err.Error())
 		return
 	}
@@ -266,6 +258,10 @@ func (r *hostedRepository) ImportState(ctx context.Context, req resource.ImportS
 }
 
 func (r *hostedRepository) read(ctx context.Context, saved *repositoryState, diagnostics *diag.Diagnostics, save func() diag.Diagnostics) {
+	if scope := saved.StateScope.ValueString(); scope != "" && scope != r.stateScope {
+		diagnostics.AddError("Repository state scope changed", "Restore the provider state scope bound to the saved repository.")
+		return
+	}
 	ctx, cancel := context.WithTimeout(ctx, time.Minute)
 	defer cancel()
 	remote, _, err := r.open(ctx, saved.Tenant.ValueString(), saved.Authority.ValueString())
@@ -284,6 +280,7 @@ func (r *hostedRepository) read(ctx context.Context, saved *repositoryState, dia
 		return
 	}
 	saved.Authority = types.StringValue(remote.Authority())
+	saved.StateScope = types.StringValue(r.stateScope)
 	saved.observe(current)
 	diagnostics.Append(save()...)
 }

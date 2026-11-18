@@ -5,6 +5,7 @@ import (
 	"context"
 	"path/filepath"
 
+	"ctlplne.dev/cratectl/internal/management"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
@@ -16,6 +17,12 @@ type cratectlProvider struct{}
 
 type providerConfig struct {
 	ClientConfig types.String `tfsdk:"client_config"`
+	StateScope   types.String `tfsdk:"state_scope"`
+}
+
+type providerSettings struct {
+	configPath string
+	stateScope string
 }
 
 func (*cratectlProvider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -30,6 +37,10 @@ func (*cratectlProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 			"client_config": schema.StringAttribute{
 				Required:    true,
 				Description: "Absolute path to a private cratectl client configuration file on the provider host.",
+			},
+			"state_scope": schema.StringAttribute{
+				Required:    true,
+				Description: "Stable name unique to this Terraform/OpenTofu state, used to scope repository creation retries.",
 			},
 		},
 	}
@@ -46,7 +57,12 @@ func (*cratectlProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		resp.Diagnostics.AddError("Invalid cratectl client configuration", "Supply a known absolute path to a private client configuration file.")
 		return
 	}
-	resp.ResourceData = path
+	scope := config.StateScope.ValueString()
+	if config.StateScope.IsUnknown() || !management.ValidRepositoryName(scope) {
+		resp.Diagnostics.AddError("Invalid cratectl state scope", "Supply a known, unique stable name for this infrastructure state.")
+		return
+	}
+	resp.ResourceData = providerSettings{configPath: path, stateScope: scope}
 }
 
 func (*cratectlProvider) Resources(context.Context) []func() resource.Resource {

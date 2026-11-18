@@ -1774,6 +1774,13 @@
       "first_failure": "evidence/2026-11-18/github-12b04b6-offline-media-readiness-failures.json",
       "local_replay": "evidence/2026-11-18/offline-media-79a6aba-arm64.json",
       "repair": "Stage the exact signed public SQL into one read-only mount and verify readability as the nonroot PostgreSQL image user. Emit bounded container status and a fixed permission classification if readiness fails."
+    },
+    {
+      "id": "DEFECT.0168",
+      "summary": "The first Terraform provider computed registry authority during final saved-plan evaluation",
+      "state": "An original stock Terraform 1.17.2 apply returned a generic TLS/connectivity refusal after the fixture changed authority. It had not reached the specific authority guard, and the stock journey remained incomplete.",
+      "first_failure": "evidence/2026-11-18/terraform-provider-4821316-authority-first-failure.json",
+      "repair": "Require the intended registry authority in the resource configuration. Derive stable creation retries from a separately named state scope, the tenant, the authority and the repository name."
     }
   ]
 }

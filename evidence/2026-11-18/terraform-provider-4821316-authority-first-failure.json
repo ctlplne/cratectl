@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "observed_at": "2026-11-18T17:00:52+00:00",
+  "candidate": "48213168f5236dcb567b52fb9e5c42629ec8e446",
+  "status": "failed",
+  "host": "macOS ARM64",
+  "terraform": "1.17.2",
+  "stage": "apply saved plan after changing the client configuration authority",
+  "original_plan": {
+    "path": ".private/cratectl-manifest-6en6cj2n/terraform-plan-create.log",
+    "bytes": 889,
+    "sha256": "5a7d3f12970cc293ff9e365e90ec6eb31ae1150e00c8eee9168c086228894b67"
+  },
+  "original_apply_refusal": {
+    "path": ".private/cratectl-manifest-6en6cj2n/terraform-different-authority-refused.log",
+    "bytes": 288,
+    "sha256": "a812171517cb383b04df3d8bb48859abc0aacd17a78ba932e2a934f0ec2dd3a1"
+  },
+  "expected": "saved authority differs before connectivity or authentication",
+  "observed": "Terraform re-planned the computed authority and returned the generic TLS/connectivity diagnostic.",
+  "limits": [
+    "This fixture stopped at the first unexpected diagnostic. It did not complete the stock create, import or drift profile."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

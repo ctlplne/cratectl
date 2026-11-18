@@ -40,9 +40,11 @@ terraform {
 
 provider "cratectl" {
   client_config = "/private/installation/client.json"
+  state_scope   = "first-team-packages"
 }
 
 resource "cratectl_hosted_repository" "packages" {
+  authority      = "https://localhost:38443"
   tenant         = "first-team"
   name           = "packages"
   format         = "npm"
@@ -52,7 +54,8 @@ resource "cratectl_hosted_repository" "packages" {
 ```
 
 Use `init`, then `plan -out=create.tfplan` to review a saved creation plan.
-The plan binds the registry authority, tenant and request identity. Apply
+Use a different stable `state_scope` for each independent state. The plan
+binds the registry authority, tenant and scope for idempotent creation. Apply
 the saved plan using `apply create.tfplan`. A competing repository requires
 explicit import. The provider keeps bearer credentials in the private client
 configuration and sends them only to the configured registry. Keep state and
