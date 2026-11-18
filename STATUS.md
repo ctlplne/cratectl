@@ -105,6 +105,12 @@ The per-test and focused-suite budgets remain in effect, and native qualificatio
 of the new budget is pending. [Original campaign](evidence/2026-11-18/github-6d41573-original-completed.json)
 [Chromium deadline evidence](evidence/2026-11-18/github-6d41573-chromium-deadline.json)
 
+The original `5551f52` candidate closed with 22 passing jobs and six failures.
+Its Linux x64 Chromium command also reached the five-minute deadline without a
+final Playwright report. The other failures were both native Windows fixture
+jobs and all three npm audits.
+[Original replay outcomes](evidence/2026-11-18/github-5551f52-original-completed.json)
+
 ## Go security patch
 
 Govulncheck reported GO-2026-6859 against the Go 1.27.3 source configuration
