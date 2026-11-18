@@ -1,0 +1,99 @@
+# SPDX-License-Identifier: BUSL-1.1
+x-cratectl: &cratectl
+  image: ${CRATECTL_COMPOSE_IMAGE:?run the evaluation launcher}
+  platform: ${CRATECTL_COMPOSE_PLATFORM:?run the evaluation launcher}
+  user: ${CRATECTL_COMPOSE_USER:?run the evaluation launcher}
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  networks: [evaluation]
+
+services:
+  postgres:
+    image: ${CRATECTL_COMPOSE_POSTGRES:?run the evaluation launcher}
+    platform: ${CRATECTL_COMPOSE_PLATFORM:?run the evaluation launcher}
+    env_file: ${CRATECTL_COMPOSE_STATE:?run the evaluation launcher}/postgres.env
+    environment:
+      PGPORT: "35432"
+      POSTGRES_DB: postgres
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+    command: [postgres, -p, "35432"]
+    healthcheck:
+      test: [CMD, pg_isready, -h, 127.0.0.1, -p, "35432", -d, postgres]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+    volumes:
+      - database:/var/lib/postgresql/data
+      - type: bind
+        source: ./init-database.sql
+        target: /docker-entrypoint-initdb.d/01-cratectl.sql
+        read_only: true
+        bind:
+          create_host_path: false
+    networks: [evaluation]
+
+  init:
+    <<: *cratectl
+    profiles: [bootstrap]
+    env_file: ${CRATECTL_COMPOSE_STATE:?run the evaluation launcher}/init.env
+    command: [init, --directory, /var/lib/cratectl, --tenant, "${CRATECTL_COMPOSE_TENANT:?run the evaluation launcher}", --public-url, "https://127.0.0.1:38443"]
+    volumes:
+      - type: bind
+        source: ${CRATECTL_COMPOSE_STATE}/installation
+        target: /var/lib/cratectl
+        bind:
+          create_host_path: false
+
+  registry:
+    <<: *cratectl
+    build:
+      context: ${CRATECTL_COMPOSE_BUILD:?run the evaluation launcher}
+      args:
+        POSTGRES_IMAGE: ${CRATECTL_COMPOSE_POSTGRES:?run the evaluation launcher}
+    command: [serve, --config, /var/lib/cratectl/runtime.json, --listen, "0.0.0.0:38443", --pagination-key-file, /var/lib/cratectl/pagination/pagination.key]
+    ports: ["127.0.0.1:38443:38443"]
+    volumes:
+      - &runtime
+        type: bind
+        source: ${CRATECTL_COMPOSE_STATE}/installation/runtime.json
+        target: /var/lib/cratectl/runtime.json
+        read_only: true
+        bind:
+          create_host_path: false
+      - &objects
+        type: bind
+        source: ${CRATECTL_COMPOSE_STATE}/installation/objects
+        target: /var/lib/cratectl/objects
+        bind:
+          create_host_path: false
+      - <<: *runtime
+        source: ${CRATECTL_COMPOSE_STATE}/installation/server.crt
+        target: /var/lib/cratectl/server.crt
+      - <<: *runtime
+        source: ${CRATECTL_COMPOSE_STATE}/installation/server.key
+        target: /var/lib/cratectl/server.key
+      - type: bind
+        source: ${CRATECTL_COMPOSE_STATE}/pagination
+        target: /var/lib/cratectl/pagination
+        bind:
+          create_host_path: false
+
+  worker:
+    <<: *cratectl
+    command: [worker, --config, /var/lib/cratectl/runtime.json]
+    volumes:
+      - *runtime
+      - *objects
+      - <<: *runtime
+        source: ${CRATECTL_COMPOSE_STATE}/installation/workers.json
+        target: /var/lib/cratectl/workers.json
+      - <<: *runtime
+        source: ${CRATECTL_COMPOSE_STATE}/installation/worker.token
+        target: /var/lib/cratectl/worker.token
+
+networks:
+  evaluation: {}
+
+volumes:
+  database: {}

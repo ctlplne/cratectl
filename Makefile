@@ -40,6 +40,7 @@ lint:
 	python3 scripts/test_oci_client_contract.py
 	python3 scripts/test_nuget_feed_cases.py
 	python3 scripts/test_bounded_client.py
+	python3 scripts/test_compose_evaluation.py
 	python3 scripts/test_conformance_profile.py
 	python3 scripts/test_go_module_profile.py
 	python3 scripts/test_go_file_proxy.py
