@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
 """Exercise native filesystem boundaries with real files, links and FIFOs."""
+import base64
+import json
 import os
 import io
 from pathlib import Path
@@ -8,7 +10,8 @@ import tempfile
 import unittest
 import tarfile
 
-from oci_client_contract import new_podman_runroot, read_owned_file, read_owned_tar_file, validate_podman_runroot
+from oci_client_contract import (new_podman_runroot, read_owned_file, read_owned_tar_file,
+                                 validate_podman_runroot, verify_file_only_helm_login)
 
 
 class NativeClientFiles(unittest.TestCase):
@@ -49,6 +52,21 @@ class NativeClientFiles(unittest.TestCase):
             read_owned_file(self.root, fifo, 4096)
         with self.assertRaises(ValueError):
             read_owned_file(self.root, self.root, 4096)
+
+    def test_helm_login_refuses_an_ambient_helper_or_a_different_credential(self):
+        path = self.root / 'helm.json'
+        authority = '127.0.0.1:38443'
+        scoped = {'auths': {authority: {'auth': base64.b64encode(b'token:owned_fixture').decode()}}}
+        for config, mode, valid in (
+                (scoped, 0o600, True), ({**scoped, 'credsStore': 'osxkeychain'}, 0o600, False),
+                ({**scoped, 'credHelpers': {authority: 'example'}}, 0o600, False),
+                ({'auths': {'example.invalid': scoped['auths'][authority]}}, 0o600, False),
+                ({'auths': {authority: {'auth': 'invalid base64'}}}, 0o600, False), (scoped, 0o644, False)):
+            with self.subTest(mode=mode, valid=valid):
+                path.write_text(json.dumps(config))
+                path.chmod(mode)
+                self.assertEqual(verify_file_only_helm_login(self.root, path, authority, 'token', 'owned_fixture'), valid)
+                self.assertFalse(verify_file_only_helm_login(self.root, path, authority, 'token', 'other_fixture'))
 
     def test_podman_runroot_is_short_private_unique_and_bound_to_its_inode(self):
         old = self.root / 'oci-client-conformance' / ('a' * 10) / 'podman-run'

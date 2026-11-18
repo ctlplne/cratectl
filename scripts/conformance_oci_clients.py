@@ -25,7 +25,8 @@ import urllib.parse
 import urllib.request
 import uuid
 
-from oci_client_contract import new_podman_runroot, read_owned_file, read_owned_tar_file, validate_podman_runroot
+from oci_client_contract import (new_podman_runroot, read_owned_file, read_owned_tar_file,
+                                 validate_podman_runroot, verify_file_only_helm_login)
 from ci.native_client_diagnostics import safe_client_diagnostics
 from qualification_contract import CURRENT_SCHEMA, candidate_binary_directory, validate_historical_build
 
@@ -222,7 +223,8 @@ def podman(role, arguments, label, **options):
 def helm(role, arguments, label, **options):
     return command([HELM, *arguments, '--registry-config', auth[role]['helm']], label,
                    extra={'HELM_CACHE_HOME': str(auth[role]['home'] / 'cache'), 'HELM_CONFIG_HOME': str(auth[role]['home'] / 'config'),
-                          'HELM_DATA_HOME': str(auth[role]['home'] / 'data'), 'HELM_PLUGINS': str(PRIVATE / 'empty-plugins')}, **options)
+                          'HELM_DATA_HOME': str(auth[role]['home'] / 'data'), 'HELM_PLUGINS': str(PRIVATE / 'empty-helm-tools'),
+                          'DOCKER_CONFIG': str(auth[role]['helm-docker']), 'PATH': str(PRIVATE / 'empty-helm-tools')}, **options)
 
 
 def repo(kind, role='admin', **settings):
@@ -420,6 +422,7 @@ try:
     rls = command([PSQL, '-X', '-At', '-v', 'ON_ERROR_STOP=1', '-c', "SELECT count(*),bool_and(c.relrowsecurity AND c.relforcerowsecurity AND c.relowner<>(SELECT oid FROM pg_roles WHERE rolname=current_user)) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='cratectl' AND c.relkind IN ('r','p') AND EXISTS(SELECT 1 FROM pg_attribute a WHERE a.attrelid=c.oid AND a.attname='tenant' AND NOT a.attisdropped)"], 'observe forced tenant table RLS', extra=runtime_pg).decode().strip().split('|')
     check('every observed durable tenant table has forced RLS', len(rls) == 2 and int(rls[0]) > 0 and rls[1] == 't')
     tenant = 'oci-clients-' + RUN
+    (PRIVATE / 'empty-helm-tools').mkdir(mode=0o700)
     for role, permission, target in [('admin', 'admin', tenant), ('writer', 'writer', tenant), ('reader', 'reader', tenant), ('revocable', 'reader', tenant), ('origin', 'admin', tenant + '-origin')]:
         token_file = PRIVATE / (role + '.token')
         command([SERVER, 'provision', '--tenant', target, '--actor', role, '--role', permission, '--token-file', token_file], 'provision ' + role, owner=True)
@@ -427,7 +430,9 @@ try:
         home = PRIVATE / ('auth-' + role)
         (home / 'docker').mkdir(parents=True)
         private('auth-' + role + '/docker/config.json', {})
-        auth[role] = {'home': home, 'docker': home / 'docker', 'podman': home / 'podman.json', 'helm': home / 'helm.json'}
+        private('auth-' + role + '/helm-docker/config.json', {'auths': {}})
+        auth[role] = {'home': home, 'docker': home / 'docker', 'podman': home / 'podman.json',
+                      'helm': home / 'helm.json', 'helm-docker': home / 'helm-docker'}
     private('upstreams.json', {tenant + '/origin': {'value': tokens['origin'], 'allowed_url': BASE + '/v2/' + REPOS['origin'] + '/'}})
     runtime = dict(env)
     runtime.pop('CRATECTL_OWNER_DSN', None)
@@ -447,6 +452,8 @@ try:
         docker(role, ['login', '--username', 'token', '--password-stdin', REGISTRY], 'Docker login ' + role, stdin=(tokens[role] + '\n').encode())
         podman(role, ['login', '--tls-verify=false', '--authfile', auth[role]['podman'], '--username', 'token', '--password-stdin', REGISTRY], 'Podman login ' + role, stdin=(tokens[role] + '\n').encode())
         helm(role, ['registry', 'login', '--plain-http', '--username', 'token', '--password-stdin', REGISTRY], 'Helm login ' + role, stdin=(tokens[role] + '\n').encode())
+        check('Helm login for ' + role + ' is bound only to its private credential file',
+              verify_file_only_helm_login(PRIVATE, auth[role]['helm'], REGISTRY, 'token', tokens[role]))
     phase('image_publication')
     native = build_image('v1', APP1)
     build_image('v2', APP2)

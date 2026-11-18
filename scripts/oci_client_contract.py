@@ -1,12 +1,31 @@
 # SPDX-License-Identifier: BUSL-1.1
 """Bounded observations of files returned by native package clients."""
-import os
+import base64
+import hmac
 import io
+import json
+import os
 from pathlib import Path
 import stat
 import re
 import tempfile
 import tarfile
+
+
+def verify_file_only_helm_login(root, path, authority, username, token):
+    path = Path(path)
+    raw = read_owned_file(root, path, 8192)
+    try:
+        config = json.loads(raw)
+        if path.lstat().st_mode & 0o077 or not isinstance(config, dict) or config.get('credsStore') or config.get('credHelpers'):
+            return False
+        entries = config['auths']
+        if set(entries) != {authority}:
+            return False
+        stored = base64.b64decode(entries[authority]['auth'], validate=True)
+        return hmac.compare_digest(stored, (username + ':' + token).encode())
+    except (OSError, TypeError, ValueError, KeyError):
+        return False
 
 
 def read_owned_tar_file(raw, name, limit):

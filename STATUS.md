@@ -539,6 +539,15 @@ description when available. Linux search, uncached upstream search, legacy Git
 discovery, replication and broader scale require further work.
 [Native Cargo proxy and group search evidence](evidence/2026-11-19/cargo-2af9921-search-native.json)
 
+The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
+trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities
+published and pulled two exact chart archives, including a build-metadata
+version. Mandatory review, chart-layer denial, restart and grant revocation
+were exercised. The first attempt selected the system Keychain helper. The
+matching disposable fixture credential was removed and the corrected replay
+used file-only logins. The hosted OCI fixture now checks that isolation.
+[Native Helm OCI TLS evidence](evidence/2026-11-19/helm-oci-2af9921-tls-native.json)
+
 The independent `b88d397` schema 18 daemon and stock ORAS 1.3.6 passed
 122 controlled upgrade checks against `910359d` on macOS ARM64 with
 PostgreSQL 16.16. The replay covered retained artifact lifecycle and original

@@ -17,7 +17,8 @@
         "Docker Engine": "28.0.4",
         "Buildx": "0.38.1",
         "Podman": "4.9.3",
-        "Helm": "4.3.1+gc0d08d0"
+        "Helm": "4.3.1+gc0d08d0",
+        "Helm macOS ARM64": "4.2.2+gb05881c"
       },
       "source_ids": [
         "jfrog-formats",
@@ -30,7 +31,7 @@
         "group": true
       },
       "jfrog_modes": "per-format documentation review required",
-      "native_limitations": "Scoped clean OCI one-time and explicitly authorized automatic retirement pass through API, CLI, Chromium and stock ORAS. Exact policy/source/actor bindings, complete bounded captures, real due-slot coalescing, cancellation/pause/expiry/revocation fences, proxy/group/hosted restore, process restart and partial-effect SIGKILL recovery are observed. Logical tombstones retain all bytes and reclaim zero storage. Other rules/formats/calendar schedules, legal-hold administration, physical GC, release/replica/restore protections, providers/platforms, clock/fault/scale, production recovery and full product readiness remain required.",
+      "native_limitations": "Scoped clean OCI one-time and explicitly authorized automatic retirement pass through API, CLI, Chromium and stock ORAS. Exact policy/source/actor bindings, complete bounded captures, real due-slot coalescing, cancellation/pause/expiry/revocation fences, proxy/group/hosted restore, process restart and partial-effect SIGKILL recovery are observed. Logical tombstones retain all bytes and reclaim zero storage. Other rules/formats/calendar schedules, legal-hold administration, physical GC, release/replica/restore protections, providers/platforms, clock/fault/scale, production recovery and full product readiness remain required. Native Helm 4.2.2 macOS ARM64 passed 12 scoped hosted OCI checks over trusted HTTPS with PostgreSQL 16.16, including build metadata, exact chart bytes, current graph review, restart and grants.",
       "state": "implementing",
       "candidate": "ab28ee966077f7e96a9d96a8898eb389200e30e4",
       "evidence": [
@@ -52,7 +53,8 @@
         "evidence/2026-10-31/retention-schedule-checkpoint.json",
         "evidence/2026-10-31/hold-checkpoint.json",
         "evidence/2026-11-03/github-e2208e7-checkpoint.json",
-        "evidence/2026-11-03/github-6854e80-checkpoint.json"
+        "evidence/2026-11-03/github-6854e80-checkpoint.json",
+        "evidence/2026-11-19/helm-oci-2af9921-tls-native.json"
       ],
       "hold_scope": "Qualified subset: tenant-administrator inventory of active/expired/released canonical OCI holds, scoped encrypted live paging/search, original immutable hold/release snapshots, actual-time expiry and retained-repository/current-administrator recovery. Exact clean production/race artifacts, native old-schema8 receipt/CLI/ORAS, seven old upgrade baselines and eleven Chromium workflows pass within the checkpoint scope. One replaceable per-reference hold slot remains; independent cases/case-specific release, bulk/legal retention, other formats, safe physical GC and production recovery remain required. No legal-compliance or broad readiness verdict.",
       "scoped_native_clients": {

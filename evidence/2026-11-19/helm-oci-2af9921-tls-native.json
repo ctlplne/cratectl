@@ -1,0 +1,77 @@
+{
+  "candidate": "2af992118f738d35a4c0f56a53c747a5df45311c",
+  "status": "passed",
+  "observed_at": "2026-11-19T01:51:21.663445+05:30",
+  "os": "Darwin",
+  "platform": "arm64",
+  "postgres": "16.16",
+  "helm": "v4.2.2+gb05881c",
+  "binaries": {
+    "cratectld": "faa5d78c57fefab2bbc007c11826721e99bd8569eda0591bd8ca4784ddf2b52b",
+    "cratectl": "220725a7c95c3502ef1e6ca7b39a051b79d1989e7533320c751a71929813d7db",
+    "helm": "19b705bb0784d3545da9f9313340f87cf0a758954c893b3e7d1e03524de1d030",
+    "postgres": "e97882a6cc72e1fa643602b28f4827b35be2adc1e9c15405d6fb374778dcc803"
+  },
+  "chart_sha256": {
+    "1.0.0": "a8edfb3f7527268fa8594a56df9bffad9b50186e70b78ce972e8142adea37cef",
+    "1.1.0+owned.7": "35a882428179d0508c22ac7ad78a7b0a50103660c58bf858ec94fc6ef2e4b394"
+  },
+  "manifests": {
+    "1.0.0": "sha256:60c84027900291c831e5ff1d461248ee0bcb875edf08ae662d5dcc9a6ee78eae",
+    "1.1.0+owned.7": "sha256:d475ce4b4a9c64e95f7fa4769af0cbec9c1287723823750a17ad575a0a0882fe"
+  },
+  "checks": [
+    "live owned PostgreSQL 16.16",
+    "exact native stock Helm 4.2.2",
+    "both stock clients log in with separate file-only actors over trusted TLS",
+    "stock Helm uploads both exact chart archives with canonical OCI descriptors and a build-metadata tag",
+    "reader cannot publish even exact existing chart bytes",
+    "mandatory review blocks a stock Helm pull before decisions",
+    "stock Helm pulls both original approved charts after graph review",
+    "denying one chart layer blocks its stock pull while the other release stays available",
+    "stock Helm retrieves exact approved bytes after clean registry restart",
+    "a stock Helm credential with a revoked grant cannot pull a retained chart",
+    "restored read access retains the original digest binding",
+    "all 59 tenant tables force RLS and runtime owns none"
+  ],
+  "goal_complete": false,
+  "broad_readiness": false,
+  "first_attempt": "evidence/2026-11-19/helm-oci-2af9921-first-credential-helper.json",
+  "raw_private_summary": {
+    "path": ".cache/cratectl-cargo-native-2af9921.BrIBxq/.private/cratectl-helm-oci-native-6pxry1h_/safe-report.json",
+    "bytes": 1891,
+    "sha256": "45c8cfbc41cb9a5b5790cbc449bbd7acccd3630d7e7617a59172f8bed4f4484b"
+  },
+  "local_driver": {
+    "path": ".cache/cratectl-helm-oci-native.py",
+    "bytes": 15448,
+    "sha256": "7e432d41368a33ea64d0f690bf259b45c079fdd7574e8c6b599f2f4e56d82372"
+  },
+  "source_sha256": [
+    {
+      "path": "internal/server/oci.go",
+      "sha256": "68b2f24290e47850b64d2aea890c166f6ca6633d71e1425f7e8c17377d166406"
+    },
+    {
+      "path": "internal/server/uploads.go",
+      "sha256": "39ddc0193e8fa464156113a45d131a84895a1aef72ce521f04e85666d1cf5ca3"
+    },
+    {
+      "path": "internal/server/oci_manifest.go",
+      "sha256": "ede500531d9af2eebd88db995756984aa84d532bf5a96e37652f0af66895bdb2"
+    },
+    {
+      "path": "internal/store/artifact_read.go",
+      "sha256": "aba845ceb45aff4503adb12c7a10330a7a7154f9a048b15ee3fa34b9153ac11e"
+    },
+    {
+      "path": "cmd/cratectld/init.go",
+      "sha256": "c96f6629a7a1050779cf79f0f77a43b038adedcbdb5a577f1f9a9ccc32738966"
+    }
+  ],
+  "limits": [
+    "Scoped stock Helm 4.2.2 macOS ARM64 and installed PostgreSQL 16.16. Both client actors use separately protected file-only authentication and trusted loopback HTTPS.",
+    "Two inert chart archives including SemVer build metadata. The client packaged, published and pulled each chart without installing or rendering it.",
+    "Independent TLS upstream proxies, artifact provenance files, and multi-node or production chart delivery remain open."
+  ]
+}
