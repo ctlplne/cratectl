@@ -84,6 +84,18 @@ else:
             self.assertNotEqual(wrong.returncode, 0)
         self.assertEqual(len(self.requests()), 2)
 
+    def test_postgresql_archive_version_and_source_are_bound(self):
+        base = 'https://ftp.postgresql.org/pub/source/'
+        for version in ('16.15', '16.16'):
+            archive = f'postgresql-{version}.tar.bz2'
+            result = self.run_fetch(archive=archive, url=f'{base}v{version}/{archive}')
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual((self.root / '.cache' / archive).read_bytes(), PAYLOAD)
+        for version, folder in (('16.16', '16.15'), ('16.17', '16.17')):
+            archive = f'postgresql-{version}.tar.bz2'
+            self.assertNotEqual(self.run_fetch(archive=archive, url=f'{base}v{folder}/{archive}').returncode, 0)
+        self.assertEqual(len(self.requests()), 2)
+
     def test_approved_sources_are_bounded_pinned_and_published_without_executing_payload(self):
         for archive,url in [(ORAS,ORAS_URL),('helm-v4.3.1-linux-arm64.tar.gz','https://get.helm.sh/helm-v4.3.1-linux-arm64.tar.gz'),('gitleaks_8.30.1_linux_x64.tar.gz','https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz')]:
             result=self.run_fetch(archive=archive,url=url)

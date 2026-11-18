@@ -11,7 +11,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from linux_offline_media import (ED25519_SPKI, IMAGE_FILES, MANIFEST, POSTGRES,
+from linux_offline_media import (ED25519_SPKI, IMAGE_FILES, MANIFEST, POSTGRES, PREVIOUS_POSTGRES,
                                  PROFILE, SIGNATURE, aliases, contract, image_id, members,
                                  saved_image_configuration, verify_media)
 
@@ -41,6 +41,12 @@ class LinuxOfflineMediaTests(unittest.TestCase):
             images['postgres']['source'] = POSTGRES
             manifest = {'schema': 1, 'profile': PROFILE, 'candidate': candidate,
                         'platform': 'linux/arm64', 'images': images, 'members': objects}
+            images['postgres']['source'] = PREVIOUS_POSTGRES
+            self.assertEqual(contract(json.dumps(manifest).encode(), 'arm64'), manifest)
+            images['postgres']['source'] = POSTGRES.rsplit(':', 1)[0] + ':' + 'a' * 64
+            with self.assertRaisesRegex(ValueError, 'PostgreSQL pin differs'):
+                contract(json.dumps(manifest).encode(), 'arm64')
+            images['postgres']['source'] = POSTGRES
             (media / MANIFEST).write_bytes(json.dumps(manifest).encode())
             (media / SIGNATURE).write_bytes(bytes(64))
             with patch('linux_offline_media.command') as openssl:

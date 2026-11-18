@@ -17,7 +17,7 @@ import time
 
 from bounded_client import run_owned_client
 from ci.compose_evidence import CHECKS, SOURCE_PATHS, safe_compose_contract
-from compose_evaluation import ROOT, private_directory, private_save, read_state
+from compose_evaluation import POSTGRES_VERSION_NUM, ROOT, private_directory, private_save, read_state
 
 
 URL = 'https://127.0.0.1:38443'
@@ -135,6 +135,8 @@ class Journey:
             return self.run('postgres-metadata', ['docker', 'exec', services['postgres'], 'psql', '-X', '-v', 'ON_ERROR_STOP=1',
                                                   '-At', '-U', 'postgres', '-p', '35432', '-d', 'cratectl', '-c', statement]).strip()
 
+        require(postgres('SHOW server_version_num') == POSTGRES_VERSION_NUM,
+                'Compose PostgreSQL server version differs from the reviewed patch')
         roles = postgres("SELECT rolsuper||'/'||rolbypassrls||'/'||rolinherit FROM pg_roles WHERE rolname='cratectl_app'")
         total, forced, owned = map(int, postgres(TABLES).split('|'))
         self.check('forced-rls', roles == 'false/false/false' and 0 < total == forced and owned == 0)

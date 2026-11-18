@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: BUSL-1.1
-ARG POSTGRES_IMAGE=postgres:16.15-alpine
+ARG POSTGRES_IMAGE=docker.io/library/postgres:16.16-alpine@sha256:81e77a4833487b8132fe4b00bedd39dc3f74b8641e387f19312a48f7de218c2e
 FROM ${POSTGRES_IMAGE} AS trust
 
 FROM scratch

@@ -21,7 +21,8 @@ from urllib.request import build_opener, HTTPSHandler, ProxyHandler
 
 ROOT = Path(__file__).resolve().parents[1]
 DEPLOY = ROOT / 'deploy/compose'
-POSTGRES = 'docker.io/library/postgres:16.15-alpine@sha256:aa6cb33cf4c19c765cefcf48d96176258800870a9a1e930ad126200f9d825139'
+POSTGRES_VERSION_NUM = '160016'
+POSTGRES = 'docker.io/library/postgres:16.16-alpine@sha256:81e77a4833487b8132fe4b00bedd39dc3f74b8641e387f19312a48f7de218c2e'
 PROJECT = re.compile(r'cratectl-[a-z0-9][a-z0-9-]{0,39}\Z')
 TENANT = re.compile(r'[a-z][a-z0-9-]{0,62}\Z')
 

@@ -17,7 +17,7 @@ import tempfile
 import time
 
 from bounded_client import run_owned_client
-from compose_evaluation import ROOT, private_directory
+from compose_evaluation import POSTGRES, POSTGRES_VERSION_NUM, ROOT, private_directory
 from linux_offline_media import assemble, require, saved_image_configuration
 from ci.offline_media_evidence import CHECKS, NODE, SOURCE_PATHS, validate
 
@@ -147,6 +147,7 @@ try:
         run('refuse-changed-registry-image',*verify_args(altered,fingerprint),want=1)
         assert 'signed media bytes differ: registry-image.tar' in (PRIVATE/'refuse-changed-registry-image.log').read_text()
     images=manifest['images']
+    require(images['postgres']['source'] == POSTGRES, 'newly assembled media must use the current PostgreSQL pin')
     loaded_ids={}
     for role in ('postgres','registry'):
         ref=images[role]['tag']
@@ -207,6 +208,8 @@ try:
         time.sleep(.13)
     else:
         raise RuntimeError(postgres_failure())
+    require(sql('verified-imported-postgres-version', 'SHOW server_version_num') == POSTGRES_VERSION_NUM,
+            'imported PostgreSQL server version differs from the reviewed patch')
     assert sql('pre-bootstrap-schema',"SELECT count(*) FROM pg_namespace WHERE nspname='cratectl'")=='0'
     service_args=['--platform='+PLATFORM,'--network=container:'+PG,'--user='+uid,'--read-only','--cap-drop=ALL',
                   '--security-opt=no-new-privileges','--label','ctlplne.project=cratectl']

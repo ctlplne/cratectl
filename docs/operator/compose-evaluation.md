@@ -11,7 +11,7 @@ python3 scripts/compose_evaluation.py up --tenant my-team
 
 The launcher builds both Linux binaries from the current clean commit and
 creates the `cratectl-evaluation` project. It starts the pinned PostgreSQL
-16.15 image and waits for TCP readiness inside the Compose network. One
+16.16 image and waits for TCP readiness inside the Compose network. One
 initializer migrates the empty database and creates the initial administrator
 and worker credentials. The registry and worker use the `cratectl_app` database
 role. It owns no tenant tables and has neither superuser nor BYPASSRLS.

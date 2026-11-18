@@ -23,6 +23,7 @@ from verify_linux_candidate import MAX_ARCHIVE, SHA256, require, unique_members,
 
 
 PROFILE = 'cratectl-linux-offline-media-v1'
+PREVIOUS_POSTGRES = 'docker.io/library/postgres:16.15-alpine@sha256:aa6cb33cf4c19c765cefcf48d96176258800870a9a1e930ad126200f9d825139'
 ARCH = ('amd64', 'arm64')
 IMAGE_FILES = {'postgres': 'postgres-image.tar', 'registry': 'registry-image.tar'}
 RELEASE_FILES = {
@@ -105,7 +106,7 @@ def contract(raw, expected_platform):
         require(type(entry) is dict and set(entry) == fields and entry['tag'] == alias
                 and type(entry['id']) is str and re.fullmatch('sha256:[a-f0-9]{64}', entry['id']),
                 'invalid reviewed image identity: ' + name)
-    require(images['postgres']['source'] == POSTGRES, 'media PostgreSQL pin differs')
+    require(images['postgres']['source'] in (POSTGRES, PREVIOUS_POSTGRES), 'media PostgreSQL pin differs')
     files = report['members']
     expected = members(expected_platform)
     require(type(files) is dict and set(files) == set(expected), 'closed media membership is required')

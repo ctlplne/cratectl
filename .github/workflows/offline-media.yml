@@ -53,7 +53,7 @@ jobs:
           go mod download
           bash scripts/ci/bootstrap_oci_clients.sh --helm-only
           printf '%s\n' "$GITHUB_WORKSPACE/.cache/bin" >> "$GITHUB_PATH"
-          docker pull --platform 'linux/${{ matrix.arch }}' docker.io/library/postgres:16.15-alpine@sha256:aa6cb33cf4c19c765cefcf48d96176258800870a9a1e930ad126200f9d825139
+          docker pull --platform 'linux/${{ matrix.arch }}' docker.io/library/postgres:16.16-alpine@sha256:81e77a4833487b8132fe4b00bedd39dc3f74b8641e387f19312a48f7de218c2e
           docker pull --platform 'linux/${{ matrix.arch }}' node:22-bookworm@sha256:363e1587494626837fa7f9a23bdb453d13b0ff3c67c705c2805cfc69c2d2fad7
       - name: Authenticate and load media and replay stock npm without network access
         run: python3 scripts/conformance_offline_media.py --architecture '${{ matrix.arch }}'
