@@ -1,0 +1,55 @@
+{
+  "candidate": "a23e8702ae728109ba737ecc2b802ef6ae97b0f0",
+  "status": "passed",
+  "observed_at": "2026-11-19T01:55:11.306256+05:30",
+  "os": "Darwin",
+  "platform": "arm64",
+  "postgres": "16.16",
+  "helm": "v4.2.2+gb05881c",
+  "binaries": {
+    "cratectld": "dba5e988d69b18b8800fb5442f2c6b938956ff6ba19be2fe73feadde622991fe",
+    "cratectl": "adff226948f595fd629b8e8615f134a92c48eba394a8eadcb9cf07b8af2c1876",
+    "helm": "19b705bb0784d3545da9f9313340f87cf0a758954c893b3e7d1e03524de1d030",
+    "postgres": "e97882a6cc72e1fa643602b28f4827b35be2adc1e9c15405d6fb374778dcc803"
+  },
+  "chart_sha256": {
+    "1.0.0": "eb23ab2b764664b04a1cbd2a57c5f63315a2d7b7a8e9c35d099f228be80853b4",
+    "1.1.0+owned.7": "1d3f0c27289a05647a8c58c3b9ec54fdfe70fa3d60d35cb622876d958ca48e41"
+  },
+  "manifests": {
+    "1.0.0": "sha256:014cac64eaa6d69db1ac68b16de0ffbd0cfcf574572f6c3a75b5b7ddfc48aac6",
+    "1.1.0+owned.7": "sha256:2c2ffd7293b2f737ebfc861f101daff320daf970984425e1a73f3d25fa3aaa5c"
+  },
+  "checks": [
+    "live owned PostgreSQL 16.16",
+    "exact native stock Helm 4.2.2",
+    "both stock clients log in with separate file-only actors over trusted TLS",
+    "stock Helm uploads both exact chart archives with canonical OCI descriptors and a build-metadata tag",
+    "reader cannot publish even exact existing chart bytes",
+    "mandatory review blocks a stock Helm pull before decisions",
+    "stock Helm pulls both original approved charts after graph review",
+    "denying one chart layer blocks its stock pull while the other release stays available",
+    "stock Helm retrieves exact approved bytes after clean registry restart",
+    "a stock Helm credential with a revoked grant cannot pull a retained chart",
+    "restored read access retains the original digest binding",
+    "all 59 tenant tables force RLS and runtime owns none"
+  ],
+  "goal_complete": false,
+  "broad_readiness": false,
+  "private_binary_report": {
+    "path": ".cache/cratectl-helm-native-a23e870.adMcoy/.private/cratectl-helm-oci-native-_7m87s0j/safe-report.json",
+    "bytes": 1891,
+    "sha256": "43c905bfc4953ea7cff479f739db610211e6d72d5540a17a6f6333b21ea6efd5"
+  },
+  "local_driver": {
+    "path": ".cache/cratectl-helm-oci-file-only-native.py",
+    "bytes": 15616,
+    "sha256": "2efb9085330614ce49d774c2064670d232d7eb9ed5c060233178bef35e13668e"
+  },
+  "fixture_source_sha256": "a82b572f0f9aa0b21277a91fa8305ca1021bbf41b1628efb74ba22c48b0d3e35",
+  "limits": [
+    "Exact local native TLS profile uses the committed guard on both real stock Helm logins.",
+    "The executable search path and plugin path were an empty private directory. Helm used separate temporary credential files and reported no helper.",
+    "The Docker and Podman portions of the hosted Linux workflow remain separate."
+  ]
+}
