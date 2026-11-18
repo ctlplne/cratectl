@@ -10,11 +10,23 @@ import tarfile
 import tempfile
 import unittest
 
-from package_linux import BINARIES, SOURCE_INPUTS, archive_candidate, digest
+from package_linux import BINARIES, SOURCE_INPUTS, archive_candidate, digest, write_checksums
 from verify_linux_candidate import verify
 
 
 class LinuxCandidateTests(unittest.TestCase):
+    def test_checksum_bytes_are_canonical_and_preserve_existing_evidence(self):
+        with tempfile.TemporaryDirectory(prefix='cratectl-checksums-') as folder:
+            root = Path(folder)
+            entries = {'cratectl-linux-arm64.tar.gz': 'b' * 64, 'cratectl-linux-amd64.tar.gz': 'a' * 64}
+            write_checksums(root, entries)
+            expected = ('a' * 64 + '  cratectl-linux-amd64.tar.gz\n' + 'b' * 64 + '  cratectl-linux-arm64.tar.gz\n').encode()
+            self.assertEqual((root / 'SHA256SUMS').read_bytes(), expected)
+            write_checksums(root, entries)
+            with self.assertRaisesRegex(ValueError, 'Existing candidate artifact differs'):
+                write_checksums(root, {**entries, 'cratectl-linux-arm64.tar.gz': 'c' * 64})
+            self.assertEqual((root / 'SHA256SUMS').read_bytes(), expected)
+
     def test_archive_bytes_and_member_metadata_are_reproducible(self):
         with tempfile.TemporaryDirectory(prefix='cratectl-archive-test-') as folder:
             root = Path(folder)

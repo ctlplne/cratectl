@@ -71,6 +71,19 @@ def archive_candidate(output, binaries, manifest):
             staged.unlink(missing_ok=True)
 
 
+def write_checksums(directory, entries):
+    with tempfile.NamedTemporaryFile(dir=directory, prefix='.cratectl-', delete=False) as output:
+        temporary = Path(output.name)
+        try:
+            for name, checksum in sorted(entries.items()):
+                output.write(f'{checksum}  {name}\n'.encode('ascii'))
+            output.flush()
+            os.fsync(output.fileno())
+            publish(directory / 'SHA256SUMS', temporary)
+        finally:
+            temporary.unlink(missing_ok=True)
+
+
 def build(architecture, candidate, version, parent, go):
     name = 'cratectl-linux-' + architecture + '.tar.gz'
     with tempfile.TemporaryDirectory(prefix='cratectl-' + architecture + '-', dir=parent) as directory:
@@ -118,9 +131,13 @@ def main():
     parent = ROOT / '.cache/cratectl-linux-candidates' / candidate
     parent.mkdir(parents=True, exist_ok=True)
     targets = ('amd64', 'arm64') if args.architecture == 'both' else (args.architecture,)
+    checksums = {}
     for architecture in targets:
         name = build(architecture, candidate, version, parent, go)
-        print(digest(parent / name), parent / name)
+        checksums[name] = digest(parent / name)
+        print(checksums[name], parent / name)
+    if args.architecture == 'both':
+        write_checksums(parent, checksums)
 
 
 if __name__ == '__main__':

@@ -15,6 +15,24 @@ and source input hashes. Archive ownership, permission and time metadata are
 fixed. If an archive already exists, another build verifies that it produced
 identical bytes before reusing the filename.
 
+The dual-architecture build also emits canonical `SHA256SUMS` bytes. An external
+signer can sign that file with your own Ed25519 key. On the signing host, use
+the approved key and write a detached signature:
+
+```sh
+openssl pkeyutl -sign -rawin -inkey "$SIGNING_KEY" -in SHA256SUMS -out SHA256SUMS.sig
+```
+
+On the verification host, authenticate the public key through your separate
+trust channel. Verify the detached signature before using the archive digests:
+
+```sh
+openssl pkeyutl -verify -rawin -pubin -inkey "$TRUSTED_PUBLIC_KEY" -in SHA256SUMS -sigfile SHA256SUMS.sig
+```
+
+Use a version of OpenSSL with Ed25519 support in `pkeyutl`.
+[OpenSSL signature options](https://docs.openssl.org/3.5/man1/openssl-pkeyutl/)
+
 Check a local archive against a SHA-256 received through your trusted channel:
 
 ```sh
@@ -31,9 +49,9 @@ The package build disables Go module proxy access and expects the modules alread
 in `.cache/go-mod`.
 
 These bundles serve local engineering. Owner-approved license terms and complete
-distribution notices are required before shipping. Detached signatures, software
-bills of materials, native installation from the packages and network-isolated
-installation of the full stack remain separate qualification work.
+distribution notices are required before shipping. Release signing authority,
+software bills of materials, native installation from the packages and
+network-isolated installation of the full stack remain separate qualification work.
 [Licensing record](../licensing.md)
 
 Two builds of `b910da7` produced byte-identical Linux x64 and ARM64 archives.
