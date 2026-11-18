@@ -258,6 +258,13 @@ and changed archive were refused. Production signing authority and release
 approval remain open.
 [External signature evidence](evidence/2026-11-18/linux-candidate-signed-checksums-5fd3edd.json)
 
+At `f2bc59e`, both Linux archives produced byte-identical SPDX and CycloneDX
+inventories across two generations. All four documents passed their published
+schemas. Each inventory describes 19 components and 26 relationships. The
+executable digests and linked Go modules were matched independently.
+Image, operating-system, vulnerability and release qualification remain open.
+[Linux archive SBOM evidence](evidence/2026-11-18/linux-sbom-f2bc59e.json)
+
 The Linux installer verifies the separately trusted compressed digest and the
 native architecture before publishing both executable files and their manifest
 in an owner-only directory. Its first isolated test stopped on administratively

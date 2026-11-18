@@ -7931,14 +7931,19 @@
     {
       "id": "J.QUAL.SBOM",
       "capability": "QUAL.SBOM",
-      "state": "planned",
+      "state": "implementing",
       "candidate": null,
-      "evidence": [],
+      "evidence": [
+        "evidence/2026-11-18/linux-sbom-f2bc59e.json"
+      ],
       "required": [
         "publish/consume exact bytes where applicable",
         "permissions/tenant isolation",
         "policy denial",
-        "failure/recovery"
+        "failure/recovery",
+        "Release subject and executable digest bindings",
+        "Published SPDX and CycloneDX schema conformance",
+        "Deterministic runtime dependency and image inventory"
       ]
     },
     {
@@ -7957,14 +7962,22 @@
     {
       "id": "J.QUAL.PACKAGING",
       "capability": "QUAL.PACKAGING",
-      "state": "planned",
+      "state": "implementing",
       "candidate": null,
-      "evidence": [],
+      "evidence": [
+        "evidence/2026-11-18/github-675177f-compose-native.json",
+        "evidence/2026-11-18/helm-f245757-arm64-kind.json",
+        "evidence/2026-11-18/github-08436af-linux-install-native-amd64.json",
+        "evidence/2026-11-18/linux-install-08436af-arm64-local.json",
+        "evidence/2026-11-18/linux-sbom-f2bc59e.json"
+      ],
       "required": [
         "publish/consume exact bytes where applicable",
         "permissions/tenant isolation",
         "policy denial",
-        "failure/recovery"
+        "failure/recovery",
+        "Controlled bootstrap and recovery from shipped resources",
+        "Approved signed offline distribution and installation"
       ]
     },
     {
@@ -7974,7 +7987,8 @@
       "candidate": null,
       "evidence": [
         "evidence/2026-11-07/github-badb85b-owned-port-first-failure.json",
-        "evidence/2026-11-07/owned-ci-ports-development.json"
+        "evidence/2026-11-07/owned-ci-ports-development.json",
+        "evidence/2026-11-18/github-08436af-linux-install-native-amd64.json"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -8014,7 +8028,9 @@
       "capability": "QUAL.LINUX-ARM64",
       "state": "implementing",
       "candidate": null,
-      "evidence": [],
+      "evidence": [
+        "evidence/2026-11-18/linux-install-08436af-arm64-local.json"
+      ],
       "required": [
         "publish/consume exact bytes where applicable",
         "permissions/tenant isolation",
