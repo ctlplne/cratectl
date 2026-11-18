@@ -18,6 +18,7 @@ import (
 	"ctlplne.dev/cratectl/internal/configfile"
 	crypt "ctlplne.dev/cratectl/internal/crypto"
 	"ctlplne.dev/cratectl/internal/gomodule"
+	"ctlplne.dev/cratectl/internal/management"
 	"ctlplne.dev/cratectl/internal/store"
 	"ctlplne.dev/cratectl/internal/ziparchive"
 )
@@ -233,7 +234,7 @@ func runGoExportSetCollect(args []string, out io.Writer) error {
 	if attribution == nil {
 		return errors.New("independent complete signed journal attribution required")
 	}
-	client, base, token, closeClient, err := configuredClient(*config)
+	client, base, token, closeClient, err := management.OpenClient(*config)
 	if err != nil {
 		return err
 	}

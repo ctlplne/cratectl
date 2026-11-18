@@ -7,56 +7,34 @@ import (
 	"encoding/json"
 	"errors"
 	"flag"
-	"fmt"
 	"io"
-	"net/http"
 	"regexp"
 	"slices"
 	"time"
 
 	"ctlplne.dev/cratectl/internal/configfile"
 	crypt "ctlplne.dev/cratectl/internal/crypto"
+	"ctlplne.dev/cratectl/internal/management"
 )
 
-const repositoriesAPI = "/api/v1/repositories"
 const repositoryManifestLimit = 4096
 
 var repositoryPlanDigest = regexp.MustCompile(`^[a-f0-9]{64}$`)
 
-type hostedRepository struct {
-	Name          string `json:"name"`
-	Format        string `json:"format"`
-	Access        string `json:"access"`
-	RequireReview bool   `json:"require_review"`
-}
-
 type repositoryManifestDocument struct {
 	Version int    `json:"version"`
 	Tenant  string `json:"tenant"`
-	hostedRepository
-}
-
-type repositoryObservation struct {
-	hostedRepository
-	Mode          string `json:"mode"`
-	State         string `json:"state"`
-	StateRevision int64  `json:"state_revision"`
+	management.RepositorySpec
 }
 
 type repositoryPlan struct {
-	Version        int                        `json:"version"`
-	Authority      string                     `json:"authority"`
-	Desired        repositoryManifestDocument `json:"desired"`
-	Current        *repositoryObservation     `json:"current"`
-	Action         string                     `json:"action"`
-	Drift          []string                   `json:"drift"`
-	ApprovalSHA256 string                     `json:"approval_sha256,omitempty"`
-}
-
-type repositoryManagement struct {
-	client    *http.Client
-	authority string
-	token     string
+	Version        int                               `json:"version"`
+	Authority      string                            `json:"authority"`
+	Desired        repositoryManifestDocument        `json:"desired"`
+	Current        *management.RepositoryObservation `json:"current"`
+	Action         string                            `json:"action"`
+	Drift          []string                          `json:"drift"`
+	ApprovalSHA256 string                            `json:"approval_sha256,omitempty"`
 }
 
 func runRepositoryManifest(args []string, command string, out io.Writer) error {
@@ -80,10 +58,10 @@ func runRepositoryManifest(args []string, command string, out io.Writer) error {
 	}
 	var desired repositoryManifestDocument
 	if command == "repository-import" {
-		if !repositoryName.MatchString(tenant) || !repositoryName.MatchString(name) {
+		if !management.ValidRepositoryName(tenant) || !management.ValidRepositoryName(name) {
 			return errors.New("repository-import requires a valid --tenant and --name")
 		}
-		desired = repositoryManifestDocument{Version: 1, Tenant: tenant, hostedRepository: hostedRepository{Name: name}}
+		desired = repositoryManifestDocument{Version: 1, Tenant: tenant, RepositorySpec: management.RepositorySpec{Name: name}}
 	} else {
 		var err error
 		desired, err = readRepositoryManifest(manifestFile)
@@ -94,43 +72,35 @@ func runRepositoryManifest(args []string, command string, out io.Writer) error {
 			return errors.New("repository-apply requires the exact --approve SHA-256 from a creation plan")
 		}
 	}
-	client, authority, token, closeClient, err := configuredClient(*config)
+	repositories, err := management.OpenRepositories(*config)
 	if err != nil {
 		return err
 	}
-	defer closeClient()
-	management := repositoryManagement{client: client, authority: authority, token: token}
+	defer repositories.Close()
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
-	var session struct {
-		Tenant  string   `json:"tenant"`
-		Role    string   `json:"role"`
-		Formats []string `json:"formats"`
-	}
-	if _, err = management.request(ctx, "GET", "/api/v1/session", "", nil, &session); err != nil {
+	formats, err := repositories.Authorize(ctx, desired.Tenant)
+	if err != nil {
 		return err
 	}
-	if session.Role != "admin" || session.Tenant != desired.Tenant {
-		return errors.New("repository_manifest_tenant_access: use a current administrator credential for the specified tenant")
-	}
-	if desired.Format != "" && !slices.Contains(session.Formats, desired.Format) {
+	if desired.Format != "" && !slices.Contains(formats, desired.Format) {
 		return errors.New("repository_manifest_format_unavailable: the authenticated registry does not serve the requested format")
 	}
-	current, err := management.inspect(ctx, desired.Name)
+	current, err := repositories.Inspect(ctx, desired.Name)
 	if err != nil {
 		return err
 	}
 	if command == "repository-import" {
-		if current == nil || current.Mode != "hosted" || current.State != "active" || !slices.Contains(session.Formats, current.Format) {
+		if current == nil || current.Mode != "hosted" || current.State != "active" || !slices.Contains(formats, current.Format) {
 			return errors.New("repository_import_unavailable: choose an active hosted repository in the specified tenant")
 		}
-		desired.hostedRepository = current.hostedRepository
+		desired.RepositorySpec = current.RepositorySpec
 		return writeRepositoryDocument(out, desired)
 	}
-	creation := planRepository(authority, desired, nil)
+	creation := planRepository(repositories.Authority(), desired, nil)
 	plan := creation
 	if current != nil {
-		plan = planRepository(authority, desired, current)
+		plan = planRepository(repositories.Authority(), desired, current)
 	}
 	if command == "repository-plan" {
 		return writeRepositoryDocument(out, plan)
@@ -147,25 +117,17 @@ func runRepositoryManifest(args []string, command string, out io.Writer) error {
 	if plan.Action == "unchanged" {
 		return writeRepositoryDocument(out, plan)
 	}
-	body, err := json.Marshal(struct {
-		hostedRepository
-		Mode string `json:"mode"`
-	}{desired.hostedRepository, "hosted"})
-	if err != nil {
+	if err := repositories.Create(ctx, desired.RepositorySpec, "repository-create-"+approval); err != nil {
 		return err
 	}
-	_, err = management.request(ctx, "POST", repositoriesAPI, "repository-create-"+approval, body, nil)
-	if err != nil {
-		return err
-	}
-	current, err = management.inspect(ctx, desired.Name)
+	current, err = repositories.Inspect(ctx, desired.Name)
 	if err != nil {
 		return err
 	}
 	if current == nil {
 		return errors.New("repository_create_readback: the repository could not be verified after creation")
 	}
-	plan = planRepository(authority, desired, current)
+	plan = planRepository(repositories.Authority(), desired, current)
 	if plan.Action != "unchanged" {
 		if err := writeRepositoryDocument(out, plan); err != nil {
 			return err
@@ -176,7 +138,7 @@ func runRepositoryManifest(args []string, command string, out io.Writer) error {
 	return writeRepositoryDocument(out, plan)
 }
 
-func planRepository(authority string, desired repositoryManifestDocument, current *repositoryObservation) repositoryPlan {
+func planRepository(authority string, desired repositoryManifestDocument, current *management.RepositoryObservation) repositoryPlan {
 	plan := repositoryPlan{Version: 1, Authority: authority, Desired: desired, Current: current, Action: "create", Drift: []string{}}
 	if current == nil {
 		// All fields in a creation plan are validated scalars or fixed literals.
@@ -215,9 +177,7 @@ func readRepositoryManifest(path string) (repositoryManifestDocument, error) {
 		return document, err
 	}
 	if !decodeRepositoryManifest(data, &document) || document.Version != 1 ||
-		!repositoryName.MatchString(document.Tenant) || !repositoryName.MatchString(document.Name) ||
-		!slices.Contains([]string{"generic", "maven", "npm", "pypi", "oci", "nuget", "go"}, document.Format) ||
-		(document.Access != "tenant" && document.Access != "restricted") {
+		!management.ValidRepositoryName(document.Tenant) || !document.RepositorySpec.Valid() {
 		return repositoryManifestDocument{}, errors.New("invalid_repository_manifest: supply version 1, tenant, name, format, access and require_review exactly once")
 	}
 	return document, nil
@@ -250,85 +210,6 @@ func decodeRepositoryManifest(data []byte, document *repositoryManifestDocument)
 	}
 	_, err := decoder.Token()
 	return err == io.EOF
-}
-
-func (m repositoryManagement) inspect(ctx context.Context, name string) (*repositoryObservation, error) {
-	var repository struct {
-		Name   string `json:"name"`
-		Format string `json:"format"`
-		Access string `json:"access"`
-		Mode   string `json:"mode"`
-		Review *bool  `json:"require_review"`
-	}
-	path := repositoriesAPI + "/" + name
-	found, err := m.request(ctx, "GET", path+"/configuration", "", nil, &repository)
-	if err != nil || !found {
-		return nil, err
-	}
-	var lifecycle struct {
-		Repository string `json:"repository"`
-		State      string `json:"state"`
-		Revision   *int64 `json:"revision"`
-	}
-	found, err = m.request(ctx, "GET", path+"/state", "", nil, &lifecycle)
-	if err != nil {
-		return nil, err
-	}
-	if !found || lifecycle.Repository != name || lifecycle.Revision == nil || *lifecycle.Revision < 0 ||
-		!slices.Contains([]string{"active", "suspended", "removed"}, lifecycle.State) ||
-		repository.Name != name || repository.Format == "" || repository.Mode == "" ||
-		repository.Review == nil || (repository.Access != "tenant" && repository.Access != "restricted") {
-		return nil, errors.New("repository_manifest_readback: registry returned incomplete or inconsistent repository identity")
-	}
-	return &repositoryObservation{
-		hostedRepository: hostedRepository{repository.Name, repository.Format, repository.Access, *repository.Review},
-		Mode:             repository.Mode, State: lifecycle.State, StateRevision: *lifecycle.Revision,
-	}, nil
-}
-
-func (m repositoryManagement) request(ctx context.Context, method, path, key string, body []byte, result any) (bool, error) {
-	request, err := http.NewRequestWithContext(ctx, method, m.authority+path, bytes.NewReader(body))
-	if err != nil {
-		return false, errors.New("repository_manifest_request: invalid registry authority")
-	}
-	request.Header.Set("Authorization", "Bearer "+m.token)
-	request.Header.Set("Accept", "application/json")
-	expected := http.StatusOK
-	if method == "POST" {
-		request.Header.Set("Content-Type", "application/json")
-		request.Header.Set("Idempotency-Key", key)
-		expected = http.StatusCreated
-	}
-	response, err := m.client.Do(request)
-	if err != nil {
-		return false, errors.New("repository_manifest_request: check registry connectivity and configured trust")
-	}
-	defer response.Body.Close()
-	const limit = 256 << 10
-	if response.ContentLength > limit {
-		return false, errors.New("repository_manifest_response_limit: registry response exceeds 256 KiB")
-	}
-	data, err := io.ReadAll(io.LimitReader(response.Body, limit+1))
-	if err != nil || len(data) > limit {
-		return false, errors.New("repository_manifest_response_limit: incomplete or oversized registry response")
-	}
-	if response.StatusCode == http.StatusNotFound && method == "GET" && path != "/api/v1/session" {
-		var failure struct {
-			Error struct {
-				Code string `json:"code"`
-			} `json:"error"`
-		}
-		if json.Unmarshal(data, &failure) == nil && failure.Error.Code == "not_found" {
-			return false, nil
-		}
-	}
-	if response.StatusCode != expected {
-		return false, fmt.Errorf("repository_manifest_http: %s returned HTTP %d; refresh the plan before retrying", method, response.StatusCode)
-	}
-	if result != nil && json.Unmarshal(data, result) != nil {
-		return false, errors.New("repository_manifest_readback: registry returned invalid JSON")
-	}
-	return true, nil
 }
 
 func writeRepositoryDocument(out io.Writer, document any) error {

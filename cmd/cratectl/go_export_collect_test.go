@@ -4,6 +4,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"ctlplne.dev/cratectl/internal/management"
 	"ctlplne.dev/cratectl/internal/store"
 	"encoding/json"
 	"fmt"
@@ -260,7 +261,7 @@ func TestCollectionClientRejectsCredentialURLsAndUnsafeTokens(t *testing.T) {
 		if err := os.WriteFile(path, raw, 0600); err != nil {
 			t.Fatal(err)
 		}
-		if _, _, _, close, err := configuredClient(path); err == nil {
+		if _, _, _, close, err := management.OpenClient(path); err == nil {
 			close()
 			t.Fatal("unsafe authority admitted")
 		}

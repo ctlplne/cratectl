@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BUSL-1.1
-package main
+package management
 
 import (
 	"errors"
@@ -13,7 +13,8 @@ import (
 	crypt "ctlplne.dev/cratectl/internal/crypto"
 )
 
-func configuredClient(path string) (*http.Client, string, string, func(), error) {
+// OpenClient opens a bounded, non-redirecting client from private local configuration.
+func OpenClient(path string) (*http.Client, string, string, func(), error) {
 	var c configfile.Client
 	if err := configfile.Read(path, &c); err != nil {
 		return nil, "", "", nil, err

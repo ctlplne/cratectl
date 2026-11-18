@@ -11,13 +11,13 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"regexp"
 	"strings"
 	"time"
 
 	"ctlplne.dev/cratectl/internal/configfile"
 	crypt "ctlplne.dev/cratectl/internal/crypto"
 	"ctlplne.dev/cratectl/internal/gomodule"
+	"ctlplne.dev/cratectl/internal/management"
 )
 
 func run() error {
@@ -202,8 +202,6 @@ func run() error {
 	return nil
 }
 
-var repositoryName = regexp.MustCompile(`^[a-z][a-z0-9-]{0,62}$`)
-
 func validateClientPath(p, method, upload, moduleTime string) error {
 	if moduleTime == "" {
 		if strings.HasPrefix(p, "/api/v1/") {
@@ -214,7 +212,7 @@ func validateClientPath(p, method, upload, moduleTime string) error {
 	invalid := errors.New("Go publication requires PUT, upload-file, a canonical /go/REPOSITORY/MODULE/@v/VERSION.zip path and a matching RFC3339 instant")
 	relative, ok := strings.CutPrefix(p, "/go/")
 	repository, coordinate, found := strings.Cut(relative, "/")
-	if !ok || !found || !repositoryName.MatchString(repository) || method != "PUT" || upload == "" {
+	if !ok || !found || !management.ValidRepositoryName(repository) || method != "PUT" || upload == "" {
 		return invalid
 	}
 	request, e := gomodule.ParseRequest(coordinate)

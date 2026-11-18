@@ -16,6 +16,7 @@ import (
 	"ctlplne.dev/cratectl/internal/blob"
 	"ctlplne.dev/cratectl/internal/configfile"
 	crypt "ctlplne.dev/cratectl/internal/crypto"
+	"ctlplne.dev/cratectl/internal/management"
 	"ctlplne.dev/cratectl/internal/store"
 )
 
@@ -67,7 +68,7 @@ func runGoRequirementCollect(args []string, out io.Writer) error {
 	if attribution == nil {
 		return errors.New("complete independent signed journal required")
 	}
-	client, base, token, closeClient, err := configuredClient(*config)
+	client, base, token, closeClient, err := management.OpenClient(*config)
 	if err != nil {
 		return err
 	}

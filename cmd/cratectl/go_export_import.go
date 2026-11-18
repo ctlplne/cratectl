@@ -22,6 +22,7 @@ import (
 	"ctlplne.dev/cratectl/internal/configfile"
 	crypt "ctlplne.dev/cratectl/internal/crypto"
 	"ctlplne.dev/cratectl/internal/gomodule"
+	"ctlplne.dev/cratectl/internal/management"
 	"ctlplne.dev/cratectl/internal/store"
 )
 
@@ -92,7 +93,7 @@ func runGoExportImport(args []string, out io.Writer) error {
 	if err != nil {
 		return err
 	}
-	client, authority, token, closeClient, err := configuredClient(*configuration)
+	client, authority, token, closeClient, err := management.OpenClient(*configuration)
 	if err != nil {
 		return err
 	}

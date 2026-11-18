@@ -19,6 +19,7 @@ import urllib.request
 
 from bounded_client import run_owned_client
 from qualification_contract import candidate_binary_directory
+from terraform_repository_fixture import evaluate_tools
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -77,11 +78,12 @@ def evaluate(args):
     def cli(label, *argv, config=None, status=0):
         return call(label, client, *argv, '--config', config or app / 'client.json', status=status)
 
-    def api(label, endpoint, method='GET', payload=None):
+    def api(label, endpoint, method='GET', payload=None, *, status=0):
         flags = ['--path', endpoint, '--method', method]
         if payload is not None:
             flags += ['--body-file', write(label + '.json', payload), '--idempotency-key', 'cratectl-manifest-' + label]
-        return json.loads(cli(label, *flags)[1])
+        _, output = cli(label, *flags, status=status)
+        return json.loads(output) if status == 0 else output
 
     def start_server():
         process = subprocess.Popen([daemon, 'serve', '--config', app / 'runtime.json'], env=public_env,
@@ -240,6 +242,14 @@ def evaluate(args):
               retained['action'] == 'drift' and retained['drift'] == ['state'] and retained['current']['state_revision'] == 1)
         cli('suspended-import-refused', 'repository-import', '--tenant', TENANT, '--name', NAME, status=1)
         check('suspended repository cannot be imported as active', True)
+        if args.provider_binary:
+            provider_bin = args.provider_binary.resolve()
+            if not provider_bin.is_relative_to(ROOT):
+                raise ValueError('use a provider built within the cratectl workspace')
+            build = call('provider-build-info', ROOT / '.cache/go/bin/go', 'version', '-m', provider_bin)[1]
+            check('provider matches the clean candidate', f'vcs.revision={candidate}' in build and 'vcs.modified=false' in build)
+            clients = [('terraform', args.terraform.resolve()), ('tofu', args.tofu.resolve())]
+            report['provider'] = evaluate_tools(work, clients, provider_bin, public_env, app / 'client.json', api, sha)
         call('revoke-other', daemon, 'revoke', '--token-file', work / 'other.token', environment=owner_env)
         result = cli('revoked-manifest-auth', 'repository-plan', '--manifest', other, config=work / 'other.json', status=1)
         check('revoked administrator cannot plan', 'HTTP 401' in result[1])
@@ -267,4 +277,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--binary-directory', type=Path)
     parser.add_argument('--pg-bin', type=Path, default=ROOT / '.cache/postgresql-16.15-install/bin')
-    evaluate(parser.parse_args())
+    parser.add_argument('--provider-binary', type=Path)
+    parser.add_argument('--terraform', type=Path)
+    parser.add_argument('--tofu', type=Path)
+    options = parser.parse_args()
+    if len([value for value in (options.provider_binary, options.terraform, options.tofu) if value]) not in (0, 3):
+        parser.error('provide the local provider and both stock clients together')
+    evaluate(options)

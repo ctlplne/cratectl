@@ -16,6 +16,8 @@ import (
 	"ctlplne.dev/cratectl/internal/configfile"
 )
 
+const repositoriesAPI = "/api/v1/repositories"
+
 const ownedRepositoryManifest = `{"version":1,"tenant":"cratectl-manifest","name":"cratectl-packages","format":"npm","access":"restricted","require_review":true}`
 
 func TestRepositoryManifestRequiresExactFields(t *testing.T) {

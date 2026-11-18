@@ -33,3 +33,9 @@ Python index/intake parsing adds `golang.org/x/net` v0.62.0 (BSD-3-Clause) and
 dependencies `github.com/aquasecurity/go-version` v0.0.1 (Apache-2.0) and
 `golang.org/x/xerrors` (BSD-3-Clause). Their license texts are retained under
 `third_party/licenses/`; no third-party license is replaced by the core identifier.
+
+The local Terraform/OpenTofu provider under `integrations/terraform` uses
+MPL-2.0. Its separate Go module pins Terraform Plugin Framework v1.19.0. The
+framework's license is retained at
+`third_party/licenses/terraform-plugin-framework-LICENSE.txt`. Provider
+distribution and its complete dependency notices remain under the release gate.
