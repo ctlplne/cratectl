@@ -443,8 +443,12 @@ version while a pinned lockfile still retrieved the exact approved bytes.
 Unyank restored the original index after restart. Explicit retained-reference
 restoration recovered the same index and archive. The earlier `61b2e8a` native Linux x64 and
 ARM64 jobs each passed 11 scoped Cargo checks on installed PostgreSQL 16.15.
-The expanded Linux profile, per-crate ownership, legacy Git discovery, proxy,
-group, search, and wider hosted cases remain open.
+Stock Cargo search at `35c3708` passed four additional native macOS ARM64
+checks across two real versions. It hid the pending version, returned the
+newer version after approval, and fell back to the earlier version when the
+newer version was yanked. The expanded Linux profile, per-crate ownership,
+legacy Git discovery, proxy, group, and cross-repository search remain open.
+[Native Cargo search evidence](evidence/2026-11-19/cargo-35c3708-search-native.json)
 [Expanded native Cargo evidence](evidence/2026-11-18/cargo-a39c952-native.json)
 [Native Cargo lifecycle evidence](evidence/2026-11-18/cargo-45f2799-lifecycle-native.json)
 [Original native Linux Cargo and provider results](evidence/2026-11-18/github-61b2e8a-cargo-and-provider-native.json)

@@ -1969,15 +1969,19 @@
     {
       "id": "J.CARGO.SEARCH",
       "capability": "FMT.CARGO.SEARCH",
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
+      "state": "implementing",
+      "candidate": "35c3708616c9847f6cd5636a6e86858eb82e571b",
+      "evidence": [
+        "evidence/2026-11-19/cargo-35c3708-search-native.json"
+      ],
       "required": [
         "publish/consume exact bytes where applicable",
         "permissions/tenant isolation",
         "policy denial",
         "failure/recovery"
-      ]
+      ],
+      "limits": "Stock Cargo 1.100.0 on macOS ARM64 with two versions in one authorized hosted repository. Search omits unassessed and yanked releases under current policy.",
+      "next_action": "Qualify both Linux architectures, search across authorized repositories, and performance with a large version inventory."
     },
     {
       "id": "J.CARGO.AUTHORIZATION",

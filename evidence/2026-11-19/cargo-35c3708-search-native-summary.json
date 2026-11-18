@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "profile": "cratectl-repository-manifest-native-v1",
+  "status": "passed",
+  "checks": [
+    "clean exact source",
+    "cratectl matches the clean candidate",
+    "cratectld matches the clean candidate",
+    "real reviewed PostgreSQL 16 patch release",
+    "absent repository has an authority and tenant bound creation plan",
+    "plan, wrong approval and denied callers leave the tenant journal unchanged",
+    "concurrent approved requests produce one creation or a safe retry",
+    "retry after successful creation returns unchanged",
+    "one repository creation event despite concurrent retry",
+    "second tenant can plan an independent same-name repository",
+    "import returns the exact active hosted fields",
+    "plan exposes review drift without writing",
+    "stock npm published its exact bytes and unassessed input was denied",
+    "registry restart preserves the declared state",
+    "fresh stock npm downloads the exact approved archive after restart",
+    "stale approval leaves suspended repository retained",
+    "suspended repository cannot be imported as active",
+    "revoked administrator cannot plan",
+    "schema 18 with all 57 tenant tables forced RLS and a restricted runtime role"
+  ],
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "goal_complete": false,
+  "broad_readiness": false,
+  "private_fixture": ".private/cratectl-manifest-e0_dnz_u",
+  "limits": [
+    "Hosted npm and the version 1 manifest fields on one native server.",
+    "Broader source configuration and production provider distribution remain open."
+  ],
+  "candidate": "35c3708616c9847f6cd5636a6e86858eb82e571b",
+  "binary_sha256": {
+    "cratectl": "7a69b8fb71701214cac07d44667467151712f47972a7f99936d24fbdf515c870",
+    "cratectld": "0452c141ce9a6a3f5131cc768116734e9d59d836b698ebe4c4a7b2b5acfe4280"
+  },
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "npm": "11.16.0",
+  "archive_sha256": "a2694827c507c96f5fa663bf6216761bb74777d84f49d9b0d9ab8cc6c58e58de",
+  "cargo": {
+    "cargo": "cargo 1.100.0 (3acc79c0c 2026-11-05)",
+    "cargo_sha256": "ad0566b5b484db86c6787b2c77d96c753c31193b23f36d121a334ecadaf6c788",
+    "rustc_sha256": "574f8ce13814c332aa5e63445f68ce7fee7c506f802d6135194731d2ae8370ad",
+    "checks": [
+      "stock Cargo and rustc 1.100.0",
+      "registry discovery requires a tenant token and current repository grant",
+      "sparse config binds required auth, API and downloads to the same trusted authority",
+      "two stock publications retain exact unassessed bytes",
+      "sparse index binds immutable checksum and same-registry renamed dependency",
+      "concurrent publication retries preserve a single journal effect and require current write authority",
+      "conflicting bytes, build metadata and hyphen-underscore aliases preserve retained coordinates",
+      "short publication frame leaves no retained reference or journal effect",
+      "complete retry binds exactly the original frame bytes to an unassessed reference",
+      "unassessed index entries are hidden and direct byte delivery is denied",
+      "fresh stock Cargo cannot resolve an unassessed crate",
+      "fresh stock Cargo resolves the transitive graph and downloads exact approved bytes after restart",
+      "reader and active hold block yank without changing the index",
+      "stock Cargo yank changes only discovery and repeated yank leaves the journal unchanged",
+      "stock Cargo rejects a yanked version during fresh resolution",
+      "stock Cargo lockfile still fetches both exact approved archives while yanked",
+      "stock Cargo unyank restores fresh resolution after restart with the original index entry",
+      "common deletion removes discovery and blocks even exact pinned byte access",
+      "common restoration restores the original index and exact approved archive",
+      "Cargo search requires current tenant and repository access",
+      "stock Cargo search excludes a newer unassessed version and prints the approved description",
+      "stock Cargo search selects the newer approved authentic release",
+      "stock Cargo search falls back to the preceding release while the latest is yanked",
+      "protected download still honors both grant revocation and tenant binding",
+      "revoked grant refuses current index and direct download even with a populated client cache",
+      "revoked writer cannot replay publication or change yank state"
+    ],
+    "archive_sha256": {
+      "cratectl-cargo-leaf": "9bd109fedaaa1ecf8bd8900aa95685a3e7cc379a3e638a14d767fbacf84a64ec",
+      "cratectl-cargo-root": "cdbb46a6cf40487a8ce7d827ca7117998a8abfd4777ad262e990d37e46c7578c",
+      "cratectl-cargo-root-1.10.0": "2906a22d98a1226e42403f19180a5d204e636544a6216102b92691fe0434b661"
+    }
+  }
+}
