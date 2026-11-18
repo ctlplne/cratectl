@@ -122,3 +122,122 @@ func TestNPMSourcePublicationIsFencedAndAtomic(t *testing.T) {
 		t.Fatal("unscoped source query exposed rows", n, e)
 	}
 }
+
+func TestNPMCachedSearchPreservesReviewAndCurrentSourceOrder(t *testing.T) {
+	s, ctx, actor, lower := npmTestStore(t)
+	proxy, group := lower+"-proxy", lower+"-group"
+	config := upstream.Config{URL: "http://127.0.0.1:38443/cratectl-npm-source/", Networks: []string{"127.0.0.1/32"}}
+	repositories := []Repository{
+		{Name: proxy, Format: "npm", Mode: "proxy", Settings: RepositorySettings{Upstream: &config}},
+		{Name: group, Format: "npm", Mode: "group", RequireReview: true,
+			Settings: RepositorySettings{Members: []string{proxy, lower}}},
+	}
+	if err := s.Tx(ctx, actor, true, func(tx pgx.Tx) error {
+		for _, repo := range repositories {
+			if err := CreateRepository(ctx, tx, actor, repo); err != nil {
+				return err
+			}
+		}
+		return nil
+	}); err != nil {
+		t.Fatal(err)
+	}
+	objects, err := blob.New(t.TempDir(), 1<<20)
+	if err != nil {
+		t.Fatal(err)
+	}
+	const name, version = "cratectl-search-copy", "1.0.0"
+	put := func(content []byte) blob.Object {
+		t.Helper()
+		obj, err := objects.Put(ctx, actor.Tenant, bytes.NewReader(content), "", int64(len(content)))
+		if err != nil {
+			t.Fatal(err)
+		}
+		return obj
+	}
+	decide := func(repo, path, digest string) {
+		t.Helper()
+		if err := s.Tx(ctx, actor, true, func(tx pgx.Tx) error {
+			_, err := Decide(ctx, tx, actor, repo, path, digest, "allowed")
+			return err
+		}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	local := put([]byte("Original lower group package"))
+	localMetadata := json.RawMessage(`{"name":"cratectl-search-copy","version":"1.0.0","package":{"description":"Hosted lower source","dist":{}}}`)
+	localPath := NPMPath(name, version)
+	if err := s.PublishNPM(ctx, actor, lower, name, []Artifact{{Path: localPath, Digest: local.Digest, Size: local.Size,
+		MediaType: "application/octet-stream", Metadata: localMetadata}}, map[string]string{"latest": version}); err != nil {
+		t.Fatal(err)
+	}
+	decide(lower, localPath, local.Digest)
+	search := func(repo, expected string) {
+		t.Helper()
+		hits, total, err := s.NPMSearch(ctx, actor, repo, name, 0, 20, 100, 16, 1<<20)
+		if err != nil || total != len(hits) {
+			t.Fatal("search", repo, hits, total, err)
+		}
+		if expected == "" {
+			if total != 0 {
+				t.Fatal("unavailable source was advertised", repo, hits)
+			}
+			return
+		}
+		if total != 1 || hits[0].Description != expected || hits[0].Version != version || hits[0].Date.IsZero() {
+			t.Fatal("wrong search selection", repo, hits)
+		}
+	}
+	search(proxy, "")
+	search(group, "")
+	original := []byte("Exact preferred proxy artifact bytes")
+	content := put(original)
+	key := crypt.Digest([]byte("cratectl reviewed npm source identity"))
+	source := NPMSource{Key: key, Name: name, Version: version, Tarball: config.URL + "copy.tgz",
+		Integrity: crypt.Integrity(original), Package: json.RawMessage(`{"description":"Unvalidated upstream text"}`)}
+	catalog := NPMCatalog{Name: name, Versions: map[string]string{version: key}, Tags: map[string]string{"latest": version}}
+	encoded, err := json.Marshal(catalog)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalogObject := put(encoded)
+	complete := func(path string, result RetrievalResult) {
+		t.Helper()
+		lease, err := s.AcquireRetrieval(ctx, actor, proxy, path, "cratectl-npm-search-filler", false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := s.CompleteRetrieval(ctx, actor, lease, result); err != nil {
+			t.Fatal(err)
+		}
+	}
+	complete(NPMCatalogPath(name), RetrievalResult{Status: 200, Object: &catalogObject, Metadata: encoded, MediaType: NPMCatalogMedia,
+		NPMCatalog: &catalog, NPMSources: []NPMSource{source}, FreshSeconds: 60})
+	search(proxy, "")
+	search(group, "")
+
+	cachePath := NPMBlobPath(name, key)
+	metadata, err := json.Marshal(map[string]any{"name": name, "version": version, "source_key": key,
+		"integrity": source.Integrity, "package": map[string]string{"description": "Preferred archive-derived description"}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	complete(cachePath, RetrievalResult{Status: 200, Object: &content, Metadata: metadata,
+		MediaType: "application/octet-stream", FreshSeconds: 60})
+	search(proxy, "Preferred archive-derived description")
+	search(group, "")
+	decide(proxy, cachePath, content.Digest)
+	search(group, "Preferred archive-derived description")
+
+	if err := s.Tx(ctx, actor, true, func(tx pgx.Tx) error {
+		_, err := InvalidateRetrieval(ctx, tx, actor, proxy, NPMCatalogPath(name))
+		return err
+	}); err != nil {
+		t.Fatal(err)
+	}
+	search(proxy, "")
+	search(group, "")
+	complete(NPMCatalogPath(name), RetrievalResult{Status: 404, FreshSeconds: 60})
+	search(proxy, "")
+	search(group, "Hosted lower source")
+}

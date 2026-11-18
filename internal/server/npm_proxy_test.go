@@ -15,7 +15,7 @@ func TestNPMGroupDenialAndTagPrecedence(t *testing.T) {
 		{Repository: store.Repository{Name: "first"}, Versions: []store.NPMVersion{{Version: "1.0.0", Blocked: true}}, Tags: map[string]string{"latest": "1.0.0"}},
 		{Repository: store.Repository{Name: "second"}, Versions: []store.NPMVersion{{Version: "1.0.0"}, {Version: "2.0.0"}}, Tags: map[string]string{"latest": "2.0.0", "next": "2.0.0"}},
 	}
-	versions, tags := npmMerge(members)
+	versions, tags := store.MergeNPMMembers(members)
 	if !versions["1.0.0"].Version.Blocked || versions["1.0.0"].Source.Name != "first" || tags["latest"] != "" || tags["next"] != "2.0.0" {
 		t.Fatal("group fell through a denied collision or changed tag authority", versions, tags)
 	}

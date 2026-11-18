@@ -27,7 +27,11 @@ target is unavailable, the highest visible semantic version. The result
 includes the selected package description when present. Use
 `--searchlimit` to request up to 100 packages. Search uses current grants,
 digest decisions and retained lifecycle state. Proxy and group search
-require separate qualification and implementation.
+uses retained archives whose catalog is currently admitted. It never
+contacts an upstream. A group preserves its existing version, tag and
+namespace precedence. A current cached upstream absence can admit a
+lower member. An unknown or expired selected catalog hides the result
+until a normal package request refreshes it.
 
 If metadata returns `metadata_budget_exceeded`, inspect the package's version,
 tag and metadata volume, then size the server's `--native-version-budget`,

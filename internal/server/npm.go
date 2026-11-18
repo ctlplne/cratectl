@@ -37,12 +37,12 @@ func validNPMTag(tag string) bool {
 }
 
 func (s *Server) npm(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, p string) {
-	if repo.Mode != "hosted" {
-		s.npmRemote(w, r, i, repo, p)
+	if p == "-/v1/search" {
+		s.npmSearch(w, r, i, repo)
 		return
 	}
-	if p == "-/v1/search" {
-		s.npmHostedSearch(w, r, i, repo)
+	if repo.Mode != "hosted" {
+		s.npmRemote(w, r, i, repo, p)
 		return
 	}
 	if strings.HasPrefix(p, "-/package/") {

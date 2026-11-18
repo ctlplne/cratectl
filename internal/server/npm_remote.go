@@ -15,33 +15,8 @@ import (
 	"ctlplne.dev/cratectl/internal/store"
 )
 
-type npmSelected struct {
-	Version store.NPMVersion
-	Source  store.Repository
-}
+type npmSelected = store.NPMSelected
 
-func npmMerge(members []store.NPMMember) (map[string]npmSelected, map[string]string) {
-	versions := map[string]npmSelected{}
-	tags := map[string]string{}
-	seenTags := map[string]bool{}
-	for _, member := range members {
-		for _, v := range member.Versions {
-			if _, seen := versions[v.Version]; !seen {
-				versions[v.Version] = npmSelected{v, member.Repository}
-			}
-		}
-		for tag, version := range member.Tags {
-			if seenTags[tag] {
-				continue
-			}
-			seenTags[tag] = true
-			if v, ok := versions[version]; ok && v.Source.Name == member.Repository.Name && !v.Version.Blocked {
-				tags[tag] = version
-			}
-		}
-	}
-	return versions, tags
-}
 func (s *Server) npmMembers(ctx context.Context, i store.Identity, repo store.Repository, name string, force bool) ([]store.NPMMember, error) {
 	repositories, e := s.DB.NPMRepositories(ctx, i, repo.Name, name)
 	if e != nil {
@@ -128,7 +103,7 @@ func (s *Server) npmRemote(w http.ResponseWriter, r *http.Request, i store.Ident
 			respondErr(w, e)
 			return
 		}
-		versions, _ := npmMerge(members)
+		versions, _ := store.MergeNPMMembers(members)
 		selected, ok := versions[version]
 		if !ok {
 			respondErr(w, store.ErrNotFound)
@@ -152,7 +127,7 @@ func (s *Server) npmRemote(w http.ResponseWriter, r *http.Request, i store.Ident
 		respondErr(w, e)
 		return
 	}
-	selected, tags := npmMerge(members)
+	selected, tags := store.MergeNPMMembers(members)
 	versions := map[string]any{}
 	for version, selection := range selected {
 		if selection.Version.Blocked {

@@ -44,7 +44,7 @@ def sha(file):
 
 def evaluate(args):
     os.umask(0o077)
-    authority = 'https://127.0.0.1:38443' if args.cargo_toolchain else BASE
+    authority = 'https://127.0.0.1:38443' if args.cargo_toolchain or args.npm_search else BASE
     private = ROOT / '.private'
     if private.is_symlink() or private.stat().st_mode & 0o077:
         raise ValueError('use the existing owner-only .private directory')
@@ -193,6 +193,8 @@ def evaluate(args):
         call('initialize-registry', bootstrap, 'init', '--tenant', TENANT, '--directory', app,
              '--public-url', authority, environment=owner_env)
         actors = [('reader', TENANT, 'reader'), ('other', OTHER, 'admin')]
+        if args.cargo_toolchain or args.npm_search:
+            server_flags.extend(('--allow-private-upstreams', '::1/128'))
         if args.cargo_toolchain:
             actors.extend([('writer', TENANT, 'writer'), ('maintainer', TENANT, 'writer')])
         for label, tenant, role in actors:
@@ -206,7 +208,7 @@ def evaluate(args):
                 TENANT + '/cratectl-cargo-' + label: {'value': origin_credentials[label], 'allowed_url': url,
                                                       'authentication': 'cargo-token'}
                 for label, url in (('index', INDEX_ORIGIN), ('download', DOWNLOAD_ORIGIN))})
-            server_flags.extend(('--allow-private-upstreams', '::1/128', '--upstream-credentials', str(credentials)))
+            server_flags.extend(('--upstream-credentials', str(credentials)))
         server = start_server(bootstrap)
         if args.legacy_cargo_daemon:
             def controlled_upgrade():
@@ -387,9 +389,10 @@ def evaluate(args):
               sha(download / restored[0]['filename']) == sha(tarball))
         report['archive_sha256'] = sha(tarball)
         if args.npm_search:
-            from npm_search_fixture import evaluate_search
+            from npm_search_fixture import evaluate_cached_search, evaluate_search
 
             report['npm_search'] = evaluate_search(work, public_env, call, cli, api, restart_server, sha)
+            report['npm_cached_search'] = evaluate_cached_search(work, public_env, call, cli, api, restart_server, sha)
         if args.cargo_toolchain:
             report['cargo'] = evaluate_cargo(work, app, authority, args.cargo_toolchain.resolve(),
                                             public_env, call, api, restart_server, sha)
@@ -462,6 +465,7 @@ def evaluate(args):
     print(f'PASS: {len(checks)} native declarative repository checks')
     if args.npm_search:
         print(f"PASS: {len(report['npm_search']['checks'])} stock hosted npm search checks")
+        print(f"PASS: {len(report['npm_cached_search']['checks'])} stock cached npm search checks")
     if args.provider_binary:
         totals = {row['client']: len(row['checks']) for row in report['provider']['clients']}
         print(f"PASS: Terraform {totals['terraform']} and OpenTofu {totals['tofu']} scoped provider checks")
@@ -538,7 +542,7 @@ if __name__ == '__main__':
     parser.add_argument('--mcp-client', type=Path)
     parser.add_argument('--promtool', type=Path)
     parser.add_argument('--npm-search', action='store_true',
-                        help='also verify hosted search with stock npm and independent tenants')
+                        help='also verify npm hosted and cached search using stock clients')
     parser.add_argument('--cargo-toolchain', type=Path)
     parser.add_argument('--cargo-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--cargo-public-origin', action='store_true',

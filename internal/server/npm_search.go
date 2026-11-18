@@ -16,7 +16,7 @@ type npmSearchObject struct {
 	Package store.NPMSearchPackage `json:"package"`
 }
 
-func (s *Server) npmHostedSearch(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository) {
+func (s *Server) npmSearch(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository) {
 	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		w.Header().Set("Allow", "GET, HEAD")
 		fail(w, http.StatusMethodNotAllowed, "method_not_allowed", "Use GET or HEAD for npm search.")
@@ -27,7 +27,8 @@ func (s *Server) npmHostedSearch(w http.ResponseWriter, r *http.Request, i store
 		fail(w, http.StatusBadRequest, "invalid_npm_search", "Use bounded search text, size and offset.")
 		return
 	}
-	results, total, err := s.DB.NPMSearchHosted(r.Context(), i, repo.Name, text, from, size, min(s.NativeVersionLimit, 10000))
+	results, total, err := s.DB.NPMSearch(r.Context(), i, repo.Name, text, from, size, min(s.NativeVersionLimit, 10000),
+		s.NativeTagLimit, s.NativeMetadataBytes)
 	if err != nil {
 		respondErr(w, err)
 		return
