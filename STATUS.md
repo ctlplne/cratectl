@@ -540,13 +540,15 @@ passed the same 78 Cargo and 19 declarative checks with PostgreSQL 16.15.
 Each report matched 46 source hashes. The exact `f21dc28` macOS ARM64
 candidate passed 80 Cargo and 19 declarative checks. Two independent tenants
 used identical group, repository and crate coordinates and received their
-own archive bytes and search descriptions. Linux replay of those two cases,
-uncached upstream search, legacy Git discovery, replication and broader
-scale remain open.
+own archive bytes and search descriptions. Both original `ee1e955` Linux
+architectures passed the same 80 Cargo and 19 declarative checks. Uncached
+upstream search, legacy Git discovery, replication and broader scale remain
+open.
 [Native Cargo proxy and group search evidence](evidence/2026-11-19/cargo-2af9921-search-native.json)
 [Original Linux Cargo search evidence](evidence/2026-11-19/github-f65b296-cargo-search-native.json)
 [Original workflow inventory](evidence/2026-11-19/github-f65b296-started.json)
 [Native cross-tenant evidence](evidence/2026-11-19/cargo-f21dc28-tenants-native.json)
+[Original Linux cross-tenant evidence](evidence/2026-11-19/github-ee1e955-cargo-tenants-native.json)
 
 The same `f21dc28` macOS ARM64 candidate passed six checks against the public
 crates.io sparse index and its separate HTTPS CDN. Stock Cargo fetched the
@@ -554,6 +556,13 @@ exact `itoa 1.0.15` archive pinned by the upstream index. A fresh Cargo home
 received the stored archive after registry restart, and grant revocation
 denied further access. The optional dependency remained disabled.
 [Public sparse registry evidence](evidence/2026-11-19/cargo-f21dc28-public-sparse-native.json)
+
+The checked-in `d2727c7` fixture passed nine public-origin checks on macOS
+ARM64 and PostgreSQL 16.16. Stock Cargo resolved `form_urlencoded 1.2.1` and
+its required `percent-encoding 2.3.1` dependency. Both original archive
+digests matched the official index before and after restart, and stock
+Cargo recorded the dependency edge and digests in its lockfile.
+[Public dependency graph evidence](evidence/2026-11-19/cargo-d2727c7-public-graph-native.json)
 
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities

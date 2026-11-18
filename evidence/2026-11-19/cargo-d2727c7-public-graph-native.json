@@ -1,0 +1,67 @@
+{
+  "candidate": "d2727c71fc2dc7457201b1744d34f1530cba8a63",
+  "status": "passed",
+  "observed_at": "2026-11-19T02:12:47.782173+05:30",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "cargo": "cargo 1.100.0 (3acc79c0c 2026-11-05)",
+  "declarative_checks": 19,
+  "private_origin_cargo_checks": 80,
+  "public_origin": {
+    "checks": [
+      "the public sparse index advertises the configured crates.io CDN",
+      "the official index retains the pinned form_urlencoded checksum",
+      "the official index retains the pinned percent-encoding checksum",
+      "the pinned root declares the leaf as a required runtime dependency",
+      "stock Cargo fetched exactly the pinned public root and leaf archives",
+      "the stock lockfile records the real dependency edge and both public checksums",
+      "fresh stock Cargo replays the same pinned graph after restart",
+      "current repository grant gates the stored form_urlencoded archive",
+      "current repository grant gates the stored percent-encoding archive"
+    ],
+    "archive_sha256": {
+      "form_urlencoded-1.2.1.crate": "e13624c2627564efccf4934284bdd98cbaa14e79b0b5a141218e507b3a823456",
+      "percent-encoding-2.3.1.crate": "e3148f5046208a5d56bcfc03053e3ca6334e51da8dfb19b6cdc8b306fae3283e"
+    },
+    "index": "https://index.crates.io",
+    "download_base": "https://static.crates.io/crates",
+    "lock_sha256": "0bd2ca766015cf03ae7ce5b20bf341bef419b3f040f2dce8e128d9f4e61a2ef1"
+  },
+  "binary_sha256": {
+    "cratectl": "d6881161d797cf0d0dbf68782b05d0f6741ab50b0058570280b409a68c2f7976",
+    "cratectld": "0b15a738bf2758994b975d78d012fe992aad5dd1f5d3bba9ae63af77f39ac30f"
+  },
+  "original_private_summary_sha256": "160b303ca7868a3db584cf51058ea1296c469530db2060e473d75a8f5f64a0a2",
+  "source_sha256": [
+    {
+      "path": "scripts/cargo_public_fixture.py",
+      "sha256": "289fc258c1648004155a0171bc87365fd42be59272fb1c27cba416f33df0f4df"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "c75697e1fbf5650ce43555b05483439c3a3558747bb52a10b2734144f53b7c18"
+    },
+    {
+      "path": "scripts/cargo_hosted_fixture.py",
+      "sha256": "8feaede986a4b8990c7cc5aa2464137d3c24aaac859aa58ce030eed4eda55020"
+    },
+    {
+      "path": "internal/cargo/sparse.go",
+      "sha256": "1407111ba1fb9cb88019c293537875a1fba9a3869de7c7fe699aacc0a48a4068"
+    },
+    {
+      "path": "internal/server/cargo_proxy.go",
+      "sha256": "fe0762ce8cd8e47c50a6ce4c7a4e2be74bf302e0e48ea232dd38d64e4440bad5"
+    },
+    {
+      "path": "internal/upstream/upstream.go",
+      "sha256": "d96fab63d134fde71828f873f3e11c92fc9423b93b6f3f3bbd9a261e46db1e0f"
+    }
+  ],
+  "limits": [
+    "One exact public package and its real runtime dependency were fetched as inert archives using stock Cargo and trusted TLS.",
+    "The fixture pinned checksums and operation authority to the live official index and its explicit public CDN."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

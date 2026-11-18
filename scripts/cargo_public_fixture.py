@@ -83,13 +83,19 @@ def evaluate_public_origin(work, installation, authority, toolchain, environment
     env = stock_cargo_environment(installation, toolchain / 'rustc', environment)
     cargo = toolchain / 'cargo'
 
-    def fetch(label, resolve=False):
+    def lock_graph(label, directory, child):
+        call('cargo-public-resolve-' + label, cargo, 'generate-lockfile', cwd=directory, environment=child, timeout=60)
+        call('cargo-public-pin-leaf-' + label, cargo, 'update', '-p', 'percent-encoding', '--precise', PACKAGES['percent-encoding'][0],
+             cwd=directory, environment=child, timeout=60)
+
+    def fetch(label, directory=project, resolve=False, replace=False):
         home, child = cargo_home(work, 'cargo-public-home-' + label, 'sparse+' + root + '/index/', env, reader)
+        if replace:
+            with (home / 'config.toml').open('a') as stream:
+                stream.write('\n[source.crates-io]\nreplace-with = "cratectl"\n')
         if resolve:
-            call('cargo-public-resolve', cargo, 'generate-lockfile', cwd=project, environment=child, timeout=60)
-            call('cargo-public-pin-leaf', cargo, 'update', '-p', 'percent-encoding', '--precise', PACKAGES['percent-encoding'][0],
-                 cwd=project, environment=child, timeout=60)
-        call('cargo-public-fetch-' + label, cargo, 'fetch', '--locked', cwd=project, environment=child, timeout=60)
+            lock_graph(label, directory, child)
+        call('cargo-public-fetch-' + label, cargo, 'fetch', '--locked', cwd=directory, environment=child, timeout=60)
         archives = list(home.glob('registry/cache/*/*.crate'))
         return {archive.name: sha(archive) for archive in archives}
 
@@ -106,6 +112,25 @@ def evaluate_public_origin(work, installation, authority, toolchain, environment
 
     restart()
     check('fresh stock Cargo replays the same pinned graph after restart', fetch('restart') == expected)
+
+    canonical = work / 'cargo-public-canonical'
+    new_project(canonical, 'cratectl-canonical-client', dependency='\n[dependencies]\nform_urlencoded = "=1.2.1"\n')
+    official_home = work / 'cargo-public-canonical-home'
+    official_home.mkdir(mode=0o700)
+    official_env = {key: value for key, value in env.items() if key not in ('CARGO_HTTP_CAINFO', 'CARGO_HTTP_PROXY')}
+    official_env.update(CARGO_HOME=str(official_home), CARGO_REGISTRIES_CRATES_IO_PROTOCOL='sparse')
+    lock_graph('canonical', canonical, official_env)
+    canonical_lock = canonical / 'Cargo.lock'
+    canonical_digest = sha(canonical_lock)
+    with canonical_lock.open('rb') as stream:
+        canonical_records = [entry for entry in tomllib.load(stream)['package'] if 'source' in entry]
+    check('the independent stock lockfile uses the canonical crates.io source and pinned checksums',
+          {entry['name'] for entry in canonical_records} == set(PACKAGES)
+          and all(entry['source'] == 'registry+https://github.com/rust-lang/crates.io-index'
+                  and (entry['version'], entry['checksum']) == PACKAGES[entry['name']] for entry in canonical_records))
+    check('the authenticated crates.io replacement fetches both exact archives with an unchanged canonical lockfile',
+          fetch('replacement', directory=canonical, replace=True) == expected and sha(canonical_lock) == canonical_digest)
+
     api('cargo-public-revoke', management + '/grants', 'PUT', {**grant, 'read': False})
     local_trust = ssl.create_default_context(cafile=str(installation / 'ca.crt'))
     local = urllib.request.build_opener(urllib.request.ProxyHandler({}), urllib.request.HTTPSHandler(context=local_trust), NoRedirect())
@@ -117,4 +142,5 @@ def evaluate_public_origin(work, installation, authority, toolchain, environment
             status = error.code
             error.close()
         check(f'current repository grant gates the stored {name} archive', status == 403)
-    return {'checks': checks, 'archive_sha256': expected, 'index': INDEX, 'download_base': DOWNLOAD, 'lock_sha256': sha(lock)}
+    return {'checks': checks, 'archive_sha256': expected, 'index': INDEX, 'download_base': DOWNLOAD,
+            'lock_sha256': sha(lock), 'canonical_lock_sha256': canonical_digest}
