@@ -229,6 +229,34 @@ def evaluate(args):
         check('stock npm published its exact bytes and unassessed input was denied',
               len(artifacts) == 1 and artifacts[0]['decision'] == 'unassessed'
               and artifacts[0]['digest'] == sha(tarball) and not list(download.iterdir()))
+        phases = []
+
+        def mcp_phase(phase, config):
+            raw = call('mcp-' + phase, mcp_client, '--phase', phase, '--server', mcp_server, '--config', config,
+                       '--authority', BASE, '--tenant', TENANT, '--repository', NAME,
+                       '--artifact-path', artifacts[0]['path'], '--digest', artifacts[0]['digest'])[1]
+            result = json.loads(raw)
+            if result['phase'] != phase or result['protocol'] != '2026-07-28' or not result['checks']:
+                raise ValueError('invalid official MCP phase evidence')
+            phases.append(result)
+
+        if args.mcp_binary:
+            mcp_server, mcp_client = args.mcp_binary.resolve(), args.mcp_client.resolve()
+            if not mcp_server.is_relative_to(ROOT) or not mcp_client.is_relative_to(ROOT):
+                raise ValueError('use MCP binaries built within the cratectl workspace')
+            for component in (mcp_server, mcp_client):
+                build = call(component.name + '-build-info', go, 'version', '-m', component)[1]
+                check(component.name + ' matches the clean candidate', f'vcs.revision={candidate}' in build and 'vcs.modified=false' in build)
+            call('mcp-require-metadata-consent', mcp_server, '--client-config', app / 'client.json',
+                 '--authority', BASE, '--tenant', TENANT, status=1)
+            check('MCP binary requires explicit scoped metadata consent', True)
+            api('mcp-create-second-repository', '/api/v1/repositories', 'POST',
+                {'name': 'cratectl-secondary', 'format': 'npm', 'require_review': False})
+            mcp_phase('admin-pending', app / 'client.json')
+            mcp_phase('reader-ungranted', work / 'reader.json')
+            api('mcp-grant-reader', REPOSITORY + '/grants', 'PUT', {'actor': 'cratectl-reader', 'read': True, 'write': False})
+            mcp_phase('reader-pending', work / 'reader.json')
+            mcp_phase('other-tenant', work / 'other.json')
         api('approve', REPOSITORY + '/decisions', 'PUT',
             {'path': artifacts[0]['path'], 'digest': artifacts[0]['digest'], 'decision': 'allowed'})
         stop_server(server)
@@ -241,6 +269,11 @@ def evaluate(args):
         check('fresh stock npm downloads the exact approved archive after restart',
               sha(download / restored[0]['filename']) == sha(tarball))
         report['archive_sha256'] = sha(tarball)
+        if args.mcp_binary:
+            mcp_phase('reader-approved', work / 'reader.json')
+            call('revoke-mcp-reader', daemon, 'revoke', '--token-file', work / 'reader.token', environment=owner_env)
+            mcp_phase('revoked', work / 'reader.json')
+            report['mcp'] = {'server_sha256': sha(mcp_server), 'client_sha256': sha(mcp_client), 'phases': phases}
         api('suspend', REPOSITORY + '/state', 'PUT',
             {'action': 'suspend', 'expected_revision': 0, 'reason': 'Retain the owned manifest fixture'})
         cli('stale-approved-create', *apply_flags, approval, status=1)
@@ -281,6 +314,8 @@ def evaluate(args):
     if args.provider_binary:
         totals = {row['client']: len(row['checks']) for row in report['provider']['clients']}
         print(f"PASS: Terraform {totals['terraform']} and OpenTofu {totals['tofu']} scoped provider checks")
+    if args.mcp_binary:
+        print(f"PASS: {sum(len(phase['checks']) for phase in report['mcp']['phases'])} scoped official MCP checks")
     if args.ci_architecture:
         record_ci(report, args.ci_architecture)
 
@@ -312,9 +347,13 @@ if __name__ == '__main__':
     parser.add_argument('--terraform', type=Path)
     parser.add_argument('--tofu', type=Path)
     parser.add_argument('--ci-architecture', choices=('amd64', 'arm64'))
+    parser.add_argument('--mcp-binary', type=Path)
+    parser.add_argument('--mcp-client', type=Path)
     options = parser.parse_args()
     if len([value for value in (options.provider_binary, options.terraform, options.tofu) if value]) not in (0, 3):
         parser.error('provide the local provider and both stock clients together')
     if options.ci_architecture and not options.provider_binary:
         parser.error('the hosted evidence profile requires both stock clients and the provider')
+    if bool(options.mcp_binary) != bool(options.mcp_client) or options.ci_architecture and options.mcp_binary:
+        parser.error('the local MCP profile requires both candidate MCP binaries')
     evaluate(options)

@@ -39,3 +39,8 @@ MPL-2.0. Its separate Go module pins Terraform Plugin Framework v1.19.0. The
 framework's license is retained at
 `third_party/licenses/terraform-plugin-framework-LICENSE.txt`. Provider
 distribution and its complete dependency notices remain under the release gate.
+
+The local MCP adapter under `integrations/mcp` uses MPL-2.0. Its separate Go
+module pins the upstream MCP Go SDK v1.8.0. The SDK license records an
+Apache-2.0 transition with earlier MIT contributions. The tagged license text
+is retained at `third_party/licenses/modelcontextprotocol-go-sdk-LICENSE.txt`.

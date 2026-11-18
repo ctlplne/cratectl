@@ -5,7 +5,7 @@ export CRATECTL_QUALIFICATION_BIN_DIR := $(abspath $(BINDIR))
 export GOCACHE := $(CURDIR)/.cache/go-build
 export GOMODCACHE := $(CURDIR)/.cache/go-mod
 export GOTOOLCHAIN := local
-.PHONY: build build-provider test-provider test race lint integration integration-race conformance security packaging package-linux package-linux-sbom console console-check
+.PHONY: build build-provider test-provider build-mcp test-mcp test race lint integration integration-race conformance security packaging package-linux package-linux-sbom console console-check
 build:
 	python3 scripts/check_console_assets.py
 	mkdir -p "$(BINDIR)"
@@ -16,6 +16,11 @@ build-provider:
 	$(GO) -C integrations/terraform build -mod=readonly -trimpath -o "$(abspath $(BINDIR))/terraform-provider-cratectl" .
 test-provider:
 	$(GO) -C integrations/terraform test -mod=readonly ./...
+build-mcp:
+	mkdir -p "$(BINDIR)"
+	$(GO) -C integrations/mcp build -mod=readonly -trimpath -o "$(abspath $(BINDIR))/cratectl-mcp" .
+test-mcp:
+	$(GO) -C integrations/mcp test -mod=readonly -race ./...
 test:
 	$(GO) test ./...
 race:
