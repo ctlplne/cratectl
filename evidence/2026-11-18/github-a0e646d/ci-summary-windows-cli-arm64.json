@@ -1,0 +1,86 @@
+{
+  "all_owned_jobs_empty": true,
+  "binary_sha256": {
+    "cli": "3691bf7a246bb6dc431d11f1aad73d72d54f085d3e1ab943c95d03d62c5df3aa",
+    "driver": "21e12847d932eeebe6834ffdeda24f59e6c8386dd0b2902d728fb3ad7e0528cb",
+    "go": "304e57e24eaa3560004540ac1d597763690789473d73bf21e98c93ba7462cee4"
+  },
+  "broad_readiness": false,
+  "build_identity": {
+    "cli": {
+      "GOARCH": "arm64",
+      "GOOS": "windows",
+      "vcs.modified": "false",
+      "vcs.revision": "a0e646d078b31be6e626b869670555f9e61401b5"
+    },
+    "driver": {
+      "GOARCH": "arm64",
+      "GOOS": "windows",
+      "vcs.modified": "false",
+      "vcs.revision": "a0e646d078b31be6e626b869670555f9e61401b5"
+    }
+  },
+  "candidate": "a0e646d078b31be6e626b869670555f9e61401b5",
+  "events_sha256": {
+    "configuration": "4fe4047def9281d343eb007e32728e78b326bfbd1653104e466227e8f83eb0db",
+    "driver": "a219760c5115f4c3bf047c7efc635ec778cc0838e42f3ecef315e3a5b6477dd8"
+  },
+  "go_version": "1.27.4",
+  "goal_complete": false,
+  "managed_commands": 5,
+  "management_response_standin": true,
+  "offline_collection_qualified": false,
+  "profile": "cratectl.windows.private-configuration.v1",
+  "run_id": "44297755759",
+  "runner_arch": "ARM64",
+  "runner_os": "Windows",
+  "schema": 1,
+  "source_sha256": {
+    "cmd/cratectl/main.go": "04544e6b0113fe3d853313b89b44966b34f5cc93a7e87522f2e8cf36403d6970",
+    "cmd/cratectl/npm.go": "68978f824798b6fabfeb00f29d9ff664b20deddb20ac092db34c1ef98db0173b",
+    "go.mod": "241101cea898478bbd0206b23e305695d5de2cb780747120d172d96e1e4eb99e",
+    "go.sum": "d0d1ecad19532ff247235eb62f99780093ead4679c958d9eb83d6dcc8d5b5fb1",
+    "internal/configfile/config.go": "21f6edd2ba1cc53df6a20e555d691eefeacb1c1cd1c0c1bdc674ce3ff2515e43",
+    "internal/configfile/config_test.go": "693e3b77cf5ea40ea3ec240f8308f88bf32e8e94eaa2eeb966aa6709ea84a926",
+    "internal/configfile/private_acl.go": "83cac69636be4110183ba271dd5317be9f4f2efa5a59da4a13afb9bcb1353d40",
+    "internal/configfile/private_acl_test.go": "ebfe2d9a4aaa27a2a3d479151cd769fee60e429f1f7c6dfc831bbd248f0763a6",
+    "internal/configfile/read_other.go": "3270d6fafff7fcbe895cc67bf52b427429ad04616d8998b78a589e8c840db15f",
+    "internal/configfile/read_unix.go": "ab2953d7d4d26f4caec4077c15033c55259ec1434b9ac6b5671331159627032d",
+    "internal/configfile/read_windows.go": "d969e29a2463460882139f8c58083e07ed4f407fb357efa25f90656e676be9fa",
+    "internal/configfile/read_windows_test.go": "a88c290885b5fdb233a1636678ea20c73c851edc50883340b3185a42289442b7",
+    "internal/configfile/write.go": "0475e0afea5273ff39263f88086c429cef1566cb54191bf12dc58099f069f3dd",
+    "internal/configfile/write_other.go": "1f3c460809857d669584d19be5c731077bc6bf154bd23f705afdfc3032f5d8e2",
+    "internal/configfile/write_test.go": "26c235bc3bbb29f366b49ed9102430206b120a5f4658db789ca4c053e34f1136",
+    "internal/configfile/write_windows.go": "c2d6d1baf68bad7e06376662f60938be4e2e2664b58e95e0681bf6625d7ebda9",
+    "scripts/ci/windowscli/events.go": "d7a2ec4fb2bc4762e96465fbf8cc593f11c91113606e27a97f12f1f976da71d4",
+    "scripts/ci/windowscli/events_test.go": "27b56d4b683af1da7b4f630024aca4f273378dce7bdc4ac09deedf364b48e1a6",
+    "scripts/ci/windowscli/main.go": "220c17345134f3565b276204525c35b3f1a75ce69cd15b1e5a6fe41b3b48705f",
+    "scripts/ci/windowscli/process.go": "e223df11ccfaee31d8e20540b4db82f67fa83cd09cf704ce30e92decc16c1962",
+    "scripts/ci/windowscli/process_other.go": "0abce7583c454abc5997700828cc5df608ae6537eeddc9712f11bac04d304127",
+    "scripts/ci/windowscli/process_windows.go": "4a135b26c443a83b3131b665eb2fe513d5aca784813062b9a9929c1f6d591697",
+    "scripts/ci/windowscli/process_windows_test.go": "40bba575eceaddc6410a68cc41b06266c65f7e1121d87db85eacbdf759523f8b"
+  },
+  "status": "passed",
+  "tests": {
+    "configuration": [
+      "TestPrivateWindowsACLRejectsBroadComplexUnprotectedAndUnboundedMetadata",
+      "TestPrivateWindowsACLRestrictsEveryEffectiveGrantToOwnerAndOSAdministrators",
+      "TestReadBytesRejectsOverflowingSentinelBudget",
+      "TestWindowsConfigurationHandleDeniesConcurrentWriteAndRename",
+      "TestWindowsConfigurationRejectsActualReparsePoint",
+      "TestWindowsNativeCLIUsesPrivateConfigurationAndRefusesBroadCredentialsBeforeHTTP",
+      "TestWindowsPrivateConfigurationRejectsBroadInheritedAndNullACLs",
+      "TestWindowsPrivateConfigurationRejectsHardLinkAliasesAndAlternateStreams",
+      "TestWindowsPrivateConfigurationUsesActualProtectedOwnerACL",
+      "TestWriteNewPrivateKeepsExactBytesAndRefusesConcurrentOverwrite"
+    ],
+    "driver": [
+      "TestWindowsEventsEnforceExactTopLevelCoverageAndOrder",
+      "TestWindowsEventsRejectSkippedFailedMalformedAndUnboundedInput",
+      "TestWindowsOwnedProcessBoundsOutput",
+      "TestWindowsOwnedProcessCapturesExactOutput",
+      "TestWindowsOwnedProcessTimeoutKillsOwnedDescendant"
+    ]
+  },
+  "windows_server_qualified": false
+}

@@ -95,6 +95,10 @@ The fixture repair is on `a0e646d`. Its [Windows replay](https://github.com/ctlp
 and six baseline workflows are recorded in the [original run inventory](evidence/2026-11-18/github-a0e646d-started.json).
 The earlier campaigns retain their original job IDs and outcomes.
 
+The original `a0e646d` ARM64 Windows job passed all 15 functions and five
+managed commands. The retained report matches 23 source hashes in Git. The
+x64 job remains queued. [ARM64 native evidence](evidence/2026-11-18/github-a0e646d-windows-native-arm64.json)
+
 The [partial `6d41573` snapshot](evidence/2026-11-18/github-6d41573-original-partial.json)
 retains 21 safe members and the outstanding original native jobs. Full campaign
 acceptance remains open.
