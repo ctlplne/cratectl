@@ -312,8 +312,11 @@ def validate_summary(summary, candidate, run_id, spec, baselines, source=None):
             original = [a for a in record.get('artifacts', []) if a['path'] in historical_paths]
             require(len(original) == 1 and historical_paths[original[0]['path']] == version
                     and original[0]['sha256'] == historical_hashes[version], 'upgrade_historical_binary_identity')
-        for version, checks in [(13, 70), (14, 81), (15, 96)] + ([(16, 96)] if any(b["schema"] == 16 for b in baselines) else []) + ([(17, 122)] if any(b["schema"] == 17 for b in baselines) else []):
-            require(next(r for r in lifecycle if r['baseline_version'] == version)['checks'] == checks, 'upgrade_baseline_checks')
+        observed_counts = {13: 70, 14: 81, 15: 96, 16: 96, 17: 122, 18: 122}
+        for record in lifecycle:
+            version = record['baseline_version']
+            if version in observed_counts:
+                require(record['checks'] == observed_counts[version], 'upgrade_baseline_checks')
         require({r['report'].split('-')[0] for r in observed} == {'historical', 'lifecycle', 'repairs', 'retention', 'schedules', 'schema'}, 'upgrade_report_inventory')
     elif kind.startswith('browser-'):
         journey = kind.removeprefix('browser-')

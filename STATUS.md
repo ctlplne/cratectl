@@ -466,6 +466,12 @@ group, and cross-repository search remain open.
 [Native Cargo ownership evidence](evidence/2026-11-19/cargo-fa6b4f7-ownership-native.json)
 [Stock Cargo historical adoption evidence](evidence/2026-11-19/cargo-910359d-historical-adoption-native.json)
 [Original expanded Linux Cargo evidence](evidence/2026-11-19/github-51b0953-cargo-expanded-native.json)
+
+The independent `b88d397` schema 18 daemon and stock ORAS 1.3.6 passed
+122 controlled upgrade checks against `910359d` on macOS ARM64 with
+PostgreSQL 16.16. The replay covered retained artifact lifecycle and original
+export state. Rolling upgrade and independent-host recovery remain open.
+[Schema 18 to 19 lifecycle evidence](evidence/2026-11-19/schema18-to-19-910359d-native.json)
 [Native Cargo search evidence](evidence/2026-11-19/cargo-35c3708-search-native.json)
 [Expanded native Cargo evidence](evidence/2026-11-18/cargo-a39c952-native.json)
 [Native Cargo lifecycle evidence](evidence/2026-11-18/cargo-45f2799-lifecycle-native.json)
