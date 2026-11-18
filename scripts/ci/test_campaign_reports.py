@@ -21,6 +21,30 @@ SPECS = {spec['artifact']: spec for family in WORKFLOWS.values() for spec in job
 
 
 class CampaignReports(unittest.TestCase):
+    def test_oci_check_inventory_tracks_the_selected_source_fixture(self):
+        class Source:
+            path = 'scripts/conformance_oci_clients.py'
+            paths = {path}
+
+            def __init__(self, content):
+                self.content = content
+
+            def __call__(self, path):
+                assert path == self.path
+                return self.content
+
+        old = Source(b'helm_login()')
+        new = Source((ROOT / Source.path).read_bytes())
+        spec = SPECS['ci-summary-oci-clients-amd64']
+        for candidate, source, wrong, checks in [('ab6e559', old, new, 214), ('ee1e955', new, old, 219)]:
+            report = json.loads((ROOT / 'evidence/2026-11-19' / ('github-' + candidate) /
+                                 'ci-summary-oci-clients-amd64.json').read_text())
+            with self.subTest(candidate=candidate):
+                validate_summary(report, report['candidate'], int(report['run_id']), spec, [], source)
+                self.assertEqual(report['records'][0]['checks'], checks)
+                with self.assertRaisesRegex(EvidenceError, 'oci_report_inventory'):
+                    validate_summary(report, report['candidate'], int(report['run_id']), spec, [], wrong)
+
     def test_offline_media_binds_both_phases_source_archive_and_image_inventory(self):
         source = lambda path: path.encode()
         candidate = 'a' * 40

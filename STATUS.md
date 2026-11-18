@@ -587,6 +587,13 @@ matching disposable fixture credential was removed and the corrected replay
 used file-only logins. The hosted OCI fixture now checks that isolation.
 [Native Helm OCI TLS evidence](evidence/2026-11-19/helm-oci-2af9921-tls-native.json)
 
+Both original `ee1e955` Linux OCI jobs passed 219 checks, including five new
+role-specific checks for file-only Helm logins. The unchanged verifier still
+expected 214 checks and refused those reports. Its repair selects the inventory
+from the candidate's OCI fixture source.
+[Original OCI reports and verifier refusal](evidence/2026-11-19/github-ee1e955-helm-file-only-first-verifier.json)
+[Successful local report revalidation](evidence/2026-11-19/github-ee1e955-helm-file-only-revalidated.json)
+
 The independent `b88d397` schema 18 daemon and stock ORAS 1.3.6 passed
 122 controlled upgrade checks against `910359d` on macOS ARM64 with
 PostgreSQL 16.16. The replay covered retained artifact lifecycle and original

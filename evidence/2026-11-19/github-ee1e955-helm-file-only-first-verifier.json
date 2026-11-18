@@ -1,0 +1,76 @@
+{
+  "candidate": "ee1e9552a26aa18abdb9e4dbdb7d56fa4e077577",
+  "observed_at": "2026-11-19T02:33:35.310289+05:30",
+  "attempt": 1,
+  "status": "original_jobs_passed_verifier_refused",
+  "run_id": 44392971030,
+  "jobs": [
+    {
+      "arch": "amd64",
+      "job_id": 135115242409,
+      "job_url": "https://github.com/ctlplne/cratectl/actions/runs/44392971030/job/135115242409",
+      "artifact_id": 14468958554,
+      "artifact_digest": "sha256:99709165efd782be7840acd25556670237c927a107488f9dc433042f5f481109",
+      "safe_summary": {
+        "path": "evidence/2026-11-19/github-ee1e955/ci-summary-oci-clients-amd64.json",
+        "sha256": "fa2f331396d34aa28f078aa113da1036af4f13e14d459ae607f6f1df79c08791",
+        "bytes": 8052
+      },
+      "private_job_log": {
+        "path": ".private/ci-diagnostics/github-ee1e955-campaign/135115242409.txt",
+        "sha256": "8eab6b5bbda6221a6b00ef41891f6c7d1b8831c7fbefdd6dc140f3109c79491d",
+        "bytes": 74083
+      },
+      "counts": {
+        "checks": 219
+      },
+      "exact_verifier_status": "oci_report_inventory"
+    },
+    {
+      "arch": "arm64",
+      "job_id": 135115242876,
+      "job_url": "https://github.com/ctlplne/cratectl/actions/runs/44392971030/job/135115242876",
+      "artifact_id": 14472220219,
+      "artifact_digest": "sha256:609c80462fc92dcfec0f78b1f5a314562af4191bf41bb8af40bc22f6dc04e16a",
+      "safe_summary": {
+        "path": "evidence/2026-11-19/github-ee1e955/ci-summary-oci-clients-arm64.json",
+        "sha256": "b0a2f5fc352de16ac54b078821640f578d4045bbfc6b228410e64277b6e644e3",
+        "bytes": 8054
+      },
+      "private_job_log": {
+        "path": ".private/ci-diagnostics/github-ee1e955-campaign/135115242876.txt",
+        "sha256": "b6834675474337d6ad1e95e53a47cd8dae312340d5cfc0f22f8b2f59c84a6e81",
+        "bytes": 74242
+      },
+      "counts": {
+        "checks": 219
+      },
+      "exact_verifier_status": "oci_report_inventory"
+    }
+  ],
+  "source_sha256": [
+    {
+      "path": ".github/workflows/oci-clients.yml",
+      "sha256": "e0c9d0f91eee09b2f697e02038398c9e86d0eb25b98cb9f04226208fa633cdcc"
+    },
+    {
+      "path": "scripts/conformance_oci_clients.py",
+      "sha256": "afb63b20316a8f55d7911e77cf3637f17817ef5fb7b80bd54804ace81a29e145"
+    },
+    {
+      "path": "scripts/oci_client_contract.py",
+      "sha256": "a82b572f0f9aa0b21277a91fa8305ca1021bbf41b1628efb74ba22c48b0d3e35"
+    },
+    {
+      "path": "scripts/test_oci_client_contract.py",
+      "sha256": "bf8c7296430ac76089c5b845da1de839f8115e558310c6f3b3d80f6f61237451"
+    }
+  ],
+  "limits": [
+    "Both original Linux jobs passed in the loopback plaintext profile. The unchanged verifier expects 214 checks and refused their larger inventories.",
+    "The separate exact macOS ARM64 replay qualifies native Helm 4.2.2 with trusted HTTPS."
+  ],
+  "whole_accepted": false,
+  "goal_complete": false,
+  "broad_readiness": false
+}

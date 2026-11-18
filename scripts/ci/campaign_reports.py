@@ -297,7 +297,12 @@ def validate_summary(summary, candidate, run_id, spec, baselines, source=None):
                 require('maven_cache_contract' in record and 'journal_checkpoint_contract' in record, 'native_report_contracts')
         require(counts == expected, 'native_report_counts')
     elif kind == 'oci':
-        require(len(observed) == 1 and observed[0]['checks'] == 214 and observed[0].get('phase') == 'complete', 'oci_report_inventory')
+        fixture = 'scripts/conformance_oci_clients.py'
+        private_helm = (source is not None and fixture in source.paths
+                        and b'verify_file_only_helm_login(PRIVATE,' in source(fixture))
+        expected_checks = 219 if private_helm else 214
+        require(len(observed) == 1 and observed[0]['checks'] == expected_checks
+                and observed[0].get('phase') == 'complete', 'oci_report_inventory')
         record = observed[0]
         require(set(record.get('client_versions', {})) == {'docker', 'docker_engine', 'buildx', 'podman', 'helm'}
                 and set(record.get('client_binary_sha256', {})) == {'docker', 'podman', 'helm'}

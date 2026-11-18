@@ -1832,9 +1832,10 @@
     {
       "id": "DEFECT.0175",
       "summary": "General integration fixture omits the supported Cargo console adapter",
-      "state": "Original schema 19 x64 and ARM64 jobs both failed the protected session adapter inventory assertion. The fixture now includes Cargo and retains the original OCI removal and credential checks. The exact 04e2ba0 real PostgreSQL integration check passed locally. Full hosted replay pending.",
+      "state": "Original schema 19 x64 and ARM64 jobs both failed the protected session adapter inventory assertion. The fixture now includes Cargo and retains the original OCI removal and credential checks. The exact 04e2ba0 PostgreSQL check passed locally and both original ab6e559 native client jobs passed the corrected full hosted replay.",
       "first_failure": "evidence/2026-11-19/github-d2ee434-console-format-inventory-failure.json",
       "replay": "evidence/2026-11-19/cargo-04e2ba0-proxy-native.json",
+      "hosted_replay": "evidence/2026-11-19/github-ab6e559-exact-local-accepted.json",
       "repair": "Include the Cargo adapter in the exact non-OCI fixture inventory."
     },
     {
@@ -1877,6 +1878,14 @@
       "replay": "evidence/2026-11-19/helm-oci-2af9921-tls-native.json",
       "guard_replay": "evidence/2026-11-19/helm-oci-a23e870-file-only-native.json",
       "repair": "Give the bounded Helm process an empty executable and plugin path and per-actor Docker and Helm configuration. Validate the exact credential file without logging secrets."
+    },
+    {
+      "id": "DEFECT.0181",
+      "summary": "The original OCI report verifier still expects the inventory without the five Helm credential checks",
+      "state": "Both original ee1e955 OCI jobs completed 219 checks successfully. The unchanged verifier refused both reports because its contract still expected 214 checks. The candidate-specific repair preserves 214 for older sources and requires 219 for sources with file-only Helm verification.",
+      "first_failure": "evidence/2026-11-19/github-ee1e955-helm-file-only-first-verifier.json",
+      "replay": "evidence/2026-11-19/github-ee1e955-helm-file-only-revalidated.json",
+      "repair": "Select the required check count from the original OCI fixture source and test acceptance and refusal of both exact retained report inventories."
     }
   ]
 }
