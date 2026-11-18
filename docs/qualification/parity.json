@@ -4556,7 +4556,7 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "Hosted sparse publish, verified archive downloads, same-registry dependencies and retained archive lifecycle.",
+      "implementation": "Hosted sparse publish, verified archive downloads, same-registry dependencies and retained archive lifecycle. New crates bind per-crate owners to current tenant repository grants.",
       "surfaces": {
         "api": "/cargo/{repository}/ and common repository management routes",
         "cli": "Stock Cargo and the cratectl management CLI",
@@ -4591,13 +4591,14 @@
         "delete/restore"
       ],
       "state": "implementing",
-      "candidate": "a39c95249dc0109f871476809d066b73e8ecc223",
+      "candidate": "fa6b4f7c5fac9b264586ebd4f9971a7b3e4dbc46",
       "evidence": [
+        "evidence/2026-11-19/cargo-fa6b4f7-ownership-native.json",
         "evidence/2026-11-18/cargo-a39c952-native.json",
         "evidence/2026-11-18/github-61b2e8a-cargo-and-provider-native.json"
       ],
-      "limits": "Exact scoped stock Cargo 1.100.0 evidence on macOS ARM64 with PostgreSQL 16.16. Broader capability coverage remains open.",
-      "next_action": "Run the expanded Linux profiles. Qualify multiple real versions, connection interruption, per-crate ownership and legacy discovery."
+      "limits": "Scoped stock Cargo 1.100.0 schema 19 ownership evidence on macOS ARM64 with PostgreSQL 16.16. Repository grants apply on every mutation and the last owner remains protected.",
+      "next_action": "Qualify historical Cargo adoption and the expanded Linux campaigns. Exercise remaining platform, scaling, and format cases."
     },
     {
       "id": "FMT.CARGO.PROXY",
@@ -4920,7 +4921,7 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "Tenant identity and current repository grants apply to the Cargo Web API, sparse index and byte downloads.",
+      "implementation": "Tenant identity and current repository grants apply to the Cargo Web API, sparse index and byte downloads. New crates bind per-crate owners to current tenant repository grants.",
       "surfaces": {
         "api": "/cargo/{repository}/ and common repository management routes",
         "cli": "Stock Cargo and the cratectl management CLI",
@@ -4955,12 +4956,13 @@
         "delete/restore"
       ],
       "state": "implementing",
-      "candidate": "a39c95249dc0109f871476809d066b73e8ecc223",
+      "candidate": "fa6b4f7c5fac9b264586ebd4f9971a7b3e4dbc46",
       "evidence": [
+        "evidence/2026-11-19/cargo-fa6b4f7-ownership-native.json",
         "evidence/2026-11-18/cargo-a39c952-native.json"
       ],
-      "limits": "Exact scoped stock Cargo 1.100.0 evidence on macOS ARM64 with PostgreSQL 16.16. Broader capability coverage remains open.",
-      "next_action": "Verify expanded Linux grant cases and implement per-crate ownership and native owner management."
+      "limits": "Scoped stock Cargo 1.100.0 schema 19 ownership evidence on macOS ARM64 with PostgreSQL 16.16. Repository grants apply on every mutation and the last owner remains protected.",
+      "next_action": "Qualify historical Cargo adoption and the expanded Linux campaigns. Exercise remaining platform, scaling, and format cases."
     },
     {
       "id": "FMT.CARGO.LIFECYCLE",
@@ -4995,7 +4997,7 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "Native Cargo yank and unyank share the repository write grant, legal-hold fence and tenant journal. Common deletion and restoration apply to verified crate bytes.",
+      "implementation": "Native Cargo yank and unyank share the repository write grant, legal-hold fence and tenant journal. Common deletion and restoration apply to verified crate bytes. New crates bind per-crate owners to current tenant repository grants.",
       "surfaces": {
         "api": "/cargo/{repository}/ and common repository management routes",
         "cli": "Stock Cargo and the cratectl management CLI",
@@ -5030,12 +5032,13 @@
         "delete/restore"
       ],
       "state": "implementing",
-      "candidate": "a39c95249dc0109f871476809d066b73e8ecc223",
+      "candidate": "fa6b4f7c5fac9b264586ebd4f9971a7b3e4dbc46",
       "evidence": [
+        "evidence/2026-11-19/cargo-fa6b4f7-ownership-native.json",
         "evidence/2026-11-18/cargo-a39c952-native.json"
       ],
-      "limits": "Exact scoped stock Cargo 1.100.0 evidence on macOS ARM64 with PostgreSQL 16.16. Broader capability coverage remains open.",
-      "next_action": "Qualify expanded Linux lifecycle, concurrent state transitions, ownership, additional retention policies and disconnected recovery."
+      "limits": "Scoped stock Cargo 1.100.0 schema 19 ownership evidence on macOS ARM64 with PostgreSQL 16.16. Repository grants apply on every mutation and the last owner remains protected.",
+      "next_action": "Qualify historical Cargo adoption and the expanded Linux campaigns. Exercise remaining platform, scaling, and format cases."
     },
     {
       "id": "FMT.APT.HOSTED",

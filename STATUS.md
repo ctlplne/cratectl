@@ -8,6 +8,13 @@ Broad readiness,security and packaging remain unqualified.
 
 ## Latest whole accepted source
 
+`6c4d583` passed all 32 original GitHub jobs across nine workflows. Its
+unmodified read-only verifier ran locally from the same source and accepted
+86 reports. Independent comparison matched all 32 logs, 25 safe job
+summaries, the selection summary, 30 source contracts, and three transfer
+records. This acceptance covers the selected schema 18 campaign.
+[Exact local verifier evidence](evidence/2026-11-19/github-6c4d583-exact-local-accepted.json)
+
 `b88d397` passed all 28 original jobs across seven workflows. The read-only
 verifier ran from the same commit and accepted 21 safe job summaries plus
 the selection summary, covering 82 reports. Independent comparison matched
@@ -446,8 +453,12 @@ ARM64 jobs each passed 11 scoped Cargo checks on installed PostgreSQL 16.15.
 Stock Cargo search at `35c3708` passed four additional native macOS ARM64
 checks across two real versions. It hid the pending version, returned the
 newer version after approval, and fell back to the earlier version when the
-newer version was yanked. The expanded Linux profile, per-crate ownership,
-legacy Git discovery, proxy, group, and cross-repository search remain open.
+newer version was yanked. The current schema 19 Cargo candidate `fa6b4f7`
+passed 32 stock checks, including six ownership checks, on macOS ARM64 with
+PostgreSQL 16.16. Its 59 tenant tables all enforce forced RLS. The expanded
+Linux profile, historical Cargo adoption, legacy Git discovery, proxy, group,
+and cross-repository search remain open.
+[Native Cargo ownership evidence](evidence/2026-11-19/cargo-fa6b4f7-ownership-native.json)
 [Native Cargo search evidence](evidence/2026-11-19/cargo-35c3708-search-native.json)
 [Expanded native Cargo evidence](evidence/2026-11-18/cargo-a39c952-native.json)
 [Native Cargo lifecycle evidence](evidence/2026-11-18/cargo-45f2799-lifecycle-native.json)
@@ -499,6 +510,8 @@ still require qualification.
 
 All18 migration definitions remain frozen. Schema18 checksum is
 6c60ac3e1228e57b54cdd99397ef4bccfb91cbd942b3437e41a63441b9ad1035.
+The appended schema 19 ownership step has checksum
+0645615e7c59635cbfd0b9f8ffe610ad91dd4fefabf61ebc216852af64247561.
 Qualified17/bb6f728 remains the native historical pin. Only the two exact frozen
 schema17 exceptions exist; new22-contract source requires its own native campaign.
 Primary remains stopped at11/5483878b with ten receipts and unchanged selected
