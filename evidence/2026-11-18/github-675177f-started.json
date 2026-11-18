@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "candidate": "675177fce305fb4dd4e66dc8a72e7cb9e959000c",
+  "observed_at": "2026-11-18T13:43:04.668533+00:00",
+  "trigger": "six push workflows, plus first-attempt native Compose workflow dispatch on the same main SHA",
+  "runs_by_family": {
+    "compose": 44316166013,
+    "upgrades": 44315431698,
+    "oci": 44315431654,
+    "portable": 44315431535,
+    "jvm": 44315431851,
+    "go": 44315431936,
+    "main": 44315431844
+  },
+  "original_runs": [
+    {
+      "id": 44316166013,
+      "path": ".github/workflows/compose-evaluation.yml",
+      "event": "workflow_dispatch",
+      "html_url": "https://github.com/ctlplne/cratectl/actions/runs/44316166013",
+      "status": "pending",
+      "run_attempt": 1
+    },
+    {
+      "id": 44315431698,
+      "path": ".github/workflows/upgrade-qualification.yml",
+      "event": "push",
+      "html_url": "https://github.com/ctlplne/cratectl/actions/runs/44315431698",
+      "status": "queued",
+      "run_attempt": 1
+    },
+    {
+      "id": 44315431654,
+      "path": ".github/workflows/oci-clients.yml",
+      "event": "push",
+      "html_url": "https://github.com/ctlplne/cratectl/actions/runs/44315431654",
+      "status": "queued",
+      "run_attempt": 1
+    },
+    {
+      "id": 44315431844,
+      "path": ".github/workflows/ci.yml",
+      "event": "push",
+      "html_url": "https://github.com/ctlplne/cratectl/actions/runs/44315431844",
+      "status": "queued",
+      "run_attempt": 1
+    },
+    {
+      "id": 44315431535,
+      "path": ".github/workflows/go-export-portability.yml",
+      "event": "push",
+      "html_url": "https://github.com/ctlplne/cratectl/actions/runs/44315431535",
+      "status": "queued",
+      "run_attempt": 1
+    },
+    {
+      "id": 44315431851,
+      "path": ".github/workflows/jvm-clients.yml",
+      "event": "push",
+      "html_url": "https://github.com/ctlplne/cratectl/actions/runs/44315431851",
+      "status": "pending",
+      "run_attempt": 1
+    },
+    {
+      "id": 44315431936,
+      "path": ".github/workflows/go-modules.yml",
+      "event": "push",
+      "html_url": "https://github.com/ctlplne/cratectl/actions/runs/44315431936",
+      "status": "queued",
+      "run_attempt": 1
+    }
+  ],
+  "scope": [
+    "The repaired renderer passed the exact 2.38.2 local control and all 20 local Compose checks.",
+    "The Compose workflow did not appear in the push inventory and was dispatched once for this exact new source. The original 0f77078 candidate and jobs keep their own run identities.",
+    "The record binds original GitHub handles. It awards no pass."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

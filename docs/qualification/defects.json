@@ -1700,10 +1700,12 @@
     },
     {
       "id": "DEFECT.0159",
-      "summary": "The hosted x64 Compose renderer resolves service credential inputs despite the no-environment-resolution option",
-      "state": "The x64 first failure and exact Compose 2.38.2 comparison with inert data are retained. The repaired local render and all 20 local Compose checks pass at 675177f. Hosted replay pending.",
+      "summary": "The hosted Compose renderer resolves service credential inputs despite the no-environment-resolution option",
+      "state": "Both first hosted jobs failed the safe render check. The original logs and Compose 2.38.2 comparison with inert data are retained. The repaired local render and all 20 local checks pass at 675177f. The first hosted replay is queued.",
       "first_failure": "evidence/2026-11-18/github-0f77078-compose-render-failure.json",
+      "both_original_failures": "evidence/2026-11-18/github-0f77078-compose-original.json",
       "local_replay": "evidence/2026-11-18/compose-675177f-arm64-local.json",
+      "hosted_replay": "evidence/2026-11-18/github-675177f-started.json",
       "repair": "Render, build, clean up and start runtime services with empty environment files. Supply separate private inputs only when starting PostgreSQL or the one-shot initializer."
     }
   ]

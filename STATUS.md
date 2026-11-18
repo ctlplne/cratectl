@@ -211,14 +211,16 @@ Retained earlier verdicts keep their original scope.
 The reusable driver passed locally at `0f77078`. The same commit started the
 first two hosted Compose jobs and six baseline workflows.
 [Compose CI inventory](evidence/2026-11-18/github-0f77078-started.json)
-The first hosted x64 runner failed the safe-render check. The same Compose
-2.38.2 binary exposed an inert environment value during local diagnosis. The
+Both first hosted Compose jobs failed the safe-render check. Compose
+2.38.2 exposed an inert environment value during local diagnosis. The
 launcher now passes empty files to render, build, cleanup and runtime startup.
 The database and initializer each receive their own private file. The
 same-version render passes with the repaired inputs.
-[Original x64 failure](evidence/2026-11-18/github-0f77078-compose-render-failure.json)
+[Original native failures](evidence/2026-11-18/github-0f77078-compose-original.json)
 The repaired full local Compose journey passed all 20 checks at `675177f`.
-[Repaired local replay](evidence/2026-11-18/compose-675177f-arm64-local.json)
+The same commit is running its first native Compose dispatch alongside the six
+baseline push workflows. [Repaired local replay](evidence/2026-11-18/compose-675177f-arm64-local.json)
+[Original dispatch inventory](evidence/2026-11-18/github-675177f-started.json)
 
 At `b910da7`, two builds produced identical local binary archives for Linux
 x64 and ARM64. Independent inspection matched all four ELF machines and
