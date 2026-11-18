@@ -1772,6 +1772,7 @@
       "summary": "The hosted imported PostgreSQL fixture never reaches readiness",
       "state": "Both original Linux hosted readiness failures retained. A separate stock PostgreSQL image probe showed the bootstrap SQL mode difference under POSIX ownership. Original host logs lack the database process output.",
       "first_failure": "evidence/2026-11-18/github-12b04b6-offline-media-readiness-failures.json",
+      "local_replay": "evidence/2026-11-18/offline-media-79a6aba-arm64.json",
       "repair": "Stage the exact signed public SQL into one read-only mount and verify readability as the nonroot PostgreSQL image user. Emit bounded container status and a fixed permission classification if readiness fails."
     }
   ]

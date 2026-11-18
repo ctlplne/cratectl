@@ -373,6 +373,12 @@ a runner-owned SQL file at mode 0600 and can read the staged copy at 0444.
 The fixture verifies the signed SQL bytes before staging and checks readability
 as the image user. It reports bounded container state if readiness fails.
 [Original database readiness failures](evidence/2026-11-18/github-12b04b6-offline-media-readiness-failures.json)
+On exact `79a6aba`, the local ARM64 Docker API 1.48 replay verified the
+staged SQL as the nonroot PostgreSQL image user and passed all 27 checks.
+The original hosted Windows x64 and ARM64 jobs at `12b04b6` also passed all
+15 functions each, with 23 source hashes independently matched per job.
+[Local signed SQL replay](evidence/2026-11-18/offline-media-79a6aba-arm64.json)
+[Native Windows results](evidence/2026-11-18/github-12b04b6-windows-native.json)
 
 The hosted repository manifest commands plan creation and surface drift,
 require approval bound to the registry and tenant, and import existing hosted
