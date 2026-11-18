@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
 """Replay authenticated stock Cargo on the fixture's real registry."""
+from concurrent.futures import ThreadPoolExecutor
+import hashlib
+import io
 import json
 import re
 import ssl
 import struct
+import tarfile
 import urllib.error
 import urllib.request
 import tomllib
@@ -24,6 +28,7 @@ def evaluate_cargo(work, installation, authority, toolchain, environment, call, 
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), urllib.request.HTTPSHandler(context=trust))
     admin = (installation / 'admin.token').read_text().strip()
     reader = (work / 'reader.token').read_text().strip()
+    writer = (work / 'writer.token').read_text().strip()
     other = (work / 'other.token').read_text().strip()
     checks = []
 
@@ -49,6 +54,19 @@ def evaluate_cargo(work, installation, authority, toolchain, environment, call, 
 
     def index(name):
         return '/index/' + name[:2] + '/' + name[2:4] + '/' + name
+
+    def publish_frame(name, version, archive):
+        metadata = json.dumps({'name': name, 'vers': version}).encode()
+        return struct.pack('<I', len(metadata)) + metadata + struct.pack('<I', len(archive)) + archive
+
+    def inert_archive(name, version):
+        data = io.BytesIO()
+        with tarfile.open(fileobj=data, mode='w:gz') as bundle:
+            manifest = f'[package]\nname = "{name}"\nversion = "{version}"\n'.encode()
+            item = tarfile.TarInfo(f'{name}-{version}/Cargo.toml')
+            item.size = len(manifest)
+            bundle.addfile(item, io.BytesIO(manifest))
+        return data.getvalue()
 
     cargo, rustc = toolchain / 'cargo', toolchain / 'rustc'
     cargo_version = call('stock-cargo-version', cargo, '-V')[1].strip()
@@ -82,12 +100,14 @@ def evaluate_cargo(work, installation, authority, toolchain, environment, call, 
     })
     check('registry discovery requires a tenant token and current repository grant',
           request('/index/config.json')[0] == 401 and request('/index/config.json', reader)[0] == 403
+          and request('/index/config.json', writer)[0] == 403
           and request('/index/config.json', other)[0] == 404)
     status, data = request('/index/config.json', admin)
     check('sparse config binds required auth, API and downloads to the same trusted authority',
           status == 200 and json.loads(data) == {'api': base, 'dl': base+'/download/{crate}/{version}', 'auth-required': True})
     api('cargo-grant-reader', repo+'/grants', 'PUT', {'actor': 'cratectl-reader', 'read': True, 'write': False})
-    _, publisher = cargo_env('cargo-publisher-home', admin)
+    api('cargo-grant-writer', repo+'/grants', 'PUT', {'actor': 'cratectl-writer', 'read': True, 'write': True})
+    _, publisher = cargo_env('cargo-publisher-home', writer)
     published = {}
     for label, name, spec in (
         ('leaf', BASE_PACKAGE, '\n[features]\nwire = []\n'),
@@ -114,16 +134,40 @@ def evaluate_cargo(work, installation, authority, toolchain, environment, call, 
           and dep == {'name': 'fixture-leaf', 'req': '1.0', 'features': ['wire'], 'optional': True,
                       'default_features': False, 'kind': 'normal', 'package': BASE_PACKAGE})
 
-    metadata = json.dumps({'name': BASE_PACKAGE, 'vers': VERSION}).encode()
     original = published[BASE_PACKAGE].read_bytes()
-    frame = struct.pack('<I', len(metadata)) + metadata + struct.pack('<I', len(original)) + original
+    frame = publish_frame(BASE_PACKAGE, VERSION, original)
+    new_crate = '/api/v1/crates/new'
     checkpoint = api('cargo-before-replay', '/api/v1/audit/checkpoint')
-    check('ordinary publication retry preserves a single journal effect and requires current write authority',
-          request('/api/v1/crates/new', admin, frame, 'PUT')[0] == 200
-          and request('/api/v1/crates/new', reader, frame, 'PUT')[0] == 403
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        attempts = [executor.submit(request, new_crate, writer, frame, 'PUT') for _ in range(2)]
+        outcomes = [result.result()[0] for result in attempts]
+    check('concurrent publication retries preserve a single journal effect and require current write authority',
+          outcomes == [200, 200]
+          and request(new_crate, reader, frame, 'PUT')[0] == 403
           and api('cargo-after-replay', '/api/v1/audit/checkpoint') == checkpoint)
 
+    def refused_coordinate(name, version):
+        return request(new_crate, writer, publish_frame(name, version, inert_archive(name, version)), 'PUT')[0] == 409
+
+    check('conflicting bytes, build metadata and hyphen-underscore aliases preserve retained coordinates',
+          refused_coordinate(BASE_PACKAGE, VERSION) and refused_coordinate(BASE_PACKAGE, VERSION+'+new')
+          and refused_coordinate(BASE_PACKAGE.replace('-', '_'), '2.0.0')
+          and api('cargo-after-collisions', '/api/v1/audit/checkpoint') == checkpoint)
+
     api('cargo-set-review', repo+'/policy', 'PUT', {'require_review': True})
+    probe_name = 'cratectl-cargo-incomplete'
+    probe_archive = inert_archive(probe_name, VERSION)
+    probe = publish_frame(probe_name, VERSION, probe_archive)
+    checkpoint = api('cargo-before-short-frame', '/api/v1/audit/checkpoint')
+    check('short publication frame leaves no retained reference or journal effect',
+          request(new_crate, writer, probe[:-16], 'PUT')[0] == 400
+          and api('cargo-after-short-frame', '/api/v1/audit/checkpoint') == checkpoint
+          and all(row['metadata']['name'] != probe_name for row in api('cargo-no-short-reference', repo+'/artifacts')['items']))
+    check('complete retry binds exactly the original frame bytes to an unassessed reference',
+          request(new_crate, writer, probe, 'PUT')[0] == 200
+          and any(row['metadata']['name'] == probe_name and row['decision'] == 'unassessed'
+                  and row['digest'] == hashlib.sha256(probe_archive).hexdigest()
+                  for row in api('cargo-complete-reference', repo+'/artifacts')['items']))
     download = '/download/' + ROOT_PACKAGE + '/' + VERSION
     check('unassessed index entries are hidden and direct byte delivery is denied',
           request(index(ROOT_PACKAGE), reader)[0] == 404 and request(download, reader)[0] == 403)
@@ -157,7 +201,7 @@ def evaluate_cargo(work, installation, authority, toolchain, environment, call, 
                                         'reason': 'Retain approved crate lifecycle evidence'})
     check('reader and active hold block yank without changing the index',
           request(package_endpoint + '/yank', reader, method='DELETE')[0] == 403
-          and request(package_endpoint + '/yank', admin, method='DELETE')[0] == 409
+          and request(package_endpoint + '/yank', writer, method='DELETE')[0] == 409
           and json.loads(request(index(ROOT_PACKAGE), reader)[1])['yanked'] is False)
     api('cargo-release-hold', lifecycle, 'PUT', {**reference, 'action': 'release_hold', 'expected_revision': 1,
                                                 'reason': 'Release the owned fixture hold'})
@@ -168,7 +212,7 @@ def evaluate_cargo(work, installation, authority, toolchain, environment, call, 
     checkpoint = api('cargo-yank-checkpoint', '/api/v1/audit/checkpoint')
     check('stock Cargo yank changes only discovery and repeated yank leaves the journal unchanged',
           status == 200 and json.loads(yanked) == {**original_entry, 'yanked': True}
-          and request(package_endpoint+'/yank', admin, method='DELETE')[0] == 200
+          and request(package_endpoint+'/yank', writer, method='DELETE')[0] == 200
           and api('cargo-yank-retry-checkpoint', '/api/v1/audit/checkpoint') == checkpoint)
 
     alternative = work/'cargo-unlocked'
@@ -204,5 +248,9 @@ def evaluate_cargo(work, installation, authority, toolchain, environment, call, 
     api('cargo-revoke-grant', repo+'/grants', 'PUT', {'actor': 'cratectl-reader', 'read': False, 'write': False})
     check('revoked grant refuses current index and direct download even with a populated client cache',
           request(index(ROOT_PACKAGE), reader)[0] == request(download, reader)[0] == 403)
+    api('cargo-revoke-writer', repo+'/grants', 'PUT', {'actor': 'cratectl-writer', 'read': True, 'write': False})
+    check('revoked writer cannot replay publication or change yank state',
+          request(new_crate, writer, frame, 'PUT')[0] == 403
+          and request(package_endpoint+'/yank', writer, method='DELETE')[0] == 403)
     return {'cargo': cargo_version, 'cargo_sha256': sha(cargo), 'rustc_sha256': sha(rustc), 'checks': checks,
             'archive_sha256': {name: sha(archive) for name, archive in published.items()}}

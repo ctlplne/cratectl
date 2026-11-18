@@ -176,7 +176,10 @@ def evaluate(args):
         owner_env = dict(public_env, CRATECTL_OWNER_DSN='postgres://cratectl_owner:' + owner + suffix,
                          CRATECTL_DSN='postgres://cratectl_app:' + runtime + suffix)
         call('initialize-registry', daemon, 'init', '--tenant', TENANT, '--directory', app, environment=owner_env)
-        for label, tenant, role in (('reader', TENANT, 'reader'), ('other', OTHER, 'admin')):
+        actors = [('reader', TENANT, 'reader'), ('other', OTHER, 'admin')]
+        if args.cargo_toolchain:
+            actors.append(('writer', TENANT, 'writer'))
+        for label, tenant, role in actors:
             token = work / (label + '.token')
             call('provision-' + label, daemon, 'provision', '--tenant', tenant, '--actor', 'cratectl-' + label,
                  '--role', role, '--token-file', token, environment=owner_env)

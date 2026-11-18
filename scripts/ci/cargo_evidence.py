@@ -16,7 +16,10 @@ CHECKS = (
     'sparse config binds required auth, API and downloads to the same trusted authority',
     'two stock publications retain exact unassessed bytes',
     'sparse index binds immutable checksum and same-registry renamed dependency',
-    'ordinary publication retry preserves a single journal effect and requires current write authority',
+    'concurrent publication retries preserve a single journal effect and require current write authority',
+    'conflicting bytes, build metadata and hyphen-underscore aliases preserve retained coordinates',
+    'short publication frame leaves no retained reference or journal effect',
+    'complete retry binds exactly the original frame bytes to an unassessed reference',
     'unassessed index entries are hidden and direct byte delivery is denied',
     'fresh stock Cargo cannot resolve an unassessed crate',
     'fresh stock Cargo resolves the transitive graph and downloads exact approved bytes after restart',
@@ -29,6 +32,7 @@ CHECKS = (
     'common restoration restores the original index and exact approved archive',
     'protected download still honors both grant revocation and tenant binding',
     'revoked grant refuses current index and direct download even with a populated client cache',
+    'revoked writer cannot replay publication or change yank state',
 )
 SOURCE_PATHS = (
     '.github/workflows/cargo.yml', 'go.mod', 'go.sum', 'Makefile',
