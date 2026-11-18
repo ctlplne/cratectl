@@ -3,6 +3,7 @@
 """Install exact candidate executables inside a native, network-isolated Linux target."""
 
 import argparse
+from functools import partial
 import json
 import os
 from pathlib import Path
@@ -25,9 +26,9 @@ from verify_linux_candidate import require
 MACHINES = {'amd64': ('x86_64', 'X64'), 'arm64': ('aarch64', 'ARM64')}
 
 
-def command(*args, timeout=40, refusal=None):
+def command(*args, timeout=40, refusal=None, cwd=ROOT):
     argv = [str(item) for item in args]
-    code, output = run_owned_client(argv, ROOT, os.environ, timeout=timeout, output_limit=128 << 10)
+    code, output = run_owned_client(argv, cwd, os.environ, timeout=timeout, output_limit=128 << 10)
     if refusal is None:
         require(code == 0, 'command failed: ' + ' '.join(argv[:3]) + '\n' + output)
     else:
@@ -65,6 +66,7 @@ def qualify_inside(architecture, candidate, expected, other_digest):
     check('only-loopback', only_loopback())
     with tempfile.TemporaryDirectory(prefix='cratectl-linux-install-') as folder:
         target = Path(folder)
+        target_command = partial(command, cwd=target)
         safe = target / 'installations'
         safe.mkdir(mode=0o700)
         check('empty-target', not list(safe.iterdir()))
@@ -72,7 +74,7 @@ def qualify_inside(architecture, candidate, expected, other_digest):
         base = (sys.executable, ROOT / 'scripts/install_linux_candidate.py')
         installer = (*base, archive(ROOT, architecture), '--directory', safe, '--sha256')
         installed = safe / f'cratectl-{candidate}-{architecture}'
-        observed = command(*installer, expected)
+        observed = target_command(*installer, expected)
         check('trusted-install', Path(observed) == installed and list(safe.iterdir()) == [installed])
         files = {'manifest.json': 0o644, **dict.fromkeys(BINARIES, 0o755)}
         manifest = json.loads((installed / 'manifest.json').read_text())
@@ -84,28 +86,30 @@ def qualify_inside(architecture, candidate, expected, other_digest):
                       for name, mode in files.items()))
         hashes = {name: digest(installed / name) for name in BINARIES}
         check('installed-digests', all(hashes[name] == manifest['binaries'][name]['sha256'] for name in BINARIES))
-        check('cli-execution', 'npm-config' in command(installed / 'cratectl', '--help'))
-        check('server-execution', 'migrate' in command(installed / 'cratectld', '--help'))
+        cli_help = target_command(installed / 'cratectl', 'npm-config', '--help', refusal='flag: help requested')
+        check('cli-execution', 'Usage of npm-config:' in cli_help and '-repository' in cli_help)
+        server_help = target_command(installed / 'cratectld', 'migrate', '--help', refusal='flag: help requested')
+        check('server-execution', 'Usage of migrate:' in server_help and '-plan' in server_help)
 
         empty = target / 'refusals'
         empty.mkdir(mode=0o700)
         wrong = ('0' if expected[0] != '0' else '1') + expected[1:]
-        command(*base, archive(ROOT, architecture), '--directory', empty, '--sha256', wrong,
-                refusal='compressed archive SHA-256 differs')
+        target_command(*base, archive(ROOT, architecture), '--directory', empty, '--sha256', wrong,
+                       refusal='compressed archive SHA-256 differs')
         check('bad-digest-cleanup', not list(empty.iterdir()))
-        command(*base, archive(ROOT, other), '--directory', empty, '--sha256', other_digest,
-                refusal='archive platform differs')
+        target_command(*base, archive(ROOT, other), '--directory', empty, '--sha256', other_digest,
+                       refusal='archive platform differs')
         check('other-platform-cleanup', not list(empty.iterdir()))
-        command(*installer, expected, refusal='this candidate installation already exists')
+        target_command(*installer, expected, refusal='this candidate installation already exists')
         check('existing-candidate-preserved', list(safe.iterdir()) == [installed]
               and all(digest(installed / name) == hashes[name] for name in BINARIES))
         alias = target / 'alias'
         alias.symlink_to(empty, target_is_directory=True)
-        command(*base, archive(ROOT, architecture), '--directory', alias, '--sha256', expected,
-                refusal='Linux candidate installation failed:')
+        target_command(*base, archive(ROOT, architecture), '--directory', alias, '--sha256', expected,
+                       refusal='Linux candidate installation failed:')
         empty.chmod(0o755)
-        command(*base, archive(ROOT, architecture), '--directory', empty, '--sha256', expected,
-                refusal='installation directory must be owned by the caller with mode 0700')
+        target_command(*base, archive(ROOT, architecture), '--directory', empty, '--sha256', expected,
+                       refusal='installation directory must be owned by the caller with mode 0700')
         check('unsafe-target-refused', not list(empty.iterdir()))
     return {'runner_arch': runner, 'checks': checks, 'binary_sha256': hashes}
 

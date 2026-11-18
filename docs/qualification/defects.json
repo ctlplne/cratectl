@@ -1715,6 +1715,13 @@
       "first_failure": "evidence/2026-11-18/linux-install-36d9db1-network-first-failure.json",
       "repair": "Require only the loopback interface to be administratively up and require all IPv4 and IPv6 route entries to use that interface.",
       "limits": "The original fixture stops before running the installer. Separate native installation replays are required."
+    },
+    {
+      "id": "DEFECT.0161",
+      "summary": "The isolated test's bounded subprocess driver tries to stage empty standard input on the read-only archive mount",
+      "state": "Original exact ARM64 fixture error retained. With a private writable working directory, the development test crossed the mount boundary and completed all 12 checks against the original ARM64 archives.",
+      "first_failure": "evidence/2026-11-18/linux-install-1bba4eb-read-only-fixture.json",
+      "repair": "Run the installer and binaries from the private temporary directory, keeping the archive inputs mounted read-only. Check the actual npm-config and migrate help text and the documented flag parser exit status."
     }
   ]
 }

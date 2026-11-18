@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "candidate": "1bba4eb3086edc5870aac0b7bd71ddb659cbdd06",
+  "observed_at": "2026-11-18T14:39:24.675200+00:00",
+  "original": {
+    "status": "failed",
+    "outcome": "The bounded command driver tried to create standard input in the read-only archive mount before the installer started.",
+    "log": {
+      "path": ".private/cratectl-linux-install-1bba4eb/local-replay.log",
+      "bytes": 88,
+      "sha256": "54f89743026ee66cab9d6ea9ff7206530140fca4182b1757c3affc60372668ae"
+    }
+  },
+  "development": {
+    "archive_candidate": "1bba4eb3086edc5870aac0b7bd71ddb659cbdd06",
+    "corrected_working_directory": "Private writable target scratch under /tmp. The input mount remains read-only.",
+    "corrected_binary_check": "The npm-config and migrate flag parsers return status 1 with their specific help text.",
+    "installed": {
+      "runner_arch": "ARM64",
+      "checks": [
+        "nonroot-native-linux",
+        "only-loopback",
+        "empty-target",
+        "trusted-install",
+        "manifest-and-modes",
+        "installed-digests",
+        "cli-execution",
+        "server-execution",
+        "bad-digest-cleanup",
+        "other-platform-cleanup",
+        "existing-candidate-preserved",
+        "unsafe-target-refused"
+      ],
+      "binary_sha256": {
+        "cratectl": "65340be02bd73bb4b101f00cadab95206653c4751614f6be2f4046a177a5aeb2",
+        "cratectld": "3cb0c6dd1fa1b8e842cb4c29728eab3b9322689591b4d7e013eb70d652785e23"
+      }
+    },
+    "log": {
+      "path": ".private/cratectl-linux-install-1bba4eb/harness-development-recheck.log",
+      "bytes": 478,
+      "sha256": "bbea4d813cd784e0610f40968e7a062b31c2752319a39c3749964b73347c6aed"
+    },
+    "driver_sha256": "a1d30aab25028fe7a2f648394888cbc06d8234df5a207b074f1043aafe85b08f",
+    "exact_source_replay": false
+  },
+  "goal_complete": false,
+  "broad_readiness": false
+}
