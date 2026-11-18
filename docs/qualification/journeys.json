@@ -525,9 +525,10 @@
       "id": "J.MAVEN.SEARCH",
       "capability": "FMT.MAVEN.SEARCH",
       "state": "implementing",
-      "candidate": "0cba518f45da7dea3b4801f48010c726cbebc6be",
+      "candidate": "8bc2ea101b9497c9a5788da43885e91d02d93a5f",
       "evidence": [
-        "evidence/2026-11-19/maven-0cba518-hosted-index-native.json"
+        "evidence/2026-11-19/maven-0cba518-hosted-index-native.json",
+        "evidence/2026-11-19/maven-8bc2ea1-cached-index-native.json"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -535,8 +536,8 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Stock Apache Maven Indexer Reader 7.1.6 passed eight hosted full-index checks and 19 declarative checks on macOS ARM64 with PostgreSQL 16.16. The stock reader decoded canonical JAR release coordinates, sizes and digests. The fixtures exercised current JAR/POM review, separate tenants at the same coordinate, exact restart recovery and grant revocation.",
-      "next_action": "Qualify native Linux, Maven CLI and IDE consumption, richer records, proxy/groups, snapshots and larger workloads."
+      "limits": "Stock Apache Maven Indexer Reader 7.1.6 passed eight hosted, seven cached proxy and 19 declarative checks on macOS ARM64 with PostgreSQL 16.16. Cached index discovery required both exact checksum-validated JAR and POM receipts and made zero source requests during indexing. Current denial and invalidation removed the result, and an explicit fetch and restart restored exact visibility and bytes.",
+      "next_action": "Qualify Linux, ordered group indexes, additional JVM clients, richer records and larger workloads."
     },
     {
       "id": "J.MAVEN.AUTHORIZATION",

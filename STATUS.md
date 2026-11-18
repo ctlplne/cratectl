@@ -706,6 +706,14 @@ index regression and the build, unit, race and lint gates passed. Native
 Linux has separate qualification jobs.
 [Native Maven repository index evidence](evidence/2026-11-19/maven-0cba518-hosted-index-native.json)
 
+`8bc2ea1` passed 34 combined native checks on macOS ARM64, including seven
+cached Maven index checks. A controlled origin served exact JAR and POM
+bytes with SHA-256 sidecars. Indexing made zero origin requests and required
+current receipts for both files. Invalidation, policy, explicit revalidation
+and restart were exercised. Both real PostgreSQL index tests and the build,
+unit, race and lint gates passed.
+[Native cached Maven index evidence](evidence/2026-11-19/maven-8bc2ea1-cached-index-native.json)
+
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities
 published and pulled two exact chart archives, including a build-metadata
