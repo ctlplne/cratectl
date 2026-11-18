@@ -4652,8 +4652,10 @@
       "clients": [
         "cargo"
       ],
-      "client_versions": {},
-      "test_data": "Two nontrivial versions plus a dependency package; same coordinates in two tenants.",
+      "client_versions": {
+        "cargo": "1.100.0"
+      },
+      "test_data": "An inert Cargo-packaged dependency root bound to the original sparse origin and one original stock-published leaf. An owned source changes response state, yank annotation and candidate checksum.",
       "permission_cases": [
         "reader denial on publish",
         "revoked token",
@@ -4669,12 +4671,13 @@
         "delete/restore"
       ],
       "state": "implementing",
-      "candidate": "4a5c5420122dd068dbb5423f87005a2722c16370",
+      "candidate": "04e2ba02b146226cb942a353704020bd6ebf66b8",
       "evidence": [
+        "evidence/2026-11-19/cargo-04e2ba0-proxy-native.json",
         "evidence/2026-11-19/cargo-4a5c542-ipv6-fixture-failure.json"
       ],
-      "limits": "The sparse proxy implementation is committed. The original local stock fixture stopped before proxy checks because of ambiguous loopback hostname resolution. The corrected stock-client replay is pending.",
-      "next_action": "Run the corrected exact-source native replay with both loopback authorities and the original failure retained."
+      "limits": "Fourteen stock Cargo 1.100.0 proxy checks pass on macOS ARM64 and PostgreSQL 16.16. The owned origin has two independently authenticated paths. Public origin, native Linux, stale windows and interrupted/concurrent transfers remain open.",
+      "next_action": "Qualify the proxy on both native Linux architectures, source revision changes, stale-window and interrupted/concurrent transfers, then support proxy members in ordered Cargo groups."
     },
     {
       "id": "FMT.CARGO.GROUP",

@@ -1,0 +1,244 @@
+{
+  "schema": 1,
+  "candidate": "04e2ba02b146226cb942a353704020bd6ebf66b8",
+  "observed_at": "2026-11-19T01:07:02.140985+05:30",
+  "status": "passed",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "client": "cargo 1.100.0 (3acc79c0c 2026-11-05)",
+  "binary_sha256": {
+    "cratectl": "d15f93e76a796f1eea1421ef70399cce6459b4d5f7228b978fe47605bba4bfee",
+    "cratectld": "59fd129a9b645e6c7366ea02da2e83f14cc5ee5636664f10fcd2f400809a5ba6",
+    "cargo": "ad0566b5b484db86c6787b2c77d96c753c31193b23f36d121a334ecadaf6c788",
+    "rustc": "574f8ce13814c332aa5e63445f68ce7fee7c506f802d6135194731d2ae8370ad"
+  },
+  "base_checks": 19,
+  "cargo_checks": 55,
+  "proxy_checks": 14,
+  "archive_sha256": {
+    "cratectl-cargo-leaf": "9bd109fedaaa1ecf8bd8900aa95685a3e7cc379a3e638a14d767fbacf84a64ec",
+    "cratectl-cargo-root": "3f973faf92867ea8683f00dace820f57ec5b0f30fb498bd270c8467d3ddad10c",
+    "cratectl-cargo-root-1.10.0": "2906a22d98a1226e42403f19180a5d204e636544a6216102b92691fe0434b661",
+    "group-preferred": "732975231f9711d08c027e58140d0522fd1442e50ca7d3f481d67e701cc04ad6",
+    "group-duplicate": "d59c67ad8fab5bab2103a85ff6cceb9362ba7158ac78ae774297160015cdbae8",
+    "group-lower-only": "e1b291ec1027dabbcd469ccc025849f226a52c565e28e2671eee08df3763992f",
+    "proxy-root": "acabccb4094c0b82518fe321e39066497d7fd9252d61bdbd527c5b20775e9c79",
+    "proxy-leaf": "9bd109fedaaa1ecf8bd8900aa95685a3e7cc379a3e638a14d767fbacf84a64ec"
+  },
+  "stock_client_summary": {
+    "path": "evidence/2026-11-19/cargo-04e2ba0-proxy-native-summary.json",
+    "bytes": 7597,
+    "sha256": "d4c2e6374af20c7ef67c5661477250777298a04dfde7971d04be5d8d568d6f51",
+    "original_sha256": "cee2cc37beb07518b84fc66972d1f9153d195f4f51193e9bb297f9f6ce6272e6",
+    "redaction": "Omitted the private fixture directory."
+  },
+  "real_postgresql_tests": {
+    "functions": [
+      "TestConsoleSessionUsesCurrentCredentialAndDoesNotExposeSecrets",
+      "TestCargoGroupServingRechecksFirstMemberBeforeHeaders"
+    ],
+    "group_subtests": [
+      "TestCargoGroupServingRechecksFirstMemberBeforeHeaders/new-servable-source",
+      "TestCargoGroupServingRechecksFirstMemberBeforeHeaders/new-unassessed-source"
+    ],
+    "skipped": 0,
+    "original_private_output": {
+      "path": ".cache/cratectl-cargo-native-04e2ba0.vndaFm/.private/cratectl-console-format-integration-2isicmi9/native-replay.log",
+      "bytes": 708,
+      "sha256": "50b1d75912b2d4c156016c96bb807db95cd51a3c4003913f8dfb83eb5ac45f84"
+    }
+  },
+  "source_sha256": [
+    {
+      "path": ".github/workflows/cargo.yml",
+      "sha256": "599a88989eb1ebbcb45222f9bc0b7d4b100b91ce6ecf200f28aa992edebcad62"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "1d4aecc2732cd54db4534e0afc862ffe14d5c24890f106008682fd9bbc8e5ba9"
+    },
+    {
+      "path": "go.sum",
+      "sha256": "5e364e4e1eff09d8d39617427d7775012304b09a7be26778dc2b46fdabae3f15"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "12f2a8b5cfbc2f322822b82e4446f51ff017374acab1f3a8921db8cc8e833bf6"
+    },
+    {
+      "path": "internal/cargo/coordinates.go",
+      "sha256": "7cb6cae3699762ec2f6246ed0a562e100e43e12416217170225ee34f5e1a3e56"
+    },
+    {
+      "path": "internal/cargo/index.go",
+      "sha256": "52fea83aa2d72a423382a477ec209ea979bc58f942ff403e47cccd1156a84ff5"
+    },
+    {
+      "path": "internal/cargo/publish.go",
+      "sha256": "8b1100f0d6e28dfa246c90198a35351c9a3ea635c965e6c448266efab9a7cf58"
+    },
+    {
+      "path": "internal/server/cargo.go",
+      "sha256": "e1c0936b59efe2215d141375dae569e6ea7edf926bc5689cb50d09e5f7509835"
+    },
+    {
+      "path": "internal/server/nuget.go",
+      "sha256": "fd79a030b9fc27dbe1377c3d1f56932a1784063a387d9e987cd4b2da94d1e7b8"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "9c2e99c6943c31559f9c0930142d992b4c290a6dfcd748d859b0dd7de499ccc2"
+    },
+    {
+      "path": "internal/store/cargo.go",
+      "sha256": "f0a6f0a89a301422b2c333377abd56104e97a6904b5dbe0ef220821bc3a67d3f"
+    },
+    {
+      "path": "internal/store/cargo_search.go",
+      "sha256": "5537964b37b8dafe27bee0a3f3ca8f4d599157d67457eb00d93d9e9ee21ced0a"
+    },
+    {
+      "path": "internal/store/store.go",
+      "sha256": "371c857dcfe658ca4a73fef52077f85b5636c44e636d534f3e3a576c16aa074e"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "a040d94629452f4185f16dac161a1d6d46a50f47ddbdd63d4e0f71410b5311a8"
+    },
+    {
+      "path": "internal/store/artifact_read.go",
+      "sha256": "aba845ceb45aff4503adb12c7a10330a7a7154f9a048b15ee3fa34b9153ac11e"
+    },
+    {
+      "path": "internal/blob/local.go",
+      "sha256": "3cdbb9ecd323808a6f0d6d866fe66260fbcb355c6cda416bf5b4e11f19cb9e37"
+    },
+    {
+      "path": "internal/crypto/crypto.go",
+      "sha256": "657b8651c9f7db4921eb8d6390b588675d6315d82c40c77f7d1a449e4481ef41"
+    },
+    {
+      "path": "internal/store/lifecycle_artifact.go",
+      "sha256": "167073e909bbf51f201227ce740bdf2999088aab52af7f48ad93c9773f530651"
+    },
+    {
+      "path": "internal/store/lifecycle.go",
+      "sha256": "1ee74e65136c7d5a9fde27378afb1c99e0fd76d376e2e67bafd1fe95ea6892a6"
+    },
+    {
+      "path": "internal/server/lifecycle.go",
+      "sha256": "0097a57efb37f30f6f52093c503b15526afb100779e1ad6ea547638a798e4ce5"
+    },
+    {
+      "path": "internal/store/cargo_owners.go",
+      "sha256": "279c50369618e0b9053fdea05059fb6417c6c5b9c0f5bf76f1ce48407260b6db"
+    },
+    {
+      "path": "internal/store/cargo_ownership_schema.go",
+      "sha256": "fd7513c2816bb43b210e578d54df4a2319b9aae7e4cff8163b01575c89892d27"
+    },
+    {
+      "path": "internal/store/migrations.go",
+      "sha256": "59f3478fbc77b7c969e43719f7eea92844a5bb1b2cd5b0d63ec2f356e368594b"
+    },
+    {
+      "path": "internal/store/cargo_selection.go",
+      "sha256": "f37900421ec5e8976d297281c97e261c9ecff3b5bac93ae63154f266c2cd1f6f"
+    },
+    {
+      "path": "internal/store/native_source.go",
+      "sha256": "9020d58cedc9b41b203de33dc18e81ce6b0f297b997389dbcab0eb9383a51063"
+    },
+    {
+      "path": "internal/server/resolve.go",
+      "sha256": "671a7cabd700cce628148c18763481ee700041d7685bc90de5098be6b95c5e6f"
+    },
+    {
+      "path": "scripts/cargo_hosted_fixture.py",
+      "sha256": "8feaede986a4b8990c7cc5aa2464137d3c24aaac859aa58ce030eed4eda55020"
+    },
+    {
+      "path": "scripts/cargo_group_fixture.py",
+      "sha256": "e6e736d8df516fea151d96364137b0197c501d5aa3aede38276cca8e248c0508"
+    },
+    {
+      "path": "scripts/cargo_ownership_upgrade_fixture.py",
+      "sha256": "2cac4d171b73be8a601b8c36a54da32cd048d9559c629b60ae3945c05afaba91"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "f7cb7c3238bf01bb1c59815d98136c3a84890f1dd7e5856da8f4d50e09999d7f"
+    },
+    {
+      "path": "scripts/ci/cargo_evidence.py",
+      "sha256": "4c766ffd9dfc2d79f0065d715600668233d7344ded55ec258093c0ac60810f16"
+    },
+    {
+      "path": "scripts/ci/bootstrap_cargo.py",
+      "sha256": "2e1460a56a6343a0f0375e60c32fe8c528d739406272f085bf14cd71db44c42d"
+    },
+    {
+      "path": "scripts/ci/fetch_archive.py",
+      "sha256": "d0fde9da29964255004e6e71ecdac1a807fb60fe2c211520576dfca9d96f747a"
+    },
+    {
+      "path": "scripts/ci/terraform_provider_evidence.py",
+      "sha256": "130de2ec92ed288a6fa6c744c67003a76cafa2dfb9835e48f653abccda1a50ca"
+    },
+    {
+      "path": "scripts/qualification_contract.py",
+      "sha256": "c40a9d0209a9dc1fb9838f49cdb316ad5a762d45c0359b97fce156746564e5ba"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+    },
+    {
+      "path": "internal/cargo/sparse.go",
+      "sha256": "d92e7ecfd0316548f787d70bb45bab54f667c333d8889c556e6842d844b2bb43"
+    },
+    {
+      "path": "internal/server/cargo_proxy.go",
+      "sha256": "6582fcfb8fdf924c2da31c0d2f464ac44c49cc17ba9959f916134f1deff1342e"
+    },
+    {
+      "path": "internal/store/cargo_proxy.go",
+      "sha256": "31dec407e7ecca671f4d43d09035f019f0cde06bdecd1d3b69199676d3a5686b"
+    },
+    {
+      "path": "internal/store/cargo_retrieval.go",
+      "sha256": "baa4fcbbfcea31b60e55c06e1fc691524fdf9c1dd89f332c2d0f5ba09461a9d7"
+    },
+    {
+      "path": "internal/store/retrieval.go",
+      "sha256": "360c7804b8a95ff01939bbf03f4d3c1b86f63300a9014ea528db4ac4f05d6a68"
+    },
+    {
+      "path": "internal/store/source_configuration.go",
+      "sha256": "7fda10529bb5273db5e905440ca7c1473ea9cc3deb4193931555e1fefc414950"
+    },
+    {
+      "path": "internal/upstream/upstream.go",
+      "sha256": "d96fab63d134fde71828f873f3e11c92fc9423b93b6f3f3bbd9a261e46db1e0f"
+    },
+    {
+      "path": "internal/server/credentials.go",
+      "sha256": "8e44024b96cb3017e21c5b5995f6b102bc6780950ac7340ce29f7a00a839604f"
+    },
+    {
+      "path": "scripts/cargo_proxy_fixture.py",
+      "sha256": "0afae4c268a10d55697221049520d794878f6226dcc7bd9beb81d54cea4fafbc"
+    },
+    {
+      "path": "internal/server/console_integration_test.go",
+      "sha256": "ee1e78c88dc7900ad1ab02faec9cfae040d945cc5993b9535eebb105db8367d2"
+    }
+  ],
+  "limits": [
+    "Owned installed PostgreSQL 16.16 and exact stock Cargo 1.100.0 on macOS ARM64.",
+    "Downstream Cargo and cratectl used trusted TLS on literal IPv4. The independent authenticated origin was an inert loopback IPv6 HTTP fixture with separate index and download credentials. Cargo packaged the root for that origin and reused the exact original stock leaf.",
+    "Origin outage replay used a fresh cached binding and a source response of 503. Separate production service, stale-window, parallel and interrupted transfer, and native Linux proxy qualification remain open."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

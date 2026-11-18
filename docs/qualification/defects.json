@@ -1832,15 +1832,17 @@
     {
       "id": "DEFECT.0175",
       "summary": "General integration fixture omits the supported Cargo console adapter",
-      "state": "Original schema 19 x64 and ARM64 jobs both failed the protected session adapter inventory assertion. The fixture now includes Cargo and retains the original OCI removal and credential checks. Full hosted replay pending.",
+      "state": "Original schema 19 x64 and ARM64 jobs both failed the protected session adapter inventory assertion. The fixture now includes Cargo and retains the original OCI removal and credential checks. The exact 04e2ba0 real PostgreSQL integration check passed locally. Full hosted replay pending.",
       "first_failure": "evidence/2026-11-19/github-d2ee434-console-format-inventory-failure.json",
+      "replay": "evidence/2026-11-19/cargo-04e2ba0-proxy-native.json",
       "repair": "Include the Cargo adapter in the exact non-OCI fixture inventory."
     },
     {
       "id": "DEFECT.0176",
       "summary": "The Cargo proxy fixture shares hostname resolution with its separate IPv6 origin",
-      "state": "The original stock hosted and group checks passed before the first proxy request. The first proxy profile stopped at the fixture TLS handshake. The corrected exact-source stock replay is pending.",
+      "state": "The original stock hosted and group checks passed before the first proxy request. The first proxy profile stopped at the fixture TLS handshake. The corrected exact 04e2ba0 replay passed all fourteen proxy checks and the earlier hosted and group checks.",
       "first_failure": "evidence/2026-11-19/cargo-4a5c542-ipv6-fixture-failure.json",
+      "replay": "evidence/2026-11-19/cargo-04e2ba0-proxy-native.json",
       "repair": "Use a literal IPv4 TLS authority for the registry and a separate literal IPv6 origin. Produce the stock dependency archive for the real origin."
     }
   ]
