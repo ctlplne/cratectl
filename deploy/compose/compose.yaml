@@ -12,7 +12,7 @@ services:
   postgres:
     image: ${CRATECTL_COMPOSE_POSTGRES:?run the evaluation launcher}
     platform: ${CRATECTL_COMPOSE_PLATFORM:?run the evaluation launcher}
-    env_file: ${CRATECTL_COMPOSE_STATE:?run the evaluation launcher}/postgres.env
+    env_file: ${CRATECTL_COMPOSE_POSTGRES_ENV:?run the evaluation launcher}
     environment:
       PGPORT: "35432"
       POSTGRES_DB: postgres
@@ -36,7 +36,7 @@ services:
   init:
     <<: *cratectl
     profiles: [bootstrap]
-    env_file: ${CRATECTL_COMPOSE_STATE:?run the evaluation launcher}/init.env
+    env_file: ${CRATECTL_COMPOSE_INIT_ENV:?run the evaluation launcher}
     command: [init, --directory, /var/lib/cratectl, --tenant, "${CRATECTL_COMPOSE_TENANT:?run the evaluation launcher}", --public-url, "https://127.0.0.1:38443"]
     volumes:
       - type: bind

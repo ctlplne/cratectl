@@ -155,6 +155,11 @@ and collapsed them in invariant mode. The macOS SDK collapsed them in both
 modes. This isolates the original discrepancy to the SDK's treatment of the
 same flag pair under different globalization settings.
 [NuGet comparison](evidence/2026-11-18/nuget-supplementary-globalization.json)
+The stock macOS SDK also restored the same two packages from the registered
+feed and the original folder archives for three owned flag cases. All three
+produced identical asset graphs and exact original package bytes. The raw
+supplementary cardinality discrepancy remains an open metadata check.
+[Stock restore evidence](evidence/2026-11-18/nuget-stock-restore-5d2d978-arm64.json)
 
 The local candidate evidence also retains the open build-tool npm advisory and
 the date of the Trivy database used for the Linux ARM64 binary scan.
@@ -182,6 +187,9 @@ and tokens. Local normal and race tests and vet passed. The worker rejects
 nonregular identity input before database setup, and its JSON parser accepts
 only one object within the configured budget.
 [Worker input evidence](evidence/2026-11-18/worker-private-input-development.json)
+At `5d2d978`, the fresh Linux ARM64 Docker run authenticated the worker with its
+generated private files and processed the PostgreSQL publication intents.
+[Native worker replay](evidence/2026-11-18/worker-private-5d2d978-native.json)
 
 The blank Compose evaluation passed 20 checks at `498a078` on a Linux ARM64
 Docker engine on macOS. The empty database reached schema 18 with forced RLS
@@ -197,6 +205,12 @@ Retained earlier verdicts keep their original scope.
 The reusable driver passed locally at `0f77078`. The same commit started the
 first two hosted Compose jobs and six baseline workflows.
 [Compose CI inventory](evidence/2026-11-18/github-0f77078-started.json)
+The first hosted x64 runner failed the safe-render check. The same Compose
+2.38.2 binary exposed an inert environment value during local diagnosis. The
+launcher now passes empty files to render, build, cleanup and runtime startup.
+The database and initializer each receive their own private file. The
+same-version render passes with the repaired inputs.
+[Original x64 failure](evidence/2026-11-18/github-0f77078-compose-render-failure.json)
 
 At `b910da7`, two builds produced identical local binary archives for Linux
 x64 and ARM64. Independent inspection matched all four ELF machines and

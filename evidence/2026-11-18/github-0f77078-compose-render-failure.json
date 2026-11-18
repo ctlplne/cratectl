@@ -1,0 +1,35 @@
+{
+  "candidate": "0f77078d52cfd53b40e19952ce805b708d00520f",
+  "observed_at": "2026-11-18T13:33:37.366780+00:00",
+  "event": "push",
+  "attempt": 1,
+  "run_id": 44310463309,
+  "job_id": 134822941684,
+  "url": "https://github.com/ctlplne/cratectl/actions/runs/44310463309/job/134822941684",
+  "runner": "ubuntu-24.04 / x64",
+  "status": "failed",
+  "failed_step": "Replay blank Compose with real PostgreSQL, TLS and stock npm",
+  "first_failure_label": "safe-render",
+  "original_job_log": {
+    "path": ".private/ci-diagnostics/github-0f77078-compose/134822941684.txt",
+    "bytes": 23770,
+    "sha256": "75c3a402838f9707715da22e8c5415ecb896c7d3b6fd4547437fa8c47cfa5328"
+  },
+  "native_runner_reference": "https://github.com/actions/runner-images/blob/ubuntu24/20261111.370/images/ubuntu/Ubuntu2404-Readme.md",
+  "diagnosis": {
+    "compose_version": "2.38.2",
+    "official_release": "https://github.com/docker/compose/releases/tag/v2.38.2",
+    "observed_matching_arm64_binary_sha256": "4d0f7678dd3338452beba4518e36a8e22b20cad79ba2535c687da554dc3997fb",
+    "original_render_contains_inert_marker": true,
+    "repaired_render_contains_inert_marker": false,
+    "repaired_registry_binding": "127.0.0.1:38443",
+    "repaired_postgresql_host_mapping": false
+  },
+  "repair": "Pass empty environment file paths to topology rendering, image creation, cleanup and runtime container startup. Supply the private environment file of PostgreSQL only to its startup command and the private owner DSN file only to the initializer command.",
+  "limits": [
+    "The original hosted job reported the failed check label. Its rendered model remained in runner-local command logs and was never selected for artifact upload.",
+    "The cause was reproduced using only an inert marker with the same Compose version on a local Linux ARM64 engine. No downstream check or hosted successful replay is credited to this failed attempt."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

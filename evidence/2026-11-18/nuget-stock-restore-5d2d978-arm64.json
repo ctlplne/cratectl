@@ -1,0 +1,87 @@
+{
+  "candidate": "5d2d97808a2b907f841ccef07a6e8fa06134fe18",
+  "source_dirty": false,
+  "observed_at": "2026-11-18T13:28:02.767741+00:00",
+  "platform": "macOS ARM64",
+  "sdk": "10.0.403",
+  "results": [
+    {
+      "case": "flags-empty-token",
+      "index": 45,
+      "http_dependency_declarations": 2,
+      "restore_asset_graph_matches": true,
+      "resolved_package_count": 2,
+      "retained_original_nupkg_bytes": true
+    },
+    {
+      "case": "flags-supplementary",
+      "index": 46,
+      "http_dependency_declarations": 2,
+      "restore_asset_graph_matches": true,
+      "resolved_package_count": 2,
+      "retained_original_nupkg_bytes": true
+    },
+    {
+      "case": "flags-distinct",
+      "index": 55,
+      "http_dependency_declarations": 2,
+      "restore_asset_graph_matches": true,
+      "resolved_package_count": 2,
+      "retained_original_nupkg_bytes": true
+    }
+  ],
+  "parent_evidence": [
+    "evidence/2026-11-18/local-12b1968-qualification.json",
+    "evidence/2026-11-18/nuget-supplementary-globalization.json"
+  ],
+  "goal_complete": false,
+  "broad_readiness": false,
+  "scope": "Actual pinned macOS stock dotnet restore against the hosted registry over owned development loopback HTTP and the exact same archives as an independent folder source. Each invocation uses a new consumer and separate package cache.",
+  "limits": [
+    "This tests outcome agreement for three inert owned cases. The original supplementary raw metadata cardinality discrepancy remains observed.",
+    "Linux and Windows stock restore, noninert package asset-flag behaviors and full NuGet parity require separate evidence."
+  ],
+  "exact_server_sha256": "a7a953c4a7d1719d2182701d0a65ca4d17e834371ba00a512bd89ff97a9a287c",
+  "private_logs": [
+    {
+      "path": ".private/cratectl-nuget-restore-8e80f3f53e/build.log",
+      "sha256": "017516808ecc47cb006d985552fc3ad347e7a5b18d8785f87a051e20e119f9f7"
+    },
+    {
+      "path": ".private/cratectl-nuget-restore-8e80f3f53e/provision.log",
+      "sha256": "d8ce6996f1505f6a8ad425da73d132cae9d4e5892f075b96826572761b0aea10"
+    },
+    {
+      "path": ".private/cratectl-nuget-restore-8e80f3f53e/sdk.log",
+      "sha256": "00922204861c9366b1259b84337ee228d58ec876604bb149e82c077108ce3be2"
+    },
+    {
+      "path": ".private/cratectl-nuget-restore-8e80f3f53e/restore-flags-empty-token-http.log",
+      "sha256": "1104371027f3f6eaded96bcab16033383539960c59f19dd3b5bf07c946220807"
+    },
+    {
+      "path": ".private/cratectl-nuget-restore-8e80f3f53e/restore-flags-empty-token-folder.log",
+      "sha256": "98aedde3f80f61f5cf4ab5466b0aa4b7b8908de95da62f7bda907a9724f362dd"
+    },
+    {
+      "path": ".private/cratectl-nuget-restore-8e80f3f53e/restore-flags-supplementary-http.log",
+      "sha256": "21c1095405416ff453214411dde61b5231bc113b07bd36cd06adf33cd1f397ab"
+    },
+    {
+      "path": ".private/cratectl-nuget-restore-8e80f3f53e/restore-flags-supplementary-folder.log",
+      "sha256": "1ad318244d93f6f90cc15292af68ddeeff341ab74a54650de32b86081ea96c6a"
+    },
+    {
+      "path": ".private/cratectl-nuget-restore-8e80f3f53e/restore-flags-distinct-http.log",
+      "sha256": "99e2ce5289c92a63f32e0aeb93881de504102901948036e251497fe891ca10bc"
+    },
+    {
+      "path": ".private/cratectl-nuget-restore-8e80f3f53e/restore-flags-distinct-folder.log",
+      "sha256": "ea3284822c835e3e2c84f48cdb3b9f8c5e03af902a7bc7b8cd2a4e4eb5e0930f"
+    }
+  ],
+  "local_driver": {
+    "path": ".cache/cratectl-nuget-restore-diff.py",
+    "sha256": "7148eabdc6d27f6f7d818c6e3102b8922517c180313d8c02e5d8319e641f42df"
+  }
+}

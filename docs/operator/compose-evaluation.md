@@ -39,8 +39,8 @@ using `$CRATECTL_EVAL/client.json` for `--config`. Keep `--ignore-scripts` for
 the inert evaluation package. Initial administrator and worker credentials
 expire after 24 hours. The local TLS certificate expires after 30 days.
 
-To render the Compose configuration as JSON with private environment files kept
-as path references, run:
+To render the Compose topology as JSON, run the following command. The renderer
+receives empty environment files in place of database credentials.
 
 ```sh
 python3 scripts/compose_evaluation.py config

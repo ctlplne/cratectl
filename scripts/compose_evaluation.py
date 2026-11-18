@@ -159,7 +159,12 @@ def main():
                'CRATECTL_COMPOSE_PLATFORM': 'linux/' + architecture,
                'CRATECTL_COMPOSE_USER': f'{os.geteuid()}:{os.getegid()}',
                'CRATECTL_COMPOSE_POSTGRES': POSTGRES, 'CRATECTL_COMPOSE_TENANT': state['tenant'],
-               'CRATECTL_COMPOSE_BUILD': str(output), 'CRATECTL_COMPOSE_STATE': str(directory)}
+               'CRATECTL_COMPOSE_BUILD': str(output), 'CRATECTL_COMPOSE_STATE': str(directory),
+               'CRATECTL_COMPOSE_POSTGRES_ENV': '/dev/null', 'CRATECTL_COMPOSE_INIT_ENV': '/dev/null'}
+        # Some Compose releases resolve service env_file even during a render.
+        # The renderer, image builder and runtime services receive empty files.
+        postgres_env = {**env, 'CRATECTL_COMPOSE_POSTGRES_ENV': str(directory / 'postgres.env')}
+        init_env = {**env, 'CRATECTL_COMPOSE_INIT_ENV': str(directory / 'init.env')}
         base = ('docker', 'compose', '--env-file', '/dev/null', '-f', str(DEPLOY / 'compose.yaml'), '-p', args.project)
         if args.action == 'config':
             command(*base, '--profile', 'bootstrap', 'config', '--no-env-resolution', '--format', 'json', env=env)
@@ -173,8 +178,8 @@ def main():
             command('make', 'build', 'BINDIR=' + str(output), timeout=300,
                     env={**os.environ, 'GOOS': 'linux', 'GOARCH': architecture, 'CGO_ENABLED': '0'})
             command(*base, 'build', 'registry', env=env, timeout=300)
-            command(*base, 'up', '-d', '--wait', '--wait-timeout', '75', 'postgres', env=env, timeout=90)
-            command(*base, 'run', '--rm', '--no-deps', 'init', env=env, timeout=150)
+            command(*base, 'up', '-d', '--wait', '--wait-timeout', '75', 'postgres', env=postgres_env, timeout=90)
+            command(*base, 'run', '--rm', '--no-deps', 'init', env=init_env, timeout=150)
             prepare_client(directory)
             command(*base, 'up', '-d', '--no-build', '--no-deps', 'registry', 'worker', env=env, timeout=90)
             ready(directory)

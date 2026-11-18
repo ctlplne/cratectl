@@ -144,9 +144,12 @@ class Journey:
         definitions = json.loads(model)['services']
         port, = definitions['registry']['ports']
         inputs = read_state(self.state / 'evaluation.json')
-        self.check('safe-render', all(inputs[role] not in model for role in ('postgres', 'owner', 'runtime'))
-                   and port['host_ip'] == '127.0.0.1' and str(port['published']) == '38443'
-                   and int(port['target']) == 38443 and not definitions['postgres'].get('ports'))
+        require(all(inputs[role] not in model for role in ('postgres', 'owner', 'runtime')),
+                'Compose render included database credentials')
+        require(port['host_ip'] == '127.0.0.1' and str(port['published']) == '38443'
+                and int(port['target']) == 38443 and not definitions['postgres'].get('ports'),
+                'Compose render exposed an unexpected listener')
+        self.check('safe-render', True)
         image_ids = set()
         for service in ('registry', 'worker'):
             info, = json.loads(self.run(service, ['docker', 'inspect', services[service]]))
