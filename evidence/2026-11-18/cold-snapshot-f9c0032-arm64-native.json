@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "candidate": "f9c003263b3b4bb1477464b1bb6c6299871216ea",
+  "runtime_candidate": "e4adc190caa621fd46a35312242fdc029f787f73",
+  "observed_at": "2026-11-18T16:03:06.355154+00:00",
+  "status": "passed",
+  "platform": "linux/arm64",
+  "sealed_files": 1573,
+  "sealed_bytes": 51409770,
+  "verified_cas_files": 1,
+  "snapshot_digest": "32b4ffb0c2cf7d46821cac5587e5cc0ee1e7299ea777406474dcdbf38315326b",
+  "actual_pair_capture_and_verify_logs": [
+    {
+      "path": ".private/cratectl-recovery-5db413ce1d/exact-prod-pair-capture.log",
+      "bytes": 65,
+      "sha256": "8d735d1c390e062038a932e50ed5bba57164ec42098516c5cbf1f99a899c94fc"
+    },
+    {
+      "path": ".private/cratectl-recovery-5db413ce1d/exact-prod-pair-verify.log",
+      "bytes": 60,
+      "sha256": "7576fd0c963006333375f99d7f6ca7d91ba92d70ef2944576687eac977efd94b"
+    }
+  ],
+  "original_recovery": {
+    "path": ".private/cratectl-recovery-5db413ce1d/safe-report.json",
+    "bytes": 5660,
+    "sha256": "2c6c8d3e06a3b9c24853d494371895793d1cf7a6a9efcb8958a67982ed633d4a"
+  },
+  "journal_equivalent": true,
+  "stock_runtime_checks": 17,
+  "cold_checks": 12,
+  "limits": [
+    "Scoped cold single-node filesystem and physical PostgreSQL 16.15 recovery on the same Linux ARM64 Docker engine. Applications were stopped before paired capture.",
+    "Docker volumes were newly allocated and namespaced. Mixed-version recovery, live production backups, independent-host HA, preservation under storage outages and RPO/RTO budgets remain open."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

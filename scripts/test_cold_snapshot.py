@@ -9,7 +9,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from cold_snapshot import REQUIRED, SNAPSHOT, capture, verify
+from cold_snapshot import MIGRATION_18, REQUIRED, SNAPSHOT, capture, check_restored_database, verify
 
 
 class ColdSnapshotTests(unittest.TestCase):
@@ -77,6 +77,29 @@ class ColdSnapshotTests(unittest.TestCase):
             self.create()
         self.assertFalse(self.output.exists())
         self.assertTrue(path.is_file())
+
+    def test_restored_database_requires_exact_checkpoint_and_current_reference_sizes(self):
+        digest = self.create()
+        entry = self.output / self.object
+        journal = json.loads((self.output/'journal-checkpoint.json').read_bytes())
+        reference = {'tenant': 'one', 'digest': self.object.name, 'size': entry.stat().st_size}
+        result = {'schema': {'version': 18, 'checksum': MIGRATION_18}, 'runtime_restricted': True,
+                  'runtime_stopped': True, 'coverage': {'tenant_tables': 57, 'forced': 57, 'runtime_owned': 0},
+                  'journal': journal, 'references': [reference]}
+
+        def replay(value):
+            self.postgres.side_effect = [(0, 'backup successfully verified'), (0, json.dumps(value))]
+            return check_restored_database(self.output, digest)
+
+        self.assertEqual(replay(result), {'schema': 18, 'forced_tenant_tables': 57,
+                                          'journal_heads': 1, 'matched_object_references': 1})
+        self.assertIn('READ ONLY', self.postgres.call_args.kwargs['input_text'])
+        for altered, message in [({'journal': [{**journal[0], 'last_hash': '8' * 64}]}, 'journal heads differ'),
+                                 ({'runtime_stopped': False}, 'stopped runtime differs'),
+                                 ({'references': [{**reference, 'size': 0}]}, 'no verified bytes'),
+                                 ({'references': [{**reference, 'tenant': 'other'}]}, 'no verified bytes')]:
+            with self.subTest(change=list(altered)), self.assertRaisesRegex(ValueError, message):
+                replay({**result, **altered})
 
 
 if __name__ == '__main__':

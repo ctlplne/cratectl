@@ -32,6 +32,54 @@ REQUIRED = {'database/PG_VERSION', 'database/backup_manifest', 'installation/run
             'installation/worker.token', 'pagination.key', 'journal-checkpoint.json'}
 ROOTS = {'database', 'installation'}
 SNAPSHOT = 'snapshot.json'
+MIGRATION_18 = '6c60ac3e1228e57b54cdd99397ef4bccfb91cbd942b3437e41a63441b9ad1035'
+RESTORE_QUERY = """
+BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ READ ONLY;
+SET LOCAL statement_timeout='30s';
+SET LOCAL row_security=off;
+WITH journal AS (
+ SELECT c.tenant,c.event_count,h.sequence AS last_sequence,h.hash AS last_hash
+ FROM (SELECT tenant,count(*) event_count FROM cratectl.events GROUP BY tenant LIMIT 4097)c
+ CROSS JOIN LATERAL (
+   SELECT sequence,hash FROM cratectl.events WHERE tenant=c.tenant ORDER BY sequence DESC LIMIT 1
+ )h
+), references_to_bytes AS (
+ SELECT tenant,digest,size FROM cratectl.artifacts
+ UNION SELECT tenant,digest,size FROM cratectl.upload_parts
+ UNION SELECT tenant,manifest_digest,manifest_size FROM cratectl.artifact_exports
+ UNION SELECT i.tenant,i.digest,i.size FROM cratectl.artifact_export_items i
+   JOIN cratectl.artifact_exports e ON (e.tenant,e.id)=(i.tenant,i.export_id) WHERE e.state IN ('open','acknowledged')
+ UNION SELECT tenant,manifest_digest,manifest_size FROM cratectl.artifact_export_sets
+ UNION SELECT tenant,manifest_digest,manifest_size FROM cratectl.artifact_export_set_requirements
+ UNION SELECT tenant,main_digest,main_size FROM cratectl.artifact_export_set_requirements
+ UNION SELECT tenant,proof_digest,proof_size FROM cratectl.artifact_export_set_requirements
+ UNION SELECT tenant,manifest_digest,manifest_size FROM cratectl.artifact_export_set_requirement_sources
+ UNION SELECT tenant,mod_digest,mod_size FROM cratectl.artifact_export_set_requirement_sources
+ UNION SELECT i.tenant,i.digest,i.size FROM cratectl.artifact_export_set_items i
+   JOIN cratectl.artifact_export_sets e ON (e.tenant,e.id)=(i.tenant,i.set_id) WHERE e.state IN ('open','acknowledged')
+ LIMIT 10001
+), coverage AS (
+ SELECT count(*) AS tenant_tables,
+        count(*) FILTER (WHERE c.relrowsecurity AND c.relforcerowsecurity) AS forced,
+        count(*) FILTER (WHERE pg_get_userbyid(c.relowner)='cratectl_app') AS runtime_owned
+ FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+ WHERE n.nspname='cratectl' AND c.relkind IN ('r','p')
+ AND EXISTS (SELECT 1 FROM pg_attribute a WHERE a.attrelid=c.oid AND a.attname='tenant' AND NOT a.attisdropped)
+)
+SELECT json_build_object(
+ 'journal',coalesce((SELECT json_agg(journal ORDER BY tenant) FROM journal),'[]'::json),
+ 'references',coalesce((SELECT json_agg(references_to_bytes) FROM references_to_bytes),'[]'::json),
+ 'coverage',(SELECT row_to_json(coverage) FROM coverage),
+ 'schema',(SELECT row_to_json(m) FROM (
+   SELECT version,checksum FROM cratectl_private.schema_migrations ORDER BY version DESC LIMIT 1
+ )m),
+ 'runtime_restricted',(SELECT NOT rolsuper AND NOT rolbypassrls FROM pg_roles WHERE rolname='cratectl_app'),
+ 'runtime_stopped',NOT EXISTS (
+   SELECT 1 FROM pg_stat_activity WHERE datname=current_database() AND usename='cratectl_app'
+ )
+);
+COMMIT;
+"""
 
 
 def private_directory(fd):
@@ -159,6 +207,20 @@ class Inventory:
                 'bytes': self.bytes, 'verified_cas_files': self.cas_files}
 
 
+def journal_heads(journal):
+    require(type(journal) is list and len(journal) <= 4096, 'invalid journal checkpoint inventory')
+    tenants = {}
+    for entry in journal:
+        require(type(entry) is dict and set(entry) == {'tenant', 'event_count', 'last_sequence', 'last_hash'}
+                and type(entry['tenant']) is str and TENANT.fullmatch(entry['tenant'])
+                and type(entry['event_count']) is int and type(entry['last_sequence']) is int
+                and 0 < entry['event_count'] <= entry['last_sequence'] < 1 << 63
+                and type(entry['last_hash']) is str and SHA256.fullmatch(entry['last_hash'])
+                and entry['tenant'] not in tenants, 'invalid journal checkpoint identity')
+        tenants[entry['tenant']] = entry
+    return tenants
+
+
 def check_supported_inputs(root):
     require(read_small(root / 'database/PG_VERSION', 8).strip() == b'16', 'a PostgreSQL 16 physical backup is required')
     key = read_small(root / 'pagination.key', 128)
@@ -168,17 +230,7 @@ def check_supported_inputs(root):
     observed = root / 'installation/pagination.key'
     if observed.exists():
         require(read_small(observed, 128).strip() == encoded, 'installation and separately retained pagination keys differ')
-    journal = json.loads(read_small(root / 'journal-checkpoint.json', 1 << 20), object_pairs_hook=unique_members)
-    require(type(journal) is list and len(journal) <= 4096, 'invalid journal checkpoint inventory')
-    tenants = set()
-    for entry in journal:
-        require(type(entry) is dict and set(entry) == {'tenant', 'event_count', 'last_sequence', 'last_hash'}
-                and type(entry['tenant']) is str and TENANT.fullmatch(entry['tenant'])
-                and type(entry['event_count']) is int and type(entry['last_sequence']) is int
-                and 0 < entry['event_count'] <= entry['last_sequence'] < 1 << 63
-                and type(entry['last_hash']) is str and SHA256.fullmatch(entry['last_hash'])
-                and entry['tenant'] not in tenants, 'invalid journal checkpoint identity')
-        tenants.add(entry['tenant'])
+    journal_heads(json.loads(read_small(root / 'journal-checkpoint.json', 1 << 20), object_pairs_hook=unique_members))
     with tempfile.TemporaryDirectory(prefix='cratectl-cold-verify-') as work:
         code, output = run_owned_client(['pg_verifybackup', '--exit-on-error', root.absolute() / 'database'],
                                         work, os.environ, timeout=300, output_limit=128 << 10)
@@ -231,19 +283,54 @@ def verify(root, expected):
         os.close(fd)
 
 
+def check_restored_database(root, expected):
+    observed = verify(root, expected)
+    journal = journal_heads(json.loads(read_small(root / 'journal-checkpoint.json', 1 << 20),
+                                       object_pairs_hook=unique_members))
+    with tempfile.TemporaryDirectory(prefix='cratectl-cold-database-check-') as work:
+        code, stdout = run_owned_client(['psql', '-X', '-q', '-At', '-w', '-v', 'ON_ERROR_STOP=1'],
+                                       work, os.environ, input_text=RESTORE_QUERY, timeout=45,
+                                       output_limit=4 << 20, capture_limit=4 << 20)
+    require(code == 0, 'the restored read-only database check failed')
+    result = json.loads(stdout, object_pairs_hook=unique_members)
+    require(result['schema'] == {'version': 18, 'checksum': MIGRATION_18}
+            and result['runtime_restricted'] is True and result['runtime_stopped'] is True,
+            'restored schema, maintenance authority or stopped runtime differs')
+    coverage = result['coverage']
+    require(0 < coverage['tenant_tables'] == coverage['forced'] <= 1024 and coverage['runtime_owned'] == 0,
+            'restored tenant tables lack forced RLS or have an unsafe owner')
+    require(journal_heads(result['journal']) == journal, 'restored database journal heads differ from the sealed checkpoint')
+    refs = result['references']
+    require(type(refs) is list and len(refs) <= MAX_ENTRIES, 'restored reference inventory exceeds its bound')
+    for ref in refs:
+        tenant, digest, size = ref['tenant'], ref['digest'], ref['size']
+        require(type(tenant) is str and TENANT.fullmatch(tenant)
+                and type(digest) is str and SHA256.fullmatch(digest)
+                and type(size) is int and 0 <= size <= MAX_FILE, 'invalid restored object reference')
+        name = f'installation/objects/{tenant}/sha256/{digest[:2]}/{digest}'
+        binding = observed['files'].get(name)
+        require(binding is not None and size == binding['bytes'],
+                'restored object reference has no verified bytes in the sealed snapshot')
+    return {'schema': 18, 'forced_tenant_tables': coverage['forced'],
+            'journal_heads': len(journal), 'matched_object_references': len(refs)}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     actions = parser.add_subparsers(dest='action', required=True)
     pair = actions.add_parser('capture')
     for name in ('database', 'installation', 'pagination-key', 'journal-checkpoint', 'directory'):
         pair.add_argument('--' + name, type=Path, required=True)
-    check = actions.add_parser('verify')
-    check.add_argument('directory', type=Path)
-    check.add_argument('--sha256', required=True)
+    for action in ('verify', 'check-restore'):
+        check = actions.add_parser(action)
+        check.add_argument('directory', type=Path)
+        check.add_argument('--sha256', required=True)
     args = parser.parse_args()
     os.umask(0o077)
     try:
-        if args.action == 'verify':
+        if args.action == 'check-restore':
+            print(json.dumps(check_restored_database(args.directory, args.sha256)))
+        elif args.action == 'verify':
             observed = verify(args.directory, args.sha256)
             print(json.dumps({'files': len(observed['files']), 'bytes': observed['bytes'],
                               'verified_cas_files': observed['verified_cas_files']}))

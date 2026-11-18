@@ -53,10 +53,17 @@ python3 scripts/cold_snapshot.py verify "$SNAPSHOT" --sha256 "$TRUSTED_SNAPSHOT_
 Restore the validated database to a new PostgreSQL data directory and the
 installation files to a separate private destination. Supply the same
 absolute application paths through the new runtime's mounts. Start the
-database first, recompute the journal heads, and compare them with the
-recorded checkpoint before starting the registry and worker. Check current
-policy, the original TLS trust, and stock-client retrieval from a fresh
-cache. Keep the verified backup intact through this process.
+database first and point the stock PostgreSQL client environment at that
+restored database using an authorized maintenance connection. Before starting
+the registry or worker, check schema 18, forced RLS, the recorded journal heads
+and the presence and length of each retained object referenced by the database.
+
+```sh
+python3 scripts/cold_snapshot.py check-restore "$SNAPSHOT" --sha256 "$TRUSTED_SNAPSHOT_SHA256"
+```
+
+Check current policy, the original TLS trust, and stock-client retrieval from
+a fresh cache. Keep the verified backup intact through this process.
 
 The pairing tool bounds individual files to 1 GiB, aggregate bytes to
 16 GiB, and the complete inventory to 10,000 entries. Protect backup storage

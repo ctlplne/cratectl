@@ -247,6 +247,10 @@ The original `0f77078` campaign has now closed with 22 passes and six failures.
 It retains both Compose render failures, three source lint failures, and the
 original x64 stock NuGet option-parser refusal after 492 assertions.
 [Complete original outcomes](evidence/2026-11-18/github-0f77078-original-completed.json)
+The original mixed-event `675177f` campaign closed with 24 passes, three
+retained source-lint failures and one cancelled macOS fuzz job. Both Compose
+jobs passed. GitHub lists the cancelled job with no steps or downloadable log.
+[Complete repaired-candidate outcomes](evidence/2026-11-18/github-675177f-original-completed.json)
 The authorized push of `b88d397` selected six baseline workflows and the
 native Linux archive lane. It includes the audited console, campaign lint
 repair and pinned stock NuGet credential handling.
@@ -328,6 +332,10 @@ head and all 57 forced-RLS tenant tables. Stock npm installed the exact
 approved bytes over the original TLS trust after recovery. The fixture
 detected a missing key and a changed object before startup.
 [Cold recovery result](evidence/2026-11-18/cold-recovery-e4adc19-arm64.json)
+The `f9c0032` pairing tool sealed and verified 1,573 files from a separate
+stock PostgreSQL backup and the stopped runtime. A fresh test volume restored
+directly from this sealed copy and passed the same stock-client checks.
+[Sealed snapshot result](evidence/2026-11-18/cold-snapshot-f9c0032-arm64-native.json)
 
 The packaged Helm chart passed 13 deployment checks at `f245757` on an
 isolated ARM64 Kubernetes 1.35 cluster. Restricted Pod Security admitted the
