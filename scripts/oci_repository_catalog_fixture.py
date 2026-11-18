@@ -37,7 +37,7 @@ def evaluate_oci_catalog(work, app, authority, oras, environment, call, api, res
         raise ValueError('catalog evidence requires stock ORAS 1.3.6')
 
     def native(label, who, operation, *arguments, cwd=scope):
-        _, output = call('oci-catalog-' + label, oras, *operation, '--ca-file', trust,
+        _, output = call('oci-catalog-' + label, oras, *operation, '--plain-http=false', '--ca-file', trust,
                          '--registry-config', empty_config, '--username', 'cratectl-' + who,
                          '--password-stdin', *arguments, cwd=cwd, environment=env,
                          input_text=tenants[who][0].read_text())

@@ -1926,6 +1926,13 @@
       "first_failure": "evidence/2026-11-19/python-8cc78aa-cached-index-size-first-failure.json",
       "replay": "evidence/2026-11-19/python-6efab30-cached-search-native.json",
       "repair": "Publish the exact packaged wheel byte size in the owned Simple API 1.1 response and replay the stock client."
+    },
+    {
+      "id": "DEFECT.0187",
+      "summary": "Stock ORAS defaults to HTTP on localhost in the first hosted OCI catalog fixture",
+      "state": "The original candidate built successfully. Its first stock publication made an HTTP manifest HEAD to the loopback TLS listener and received HTTP 400. The listener logged a plaintext request.",
+      "first_failure": "evidence/2026-11-19/oci-266fc04-catalog-tls-first-failure.json",
+      "repair": "Select HTTPS explicitly in stock ORAS with plain-http=false and validate the fixture certificate through its CA."
     }
   ]
 }
