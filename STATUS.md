@@ -321,6 +321,14 @@ Preinstalled operator tooling, x64 runtime, scanner import and production
 recovery still need their respective qualification.
 [Imported-media result](evidence/2026-11-18/linux-offline-media-e4adc19-arm64.json)
 
+The cold `e4adc19` recovery fixture passed 17 runtime checks and 12 backup
+controls. With registry and worker stopped, stock PostgreSQL 16.15 captured
+and verified a physical backup. A fresh database volume preserved the journal
+head and all 57 forced-RLS tenant tables. Stock npm installed the exact
+approved bytes over the original TLS trust after recovery. The fixture
+detected a missing key and a changed object before startup.
+[Cold recovery result](evidence/2026-11-18/cold-recovery-e4adc19-arm64.json)
+
 The packaged Helm chart passed 13 deployment checks at `f245757` on an
 isolated ARM64 Kubernetes 1.35 cluster. Restricted Pod Security admitted the
 registry and worker, which used verified TLS to real PostgreSQL. Stock npm

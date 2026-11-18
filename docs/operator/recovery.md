@@ -56,3 +56,6 @@ do no DDL; production rolling upgrades and whole-transfer draining remain open.
 This operation does not inventory every object, remove orphan bytes, collect
 garbage, enforce retention/holds or replace backup/restore. Those workflows remain
 required before production readiness.
+
+For a stopped single-instance deployment, see
+[Cold physical backup pairing](cold-recovery.md).

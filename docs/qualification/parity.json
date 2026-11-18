@@ -26314,7 +26314,7 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "scripts/cold_snapshot.py; stock PostgreSQL physical tools and local filesystem state",
       "surfaces": {
         "api": null,
         "cli": null,
@@ -26337,11 +26337,13 @@
         "partial failure",
         "recovery"
       ],
-      "state": "planned",
+      "state": "implementing",
       "candidate": null,
-      "evidence": [],
-      "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "evidence": [
+        "evidence/2026-11-18/cold-recovery-e4adc19-arm64.json"
+      ],
+      "limits": "Named cold single-node ARM64 recovery matched the journal and exact approved bytes in a fresh physical database volume. Live capture, external object storage, independent hosts and recovery budgets remain open.",
+      "next_action": "Reproduce the named pair verifier on a real physical backup and qualify interruption, restore-point mismatch, object-store failures and recovery budgets."
     },
     {
       "id": "STORE.RESTORE",
@@ -26361,7 +26363,7 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "scripts/cold_snapshot.py; stock PostgreSQL physical tools and local filesystem state",
       "surfaces": {
         "api": null,
         "cli": null,
@@ -26384,11 +26386,13 @@
         "partial failure",
         "recovery"
       ],
-      "state": "planned",
+      "state": "implementing",
       "candidate": null,
-      "evidence": [],
-      "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "evidence": [
+        "evidence/2026-11-18/cold-recovery-e4adc19-arm64.json"
+      ],
+      "limits": "Named cold single-node ARM64 recovery matched the journal and exact approved bytes in a fresh physical database volume. Live capture, external object storage, independent hosts and recovery budgets remain open.",
+      "next_action": "Reproduce the named pair verifier on a real physical backup and qualify interruption, restore-point mismatch, object-store failures and recovery budgets."
     },
     {
       "id": "STORE.GC-SAFETY",

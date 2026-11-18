@@ -44,6 +44,7 @@ lint:
 	python3 scripts/test_package_linux.py
 	python3 scripts/test_linux_candidate_sbom.py
 	python3 scripts/test_linux_offline_media.py
+	python3 scripts/test_cold_snapshot.py
 	python3 scripts/test_conformance_profile.py
 	python3 scripts/test_go_module_profile.py
 	python3 scripts/test_go_file_proxy.py
