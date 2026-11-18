@@ -34,7 +34,8 @@ func parseOCIPage(raw, kind string, maximum int) (ociPage, error) {
 	}
 	if last, exists := values["last"]; exists {
 		page.Last = last[0]
-		if kind == "tags/list" && !ociTag.MatchString(page.Last) || kind == "referrers" && !ociDigest.MatchString(page.Last) {
+		if kind == "tags/list" && !ociTag.MatchString(page.Last) || kind == "referrers" && !ociDigest.MatchString(page.Last) ||
+			kind == "_catalog" && !store.ValidOCIRepositoryName(page.Last) {
 			return page, errors.New("invalid OCI page marker")
 		}
 	}

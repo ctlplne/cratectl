@@ -66,6 +66,8 @@ def evaluate(args):
     server = None
     server_flags = []
     origin_credentials = {}
+    if args.oci_catalog_client:
+        server_flags.extend(('--oci-page-size', '1'))
 
     def check(name, passed):
         if not passed:
@@ -388,6 +390,11 @@ def evaluate(args):
         check('fresh stock npm downloads the exact approved archive after restart',
               sha(download / restored[0]['filename']) == sha(tarball))
         report['archive_sha256'] = sha(tarball)
+        if args.oci_catalog_client:
+            from oci_repository_catalog_fixture import evaluate_oci_catalog
+
+            report['oci_repository_catalog'] = evaluate_oci_catalog(
+                work, app, authority, args.oci_catalog_client.absolute(), public_env, call, api, restart_server, sha)
         if args.npm_search:
             from npm_search_fixture import evaluate_cached_search, evaluate_search
 
@@ -470,6 +477,8 @@ def evaluate(args):
             call('stop-owned-postgres', postgres / 'pg_ctl', '-D', data, 'stop', '-m', 'fast', '-w')
         (work / 'safe-report.json').write_text(json.dumps(report, indent=2) + '\n')
     print(f'PASS: {len(checks)} native declarative repository checks')
+    if args.oci_catalog_client:
+        print(f"PASS: {len(report['oci_repository_catalog']['checks'])} stock ORAS repository catalog checks")
     if args.npm_search:
         print(f"PASS: {len(report['npm_search']['checks'])} stock hosted npm search checks")
         print(f"PASS: {len(report['npm_cached_search']['checks'])} stock cached npm search checks")
@@ -586,6 +595,8 @@ if __name__ == '__main__':
     parser.add_argument('--mcp-binary', type=Path)
     parser.add_argument('--mcp-client', type=Path)
     parser.add_argument('--promtool', type=Path)
+    parser.add_argument('--oci-catalog-client', type=Path,
+                        help='also verify the hosted OCI repository catalog using stock ORAS')
     parser.add_argument('--npm-search', action='store_true',
                         help='also verify npm hosted and cached search using stock clients')
     parser.add_argument('--npm-search-ci-architecture', choices=('amd64', 'arm64'))
@@ -598,6 +609,9 @@ if __name__ == '__main__':
                         help='also fetch a pinned dependency graph from the public crates.io index and CDN')
     parser.add_argument('--legacy-cargo-daemon', type=Path)
     options = parser.parse_args()
+    if options.oci_catalog_client and (options.ci_architecture or options.cargo_ci_architecture
+                                       or options.npm_search_ci_architecture or options.python_search_ci_architecture):
+        parser.error('OCI repository catalog uses its own stock evidence profile')
     if len([value for value in (options.provider_binary, options.terraform, options.tofu) if value]) not in (0, 3):
         parser.error('provide the local provider and both stock clients together')
     if options.ci_architecture and not options.provider_binary:

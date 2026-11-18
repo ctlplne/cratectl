@@ -13,14 +13,13 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-var ociImage = regexp.MustCompile(`^[a-z0-9]+([._-][a-z0-9]+)*(/[a-z0-9]+([._-][a-z0-9]+)*)*$`)
 var ociDigest = regexp.MustCompile(`^sha256:[a-f0-9]{64}$`)
 var ociTag = regexp.MustCompile(`^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$`)
 
 func (s *Server) oci(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, p string) {
 	w.Header().Set("Docker-Distribution-Api-Version", "registry/2.0")
 	image, operation, ref := parseOCIPath(p)
-	if !ociImage.MatchString(image) || len(image) > 255 {
+	if !store.ValidOCIImage(image) {
 		fail(w, 400, "NAME_INVALID", "Use a valid OCI image name within the tenant repository.")
 		return
 	}

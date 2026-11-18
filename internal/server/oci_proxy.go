@@ -298,7 +298,7 @@ func (s *Server) fillOCIProxy(parent context.Context, i store.Identity, repo sto
 			image, kind, ref = path[:n], "referrers", path[n+len("/referrers/"):]
 		}
 	}
-	if !ociImage.MatchString(image) {
+	if !store.ValidOCIImage(image) {
 		return store.ErrConflict
 	}
 	client, e := s.newOCIRegistryClient(i, repo, image)

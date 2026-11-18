@@ -354,6 +354,10 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		return
 	}
+	if r.URL.Path == "/v2/_catalog" {
+		s.serveOCIRepositoryCatalog(w, r, i)
+		return
+	}
 	if strings.HasPrefix(r.URL.Path, "/api/v1/") {
 		s.management(w, r, i)
 		return
