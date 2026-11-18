@@ -68,18 +68,10 @@ func (s *Server) cargo(w http.ResponseWriter, r *http.Request, i store.Identity,
 		w.Header().Set("Allow", "GET, HEAD")
 		fail(w, 405, "method_not_allowed", "Read the sparse index and crate archives with GET or HEAD.")
 	case p == "api/v1/crates":
-		if repo.Mode == "hosted" {
-			s.cargoSearch(w, r, i, repo)
-		} else {
-			fail(w, 405, "cargo_read_only_search", "Search through a hosted Cargo repository.")
-		}
+		s.cargoSearch(w, r, i, repo)
 	case p == "index/config.json":
 		if s.cargoPublicAuthority(w) {
-			config := map[string]any{"dl": root + "/download/{crate}/{version}", "auth-required": true}
-			if repo.Mode == "hosted" {
-				config["api"] = root
-			}
-			writeJSON(w, 200, config)
+			writeJSON(w, 200, map[string]any{"dl": root + "/download/{crate}/{version}", "api": root, "auth-required": true})
 		}
 	case strings.HasPrefix(p, "index/"):
 		s.cargoIndex(w, r, i, repo, strings.TrimPrefix(p, "index/"))

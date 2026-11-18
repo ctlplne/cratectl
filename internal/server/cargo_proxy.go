@@ -270,7 +270,10 @@ func (s *Server) stageCargoArchive(ctx context.Context, i store.Identity, repo s
 	if err != nil || !entry.MatchesArchive(archive) {
 		return "upstream_cargo_archive_metadata_mismatch"
 	}
-	metadata, err := json.Marshal(result.CargoBinding)
+	metadata, err := json.Marshal(struct {
+		*store.CargoArchiveBinding
+		Description string `json:"description,omitempty"`
+	}{result.CargoBinding, archive.Description})
 	if err != nil {
 		return "upstream_metadata_invalid"
 	}

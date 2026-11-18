@@ -85,7 +85,7 @@ def evaluate_groups(work, installation, authority, toolchain, environment, call,
     check('Cargo group config advertises authenticated reads and rejects publication',
           request(GROUP, '/index/config.json', None)[0] == 401
           and json.loads(request(GROUP, '/index/config.json')[1]) ==
-          {'dl': endpoint(GROUP, '/download/{crate}/{version}'), 'auth-required': True}
+          {'dl': endpoint(GROUP, '/download/{crate}/{version}'), 'api': endpoint(GROUP), 'auth-required': True}
           and request(GROUP, '/api/v1/crates/new', admin, 'PUT')[0] == 405 and sha(preferred) != sha(lower))
 
     def fetch(label, repo, name, expected=0):

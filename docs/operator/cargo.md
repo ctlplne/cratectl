@@ -49,7 +49,11 @@ review policy or the artifact's lifecycle controls.
 Use `cargo search --registry cratectl example` to search crate names in this
 repository. Search uses current grants and availability decisions. It selects
 the highest allowed version that is eligible for fresh resolution and returns
-its packaged description when available.
+its packaged description when available. Proxy search covers locally cached
+archives with a current sparse index. Group search uses the same ordered
+authority and review checks as downloads. It omits a name while an earlier
+proxy needs revalidation. A search does not contact an upstream registry.
+Fetch a known coordinate first to populate a proxy's search results.
 
 The current profile covers a single hosted sparse registry and same-registry
 dependencies. The writer who publishes a new crate becomes its first owner.
@@ -68,8 +72,7 @@ Grant readers access to the group and its configured members. When a crate
 has an explicit owner mapping, the group reads only that member for the
 crate. A current upstream absence permits fallback when the earlier proxy has
 never retained the crate. A withdrawal after retention or an upstream failure
-blocks substitution with a lower source. Publish and run native search against
-hosted repositories.
+blocks substitution with a lower source. Publish to the hosted repository.
 
 ## Sparse proxy
 
@@ -104,8 +107,8 @@ lockfiles may still fetch approved bytes.
 Use artifact lifecycle controls to retire or explicitly restore a cached reference.
 
 The current proxy handles sparse indexes with same-registry dependencies and
-explicit download authorities. Legacy Git indexes and cross-repository search
-remain open.
+explicit download authorities. Legacy Git indexes and search across uncached
+upstream content remain open.
 
 Set a positive stale window to permit a previously validated archive during a
 transient upstream outage. The index and archive each need a current admission

@@ -87,19 +87,40 @@ func cargoProxyReadRepository(ctx context.Context, tx pgx.Tx, i Identity, repo, 
 	return r, nil
 }
 
-func cargoCatalogInTx(ctx context.Context, tx pgx.Tx, repo Repository, name string) (Artifact, CargoCatalog, error) {
+func cargoCatalogInTx(ctx context.Context, tx pgx.Tx, repo Repository, name string, limits ...int64) (Artifact, CargoCatalog, error) {
 	var catalog CargoCatalog
 	budget := repositoryReadBudget(repo)
 	budget.sqlMetadataBytes = 32 << 20
+	if len(limits) > 0 {
+		if limits[0] < 1 {
+			return Artifact{}, catalog, ErrMetadataLimit
+		}
+		budget.sqlMetadataBytes = min(budget.sqlMetadataBytes, limits[0])
+	}
 	a, err := readArtifact(ctx, tx, repo.Name, CargoCatalogPath(name), false, budget)
 	if err != nil {
 		return a, catalog, err
+	}
+	if len(a.Metadata) == 0 {
+		return a, catalog, ErrMetadataLimit
 	}
 	if a.MediaType != CargoCatalogMedia || json.Unmarshal(a.Metadata, &catalog) != nil ||
 		catalog.Name != name || len(catalog.Entries) == 0 || len(catalog.Entries) > 10000 {
 		return a, catalog, ErrCargoUnvalidated
 	}
 	return a, catalog, nil
+}
+
+func cargoCatalogPaths(catalog CargoCatalog, name string) ([]string, []string, error) {
+	paths, digests := make([]string, 0, len(catalog.Entries)), make([]string, 0, len(catalog.Entries))
+	for _, row := range catalog.Entries {
+		p, e := CargoProxyPath(row.Name, row.Version)
+		if e != nil || !strings.EqualFold(row.Name, name) || !cargoDigest.MatchString(row.Checksum) {
+			return nil, nil, ErrCargoUnvalidated
+		}
+		paths, digests = append(paths, p), append(digests, row.Checksum)
+	}
+	return paths, digests, nil
 }
 
 func cargoCacheState(ctx context.Context, tx pgx.Tx, repo Repository, path string) (Retrieval, error) {
@@ -164,13 +185,9 @@ func (s *Store) CargoProxyIndex(ctx context.Context, i Identity, repo, name stri
 		if len(catalog.Entries) > limit || int64(len(a.Metadata)) > budget {
 			return ErrMetadataLimit
 		}
-		paths, digests := make([]string, 0, len(catalog.Entries)), make([]string, 0, len(catalog.Entries))
-		for _, row := range catalog.Entries {
-			p, e := CargoProxyPath(row.Name, row.Version)
-			if e != nil || !strings.EqualFold(row.Name, name) || !cargoDigest.MatchString(row.Checksum) {
-				return ErrCargoUnvalidated
-			}
-			paths, digests = append(paths, p), append(digests, row.Checksum)
+		paths, digests, e := cargoCatalogPaths(catalog, name)
+		if e != nil {
+			return e
 		}
 		rows, e := tx.Query(ctx, `SELECT p.position FROM unnest($1::text[],$2::text[]) WITH ORDINALITY AS p(path,digest,position)
 LEFT JOIN cratectl.artifacts a ON (a.repository,a.path,a.source_revision,a.digest)=($3,p.path,$4,p.digest)

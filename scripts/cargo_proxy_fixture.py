@@ -185,6 +185,11 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
         call('cargo-proxy-stock-fetch-' + label, cargo, 'fetch', cwd=project, environment=env, timeout=45)
         return sorted(sha(item) for item in (cache / 'registry/cache').glob('*/*.crate'))
 
+    def search(label, repo, crate=ROOT_PACKAGE):
+        _, env = cargo_home(work, 'cargo-proxy-search-home-' + label, 'sparse+' + registry(repo) + '/index/', shared, reader)
+        return call('cargo-proxy-stock-search-' + label, cargo, 'search', '--registry', 'cratectl', '--limit', '10',
+                    crate, cwd=work, environment=env, timeout=45)[1]
+
     with origin_server(credentials, contents) as (requests, lock, offline, packaging, interrupted):
         # Cargo records the source registry in its normalized dependency table.
         # Produce this root for the actual controlled origin while preserving the
@@ -218,7 +223,12 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
         status, config, _ = request(PROXY, '/index/config.json')
         check('Cargo proxy config publishes only its own authenticated sparse authority',
               request(PROXY, '/index/config.json', None)[0] == 401 and status == 200 and
-              json.loads(config) == {'dl': registry(PROXY) + '/download/{crate}/{version}', 'auth-required': True})
+              json.loads(config) == {'dl': registry(PROXY) + '/download/{crate}/{version}', 'api': registry(PROXY), 'auth-required': True})
+        result = search('uncached', PROXY)
+        with lock:
+            untouched = not requests
+        check('cold Cargo proxy search returns an empty result without contacting the origin',
+              ROOT_PACKAGE + ' = ' not in result and untouched)
         check('fresh stock Cargo proxies a transitive graph and both original archives', stock('cold') == expected)
         with lock:
             observed = tuple(requests)
@@ -238,6 +248,11 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
         check('mixed group review hides the pending first proxy even with an approved hosted duplicate',
               request(MIXED, index)[0] == 404 and request(MIXED, package)[0] == 403
               and request(REPOSITORY, package)[0] == 200 and request(PROXY, package)[0] == 200)
+        result = search('cached', PROXY)
+        check('proxy stock search returns the locally validated crate and packaged description',
+              ROOT_PACKAGE + ' = "1.0.0"' in result and 'cratectl inert fixture' in result)
+        check('mixed group stock search withholds an approved lower duplicate while the first proxy is pending',
+              ROOT_PACKAGE + ' = ' not in search('pending-group', MIXED))
 
         offline.set()
         with lock:
@@ -298,6 +313,8 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
         status, yanked_index, _ = request(PROXY, index, refresh=True)
         check('upstream yank changes discovery while the same exact pinned bytes remain deliverable',
               status == 200 and json.loads(yanked_index)['yanked'] and request(PROXY, package)[1] == original)
+        check('a yanked preferred proxy crate disappears from both direct and mixed group search',
+              ROOT_PACKAGE + ' = ' not in search('yanked', PROXY) and ROOT_PACKAGE + ' = ' not in search('yanked-mixed', MIXED))
         with lock:
             contents[path] = old_index
 
@@ -348,6 +365,8 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
               and new_requests == [(DOWNLOAD_PATH + download_file(BASE_PACKAGE), True, False)])
 
         (project / 'src/lib.rs').write_text('// Owned source bytes for the second authority revision.\n')
+        manifest = project/'Cargo.toml'
+        manifest.write_text(manifest.read_text().replace('cratectl inert fixture', 'reviewed cratectl proxy revision'))
         revised = package_for_origin('new-revision')
         revised_data = revised.read_bytes()
         revised_digest = sha(revised)
@@ -374,6 +393,9 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
 
         check('mixed group stock Cargo receives the preferred proxy graph and exact revised archive',
               stock('mixed-proxy', MIXED) == sorted((revised_digest, metadata[BASE_PACKAGE]['cksum'])))
+        result = search('revised-mixed', MIXED)
+        check('mixed group stock search reports the selected current proxy revision once',
+              result.count(ROOT_PACKAGE + ' = "1.0.0"') == 1 and 'reviewed cratectl proxy revision' in result)
         lower_archive = work/'cargo-group-publish-lower-only'/'target/package/tmp-crate'/f'{LOW_ONLY}-{VERSION}.crate'
         lower_only = '/download/' + download_file(LOW_ONLY)
         check('mixed group can use a hosted crate after a request-scoped zero-freshness proxy absence',
@@ -382,6 +404,9 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
         grant(STALE_PROXY, 'explicit-unused-source', False)
         check('explicit Cargo namespace selects one proxy without unselected source grants',
               request(EXPLICIT, package)[1] == revised_data and request(EXPLICIT, lower_only)[0] == 403)
+        check('stock search honors an explicit group namespace after access to an unused source is revoked',
+              'reviewed cratectl proxy revision' in search('explicit-root', EXPLICIT)
+              and LOW_ONLY + ' = ' not in search('inaccessible-prefix', EXPLICIT, LOW_ONLY))
         grant(STALE_PROXY, 'restore-explicit-unused-source', True)
 
         with lock:
@@ -407,6 +432,8 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
               request(PROXY, package, other)[0] == 404)
         check('revoked preferred proxy access also fences the mixed group',
               request(MIXED, index)[0] == request(MIXED, package)[0] == 403)
+        check('stock group search hides the crate after its preferred proxy grant is revoked',
+              ROOT_PACKAGE + ' = ' not in search('revoked-mixed', MIXED))
 
     return {'checks': checks, 'archive_sha256': {'proxy-root': metadata[ROOT_PACKAGE]['cksum'],
                                                'proxy-leaf': metadata[BASE_PACKAGE]['cksum'],
