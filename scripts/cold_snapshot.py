@@ -33,6 +33,8 @@ REQUIRED = {'database/PG_VERSION', 'database/backup_manifest', 'installation/run
 ROOTS = {'database', 'installation'}
 SNAPSHOT = 'snapshot.json'
 MIGRATION_18 = '6c60ac3e1228e57b54cdd99397ef4bccfb91cbd942b3437e41a63441b9ad1035'
+MIGRATION_19 = '0645615e7c59635cbfd0b9f8ffe610ad91dd4fefabf61ebc216852af64247561'
+RESTORE_SCHEMAS = {18: (MIGRATION_18, 57), 19: (MIGRATION_19, 59)}
 RESTORE_QUERY = """
 BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ READ ONLY;
 SET LOCAL statement_timeout='30s';
@@ -310,11 +312,13 @@ def check_restored_database(root, expected):
                                        output_limit=4 << 20, capture_limit=4 << 20)
     require(code == 0, 'the restored read-only database check failed')
     result = json.loads(stdout, object_pairs_hook=unique_members)
-    require(result['schema'] == {'version': 18, 'checksum': MIGRATION_18}
+    version = result['schema'].get('version') if type(result['schema']) is dict else None
+    approved = RESTORE_SCHEMAS.get(version) if type(version) is int else None
+    require(approved is not None and result['schema'] == {'version': version, 'checksum': approved[0]}
             and result['runtime_restricted'] is True and result['runtime_stopped'] is True,
             'restored schema, maintenance authority or stopped runtime differs')
     coverage = result['coverage']
-    require(0 < coverage['tenant_tables'] == coverage['forced'] <= 1024 and coverage['runtime_owned'] == 0,
+    require(coverage['tenant_tables'] == coverage['forced'] == approved[1] and coverage['runtime_owned'] == 0,
             'restored tenant tables lack forced RLS or have an unsafe owner')
     require(journal_heads(result['journal']) == journal, 'restored database journal heads differ from the sealed checkpoint')
     refs = result['references']
@@ -328,7 +332,7 @@ def check_restored_database(root, expected):
         binding = observed['files'].get(name)
         require(binding is not None and size == binding['bytes'],
                 'restored object reference has no verified bytes in the sealed snapshot')
-    return {'schema': 18, 'forced_tenant_tables': coverage['forced'],
+    return {'schema': version, 'forced_tenant_tables': coverage['forced'],
             'journal_heads': len(journal), 'matched_object_references': len(refs)}
 
 

@@ -40,8 +40,10 @@ def compatible_contract(name, original, current, schema):
     if name == '.github/workflows/upgrade-qualification.yml':
         expected, label = SCHEMA17_UPGRADE_WORKFLOW_SHA256, 'frozen-schema17-upgrade-workflow'
         approved = original.replace('schema 2–16 upgrade'.encode(), 'schema 2–17 upgrade'.encode()).replace(b'14 15 16; do', b'14 15 16 17; do')
-        if current == approved.replace(b'image: postgres:16.15-alpine', b'image: ' + PATCHED_POSTGRES):
-            # Preserve the original job and server identity in historical records.
+        patched = approved.replace(b'image: postgres:16.15-alpine', b'image: ' + PATCHED_POSTGRES)
+        extended = patched.replace('schema 2–17 upgrade'.encode(), 'schema 2–18 upgrade'.encode()).replace(b'15 16 17; do', b'15 16 17 18; do')
+        if current in (patched, extended):
+            # Historical records retain their original job and database contract.
             approved = current
     elif name == 'scripts/ci/evidence_summary.py':
         expected, label = SCHEMA17_SUMMARY_SHA256, 'frozen-schema17-summary-baseline-bound'
@@ -54,14 +56,18 @@ def compatible_contract(name, original, current, schema):
 def validate_baselines(baselines, schema):
     # Explicit reviewed schema generations only. Adding a migration does not
     # silently admit a missing historical daemon or a smaller older campaign.
-    require(schema in (17, 18) and isinstance(baselines, list)
+    require(schema in (17, 18, 19) and isinstance(baselines, list)
             and len(baselines) == schema - 1
             and all(isinstance(row, dict) for row in baselines)
             and [row.get('schema') for row in baselines] == [None, *range(2, schema)], 'unsupported_baseline_inventory')
-    if schema == 18:
-        require(baselines[-1] == {
+    if schema >= 18:
+        require(baselines[16] == {
             'schema': 17, 'source': 'bb6f7288f3ec9df94c3f3100b9a5b2df81df64d0',
             'binary': '.cache/go-requirement-schema17-bb6f728-production/cratectld'}, 'unqualified_schema17_baseline')
+    if schema == 19:
+        require(baselines[-1] == {
+            'schema': 18, 'source': 'b88d397eea710c2046cade98d140f604e09adb73',
+            'binary': '.cache/go-requirement-schema18-b88d397-production/cratectld'}, 'unqualified_schema18_baseline')
 
 
 def git_bytes(arguments):
@@ -90,7 +96,7 @@ class Source:
         self.cache = {}
         self.remaining = 64 << 20
         targets = re.findall(rb'^CURRENT_SCHEMA = (\d+)$', self('scripts/qualification_contract.py'), re.M)
-        require(len(targets) == 1 and int(targets[0]) in (17, 18), 'unsupported_schema_target')
+        require(len(targets) == 1 and int(targets[0]) in (17, 18, 19), 'unsupported_schema_target')
         self.schema = int(targets[0])
         self.compatibility = []
         optional = []

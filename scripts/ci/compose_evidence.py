@@ -2,6 +2,11 @@
 """Verify the closed safe summary for the local Compose evaluation."""
 
 import re
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from qualification_contract import CURRENT_SCHEMA, CURRENT_TENANT_TABLES
 
 
 CHECKS = (
@@ -16,6 +21,7 @@ SOURCE_PATHS = (
     'deploy/compose/Dockerfile', 'deploy/compose/compose.yaml', 'deploy/compose/init-database.sql',
     'scripts/compose_evaluation.py', 'scripts/conformance_compose.py',
     'scripts/ci/compose_evidence.py', 'scripts/bounded_client.py', 'Makefile', 'go.mod', 'go.sum',
+    'scripts/qualification_contract.py',
 )
 FIELDS = {
     'schema', 'profile', 'candidate', 'run_id', 'runner_os', 'runner_arch', 'status',
@@ -36,8 +42,8 @@ def safe_compose_contract(report):
             or not match('[1-9][0-9]{0,17}', report['run_id'])
             or report['runner_os'] != 'Linux' or report['runner_arch'] not in ('X64', 'ARM64')
             or report['status'] != 'passed' or report['source_dirty'] is not False
-            or report['checks'] != list(CHECKS) or report['database_schema'] != 18
-            or type(report['forced_rls_tenant_tables']) is not int or not 1 <= report['forced_rls_tenant_tables'] <= 512
+            or report['checks'] != list(CHECKS) or report['database_schema'] != CURRENT_SCHEMA
+            or type(report['forced_rls_tenant_tables']) is not int or report['forced_rls_tenant_tables'] != CURRENT_TENANT_TABLES
             or report['goal_complete'] is not False or report['broad_readiness'] is not False):
         raise ValueError('invalid Compose summary identity, coverage or scope')
     if (not match(r'v?[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}(?:[-+][a-zA-Z0-9.\-]{1,50})?', report['compose_version'])

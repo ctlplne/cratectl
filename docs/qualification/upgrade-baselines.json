@@ -84,6 +84,11 @@
       "schema": 17,
       "source": "bb6f7288f3ec9df94c3f3100b9a5b2df81df64d0",
       "binary": ".cache/go-requirement-schema17-bb6f728-production/cratectld"
+    },
+    {
+      "schema": 18,
+      "source": "b88d397eea710c2046cade98d140f604e09adb73",
+      "binary": ".cache/go-requirement-schema18-b88d397-production/cratectld"
     }
   ],
   "limits": [
@@ -91,6 +96,7 @@
     "CI rebuilds native binaries and verifies revision, clean tree and architecture; it never imports local cache bytes.",
     "The legacy pagination source predates versioned schema receipts and is used only for controlled adoption.",
     "Schema16ca44 is whole-campaign qualified: evidence/2026-11-07/github-ca44b37-checkpoint.json. Its16checksummed migrations remain frozen before appending17; native historical binaries are rebuilt independently on both GitHub Linux hosts.",
-    "Schema17bb6f728 is whole-campaign qualified: evidence/2026-11-07/github-bb6f728-checkpoint.json, actual read-only verifier42414571911. Preserve all17 migration definitions/checksums; independently rebuild its clean native historical server on both GitHub Linux hosts before18 upgrade qualification. No local historical binary substitutes for those native builds."
+    "Schema17bb6f728 is whole-campaign qualified: evidence/2026-11-07/github-bb6f728-checkpoint.json, actual read-only verifier42414571911. Preserve all17 migration definitions/checksums; independently rebuild its clean native historical server on both GitHub Linux hosts before18 upgrade qualification. No local historical binary substitutes for those native builds.",
+    "Schema 18 uses whole-campaign source b88d397 and read-only verifier 44346071001. Rebuild this baseline independently on both native Linux hosts. Preserve all 18 original migration checksums before upgrading to schema 19."
   ]
 }

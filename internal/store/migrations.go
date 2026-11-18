@@ -111,6 +111,9 @@ func goRequirementExportSafetySQL() string {
 
 func schemaStateBody() string { return frozenSchemaStateBody }
 func schemaStateBodyForVersion(version int) string {
+	if version >= 19 {
+		return cargoOwnershipSchemaStateBody
+	}
 	if version >= 18 {
 		return goRequirementExportSchemaStateBody
 	}
@@ -211,7 +214,8 @@ func buildMigrations() []migrationStep {
 	exportExpiry := goExportExpirySchema + schemaStateSQL(goExportExpirySchemaStateBody)
 	exportSets := goExportSetSchema + schemaStateSQL(goExportSetSchemaStateBody)
 	requirementExports := goRequirementExportSchema + schemaStateSQL(goRequirementExportSchemaStateBody)
-	return []migrationStep{{1, "legacy baseline", legacySchemaSQL()}, {2, "schema state and runtime coordination", migrationLedgerSQL + "\n" + state}, {3, "retained artifact and repository lifecycle", lifecycle}, {4, "versioned repository source configuration", sourceConfigurationSchema + schemaStateSQL(sourceSchemaStateBody)}, {5, "fenced exact-byte repair jobs", schemaStateSQL(sourceSchemaStateBody)}, {6, "recurring bounded integrity sampling", schedules}, {7, "policy-driven retained retirement", retention}, {8, "explicitly authorized scheduled retirement", retentionSchedules}, {9, "bounded hold inventory and immutable lifecycle history", holdManagementSchema + schemaStateSQL(retentionScheduleSchemaStateBody)}, {10, "independent immutable-reference hold cases", holdCases}, {11, "cross-reference hold matters and reviewed bulk preservation", matters}, {12, "retained Go checksum timelines and atomic proof receipts", checksums}, {13, "immutable checksum failure evidence and tenant key fork blocks", failures}, {14, "retained unattributed checksum incidents and explicit external trust reviews", legacy}, {15, "durable immutable hosted Go export snapshots and object references", exports}, {16, "indexed bounded export expiry admission", exportExpiry}, {17, "atomic common-snapshot Go export sets and retained object roots", exportSets}, {18, "immutable original requirement graph evidence for shared Go export sets", requirementExports}}
+	cargoOwners := cargoOwnershipSchema + schemaStateSQL(cargoOwnershipSchemaStateBody)
+	return []migrationStep{{1, "legacy baseline", legacySchemaSQL()}, {2, "schema state and runtime coordination", migrationLedgerSQL + "\n" + state}, {3, "retained artifact and repository lifecycle", lifecycle}, {4, "versioned repository source configuration", sourceConfigurationSchema + schemaStateSQL(sourceSchemaStateBody)}, {5, "fenced exact-byte repair jobs", schemaStateSQL(sourceSchemaStateBody)}, {6, "recurring bounded integrity sampling", schedules}, {7, "policy-driven retained retirement", retention}, {8, "explicitly authorized scheduled retirement", retentionSchedules}, {9, "bounded hold inventory and immutable lifecycle history", holdManagementSchema + schemaStateSQL(retentionScheduleSchemaStateBody)}, {10, "independent immutable-reference hold cases", holdCases}, {11, "cross-reference hold matters and reviewed bulk preservation", matters}, {12, "retained Go checksum timelines and atomic proof receipts", checksums}, {13, "immutable checksum failure evidence and tenant key fork blocks", failures}, {14, "retained unattributed checksum incidents and explicit external trust reviews", legacy}, {15, "durable immutable hosted Go export snapshots and object references", exports}, {16, "indexed bounded export expiry admission", exportExpiry}, {17, "atomic common-snapshot Go export sets and retained object roots", exportSets}, {18, "immutable original requirement graph evidence for shared Go export sets", requirementExports}, {19, "tenant-scoped Cargo crate ownership", cargoOwners}}
 }
 
 var frozenMigrations = buildMigrations()

@@ -128,6 +128,8 @@ var schemaTablesV17 = append(append([]string(nil), schemaTablesV15...), "artifac
 
 var schemaTablesV18 = append(append([]string(nil), schemaTablesV17...), "artifact_export_set_requirements", "artifact_export_set_requirement_sources")
 
+var schemaTablesV19 = append(append([]string(nil), schemaTablesV18...), "cargo_owner_actors", "cargo_crate_owners")
+
 // legacySchemaSQL is migration 1. Freeze it and the five embedded SQL files;
 // subsequent schema changes belong in new checksummed steps.
 func legacySchemaSQL() string {

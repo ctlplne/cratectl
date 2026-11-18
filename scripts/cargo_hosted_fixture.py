@@ -30,6 +30,7 @@ def evaluate_cargo(work, installation, authority, toolchain, environment, call, 
     admin = (installation / 'admin.token').read_text().strip()
     reader = (work / 'reader.token').read_text().strip()
     writer = (work / 'writer.token').read_text().strip()
+    maintainer = (work / 'maintainer.token').read_text().strip()
     other = (work / 'other.token').read_text().strip()
     checks = []
 
@@ -38,10 +39,10 @@ def evaluate_cargo(work, installation, authority, toolchain, environment, call, 
             raise ValueError(name)
         checks.append(name)
 
-    def request(endpoint, token=None, frame=None, method=None):
+    def request(endpoint, token=None, frame=None, method=None, content_type='application/octet-stream'):
         headers = {} if token is None else {'Authorization': token}
         if frame is not None:
-            headers['Content-Type'] = 'application/octet-stream'
+            headers['Content-Type'] = content_type
         req = urllib.request.Request(base + endpoint, headers=headers, data=frame, method=method)
         try:
             with opener.open(req, timeout=10) as reply:
@@ -155,6 +156,45 @@ def evaluate_cargo(work, installation, authority, toolchain, environment, call, 
           and refused_coordinate(BASE_PACKAGE.replace('-', '_'), '2.0.0')
           and api('cargo-after-collisions', '/api/v1/audit/checkpoint') == checkpoint)
 
+    package_endpoint = '/api/v1/crates/' + ROOT_PACKAGE + '/' + VERSION
+    owners_endpoint = '/api/v1/crates/' + ROOT_PACKAGE + '/owners'
+    owner_code, owner_data = request(owners_endpoint, writer)
+    original_owner, = json.loads(owner_data)['users']
+    leaf_owner, = json.loads(request('/api/v1/crates/' + BASE_PACKAGE + '/owners', writer)[1])['users']
+    check('first publication assigns one stable tenant-local owner identity across crates',
+          owner_code == 200 and original_owner == leaf_owner and original_owner['login'] == 'cratectl-writer'
+          and type(original_owner['id']) is int and original_owner['id'] > 0)
+    api('cargo-grant-maintainer', repo+'/grants', 'PUT', {'actor': 'cratectl-maintainer', 'read': True, 'write': True})
+    denied_archive = inert_archive(ROOT_PACKAGE, '5.0.0')
+    denied_publication = publish_frame(ROOT_PACKAGE, '5.0.0', denied_archive)
+    check('repository write grant alone cannot publish, yank, or list owners for an owned crate',
+          request(new_crate, maintainer, denied_publication, 'PUT')[0] == 403
+          and request(package_endpoint+'/yank', maintainer, method='DELETE')[0] == 403
+          and request(owners_endpoint, maintainer)[0] == 403 and request(owners_endpoint, other)[0] == 404)
+    owner_command = (cargo, 'owner', '--registry', 'cratectl')
+    call('stock-cargo-owner-add', *owner_command, '--add', 'cratectl-maintainer', ROOT_PACKAGE,
+         cwd=work/'cargo-root', environment=publisher)
+    _, owner_environment = cargo_env('cargo-maintainer-home', maintainer)
+    _, owner_output = call('stock-cargo-owner-list', *owner_command, '--list', ROOT_PACKAGE,
+                           cwd=work/'cargo-root', environment=owner_environment)
+    owners = json.loads(request(owners_endpoint, maintainer)[1])['users']
+    check('stock Cargo adds and lists an independently granted co-owner',
+          all(owner['login'] in owner_output for owner in owners)
+          and {owner['login'] for owner in owners} == {'cratectl-writer', 'cratectl-maintainer'}
+          and len({owner['id'] for owner in owners}) == 2)
+    api('cargo-restrict-maintainer', repo+'/grants', 'PUT', {'actor': 'cratectl-maintainer', 'read': True, 'write': False})
+    check('owner membership cannot override a current repository write revocation',
+          request(owners_endpoint, maintainer)[0] == 403
+          and request(package_endpoint+'/yank', maintainer, method='DELETE')[0] == 403)
+    api('cargo-restore-maintainer-grant', repo+'/grants', 'PUT', {'actor': 'cratectl-maintainer', 'read': True, 'write': True})
+    call('stock-cargo-owner-remove', *owner_command, '--remove', 'cratectl-maintainer', ROOT_PACKAGE,
+         cwd=work/'cargo-root', environment=publisher)
+    change_owner = json.dumps({'users': ['cratectl-writer']}).encode()
+    check('stock owner removal revokes crate mutations and the last owner remains protected',
+          request(owners_endpoint, writer, change_owner, 'DELETE', 'application/json')[0] == 409
+          and request(package_endpoint+'/yank', maintainer, method='DELETE')[0] == 403
+          and json.loads(request(owners_endpoint, writer)[1])['users'] == [original_owner])
+
     api('cargo-set-review', repo+'/policy', 'PUT', {'require_review': True})
     probe_name = 'cratectl-cargo-incomplete'
     probe_archive = inert_archive(probe_name, VERSION)
@@ -184,6 +224,8 @@ def evaluate_cargo(work, installation, authority, toolchain, environment, call, 
         api('cargo-approve-'+label, repo+'/decisions', 'PUT',
             {'path': a['path'], 'digest': a['digest'], 'decision': 'allowed'})
     restart()
+    check('the same tenant owner identity survives registry restart',
+          json.loads(request(owners_endpoint, writer)[1])['users'] == [original_owner])
     cache, approved = cargo_env('cargo-approved-home', reader)
     call('cargo-approved-fetch', cargo, 'fetch', '--manifest-path', consumer/'Cargo.toml',
          cwd=consumer, environment=approved)
@@ -195,7 +237,6 @@ def evaluate_cargo(work, installation, authority, toolchain, environment, call, 
           exact[name]['source'] == index_url and fetched.get(archive.name) == sha(archive)
           for name, archive in published.items()))
 
-    package_endpoint = '/api/v1/crates/' + ROOT_PACKAGE + '/' + VERSION
     reference = {key: artifacts[ROOT_PACKAGE][key] for key in ('path', 'digest')}
     lifecycle = repo + '/artifacts/lifecycle'
     api('cargo-hold', lifecycle, 'PUT', {**reference, 'action': 'hold', 'expected_revision': 0,

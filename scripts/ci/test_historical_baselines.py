@@ -23,12 +23,12 @@ class HistoricalBaselines(unittest.TestCase):
 
     def test_complete_current_inventory_and_every_owned_output_is_validated(self):
         rows = builder.baselines()
-        self.assertEqual([row['schema'] for row in rows], [None, *range(2, 18)])
-        self.assertEqual(rows[-1]['source'], 'bb6f7288f3ec9df94c3f3100b9a5b2df81df64d0')
-        for scenario in ['missing17', 'reordered', 'duplicate-schema', 'duplicate-source', 'invalid-source', 'duplicate-output', 'outside-output', 'wrong-binary']:
+        self.assertEqual([row['schema'] for row in rows], [None, *range(2, 19)])
+        self.assertEqual(rows[-1]['source'], 'b88d397eea710c2046cade98d140f604e09adb73')
+        for scenario in ['missing18', 'reordered', 'duplicate-schema', 'duplicate-source', 'invalid-source', 'duplicate-output', 'outside-output', 'wrong-binary']:
             document = copy.deepcopy(self.document)
             rows = document['baselines']
-            if scenario == 'missing17': rows.pop()
+            if scenario == 'missing18': rows.pop()
             elif scenario == 'reordered': rows[1], rows[2] = rows[2], rows[1]
             elif scenario == 'duplicate-schema': rows[2]['schema'] = rows[1]['schema']
             elif scenario == 'duplicate-source': rows[2]['source'] = rows[1]['source']
@@ -44,13 +44,13 @@ class HistoricalBaselines(unittest.TestCase):
                 with self.subTest(scenario=scenario), patch.object(builder, 'ROOT', owned), self.assertRaises(ValueError):
                     builder.baselines()
 
-    def test_check_with_owned_git_standin_checks_all17_sources_without_native_resources(self):
+    def test_check_with_owned_git_standin_checks_all18_sources_without_native_resources(self):
         output = io.StringIO()
         with patch.object(sys, 'argv', ['builder', '--check']), patch.object(builder.subprocess, 'check_output', return_value=HEAD + '\n') as revision, patch.object(builder.subprocess, 'run') as ancestry, patch.object(builder.platform, 'machine', side_effect=AssertionError('native setup before check returned')), patch('sys.stdout', output):
             builder.main()
         revision.assert_called_once_with(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True)
         self.assertEqual(ancestry.call_args_list, [call(['git', 'merge-base', '--is-ancestor', row['source'], HEAD], cwd=ROOT, check=True) for row in self.document['baselines']])
-        self.assertIn('17 pinned historical sources are reachable; no build or worktree created', output.getvalue())
+        self.assertIn('18 pinned historical sources are reachable; no build or worktree created', output.getvalue())
 
     def test_missing_history_refuses_before_any_native_build_or_worktree(self):
         source = self.document['baselines'][0]['source']

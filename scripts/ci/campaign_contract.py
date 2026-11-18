@@ -27,10 +27,10 @@ COMPATIBLE_FILES = ['.github/workflows/' + name for name in WORKFLOWS
 
 
 def jobs(family, schema=17, requirement_portability=False):
-    if schema not in (17, 18):
+    if schema not in (17, 18, 19):
         raise ValueError('Unreviewed schema job contract')
-    if type(requirement_portability) is not bool or requirement_portability and schema != 18:
-        raise ValueError('Requirement portability needs its reviewed schema18 contract')
+    if type(requirement_portability) is not bool or requirement_portability and schema < 18:
+        raise ValueError('Requirement portability needs its reviewed schema 18 or 19 contract')
     result = {}
 
     def add(name, arch, required, artifact=None, kind=None):

@@ -38,7 +38,7 @@ waits for the version to appear. If its wait expires, inspect the repository's
 artifact inventory and approve the original digest. The same authenticated
 publication can be retried with identical bytes.
 
-An authorized repository writer can run
+An authorized crate owner with a current repository write grant can run
 `cargo yank example-lib --version 1.0.0 --registry cratectl` to exclude a
 version from fresh dependency resolution. Existing lockfiles can still use
 the version when policy allows the exact archive. Add `--undo` to make the
@@ -52,5 +52,10 @@ the highest allowed version that is eligible for fresh resolution and returns
 its packaged description when available.
 
 The current profile covers a single hosted sparse registry and same-registry
-dependencies. Per-crate ownership, legacy Git indexes, upstream proxying,
-and groups remain open.
+dependencies. The writer who publishes a new crate becomes its first owner.
+Use `cargo owner --registry cratectl --list example-lib` to read the owner
+list. Add or remove a tenant actor with `--add ACTOR` or `--remove ACTOR`.
+The last owner remains protected. Each co-owner also needs a current
+repository write grant. A tenant administrator can manage ownership to
+recover access or add the first owner to a crate that predates ownership.
+Legacy Git indexes, upstream proxying, and groups remain open.

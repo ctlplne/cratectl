@@ -52,7 +52,12 @@ func (s *Server) cargo(w http.ResponseWriter, r *http.Request, i store.Identity,
 		}
 		s.cargoPublish(w, r, i, repo, "sparse+"+root+"/index/")
 	case strings.HasPrefix(p, "api/v1/crates/"):
-		s.cargoYank(w, r, i, repo, strings.TrimPrefix(p, "api/v1/crates/"))
+		action := strings.TrimPrefix(p, "api/v1/crates/")
+		if name, rest, ok := strings.Cut(action, "/"); ok && rest == "owners" {
+			s.cargoOwners(w, r, i, repo, name)
+			return
+		}
+		s.cargoYank(w, r, i, repo, action)
 	case r.Method != http.MethodGet && r.Method != http.MethodHead:
 		w.Header().Set("Allow", "GET, HEAD")
 		fail(w, 405, "method_not_allowed", "Read the sparse index and crate archives with GET or HEAD.")
@@ -68,6 +73,45 @@ func (s *Server) cargo(w http.ResponseWriter, r *http.Request, i store.Identity,
 		s.cargoDownload(w, r, i, repo, strings.TrimPrefix(p, "download/"))
 	default:
 		respondErr(w, store.ErrNotFound)
+	}
+}
+
+func (s *Server) cargoOwners(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, name string) {
+	switch r.Method {
+	case http.MethodGet:
+		owners, err := s.DB.CargoOwners(r.Context(), i, repo.Name, name)
+		if err != nil {
+			respondErr(w, err)
+			return
+		}
+		writeJSON(w, 200, map[string]any{"users": owners})
+	case http.MethodPut, http.MethodDelete:
+		media, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
+		if err != nil || media != "application/json" {
+			fail(w, 415, "cargo_owners_content_type", "Send Cargo owner changes as application/json.")
+			return
+		}
+		var request struct {
+			Users []string `json:"users"`
+		}
+		body, err := io.ReadAll(http.MaxBytesReader(w, r.Body, 4<<10))
+		if err != nil || !decodeManagement(body, &request) {
+			fail(w, 400, "cargo_owners_input", "Supply one Cargo owner request with up to 32 tenant actor names.")
+			return
+		}
+		err = s.DB.ChangeCargoOwners(r.Context(), i, repo.Name, name, request.Users, r.Method == http.MethodPut)
+		if errors.Is(err, cargo.ErrInput) {
+			fail(w, 400, "cargo_owners_input", "Supply one Cargo owner request with up to 32 distinct tenant actor names.")
+			return
+		}
+		if err != nil {
+			respondErr(w, err)
+			return
+		}
+		writeJSON(w, 200, map[string]any{"ok": true, "msg": "Cargo ownership updated."})
+	default:
+		w.Header().Set("Allow", "GET, PUT, DELETE")
+		fail(w, 405, "method_not_allowed", "Use cargo owner to list, add, or remove crate owners.")
 	}
 }
 

@@ -180,10 +180,10 @@ try:
             check(f'schema{args.baseline_version} original journal prefix survives{CURRENT_SCHEMA} without replayed events',json.loads(api('/api/v1/audit')[1])['items']==prior_audit)
         if args.baseline_version>=17:
             status,after_set,_=api('/api/v1/go/export-sets/'+prior_set['id']);after_set=json.loads(after_set)
-            check('schema18 preserves actual17 common session identity state deadlines and pins',status==200 and {k:v for k,v in after_set.items()if k!='server_time'}=={k:v for k,v in prior_set_session.items()if k!='server_time'})
+            check(f'schema {CURRENT_SCHEMA} preserves actual common session identity state deadlines and pins',status==200 and {k:v for k,v in after_set.items()if k!='server_time'}=={k:v for k,v in prior_set_session.items()if k!='server_time'})
             for suffix,original in prior_set_objects.items():
                 status,body,_=api('/api/v1/go/export-sets/'+prior_set['id']+'/'+suffix+'?generation=2')
-                check('schema18 preserves actual17 original common set bytes '+suffix,status==200 and body==original)
+                check(f'schema {CURRENT_SCHEMA} preserves actual original common set bytes '+suffix,status==200 and body==original)
             status,replayed,headers=api('/api/v1/go/export-sets','POST',prior_set_request,key=prior_set_key)
             check('actual17 common creation receipt replays byte for byte after18',status==201 and replayed==prior_set_receipt and headers.get('Idempotent-Replayed')=='true')
             status,replayed,headers=api('/api/v1/go/export-sets/'+prior_set['id']+'/control','POST',prior_set_change,key=prior_set_change_key)

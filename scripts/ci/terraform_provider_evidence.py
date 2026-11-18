@@ -1,6 +1,11 @@
 # SPDX-License-Identifier: BUSL-1.1
 """Closed safe evidence contract for the native Terraform and OpenTofu profile."""
 import re
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from qualification_contract import CURRENT_SCHEMA, CURRENT_TENANT_TABLES
 
 
 CLIENTS = {'terraform': '1.17.2', 'tofu': '1.13.9'}
@@ -21,7 +26,7 @@ BASE_CHECKS = (
     'registry restart preserves the declared state', 'fresh stock npm downloads the exact approved archive after restart',
     'stale approval leaves suspended repository retained', 'suspended repository cannot be imported as active',
     'provider matches the clean candidate', 'revoked administrator cannot plan',
-    'schema 18 with all 57 tenant tables forced RLS and a restricted runtime role',
+    f'schema {CURRENT_SCHEMA} with all {CURRENT_TENANT_TABLES} tenant tables forced RLS and a restricted runtime role',
 )
 CLIENT_CHECKS = (
     'saved stock plan binds tenant and registry authority', 'plan left the registry unchanged',

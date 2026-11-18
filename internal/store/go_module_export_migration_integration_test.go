@@ -136,8 +136,8 @@ func testGoExportOldSchemaUpgrade(t *testing.T, baseline int) {
 		t.Fatal(err)
 	}
 	afterPlan, err := MigrationPlan(ctx, d.OwnerDSN)
-	if err != nil || len(afterPlan.Applied) != 18 || !afterPlan.SafetyValid || !reflect.DeepEqual(afterPlan.Applied[:baseline], beforePlan.Applied) || !reflect.DeepEqual(before, snapshot(true)) {
-		t.Fatal("schema18 changed old durable bytes or receipts", err)
+	if err != nil || len(afterPlan.Applied) != len(steps) || !afterPlan.SafetyValid || !reflect.DeepEqual(afterPlan.Applied[:baseline], beforePlan.Applied) || !reflect.DeepEqual(before, snapshot(true)) {
+		t.Fatal("current schema changed old durable bytes or receipts", err)
 	}
 	runtime, err := pgx.Connect(ctx, d.RuntimeDSN)
 	if err != nil {
@@ -145,10 +145,10 @@ func testGoExportOldSchemaUpgrade(t *testing.T, baseline int) {
 	}
 	defer runtime.Close(ctx)
 	if err := checkSchemaPlan(ctx, runtime, steps[:baseline], true); !errors.Is(err, ErrSchemaIncompatible) {
-		t.Fatal("old runtime admitted18", err)
+		t.Fatal("old runtime admitted the current schema", err)
 	}
 	if err := checkSchemaPlan(ctx, runtime, steps, true); err != nil {
-		t.Fatal("matching18 runtime refused", err)
+		t.Fatal("matching runtime refused", err)
 	}
 	for _, name := range []string{"artifact_exports", "artifact_export_items", "artifact_export_sets", "artifact_export_set_roots", "artifact_export_set_items", "artifact_export_set_requirements", "artifact_export_set_requirement_sources"} {
 		var n int
@@ -157,7 +157,7 @@ func testGoExportOldSchemaUpgrade(t *testing.T, baseline int) {
 		}
 	}
 	if err := Migrate(ctx, d.OwnerDSN); err != nil {
-		t.Fatal("schema18 no-op replay", err)
+		t.Fatal("current schema no-op replay", err)
 	}
 	if baseline >= 15 {
 		for name, definition := range map[string]string{

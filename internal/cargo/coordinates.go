@@ -68,12 +68,20 @@ func IndexPath(name string) (string, error) {
 	}
 }
 
-func ArtifactPrefix(name string) (string, error) {
+func CollisionKey(name string) (string, error) {
 	key, err := NameKey(name)
 	if err != nil {
 		return "", err
 	}
-	return "crates/" + strings.ReplaceAll(key, "_", "-") + "/", nil
+	return strings.ReplaceAll(key, "_", "-"), nil
+}
+
+func ArtifactPrefix(name string) (string, error) {
+	key, err := CollisionKey(name)
+	if err != nil {
+		return "", err
+	}
+	return "crates/" + key + "/", nil
 }
 
 func ArtifactPath(name, version string) (string, error) {

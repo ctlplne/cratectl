@@ -71,7 +71,7 @@ class HistoricalBaselineAdmission(unittest.TestCase):
         for original, verifier, path, schema in [
                 (old, current, name, 18), (old, current, '.github/workflows/ci.yml', 17),
                 (old + b'\n', current, name, 17), (old, current + b'\n', name, 17),
-                (old, current.replace(b'14 15 16 17; do', b'14 15 17; do'), name, 17),
+                (old, current.replace(b'14 15 16 17 18; do', b'14 15 17 18; do'), name, 17),
                 (old, current.replace(b'ubuntu-24.04', b'ubuntu-latest'), name, 17)]:
             with self.subTest(path=path, schema=schema), self.assertRaises(EvidenceError):
                 acceptance.compatible_contract(path, original, verifier, schema)
@@ -87,7 +87,7 @@ class HistoricalBaselineAdmission(unittest.TestCase):
             self.assertNotIn(b'image: postgres:16.15-alpine', workflow)
 
     def test_schema18_requires_qualified17_and_every_previous_binary(self):
-        current = json.loads((ROOT / 'docs/qualification/upgrade-baselines.json').read_bytes())['baselines']
+        current = json.loads((ROOT / 'docs/qualification/upgrade-baselines.json').read_bytes())['baselines'][:-1]
         acceptance.validate_baselines(current, 18)
         acceptance.validate_baselines(current[:-1], 17)
         for change in ('missing17', 'wrong17source', 'wrong17path', 'missingold', 'duplicate', 'reordered', 'unreviewedtarget'):
@@ -102,6 +102,16 @@ class HistoricalBaselineAdmission(unittest.TestCase):
             elif change == 'unreviewedtarget': schema = 19
             with self.subTest(change=change), self.assertRaises(EvidenceError):
                 acceptance.validate_baselines(rows, schema)
+
+    def test_schema19_requires_exact_qualified_schema18_source_and_binary(self):
+        current = json.loads((ROOT / 'docs/qualification/upgrade-baselines.json').read_bytes())['baselines']
+        acceptance.validate_baselines(current, 19)
+        with self.assertRaises(EvidenceError):
+            acceptance.validate_baselines(current[:-1], 19)
+        changed = copy.deepcopy(current)
+        changed[-1]['source'] = current[-2]['source']
+        with self.assertRaisesRegex(EvidenceError, 'unqualified_schema18_baseline'):
+            acceptance.validate_baselines(changed, 19)
 
 
 def run(identifier=11, path='ci.yml'):

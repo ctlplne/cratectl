@@ -18,6 +18,7 @@ import time
 from bounded_client import run_owned_client
 from ci.compose_evidence import CHECKS, SOURCE_PATHS, safe_compose_contract
 from compose_evaluation import POSTGRES_VERSION_NUM, ROOT, private_directory, private_save, read_state
+from qualification_contract import CURRENT_SCHEMA, CURRENT_TENANT_TABLES
 
 
 URL = 'https://127.0.0.1:38443'
@@ -139,9 +140,9 @@ class Journey:
                 'Compose PostgreSQL server version differs from the reviewed patch')
         roles = postgres("SELECT rolsuper||'/'||rolbypassrls||'/'||rolinherit FROM pg_roles WHERE rolname='cratectl_app'")
         total, forced, owned = map(int, postgres(TABLES).split('|'))
-        self.check('forced-rls', roles == 'false/false/false' and 0 < total == forced and owned == 0)
+        self.check('forced-rls', roles == 'false/false/false' and total == forced == CURRENT_TENANT_TABLES and owned == 0)
         schema = int(postgres('SELECT max(version) FROM cratectl_private.schema_migrations'))
-        self.check('schema', schema == 18)
+        self.check('schema', schema == CURRENT_SCHEMA)
         model = self.compose('config')
         definitions = json.loads(model)['services']
         port, = definitions['registry']['ports']

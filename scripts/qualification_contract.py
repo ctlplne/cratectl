@@ -10,7 +10,8 @@ import json
 import re
 from pathlib import Path
 
-CURRENT_SCHEMA = 18
+CURRENT_SCHEMA = 19
+CURRENT_TENANT_TABLES = 59
 
 
 def dotnet_sdk_pin(root=None):

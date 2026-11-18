@@ -32,10 +32,10 @@ class CampaignReports(unittest.TestCase):
                   'archive_sha256': 'c' * 64, 'manifest_sha256': 'd' * 64,
                   'image_configuration_sha256': {'postgres': 'sha256:' + 'e' * 64, 'registry': 'sha256:' + 'f' * 64},
                   'source_sha256': {name: hashlib.sha256(source(name)).hexdigest() for name in OFFLINE_FILES},
-                  'goal_complete': False, 'broad_readiness': False, 'database_schema': 18, 'forced_tenant_tables': 57}
+                  'goal_complete': False, 'broad_readiness': False, 'database_schema': 19, 'forced_tenant_tables': 59}
         spec = SPECS['ci-summary-offline-media-amd64']
         self.assertEqual(validate_custom(report, candidate, 12, spec, source), {'checks': 27, 'records': 1})
-        for changed in ({'checks': report['checks'][:-1]}, {'runner_arch': 'ARM64'}, {'forced_tenant_tables': 57.0},
+        for changed in ({'checks': report['checks'][:-1]}, {'runner_arch': 'ARM64'}, {'forced_tenant_tables': 59.0},
                         {'runtime_phases': report['runtime_phases'][:1]}, {'profile': 'unknown'}, {'token': 'inert test'}):
             with self.subTest(change=list(changed)), self.assertRaises(EvidenceError):
                 validate_custom({**report, **changed}, candidate, 12, spec, source)
@@ -75,8 +75,8 @@ class CampaignReports(unittest.TestCase):
         report = {'schema': 1, 'profile': 'cratectl-compose-evaluation-v1', 'candidate': candidate,
                   'run_id': '12', 'runner_os': 'Linux', 'runner_arch': 'ARM64', 'status': 'passed',
                   'source_dirty': False, 'checks': list(COMPOSE_CHECKS), 'compose_version': 'v5.7.0',
-                  'npm_version': '11.16.0', 'go_version': '1.27.4', 'database_schema': 18,
-                  'forced_rls_tenant_tables': 57, 'runtime_image_id': 'sha256:' + '0' * 64,
+                  'npm_version': '11.16.0', 'go_version': '1.27.4', 'database_schema': 19,
+                  'forced_rls_tenant_tables': 59, 'runtime_image_id': 'sha256:' + '0' * 64,
                   'binary_sha256': {'cratectl': '1' * 64, 'cratectld': '2' * 64},
                   'source_sha256': {path: hashlib.sha256(source(path)).hexdigest() for path in COMPOSE_FILES},
                   'goal_complete': False, 'broad_readiness': False}
@@ -221,14 +221,14 @@ class CampaignReports(unittest.TestCase):
             self.validate(name, original)
 
     def test_new_schema17_contract_refuses_old15_baseline_campaign(self):
-        current = json.loads((ROOT / 'docs/qualification/upgrade-baselines.json').read_text())['baselines'][:-1]
+        current = json.loads((ROOT / 'docs/qualification/upgrade-baselines.json').read_text())['baselines'][:-2]
         self.assertEqual({row['schema'] for row in current}, {None, *range(2, 17)})
         original = self.report('ci-summary-upgrades-amd64')
         with self.assertRaisesRegex(EvidenceError, 'historical_baselines'):
             validate_summary(original, original['candidate'], int(original['run_id']), SPECS['ci-summary-upgrades-amd64'], current)
 
     def test_schema18_requires_actual17_historical_binary_and_upgrade_report(self):
-        current = json.loads((ROOT / 'docs/qualification/upgrade-baselines.json').read_text())['baselines']
+        current = json.loads((ROOT / 'docs/qualification/upgrade-baselines.json').read_text())['baselines'][:-1]
         self.assertEqual([row['schema'] for row in current], [None, *range(2, 18)])
         original = json.loads((ROOT / 'evidence/2026-11-07/github-bb6f728/ci-summary-upgrades-amd64.json').read_bytes())
         with self.assertRaisesRegex(EvidenceError, 'historical_baselines'):

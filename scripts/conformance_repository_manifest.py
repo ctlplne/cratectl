@@ -22,7 +22,7 @@ from bounded_client import run_owned_client
 from cargo_hosted_fixture import evaluate_cargo
 from ci.cargo_evidence import PINS as CARGO_PINS, SOURCE_PATHS as CARGO_SOURCE_PATHS, validate as validate_cargo
 from ci.terraform_provider_evidence import ARCHIVE_PINS, SOURCE_PATHS, postgres_version, validate
-from qualification_contract import candidate_binary_directory
+from qualification_contract import CURRENT_SCHEMA, CURRENT_TENANT_TABLES, candidate_binary_directory
 from terraform_repository_fixture import evaluate_tools
 
 
@@ -178,7 +178,7 @@ def evaluate(args):
         call('initialize-registry', daemon, 'init', '--tenant', TENANT, '--directory', app, environment=owner_env)
         actors = [('reader', TENANT, 'reader'), ('other', OTHER, 'admin')]
         if args.cargo_toolchain:
-            actors.append(('writer', TENANT, 'writer'))
+            actors.extend([('writer', TENANT, 'writer'), ('maintainer', TENANT, 'writer')])
         for label, tenant, role in actors:
             token = work / (label + '.token')
             call('provision-' + label, daemon, 'provision', '--tenant', tenant, '--actor', 'cratectl-' + label,
@@ -381,7 +381,8 @@ def evaluate(args):
             SELECT (NOT rolsuper AND NOT rolbypassrls AND rolcanlogin) FROM pg_roles WHERE rolname='cratectl_app';
             SELECT max(version) FROM cratectl_private.schema_migrations
             """, environment=pg_env)[1].splitlines()
-        check('schema 18 with all 57 tenant tables forced RLS and a restricted runtime role', audit == ['57/57/0', 't', '18'])
+        check(f'schema {CURRENT_SCHEMA} with all {CURRENT_TENANT_TABLES} tenant tables forced RLS and a restricted runtime role',
+              audit == [f'{CURRENT_TENANT_TABLES}/{CURRENT_TENANT_TABLES}/0', 't', str(CURRENT_SCHEMA)])
         report['status'] = 'passed'
     finally:
         stop_server(server)

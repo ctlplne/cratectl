@@ -13,6 +13,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
+	"ctlplne.dev/cratectl/internal/cargo"
 	"github.com/jackc/pgx/v5"
 )
 
@@ -66,6 +67,11 @@ func artifactLifecycleRecordMode(ctx context.Context, tx pgx.Tx, i Identity, rep
 	}
 	if e == nil && !materializedLifecycleReference(r, a) {
 		return a, ErrConflict
+	}
+	if e == nil && r.Format == "cargo" {
+		entry, _ := CargoArtifactEntry(a)
+		key, _ := cargo.CollisionKey(entry.Name)
+		e = requireCargoOwner(ctx, tx, i, repo, key)
 	}
 	return a, e
 }

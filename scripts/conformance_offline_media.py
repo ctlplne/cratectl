@@ -19,6 +19,7 @@ import time
 from bounded_client import run_owned_client
 from compose_evaluation import POSTGRES, POSTGRES_VERSION_NUM, ROOT, private_directory
 from linux_offline_media import assemble, require, saved_image_configuration
+from qualification_contract import CURRENT_SCHEMA, CURRENT_TENANT_TABLES
 from ci.offline_media_evidence import CHECKS, NODE, SOURCE_PATHS, validate
 
 parser = argparse.ArgumentParser(description=__doc__)
@@ -249,8 +250,8 @@ try:
          ||'/'||count(*) FILTER (WHERE pg_get_userbyid(c.relowner)='cratectl_app') FROM pg_class c
          JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='cratectl' AND c.relkind IN ('r','p')
          AND EXISTS(SELECT 1 FROM pg_attribute a WHERE a.attrelid=c.oid AND a.attname='tenant' AND NOT a.attisdropped)""")
-    assert rls=='57/57/0'
-    assert sql('verified-imported-schema','SELECT max(version) FROM cratectl_private.schema_migrations')=='18'
+    assert rls == f'{CURRENT_TENANT_TABLES}/{CURRENT_TENANT_TABLES}/0'
+    assert sql('verified-imported-schema','SELECT max(version) FROM cratectl_private.schema_migrations') == str(CURRENT_SCHEMA)
     for container in (PG,REGISTRY,WORKER):
         mode=run('container-scope-'+container,'docker','inspect',container,'--format',
                  '{{.HostConfig.NetworkMode}} {{json .HostConfig.PortBindings}} {{.Image}}')
@@ -265,7 +266,7 @@ try:
               'image_configuration_sha256': {role: image['id'] for role, image in images.items()},
               'manifest_sha256': sha(manifest_path), 'archive_sha256': manifest['members'][ARCHIVE]['sha256'],
               'source_sha256': {name: sha(ROOT / name) for name in SOURCE_PATHS},
-              'forced_tenant_tables': 57, 'database_schema': 18,
+              'forced_tenant_tables': CURRENT_TENANT_TABLES, 'database_schema': CURRENT_SCHEMA,
               'goal_complete': False, 'broad_readiness': False}
     validate(result, local=result['run_id'] is None)
     encoded = json.dumps(result, indent=2) + '\n'

@@ -175,7 +175,7 @@ func TestGoModuleLegacyChecksumBackfillPreservesEveryTenantAndOriginalJournalUnd
 	before := seedLegacyChecksumSchema13(t, d)
 	ctx := context.Background()
 	plan, err := MigrationPlan(ctx, d.OwnerDSN)
-	if err != nil || len(plan.Applied) != 13 || !reflect.DeepEqual(plan.Pending, []int{14, 15, 16, 17, 18}) {
+	if err != nil || len(plan.Applied) != 13 || !reflect.DeepEqual(plan.Pending, []int{14, 15, 16, 17, 18, 19}) {
 		t.Fatal("prior schema13 plan", err)
 	}
 	if err = Migrate(ctx, d.OwnerDSN); err != nil {
@@ -183,7 +183,7 @@ func TestGoModuleLegacyChecksumBackfillPreservesEveryTenantAndOriginalJournalUnd
 	}
 	assertLegacyMigrationPolicies(t, d, 18)
 	after, err := MigrationPlan(ctx, d.OwnerDSN)
-	if err != nil || len(after.Applied) != 18 || !reflect.DeepEqual(after.Applied[:13], plan.Applied) || !after.SafetyValid {
+	if err != nil || len(after.Applied) != 19 || !reflect.DeepEqual(after.Applied[:13], plan.Applied) || !after.SafetyValid {
 		t.Fatal("backfill changed old receipts or isolation", err)
 	}
 	s, err := Open(ctx, d.RuntimeDSN)
@@ -273,7 +273,7 @@ func TestGoModuleLegacyChecksumInterruptedBackfillRollsBackPoliciesRowsAndReceip
 	}
 	assertLegacyMigrationPolicies(t, d, 13)
 	plan, err := MigrationPlan(ctx, d.OwnerDSN)
-	if err != nil || len(plan.Applied) != 13 || !reflect.DeepEqual(plan.Pending, []int{14, 15, 16, 17, 18}) || !plan.SafetyValid {
+	if err != nil || len(plan.Applied) != 13 || !reflect.DeepEqual(plan.Pending, []int{14, 15, 16, 17, 18, 19}) || !plan.SafetyValid {
 		t.Fatal("interruption left a partial receipt or unsafe schema", err)
 	}
 	c, err := pgx.Connect(ctx, d.OwnerDSN)
@@ -412,7 +412,7 @@ func TestGoModuleLegacyChecksumDamagedOriginalHistoryRefusesMigrationAtomically(
 	}
 	assertLegacyMigrationPolicies(t, d, 13)
 	plan, err := MigrationPlan(ctx, d.OwnerDSN)
-	if err != nil || len(plan.Applied) != 13 || !reflect.DeepEqual(plan.Pending, []int{14, 15, 16, 17, 18}) || !plan.SafetyValid {
+	if err != nil || len(plan.Applied) != 13 || !reflect.DeepEqual(plan.Pending, []int{14, 15, 16, 17, 18, 19}) || !plan.SafetyValid {
 		t.Fatal("failed integrity check left partial schema14 receipt", err)
 	}
 	var absent bool

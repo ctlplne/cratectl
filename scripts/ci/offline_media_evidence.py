@@ -2,6 +2,11 @@
 """Validate safe evidence from the disconnected saved-image replay."""
 
 import re
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from qualification_contract import CURRENT_SCHEMA, CURRENT_TENANT_TABLES
 
 
 NODE = 'node:22-bookworm@sha256:363e1587494626837fa7f9a23bdb453d13b0ff3c67c705c2805cfc69c2d2fad7'
@@ -27,7 +32,7 @@ SOURCE_PATHS = (
     'deploy/helm/cratectl/values.yaml', 'deploy/helm/cratectl/values.schema.json',
     'deploy/helm/cratectl/templates/_helpers.tpl', 'deploy/helm/cratectl/templates/deployment.yaml',
     'deploy/helm/cratectl/templates/service.yaml', 'deploy/helm/cratectl/templates/worker-identities.yaml',
-    'Makefile', 'go.mod', 'go.sum',
+    'Makefile', 'go.mod', 'go.sum', 'scripts/qualification_contract.py',
 )
 FIELDS = {'schema', 'profile', 'candidate', 'runner_os', 'runner_arch', 'run_id', 'source_dirty', 'status',
           'runtime_phases', 'checks', 'image_configuration_sha256', 'manifest_sha256', 'archive_sha256',
@@ -45,8 +50,8 @@ def validate(report, *, local=False):
             or report['runner_os'] != 'Linux' or report['runner_arch'] not in ('X64', 'ARM64')
             or report['status'] != 'passed' or report['source_dirty'] is not False
             or report['checks'] != list(CHECKS)
-            or type(report['database_schema']) is not int or report['database_schema'] != 18
-            or type(report['forced_tenant_tables']) is not int or report['forced_tenant_tables'] != 57
+            or type(report['database_schema']) is not int or report['database_schema'] != CURRENT_SCHEMA
+            or type(report['forced_tenant_tables']) is not int or report['forced_tenant_tables'] != CURRENT_TENANT_TABLES
             or report['goal_complete'] is not False or report['broad_readiness'] is not False
             or any(not matches(report[key], '[a-f0-9]{64}') for key in ('manifest_sha256', 'archive_sha256'))):
         raise ValueError('invalid offline media identity or coverage')

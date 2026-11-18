@@ -41,6 +41,7 @@ func (s *Store) PublishCargo(ctx context.Context, i Identity, repo string, a Art
 		return err
 	}
 	prefix, _ := cargo.ArtifactPrefix(entry.Name)
+	crateKey, _ := cargo.CollisionKey(entry.Name)
 	// Same actor, repository and normalized coordinate replay only these bytes.
 	// The write grant and retirement fence apply on the replay path too.
 	key := "cargo-publish:" + crypt.Digest([]byte(repo+"\x00"+a.Path))
@@ -51,6 +52,9 @@ func (s *Store) PublishCargo(ctx context.Context, i Identity, repo string, a Art
 		}
 		if r.Format != "cargo" || r.Mode != "hosted" {
 			return ErrConflict
+		}
+		if err = requireCargoOwner(ctx, tx, i, repo, crateKey); err != nil {
+			return err
 		}
 		return notDeletedInTx(ctx, tx, repo, a.Path)
 	}
@@ -66,6 +70,7 @@ WHERE tenant=$1 AND repository=$2 AND starts_with(path,$3) ORDER BY path LIMIT 1
 		if err == nil && (existing == nil || *existing != entry.Name) {
 			return nil, 0, ErrConflict
 		}
+		firstPublication := errors.Is(err, pgx.ErrNoRows)
 		var versionExists bool
 		if err = tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM cratectl.artifacts WHERE tenant=$1 AND repository=$2 AND path=$3)`,
 			i.Tenant, repo, a.Path).Scan(&versionExists); err != nil {
@@ -76,6 +81,11 @@ WHERE tenant=$1 AND repository=$2 AND starts_with(path,$3) ORDER BY path LIMIT 1
 		}
 		if err = InsertArtifacts(ctx, tx, i, repo, []Artifact{a}); err != nil {
 			return nil, 0, err
+		}
+		if firstPublication {
+			if err = addCargoOwner(ctx, tx, i.Tenant, repo, crateKey, i.Actor); err != nil {
+				return nil, 0, err
+			}
 		}
 		return map[string]any{"repository": repo, "path": a.Path, "digest": a.Digest, "size": a.Size}, 200, nil
 	})
@@ -156,6 +166,7 @@ func (s *Store) SetCargoYanked(ctx context.Context, i Identity, repo, name, vers
 	if err != nil {
 		return ErrNotFound
 	}
+	crateKey, _ := cargo.CollisionKey(name)
 	return s.Tx(ctx, i, true, func(tx pgx.Tx) error {
 		r, err := repositoryInTx(ctx, tx, i, repo, "write")
 		if err != nil {
@@ -163,6 +174,9 @@ func (s *Store) SetCargoYanked(ctx context.Context, i Identity, repo, name, vers
 		}
 		if r.Format != "cargo" || r.Mode != "hosted" {
 			return ErrConflict
+		}
+		if err = requireCargoOwner(ctx, tx, i, repo, crateKey); err != nil {
+			return err
 		}
 		a := Artifact{Repository: repo, Path: key}
 		err = tx.QueryRow(ctx, `SELECT left(digest,65),size,left(media_type,129),
