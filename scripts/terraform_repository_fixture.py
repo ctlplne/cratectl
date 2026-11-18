@@ -102,8 +102,13 @@ output "lifecycle" {{
         finally:
             client_config.write_bytes(config_bytes)
         registry_call(name + '-absent-after-refusal', endpoint + '/configuration', status=1)
-        # The stock client applies the exact, already reviewed plan.
-        cli('apply-create', 'apply', '-input=false', '-no-color', 'create.tfplan')
+        # A failed apply can advance the client's local state serial. Review a
+        # fresh saved plan and verify that it still declares the same creation.
+        cli('plan-after-refusal', 'plan', '-input=false', '-no-color', '-out=reviewed.tfplan')
+        reviewed = json.loads(cli('show-reviewed-create', 'show', '-json', 'reviewed.tfplan'))
+        refreshed = [row['change'] for row in reviewed['resource_changes'] if row['address'] == RESOURCE]
+        check('retry plan keeps the same reviewed repository identity', refreshed == [create])
+        cli('apply-create', 'apply', '-input=false', '-no-color', 'reviewed.tfplan')
         configured = registry_call(name + '-inspect-created', endpoint + '/configuration')
         check('stock apply created the exact hosted review configuration', configured['format'] == 'npm'
               and configured['mode'] == 'hosted' and configured['access'] == 'restricted' and configured['require_review'])

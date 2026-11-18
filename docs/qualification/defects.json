@@ -1781,6 +1781,13 @@
       "state": "An original stock Terraform 1.17.2 apply returned a generic TLS/connectivity refusal after the fixture changed authority. It had not reached the specific authority guard, and the stock journey remained incomplete.",
       "first_failure": "evidence/2026-11-18/terraform-provider-4821316-authority-first-failure.json",
       "repair": "Require the intended registry authority in the resource configuration. Derive stable creation retries from a separately named state scope, the tenant, the authority and the repository name."
+    },
+    {
+      "id": "DEFECT.0169",
+      "summary": "Terraform invalidates the fixture's saved plan after a deliberately refused apply",
+      "state": "The corrected provider's authority refusal and the actual unchanged registry were observed. The first fixture then stopped because it reused the stale local plan file.",
+      "first_failure": "evidence/2026-11-18/terraform-provider-581d5de-stock-state-serial.json",
+      "repair": "Save a fresh plan after a refused apply. Compare the whole resource change with the previously reviewed plan before applying."
     }
   ]
 }
