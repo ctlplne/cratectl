@@ -65,10 +65,18 @@ CHECKS = (
     'retry stages the original archive after checksum failure and still requires local approval',
     'an upstream coordinate change refuses the entire refreshed index and its download',
     'upstream yank changes discovery while the same exact pinned bytes remain deliverable',
+    'zero-freshness validation admits the request that filled both Cargo cache entries',
+    'a transient origin failure can serve the exact revision-bound Cargo bytes within its stale window',
+    'a source binding conflict refuses stale Cargo bytes even within the configured window',
+    'an interrupted origin transfer leaves no materialized Cargo archive',
+    'the exact Cargo archive can be retrieved after an interrupted origin transfer',
+    'concurrent Cargo cache misses consume one upstream archive transfer',
+    'advancing the Cargo source revision clears inherited validators and requires a new exact-digest decision',
+    'fresh stock Cargo resolves the new approved source revision and exact leaf',
     'current grants and tenant isolation fence a previously filled Cargo proxy',
 )
 ARCHIVES = ('cratectl-cargo-leaf', 'cratectl-cargo-root', 'cratectl-cargo-root-1.10.0',
-            'group-preferred', 'group-duplicate', 'group-lower-only', 'proxy-root', 'proxy-leaf')
+            'group-preferred', 'group-duplicate', 'group-lower-only', 'proxy-root', 'proxy-leaf', 'proxy-revised-root')
 SOURCE_PATHS = (
     '.github/workflows/cargo.yml', 'go.mod', 'go.sum', 'Makefile',
     'internal/cargo/coordinates.go', 'internal/cargo/index.go', 'internal/cargo/publish.go',
@@ -119,6 +127,7 @@ def validate(report):
             raise ValueError('invalid stock Cargo digest inventory')
     archives = report['archive_sha256']
     if (archives['proxy-root'] == archives['cratectl-cargo-root']
-            or archives['proxy-leaf'] != archives['cratectl-cargo-leaf']):
+            or archives['proxy-leaf'] != archives['cratectl-cargo-leaf']
+            or archives['proxy-revised-root'] in (archives['proxy-root'], archives['cratectl-cargo-root'])):
         raise ValueError('Cargo proxy evidence must bind the origin-built root and original stock leaf')
     return report

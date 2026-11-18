@@ -10,6 +10,7 @@ import ssl
 import threading
 import urllib.error
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 
 from cargo_hosted_fixture import (BASE_PACKAGE, REPOSITORY, ROOT_PACKAGE, VERSION,
                                   cargo_home, new_project, stock_cargo_environment)
@@ -21,6 +22,8 @@ INDEX_ORIGIN = 'http://[::1]:38443' + INDEX_PATH
 DOWNLOAD_ORIGIN = 'http://[::1]:38443' + DOWNLOAD_PATH
 PROXY = 'cratectl-cargo-proxy'
 CHECKSUM_PROXY = 'cratectl-cargo-checksum'
+SHORT_PROXY = 'cratectl-cargo-short'
+STALE_PROXY = 'cratectl-cargo-stale'
 
 
 def index_file(name):
@@ -53,6 +56,7 @@ def origin_server(credentials, contents):
             with lock:
                 requests.append((self.path, admitted, bool(current)))
                 body = contents.get(self.path)
+                is_interrupted = self.path in interrupted
                 is_offline = offline.is_set()
             code = 503 if is_offline else 401 if not admitted else 404 if body is None else 200
             tag = ''
@@ -67,17 +71,18 @@ def origin_server(credentials, contents):
             self.send_header('Cache-Control', 'max-age=300')
             self.send_header('Content-Length', str(len(response)))
             self.end_headers()
-            self.wfile.write(response)
+            self.wfile.write(response[:len(response)//2] if is_interrupted else response)
 
     requests = []
     lock = threading.Lock()
     offline = threading.Event()
     packaging = threading.Event()
+    interrupted = set()
     with Origin(('::1', 38443), Handler) as server:
         thread = threading.Thread(target=server.serve_forever, name='cratectl-cargo-origin')
         thread.start()
         try:
-            yield requests, lock, offline, packaging
+            yield requests, lock, offline, packaging, interrupted
         finally:
             server.shutdown()
             thread.join(5)
@@ -132,10 +137,13 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
                               'credential_ref': 'cratectl-cargo-download'}],
         'cache': {'fresh_seconds': 300, 'negative_seconds': 30, 'stale_seconds': 0},
     }
-    for label, repo in (('main', PROXY), ('checksum', CHECKSUM_PROXY)):
+    for label, repo in (('main', PROXY), ('checksum', CHECKSUM_PROXY), ('short', SHORT_PROXY), ('stale', STALE_PROXY)):
+        selected = settings
+        if repo == STALE_PROXY:
+            selected = {**settings, 'cache': {**settings['cache'], 'fresh_seconds': 0, 'stale_seconds': 60}}
         api('cargo-proxy-create-' + label, '/api/v1/repositories', 'POST',
             {'name': repo, 'format': 'cargo', 'mode': 'proxy', 'access': 'restricted',
-             'require_review': repo == CHECKSUM_PROXY, 'settings': settings})
+             'require_review': repo == CHECKSUM_PROXY, 'settings': selected})
         grant(repo, label, True)
 
     metadata, archives, contents = {}, {}, {}
@@ -163,7 +171,7 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
         call('cargo-proxy-stock-fetch-' + label, cargo, 'fetch', cwd=project, environment=env, timeout=45)
         return sorted(sha(item) for item in (cache / 'registry/cache').glob('*/*.crate'))
 
-    with origin_server(credentials, contents) as (requests, lock, offline, packaging):
+    with origin_server(credentials, contents) as (requests, lock, offline, packaging, interrupted):
         # Cargo records the source registry in its normalized dependency table.
         # Produce this root for the actual controlled origin while preserving the
         # original stock leaf and the original resolution graph.
@@ -173,14 +181,18 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
                     '[features]\nwire = ["dep:fixture-leaf"]\n')
         _, producer = cargo_home(work, 'cargo-proxy-origin-home', 'sparse+' + INDEX_ORIGIN,
                                  dict(shared, NO_PROXY='127.0.0.1,::1', no_proxy='127.0.0.1,::1'), credentials['index'])
-        target = project / 'target'
-        packaging.set()
-        try:
-            call('cargo-proxy-stock-package', cargo, 'package', '--registry', 'cratectl', '--allow-dirty', '--no-verify',
-                 '--exclude-lockfile', cwd=project, environment=dict(producer, CARGO_TARGET_DIR=str(target)), timeout=45)
-        finally:
-            packaging.clear()
-        original = target / 'package' / (ROOT_PACKAGE + '-' + VERSION + '.crate')
+        def package_for_origin(label):
+            target = work / ('cargo-proxy-origin-target-' + label)
+            packaging.set()
+            try:
+                call('cargo-proxy-stock-package-' + label, cargo, 'package', '--registry', 'cratectl',
+                     '--allow-dirty', '--no-verify', '--exclude-lockfile', cwd=project,
+                     environment=dict(producer, CARGO_TARGET_DIR=str(target)), timeout=45)
+            finally:
+                packaging.clear()
+            return target / 'package' / (ROOT_PACKAGE + '-' + VERSION + '.crate')
+
+        original = package_for_origin('original')
         archives[ROOT_PACKAGE] = original.read_bytes()
         metadata[ROOT_PACKAGE]['cksum'] = sha(original)
         with lock:
@@ -271,10 +283,79 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
         with lock:
             contents[path] = old_index
 
+        # A zero-freshness origin response admits the request that validated it.
+        # A later transient outage may use only the separately configured stale window.
+        status, body, _ = request(STALE_PROXY, package)
+        check('zero-freshness validation admits the request that filled both Cargo cache entries',
+              status == 200 and body == archives[ROOT_PACKAGE])
+        offline.set()
+        status, body, headers = request(STALE_PROXY, package)
+        offline.clear()
+        check('a transient origin failure can serve the exact revision-bound Cargo bytes within its stale window',
+              status == 200 and body == archives[ROOT_PACKAGE] and headers.get('X-Cratectl-Cache') == 'stale')
+        with lock:
+            contents[path] = json.dumps({**metadata[ROOT_PACKAGE], 'cksum': 'b' * 64}).encode() + b'\n'
+        check('a source binding conflict refuses stale Cargo bytes even within the configured window',
+              request(STALE_PROXY, package, refresh=True)[0] == 502)
+        with lock:
+            contents[path] = old_index
+
+        download_path = DOWNLOAD_PATH + download_file(ROOT_PACKAGE)
+        with lock:
+            interrupted.add(download_path)
+        status, _, headers = request(SHORT_PROXY, package)
+        partial = api('cargo-proxy-short-retained', management(SHORT_PROXY, '/artifacts'))['items']
+        check('an interrupted origin transfer leaves no materialized Cargo archive',
+              status == 502 and headers.get('X-Checksum-Sha256') is None
+              and all(item['path'] != reference['path'] for item in partial))
+        with lock:
+            interrupted.remove(download_path)
+        check('the exact Cargo archive can be retrieved after an interrupted origin transfer',
+              request(SHORT_PROXY, package, refresh=True)[1] == archives[ROOT_PACKAGE])
+
+        # Once the lower leaf has a retained metadata projection in SHORT_PROXY,
+        # the contenders should join one genuine archive retrieval in PostgreSQL.
+        lower_index = '/index/' + index_file(BASE_PACKAGE)
+        lower_download = '/download/' + download_file(BASE_PACKAGE)
+        if request(SHORT_PROXY, lower_index)[0] != 200:
+            raise ValueError('could not warm the Cargo concurrency metadata')
+        with lock:
+            before = len(requests)
+        with ThreadPoolExecutor(max_workers=6) as pool:
+            replies = list(pool.map(lambda _: request(SHORT_PROXY, lower_download), range(6)))
+        with lock:
+            new_requests = requests[before:]
+        check('concurrent Cargo cache misses consume one upstream archive transfer',
+              all(status == 200 and data == archives[BASE_PACKAGE] for status, data, _ in replies)
+              and new_requests == [(DOWNLOAD_PATH + download_file(BASE_PACKAGE), True, False)])
+
+        (project / 'src/lib.rs').write_text('// Owned source bytes for the second authority revision.\n')
+        revised = package_for_origin('new-revision')
+        revised_data = revised.read_bytes()
+        revised_digest = sha(revised)
+        with lock:
+            contents[path] = json.dumps({**metadata[ROOT_PACKAGE], 'cksum': revised_digest}).encode() + b'\n'
+            contents[download_path] = revised_data
+            before = len(requests)
+        changed = api('cargo-proxy-new-revision', management(PROXY, '/configuration'), 'PUT',
+                      {'settings': settings, 'expected_revision': 0, 'reason': 'Review the revised owned Cargo source'})
+        pending, _, headers = request(PROXY, package)
+        with lock:
+            new_requests = requests[before:]
+        check('advancing the Cargo source revision clears inherited validators and requires a new exact-digest decision',
+              revised_digest != reference['digest'] and changed['current']['source_revision'] == 1
+              and pending == 403 and headers.get('X-Checksum-Sha256') is None and request(PROXY, index)[0] == 404
+              and new_requests == [(path, True, False), (INDEX_PATH+'config.json', True, False), (download_path, True, False)])
+        api('cargo-proxy-approve-revised', management(PROXY, '/decisions'), 'PUT',
+            {**reference, 'digest': revised_digest, 'decision': 'allowed'})
+        check('fresh stock Cargo resolves the new approved source revision and exact leaf',
+              stock('revised-source') == sorted((revised_digest, metadata[BASE_PACKAGE]['cksum'])))
+
         grant(PROXY, 'revoke', False)
         check('current grants and tenant isolation fence a previously filled Cargo proxy',
               request(PROXY, package)[0] == 403 and request(PROXY, index)[0] == 403 and
               request(PROXY, package, other)[0] == 404)
 
     return {'checks': checks, 'archive_sha256': {'proxy-root': metadata[ROOT_PACKAGE]['cksum'],
-                                               'proxy-leaf': metadata[BASE_PACKAGE]['cksum']}}
+                                               'proxy-leaf': metadata[BASE_PACKAGE]['cksum'],
+                                               'proxy-revised-root': revised_digest}}
