@@ -230,6 +230,11 @@ against an independently supplied checksum, then checks the enclosed binary
 identities without extraction. `make packaging` still fails pending the
 complete release and disconnected installation requirements.
 [Linux assembly evidence](evidence/2026-11-18/linux-candidates-b910da7-local.json)
+At `5fd3edd`, an external OpenSSL Ed25519 test verified canonical `SHA256SUMS`
+and both enclosed Linux archives. The wrong public key, changed checksum list
+and changed archive were refused. Production signing authority and release
+approval remain open.
+[External signature evidence](evidence/2026-11-18/linux-candidate-signed-checksums-5fd3edd.json)
 
 ## Durable state and remaining scope
 

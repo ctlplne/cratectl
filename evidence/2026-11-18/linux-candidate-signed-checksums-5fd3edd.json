@@ -1,0 +1,86 @@
+{
+  "candidate": "5fd3edd20146610b093c6020e02c0a448121f751",
+  "source_dirty": false,
+  "observed_at": "2026-11-18T13:49:42.227303+00:00",
+  "observed_openssl": "OpenSSL 4.0.3 29 Sep 2026 (Library: OpenSSL 4.0.3 29 Sep 2026)",
+  "status": "passed",
+  "checksums_sha256": "3df69a7435c86ce89717f446e3f765fd70e91e7e58580544071a26e3749184c1",
+  "signature_sha256": "3fbe4053e2ca907d2e8ffccac2168e65286a33d4b27caa314d77498339c84f23",
+  "trusted_public_pem_sha256": "34fd0b633f16edbde3488d446db8caf821eec09d1773bcfa16188ed0e3cec35e",
+  "checksums_reproducible": true,
+  "archive_tampering_refused": true,
+  "both_exact_archives": {
+    "linux/amd64": {
+      "archive": ".cache/cratectl-linux-candidates/5fd3edd20146610b093c6020e02c0a448121f751/cratectl-linux-amd64.tar.gz",
+      "sha256": "8e792c9350f92e347423256b0a04992e0a95204b99cf5a77047d7940f4db4204",
+      "binary_sha256": {
+        "cratectl": "0688ca3db169065e3ebea4b7ff1600ecbc62a48aa45294e667443f20fc42e124",
+        "cratectld": "225d2e012d852e93eb9926a89ad0e3457b1ab91784f54f37dacc4a79d4f5aa6a"
+      }
+    },
+    "linux/arm64": {
+      "archive": ".cache/cratectl-linux-candidates/5fd3edd20146610b093c6020e02c0a448121f751/cratectl-linux-arm64.tar.gz",
+      "sha256": "dca27eaa978f48401618ec6373759c31f375d32c995ba797b3f16e31464f5eb3",
+      "binary_sha256": {
+        "cratectl": "2b48e6a3a7aeb22ad2127dd9e0852661fa4338d13fcf2f94f9f9e47c2fe65ba2",
+        "cratectld": "3987c071b5a8225771e23a9be3a5be69ca19d70eb301f95fb4eb70886d221062"
+      }
+    }
+  },
+  "process_checks": [
+    {
+      "label": "signer-key",
+      "result": "success",
+      "private_log": ".private/cratectl-local-checksum-signing-5fd3edd/signer-key.log",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "label": "unrelated-key",
+      "result": "success",
+      "private_log": ".private/cratectl-local-checksum-signing-5fd3edd/unrelated-key.log",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "label": "export-trusted-public",
+      "result": "success",
+      "private_log": ".private/cratectl-local-checksum-signing-5fd3edd/export-trusted-public.log",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "label": "export-unrelated-public",
+      "result": "success",
+      "private_log": ".private/cratectl-local-checksum-signing-5fd3edd/export-unrelated-public.log",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "label": "external-sign",
+      "result": "success",
+      "private_log": ".private/cratectl-local-checksum-signing-5fd3edd/external-sign.log",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "label": "verify-exact-checksums",
+      "result": "success",
+      "private_log": ".private/cratectl-local-checksum-signing-5fd3edd/verify-exact-checksums.log",
+      "sha256": "bec41df75f7eb9b938eb282dd6f10147f0686e6efcfa1922ac31e4ea8822fb2b"
+    },
+    {
+      "label": "refuse-unrelated-public-key",
+      "result": "refused",
+      "private_log": ".private/cratectl-local-checksum-signing-5fd3edd/refuse-unrelated-public-key.log",
+      "sha256": "4d3257e43e63b8767d879c7182fd6920d4d2e23af2a861481f261aaeae3171c2"
+    },
+    {
+      "label": "refuse-altered-checksums",
+      "result": "refused",
+      "private_log": ".private/cratectl-local-checksum-signing-5fd3edd/refuse-altered-checksums.log",
+      "sha256": "4d3257e43e63b8767d879c7182fd6920d4d2e23af2a861481f261aaeae3171c2"
+    }
+  ],
+  "limits": [
+    "An owned temporary Ed25519 test key exercised the external OpenSSL path. The verification process consumed only independently supplied public key material.",
+    "The scoped result covers canonical checksum signing and exact local archive verification. Production trust, component SBOMs, native release install, disconnected stack and legal distribution approval remain open."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}
