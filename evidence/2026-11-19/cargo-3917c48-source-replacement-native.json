@@ -1,0 +1,71 @@
+{
+  "candidate": "3917c4844a5dbbb2e41f87716e4902ab53af5435",
+  "status": "passed",
+  "observed_at": "2026-11-19T02:16:45.258553+05:30",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "cargo": "cargo 1.100.0 (3acc79c0c 2026-11-05)",
+  "declarative_checks": 19,
+  "controlled_origin_cargo_checks": 80,
+  "public_origin": {
+    "checks": [
+      "the public sparse index advertises the configured crates.io CDN",
+      "the official index retains the pinned form_urlencoded checksum",
+      "the official index retains the pinned percent-encoding checksum",
+      "the pinned root declares the leaf as a required runtime dependency",
+      "stock Cargo fetched exactly the pinned public root and leaf archives",
+      "the stock lockfile records the real dependency edge and both public checksums",
+      "fresh stock Cargo replays the same pinned graph after restart",
+      "the independent stock lockfile uses the canonical crates.io source and pinned checksums",
+      "the authenticated crates.io replacement fetches both exact archives with an unchanged canonical lockfile",
+      "current repository grant gates the stored form_urlencoded archive",
+      "current repository grant gates the stored percent-encoding archive"
+    ],
+    "archive_sha256": {
+      "form_urlencoded-1.2.1.crate": "e13624c2627564efccf4934284bdd98cbaa14e79b0b5a141218e507b3a823456",
+      "percent-encoding-2.3.1.crate": "e3148f5046208a5d56bcfc03053e3ca6334e51da8dfb19b6cdc8b306fae3283e"
+    },
+    "index": "https://index.crates.io",
+    "download_base": "https://static.crates.io/crates",
+    "lock_sha256": "0bd2ca766015cf03ae7ce5b20bf341bef419b3f040f2dce8e128d9f4e61a2ef1",
+    "canonical_lock_sha256": "ce631595541e087508b79e12f66657ab65a93089e2fe8917feae4b15bfa36b48"
+  },
+  "binary_sha256": {
+    "cratectl": "86e0ed48a43501ba067a8129da98b890a90d2fe7294a4a909f3256dc919f354d",
+    "cratectld": "40eca718fd3f2897f1b8f29eb5ec10dbd827213c1fa10e6b0cc098cd520f16f6"
+  },
+  "original_private_summary_sha256": "e8913a4bbbc37047479c7519f3308650d8f105c832ea0fd44df2a776cf48dca5",
+  "source_sha256": [
+    {
+      "path": "scripts/cargo_public_fixture.py",
+      "sha256": "549392d65e7485d9597d56c645c017107a47fc7f52f1146157e9a4a1b3513dc4"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "c75697e1fbf5650ce43555b05483439c3a3558747bb52a10b2734144f53b7c18"
+    },
+    {
+      "path": "scripts/cargo_hosted_fixture.py",
+      "sha256": "8feaede986a4b8990c7cc5aa2464137d3c24aaac859aa58ce030eed4eda55020"
+    },
+    {
+      "path": "internal/cargo/sparse.go",
+      "sha256": "1407111ba1fb9cb88019c293537875a1fba9a3869de7c7fe699aacc0a48a4068"
+    },
+    {
+      "path": "internal/server/cargo_proxy.go",
+      "sha256": "fe0762ce8cd8e47c50a6ce4c7a4e2be74bf302e0e48ea232dd38d64e4440bad5"
+    },
+    {
+      "path": "internal/upstream/upstream.go",
+      "sha256": "d96fab63d134fde71828f873f3e11c92fc9423b93b6f3f3bbd9a261e46db1e0f"
+    }
+  ],
+  "limits": [
+    "A stock lockfile independently generated against canonical crates.io retained its exact bytes during authenticated source replacement.",
+    "Two public archives matched the official source checksums. Only inert Cargo resolution and fetch commands ran.",
+    "This verifies sparse source replacement with the existing canonical Cargo lockfile identifier. The legacy Git index protocol remains open."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

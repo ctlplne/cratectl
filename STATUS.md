@@ -8,6 +8,14 @@ Broad readiness,security and packaging remain unqualified.
 
 ## Latest whole accepted source
 
+`ab6e559` passed all 33 original jobs across nine workflows. Its unchanged
+read-only verifier ran locally at the same exact schema 19 commit and
+accepted 101 reports. Independent comparison matched 33 original job logs,
+26 safe job summaries, the selection summary, 33 source contracts and
+three transfer records. The selected lanes include stock Cargo, both native
+PostgreSQL client suites, both provider jobs and the Chromium campaign.
+[Exact schema 19 verifier evidence](evidence/2026-11-19/github-ab6e559-exact-local-accepted.json)
+
 `6c4d583` passed all 32 original GitHub jobs across nine workflows. Its
 unmodified read-only verifier ran locally from the same source and accepted
 86 reports. Independent comparison matched all 32 logs, 25 safe job
@@ -563,6 +571,12 @@ its required `percent-encoding 2.3.1` dependency. Both original archive
 digests matched the official index before and after restart, and stock
 Cargo recorded the dependency edge and digests in its lockfile.
 [Public dependency graph evidence](evidence/2026-11-19/cargo-d2727c7-public-graph-native.json)
+
+The exact `3917c48` fixture passed 11 public-origin checks. Stock Cargo
+created a lockfile against canonical crates.io. A fresh Cargo home then
+fetched both identical archives through the authenticated cratectl sparse
+replacement and left the lockfile byte-for-byte unchanged.
+[Canonical lockfile replacement evidence](evidence/2026-11-19/cargo-3917c48-source-replacement-native.json)
 
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities
