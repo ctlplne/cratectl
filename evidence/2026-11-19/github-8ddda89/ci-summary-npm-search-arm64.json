@@ -1,0 +1,179 @@
+{
+  "candidate": "8ddda89177f65ca6d384e7846ccce51736b26b4a",
+  "status": "passed",
+  "checks": [
+    "clean exact source",
+    "cratectl matches the clean candidate",
+    "cratectld matches the clean candidate",
+    "real reviewed PostgreSQL 16 patch release",
+    "absent repository has an authority and tenant bound creation plan",
+    "plan, wrong approval and denied callers leave the tenant journal unchanged",
+    "concurrent approved requests produce one creation or a safe retry",
+    "retry after successful creation returns unchanged",
+    "one repository creation event despite concurrent retry",
+    "second tenant can plan an independent same-name repository",
+    "import returns the exact active hosted fields",
+    "plan exposes review drift without writing",
+    "stock npm published its exact bytes and unassessed input was denied",
+    "registry restart preserves the declared state",
+    "fresh stock npm downloads the exact approved archive after restart",
+    "stale approval leaves suspended repository retained",
+    "suspended repository cannot be imported as active",
+    "revoked administrator cannot plan",
+    "schema 19 with all 59 tenant tables forced RLS and a restricted runtime role"
+  ],
+  "binary_sha256": {
+    "cratectl": "b24bd20d7dd0bf0e4889a3d4a9f0dc897c79068e90f158d429e167d18b180191",
+    "cratectld": "2536b98d7378195da4002f47ff847a77571a18db669af35ee523009e39d3ade6"
+  },
+  "archive_sha256": "eb88cfbb43de75bcfb7e6ec35e9cf45e90e0288fcdcf1f05d76e4b3b5f3f6b28",
+  "postgres": "postgres (PostgreSQL) 16.15 (Ubuntu 16.15-1.pgdg24.04+2)",
+  "npm": "10.9.9",
+  "npm_search": {
+    "checks": [
+      "unassessed versions are absent from stock npm search",
+      "stock npm returns approved scoped and unscoped names while hiding the pending latest version",
+      "the npm search limit returns only the highest ranked package",
+      "the second tenant sees its own description at the same coordinate",
+      "approving the latest version replaces the search projection",
+      "stock npm searches the current latest tag even when it points at an earlier allowed version",
+      "retirement removes the tagged version from stock search",
+      "stock npm sees the restored tag and exact original archive after restart",
+      "an existing stock npm client loses search access after grant revocation"
+    ],
+    "archive_sha256": [
+      "e343310962b766caaf0d5d812f5476678883dfe98397d2023ff8fc9c2261ebc5",
+      "fada6433c84bedff33582612a45cc9e73bd8058abdb32777ed5fd07ed0d69edb",
+      "3b495298c45379ed7e5c4f0df7ca466fdf7c4ba506ff02525c3e814643a95a36",
+      "4de8d74771255a566515f6ecb59a1089be62942dee2740af04f4df9b7122dc1f"
+    ]
+  },
+  "npm_cached_search": {
+    "checks": [
+      "stock npm cached search makes no network fill and fences an unknown preferred source",
+      "stock search omits a catalog-only proxy version and its lower duplicate",
+      "stock proxy search uses the exact fetched archive description",
+      "mixed group review fences the lower duplicate while the preferred bytes await approval",
+      "stock group search selects the approved preferred proxy bytes",
+      "current proxy absence admits the hosted package in stock group search",
+      "stock search replays the same source after restart without upstream requests",
+      "invalidating the preferred catalog hides the cached result and its lower duplicate",
+      "revoking a selected member grant hides the cached and lower group results"
+    ],
+    "preferred_archive_sha256": "80eef80f503fc52cc3a038bd1af6baed9eec97819060910415d1571fbc55bd80"
+  },
+  "goal_complete": false,
+  "broad_readiness": false,
+  "schema": 1,
+  "profile": "cratectl-native-npm-search-v1",
+  "runner_os": "Linux",
+  "runner_arch": "ARM64",
+  "run_id": "44403374644",
+  "source_dirty": false,
+  "source_sha256": [
+    {
+      "path": ".github/workflows/npm-search.yml",
+      "sha256": "1e0b3ae448103fe38cc85016d0a08b0553cdf032f846f0a874ba86d41f72efad"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "12f2a8b5cfbc2f322822b82e4446f51ff017374acab1f3a8921db8cc8e833bf6"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "1d4aecc2732cd54db4534e0afc862ffe14d5c24890f106008682fd9bbc8e5ba9"
+    },
+    {
+      "path": "go.sum",
+      "sha256": "5e364e4e1eff09d8d39617427d7775012304b09a7be26778dc2b46fdabae3f15"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "35c226a96df4c66715bd42f1ae759fa1160fa72f14c3b91a3ddb899f125fc26d"
+    },
+    {
+      "path": "scripts/npm_search_fixture.py",
+      "sha256": "246243c58a1221e619745ec83edcfd63cfa947db992721af722a34647c90f9fc"
+    },
+    {
+      "path": "scripts/ci/npm_search_evidence.py",
+      "sha256": "d2b7c21dfef188bdd550fe605988215088cab63e26e7f373f6f515d709135ef6"
+    },
+    {
+      "path": "scripts/cargo_proxy_fixture.py",
+      "sha256": "c780300b59344662d7381dde29cee5093adf5ae4ea9b82ccd0071f38994c838a"
+    },
+    {
+      "path": "scripts/ci/terraform_provider_evidence.py",
+      "sha256": "130de2ec92ed288a6fa6c744c67003a76cafa2dfb9835e48f653abccda1a50ca"
+    },
+    {
+      "path": "scripts/qualification_contract.py",
+      "sha256": "c40a9d0209a9dc1fb9838f49cdb316ad5a762d45c0359b97fce156746564e5ba"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "9c2e99c6943c31559f9c0930142d992b4c290a6dfcd748d859b0dd7de499ccc2"
+    },
+    {
+      "path": "internal/server/npm.go",
+      "sha256": "b1a8b70f1020aa7dd196ef9a975d6f18e7bfe6f63992dfcbac9c5e1b752b30c0"
+    },
+    {
+      "path": "internal/server/npm_search.go",
+      "sha256": "4d6489963246f53f3db2d553b1171cae1298dd711b39722d3bb47d203895fb9e"
+    },
+    {
+      "path": "internal/server/npm_remote.go",
+      "sha256": "27417c92eb06e042fea805ef097437a4347cc8bb24f9e68e1b48f766af5aa855"
+    },
+    {
+      "path": "internal/server/npm_proxy.go",
+      "sha256": "a08ceb520cf0ccf3e9b2907e16f9a7fad6c662bb2049aa021e9f808c2c9d41e3"
+    },
+    {
+      "path": "internal/store/npm.go",
+      "sha256": "c8167dddcf11c93bc2b7630fda61f283ac0afdeb3c2f23018ac7dc45dcc39e41"
+    },
+    {
+      "path": "internal/store/npm_search.go",
+      "sha256": "dbfbe07395841802712bdab73908f53e3f1cace8ebd1ba43bca2ee09624b0f23"
+    },
+    {
+      "path": "internal/store/npm_proxy.go",
+      "sha256": "9808b5c6c374d2259d3bb7f85e5f91ff9a4c694ee661a49a839c4235b403ea35"
+    },
+    {
+      "path": "internal/store/native_source.go",
+      "sha256": "9020d58cedc9b41b203de33dc18e81ce6b0f297b997389dbcab0eb9383a51063"
+    },
+    {
+      "path": "internal/store/retrieval.go",
+      "sha256": "360c7804b8a95ff01939bbf03f4d3c1b86f63300a9014ea528db4ac4f05d6a68"
+    },
+    {
+      "path": "internal/store/artifact_read.go",
+      "sha256": "aba845ceb45aff4503adb12c7a10330a7a7154f9a048b15ee3fa34b9153ac11e"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "54412aeffd3ed0708a7ac7fccb69184f6413aec87522c34abc1d0ab9fa9f9529"
+    },
+    {
+      "path": "internal/store/decision.go",
+      "sha256": "3f9c785f2da56ee4678ef9a49418ab4eb794eb9ba2556dd32d88229b18427db4"
+    },
+    {
+      "path": "internal/store/lifecycle_artifact.go",
+      "sha256": "167073e909bbf51f201227ce740bdf2999088aab52af7f48ad93c9773f530651"
+    },
+    {
+      "path": "internal/store/migrations.go",
+      "sha256": "59f3478fbc77b7c969e43719f7eea92844a5bb1b2cd5b0d63ec2f356e368594b"
+    }
+  ]
+}
