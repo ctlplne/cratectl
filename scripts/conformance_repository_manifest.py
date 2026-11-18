@@ -622,14 +622,15 @@ def record_oci_catalog_ci(report, architecture):
 
 
 def record_maven_index_ci(report, architecture):
-    from ci.maven_index_evidence import PROFILE, SOURCE_PATHS, validate as validate_index
+    from ci.maven_index_evidence import CACHED_PROFILE, CACHED_SOURCE_PATHS, PROFILE, SOURCE_PATHS, validate as validate_index
 
     runner = hosted_runner(report, architecture)
     projection = {key: report[key] for key in ('candidate', 'status', 'checks', 'binary_sha256', 'archive_sha256',
                                                 'postgres', 'npm', 'maven_index', 'goal_complete', 'broad_readiness')}
-    projection.update(schema=1, profile=PROFILE, runner_os='Linux', runner_arch=runner,
+    cached = 'cached' in report['maven_index']
+    projection.update(schema=1, profile=CACHED_PROFILE if cached else PROFILE, runner_os='Linux', runner_arch=runner,
                       run_id=os.environ.get('GITHUB_RUN_ID'), source_dirty=False,
-                      source_sha256={name: sha(ROOT / name) for name in SOURCE_PATHS})
+                      source_sha256={name: sha(ROOT / name) for name in (CACHED_SOURCE_PATHS if cached else SOURCE_PATHS)})
     validate_index(projection)
     with (ROOT / '.cache/ci-maven-index.json').open('x') as stream:
         json.dump(projection, stream, indent=2)
@@ -655,7 +656,7 @@ if __name__ == '__main__':
     parser.add_argument('--maven-index-reader', type=Path, help='the pinned Apache Maven Indexer Reader JAR')
     parser.add_argument('--maven-index-java', type=Path, help='the JDK 21 executable for the stock index reader')
     parser.add_argument('--maven-index-ci-architecture', choices=('amd64', 'arm64'))
-    parser.add_argument('--maven-index-cached', action='store_true', help='also verify the controlled cached Maven proxy index')
+    parser.add_argument('--maven-index-cached', action='store_true', help='also verify cached Maven proxy and ordered group indexes')
     parser.add_argument('--npm-search', action='store_true',
                         help='also verify npm hosted and cached search using stock clients')
     parser.add_argument('--npm-search-ci-architecture', choices=('amd64', 'arm64'))
@@ -677,7 +678,7 @@ if __name__ == '__main__':
         parser.error('Maven index evidence uses its own stock profile')
     if options.maven_index_ci_architecture and (not options.maven_index_reader or options.provider_binary
                                                or options.npm_search or options.python_search_client or options.cargo_toolchain
-                                               or options.oci_catalog_client or options.mcp_binary or options.promtool or options.maven_index_cached):
+                                               or options.oci_catalog_client or options.mcp_binary or options.promtool):
         parser.error('native Maven index evidence requires the isolated stock Apache reader profile')
     if options.oci_catalog_client and (options.ci_architecture or options.cargo_ci_architecture
                                        or options.npm_search_ci_architecture or options.python_search_ci_architecture):

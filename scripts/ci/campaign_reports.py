@@ -29,7 +29,9 @@ from oci_repository_catalog_evidence import (CACHED_CHECKS as OCI_CACHED_CHECKS,
                                              CATALOG_CHECKS as OCI_CATALOG_CHECKS, GROUP_CHECKS as OCI_GROUP_CHECKS,
                                              HOSTED_PROFILE as OCI_HOSTED_PROFILE, cached_selected as oci_cached_selected,
                                              validate as validate_oci_catalog)
-from maven_index_evidence import MAVEN_INDEX_CHECKS, validate as validate_maven_index
+from maven_index_evidence import (CACHED_CHECKS as MAVEN_CACHED_CHECKS, CACHED_PROFILE as MAVEN_CACHED_PROFILE,
+                                  GROUP_CHECKS as MAVEN_GROUP_CHECKS, MAVEN_INDEX_CHECKS, PROFILE as MAVEN_HOSTED_PROFILE,
+                                  cached_selected as maven_cached_selected, validate as validate_maven_index)
 
 CONTRACTS = {'maven_cache_contract': safe_maven_cache_contract, 'gradle_contract': safe_gradle_contract,
              'ivy_contract': safe_ivy_contract, 'sbt_contract': safe_sbt_contract,
@@ -138,6 +140,11 @@ def validate_custom(report, candidate, run_id, spec, source):
             require(report['profile'] == (OCI_CACHED_PROFILE if cached else OCI_HOSTED_PROFILE), 'oci_catalog_profile_selection')
             if cached:
                 checks += len(OCI_CACHED_CHECKS) + len(OCI_GROUP_CHECKS)
+        if spec['kind'] == 'maven-index':
+            cached = maven_cached_selected(source)
+            require(report['profile'] == (MAVEN_CACHED_PROFILE if cached else MAVEN_HOSTED_PROFILE), 'maven_index_profile_selection')
+            if cached:
+                checks += len(MAVEN_CACHED_CHECKS) + len(MAVEN_GROUP_CHECKS)
         return {'checks': checks, 'records': 1}
     require(report.get('status') == 'passed' and report.get('source_dirty') is False, 'custom_report_incomplete')
     if spec['kind'] == 'library':

@@ -1268,7 +1268,7 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": "Bounded Apache Maven Indexer full snapshot of hosted or currently cached canonical JAR releases whose JAR and POM are both authorized.",
+      "implementation": "Bounded Apache Maven Indexer full snapshot of hosted, cached proxy and ordered group canonical JAR releases whose selected JAR and POM are currently authorized.",
       "surfaces": {
         "api": "/r/{repository}/.index/",
         "cli": "Apache Maven Indexer Reader",
@@ -1306,13 +1306,14 @@
         "delete/restore"
       ],
       "state": "implementing",
-      "candidate": "8bc2ea101b9497c9a5788da43885e91d02d93a5f",
+      "candidate": "769a2b6f50d24ca43aa05df89c2b3e14e6a07b85",
       "evidence": [
         "evidence/2026-11-19/maven-0cba518-hosted-index-native.json",
-        "evidence/2026-11-19/maven-8bc2ea1-cached-index-native.json"
+        "evidence/2026-11-19/maven-8bc2ea1-cached-index-native.json",
+        "evidence/2026-11-19/maven-769a2b6-ordered-index-native.json"
       ],
-      "limits": "Stock Apache Maven Indexer Reader 7.1.6 passed eight hosted, seven cached proxy and 19 declarative checks on macOS ARM64 with PostgreSQL 16.16. Cached index discovery required both exact checksum-validated JAR and POM receipts and made zero source requests during indexing. Current denial and invalidation removed the result, and an explicit fetch and restart restored exact visibility and bytes.",
-      "next_action": "Qualify Linux, ordered group indexes, additional JVM clients, richer records and larger workloads."
+      "limits": "Stock Apache Maven Indexer Reader 7.1.6 passed eight hosted, seven cached proxy, seven ordered group and 19 declarative checks on macOS ARM64 with PostgreSQL 16.16. Both the JAR and POM needed current authorization and source receipts. The stock group fixture used separate selected hosted members and precise preferred proxy absences, with zero origin requests during indexing.",
+      "next_action": "Qualify both combined Linux runs, Maven CLI and IDE consumption, alternative JVM clients, additional package records and larger workloads."
     },
     {
       "id": "FMT.MAVEN.AUTHORIZATION",

@@ -12,7 +12,10 @@ from campaign_reports import validate_custom, validate_summary
 from campaign_transport import EvidenceError
 from compose_evidence import CHECKS as COMPOSE_CHECKS, SOURCE_PATHS as COMPOSE_FILES
 from linux_install_evidence import CHECKS as INSTALL_CHECKS, IMAGE as INSTALL_IMAGE, SOURCE_PATHS as INSTALL_FILES
-from maven_index_evidence import BASE_CHECKS as MAVEN_INDEX_BASE, INDEXER_SHA256, MAVEN_INDEX_CHECKS, PROFILE as MAVEN_INDEX_PROFILE, SOURCE_PATHS as MAVEN_INDEX_FILES
+from maven_index_evidence import (BASE_CHECKS as MAVEN_INDEX_BASE, CACHED_CHECKS as MAVEN_CACHED_CHECKS,
+                                  CACHED_PROFILE as MAVEN_CACHED_PROFILE, CACHED_SOURCE_PATHS as MAVEN_CACHED_FILES,
+                                  GROUP_CHECKS as MAVEN_GROUP_CHECKS, INDEXER_SHA256, MAVEN_INDEX_CHECKS,
+                                  PROFILE as MAVEN_INDEX_PROFILE, SOURCE_PATHS as MAVEN_INDEX_FILES)
 from npm_search_evidence import BASE_CHECKS as NPM_BASE, HOSTED_CHECKS as NPM_HOSTED, CACHED_CHECKS as NPM_CACHED, SOURCE_PATHS as NPM_FILES
 from oci_repository_catalog_evidence import (ARCHIVE_PINS as ORAS_PINS, BASE_CHECKS as OCI_CATALOG_BASE,
                                              CACHED_CHECKS as OCI_CACHED_CHECKS, CACHED_PROFILE as OCI_CACHED_PROFILE,
@@ -47,6 +50,23 @@ class CampaignReports(unittest.TestCase):
                 validate_custom({**report, 'maven_index': {**index, **mutation}}, candidate, 12, spec, source)
         with self.assertRaisesRegex(EvidenceError, 'maven_index_source_identity'):
             validate_custom(report, candidate, 12, spec, lambda path: b'changed')
+
+        def cached_source(path):
+            if path == '.github/workflows/maven-index.yml':
+                return b'--maven-index-cached --maven-index-ci-architecture'
+            return source(path)
+
+        def bind(body, paths):
+            return {**body, 'source_sha256': {path: hashlib.sha256(cached_source(path)).hexdigest() for path in paths}}
+
+        cached = {'checks': list(MAVEN_CACHED_CHECKS), 'archive_sha256': '1' * 64, 'jar_sha256': index['jar_sha256'][1],
+                  'pom_sha256': '2' * 64, 'groups': {'checks': list(MAVEN_GROUP_CHECKS), 'archive_sha256': '3' * 64}}
+        combined = bind({**report, 'profile': MAVEN_CACHED_PROFILE, 'maven_index': {**index, 'cached': cached}}, MAVEN_CACHED_FILES)
+        self.assertEqual(validate_custom(combined, candidate, 12, spec, cached_source), {'checks': 41, 'records': 1})
+        with self.assertRaisesRegex(EvidenceError, 'maven_index_profile_selection'):
+            validate_custom(bind(report, MAVEN_INDEX_FILES), candidate, 12, spec, cached_source)
+        with self.assertRaisesRegex(EvidenceError, 'maven_index_report_contract'):
+            validate_custom({**combined, 'maven_index': {**index, 'cached': {**cached, 'jar_sha256': '4' * 64}}}, candidate, 12, spec, cached_source)
 
     def test_oci_catalog_requires_architecture_bound_tool_and_exact_graph_checks(self):
         source = lambda path: path.encode()

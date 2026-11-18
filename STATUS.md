@@ -714,6 +714,14 @@ and restart were exercised. Both real PostgreSQL index tests and the build,
 unit, race and lint gates passed.
 [Native cached Maven index evidence](evidence/2026-11-19/maven-8bc2ea1-cached-index-native.json)
 
+`769a2b6` passed 41 combined native checks on macOS ARM64, including
+seven ordered-group checks with stock Apache Maven Indexer Reader. An exact
+JAR and its POM came from separate selected hosted members after current
+absence receipts permitted fallback from the preferred proxy. Group grants
+and invalidation affected discovery without an origin request during index
+reads. Three PostgreSQL regressions and all four source gates passed.
+[Native ordered Maven index evidence](evidence/2026-11-19/maven-769a2b6-ordered-index-native.json)
+
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities
 published and pulled two exact chart archives, including a build-metadata

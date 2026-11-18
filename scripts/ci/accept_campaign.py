@@ -20,7 +20,8 @@ from npm_search_evidence import HOSTED_CHECKS as NPM_HOSTED, CACHED_CHECKS as NP
 from python_search_evidence import HOSTED_CHECKS as PYTHON_HOSTED, CACHED_CHECKS as PYTHON_CACHED
 from oci_repository_catalog_evidence import (CACHED_CHECKS as OCI_CACHED_CHECKS, CATALOG_CHECKS as OCI_CATALOG_CHECKS,
                                              GROUP_CHECKS as OCI_GROUP_CHECKS, cached_selected as oci_cached_selected)
-from maven_index_evidence import MAVEN_INDEX_CHECKS
+from maven_index_evidence import (CACHED_CHECKS as MAVEN_CACHED_CHECKS, GROUP_CHECKS as MAVEN_GROUP_CHECKS,
+                                  MAVEN_INDEX_CHECKS, cached_selected as maven_cached_selected)
 from campaign_transport import (EvidenceError, GitHubEvidenceClient, LOG_BYTES,
                                 REPOSITORY, artifact_json, require, strict_json)
 
@@ -226,6 +227,10 @@ def check_log(raw, spec, source):
         require(text.count(f'PASS: {len(IAC_BASE) - 1} native declarative repository checks') == 1
                 and text.count(f'PASS: {len(MAVEN_INDEX_CHECKS)} stock Apache Maven Indexer checks') == 1,
                 'maven_index_native_inventory')
+        if maven_cached_selected(source):
+            require(text.count(f'PASS: {len(MAVEN_CACHED_CHECKS)} stock Apache cached Maven index checks') == 1
+                    and text.count(f'PASS: {len(MAVEN_GROUP_CHECKS)} stock Apache ordered Maven index checks') == 1,
+                    'maven_index_cached_inventory')
     if kind in ('native', 'go'):
         pattern = r'\bok\s+ctlplne.dev/cratectl/internal/(?:server|store' + ('|conformance' if kind == 'native' else '') + r')\s'
         require(len(re.findall(pattern, text)) == (6 if kind == 'native' else 4), 'native_package_success_inventory')
