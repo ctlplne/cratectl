@@ -1639,9 +1639,10 @@
       "id": "DEFECT.0152",
       "summary": "Native Windows inheritance test assumed initial file creation installed an unprotected DACL",
       "candidate": "5551f528586b3198023ae26ff3b3dda56d7ea544",
-      "state": "Both original native Windows failures retained. Fixture repair cross-compiled and vetted. Native replay pending.",
+      "state": "Both original native Windows failures retained. The repaired fixture passed on x64 and ARM64 at a0e646d.",
       "first_failure": "evidence/2026-11-18/github-5551f52-windows-fixture-failure.json",
-      "repair": "Explicitly install an unprotected DACL using the Windows API. Confirm the installed control flags before verifying that the reader refuses private input."
+      "repair": "Explicitly install an unprotected DACL using the Windows API. Confirm the installed control flags before verifying that the reader refuses private input.",
+      "replay": "evidence/2026-11-18/github-a0e646d-windows-native.json"
     },
     {
       "id": "DEFECT.0153",

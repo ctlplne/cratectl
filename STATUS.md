@@ -57,7 +57,7 @@ and DEFECT0147's bounded-read overflow repair. The normal/race source gates on
 three native non-Windows hosts passed. Actual Windows runtime is absent from
 2a and78a. The0147 first local failure and all earlier failed campaigns remain.
 
-## Native Windows CI is running on the patched candidate
+## Native Windows CLI checks passed on x64 and ARM64
 
 [ADR0075](docs/adr/0075-native-windows-cli-qualification.md) and its
 [development records](evidence/2026-11-18/windows-npm-private-development.json) add two
@@ -68,11 +68,10 @@ resumes. Output/time bounds, actual descendant cancellation and zero remaining
 owned processes are mandatory. Closed safe evidence binds twenty-three source hashes;
 first-failure output has protected ACLs and encrypted-only diagnostic retention.
 
-Local ARM build/unit/race/lint and Windows x64/ARM64 cross-build and vet pass.
-Native ACL, NTFS, sharing, protected npm configuration output, and process controls
-await actual Windows jobs. The read journey uses an owned trusted-TLS management
-stand-in. Windows server operation, offline collection, bootstrap and installation
-remain open.
+Both `a0e646d` native jobs pass ACL, NTFS, sharing, protected npm configuration
+output, and process controls. The read journey uses an owned trusted-TLS
+management stand-in. Windows server operation, offline collection, bootstrap and
+installation remain open.
 
 The workflow plus custom validator close22 files. Both original20-contract
 records above were retained and checked against their original logs and members.
@@ -87,17 +86,16 @@ Both `6d41573` Windows jobs failed during process cleanup. The native replay at
 `5551f52` passed the process suite and nine configuration functions on both hosts,
 including protected npm output. Both jobs failed the DACL inheritance fixture.
 The fixture repair explicitly unprotects the DACL and verifies the installed
-control bits before checking refusal. Full Windows qualification requires the
-repaired native replay. [Original process failures](evidence/2026-11-18/github-6d41573-first-failures.json)
+control bits before checking refusal. [Original process failures](evidence/2026-11-18/github-6d41573-first-failures.json)
 [Native replay and fixture repair](evidence/2026-11-18/github-5551f52-windows-fixture-failure.json)
 
 The fixture repair is on `a0e646d`. Its [Windows replay](https://github.com/ctlplne/cratectl/actions/runs/44297755759)
 and six baseline workflows are recorded in the [original run inventory](evidence/2026-11-18/github-a0e646d-started.json).
 The earlier campaigns retain their original job IDs and outcomes.
 
-The original `a0e646d` ARM64 Windows job passed all 15 functions and five
-managed commands. The retained report matches 23 source hashes in Git. The
-x64 job remains queued. [ARM64 native evidence](evidence/2026-11-18/github-a0e646d-windows-native-arm64.json)
+Each original Windows job passed all 15 functions and five managed commands.
+Both retained reports match their original workflow logs, artifact digests and
+23 source hashes in Git. [Native Windows evidence](evidence/2026-11-18/github-a0e646d-windows-native.json)
 
 The [partial `6d41573` snapshot](evidence/2026-11-18/github-6d41573-original-partial.json)
 retains 21 safe members and the outstanding original native jobs. Full campaign

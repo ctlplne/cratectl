@@ -1,6 +1,6 @@
 # 0075: Qualify Windows private configuration on native GitHub hosts
 
-Status: implemented; actual Windows execution remains required.
+Status: native x64 and ARM64 verified at `a0e646d` for the profile below.
 
 Windows ACL, NTFS, reparse-point and sharing behavior must run on Windows. The
 existing POSIX process helper cannot establish those outcomes. Add two independent
@@ -64,10 +64,14 @@ Adding the workflow and validator closes22 files rather than20. The original
 78a5983 whole acceptance and2a0268c's completed failed strict campaign are retained
 before publishing this boundary; historical results are never upgraded by it.
 
-The actual jobs are required for private configuration reads, npm configuration
-output, the scoped CLI request and owned Windows process controls. Windows server
-operation, server-issued credential creation and bootstrap, collection directory
-locks, disconnected installation and the other GOAL requirements stay open.
+The first-attempt `a0e646d` workflow completed both native jobs. Both reports bind
+all 23 source files and the original CI identities. Each job ran the private
+configuration, npm configuration output, scoped CLI request and owned process
+controls. [Native evidence](../../evidence/2026-11-18/github-a0e646d-windows-native.json)
+
+Windows server operation, server-issued credential creation and bootstrap,
+collection directory locks, disconnected installation and the other GOAL
+requirements stay open.
 No primary/customer/sibling service or selected local binary is changed.
 
 References: [GitHub standard native runner labels](https://docs.github.com/en/actions/reference/runners/github-hosted-runners),
