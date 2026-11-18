@@ -112,11 +112,18 @@ jobs and all three npm audits.
 [Original replay outcomes](evidence/2026-11-18/github-5551f52-original-completed.json)
 
 The `b00aa94` push started nine first-attempt workflows for the Chromium
-deadline and private credential file changes. The earlier `a0e646d` jobs
-continue under their original IDs. [Replay run inventory](evidence/2026-11-18/github-b00aa94-started.json)
+deadline and private credential file changes.
+[Replay run inventory](evidence/2026-11-18/github-b00aa94-started.json)
 Both native Windows jobs at `b00aa94` passed the same 15 CLI functions and five
 managed commands. The original logs, reports and 23 source hashes per job
 matched. [Replay Windows evidence](evidence/2026-11-18/github-b00aa94-windows-native.json)
+
+The earlier `a0e646d` campaign closed with 25 passing jobs and three npm audit
+failures. Its Linux x64 Chromium step completed all 19 workflows and 151
+assertions before the original deadline, with no unexpected, skipped or flaky
+tests. All 28 original logs and 82 reports are retained. The full-suite budget
+change still needs exact-source replay.
+[Original a0e646d outcomes](evidence/2026-11-18/github-a0e646d-original-completed.json)
 
 ## Go security patch
 
@@ -173,6 +180,11 @@ on all 57 tenant tables. The registry and worker ran without database owner
 credentials. Stock npm published over trusted TLS, respected exact-digest
 review and installed the original bytes after a full stop and restart.
 [Compose qualification](evidence/2026-11-18/compose-498a078-arm64.json)
+
+The new Compose CI profile runs the same 20 checks on dedicated native x64 and
+ARM64 Linux jobs. Each report binds its toolchain, image, binaries and 12 source
+files. The campaign verifier now checks 24 workflow and report-extractor files.
+Retained earlier verdicts keep their original scope.
 
 ## Durable state and remaining scope
 
