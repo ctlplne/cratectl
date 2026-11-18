@@ -1902,6 +1902,13 @@
       "first_failure": "evidence/2026-11-19/python-f4495dc-search-fixture-first-failure.json",
       "replay": "evidence/2026-11-19/python-c583ad5-hosted-search-native.json",
       "repair": "Require pip 26.1.2's observed transport-error exit code and independently assert HTTP 403 without any search result."
+    },
+    {
+      "id": "DEFECT.0184",
+      "summary": "Stock npm's update notifier introduces an unrelated upstream request during the cold search fixture",
+      "state": "Both original 19e5a87 searches returned empty arrays. An exact-source diagnostic replay observed a request for the npm package on the configured origin. The stock npm update notifier checks that package through the configured registry.",
+      "first_failure": "evidence/2026-11-19/npm-19e5a87-update-notifier-first-failure.json",
+      "repair": "Disable the stock npm update notifier in the isolated fixture and keep the zero-upstream-request search assertion."
     }
   ]
 }

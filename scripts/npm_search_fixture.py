@@ -20,7 +20,7 @@ def npm_client(work, label, repo, config, environment, cli):
     global_config.touch()
     return dict(environment, NPM_CONFIG_USERCONFIG=str(rc), NPM_CONFIG_GLOBALCONFIG=str(global_config),
                 NPM_CONFIG_CACHE=str(work / f'npm-search-cache-{label}'), NPM_CONFIG_AUDIT='false',
-                NPM_CONFIG_FUND='false', NPM_CONFIG_IGNORE_SCRIPTS='true')
+                NPM_CONFIG_FUND='false', NPM_CONFIG_IGNORE_SCRIPTS='true', NPM_CONFIG_UPDATE_NOTIFIER='false')
 
 
 def npm_archive(work, label, name, version, description, call, environment):
