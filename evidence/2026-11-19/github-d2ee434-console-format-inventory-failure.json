@@ -1,0 +1,39 @@
+{
+  "candidate": "d2ee434a14324a09fd081818811b21dc6d426e77",
+  "observed_at": "2026-11-19T01:04:21.623078+05:30",
+  "status": "failed",
+  "jobs": [
+    {
+      "arch": "arm64",
+      "id": 135058571654,
+      "run_id": 44375185666,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/44375185666/job/135058571654",
+      "attempt": 1,
+      "conclusion": "failure",
+      "original_private_log": {
+        "path": ".private/ci-diagnostics/github-d2ee434-campaign/135058571654.txt",
+        "bytes": 416747,
+        "sha256": "1583f4b0d38756760744fd35e6a4b10386358326a2a1d327667630a0dfaf7968"
+      }
+    },
+    {
+      "arch": "amd64",
+      "id": 135058571769,
+      "run_id": 44375185666,
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/44375185666/job/135058571769",
+      "attempt": 1,
+      "conclusion": "failure",
+      "original_private_log": {
+        "path": ".private/ci-diagnostics/github-d2ee434-campaign/135058571769.txt",
+        "bytes": 415872,
+        "sha256": "2aab54c70b31d7f9d8be6142f171d5b556f1bfb2bb9b5ad3386c8575e4c11de4"
+      }
+    }
+  ],
+  "failed_check": "TestConsoleSessionUsesCurrentCredentialAndDoesNotExposeSecrets",
+  "observed": "session identity or supported-adapter scope incorrect",
+  "cause": "The fixture removes OCI and still expects the pre-Cargo list of supported adapters. Both architecture jobs failed at the same exact assertion.",
+  "fixture_source_sha256": "83968fa7771dad316afd3aa6d9ca75c338f62b6123a85a65edd434d54abccb25",
+  "goal_complete": false,
+  "broad_readiness": false
+}

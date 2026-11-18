@@ -18,6 +18,7 @@ class CargoEvidenceTests(unittest.TestCase):
                   'base_checks': [check for check in BASE_CHECKS if check != 'provider matches the clean candidate'],
                   'archive_sha256': dict.fromkeys(ARCHIVES, digest),
                   'postgres': 'postgres (PostgreSQL) 16.16', 'goal_complete': False, 'broad_readiness': False}
+        report['archive_sha256']['proxy-root'] = 'c' * 64
         self.assertEqual(validate(report), report)
         for field, value in [('source_dirty', True), ('runner_arch', 'X64'), ('checks', list(CHECKS)[:-1]),
                              ('broad_readiness', True), ('archive_sha256', {}), ('source_sha256', {}),
@@ -26,8 +27,8 @@ class CargoEvidenceTests(unittest.TestCase):
                 changed = copy.deepcopy(report)
                 changed[field] = value
                 validate(changed)
-        report['archive_sha256']['proxy-root'] = 'c' * 64
-        with self.assertRaisesRegex(ValueError, 'differs from the original'):
+        report['archive_sha256']['proxy-root'] = digest
+        with self.assertRaisesRegex(ValueError, 'origin-built root and original stock leaf'):
             validate(report)
 
 

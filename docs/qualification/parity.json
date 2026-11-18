@@ -4636,11 +4636,11 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "Authenticated sparse retrieval, immutable version and provenance pins, archive and packaged-manifest checks, and tenant review and lifecycle controls.",
       "surfaces": {
-        "api": null,
-        "cli": null,
-        "ui": null
+        "api": "Authenticated Cargo sparse HTTP routes, source settings, decisions and lifecycle API.",
+        "cli": "Stock Cargo sparse registry config and cargo fetch.",
+        "ui": "Repository creation, client setup, local package review and lifecycle."
       },
       "core": true,
       "dependencies": [
@@ -4668,11 +4668,13 @@
         "upstream outage",
         "delete/restore"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "No implementation or native-client proof yet.",
-      "next_action": "Implement cargo proxy and execute the complete stock-client journey."
+      "state": "implementing",
+      "candidate": "4a5c5420122dd068dbb5423f87005a2722c16370",
+      "evidence": [
+        "evidence/2026-11-19/cargo-4a5c542-ipv6-fixture-failure.json"
+      ],
+      "limits": "The sparse proxy implementation is committed. The original local stock fixture stopped before proxy checks because of ambiguous loopback hostname resolution. The corrected stock-client replay is pending.",
+      "next_action": "Run the corrected exact-source native replay with both loopback authorities and the original failure retained."
     },
     {
       "id": "FMT.CARGO.GROUP",
@@ -4742,12 +4744,13 @@
         "delete/restore"
       ],
       "state": "implementing",
-      "candidate": "139041dd0e45c1da610f4ee4bdbad8682c02864c",
+      "candidate": "c55ccdae8a76ad54cbd4d3302d094a5303194276",
       "evidence": [
+        "evidence/2026-11-19/github-c55ccda-cargo-groups-native.json",
         "evidence/2026-11-19/cargo-139041d-groups-native.json"
       ],
-      "limits": "Stock Cargo 1.100.0 on macOS ARM64 and live PostgreSQL 16.16 verify nine hosted group journeys and two current-source rechecks. Proxy members and group search are separate. Native Linux, tenant collision, concurrent and interrupted transfer qualification remain open.",
-      "next_action": "Qualify hosted groups on both native Linux architectures and extend the matrix to proxy source precedence, cross-tenant collision and interrupted/concurrent transfers."
+      "limits": "Nine hosted group journeys pass on macOS ARM64 and both native Linux architectures with stock Cargo 1.100.0 and live PostgreSQL. Two separate PostgreSQL cases check source changes before sending response headers. Proxy members, cross-tenant duplicates and broad transfer fault/concurrency coverage remain open.",
+      "next_action": "Qualify proxy source precedence, cross-tenant duplicates and interrupted or concurrent group transfers."
     },
     {
       "id": "FMT.CARGO.REPLICATION",

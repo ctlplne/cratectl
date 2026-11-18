@@ -44,6 +44,7 @@ def sha(file):
 
 def evaluate(args):
     os.umask(0o077)
+    authority = 'https://127.0.0.1:38443' if args.cargo_toolchain else BASE
     private = ROOT / '.private'
     if private.is_symlink() or private.stat().st_mode & 0o077:
         raise ValueError('use the existing owner-only .private directory')
@@ -108,7 +109,7 @@ def evaluate(args):
                 if process.poll() is not None:
                     raise ValueError('owned registry stopped before readiness')
                 try:
-                    with local_http.open(BASE + '/health/ready', timeout=1) as reply:
+                    with local_http.open(authority + '/health/ready', timeout=1) as reply:
                         if reply.status == 200:
                             return process
                 except (OSError, urllib.error.URLError):
@@ -189,7 +190,8 @@ def evaluate(args):
             if (f'vcs.revision={CARGO_UPGRADE_BASELINE}' not in build or 'vcs.modified=false' not in build
                     or '\tpath\tctlplne.dev/cratectl/cmd/cratectld\n' not in build):
                 raise ValueError('legacy Cargo upgrade requires the exact reviewed schema 18 daemon')
-        call('initialize-registry', bootstrap, 'init', '--tenant', TENANT, '--directory', app, environment=owner_env)
+        call('initialize-registry', bootstrap, 'init', '--tenant', TENANT, '--directory', app,
+             '--public-url', authority, environment=owner_env)
         actors = [('reader', TENANT, 'reader'), ('other', OTHER, 'admin')]
         if args.cargo_toolchain:
             actors.extend([('writer', TENANT, 'writer'), ('maintainer', TENANT, 'writer')])
@@ -197,7 +199,7 @@ def evaluate(args):
             token = work / (label + '.token')
             call('provision-' + label, bootstrap, 'provision', '--tenant', tenant, '--actor', 'cratectl-' + label,
                  '--role', role, '--token-file', token, environment=owner_env)
-            write(label + '.json', {'version': 1, 'url': BASE, 'token_file': str(token), 'ca_file': str(app / 'ca.crt')})
+            write(label + '.json', {'version': 1, 'url': authority, 'token_file': str(token), 'ca_file': str(app / 'ca.crt')})
         if args.cargo_toolchain:
             origin_credentials = {label: secrets.token_urlsafe(32) for label in ('index', 'download')}
             credentials = write('cargo-origin-credentials.json', {
@@ -233,7 +235,7 @@ def evaluate(args):
                 return {'baseline_binary_sha256': sha(bootstrap), 'preserved_receipts': len(before['applied']),
                         'applied': after['applied'][-1], 'old_daemon_refused_current_schema': True}
 
-            report['cargo_upgrade'] = replay_legacy_cargo(work, app, BASE, args.cargo_toolchain.resolve(),
+            report['cargo_upgrade'] = replay_legacy_cargo(work, app, authority, args.cargo_toolchain.resolve(),
                                                         public_env, call, api, controlled_upgrade, sha)
         if args.promtool:
             promtool = args.promtool.resolve()
@@ -245,7 +247,7 @@ def evaluate(args):
 
             def scrape(credential=None):
                 headers = {} if credential is None else {'Authorization': 'Bearer ' + credential}
-                request = urllib.request.Request(BASE + '/metrics', headers=headers)
+                request = urllib.request.Request(authority + '/metrics', headers=headers)
                 try:
                     with scrape_http.open(request, timeout=5) as response:
                         data = response.read((64 << 10) + 1)
@@ -288,7 +290,7 @@ def evaluate(args):
         before = api('before-plan-audit', '/api/v1/audit/checkpoint')
         plan = json.loads(cli('plan-missing', *plan_flags)[1])
         check('absent repository has an authority and tenant bound creation plan',
-              plan['action'] == 'create' and plan['current'] is None and plan['authority'] == BASE and plan['desired'] == desired)
+              plan['action'] == 'create' and plan['current'] is None and plan['authority'] == authority and plan['desired'] == desired)
         approval = plan['approval_sha256']
         cli('wrong-approval', *apply_flags, '0' * 64, status=1)
         cli('reader-denied', *plan_flags, config=work / 'reader.json', status=1)
@@ -342,7 +344,7 @@ def evaluate(args):
 
         def mcp_phase(phase, config):
             raw = call('mcp-' + phase, mcp_client, '--phase', phase, '--server', mcp_server, '--config', config,
-                       '--authority', BASE, '--tenant', TENANT, '--repository', NAME,
+                       '--authority', authority, '--tenant', TENANT, '--repository', NAME,
                        '--artifact-path', artifacts[0]['path'], '--digest', artifacts[0]['digest'])[1]
             result = json.loads(raw)
             if result['phase'] != phase or result['protocol'] != '2026-07-28' or not result['checks']:
@@ -357,7 +359,7 @@ def evaluate(args):
                 build = call(component.name + '-build-info', go, 'version', '-m', component)[1]
                 check(component.name + ' matches the clean candidate', f'vcs.revision={candidate}' in build and 'vcs.modified=false' in build)
             call('mcp-require-metadata-consent', mcp_server, '--client-config', app / 'client.json',
-                 '--authority', BASE, '--tenant', TENANT, status=1)
+                 '--authority', authority, '--tenant', TENANT, status=1)
             check('MCP binary requires explicit scoped metadata consent', True)
             api('mcp-create-second-repository', '/api/v1/repositories', 'POST',
                 {'name': 'cratectl-secondary', 'format': 'npm', 'require_review': False})
@@ -385,13 +387,13 @@ def evaluate(args):
               sha(download / restored[0]['filename']) == sha(tarball))
         report['archive_sha256'] = sha(tarball)
         if args.cargo_toolchain:
-            report['cargo'] = evaluate_cargo(work, app, BASE, args.cargo_toolchain.resolve(),
+            report['cargo'] = evaluate_cargo(work, app, authority, args.cargo_toolchain.resolve(),
                                             public_env, call, api, restart_server, sha)
-            group = evaluate_groups(work, app, BASE, args.cargo_toolchain.resolve(),
+            group = evaluate_groups(work, app, authority, args.cargo_toolchain.resolve(),
                                     public_env, call, api, restart_server, sha)
             report['cargo']['checks'].extend(group['checks'])
             report['cargo']['archive_sha256'].update(group['archive_sha256'])
-            proxy = evaluate_proxy(work, app, BASE, args.cargo_toolchain.resolve(), public_env,
+            proxy = evaluate_proxy(work, app, authority, args.cargo_toolchain.resolve(), public_env,
                                    call, api, restart_server, sha, origin_credentials)
             report['cargo']['checks'].extend(proxy['checks'])
             report['cargo']['archive_sha256'].update(proxy['archive_sha256'])

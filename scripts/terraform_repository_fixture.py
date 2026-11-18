@@ -28,6 +28,7 @@ def evaluate_tools(work, clients, provider, env, config, registry_call, sha):
                   '  }\n}\n')
     client_config = work / 'provider-client.json'
     config_bytes = config.read_bytes()
+    authority = json.loads(config_bytes)['url']
     client_config.write_bytes(config_bytes)
     results = []
     child_env = {key: value for key, value in env.items()
@@ -65,7 +66,7 @@ provider "cratectl" {{
   state_scope   = "cratectl-{name}-provider"
 }}
 resource "cratectl_hosted_repository" "owned" {{
-  authority      = "https://localhost:38443"
+  authority      = {json.dumps(authority)}
   tenant         = "cratectl-manifest"
   name           = "{repository}"
   format         = "npm"
@@ -86,14 +87,15 @@ output "lifecycle" {{
         changes = [row for row in plan['resource_changes'] if row['address'] == RESOURCE]
         create = changes[0]['change']
         check('saved stock plan binds tenant and registry authority', len(changes) == 1
-              and create['actions'] == ['create'] and create['after']['authority'] == 'https://localhost:38443'
+              and create['actions'] == ['create'] and create['after']['authority'] == authority
               and create['after']['id'] == 'cratectl-manifest/' + current_name
               and create['after']['state_scope'] == 'cratectl-' + name + '-provider')
         endpoint = '/api/v1/repositories/' + current_name
         registry_call(name + '-absent-after-plan', endpoint + '/configuration', status=1)
         check('plan left the registry unchanged', True)
         altered = json.loads(config_bytes)
-        altered['url'] = 'https://127.0.0.1:38443'
+        altered['url'] = ('https://127.0.0.1:38443' if authority == 'https://localhost:38443'
+                          else 'https://localhost:38443')
         client_config.write_text(json.dumps(altered))
         try:
             failed = cli('different-authority-refused', 'apply', '-input=false', '-no-color',

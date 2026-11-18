@@ -48,7 +48,8 @@ def origin_server(credentials, contents):
             label = 'index' if self.path.startswith(INDEX_PATH) else 'download'
             token = self.headers.get('Authorization', '')
             current = self.headers.get('If-None-Match', '')
-            admitted = hmac.compare_digest(token, credentials[label])
+            admitted = hmac.compare_digest(token, credentials[label]) or (
+                packaging.is_set() and hmac.compare_digest(token, credentials['index']))
             with lock:
                 requests.append((self.path, admitted, bool(current)))
                 body = contents.get(self.path)
@@ -71,11 +72,12 @@ def origin_server(credentials, contents):
     requests = []
     lock = threading.Lock()
     offline = threading.Event()
+    packaging = threading.Event()
     with Origin(('::1', 38443), Handler) as server:
         thread = threading.Thread(target=server.serve_forever, name='cratectl-cargo-origin')
         thread.start()
         try:
-            yield requests, lock, offline
+            yield requests, lock, offline, packaging
         finally:
             server.shutdown()
             thread.join(5)
@@ -150,19 +152,43 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
         contents[DOWNLOAD_PATH + download_file(name)] = archives[name]
     contents[INDEX_PATH + 'config.json'] = json.dumps({'dl': DOWNLOAD_ORIGIN + '{crate}/{version}',
                                                        'auth-required': True}).encode()
-    expected = sorted(row['cksum'] for row in metadata.values())
     index = '/index/' + index_file(ROOT_PACKAGE)
     package = '/download/' + download_file(ROOT_PACKAGE)
 
     def stock(label):
         project = work / ('cargo-proxy-project-' + label)
         new_project(project, 'cratectl-proxy-consumer', '\n[dependencies]\n' + ROOT_PACKAGE +
-                    ' = {version = "=1.0.0", registry = "cratectl"}\n')
+                    ' = {version = "=1.0.0", registry = "cratectl", features = ["wire"]}\n')
         cache, env = cargo_home(work, 'cargo-proxy-home-' + label, 'sparse+' + registry(PROXY) + '/index/', shared, reader)
         call('cargo-proxy-stock-fetch-' + label, cargo, 'fetch', cwd=project, environment=env, timeout=45)
         return sorted(sha(item) for item in (cache / 'registry/cache').glob('*/*.crate'))
 
-    with origin_server(credentials, contents) as (requests, lock, offline):
+    with origin_server(credentials, contents) as (requests, lock, offline, packaging):
+        # Cargo records the source registry in its normalized dependency table.
+        # Produce this root for the actual controlled origin while preserving the
+        # original stock leaf and the original resolution graph.
+        project = work / 'cargo-proxy-origin-root'
+        new_project(project, ROOT_PACKAGE, '\n[dependencies]\nfixture-leaf = {package = "' + BASE_PACKAGE +
+                    '", version = "1.0", registry = "cratectl", optional = true, default-features = false, features = ["wire"]}\n'
+                    '[features]\nwire = ["dep:fixture-leaf"]\n')
+        _, producer = cargo_home(work, 'cargo-proxy-origin-home', 'sparse+' + INDEX_ORIGIN,
+                                 dict(shared, NO_PROXY='127.0.0.1,::1', no_proxy='127.0.0.1,::1'), credentials['index'])
+        target = project / 'target'
+        packaging.set()
+        try:
+            call('cargo-proxy-stock-package', cargo, 'package', '--registry', 'cratectl', '--allow-dirty', '--no-verify',
+                 '--exclude-lockfile', cwd=project, environment=dict(producer, CARGO_TARGET_DIR=str(target)), timeout=45)
+        finally:
+            packaging.clear()
+        original = target / 'package' / (ROOT_PACKAGE + '-' + VERSION + '.crate')
+        archives[ROOT_PACKAGE] = original.read_bytes()
+        metadata[ROOT_PACKAGE]['cksum'] = sha(original)
+        with lock:
+            contents[INDEX_PATH + index_file(ROOT_PACKAGE)] = json.dumps(metadata[ROOT_PACKAGE]).encode() + b'\n'
+            contents[DOWNLOAD_PATH + download_file(ROOT_PACKAGE)] = archives[ROOT_PACKAGE]
+            requests.clear()
+        expected = sorted(row['cksum'] for row in metadata.values())
+
         status, config, _ = request(PROXY, '/index/config.json')
         check('Cargo proxy config publishes only its own authenticated sparse authority',
               request(PROXY, '/index/config.json', None)[0] == 401 and status == 200 and

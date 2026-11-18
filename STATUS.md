@@ -477,9 +477,26 @@ Cargo 1.100.0 and PostgreSQL 16.16 on macOS ARM64. The first source that
 retains a crate controls its whole namespace. Current member grants and the
 group review policy apply. Two independent PostgreSQL cases exercised the
 last source check before delivery when a new preferred source appeared.
-Native Linux groups, proxy members, tenant collision, interrupted transfers,
-broader concurrency, legacy Git discovery and cross-repository search remain open.
+Both original `c55ccda` Linux architectures passed all 41 Cargo and 19
+declarative checks. Each report binds 36 source files. Proxy members, tenant
+collision, interrupted transfers, broader concurrency, legacy Git discovery
+and cross-repository search remain open.
 [Native hosted group evidence](evidence/2026-11-19/cargo-139041d-groups-native.json)
+[Original Linux group evidence](evidence/2026-11-19/github-c55ccda-cargo-groups-native.json)
+
+Two original general PostgreSQL jobs at `d2ee434` failed the same console
+session assertion. The fixture expected the pre-Cargo format list after it
+disabled OCI. The repair includes Cargo and keeps the existing credential and
+adapter checks. The failed campaign cannot receive whole acceptance.
+[Original console fixture failures](evidence/2026-11-19/github-d2ee434-console-format-inventory-failure.json)
+
+The sparse proxy stages checksummed and manifest-validated archives under an
+explicit source revision, then applies current tenant policy. The first
+`4a5c542` replay passed 41 hosted and group checks. Its proxy fixture reached
+the unencrypted IPv6 origin when it used `localhost` for the TLS registry.
+The fixture now uses separate literal IPv4 and IPv6 authorities. Stock Cargo
+packages the origin's dependency root for that exact upstream URL.
+[Original proxy fixture failure](evidence/2026-11-19/cargo-4a5c542-ipv6-fixture-failure.json)
 
 The independent `b88d397` schema 18 daemon and stock ORAS 1.3.6 passed
 122 controlled upgrade checks against `910359d` on macOS ARM64 with

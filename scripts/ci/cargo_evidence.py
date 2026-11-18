@@ -118,7 +118,7 @@ def validate(report):
         if type(binding) is not dict or set(binding) != set(keys) or any(not matches(v, '[a-f0-9]{64}') for v in binding.values()):
             raise ValueError('invalid stock Cargo digest inventory')
     archives = report['archive_sha256']
-    if (archives['proxy-root'] != archives['cratectl-cargo-root']
+    if (archives['proxy-root'] == archives['cratectl-cargo-root']
             or archives['proxy-leaf'] != archives['cratectl-cargo-leaf']):
-        raise ValueError('Cargo proxy digest differs from the original stock publication')
+        raise ValueError('Cargo proxy evidence must bind the origin-built root and original stock leaf')
     return report

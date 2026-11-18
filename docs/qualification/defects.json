@@ -1828,6 +1828,20 @@
       "first_failure": "evidence/2026-11-19/cargo-56a8118-historical-fixture-failure.json",
       "replay": "evidence/2026-11-19/cargo-910359d-historical-adoption-native.json",
       "repair": "Match the declarative repository name in the journal and require its single creation receipt across concurrent retries."
+    },
+    {
+      "id": "DEFECT.0175",
+      "summary": "General integration fixture omits the supported Cargo console adapter",
+      "state": "Original schema 19 x64 and ARM64 jobs both failed the protected session adapter inventory assertion. The fixture now includes Cargo and retains the original OCI removal and credential checks. Full hosted replay pending.",
+      "first_failure": "evidence/2026-11-19/github-d2ee434-console-format-inventory-failure.json",
+      "repair": "Include the Cargo adapter in the exact non-OCI fixture inventory."
+    },
+    {
+      "id": "DEFECT.0176",
+      "summary": "The Cargo proxy fixture shares hostname resolution with its separate IPv6 origin",
+      "state": "The original stock hosted and group checks passed before the first proxy request. The first proxy profile stopped at the fixture TLS handshake. The corrected exact-source stock replay is pending.",
+      "first_failure": "evidence/2026-11-19/cargo-4a5c542-ipv6-fixture-failure.json",
+      "repair": "Use a literal IPv4 TLS authority for the registry and a separate literal IPv6 origin. Produce the stock dependency archive for the real origin."
     }
   ]
 }
