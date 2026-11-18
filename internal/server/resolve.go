@@ -33,6 +33,7 @@ type resolvedArtifact struct {
 	admissions           []store.NativeAdmission
 	goLatest             bool
 	goMetadataAdmissions []store.NativeAdmission
+	cargo                *cargoRead
 }
 
 func (s *Server) resolve(ctx context.Context, i store.Identity, repo store.Repository, p string, force bool) (resolvedArtifact, error) {
@@ -570,6 +571,16 @@ func (s *Server) fillProxyOnce(parent context.Context, i store.Identity, repo st
 func (s *Server) guardResolved(ctx context.Context, i store.Identity, a resolvedArtifact) (store.Artifact, error) {
 	var current store.Artifact
 	var e error
+	if a.cargo != nil {
+		current, source, err := s.DB.CargoDownload(ctx, i, a.cargo.repository, a.cargo.name, a.cargo.version)
+		if err != nil {
+			return current, err
+		}
+		if source.Name != a.source.Name || source.SourceRevision != a.source.SourceRevision || current.Digest != a.artifact.Digest {
+			return current, store.ErrConflict
+		}
+		return current, nil
+	}
 	snapshot := store.SourceSnapshot{Repository: a.source.Name, Revision: a.source.SourceRevision, Groups: a.groupRevisions}
 	if a.source.Format == "go" {
 		endpoint := a.source.Name

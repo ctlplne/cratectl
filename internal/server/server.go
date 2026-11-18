@@ -287,6 +287,8 @@ func respondErr(w http.ResponseWriter, e error) {
 		fail(w, 400, "upload_mismatch", "Retry with the declared length and digest of the exact uploaded bytes.")
 	case errors.Is(e, blob.ErrIntegrity):
 		fail(w, 503, "integrity_failure", "Restore the exact digest from a verified source and inspect storage health.")
+	case errors.Is(e, store.ErrCargoUnvalidated):
+		fail(w, 503, "invalid_cargo_metadata", "Ask the operator to inspect this stored Cargo archive binding.")
 	default:
 		fail(w, 503, "dependency_failure", "Retry; ask the operator to inspect database and object storage health.")
 	}

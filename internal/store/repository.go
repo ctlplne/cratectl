@@ -7,6 +7,7 @@ import (
 	"errors"
 	"strings"
 
+	"ctlplne.dev/cratectl/internal/cargo"
 	"ctlplne.dev/cratectl/internal/gomodule"
 	"ctlplne.dev/cratectl/internal/upstream"
 	"github.com/jackc/pgx/v5"
@@ -142,7 +143,8 @@ func validateRepository(r *Repository, retainedGoProxy bool) error {
 	if retainedGoProxy && (r.Format != "go" || r.Mode != "proxy" || r.Settings.GoChecksumAuthority == nil || !r.Settings.Cache.RequireChecksum) {
 		return errors.New("retained Go proxy configuration requires explicit checksum authority and checksum enforcement")
 	}
-	if r.Mode != "hosted" && r.Format != "generic" && r.Format != "maven" && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" && !(r.Format == "go" && (r.Mode == "group" || r.Mode == "proxy" && retainedGoProxy)) {
+	if r.Mode != "hosted" && r.Format != "generic" && r.Format != "maven" && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" &&
+		!(r.Format == "go" && (r.Mode == "group" || r.Mode == "proxy" && retainedGoProxy)) && !(r.Format == "cargo" && r.Mode == "group") {
 		return errors.New("proxy/group native adapters not yet implemented for this format")
 	}
 	if r.Settings.OCITokenEndpoint != nil {
@@ -228,6 +230,13 @@ func validateRepository(r *Repository, retainedGoProxy bool) error {
 				request, e := gomodule.ParseRequest(strings.TrimSuffix(prefix, "/") + "/@v/list")
 				if e != nil || request.Operation != "list" {
 					return errors.New("Go namespace owners require a canonical escaped module or parent namespace prefix")
+				}
+			}
+			if r.Format == "cargo" {
+				name := strings.TrimSuffix(prefix, "/")
+				key, err := cargo.NameKey(name)
+				if err != nil || key != name {
+					return errors.New("Cargo namespace owners require a lowercase crate name followed by a slash")
 				}
 			}
 		}

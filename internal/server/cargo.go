@@ -26,6 +26,10 @@ type cargoProtocolResponse struct{ http.ResponseWriter }
 
 func (w cargoProtocolResponse) Unwrap() http.ResponseWriter { return w.ResponseWriter }
 
+type cargoRead struct {
+	repository, name, version string
+}
+
 func cargoCredential(r *http.Request) (string, error) {
 	values := r.Header.Values("Authorization")
 	if len(values) != 1 || !cargoToken.MatchString(values[0]) {
@@ -35,8 +39,8 @@ func cargoCredential(r *http.Request) (string, error) {
 }
 
 func (s *Server) cargo(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, p string) {
-	if repo.Mode != "hosted" {
-		fail(w, 405, "cargo_mode_unavailable", "Use a hosted Cargo repository.")
+	if repo.Mode != "hosted" && repo.Mode != "group" {
+		fail(w, 405, "cargo_mode_unavailable", "Use a hosted Cargo repository or a group of hosted sources.")
 		return
 	}
 	root := s.PublicURL + "/cargo/" + repo.Name
@@ -52,6 +56,10 @@ func (s *Server) cargo(w http.ResponseWriter, r *http.Request, i store.Identity,
 		}
 		s.cargoPublish(w, r, i, repo, "sparse+"+root+"/index/")
 	case strings.HasPrefix(p, "api/v1/crates/"):
+		if repo.Mode == "group" {
+			fail(w, 405, "cargo_group_read_only", "Manage crates through their hosted repository.")
+			return
+		}
 		action := strings.TrimPrefix(p, "api/v1/crates/")
 		if name, rest, ok := strings.Cut(action, "/"); ok && rest == "owners" {
 			s.cargoOwners(w, r, i, repo, name)
@@ -62,10 +70,18 @@ func (s *Server) cargo(w http.ResponseWriter, r *http.Request, i store.Identity,
 		w.Header().Set("Allow", "GET, HEAD")
 		fail(w, 405, "method_not_allowed", "Read the sparse index and crate archives with GET or HEAD.")
 	case p == "api/v1/crates":
-		s.cargoSearch(w, r, i, repo)
+		if repo.Mode == "hosted" {
+			s.cargoSearch(w, r, i, repo)
+		} else {
+			fail(w, 405, "cargo_group_search", "Search through a hosted Cargo repository.")
+		}
 	case p == "index/config.json":
 		if s.cargoPublicAuthority(w) {
-			writeJSON(w, 200, map[string]any{"api": root, "dl": root + "/download/{crate}/{version}", "auth-required": true})
+			config := map[string]any{"dl": root + "/download/{crate}/{version}", "auth-required": true}
+			if repo.Mode == "hosted" {
+				config["api"] = root
+			}
+			writeJSON(w, 200, config)
 		}
 	case strings.HasPrefix(p, "index/"):
 		s.cargoIndex(w, r, i, repo, strings.TrimPrefix(p, "index/"))
@@ -202,26 +218,17 @@ func (s *Server) cargoIndex(w http.ResponseWriter, r *http.Request, i store.Iden
 
 func (s *Server) cargoDownload(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, p string) {
 	name, version, ok := strings.Cut(p, "/")
-	key, err := cargo.ArtifactPath(name, version)
-	if !ok || err != nil {
+	if !ok {
 		respondErr(w, store.ErrNotFound)
 		return
 	}
-	resolved, err := s.resolve(r.Context(), i, repo, key, false)
+	artifact, source, err := s.DB.CargoDownload(r.Context(), i, repo.Name, name, version)
 	if err != nil {
 		respondErr(w, err)
 		return
 	}
-	entry, err := store.CargoArtifactEntry(resolved.artifact)
-	if err != nil {
-		fail(w, 503, "invalid_cargo_metadata", "Ask the operator to inspect this stored Cargo archive binding.")
-		return
-	}
-	if !strings.EqualFold(entry.Name, name) || entry.Version != version {
-		respondErr(w, store.ErrNotFound)
-		return
-	}
-	s.serveResolvedArtifact(w, r, i, resolved)
+	s.serveResolvedArtifact(w, r, i, resolvedArtifact{artifact: artifact, source: source,
+		cargo: &cargoRead{repository: repo.Name, name: name, version: version}})
 }
 
 func (s *Server) cargoPublish(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, sparseIndex string) {

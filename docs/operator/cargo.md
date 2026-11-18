@@ -58,4 +58,13 @@ list. Add or remove a tenant actor with `--add ACTOR` or `--remove ACTOR`.
 The last owner remains protected. Each co-owner also needs a current
 repository write grant. A tenant administrator can manage ownership to
 recover access or add the first owner to a crate that predates ownership.
-Legacy Git indexes, upstream proxying, and groups remain open.
+For a read-only group, add hosted Cargo repositories as ordered members.
+Point the same sparse client configuration at the group. The first member
+that retains a crate name controls its index and downloads, including
+unassessed or retired versions. Group policy can require review even when
+the selected member permits unassessed bytes. An explicit namespace owner
+can select a member for a crate using the crate name followed by `/`.
+Grant readers access to the group and its configured members. When a crate
+has an explicit owner mapping, the group reads only that member for the
+crate. Publish and run native search against hosted repositories. Legacy Git
+indexes, upstream proxying and cross-repository search remain open.

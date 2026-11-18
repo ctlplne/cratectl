@@ -43,6 +43,15 @@ CHECKS = (
     'protected download still honors both grant revocation and tenant binding',
     'revoked grant refuses current index and direct download even with a populated client cache',
     'revoked writer cannot replay publication or change yank state',
+    'Cargo group config advertises authenticated reads and rejects publication',
+    'first unassessed crate fences a lower duplicate for both index and stock resolution',
+    'stock Cargo selects the lower source for a name absent from the first member',
+    'stock Cargo uses the approved first source for both index and exact archive bytes',
+    'group review policy also applies when the selected member allows unassessed bytes',
+    'loss of required member access fences the group before fallback',
+    'retired preferred crate still fences the lower duplicate',
+    'fresh stock Cargo recovers the same preferred archive after restore and restart',
+    'an explicit namespace owner routes stock Cargo to the selected lower source',
 )
 SOURCE_PATHS = (
     '.github/workflows/cargo.yml', 'go.mod', 'go.sum', 'Makefile',
@@ -52,7 +61,9 @@ SOURCE_PATHS = (
     'internal/store/artifact_read.go', 'internal/blob/local.go', 'internal/crypto/crypto.go',
     'internal/store/lifecycle_artifact.go', 'internal/store/lifecycle.go', 'internal/server/lifecycle.go',
     'internal/store/cargo_owners.go', 'internal/store/cargo_ownership_schema.go', 'internal/store/migrations.go',
-    'scripts/cargo_hosted_fixture.py', 'scripts/cargo_ownership_upgrade_fixture.py', 'scripts/conformance_repository_manifest.py',
+    'internal/store/cargo_selection.go', 'internal/store/native_source.go', 'internal/server/resolve.go',
+    'scripts/cargo_hosted_fixture.py', 'scripts/cargo_group_fixture.py', 'scripts/cargo_ownership_upgrade_fixture.py',
+    'scripts/conformance_repository_manifest.py',
     'scripts/ci/cargo_evidence.py', 'scripts/ci/bootstrap_cargo.py', 'scripts/ci/fetch_archive.py',
     'scripts/ci/terraform_provider_evidence.py', 'scripts/qualification_contract.py', 'scripts/bounded_client.py',
 )
@@ -83,7 +94,8 @@ def validate(report):
     if report['sdk_archives_sha256'] != PINS[arch]:
         raise ValueError('invalid stock Cargo distribution pins')
     for name, keys in [('source_sha256', SOURCE_PATHS), ('binary_sha256', ('cratectl', 'cratectld')),
-                       ('archive_sha256', ('cratectl-cargo-leaf', 'cratectl-cargo-root', 'cratectl-cargo-root-1.10.0'))]:
+                       ('archive_sha256', ('cratectl-cargo-leaf', 'cratectl-cargo-root', 'cratectl-cargo-root-1.10.0',
+                                           'group-preferred', 'group-duplicate', 'group-lower-only'))]:
         binding = report[name]
         if type(binding) is not dict or set(binding) != set(keys) or any(not matches(v, '[a-f0-9]{64}') for v in binding.values()):
             raise ValueError('invalid stock Cargo digest inventory')

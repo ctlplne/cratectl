@@ -101,12 +101,9 @@ func (s *Store) CargoIndex(ctx context.Context, i Identity, repo, name string, l
 	}
 	var out []byte
 	err = s.Tx(ctx, i, false, func(tx pgx.Tx) error {
-		r, err := repositoryInTx(ctx, tx, i, repo, "read")
+		source, review, err := cargoRepositoryInTx(ctx, tx, i, repo, name, prefix)
 		if err != nil {
 			return err
-		}
-		if r.Format != "cargo" || r.Mode != "hosted" {
-			return ErrConflict
 		}
 		rows, err := tx.Query(ctx, `SELECT a.path,a.digest,a.size,a.media_type,
 CASE WHEN octet_length(a.metadata::text)<=$5 THEN a.metadata ELSE NULL END,a.created_at
@@ -114,7 +111,7 @@ FROM cratectl.artifacts a `+decisionJoin+nativeLifecycleJoin+`
 WHERE a.tenant=$1 AND a.repository=$2 AND starts_with(a.path,$3)
 AND NOT COALESCE(nl.deleted,false) AND COALESCE(d.decision,a.decision)<>'denied'
 AND (NOT $4::boolean OR COALESCE(d.decision,a.decision)='allowed') ORDER BY a.path LIMIT $6`,
-			i.Tenant, repo, prefix, r.RequireReview, 2*cargo.MaxIndexBytes, limit+1)
+			i.Tenant, source.Name, prefix, review, 2*cargo.MaxIndexBytes, limit+1)
 		if err != nil {
 			return err
 		}

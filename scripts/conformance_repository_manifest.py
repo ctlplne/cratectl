@@ -19,6 +19,7 @@ import urllib.error
 import urllib.request
 
 from bounded_client import run_owned_client
+from cargo_group_fixture import evaluate_groups
 from cargo_hosted_fixture import evaluate_cargo
 from cargo_ownership_upgrade_fixture import BASELINE as CARGO_UPGRADE_BASELINE, replay_legacy_cargo
 from ci.cargo_evidence import PINS as CARGO_PINS, SOURCE_PATHS as CARGO_SOURCE_PATHS, validate as validate_cargo
@@ -374,6 +375,10 @@ def evaluate(args):
         if args.cargo_toolchain:
             report['cargo'] = evaluate_cargo(work, app, BASE, args.cargo_toolchain.resolve(),
                                             public_env, call, api, restart_server, sha)
+            group = evaluate_groups(work, app, BASE, args.cargo_toolchain.resolve(),
+                                    public_env, call, api, restart_server, sha)
+            report['cargo']['checks'].extend(group['checks'])
+            report['cargo']['archive_sha256'].update(group['archive_sha256'])
         if args.promtool:
             metrics = metrics_values('stock-download-after-restart')
             check('stock npm download contributes bytes and a complete latency histogram',
