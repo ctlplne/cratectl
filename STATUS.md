@@ -8,6 +8,13 @@ Broad readiness,security and packaging remain unqualified.
 
 ## Latest whole accepted source
 
+`56a9d40` passed all 32 original jobs across nine workflows. Its unchanged
+local verifier accepted 88 reports. Independent comparison matched 25 safe
+job summaries, the selection summary, 35 exact source contracts and three
+transfer records. Both Linux public Cargo jobs passed the canonical lockfile
+replacement replay. The main stock-client jobs passed on both architectures.
+[Exact public Cargo campaign evidence](evidence/2026-11-19/github-56a9d40-exact-local-accepted.json)
+
 `f65b296` passed all 28 original jobs across seven workflows. Its unchanged
 local verifier accepted 84 reports, with 33 exact source contracts and three
 transfer records independently matched. Both native Linux stock Cargo jobs
@@ -640,8 +647,13 @@ Twine 7.0.0 and PostgreSQL 16.16. Cached search exercised current source
 authority, exact wheel metadata, ordered group collisions, review, yanks,
 grant changes and restart with zero upstream search requests. Five real
 PostgreSQL integration tests and the build, unit, race and lint gates passed.
-The native Linux Python jobs have a separate 37-check evidence profile.
 [Combined native search evidence](evidence/2026-11-19/python-6efab30-cached-search-native.json)
+
+Both original `9877dd9` native Linux jobs passed all 37 checks with pip
+26.1.2, Twine 7.0.0 and PostgreSQL 16.15. The two architecture reports
+matched 28 exact source files each. Uncached discovery, alternate Python
+clients and larger workloads remain open.
+[Original Linux Python evidence](evidence/2026-11-19/github-9877dd9-python-search-native.json)
 
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities
