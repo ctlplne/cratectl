@@ -1,0 +1,86 @@
+{
+  "candidate": "c583ad5d2dcc56d7e19a5103c5234e9ec4fa1989",
+  "status": "passed",
+  "observed_at": "2026-11-19T03:17:34.761931+05:30",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "source_gates": [
+    "make build",
+    "make test",
+    "make race",
+    "make lint"
+  ],
+  "declarative_checks": 19,
+  "python_search": {
+    "checks": [
+      "stock pip search hides hosted files awaiting review",
+      "stock pip normalizes the package name and returns the allowed original summary",
+      "stock pip finds a package by its archive-derived summary",
+      "the independently authorized tenant sees its own package at the same coordinate",
+      "stock pip search uses PEP 440 ordering for visible releases",
+      "stock pip search only returns a release with a non-yanked visible file",
+      "stock pip search and exact wheel download recover after restart",
+      "stock pip search respects revocation of its repository read grant"
+    ],
+    "pip": "26.1.2",
+    "twine": "7.0.0",
+    "archive_sha256": [
+      "561e741e314ebb941d96171a44cc73bfcbcb7cd3f93bba890fc8950c97106b6f",
+      "6bb968b575142cc5ce2b3ec643ea9739acef7f81c36964c98565c94fa491114a",
+      "0b2f9df462f79480169d3b9e310ebb3b8371342b650a86bca845a403ac2b20c3"
+    ]
+  },
+  "binary_sha256": {
+    "cratectl": "47b5a2f960959d5234cd70ebaa3b3fb1f54b9b1f23ed8a0bb59d464ad854a17a",
+    "cratectld": "0bcbe03abe169cb6d0c6b2f3b68d14a415383c93b0941b2f197636f71f25545e"
+  },
+  "private_report_sha256": "0e275e8eea78408d66f42552e17d6d5d8ae33a96ce6a97c02cff7907061f16c7",
+  "integration": {
+    "function": "TestPythonHostedSearchReadsCurrentValidatedPackages",
+    "log_sha256": "3acb19201d934c48aac42c50797a6c1c2bf649d010893c64329654899625c2be",
+    "status": "passed"
+  },
+  "source_sha256": [
+    {
+      "path": "internal/server/python_search.go",
+      "sha256": "0e3903021ffd38f97efc59d46ff783a86f207bee1d0c3fb4653fc61848b56598"
+    },
+    {
+      "path": "internal/server/pypi.go",
+      "sha256": "df04e10e77f8333e49375c35a6b78af0e6b06681944181ccac605a5a92aa8a5f"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "82cb7bc295a210d40f3b3a43d9976611983b78f03d910635b5b70d5b8c5c1aca"
+    },
+    {
+      "path": "internal/store/python_search.go",
+      "sha256": "bbab20b769f72a0fe7a38e192491d073cc643630f4d24074b385609905cfcd29"
+    },
+    {
+      "path": "internal/store/literal_search.go",
+      "sha256": "c9fc480909345fee380894e6b315bc9c2c1af9a38e9cd52b8a4faae8b9ed13fe"
+    },
+    {
+      "path": "internal/server/python_search_integration_test.go",
+      "sha256": "b2f8d6f87e9cc57f1c10781225b70cf4693d420a1aa712508ccd5ea933dccec9"
+    },
+    {
+      "path": "scripts/python_search_fixture.py",
+      "sha256": "25566d0c5acf016aaa388262620b58d4b635d81199396a02a2b028f3f7039468"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "a310cc12ba81bd7a2a16f8c623fdd097fba9aa7ceadc35ffa21c643fd0dd3163"
+    }
+  ],
+  "references": [
+    "https://pip.pypa.io/en/stable/cli/pip_search/"
+  ],
+  "limits": [
+    "Hosted wheels and the stock XML-RPC search command through trusted loopback TLS with native PostgreSQL on macOS ARM64.",
+    "Stock Twine uploaded the inert archives. Stock pip searched and downloaded one exact wheel. Proxy, group, native Linux and additional Python clients are separate."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

@@ -620,6 +620,13 @@ hashes per architecture. PostgreSQL 16.16 ran on x64 and 16.15 on ARM64.
 [Cached npm search evidence](evidence/2026-11-19/npm-e2eb432-cached-search-native.json)
 [Original Linux npm search evidence](evidence/2026-11-19/github-8ddda89-npm-search-native.json)
 
+`c583ad5` passed eight stock hosted Python search and 19 declarative checks
+on macOS ARM64 with PostgreSQL 16.16. Stock pip and Twine exercised
+archive-derived summaries, PEP 440 ordering, yanks, tenant isolation,
+repository grants and exact wheel recovery after restart. The real
+PostgreSQL HTTP check and source, race and lint gates passed.
+[Hosted Python search evidence](evidence/2026-11-19/python-c583ad5-hosted-search-native.json)
+
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities
 published and pulled two exact chart archives, including a build-metadata

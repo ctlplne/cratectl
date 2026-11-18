@@ -1900,6 +1900,7 @@
       "summary": "The first hosted Python search fixture expects the wrong pip status for forbidden XML-RPC access",
       "state": "The original host reached the final revocation check and pip received HTTP 403. Pip 26.1.2 exits 2 for that RPC transport error. The original fixture expected 1. The corrected fixture still requires the exact forbidden status and the absence of result data.",
       "first_failure": "evidence/2026-11-19/python-f4495dc-search-fixture-first-failure.json",
+      "replay": "evidence/2026-11-19/python-c583ad5-hosted-search-native.json",
       "repair": "Require pip 26.1.2's observed transport-error exit code and independently assert HTTP 403 without any search result."
     }
   ]
