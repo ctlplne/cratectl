@@ -1,0 +1,42 @@
+{
+  "candidate": "f4495dc3921bf14e99ebdae732c88ea6a65f0bd1",
+  "observed_at": "2026-11-19T03:15:21.652583+05:30",
+  "status": "failed",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "phase": "stock pip search after grant revocation",
+  "observed_http_status": 403,
+  "expected_child_exit_status": 1,
+  "observed_child_exit_status": 2,
+  "private_diagnostic_hashes": {
+    "python-search-revoked": {
+      "bytes": 2239,
+      "sha256": "b68e9fe97f1fe560704e1307dd2b66cf0c497e9e4330475ce41dae84b73bc0d9"
+    },
+    "python-search-restarted": {
+      "bytes": 86,
+      "sha256": "aac154675e6e7a49aa94d09848ee18d35f3bf289ddd3e0f17f3e90427f478bec"
+    },
+    "python-search-resolved-wheel": {
+      "bytes": 446,
+      "sha256": "901572812317bac04006fd3ea82c9124b957f56ca1028b877b27b5988a19d6ad"
+    },
+    "python-search-pip-version": {
+      "bytes": 118,
+      "sha256": "fec0997ab072aa16fbaa06cf149987295bc4a29b3f7ae827af98605ce81ca6b8"
+    },
+    "python-search-twine-version": {
+      "bytes": 180,
+      "sha256": "a2fe1fcc12124f23781b872c8d4d7ef6ddd05b71d5f91798e1892dc5ce0e3445"
+    }
+  },
+  "binary_sha256": {
+    "cratectl": "516dcaec96e38c3ae64b25cef26a5adfb11f48875e6f5e127056443729144b18",
+    "cratectld": "e4c7d2792eb03a5f10ef465cd8d584aa5650629fa2e3045ffd42e3bf32f0ee26"
+  },
+  "limits": [
+    "The original stock fixture reached the final grant-revocation assertion and received HTTP 403. Its expected CLI exit status differed."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

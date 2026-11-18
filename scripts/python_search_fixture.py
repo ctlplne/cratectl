@@ -117,6 +117,7 @@ def evaluate_python_search(work, installation, authority, python, environment, c
     check('stock pip search and exact wheel download recover after restart',
           matches(search('restarted', NAME), '2.0', old_summary) and sha(downloaded / a.name) == sha(a))
     api('python-search-revoke', management + '/grants', 'PUT', {**grant, 'read': False})
-    denied = search('revoked', NAME, expected=1)
-    check('stock pip search respects revocation of its repository read grant', '403' in denied and old_summary not in denied)
+    denied = search('revoked', NAME, expected=2)
+    check('stock pip search respects revocation of its repository read grant',
+          '403 Client Error' in denied and 'Forbidden' in denied and old_summary not in denied)
     return {'checks': checks, 'pip': pip_version, 'twine': twine_version, 'archive_sha256': [sha(path) for path in (a, b, c)]}
