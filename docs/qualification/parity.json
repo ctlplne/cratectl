@@ -28101,17 +28101,17 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "integrations/terraform/",
       "surfaces": {
-        "api": null,
-        "cli": null,
+        "api": "Tenant-scoped management session and hosted repository configuration, lifecycle and creation",
+        "cli": "Stock Terraform and OpenTofu provider protocol 6",
         "ui": null
       },
       "core": true,
       "dependencies": [],
       "acceptance_journey": "J.UX.TERRAFORM-PROVIDER",
-      "clients": [],
-      "client_versions": {},
+      "clients": ["Terraform", "OpenTofu"],
+      "client_versions": {"Terraform": "1.17.2", "OpenTofu": "1.13.9"},
       "test_data": "Defined by the corresponding GOAL.md acceptance requirement.",
       "permission_cases": [
         "least privilege",
@@ -28124,11 +28124,11 @@
         "partial failure",
         "recovery"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "state": "implemented",
+      "candidate": "5429b9a2c374839fefa47ac841efcb426f3064d0",
+      "evidence": ["evidence/2026-11-18/terraform-provider-5429b9a-native.json"],
+      "limits": "Both stock clients pass nine scoped checks on macOS ARM64 and real PostgreSQL 16.15 with trusted TLS. Hosted repository create, import and drift are covered. Repository retirement and configuration changes require explicit operator reconciliation. Additional resources and provider distribution remain open.",
+      "next_action": "Qualify both stock clients on native Linux runners and extend the provider to revision-checked operational resources."
     },
     {
       "id": "UX.MCP",
@@ -29100,9 +29100,10 @@
         "evidence/2026-11-18/linux-install-08436af-arm64-local.json",
         "evidence/2026-11-18/linux-sbom-f2bc59e.json",
         "evidence/2026-11-18/linux-disconnected-stack-f2bc59e-arm64.json",
-        "evidence/2026-11-18/linux-offline-media-e4adc19-arm64.json"
+        "evidence/2026-11-18/linux-offline-media-e4adc19-arm64.json",
+        "evidence/2026-11-18/github-4821316-offline-media-native.json"
       ],
-      "limits": "Scoped blank Compose, single-node Helm and offline binary installation successes. Production distribution licensing, signing authority, full disconnected stack and production release/recovery remain open.",
+      "limits": "Scoped blank Compose, single-node Helm, native installation and signed-media deployment on both Linux architectures passed. Production distribution licensing, signing authority, disconnected scanner inputs and release recovery remain open.",
       "next_action": "Stage the reviewed component set and qualify a full disconnected target and production storage, bootstrap, controlled upgrade and recovery."
     },
     {
@@ -29409,7 +29410,8 @@
       "candidate": null,
       "evidence": [
         "evidence/2026-11-18/linux-disconnected-stack-f2bc59e-arm64.json",
-        "evidence/2026-11-18/linux-offline-media-e4adc19-arm64.json"
+        "evidence/2026-11-18/linux-offline-media-e4adc19-arm64.json",
+        "evidence/2026-11-18/github-4821316-offline-media-native.json"
       ],
       "limits": "The signed ARM64 media restored both runtime images from saved bytes and installed the native CLI. Actual registry, worker, PostgreSQL and stock npm finished the isolated journey. Preinstalled Docker and harness tools were supplied independently.",
       "next_action": "Run from the prepared media on a clean x64 engine. Include permitted scanner intelligence, production tooling and controlled upgrade and recovery before distribution."

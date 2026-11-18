@@ -379,15 +379,27 @@ The original hosted Windows x64 and ARM64 jobs at `12b04b6` also passed all
 15 functions each, with 23 source hashes independently matched per job.
 [Local signed SQL replay](evidence/2026-11-18/offline-media-79a6aba-arm64.json)
 [Native Windows results](evidence/2026-11-18/github-12b04b6-windows-native.json)
+Both original hosted `4821316` jobs completed the signed-media replay on
+Docker 28.0.4. Each passed 17 runtime checks and ten media controls.
+The original safe reports matched 27 exact source hashes per architecture.
+Both imported registries preserved approved npm bytes across restart.
+[Native signed-media x64 and ARM64 evidence](evidence/2026-11-18/github-4821316-offline-media-native.json)
 
 The hosted repository manifest commands plan creation and surface drift,
 require approval bound to the registry and tenant, and import existing hosted
 configuration. Native `12b04b6` passed 19 checks with PostgreSQL 16.15 and
 stock npm 11.16.0, including one journaled creation under concurrent requests,
 tenant isolation and exact approved package bytes after restart. The current
-commands cover hosted repository creation and import. Wider declarative and
-Terraform/OpenTofu coverage remains open.
+commands cover hosted repository creation and import. Wider declarative
+coverage remains open.
 [Native repository manifest result](evidence/2026-11-18/repository-manifest-12b04b6-native.json)
+At exact `5429b9a`, stock Terraform 1.17.2 and OpenTofu 1.13.9 each passed
+nine hosted repository provider checks against real PostgreSQL 16.15.
+The saved plans refused a changed authority, competing creation required
+explicit import, and refresh exposed retained suspension. A destroy plan
+left the repository in place. The provider currently manages hosted creation
+and import. Additional resources and release distribution remain open.
+[Native Terraform and OpenTofu evidence](evidence/2026-11-18/terraform-provider-5429b9a-native.json)
 
 The cold `e4adc19` recovery fixture passed 17 runtime checks and 12 backup
 controls. With registry and worker stopped, stock PostgreSQL 16.15 captured

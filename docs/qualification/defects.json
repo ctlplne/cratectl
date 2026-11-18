@@ -1755,8 +1755,9 @@
     {
       "id": "DEFECT.0165",
       "summary": "Hosted Docker 28.0.4 rejects the platform option on image inspection",
-      "state": "Both original hosted jobs stopped before the disconnected runtime. The focused compatibility regression passes. Native hosted replays are pending.",
+      "state": "Both original hosted jobs stopped before the disconnected runtime. The focused compatibility regression and both native hosted replays pass at 4821316.",
       "first_failure": "evidence/2026-11-18/github-e4b1408-offline-media-original-failures.json",
+      "hosted_replay": "evidence/2026-11-18/github-4821316-offline-media-native.json",
       "repair": "Read the image ID and Linux architecture from native inspection. Require exact platform selection when saving and loading the images."
     },
     {
@@ -1773,6 +1774,7 @@
       "state": "Both original Linux hosted readiness failures retained. A separate stock PostgreSQL image probe showed the bootstrap SQL mode difference under POSIX ownership. Original host logs lack the database process output.",
       "first_failure": "evidence/2026-11-18/github-12b04b6-offline-media-readiness-failures.json",
       "local_replay": "evidence/2026-11-18/offline-media-79a6aba-arm64.json",
+      "hosted_replay": "evidence/2026-11-18/github-4821316-offline-media-native.json",
       "repair": "Stage the exact signed public SQL into one read-only mount and verify readability as the nonroot PostgreSQL image user. Emit bounded container status and a fixed permission classification if readiness fails."
     },
     {
@@ -1787,6 +1789,7 @@
       "summary": "Terraform invalidates the fixture's saved plan after a deliberately refused apply",
       "state": "The corrected provider's authority refusal and the actual unchanged registry were observed. The first fixture then stopped because it reused the stale local plan file.",
       "first_failure": "evidence/2026-11-18/terraform-provider-581d5de-stock-state-serial.json",
+      "replay": "evidence/2026-11-18/terraform-provider-5429b9a-native.json",
       "repair": "Save a fresh plan after a refused apply. Compare the whole resource change with the previously reviewed plan before applying."
     }
   ]
