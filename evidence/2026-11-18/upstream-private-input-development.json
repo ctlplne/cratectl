@@ -1,0 +1,36 @@
+{
+  "development_base": "7ab722d5bb8fcebc442431b43ab027b4d31b81bf",
+  "observed_at": "2026-11-18T12:28:58.664946+00:00",
+  "platform": "macOS ARM64",
+  "toolchain": "Go 1.27.4",
+  "changed_source_sha256": {
+    "cmd/cratectld/main.go": "232b563b6c77c541a0535dd86ff623966b331b5180998da7645b0121fdf50abd",
+    "cmd/cratectld/serve_test.go": "01c5cd97abd355466fb5d24375cb32d7e7ef07c66570676e858dbaacd89dcb9b",
+    "internal/configfile/config.go": "21f6edd2ba1cc53df6a20e555d691eefeacb1c1cd1c0c1bdc674ce3ff2515e43",
+    "internal/configfile/read_unix.go": "ab2953d7d4d26f4caec4077c15033c55259ec1434b9ac6b5671331159627032d",
+    "internal/configfile/read_windows.go": "d969e29a2463460882139f8c58083e07ed4f407fb357efa25f90656e676be9fa"
+  },
+  "source_state": "Development changes applied. Exact tested source hashes retained. Native CI replay pending.",
+  "red_regression": "On the unmodified command, both inputs reached database configuration before rejection.",
+  "verified_locally": {
+    "normal_and_race_packages": [
+      "./cmd/cratectld",
+      "./internal/configfile"
+    ],
+    "vet": "passed",
+    "command_entrypoint_subcases": [
+      "64 KiB plus one byte rejected before database setup",
+      "malformed private JSON rejected before database setup with a fixed error"
+    ],
+    "windows_test_binaries_cross_compiled": [
+      "amd64",
+      "arm64"
+    ]
+  },
+  "scope": [
+    "Uses cratectl\u2019s existing same-handle private reader and the existing 64 KiB JSON limit. No credential values are retained.",
+    "Windows results are compile-only. Native positive proxy/registry replay and broad qualification remain open."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

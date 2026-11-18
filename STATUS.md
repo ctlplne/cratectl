@@ -127,8 +127,14 @@ The server package failed three checks that require Linux network namespaces.
 Stock-client conformance reached 677 assertions and failed at NuGet metadata
 case 46 with the actual macOS .NET 10.0.403 SDK. The exact source and outcomes
 are in the [local candidate evidence](evidence/2026-11-18/local-12b1968-qualification.json).
-The same record retains the open build-tool npm advisory and the limits of the
-older Trivy database used for the Linux ARM64 binary scan.
+The same SDK on Ubuntu retained both declarations with default globalization
+and collapsed them in invariant mode. The macOS SDK collapsed them in both
+modes. This isolates the original discrepancy to the SDK's treatment of the
+same flag pair under different globalization settings.
+[NuGet comparison](evidence/2026-11-18/nuget-supplementary-globalization.json)
+
+The local candidate evidence also retains the open build-tool npm advisory and
+the date of the Trivy database used for the Linux ARM64 binary scan.
 
 At `6d41573`, the clean macOS ARM64 candidate passed all 30 assertions in the
 blank native installation journey. It created a private npm configuration,
@@ -142,6 +148,11 @@ macOS ARM64 with real PostgreSQL. They covered private provisioning output,
 cleanup after a database error, overwrite refusal, bounded private revocation
 input and authentication before and after revocation.
 [Credential transaction evidence](evidence/2026-11-18/credential-05bd89a-native.json)
+
+`cratectld serve` now uses the shared bounded private reader for upstream
+credentials. Normal and race tests and vet passed on macOS ARM64. The positive
+proxy and stock-client replay requires the exact source in GitHub CI.
+[Development evidence](evidence/2026-11-18/upstream-private-input-development.json)
 
 ## Durable state and remaining scope
 

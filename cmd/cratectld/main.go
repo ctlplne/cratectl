@@ -3,7 +3,6 @@ package main
 
 import (
 	"context"
-	"ctlplne.dev/cratectl/internal/configfile"
 	"encoding/json"
 	"errors"
 	"flag"
@@ -20,6 +19,7 @@ import (
 	"time"
 
 	"ctlplne.dev/cratectl/internal/blob"
+	"ctlplne.dev/cratectl/internal/configfile"
 	crypt "ctlplne.dev/cratectl/internal/crypto"
 	"ctlplne.dev/cratectl/internal/server"
 	"ctlplne.dev/cratectl/internal/store"
@@ -220,6 +220,18 @@ func run() error {
 		} else if *cert == "" || *key == "" || u.Scheme != "https" {
 			return errors.New("TLS certificate/key and HTTPS public URL required")
 		}
+		var upstreamCredentials map[string]server.UpstreamCredential
+		if *credentials != "" {
+			data, err := configfile.ReadBytes(*credentials, 64<<10, true)
+			if err != nil {
+				return errors.New("private regular upstream credential file within 64 KiB required")
+			}
+			err = json.Unmarshal(data, &upstreamCredentials)
+			clear(data)
+			if err != nil {
+				return errors.New("invalid private upstream credentials JSON")
+			}
+		}
 		db, e := store.Open(ctx, dsn)
 		if e != nil {
 			return e
@@ -311,18 +323,7 @@ func run() error {
 			}
 		}
 		if *credentials != "" {
-			info, e := os.Stat(*credentials)
-			if e != nil || info.Mode().Perm()&0077 != 0 {
-				return errors.New("upstream credential file must exist with private permissions")
-			}
-			data, e := os.ReadFile(*credentials)
-			if e != nil {
-				return errors.New("cannot read upstream credential file")
-			}
-			defer clear(data)
-			if len(data) > 64<<10 || json.Unmarshal(data, &h.UpstreamCredentials) != nil {
-				return errors.New("invalid private upstream credentials JSON")
-			}
+			h.UpstreamCredentials = upstreamCredentials
 			if e := h.ValidateCredentials(); e != nil {
 				return e
 			}

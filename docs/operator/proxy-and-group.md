@@ -86,8 +86,10 @@ Cross-authority CDN redirects and general signed-query download URLs remain open
 
 ## Bind private upstream credentials
 
-Credentials belong in a server-side JSON file with mode 0600, loaded with
-`--upstream-credentials`. Each key is `TENANT/REFERENCE`. Its object has `value`,
+Load credentials with `--upstream-credentials` from a private regular JSON file
+of at most 64 KiB. Use mode 0600 on Linux and macOS, or a protected owner ACL on
+Windows. The server rejects symbolic links and checks the file before connecting to
+PostgreSQL. Each key is `TENANT/REFERENCE`. Its object has `value`,
 `allowed_url` and optional `authentication` (`bearer`, the default, or `basic`).
 For Basic authentication, the private value is `username:password`. Use a
 customer-managed secret provisioning process to write actual values; never put

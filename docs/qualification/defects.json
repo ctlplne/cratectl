@@ -1612,10 +1612,11 @@
       "id": "DEFECT.0149",
       "summary": "macOS ARM64 NuGet SDK reads a different number of dependencies from HTTP registration and the original Nuspec for a supplementary Unicode flag case",
       "candidate": "12b19684b47210dc485b6aea362de6537c7c5031",
-      "state": "Open. Original failure retained.",
+      "state": "Open. The original macOS HTTP failure and both original Linux HTTP passes are retained. The owned Ubuntu SDK probe confirms the dependency count changes with globalization mode.",
       "first_failure": "evidence/2026-11-18/local-12b1968-qualification.json",
-      "next": "Compare the original 56-case corpus across native SDKs and determine a stable registration representation that preserves the observed dependency semantics before changing deduplication.",
-      "limits": "Observed with actual .NET SDK 10.0.403 on macOS ARM64 after 677 successful local conformance assertions. Established Linux observations retain their original scope."
+      "diagnosis": "evidence/2026-11-18/nuget-supplementary-globalization.json",
+      "next": "Test actual restore behavior with the supplementary flags in both default environments. Keep the raw cardinality mismatch visible while establishing the dependency and asset outcomes a deterministic registration must preserve.",
+      "limits": "Observed with actual .NET SDK 10.0.403 on macOS ARM64 after 677 successful local conformance assertions. Both original native Linux HTTP runs matched all 56 fixtures. The focused probe isolates reader and casing behavior."
     },
     {
       "id": "DEFECT.0150",
@@ -1660,6 +1661,13 @@
       "first_failure": "evidence/2026-11-18/github-6d41573-chromium-deadline.json",
       "repair": "Allow the complete serial suite 600 seconds within the owned group. Keep 300 seconds for focused invocations and the Playwright per-test limits, no retries and bounded private diagnostics.",
       "limits": "The original command stopped before final Playwright JSON. The suite outcome remains failed and the last workflow result remains unknown."
+    },
+    {
+      "id": "DEFECT.0155",
+      "summary": "Server startup checks upstream credential permissions and reads unbounded input through separate path operations",
+      "state": "Repaired. Command and configuration package tests pass normally and under the race detector. Native positive replay pending.",
+      "first_failure": "evidence/2026-11-18/upstream-private-input-development.json",
+      "repair": "Use the shared bounded private reader before database setup. Apply the existing 64 KiB limit before buffering, clear the raw bytes after JSON decode and preserve tenant, authority and scheme validation."
     }
   ]
 }

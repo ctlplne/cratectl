@@ -1,0 +1,80 @@
+{
+  "observed_at": "2026-11-18T12:27:52.352250+00:00",
+  "original_macos_failure": "evidence/2026-11-18/local-12b1968-qualification.json",
+  "original_linux_http_passes": [
+    "evidence/2026-11-18/github-6d41573/ci-summary-amd64.json",
+    "evidence/2026-11-18/github-6d41573/ci-summary-arm64.json"
+  ],
+  "related_case": {
+    "index": 46,
+    "label": "flags-supplementary",
+    "lower": "U+10D70",
+    "upper": "U+10D50",
+    "fixture_source": "scripts/nuget_feed_cases.py"
+  },
+  "sdk": "10.0.403",
+  "macos_arm64": {
+    "build": "26B5086k",
+    "nuget_protocol_sha256": "0136deb183eb54d8802f17b62476cc6d5fd19607613fdd6dba4fcf149c27ed1c",
+    "default": {
+      "os": "macOS 27.2.0",
+      "arch": "Arm64",
+      "runtime": ".NET 10.0.14",
+      "nuspecDependencyCount": 1,
+      "ordinalEqual": true,
+      "invariantUpperEqual": true
+    },
+    "invariant_mode": {
+      "os": "macOS 27.2.0",
+      "arch": "Arm64",
+      "runtime": ".NET 10.0.14",
+      "nuspecDependencyCount": 1,
+      "ordinalEqual": true,
+      "invariantUpperEqual": true
+    }
+  },
+  "ubuntu_arm64": {
+    "sdk_image": "mcr.microsoft.com/dotnet/sdk@sha256:c99fcb290d1df5a09f0e4e99904d47d6027f966f50be4004088f14f57cf8ebbc",
+    "installed_icu": "74.2-1ubuntu3.1",
+    "nuget_protocol_sha256": "7d805e2dabb24d36ec9ffddc23bb1a2dc63167b9690c92bbd53fcac58b2d6fe3",
+    "matches_original_ci_arm64_library_sha256": true,
+    "default": {
+      "os": "Ubuntu 24.04.5 LTS",
+      "arch": "Arm64",
+      "runtime": ".NET 10.0.14",
+      "nuspecDependencyCount": 2,
+      "ordinalEqual": true,
+      "invariantUpperEqual": false
+    },
+    "invariant_mode": {
+      "os": "Ubuntu 24.04.5 LTS",
+      "arch": "Arm64",
+      "runtime": ".NET 10.0.14",
+      "nuspecDependencyCount": 1,
+      "ordinalEqual": true,
+      "invariantUpperEqual": true
+    }
+  },
+  "probe": {
+    "reads": [
+      "NuspecReader.GetDependencyGroups().Single().Packages.Count()",
+      "StringComparer.OrdinalIgnoreCase.Equals(lower, upper)",
+      "lower.ToUpperInvariant() == upper.ToUpperInvariant()"
+    ],
+    "fixture": "Two inert Owned.A version 1 dependencies in one group with only their include flags varied. Use the original case values. Invariant comparison sets DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 for one invocation.",
+    "source_sha256": "ad68877087c5018f3e29e79c66b735b7f4594118510dc8b87fea0717a3254333",
+    "local_source_path": ".cache/cratectl-nuget-supplementary-probe/Program.cs"
+  },
+  "references": [
+    "https://learn.microsoft.com/en-us/dotnet/core/extensions/globalization-icu",
+    "https://github.com/NuGet/NuGet.Client/blob/dev/src/NuGet.Core/NuGet.Packaging/NuspecReader.cs"
+  ],
+  "finding": "The same pinned SDK and runtime return different dependency counts for the inert pair under default platform globalization. Toggling the same Linux image to invariant globalization also changes its count and invariant uppercase equality. A single invariant wire list cannot exactly match both observed original Nuspec cardinalities.",
+  "limits": [
+    "This isolates the SDK reader and casing. It adds no new native registry, stock restore, Windows or full-corpus result.",
+    "The failed macOS HTTP assertion and both earlier passing Linux HTTP comparisons retain their original scope. The conformance criterion and emitted registration are unchanged."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false,
+  "repository_checkpoint": "7ab722d5bb8fcebc442431b43ab027b4d31b81bf"
+}
