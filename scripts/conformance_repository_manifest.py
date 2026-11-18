@@ -90,11 +90,11 @@ def evaluate(args):
     def cli(label, *argv, config=None, status=0):
         return call(label, client, *argv, '--config', config or app / 'client.json', status=status)
 
-    def api(label, endpoint, method='GET', payload=None, *, status=0):
+    def api(label, endpoint, method='GET', payload=None, *, status=0, config=None):
         flags = ['--path', endpoint, '--method', method]
         if payload is not None:
             flags += ['--body-file', write(label + '.json', payload), '--idempotency-key', 'cratectl-manifest-' + label]
-        _, output = cli(label, *flags, status=status)
+        _, output = cli(label, *flags, config=config, status=status)
         return json.loads(output) if status == 0 else output
 
     def start_server(executable=None):

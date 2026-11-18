@@ -176,17 +176,17 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
     index = '/index/' + index_file(ROOT_PACKAGE)
     package = '/download/' + download_file(ROOT_PACKAGE)
 
-    def stock(label, repo=PROXY, crate=ROOT_PACKAGE):
+    def stock(label, repo=PROXY, crate=ROOT_PACKAGE, actor=reader):
         project = work / ('cargo-proxy-project-' + label)
         feature = ', features = ["wire"]' if crate == ROOT_PACKAGE else ''
         new_project(project, 'cratectl-proxy-consumer', '\n[dependencies]\n' + crate +
                     ' = {version = "=1.0.0", registry = "cratectl"' + feature + '}\n')
-        cache, env = cargo_home(work, 'cargo-proxy-home-' + label, 'sparse+' + registry(repo) + '/index/', shared, reader)
+        cache, env = cargo_home(work, 'cargo-proxy-home-' + label, 'sparse+' + registry(repo) + '/index/', shared, actor)
         call('cargo-proxy-stock-fetch-' + label, cargo, 'fetch', cwd=project, environment=env, timeout=45)
         return sorted(sha(item) for item in (cache / 'registry/cache').glob('*/*.crate'))
 
-    def search(label, repo, crate=ROOT_PACKAGE):
-        _, env = cargo_home(work, 'cargo-proxy-search-home-' + label, 'sparse+' + registry(repo) + '/index/', shared, reader)
+    def search(label, repo, crate=ROOT_PACKAGE, actor=reader):
+        _, env = cargo_home(work, 'cargo-proxy-search-home-' + label, 'sparse+' + registry(repo) + '/index/', shared, actor)
         return call('cargo-proxy-stock-search-' + label, cargo, 'search', '--registry', 'cratectl', '--limit', '10',
                     crate, cwd=work, environment=env, timeout=45)[1]
 
@@ -426,10 +426,39 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
         check('mixed group refuses to substitute another source during a preferred origin outage',
               request(MIXED, package, refresh=True)[1] == revised_data)
 
+        other_config = work/'other.json'
+        api('cargo-collision-create-hosted', '/api/v1/repositories', 'POST',
+            {'name': PROXY, 'format': 'cargo', 'access': 'restricted'}, config=other_config)
+        api('cargo-collision-create-group', '/api/v1/repositories', 'POST',
+            {'name': MIXED, 'format': 'cargo', 'mode': 'group', 'access': 'restricted',
+             'settings': {'members': [PROXY]}}, config=other_config)
+        other_project = work/'cargo-tenant-collision-publish'
+        new_project(other_project, ROOT_PACKAGE, '\n[features]\nwire = []\n')
+        other_manifest = other_project/'Cargo.toml'
+        other_manifest.write_text(other_manifest.read_text().replace('cratectl inert fixture', 'isolated Cargo tenant release'))
+        _, other_publisher = cargo_home(work, 'cargo-tenant-other-publisher',
+                                       'sparse+' + registry(PROXY) + '/index/', shared, other)
+        other_target = work/'cargo-tenant-other-target'
+        call('cargo-tenant-other-publish', cargo, 'publish', '--registry', 'cratectl', '--allow-dirty', '--no-verify',
+             cwd=other_project, environment=dict(other_publisher, CARGO_TARGET_DIR=str(other_target)), timeout=85)
+        other_archive = other_target/'package/tmp-crate'/f'{ROOT_PACKAGE}-{VERSION}.crate'
+        other_digest = sha(other_archive)
+        check('same Cargo group and coordinate names resolve distinct stock archives for two tenants',
+              other_digest != revised_digest and stock('first-tenant-collision', MIXED) ==
+              sorted((revised_digest, metadata[BASE_PACKAGE]['cksum']))
+              and stock('other-tenant-collision', MIXED, actor=other) == [other_digest]
+              and json.loads(request(MIXED, index)[1])['cksum'] == revised_digest
+              and json.loads(request(MIXED, index, other)[1])['cksum'] == other_digest)
+        primary_search = search('primary-tenant-collision', MIXED)
+        other_search = search('other-tenant-collision', MIXED, actor=other)
+        check('stock group search returns only the selected tenant description at an identical coordinate',
+              'reviewed cratectl proxy revision' in primary_search and 'isolated Cargo tenant release' not in primary_search
+              and 'isolated Cargo tenant release' in other_search and 'reviewed cratectl proxy revision' not in other_search)
+
         grant(PROXY, 'revoke', False)
         check('current grants and tenant isolation fence a previously filled Cargo proxy',
               request(PROXY, package)[0] == 403 and request(PROXY, index)[0] == 403 and
-              request(PROXY, package, other)[0] == 404)
+              request(PROXY, package, other)[1] == other_archive.read_bytes())
         check('revoked preferred proxy access also fences the mixed group',
               request(MIXED, index)[0] == request(MIXED, package)[0] == 403)
         check('stock group search hides the crate after its preferred proxy grant is revoked',
@@ -437,4 +466,4 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
 
     return {'checks': checks, 'archive_sha256': {'proxy-root': metadata[ROOT_PACKAGE]['cksum'],
                                                'proxy-leaf': metadata[BASE_PACKAGE]['cksum'],
-                                               'proxy-revised-root': revised_digest}}
+                                               'proxy-revised-root': revised_digest, 'proxy-other-tenant-root': other_digest}}

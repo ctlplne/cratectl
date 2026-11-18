@@ -86,12 +86,15 @@ CHECKS = (
     'stock search honors an explicit group namespace after access to an unused source is revoked',
     'withdrawn proxy crate fences the approved hosted duplicate in a mixed group',
     'mixed group refuses to substitute another source during a preferred origin outage',
+    'same Cargo group and coordinate names resolve distinct stock archives for two tenants',
+    'stock group search returns only the selected tenant description at an identical coordinate',
     'current grants and tenant isolation fence a previously filled Cargo proxy',
     'revoked preferred proxy access also fences the mixed group',
     'stock group search hides the crate after its preferred proxy grant is revoked',
 )
 ARCHIVES = ('cratectl-cargo-leaf', 'cratectl-cargo-root', 'cratectl-cargo-root-1.10.0',
-            'group-preferred', 'group-duplicate', 'group-lower-only', 'proxy-root', 'proxy-leaf', 'proxy-revised-root')
+            'group-preferred', 'group-duplicate', 'group-lower-only', 'proxy-root', 'proxy-leaf', 'proxy-revised-root',
+            'proxy-other-tenant-root')
 SOURCE_PATHS = (
     '.github/workflows/cargo.yml', 'go.mod', 'go.sum', 'Makefile',
     'internal/cargo/coordinates.go', 'internal/cargo/index.go', 'internal/cargo/publish.go',
@@ -144,6 +147,7 @@ def validate(report):
     archives = report['archive_sha256']
     if (archives['proxy-root'] == archives['cratectl-cargo-root']
             or archives['proxy-leaf'] != archives['cratectl-cargo-leaf']
-            or archives['proxy-revised-root'] in (archives['proxy-root'], archives['cratectl-cargo-root'])):
+            or len({archives[key] for key in ('proxy-root', 'cratectl-cargo-root', 'proxy-revised-root',
+                                             'proxy-other-tenant-root')}) != 4):
         raise ValueError('Cargo proxy evidence must bind the origin-built root and original stock leaf')
     return report

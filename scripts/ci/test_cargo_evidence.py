@@ -20,6 +20,7 @@ class CargoEvidenceTests(unittest.TestCase):
                   'postgres': 'postgres (PostgreSQL) 16.16', 'goal_complete': False, 'broad_readiness': False}
         report['archive_sha256']['proxy-root'] = 'c' * 64
         report['archive_sha256']['proxy-revised-root'] = 'd' * 64
+        report['archive_sha256']['proxy-other-tenant-root'] = 'e' * 64
         self.assertEqual(validate(report), report)
         for field, value in [('source_dirty', True), ('runner_arch', 'X64'), ('checks', list(CHECKS)[:-1]),
                              ('broad_readiness', True), ('archive_sha256', {}), ('source_sha256', {}),
