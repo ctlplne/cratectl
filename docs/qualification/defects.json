@@ -1658,18 +1658,20 @@
       "id": "DEFECT.0154",
       "summary": "The full Chromium suite reaches its outer deadline after logging 18 of 19 workflow passes",
       "candidate": "6d415738669eecf70b6b1b0f0891387331ce002c",
-      "state": "Original failure authenticated and retained. Subprocess budget regression passed locally. Native replay pending.",
+      "state": "Original failures authenticated and retained. The longer budget passed all 19 Chromium workflows and 151 checks on the exact b00aa94 Linux x64 run.",
       "first_failure": "evidence/2026-11-18/github-6d41573-chromium-deadline.json",
       "original_followup_failure": "evidence/2026-11-18/github-5551f52-original-completed.json",
       "original_budget_success_on_later_host": "evidence/2026-11-18/github-a0e646d-original-completed.json",
+      "replay": "evidence/2026-11-18/github-b00aa94-original-completed.json",
       "repair": "Allow the complete serial suite 600 seconds within the owned group. Keep 300 seconds for focused invocations and the Playwright per-test limits, no retries and bounded private diagnostics.",
       "limits": "The original command stopped before final Playwright JSON. The suite outcome remains failed and the last workflow result remains unknown."
     },
     {
       "id": "DEFECT.0155",
       "summary": "Server startup checks upstream credential permissions and reads unbounded input through separate path operations",
-      "state": "Repaired. Command and configuration package tests pass normally and under the race detector. Native positive replay pending.",
+      "state": "Repaired. Command and configuration package tests pass normally and under the race detector. Both native Linux baseline stock-client jobs pass at b00aa94.",
       "first_failure": "evidence/2026-11-18/upstream-private-input-development.json",
+      "replay": "evidence/2026-11-18/github-b00aa94-original-completed.json",
       "repair": "Use the shared bounded private reader before database setup. Apply the existing 64 KiB limit before buffering, clear the raw bytes after JSON decode and preserve tenant, authority and scheme validation."
     },
     {
@@ -1699,8 +1701,9 @@
     {
       "id": "DEFECT.0159",
       "summary": "The hosted x64 Compose renderer resolves service credential inputs despite the no-environment-resolution option",
-      "state": "The x64 first failure and exact Composer 2.38.2 comparison with inert data are retained. The repaired local render passed. Hosted replay pending.",
+      "state": "The x64 first failure and exact Compose 2.38.2 comparison with inert data are retained. The repaired local render and all 20 local Compose checks pass at 675177f. Hosted replay pending.",
       "first_failure": "evidence/2026-11-18/github-0f77078-compose-render-failure.json",
+      "local_replay": "evidence/2026-11-18/compose-675177f-arm64-local.json",
       "repair": "Render, build, clean up and start runtime services with empty environment files. Supply separate private inputs only when starting PostgreSQL or the one-shot initializer."
     }
   ]

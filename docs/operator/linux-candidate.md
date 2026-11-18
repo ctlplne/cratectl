@@ -15,6 +15,16 @@ and source input hashes. Archive ownership, permission and time metadata are
 fixed. If an archive already exists, another build verifies that it produced
 identical bytes before reusing the filename.
 
+Check a local archive against a SHA-256 received through your trusted channel:
+
+```sh
+python3 scripts/verify_linux_candidate.py /path/to/cratectl-linux-arm64.tar.gz --sha256 "$EXPECTED_SHA256"
+```
+
+The verifier checks the compressed bytes first. It then confirms the manifest,
+member names, normalized metadata, both ELF architectures and executable
+digests without extracting or running either program.
+
 To assemble a single architecture, pass `--architecture amd64` or
 `--architecture arm64` to `scripts/package_linux.py` with Python 3.10 or newer.
 The package build disables Go module proxy access and expects the modules already

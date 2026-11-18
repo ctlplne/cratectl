@@ -124,9 +124,15 @@ total. [Focused Chromium evidence](evidence/2026-11-18/github-b00aa94-focused-br
 The earlier `a0e646d` campaign closed with 25 passing jobs and three npm audit
 failures. Its Linux x64 Chromium step completed all 19 workflows and 151
 assertions before the original deadline, with no unexpected, skipped or flaky
-tests. All 28 original logs and 82 reports are retained. The full-suite budget
-change still needs exact-source replay.
+tests. All 28 original logs and 82 reports are retained.
 [Original a0e646d outcomes](evidence/2026-11-18/github-a0e646d-original-completed.json)
+
+The `b00aa94` campaign closed with 28 passing jobs and six failures. The larger
+Chromium budget replay passed all 19 workflows and 151 assertions. Both Linux
+hosts passed 683 stock-client and 30 blank-install assertions each. Three npm
+audits and three strict Go trust-state jobs failed. The retained selection and
+27 safe summaries cover 100 underlying reports.
+[Original b00aa94 outcomes](evidence/2026-11-18/github-b00aa94-original-completed.json)
 
 ## Go security patch
 
@@ -178,8 +184,8 @@ input and authentication before and after revocation.
 [Credential transaction evidence](evidence/2026-11-18/credential-05bd89a-native.json)
 
 `cratectld serve` now uses the shared bounded private reader for upstream
-credentials. Normal and race tests and vet passed on macOS ARM64. The positive
-proxy and stock-client replay requires the exact source in GitHub CI.
+credentials. Normal and race tests and vet passed on macOS ARM64. Both
+`b00aa94` Linux stock-client jobs passed the complete baseline with the repair.
 [Development evidence](evidence/2026-11-18/upstream-private-input-development.json)
 
 The worker now requires private regular files for its identity configuration
@@ -211,11 +217,15 @@ launcher now passes empty files to render, build, cleanup and runtime startup.
 The database and initializer each receive their own private file. The
 same-version render passes with the repaired inputs.
 [Original x64 failure](evidence/2026-11-18/github-0f77078-compose-render-failure.json)
+The repaired full local Compose journey passed all 20 checks at `675177f`.
+[Repaired local replay](evidence/2026-11-18/compose-675177f-arm64-local.json)
 
 At `b910da7`, two builds produced identical local binary archives for Linux
 x64 and ARM64. Independent inspection matched all four ELF machines and
 manifest digests. Both extracted ARM64 binaries reached their help paths in
-containers with networking disabled. `make packaging` still fails pending the
+containers with networking disabled. The offline verifier checks the archive
+against an independently supplied checksum, then checks the enclosed binary
+identities without extraction. `make packaging` still fails pending the
 complete release and disconnected installation requirements.
 [Linux assembly evidence](evidence/2026-11-18/linux-candidates-b910da7-local.json)
 
