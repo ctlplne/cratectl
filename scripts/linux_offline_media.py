@@ -207,7 +207,9 @@ def assemble(architecture, candidate, output):
         for name, source in RELEASE_FILES.items():
             shutil.copyfile(ROOT / source, media / name)
         command('helm', 'package', ROOT / 'deploy/helm/cratectl', '--destination', media)
-        command('docker', 'image', 'tag', postgres_id, tags['postgres'])
+        # The configuration ID from platform inspection is a useful binding.
+        # The daemon indexes multi-platform images by the registry reference.
+        command('docker', 'image', 'tag', POSTGRES, tags['postgres'])
         command('docker', 'build', '--platform=' + platform, '--network=none', '--build-arg', 'POSTGRES_IMAGE=' + POSTGRES,
                 '-t', tags['registry'], context, timeout=300)
         images = {'postgres': {'tag': tags['postgres'], 'id': postgres_id, 'source': POSTGRES},

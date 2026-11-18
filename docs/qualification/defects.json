@@ -1740,8 +1740,16 @@
       "state": "The original x64 stock-client failure is retained after 492 assertions. A separate pinned SDK loopback test reproduced key loss and verified exact HTTP header values with the corrected push and delete invocations.",
       "first_failure": "evidence/2026-11-18/github-0f77078-original-completed.json",
       "development": "evidence/2026-11-18/nuget-push-env-key-probe.json",
+      "partial_replay": "evidence/2026-11-18/nuget-b88d397-native-mutation-replay.json",
       "repair": "Use NuGet's NUGET_API_KEY environment setting for push. For delete, use one leading optional field space to keep opaque values out of the short-option parser, with the HTTP server receiving the unchanged key.",
       "limits": "The historical real key remains private. The native parser tests used inert keys and a local HTTP 401 fixture. Full hosted registry, authorization and policy replay on the repaired candidate remain required."
+    },
+    {
+      "id": "DEFECT.0164",
+      "summary": "Docker platform inspection returns a PostgreSQL image configuration ID that cannot be used as the image-tag source",
+      "state": "Original ARM64 offline media assembly failure retained. Tagging the pinned registry reference under a cratectl-owned alias resolves to the same inspected platform ID.",
+      "first_failure": "evidence/2026-11-18/linux-offline-media-b88d397-first-attempt.json",
+      "repair": "Use the digest-pinned upstream reference to create the local alias. Re-inspect the exact architecture and configuration ID before exporting the image."
     }
   ]
 }

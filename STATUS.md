@@ -247,6 +247,17 @@ The original `0f77078` campaign has now closed with 22 passes and six failures.
 It retains both Compose render failures, three source lint failures, and the
 original x64 stock NuGet option-parser refusal after 492 assertions.
 [Complete original outcomes](evidence/2026-11-18/github-0f77078-original-completed.json)
+The authorized push of `b88d397` selected six baseline workflows and the
+native Linux archive lane. It includes the audited console, campaign lint
+repair and pinned stock NuGet credential handling.
+[Original GitHub run inventory](evidence/2026-11-18/github-b88d397-started.json)
+
+On `b88d397`, native macOS ARM64 stock NuGet completed the publish, unlist,
+relist, isolation and restart checks against a fresh real database. The
+selected profile stopped after 282 assertions at the existing case 46 raw
+SDK metadata mismatch. The original x64 option-parser failure remains in
+its original campaign.
+[Native NuGet mutation replay](evidence/2026-11-18/nuget-b88d397-native-mutation-replay.json)
 
 At `b910da7`, two builds produced identical local binary archives for Linux
 x64 and ARM64. Independent inspection matched all four ELF machines and

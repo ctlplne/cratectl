@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "candidate": "b88d397eea710c2046cade98d140f604e09adb73",
+  "observed_at": "2026-11-18T15:34:27.360005+00:00",
+  "status": "failed",
+  "scope": "Exact native macOS ARM64 stock NuGet profile against an isolated migrated PostgreSQL 16.15 test database.",
+  "fixture_refusals": [
+    {
+      "reason": "Default base database chosen. Its older schema was refused before provisioning.",
+      "path": ".private/cratectl-nuget-b88d397/conformance-7eaf611e67.json",
+      "bytes": 2906,
+      "sha256": "45bc2cdbd9489a7970fd336cd317aa1d415a18172de1f0ac20799221b344b423"
+    },
+    {
+      "reason": "Fresh database migrated. The harness still selected its default file. The old schema was refused before provisioning.",
+      "path": ".private/cratectl-nuget-b88d397/conformance-e8d84b61d0.json",
+      "bytes": 2906,
+      "sha256": "0e191adb88d02c08f3d8c71339309a824429bbccf71ba8cc5ab61a814300ddbd"
+    }
+  ],
+  "bound_fresh_result": {
+    "path": ".private/cratectl-nuget-b88d397/conformance-0859cbe1b4.json",
+    "bytes": 63663,
+    "sha256": "6e37128a41223335e80850a500973fb8a95857f57600a25319b4e48a06916b32"
+  },
+  "passing_assertions": 282,
+  "named_mutation_checkpoints": [
+    "stock dotnet forwards dash-leading push keys directly to protocol authentication",
+    "NuGet durable native listing state False",
+    "NuGet colliding tenant coordinates retain distinct exact bytes",
+    "NuGet exact content survives actual registry restart"
+  ],
+  "sdk": "10.0.403",
+  "sdk_executable_sha256": "09448be14f72ee40d5ddaaf6039e9103c1dfdab1b975982aa68b537c4fad4a9b",
+  "native_metadata_contract": {
+    "cases": 56,
+    "fixture_sha256": "dfb0cda92ab9ab13314cd74cb162b3f336dd79c64d729d068fc3dfba406f1b9d",
+    "observations_sha256": "24f00b7c4f5f2501a753757f86cee7dcd63d9dac5314b5a4bc974cfa2c24b064",
+    "mismatch_indexes": [
+      46
+    ],
+    "phase": "published"
+  },
+  "first_failure": "actual SDK HTTP framework/range/preference/list semantics match original Nuspec published",
+  "limits": [
+    "Stock push, unlist, relist, authorization and recovery succeeded before the known raw metadata mismatch.",
+    "The full selected profile remains failed. The exact original x64 GitHub failure and pending hosted replay remain separate."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}
