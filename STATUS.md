@@ -265,6 +265,12 @@ the observed families. Their main CI campaigns remain separate.
 The whole original `22f2cec` campaign closed with 15 passes and three source
 lint failures. Its 72 safe reports retain the individual job outcomes.
 [Complete Helm-candidate campaign](evidence/2026-11-18/github-22f2cec-original-completed.json)
+The full original `08436af` campaign closed with 25 passes and three earlier
+source-lint failures. On exact `b88d397`, all three original platform source
+jobs passed build, unit, race, lint, byte-for-byte console rebuild and the
+unchanged npm audit. Each audit reported zero vulnerabilities.
+[Complete installer-candidate campaign](evidence/2026-11-18/github-08436af-original-completed.json)
+[Native source audits](evidence/2026-11-18/github-b88d397-native-source-audits.json)
 
 On `b88d397`, native macOS ARM64 stock NuGet completed the publish, unlist,
 relist, isolation and restart checks against a fresh real database. The
@@ -343,6 +349,10 @@ The pre-start check at `255326b` accepted the exact restored database and
 refused a separate snapshot missing a referenced object. After a real
 registry mutation advanced the journal, it refused the earlier checkpoint.
 [Native restore check](evidence/2026-11-18/cold-restore-guard-255326b-arm64.json)
+At `c066084`, an actual interrupted materialization left only private
+provisional files. The verifier refused that partial tree. A retry to the
+same destination completed and independently reverified 1,573 files.
+[Cold copy interruption and retry](evidence/2026-11-18/cold-snapshot-materialize-c066084.json)
 
 The packaged Helm chart passed 13 deployment checks at `f245757` on an
 isolated ARM64 Kubernetes 1.35 cluster. Restricted Pod Security admitted the

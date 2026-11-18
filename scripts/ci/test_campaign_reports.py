@@ -12,6 +12,7 @@ from campaign_reports import validate_custom, validate_summary
 from campaign_transport import EvidenceError
 from compose_evidence import CHECKS as COMPOSE_CHECKS, SOURCE_PATHS as COMPOSE_FILES
 from linux_install_evidence import CHECKS as INSTALL_CHECKS, IMAGE as INSTALL_IMAGE, SOURCE_PATHS as INSTALL_FILES
+from offline_media_evidence import CHECKS as OFFLINE_CHECKS, PHASES as OFFLINE_PHASES, SOURCE_PATHS as OFFLINE_FILES
 from test_go_common_export_portability_evidence import complete as complete_common_contract
 from test_go_requirement_export_portability_evidence import complete as complete_requirement_contract
 
@@ -20,6 +21,33 @@ SPECS = {spec['artifact']: spec for family in WORKFLOWS.values() for spec in job
 
 
 class CampaignReports(unittest.TestCase):
+    def test_offline_media_binds_both_phases_source_archive_and_image_inventory(self):
+        source = lambda path: path.encode()
+        candidate = 'a' * 40
+        report = {'schema': 1, 'profile': 'cratectl-native-offline-media-v1', 'candidate': candidate, 'run_id': '12',
+                  'runner_os': 'Linux', 'runner_arch': 'X64', 'status': 'passed', 'source_dirty': False,
+                  'checks': list(OFFLINE_CHECKS), 'runtime_phases': [
+                      {'phase': name, 'checks': list(checks), 'artifact_digest': 'b' * 64, 'npm': '10.9.9'}
+                      for name, checks in OFFLINE_PHASES.items()],
+                  'archive_sha256': 'c' * 64, 'manifest_sha256': 'd' * 64,
+                  'image_configuration_sha256': {'postgres': 'sha256:' + 'e' * 64, 'registry': 'sha256:' + 'f' * 64},
+                  'source_sha256': {name: hashlib.sha256(source(name)).hexdigest() for name in OFFLINE_FILES},
+                  'goal_complete': False, 'broad_readiness': False, 'database_schema': 18, 'forced_tenant_tables': 57}
+        spec = SPECS['ci-summary-offline-media-amd64']
+        self.assertEqual(validate_custom(report, candidate, 12, spec, source), {'checks': 27, 'records': 1})
+        for changed in ({'checks': report['checks'][:-1]}, {'runner_arch': 'ARM64'}, {'forced_tenant_tables': 57.0},
+                        {'runtime_phases': report['runtime_phases'][:1]}, {'profile': 'unknown'}, {'token': 'inert test'}):
+            with self.subTest(change=list(changed)), self.assertRaises(EvidenceError):
+                validate_custom({**report, **changed}, candidate, 12, spec, source)
+        for field, key in [('source_sha256', 'scripts/linux_offline_media.py'), ('runtime_phases', 1)]:
+            altered = copy.deepcopy(report)
+            if key == 1:
+                altered[field][key]['artifact_digest'] = 'c' * 64
+            else:
+                altered[field][key] = 'a' * 64
+            with self.subTest(field=field), self.assertRaises(EvidenceError):
+                validate_custom(altered, candidate, 12, spec, source)
+
     def test_linux_install_requires_exact_safe_native_result(self):
         source = lambda path: path.encode()
         candidate = 'a' * 40

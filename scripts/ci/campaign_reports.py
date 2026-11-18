@@ -19,6 +19,7 @@ from go_requirement_export_portability_evidence import safe_go_requirement_expor
 from windows_cli_evidence import safe_windows_cli_contract
 from compose_evidence import CHECKS as COMPOSE_CHECKS, safe_compose_contract
 from linux_install_evidence import CHECKS as LINUX_INSTALL_CHECKS, validate as validate_linux_install
+from offline_media_evidence import CHECKS as OFFLINE_CHECKS, PHASES as OFFLINE_PHASES, validate as validate_offline_media
 
 CONTRACTS = {'maven_cache_contract': safe_maven_cache_contract, 'gradle_contract': safe_gradle_contract,
              'ivy_contract': safe_ivy_contract, 'sbt_contract': safe_sbt_contract,
@@ -98,17 +99,21 @@ def validate_custom(report, candidate, run_id, spec, source):
         require(all(digest == hashlib.sha256(source(path)).hexdigest()
                     for path, digest in report['source_sha256'].items()), 'windows_source_identity')
         return {'checks': 15, 'records': 1}
-    if spec['kind'] in ('compose', 'linux-install'):
+    source_contracts = {
+        'compose': (safe_compose_contract, len(COMPOSE_CHECKS)),
+        'linux-install': (validate_linux_install, len(LINUX_INSTALL_CHECKS)),
+        'offline-media': (validate_offline_media, len(OFFLINE_CHECKS) + sum(map(len, OFFLINE_PHASES.values()))),
+    }
+    if spec['kind'] in source_contracts:
         kind = spec['kind'].replace('-', '_')
-        validator, checks = ((safe_compose_contract, COMPOSE_CHECKS) if kind == 'compose'
-                             else (validate_linux_install, LINUX_INSTALL_CHECKS))
+        validator, checks = source_contracts[spec['kind']]
         try:
             require(validator(report) == report, kind + '_report_contract')
         except (ValueError, TypeError, KeyError):
             require(False, kind + '_report_contract')
         require(all(digest == hashlib.sha256(source(path)).hexdigest()
                     for path, digest in report['source_sha256'].items()), kind + '_source_identity')
-        return {'checks': len(checks), 'records': 1}
+        return {'checks': checks, 'records': 1}
     require(report.get('status') == 'passed' and report.get('source_dirty') is False, 'custom_report_incomplete')
     if spec['kind'] == 'library':
         require(report.get('phase') == 'complete' and isinstance(report.get('checks'), list)

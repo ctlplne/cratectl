@@ -1,0 +1,67 @@
+name: Native offline media
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/offline-media.yml'
+      - 'deploy/compose/**'
+      - 'deploy/helm/**'
+      - 'scripts/conformance_offline_media.py'
+      - 'scripts/fixtures/offline-media/**'
+      - 'scripts/ci/offline_media_evidence.py'
+      - 'scripts/linux_offline_media.py'
+
+permissions:
+  contents: read
+
+jobs:
+  offline:
+    if: github.ref == 'refs/heads/main' && github.repository == 'ctlplne/cratectl'
+    name: Signed media and imported registry (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 25
+    concurrency:
+      group: cratectl-offline-media-${{ github.ref }}-${{ matrix.arch }}-${{ github.sha }}
+      cancel-in-progress: false
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    env:
+      GOENV: 'off'
+      GOTOOLCHAIN: local
+      GOMODCACHE: ${{ github.workspace }}/.cache/go-mod
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - name: Prepare pinned tools and images before isolation
+        run: |
+          go mod download
+          bash scripts/ci/bootstrap_oci_clients.sh --helm-only
+          printf '%s\n' "$GITHUB_WORKSPACE/.cache/bin" >> "$GITHUB_PATH"
+          docker pull --platform 'linux/${{ matrix.arch }}' docker.io/library/postgres:16.15-alpine@sha256:aa6cb33cf4c19c765cefcf48d96176258800870a9a1e930ad126200f9d825139
+          docker pull --platform 'linux/${{ matrix.arch }}' node:22-bookworm@sha256:363e1587494626837fa7f9a23bdb453d13b0ff3c67c705c2805cfc69c2d2fad7
+      - name: Authenticate and load media and replay stock npm without network access
+        run: python3 scripts/conformance_offline_media.py --architecture '${{ matrix.arch }}'
+      - uses: actions/upload-artifact@v7
+        if: success()
+        with:
+          name: ci-summary-offline-media-${{ matrix.arch }}
+          path: .cache/ci-offline-media.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14

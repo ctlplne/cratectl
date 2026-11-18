@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "candidate": "c066084ad2d98c8deb75dca991434c92b4a846a3",
+  "runtime_candidate": "e4adc190caa621fd46a35312242fdc029f787f73",
+  "observed_at": "2026-11-18T16:08:17.701925+00:00",
+  "status": "passed",
+  "signal": "SIGKILL of the owned materialization process after provisional database files appeared",
+  "checks": [
+    "partial staging observed",
+    "normal output never published",
+    "private partial tree refused by verifier",
+    "retry to the same destination succeeds",
+    "original manifest unchanged and exact output reverified"
+  ],
+  "stock_verify_result": {
+    "files": 1573,
+    "bytes": 51409769,
+    "verified_cas_files": 1
+  },
+  "private_logs": [
+    {
+      "path": ".private/cratectl-atomic-restore-c066084/interrupted.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".private/cratectl-atomic-restore-c066084/partial-refusal.log",
+      "bytes": 75,
+      "sha256": "866c4ec0985182e0b2027b9cd01c16ea26cd3bef29abeb480f273012a303ad7a"
+    },
+    {
+      "path": ".private/cratectl-atomic-restore-c066084/retry.log",
+      "bytes": 51,
+      "sha256": "776dfe15eb2669560920f5676d52087a74e8dd55253846b06d77f70878b3e706"
+    },
+    {
+      "path": ".private/cratectl-atomic-restore-c066084/verified-retry.log",
+      "bytes": 60,
+      "sha256": "199a36e7ad08cd788261c925ff7a5407074954837d0efd1464aef16f76ce0595"
+    }
+  ],
+  "limits": [
+    "Single POSIX host and own local operator directories. This kills only the file-materialization process before publication.",
+    "Interruption during PostgreSQL WAL replay, actual storage outages, mixed-host failover and RPO/RTO remain separate."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

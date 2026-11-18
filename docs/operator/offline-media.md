@@ -57,3 +57,9 @@ The native archive can be installed using the verified digest from
 and trust keys for the intended deployment are supplied independently.
 Production license approval, signing authority, offline scanner data, and
 full disconnected provisioning and recovery qualification remain open.
+
+The stock-client replay in `scripts/conformance_offline_media.py` assembles
+and signs disposable test media, refuses a changed image, loads both images
+after removing their owned tags, and starts the registry and worker in a
+loopback-only Docker namespace. The native GitHub workflow runs the same
+check on x64 and ARM64 using prepared Docker, Helm and stock-client tools.

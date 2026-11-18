@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: BUSL-1.1
 set -euo pipefail
+if (( $# > 1 )) || { (( $# == 1 )) && [[ "$1" != --helm-only ]]; }; then
+  echo 'Expected no argument or --helm-only' >&2
+  exit 2
+fi
 test "${GITHUB_ACTIONS:-}" = true
 test "${RUNNER_OS:-}" = Linux
 umask 077
@@ -20,6 +24,10 @@ python3 scripts/ci/fetch_archive.py --archive "$archive" --url "https://get.helm
 printf '%s  %s\n' "$helm_sha" ".cache/$archive" | sha256sum --check --status
 tar -xzf ".cache/$archive" -C .cache/bin --strip-components=1 "linux-$architecture/helm"
 chmod 755 .cache/bin/helm
+if [[ "${1:-}" == --helm-only ]]; then
+  .cache/bin/helm version --short
+  exit 0
+fi
 sudo apt-get update -qq
 podman --version
 test "$(podman --version)" = 'podman version 4.9.3'

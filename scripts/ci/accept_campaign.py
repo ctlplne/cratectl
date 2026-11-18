@@ -9,7 +9,7 @@ from pathlib import Path
 import re
 import sys
 
-from campaign_contract import COMPATIBLE_FILES, LINUX_INSTALL_CONTRACT, WORKFLOWS, jobs as job_contracts
+from campaign_contract import COMPATIBLE_FILES, OPTIONAL_CONTRACTS, WORKFLOWS, jobs as job_contracts
 from campaign_reports import validate_custom, validate_summary
 from compose_evidence import CHECKS as COMPOSE_CHECKS
 from linux_install_evidence import CHECKS as LINUX_INSTALL_CHECKS
@@ -87,9 +87,12 @@ class Source:
         require(len(targets) == 1 and int(targets[0]) in (17, 18), 'unsupported_schema_target')
         self.schema = int(targets[0])
         self.compatibility = []
-        linux_install_files = LINUX_INSTALL_CONTRACT & self.paths
-        require(not linux_install_files or linux_install_files == LINUX_INSTALL_CONTRACT, 'incomplete_linux_install_contract')
-        for name in [*COMPATIBLE_FILES, *sorted(linux_install_files)]:
+        optional = []
+        for group in OPTIONAL_CONTRACTS:
+            present = group & self.paths
+            require(not present or present == group, 'incomplete_optional_campaign_contract')
+            optional.extend(sorted(present))
+        for name in [*COMPATIBLE_FILES, *optional]:
             current = (ROOT / name).read_bytes()
             self.compatibility.append(compatible_contract(name, self(name), current, self.schema))
         self.baselines = strict_json(self('docs/qualification/upgrade-baselines.json'))['baselines']
@@ -171,6 +174,9 @@ def check_log(raw, spec, source):
     if kind == 'linux-install':
         require(text.count(f'PASS: {len(LINUX_INSTALL_CHECKS)} scoped native Linux installation checks') == 1,
                 'linux_install_native_inventory')
+    if kind == 'offline-media':
+        require(text.count('PASS: 17 scoped imported-image runtime checks and 10 media controls') == 1,
+                'offline_media_native_inventory')
     if kind in ('native', 'go'):
         pattern = r'\bok\s+ctlplne.dev/cratectl/internal/(?:server|store' + ('|conformance' if kind == 'native' else '') + r')\s'
         require(len(re.findall(pattern, text)) == (6 if kind == 'native' else 4), 'native_package_success_inventory')
@@ -301,9 +307,10 @@ def accept(client, source, expected_ids):
                 used.add(artifact_name)
                 member = {'library': 'nuget-version-summary.json', 'strict': 'ci-go-checksum-client-summary.json',
                           'windows': 'ci-windows-cli-summary.json', 'compose': 'ci-compose-evaluation.json',
-                          'linux-install': 'ci-linux-install.json'}.get(spec['kind'], 'ci-evidence-summary.json')
+                          'linux-install': 'ci-linux-install.json',
+                          'offline-media': 'ci-offline-media.json'}.get(spec['kind'], 'ci-evidence-summary.json')
                 report, reference = safe_artifact(client, by_artifact[artifact_name], source.candidate, run_id, member)
-                if spec['kind'] in ('library', 'strict', 'windows', 'compose', 'linux-install'):
+                if spec['kind'] in ('library', 'strict', 'windows', 'compose', 'linux-install', 'offline-media'):
                     counts = validate_custom(report, source.candidate, run_id, spec, source)
                 else:
                     counts, contract = validate_summary(report, source.candidate, run_id, spec, source.baselines, source)

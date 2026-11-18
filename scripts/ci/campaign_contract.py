@@ -7,7 +7,7 @@ WORKFLOWS = {
     'oci-clients.yml': 'oci', 'upgrade-qualification.yml': 'upgrades',
     'go-export-portability.yml': 'portable', 'nuget-contract.yml': 'library',
     'browser-repair.yml': 'browser', 'go-checksum-client.yml': 'strict', 'windows-cli.yml': 'windows',
-    'compose-evaluation.yml': 'compose', 'linux-install.yml': 'linux-install',
+    'compose-evaluation.yml': 'compose', 'linux-install.yml': 'linux-install', 'offline-media.yml': 'offline-media',
 }
 PLATFORMS = {'amd64': ('ubuntu-24.04', 'Linux', 'X64'),
              'arm64': ('ubuntu-24.04-arm', 'Linux', 'ARM64'),
@@ -15,7 +15,9 @@ PLATFORMS = {'amd64': ('ubuntu-24.04', 'Linux', 'X64'),
 VALIDATOR_FILES = ['scripts/ci/' + name + '_evidence.py' for name in
                    ['maven', 'gradle', 'ivy', 'sbt', 'go_module', 'journal', 'go_export_portability', 'go_common_export_portability', 'go_requirement_export_portability', 'windows_cli', 'compose']]
 LINUX_INSTALL_CONTRACT = {'.github/workflows/linux-install.yml', 'scripts/ci/linux_install_evidence.py'}
-COMPATIBLE_FILES = ['.github/workflows/' + name for name in WORKFLOWS if name != 'linux-install.yml'] + VALIDATOR_FILES + ['scripts/ci/evidence_summary.py', 'scripts/conformance_go.py']
+OFFLINE_MEDIA_CONTRACT = {'.github/workflows/offline-media.yml', 'scripts/ci/offline_media_evidence.py'}
+OPTIONAL_CONTRACTS = (LINUX_INSTALL_CONTRACT, OFFLINE_MEDIA_CONTRACT)
+COMPATIBLE_FILES = ['.github/workflows/' + name for name in WORKFLOWS if name not in ('linux-install.yml', 'offline-media.yml')] + VALIDATOR_FILES + ['scripts/ci/evidence_summary.py', 'scripts/conformance_go.py']
 
 
 def jobs(family, schema=17, requirement_portability=False):
@@ -80,6 +82,11 @@ def jobs(family, schema=17, requirement_portability=False):
                 ['Prepare reviewed inputs before the isolated installation',
                  'Verify and install both executables in a network-isolated target'],
                 'ci-summary-linux-install-' + arch, 'linux-install')
+        elif family == 'offline-media':
+            add('Signed media and imported registry (' + arch + ')', arch,
+                ['Prepare pinned tools and images before isolation',
+                 'Authenticate and load media and replay stock npm without network access'],
+                'ci-summary-offline-media-' + arch, 'offline-media')
     if family == 'portable':
         add('Real PostgreSQL signed export source (amd64)', 'amd64',
             ['Prepare actual signed source fixture and independent trust-channel digests', 'Transfer reviewed synthetic fixture only',
