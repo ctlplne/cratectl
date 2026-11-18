@@ -33,16 +33,16 @@ Save a private `NuGet.Config`, readable only by its owner:
 </configuration>
 ```
 
-Supply the environment variables from your private secret provider:
+Supply the environment variables from your private secret provider. The pinned
+SDK can read the publish key directly from `NUGET_API_KEY`.
+[NuGet publish authentication](https://learn.microsoft.com/en-us/nuget/nuget-org/publish-a-package)
 
 ```sh
 dotnet restore --configfile /private/path/NuGet.Config
-dotnet nuget push PACKAGE.nupkg --source https://REGISTRY/nuget/REPOSITORY/index.json \
-  --api-key="$CRATECTL_WRITER_TOKEN" --skip-duplicate
+NUGET_API_KEY="$CRATECTL_WRITER_TOKEN" dotnet nuget push PACKAGE.nupkg \
+  --source https://REGISTRY/nuget/REPOSITORY/index.json --skip-duplicate
 ```
 
-Keep the `=` between the option and its value so an opaque token beginning with
-`-` stays attached to the API-key option. Do not regenerate or alter that token.
 The API key is authoritative for native push and unlist/relist, even when the client's source
 configuration also supplies Basic credentials. It is ignored on read and
 management routes. Duplicate coordinates return 409; publishing cannot restore
@@ -62,8 +62,12 @@ records the version as unlisted:
 
 ```sh
 dotnet nuget delete PACKAGE_ID VERSION --non-interactive \
-  --source https://REGISTRY/nuget/REPOSITORY/index.json --api-key="$CRATECTL_WRITER_TOKEN"
+  --source https://REGISTRY/nuget/REPOSITORY/index.json --api-key=" $CRATECTL_WRITER_TOKEN"
 ```
+
+The space before the key keeps dash-leading values out of the pinned delete
+command's option parser. The HTTP parser removes this optional field whitespace
+before authenticating the exact key.
 
 The flat version index, original package and original Nuspec remain available to
 authorized pinned consumers. Current review/policy decisions still govern reads.

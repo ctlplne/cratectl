@@ -97,13 +97,13 @@ def hosted(h):
         packages[label] = (name, version, data, nuspec, payload)
         return path, digest
 
-    def push(path, token='admin', duplicate=False, denied=False):
-        # Bind an opaque key to its option, including a valid generated key
-        # whose first base64url character is '-'. Never regenerate such keys.
-        args = [dotnet, 'nuget', 'push', path, '--source', source, '--api-key=' + h.tokens[token], '--no-symbols']
+    def push(path, key, duplicate=False, denied=False):
+        # NuGet 7.6 and later reads NUGET_API_KEY for push. The CLI parser can
+        # interpret parts of a dash-leading key as short option prefixes.
+        args = [dotnet, 'nuget', 'push', path, '--source', source, '--no-symbols']
         if duplicate:
             args.append('--skip-duplicate')
-        run(args, work, extra, expect_failure=denied)
+        return run(args, work, {**extra, 'NUGET_API_KEY': key}, expect_failure=denied)
 
     def decide(name, version, digest, decision):
         path = 'nuget-packages/' + name.lower() + '/' + version + '.nupkg'
@@ -134,20 +134,16 @@ def hosted(h):
     dep, dep_digest = package('dependency', 'Cratectl.Proof.Dependency', '1.0.0')
     app1, app1_digest = package('application_1', 'Cratectl.Proof.Application', '1.0.0', True)
     app2, app2_digest = package('application_2', 'Cratectl.Proof.Application', '2.0.0', True)
-    # This public synthetic value is deliberately not a credential. Exercise the
-    # actual SDK parser and real registry's authentication boundary before any
-    # dependency publication; invalid authentication must leave no reference.
-    parser_probe = run([dotnet, 'nuget', 'push', dep, '--source', source,
-                        '--api-key=-cratectl_owned_invalid_parser_probe_000000', '--no-symbols'],
-                       work, extra, expect_failure=True)
-    check('stock dotnet consumes a leading-hyphen API key without treating it as an option',
-          '401 (Unauthorized)' in parser_probe and 'No API Key was provided' not in parser_probe)
+    # Exercise both plain hyphens and a short-option prefix as inert values.
+    probes = [push(dep, key, denied=True) for key in ('-cratectl_owned_invalid_parser_probe_000000', '-s' + 'd' * 41)]
+    check('stock dotnet forwards dash-leading push keys directly to protocol authentication',
+          all('401 (Unauthorized)' in output and 'No API Key was provided' not in output for output in probes))
     check('invalid parser-probe key publishes no NuGet dependency',
           req('/nuget/dotnet/flat/cratectl.proof.dependency/index.json')[0] == 404)
     for path in [dep, app1, app2]:
-        push(path)
-    push(app1, duplicate=True)
-    push(app1, token='reader', denied=True)
+        push(path, h.tokens['admin'])
+    push(app1, h.tokens['admin'], duplicate=True)
+    push(app1, h.tokens['reader'], denied=True)
     flat = '/nuget/dotnet/flat/cratectl.proof.application/'
     package_url = flat + '1.0.0/cratectl.proof.application.1.0.0.nupkg'
     manifest_url = flat + '1.0.0/cratectl.proof.application.nuspec'
@@ -172,7 +168,11 @@ def hosted(h):
     check('NuGet registration pages advertise complete numeric bounds', registration()['items'][0]['lower'] == '1.0.0' and registration()['items'][0]['upper'] == '2.0.0')
 
     def unlist(token='admin', denied=False):
-        run([dotnet, 'nuget', 'delete', 'Cratectl.Proof.Application', '1.0.0', '--source', source, '--api-key=' + h.tokens[token], '--non-interactive'], work, extra, expect_failure=denied)
+        # Delete has no environment-key support in the pinned SDK. HTTP field
+        # parsing removes the leading optional whitespace before validation.
+        key = '--api-key= ' + h.tokens[token]
+        run([dotnet, 'nuget', 'delete', 'Cratectl.Proof.Application', '1.0.0', '--source', source,
+             key, '--non-interactive'], work, extra, expect_failure=denied)
 
     def listing_state(expected):
         reference = '/api/v1/repositories/dotnet/artifacts/reference?' + urlencode({'path': 'nuget-packages/cratectl.proof.application/1.0.0.nupkg'})
@@ -207,7 +207,7 @@ def hosted(h):
     restore('relisted-pinned-consumer', '1.0.0')
     check('NuGet other tenant initially cannot see matching repository coordinate', req(package_url, 'other')[0] == 404)
     other, _ = package('other_application_1', 'Cratectl.Proof.Application', '1.0.0', True, True)
-    push(other, token='other')
+    push(other, h.tokens['other'])
     check('NuGet colliding tenant coordinates retain distinct exact bytes', req(package_url, 'other')[1] == packages['other_application_1'][2] and req(package_url, 'reader')[1] == packages['application_1'][2])
     decide('Cratectl.Proof.Application', '1.0.0', app1_digest, 'denied')
     check('NuGet relisting never overrides current content denial', req(listing_endpoint, method='POST', headers=key_headers)[0] == 200 and req(package_url, 'reader')[0] == 403)

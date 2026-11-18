@@ -1733,6 +1733,15 @@
       "first_failure": "evidence/2026-11-18/campaign-catalog-lint-original.json",
       "replay": "evidence/2026-11-18/local-gates-9563f96.json",
       "repair": "Compare exact workflow and evidence-validator names and keep the Windows-specific inventory checks. Reject duplicate compatibility paths and require every catalogued file to exist."
+    },
+    {
+      "id": "DEFECT.0163",
+      "summary": "The pinned NuGet CLI can parse opaque dash-leading credentials as short options",
+      "state": "The original x64 stock-client failure is retained after 492 assertions. A separate pinned SDK loopback test reproduced key loss and verified exact HTTP header values with the corrected push and delete invocations.",
+      "first_failure": "evidence/2026-11-18/github-0f77078-original-completed.json",
+      "development": "evidence/2026-11-18/nuget-push-env-key-probe.json",
+      "repair": "Use NuGet's NUGET_API_KEY environment setting for push. For delete, use one leading optional field space to keep opaque values out of the short-option parser, with the HTTP server receiving the unchanged key.",
+      "limits": "The historical real key remains private. The native parser tests used inert keys and a local HTTP 401 fixture. Full hosted registry, authorization and policy replay on the repaired candidate remain required."
     }
   ]
 }

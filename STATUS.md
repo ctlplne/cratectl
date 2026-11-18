@@ -243,6 +243,10 @@ with 16 passes and the two retained Compose failures. Five workflows at
 workflow were still active at these checkpoints.
 [Original terminal families](evidence/2026-11-18/github-0f77078-original-terminal-families.json)
 [Repaired candidate terminal families](evidence/2026-11-18/github-675177f-original-terminal-families.json)
+The original `0f77078` campaign has now closed with 22 passes and six failures.
+It retains both Compose render failures, three source lint failures, and the
+original x64 stock NuGet option-parser refusal after 492 assertions.
+[Complete original outcomes](evidence/2026-11-18/github-0f77078-original-completed.json)
 
 At `b910da7`, two builds produced identical local binary archives for Linux
 x64 and ARM64. Independent inspection matched all four ELF machines and

@@ -1,0 +1,278 @@
+{
+  "candidate": "0f77078d52cfd53b40e19952ce805b708d00520f",
+  "original_run_id": 44310463366,
+  "original_job_id": 134841866922,
+  "original_failure_summary": "Option --source expects a single argument but 2 were provided",
+  "original_report": "evidence/2026-11-18/github-0f77078/ci-summary-amd64.json",
+  "original_passing_assertions": 492,
+  "native_loopback_probe": {
+    "observed_at": "2026-11-18T15:21:41.903322+00:00",
+    "sdk": "10.0.403",
+    "dotnet_executable_sha256": "09448be14f72ee40d5ddaaf6039e9103c1dfdab1b975982aa68b537c4fad4a9b",
+    "platform": "arm64",
+    "cases": [
+      {
+        "shape": "ordinary",
+        "mode": "argument",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": true,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "ordinary",
+        "mode": "environment",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": true,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "single-hyphen",
+        "mode": "argument",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": true,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "single-hyphen",
+        "mode": "environment",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": true,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "double-hyphen",
+        "mode": "argument",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": true,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "double-hyphen",
+        "mode": "environment",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": true,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "short-flag-prefix",
+        "mode": "argument",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": false,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "short-flag-prefix",
+        "mode": "environment",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": true,
+        "unauthenticated_response": true
+      },
+      {
+        "mode": "delete-environment",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": false,
+        "unauthenticated_response": true
+      },
+      {
+        "mode": "delete-eq-argument",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": true,
+        "unauthenticated_response": true
+      },
+      {
+        "mode": "delete-source-last",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": true,
+        "unauthenticated_response": true
+      }
+    ]
+  },
+  "repair": "Use the documented NUGET_API_KEY environment variable in the pinned SDK for stock NuGet publish. An optional leading field space preserves exact received credentials for delete in the pinned SDK.",
+  "limits": [
+    "Only inert synthetic keys were used in the isolated parser and HTTP fixture. The historical real key remains private.",
+    "All observed environment-based publish requests carried the exact expected header and received the fixture HTTP 401. Full native stock replay remains distinct."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false,
+  "delete_delimiter_probe": {
+    "scope": "Native SDK on owned HTTP fixture, inert option-like keys and expected HTTP 401.",
+    "raw_safe_report": {
+      "path": ".private/cratectl-nuget-delete-delimiter-probe/safe-report.json",
+      "bytes": 5622,
+      "sha256": "12674a9d5d76ae188db7de6b33b9c161c786853a5508bce85ed53b4595cfa6c6"
+    },
+    "cases": [
+      {
+        "shape": "dash-s",
+        "mode": "leading-space",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": true,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "dash-s",
+        "mode": "leading-tab",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": true,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "dash-s",
+        "mode": "double-quotes",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": false,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "dash-s",
+        "mode": "escaped",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": false,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "dash-s",
+        "mode": "end-options",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": false,
+        "unauthenticated_response": false
+      },
+      {
+        "shape": "dash-k",
+        "mode": "leading-space",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": true,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "dash-k",
+        "mode": "leading-tab",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": true,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "dash-k",
+        "mode": "double-quotes",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": false,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "dash-k",
+        "mode": "escaped",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": false,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "dash-k",
+        "mode": "end-options",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": false,
+        "unauthenticated_response": false
+      },
+      {
+        "shape": "dash-n",
+        "mode": "leading-space",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": true,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "dash-n",
+        "mode": "leading-tab",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": true,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "dash-n",
+        "mode": "double-quotes",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": false,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "dash-n",
+        "mode": "escaped",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": false,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "dash-n",
+        "mode": "end-options",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": false,
+        "unauthenticated_response": false
+      },
+      {
+        "shape": "dash-h",
+        "mode": "leading-space",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": true,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "dash-h",
+        "mode": "leading-tab",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": true,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "dash-h",
+        "mode": "double-quotes",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": false,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "dash-h",
+        "mode": "escaped",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": false,
+        "unauthenticated_response": true
+      },
+      {
+        "shape": "dash-h",
+        "mode": "end-options",
+        "exit": 1,
+        "option_failure": false,
+        "exact_protocol_header": false,
+        "unauthenticated_response": false
+      }
+    ]
+  }
+}
