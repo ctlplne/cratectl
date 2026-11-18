@@ -20,6 +20,15 @@ digest hides every alias of those bytes within the repository, including tags,
 and blocks direct tarball reads. Repository inventory lets an administrator
 inspect quarantined references and issue an explicit manual decision.
 
+Use `npm search NAME --json` with the same configuration to find visible
+packages in a hosted repository. Search matches case-insensitive terms in
+package names. It returns the visible `latest` tag target or, when that
+target is unavailable, the highest visible semantic version. The result
+includes the selected package description when present. Use
+`--searchlimit` to request up to 100 packages. Search uses current grants,
+digest decisions and retained lifecycle state. Proxy and group search
+require separate qualification and implementation.
+
 If metadata returns `metadata_budget_exceeded`, inspect the package's version,
 tag and metadata volume, then size the server's `--native-version-budget`,
 `--native-tag-budget` and `--native-metadata-bytes` for available memory and work.

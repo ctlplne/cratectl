@@ -386,6 +386,10 @@ def evaluate(args):
         check('fresh stock npm downloads the exact approved archive after restart',
               sha(download / restored[0]['filename']) == sha(tarball))
         report['archive_sha256'] = sha(tarball)
+        if args.npm_search:
+            from npm_search_fixture import evaluate_search
+
+            report['npm_search'] = evaluate_search(work, public_env, call, cli, api, restart_server, sha)
         if args.cargo_toolchain:
             report['cargo'] = evaluate_cargo(work, app, authority, args.cargo_toolchain.resolve(),
                                             public_env, call, api, restart_server, sha)
@@ -456,6 +460,8 @@ def evaluate(args):
             call('stop-owned-postgres', postgres / 'pg_ctl', '-D', data, 'stop', '-m', 'fast', '-w')
         (work / 'safe-report.json').write_text(json.dumps(report, indent=2) + '\n')
     print(f'PASS: {len(checks)} native declarative repository checks')
+    if args.npm_search:
+        print(f"PASS: {len(report['npm_search']['checks'])} stock hosted npm search checks")
     if args.provider_binary:
         totals = {row['client']: len(row['checks']) for row in report['provider']['clients']}
         print(f"PASS: Terraform {totals['terraform']} and OpenTofu {totals['tofu']} scoped provider checks")
@@ -531,6 +537,8 @@ if __name__ == '__main__':
     parser.add_argument('--mcp-binary', type=Path)
     parser.add_argument('--mcp-client', type=Path)
     parser.add_argument('--promtool', type=Path)
+    parser.add_argument('--npm-search', action='store_true',
+                        help='also verify hosted search with stock npm and independent tenants')
     parser.add_argument('--cargo-toolchain', type=Path)
     parser.add_argument('--cargo-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--cargo-public-origin', action='store_true',
@@ -551,6 +559,8 @@ if __name__ == '__main__':
         parser.error('hosted Cargo evidence requires the stock toolchain in the isolated Cargo profile')
     if options.cargo_public_origin and not options.cargo_toolchain:
         parser.error('the public origin check requires the stock Cargo profile')
+    if options.npm_search and (options.ci_architecture or options.cargo_ci_architecture):
+        parser.error('npm search uses the local stock npm evidence profile')
     if options.legacy_cargo_daemon and (not options.cargo_toolchain or options.cargo_ci_architecture):
         parser.error('historical Cargo adoption requires the local stock Cargo profile and reviewed schema 18 daemon')
     evaluate(options)

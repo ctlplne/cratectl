@@ -41,6 +41,10 @@ func (s *Server) npm(w http.ResponseWriter, r *http.Request, i store.Identity, r
 		s.npmRemote(w, r, i, repo, p)
 		return
 	}
+	if p == "-/v1/search" {
+		s.npmHostedSearch(w, r, i, repo)
+		return
+	}
 	if strings.HasPrefix(p, "-/package/") {
 		s.npmDistTags(w, r, i, repo, strings.TrimPrefix(p, "-/package/"))
 		return
