@@ -393,6 +393,11 @@ def evaluate(args):
 
             report['npm_search'] = evaluate_search(work, public_env, call, cli, api, restart_server, sha)
             report['npm_cached_search'] = evaluate_cached_search(work, public_env, call, cli, api, restart_server, sha)
+        if args.python_search_client:
+            from python_search_fixture import evaluate_python_search
+
+            report['python_search'] = evaluate_python_search(
+                work, app, authority, args.python_search_client.absolute(), public_env, call, api, restart_server, sha)
         if args.cargo_toolchain:
             report['cargo'] = evaluate_cargo(work, app, authority, args.cargo_toolchain.resolve(),
                                             public_env, call, api, restart_server, sha)
@@ -466,6 +471,8 @@ def evaluate(args):
     if args.npm_search:
         print(f"PASS: {len(report['npm_search']['checks'])} stock hosted npm search checks")
         print(f"PASS: {len(report['npm_cached_search']['checks'])} stock cached npm search checks")
+    if args.python_search_client:
+        print(f"PASS: {len(report['python_search']['checks'])} stock hosted Python search checks")
     if args.provider_binary:
         totals = {row['client']: len(row['checks']) for row in report['provider']['clients']}
         print(f"PASS: Terraform {totals['terraform']} and OpenTofu {totals['tofu']} scoped provider checks")
@@ -561,6 +568,8 @@ if __name__ == '__main__':
     parser.add_argument('--npm-search', action='store_true',
                         help='also verify npm hosted and cached search using stock clients')
     parser.add_argument('--npm-search-ci-architecture', choices=('amd64', 'arm64'))
+    parser.add_argument('--python-search-client', type=Path,
+                        help='also verify hosted search with a Python environment containing stock pip and Twine')
     parser.add_argument('--cargo-toolchain', type=Path)
     parser.add_argument('--cargo-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--cargo-public-origin', action='store_true',
@@ -586,6 +595,9 @@ if __name__ == '__main__':
     if options.npm_search_ci_architecture and (not options.npm_search or options.cargo_toolchain
                                                 or options.promtool or options.mcp_binary or options.provider_binary):
         parser.error('hosted npm search evidence requires the isolated stock npm search profile')
+    if options.python_search_client and (options.ci_architecture or options.cargo_ci_architecture
+                                         or options.npm_search_ci_architecture):
+        parser.error('Python search uses the local stock Python evidence profile')
     if options.legacy_cargo_daemon and (not options.cargo_toolchain or options.cargo_ci_architecture):
         parser.error('historical Cargo adoption requires the local stock Cargo profile and reviewed schema 18 daemon')
     evaluate(options)

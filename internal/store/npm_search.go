@@ -10,7 +10,6 @@ import (
 	"slices"
 	"strings"
 	"time"
-	"unicode"
 
 	"github.com/Masterminds/semver/v3"
 	"github.com/jackc/pgx/v5"
@@ -124,16 +123,7 @@ func selectNPMSearchResult(selected map[string]npmSearchCandidate, candidate npm
 			}
 		}
 	}
-	var description strings.Builder
-	for _, r := range pkg.Description {
-		if description.Len() >= 512 {
-			break
-		}
-		if !unicode.IsControl(r) {
-			description.WriteRune(r)
-		}
-	}
-	pkg.Description = description.String()
+	pkg.Description = searchDescription(pkg.Description)
 	pkg.Maintainers = []struct{}{}
 	pkg.Date = pkg.Date.UTC()
 	selected[pkg.Name] = candidate

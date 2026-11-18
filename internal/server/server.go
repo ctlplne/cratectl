@@ -378,11 +378,13 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		fail(w, 404, "format_mismatch", "Use the native endpoint for this repository format.")
 		return
 	}
-	if r.Method != "GET" && r.Method != "HEAD" && !i.CanWrite() {
+	readOnly := r.Method == "GET" || r.Method == "HEAD" ||
+		(r.Method == "POST" && repo.Format == "pypi" && p == "search")
+	if !readOnly && !i.CanWrite() {
 		fail(w, 403, "forbidden", "A repository writer or administrator token is required.")
 		return
 	}
-	if r.Method != "GET" && r.Method != "HEAD" {
+	if !readOnly {
 		if repo.Mode != "hosted" {
 			fail(w, 405, "read_only_repository", "Publish to a hosted source, then consume through the proxy/group endpoint.")
 			return

@@ -28,3 +28,16 @@ func literalSearch(query string) string {
 	}
 	return pattern.String()
 }
+
+func searchDescription(text string) string {
+	var description strings.Builder
+	for _, r := range text {
+		if description.Len() >= 512 {
+			break
+		}
+		if !unicode.IsControl(r) {
+			description.WriteRune(r)
+		}
+	}
+	return description.String()
+}

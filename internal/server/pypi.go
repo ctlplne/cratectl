@@ -23,6 +23,10 @@ func NormalizePython(name string) string {
 	return pyNormalize.ReplaceAllString(strings.ToLower(name), "-")
 }
 func (s *Server) pypi(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, p string) {
+	if p == "search" {
+		s.pythonSearch(w, r, i, repo)
+		return
+	}
 	if strings.HasPrefix(p, "files/") {
 		s.pythonDownload(w, r, i, repo, strings.TrimPrefix(p, "files/"))
 		return
