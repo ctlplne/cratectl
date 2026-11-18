@@ -21,6 +21,33 @@ ROOT_PACKAGE = 'cratectl-cargo-root'
 VERSION = '1.0.0'
 
 
+def stock_cargo_environment(installation, rustc, environment):
+    env = {k: v for k, v in environment.items() if not k.startswith(('CARGO_', 'RUST_', 'RUSTC', 'RUSTUP'))}
+    env.update(RUSTC=str(rustc), CARGO_HTTP_CAINFO=str(installation / 'ca.crt'), CARGO_NET_RETRY='0',
+               CARGO_HTTP_TIMEOUT='10', NO_PROXY='localhost,127.0.0.1', no_proxy='localhost,127.0.0.1',
+               CARGO_HTTP_PROXY='http://127.0.0.1:38443')
+    return env
+
+
+def cargo_home(work, label, index_url, environment, token):
+    directory = work / label
+    directory.mkdir(mode=0o700)
+    (directory / 'config.toml').write_text('[registry]\nglobal-credential-providers = ["cargo:token"]\n'
+                                           '[registries.cratectl]\nindex = ' + json.dumps(index_url) + '\n')
+    env = dict(environment, CARGO_HOME=str(directory))
+    if token is not None:
+        env['CARGO_REGISTRIES_CRATECTL_TOKEN'] = token
+    return directory, env
+
+
+def new_project(path, name, dependency='', version=VERSION):
+    (path / 'src').mkdir(mode=0o700, parents=True)
+    (path / 'src/lib.rs').write_text('// Inert registry download fixture.\n')
+    (path / 'Cargo.toml').write_text(f'[package]\nname = "{name}"\nversion = "{version}"\nedition = "2024"\n'
+                                     'rust-version = "1.89"\nlicense = "MIT"\n'
+                                     'description = "cratectl inert fixture"\n' + dependency)
+
+
 def evaluate_cargo(work, installation, authority, toolchain, environment, call, api, restart, sha):
     repo = '/api/v1/repositories/' + REPOSITORY
     base = authority + '/cargo/' + REPOSITORY
@@ -75,27 +102,10 @@ def evaluate_cargo(work, installation, authority, toolchain, environment, call, 
     rust_version = call('stock-rustc-version', rustc, '-Vv')[1]
     check('stock Cargo and rustc 1.100.0', bool(re.fullmatch(r'cargo 1\.100\.0 \([0-9a-f]+ [0-9-]+\)', cargo_version))
           and rust_version.startswith('rustc 1.100.0 '))
-    shared_env = {k: v for k, v in environment.items() if not k.startswith(('CARGO_', 'RUST_', 'RUSTC', 'RUSTUP'))}
-    shared_env.update(RUSTC=str(rustc), CARGO_HTTP_CAINFO=str(installation / 'ca.crt'), CARGO_NET_RETRY='0',
-                      CARGO_HTTP_TIMEOUT='10', NO_PROXY='localhost,127.0.0.1', no_proxy='localhost,127.0.0.1',
-                      CARGO_HTTP_PROXY='http://127.0.0.1:38443')
+    shared_env = stock_cargo_environment(installation, rustc, environment)
 
     def cargo_env(label, token):
-        directory = work / label
-        directory.mkdir(mode=0o700)
-        (directory / 'config.toml').write_text('[registry]\nglobal-credential-providers = ["cargo:token"]\n'
-                                               '[registries.cratectl]\nindex = ' + json.dumps(index_url) + '\n')
-        env = dict(shared_env, CARGO_HOME=str(directory))
-        if token is not None:
-            env['CARGO_REGISTRIES_CRATECTL_TOKEN'] = token
-        return directory, env
-
-    def new_project(path, name, dependency='', version=VERSION):
-        (path / 'src').mkdir(mode=0o700, parents=True)
-        (path / 'src/lib.rs').write_text('// Inert registry download fixture.\n')
-        (path / 'Cargo.toml').write_text(f'[package]\nname = "{name}"\nversion = "{version}"\nedition = "2024"\n'
-                                         'rust-version = "1.89"\nlicense = "MIT"\n'
-                                         'description = "cratectl inert fixture"\n' + dependency)
+        return cargo_home(work, label, index_url, shared_env, token)
 
     api('cargo-create', '/api/v1/repositories', 'POST', {
         'name': REPOSITORY, 'format': 'cargo', 'access': 'restricted', 'require_review': False,

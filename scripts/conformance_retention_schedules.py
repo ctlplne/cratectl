@@ -70,7 +70,7 @@ result = {
     'checks': checks, 'commands': commands, 'process_events': process_events,
     'timing_helpers': [],
     'private_logs': str(PRIVATE.relative_to(ROOT)),
-    'topology': f'Native {platform.platform()}, qualified schema-7 binary then schema-{CURRENT_SCHEMA} registry/worker, PostgreSQL 16.15 forced RLS and restricted runtime, stock ORAS 1.3.6 and cratectl CLI. Explicit HTTP loopback 38443. Runtime processes omit the owner DSN; native clients omit both database DSNs.',
+    'topology': f'Native {platform.platform()}, qualified schema-7 binary then schema-{CURRENT_SCHEMA} registry/worker, PostgreSQL forced RLS and restricted runtime, stock ORAS 1.3.6 and cratectl CLI. Explicit HTTP loopback 38443. Runtime processes omit the owner DSN; native clients omit both database DSNs.',
     'limits': [
         'Canonical OCI manifest creation-age/newest/tag/hold/reference rules. No physical erasure or reclaimed storage; other formats/rules and production recovery remain required.',
         'Artifact creation age is an owned SQL fixture. Claim and second-outcome barriers are declared timing faults in the isolated database, not supported product hooks or metadata repair.',

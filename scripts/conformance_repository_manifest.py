@@ -20,6 +20,7 @@ import urllib.request
 
 from bounded_client import run_owned_client
 from cargo_hosted_fixture import evaluate_cargo
+from cargo_ownership_upgrade_fixture import BASELINE as CARGO_UPGRADE_BASELINE, replay_legacy_cargo
 from ci.cargo_evidence import PINS as CARGO_PINS, SOURCE_PATHS as CARGO_SOURCE_PATHS, validate as validate_cargo
 from ci.terraform_provider_evidence import ARCHIVE_PINS, SOURCE_PATHS, postgres_version, validate
 from qualification_contract import CURRENT_SCHEMA, CURRENT_TENANT_TABLES, candidate_binary_directory
@@ -91,8 +92,8 @@ def evaluate(args):
         _, output = cli(label, *flags, status=status)
         return json.loads(output) if status == 0 else output
 
-    def start_server():
-        process = subprocess.Popen([daemon, 'serve', '--config', runtime_config], env=public_env,
+    def start_server(executable=None):
+        process = subprocess.Popen([executable or daemon, 'serve', '--config', runtime_config], env=public_env,
                                    stdout=server_log, stderr=subprocess.STDOUT)
         trust = ssl.create_default_context(cafile=str(app / 'ca.crt'))
         local_http = urllib.request.build_opener(urllib.request.ProxyHandler({}), urllib.request.HTTPSHandler(context=trust))
@@ -175,16 +176,52 @@ def evaluate(args):
         suffix = '@127.0.0.1:35432/cratectl_manifest?sslmode=disable'
         owner_env = dict(public_env, CRATECTL_OWNER_DSN='postgres://cratectl_owner:' + owner + suffix,
                          CRATECTL_DSN='postgres://cratectl_app:' + runtime + suffix)
-        call('initialize-registry', daemon, 'init', '--tenant', TENANT, '--directory', app, environment=owner_env)
+        bootstrap = daemon
+        if args.legacy_cargo_daemon:
+            bootstrap = args.legacy_cargo_daemon.resolve()
+            build = call('legacy-cargo-baseline-build', go, 'version', '-m', bootstrap)[1]
+            if (f'vcs.revision={CARGO_UPGRADE_BASELINE}' not in build or 'vcs.modified=false' not in build
+                    or '\tpath\tctlplne.dev/cratectl/cmd/cratectld\n' not in build):
+                raise ValueError('legacy Cargo upgrade requires the exact reviewed schema 18 daemon')
+        call('initialize-registry', bootstrap, 'init', '--tenant', TENANT, '--directory', app, environment=owner_env)
         actors = [('reader', TENANT, 'reader'), ('other', OTHER, 'admin')]
         if args.cargo_toolchain:
             actors.extend([('writer', TENANT, 'writer'), ('maintainer', TENANT, 'writer')])
         for label, tenant, role in actors:
             token = work / (label + '.token')
-            call('provision-' + label, daemon, 'provision', '--tenant', tenant, '--actor', 'cratectl-' + label,
+            call('provision-' + label, bootstrap, 'provision', '--tenant', tenant, '--actor', 'cratectl-' + label,
                  '--role', role, '--token-file', token, environment=owner_env)
             write(label + '.json', {'version': 1, 'url': BASE, 'token_file': str(token), 'ca_file': str(app / 'ca.crt')})
-        server = start_server()
+        server = start_server(bootstrap)
+        if args.legacy_cargo_daemon:
+            def controlled_upgrade():
+                nonlocal server
+                def migration_plan(binary, label):
+                    return json.loads(call(label, binary, 'migrate', '--plan', environment=owner_env)[1])
+
+                before = migration_plan(bootstrap, 'legacy-cargo-before-migration-plan')
+                if before['binary_version'] != 18 or len(before['applied']) != 18 or not before['safety_valid'] or before['pending']:
+                    raise ValueError('legacy Cargo baseline receipts differ')
+                stop_server(server)
+                server = None
+                pending = migration_plan(daemon, 'legacy-cargo-pending-migration-plan')
+                if pending['binary_version'] != CURRENT_SCHEMA or pending['pending'] != [19] or pending['applied'] != before['applied']:
+                    raise ValueError('Cargo ownership migration changes the older receipt inventory')
+                call('apply-cargo-ownership-migration', daemon, 'migrate', environment=owner_env)
+                after = migration_plan(daemon, 'legacy-cargo-after-migration-plan')
+                if (after['applied'][:-1] != before['applied'] or len(after['applied']) != CURRENT_SCHEMA
+                        or after['pending'] or not after['safety_valid']):
+                    raise ValueError('Cargo ownership migration did not preserve the older receipts')
+                _, refusal = call('legacy-cargo-old-daemon-refused', bootstrap, 'serve', '--config', runtime_config,
+                                  environment=public_env, status=1, timeout=10)
+                if 'schema' not in refusal.lower():
+                    raise ValueError('legacy Cargo runtime did not explicitly refuse the migrated schema')
+                server = start_server()
+                return {'baseline_binary_sha256': sha(bootstrap), 'preserved_receipts': len(before['applied']),
+                        'applied': after['applied'][-1], 'old_daemon_refused_current_schema': True}
+
+            report['cargo_upgrade'] = replay_legacy_cargo(work, app, BASE, args.cargo_toolchain.resolve(),
+                                                        public_env, call, api, controlled_upgrade, sha)
         if args.promtool:
             promtool = args.promtool.resolve()
             prometheus = call('stock-promtool-version', promtool, '--version')[1].splitlines()[0]
@@ -398,6 +435,8 @@ def evaluate(args):
         print(f"PASS: {sum(len(phase['checks']) for phase in report['mcp']['phases'])} scoped official MCP checks")
     if args.cargo_toolchain:
         print(f"PASS: {len(report['cargo']['checks'])} scoped stock Cargo checks")
+    if args.legacy_cargo_daemon:
+        print(f"PASS: {len(report['cargo_upgrade']['checks'])} stock Cargo historical adoption checks")
     if args.ci_architecture:
         record_ci(report, args.ci_architecture)
     if args.cargo_ci_architecture:
@@ -455,6 +494,7 @@ if __name__ == '__main__':
     parser.add_argument('--promtool', type=Path)
     parser.add_argument('--cargo-toolchain', type=Path)
     parser.add_argument('--cargo-ci-architecture', choices=('amd64', 'arm64'))
+    parser.add_argument('--legacy-cargo-daemon', type=Path)
     options = parser.parse_args()
     if len([value for value in (options.provider_binary, options.terraform, options.tofu) if value]) not in (0, 3):
         parser.error('provide the local provider and both stock clients together')
@@ -468,4 +508,6 @@ if __name__ == '__main__':
         parser.error('the native Cargo profile runs separately from hosted provider qualification')
     if options.cargo_ci_architecture and (not options.cargo_toolchain or options.promtool or options.mcp_binary or options.provider_binary):
         parser.error('hosted Cargo evidence requires the stock toolchain in the isolated Cargo profile')
+    if options.legacy_cargo_daemon and (not options.cargo_toolchain or options.cargo_ci_architecture):
+        parser.error('historical Cargo adoption requires the local stock Cargo profile and reviewed schema 18 daemon')
     evaluate(options)

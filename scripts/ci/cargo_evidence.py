@@ -52,7 +52,7 @@ SOURCE_PATHS = (
     'internal/store/artifact_read.go', 'internal/blob/local.go', 'internal/crypto/crypto.go',
     'internal/store/lifecycle_artifact.go', 'internal/store/lifecycle.go', 'internal/server/lifecycle.go',
     'internal/store/cargo_owners.go', 'internal/store/cargo_ownership_schema.go', 'internal/store/migrations.go',
-    'scripts/cargo_hosted_fixture.py', 'scripts/conformance_repository_manifest.py',
+    'scripts/cargo_hosted_fixture.py', 'scripts/cargo_ownership_upgrade_fixture.py', 'scripts/conformance_repository_manifest.py',
     'scripts/ci/cargo_evidence.py', 'scripts/ci/bootstrap_cargo.py', 'scripts/ci/fetch_archive.py',
     'scripts/ci/terraform_provider_evidence.py', 'scripts/qualification_contract.py', 'scripts/bounded_client.py',
 )
