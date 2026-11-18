@@ -12,6 +12,7 @@ from pathlib import Path
 import re
 import shutil
 import stat
+import tarfile
 import tempfile
 
 from bounded_client import run_owned_client
@@ -162,6 +163,39 @@ def image_id(reference, platform):
     return result[1]
 
 
+def saved_image_configuration(path, tag, platform):
+    require(0 < path.stat().st_size <= MAX_IMAGE, 'saved image exceeds the media size budget')
+    with tarfile.open(path, 'r:') as archive:
+        entries = {}
+        for entry in archive:
+            require(len(entries) < 4096 and entry.name not in entries, 'invalid saved image tar inventory')
+            entries[entry.name] = entry
+
+        def metadata(name):
+            item = entries.get(name)
+            require(item is not None and item.isfile() and 0 < item.size <= 256 << 10,
+                    'invalid saved image metadata entry')
+            with archive.extractfile(item) as stream:
+                raw = stream.read((256 << 10) + 1)
+            require(len(raw) == item.size, 'incomplete saved image metadata')
+            return raw
+
+        manifest = closed_json(metadata('manifest.json'))
+        require(type(manifest) is list and len(manifest) == 1 and type(manifest[0]) is dict
+                and manifest[0].get('RepoTags') == [tag], 'expected one saved native image and exact tag')
+        name = manifest[0].get('Config')
+        match = re.fullmatch(r'(?:blobs/sha256/([0-9a-f]{64})|([0-9a-f]{64})\.json)', name) if type(name) is str else None
+        require(match is not None, 'invalid saved image configuration name')
+        raw = metadata(name)
+        checksum = hashlib.sha256(raw).hexdigest()
+        config = json.loads(raw.decode('utf-8'), object_pairs_hook=unique_members)
+        os_name, architecture = platform.split('/')
+        require(checksum == (match[1] or match[2]) and type(config) is dict
+                and config.get('os') == os_name and config.get('architecture') == architecture,
+                'saved image configuration digest or platform differs')
+        return 'sha256:' + checksum
+
+
 def verify_sbom_subjects(media, archive, metadata, archive_digest):
     fd = os.open(media, os.O_RDONLY | os.O_DIRECTORY)
     try:
@@ -211,11 +245,13 @@ def assemble(architecture, candidate, output):
         command('docker', 'image', 'tag', POSTGRES, tags['postgres'])
         command('docker', 'build', '--platform=' + platform, '--network=none', '--build-arg', 'POSTGRES_IMAGE=' + POSTGRES,
                 '-t', tags['registry'], context, timeout=300)
-        images = {'postgres': {'tag': tags['postgres'], 'id': postgres_id, 'source': POSTGRES},
-                  'registry': {'tag': tags['registry'], 'id': image_id(tags['registry'], platform)}}
+        require(image_id(tags['postgres'], platform) == postgres_id, 'staged PostgreSQL image differs from its pinned source')
+        image_id(tags['registry'], platform)
+        images = {}
         for name, filename in IMAGE_FILES.items():
-            require(image_id(tags[name], platform) == images[name]['id'], 'staged image tag differs')
             command('docker', 'image', 'save', '--platform=' + platform, '--output', media / filename, tags[name], timeout=300)
+            images[name] = {'tag': tags[name], 'id': saved_image_configuration(media / filename, tags[name], platform)}
+        images['postgres']['source'] = POSTGRES
         fd = os.open(media, os.O_RDONLY | os.O_DIRECTORY)
         try:
             files = {name: bounded_member(fd, name, maximum) for name, maximum in members(architecture).items()}

@@ -354,6 +354,11 @@ Their Docker 28.0.4 CLI rejected the platform flag before the runtime replay.
 The correction validates the inspected image digest and Linux architecture
 and keeps platform selection on image save and load.
 [Original hosted failures](evidence/2026-11-18/github-e4b1408-offline-media-original-failures.json)
+The local Docker API 1.48 replay at `43dc8f4` then reached image import. It
+showed that the pinned index, loaded manifest and native image configuration
+have distinct digests. The replay now reads the native configuration from the
+saved archive and compares it with a fresh platform-filtered export after load.
+[Original post-import identity failure](evidence/2026-11-18/offline-media-43dc8f4-api148-first-failure.json)
 
 The cold `e4adc19` recovery fixture passed 17 runtime checks and 12 backup
 controls. With registry and worker stopped, stock PostgreSQL 16.15 captured

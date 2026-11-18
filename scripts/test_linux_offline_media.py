@@ -3,14 +3,17 @@
 
 import base64
 import hashlib
+import io
 import json
 from pathlib import Path
+import tarfile
 import tempfile
 import unittest
 from unittest.mock import patch
 
 from linux_offline_media import (ED25519_SPKI, IMAGE_FILES, MANIFEST, POSTGRES,
-                                 PROFILE, SIGNATURE, aliases, contract, image_id, members, verify_media)
+                                 PROFILE, SIGNATURE, aliases, contract, image_id, members,
+                                 saved_image_configuration, verify_media)
 
 
 def sha(raw):
@@ -77,6 +80,32 @@ class LinuxOfflineMediaTests(unittest.TestCase):
             docker.return_value += '\n' + digest + ' linux/arm64'
             with self.assertRaisesRegex(ValueError, 'reviewed Linux platform'):
                 image_id(POSTGRES, 'linux/arm64')
+
+    def test_saved_configuration_binds_native_bytes_and_one_tag(self):
+        config = b'{"os":"linux","architecture":"arm64"}'
+        checksum = sha(config)
+        tag = 'cratectl-offline-postgres:fixture'
+        with tempfile.TemporaryDirectory(prefix='cratectl-offline-inspection-test-') as folder:
+            path = Path(folder) / 'image.tar'
+            for name in ('blobs/sha256/' + checksum, checksum + '.json'):
+                manifest = {'RepoTags': [tag], 'Config': name}
+
+                def write_archive(config_body):
+                    with tarfile.open(path, 'w:') as saved:
+                        for key, data in [('manifest.json', json.dumps([manifest]).encode()), (name, config_body)]:
+                            member = tarfile.TarInfo(key)
+                            member.size = len(data)
+                            saved.addfile(member, io.BytesIO(data))
+
+                write_archive(config)
+                self.assertEqual(saved_image_configuration(path, tag, 'linux/arm64'), 'sha256:' + checksum)
+                with self.assertRaisesRegex(ValueError, 'exact tag'):
+                    saved_image_configuration(path, tag + 'other', 'linux/arm64')
+                with self.assertRaisesRegex(ValueError, 'digest or platform'):
+                    saved_image_configuration(path, tag, 'linux/amd64')
+                write_archive(config + b' ')
+                with self.assertRaisesRegex(ValueError, 'digest or platform'):
+                    saved_image_configuration(path, tag, 'linux/arm64')
 
 
 if __name__ == '__main__':

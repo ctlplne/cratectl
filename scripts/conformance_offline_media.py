@@ -18,7 +18,7 @@ import time
 
 from bounded_client import run_owned_client
 from compose_evaluation import ROOT, private_directory
-from linux_offline_media import assemble, require
+from linux_offline_media import assemble, require, saved_image_configuration
 from ci.offline_media_evidence import CHECKS, NODE, SOURCE_PATHS, validate
 
 parser = argparse.ArgumentParser(description=__doc__)
@@ -72,8 +72,11 @@ def verify_args(path, fingerprint):
 
 
 def inspect(tag):
-    return run('inspected-'+tag.split(':')[0],'docker','image','inspect',
-               '--format','{{.Id}} {{.Os}}/{{.Architecture}}',tag)
+    result = run('inspected-'+tag.split(':')[0],'docker','image','inspect',
+                 '--format','{{.Id}} {{.Os}}/{{.Architecture}}',tag)
+    match = re.fullmatch(r'(sha256:[a-f0-9]{64}) ' + re.escape(PLATFORM), result)
+    require(match is not None, 'loaded Docker platform differs')
+    return match[1]
 
 
 CANDIDATE = run('source', 'git', 'rev-parse', 'HEAD')
@@ -128,13 +131,18 @@ try:
         run('refuse-changed-registry-image',*verify_args(altered,fingerprint),want=1)
         assert 'signed media bytes differ: registry-image.tar' in (PRIVATE/'refuse-changed-registry-image.log').read_text()
     images=manifest['images']
+    loaded_ids={}
     for role in ('postgres','registry'):
         ref=images[role]['tag']
-        assert inspect(ref)==images[role]['id']+' '+PLATFORM
         run('remove-only-assembly-tag-'+role,'docker','image','rm',ref)
         run('confirm-absent-tag-'+role,'docker','image','inspect',ref,want=1)
         run('load-'+role,'docker','image','load','--platform='+PLATFORM,'--input',MEDIA/(role+'-image.tar'),timeout=120)
-        assert inspect(ref)==images[role]['id']+' '+PLATFORM
+        loaded_ids[role]=inspect(ref)
+        with tempfile.TemporaryDirectory(prefix=PROJECT+'-readback-',dir=PRIVATE) as folder:
+            readback=Path(folder)/'image.tar'
+            run('export-loaded-'+role,'docker','image','save','--platform='+PLATFORM,
+                '--output',readback,ref,timeout=120)
+            assert saved_image_configuration(readback,ref,PLATFORM)==images[role]['id']
     install=PRIVATE/'installation'
     install.mkdir(mode=0o700)
     pagination=PRIVATE/'pagination'
@@ -206,7 +214,7 @@ try:
                  '{{.HostConfig.NetworkMode}} {{json .HostConfig.PortBindings}} {{.Image}}')
         assert (' none ' in ' '+mode if container==PG else mode.startswith('container:'))
         assert ' {} ' in mode
-        image=images['postgres' if container==PG else 'registry']['id']
+        image=loaded_ids['postgres' if container==PG else 'registry']
         assert mode.endswith(' '+image)
     result = {'schema': 1, 'profile': 'cratectl-native-offline-media-v1',
               'candidate': CANDIDATE, 'runner_os': 'Linux', 'runner_arch': RUNNER,

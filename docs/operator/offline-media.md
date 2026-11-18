@@ -3,9 +3,9 @@
 This candidate workflow is for authorized local qualification. It requires a
 clean source checkout, its pinned Go toolchain and prepared Go module cache.
 The assembly host also needs Helm and a local Docker engine that supports
-platform-filtered export and import through API 1.48 or newer. Inspection
-checks the reported Linux architecture and configuration digest. The native
+platform-filtered export and import through API 1.48 or newer. The native
 variant must be the one Docker selects when inspecting the pinned reference.
+The manifest records the configuration digest of each saved native image.
 The PostgreSQL image must already be available by the pinned reference in
 `scripts/compose_evaluation.py` for the intended platform.
 [Docker image inspection](https://docs.docker.com/reference/cli/docker/image/inspect/)
@@ -46,7 +46,9 @@ Copy the authenticated directory into storage controlled by the installing
 operator. Import the named image archives on the disconnected Docker engine
 and compare each platform's image configuration digest with `images` in the
 verified manifest. The saved tags are specific to the candidate and
-architecture.
+architecture. The replay re-exports each loaded tag and compares the SHA-256
+of the exact configuration JSON named in the archive's `manifest.json`.
+Docker may display an image index or manifest digest when inspecting a tag.
 [Docker platform-specific import](https://docs.docker.com/reference/cli/docker/image/load/)
 
 ```sh

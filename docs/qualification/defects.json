@@ -1758,6 +1758,13 @@
       "state": "Both original hosted jobs stopped before the disconnected runtime. The focused compatibility regression passes. Native hosted replays are pending.",
       "first_failure": "evidence/2026-11-18/github-e4b1408-offline-media-original-failures.json",
       "repair": "Read the image ID and Linux architecture from native inspection. Require exact platform selection when saving and loading the images."
+    },
+    {
+      "id": "DEFECT.0166",
+      "summary": "Docker API 1.48 reports an image index or manifest digest in ordinary inspection",
+      "state": "The native ARM64 replay at 43dc8f4 reached import and retained the original digest mismatch. Focused checks pass for both saved archive layouts.",
+      "first_failure": "evidence/2026-11-18/offline-media-43dc8f4-api148-first-failure.json",
+      "repair": "Read and hash the exact native configuration from the platform-filtered archive. Re-export the imported tag and compare the configuration digest. Bind launched containers to the independently observed loaded daemon image identity."
     }
   ]
 }
