@@ -18,7 +18,8 @@ from cargo_evidence import CHECKS as CARGO_CHECKS
 from cargo_public_evidence import CHECKS as CARGO_PUBLIC_CHECKS
 from npm_search_evidence import HOSTED_CHECKS as NPM_HOSTED, CACHED_CHECKS as NPM_CACHED
 from python_search_evidence import HOSTED_CHECKS as PYTHON_HOSTED, CACHED_CHECKS as PYTHON_CACHED
-from oci_repository_catalog_evidence import CATALOG_CHECKS as OCI_CATALOG_CHECKS
+from oci_repository_catalog_evidence import (CACHED_CHECKS as OCI_CACHED_CHECKS, CATALOG_CHECKS as OCI_CATALOG_CHECKS,
+                                             GROUP_CHECKS as OCI_GROUP_CHECKS, cached_selected as oci_cached_selected)
 from campaign_transport import (EvidenceError, GitHubEvidenceClient, LOG_BYTES,
                                 REPOSITORY, artifact_json, require, strict_json)
 
@@ -216,6 +217,10 @@ def check_log(raw, spec, source):
         require(text.count(f'PASS: {len(IAC_BASE) - 1} native declarative repository checks') == 1
                 and text.count(f'PASS: {len(OCI_CATALOG_CHECKS)} stock ORAS repository catalog checks') == 1,
                 'oci_catalog_native_inventory')
+        if oci_cached_selected(source):
+            require(text.count(f'PASS: {len(OCI_CACHED_CHECKS)} stock ORAS cached repository catalog checks') == 1
+                    and text.count(f'PASS: {len(OCI_GROUP_CHECKS)} stock ORAS ordered group catalog checks') == 1,
+                    'oci_catalog_cached_inventory')
     if kind in ('native', 'go'):
         pattern = r'\bok\s+ctlplne.dev/cratectl/internal/(?:server|store' + ('|conformance' if kind == 'native' else '') + r')\s'
         require(len(re.findall(pattern, text)) == (6 if kind == 'native' else 4), 'native_package_success_inventory')

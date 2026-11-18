@@ -681,6 +681,14 @@ the unit, race and lint gates passed. Ordered group and Linux cached
 catalogs retain separate qualification.
 [Native cached OCI catalog evidence](evidence/2026-11-19/oci-9f9b558-cached-catalog-native.json)
 
+`79323c2` passed all 42 combined native checks on macOS ARM64, including
+seven ordered-group catalog checks. The stock ORAS fixture exercised
+selected member grants, namespace ownership, exact lower-member delivery
+and preferred proxy absence without a source request during listing. All
+three real PostgreSQL catalog tests and the build, unit, race and lint gates
+passed. The combined Linux workflow has a separate report profile.
+[Native ordered OCI catalog evidence](evidence/2026-11-19/oci-79323c2-ordered-catalog-native.json)
+
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities
 published and pulled two exact chart archives, including a build-metadata

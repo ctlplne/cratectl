@@ -592,15 +592,16 @@ def record_python_search_ci(report, architecture):
 
 
 def record_oci_catalog_ci(report, architecture):
-    from ci.oci_repository_catalog_evidence import SOURCE_PATHS as catalog_sources, validate as validate_catalog
+    from ci.oci_repository_catalog_evidence import CACHED_PROFILE, CACHED_SOURCE_PATHS, HOSTED_PROFILE, SOURCE_PATHS, validate as validate_catalog
 
     runner = hosted_runner(report, architecture)
     projection = {key: report[key] for key in ('candidate', 'status', 'checks', 'binary_sha256', 'archive_sha256',
                                                 'postgres', 'npm', 'oci_repository_catalog', 'goal_complete', 'broad_readiness')}
-    projection.update(schema=1, profile='cratectl-native-oci-repository-catalog-v1', runner_os='Linux', runner_arch=runner,
+    cached = 'cached' in report['oci_repository_catalog']
+    projection.update(schema=1, profile=CACHED_PROFILE if cached else HOSTED_PROFILE, runner_os='Linux', runner_arch=runner,
                       run_id=os.environ.get('GITHUB_RUN_ID'), source_dirty=False,
                       oras_archive_sha256=sha(ROOT / f'.cache/oras_1.3.6_linux_{architecture}.tar.gz'),
-                      source_sha256={name: sha(ROOT / name) for name in catalog_sources})
+                      source_sha256={name: sha(ROOT / name) for name in (CACHED_SOURCE_PATHS if cached else SOURCE_PATHS)})
     validate_catalog(projection)
     with (ROOT / '.cache/ci-oci-catalog.json').open('x') as stream:
         json.dump(projection, stream, indent=2)
@@ -622,7 +623,7 @@ if __name__ == '__main__':
                         help='also verify the hosted OCI repository catalog using stock ORAS')
     parser.add_argument('--oci-catalog-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--oci-catalog-cached', action='store_true',
-                        help='also exercise the scoped cached OCI proxy discovery fixture')
+                        help='also exercise the scoped cached proxy and ordered OCI group discovery fixture')
     parser.add_argument('--npm-search', action='store_true',
                         help='also verify npm hosted and cached search using stock clients')
     parser.add_argument('--npm-search-ci-architecture', choices=('amd64', 'arm64'))
@@ -640,8 +641,8 @@ if __name__ == '__main__':
         parser.error('OCI repository catalog uses its own stock evidence profile')
     if options.oci_catalog_ci_architecture and (not options.oci_catalog_client or options.provider_binary
                                                or options.npm_search or options.python_search_client or options.cargo_toolchain
-                                               or options.mcp_binary or options.promtool or options.oci_catalog_cached):
-        parser.error('hosted OCI catalog evidence requires the isolated stock ORAS catalog profile')
+                                               or options.mcp_binary or options.promtool):
+        parser.error('native OCI catalog evidence requires the isolated stock ORAS catalog profile')
     if options.oci_catalog_cached and not options.oci_catalog_client:
         parser.error('cached OCI catalog requires stock ORAS')
     if len([value for value in (options.provider_binary, options.terraform, options.tofu) if value]) not in (0, 3):

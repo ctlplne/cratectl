@@ -25,7 +25,10 @@ from cargo_evidence import CHECKS as CARGO_CHECKS, validate as validate_cargo
 from cargo_public_evidence import CHECKS as CARGO_PUBLIC_CHECKS, validate as validate_cargo_public
 from npm_search_evidence import HOSTED_CHECKS as NPM_HOSTED, CACHED_CHECKS as NPM_CACHED, validate as validate_npm_search
 from python_search_evidence import HOSTED_CHECKS as PYTHON_HOSTED, CACHED_CHECKS as PYTHON_CACHED, validate as validate_python_search
-from oci_repository_catalog_evidence import CATALOG_CHECKS as OCI_CATALOG_CHECKS, validate as validate_oci_catalog
+from oci_repository_catalog_evidence import (CACHED_CHECKS as OCI_CACHED_CHECKS, CACHED_PROFILE as OCI_CACHED_PROFILE,
+                                             CATALOG_CHECKS as OCI_CATALOG_CHECKS, GROUP_CHECKS as OCI_GROUP_CHECKS,
+                                             HOSTED_PROFILE as OCI_HOSTED_PROFILE, cached_selected as oci_cached_selected,
+                                             validate as validate_oci_catalog)
 
 CONTRACTS = {'maven_cache_contract': safe_maven_cache_contract, 'gradle_contract': safe_gradle_contract,
              'ivy_contract': safe_ivy_contract, 'sbt_contract': safe_sbt_contract,
@@ -128,6 +131,11 @@ def validate_custom(report, candidate, run_id, spec, source):
         if spec['kind'] == 'cargo-public':
             require(all(digest == hashlib.sha256(source(path)).hexdigest()
                         for path, digest in report['public_source_sha256'].items()), 'cargo_public_fixture_source_identity')
+        if spec['kind'] == 'oci-catalog':
+            cached = oci_cached_selected(source)
+            require(report['profile'] == (OCI_CACHED_PROFILE if cached else OCI_HOSTED_PROFILE), 'oci_catalog_profile_selection')
+            if cached:
+                checks += len(OCI_CACHED_CHECKS) + len(OCI_GROUP_CHECKS)
         return {'checks': checks, 'records': 1}
     require(report.get('status') == 'passed' and report.get('source_dirty') is False, 'custom_report_incomplete')
     if spec['kind'] == 'library':

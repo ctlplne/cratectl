@@ -13,7 +13,10 @@ from campaign_transport import EvidenceError
 from compose_evidence import CHECKS as COMPOSE_CHECKS, SOURCE_PATHS as COMPOSE_FILES
 from linux_install_evidence import CHECKS as INSTALL_CHECKS, IMAGE as INSTALL_IMAGE, SOURCE_PATHS as INSTALL_FILES
 from npm_search_evidence import BASE_CHECKS as NPM_BASE, HOSTED_CHECKS as NPM_HOSTED, CACHED_CHECKS as NPM_CACHED, SOURCE_PATHS as NPM_FILES
-from oci_repository_catalog_evidence import ARCHIVE_PINS as ORAS_PINS, BASE_CHECKS as OCI_CATALOG_BASE, CATALOG_CHECKS, SOURCE_PATHS as OCI_CATALOG_FILES
+from oci_repository_catalog_evidence import (ARCHIVE_PINS as ORAS_PINS, BASE_CHECKS as OCI_CATALOG_BASE,
+                                             CACHED_CHECKS as OCI_CACHED_CHECKS, CACHED_PROFILE as OCI_CACHED_PROFILE,
+                                             CACHED_SOURCE_PATHS as OCI_CACHED_FILES, CATALOG_CHECKS, GROUP_CHECKS,
+                                             SOURCE_PATHS as OCI_CATALOG_FILES)
 from python_search_evidence import BASE_CHECKS as PYTHON_BASE, HOSTED_CHECKS as PYTHON_HOSTED, CACHED_CHECKS as PYTHON_CACHED, SOURCE_PATHS as PYTHON_FILES
 from offline_media_evidence import CHECKS as OFFLINE_CHECKS, PHASES as OFFLINE_PHASES, SOURCE_PATHS as OFFLINE_FILES
 from test_go_common_export_portability_evidence import complete as complete_common_contract
@@ -46,6 +49,27 @@ class CampaignReports(unittest.TestCase):
                 validate_custom({**report, **mutation}, candidate, 12, spec, source)
         with self.assertRaisesRegex(EvidenceError, 'oci_catalog_source_identity'):
             validate_custom(report, candidate, 12, spec, lambda path: b'different')
+
+        def cached_source(path):
+            if path == '.github/workflows/oci-repository-catalog.yml':
+                return b'--oci-catalog-cached --oci-catalog-ci-architecture'
+            return source(path)
+
+        cached = {'checks': list(OCI_CACHED_CHECKS), 'manifest_sha256': catalog['manifest_sha256'][0],
+                  'payload_sha256': catalog['payload_sha256'][0], 'groups': {
+                      'checks': list(GROUP_CHECKS), 'lower_manifest_sha256': '6' * 64,
+                      'lower_payload_sha256': catalog['payload_sha256'][0]}}
+
+        def bind(report, paths):
+            return {**report, 'source_sha256': {path: hashlib.sha256(cached_source(path)).hexdigest() for path in paths}}
+
+        combined = bind({**report, 'profile': OCI_CACHED_PROFILE, 'oci_repository_catalog': {**catalog, 'cached': cached}}, OCI_CACHED_FILES)
+        self.assertEqual(validate_custom(combined, candidate, 12, spec, cached_source), {'checks': 42, 'records': 1})
+        with self.assertRaisesRegex(EvidenceError, 'oci_catalog_profile_selection'):
+            validate_custom(bind(report, OCI_CATALOG_FILES), candidate, 12, spec, cached_source)
+        incomplete = {**cached, 'groups': {**cached['groups'], 'checks': list(GROUP_CHECKS)[:-1]}}
+        with self.assertRaisesRegex(EvidenceError, 'oci_catalog_report_contract'):
+            validate_custom({**combined, 'oci_repository_catalog': {**catalog, 'cached': incomplete}}, candidate, 12, spec, cached_source)
 
     def test_python_search_report_binds_exact_pip_and_twine_and_cached_scope(self):
         source = lambda path: path.encode()

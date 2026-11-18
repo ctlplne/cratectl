@@ -14,6 +14,22 @@ oras pull --registry-config /private/cratectl-registry.json \
   REGISTRY/REPOSITORY/IMAGE:v1
 ```
 
+Run `oras repo ls --registry-config /private/cratectl-registry.json REGISTRY`
+to list readable registry names. Pass `--last REPOSITORY/IMAGE` to resume after
+a full name. The server exposes the paged catalog at `/v2/_catalog` and uses
+the current tenant, repository grants and complete manifest graph policy.
+A digest-only manifest can make a name discoverable. Hosted discovery works
+immediately after a permitted publication. Proxy discovery requires current
+cache receipts for an exact manifest and its graph.
+
+Group results use the configured member order, namespace owners, selected
+member grants and group review rules. A preferred proxy must have current
+absence evidence for the exact digest before the catalog advertises it from
+a lower member. A normal pull can populate the cache or establish that
+absence. Catalog calls use local state and never contact upstream providers.
+The catalog returns at most 1000 names per page with a `Link` continuation
+when more names are available.
+
 A writer publishes; a reader consumes permitted bytes. Review-required
 repositories accept durable intake while keeping its manifest and payload graph
 quarantined. Inspect administrator inventory and manually decide the exact root

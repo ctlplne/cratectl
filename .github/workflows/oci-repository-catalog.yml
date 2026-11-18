@@ -72,7 +72,7 @@ jobs:
           mkdir -p .private
           python3 scripts/conformance_repository_manifest.py \
             --pg-bin /usr/lib/postgresql/16/bin --binary-directory .cache/cratectl-oci-catalog-bin \
-            --oci-catalog-client .cache/cratectl-oci-tools/oras --oci-catalog-ci-architecture '${{ matrix.arch }}'
+            --oci-catalog-client .cache/cratectl-oci-tools/oras --oci-catalog-cached --oci-catalog-ci-architecture '${{ matrix.arch }}'
       - uses: actions/upload-artifact@v7
         if: success()
         with:

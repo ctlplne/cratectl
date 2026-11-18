@@ -194,11 +194,12 @@
       "id": "J.OCI.SEARCH",
       "capability": "FMT.OCI.SEARCH",
       "state": "implementing",
-      "candidate": "9f9b5582efbc16ca5678a25bfa98bc181224bf1d",
+      "candidate": "79323c214bc2b53640d8ec4572791e8f0b886057",
       "evidence": [
         "evidence/2026-11-19/oci-8c9915c-hosted-catalog-native.json",
         "evidence/2026-11-19/github-586eb5d-oci-hosted-catalog-native.json",
-        "evidence/2026-11-19/oci-9f9b558-cached-catalog-native.json"
+        "evidence/2026-11-19/oci-9f9b558-cached-catalog-native.json",
+        "evidence/2026-11-19/oci-79323c2-ordered-catalog-native.json"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -206,8 +207,8 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Nine hosted and seven cached proxy stock ORAS catalog checks passed on macOS ARM64 with PostgreSQL 16.16 and trusted TLS. Hosted ORAS also passed on the original Linux x64 and ARM64 jobs. Cached search omitted cold, denied or invalidated graphs without contacting the origin, and exact explicit pulls restored visibility and survived restart.",
-      "next_action": "Qualify ordered group catalogs, native Linux cached discovery, alternate clients and larger workloads."
+      "limits": "Nine hosted, seven cached proxy and seven ordered group stock ORAS checks passed on macOS ARM64 with PostgreSQL 16.16 and trusted TLS. Hosted ORAS also passed at 586eb5d on native Linux x64 and ARM64. The combined catalog replay required current graph policy, chosen member grants, namespace ownership, fresh exact proxy authority and current absence for ordered fallback, with zero origin requests during catalog calls.",
+      "next_action": "Qualify the combined Linux profiles, alternate clients, independent origins and larger workloads."
     },
     {
       "id": "J.OCI.AUTHORIZATION",
