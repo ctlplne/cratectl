@@ -189,6 +189,13 @@ The reusable driver passed locally at `0f77078`. The same commit started the
 first two hosted Compose jobs and six baseline workflows.
 [Compose CI inventory](evidence/2026-11-18/github-0f77078-started.json)
 
+At `b910da7`, two builds produced identical local binary archives for Linux
+x64 and ARM64. Independent inspection matched all four ELF machines and
+manifest digests. Both extracted ARM64 binaries reached their help paths in
+containers with networking disabled. `make packaging` still fails pending the
+complete release and disconnected installation requirements.
+[Linux assembly evidence](evidence/2026-11-18/linux-candidates-b910da7-local.json)
+
 ## Durable state and remaining scope
 
 All18 migration definitions remain frozen. Schema18 checksum is

@@ -1,0 +1,101 @@
+{
+  "candidate": "b910da71c6dd0f981603b13c4d664e71ea2f1463",
+  "observed_at": "2026-11-18T13:17:11.424985+00:00",
+  "source_dirty": false,
+  "host": "macOS ARM64",
+  "go_version": "1.27.4",
+  "status": "passed",
+  "archive_assembly": "make package-linux",
+  "both_builds_byte_identical": true,
+  "artifacts": {
+    "amd64": {
+      "archive": ".cache/cratectl-linux-candidates/b910da71c6dd0f981603b13c4d664e71ea2f1463/cratectl-linux-amd64.tar.gz",
+      "bytes": 18517866,
+      "sha256": "edff21d958edf0fc48e4fc5a8eaf911b2ca24ac9327f974823004b537d689bf6",
+      "verified_manifest": {
+        "binaries": {
+          "cratectl": {
+            "bytes": 12488374,
+            "sha256": "2baed4a37646b59876d65ddf10ba7df416fc6a2f002432fb81dae83972cd60cc"
+          },
+          "cratectld": {
+            "bytes": 23564378,
+            "sha256": "bcc6f003dfe8a9651e98c584f112a2a51cb0ef69b4095beb7b785293e54df4b2"
+          }
+        },
+        "candidate": "b910da71c6dd0f981603b13c4d664e71ea2f1463",
+        "distribution_approved": false,
+        "go_version": "1.27.4",
+        "platform": "linux/amd64",
+        "profile": "cratectl-linux-binary-candidate-v1",
+        "schema": 1,
+        "source_sha256": {
+          "docs/licensing.md": "122d50592f15b57bfb10a359f84182cd2a1d096e6a439e25a65d9e4e022c9511",
+          "go.mod": "241101cea898478bbd0206b23e305695d5de2cb780747120d172d96e1e4eb99e",
+          "go.sum": "d0d1ecad19532ff247235eb62f99780093ead4679c958d9eb83d6dcc8d5b5fb1",
+          "internal/consoleui/dist/third-party-notices.txt": "fa81bac0f3ca351d2b864d51f9374d43d0daf3182f6390a8d23dccd83d3c2eb3",
+          "web/build-manifest.json": "72f0690c176923596236d7372daf9a870c5a3c18407785bd164bd8d2f242e7fa",
+          "web/package-lock.json": "f2b5ef59debedcbad42494b98207329e72852c82ea04f745caccf8069f3d5152"
+        }
+      }
+    },
+    "arm64": {
+      "archive": ".cache/cratectl-linux-candidates/b910da71c6dd0f981603b13c4d664e71ea2f1463/cratectl-linux-arm64.tar.gz",
+      "bytes": 16931247,
+      "sha256": "fc50166bded2ba569b1e4ea74ec33dc5772e34582a9ddc7bf0c5df8f1b14619d",
+      "verified_manifest": {
+        "binaries": {
+          "cratectl": {
+            "bytes": 11555574,
+            "sha256": "88601b0e08c559003f8f95e3fe0ab53efb04e93cea12cb138bc053e39c53b8c3"
+          },
+          "cratectld": {
+            "bytes": 21880770,
+            "sha256": "1900645529602687229d63b54819e4fb3754d6ca07a41e0931f184aca877b3dc"
+          }
+        },
+        "candidate": "b910da71c6dd0f981603b13c4d664e71ea2f1463",
+        "distribution_approved": false,
+        "go_version": "1.27.4",
+        "platform": "linux/arm64",
+        "profile": "cratectl-linux-binary-candidate-v1",
+        "schema": 1,
+        "source_sha256": {
+          "docs/licensing.md": "122d50592f15b57bfb10a359f84182cd2a1d096e6a439e25a65d9e4e022c9511",
+          "go.mod": "241101cea898478bbd0206b23e305695d5de2cb780747120d172d96e1e4eb99e",
+          "go.sum": "d0d1ecad19532ff247235eb62f99780093ead4679c958d9eb83d6dcc8d5b5fb1",
+          "internal/consoleui/dist/third-party-notices.txt": "fa81bac0f3ca351d2b864d51f9374d43d0daf3182f6390a8d23dccd83d3c2eb3",
+          "web/build-manifest.json": "72f0690c176923596236d7372daf9a870c5a3c18407785bd164bd8d2f242e7fa",
+          "web/package-lock.json": "f2b5ef59debedcbad42494b98207329e72852c82ea04f745caccf8069f3d5152"
+        }
+      }
+    }
+  },
+  "native_arm64_exec": {
+    "engine": "Linux ARM64 Docker",
+    "network": "none",
+    "checks": [
+      "The extracted management CLI prints its expected option list.",
+      "The extracted server initializer prints its expected option list."
+    ],
+    "logs": {
+      "cratectl": {
+        "path": ".cache/cratectl-linux-candidates/b910da71c6dd0f981603b13c4d664e71ea2f1463/arm64-cratectl-help.log",
+        "sha256": "83d2d5dc9cc11afbf36390d3d47ba5e8a70c3e6e1ec62dfce99027fc388084e6",
+        "expected_exit": 1
+      },
+      "cratectld": {
+        "path": ".cache/cratectl-linux-candidates/b910da71c6dd0f981603b13c4d664e71ea2f1463/arm64-cratectld-help.log",
+        "sha256": "e9e23942ebfb1af8b3ee95c4c400bc3aa5d3ae0cdff379aa39db3c24b5abe403",
+        "expected_exit": 1
+      }
+    }
+  },
+  "limits": [
+    "The x64 artifacts were cross-compiled and independently inspected as ELF. No native x64 archive execution was observed.",
+    "The ARM64 smoke only launches the exact extracted binaries. The separate Compose evidence covers PostgreSQL and stock npm.",
+    "The release packaging gate remains failed while signing, SBOM, full offline install and distribution approval remain open."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

@@ -25,3 +25,7 @@ distribution notices are required before shipping. Detached signatures, software
 bills of materials, native installation from the packages and network-isolated
 installation of the full stack remain separate qualification work.
 [Licensing record](../licensing.md)
+
+Two builds of `b910da7` produced byte-identical Linux x64 and ARM64 archives.
+The extracted ARM64 binaries also ran their expected help commands with
+container networking disabled. [Assembly evidence](../../evidence/2026-11-18/linux-candidates-b910da7-local.json)
