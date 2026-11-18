@@ -107,6 +107,9 @@ func (s *Server) resolve(ctx context.Context, i store.Identity, repo store.Repos
 func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.Repository, p string, force bool) (resolvedArtifact, error) {
 	result := resolvedArtifact{source: repo}
 	admitGeneration := repo.Format == "oci" || repo.Format == "go" || repo.Format == "cargo"
+	allowStale := func(entry store.Retrieval) bool {
+		return entry.StalePermitted() && (repo.Format != "cargo" || entry.SourceStale > 0)
+	}
 	waits := 0
 	sourceRetries := 0
 	proofRetries := 0
@@ -141,7 +144,7 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 				if lease.LastError == "upstream_checksum_fork" || lease.LastError == "upstream_checksum_authority_blocked" || lease.LastError == "upstream_checksum_legacy_review" {
 					return result, s.goChecksumFailedState(ctx, i, repo)
 				}
-				if lease.StalePermitted() {
+				if allowStale(lease) {
 					if admitGeneration {
 						result.admissions = []store.OCIAdmission{{Repository: repo.Name, Path: p, Generation: lease.Generation, Stale: true}}
 					}
@@ -257,7 +260,7 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 			if refreshed.LastError == "upstream_checksum_fork" || refreshed.LastError == "upstream_checksum_authority_blocked" || refreshed.LastError == "upstream_checksum_legacy_review" {
 				return result, s.goChecksumFailedState(ctx, i, repo)
 			}
-			if refreshed.StalePermitted() {
+			if allowStale(refreshed) {
 				if admitGeneration {
 					result.admissions = []store.OCIAdmission{{Repository: repo.Name, Path: p, Generation: refreshed.Generation, Stale: true}}
 				}

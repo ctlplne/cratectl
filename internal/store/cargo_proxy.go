@@ -121,7 +121,7 @@ func cargoCacheAllowed(ctx context.Context, tx pgx.Tx, repo Repository, state Re
 	if state.State == "ready" && state.Fresh() {
 		return true, nil
 	}
-	if state.State == "ready" || (state.State == "failed" && state.StalePermitted()) {
+	if state.State == "ready" || (state.State == "failed" && state.SourceStale > 0 && state.StalePermitted()) {
 		return ociCacheAdmission(ctx, tx, repo.Name, state, admissions)
 	}
 	return false, nil

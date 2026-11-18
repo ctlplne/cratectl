@@ -82,6 +82,9 @@ func parseSparseEntry(row []byte, name string) (SparseEntry, string, error) {
 	if e.Features == nil {
 		e.Features = map[string][]string{}
 	}
+	if len(e.Features2) == 0 {
+		e.Features2 = nil
+	}
 	for _, values := range []map[string][]string{e.Features, e.Features2} {
 		for field, features := range values {
 			if field == "" || !cleanText(field, 128) || features == nil || !validFeatures(features) {
@@ -143,7 +146,7 @@ func DownloadURL(template string, e SparseEntry) (string, error) {
 		return "", err
 	}
 	u, err := url.Parse(template)
-	if err != nil || u.Host == "" || (u.Scheme != "http" && u.Scheme != "https") || u.User != nil || strings.Contains(template, "%") ||
+	if err != nil || u.Host == "" || (u.Scheme != "http" && u.Scheme != "https") || u.User != nil || strings.ContainsAny(template, "%#") ||
 		u.RawQuery != "" || u.ForceQuery || u.Fragment != "" || u.Opaque != "" ||
 		strings.ContainsAny(u.Host, "{}") {
 		return "", ErrInput

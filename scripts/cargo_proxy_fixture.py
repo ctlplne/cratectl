@@ -396,8 +396,10 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
         offline.set()
         refused = request(MIXED, index, refresh=True)[0]
         offline.clear()
+        if refused != 502:
+            raise ValueError(f'mixed group forced origin refresh returned HTTP {refused} during the outage, expected 502')
         check('mixed group refuses to substitute another source during a preferred origin outage',
-              refused == 502 and request(MIXED, package, refresh=True)[1] == revised_data)
+              request(MIXED, package, refresh=True)[1] == revised_data)
 
         grant(PROXY, 'revoke', False)
         check('current grants and tenant isolation fence a previously filled Cargo proxy',

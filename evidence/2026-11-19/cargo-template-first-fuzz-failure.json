@@ -1,0 +1,12 @@
+{
+  "parent_candidate": "a99f53c63fbb5755f3c7b70f1c801c9630f6251c",
+  "source_state": "local development source with four new bounded Cargo fuzz tests",
+  "status": "failed",
+  "observed_at": "2026-11-19T01:30:21.206444+05:30",
+  "target": "FuzzCargoDownloadTemplate",
+  "assertion": "template expansion changed an authority or introduced unsupported URL syntax",
+  "private_input_sha256": "a6dd739c6cd7739cf2e52919c4137f2e8df2c0f2b365b9c47a2016fa95a567a6",
+  "repair": "Reject fragment delimiters during Cargo template parsing even if the parsed fragment is empty.",
+  "goal_complete": false,
+  "broad_readiness": false
+}

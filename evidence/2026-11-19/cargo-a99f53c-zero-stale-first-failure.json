@@ -1,0 +1,22 @@
+{
+  "candidate": "a99f53c63fbb5755f3c7b70f1c801c9630f6251c",
+  "status": "failed",
+  "observed_at": "2026-11-19T01:30:21.206444+05:30",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "binary_sha256": {
+    "cratectl": "84b5de18b0b78a94881990b2e2cee66ca01b5906044b6c2c08a8e02b995b413f",
+    "cratectld": "48044a2f88dd9446397654c13d2cd95010059acaeb39f62e5fb52cf9fe79c165"
+  },
+  "raw_private_report": {
+    "path": ".cache/cratectl-cargo-native-a99f53c.TRrCrF/.private/cratectl-manifest-lp1sgtde/safe-report.json",
+    "bytes": 6024,
+    "sha256": "14651e6dd93218c0df7105422fe4c55b58d734a1e92701f23ad02f600aa88e42"
+  },
+  "failed_check": "mixed group refuses to substitute another source during a preferred origin outage",
+  "analysis": "Generic retrieval can retain a future stale deadline when the earlier freshness period remains open and the accepted stale duration is zero.",
+  "repair": "Require a positive source stale window in both Cargo proxy resolution and the final group admission check. Report the exact outage response in the corrected fixture.",
+  "other_attempt": "An earlier invocation encountered an occupied loopback port before creating the native fixture. It produced no qualification result.",
+  "goal_complete": false,
+  "broad_readiness": false
+}
