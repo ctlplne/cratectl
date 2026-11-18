@@ -1669,6 +1669,13 @@
       "state": "Repaired. Command and configuration package tests pass normally and under the race detector. Native positive replay pending.",
       "first_failure": "evidence/2026-11-18/upstream-private-input-development.json",
       "repair": "Use the shared bounded private reader before database setup. Apply the existing 64 KiB limit before buffering, clear the raw bytes after JSON decode and preserve tenant, authority and scheme validation."
+    },
+    {
+      "id": "DEFECT.0156",
+      "summary": "Compose image copies root-owned executables with the host's private 0700 mode",
+      "state": "First owned ARM64 Docker launch failed before initializer startup. The image inputs now specify their final modes. Native replay pending.",
+      "first_failure": "evidence/2026-11-18/compose-72e2967-first-attempt.json",
+      "repair": "Set explicit executable and public CA file modes in the image. Preserve the operator's private umask and the nonroot service UID."
     }
   ]
 }

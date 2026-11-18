@@ -1,0 +1,40 @@
+{
+  "candidate": "72e296744d72b316d2050ceff6c3dfd3a1811c36",
+  "observed_at": "2026-11-18T12:45:00.787890+00:00",
+  "source_dirty": false,
+  "project": "cratectl-compose-72e2967",
+  "platform": "macOS ARM64 with local Linux ARM64 Docker engine",
+  "compose": "5.7.0",
+  "go": "1.27.4",
+  "umask": "0077",
+  "status": "failed",
+  "failure": "The nonroot container entrypoint could not execute the copied root-owned binary with mode 0700.",
+  "checks_before_failure": [
+    "Both Linux ARM64 binaries built.",
+    "The pinned PostgreSQL image started and reached TCP readiness.",
+    "The initial database had no cratectl schema. The runtime login had neither superuser nor BYPASSRLS."
+  ],
+  "binaries": {
+    "cratectl": {
+      "sha256": "a62428399078cc4b04e0b3d329007873db744b52f1345a73c81ddff713179414",
+      "host_mode": "0o700"
+    },
+    "cratectld": {
+      "sha256": "ec04ac28c7a52a7666354d39b832208857638af9bfd661788f2806140a63741f",
+      "host_mode": "0o700"
+    }
+  },
+  "postgres_image": "docker.io/library/postgres:16.15-alpine@sha256:aa6cb33cf4c19c765cefcf48d96176258800870a9a1e930ad126200f9d825139",
+  "private_original_log": {
+    "path": ".private/cratectl-compose-72e2967-launch.log",
+    "sha256": "7e5c939f12cf89f3e0d302f2fdda07440f3cb71fa0757ca471b670f3f49c3fff",
+    "bytes": 8802
+  },
+  "cleanup": "Stopped the owned failed attempt and retained its database volume and private input files.",
+  "repair": "BuildKit applies mode 0755 to both executable files and 0644 to the public trust bundle. The host private umask remains in effect.",
+  "limits": [
+    "Application startup and its package journey did not run. A new clean source and fresh owned database are required for the replay."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}
