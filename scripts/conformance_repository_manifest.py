@@ -483,6 +483,7 @@ def evaluate(args):
         print(f"PASS: {len(report['oci_repository_catalog']['checks'])} stock ORAS repository catalog checks")
     if args.oci_catalog_cached:
         print(f"PASS: {len(report['oci_repository_catalog']['cached']['checks'])} stock ORAS cached repository catalog checks")
+        print(f"PASS: {len(report['oci_repository_catalog']['cached']['groups']['checks'])} stock ORAS ordered group catalog checks")
     if args.npm_search:
         print(f"PASS: {len(report['npm_search']['checks'])} stock hosted npm search checks")
         print(f"PASS: {len(report['npm_cached_search']['checks'])} stock cached npm search checks")

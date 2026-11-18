@@ -41,23 +41,34 @@ func (s *Store) OCIRepositoryCatalog(ctx context.Context, i Identity, after stri
 			return nil
 		}
 		const manifestSuffixBytes = len("/manifests/sha256:") + 64
-		rows, err := tx.Query(ctx, `SELECT a.repository,a.path,
- (a.repository||'/'||left(a.path,-$5::integer)) COLLATE "C" AS name
-FROM cratectl.artifacts a JOIN cratectl.repositories r ON (r.tenant,r.name)=(a.tenant,a.repository)
-LEFT JOIN cratectl.repository_grants g ON (g.tenant,g.repository,g.actor)=(a.tenant,a.repository,$2)
-LEFT JOIN cratectl.repository_lifecycle rl ON (rl.tenant,rl.repository)=(a.tenant,a.repository)
+		rows, err := tx.Query(ctx, `WITH readable AS (
+ SELECT r.tenant,r.name,r.mode,r.require_review,r.settings,r.source_revision
+ FROM cratectl.repositories r
+ LEFT JOIN cratectl.repository_grants g ON (g.tenant,g.repository,g.actor)=(r.tenant,r.name,$2)
+ LEFT JOIN cratectl.repository_lifecycle rl ON (rl.tenant,rl.repository)=(r.tenant,r.name)
+ WHERE r.tenant=$1 AND r.format='oci' AND COALESCE(rl.state,'active')='active'
+   AND ($3::boolean OR r.access='tenant' OR g.can_read) AND octet_length(r.name)<=63
+), routes AS (
+ SELECT name AS endpoint,name AS member FROM readable WHERE mode<>'group'
+ UNION ALL
+ SELECT g.name,m.name FROM readable g CROSS JOIN LATERAL jsonb_array_elements_text(g.settings->'members') AS m(name)
+ WHERE g.mode='group'
+)
+SELECT DISTINCT route.endpoint,a.path COLLATE "C" AS path,
+ (route.endpoint||'/'||left(a.path,-$5::integer)) COLLATE "C" AS name
+FROM cratectl.artifacts a JOIN readable r ON (r.tenant,r.name)=(a.tenant,a.repository)
+JOIN routes route ON route.member=r.name
 `+decisionJoin+nativeLifecycleJoin+`
-WHERE a.tenant=$1 AND r.format='oci' AND COALESCE(rl.state,'active')='active'
+WHERE a.tenant=$1
  AND (r.mode='hosted' OR (r.mode='proxy' AND a.source_revision=r.source_revision AND EXISTS (
    SELECT 1 FROM cratectl.retrievals rc WHERE (rc.tenant,rc.repository,rc.path,rc.source_revision)=(a.tenant,a.repository,a.path,r.source_revision)
      AND rc.state='ready' AND rc.fresh_until>clock_timestamp())))
- AND ($3::boolean OR r.access='tenant' OR g.can_read)
- AND octet_length(a.repository)<=63 AND octet_length(a.path) BETWEEN $5+1 AND $5+255
+ AND octet_length(a.path) BETWEEN $5+1 AND $5+255
  AND right(a.path,$5)='/manifests/sha256:'||a.digest AND a.metadata->'oci_validated'='true'::jsonb
  AND NOT COALESCE(nl.deleted,false) AND COALESCE(d.decision,a.decision)<>'denied'
  AND (NOT r.require_review OR COALESCE(d.decision,a.decision)='allowed')
- AND (a.repository||'/'||left(a.path,-$5::integer)) COLLATE "C">$4
-ORDER BY name,a.path COLLATE "C" LIMIT $6`, i.Tenant, i.Actor, i.Role == "admin", after, manifestSuffixBytes, candidateLimit+1)
+ AND (route.endpoint||'/'||left(a.path,-$5::integer)) COLLATE "C">$4
+ORDER BY name,path LIMIT $6`, i.Tenant, i.Actor, i.Role == "admin", after, manifestSuffixBytes, candidateLimit+1)
 		if err != nil {
 			return err
 		}
@@ -69,6 +80,7 @@ ORDER BY name,a.path COLLATE "C" LIMIT $6`, i.Tenant, i.Actor, i.Role == "admin"
 		budget := newGraphBudget()
 		budget.metadataBytes = min(budget.metadataBytes, byteLimit)
 		budget.sqlMetadataBytes = budget.metadataBytes
+		reader := ociCatalogGraph{budget: budget}
 		var repo Repository
 		for offset, item := range candidates {
 			if offset == candidateLimit {
@@ -82,18 +94,13 @@ ORDER BY name,a.path COLLATE "C" LIMIT $6`, i.Tenant, i.Actor, i.Role == "admin"
 				if err != nil {
 					return err
 				}
-				clear(budget.checked) // Graph paths are meaningful only inside one repository.
-				budget.cacheRepository, budget.sourceRevision = "", nil
-				if repo.Mode == "proxy" {
-					budget.cacheRepository, budget.sourceRevision = repo.Name, &repo.SourceRevision
-				}
 			}
-			artifact, err := readArtifact(ctx, tx, repo.Name, item.Path, repo.RequireReview, budget)
-			if errors.Is(err, ErrDenied) || errors.Is(err, ErrDeleted) || errors.Is(err, ErrNotFound) || errors.Is(err, ErrOCIUnvalidated) {
+			_, image, _ := strings.Cut(item.Name, "/")
+			artifact, err := reader.manifest(ctx, tx, i, repo, image, item.Path)
+			if nativeSearchSourceUnavailable(err) || errors.Is(err, ErrDeleted) || errors.Is(err, ErrOCIUnvalidated) {
 				continue
 			}
-			if repo.Mode == "proxy" && (errors.Is(err, ErrOCICacheExpired) || errors.Is(err, ErrOCICache) ||
-				errors.Is(err, ErrBusy) || errors.Is(err, ErrSourceChanged)) {
+			if errors.Is(err, ErrOCICacheExpired) || errors.Is(err, ErrOCICache) || errors.Is(err, ErrBusy) || errors.Is(err, ErrSourceChanged) {
 				continue
 			}
 			if err != nil {
@@ -114,4 +121,68 @@ ORDER BY name,a.path COLLATE "C" LIMIT $6`, i.Tenant, i.Actor, i.Role == "admin"
 		return nil, "", err
 	}
 	return names, next, nil
+}
+
+type ociCatalogGraph struct {
+	budget        *graphBudget
+	repository    string
+	requireReview bool
+}
+
+// The same graph can be admitted through a direct repository and withheld
+// through a group with mandatory review. Cache graph reads only within one policy.
+func (g *ociCatalogGraph) read(ctx context.Context, tx pgx.Tx, source Repository, path string, review bool) (Artifact, error) {
+	if g.repository != source.Name || g.requireReview != review {
+		g.repository, g.requireReview = source.Name, review
+		clear(g.budget.checked)
+		g.budget.cacheRepository, g.budget.sourceRevision = "", nil
+		if source.Mode == "proxy" {
+			g.budget.cacheRepository, g.budget.sourceRevision = source.Name, &source.SourceRevision
+		}
+	}
+	return readArtifact(ctx, tx, source.Name, path, review, g.budget)
+}
+
+// Select an exact digest using the same group authorization, review and member
+// order as pulls. A proxy can yield to a lower source only with current exact
+// absence evidence. Catalog requests never refresh expired or unknown evidence.
+func (g *ociCatalogGraph) manifest(ctx context.Context, tx pgx.Tx, i Identity, endpoint Repository, image, path string) (Artifact, error) {
+	if endpoint.Mode != "group" {
+		return g.read(ctx, tx, endpoint, path, endpoint.RequireReview)
+	}
+	_, members, err := nativeRepositories(ctx, tx, i, endpoint.Name, image, "oci")
+	if err != nil {
+		return Artifact{}, err
+	}
+	for _, source := range members {
+		if err := notDeletedInTx(ctx, tx, source.Name, path); err != nil {
+			return Artifact{}, err
+		}
+		if source.Mode == "proxy" {
+			state, err := nativeCatalogRetrieval(ctx, tx, source.Name, path)
+			if errors.Is(err, pgx.ErrNoRows) {
+				return Artifact{}, ErrOCICacheExpired
+			}
+			if err != nil {
+				return Artifact{}, err
+			}
+			if state.SourceRevision != source.SourceRevision || !state.Fresh() || (state.State != "ready" && state.State != "negative") {
+				return Artifact{}, ErrOCICacheExpired
+			}
+			if state.State == "negative" {
+				continue
+			}
+		} else {
+			var exists bool
+			err := tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM cratectl.artifacts WHERE repository=$1 AND path=$2)`, source.Name, path).Scan(&exists)
+			if err != nil {
+				return Artifact{}, err
+			}
+			if !exists {
+				continue
+			}
+		}
+		return g.read(ctx, tx, source, path, endpoint.RequireReview || source.RequireReview)
+	}
+	return Artifact{}, ErrNotFound
 }

@@ -49,7 +49,6 @@ func TestOCIRepositoryCatalogUsesCurrentGraphPolicyAndTenantGrants(t *testing.T)
 	configure(token, store.Repository{Name: public, Format: "oci"})
 	configure(token, store.Repository{Name: restricted, Format: "oci", Access: "restricted", RequireReview: true})
 	configure(other, store.Repository{Name: public, Format: "oci"})
-	configure(token, store.Repository{Name: "cratectl-catalog-group", Format: "oci", Mode: "group", Settings: store.RepositorySettings{Members: []string{public}}})
 
 	put := func(auth, repo, image, ref, body string) string {
 		t.Helper()
@@ -220,4 +219,95 @@ func TestOCIRepositoryCatalogUsesOnlyFreshCachedGraphs(t *testing.T) {
 		t.Fatal("deny graph dependency", w.Code, w.Body.String())
 	}
 	list()
+}
+
+func TestOCIRepositoryCatalogUsesGroupOrderGrantsAndNamespaceOwners(t *testing.T) {
+	s, db, token, adminIdentity := schemaServer(t)
+	s.PrivateUpstreamNetworks = []string{"127.0.0.1/32"}
+	const hosted = "cratectl-catalog-lower"
+	const proxy = "cratectl-catalog-preferred"
+	const group = "cratectl-catalog-group"
+	const owned = "cratectl-catalog-owned-group"
+	const reviewed = "cratectl-catalog-review-group"
+	const image = "namespace/workload"
+	const manifest = `{"schemaVersion":2,"mediaType":"application/vnd.oci.image.index.v1+json","manifests":[]}`
+	digest := crypt.Digest([]byte(manifest))
+	path := image + "/manifests/sha256:" + digest
+	var upstreamRequests atomic.Int64
+	listener, err := testnet.ListenOwned()
+	if err != nil {
+		t.Fatal(err)
+	}
+	origin := &httptest.Server{Listener: listener, Config: &http.Server{Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		upstreamRequests.Add(1)
+		w.Header().Set("Cache-Control", "max-age=90")
+		w.WriteHeader(http.StatusNotFound)
+	})}}
+	origin.Start()
+	defer origin.Close()
+	credential, err := crypt.Token()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := store.Provision(t.Context(), db.OwnerDSN, adminIdentity.Tenant, "cratectl-catalog-reader", "reader", credential, time.Now().Add(time.Hour)); err != nil {
+		t.Fatal(err)
+	}
+	admin := lifecycleHTTP(t, s, token)
+	reader := lifecycleHTTP(t, s, credential)
+	for _, configuration := range []store.Repository{
+		{Name: hosted, Format: "oci"},
+		{Name: proxy, Format: "oci", Mode: "proxy", Access: "restricted", Settings: store.RepositorySettings{
+			Upstream: &upstream.Config{URL: origin.URL + "/v2/cratectl-absent-origin/", Networks: []string{"127.0.0.1/32"}},
+			Cache:    store.CacheSettings{FreshSeconds: 90, NegativeSeconds: 90},
+		}},
+		{Name: group, Format: "oci", Mode: "group", Settings: store.RepositorySettings{Members: []string{proxy, hosted}}},
+		{Name: owned, Format: "oci", Mode: "group", Settings: store.RepositorySettings{
+			Members: []string{proxy, hosted}, NamespaceOwners: map[string]string{"namespace/": hosted},
+		}},
+		{Name: reviewed, Format: "oci", Mode: "group", RequireReview: true, Settings: store.RepositorySettings{Members: []string{hosted}}},
+	} {
+		if w := admin(http.MethodPost, "/api/v1/repositories", configuration, "create-"+configuration.Name); w.Code != http.StatusCreated {
+			t.Fatal("configure group catalog", w.Code, w.Body.String())
+		}
+	}
+	if w := mavenHTTP(t, s, token, http.MethodPut, "/v2/"+hosted+"/"+image+"/manifests/latest", manifest, "Content-Type", testOCIIndex); w.Code != http.StatusCreated {
+		t.Fatal("publish lower manifest", w.Code, w.Body.String())
+	}
+	list := func(want ...string) {
+		t.Helper()
+		before := upstreamRequests.Load()
+		w := reader(http.MethodGet, "/v2/_catalog", nil, "")
+		var body struct{ Repositories []string }
+		if w.Code != http.StatusOK || json.Unmarshal(w.Body.Bytes(), &body) != nil || !slices.Equal(body.Repositories, want) || upstreamRequests.Load() != before {
+			t.Fatalf("group catalog status %d, body %s, expected %v", w.Code, w.Body.String(), want)
+		}
+	}
+	grant := func(allow bool, key string) {
+		t.Helper()
+		if w := admin(http.MethodPut, "/api/v1/repositories/"+proxy+"/grants", map[string]any{
+			"actor": "cratectl-catalog-reader", "read": allow, "write": false,
+		}, key); w.Code != http.StatusOK {
+			t.Fatal("change group member grant", w.Code, w.Body.String())
+		}
+	}
+	list(hosted+"/"+image, owned+"/"+image)
+	grant(true, "grant-preferred-catalog")
+	list(hosted+"/"+image, owned+"/"+image)
+	if w := mavenHTTP(t, s, credential, http.MethodGet, "/v2/"+group+"/"+path, "", "Accept", testOCIIndex); w.Code != http.StatusOK || w.Body.String() != manifest || upstreamRequests.Load() == 0 {
+		t.Fatal("group fallback establishes exact proxy absence", w.Code, w.Body.String())
+	}
+	list(group+"/"+image, hosted+"/"+image, owned+"/"+image)
+	if w := admin(http.MethodPut, "/api/v1/repositories/"+hosted+"/decisions", map[string]string{
+		"path": path, "digest": digest, "decision": "allowed",
+	}, "approve-lower-catalog"); w.Code != http.StatusOK {
+		t.Fatal("approve group manifest", w.Code, w.Body.String())
+	}
+	list(group+"/"+image, hosted+"/"+image, owned+"/"+image, reviewed+"/"+image)
+	grant(false, "revoke-preferred-catalog")
+	list(hosted+"/"+image, owned+"/"+image, reviewed+"/"+image)
+	grant(true, "restore-preferred-catalog")
+	if w := admin(http.MethodPut, "/api/v1/repositories/"+proxy+"/cache", map[string]string{"path": path}, "invalidate-preferred-absence"); w.Code != http.StatusOK {
+		t.Fatal("expire preferred cache absence", w.Code, w.Body.String())
+	}
+	list(hosted+"/"+image, owned+"/"+image, reviewed+"/"+image)
 }

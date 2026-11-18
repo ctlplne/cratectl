@@ -239,4 +239,66 @@ def evaluate_cached_catalog(scope, registry, graph, manifest_sha, payload_sha, n
         restart()
         check('fresh cached catalog authority and exact bytes survive restart',
               search('restart', name) and pull('restart'))
-        return {'checks': checks, 'manifest_sha256': manifest_sha, 'payload_sha256': payload_sha}
+        groups = evaluate_group_catalog(scope, registry, repo, image, payload_sha, native, search, add_repo, api, requests, sha)
+        return {'checks': checks, 'manifest_sha256': manifest_sha, 'payload_sha256': payload_sha, 'groups': groups}
+
+
+def evaluate_group_catalog(scope, registry, cached, image, payload_sha, native, search, add_repo, api, requests, sha):
+    lower = 'cratectl-discovery-group-member'
+    preferred = 'cratectl-discovery-preferred'
+    ordered = 'cratectl-discovery-ordered-group'
+    owned = 'cratectl-discovery-owned-group'
+    cached_root = 'cratectl-discovery-cached-group'
+    lower_name = lower + '/' + image
+    preferred_endpoint = '/api/v1/repositories/' + preferred
+    missing = '/v2/cratectl-discovery-absent/'
+    checks = []
+
+    def check(name, condition):
+        if not condition:
+            raise ValueError(name)
+        checks.append(name)
+
+    add_repo('group-member', 'admin', lower)
+    add_repo('preferred', 'admin', preferred, mode='proxy', access='restricted', settings={
+        'upstream': {'url': 'http://[::1]:38443' + missing, 'networks': ['::1/128']},
+        'cache': {'fresh_seconds': 180, 'negative_seconds': 120}})
+    add_repo('ordered-group', 'admin', ordered, mode='group', settings={'members': [preferred, lower]})
+    add_repo('owned-group', 'admin', owned, mode='group', settings={
+        'members': [preferred, lower], 'namespace_owners': {'cached/': lower}})
+    add_repo('cached-group', 'admin', cached_root, mode='group', settings={'members': [cached, lower]})
+    manifest = scope / 'group-manifest.json'
+    native('publish-group-member', 'admin', ('push',), '--export-manifest', manifest,
+           registry + '/' + lower_name + ':1.0.0', 'payload.txt:text/plain', cwd=scope / 'push-first')
+    digest = sha(manifest)
+    manifest_path = image + '/manifests/sha256:' + digest
+    ordinary = sorted(f'{repo}/{image}' for repo in (cached, cached_root, lower, owned))
+    with_fallback = sorted([*ordinary, ordered + '/' + image])
+
+    def grant(stage, allow):
+        api('oci-group-preferred-' + stage, preferred_endpoint + '/grants', 'PUT', {
+            'actor': 'cratectl-reader', 'read': allow, 'write': False})
+
+    check('stock ORAS lists authorized names through a cached member and an explicit namespace owner',
+          search('group-namespace', ordinary))
+    grant('allow', True)
+    check('a cold preferred proxy fences a lower group result without a catalog origin request',
+          search('group-cold', ordinary))
+    destination = scope / 'ordered-group-pull'
+    destination.mkdir(mode=0o700)
+    native('pull-group-fallback', 'reader', ('pull',), '--output', destination,
+           registry + '/' + ordered + '/' + image + '@sha256:' + digest)
+    check('stock ORAS fallback pulls the exact lower graph and establishes current preferred absence',
+          sha(destination / 'payload.txt') == payload_sha and missing + manifest_path in requests)
+    check('current exact proxy absence admits the lower group name without a catalog origin request',
+          search('group-fallback', with_fallback))
+    grant('revoke', False)
+    check('current preferred member grant revocation hides the ordered group name',
+          search('group-revoked', ordinary))
+    grant('restore', True)
+    check('restoring the selected member grant restores the currently admitted group name',
+          search('group-restored', with_fallback))
+    api('oci-group-expire-absence', preferred_endpoint + '/cache', 'PUT', {'path': manifest_path})
+    check('invalidated proxy absence fences ordered group discovery without contacting the origin',
+          search('group-expired', ordinary))
+    return {'checks': checks, 'lower_manifest_sha256': digest, 'lower_payload_sha256': payload_sha}
