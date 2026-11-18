@@ -595,8 +595,12 @@ at `9b70578`. The initial run inventory binds that lane and eight other
 first-attempt workflows to the exact commit.
 [Original workflow inventory](evidence/2026-11-19/github-9b70578-started.json)
 Both original public Cargo jobs failed during initial dependency resolution.
-The next candidate adds bounded client and catalog failure categories.
+Both original `56a9d40` Linux jobs subsequently passed all 110 selected
+checks, including 11 public-origin checks. They matched 49 source hashes
+each and verified both public archives and the unchanged canonical
+lockfile with PostgreSQL 16.15. The first failure's cause remains open.
 [Original Linux public Cargo failure](evidence/2026-11-19/github-9b70578-public-cargo-first-failure.json)
+[Native Linux public Cargo replacement evidence](evidence/2026-11-19/github-56a9d40-cargo-public-replacement-native.json)
 
 The exact `1fcfc66` candidate adds hosted name search through stock npm 11.16.0.
 Nine checks passed on macOS ARM64 with PostgreSQL 16.16. They cover current

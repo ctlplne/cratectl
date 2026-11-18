@@ -4677,8 +4677,10 @@
         "delete/restore"
       ],
       "state": "implementing",
-      "candidate": "d2727c71fc2dc7457201b1744d34f1530cba8a63",
+      "candidate": "56a9d40e799f4388b8ea743956ed207f5546b4d1",
       "evidence": [
+        "evidence/2026-11-19/github-56a9d40-cargo-public-replacement-native.json",
+        "evidence/2026-11-19/cargo-3917c48-source-replacement-native.json",
         "evidence/2026-11-19/cargo-d2727c7-public-graph-native.json",
         "evidence/2026-11-19/cargo-f21dc28-public-sparse-native.json",
         "evidence/2026-11-19/github-383b444-cargo-mixed-native.json",
@@ -4688,8 +4690,8 @@
         "evidence/2026-11-19/cargo-04e2ba0-proxy-native.json",
         "evidence/2026-11-19/cargo-4a5c542-ipv6-fixture-failure.json"
       ],
-      "limits": "Native macOS ARM64 and native Linux x64 and ARM64 pass the expanded stock sparse proxy profile. Coverage includes source revision, stale policy, interrupted and six simultaneous transfers, and mixed groups. Public origin and representative scale remain open. The independent macOS ARM64 profile fetched the exact public crates.io itoa 1.0.15 archive from its distinct HTTPS CDN and replayed it after restart. The checked-in public graph profile on macOS passes both package digests, a required dependency edge, restart and grant revocation.",
-      "next_action": "Qualify public origins on additional native architectures and cover broader workloads, transfer faults, and dependency graphs."
+      "limits": "Stock Cargo controlled-origin and public sparse proxy checks pass with native PostgreSQL on macOS ARM64 and both Linux architectures. The public crates.io profile verifies two exact archive digests, a real dependency edge and authenticated source replacement with an unchanged canonical lockfile. The controlled origin also exercises catalog changes, interruptions, restart, review and current grants.",
+      "next_action": "Qualify remaining environments, broader dependency graphs, workload sizes and origin and transfer failure cases."
     },
     {
       "id": "FMT.CARGO.GROUP",

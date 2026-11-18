@@ -1890,9 +1890,10 @@
     {
       "id": "DEFECT.0182",
       "summary": "Both first Linux public Cargo jobs stop at initial stock dependency resolution",
-      "state": "Both original 9b70578 jobs exited during Cargo generate-lockfile before creating the public-origin report. The original logs retain the exit status. The child output was confined to the ephemeral private fixture. Native Linux public-source qualification remains open.",
+      "state": "Both original 9b70578 jobs exited during Cargo generate-lockfile before creating the public-origin report. Both original 56a9d40 jobs subsequently passed the complete public profile with bounded diagnostics installed. The first failure cause remains unresolved.",
       "first_failure": "evidence/2026-11-19/github-9b70578-public-cargo-first-failure.json",
-      "repair": "Record fixed client failure categories and bounded catalog retrieval states from the public-origin fixture, then run a new exact candidate to diagnose the failure."
+      "replay": "evidence/2026-11-19/github-56a9d40-cargo-public-replacement-native.json",
+      "repair": "The fixture now records fixed client failure categories and bounded catalog retrieval states if a stock command fails."
     }
   ]
 }
