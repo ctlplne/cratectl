@@ -435,14 +435,25 @@ An independent local ARM64 replay passed the media and provider profiles on
 [Hosted PostgreSQL evidence](evidence/2026-11-18/github-6c4d583-postgres-16.16-native.json)
 [Local PostgreSQL evidence](evidence/2026-11-18/postgres-16.16-6c4d583-native.json)
 
-Stock Cargo 1.100.0 passed 11 hosted sparse-registry checks at `1b4d38e` on
-macOS ARM64 with PostgreSQL 16.16. It published two dependent crates, observed
-review denial, and fetched both approved archives with their original SHA-256
-after restart. The fixture also exercised current tenant grants and an exact
-publication retry. Ownership, yanking, legacy Git discovery, proxy and group
-operations, and wider hosted cases remain open.
-[Native Cargo evidence](evidence/2026-11-18/cargo-1b4d38e-native.json)
+Stock Cargo 1.100.0 passed 22 hosted checks at `a39c952` on macOS ARM64 with
+PostgreSQL 16.16. A separately granted writer published two related crates.
+The registry refused changed bytes, coordinate aliases, a short frame and
+both write operations after revocation. A fresh resolution refused a yanked
+version while a pinned lockfile still retrieved the exact approved bytes.
+Unyank restored the original index after restart. Explicit retained-reference
+restoration recovered the same index and archive. The earlier `61b2e8a` native Linux x64 and
+ARM64 jobs each passed 11 scoped Cargo checks on installed PostgreSQL 16.15.
+The expanded Linux profile, per-crate ownership, legacy Git discovery, proxy,
+group, search, and wider hosted cases remain open.
+[Expanded native Cargo evidence](evidence/2026-11-18/cargo-a39c952-native.json)
+[Native Cargo lifecycle evidence](evidence/2026-11-18/cargo-45f2799-lifecycle-native.json)
+[Original native Linux Cargo and provider results](evidence/2026-11-18/github-61b2e8a-cargo-and-provider-native.json)
 [Hosted Cargo setup](docs/operator/cargo.md)
+
+The original `12b04b6` campaign ended with 28 passes and two offline-media
+readiness failures. Its original native media failures stay separate from
+the later corrected profile.
+[Original `12b04b6` observations](evidence/2026-11-18/github-12b04b6-original-completed.json)
 
 The original `4821316` campaign ended with 30 passes, one Maven bootstrap
 failure, and one cancelled macOS job. The original `3639a74` campaign ended

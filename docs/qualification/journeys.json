@@ -1913,9 +1913,10 @@
       "id": "J.CARGO.HOSTED",
       "capability": "FMT.CARGO.HOSTED",
       "state": "implementing",
-      "candidate": "1b4d38ecd6dfee861757e7a21d59017a28e17b39",
+      "candidate": "a39c95249dc0109f871476809d066b73e8ecc223",
       "evidence": [
-        "evidence/2026-11-18/cargo-1b4d38e-native.json"
+        "evidence/2026-11-18/cargo-a39c952-native.json",
+        "evidence/2026-11-18/github-61b2e8a-cargo-and-provider-native.json"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -1923,8 +1924,8 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Two same-registry packages and one version per package passed stock publish, policy denial, exact bytes after restart, and current grants on macOS ARM64. Wider hosted and legacy behavior remains open.",
-      "next_action": "Qualify Linux x64 and ARM64, conflicting coordinates, multiple versions, interrupted transfer, and retained package lifecycle."
+      "limits": "Exact scoped stock Cargo 1.100.0 evidence on macOS ARM64 with PostgreSQL 16.16. Broader capability coverage remains open.",
+      "next_action": "Run the expanded Linux profiles. Qualify multiple real versions, connection interruption, per-crate ownership and legacy discovery."
     },
     {
       "id": "J.CARGO.PROXY",
@@ -1981,28 +1982,36 @@
     {
       "id": "J.CARGO.AUTHORIZATION",
       "capability": "FMT.CARGO.AUTHORIZATION",
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
+      "state": "implementing",
+      "candidate": "a39c95249dc0109f871476809d066b73e8ecc223",
+      "evidence": [
+        "evidence/2026-11-18/cargo-a39c952-native.json"
+      ],
       "required": [
         "publish/consume exact bytes where applicable",
         "permissions/tenant isolation",
         "policy denial",
         "failure/recovery"
-      ]
+      ],
+      "limits": "Exact scoped stock Cargo 1.100.0 evidence on macOS ARM64 with PostgreSQL 16.16. Broader capability coverage remains open.",
+      "next_action": "Verify expanded Linux grant cases and implement per-crate ownership and native owner management."
     },
     {
       "id": "J.CARGO.LIFECYCLE",
       "capability": "FMT.CARGO.LIFECYCLE",
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
+      "state": "implementing",
+      "candidate": "a39c95249dc0109f871476809d066b73e8ecc223",
+      "evidence": [
+        "evidence/2026-11-18/cargo-a39c952-native.json"
+      ],
       "required": [
         "publish/consume exact bytes where applicable",
         "permissions/tenant isolation",
         "policy denial",
         "failure/recovery"
-      ]
+      ],
+      "limits": "Exact scoped stock Cargo 1.100.0 evidence on macOS ARM64 with PostgreSQL 16.16. Broader capability coverage remains open.",
+      "next_action": "Qualify expanded Linux lifecycle, concurrent state transitions, ownership, additional retention policies and disconnected recovery."
     },
     {
       "id": "J.APT.HOSTED",
