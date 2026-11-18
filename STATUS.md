@@ -8,7 +8,16 @@ Broad readiness,security and packaging remain unqualified.
 
 ## Latest whole accepted source
 
-[78a5983](evidence/2026-11-07/github-78a5983-checkpoint.json) passes all26 original
+`b88d397` passed all 28 original jobs across seven workflows. The read-only
+verifier ran from the same commit and accepted 21 safe job summaries plus
+the selection summary, covering 82 reports. Independent comparison matched
+all 28 original logs, the summaries, and 26 source contracts. Both native
+Linux stock-client jobs and x64 Chromium passed. The selected campaign
+leaves the strict Go, focused NuGet, and later packaging lanes open.
+[Exact-source evidence](evidence/2026-11-18/github-b88d397-exact-accepted.json)
+[Original GitHub verifier](https://github.com/ctlplne/cratectl/actions/runs/44346071001)
+
+[Earlier whole acceptance at 78a5983](evidence/2026-11-07/github-78a5983-checkpoint.json) passes all26 original
 jobs/six workflows,19 unchanged safe members and80 reports. Actual read-only
 [verifier42435561789](https://github.com/ctlplne/cratectl/actions/runs/42435561789),
 job128593534916, runs from78a itself. All26 original log hashes/byte counts,
@@ -333,6 +342,12 @@ image's two executable digests independently matched the native archive.
 Preinstalled operator tooling, x64 runtime, scanner import and production
 recovery still need their respective qualification.
 [Imported-media result](evidence/2026-11-18/linux-offline-media-e4adc19-arm64.json)
+
+The checked-in signed-media harness at `0fa3dd8` passed all 17 runtime
+checks and ten media controls on a local native Linux ARM64 Docker engine.
+The original summary independently matched all 27 source hashes. This
+replay used preinstalled operator tooling and a disposable signing key.
+[Local signed-media replay](evidence/2026-11-18/offline-media-0fa3dd8-arm64-local.json)
 
 The cold `e4adc19` recovery fixture passed 17 runtime checks and 12 backup
 controls. With registry and worker stopped, stock PostgreSQL 16.15 captured
