@@ -185,6 +185,9 @@ The new Compose CI profile runs the same 20 checks on dedicated native x64 and
 ARM64 Linux jobs. Each report binds its toolchain, image, binaries and 12 source
 files. The campaign verifier now checks 24 workflow and report-extractor files.
 Retained earlier verdicts keep their original scope.
+The reusable driver passed locally at `0f77078`. The same commit started the
+first two hosted Compose jobs and six baseline workflows.
+[Compose CI inventory](evidence/2026-11-18/github-0f77078-started.json)
 
 ## Durable state and remaining scope
 
