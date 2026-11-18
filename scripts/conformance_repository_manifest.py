@@ -397,6 +397,11 @@ def evaluate(args):
                                    call, api, restart_server, sha, origin_credentials)
             report['cargo']['checks'].extend(proxy['checks'])
             report['cargo']['archive_sha256'].update(proxy['archive_sha256'])
+            if args.cargo_public_origin:
+                from cargo_public_fixture import evaluate_public_origin
+
+                report['cargo_public_origin'] = evaluate_public_origin(
+                    work, app, authority, args.cargo_toolchain.resolve(), public_env, call, api, restart_server, sha)
         if args.promtool:
             metrics = metrics_values('stock-download-after-restart')
             check('stock npm download contributes bytes and a complete latency histogram',
@@ -458,6 +463,8 @@ def evaluate(args):
         print(f"PASS: {sum(len(phase['checks']) for phase in report['mcp']['phases'])} scoped official MCP checks")
     if args.cargo_toolchain:
         print(f"PASS: {len(report['cargo']['checks'])} scoped stock Cargo checks")
+    if args.cargo_public_origin:
+        print(f"PASS: {len(report['cargo_public_origin']['checks'])} stock Cargo public-origin checks")
     if args.legacy_cargo_daemon:
         print(f"PASS: {len(report['cargo_upgrade']['checks'])} stock Cargo historical adoption checks")
     if args.ci_architecture:
@@ -517,6 +524,8 @@ if __name__ == '__main__':
     parser.add_argument('--promtool', type=Path)
     parser.add_argument('--cargo-toolchain', type=Path)
     parser.add_argument('--cargo-ci-architecture', choices=('amd64', 'arm64'))
+    parser.add_argument('--cargo-public-origin', action='store_true',
+                        help='also fetch a pinned dependency graph from the public crates.io index and CDN')
     parser.add_argument('--legacy-cargo-daemon', type=Path)
     options = parser.parse_args()
     if len([value for value in (options.provider_binary, options.terraform, options.tofu) if value]) not in (0, 3):
@@ -531,6 +540,8 @@ if __name__ == '__main__':
         parser.error('the native Cargo profile runs separately from hosted provider qualification')
     if options.cargo_ci_architecture and (not options.cargo_toolchain or options.promtool or options.mcp_binary or options.provider_binary):
         parser.error('hosted Cargo evidence requires the stock toolchain in the isolated Cargo profile')
+    if options.cargo_public_origin and (not options.cargo_toolchain or options.cargo_ci_architecture):
+        parser.error('the public origin check requires the local stock Cargo profile')
     if options.legacy_cargo_daemon and (not options.cargo_toolchain or options.cargo_ci_architecture):
         parser.error('historical Cargo adoption requires the local stock Cargo profile and reviewed schema 18 daemon')
     evaluate(options)

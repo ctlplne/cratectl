@@ -110,6 +110,15 @@ The current proxy handles sparse indexes with same-registry dependencies and
 explicit download authorities. Legacy Git indexes and search across uncached
 upstream content remain open.
 
+The optional native conformance profile
+`scripts/conformance_repository_manifest.py --cargo-toolchain PATH --cargo-public-origin`
+uses an isolated PostgreSQL installation and live HTTPS access to
+`index.crates.io` and `static.crates.io`. It verifies a pinned stock Cargo
+dependency graph, both archive checksums, replay after restart, and current
+repository grants. Provide clean candidate binaries and the stock PostgreSQL
+and Cargo tools using the script's documented flags. The default profile uses
+a controlled loopback origin.
+
 Set a positive stale window to permit a previously validated archive during a
 transient upstream outage. The index and archive each need a current admission
 under that window. A changed checksum or source binding blocks stale delivery.
