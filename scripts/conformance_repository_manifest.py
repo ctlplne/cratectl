@@ -494,6 +494,7 @@ def evaluate(args):
         print(f"PASS: {len(report['maven_index']['checks'])} stock Apache Maven Indexer checks")
     if args.maven_index_cached:
         print(f"PASS: {len(report['maven_index']['cached']['checks'])} stock Apache cached Maven index checks")
+        print(f"PASS: {len(report['maven_index']['cached']['groups']['checks'])} stock Apache ordered Maven index checks")
     if args.npm_search:
         print(f"PASS: {len(report['npm_search']['checks'])} stock hosted npm search checks")
         print(f"PASS: {len(report['npm_cached_search']['checks'])} stock cached npm search checks")

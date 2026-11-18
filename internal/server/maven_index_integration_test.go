@@ -218,3 +218,90 @@ func TestMavenProxyIndexRequiresBothCurrentSourceReceipts(t *testing.T) {
 	mavenDeny(t, s, i, repo, artifact+".jar")
 	read(false)
 }
+
+func TestMavenGroupIndexRespectsExactFileOrderAndMemberGrants(t *testing.T) {
+	s, db, token, identity := schemaServer(t)
+	s.PrivateUpstreamNetworks = []string{"127.0.0.1/32"}
+	const preferred = "cratectl-index-preferred"
+	const jarRepo = "cratectl-index-jar"
+	const pomRepo = "cratectl-index-pom"
+	const group = "cratectl-index-group"
+	const actor = "cratectl-index-reader"
+	const coordinate = "dev/ctlplne/cratectl-index/1.0.0/cratectl-index-1.0.0"
+	const jar = "owned lower Maven JAR"
+	const pom = `<project><artifactId>cratectl-index</artifactId></project>`
+	var requests atomic.Int64
+	listener, err := testnet.ListenOwned()
+	if err != nil {
+		t.Fatal(err)
+	}
+	origin := &httptest.Server{Listener: listener, Config: &http.Server{Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requests.Add(1)
+		w.WriteHeader(http.StatusNotFound)
+	})}}
+	origin.Start()
+	defer origin.Close()
+	reader, err := crypt.Token()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := store.Provision(t.Context(), db.OwnerDSN, identity.Tenant, actor, "reader", reader, time.Now().Add(time.Hour)); err != nil {
+		t.Fatal(err)
+	}
+	mavenRepositories(t, s, identity,
+		store.Repository{Name: jarRepo, Format: "maven"}, store.Repository{Name: pomRepo, Format: "maven"},
+		store.Repository{Name: preferred, Mode: "proxy", Access: "restricted", Format: "maven", Settings: store.RepositorySettings{
+			Upstream: &upstream.Config{URL: origin.URL + "/cratectl-maven-index-absent/", Networks: []string{"127.0.0.1/32"}},
+			Cache:    store.CacheSettings{FreshSeconds: 120, NegativeSeconds: 120, RequireChecksum: true},
+		}},
+		store.Repository{Name: group, Mode: "group", Format: "maven", Settings: store.RepositorySettings{Members: []string{preferred, jarRepo, pomRepo}}})
+	if w := mavenHTTP(t, s, token, http.MethodPut, "/r/"+jarRepo+"/"+coordinate+".jar", jar); w.Code != http.StatusCreated {
+		t.Fatal("publish lower JAR", w.Code, w.Body.String())
+	}
+	if w := mavenHTTP(t, s, token, http.MethodPut, "/r/"+pomRepo+"/"+coordinate+".pom", pom); w.Code != http.StatusCreated {
+		t.Fatal("publish lower POM", w.Code, w.Body.String())
+	}
+	read := func(expected bool) {
+		t.Helper()
+		before := requests.Load()
+		w := mavenHTTP(t, s, reader, http.MethodGet, "/r/"+group+"/"+mavenIndexChunk, "")
+		if w.Code != http.StatusOK {
+			t.Fatal("group index response", w.Code, w.Body.String())
+		}
+		gz, err := gzip.NewReader(w.Body)
+		if err != nil {
+			t.Fatal(err)
+		}
+		data, err := io.ReadAll(io.LimitReader(gz, 4096))
+		if err != nil || gz.Close() != nil || bytes.Contains(data, []byte(crypt.Digest([]byte(jar)))) != expected || requests.Load() != before {
+			t.Fatal("Maven group discovery failed to enforce current receipts and grants", expected, err)
+		}
+	}
+	api := lifecycleHTTP(t, s, token)
+	grant := func(allow bool, key string) {
+		t.Helper()
+		w := api(http.MethodPut, "/api/v1/repositories/"+preferred+"/grants", map[string]any{"actor": actor, "read": allow, "write": false}, key)
+		if w.Code != http.StatusOK {
+			t.Fatal("set preferred Maven group grant", w.Code, w.Body.String())
+		}
+	}
+	read(false)
+	grant(true, "allow-preferred-maven-index")
+	read(false)
+	if w := mavenHTTP(t, s, reader, http.MethodGet, "/r/"+group+"/"+coordinate+".jar", ""); w.Code != http.StatusOK || w.Body.String() != jar {
+		t.Fatal("ordinary group JAR fallback", w.Code, w.Body.String())
+	}
+	read(false)
+	if w := mavenHTTP(t, s, reader, http.MethodGet, "/r/"+group+"/"+coordinate+".pom", ""); w.Code != http.StatusOK || w.Body.String() != pom {
+		t.Fatal("ordinary group POM fallback", w.Code, w.Body.String())
+	}
+	read(true)
+	grant(false, "revoke-preferred-maven-index")
+	read(false)
+	grant(true, "restore-preferred-maven-index")
+	read(true)
+	if w := api(http.MethodPut, "/api/v1/repositories/"+preferred+"/cache", map[string]string{"path": coordinate + ".pom"}, "expire-preferred-pom-receipt"); w.Code != http.StatusOK {
+		t.Fatal("expire preferred POM absence", w.Code, w.Body.String())
+	}
+	read(false)
+}

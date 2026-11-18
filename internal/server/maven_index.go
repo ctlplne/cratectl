@@ -117,7 +117,7 @@ func (s *Server) serveMavenIndex(w http.ResponseWriter, r *http.Request, i store
 	maxBytes := min(s.NativeMetadataBytes, 32<<20)
 	files, err := s.DB.MavenRepositoryIndex(r.Context(), i, repo.Name, s.NativeVersionLimit, maxBytes)
 	if errors.Is(err, store.ErrNotFound) {
-		fail(w, http.StatusNotFound, "maven_index_unavailable", "Read the Maven index from a hosted or cached proxy repository.")
+		fail(w, http.StatusNotFound, "maven_index_unavailable", "Read the full index from a Maven repository.")
 		return
 	}
 	if err != nil {

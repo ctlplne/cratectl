@@ -3,6 +3,9 @@ package store
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
+	"strings"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -30,7 +33,14 @@ func (s *Store) MavenRepositoryIndex(ctx context.Context, i Identity, repo strin
 		if err != nil {
 			return err
 		}
-		if r.Format != "maven" || (r.Mode != "hosted" && r.Mode != "proxy") {
+		if r.Format != "maven" {
+			return ErrNotFound
+		}
+		if r.Mode == "group" {
+			files, err = mavenGroupIndex(ctx, tx, i, r, limit, byteLimit)
+			return err
+		}
+		if r.Mode != "hosted" && r.Mode != "proxy" {
 			return ErrNotFound
 		}
 		authority := ""
@@ -75,4 +85,107 @@ ORDER BY a.path COLLATE "C" LIMIT $7`, i.Tenant, r.Name, r.RequireReview, r.Mode
 		return nil, err
 	}
 	return files, nil
+}
+
+func mavenGroupIndex(ctx context.Context, tx pgx.Tx, i Identity, endpoint Repository, limit int, byteLimit int64) ([]MavenIndexFile, error) {
+	rows, err := tx.Query(ctx, `SELECT DISTINCT a.path COLLATE "C" AS path
+FROM cratectl.artifacts a JOIN cratectl.repositories r ON (r.tenant,r.name)=(a.tenant,a.repository)
+LEFT JOIN cratectl.repository_grants g ON (g.tenant,g.repository,g.actor)=(a.tenant,a.repository,$3)
+LEFT JOIN cratectl.repository_lifecycle rl ON (rl.tenant,rl.repository)=(a.tenant,a.repository)
+`+decisionJoin+nativeLifecycleJoin+`
+WHERE a.tenant=$1 AND a.repository=ANY($2::text[]) AND r.format='maven'
+ AND (r.mode='hosted' OR (r.mode='proxy' AND a.source_revision=r.source_revision))
+ AND COALESCE(rl.state,'active')='active' AND ($4::boolean OR r.access='tenant' OR g.can_read)
+ AND right(a.path,4)='.jar' AND octet_length(a.path)<=2048
+ AND NOT COALESCE(nl.deleted,false) AND COALESCE(d.decision,a.decision)<>'denied'
+ AND (NOT (r.require_review OR $5::boolean) OR COALESCE(d.decision,a.decision)='allowed')
+ORDER BY path LIMIT $6`, i.Tenant, endpoint.Settings.Members, i.Actor, i.Role == "admin", endpoint.RequireReview, limit+1)
+	if err != nil {
+		return nil, err
+	}
+	paths, err := pgx.CollectRows(rows, pgx.RowTo[string])
+	if err != nil {
+		return nil, err
+	}
+	if len(paths) > limit {
+		return nil, ErrMetadataLimit
+	}
+	var files []MavenIndexFile
+	sources := map[string]Repository{}
+	for _, jarPath := range paths {
+		byteLimit -= int64(len(jarPath) + 128)
+		if byteLimit < 0 {
+			return nil, ErrMetadataLimit
+		}
+		jar, err := mavenIndexGroupArtifact(ctx, tx, i, endpoint, jarPath, sources)
+		if err == nil {
+			_, err = mavenIndexGroupArtifact(ctx, tx, i, endpoint, strings.TrimSuffix(jarPath, ".jar")+".pom", sources)
+		}
+		if nativeSearchSourceUnavailable(err) || errors.Is(err, ErrDeleted) || errors.Is(err, errNativeSearchCatalog) {
+			continue
+		}
+		if err != nil {
+			return nil, err
+		}
+		files = append(files, MavenIndexFile{Path: jar.Path, Digest: jar.Digest, Size: jar.Size, Modified: jar.Created})
+	}
+	return files, nil
+}
+
+// The group can select the JAR and POM from different members. Each path must
+// follow the live pull order. Unknown preferred proxy authority fences discovery.
+func mavenIndexGroupArtifact(ctx context.Context, tx pgx.Tx, i Identity, endpoint Repository, path string, sources map[string]Repository) (Artifact, error) {
+	for _, member := range MembersForPath(endpoint, path) {
+		source, present := sources[member]
+		if !present {
+			var err error
+			source, err = repositoryInTx(ctx, tx, i, member, "read")
+			if err != nil {
+				return Artifact{}, err
+			}
+			sources[member] = source
+		}
+		if source.Format != "maven" || source.Mode == "group" {
+			return Artifact{}, ErrConflict
+		}
+		if err := notDeletedInTx(ctx, tx, source.Name, path); err != nil {
+			return Artifact{}, err
+		}
+		if source.Mode == "proxy" {
+			state, err := nativeCatalogRetrieval(ctx, tx, source.Name, path)
+			if errors.Is(err, pgx.ErrNoRows) {
+				return Artifact{}, errNativeSearchCatalog
+			}
+			if err != nil {
+				return Artifact{}, err
+			}
+			if state.SourceRevision != source.SourceRevision || !state.Fresh() || (state.State != "ready" && state.State != "negative") {
+				return Artifact{}, errNativeSearchCatalog
+			}
+			if state.State == "negative" {
+				continue
+			}
+		}
+		budget := repositoryReadBudget(source)
+		budget.sqlMetadataBytes = 32 << 10
+		a, err := readArtifact(ctx, tx, source.Name, path, source.RequireReview || endpoint.RequireReview, budget)
+		if source.Mode == "hosted" && errors.Is(err, ErrNotFound) {
+			continue
+		}
+		if err != nil {
+			return Artifact{}, err
+		}
+		if source.Mode == "proxy" {
+			var binding struct {
+				Authority string `json:"source_authority"`
+				Path      string `json:"source_path"`
+			}
+			if json.Unmarshal(a.Metadata, &binding) != nil || source.Settings.Upstream == nil ||
+				binding.Authority != source.Settings.Upstream.URL || binding.Path != path {
+				return Artifact{}, errNativeSearchCatalog
+			}
+		}
+		return a, nil
+	}
+	return Artifact{}, ErrNotFound
 }

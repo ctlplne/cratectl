@@ -221,4 +221,61 @@ def cached_maven_index(coordinate, jar_digest, pom_digest, row, index, request, 
         api('maven-index-deny-cached-pom', endpoint + '/decisions', 'PUT',
             {'path': coordinate + '.pom', 'digest': pom_digest, 'decision': 'denied'})
         check('current POM policy hides the cached pair without a source result leak', visible('denied', [])[0])
-        return {'checks': checks, 'archive_sha256': archive_sha, 'jar_sha256': jar_digest, 'pom_sha256': pom_digest}
+        groups = grouped_maven_index(coordinate, jar_digest, pom_digest, row, files, origin, requests, index, request, api)
+        return {'checks': checks, 'archive_sha256': archive_sha, 'jar_sha256': jar_digest, 'pom_sha256': pom_digest, 'groups': groups}
+
+
+def grouped_maven_index(coordinate, jar_digest, pom_digest, row, files, origin, requests, index, request, api):
+    preferred = 'cratectl-maven-index-preferred'
+    jar_repo = 'cratectl-maven-index-jar'
+    pom_repo = 'cratectl-maven-index-pom'
+    group = 'cratectl-maven-index-group'
+    missing = '/cratectl-maven-index-absent/'
+    endpoint = '/api/v1/repositories/' + preferred
+    checks = []
+
+    def check(label, condition):
+        if not condition:
+            raise ValueError(label)
+        checks.append(label)
+
+    def repository(label, name, **fields):
+        api('maven-index-group-create-' + label, '/api/v1/repositories', 'POST', {'name': name, 'format': 'maven', **fields})
+
+    repository('preferred', preferred, mode='proxy', access='restricted', settings={
+        'upstream': {'url': 'http://[::1]:38443' + missing, 'networks': ['::1/128']},
+        'cache': {'fresh_seconds': 180, 'negative_seconds': 120, 'require_checksum': True}})
+    repository('jar', jar_repo)
+    repository('pom', pom_repo)
+    repository('group', group, mode='group', settings={'members': [preferred, jar_repo, pom_repo]})
+    for ext, owner in (('.jar', jar_repo), ('.pom', pom_repo)):
+        path = coordinate + ext
+        if request(path, 'admin', 'PUT', files[origin + path], repository=owner)[0] != 201:
+            raise ValueError('cannot seed the split hosted Maven group release')
+
+    def grant(label, allow):
+        api('maven-index-group-grant-' + label, endpoint + '/grants', 'PUT', {'actor': 'cratectl-reader', 'read': allow, 'write': False})
+
+    def read(phase, expected):
+        before = len(requests)
+        rows, digest, _ = index('group-' + phase, 'reader', group)
+        return rows == expected and before == len(requests), digest
+
+    def pull(extension, digest):
+        status, body, _ = request(coordinate + extension, repository=group)
+        return status == 200 and hashlib.sha256(body).hexdigest() == digest and missing + coordinate + extension in requests
+
+    check('an ungranted preferred source hides the ordered Maven group coordinate', read('ungranted', [])[0])
+    grant('allow', True)
+    check('unknown preferred source state fences an ordered Maven index without an origin request', read('cold', [])[0])
+    check('a current JAR absence alone cannot admit an ordered Maven release', pull('.jar', jar_digest) and read('jar-only', [])[0])
+    admitted = pull('.pom', pom_digest)
+    visible, archive_sha = read('admitted', [row])
+    check('stock Maven Indexer reads a group release from independently selected JAR and POM members', admitted and visible)
+    grant('revoke', False)
+    check('revoking the consulted preferred source grant removes the group release', read('revoked', [])[0])
+    grant('restore', True)
+    check('restoring the grant and current absence restores discovery with zero origin reads', read('restored', [row])[0])
+    api('maven-index-group-expire-pom', endpoint + '/cache', 'PUT', {'path': coordinate + '.pom'})
+    check('expired preferred POM absence fences group indexing without contacting the origin', read('expired', [])[0])
+    return {'checks': checks, 'archive_sha256': archive_sha}
