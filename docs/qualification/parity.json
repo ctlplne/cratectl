@@ -28055,17 +28055,17 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "cmd/cratectl/repository_manifest.go",
       "surfaces": {
-        "api": null,
-        "cli": null,
+        "api": "GET session and retained repository configuration/state, POST repositories",
+        "cli": "repository-plan, repository-apply, repository-import",
         "ui": null
       },
       "core": true,
       "dependencies": [],
       "acceptance_journey": "J.UX.DECLARATIVE",
-      "clients": [],
-      "client_versions": {},
+      "clients": ["cratectl", "stock npm"],
+      "client_versions": {"stock npm": "11.16.0"},
       "test_data": "Defined by the corresponding GOAL.md acceptance requirement.",
       "permission_cases": [
         "least privilege",
@@ -28078,11 +28078,11 @@
         "partial failure",
         "recovery"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "Not implemented or qualified.",
-      "next_action": "Specify and implement the owner-required journey, then retain observed evidence."
+      "state": "implemented",
+      "candidate": "12b04b6868b4c062fd97e3af14ca2f12aeaaf7d6",
+      "evidence": ["evidence/2026-11-18/repository-manifest-12b04b6-native.json"],
+      "limits": "Native macOS ARM64, real PostgreSQL 16.15 and stock npm verify 19 scoped hosted repository checks. Version 1 covers approved creation, exact import and read-only drift. Other operational resources and full reconciliation remain open.",
+      "next_action": "Extend declarative coverage to additional managed resources with revision-checked reconciliation and native platform qualification."
     },
     {
       "id": "UX.TERRAFORM-PROVIDER",

@@ -364,6 +364,18 @@ engine through Docker API 1.48. Each re-export matched the configuration
 digest in the signed manifest. The unchanged report matches all 27 source
 hashes and records 57 forced-RLS tables on the imported database.
 [Local Docker API 1.48 replay](evidence/2026-11-18/offline-media-27b33f9-api148-arm64.json)
+The authorized `12b04b6` push selected the corrected native signed-media
+workflow, the Windows CLI qualification and six baseline workflows.
+[Original GitHub run inventory](evidence/2026-11-18/github-12b04b6-started.json)
+
+The hosted repository manifest commands plan creation and surface drift,
+require approval bound to the registry and tenant, and import existing hosted
+configuration. Native `12b04b6` passed 19 checks with PostgreSQL 16.15 and
+stock npm 11.16.0, including one journaled creation under concurrent requests,
+tenant isolation and exact approved package bytes after restart. The current
+commands cover hosted repository creation and import. Wider declarative and
+Terraform/OpenTofu coverage remains open.
+[Native repository manifest result](evidence/2026-11-18/repository-manifest-12b04b6-native.json)
 
 The cold `e4adc19` recovery fixture passed 17 runtime checks and 12 backup
 controls. With registry and worker stopped, stock PostgreSQL 16.15 captured
