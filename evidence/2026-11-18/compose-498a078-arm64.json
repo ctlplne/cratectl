@@ -1,0 +1,274 @@
+{
+  "candidate": "498a078ed74f5fa6ef7b39103c96acb20fa63168",
+  "source_dirty": false,
+  "observed_at": "2026-11-18T12:52:36.206364+00:00",
+  "project": "cratectl-compose-498a078",
+  "host": "macOS ARM64",
+  "engine": "Linux ARM64 Docker",
+  "compose": "5.7.0",
+  "toolchain": "Go 1.27.4",
+  "umask": "0077",
+  "npm": "11.16.0",
+  "status": "passed",
+  "failure": null,
+  "forced_rls_tenant_tables": 57,
+  "checks": [
+    "Clean Git source matches the qualification candidate",
+    "Actual cratectl is an ARM64 Linux binary from the exact clean candidate",
+    "Actual cratectld is an ARM64 Linux binary from the exact clean candidate",
+    "Only the intended PostgreSQL, registry and worker are running after bootstrap",
+    "Actual PostgreSQL runtime role cannot bypass forced RLS and owns no tenant tables",
+    "Blank database bootstrap committed schema 18",
+    "Stock Compose resolves the complete topology without credentials or a PostgreSQL host listener",
+    "The actual registry process uses its scoped nonroot mounts without owner credentials",
+    "The actual worker process uses its scoped nonroot mounts without owner credentials",
+    "The host CLI configuration is private",
+    "Stock curl refuses untrusted TLS and accepts the generated CA",
+    "Authenticated stock workflow starts with no seeded repositories",
+    "The actual CLI writes a private scoped npm configuration with TLS verification",
+    "Stock npm publishes exact inert bytes to the local review-gated repository",
+    "Fresh stock npm cannot consume unassessed bytes",
+    "Approved stock npm install extracts the original inert bytes",
+    "The separate Compose worker processes tenant event and byte-integrity intents",
+    "Stopping the project removes all three owned running services",
+    "Restart preserves the bootstrap identity, policies and stock-client package bytes",
+    "Only the owned tests stopped and their persistent volume remains outside runtime"
+  ],
+  "observations": [
+    {
+      "label": "source-revision",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/000-source-revision.log",
+      "bytes": 42,
+      "sha256": "d625ba7d02a67f2e6fede2fea24ef940f0708589cb57fc4a513215b2a2901faf"
+    },
+    {
+      "label": "source-clean",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/001-source-clean.log",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "label": "build-host-cli",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/002-build-host-cli.log",
+      "bytes": 558,
+      "sha256": "68ce4a32b36f4af13a2e5feca19f40c3da115f5a48086b788886481dcc891fca"
+    },
+    {
+      "label": "identity-cratectl",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/003-identity-cratectl.log",
+      "bytes": 1103,
+      "sha256": "175997e6a98864b76d78aa51e24ede47aba56f82551a38a54dbf46d6c530e149"
+    },
+    {
+      "label": "identity-cratectld",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/004-identity-cratectld.log",
+      "bytes": 1582,
+      "sha256": "aa65b162709d91e07113791892b5284c1aa130d82dfdf2c937ee1950c31ee1d7"
+    },
+    {
+      "label": "named-services",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/005-named-services.log",
+      "bytes": 146,
+      "sha256": "4dfb6520d501b748c26d80c4662b6d74ec3d3438598d1bdacc370fc50f6f89d4"
+    },
+    {
+      "label": "postgres-metadata",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/006-postgres-metadata.log",
+      "bytes": 19,
+      "sha256": "0c8e0dfffb7b57885d66fde8c59fb2d54b29199b5e0c176168d99bc19457245a"
+    },
+    {
+      "label": "postgres-metadata",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/007-postgres-metadata.log",
+      "bytes": 9,
+      "sha256": "e0aa797039ff9b129430d42de01745ccfeca0d852dbf5f10439fb52d02f96966"
+    },
+    {
+      "label": "postgres-metadata",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/008-postgres-metadata.log",
+      "bytes": 4,
+      "sha256": "f573548b0e961452b19685793394a5a64336b551dac5ec9ff0d7f8f59296e563"
+    },
+    {
+      "label": "safe-config",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/009-safe-config.log",
+      "bytes": 5725,
+      "sha256": "ea4035ee72ae2229cfb7f064728d633c007255b0fd97a06bb49245ff3549adab"
+    },
+    {
+      "label": "inspect-registry",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/010-inspect-registry.log",
+      "bytes": 12340,
+      "sha256": "155458609d78aed4733b2daf99b9a37a47cedd69972029434a8a8f52540c9b4b"
+    },
+    {
+      "label": "inspect-worker",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/011-inspect-worker.log",
+      "bytes": 10934,
+      "sha256": "f11d57f67c9235f83272536fcafe1f32d970a91ca4f85158cecc47d7a26e8e8f"
+    },
+    {
+      "label": "unknown-ca-refused",
+      "exit": 60,
+      "private_path": ".private/cratectl-compose-498a078/qualification/012-unknown-ca-refused.log",
+      "bytes": 340,
+      "sha256": "73ee35db0e9cd9efd5ffcfb9c2c7b0f3e0305c55fc4ffef11dfd42b18bac3fb2"
+    },
+    {
+      "label": "trusted-ready",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/013-trusted-ready.log",
+      "bytes": 20,
+      "sha256": "638315f070032e97b66e9b07a8b3e3344c9be6ed1c18c2a279614bd31d8ef8e5"
+    },
+    {
+      "label": "first-use",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/014-first-use.log",
+      "bytes": 209,
+      "sha256": "d914066f21935878d9ed10c8c95ce2193a4d54b115ee62df5364d6ab88a17d92"
+    },
+    {
+      "label": "create-repository",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/015-create-repository.log",
+      "bytes": 272,
+      "sha256": "02d2a5f88de2e8d7dc3c7cea949cf22a4ba5d44699f0120a2051e084ea39fb50"
+    },
+    {
+      "label": "npm-config",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/016-npm-config.log",
+      "bytes": 181,
+      "sha256": "b0826e21e4ff065930a9f6522e95406d9a4981813807d370480cd8d68f3a5c1c"
+    },
+    {
+      "label": "stock-npm-version",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/017-stock-npm-version.log",
+      "bytes": 9,
+      "sha256": "1d01c01718f2b6cb41973abc497379d9c4fe42da5a57f6fb3e0eeeae18482608"
+    },
+    {
+      "label": "npm-publish",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/018-npm-publish.log",
+      "bytes": 638,
+      "sha256": "f1754f481c0f06e08cf1d2446b9858d78235c696ac7e8486460eeff8bc6de22c"
+    },
+    {
+      "label": "artifact",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/019-artifact.log",
+      "bytes": 900,
+      "sha256": "6764ff2b7b64e1e7c1adcaa55dbc1eeb0a40a79450c785b864c375553d38f694"
+    },
+    {
+      "label": "review-refused",
+      "exit": 1,
+      "private_path": ".private/cratectl-compose-498a078/qualification/020-review-refused.log",
+      "bytes": 600,
+      "sha256": "5c77d9347946061cf98877377bdd118d8df45979ea2570272cf2c426d99c37b6"
+    },
+    {
+      "label": "approve",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/021-approve.log",
+      "bytes": 289,
+      "sha256": "51ccf117910711e66ee30de3f83a6554276bdc10bae8a8a03a9a5ba2af3e97e3"
+    },
+    {
+      "label": "approved-install",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/022-approved-install.log",
+      "bytes": 27,
+      "sha256": "26e6166faf66eba18c4abc55d3d1b0c3a5ed9f8b6e247cfac6b4a132bab108aa"
+    },
+    {
+      "label": "worker-jobs",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/023-worker-jobs.log",
+      "bytes": 1855,
+      "sha256": "065f7e0c6f7c31d4cfbcbf5e459b8f1dc130ead01f7a1784569d5e33443427fa"
+    },
+    {
+      "label": "shutdown",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/024-shutdown.log",
+      "bytes": 780,
+      "sha256": "c5667e0754ee92778d9ef7f90432e2c73e5060a948068369bc5f708980306a6a"
+    },
+    {
+      "label": "named-services",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/025-named-services.log",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "label": "durable-restart",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/026-durable-restart.log",
+      "bytes": 4182,
+      "sha256": "662d9b1023f4ec55417c76eb65f10dcfe85bfdb8eb4263478baf3e126dbdc494"
+    },
+    {
+      "label": "restarted-install",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/027-restarted-install.log",
+      "bytes": 27,
+      "sha256": "b1b1121b3ca51b668e741ab75cc719abb8eee58a0c28824d14a88e65b3dfc7f5"
+    },
+    {
+      "label": "final-shutdown",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/028-final-shutdown.log",
+      "bytes": 780,
+      "sha256": "53a43df954a84ee8a00e944d1486ecde93bf2aff9b5eeabff33b71f42dd5bafb"
+    },
+    {
+      "label": "named-services",
+      "exit": 0,
+      "private_path": ".private/cratectl-compose-498a078/qualification/029-named-services.log",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    }
+  ],
+  "limits": [
+    "Owned local Docker engine with one database, one registry and one worker.",
+    "This result covers Linux ARM64 container execution on a macOS Docker host. Linux amd64 execution, controlled upgrades, Helm and disconnected packaging remain open."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false,
+  "linux_arm64_binary_sha256": {
+    "cratectl": "747164d4112f7bbe006545e50b0871f2edb2349dfaf684c0e632bae80b772dc2",
+    "cratectld": "75a2d861216631c8568dda2654c9a85b0b50cc5a630aad1678dc77d909eabb14"
+  },
+  "runtime_image_id": "sha256:f788803e394dcc6afaaa35ab52aa56d8d01c2447496a608540d2433e951e5c04",
+  "postgres_image": "docker.io/library/postgres:16.15-alpine@sha256:aa6cb33cf4c19c765cefcf48d96176258800870a9a1e930ad126200f9d825139",
+  "launch_log": {
+    "private_path": ".private/cratectl-compose-498a078-launch.log",
+    "sha256": "145743ad7b0ac7882539d6e6150f85f55a6854db272d6be50bf36be48b1df3c5"
+  },
+  "local_driver": {
+    "path": ".cache/cratectl-compose-acceptance.py",
+    "sha256": "5406bfb6fd326818861659fc05e80f3fe8e2b86774171b89a67dd195d504c0b0"
+  },
+  "retained_volume": "cratectl-compose-498a078_database",
+  "earlier_attempts": [
+    "evidence/2026-11-18/compose-72e2967-first-attempt.json",
+    "evidence/2026-11-18/compose-4458f24-dns-failure.json"
+  ]
+}

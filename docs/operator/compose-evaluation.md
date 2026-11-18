@@ -60,5 +60,8 @@ different initial tenant, choose a fresh `--project cratectl-...` and use that
 name with every command. Only one project can publish port 38443 at a time.
 
 This profile covers one local engine with one PostgreSQL instance, one registry
-and one worker. Production Helm, controlled upgrades, backup and recovery,
-replicated storage and disconnected installation have separate qualification.
+and one worker. Its Linux ARM64 run passed blank bootstrap, trusted TLS, stock
+npm, worker processing and restart at `498a078`. Linux x64 execution, production
+Helm, controlled upgrades, backup and recovery, replicated storage and
+disconnected installation have separate qualification.
+[ARM64 qualification](../../evidence/2026-11-18/compose-498a078-arm64.json)

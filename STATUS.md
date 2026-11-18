@@ -167,6 +167,13 @@ credentials. Normal and race tests and vet passed on macOS ARM64. The positive
 proxy and stock-client replay requires the exact source in GitHub CI.
 [Development evidence](evidence/2026-11-18/upstream-private-input-development.json)
 
+The blank Compose evaluation passed 20 checks at `498a078` on a Linux ARM64
+Docker engine on macOS. The empty database reached schema 18 with forced RLS
+on all 57 tenant tables. The registry and worker ran without database owner
+credentials. Stock npm published over trusted TLS, respected exact-digest
+review and installed the original bytes after a full stop and restart.
+[Compose qualification](evidence/2026-11-18/compose-498a078-arm64.json)
+
 ## Durable state and remaining scope
 
 All18 migration definitions remain frozen. Schema18 checksum is
@@ -179,7 +186,8 @@ binaries. New binaries stay.cache; ignored.private0700/.cache and originals rema
 Complete remaining workspace/local immutable inputs, package/platform/permission/
 provenance closure, private hosted/proxy/group precedence and authority, current
 scan/import/server-session/operator/console outcomes, lifecycle/physical GC,
-providers/Windows writes and collection locks, Compose/Helm/disconnected install,
+providers/Windows writes and collection locks, Linux x64 Compose, production
+Helm and disconnected install,
 backup/HA/scale/soak and all450/41/14case/7environment/later scope. External legal,
 licensed-comparator and capacity inputs block only their rows. Strict0126 and
 original unresolved durable-jobs0122 remain open. No autonomous delegation.
