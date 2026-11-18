@@ -348,6 +348,9 @@ def evaluate_proxy(work, installation, authority, toolchain, environment, call, 
               and new_requests == [(path, True, False), (INDEX_PATH+'config.json', True, False), (download_path, True, False)])
         api('cargo-proxy-approve-revised', management(PROXY, '/decisions'), 'PUT',
             {**reference, 'digest': revised_digest, 'decision': 'allowed'})
+        check('an unchanged approved dependency must rebind its exact bytes before discovery in the new source revision',
+              request(PROXY, lower_index)[0] == 404 and request(PROXY, lower_download)[1] == archives[BASE_PACKAGE]
+              and json.loads(request(PROXY, lower_index)[1])['cksum'] == metadata[BASE_PACKAGE]['cksum'])
         check('fresh stock Cargo resolves the new approved source revision and exact leaf',
               stock('revised-source') == sorted((revised_digest, metadata[BASE_PACKAGE]['cksum'])))
 

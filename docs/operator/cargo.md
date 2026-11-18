@@ -93,8 +93,11 @@ When local approval is required, a repository reader can request the exact
 `/cargo/REPOSITORY/download/CRATE/VERSION` endpoint to stage a known version.
 The download is denied while review is pending. An administrator can inspect
 the `crates/` reference in the artifact inventory and approve its exact digest.
-After approval, the version can appear in the sparse index. An upstream yank
-changes resolution while existing lockfiles may still fetch approved bytes.
+After approval, the version can appear in the sparse index. Following a source
+revision change, request each exact dependency again so the proxy validates
+its bytes under the new revision. An existing allow decision still applies if
+the digest is unchanged. An upstream yank changes resolution while existing
+lockfiles may still fetch approved bytes.
 Use artifact lifecycle controls to retire or explicitly restore a cached reference.
 
 The current proxy handles sparse indexes with same-registry dependencies and

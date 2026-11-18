@@ -72,6 +72,7 @@ CHECKS = (
     'the exact Cargo archive can be retrieved after an interrupted origin transfer',
     'concurrent Cargo cache misses consume one upstream archive transfer',
     'advancing the Cargo source revision clears inherited validators and requires a new exact-digest decision',
+    'an unchanged approved dependency must rebind its exact bytes before discovery in the new source revision',
     'fresh stock Cargo resolves the new approved source revision and exact leaf',
     'current grants and tenant isolation fence a previously filled Cargo proxy',
 )
