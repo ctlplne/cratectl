@@ -56,7 +56,8 @@ func TestCargoGroupServingRechecksFirstMemberBeforeHeaders(t *testing.T) {
 			if err != nil || source.Name != "lower" {
 				t.Fatalf("initial source %q: %v", source.Name, err)
 			}
-			resolved := resolvedArtifact{artifact: artifact, source: source, cargo: &cargoRead{"combined", name, version}}
+			resolved := resolvedArtifact{artifact: artifact, source: source,
+				cargo: &cargoRead{repository: "combined", name: name, version: version}}
 			file, err := s.Blobs.OpenVerified(ctx, i.Tenant, artifact.Digest, artifact.Size)
 			if err != nil {
 				t.Fatal(err)

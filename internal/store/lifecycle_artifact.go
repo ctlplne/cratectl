@@ -68,7 +68,7 @@ func artifactLifecycleRecordMode(ctx context.Context, tx pgx.Tx, i Identity, rep
 	if e == nil && !materializedLifecycleReference(r, a) {
 		return a, ErrConflict
 	}
-	if e == nil && r.Format == "cargo" {
+	if e == nil && r.Format == "cargo" && r.Mode == "hosted" {
 		entry, _ := CargoArtifactEntry(a)
 		key, _ := cargo.CollisionKey(entry.Name)
 		e = requireCargoOwner(ctx, tx, i, repo, key)
@@ -99,6 +99,14 @@ func materializedLifecycleReference(r Repository, a Artifact) bool {
 	case "nuget":
 		return strings.HasPrefix(a.Path, "nuget-packages/") && strings.HasSuffix(a.Path, ".nupkg")
 	case "cargo":
+		if r.Mode == "proxy" {
+			var binding CargoArchiveBinding
+			if len(a.Metadata) > 4096 || json.Unmarshal(a.Metadata, &binding) != nil || !cargoDigest.MatchString(binding.Checksum) {
+				return false
+			}
+			p, err := CargoProxyPath(binding.Name, binding.Version)
+			return err == nil && a.Path == p && binding.SourceKey == CargoSourceKey(binding.Name, binding.Version) && validCargoArchive(a, binding)
+		}
 		_, err := CargoArtifactEntry(a)
 		return err == nil
 	}

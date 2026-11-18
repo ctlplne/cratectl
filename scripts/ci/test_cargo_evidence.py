@@ -3,7 +3,7 @@
 import copy
 import unittest
 
-from cargo_evidence import BASE_CHECKS, CHECKS, PINS, SOURCE_PATHS, validate
+from cargo_evidence import ARCHIVES, BASE_CHECKS, CHECKS, PINS, SOURCE_PATHS, validate
 
 
 class CargoEvidenceTests(unittest.TestCase):
@@ -16,8 +16,7 @@ class CargoEvidenceTests(unittest.TestCase):
                   'sdk_archives_sha256': PINS['arm64'], 'cargo': 'cargo 1.100.0 (3acc79c0c 2026-11-05)',
                   'cargo_sha256': digest, 'rustc_sha256': digest, 'checks': list(CHECKS),
                   'base_checks': [check for check in BASE_CHECKS if check != 'provider matches the clean candidate'],
-                  'archive_sha256': dict.fromkeys(('cratectl-cargo-leaf', 'cratectl-cargo-root', 'cratectl-cargo-root-1.10.0',
-                                                  'group-preferred', 'group-duplicate', 'group-lower-only'), digest),
+                  'archive_sha256': dict.fromkeys(ARCHIVES, digest),
                   'postgres': 'postgres (PostgreSQL) 16.16', 'goal_complete': False, 'broad_readiness': False}
         self.assertEqual(validate(report), report)
         for field, value in [('source_dirty', True), ('runner_arch', 'X64'), ('checks', list(CHECKS)[:-1]),
@@ -27,6 +26,9 @@ class CargoEvidenceTests(unittest.TestCase):
                 changed = copy.deepcopy(report)
                 changed[field] = value
                 validate(changed)
+        report['archive_sha256']['proxy-root'] = 'c' * 64
+        with self.assertRaisesRegex(ValueError, 'differs from the original'):
+            validate(report)
 
 
 if __name__ == '__main__':

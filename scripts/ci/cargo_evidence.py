@@ -52,7 +52,23 @@ CHECKS = (
     'retired preferred crate still fences the lower duplicate',
     'fresh stock Cargo recovers the same preferred archive after restore and restart',
     'an explicit namespace owner routes stock Cargo to the selected lower source',
+    'Cargo proxy config publishes only its own authenticated sparse authority',
+    'fresh stock Cargo proxies a transitive graph and both original archives',
+    'configured index and download credentials remain bound to separate upstream paths',
+    'conditional sparse and archive validation preserves the original bytes',
+    'fresh stock Cargo recovers both exact cached bytes across restart during upstream outage',
+    'current review hides an upstream checksum pending local authorization',
+    'local approval restores stock Cargo discovery and exact byte delivery',
+    'retired proxy reference blocks discovery and delivery even when a cache fill is requested',
+    'proxy reference restoration retains the exact locally approved archive',
+    'a download checksum mismatch leaves no materialized package reference',
+    'retry stages the original archive after checksum failure and still requires local approval',
+    'an upstream coordinate change refuses the entire refreshed index and its download',
+    'upstream yank changes discovery while the same exact pinned bytes remain deliverable',
+    'current grants and tenant isolation fence a previously filled Cargo proxy',
 )
+ARCHIVES = ('cratectl-cargo-leaf', 'cratectl-cargo-root', 'cratectl-cargo-root-1.10.0',
+            'group-preferred', 'group-duplicate', 'group-lower-only', 'proxy-root', 'proxy-leaf')
 SOURCE_PATHS = (
     '.github/workflows/cargo.yml', 'go.mod', 'go.sum', 'Makefile',
     'internal/cargo/coordinates.go', 'internal/cargo/index.go', 'internal/cargo/publish.go',
@@ -66,6 +82,9 @@ SOURCE_PATHS = (
     'scripts/conformance_repository_manifest.py',
     'scripts/ci/cargo_evidence.py', 'scripts/ci/bootstrap_cargo.py', 'scripts/ci/fetch_archive.py',
     'scripts/ci/terraform_provider_evidence.py', 'scripts/qualification_contract.py', 'scripts/bounded_client.py',
+    'internal/cargo/sparse.go', 'internal/server/cargo_proxy.go', 'internal/store/cargo_proxy.go',
+    'internal/store/cargo_retrieval.go', 'internal/store/retrieval.go', 'internal/store/source_configuration.go',
+    'internal/upstream/upstream.go', 'internal/server/credentials.go', 'scripts/cargo_proxy_fixture.py',
 )
 
 
@@ -94,9 +113,12 @@ def validate(report):
     if report['sdk_archives_sha256'] != PINS[arch]:
         raise ValueError('invalid stock Cargo distribution pins')
     for name, keys in [('source_sha256', SOURCE_PATHS), ('binary_sha256', ('cratectl', 'cratectld')),
-                       ('archive_sha256', ('cratectl-cargo-leaf', 'cratectl-cargo-root', 'cratectl-cargo-root-1.10.0',
-                                           'group-preferred', 'group-duplicate', 'group-lower-only'))]:
+                       ('archive_sha256', ARCHIVES)]:
         binding = report[name]
         if type(binding) is not dict or set(binding) != set(keys) or any(not matches(v, '[a-f0-9]{64}') for v in binding.values()):
             raise ValueError('invalid stock Cargo digest inventory')
+    archives = report['archive_sha256']
+    if (archives['proxy-root'] != archives['cratectl-cargo-root']
+            or archives['proxy-leaf'] != archives['cratectl-cargo-leaf']):
+        raise ValueError('Cargo proxy digest differs from the original stock publication')
     return report

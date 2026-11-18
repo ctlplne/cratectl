@@ -68,7 +68,11 @@ func nativeCatalogArtifact(ctx context.Context, tx pgx.Tx, i Identity, repo, nam
 	if r.Format != format || r.Mode != "proxy" {
 		return Artifact{}, ErrConflict
 	}
-	a, e := readArtifact(ctx, tx, repo, format+"-catalog/"+name, false, repositoryReadBudget(r))
+	budget := repositoryReadBudget(r)
+	if format == "cargo" {
+		budget.sqlMetadataBytes = 32 << 20
+	}
+	a, e := readArtifact(ctx, tx, repo, format+"-catalog/"+name, false, budget)
 	if e == nil && a.MediaType != media {
 		return a, ErrConflict
 	}

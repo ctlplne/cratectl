@@ -206,6 +206,7 @@ type RetrievalResult struct {
 	NPMCatalog                 *NPMCatalog
 	NPMSources                 []NPMSource
 	NativeCatalog              *NativeCatalogPublication
+	CargoBinding               *CargoArchiveBinding
 	OCI                        *OCIPublication
 	GoModule                   *GoModulePublication
 	GoCatalog                  *GoModuleCatalog
@@ -260,6 +261,26 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 			if !bound {
 				return ErrSourceRevalidation
 			}
+		}
+		if repo.Format == "cargo" && (result.Status == 200 || result.Status == 304) && result.Failure == "" {
+			if result.NPMCatalog != nil || len(result.NPMSources) != 0 || result.OCI != nil || result.GoModule != nil ||
+				result.GoCatalog != nil || result.GoLatest != nil || result.GoChecksumFailure != nil {
+				return ErrCargoUnvalidated
+			}
+			if strings.HasPrefix(lease.Path, "cargo-catalog/") {
+				e = completeCargoCatalog(ctx, tx, i, repo, lease, result)
+				if errors.Is(e, errCargoCoordinateChanged) {
+					result = RetrievalResult{Status: result.Status, Failure: "upstream_cargo_coordinate_changed"}
+					e = nil
+				}
+			} else {
+				e = completeCargoArchive(ctx, tx, repo, lease, result)
+			}
+			if e != nil {
+				return e
+			}
+		} else if result.CargoBinding != nil && result.Failure == "" {
+			return ErrCargoUnvalidated
 		}
 		sequence, e := nextEventSequence(ctx, tx, i)
 		if e != nil {
@@ -334,7 +355,7 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 					publication.Sources = append(publication.Sources, NativeSource{Key: source.Key, Format: "npm", Name: source.Name, Coordinate: source.Version, Version: source.Version, URL: source.Tarball, Integrity: source.Integrity, Metadata: source.Package})
 				}
 			}
-			if publication != nil {
+			if publication != nil && repo.Format != "cargo" {
 				if (repo.Format != "npm" && repo.Format != "pypi") || lease.Path != repo.Format+"-catalog/"+publication.Name || len(publication.Entries) != len(publication.Sources) {
 					return ErrConflict
 				}

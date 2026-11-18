@@ -28,6 +28,7 @@ func (w cargoProtocolResponse) Unwrap() http.ResponseWriter { return w.ResponseW
 
 type cargoRead struct {
 	repository, name, version string
+	proxy                     *store.CargoArchiveBinding
 }
 
 func cargoCredential(r *http.Request) (string, error) {
@@ -39,10 +40,6 @@ func cargoCredential(r *http.Request) (string, error) {
 }
 
 func (s *Server) cargo(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, p string) {
-	if repo.Mode != "hosted" && repo.Mode != "group" {
-		fail(w, 405, "cargo_mode_unavailable", "Use a hosted Cargo repository or a group of hosted sources.")
-		return
-	}
 	root := s.PublicURL + "/cargo/" + repo.Name
 	switch {
 	case p == "api/v1/crates/new":
@@ -56,8 +53,8 @@ func (s *Server) cargo(w http.ResponseWriter, r *http.Request, i store.Identity,
 		}
 		s.cargoPublish(w, r, i, repo, "sparse+"+root+"/index/")
 	case strings.HasPrefix(p, "api/v1/crates/"):
-		if repo.Mode == "group" {
-			fail(w, 405, "cargo_group_read_only", "Manage crates through their hosted repository.")
+		if repo.Mode != "hosted" {
+			fail(w, 405, "cargo_read_only", "Manage crates through their hosted repository.")
 			return
 		}
 		action := strings.TrimPrefix(p, "api/v1/crates/")
@@ -73,7 +70,7 @@ func (s *Server) cargo(w http.ResponseWriter, r *http.Request, i store.Identity,
 		if repo.Mode == "hosted" {
 			s.cargoSearch(w, r, i, repo)
 		} else {
-			fail(w, 405, "cargo_group_search", "Search through a hosted Cargo repository.")
+			fail(w, 405, "cargo_read_only_search", "Search through a hosted Cargo repository.")
 		}
 	case p == "index/config.json":
 		if s.cargoPublicAuthority(w) {
@@ -206,7 +203,17 @@ func (s *Server) cargoIndex(w http.ResponseWriter, r *http.Request, i store.Iden
 		respondErr(w, store.ErrNotFound)
 		return
 	}
-	data, err := s.DB.CargoIndex(r.Context(), i, repo.Name, name, s.NativeVersionLimit, s.NativeMetadataBytes)
+	var data []byte
+	if repo.Mode == "proxy" {
+		var catalog resolvedArtifact
+		catalog, err = s.resolveProxy(r.Context(), i, repo, store.CargoCatalogPath(name), forceRefresh(r))
+		if err == nil {
+			data, err = s.DB.CargoProxyIndex(r.Context(), i, repo.Name, name, repo.SourceRevision, catalog.artifact.Digest,
+				s.NativeVersionLimit, s.NativeMetadataBytes, catalog.admissions...)
+		}
+	} else {
+		data, err = s.DB.CargoIndex(r.Context(), i, repo.Name, name, s.NativeVersionLimit, s.NativeMetadataBytes)
+	}
 	if err != nil {
 		respondErr(w, err)
 		return
@@ -220,6 +227,10 @@ func (s *Server) cargoDownload(w http.ResponseWriter, r *http.Request, i store.I
 	name, version, ok := strings.Cut(p, "/")
 	if !ok {
 		respondErr(w, store.ErrNotFound)
+		return
+	}
+	if repo.Mode == "proxy" {
+		s.cargoProxyDownload(w, r, i, repo, name, version)
 		return
 	}
 	artifact, source, err := s.DB.CargoDownload(r.Context(), i, repo.Name, name, version)

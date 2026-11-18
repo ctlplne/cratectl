@@ -22,6 +22,7 @@ from bounded_client import run_owned_client
 from cargo_group_fixture import evaluate_groups
 from cargo_hosted_fixture import evaluate_cargo
 from cargo_ownership_upgrade_fixture import BASELINE as CARGO_UPGRADE_BASELINE, replay_legacy_cargo
+from cargo_proxy_fixture import evaluate_proxy, INDEX_ORIGIN, DOWNLOAD_ORIGIN
 from ci.cargo_evidence import PINS as CARGO_PINS, SOURCE_PATHS as CARGO_SOURCE_PATHS, validate as validate_cargo
 from ci.terraform_provider_evidence import ARCHIVE_PINS, SOURCE_PATHS, postgres_version, validate
 from qualification_contract import CURRENT_SCHEMA, CURRENT_TENANT_TABLES, candidate_binary_directory
@@ -62,6 +63,8 @@ def evaluate(args):
                   and key not in ('HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'http_proxy', 'https_proxy', 'all_proxy')}
     checks = []
     server = None
+    server_flags = []
+    origin_credentials = {}
 
     def check(name, passed):
         if not passed:
@@ -94,7 +97,9 @@ def evaluate(args):
         return json.loads(output) if status == 0 else output
 
     def start_server(executable=None):
-        process = subprocess.Popen([executable or daemon, 'serve', '--config', runtime_config], env=public_env,
+        binary = executable or daemon
+        flags = server_flags if binary == daemon else []
+        process = subprocess.Popen([binary, 'serve', '--config', runtime_config, *flags], env=public_env,
                                    stdout=server_log, stderr=subprocess.STDOUT)
         trust = ssl.create_default_context(cafile=str(app / 'ca.crt'))
         local_http = urllib.request.build_opener(urllib.request.ProxyHandler({}), urllib.request.HTTPSHandler(context=trust))
@@ -193,6 +198,13 @@ def evaluate(args):
             call('provision-' + label, bootstrap, 'provision', '--tenant', tenant, '--actor', 'cratectl-' + label,
                  '--role', role, '--token-file', token, environment=owner_env)
             write(label + '.json', {'version': 1, 'url': BASE, 'token_file': str(token), 'ca_file': str(app / 'ca.crt')})
+        if args.cargo_toolchain:
+            origin_credentials = {label: secrets.token_urlsafe(32) for label in ('index', 'download')}
+            credentials = write('cargo-origin-credentials.json', {
+                TENANT + '/cratectl-cargo-' + label: {'value': origin_credentials[label], 'allowed_url': url,
+                                                      'authentication': 'cargo-token'}
+                for label, url in (('index', INDEX_ORIGIN), ('download', DOWNLOAD_ORIGIN))})
+            server_flags.extend(('--allow-private-upstreams', '::1/128', '--upstream-credentials', str(credentials)))
         server = start_server(bootstrap)
         if args.legacy_cargo_daemon:
             def controlled_upgrade():
@@ -379,6 +391,10 @@ def evaluate(args):
                                     public_env, call, api, restart_server, sha)
             report['cargo']['checks'].extend(group['checks'])
             report['cargo']['archive_sha256'].update(group['archive_sha256'])
+            proxy = evaluate_proxy(work, app, BASE, args.cargo_toolchain.resolve(), public_env,
+                                   call, api, restart_server, sha, origin_credentials)
+            report['cargo']['checks'].extend(proxy['checks'])
+            report['cargo']['archive_sha256'].update(proxy['archive_sha256'])
         if args.promtool:
             metrics = metrics_values('stock-download-after-restart')
             check('stock npm download contributes bytes and a complete latency histogram',

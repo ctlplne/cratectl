@@ -90,7 +90,10 @@ func New(c Config, credential string, privateNetworks ...string) (*Endpoint, err
 	if c.Authentication == "basic" && credential != "" && !strings.Contains(credential, ":") {
 		return nil, ErrDestination
 	}
-	if c.Authentication != "" && c.Authentication != "bearer" && c.Authentication != "basic" {
+	if c.Authentication == "cargo-token" && (len(credential) > 4096 || strings.IndexFunc(credential, func(r rune) bool { return r < '!' || r > '~' }) >= 0) {
+		return nil, ErrDestination
+	}
+	if c.Authentication != "" && c.Authentication != "bearer" && c.Authentication != "basic" && c.Authentication != "cargo-token" {
 		return nil, ErrDestination
 	}
 
@@ -237,13 +240,16 @@ func (e *Endpoint) getUsing(ctx context.Context, u *url.URL, validators http.Hea
 		}
 		r.Header.Set("Authorization", "Bearer "+override[0])
 	} else if e.credential != "" {
-		if e.authentication == "basic" {
+		switch e.authentication {
+		case "basic":
 			user, password, ok := strings.Cut(e.credential, ":")
 			if !ok {
 				return nil, ErrDestination
 			}
 			r.SetBasicAuth(user, password)
-		} else {
+		case "cargo-token":
+			r.Header.Set("Authorization", e.credential)
+		default:
 			r.Header.Set("Authorization", "Bearer "+e.credential)
 		}
 	}

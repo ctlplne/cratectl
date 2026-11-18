@@ -171,15 +171,22 @@ func parseDependency(name, target, kind, sparseIndex string, data any) (Dependen
 	default:
 		return Dependency{}, ErrInput
 	}
-	if len(d.Requirement) == 0 || len(d.Requirement) > 512 || !validFeatures(d.Features) {
+	if !validRequirement(d.Requirement) || !validFeatures(d.Features) {
 		return Dependency{}, ErrInput
 	}
-	for part := range strings.SplitSeq(d.Requirement, ",") {
+	return d, nil
+}
+
+func validRequirement(value string) bool {
+	if value == "" || len(value) > 512 {
+		return false
+	}
+	for part := range strings.SplitSeq(value, ",") {
 		if !requirement.MatchString(strings.TrimSpace(part)) {
-			return Dependency{}, ErrInput
+			return false
 		}
 	}
-	return d, nil
+	return true
 }
 
 func cleanText(value string, max int) bool {

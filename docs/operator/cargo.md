@@ -1,4 +1,4 @@
-# Hosted Cargo registry
+# Cargo registries
 
 Create a hosted repository with format `cargo`. For restricted repositories,
 grant the publisher read and write access and grant consumers read access. Use
@@ -66,5 +66,37 @@ the selected member permits unassessed bytes. An explicit namespace owner
 can select a member for a crate using the crate name followed by `/`.
 Grant readers access to the group and its configured members. When a crate
 has an explicit owner mapping, the group reads only that member for the
-crate. Publish and run native search against hosted repositories. Legacy Git
-indexes, upstream proxying and cross-repository search remain open.
+crate. Publish and run native search against hosted repositories.
+
+## Sparse proxy
+
+Create a `cargo` repository in `proxy` mode. Set `settings.upstream.url` to
+the upstream sparse index's HTTPS base and `settings.upstream.networks` to
+its permitted network ranges. Point clients at the proxy using the same
+authenticated sparse configuration. The proxy reads the source's root
+`config.json` and uses its `dl` template. Add an explicit
+`settings.download_sources` entry when the expanded crate URL uses a separate
+host or base path. Each entry has its own permitted networks and optional
+credential reference. For an upstream that expects an opaque Cargo token, set
+`authentication` to `cargo-token` on both the repository authority and the
+operator's private credential binding. The client still uses its cratectl token.
+
+The proxy pins each version's URL, index dependency graph and SHA-256 under
+the configured source revision. It checks the downloaded archive and its
+`Cargo.toml` before recording a byte reference. It rejects a changed pin
+within that source revision and records `upstream_cargo_coordinate_changed`
+in the cache status. Inspect the upstream and its retained pin before using
+the source settings API to approve a new source revision. Downstream Cargo
+keeps its usual archive checksum in `Cargo.lock`.
+
+When local approval is required, a repository reader can request the exact
+`/cargo/REPOSITORY/download/CRATE/VERSION` endpoint to stage a known version.
+The download is denied while review is pending. An administrator can inspect
+the `crates/` reference in the artifact inventory and approve its exact digest.
+After approval, the version can appear in the sparse index. An upstream yank
+changes resolution while existing lockfiles may still fetch approved bytes.
+Use artifact lifecycle controls to retire or explicitly restore a cached reference.
+
+The current proxy handles sparse indexes with same-registry dependencies and
+explicit download authorities. Legacy Git indexes, groups with proxy members,
+and cross-repository search remain open.

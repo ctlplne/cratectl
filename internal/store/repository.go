@@ -143,11 +143,14 @@ func validateRepository(r *Repository, retainedGoProxy bool) error {
 	if retainedGoProxy && (r.Format != "go" || r.Mode != "proxy" || r.Settings.GoChecksumAuthority == nil || !r.Settings.Cache.RequireChecksum) {
 		return errors.New("retained Go proxy configuration requires explicit checksum authority and checksum enforcement")
 	}
-	if r.Mode != "hosted" && r.Format != "generic" && r.Format != "maven" && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" &&
-		!(r.Format == "go" && (r.Mode == "group" || r.Mode == "proxy" && retainedGoProxy)) && !(r.Format == "cargo" && r.Mode == "group") {
+	if r.Mode != "hosted" && r.Format != "generic" && r.Format != "maven" && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" && r.Format != "cargo" &&
+		!(r.Format == "go" && (r.Mode == "group" || r.Mode == "proxy" && retainedGoProxy)) {
 		return errors.New("proxy/group native adapters not yet implemented for this format")
 	}
 	if r.Settings.OCITokenEndpoint != nil {
+		if r.Settings.OCITokenEndpoint.Authentication == "cargo-token" {
+			return errors.New("opaque Cargo credentials require a Cargo proxy")
+		}
 		if ref := r.Settings.OCITokenEndpoint.CredentialRef; ref != "" && !Name.MatchString(ref) {
 			return errors.New("invalid OCI token credential reference")
 		}
@@ -177,16 +180,22 @@ func validateRepository(r *Repository, retainedGoProxy bool) error {
 		if r.Settings.Upstream.AllowSignedQuery && r.Format != "oci" {
 			return errors.New("signed query delivery requires an OCI proxy")
 		}
+		if r.Settings.Upstream.Authentication == "cargo-token" && r.Format != "cargo" {
+			return errors.New("opaque Cargo credentials require a Cargo proxy")
+		}
 		endpoint, e := upstream.New(*r.Settings.Upstream, "")
 		if e != nil {
 			return e
 		}
 		endpoint.Close()
-		if len(r.Settings.DownloadSources) > 16 || (len(r.Settings.DownloadSources) > 0 && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci") {
-			return errors.New("download sources require npm, PyPI or OCI and at most 16 explicit authorities")
+		if len(r.Settings.DownloadSources) > 16 || (len(r.Settings.DownloadSources) > 0 && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" && r.Format != "cargo") {
+			return errors.New("download sources require npm, PyPI, OCI or Cargo and at most 16 explicit authorities")
 		}
 		authorities := map[string]bool{strings.TrimRight(r.Settings.Upstream.URL, "/") + "/": true}
 		for _, source := range r.Settings.DownloadSources {
+			if source.Authentication == "cargo-token" && r.Format != "cargo" {
+				return errors.New("opaque Cargo credentials require a Cargo proxy")
+			}
 			if source.AllowSignedQuery && r.Format != "oci" {
 				return errors.New("signed query delivery requires an OCI proxy")
 			}
@@ -207,6 +216,9 @@ func validateRepository(r *Repository, retainedGoProxy bool) error {
 		c := r.Settings.Cache
 		if c.FreshSeconds < 0 || c.FreshSeconds > 86400 || c.NegativeSeconds < 0 || c.NegativeSeconds > 3600 || c.StaleSeconds < 0 || c.StaleSeconds > 604800 {
 			return errors.New("cache windows exceed configured safety bounds")
+		}
+		if r.Format == "cargo" {
+			r.Settings.Cache.RequireChecksum = true
 		}
 	case "group":
 		if r.Settings.Upstream != nil || len(r.Settings.DownloadSources) != 0 || len(r.Settings.Members) == 0 || len(r.Settings.Members) > 32 {
@@ -257,7 +269,7 @@ func CreateRepository(ctx context.Context, tx pgx.Tx, i Identity, r Repository) 
 		if e != nil {
 			return e
 		}
-		if source.Format != r.Format || source.Mode == "group" {
+		if source.Format != r.Format || source.Mode == "group" || (r.Format == "cargo" && source.Mode != "hosted") {
 			return ErrConflict
 		}
 	}

@@ -106,6 +106,7 @@ func (s *Server) resolve(ctx context.Context, i store.Identity, repo store.Repos
 }
 func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.Repository, p string, force bool) (resolvedArtifact, error) {
 	result := resolvedArtifact{source: repo}
+	admitGeneration := repo.Format == "oci" || repo.Format == "go" || repo.Format == "cargo"
 	waits := 0
 	sourceRetries := 0
 	proofRetries := 0
@@ -141,7 +142,7 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 					return result, s.goChecksumFailedState(ctx, i, repo)
 				}
 				if lease.StalePermitted() {
-					if repo.Format == "oci" || repo.Format == "go" {
+					if admitGeneration {
 						result.admissions = []store.OCIAdmission{{Repository: repo.Name, Path: p, Generation: lease.Generation, Stale: true}}
 					}
 					result.cache = "stale"
@@ -233,7 +234,7 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 		force = false
 		switch refreshed.State {
 		case "ready":
-			if repo.Format == "oci" || repo.Format == "go" {
+			if admitGeneration {
 				result.admissions = []store.OCIAdmission{{Repository: repo.Name, Path: p, Generation: refreshed.Generation}}
 			}
 			result.cache = "filled"
@@ -257,7 +258,7 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 				return result, s.goChecksumFailedState(ctx, i, repo)
 			}
 			if refreshed.StalePermitted() {
-				if repo.Format == "oci" || repo.Format == "go" {
+				if admitGeneration {
 					result.admissions = []store.OCIAdmission{{Repository: repo.Name, Path: p, Generation: refreshed.Generation, Stale: true}}
 				}
 				result.cache = "stale"
@@ -331,6 +332,9 @@ func (s *Server) proxyArtifact(ctx context.Context, i store.Identity, repo store
 	}
 	if repo.Format == "npm" && strings.HasPrefix(p, "npm-catalog/") {
 		return s.DB.NPMCatalogArtifact(ctx, i, repo.Name, strings.TrimPrefix(p, "npm-catalog/"))
+	}
+	if repo.Format == "cargo" && strings.HasPrefix(p, "cargo-catalog/") {
+		return s.DB.NativeCatalogArtifact(ctx, i, repo.Name, strings.TrimPrefix(p, "cargo-catalog/"), "cargo", store.CargoCatalogMedia)
 	}
 	return s.DB.Artifact(ctx, i, repo.Name, p)
 }
@@ -410,6 +414,9 @@ func (s *Server) fillProxyOnce(parent context.Context, i store.Identity, repo st
 	}
 	if repo.Format == "npm" {
 		return s.fillNPMProxy(parent, i, repo, lease)
+	}
+	if repo.Format == "cargo" {
+		return s.fillCargoProxy(parent, i, repo, lease)
 	}
 	ctx, cancel := context.WithTimeout(parent, 120*time.Second)
 	defer cancel()
@@ -572,6 +579,10 @@ func (s *Server) guardResolved(ctx context.Context, i store.Identity, a resolved
 	var current store.Artifact
 	var e error
 	if a.cargo != nil {
+		if a.cargo.proxy != nil {
+			return s.DB.CargoProxyDownload(ctx, i, a.source.Name, a.cargo.name, a.cargo.version,
+				a.source.SourceRevision, *a.cargo.proxy, a.admissions...)
+		}
 		current, source, err := s.DB.CargoDownload(ctx, i, a.cargo.repository, a.cargo.name, a.cargo.version)
 		if err != nil {
 			return current, err
