@@ -1,0 +1,26 @@
+{
+  "source_parent": "a0e646d078b31be6e626b869670555f9e61401b5",
+  "source_dirty": true,
+  "observed_at": "2026-11-18T11:57:10.383098+00:00",
+  "state": "Revocation uses the shared private bounded credential reader.",
+  "original_outcome": "A 258-byte synthetic file reached the database owner path before validation.",
+  "repair": "Open a private regular credential file with the same 257-byte bound as other CLI token readers. Return a generic actionable error before owner database work on failure.",
+  "scope": [
+    "Focused normal and race command tests passed on macOS ARM64. Targeted vet passed.",
+    "The existing database revocation transaction is unchanged. Positive native revocation should replay through the original stock conformance controls with this source."
+  ],
+  "source_files": [
+    {
+      "path": "cmd/cratectld/main.go",
+      "bytes": 17117,
+      "sha256": "bfc4b7d879a143d3c5eb6d92f7628aafc0d3994d53d8341e13326f3b39d6c39b"
+    },
+    {
+      "path": "cmd/cratectld/revoke_test.go",
+      "bytes": 792,
+      "sha256": "46c5c6554f7c8417be4ba7c19e1d405f8e568257493bd09157bedc0ca0c384c9"
+    }
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

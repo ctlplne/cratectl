@@ -110,9 +110,9 @@ func run() error {
 		if e := f.Parse(os.Args[2:]); e != nil {
 			return e
 		}
-		b, e := os.ReadFile(*file)
+		b, e := configfile.ReadBytes(*file, 257, true)
 		if e != nil {
-			return e
+			return errors.New("revocation requires a private regular token file within 257 bytes")
 		}
 		defer clear(b)
 		if e = store.Revoke(ctx, os.Getenv("CRATECTL_OWNER_DSN"), strings.TrimSpace(string(b))); e != nil {

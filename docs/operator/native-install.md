@@ -127,6 +127,11 @@ to create a new scoped token, then update the relevant client/worker token path;
 restart the worker after changing its identity configuration. Rerunning init
 does not extend or rotate credentials.
 
+For emergency revocation, `cratectld revoke --token-file` reads the original
+credential from a private regular file. Use the file produced by `provision`
+or `init`. The command rejects files over 257 bytes before connecting with
+database owner authority.
+
 Explicit CLI/server/worker flags override configuration defaults. `cratectl
 --ca-file` can select operator-managed trust; TLS verification stays enabled.
 Config files are bounded and reject unknown fields. Production deployment,
