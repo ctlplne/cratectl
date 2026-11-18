@@ -29,6 +29,7 @@ from oci_repository_catalog_evidence import (CACHED_CHECKS as OCI_CACHED_CHECKS,
                                              CATALOG_CHECKS as OCI_CATALOG_CHECKS, GROUP_CHECKS as OCI_GROUP_CHECKS,
                                              HOSTED_PROFILE as OCI_HOSTED_PROFILE, cached_selected as oci_cached_selected,
                                              validate as validate_oci_catalog)
+from maven_index_evidence import MAVEN_INDEX_CHECKS, validate as validate_maven_index
 
 CONTRACTS = {'maven_cache_contract': safe_maven_cache_contract, 'gradle_contract': safe_gradle_contract,
              'ivy_contract': safe_ivy_contract, 'sbt_contract': safe_sbt_contract,
@@ -118,6 +119,7 @@ def validate_custom(report, candidate, run_id, spec, source):
         'npm-search': (validate_npm_search, len(IAC_BASE) - 1 + len(NPM_HOSTED) + len(NPM_CACHED)),
         'python-search': (validate_python_search, len(IAC_BASE) - 1 + len(PYTHON_HOSTED) + len(PYTHON_CACHED)),
         'oci-catalog': (validate_oci_catalog, len(IAC_BASE) - 1 + len(OCI_CATALOG_CHECKS)),
+        'maven-index': (validate_maven_index, len(IAC_BASE) - 1 + len(MAVEN_INDEX_CHECKS)),
     }
     if spec['kind'] in source_contracts:
         kind = spec['kind'].replace('-', '_')

@@ -524,15 +524,19 @@
     {
       "id": "J.MAVEN.SEARCH",
       "capability": "FMT.MAVEN.SEARCH",
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
+      "state": "implementing",
+      "candidate": "0cba518f45da7dea3b4801f48010c726cbebc6be",
+      "evidence": [
+        "evidence/2026-11-19/maven-0cba518-hosted-index-native.json"
+      ],
       "required": [
         "publish/consume exact bytes where applicable",
         "permissions/tenant isolation",
         "policy denial",
         "failure/recovery"
-      ]
+      ],
+      "limits": "Stock Apache Maven Indexer Reader 7.1.6 passed eight hosted full-index checks and 19 declarative checks on macOS ARM64 with PostgreSQL 16.16. The stock reader decoded canonical JAR release coordinates, sizes and digests. The fixtures exercised current JAR/POM review, separate tenants at the same coordinate, exact restart recovery and grant revocation.",
+      "next_action": "Qualify native Linux, Maven CLI and IDE consumption, richer records, proxy/groups, snapshots and larger workloads."
     },
     {
       "id": "J.MAVEN.AUTHORIZATION",

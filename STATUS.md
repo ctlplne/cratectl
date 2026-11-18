@@ -691,6 +691,14 @@ with stock ORAS 1.3.6 and PostgreSQL 16.15. Each matched 34 exact source files.
 [Native ordered OCI catalog evidence](evidence/2026-11-19/oci-79323c2-ordered-catalog-native.json)
 [Original Linux ordered OCI catalog evidence](evidence/2026-11-19/github-7295441-oci-ordered-catalog-native.json)
 
+`0cba518` passed eight stock Apache Maven Indexer Reader 7.1.6 checks and
+19 declarative checks on macOS ARM64 with PostgreSQL 16.16. The full hosted
+index covered exact release JAR and POM admission, two independent tenants
+at the same coordinates, restart and grant revocation. The real PostgreSQL
+index regression and the build, unit, race and lint gates passed. Native
+Linux has separate qualification jobs.
+[Native Maven repository index evidence](evidence/2026-11-19/maven-0cba518-hosted-index-native.json)
+
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities
 published and pulled two exact chart archives, including a build-metadata

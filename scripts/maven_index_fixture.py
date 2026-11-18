@@ -9,8 +9,8 @@ import urllib.error
 import urllib.request
 import zipfile
 
+from ci.maven_index_evidence import INDEXER_SHA256
 
-INDEXER_SHA256 = '7aebdcebb934f1e4f1b9583348a8a0cb4881862ac7263b40e5122b7c5ec1c3aa'
 INDEX = 'nexus-maven-repository-index'
 REPO = 'cratectl-maven-index'
 API = '/api/v1/repositories/' + REPO

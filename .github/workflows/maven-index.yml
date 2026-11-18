@@ -1,0 +1,81 @@
+name: Native Maven repository index
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/maven-index.yml'
+      - 'internal/server/maven_index*.go'
+      - 'internal/store/maven_index*.go'
+      - 'scripts/maven_index_fixture.py'
+      - 'scripts/fixtures/maven-index/**'
+      - 'scripts/ci/maven_index_evidence.py'
+
+permissions:
+  contents: read
+
+jobs:
+  maven-index:
+    if: github.ref == 'refs/heads/main' && github.repository == 'ctlplne/cratectl'
+    name: Stock Maven Indexer and real PostgreSQL (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 18
+    concurrency:
+      group: cratectl-maven-index-${{ github.ref }}-${{ matrix.arch }}-${{ github.sha }}
+      cancel-in-progress: false
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    env:
+      GOENV: 'off'
+      GOTOOLCHAIN: local
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22.23.4'
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21.0.13+9.0.LTS'
+      - name: Fetch the digest-pinned Apache Maven Indexer Reader
+        run: |
+          umask 077
+          mkdir -p .cache/cratectl-maven-index-tools
+          jar=.cache/cratectl-maven-index-tools/indexer-reader-7.1.6.jar
+          curl --proto '=https' --fail --silent --show-error --max-time 30 --max-filesize 1048576 \
+            --output "$jar" 'https://repo.maven.apache.org/maven2/org/apache/maven/indexer/indexer-reader/7.1.6/indexer-reader-7.1.6.jar'
+          printf '%s  %s\n' '7aebdcebb934f1e4f1b9583348a8a0cb4881862ac7263b40e5122b7c5ec1c3aa' "$jar" | sha256sum --check --status
+      - name: Build the clean cratectl candidate
+        run: make build BINDIR=.cache/cratectl-maven-index-bin
+      - name: Replay the hosted index with the stock Apache reader
+        run: |
+          umask 077
+          mkdir -p .private
+          python3 scripts/conformance_repository_manifest.py \
+            --pg-bin /usr/lib/postgresql/16/bin --binary-directory .cache/cratectl-maven-index-bin \
+            --maven-index-java "$JAVA_HOME/bin/java" --maven-index-reader .cache/cratectl-maven-index-tools/indexer-reader-7.1.6.jar \
+            --maven-index-ci-architecture '${{ matrix.arch }}'
+      - uses: actions/upload-artifact@v7
+        if: success()
+        with:
+          name: ci-summary-maven-index-${{ matrix.arch }}
+          path: .cache/ci-maven-index.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14

@@ -1,0 +1,135 @@
+{
+  "candidate": "0cba518f45da7dea3b4801f48010c726cbebc6be",
+  "status": "passed",
+  "observed_at": "2026-11-18T23:02:12.682927+00:00",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "declarative_checks": 19,
+  "assertions_total": 27,
+  "binary_sha256": {
+    "cratectl": "753608a33aec140fbbaf384ea50bc6d17e69b723324838c9e9ee49447c4a82af",
+    "cratectld": "1df17da12b4d8e1e1018ce1c64b8b4233264c84c5e7c1187029c8453f74d7ac2"
+  },
+  "private_report_sha256": "fd43ff5ca2900d0486e947a5d52432f955096b26f07b3bc4340b57d2a1167ac1",
+  "maven_index": {
+    "checks": [
+      "an ungranted same-tenant reader is forbidden from the native index",
+      "stock Maven Indexer reads an empty full index while the POM awaits review",
+      "stock Maven Indexer finds only the first fully admitted release",
+      "stock Maven Indexer preserves both version and digest identities in repository order",
+      "stock Maven Indexer holds independent same-coordinate tenant inventories",
+      "the stock index and its exact JAR bytes recover after registry restart",
+      "current POM denial removes that coordinate from the stock full index",
+      "a conditional native index request honors read grant revocation"
+    ],
+    "reader": "7.1.6",
+    "reader_sha256": "7aebdcebb934f1e4f1b9583348a8a0cb4881862ac7263b40e5122b7c5ec1c3aa",
+    "java": "openjdk 21.0.13 2026-10-20 LTS",
+    "archive_sha256": "3b1da89c16bba4b4909bf6673e99e6719ebe6d4ca4ff39cc832543bef5731603",
+    "jar_sha256": [
+      "5936f711d79b7323c1c3b3c14e10150aa4332b71b0ac95a4345d55f9bcc5363f",
+      "ad71dec48f1e41af7d3ea7d8c597d7434c3c5caa9440a106002f9a3149889d41",
+      "4c8dd9dafa2044d379cd6f0fbfcc66996f16f806ffd9dbd698f4e0b481cec720"
+    ]
+  },
+  "integration": {
+    "function": "TestMavenHostedIndexBindsCurrentJARAndPOMPolicyAcrossTenants",
+    "status": "passed",
+    "log_sha256": "5637e8a8e1619a118f62a3026eb943c8e0075142c56d7ca564d4045c6f13507f"
+  },
+  "source_gates": [
+    "make build",
+    "make test",
+    "make race",
+    "make lint"
+  ],
+  "source_sha256": [
+    {
+      "path": "Makefile",
+      "sha256": "12f2a8b5cfbc2f322822b82e4446f51ff017374acab1f3a8921db8cc8e833bf6"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "1d4aecc2732cd54db4534e0afc862ffe14d5c24890f106008682fd9bbc8e5ba9"
+    },
+    {
+      "path": "go.sum",
+      "sha256": "5e364e4e1eff09d8d39617427d7775012304b09a7be26778dc2b46fdabae3f15"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "784bef2ea32186d96d148fe8260f2f652cc23102489fdb13188e360cddf4b2da"
+    },
+    {
+      "path": "scripts/maven_index_fixture.py",
+      "sha256": "8bc7961fb7258e2e237d8189857b3e3b0399fad44de470bdb2fbbb0480753b41"
+    },
+    {
+      "path": "scripts/fixtures/maven-index/MavenIndexStock.java",
+      "sha256": "c80bab7d8e61fd3d5206952e4356e2b44501c373d1f051a81ea9c7023805cc7d"
+    },
+    {
+      "path": "scripts/ci/terraform_provider_evidence.py",
+      "sha256": "130de2ec92ed288a6fa6c744c67003a76cafa2dfb9835e48f653abccda1a50ca"
+    },
+    {
+      "path": "scripts/qualification_contract.py",
+      "sha256": "c40a9d0209a9dc1fb9838f49cdb316ad5a762d45c0359b97fce156746564e5ba"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "1e1ac5a8ee3659d09a74e127ca3e2ab5e6687bc0cc896d5d9b671e0f664f7498"
+    },
+    {
+      "path": "internal/server/maven_index.go",
+      "sha256": "1bc3742ecefb9ae025bcac563df36f013031a3f23ba97d7d72c201927499745b"
+    },
+    {
+      "path": "internal/server/maven_metadata.go",
+      "sha256": "3e1003d1b4cdff9630ac93c357eeb1c2ae6cb8bd3b797da033e34134f7f21fc7"
+    },
+    {
+      "path": "internal/store/maven_index.go",
+      "sha256": "f6a9a015331ca04f3424573aa79f5ed7555291da9a6f41f72169545f624e5057"
+    },
+    {
+      "path": "internal/store/decision.go",
+      "sha256": "3f9c785f2da56ee4678ef9a49418ab4eb794eb9ba2556dd32d88229b18427db4"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "54412aeffd3ed0708a7ac7fccb69184f6413aec87522c34abc1d0ab9fa9f9529"
+    },
+    {
+      "path": "internal/store/lifecycle.go",
+      "sha256": "1ee74e65136c7d5a9fde27378afb1c99e0fd76d376e2e67bafd1fe95ea6892a6"
+    },
+    {
+      "path": "internal/store/store.go",
+      "sha256": "371c857dcfe658ca4a73fef52077f85b5636c44e636d534f3e3a576c16aa074e"
+    },
+    {
+      "path": "internal/store/migrations.go",
+      "sha256": "59f3478fbc77b7c969e43719f7eea92844a5bb1b2cd5b0d63ec2f356e368594b"
+    },
+    {
+      "path": "internal/server/maven_index_integration_test.go",
+      "sha256": "9ba20e5e0f41b59bb86497e6679f73599009573bc1e3fac4edefeed2d43603d7"
+    }
+  ],
+  "references": [
+    "https://maven.apache.org/repository/layout.html",
+    "https://maven.apache.org/components/maven-indexer/indexer-reader/apidocs/org/apache/maven/index/reader/package-summary.html"
+  ],
+  "limits": [
+    "Native macOS ARM64 with stock Apache Maven Indexer Reader 7.1.6, JDK 21.0.13 and PostgreSQL 16.16.",
+    "Hosted full-index release coordinates cover canonical ordinary JAR/POM pairs under current tenant, grant, review and lifecycle rules. The reader decoded archive and exact JAR identities from trusted loopback HTTPS, and exact JAR bytes recovered after restart.",
+    "Maven CLI and IDE consumption, additional JVM clients, richer records, snapshots, incremental updates, proxy/groups and larger deployments remain separate."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

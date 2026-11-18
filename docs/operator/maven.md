@@ -18,6 +18,15 @@ authority. Restricted groups also require grants on every consulted source.
 The [proxy/group guide](proxy-and-group.md) describes approved upstreams, private
 credential bindings, freshness, checksum intake and namespace ownership.
 
+Configure Apache Maven Indexer with the hosted repository's `.index/` URL to
+discover releases by group ID, artifact ID and version. Its full index uses
+`nexus-maven-repository-index.properties` and `nexus-maven-repository-index.gz`.
+Both the canonical JAR and its same-coordinate POM must be readable under
+current grants, review and lifecycle state. Index entries contain the JAR's
+exact length and SHA-256 digest. Each request reads a current repository snapshot.
+Serve the index through the same HTTPS authority and private reader credentials
+as other Maven artifacts. [Apache Maven repository layout](https://maven.apache.org/repository/layout.html)
+
 Artifact files have immutable SHA-256 identities. A release coordinate cannot be
 overwritten with different bytes. Maven's unique snapshots use timestamped
 filenames under a `-SNAPSHOT` version directory; repeat publication creates a new

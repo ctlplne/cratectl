@@ -20,6 +20,7 @@ from npm_search_evidence import HOSTED_CHECKS as NPM_HOSTED, CACHED_CHECKS as NP
 from python_search_evidence import HOSTED_CHECKS as PYTHON_HOSTED, CACHED_CHECKS as PYTHON_CACHED
 from oci_repository_catalog_evidence import (CACHED_CHECKS as OCI_CACHED_CHECKS, CATALOG_CHECKS as OCI_CATALOG_CHECKS,
                                              GROUP_CHECKS as OCI_GROUP_CHECKS, cached_selected as oci_cached_selected)
+from maven_index_evidence import MAVEN_INDEX_CHECKS
 from campaign_transport import (EvidenceError, GitHubEvidenceClient, LOG_BYTES,
                                 REPOSITORY, artifact_json, require, strict_json)
 
@@ -221,6 +222,10 @@ def check_log(raw, spec, source):
             require(text.count(f'PASS: {len(OCI_CACHED_CHECKS)} stock ORAS cached repository catalog checks') == 1
                     and text.count(f'PASS: {len(OCI_GROUP_CHECKS)} stock ORAS ordered group catalog checks') == 1,
                     'oci_catalog_cached_inventory')
+    if kind == 'maven-index':
+        require(text.count(f'PASS: {len(IAC_BASE) - 1} native declarative repository checks') == 1
+                and text.count(f'PASS: {len(MAVEN_INDEX_CHECKS)} stock Apache Maven Indexer checks') == 1,
+                'maven_index_native_inventory')
     if kind in ('native', 'go'):
         pattern = r'\bok\s+ctlplne.dev/cratectl/internal/(?:server|store' + ('|conformance' if kind == 'native' else '') + r')\s'
         require(len(re.findall(pattern, text)) == (6 if kind == 'native' else 4), 'native_package_success_inventory')
@@ -357,10 +362,10 @@ def accept(client, source, expected_ids):
                           'cargo': 'ci-cargo.json', 'cargo-public': 'ci-cargo-public.json',
                           'npm-search': 'ci-npm-search.json',
                           'python-search': 'ci-python-search.json',
-                          'oci-catalog': 'ci-oci-catalog.json'}.get(spec['kind'], 'ci-evidence-summary.json')
+                          'oci-catalog': 'ci-oci-catalog.json', 'maven-index': 'ci-maven-index.json'}.get(spec['kind'], 'ci-evidence-summary.json')
                 report, reference = safe_artifact(client, by_artifact[artifact_name], source.candidate, run_id, member)
                 if spec['kind'] in ('library', 'strict', 'windows', 'compose', 'linux-install', 'offline-media', 'terraform-provider',
-                                    'cargo', 'cargo-public', 'npm-search', 'python-search', 'oci-catalog'):
+                                    'cargo', 'cargo-public', 'npm-search', 'python-search', 'oci-catalog', 'maven-index'):
                     counts = validate_custom(report, source.candidate, run_id, spec, source)
                 else:
                     counts, contract = validate_summary(report, source.candidate, run_id, spec, source.baselines, source)

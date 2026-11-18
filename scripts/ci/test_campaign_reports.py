@@ -12,6 +12,7 @@ from campaign_reports import validate_custom, validate_summary
 from campaign_transport import EvidenceError
 from compose_evidence import CHECKS as COMPOSE_CHECKS, SOURCE_PATHS as COMPOSE_FILES
 from linux_install_evidence import CHECKS as INSTALL_CHECKS, IMAGE as INSTALL_IMAGE, SOURCE_PATHS as INSTALL_FILES
+from maven_index_evidence import BASE_CHECKS as MAVEN_INDEX_BASE, INDEXER_SHA256, MAVEN_INDEX_CHECKS, PROFILE as MAVEN_INDEX_PROFILE, SOURCE_PATHS as MAVEN_INDEX_FILES
 from npm_search_evidence import BASE_CHECKS as NPM_BASE, HOSTED_CHECKS as NPM_HOSTED, CACHED_CHECKS as NPM_CACHED, SOURCE_PATHS as NPM_FILES
 from oci_repository_catalog_evidence import (ARCHIVE_PINS as ORAS_PINS, BASE_CHECKS as OCI_CATALOG_BASE,
                                              CACHED_CHECKS as OCI_CACHED_CHECKS, CACHED_PROFILE as OCI_CACHED_PROFILE,
@@ -27,6 +28,26 @@ SPECS = {spec['artifact']: spec for family in WORKFLOWS.values() for spec in job
 
 
 class CampaignReports(unittest.TestCase):
+    def test_maven_index_report_binds_stock_reader_and_exact_source(self):
+        source = lambda path: path.encode()
+        candidate = 'a' * 40
+        index = {'checks': list(MAVEN_INDEX_CHECKS), 'reader': '7.1.6', 'reader_sha256': INDEXER_SHA256,
+                 'java': 'openjdk 21.0.13 2026-10-20 LTS', 'archive_sha256': 'd' * 64, 'jar_sha256': [letter * 64 for letter in 'ef0']}
+        report = {'schema': 1, 'profile': MAVEN_INDEX_PROFILE, 'candidate': candidate,
+                  'runner_os': 'Linux', 'runner_arch': 'X64', 'run_id': '12', 'status': 'passed', 'source_dirty': False,
+                  'source_sha256': {path: hashlib.sha256(source(path)).hexdigest() for path in MAVEN_INDEX_FILES},
+                  'binary_sha256': {'cratectl': 'a' * 64, 'cratectld': 'b' * 64}, 'archive_sha256': 'c' * 64,
+                  'postgres': 'postgres (PostgreSQL) 16.15', 'npm': '10.9.9', 'checks': list(MAVEN_INDEX_BASE),
+                  'maven_index': index, 'goal_complete': False, 'broad_readiness': False}
+        spec = SPECS['ci-summary-maven-index-amd64']
+        self.assertEqual(validate_custom(report, candidate, 12, spec, source), {'checks': 27, 'records': 1})
+        for mutation in ({'reader_sha256': '0' * 64}, {'java': 'openjdk 23'}, {'jar_sha256': ['e' * 64] * 3},
+                         {'checks': list(MAVEN_INDEX_CHECKS)[1:]}, {'private_log': 'inert fixture output'}):
+            with self.subTest(change=mutation.keys()), self.assertRaises(EvidenceError):
+                validate_custom({**report, 'maven_index': {**index, **mutation}}, candidate, 12, spec, source)
+        with self.assertRaisesRegex(EvidenceError, 'maven_index_source_identity'):
+            validate_custom(report, candidate, 12, spec, lambda path: b'changed')
+
     def test_oci_catalog_requires_architecture_bound_tool_and_exact_graph_checks(self):
         source = lambda path: path.encode()
         candidate = 'a' * 40
