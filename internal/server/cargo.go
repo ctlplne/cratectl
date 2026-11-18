@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"path"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -55,6 +56,8 @@ func (s *Server) cargo(w http.ResponseWriter, r *http.Request, i store.Identity,
 	case r.Method != http.MethodGet && r.Method != http.MethodHead:
 		w.Header().Set("Allow", "GET, HEAD")
 		fail(w, 405, "method_not_allowed", "Read the sparse index and crate archives with GET or HEAD.")
+	case p == "api/v1/crates":
+		s.cargoSearch(w, r, i, repo)
 	case p == "index/config.json":
 		if s.cargoPublicAuthority(w) {
 			writeJSON(w, 200, map[string]any{"api": root, "dl": root + "/download/{crate}/{version}", "auth-required": true})
@@ -66,6 +69,37 @@ func (s *Server) cargo(w http.ResponseWriter, r *http.Request, i store.Identity,
 	default:
 		respondErr(w, store.ErrNotFound)
 	}
+}
+
+func (s *Server) cargoSearch(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository) {
+	const advice = "Supply one crate name query and a result limit from 1 to 100."
+	if len(r.URL.RawQuery) > 2048 {
+		fail(w, 400, "cargo_search_query", advice)
+		return
+	}
+	values, err := url.ParseQuery(r.URL.RawQuery)
+	if err != nil || len(values["q"]) != 1 || len(values["per_page"]) > 1 {
+		fail(w, 400, "cargo_search_query", advice)
+		return
+	}
+	limit := 10
+	if values.Has("per_page") {
+		limit, err = strconv.Atoi(values.Get("per_page"))
+		if err != nil {
+			fail(w, 400, "cargo_search_query", advice)
+			return
+		}
+	}
+	hits, total, err := s.DB.CargoSearch(r.Context(), i, repo.Name, values.Get("q"), limit)
+	if errors.Is(err, cargo.ErrInput) {
+		fail(w, 400, "cargo_search_query", advice)
+		return
+	}
+	if err != nil {
+		respondErr(w, err)
+		return
+	}
+	writeJSON(w, 200, map[string]any{"crates": hits, "meta": map[string]int{"total": total}})
 }
 
 func (s *Server) cargoYank(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, p string) {

@@ -127,6 +127,7 @@ AND (NOT $4::boolean OR COALESCE(d.decision,a.decision)='allowed') ORDER BY a.pa
 				return ErrNotFound
 			}
 			entry.Published = a.Created.UTC().Format("2006-01-02T15:04:05Z")
+			entry.Description = ""
 			row, err := json.Marshal(entry)
 			if err != nil {
 				return err

@@ -9,6 +9,7 @@ import re
 import ssl
 import struct
 import tarfile
+import time
 import urllib.error
 import urllib.request
 import tomllib
@@ -88,10 +89,10 @@ def evaluate_cargo(work, installation, authority, toolchain, environment, call, 
             env['CARGO_REGISTRIES_CRATECTL_TOKEN'] = token
         return directory, env
 
-    def new_project(path, name, dependency=''):
+    def new_project(path, name, dependency='', version=VERSION):
         (path / 'src').mkdir(mode=0o700, parents=True)
         (path / 'src/lib.rs').write_text('// Inert registry download fixture.\n')
-        (path / 'Cargo.toml').write_text(f'[package]\nname = "{name}"\nversion = "{VERSION}"\nedition = "2024"\n'
+        (path / 'Cargo.toml').write_text(f'[package]\nname = "{name}"\nversion = "{version}"\nedition = "2024"\n'
                                          'rust-version = "1.89"\nlicense = "MIT"\n'
                                          'description = "cratectl inert fixture"\n' + dependency)
 
@@ -243,6 +244,56 @@ def evaluate_cargo(work, installation, authority, toolchain, environment, call, 
     check('common restoration restores the original index and exact approved archive',
           status == 200 and restored_bytes == published[ROOT_PACKAGE].read_bytes()
           and json.loads(request(index(ROOT_PACKAGE), reader)[1]) == original_entry)
+
+    search_endpoint = '/api/v1/crates?q=' + ROOT_PACKAGE + '&per_page=1'
+    check('Cargo search requires current tenant and repository access',
+          request(search_endpoint)[0] == 401 and request(search_endpoint, other)[0] == 404
+          and request(search_endpoint+'&per_page=1', reader)[0] == 400)
+    _, search_env = cargo_env('cargo-search-home', reader)
+
+    def stock_search(label):
+        _, text = call(label, cargo, 'search', '--registry', 'cratectl', '--limit', '1', ROOT_PACKAGE,
+                       cwd=consumer, environment=search_env)
+        return text
+
+    version = '1.10.0'
+    version_project = work/'cargo-root-new-version'
+    new_project(version_project, ROOT_PACKAGE, version=version)
+    version_target = version_project/'target'
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        publication = executor.submit(call, 'cargo-publish-next-version', cargo, 'publish', '--registry',
+                                      'cratectl', '--allow-dirty', '--no-verify', cwd=version_project,
+                                      environment=dict(publisher, CARGO_TARGET_DIR=str(version_target)), timeout=85)
+        for attempt in range(60):
+            rows = api(f'cargo-await-new-version-{attempt}', repo+'/artifacts')['items']
+            next_version = next((r for r in rows if r['metadata'].get('vers') == version
+                                 and r['metadata'].get('name') == ROOT_PACKAGE), None)
+            if next_version is not None:
+                break
+            if publication.done():
+                publication.result()
+            time.sleep(.16)
+        if next_version is None:
+            raise ValueError('stock publish did not stage the next version')
+        check('stock Cargo search excludes a newer unassessed version and prints the approved description',
+              next_version['decision'] == 'unassessed' and f'{ROOT_PACKAGE} = "1.0.0"' in stock_search('cargo-search-pending')
+              and json.loads(request(search_endpoint, reader)[1])['crates'] ==
+              [{'name': ROOT_PACKAGE, 'max_version': VERSION, 'description': 'cratectl inert fixture'}])
+        api('cargo-approve-next-version', repo+'/decisions', 'PUT',
+            {'path': next_version['path'], 'digest': next_version['digest'], 'decision': 'allowed'})
+        publication.result()
+    version_archive = version_target/'package'/'tmp-crate'/f'{ROOT_PACKAGE}-{version}.crate'
+    index_versions = [json.loads(line) for line in request(index(ROOT_PACKAGE), reader)[1].splitlines()]
+    check('stock Cargo search selects the newer approved authentic release',
+          f'{ROOT_PACKAGE} = "{version}"' in stock_search('cargo-search-approved')
+          and {v['vers']: v['cksum'] for v in index_versions} ==
+          {VERSION: sha(published[ROOT_PACKAGE]), version: sha(version_archive)}
+          and next_version['digest'] == sha(version_archive))
+    next_yank = (cargo, 'yank', '--registry', 'cratectl', '--version', version, ROOT_PACKAGE)
+    call('stock-cargo-yank-new-version', *next_yank, cwd=version_project, environment=publisher)
+    check('stock Cargo search falls back to the preceding release while the latest is yanked',
+          f'{ROOT_PACKAGE} = "{VERSION}"' in stock_search('cargo-search-yanked-latest'))
+    call('stock-cargo-unyank-new-version', *next_yank, '--undo', cwd=version_project, environment=publisher)
     check('protected download still honors both grant revocation and tenant binding',
           request(download, other)[0] == 404 and request(download, reader)[0] == 200)
     api('cargo-revoke-grant', repo+'/grants', 'PUT', {'actor': 'cratectl-reader', 'read': False, 'write': False})
@@ -252,5 +303,7 @@ def evaluate_cargo(work, installation, authority, toolchain, environment, call, 
     check('revoked writer cannot replay publication or change yank state',
           request(new_crate, writer, frame, 'PUT')[0] == 403
           and request(package_endpoint+'/yank', writer, method='DELETE')[0] == 403)
+    archives = {name: sha(archive) for name, archive in published.items()}
+    archives[ROOT_PACKAGE + '-' + version] = sha(version_archive)
     return {'cargo': cargo_version, 'cargo_sha256': sha(cargo), 'rustc_sha256': sha(rustc), 'checks': checks,
-            'archive_sha256': {name: sha(archive) for name, archive in published.items()}}
+            'archive_sha256': archives}

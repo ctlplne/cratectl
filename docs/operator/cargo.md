@@ -46,6 +46,11 @@ version available for new resolutions again. An active artifact hold blocks
 these state changes. To remove even existing lockfile access, use the common
 review policy or the artifact's lifecycle controls.
 
+Use `cargo search --registry cratectl example` to search crate names in this
+repository. Search uses current grants and availability decisions. It selects
+the highest allowed version that is eligible for fresh resolution and returns
+its packaged description when available.
+
 The current profile covers a single hosted sparse registry and same-registry
 dependencies. Per-crate ownership, legacy Git indexes, upstream proxying,
-groups, and native search remain open.
+and groups remain open.

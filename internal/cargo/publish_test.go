@@ -8,7 +8,9 @@ import (
 	"context"
 	"encoding/binary"
 	"errors"
+	"strings"
 	"testing"
+	"unicode/utf8"
 )
 
 func TestCargoSparsePathsAndVersionUniqueness(t *testing.T) {
@@ -27,6 +29,16 @@ func TestCargoSparsePathsAndVersionUniqueness(t *testing.T) {
 		if _, err = VersionKey(version); !errors.Is(err, ErrInput) {
 			t.Fatalf("invalid version %q: %v", version, err)
 		}
+	}
+}
+
+func TestSearchDescriptionIsBoundedAndPreservesUTF8(t *testing.T) {
+	if got := searchDescription("   package \t\nsummary\r "); got != "package summary" {
+		t.Fatalf("unexpected search text %q", got)
+	}
+	raw := strings.Repeat("a", 511) + "界"
+	if got := searchDescription(raw); !utf8.ValidString(got) || len(got) != 511 {
+		t.Fatalf("search description crosses a UTF-8 boundary: %q", got)
 	}
 }
 

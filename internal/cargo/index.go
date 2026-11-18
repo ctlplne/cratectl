@@ -22,6 +22,7 @@ type Entry struct {
 	Links        string              `json:"links,omitempty"`
 	RustVersion  string              `json:"rust_version,omitempty"`
 	Published    string              `json:"pubtime,omitempty"`
+	Description  string              `json:"description,omitempty"`
 }
 
 type Dependency struct {
@@ -57,6 +58,7 @@ func parseManifest(data []byte, c Coordinate, sparseIndex string) (Entry, error)
 			Version     string `toml:"version"`
 			Links       string `toml:"links"`
 			RustVersion string `toml:"rust-version"`
+			Description string `toml:"description"`
 		} `toml:"package"`
 		Features map[string][]string             `toml:"features"`
 		Target   map[string]manifestDependencies `toml:"target"`
@@ -80,7 +82,8 @@ func parseManifest(data []byte, c Coordinate, sparseIndex string) (Entry, error)
 		}
 	}
 	entry := Entry{Name: c.Name, Version: c.Version, Features: m.Features, Links: m.Package.Links,
-		RustVersion: m.Package.RustVersion, Dependencies: []Dependency{}}
+		RustVersion: m.Package.RustVersion, Dependencies: []Dependency{},
+		Description: searchDescription(m.Package.Description)}
 	if err := addDependencies(&entry, m.manifestDependencies, "", sparseIndex); err != nil {
 		return Entry{}, err
 	}
@@ -181,6 +184,20 @@ func parseDependency(name, target, kind, sparseIndex string, data any) (Dependen
 
 func cleanText(value string, max int) bool {
 	return len(value) <= max && utf8.ValidString(value) && strings.IndexFunc(value, unicode.IsControl) < 0
+}
+
+func searchDescription(value string) string {
+	value = strings.Join(strings.FieldsFunc(value, func(r rune) bool {
+		return unicode.IsSpace(r) || unicode.IsControl(r)
+	}), " ")
+	if len(value) <= 512 {
+		return value
+	}
+	offset := 512
+	for !utf8.RuneStart(value[offset]) {
+		offset--
+	}
+	return value[:offset]
 }
 
 func validFeatures(features []string) bool {

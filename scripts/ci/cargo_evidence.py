@@ -30,6 +30,10 @@ CHECKS = (
     'stock Cargo unyank restores fresh resolution after restart with the original index entry',
     'common deletion removes discovery and blocks even exact pinned byte access',
     'common restoration restores the original index and exact approved archive',
+    'Cargo search requires current tenant and repository access',
+    'stock Cargo search excludes a newer unassessed version and prints the approved description',
+    'stock Cargo search selects the newer approved authentic release',
+    'stock Cargo search falls back to the preceding release while the latest is yanked',
     'protected download still honors both grant revocation and tenant binding',
     'revoked grant refuses current index and direct download even with a populated client cache',
     'revoked writer cannot replay publication or change yank state',
@@ -38,7 +42,7 @@ SOURCE_PATHS = (
     '.github/workflows/cargo.yml', 'go.mod', 'go.sum', 'Makefile',
     'internal/cargo/coordinates.go', 'internal/cargo/index.go', 'internal/cargo/publish.go',
     'internal/server/cargo.go', 'internal/server/nuget.go', 'internal/server/server.go',
-    'internal/store/cargo.go', 'internal/store/store.go', 'internal/store/repository.go',
+    'internal/store/cargo.go', 'internal/store/cargo_search.go', 'internal/store/store.go', 'internal/store/repository.go',
     'internal/store/artifact_read.go', 'internal/blob/local.go', 'internal/crypto/crypto.go',
     'internal/store/lifecycle_artifact.go', 'internal/store/lifecycle.go', 'internal/server/lifecycle.go',
     'scripts/cargo_hosted_fixture.py', 'scripts/conformance_repository_manifest.py',
@@ -72,7 +76,7 @@ def validate(report):
     if report['sdk_archives_sha256'] != PINS[arch]:
         raise ValueError('invalid stock Cargo distribution pins')
     for name, keys in [('source_sha256', SOURCE_PATHS), ('binary_sha256', ('cratectl', 'cratectld')),
-                       ('archive_sha256', ('cratectl-cargo-leaf', 'cratectl-cargo-root'))]:
+                       ('archive_sha256', ('cratectl-cargo-leaf', 'cratectl-cargo-root', 'cratectl-cargo-root-1.10.0'))]:
         binding = report[name]
         if type(binding) is not dict or set(binding) != set(keys) or any(not matches(v, '[a-f0-9]{64}') for v in binding.values()):
             raise ValueError('invalid stock Cargo digest inventory')
