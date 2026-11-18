@@ -67,7 +67,7 @@ func runGoRequirementCollect(args []string, out io.Writer) error {
 	if attribution == nil {
 		return errors.New("complete independent signed journal required")
 	}
-	client, base, token, closeClient, err := collectionClient(*config)
+	client, base, token, closeClient, err := configuredClient(*config)
 	if err != nil {
 		return err
 	}

@@ -133,6 +133,56 @@ credential from a private regular file. Use the file produced by `provision`
 or `init`. The command rejects files over 257 bytes before connecting with
 database owner authority.
 
+### Declare a hosted repository
+
+Use a version 1 JSON manifest to declare one hosted repository in a specific
+tenant. Use a private administrator client configuration from this tenant.
+The manifest needs no service credentials and can be reviewed in source control.
+All six fields are required.
+
+```json
+{
+  "version": 1,
+  "tenant": "first-team",
+  "name": "packages",
+  "format": "npm",
+  "access": "restricted",
+  "require_review": true
+}
+```
+
+```sh
+cratectl repository-plan --config "$CLIENT" --manifest repository.json
+```
+
+Review the authority, tenant, desired repository and any reported drift. A
+`create` plan contains an `approval_sha256` bound to that authority, tenant and
+desired configuration. To authorize the creation, pass the reviewed digest.
+
+```sh
+cratectl repository-apply --config "$CLIENT" --manifest repository.json \
+  --approve "$REVIEWED_SHA256"
+```
+
+Apply rechecks the current administrator identity and retained repository.
+The server records the creation through its normal idempotent management API.
+If a response is lost, the same approval can be retried. A matching existing
+repository yields `unchanged`. A competing or changed repository yields a
+conflict or a `drift` result with a nonzero exit status. Plan itself is read-only
+and returns `drift` as successful JSON for review. Lifecycle state remains
+visible for suspended and removed repositories.
+
+```sh
+cratectl repository-import --config "$CLIENT" --tenant first-team --name packages
+```
+
+Import prints a new manifest from the active hosted repository. Version 1
+manages the repository name, hosted format, access and review requirement.
+Use the corresponding management APIs to change lifecycle, source settings,
+grants and policies. Review and reconcile drift explicitly with an administrator.
+
+### Assign service credentials
+
 `cratectld provision --token-file` creates a new private file, syncs the token,
 then applies the database change. Windows creates the file with the same
 protected owner DACL used for npm configuration. If the database operation

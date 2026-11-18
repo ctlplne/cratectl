@@ -92,7 +92,7 @@ func runGoExportImport(args []string, out io.Writer) error {
 	if err != nil {
 		return err
 	}
-	client, authority, token, closeClient, err := collectionClient(*configuration)
+	client, authority, token, closeClient, err := configuredClient(*configuration)
 	if err != nil {
 		return err
 	}

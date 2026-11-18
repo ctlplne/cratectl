@@ -260,7 +260,7 @@ func TestCollectionClientRejectsCredentialURLsAndUnsafeTokens(t *testing.T) {
 		if err := os.WriteFile(path, raw, 0600); err != nil {
 			t.Fatal(err)
 		}
-		if _, _, _, close, err := collectionClient(path); err == nil {
+		if _, _, _, close, err := configuredClient(path); err == nil {
 			close()
 			t.Fatal("unsafe authority admitted")
 		}

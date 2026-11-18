@@ -21,6 +21,12 @@ import (
 )
 
 func run() error {
+	if len(os.Args) > 1 {
+		switch os.Args[1] {
+		case "repository-plan", "repository-apply", "repository-import":
+			return runRepositoryManifest(os.Args[2:], os.Args[1], os.Stdout)
+		}
+	}
 	if len(os.Args) > 1 && os.Args[1] == "go-requirement-export-collect" {
 		return runGoRequirementCollect(os.Args[2:], os.Stdout)
 	}
