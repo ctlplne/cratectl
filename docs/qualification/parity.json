@@ -1311,10 +1311,11 @@
         "evidence/2026-11-19/maven-0cba518-hosted-index-native.json",
         "evidence/2026-11-19/maven-8bc2ea1-cached-index-native.json",
         "evidence/2026-11-19/maven-769a2b6-ordered-index-native.json",
-        "evidence/2026-11-19/github-541ea5d-maven-hosted-index-native.json"
+        "evidence/2026-11-19/github-541ea5d-maven-hosted-index-native.json",
+        "evidence/2026-11-19/github-df7a07a-maven-ordered-index-native.json"
       ],
-      "limits": "Stock Apache Maven Indexer Reader 7.1.6 passed eight hosted, seven cached proxy, seven ordered group and 19 declarative checks on macOS ARM64 with PostgreSQL 16.16. Both the JAR and POM needed current authorization and source receipts. The stock group fixture used separate selected hosted members and precise preferred proxy absences, with zero origin requests during indexing. Both original hosted 541ea5d Linux jobs passed 27 checks with PostgreSQL 16.15 and matched 20 source files each.",
-      "next_action": "Qualify both combined Linux runs, Maven CLI and IDE consumption, alternative JVM clients, additional package records and larger workloads."
+      "limits": "Stock Apache Maven Indexer Reader 7.1.6 passed eight hosted, seven cached proxy, seven ordered group and 19 declarative checks on macOS ARM64 with PostgreSQL 16.16 and both original df7a07a Linux jobs with PostgreSQL 16.15. Each combined hosted job matched 26 exact source files. Both the JAR and POM needed current authorization and source receipts. The stock group fixture selected separate hosted members with current preferred proxy absences and zero origin requests during indexing.",
+      "next_action": "Qualify Maven CLI and IDE consumption, alternative JVM clients, additional package records and larger workloads."
     },
     {
       "id": "FMT.MAVEN.AUTHORIZATION",
@@ -2970,9 +2971,9 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "Bounded PackageBaseAddress V3 proxy with shared retrieval, policy, immutable publication and Nuspec verification.",
       "surfaces": {
-        "api": null,
+        "api": "/nuget/REPOSITORY/index.json",
         "cli": null,
         "ui": null
       },
@@ -2989,7 +2990,9 @@
         "chocolatey",
         "powershell"
       ],
-      "client_versions": {},
+      "client_versions": {
+        "dotnet": "10.0.403"
+      },
       "test_data": "Two nontrivial versions plus a dependency package; same coordinates in two tenants.",
       "permission_cases": [
         "reader denial on publish",
@@ -3005,11 +3008,13 @@
         "upstream outage",
         "delete/restore"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "No implementation or native-client proof yet.",
-      "next_action": "Implement nuget proxy and execute the complete stock-client journey."
+      "state": "implementing",
+      "candidate": "fada553638ff51519855bb233b476787360511ea",
+      "evidence": [
+        "evidence/2026-11-19/nuget-fada553-flat-proxy-native.json"
+      ],
+      "limits": "Stock .NET SDK 10.0.403 passed 30 assertions on exact fada553 with PostgreSQL 16.16 and macOS ARM64. The scope covers a configured flat-container origin, SHA-512 sidecars, exact application and transitive dependency restore, current review, tenant denial, and no origin requests on warm restore after restart. Real PostgreSQL regressions cover invalid source archives, checksum disagreement, immutable coordinates, and origin no-cache responses.",
+      "next_action": "Qualify native Linux, configured service-index discovery, independent sources, proxy groups, registration and search, additional clients and production workloads."
     },
     {
       "id": "FMT.NUGET.GROUP",

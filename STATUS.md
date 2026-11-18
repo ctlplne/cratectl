@@ -729,6 +729,17 @@ absence receipts permitted fallback from the preferred proxy. Group grants
 and invalidation affected discovery without an origin request during index
 reads. Three PostgreSQL regressions and all four source gates passed.
 [Native ordered Maven index evidence](evidence/2026-11-19/maven-769a2b6-ordered-index-native.json)
+Both original `df7a07a` Linux jobs passed the same 41 scoped checks with
+PostgreSQL 16.15 and matched 26 exact source files per architecture.
+[Original Linux ordered Maven index reports](evidence/2026-11-19/github-df7a07a-maven-ordered-index-native.json)
+
+`fada553` passed 30 stock .NET SDK 10.0.403 proxy checks on macOS ARM64 with
+PostgreSQL 16.16. The explicit flat-container proxy verified SHA-512 sidecars,
+served exact application and transitive dependency bytes, and applied current
+digest review. The warm restore after restart made zero origin requests. The
+named PostgreSQL regressions and the build, unit, race and lint gates passed.
+The native fixture used isolated loopback HTTP.
+[Native NuGet flat-container proxy evidence](evidence/2026-11-19/nuget-fada553-flat-proxy-native.json)
 
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities

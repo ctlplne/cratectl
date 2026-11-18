@@ -1,0 +1,193 @@
+{
+  "candidate": "df7a07a261eb589a7df4e4ad868002996da1026a",
+  "status": "passed",
+  "checks": [
+    "clean exact source",
+    "cratectl matches the clean candidate",
+    "cratectld matches the clean candidate",
+    "real reviewed PostgreSQL 16 patch release",
+    "absent repository has an authority and tenant bound creation plan",
+    "plan, wrong approval and denied callers leave the tenant journal unchanged",
+    "concurrent approved requests produce one creation or a safe retry",
+    "retry after successful creation returns unchanged",
+    "one repository creation event despite concurrent retry",
+    "second tenant can plan an independent same-name repository",
+    "import returns the exact active hosted fields",
+    "plan exposes review drift without writing",
+    "stock npm published its exact bytes and unassessed input was denied",
+    "registry restart preserves the declared state",
+    "fresh stock npm downloads the exact approved archive after restart",
+    "stale approval leaves suspended repository retained",
+    "suspended repository cannot be imported as active",
+    "revoked administrator cannot plan",
+    "schema 19 with all 59 tenant tables forced RLS and a restricted runtime role"
+  ],
+  "binary_sha256": {
+    "cratectl": "50df41976b4095af41c1ff777965ab42f37939377d1ed8a7717d7ce32794b4d1",
+    "cratectld": "db4ae96301685cc08686436f401effc445e8d4729871f5d75dc25d7385973d64"
+  },
+  "archive_sha256": "eb88cfbb43de75bcfb7e6ec35e9cf45e90e0288fcdcf1f05d76e4b3b5f3f6b28",
+  "postgres": "postgres (PostgreSQL) 16.15 (Ubuntu 16.15-1.pgdg24.04+2)",
+  "npm": "10.9.9",
+  "maven_index": {
+    "checks": [
+      "an ungranted same-tenant reader is forbidden from the native index",
+      "stock Maven Indexer reads an empty full index while the POM awaits review",
+      "stock Maven Indexer finds only the first fully admitted release",
+      "stock Maven Indexer preserves both version and digest identities in repository order",
+      "stock Maven Indexer holds independent same-coordinate tenant inventories",
+      "the stock index and its exact JAR bytes recover after registry restart",
+      "current POM denial removes that coordinate from the stock full index",
+      "a conditional native index request honors read grant revocation"
+    ],
+    "reader": "7.1.6",
+    "reader_sha256": "7aebdcebb934f1e4f1b9583348a8a0cb4881862ac7263b40e5122b7c5ec1c3aa",
+    "java": "openjdk 21.0.13 2026-10-20 LTS",
+    "archive_sha256": "97a6bd65beeee0b15d17087b15c197be22935b868c586fa380e19de057bc5578",
+    "jar_sha256": [
+      "5936f711d79b7323c1c3b3c14e10150aa4332b71b0ac95a4345d55f9bcc5363f",
+      "ad71dec48f1e41af7d3ea7d8c597d7434c3c5caa9440a106002f9a3149889d41",
+      "4c8dd9dafa2044d379cd6f0fbfcc66996f16f806ffd9dbd698f4e0b481cec720"
+    ],
+    "cached": {
+      "checks": [
+        "stock Maven Indexer reads a cold proxy index without contacting its origin",
+        "an exact cached JAR alone cannot advertise a release without its POM",
+        "stock Maven Indexer lists the exact checksum-validated pair without an upstream search",
+        "an invalidated POM hides the cached release without consulting the origin",
+        "an explicit POM fetch restores the current stock index record",
+        "stock cached Maven discovery and exact JAR bytes survive restart",
+        "current POM policy hides the cached pair without a source result leak"
+      ],
+      "archive_sha256": "f27c150be7be889935e8615dce895befe77f10af096d5100282f7e7d7057b2d0",
+      "jar_sha256": "ad71dec48f1e41af7d3ea7d8c597d7434c3c5caa9440a106002f9a3149889d41",
+      "pom_sha256": "5ad114bacc6920e9c74de2f27a1e762580ef5d67f1bb3d90546706b73437fe00",
+      "groups": {
+        "checks": [
+          "an ungranted preferred source hides the ordered Maven group coordinate",
+          "unknown preferred source state fences an ordered Maven index without an origin request",
+          "a current JAR absence alone cannot admit an ordered Maven release",
+          "stock Maven Indexer reads a group release from independently selected JAR and POM members",
+          "revoking the consulted preferred source grant removes the group release",
+          "restoring the grant and current absence restores discovery with zero origin reads",
+          "expired preferred POM absence fences group indexing without contacting the origin"
+        ],
+        "archive_sha256": "72932ab08e6c04792ac401d739db2521989a5947de3f919ca725af12a9f1d310"
+      }
+    }
+  },
+  "goal_complete": false,
+  "broad_readiness": false,
+  "schema": 1,
+  "profile": "cratectl-native-maven-repository-index-v2",
+  "runner_os": "Linux",
+  "runner_arch": "ARM64",
+  "run_id": "44422175110",
+  "source_dirty": false,
+  "source_sha256": [
+    {
+      "path": ".github/workflows/maven-index.yml",
+      "sha256": "3d82b44febbe000b31fa6dd8c971913bcf7a1c24823ee772b602e42abf922794"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "12f2a8b5cfbc2f322822b82e4446f51ff017374acab1f3a8921db8cc8e833bf6"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "1d4aecc2732cd54db4534e0afc862ffe14d5c24890f106008682fd9bbc8e5ba9"
+    },
+    {
+      "path": "go.sum",
+      "sha256": "5e364e4e1eff09d8d39617427d7775012304b09a7be26778dc2b46fdabae3f15"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "d5f7578dce70815cbeae5f8d3f24382d8820d2343957fde68272fc7af5764cc5"
+    },
+    {
+      "path": "scripts/maven_index_fixture.py",
+      "sha256": "6bc53aa9839fe217ca23cc8377f64eea52d424bad57e98200750993357bafcb8"
+    },
+    {
+      "path": "scripts/fixtures/maven-index/MavenIndexStock.java",
+      "sha256": "c80bab7d8e61fd3d5206952e4356e2b44501c373d1f051a81ea9c7023805cc7d"
+    },
+    {
+      "path": "scripts/ci/maven_index_evidence.py",
+      "sha256": "b5c1cb9cb21867a7c8f38afde9ed865b342f3624ca78b6a550c37ecba214efd8"
+    },
+    {
+      "path": "scripts/ci/terraform_provider_evidence.py",
+      "sha256": "130de2ec92ed288a6fa6c744c67003a76cafa2dfb9835e48f653abccda1a50ca"
+    },
+    {
+      "path": "scripts/qualification_contract.py",
+      "sha256": "c40a9d0209a9dc1fb9838f49cdb316ad5a762d45c0359b97fce156746564e5ba"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "1e1ac5a8ee3659d09a74e127ca3e2ab5e6687bc0cc896d5d9b671e0f664f7498"
+    },
+    {
+      "path": "internal/server/maven_index.go",
+      "sha256": "d1490a231dbdbb129c375bcfc384f0764ba34bd2260b20720baf4a4f0a68b402"
+    },
+    {
+      "path": "internal/server/maven_metadata.go",
+      "sha256": "3e1003d1b4cdff9630ac93c357eeb1c2ae6cb8bd3b797da033e34134f7f21fc7"
+    },
+    {
+      "path": "internal/store/maven_index.go",
+      "sha256": "c23e62b6208686bf9c58a957c8912a41db999d76418034454face418e0da0370"
+    },
+    {
+      "path": "internal/store/decision.go",
+      "sha256": "3f9c785f2da56ee4678ef9a49418ab4eb794eb9ba2556dd32d88229b18427db4"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "54412aeffd3ed0708a7ac7fccb69184f6413aec87522c34abc1d0ab9fa9f9529"
+    },
+    {
+      "path": "internal/store/lifecycle.go",
+      "sha256": "1ee74e65136c7d5a9fde27378afb1c99e0fd76d376e2e67bafd1fe95ea6892a6"
+    },
+    {
+      "path": "internal/store/store.go",
+      "sha256": "371c857dcfe658ca4a73fef52077f85b5636c44e636d534f3e3a576c16aa074e"
+    },
+    {
+      "path": "internal/store/migrations.go",
+      "sha256": "59f3478fbc77b7c969e43719f7eea92844a5bb1b2cd5b0d63ec2f356e368594b"
+    },
+    {
+      "path": "internal/server/resolve.go",
+      "sha256": "be996014511b408e24dc2a9374e807cfa9cd7f5fbcc8a662179aba52c9e1039b"
+    },
+    {
+      "path": "internal/store/retrieval.go",
+      "sha256": "360c7804b8a95ff01939bbf03f4d3c1b86f63300a9014ea528db4ac4f05d6a68"
+    },
+    {
+      "path": "internal/store/native_source.go",
+      "sha256": "4b22b0c593713304a9808f4a5a9a11aeec0da41a652892a9b48cd21ff395297e"
+    },
+    {
+      "path": "internal/store/npm_proxy.go",
+      "sha256": "b5a6feb229953c30d2df71962270279d1dd9365d876036fe95edd1eeba167733"
+    },
+    {
+      "path": "internal/store/artifact_read.go",
+      "sha256": "aba845ceb45aff4503adb12c7a10330a7a7154f9a048b15ee3fa34b9153ac11e"
+    },
+    {
+      "path": "internal/store/source_configuration.go",
+      "sha256": "604126662853821e35c2b259b00c2535795daa555d4a9003c30ae7b19844acac"
+    }
+  ]
+}
