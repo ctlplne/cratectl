@@ -367,6 +367,12 @@ hashes and records 57 forced-RLS tables on the imported database.
 The authorized `12b04b6` push selected the corrected native signed-media
 workflow, the Windows CLI qualification and six baseline workflows.
 [Original GitHub run inventory](evidence/2026-11-18/github-12b04b6-started.json)
+Both hosted `12b04b6` media jobs passed image import and stopped at database
+readiness. A separate isolated probe confirmed the PostgreSQL user cannot read
+a runner-owned SQL file at mode 0600 and can read the staged copy at 0444.
+The fixture verifies the signed SQL bytes before staging and checks readability
+as the image user. It reports bounded container state if readiness fails.
+[Original database readiness failures](evidence/2026-11-18/github-12b04b6-offline-media-readiness-failures.json)
 
 The hosted repository manifest commands plan creation and surface drift,
 require approval bound to the registry and tenant, and import existing hosted

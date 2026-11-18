@@ -1766,6 +1766,13 @@
       "first_failure": "evidence/2026-11-18/offline-media-43dc8f4-api148-first-failure.json",
       "local_replay": "evidence/2026-11-18/offline-media-27b33f9-api148-arm64.json",
       "repair": "Read and hash the exact native configuration from the platform-filtered archive. Re-export the imported tag and compare the configuration digest. Bind launched containers to the independently observed loaded daemon image identity."
+    },
+    {
+      "id": "DEFECT.0167",
+      "summary": "The hosted imported PostgreSQL fixture never reaches readiness",
+      "state": "Both original Linux hosted readiness failures retained. A separate stock PostgreSQL image probe showed the bootstrap SQL mode difference under POSIX ownership. Original host logs lack the database process output.",
+      "first_failure": "evidence/2026-11-18/github-12b04b6-offline-media-readiness-failures.json",
+      "repair": "Stage the exact signed public SQL into one read-only mount and verify readability as the nonroot PostgreSQL image user. Emit bounded container status and a fixed permission classification if readiness fails."
     }
   ]
 }

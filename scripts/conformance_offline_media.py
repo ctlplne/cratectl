@@ -79,6 +79,22 @@ def inspect(tag):
     return match[1]
 
 
+def postgres_failure():
+    fields = '{{.State.Status}} {{.State.ExitCode}} {{.State.OOMKilled}}'
+    try:
+        state = run('postgres-failure-state', 'docker', 'container', 'inspect', '--format', fields, PG, timeout=10)
+    except ValueError:
+        state = ''
+    try:
+        log = run('postgres-failure-tail', 'docker', 'logs', '--tail=40', PG, timeout=10).lower()
+    except ValueError:
+        log = ''
+    if not re.fullmatch(r'(?:created|running|removing|paused|exited|dead|restarting) [0-9]{1,3} (?:true|false)', state):
+        state = 'unavailable'
+    sql_denied = any('permission denied' in line and '/docker-entrypoint-initdb.d/' in line for line in log.splitlines())
+    return f'Imported database did not reach readiness. Container state: {state}. Bootstrap SQL permission denial: {sql_denied}.'
+
+
 CANDIDATE = run('source', 'git', 'rev-parse', 'HEAD')
 require(re.fullmatch('[a-f0-9]{40}', CANDIDATE) and not run('source-clean', 'git', 'status', '--porcelain'),
         'clean exact source is required')
@@ -155,19 +171,42 @@ try:
                     'POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256\nPGPORT=35432\n')
     env.write_text('CRATECTL_OWNER_DSN=postgres://cratectl_owner:'+owner+'@127.0.0.1:35432/cratectl?sslmode=disable\n'
                   'CRATECTL_DSN=postgres://cratectl_app:'+runtime+'@127.0.0.1:35432/cratectl?sslmode=disable\n')
+    sql_mount = PRIVATE / 'init-database.sql'
+    sql_identity = manifest['members']['init-database.sql']
+    with (MEDIA/'init-database.sql').open('rb') as source:
+        sql_bytes = source.read(sql_identity['bytes'] + 1)
+    assert len(sql_bytes) == sql_identity['bytes'] and hashlib.sha256(sql_bytes).hexdigest() == sql_identity['sha256']
+    with sql_mount.open('xb') as staged:
+        staged.write(sql_bytes)
+    # PostgreSQL switches to its image user before reading the public SQL.
+    sql_mount.chmod(0o444)
+    init_mount = bind(sql_mount, '/docker-entrypoint-initdb.d/01-cratectl.sql', True)
+    pg_image = images['postgres']['tag']
+    user_probe = PROJECT + '-pg-user'
+    sql_probe = PROJECT + '-pg-sql'
+    owned.extend((user_probe, sql_probe))
+    uid_gid = run('postgres-image-user', 'docker', 'run', '--rm', '--pull=never', '--network=none', '--name', user_probe,
+                  '--read-only', '--cap-drop=ALL', '--entrypoint=/bin/sh', pg_image,
+                  '-c', 'printf "%s:%s\\n" "$(id -u postgres)" "$(id -g postgres)"')
+    require(re.fullmatch(r'[1-9][0-9]{0,8}:[1-9][0-9]{0,8}', uid_gid), 'nonroot PostgreSQL image user required')
+    run('postgres-sql-readable', 'docker', 'run', '--rm', '--pull=never', '--network=none', '--name', sql_probe,
+        '--read-only', '--cap-drop=ALL', '--user='+uid_gid, '--entrypoint=/bin/sh', init_mount, pg_image,
+        '-c', 'test -r /docker-entrypoint-initdb.d/01-cratectl.sql')
     owned.append(PG)
     run('start-imported-postgres','docker','run','-d','--pull=never','--name',PG,'--platform='+PLATFORM,'--network=none',
         '--label','ctlplne.project=cratectl','--env-file',pgenv,'--tmpfs=/var/lib/postgresql/data:rw,nosuid,nodev,size=384m,mode=0700',
-        bind(MEDIA/'init-database.sql','/docker-entrypoint-initdb.d/01-cratectl.sql',True),
-        images['postgres']['tag'],'postgres','-h','127.0.0.1','-p','35432')
-    for _ in range(80):
+        init_mount,pg_image,'postgres','-h','127.0.0.1','-p','35432')
+    deadline = time.monotonic() + 45
+    while time.monotonic() < deadline:
         readiness=subprocess.run(['docker','exec',PG,'pg_isready','-h','127.0.0.1','-p','35432','-d','cratectl'],
                                  stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=5)
         if readiness.returncode==0:
             break
+        if run('postgres-running','docker','container','inspect','--format','{{.State.Running}}',PG,timeout=10) == 'false':
+            raise RuntimeError(postgres_failure())
         time.sleep(.13)
     else:
-        raise RuntimeError('Imported database never ready')
+        raise RuntimeError(postgres_failure())
     assert sql('pre-bootstrap-schema',"SELECT count(*) FROM pg_namespace WHERE nspname='cratectl'")=='0'
     service_args=['--platform='+PLATFORM,'--network=container:'+PG,'--user='+uid,'--read-only','--cap-drop=ALL',
                   '--security-opt=no-new-privileges','--label','ctlplne.project=cratectl']

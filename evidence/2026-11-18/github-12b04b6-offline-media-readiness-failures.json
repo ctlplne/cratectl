@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "observed_at": "2026-11-18T16:52:31+00:00",
+  "candidate": "12b04b6868b4c062fd97e3af14ca2f12aeaaf7d6",
+  "run_id": 44350418026,
+  "event": "push",
+  "attempt": 1,
+  "jobs": [
+    {
+      "architecture": "amd64",
+      "runner": "ubuntu-24.04",
+      "job_id": 134964200445,
+      "conclusion": "failure",
+      "stage": "imported PostgreSQL readiness",
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/github-12b04b6-offline-media/134964200445.txt",
+        "bytes": 29805,
+        "sha256": "c0ef20c2bafb7bf5680ae55017876cc754424d45a8936418580cb7a88fae2914"
+      }
+    },
+    {
+      "architecture": "arm64",
+      "runner": "ubuntu-24.04-arm",
+      "job_id": 134964200205,
+      "conclusion": "failure",
+      "stage": "imported PostgreSQL readiness",
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/github-12b04b6-offline-media/134964200205.txt",
+        "bytes": 29800,
+        "sha256": "c09be69cf3b7707544f59649f74c3bf6cf16c50dfaab4431ba79803b67793e2c"
+      }
+    }
+  ],
+  "safe_artifact_count": 0,
+  "native_uid_mode_probe": {
+    "path": ".private/cratectl-offline-sql-mode/uid-mode-probe.log",
+    "bytes": 88,
+    "sha256": "b5272e25bc4d4206e16ab0a68be0c346afcbaaf8e96fea77a88b4659c8296398"
+  },
+  "limits": [
+    "The original logs show database readiness failure after archive import and configuration match. They contain no PostgreSQL process output.",
+    "A separate network-isolated stock PostgreSQL image reproduced the POSIX access difference for an inert SQL file owned by the runner UID.",
+    "The native probe does not identify an unreported hosted process error."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}
