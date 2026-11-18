@@ -686,8 +686,10 @@ seven ordered-group catalog checks. The stock ORAS fixture exercised
 selected member grants, namespace ownership, exact lower-member delivery
 and preferred proxy absence without a source request during listing. All
 three real PostgreSQL catalog tests and the build, unit, race and lint gates
-passed. The combined Linux workflow has a separate report profile.
+passed. Both original `7295441` Linux jobs passed the same 42-check profile
+with stock ORAS 1.3.6 and PostgreSQL 16.15. Each matched 34 exact source files.
 [Native ordered OCI catalog evidence](evidence/2026-11-19/oci-79323c2-ordered-catalog-native.json)
+[Original Linux ordered OCI catalog evidence](evidence/2026-11-19/github-7295441-oci-ordered-catalog-native.json)
 
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities
