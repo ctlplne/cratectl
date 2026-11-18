@@ -10,7 +10,7 @@ import unittest
 from unittest.mock import patch
 
 from linux_offline_media import (ED25519_SPKI, IMAGE_FILES, MANIFEST, POSTGRES,
-                                 PROFILE, SIGNATURE, aliases, contract, members, verify_media)
+                                 PROFILE, SIGNATURE, aliases, contract, image_id, members, verify_media)
 
 
 def sha(raw):
@@ -66,6 +66,17 @@ class LinuxOfflineMediaTests(unittest.TestCase):
         for invalid in (b'{"schema":1,"schema":1}', b'[]', b'{"platform":"linux/amd64"}'):
             with self.subTest(invalid=invalid), self.assertRaises(ValueError):
                 contract(invalid, 'amd64')
+
+    def test_image_inspection_accepts_legacy_cli_and_checks_returned_native_identity(self):
+        digest = 'sha256:' + '1' * 64
+        with patch('linux_offline_media.command', return_value=digest + ' linux/arm64') as docker:
+            self.assertEqual(image_id(POSTGRES, 'linux/arm64'), digest)
+            docker.assert_called_once_with('docker', 'image', 'inspect', '--format', '{{.Id}} {{.Os}}/{{.Architecture}}', POSTGRES)
+            with self.assertRaisesRegex(ValueError, 'reviewed Linux platform'):
+                image_id(POSTGRES, 'linux/amd64')
+            docker.return_value += '\n' + digest + ' linux/arm64'
+            with self.assertRaisesRegex(ValueError, 'reviewed Linux platform'):
+                image_id(POSTGRES, 'linux/arm64')
 
 
 if __name__ == '__main__':

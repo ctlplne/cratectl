@@ -349,6 +349,12 @@ The original summary independently matched all 27 source hashes. This
 replay used preinstalled operator tooling and a disposable signing key.
 [Local signed-media replay](evidence/2026-11-18/offline-media-0fa3dd8-arm64-local.json)
 
+The first hosted x64 and ARM64 signed-media jobs stopped at image inspection.
+Their Docker 28.0.4 CLI rejected the platform flag before the runtime replay.
+The correction validates the inspected image digest and Linux architecture
+and keeps platform selection on image save and load.
+[Original hosted failures](evidence/2026-11-18/github-e4b1408-offline-media-original-failures.json)
+
 The cold `e4adc19` recovery fixture passed 17 runtime checks and 12 backup
 controls. With registry and worker stopped, stock PostgreSQL 16.15 captured
 and verified a physical backup. A fresh database volume preserved the journal

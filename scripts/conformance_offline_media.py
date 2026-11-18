@@ -72,7 +72,7 @@ def verify_args(path, fingerprint):
 
 
 def inspect(tag):
-    return run('inspected-'+tag.split(':')[0],'docker','image','inspect','--platform='+PLATFORM,
+    return run('inspected-'+tag.split(':')[0],'docker','image','inspect',
                '--format','{{.Id}} {{.Os}}/{{.Architecture}}',tag)
 
 

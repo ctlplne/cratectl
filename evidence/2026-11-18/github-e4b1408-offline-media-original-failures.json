@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "observed_at": "2026-11-18T16:32:39+00:00",
+  "candidate": "e4b14089fdacfbf454eb12165e1483a3355d6f89",
+  "run_id": 44347465972,
+  "run_url": "https://github.com/ctlplne/cratectl/actions/runs/44347465972",
+  "event": "push",
+  "attempt": 1,
+  "jobs": [
+    {
+      "arch": "arm64",
+      "runner": "ubuntu-24.04-arm",
+      "job_id": 134953652769,
+      "conclusion": "failure",
+      "runner_inventory": "https://github.com/actions/runner-images/blob/ubuntu24-arm64/20261111.182/images/ubuntu/Ubuntu2404-Arm64-Readme.md",
+      "diagnostic": "docker image inspect: unknown flag: --platform",
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/github-e4b1408-offline-media/134953652769.txt",
+        "bytes": 31504,
+        "sha256": "96fc935cf38b4e604c496ef531c5031db59bc05316467cde904218a5f625eacd"
+      }
+    },
+    {
+      "arch": "amd64",
+      "runner": "ubuntu-24.04",
+      "job_id": 134953653344,
+      "conclusion": "failure",
+      "runner_inventory": "https://github.com/actions/runner-images/blob/ubuntu24/20261111.370/images/ubuntu/Ubuntu2404-Readme.md",
+      "diagnostic": "docker image inspect: unknown flag: --platform",
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/github-e4b1408-offline-media/134953653344.txt",
+        "bytes": 31321,
+        "sha256": "424f127ccee1b837c10d3c5945cc8cfddca3f53de27f0d3fd18101520474c7e9"
+      }
+    }
+  ],
+  "safe_artifacts": 0,
+  "runtime_checks_completed": 0,
+  "reason": "Hosted Docker 28.0.4 implements platform-filtered save and load through API 1.48. Image inspect --platform requires Docker API 1.49.",
+  "reference": "https://docs.docker.com/reference/api/engine/version-history/",
+  "goal_complete": false,
+  "broad_readiness": false
+}

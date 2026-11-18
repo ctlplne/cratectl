@@ -156,8 +156,7 @@ def verify_media(directory, architecture, trusted_key, key_digest):
 
 
 def image_id(reference, platform):
-    output = command('docker', 'image', 'inspect', '--platform=' + platform,
-                     '--format', '{{.Id}} {{.Os}}/{{.Architecture}}', reference)
+    output = command('docker', 'image', 'inspect', '--format', '{{.Id}} {{.Os}}/{{.Architecture}}', reference)
     result = re.fullmatch(r'(sha256:[a-f0-9]{64}) ' + re.escape(platform), output)
     require(result is not None, 'image does not have the reviewed Linux platform')
     return result[1]
@@ -207,8 +206,8 @@ def assemble(architecture, candidate, output):
         for name, source in RELEASE_FILES.items():
             shutil.copyfile(ROOT / source, media / name)
         command('helm', 'package', ROOT / 'deploy/helm/cratectl', '--destination', media)
-        # The configuration ID from platform inspection is a useful binding.
-        # The daemon indexes multi-platform images by the registry reference.
+        # Tag the pinned reference. Some stores do not index its native
+        # variant's configuration digest as a tag source.
         command('docker', 'image', 'tag', POSTGRES, tags['postgres'])
         command('docker', 'build', '--platform=' + platform, '--network=none', '--build-arg', 'POSTGRES_IMAGE=' + POSTGRES,
                 '-t', tags['registry'], context, timeout=300)

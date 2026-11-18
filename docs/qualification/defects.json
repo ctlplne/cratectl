@@ -1751,6 +1751,13 @@
       "first_failure": "evidence/2026-11-18/linux-offline-media-b88d397-first-attempt.json",
       "replay": "evidence/2026-11-18/linux-offline-media-e4adc19-arm64.json",
       "repair": "Use the digest-pinned upstream reference to create the local alias. Re-inspect the exact architecture and configuration ID before exporting the image."
+    },
+    {
+      "id": "DEFECT.0165",
+      "summary": "Hosted Docker 28.0.4 rejects the platform option on image inspection",
+      "state": "Both original hosted jobs stopped before the disconnected runtime. The focused compatibility regression passes. Native hosted replays are pending.",
+      "first_failure": "evidence/2026-11-18/github-e4b1408-offline-media-original-failures.json",
+      "repair": "Read the image ID and Linux architecture from native inspection. Require exact platform selection when saving and loading the images."
     }
   ]
 }
