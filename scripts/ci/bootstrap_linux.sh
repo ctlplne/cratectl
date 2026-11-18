@@ -17,6 +17,13 @@ fi
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$root"
 docker inspect --type container --format '{{json .NetworkSettings.Ports}}' "$CRATECTL_CI_POSTGRES_CONTAINER_ID" | python3 scripts/ci/check_postgres_binding.py
+server_version="$(docker exec "$CRATECTL_CI_POSTGRES_CONTAINER_ID" psql -X -At -v ON_ERROR_STOP=1 \
+  -U cratectl_owner -d cratectl -c 'SHOW server_version_num')"
+if test "$server_version" != 160016; then
+  echo 'The CI PostgreSQL server differs from the pinned 16.16 patch release.' >&2
+  exit 1
+fi
+echo 'PASS: live PostgreSQL server_version_num is 160016'
 # These fixed service ports must not be chosen as automatic outbound client
 # ports while a fixture listener is between lifetimes. Preserve inherited
 # reservations and prove the kernel behavior in fresh child namespaces first.

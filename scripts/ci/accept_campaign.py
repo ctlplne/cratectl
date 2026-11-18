@@ -25,6 +25,7 @@ from bounded_client import run_owned_client
 SHA = re.compile('[a-f0-9]{40}')
 SCHEMA17_UPGRADE_WORKFLOW_SHA256 = 'e4a0131a608b12834014c54df68dd35875dc15d7c05a4e66287fac3b4324db22'
 SCHEMA17_SUMMARY_SHA256 = 'fe806ef5b8712bee40c7c89e40ba3348a8640445518edaab228c7b26f9971fb3'
+PATCHED_POSTGRES = b'docker.io/library/postgres:16.16-alpine@sha256:81e77a4833487b8132fe4b00bedd39dc3f74b8641e387f19312a48f7de218c2e'
 
 
 def compatible_contract(name, original, current, schema):
@@ -39,6 +40,9 @@ def compatible_contract(name, original, current, schema):
     if name == '.github/workflows/upgrade-qualification.yml':
         expected, label = SCHEMA17_UPGRADE_WORKFLOW_SHA256, 'frozen-schema17-upgrade-workflow'
         approved = original.replace('schema 2–16 upgrade'.encode(), 'schema 2–17 upgrade'.encode()).replace(b'14 15 16; do', b'14 15 16 17; do')
+        if current == approved.replace(b'image: postgres:16.15-alpine', b'image: ' + PATCHED_POSTGRES):
+            # Preserve the original job and server identity in historical records.
+            approved = current
     elif name == 'scripts/ci/evidence_summary.py':
         expected, label = SCHEMA17_SUMMARY_SHA256, 'frozen-schema17-summary-baseline-bound'
         approved = original.replace(b"len(report['baselines']) > 16", b"len(report['baselines']) > 17").replace(b'*range(2, 17)', b'*range(2, 18)')

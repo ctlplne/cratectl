@@ -76,6 +76,16 @@ class HistoricalBaselineAdmission(unittest.TestCase):
             with self.subTest(path=path, schema=schema), self.assertRaises(EvidenceError):
                 acceptance.compatible_contract(path, original, verifier, schema)
 
+    def test_active_ci_database_services_share_the_exact_patched_image(self):
+        pin = b'image: ' + acceptance.PATCHED_POSTGRES
+        candidate = (ROOT / 'scripts/compose_evaluation.py').read_bytes()
+        self.assertIn(acceptance.PATCHED_POSTGRES, candidate)
+        for filename in ('ci.yml', 'go-modules.yml', 'go-export-portability.yml', 'upgrade-qualification.yml',
+                         'jvm-clients.yml', 'oci-clients.yml', 'browser-repair.yml'):
+            workflow = (ROOT / '.github/workflows' / filename).read_bytes()
+            self.assertEqual(workflow.count(pin), 3 if filename == 'jvm-clients.yml' else 1, filename)
+            self.assertNotIn(b'image: postgres:16.15-alpine', workflow)
+
     def test_schema18_requires_qualified17_and_every_previous_binary(self):
         current = json.loads((ROOT / 'docs/qualification/upgrade-baselines.json').read_bytes())['baselines']
         acceptance.validate_baselines(current, 18)

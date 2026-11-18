@@ -2,6 +2,7 @@
 """Owned local development resources. Never cleans up by prefix or wildcard."""
 import json,os,secrets,subprocess,sys,time
 from pathlib import Path
+from compose_evaluation import POSTGRES
 root=Path(__file__).resolve().parents[1];os.chdir(root)
 private=root/'.private';private.mkdir(exist_ok=True,mode=0o700);private.chmod(0o700)
 command=sys.argv[1:]
@@ -23,7 +24,7 @@ if command==['init']:
   if info['Config']['Labels'].get('ctlplne.project')!='cratectl':raise SystemExit('Refusing to operate an unowned container with the reserved name.')
   if not info['State']['Running']:subprocess.run(['docker','start','cratectl-dev-postgres'],check=True,stdout=subprocess.DEVNULL)
  else:
-  subprocess.run(['docker','run','-d','--name','cratectl-dev-postgres','--label','ctlplne.project=cratectl','--env-file',str(private/'postgres.env'),'-p','127.0.0.1:35432:5432','-v','cratectl-dev-postgres-data:/var/lib/postgresql/data','--memory','512m','--cpus','2','--pids-limit','128','postgres:16.15-alpine'],check=True,stdout=subprocess.DEVNULL)
+  subprocess.run(['docker','run','-d','--name','cratectl-dev-postgres','--label','ctlplne.project=cratectl','--env-file',str(private/'postgres.env'),'-p','127.0.0.1:35432:5432','-v','cratectl-dev-postgres-data:/var/lib/postgresql/data','--memory','512m','--cpus','2','--pids-limit','128',POSTGRES],check=True,stdout=subprocess.DEVNULL)
  for _ in range(60):
   if subprocess.run(['docker','exec','cratectl-dev-postgres','pg_isready','-U','cratectl_owner','-d','cratectl'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).returncode==0:break
   time.sleep(.25)
