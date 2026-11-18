@@ -81,27 +81,15 @@ func run() error {
 		if e != nil {
 			return e
 		}
-		file, e := os.OpenFile(*out, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
-		if e != nil {
+		credential := make([]byte, 0, len(token)+1)
+		credential = append(credential, token...)
+		credential = append(credential, '\n')
+		defer clear(credential)
+		if e = configfile.WriteNewPrivateThen(*out, credential, func() error {
+			return store.Provision(ctx, os.Getenv("CRATECTL_OWNER_DSN"), *tenant, *actor, *role, token, time.Now().Add(*expiresIn))
+		}); e != nil {
 			return e
 		}
-		defer file.Close()
-		ok := false
-		defer func() {
-			if !ok {
-				os.Remove(*out)
-			}
-		}()
-		if _, e = file.WriteString(token + "\n"); e != nil {
-			return e
-		}
-		if e = file.Sync(); e != nil {
-			return e
-		}
-		if e = store.Provision(ctx, os.Getenv("CRATECTL_OWNER_DSN"), *tenant, *actor, *role, token, time.Now().Add(*expiresIn)); e != nil {
-			return e
-		}
-		ok = true
 		fmt.Println("Created expiring tenant-scoped credential. Credential is in the private file.")
 		return nil
 	case "revoke":

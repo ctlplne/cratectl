@@ -3,6 +3,8 @@ package configfile
 
 import (
 	"bytes"
+	"errors"
+	"os"
 	"path/filepath"
 	"testing"
 )
@@ -37,4 +39,24 @@ func TestWriteNewPrivateKeepsExactBytesAndRefusesConcurrentOverwrite(t *testing.
 	if err != nil || !bytes.Equal(got, winner) {
 		t.Fatal("private output changed or failed its permissions check", err)
 	}
+
+	t.Run("failed owner operation discards its prepared file", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), "cratectl-provision-output")
+		commitErr := errors.New("owned operation refused")
+		if err := WriteNewPrivateThen(path, []byte("owned prerequisite"), func() error { return commitErr }); !errors.Is(err, commitErr) {
+			t.Fatal("prepared output did not report its operation error", err)
+		}
+		if _, err := os.Lstat(path); !errors.Is(err, os.ErrNotExist) {
+			t.Fatal("failed owner operation retained the prepared credential", err)
+		}
+		if err := WriteNewPrivate(path, []byte("owned retry")); err != nil {
+			t.Fatal("could not retry with the original path", err)
+		}
+		if err := WriteNewPrivateThen(path, []byte("owned concurrent attempt"), func() error {
+			t.Error("existing output still invoked the owner operation")
+			return nil
+		}); err == nil {
+			t.Fatal("existing output did not refuse the owner operation")
+		}
+	})
 }

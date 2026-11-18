@@ -1,0 +1,35 @@
+{
+  "source_parent": "6a2b4ed241fe9cea957bcf9d1361fcd6846f598a",
+  "source_dirty": true,
+  "observed_at": "2026-11-18T12:10:20.077119+00:00",
+  "state": "Existing cratectl credential provision uses protected private-file creation.",
+  "behavior": "Sync newly created private bytes before the owner database operation. Discard its prepared file when the operation returns an error. Refuse an existing destination before database work.",
+  "source_files": [
+    {
+      "path": "cmd/cratectld/main.go",
+      "bytes": 17021,
+      "sha256": "80be48418796c858dc9302d8df308bc7e99b137753803e65dcd0baf29300a29a"
+    },
+    {
+      "path": "internal/configfile/write.go",
+      "bytes": 1050,
+      "sha256": "a4a11e096e37c54dc96952774955d49ae1229190e7b4ee115e27adcf9516587e"
+    },
+    {
+      "path": "internal/configfile/write_test.go",
+      "bytes": 2029,
+      "sha256": "b7db0a681f8c9b2b09a579783ff2643edcf88211d71c18bf8bbe25bb6741f7d2"
+    }
+  ],
+  "checks": [
+    "macOS ARM64 targeted unit, race and vet",
+    "Windows x64 and ARM64 binary cross-build, test compilation and vet",
+    "Closed Windows report fixture"
+  ],
+  "limits": [
+    "The scoped Windows CI at earlier sources exercises CLI npm and file behavior. Actual Windows provision with PostgreSQL and the new callback needs native replay.",
+    "The database issuance and journal transaction is unchanged."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

@@ -81,8 +81,8 @@ JSON
 
 `npm-config` writes a new private file containing the scoped credential and
 verified TLS settings. On Windows it creates the file with a protected owner
-DACL so it cannot inherit grants from the parent. Native Windows execution is
-pending. It refuses to overwrite an existing file. Set
+DACL so it cannot inherit grants from the parent. The native x64 and ARM64 CLI
+checks passed at `a0e646d`. It refuses to overwrite an existing file. Set
 `NPM_CONFIG_USERCONFIG` to that file's absolute path, then use stock npm:
 
 ```sh
@@ -131,6 +131,12 @@ For emergency revocation, `cratectld revoke --token-file` reads the original
 credential from a private regular file. Use the file produced by `provision`
 or `init`. The command rejects files over 257 bytes before connecting with
 database owner authority.
+
+`cratectld provision --token-file` creates a new private file, syncs the token,
+then applies the database change. Windows creates the file with the same
+protected owner DACL used for npm configuration. If the database operation
+returns an error, cratectl discards its prepared file. The Windows provisioning
+command still needs its own database-backed runtime replay.
 
 Explicit CLI/server/worker flags override configuration defaults. `cratectl
 --ca-file` can select operator-managed trust; TLS verification stays enabled.
