@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import platform
 import secrets
+import shutil
 import socket
 import ssl
 import subprocess
@@ -18,6 +19,7 @@ import urllib.error
 import urllib.request
 
 from bounded_client import run_owned_client
+from ci.terraform_provider_evidence import ARCHIVE_PINS, SOURCE_PATHS, postgres_version, validate
 from qualification_contract import candidate_binary_directory
 from terraform_repository_fixture import evaluate_tools
 
@@ -118,20 +120,25 @@ def evaluate(args):
               'checks': checks, 'platform': platform.platform(), 'goal_complete': False, 'broad_readiness': False,
               'private_fixture': str(work.relative_to(ROOT)),
               'limits': ['Hosted npm and the version 1 manifest fields on one native server.',
-                         'Broader source configuration and Terraform/OpenTofu provider qualification remain open.']}
+                         'Broader source configuration and production provider distribution remain open.']}
     started = False
     server_log = (work / 'registry.log').open('ab')
     try:
         candidate = call('candidate', 'git', 'rev-parse', 'HEAD')[1].strip()
         check('clean exact source', not call('source-clean', 'git', 'status', '--porcelain')[1].strip())
         report['candidate'] = candidate
+        go = ROOT / '.cache/go/bin/go'
+        if not go.is_file():
+            go = shutil.which('go')
+        if not go:
+            raise ValueError('the exact candidate Go toolchain is required')
         report['binary_sha256'] = {}
         for program in (client, daemon):
-            build = call(program.name + '-build-info', ROOT / '.cache/go/bin/go', 'version', '-m', program)[1]
+            build = call(program.name + '-build-info', go, 'version', '-m', program)[1]
             check(program.name + ' matches the clean candidate', f'vcs.revision={candidate}' in build and 'vcs.modified=false' in build)
             report['binary_sha256'][program.name] = sha(program)
         report['postgres'] = call('postgres-version', postgres / 'postgres', '--version')[1].strip()
-        check('real PostgreSQL 16.15', report['postgres'].endswith('16.15'))
+        check('real PostgreSQL 16.15', postgres_version(report['postgres']))
         report['npm'] = call('stock-npm-version', 'npm', '--version')[1].strip()
         owner, runtime = secrets.token_hex(24), secrets.token_hex(24)
         password = work / 'pg-init-password'
@@ -246,7 +253,7 @@ def evaluate(args):
             provider_bin = args.provider_binary.resolve()
             if not provider_bin.is_relative_to(ROOT):
                 raise ValueError('use a provider built within the cratectl workspace')
-            build = call('provider-build-info', ROOT / '.cache/go/bin/go', 'version', '-m', provider_bin)[1]
+            build = call('provider-build-info', go, 'version', '-m', provider_bin)[1]
             check('provider matches the clean candidate', f'vcs.revision={candidate}' in build and 'vcs.modified=false' in build)
             clients = [('terraform', args.terraform.resolve()), ('tofu', args.tofu.resolve())]
             report['provider'] = evaluate_tools(work, clients, provider_bin, public_env, app / 'client.json', api, sha)
@@ -271,6 +278,30 @@ def evaluate(args):
             call('stop-owned-postgres', postgres / 'pg_ctl', '-D', data, 'stop', '-m', 'fast', '-w')
         (work / 'safe-report.json').write_text(json.dumps(report, indent=2) + '\n')
     print(f'PASS: {len(checks)} native declarative repository checks')
+    if args.provider_binary:
+        totals = {row['client']: len(row['checks']) for row in report['provider']['clients']}
+        print(f"PASS: Terraform {totals['terraform']} and OpenTofu {totals['tofu']} scoped provider checks")
+    if args.ci_architecture:
+        record_ci(report, args.ci_architecture)
+
+
+def record_ci(report, architecture):
+    runner, host = {'amd64': ('X64', 'x86_64'), 'arm64': ('ARM64', 'aarch64')}[architecture]
+    if (platform.system() != 'Linux' or platform.machine() != host or os.environ.get('GITHUB_ACTIONS') != 'true'
+            or os.environ.get('GITHUB_REPOSITORY') != 'ctlplne/cratectl' or os.environ.get('GITHUB_REF') != 'refs/heads/main'
+            or os.environ.get('RUNNER_ARCH') != runner or os.environ.get('GITHUB_RUN_ATTEMPT') != '1'
+            or os.environ.get('GITHUB_SHA') != report['candidate']):
+        raise ValueError('exact first native hosted source required')
+    projection = {key: report[key] for key in ('candidate', 'status', 'checks', 'binary_sha256',
+                                                'archive_sha256', 'postgres', 'npm', 'goal_complete', 'broad_readiness')}
+    projection.update(schema=1, profile='cratectl-native-terraform-provider-v1', runner_os='Linux', runner_arch=runner,
+                      run_id=os.environ.get('GITHUB_RUN_ID'), source_dirty=False, client_archives=ARCHIVE_PINS[architecture],
+                      clients=report['provider']['clients'], provider_sha256=report['provider']['provider_sha256'],
+                      source_sha256={name: sha(ROOT / name) for name in SOURCE_PATHS})
+    validate(projection)
+    with (ROOT / '.cache/ci-terraform-provider.json').open('x') as stream:
+        json.dump(projection, stream, indent=2)
+        stream.write('\n')
 
 
 if __name__ == '__main__':
@@ -280,7 +311,10 @@ if __name__ == '__main__':
     parser.add_argument('--provider-binary', type=Path)
     parser.add_argument('--terraform', type=Path)
     parser.add_argument('--tofu', type=Path)
+    parser.add_argument('--ci-architecture', choices=('amd64', 'arm64'))
     options = parser.parse_args()
     if len([value for value in (options.provider_binary, options.terraform, options.tofu) if value]) not in (0, 3):
         parser.error('provide the local provider and both stock clients together')
+    if options.ci_architecture and not options.provider_binary:
+        parser.error('the hosted evidence profile requires both stock clients and the provider')
     evaluate(options)

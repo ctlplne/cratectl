@@ -40,8 +40,10 @@ def validate(name, url, digest, maximum, algorithm='sha256'):
     oras = parsed.hostname == 'github.com' and re.fullmatch(r'/oras-project/oras/releases/download/v([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,4})/oras_\1_linux_(amd64|arm64)\.tar\.gz', parsed.path)
     helm = parsed.hostname == 'get.helm.sh' and re.fullmatch(r'/helm-v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,4}-linux-(amd64|arm64)\.tar\.gz', parsed.path)
     gitleaks = parsed.hostname == 'github.com' and parsed.path == '/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz'
+    terraform = parsed.hostname == 'releases.hashicorp.com' and re.fullmatch(r'/terraform/1\.17\.2/terraform_1\.17\.2_linux_(amd64|arm64)\.zip', parsed.path)
+    opentofu = parsed.hostname == 'github.com' and re.fullmatch(r'/opentofu/opentofu/releases/download/v1\.13\.9/tofu_1\.13\.9_linux_(amd64|arm64)\.zip', parsed.path)
     apache = (name in APACHE_ARCHIVES and ((parsed.hostname == 'downloads.apache.org' and parsed.path == APACHE_ARCHIVES[name]) or (parsed.hostname == 'archive.apache.org' and parsed.path == '/dist'+APACHE_ARCHIVES[name])))
-    if not ((algorithm == 'sha256' and (oras or helm or gitleaks)) or (algorithm == 'sha512' and apache)) or (oras or gitleaks) and maximum > 32 << 20:
+    if not ((algorithm == 'sha256' and (oras or helm or gitleaks or terraform or opentofu)) or (algorithm == 'sha512' and apache)) or (oras or gitleaks) and maximum > 32 << 20:
         raise ValueError('Tool archive source or byte budget is not approved')
 
 

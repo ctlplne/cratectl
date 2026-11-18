@@ -72,6 +72,18 @@ else:
     def assert_no_partial(self):
         self.assertEqual(list((self.root/'.cache').glob('*.part')), [])
 
+    def test_stock_infrastructure_archive_allowlist(self):
+        for archive, base in (
+            ('terraform_1.17.2_linux_arm64.zip', 'https://releases.hashicorp.com/terraform/1.17.2/'),
+            ('tofu_1.13.9_linux_amd64.zip', 'https://github.com/opentofu/opentofu/releases/download/v1.13.9/'),
+        ):
+            result = self.run_fetch(archive=archive, url=base + archive)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual((self.root / '.cache' / archive).read_bytes(), PAYLOAD)
+            wrong = self.run_fetch(archive=archive, url='https://owned-fixture.invalid/' + archive)
+            self.assertNotEqual(wrong.returncode, 0)
+        self.assertEqual(len(self.requests()), 2)
+
     def test_approved_sources_are_bounded_pinned_and_published_without_executing_payload(self):
         for archive,url in [(ORAS,ORAS_URL),('helm-v4.3.1-linux-arm64.tar.gz','https://get.helm.sh/helm-v4.3.1-linux-arm64.tar.gz'),('gitleaks_8.30.1_linux_x64.tar.gz','https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz')]:
             result=self.run_fetch(archive=archive,url=url)

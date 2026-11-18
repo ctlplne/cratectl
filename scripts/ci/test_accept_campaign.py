@@ -316,8 +316,8 @@ class CampaignAcceptance(unittest.TestCase):
 
     def test_catalog_covers_every_existing_native_job_template(self):
         expected = {'main': 10, 'go': 2, 'jvm': 8, 'oci': 2, 'upgrades': 2, 'portable': 2, 'library': 2, 'browser': 3,
-                    'strict': 3, 'windows': 2, 'compose': 2, 'linux-install': 2, 'offline-media': 2}
-        self.assertEqual(sum(expected.values()), 42)
+                    'strict': 3, 'windows': 2, 'compose': 2, 'linux-install': 2, 'offline-media': 2, 'terraform-provider': 2}
+        self.assertEqual(sum(expected.values()), 44)
         for filename, family in WORKFLOWS.items():
             specs = jobs(family)
             self.assertEqual(len(specs), expected[family])
@@ -331,6 +331,7 @@ class CampaignAcceptance(unittest.TestCase):
         self.assertEqual(len(paths), len(set(paths)))
         expected = {'.github/workflows/' + name for name in WORKFLOWS} | set(VALIDATOR_FILES) | {
             'scripts/ci/linux_install_evidence.py', 'scripts/ci/offline_media_evidence.py',
+            'scripts/ci/terraform_provider_evidence.py',
             'scripts/ci/evidence_summary.py', 'scripts/conformance_go.py'}
         self.assertEqual(set(paths), expected)
         self.assertTrue(all((ROOT / path).is_file() for path in paths))
@@ -343,7 +344,7 @@ class CampaignAcceptance(unittest.TestCase):
         self.assertFalse(result['broad_readiness'])
         self.assertEqual(len(result['jobs']), 2)
         self.assertEqual(result['unselected_runtime'], [{'run_id': 11, 'scope': 'runtime', 'jobs': 3}])
-        self.assertEqual(len(result['unselected_workflows']), 12)
+        self.assertEqual(set(result['unselected_workflows']), set(WORKFLOWS.values()) - {'main'})
         self.assertNotIn('owned-private-synthetic', json.dumps(result))
         self.assertEqual(api.snapshots, 2)
 

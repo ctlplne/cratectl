@@ -13,6 +13,7 @@ from campaign_contract import COMPATIBLE_FILES, OPTIONAL_CONTRACTS, WORKFLOWS, j
 from campaign_reports import validate_custom, validate_summary
 from compose_evidence import CHECKS as COMPOSE_CHECKS
 from linux_install_evidence import CHECKS as LINUX_INSTALL_CHECKS
+from terraform_provider_evidence import BASE_CHECKS as IAC_BASE, CLIENT_CHECKS as IAC_CHECKS
 from campaign_transport import (EvidenceError, GitHubEvidenceClient, LOG_BYTES,
                                 REPOSITORY, artifact_json, require, strict_json)
 
@@ -177,6 +178,10 @@ def check_log(raw, spec, source):
     if kind == 'offline-media':
         require(text.count('PASS: 17 scoped imported-image runtime checks and 10 media controls') == 1,
                 'offline_media_native_inventory')
+    if kind == 'terraform-provider':
+        require(text.count(f'PASS: {len(IAC_BASE)} native declarative repository checks') == 1
+                and text.count(f'PASS: Terraform {len(IAC_CHECKS)} and OpenTofu {len(IAC_CHECKS)} scoped provider checks') == 1,
+                'terraform_provider_native_inventory')
     if kind in ('native', 'go'):
         pattern = r'\bok\s+ctlplne.dev/cratectl/internal/(?:server|store' + ('|conformance' if kind == 'native' else '') + r')\s'
         require(len(re.findall(pattern, text)) == (6 if kind == 'native' else 4), 'native_package_success_inventory')
@@ -308,9 +313,10 @@ def accept(client, source, expected_ids):
                 member = {'library': 'nuget-version-summary.json', 'strict': 'ci-go-checksum-client-summary.json',
                           'windows': 'ci-windows-cli-summary.json', 'compose': 'ci-compose-evaluation.json',
                           'linux-install': 'ci-linux-install.json',
-                          'offline-media': 'ci-offline-media.json'}.get(spec['kind'], 'ci-evidence-summary.json')
+                          'offline-media': 'ci-offline-media.json',
+                          'terraform-provider': 'ci-terraform-provider.json'}.get(spec['kind'], 'ci-evidence-summary.json')
                 report, reference = safe_artifact(client, by_artifact[artifact_name], source.candidate, run_id, member)
-                if spec['kind'] in ('library', 'strict', 'windows', 'compose', 'linux-install', 'offline-media'):
+                if spec['kind'] in ('library', 'strict', 'windows', 'compose', 'linux-install', 'offline-media', 'terraform-provider'):
                     counts = validate_custom(report, source.candidate, run_id, spec, source)
                 else:
                     counts, contract = validate_summary(report, source.candidate, run_id, spec, source.baselines, source)

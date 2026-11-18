@@ -1,0 +1,80 @@
+name: Native Terraform and OpenTofu provider
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/terraform-provider.yml'
+      - 'integrations/terraform/**'
+      - 'internal/management/**'
+      - 'cmd/cratectl/repository_manifest*.go'
+      - 'scripts/ci/bootstrap_iac_clients.py'
+      - 'scripts/ci/terraform_provider_evidence.py'
+      - 'scripts/conformance_repository_manifest.py'
+      - 'scripts/terraform_repository_fixture.py'
+
+permissions:
+  contents: read
+
+jobs:
+  provider:
+    if: github.ref == 'refs/heads/main' && github.repository == 'ctlplne/cratectl'
+    name: Terraform and OpenTofu with real PostgreSQL (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 15
+    concurrency:
+      group: cratectl-terraform-provider-${{ github.ref }}-${{ matrix.arch }}-${{ github.sha }}
+      cancel-in-progress: false
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    env:
+      GOENV: 'off'
+      GOTOOLCHAIN: local
+      GOMODCACHE: ${{ github.workspace }}/.cache/go-mod
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22.23.4'
+      - name: Prepare pinned stock infrastructure clients
+        run: |
+          umask 077
+          mkdir -p .private
+          clients="$(python3 scripts/ci/bootstrap_iac_clients.py '${{ matrix.arch }}')"
+          printf 'CRATECTL_IAC_CLIENTS=%s\n' "$clients" >> "$GITHUB_ENV"
+      - name: Build and test the isolated provider module
+        run: |
+          umask 077
+          make build build-provider test-provider BINDIR=.cache/cratectl-provider-bin
+      - name: Replay stock saved plans, imports and drift with real PostgreSQL
+        run: |
+          umask 077
+          python3 scripts/conformance_repository_manifest.py \
+            --pg-bin /usr/lib/postgresql/16/bin --binary-directory .cache/cratectl-provider-bin \
+            --provider-binary .cache/cratectl-provider-bin/terraform-provider-cratectl \
+            --terraform "$CRATECTL_IAC_CLIENTS/terraform" --tofu "$CRATECTL_IAC_CLIENTS/tofu" \
+            --ci-architecture '${{ matrix.arch }}'
+      - uses: actions/upload-artifact@v7
+        if: success()
+        with:
+          name: ci-summary-terraform-provider-${{ matrix.arch }}
+          path: .cache/ci-terraform-provider.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14

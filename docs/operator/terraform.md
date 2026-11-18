@@ -79,3 +79,9 @@ from state.
 The candidate provider has one hosted repository resource. Other
 cratectl resources, provider distribution and broader platform
 qualification remain open.
+
+The native GitHub workflow builds the same provider module and uses
+checksum-pinned stock binaries on Linux x64 and ARM64. It launches its own
+PostgreSQL 16.15 fixture on loopback and exports only the bounded evidence
+summary. Raw plans, state, credentials and child command logs remain inside
+the private runner fixture.
