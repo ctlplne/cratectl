@@ -290,9 +290,9 @@ def evaluate(args):
               any(code == 0 and json.loads(output)['action'] == 'created' for code, output in outcomes))
         check('retry after successful creation returns unchanged',
               json.loads(cli('retry-create', *apply_flags, approval)[1])['action'] == 'unchanged')
-        events = api('create-audit', '/api/v1/audit?limit=100')['items']
+        events = [json.loads(event['payload']) for event in api('create-audit', '/api/v1/audit?limit=100')['items']]
         check('one repository creation event despite concurrent retry',
-              sum(json.loads(event['payload'])['kind'] == 'repository.created' for event in events) == 1)
+              sum(event['kind'] == 'repository.created' and event['data']['name'] == NAME for event in events) == 1)
         check('second tenant can plan an independent same-name repository',
               json.loads(cli('independent-tenant-plan', 'repository-plan', '--manifest', other,
                              config=work / 'other.json')[1])['action'] == 'create')
