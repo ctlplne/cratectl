@@ -31,8 +31,11 @@ def private(path,data):
     p=PRIVATE/path;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(data if isinstance(data,bytes)else json.dumps(data).encode());p.chmod(0o600);return p
 def command(argv,runenv=env,cwd=ROOT):
     if Path(str(argv[0])).name=='playwright':
+        # The full suite runs 19 workflows serially. Each retains its own
+        # Playwright timeout, while the owned process group bounds the suite.
+        timeout = 600 if args.workflow == 'all' else 300
         with (PRIVATE/'commands.log').open('ab')as log:
-            code,_=run_owned_client(argv,cwd,runenv,timeout=300,poll_hook=worker_control,output_sink=log)
+            code,_=run_owned_client(argv,cwd,runenv,timeout=timeout,poll_hook=worker_control,output_sink=log)
         if code:raise AssertionError('real browser suite failed; inspect its private report')
         return b''
     p=subprocess.run([str(a)for a in argv],env=runenv,cwd=cwd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=300)

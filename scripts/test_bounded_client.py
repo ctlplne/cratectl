@@ -109,6 +109,16 @@ class BoundedClient(unittest.TestCase):
             self.assertEqual(output.getvalue(),b'owned browser progress\n')
             self.assertGreater(len(polls),1)
 
+    def test_full_browser_budget_remains_bounded(self):
+        with tempfile.TemporaryDirectory(prefix='cratectl-browser-budget-') as directory:
+            argv = [sys.executable, '-c', 'print("owned browser suite")']
+            code, output = run_owned_client(argv, directory, dict(os.environ), timeout=600)
+            self.assertEqual((code, output), (0, 'owned browser suite\n'))
+            with patch('bounded_client.subprocess.Popen') as spawn:
+                with self.assertRaises(ValueError):
+                    run_owned_client(argv, directory, dict(os.environ), timeout=601)
+                spawn.assert_not_called()
+
     def test_control_failure_still_stops_owned_descendants(self):
         with tempfile.TemporaryDirectory(prefix='cratectl-browser-control-') as directory:
             marker=Path(directory)/'late-child';ready=Path(directory)/'ready'

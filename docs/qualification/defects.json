@@ -1647,9 +1647,19 @@
     {
       "id": "DEFECT.0153",
       "summary": "Administrative revocation reads the entire supplied credential file before applying any filesystem privacy or size check",
-      "state": "Repaired. Focused normal and race tests and vet passed. Positive native transaction replay pending.",
+      "state": "Repaired. Focused normal and race tests and vet passed. The real macOS ARM64 PostgreSQL credential transaction replay passed all eight checks.",
       "first_failure": "evidence/2026-11-18/revocation-private-input-development.json",
-      "repair": "Read the credential through the shared private file reader with the CLI's 257-byte budget before opening the owner connection."
+      "repair": "Read the credential through the shared private file reader with the CLI's 257-byte budget before opening the owner connection.",
+      "replay": "evidence/2026-11-18/credential-05bd89a-native.json"
+    },
+    {
+      "id": "DEFECT.0154",
+      "summary": "The full Chromium suite reaches its outer deadline after logging 18 of 19 workflow passes",
+      "candidate": "6d415738669eecf70b6b1b0f0891387331ce002c",
+      "state": "Original failure authenticated and retained. Subprocess budget regression passed locally. Native replay pending.",
+      "first_failure": "evidence/2026-11-18/github-6d41573-chromium-deadline.json",
+      "repair": "Allow the complete serial suite 600 seconds within the owned group. Keep 300 seconds for focused invocations and the Playwright per-test limits, no retries and bounded private diagnostics.",
+      "limits": "The original command stopped before final Playwright JSON. The suite outcome remains failed and the last workflow result remains unknown."
     }
   ]
 }

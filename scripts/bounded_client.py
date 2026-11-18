@@ -8,6 +8,9 @@ import tempfile
 import time
 
 
+MAX_TIMEOUT_SECONDS = 600
+
+
 class ClientLimitError(RuntimeError):
     pass
 
@@ -42,7 +45,7 @@ def _wait_for_owned_group_removal(group, timeout=3):
 
 
 def run_owned_client(argv, cwd, environment, timeout=120, output_limit=8 << 20, *, input_text=None, capture_limit=65536, poll_hook=None, output_sink=None):
-    if os.name != 'posix' or not all(hasattr(os,name)for name in ['waitid','WNOWAIT','P_PID','WEXITED','WNOHANG','CLD_EXITED']) or not 0 < timeout <= 300 or not 1 <= output_limit <= 8 << 20 or not 1 <= capture_limit <= 8 << 20:
+    if os.name != 'posix' or not all(hasattr(os,name)for name in ['waitid','WNOWAIT','P_PID','WEXITED','WNOHANG','CLD_EXITED']) or not 0 < timeout <= MAX_TIMEOUT_SECONDS or not 1 <= output_limit <= 8 << 20 or not 1 <= capture_limit <= 8 << 20:
         raise ValueError('Owned client requires POSIX nonreaping exit observation and bounded time/output')
     if input_text is not None and (not isinstance(input_text,str) or len(input_text)>1<<20):
         raise ValueError('Owned client input must be bounded UTF-8 text')

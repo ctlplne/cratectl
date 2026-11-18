@@ -33,8 +33,7 @@ def require(condition, message):
 
 
 def prepare_source_fixture(go, root, fixture_dir, command):
-    # The shared owned-process runner caps each command at 300 seconds. Keep
-    # this caller within that bound, as the original portability producer does.
+    # Preserve the original portability producer's 300-second command budget.
     native_env = {**os.environ, 'CRATECTL_GO_COMMON_EXPORT_PORTABLE_OUT': str(fixture_dir)}
     return command([go, 'test', '-count=1', '-tags=integration', '-run',
                     '^TestGoModuleCommonSetOfflineNativeGraphAndUncertainAcknowledgement$', './internal/server'],

@@ -97,9 +97,13 @@ Each original Windows job passed all 15 functions and five managed commands.
 Both retained reports match their original workflow logs, artifact digests and
 23 source hashes in Git. [Native Windows evidence](evidence/2026-11-18/github-a0e646d-windows-native.json)
 
-The [partial `6d41573` snapshot](evidence/2026-11-18/github-6d41573-original-partial.json)
-retains 21 safe members and the outstanding original native jobs. Full campaign
-acceptance remains open.
+The original `6d41573` campaign closed with 24 passing jobs and nine failures.
+The retained selection and 24 safe summaries cover 85 underlying reports.
+The Linux x64 Chromium command reached its five-minute deadline after logging
+18 of the 19 workflows as passed. The full-suite budget is now ten minutes.
+The per-test and focused-suite budgets remain in effect, and native qualification
+of the new budget is pending. [Original campaign](evidence/2026-11-18/github-6d41573-original-completed.json)
+[Chromium deadline evidence](evidence/2026-11-18/github-6d41573-chromium-deadline.json)
 
 ## Go security patch
 
@@ -132,6 +136,12 @@ refused overwrite, published with stock npm over independently trusted TLS, and
 kept the artifact and policy through restart. This scope uses one owned
 PostgreSQL instance and a filesystem store.
 [Installation evidence](evidence/2026-11-18/installation-b19d3ac0ac.json)
+
+At `05bd89a`, all eight focused administrative credential checks passed on
+macOS ARM64 with real PostgreSQL. They covered private provisioning output,
+cleanup after a database error, overwrite refusal, bounded private revocation
+input and authentication before and after revocation.
+[Credential transaction evidence](evidence/2026-11-18/credential-05bd89a-native.json)
 
 ## Durable state and remaining scope
 
