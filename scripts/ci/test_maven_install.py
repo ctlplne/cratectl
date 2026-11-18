@@ -35,7 +35,7 @@ class MavenInstall(unittest.TestCase):
 from pathlib import Path
 a=sys.argv[1:];p=Path('requests.json');rows=json.loads(p.read_text()) if p.exists() else [];rows.append(a);p.write_text(json.dumps(rows))
 destination=Path(a[a.index('--output')+1]);mode=os.environ['CRATECTL_MAVEN_STANDIN']
-if mode=='both_fail' or (mode=='fallback' and len(rows)==1):
+if mode=='all_fail' or (mode=='fallback' and len(rows)<3):
  destination.write_bytes(b'partial');sys.exit(28)
 destination.write_bytes(b'corrupt' if mode=='mismatch' else Path('fixture.tar.gz').read_bytes())
 ''')
@@ -57,7 +57,8 @@ sys.exit(0 if hashlib.sha512(Path(path).read_bytes()).hexdigest()==digest else 1
                                     env=environment, capture_output=True, text=True, timeout=15)
             requests = json.loads((root / 'requests.json').read_text()) if (root / 'requests.json').exists() else []
             for request in requests:
-                for option, expected in [('--proto', '=https'), ('--proto-redir', '=https'),
+                self.assertEqual(request[0], '--disable')
+                for option, expected in [('--proto', '=https'), ('--proto-redir', '=https'), ('--max-redirs', '5'),
                                          ('--connect-timeout', '15'), ('--max-time', '180'),
                                          ('--max-filesize', '33554432')]:
                     self.assertEqual(request[request.index(option) + 1], expected)
@@ -66,22 +67,23 @@ sys.exit(0 if hashlib.sha512(Path(path).read_bytes()).hexdigest()==digest else 1
     def test_primary_download_is_checked_and_extracted(self):
         code, requests, extracted, partial = self.install('primary')
         self.assertEqual((code, len(requests), extracted, partial), (0, 1, True, []))
-        self.assertTrue(requests[0][-1].startswith('https://downloads.apache.org/'))
+        self.assertTrue(requests[0][-1].startswith('https://repo.maven.apache.org/maven2/'))
 
     def test_transport_failure_uses_only_approved_archive(self):
         code, requests, extracted, partial = self.install('fallback')
-        self.assertEqual((code, len(requests), extracted, partial), (0, 2, True, []))
-        self.assertTrue(requests[1][-1].startswith('https://archive.apache.org/dist/maven/'))
+        self.assertEqual((code, len(requests), extracted, partial), (0, 3, True, []))
+        self.assertTrue(requests[1][-1].startswith('https://downloads.apache.org/'))
+        self.assertTrue(requests[2][-1].startswith('https://archive.apache.org/dist/maven/'))
 
     def test_digest_mismatch_never_falls_back_or_extracts(self):
-        code, requests, extracted, _ = self.install('mismatch')
+        code, requests, extracted, partial = self.install('mismatch')
         self.assertNotEqual(code, 0)
-        self.assertEqual((len(requests), extracted), (1, False))
+        self.assertEqual((len(requests), extracted, partial), (1, False, []))
 
     def test_exhausted_transfers_leave_no_partial_or_installation(self):
-        code, requests, extracted, partial = self.install('both_fail')
+        code, requests, extracted, partial = self.install('all_fail')
         self.assertNotEqual(code, 0)
-        self.assertEqual((len(requests), extracted, partial), (2, False, []))
+        self.assertEqual((len(requests), extracted, partial), (3, False, []))
 
     def test_nonhosted_execution_stops_before_network(self):
         code, requests, extracted, partial = self.install('primary', hosted=False)

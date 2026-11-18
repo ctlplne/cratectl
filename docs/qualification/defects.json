@@ -1791,6 +1791,13 @@
       "first_failure": "evidence/2026-11-18/terraform-provider-581d5de-stock-state-serial.json",
       "replay": "evidence/2026-11-18/terraform-provider-5429b9a-native.json",
       "repair": "Save a fresh plan after a refused apply. Compare the whole resource change with the previously reviewed plan before applying."
+    },
+    {
+      "id": "DEFECT.0170",
+      "summary": "Both approved Maven archive transfers time out in an original hosted ARM64 job",
+      "state": "The original 4821316 job stopped before runtime tests. Maven Central served the identical pinned 3.10.0 archive locally. The fallback regression passes.",
+      "first_failure": "evidence/2026-11-18/github-4821316-arm64-maven-bootstrap-failure.json",
+      "repair": "Start with the exact pinned Apache Maven artifact from Maven Central, then try the original Apache distribution and archives on transfer failure. Stop immediately on a digest mismatch."
     }
   ]
 }
