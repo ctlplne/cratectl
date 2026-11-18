@@ -1,0 +1,154 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "cratectl.selector" . | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "cratectl.selector" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "cratectl.selector" . | nindent 8 }}
+      annotations:
+        checksum/worker-identities: {{ include (print $.Template.BasePath "/worker-identities.yaml") . | sha256sum | quote }}
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        - name: prepare-worker-inputs
+          image: {{ .Values.worker.initImage | quote }}
+          securityContext:
+            {{- include "cratectl.containerSecurity" . | nindent 12 }}
+          command: ["/bin/sh", "-euc"]
+          args:
+            - |
+              umask 077
+              mkdir -p /worker/tokens
+              head -c 8193 /identity/identities.json > /worker/identities.json
+              test "$(wc -c < /worker/identities.json)" -le 8192
+              for key in "$@"; do
+                head -c 258 "/source-tokens/$key" > "/worker/tokens/$key"
+                count=$(wc -c < "/worker/tokens/$key")
+                test "$count" -gt 0 && test "$count" -le 257 || exit 1
+              done
+            - --
+            {{- range .Values.worker.tokenKeys }}
+            - {{ . | quote }}
+            {{- end }}
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+          volumeMounts:
+            - {name: worker-identities, mountPath: /identity, readOnly: true}
+            - {name: worker-source, mountPath: /source-tokens, readOnly: true}
+            - {name: worker-private, mountPath: /worker}
+      containers:
+        - name: registry
+          image: {{ .Values.image | quote }}
+          securityContext:
+            {{- include "cratectl.containerSecurity" . | nindent 12 }}
+          command: ["/usr/local/bin/cratectld"]
+          args:
+            - serve
+            - --listen=0.0.0.0:38443
+            - {{ print "--public-url=" .Values.publicURL | quote }}
+            - --objects=/data/objects
+            - --pagination-key-file=/data/pagination.key
+            - --tls-cert=/var/run/cratectl/tls/tls.crt
+            - --tls-key=/var/run/cratectl/tls/tls.key
+          env:
+            {{- include "cratectl.databaseEnv" . | nindent 12 }}
+          ports:
+            - name: https
+              containerPort: 38443
+          startupProbe:
+            httpGet: {path: /health/ready, port: https, scheme: HTTPS}
+            periodSeconds: 2
+            failureThreshold: 45
+          readinessProbe:
+            httpGet: {path: /health/ready, port: https, scheme: HTTPS}
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: {path: /health/live, port: https, scheme: HTTPS}
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          volumeMounts:
+            - {name: objects, mountPath: /data}
+            - {name: registry-tls, mountPath: /var/run/cratectl/tls, readOnly: true}
+            {{- if .Values.postgres.caSecret }}
+            - {name: postgres-ca, mountPath: /var/run/cratectl/postgres, readOnly: true}
+            {{- end }}
+        - name: worker
+          image: {{ .Values.image | quote }}
+          securityContext:
+            {{- include "cratectl.containerSecurity" . | nindent 12 }}
+          command: ["/usr/local/bin/cratectld"]
+          args:
+            - worker
+            - --identities=/var/run/cratectl/worker/identities.json
+            - --identity-config-bytes=8192
+            - --objects=/data/objects
+          env:
+            {{- include "cratectl.databaseEnv" . | nindent 12 }}
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+          volumeMounts:
+            - {name: objects, mountPath: /data}
+            - {name: worker-private, mountPath: /var/run/cratectl/worker, readOnly: true}
+            {{- if .Values.postgres.caSecret }}
+            - {name: postgres-ca, mountPath: /var/run/cratectl/postgres, readOnly: true}
+            {{- end }}
+      volumes:
+        - name: objects
+          persistentVolumeClaim:
+            claimName: {{ .Values.storage.existingClaim | quote }}
+        - name: registry-tls
+          secret:
+            secretName: {{ .Values.tls.existingSecret | quote }}
+            defaultMode: 416
+            items:
+              - {key: tls.crt, path: tls.crt}
+              - {key: tls.key, path: tls.key}
+        - name: worker-identities
+          configMap:
+            name: {{ .Release.Name }}-worker
+        - name: worker-source
+          secret:
+            secretName: {{ .Values.worker.existingSecret | quote }}
+            defaultMode: 416
+            items:
+            {{- range .Values.worker.tokenKeys }}
+              - key: {{ . | quote }}
+                path: {{ . | quote }}
+            {{- end }}
+        - name: worker-private
+          emptyDir:
+            medium: Memory
+            sizeLimit: 64Ki
+        {{- if .Values.postgres.caSecret }}
+        - name: postgres-ca
+          secret:
+            secretName: {{ .Values.postgres.caSecret | quote }}
+            items:
+              - {key: ca.crt, path: ca.crt}
+        {{- end }}

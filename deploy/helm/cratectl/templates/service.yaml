@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "cratectl.selector" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    {{- include "cratectl.selector" . | nindent 4 }}
+  ports:
+    - name: https
+      port: 38443
+      targetPort: https

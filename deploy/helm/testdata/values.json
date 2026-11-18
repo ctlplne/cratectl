@@ -1,0 +1,16 @@
+{
+  "image": "registry.example.invalid/cratectl/cratectld@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "publicURL": "https://cratectl.example.invalid:38443",
+  "postgres": {
+    "runtimeSecret": "cratectl-database",
+    "dsnKey": "runtime-dsn",
+    "caSecret": "cratectl-database-ca"
+  },
+  "tls": {"existingSecret": "cratectl-registry-tls"},
+  "storage": {"existingClaim": "cratectl-data"},
+  "worker": {
+    "initImage": "registry.example.invalid/cratectl/busybox@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "existingSecret": "cratectl-worker-tokens",
+    "tokenKeys": ["team-a", "team-b"]
+  }
+}

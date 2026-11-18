@@ -1,0 +1,12 @@
+{{- $paths := list -}}
+{{- range .Values.worker.tokenKeys -}}
+{{- $paths = append $paths (printf "/var/run/cratectl/worker/tokens/%s" .) -}}
+{{- end -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-worker
+  labels:
+    {{- include "cratectl.selector" . | nindent 4 }}
+data:
+  identities.json: {{ dict "token_files" $paths | toJson | quote }}

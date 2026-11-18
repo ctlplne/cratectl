@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["image", "publicURL", "postgres", "tls", "storage", "worker"],
+  "definitions": {
+    "digestImage": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._:/-]{0,250}@sha256:[a-f0-9]{64}$"
+    },
+    "resourceName": {
+      "type": "string",
+      "maxLength": 63,
+      "pattern": "^[a-z0-9]([a-z0-9-]*[a-z0-9])?$"
+    }
+  },
+  "properties": {
+    "image": {"$ref": "#/definitions/digestImage"},
+    "publicURL": {
+      "type": "string",
+      "maxLength": 300,
+      "pattern": "^https://[a-zA-Z0-9][a-zA-Z0-9.-]*(:[0-9]{1,5})?$"
+    },
+    "postgres": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runtimeSecret", "dsnKey", "caSecret"],
+      "properties": {
+        "runtimeSecret": {"$ref": "#/definitions/resourceName"},
+        "dsnKey": {"type": "string", "pattern": "^[a-zA-Z0-9_][a-zA-Z0-9_.-]{0,62}$"},
+        "caSecret": {"anyOf": [{"const": ""}, {"$ref": "#/definitions/resourceName"}]}
+      }
+    },
+    "tls": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["existingSecret"],
+      "properties": {"existingSecret": {"$ref": "#/definitions/resourceName"}}
+    },
+    "storage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["existingClaim"],
+      "properties": {"existingClaim": {"$ref": "#/definitions/resourceName"}}
+    },
+    "worker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["initImage", "existingSecret", "tokenKeys"],
+      "properties": {
+        "initImage": {"$ref": "#/definitions/digestImage"},
+        "existingSecret": {"$ref": "#/definitions/resourceName"},
+        "tokenKeys": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[a-z][a-z0-9-]{0,62}$"}
+        }
+      }
+    }
+  }
+}
