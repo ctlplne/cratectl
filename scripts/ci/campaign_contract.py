@@ -9,7 +9,7 @@ WORKFLOWS = {
     'browser-repair.yml': 'browser', 'go-checksum-client.yml': 'strict', 'windows-cli.yml': 'windows',
     'compose-evaluation.yml': 'compose', 'linux-install.yml': 'linux-install', 'offline-media.yml': 'offline-media',
     'terraform-provider.yml': 'terraform-provider', 'cargo.yml': 'cargo', 'cargo-public.yml': 'cargo-public',
-    'npm-search.yml': 'npm-search', 'python-search.yml': 'python-search',
+    'npm-search.yml': 'npm-search', 'python-search.yml': 'python-search', 'oci-repository-catalog.yml': 'oci-catalog',
 }
 PLATFORMS = {'amd64': ('ubuntu-24.04', 'Linux', 'X64'),
              'arm64': ('ubuntu-24.04-arm', 'Linux', 'ARM64'),
@@ -23,8 +23,9 @@ CARGO_CONTRACT = {'.github/workflows/cargo.yml', 'scripts/ci/cargo_evidence.py',
 CARGO_PUBLIC_CONTRACT = {'.github/workflows/cargo-public.yml', 'scripts/ci/cargo_public_evidence.py'}
 NPM_SEARCH_CONTRACT = {'.github/workflows/npm-search.yml', 'scripts/ci/npm_search_evidence.py'}
 PYTHON_SEARCH_CONTRACT = {'.github/workflows/python-search.yml', 'scripts/ci/python_search_evidence.py'}
+OCI_CATALOG_CONTRACT = {'.github/workflows/oci-repository-catalog.yml', 'scripts/ci/oci_repository_catalog_evidence.py'}
 OPTIONAL_CONTRACTS = (LINUX_INSTALL_CONTRACT, OFFLINE_MEDIA_CONTRACT, TERRAFORM_PROVIDER_CONTRACT,
-                      CARGO_CONTRACT, CARGO_PUBLIC_CONTRACT, NPM_SEARCH_CONTRACT, PYTHON_SEARCH_CONTRACT)
+                      CARGO_CONTRACT, CARGO_PUBLIC_CONTRACT, NPM_SEARCH_CONTRACT, PYTHON_SEARCH_CONTRACT, OCI_CATALOG_CONTRACT)
 OPTIONAL_FILES = set.union(*OPTIONAL_CONTRACTS)
 COMPATIBLE_FILES = ['.github/workflows/' + name for name in WORKFLOWS
                     if '.github/workflows/' + name not in OPTIONAL_FILES
@@ -122,6 +123,11 @@ def jobs(family, schema=17, requirement_portability=False):
                 ['Prepare pinned stock pip and Twine', 'Build the clean cratectl candidate',
                  'Replay hosted and cached search with stock pip and Twine'],
                 'ci-summary-python-search-' + arch, 'python-search')
+        elif family == 'oci-catalog':
+            add('Stock ORAS repository catalog and real PostgreSQL (' + arch + ')', arch,
+                ['Prepare digest-pinned stock ORAS', 'Build the clean cratectl candidate',
+                 'Replay authorized OCI catalog discovery with stock ORAS'],
+                'ci-summary-oci-catalog-' + arch, 'oci-catalog')
     if family == 'portable':
         add('Real PostgreSQL signed export source (amd64)', 'amd64',
             ['Prepare actual signed source fixture and independent trust-channel digests', 'Transfer reviewed synthetic fixture only',

@@ -13,6 +13,7 @@ from campaign_transport import EvidenceError
 from compose_evidence import CHECKS as COMPOSE_CHECKS, SOURCE_PATHS as COMPOSE_FILES
 from linux_install_evidence import CHECKS as INSTALL_CHECKS, IMAGE as INSTALL_IMAGE, SOURCE_PATHS as INSTALL_FILES
 from npm_search_evidence import BASE_CHECKS as NPM_BASE, HOSTED_CHECKS as NPM_HOSTED, CACHED_CHECKS as NPM_CACHED, SOURCE_PATHS as NPM_FILES
+from oci_repository_catalog_evidence import ARCHIVE_PINS as ORAS_PINS, BASE_CHECKS as OCI_CATALOG_BASE, CATALOG_CHECKS, SOURCE_PATHS as OCI_CATALOG_FILES
 from python_search_evidence import BASE_CHECKS as PYTHON_BASE, HOSTED_CHECKS as PYTHON_HOSTED, CACHED_CHECKS as PYTHON_CACHED, SOURCE_PATHS as PYTHON_FILES
 from offline_media_evidence import CHECKS as OFFLINE_CHECKS, PHASES as OFFLINE_PHASES, SOURCE_PATHS as OFFLINE_FILES
 from test_go_common_export_portability_evidence import complete as complete_common_contract
@@ -23,6 +24,29 @@ SPECS = {spec['artifact']: spec for family in WORKFLOWS.values() for spec in job
 
 
 class CampaignReports(unittest.TestCase):
+    def test_oci_catalog_requires_architecture_bound_tool_and_exact_graph_checks(self):
+        source = lambda path: path.encode()
+        candidate = 'a' * 40
+        catalog = {'oras': '1.3.6', 'oras_sha256': 'd' * 64, 'checks': list(CATALOG_CHECKS),
+                   'manifest_sha256': [letter * 64 for letter in 'ef1'], 'payload_sha256': ['2' * 64, '3' * 64]}
+        report = {'schema': 1, 'profile': 'cratectl-native-oci-repository-catalog-v1', 'candidate': candidate,
+                  'runner_os': 'Linux', 'runner_arch': 'ARM64', 'run_id': '12', 'status': 'passed', 'source_dirty': False,
+                  'source_sha256': {path: hashlib.sha256(source(path)).hexdigest() for path in OCI_CATALOG_FILES},
+                  'binary_sha256': {'cratectl': 'a' * 64, 'cratectld': 'b' * 64}, 'archive_sha256': 'c' * 64,
+                  'postgres': 'postgres (PostgreSQL) 16.15', 'npm': '10.9.9', 'checks': list(OCI_CATALOG_BASE),
+                  'oci_repository_catalog': catalog, 'oras_archive_sha256': ORAS_PINS['ARM64'],
+                  'goal_complete': False, 'broad_readiness': False}
+        spec = SPECS['ci-summary-oci-catalog-arm64']
+        self.assertEqual(validate_custom(report, candidate, 12, spec, source), {'checks': 28, 'records': 1})
+        for mutation in ({'oras_archive_sha256': ORAS_PINS['X64']},
+                         {'oci_repository_catalog': {**catalog, 'checks': list(CATALOG_CHECKS)[:-1]}},
+                         {'oci_repository_catalog': {**catalog, 'payload_sha256': ['2' * 64] * 2}},
+                         {'oci_repository_catalog': {**catalog, 'private_log': 'discarded fixture metadata'}}):
+            with self.subTest(change=mutation.keys()), self.assertRaises(EvidenceError):
+                validate_custom({**report, **mutation}, candidate, 12, spec, source)
+        with self.assertRaisesRegex(EvidenceError, 'oci_catalog_source_identity'):
+            validate_custom(report, candidate, 12, spec, lambda path: b'different')
+
     def test_python_search_report_binds_exact_pip_and_twine_and_cached_scope(self):
         source = lambda path: path.encode()
         candidate = 'a' * 40

@@ -18,6 +18,7 @@ from cargo_evidence import CHECKS as CARGO_CHECKS
 from cargo_public_evidence import CHECKS as CARGO_PUBLIC_CHECKS
 from npm_search_evidence import HOSTED_CHECKS as NPM_HOSTED, CACHED_CHECKS as NPM_CACHED
 from python_search_evidence import HOSTED_CHECKS as PYTHON_HOSTED, CACHED_CHECKS as PYTHON_CACHED
+from oci_repository_catalog_evidence import CATALOG_CHECKS as OCI_CATALOG_CHECKS
 from campaign_transport import (EvidenceError, GitHubEvidenceClient, LOG_BYTES,
                                 REPOSITORY, artifact_json, require, strict_json)
 
@@ -211,6 +212,10 @@ def check_log(raw, spec, source):
         require(text.count(f'PASS: {len(IAC_BASE) - 1} native declarative repository checks') == 1
                 and text.count(f'PASS: {len(PYTHON_HOSTED)} stock hosted Python search checks') == 1
                 and text.count(f'PASS: {len(PYTHON_CACHED)} stock cached Python search checks') == 1, 'python_search_native_inventory')
+    if kind == 'oci-catalog':
+        require(text.count(f'PASS: {len(IAC_BASE) - 1} native declarative repository checks') == 1
+                and text.count(f'PASS: {len(OCI_CATALOG_CHECKS)} stock ORAS repository catalog checks') == 1,
+                'oci_catalog_native_inventory')
     if kind in ('native', 'go'):
         pattern = r'\bok\s+ctlplne.dev/cratectl/internal/(?:server|store' + ('|conformance' if kind == 'native' else '') + r')\s'
         require(len(re.findall(pattern, text)) == (6 if kind == 'native' else 4), 'native_package_success_inventory')
@@ -346,10 +351,11 @@ def accept(client, source, expected_ids):
                           'terraform-provider': 'ci-terraform-provider.json',
                           'cargo': 'ci-cargo.json', 'cargo-public': 'ci-cargo-public.json',
                           'npm-search': 'ci-npm-search.json',
-                          'python-search': 'ci-python-search.json'}.get(spec['kind'], 'ci-evidence-summary.json')
+                          'python-search': 'ci-python-search.json',
+                          'oci-catalog': 'ci-oci-catalog.json'}.get(spec['kind'], 'ci-evidence-summary.json')
                 report, reference = safe_artifact(client, by_artifact[artifact_name], source.candidate, run_id, member)
                 if spec['kind'] in ('library', 'strict', 'windows', 'compose', 'linux-install', 'offline-media', 'terraform-provider',
-                                    'cargo', 'cargo-public', 'npm-search', 'python-search'):
+                                    'cargo', 'cargo-public', 'npm-search', 'python-search', 'oci-catalog'):
                     counts = validate_custom(report, source.candidate, run_id, spec, source)
                 else:
                     counts, contract = validate_summary(report, source.candidate, run_id, spec, source.baselines, source)

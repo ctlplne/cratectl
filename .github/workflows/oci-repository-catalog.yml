@@ -1,0 +1,83 @@
+name: Native OCI repository catalog
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/oci-repository-catalog.yml'
+      - 'internal/server/oci_repository_catalog*.go'
+      - 'internal/store/oci_repository_catalog*.go'
+      - 'scripts/oci_repository_catalog_fixture.py'
+      - 'scripts/ci/oci_repository_catalog_evidence.py'
+
+permissions:
+  contents: read
+
+jobs:
+  oci-catalog:
+    if: github.ref == 'refs/heads/main' && github.repository == 'ctlplne/cratectl'
+    name: Stock ORAS repository catalog and real PostgreSQL (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 18
+    concurrency:
+      group: cratectl-oci-catalog-${{ github.ref }}-${{ matrix.arch }}-${{ github.sha }}
+      cancel-in-progress: false
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+            oras_sha256: 66fb0ad7206f3f6fa77ed5b552049d364ccf4b50b1684554f731f76302b52ca0
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+            oras_sha256: b84269e78dfc2d5329a4aab373da3200de95e6c138338cf6c66c10c0a3f248c1
+    env:
+      GOENV: 'off'
+      GOTOOLCHAIN: local
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22.23.4'
+      - name: Prepare digest-pinned stock ORAS
+        env:
+          ORAS_ARCH: ${{ matrix.arch }}
+          ORAS_SHA256: ${{ matrix.oras_sha256 }}
+        run: |
+          umask 077
+          mkdir -p .cache/cratectl-oci-tools
+          archive="oras_1.3.6_linux_$ORAS_ARCH.tar.gz"
+          python3 scripts/ci/fetch_archive.py --archive "$archive" \
+            --url "https://github.com/oras-project/oras/releases/download/v1.3.6/$archive" \
+            --sha256 "$ORAS_SHA256" --max-bytes 33554432
+          printf '%s  %s\n' "$ORAS_SHA256" ".cache/$archive" | sha256sum --check --status
+          tar -xzf ".cache/$archive" -C .cache/cratectl-oci-tools oras
+          chmod 700 .cache/cratectl-oci-tools/oras
+      - name: Build the clean cratectl candidate
+        run: make build BINDIR=.cache/cratectl-oci-catalog-bin
+      - name: Replay authorized OCI catalog discovery with stock ORAS
+        run: |
+          umask 077
+          mkdir -p .private
+          python3 scripts/conformance_repository_manifest.py \
+            --pg-bin /usr/lib/postgresql/16/bin --binary-directory .cache/cratectl-oci-catalog-bin \
+            --oci-catalog-client .cache/cratectl-oci-tools/oras --oci-catalog-ci-architecture '${{ matrix.arch }}'
+      - uses: actions/upload-artifact@v7
+        if: success()
+        with:
+          name: ci-summary-oci-catalog-${{ matrix.arch }}
+          path: .cache/ci-oci-catalog.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14

@@ -655,6 +655,14 @@ matched 28 exact source files each. Uncached discovery, alternate Python
 clients and larger workloads remain open.
 [Original Linux Python evidence](evidence/2026-11-19/github-9877dd9-python-search-native.json)
 
+`8c9915c` passed nine stock ORAS 1.3.6 catalog checks and 19 declarative
+checks on macOS ARM64 with PostgreSQL 16.16 and trusted TLS. Hosted
+discovery follows lexical continuation links, filters current grants and
+graph review, and preserves tenant-specific exact pulls after restart.
+The real-database catalog test and the build, unit, race and lint gates
+passed. Native Linux and cached proxy and group discovery remain open.
+[Native hosted OCI catalog evidence](evidence/2026-11-19/oci-8c9915c-hosted-catalog-native.json)
+
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities
 published and pulled two exact chart archives, including a build-metadata
