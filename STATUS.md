@@ -111,6 +111,10 @@ final Playwright report. The other failures were both native Windows fixture
 jobs and all three npm audits.
 [Original replay outcomes](evidence/2026-11-18/github-5551f52-original-completed.json)
 
+The `b00aa94` push started nine first-attempt workflows for the Chromium
+deadline and private credential file changes. The earlier `a0e646d` jobs
+continue under their original IDs. [Replay run inventory](evidence/2026-11-18/github-b00aa94-started.json)
+
 ## Go security patch
 
 Govulncheck reported GO-2026-6859 against the Go 1.27.3 source configuration
