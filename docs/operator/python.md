@@ -6,12 +6,16 @@ publishes; a reader token resolves and downloads permitted packages. Keep tokens
 in a private client configuration or netrc, scoped to the registry. Do not put
 credentials in index URLs or command arguments.
 
-For hosted discovery, use
+For hosted or cached discovery, use
 `pip search --index https://packages.example.com/pypi/REPOSITORY/search QUERY`
 with the same reader credential and HTTPS trust. The endpoint accepts the
 search request used by pip. It matches package names and archive-derived
 summaries and returns the newest matching release with an allowed, non-yanked
 file. Search reads the current repository policy and retained references.
+Proxy and group results require a current cached catalog and a validated
+local archive. Search preserves group filename precedence and uses a lower
+source when a current upstream absence permits it. A package or index
+request can fill the proxy cache.
 Narrow broad queries if the index reaches the configured metadata or result
 budget. [pip search documentation](https://pip.pypa.io/en/stable/cli/pip_search/)
 

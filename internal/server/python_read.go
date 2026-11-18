@@ -21,22 +21,8 @@ import (
 	"ctlplne.dev/cratectl/internal/store"
 )
 
-type pythonSelected struct {
-	File   store.PythonFileView
-	Source store.Repository
-}
+type pythonSelected = store.PythonSelected
 
-func pythonMerge(members []store.PythonMember) map[string]pythonSelected {
-	out := map[string]pythonSelected{}
-	for _, member := range members {
-		for _, file := range member.Files {
-			if _, exists := out[file.File.Filename]; !exists {
-				out[file.File.Filename] = pythonSelected{file, member.Repository}
-			}
-		}
-	}
-	return out
-}
 func (s *Server) pythonMembers(ctx context.Context, i store.Identity, repo store.Repository, name string, force bool) ([]store.PythonMember, error) {
 	members, e := s.DB.NativeRepositories(ctx, i, repo.Name, name, "pypi")
 	if e != nil {
@@ -166,7 +152,7 @@ func (s *Server) pythonSimple(w http.ResponseWriter, r *http.Request, i store.Id
 			respondErr(w, e)
 			return
 		}
-		selected := pythonMerge(members)
+		selected := store.MergePythonMembers(members)
 		filenames := []string{}
 		for filename, file := range selected {
 			if !file.File.Blocked {
@@ -298,7 +284,7 @@ func (s *Server) pythonDownload(w http.ResponseWriter, r *http.Request, i store.
 			return
 		}
 		var ok bool
-		selection, ok = pythonMerge(members)[filename]
+		selection, ok = store.MergePythonMembers(members)[filename]
 		if !ok {
 			respondErr(w, store.ErrNotFound)
 			return

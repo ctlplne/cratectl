@@ -38,7 +38,7 @@ def download_file(name):
 
 
 @contextmanager
-def origin_server(credentials, contents):
+def origin_server(credentials, contents, *, content_types=None):
     class Origin(ThreadingHTTPServer):
         address_family = socket.AF_INET6
 
@@ -71,6 +71,8 @@ def origin_server(credentials, contents):
             self.send_response(code)
             if tag:
                 self.send_header('ETag', tag)
+            if code == 200 and content_types and self.path in content_types:
+                self.send_header('Content-Type', content_types[self.path])
             self.send_header('Cache-Control', 'max-age=300')
             self.send_header('Content-Length', str(len(response)))
             self.end_headers()

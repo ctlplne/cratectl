@@ -63,7 +63,7 @@ func (s *Store) PythonProjects(ctx context.Context, i Identity, repo string, lim
 			}
 		}
 		for name := range seen {
-			view, e := pythonViewInTx(ctx, tx, i, repo, name, limit, maxBytes)
+			view, e := pythonViewInTx(ctx, tx, i, repo, name, limit, maxBytes, nil)
 			if e != nil {
 				return e
 			}
@@ -160,16 +160,38 @@ type PythonMember struct {
 	Files      []PythonFileView
 }
 
+type PythonSelected struct {
+	File   PythonFileView
+	Source Repository
+}
+
+func MergePythonMembers(members []PythonMember) map[string]PythonSelected {
+	out := map[string]PythonSelected{}
+	for _, member := range members {
+		for _, file := range member.Files {
+			if _, exists := out[file.File.Filename]; !exists {
+				out[file.File.Filename] = PythonSelected{File: file, Source: member.Repository}
+			}
+		}
+	}
+	return out
+}
+
+type pythonSearchBudget struct {
+	files int
+	bytes int64
+}
+
 func (s *Store) PythonView(ctx context.Context, i Identity, repo, name string, maxFiles int, maxBytes int64) ([]PythonMember, error) {
 	var out []PythonMember
 	e := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
 		var e error
-		out, e = pythonViewInTx(ctx, tx, i, repo, name, maxFiles, maxBytes)
+		out, e = pythonViewInTx(ctx, tx, i, repo, name, maxFiles, maxBytes, nil)
 		return e
 	})
 	return out, e
 }
-func pythonViewInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, name string, maxFiles int, maxBytes int64) ([]PythonMember, error) {
+func pythonViewInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, name string, maxFiles int, maxBytes int64, search *pythonSearchBudget) ([]PythonMember, error) {
 	var out []PythonMember
 	if maxFiles <= 0 || maxBytes <= 0 {
 		return nil, ErrMetadataLimit
@@ -177,15 +199,31 @@ func pythonViewInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, name strin
 	e := func() error {
 		group, members, e := nativeRepositories(ctx, tx, i, repo, name, "pypi")
 		if e != nil {
+			if search != nil && nativeSearchSourceUnavailable(e) {
+				return errNativeSearchCatalog
+			}
 			return e
+		}
+		var known map[string]Retrieval
+		if search != nil {
+			known, e = nativeSearchCatalogs(ctx, tx, members, PythonCatalogPath(name))
+			if e != nil {
+				return e
+			}
 		}
 		remaining, count := maxBytes, 0
 		for _, r := range members {
 			member := PythonMember{Repository: r}
 			cached := map[string]Artifact{}
 			denied := map[string]bool{}
-			columns := `a.repository,a.path,a.digest,a.size,a.media_type,a.metadata-'core_metadata',COALESCE(d.decision,a.decision),a.created_at,a.source_revision`
-			rows, e := tx.Query(ctx, `SELECT `+columns+`,COALESCE(nl.deleted,false) FROM cratectl.artifacts a `+decisionJoin+nativeLifecycleJoin+` WHERE a.repository=$1 AND a.metadata->>'name'=$2 AND a.media_type<>$3 AND ($5::boolean OR a.source_revision=$6) ORDER BY a.path LIMIT $4`, r.Name, name, PythonCatalogMedia, maxFiles+1, r.Mode != "proxy", r.SourceRevision)
+			metadata := `a.metadata-'core_metadata'`
+			args := []any{r.Name, name, PythonCatalogMedia, maxFiles + 1, r.Mode != "proxy", r.SourceRevision}
+			if search != nil {
+				metadata = `CASE WHEN octet_length(a.metadata::text)<=$7 THEN a.metadata END`
+				args = append(args, remaining)
+			}
+			columns := `a.repository,a.path,a.digest,a.size,a.media_type,` + metadata + `,COALESCE(d.decision,a.decision),a.created_at,a.source_revision`
+			rows, e := tx.Query(ctx, `SELECT `+columns+`,COALESCE(nl.deleted,false) FROM cratectl.artifacts a `+decisionJoin+nativeLifecycleJoin+` WHERE a.repository=$1 AND a.metadata->>'name'=$2 AND a.media_type<>$3 AND ($5::boolean OR a.source_revision=$6) ORDER BY a.path LIMIT $4`, args...)
 			if e != nil {
 				return e
 			}
@@ -196,7 +234,7 @@ func pythonViewInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, name strin
 					return e
 				}
 				remaining -= int64(len(a.Metadata))
-				if len(cached) >= maxFiles || remaining < 0 {
+				if len(cached) >= maxFiles || remaining < 0 || (search != nil && len(a.Metadata) == 0) {
 					rows.Close()
 					return ErrMetadataLimit
 				}
@@ -247,8 +285,10 @@ func pythonViewInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, name strin
 					member.Files[n].File.Yanked = values[member.Files[n].Path]
 				}
 			} else {
-				var state Retrieval
-				e = scanRetrieval(tx.QueryRow(ctx, `SELECT `+retrievalColumns+` FROM cratectl.retrievals WHERE repository=$1 AND path=$2`, r.Name, PythonCatalogPath(name)), &state)
+				state := known[r.Name]
+				if search == nil {
+					state, e = nativeCatalogRetrieval(ctx, tx, r.Name, PythonCatalogPath(name))
+				}
 				if errors.Is(e, pgx.ErrNoRows) || (e == nil && state.State == "negative") {
 					out = append(out, member)
 					continue
@@ -359,6 +399,10 @@ func pythonViewInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, name strin
 				return ErrMetadataLimit
 			}
 			out = append(out, member)
+		}
+		if search != nil {
+			search.files -= count
+			search.bytes = remaining
 		}
 		return nil
 	}()

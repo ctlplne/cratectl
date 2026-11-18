@@ -110,7 +110,7 @@ func (s *Server) pythonSearch(w http.ResponseWriter, r *http.Request, i store.Id
 		fail(w, http.StatusBadRequest, "invalid_python_search", err.Error())
 		return
 	}
-	hits, err := s.DB.PythonHostedSearch(r.Context(), i, repo.Name, names, summaries, min(s.NativeVersionLimit, 10000),
+	hits, err := s.DB.PythonSearch(r.Context(), i, repo.Name, names, summaries, min(s.NativeVersionLimit, 10000),
 		min(s.NativeMetadataBytes, 64<<20))
 	if err != nil {
 		respondErr(w, err)

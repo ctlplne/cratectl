@@ -29,8 +29,6 @@ type npmSearchCandidate struct {
 	latest  bool
 }
 
-var errNPMSearchCatalog = errors.New("npm search has no current catalog authority")
-
 // NPMSearch selects one currently visible package version per name. A proxy
 // result requires retained bytes and a current catalog. Search never fills it.
 func (s *Store) NPMSearch(ctx context.Context, i Identity, repo, query string, from, size, budget, maxTags int, maxBytes int64) ([]NPMSearchPackage, int, error) {
@@ -160,7 +158,7 @@ ORDER BY name LIMIT $6`, i.Tenant, members, i.Actor, i.Role == "admin", terms, m
 			return ErrConflict
 		}
 		sources, err := npmViewInTx(ctx, tx, i, endpoint.Name, name, &budget, true)
-		if errors.Is(err, errNPMSearchCatalog) {
+		if errors.Is(err, errNativeSearchCatalog) {
 			continue
 		}
 		if err != nil {

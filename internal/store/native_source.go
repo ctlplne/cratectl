@@ -9,6 +9,44 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
+var errNativeSearchCatalog = errors.New("native search has no current catalog authority")
+
+func nativeSearchSourceUnavailable(err error) bool {
+	return errors.Is(err, ErrDenied) || errors.Is(err, ErrNotFound) ||
+		errors.Is(err, ErrRepositorySuspended) || errors.Is(err, ErrRepositoryRemoved)
+}
+
+func nativeCatalogRetrieval(ctx context.Context, tx pgx.Tx, repo, path string) (Retrieval, error) {
+	var state Retrieval
+	err := scanRetrieval(tx.QueryRow(ctx, `SELECT `+retrievalColumns+` FROM cratectl.retrievals WHERE repository=$1 AND path=$2`, repo, path), &state)
+	return state, err
+}
+
+// A current catalog or a current negative result can authorize cached search.
+// An unknown or expired catalog cannot establish authority for a lower member.
+func nativeSearchCatalogs(ctx context.Context, tx pgx.Tx, members []Repository, path string) (map[string]Retrieval, error) {
+	known := map[string]Retrieval{}
+	for _, member := range members {
+		if member.Mode != "proxy" {
+			continue
+		}
+		state, err := nativeCatalogRetrieval(ctx, tx, member.Name, path)
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, errNativeSearchCatalog
+		}
+		if err != nil {
+			return nil, err
+		}
+		current := (state.State == "ready" || state.State == "negative") && state.Fresh()
+		stale := state.State == "failed" && member.Settings.Cache.StaleSeconds > 0 && state.StalePermitted()
+		if state.SourceRevision != member.SourceRevision || (!current && !stale) {
+			return nil, errNativeSearchCatalog
+		}
+		known[member.Name] = state
+	}
+	return known, nil
+}
+
 // NativeSource is an immutable, format-scoped binding. A catalog transaction
 // commits its descriptors and current reference under the same retrieval fence.
 type NativeSource struct {

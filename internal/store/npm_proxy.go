@@ -148,15 +148,14 @@ func npmViewInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, name string, 
 	maxVersions, maxTags := budget.versions, budget.tags
 	group, members, e := npmRepositories(ctx, tx, i, repo, name)
 	if e != nil {
-		if cachedSearch && (errors.Is(e, ErrDenied) || errors.Is(e, ErrNotFound) ||
-			errors.Is(e, ErrRepositorySuspended) || errors.Is(e, ErrRepositoryRemoved)) {
-			return out, errNPMSearchCatalog
+		if cachedSearch && nativeSearchSourceUnavailable(e) {
+			return out, errNativeSearchCatalog
 		}
 		return out, e
 	}
 	var known map[string]Retrieval
 	if cachedSearch {
-		known, e = npmSearchCatalogs(ctx, tx, members, name)
+		known, e = nativeSearchCatalogs(ctx, tx, members, NPMCatalogPath(name))
 		if e != nil {
 			return out, e
 		}
@@ -227,7 +226,7 @@ func npmViewInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, name string, 
 		} else {
 			state := known[r.Name]
 			if !cachedSearch {
-				state, e = npmCatalogRetrieval(ctx, tx, r.Name, name)
+				state, e = nativeCatalogRetrieval(ctx, tx, r.Name, NPMCatalogPath(name))
 			}
 			if errors.Is(e, pgx.ErrNoRows) || (e == nil && state.State == "negative") {
 				out = append(out, member)
@@ -347,35 +346,4 @@ func npmViewInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, name string, 
 	budget.versions -= count
 	budget.bytes = remaining
 	return out, nil
-}
-
-func npmCatalogRetrieval(ctx context.Context, tx pgx.Tx, repo, name string) (Retrieval, error) {
-	var state Retrieval
-	err := scanRetrieval(tx.QueryRow(ctx, `SELECT `+retrievalColumns+` FROM cratectl.retrievals WHERE repository=$1 AND path=$2`, repo, NPMCatalogPath(name)), &state)
-	return state, err
-}
-
-// Search may use current catalog data or a current negative result. A missing
-// or expired catalog cannot establish that a lower group member may answer.
-func npmSearchCatalogs(ctx context.Context, tx pgx.Tx, members []Repository, name string) (map[string]Retrieval, error) {
-	known := map[string]Retrieval{}
-	for _, member := range members {
-		if member.Mode != "proxy" {
-			continue
-		}
-		state, err := npmCatalogRetrieval(ctx, tx, member.Name, name)
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, errNPMSearchCatalog
-		}
-		if err != nil {
-			return nil, err
-		}
-		current := (state.State == "ready" || state.State == "negative") && state.Fresh()
-		stale := state.State == "failed" && member.Settings.Cache.StaleSeconds > 0 && state.StalePermitted()
-		if state.SourceRevision != member.SourceRevision || (!current && !stale) {
-			return nil, errNPMSearchCatalog
-		}
-		known[member.Name] = state
-	}
-	return known, nil
 }
