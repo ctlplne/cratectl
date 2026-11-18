@@ -91,6 +91,14 @@ control bits before checking refusal. Full Windows qualification requires the
 repaired native replay. [Original process failures](evidence/2026-11-18/github-6d41573-first-failures.json)
 [Native replay and fixture repair](evidence/2026-11-18/github-5551f52-windows-fixture-failure.json)
 
+The fixture repair is on `a0e646d`. Its [Windows replay](https://github.com/ctlplne/cratectl/actions/runs/44297755759)
+and six baseline workflows are recorded in the [original run inventory](evidence/2026-11-18/github-a0e646d-started.json).
+The earlier campaigns retain their original job IDs and outcomes.
+
+The [partial `6d41573` snapshot](evidence/2026-11-18/github-6d41573-original-partial.json)
+retains 21 safe members and the outstanding original native jobs. Full campaign
+acceptance remains open.
+
 ## Go security patch
 
 Govulncheck reported GO-2026-6859 against the Go 1.27.3 source configuration

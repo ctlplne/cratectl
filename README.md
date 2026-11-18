@@ -115,9 +115,12 @@ python3 scripts/dev.py make integration
 make conformance
 ```
 
-Integration tests require the real database and fail when it is absent.
-Conformance needs native npm, twine/pip, ORAS and Maven/JDK in the paths recorded
-in `scripts/conformance.py`; client installation is operator-supplied. The separate
+Integration tests require real PostgreSQL. The complete integration gate also
+requires Linux and permission to create the empty network namespaces used by
+the Go offline-client controls. Use GitHub CI for those controls on macOS.
+Baseline conformance needs native npm, twine/pip, ORAS, Maven/JDK and the .NET
+SDK version pinned in `global.json`. The harness expects the client paths
+described in `scripts/conformance.py`. The separate
 `scripts/conformance_installation.py` journey starts from an empty database and
 uses the initializer and verified TLS. Neither test installs a blank machine. Each run creates private fixtures,
 starts/stops its own server and retains a sanitized evidence JSON. Assertions
