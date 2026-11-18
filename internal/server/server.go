@@ -756,6 +756,10 @@ func (s *Server) raw(w http.ResponseWriter, r *http.Request, i store.Identity, r
 	}
 	if repo.Format == "maven" {
 		metadataPath, metadataAlgorithm := splitMavenChecksumPath(p)
+		if strings.HasPrefix(metadataPath, mavenIndexBase+".") {
+			s.serveMavenIndex(w, r, i, repo, metadataPath, metadataAlgorithm)
+			return
+		}
 		if path.Base(metadataPath) == "maven-metadata.xml" && (r.Method == "GET" || r.Method == "HEAD") {
 			s.serveMavenMetadata(w, r, i, repo, metadataPath, metadataAlgorithm)
 			return

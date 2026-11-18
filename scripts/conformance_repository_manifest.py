@@ -397,6 +397,11 @@ def evaluate(args):
             report['oci_repository_catalog'] = evaluate_oci_catalog(
                 work, app, authority, args.oci_catalog_client.absolute(), public_env, call, api, restart_server, sha,
                 cached=args.oci_catalog_cached)
+        if args.maven_index_reader:
+            from maven_index_fixture import hosted_maven_index
+
+            report['maven_index'] = hosted_maven_index(work, app, authority, args.maven_index_java.absolute(),
+                                                      args.maven_index_reader.absolute(), public_env, call, api, restart_server, sha)
         if args.npm_search:
             from npm_search_fixture import evaluate_cached_search, evaluate_search
 
@@ -484,6 +489,8 @@ def evaluate(args):
     if args.oci_catalog_cached:
         print(f"PASS: {len(report['oci_repository_catalog']['cached']['checks'])} stock ORAS cached repository catalog checks")
         print(f"PASS: {len(report['oci_repository_catalog']['cached']['groups']['checks'])} stock ORAS ordered group catalog checks")
+    if args.maven_index_reader:
+        print(f"PASS: {len(report['maven_index']['checks'])} stock Apache Maven Indexer checks")
     if args.npm_search:
         print(f"PASS: {len(report['npm_search']['checks'])} stock hosted npm search checks")
         print(f"PASS: {len(report['npm_cached_search']['checks'])} stock cached npm search checks")
@@ -624,6 +631,8 @@ if __name__ == '__main__':
     parser.add_argument('--oci-catalog-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--oci-catalog-cached', action='store_true',
                         help='also exercise the scoped cached proxy and ordered OCI group discovery fixture')
+    parser.add_argument('--maven-index-reader', type=Path, help='the pinned Apache Maven Indexer Reader JAR')
+    parser.add_argument('--maven-index-java', type=Path, help='the JDK 21 executable for the stock index reader')
     parser.add_argument('--npm-search', action='store_true',
                         help='also verify npm hosted and cached search using stock clients')
     parser.add_argument('--npm-search-ci-architecture', choices=('amd64', 'arm64'))
@@ -636,6 +645,11 @@ if __name__ == '__main__':
                         help='also fetch a pinned dependency graph from the public crates.io index and CDN')
     parser.add_argument('--legacy-cargo-daemon', type=Path)
     options = parser.parse_args()
+    if bool(options.maven_index_reader) != bool(options.maven_index_java):
+        parser.error('the Maven index profile requires both the JDK and stock index reader')
+    if options.maven_index_reader and (options.ci_architecture or options.cargo_ci_architecture or options.npm_search_ci_architecture
+                                        or options.python_search_ci_architecture or options.oci_catalog_ci_architecture):
+        parser.error('Maven index evidence uses its own stock profile')
     if options.oci_catalog_client and (options.ci_architecture or options.cargo_ci_architecture
                                        or options.npm_search_ci_architecture or options.python_search_ci_architecture):
         parser.error('OCI repository catalog uses its own stock evidence profile')
