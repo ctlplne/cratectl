@@ -1913,8 +1913,9 @@
       "id": "J.CARGO.HOSTED",
       "capability": "FMT.CARGO.HOSTED",
       "state": "implementing",
-      "candidate": "910359d7e5f8dc72059724b5e61c4d377a42630c",
+      "candidate": "d2ee434a14324a09fd081818811b21dc6d426e77",
       "evidence": [
+        "evidence/2026-11-19/github-d2ee434-schema19-native.json",
         "evidence/2026-11-19/cargo-910359d-historical-adoption-native.json",
         "evidence/2026-11-19/github-51b0953-cargo-expanded-native.json",
         "evidence/2026-11-19/cargo-fa6b4f7-ownership-native.json",
@@ -1927,8 +1928,8 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Scoped stock Cargo 1.100.0 schema 19 ownership evidence on macOS ARM64 with PostgreSQL 16.16. Repository grants apply on every mutation and the last owner remains protected.",
-      "next_action": "Qualify schema 19 with both native Linux architectures and complete remaining platform, scaling, and format cases."
+      "limits": "Scoped stock Cargo 1.100.0 schema 19 ownership evidence on macOS ARM64 with PostgreSQL 16.16. Repository grants apply on every mutation and the last owner remains protected. Both native Linux architectures also passed the 32 current schema 19 Cargo checks in the original d2ee434 campaign.",
+      "next_action": "Finish remaining environments, legacy Git discovery, interrupted transfers and representative concurrency."
     },
     {
       "id": "J.CARGO.PROXY",
@@ -1946,15 +1947,19 @@
     {
       "id": "J.CARGO.GROUP",
       "capability": "FMT.CARGO.GROUP",
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
+      "state": "implementing",
+      "candidate": "139041dd0e45c1da610f4ee4bdbad8682c02864c",
+      "evidence": [
+        "evidence/2026-11-19/cargo-139041d-groups-native.json"
+      ],
       "required": [
         "publish/consume exact bytes where applicable",
         "permissions/tenant isolation",
         "policy denial",
         "failure/recovery"
-      ]
+      ],
+      "limits": "Stock Cargo 1.100.0 on macOS ARM64 and live PostgreSQL 16.16 verify nine hosted group journeys and two current-source rechecks. Proxy members and group search are separate. Native Linux, tenant collision, concurrent and interrupted transfer qualification remain open.",
+      "next_action": "Qualify hosted groups on both native Linux architectures and extend the matrix to proxy source precedence, cross-tenant collision and interrupted/concurrent transfers."
     },
     {
       "id": "J.CARGO.REPLICATION",

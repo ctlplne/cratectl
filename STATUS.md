@@ -461,11 +461,25 @@ on schema 18. The upgrade retained all 18 prior receipts, the original index,
 and the journal checkpoint. After explicit ownership adoption, stock Cargo
 fetched the original archive. Both earlier `51b0953` native Linux jobs
 passed all 22 expanded Cargo checks against their installed PostgreSQL 16.15.
-Schema 19 coverage on both Linux architectures, legacy Git discovery, proxy,
-group, and cross-repository search remain open.
+Both original `d2ee434` Linux architectures passed 32 stock Cargo and 19
+declarative checks on schema 19 with 32 independently matched source hashes
+each. The x64 runner used PostgreSQL 16.16. The ARM64 runner used 16.15.
+Both original Compose and signed-media jobs independently asserted PostgreSQL
+16.16 on each architecture. This checkpoint retains eight original jobs across
+Cargo, Compose, signed media and the provider. Whole-campaign acceptance is pending.
 [Native Cargo ownership evidence](evidence/2026-11-19/cargo-fa6b4f7-ownership-native.json)
 [Stock Cargo historical adoption evidence](evidence/2026-11-19/cargo-910359d-historical-adoption-native.json)
 [Original expanded Linux Cargo evidence](evidence/2026-11-19/github-51b0953-cargo-expanded-native.json)
+[Original schema 19 Linux evidence](evidence/2026-11-19/github-d2ee434-schema19-native.json)
+
+Exact source `139041d` passed nine new read-only group journeys with stock
+Cargo 1.100.0 and PostgreSQL 16.16 on macOS ARM64. The first source that
+retains a crate controls its whole namespace. Current member grants and the
+group review policy apply. Two independent PostgreSQL cases exercised the
+last source check before delivery when a new preferred source appeared.
+Native Linux groups, proxy members, tenant collision, interrupted transfers,
+broader concurrency, legacy Git discovery and cross-repository search remain open.
+[Native hosted group evidence](evidence/2026-11-19/cargo-139041d-groups-native.json)
 
 The independent `b88d397` schema 18 daemon and stock ORAS 1.3.6 passed
 122 controlled upgrade checks against `910359d` on macOS ARM64 with

@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "profile": "cratectl-native-offline-media-v1",
+  "candidate": "d2ee434a14324a09fd081818811b21dc6d426e77",
+  "runner_os": "Linux",
+  "runner_arch": "ARM64",
+  "run_id": "44375185654",
+  "source_dirty": false,
+  "status": "passed",
+  "runtime_phases": [
+    {
+      "phase": "fresh",
+      "checks": [
+        "only-loopback-in-imported-image-namespace",
+        "native-linux-arch-nonroot-client",
+        "verified-native-cli-archive",
+        "imported-registry-trusted-tls",
+        "registry-empty-after-imported-bootstrap",
+        "private-stock-npm-input",
+        "stock-npm-published-to-imported-image",
+        "unassessed-package-refused",
+        "exact-approved-package-downloaded",
+        "imported-worker-completed-durable-intents"
+      ],
+      "artifact_digest": "23a9755ef0cbc6433cf0ed504222d1be8341a022a5d12efe4d97fb5c06357abd",
+      "npm": "10.9.9"
+    },
+    {
+      "phase": "restarted",
+      "checks": [
+        "only-loopback-in-imported-image-namespace",
+        "native-linux-arch-nonroot-client",
+        "verified-native-cli-archive",
+        "imported-registry-trusted-tls",
+        "private-stock-npm-input",
+        "registry-restart-retains-approved-reference",
+        "fresh-cache-installs-identical-bytes-after-restart"
+      ],
+      "artifact_digest": "23a9755ef0cbc6433cf0ed504222d1be8341a022a5d12efe4d97fb5c06357abd",
+      "npm": "10.9.9"
+    }
+  ],
+  "checks": [
+    "verified-signed-media",
+    "wrong-trust-refused",
+    "changed-image-refused",
+    "both-tags-absent-before-load",
+    "both-loaded-image-ids-exact",
+    "blank-imported-database",
+    "imported-bootstrap",
+    "scoped-imported-runtime",
+    "deployed-image-ids-exact",
+    "no-published-ports"
+  ],
+  "image_configuration_sha256": {
+    "postgres": "sha256:dc638cdfb3aa32b6ff16a84de36d866b2c9f1089da8b6f23b060f874d3e1e8ce",
+    "registry": "sha256:b72fe60fce5a446aca4a77962e101cd1bf1861d3dc9a38acae63056b1a3c0865"
+  },
+  "manifest_sha256": "2b041d978efdf9a2012019393c3c48ac373505b4c8682b53f3ec1d8f0da4e4b4",
+  "archive_sha256": "3129bc958414c550de13712871e5bc064c6e4cf5a70adaf5dc9d409ca42a7915",
+  "source_sha256": {
+    ".github/workflows/offline-media.yml": "d0297d17865fa8bbffbc3138648f239a58a3204fc897d4444b509e8f8c15a699",
+    "scripts/ci/offline_media_evidence.py": "c9a5bb3ec8e48f7737345020e405a909445ec743e268211a8b4d240429ca13f5",
+    "scripts/ci/bootstrap_oci_clients.sh": "2359f9ca1bedd4ad10471e0dca4fde998b9a6545ca9e8507ac31dd3a0cb8bee8",
+    "scripts/ci/fetch_archive.py": "d0fde9da29964255004e6e71ecdac1a807fb60fe2c211520576dfca9d96f747a",
+    "scripts/conformance_offline_media.py": "07f071811134cc1b5bc016b83c964572e4ecaf2320be9eb2ef8736ac2baf631a",
+    "scripts/fixtures/offline-media/client.py": "2c0e326fb9f2e75e1775010526b8421f8efcd44c5b174be14ada19a2f5191a7f",
+    "scripts/linux_offline_media.py": "ef88c7858faca709bcac68ff5a92e4207f58518c6bdf3ba1f0468b9f05f4afad",
+    "scripts/linux_candidate_sbom.py": "c39082815697dd93ceaed169eec983e15cb56203b751034918c4b6e2acc0af99",
+    "scripts/install_linux_candidate.py": "e842079260344fe1716a6554a41b15bde1e9d5baa2d1f3fd200d022d6dc92d82",
+    "scripts/verify_linux_candidate.py": "546e7f27f9a0b516030ec2953ff2dc952f5d3972510d29c9b1f2794cf45ab29b",
+    "scripts/package_linux.py": "eec3c6b3aa3e8b363eff31904a05e0167b034fe5e521b008b905b235158ad40f",
+    "scripts/compose_evaluation.py": "b48f6f83dc7acff5a96a7370463936a1187b920ae41346a993d076e62e2c02d2",
+    "scripts/bounded_client.py": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098",
+    "deploy/compose/Dockerfile": "e5d11f064b510d85df9e23d1db5e432333f7603552a81db2a12a255b45074580",
+    "deploy/compose/.dockerignore": "58df9be21fe103363e21e3668616cbd31f287757ecc94c726c57e0412f119eb8",
+    "deploy/compose/compose.yaml": "770ddc19390a91466185db231de12c24cf99b15f602c137f7875cc7af2325124",
+    "deploy/compose/init-database.sql": "961493f009c9722cc3b048a7c7cf1e22a5f31d31cd352853fbcb034a55db3ba1",
+    "deploy/helm/cratectl/Chart.yaml": "7ec56fd4ff1782b08ac464d5516a9a9737c73df4a77a5f4c3595bca40e8b64d5",
+    "deploy/helm/cratectl/values.yaml": "e6f3b2d1e458bb58fd70d00ee87256db166309676be5a30adb2c5ad4b470a6f1",
+    "deploy/helm/cratectl/values.schema.json": "60a83f9c7f90d5ce2088a3b24ba615a0923b335e468581105d01f38d127aa25c",
+    "deploy/helm/cratectl/templates/_helpers.tpl": "1129bed66124269c99ec0fa635d4614116eeb0032ba637ab4d0c9b45ae004ff6",
+    "deploy/helm/cratectl/templates/deployment.yaml": "d8575a7de8d4ef41ffb0fc081414d933c4a487c26ea7827f7bf3c9e666300a11",
+    "deploy/helm/cratectl/templates/service.yaml": "20b835693b1b40d0dd7fd1a4bc1e3985a976af45f60b256f8c1a33edc8c3d714",
+    "deploy/helm/cratectl/templates/worker-identities.yaml": "30f05decba916389255985b0c35a440df56dd9bb6de90f831ee91c7d80368c49",
+    "Makefile": "12f2a8b5cfbc2f322822b82e4446f51ff017374acab1f3a8921db8cc8e833bf6",
+    "go.mod": "1d4aecc2732cd54db4534e0afc862ffe14d5c24890f106008682fd9bbc8e5ba9",
+    "go.sum": "5e364e4e1eff09d8d39617427d7775012304b09a7be26778dc2b46fdabae3f15",
+    "scripts/qualification_contract.py": "c40a9d0209a9dc1fb9838f49cdb316ad5a762d45c0359b97fce156746564e5ba"
+  },
+  "forced_tenant_tables": 59,
+  "database_schema": 19,
+  "goal_complete": false,
+  "broad_readiness": false
+}

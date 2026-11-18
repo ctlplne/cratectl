@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "candidate": "139041dd0e45c1da610f4ee4bdbad8682c02864c",
+  "status": "passed",
+  "observed_at": "2026-11-19T00:41:49.790721+05:30",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "cargo": "cargo 1.100.0 (3acc79c0c 2026-11-05)",
+  "base_checks": 19,
+  "cargo_checks": 41,
+  "new_group_cargo_checks": 9,
+  "binary_sha256": {
+    "cratectl": "653e39a3a5356573c014053548b5c5d183a0c397ed1aa8194737b5d04f88eda7",
+    "cratectld": "bad5f1ccaf6d941655944261a07d8154096392710ca039bbca2d03d6402ba72a",
+    "cargo": "ad0566b5b484db86c6787b2c77d96c753c31193b23f36d121a334ecadaf6c788",
+    "rustc": "574f8ce13814c332aa5e63445f68ce7fee7c506f802d6135194731d2ae8370ad"
+  },
+  "archive_sha256": {
+    "cratectl-cargo-leaf": "9bd109fedaaa1ecf8bd8900aa95685a3e7cc379a3e638a14d767fbacf84a64ec",
+    "cratectl-cargo-root": "cdbb46a6cf40487a8ce7d827ca7117998a8abfd4777ad262e990d37e46c7578c",
+    "cratectl-cargo-root-1.10.0": "2906a22d98a1226e42403f19180a5d204e636544a6216102b92691fe0434b661",
+    "group-preferred": "732975231f9711d08c027e58140d0522fd1442e50ca7d3f481d67e701cc04ad6",
+    "group-duplicate": "d59c67ad8fab5bab2103a85ff6cceb9362ba7158ac78ae774297160015cdbae8",
+    "group-lower-only": "e1b291ec1027dabbcd469ccc025849f226a52c565e28e2671eee08df3763992f"
+  },
+  "stock_client_summary": {
+    "path": "evidence/2026-11-19/cargo-139041d-groups-native-summary.json",
+    "bytes": 6205,
+    "sha256": "9b224f69ada704256cb5738c0a40d73a43149625596838e0341c9ccf1cd847aa",
+    "original_sha256": "b8614c2f5204b6c39af93d98a8b39004e7644aa5f6259e60365c53019288dcc8",
+    "redaction": "Omitted the private fixture directory."
+  },
+  "real_postgresql_response_checks": {
+    "function": "TestCargoGroupServingRechecksFirstMemberBeforeHeaders",
+    "passed_subtests": [
+      "new-servable-source",
+      "new-unassessed-source"
+    ],
+    "raw_output_sha256": "165c01e411c654bf8df556b87dcf862d261d39a15e8b8b0e57e53cf7c22cca8c",
+    "raw_output_bytes": 554,
+    "skipped": 0
+  },
+  "source_sha256": {
+    ".github/workflows/cargo.yml": "b7523536bdd22f486dbf5f72023421c26787ed4b36b239e910c904242840243a",
+    "docs/operator/cargo.md": "f3689635e5d9ca514904cbc4f42eaa008e0377b4f4bfe771a2736c317337f1ae",
+    "internal/consoleui/dist/assets/console-45OAZVCK.js": "c101c02f2a1a5221acbcc4c3a16552f7957703d9820dd89c2291d975cdd4fe94",
+    "internal/consoleui/dist/index.html": "dfd2b1d5f24c3933d1871585b04ab39f6df56475a670350c4d7dccab0e06ddf8",
+    "internal/server/cargo.go": "ab4a746b88f2fc97acba35136bcd6bc61f19781b6ec1314595089e5476f458e0",
+    "internal/server/cargo_group_integration_test.go": "ec8d65d1c0bd37af5217e3f8c351522deb87564db6777db1e8b339f534fdebb4",
+    "internal/server/resolve.go": "51baac3dec76f4f5dc497dda8181c24b81bc9c27faee9ff3aca51336b8c240b6",
+    "internal/server/server.go": "9c2e99c6943c31559f9c0930142d992b4c290a6dfcd748d859b0dd7de499ccc2",
+    "internal/store/cargo.go": "f0a6f0a89a301422b2c333377abd56104e97a6904b5dbe0ef220821bc3a67d3f",
+    "internal/store/cargo_selection.go": "f37900421ec5e8976d297281c97e261c9ecff3b5bac93ae63154f266c2cd1f6f",
+    "internal/store/repository.go": "47168fc4b74b581abdede0f165d9514d27f9817eb0fa4a4714a32002854917be",
+    "scripts/cargo_group_fixture.py": "e6e736d8df516fea151d96364137b0197c501d5aa3aede38276cca8e248c0508",
+    "scripts/cargo_hosted_fixture.py": "8feaede986a4b8990c7cc5aa2464137d3c24aaac859aa58ce030eed4eda55020",
+    "scripts/ci/cargo_evidence.py": "850dc7a0fa881edd5c5f74619f0a8d78fc4771fcc45f63388c4dc394b06ff7d4",
+    "scripts/ci/test_cargo_evidence.py": "f6577b0b2e52081a60e77f8ea3914818836e41ab20d7e28ab275b8c88395efec",
+    "scripts/conformance_repository_manifest.py": "ec53354de9a9fb25c2f6ceaa3b7bc27f01297643c7ce50f1aa3dd5b6943358c9",
+    "web/build-manifest.json": "edf3699ded79d5fdd06b0dedd94e17496a764c4de081c7f27c6d7811c952d231",
+    "web/src/repositories.tsx": "3d2d7d2d758607ba65181bd1b86de1f16b14fab9dae0b23dab28c515d8c815c9"
+  },
+  "limits": [
+    "Both local runs used isolated PostgreSQL 16.16 clusters with loopback listeners.",
+    "The stock journey covers authenticated read-only groups of hosted sources. Uploads, origin fetch and search through the group remain outside this profile.",
+    "Native Linux group jobs, concurrent reads at scale and interrupted connections require independent evidence."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}
