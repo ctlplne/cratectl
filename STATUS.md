@@ -221,10 +221,17 @@ The repaired full local Compose journey passed all 20 checks at `675177f`.
 The same commit is running its first native Compose dispatch alongside the six
 baseline push workflows. [Repaired local replay](evidence/2026-11-18/compose-675177f-arm64-local.json)
 [Original dispatch inventory](evidence/2026-11-18/github-675177f-started.json)
-The first GitHub x64 job passed all 20 checks using Compose 2.38.2. Its
-unchanged report matches the original artifact digest and all 12 source hashes
-match the candidate. The ARM64 job was still queued at this checkpoint.
-[Native x64 result](evidence/2026-11-18/github-675177f-compose-native-amd64.json)
+Both original GitHub jobs passed all 20 checks using Compose 2.38.2. The
+unchanged reports match their artifact digests, and all 12 source hashes in
+each report match the candidate. PostgreSQL reported 57 forced-RLS tenant
+tables on each architecture.
+[Native x64 and ARM64 results](evidence/2026-11-18/github-675177f-compose-native.json)
+The original `0f77078` campaign has 18 terminal jobs across six workflows,
+with 16 passes and the two retained Compose failures. Five workflows at
+`675177f` have 10 terminal passes. The main CI workflows and the latter JVM
+workflow were still active at these checkpoints.
+[Original terminal families](evidence/2026-11-18/github-0f77078-original-terminal-families.json)
+[Repaired candidate terminal families](evidence/2026-11-18/github-675177f-original-terminal-families.json)
 
 At `b910da7`, two builds produced identical local binary archives for Linux
 x64 and ARM64. Independent inspection matched all four ELF machines and
@@ -239,6 +246,13 @@ and both enclosed Linux archives. The wrong public key, changed checksum list
 and changed archive were refused. Production signing authority and release
 approval remain open.
 [External signature evidence](evidence/2026-11-18/linux-candidate-signed-checksums-5fd3edd.json)
+
+The Linux installer verifies the separately trusted compressed digest and the
+native architecture before publishing both executable files and their manifest
+in an owner-only directory. Its first isolated test stopped on administratively
+down kernel tunnel devices. The corrected network check accepted the isolated
+target and refused the test bridge with an active Ethernet device.
+[Original isolation check](evidence/2026-11-18/linux-install-36d9db1-network-first-failure.json)
 
 The packaged Helm chart passed 13 deployment checks at `f245757` on an
 isolated ARM64 Kubernetes 1.35 cluster. Restricted Pod Security admitted the
@@ -261,7 +275,7 @@ binaries. New binaries stay.cache; ignored.private0700/.cache and originals rema
 Complete remaining workspace/local immutable inputs, package/platform/permission/
 provenance closure, private hosted/proxy/group precedence and authority, current
 scan/import/server-session/operator/console outcomes, lifecycle/physical GC,
-providers/Windows writes and collection locks, hosted Linux ARM64 Compose, production
+providers/Windows writes and collection locks, production
 Helm and disconnected install,
 backup/HA/scale/soak and all450/41/14case/7environment/later scope. External legal,
 licensed-comparator and capacity inputs block only their rows. Strict0126 and

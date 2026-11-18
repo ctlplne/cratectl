@@ -1,0 +1,1092 @@
+{
+  "candidate": "675177fce305fb4dd4e66dc8a72e7cb9e959000c",
+  "event": "mixed",
+  "run_selection": {
+    "compose": {
+      "id": 44316166013,
+      "event": "workflow_dispatch",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "upgrades": {
+      "id": 44315431698,
+      "event": "push",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "oci": {
+      "id": 44315431654,
+      "event": "push",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "portable": {
+      "id": 44315431535,
+      "event": "push",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "jvm": {
+      "id": 44315431851,
+      "event": "push",
+      "status": "in_progress",
+      "conclusion": null
+    },
+    "go": {
+      "id": 44315431936,
+      "event": "push",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "main": {
+      "id": 44315431844,
+      "event": "push",
+      "status": "queued",
+      "conclusion": null
+    }
+  },
+  "attempt": 1,
+  "observed_at": "2026-11-18T14:34:00.559879+00:00",
+  "runs": {
+    "compose": 44316166013,
+    "upgrades": 44315431698,
+    "oci": 44315431654,
+    "portable": 44315431535,
+    "jvm": 44315431851,
+    "go": 44315431936,
+    "main": 44315431844
+  },
+  "jobs": [
+    {
+      "family": "compose",
+      "run_id": 44316166013,
+      "id": 134842731304,
+      "name": "Blank Compose registry and stock npm (amd64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/44316166013/job/134842731304",
+      "conclusion": "success",
+      "platform": [
+        "ubuntu-24.04"
+      ],
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Replay blank Compose with real PostgreSQL, TLS and stock npm",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/github-675177f-campaign/134842731304.txt",
+        "bytes": 26026,
+        "sha256": "a61acdcc5fcc0d43c2a98f26480fef2f8c7008ce0506563cd8deab680d0149db"
+      }
+    },
+    {
+      "family": "compose",
+      "run_id": 44316166013,
+      "id": 134842732024,
+      "name": "Blank Compose registry and stock npm (arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/44316166013/job/134842732024",
+      "conclusion": "success",
+      "platform": [
+        "ubuntu-24.04-arm"
+      ],
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Replay blank Compose with real PostgreSQL, TLS and stock npm",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/github-675177f-campaign/134842732024.txt",
+        "bytes": 26826,
+        "sha256": "5cc841d21546ee9b0d5c17b2d39b1bd2d1629c15d6ec00da88b1f053eab743d3"
+      }
+    },
+    {
+      "family": "upgrades",
+      "run_id": 44315431698,
+      "id": 134840146036,
+      "name": "Real PostgreSQL controlled upgrades (arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/44315431698/job/134840146036",
+      "conclusion": "success",
+      "platform": [
+        "ubuntu-24.04-arm"
+      ],
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache pinned public ORAS archive",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare disposable native tools and database",
+          "conclusion": "success"
+        },
+        {
+          "name": "Rebuild and verify every pinned historical native server",
+          "conclusion": "success"
+        },
+        {
+          "name": "Legacy adoption with actual migration process interruption",
+          "conclusion": "success"
+        },
+        {
+          "name": "Retained lifecycle through every schema 2\u201317 upgrade",
+          "conclusion": "success"
+        },
+        {
+          "name": "Repair and recurring integrity upgrades",
+          "conclusion": "success"
+        },
+        {
+          "name": "Retention and scheduled-retirement upgrades",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare bounded upgrade evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache pinned public ORAS archive",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/github-675177f-campaign/134840146036.txt",
+        "bytes": 83556,
+        "sha256": "8b3158ce2450c5f5768cfd75b65ec0f3d44587f4e8abcd314f70a914c6e498bf"
+      }
+    },
+    {
+      "family": "upgrades",
+      "run_id": 44315431698,
+      "id": 134840146491,
+      "name": "Real PostgreSQL controlled upgrades (amd64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/44315431698/job/134840146491",
+      "conclusion": "success",
+      "platform": [
+        "ubuntu-24.04"
+      ],
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache pinned public ORAS archive",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare disposable native tools and database",
+          "conclusion": "success"
+        },
+        {
+          "name": "Rebuild and verify every pinned historical native server",
+          "conclusion": "success"
+        },
+        {
+          "name": "Legacy adoption with actual migration process interruption",
+          "conclusion": "success"
+        },
+        {
+          "name": "Retained lifecycle through every schema 2\u201317 upgrade",
+          "conclusion": "success"
+        },
+        {
+          "name": "Repair and recurring integrity upgrades",
+          "conclusion": "success"
+        },
+        {
+          "name": "Retention and scheduled-retirement upgrades",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare bounded upgrade evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache pinned public ORAS archive",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/github-675177f-campaign/134840146491.txt",
+        "bytes": 82827,
+        "sha256": "83006e7a996fa39aecd35874f4d74b08215db45e6479ba8899557a6bdd0774f9"
+      }
+    },
+    {
+      "family": "oci",
+      "run_id": 44315431654,
+      "id": 134840145786,
+      "name": "Docker, Podman and Helm (arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/44315431654/job/134840145786",
+      "conclusion": "success",
+      "platform": [
+        "ubuntu-24.04-arm"
+      ],
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare isolated PostgreSQL and exact native registry binaries",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache pinned public Helm archive",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify bundled Podman and install checked Helm",
+          "conclusion": "success"
+        },
+        {
+          "name": "Publish and consume with native Docker, Podman and Helm",
+          "conclusion": "success"
+        },
+        {
+          "name": "Encrypt bounded native failure logs for local diagnosis",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache pinned public Helm archive",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/github-675177f-campaign/134840145786.txt",
+        "bytes": 72853,
+        "sha256": "9de173b4479a6cd5dfaeff9ebf8be6ad4791592fb0fce6e09975320a03c2f250"
+      }
+    },
+    {
+      "family": "oci",
+      "run_id": 44315431654,
+      "id": 134840146286,
+      "name": "Docker, Podman and Helm (amd64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/44315431654/job/134840146286",
+      "conclusion": "success",
+      "platform": [
+        "ubuntu-24.04"
+      ],
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare isolated PostgreSQL and exact native registry binaries",
+          "conclusion": "success"
+        },
+        {
+          "name": "Cache pinned public Helm archive",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify bundled Podman and install checked Helm",
+          "conclusion": "success"
+        },
+        {
+          "name": "Publish and consume with native Docker, Podman and Helm",
+          "conclusion": "success"
+        },
+        {
+          "name": "Encrypt bounded native failure logs for local diagnosis",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Cache pinned public Helm archive",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/github-675177f-campaign/134840146286.txt",
+        "bytes": 72418,
+        "sha256": "8d44f7499e70599a6413fd4449b2544073b725a33e0260cacdee189172c444c1"
+      }
+    },
+    {
+      "family": "portable",
+      "run_id": 44315431535,
+      "id": 134840144706,
+      "name": "Real PostgreSQL signed export source (amd64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/44315431535/job/134840144706",
+      "conclusion": "success",
+      "platform": [
+        "ubuntu-24.04"
+      ],
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare isolated PostgreSQL and exact native binaries",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare actual signed source fixture and independent trust-channel digests",
+          "conclusion": "success"
+        },
+        {
+          "name": "Transfer reviewed synthetic fixture only",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare complete common collection and separate trust-channel digests",
+          "conclusion": "success"
+        },
+        {
+          "name": "Transfer reviewed common collection fixture only",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare signed requirement collection and separate trust-channel digests",
+          "conclusion": "success"
+        },
+        {
+          "name": "Transfer reviewed requirement collection fixture only",
+          "conclusion": "success"
+        },
+        {
+          "name": "Seal bounded original command failure for owner",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded source evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/github-675177f-campaign/134840144706.txt",
+        "bytes": 62754,
+        "sha256": "de2498d8b28dede78e901ba37f38adfbb076f2ee1ac9826178a353fad41c46f7"
+      }
+    },
+    {
+      "family": "portable",
+      "run_id": 44315431535,
+      "id": 134856407037,
+      "name": "Independent signed export consumer (arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/44315431535/job/134856407037",
+      "conclusion": "success",
+      "platform": [
+        "ubuntu-24.04-arm"
+      ],
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build exact native consumer without a database service",
+          "conclusion": "success"
+        },
+        {
+          "name": "Receive the exact source artifact",
+          "conclusion": "success"
+        },
+        {
+          "name": "Independently verify, install inert bytes and reject changed inputs",
+          "conclusion": "success"
+        },
+        {
+          "name": "Receive the exact common collection artifact",
+          "conclusion": "success"
+        },
+        {
+          "name": "Independently verify complete common graph and native interruption controls",
+          "conclusion": "success"
+        },
+        {
+          "name": "Receive the exact requirement collection artifact",
+          "conclusion": "success"
+        },
+        {
+          "name": "Independently replay requirement originals and native acknowledgement loss",
+          "conclusion": "success"
+        },
+        {
+          "name": "Seal bounded original command failure for owner",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded destination evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/github-675177f-campaign/134856407037.txt",
+        "bytes": 57781,
+        "sha256": "e2a6b51dcb62504b4c45d27218426a801b31ee92a22645750f6ae39fc118770d"
+      }
+    },
+    {
+      "family": "go",
+      "run_id": 44315431936,
+      "id": 134840147531,
+      "name": "Stock Go hosted and group modules (amd64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/44315431936/job/134840147531",
+      "conclusion": "success",
+      "platform": [
+        "ubuntu-24.04"
+      ],
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare owned PostgreSQL and native binaries",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions with race detector",
+          "conclusion": "success"
+        },
+        {
+          "name": "Trusted TLS stock Go transitive downloads and policy recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Encrypt bounded Go failure observations for owner diagnosis",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/github-675177f-campaign/134840147531.txt",
+        "bytes": 445222,
+        "sha256": "e2661fad2ece9b9311d394240e7c52fa592278ec41e83afd123998c647508855"
+      }
+    },
+    {
+      "family": "go",
+      "run_id": 44315431936,
+      "id": 134840148176,
+      "name": "Stock Go hosted and group modules (arm64)",
+      "url": "https://github.com/ctlplne/cratectl/actions/runs/44315431936/job/134840148176",
+      "conclusion": "success",
+      "platform": [
+        "ubuntu-24.04-arm"
+      ],
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare owned PostgreSQL and native binaries",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real PostgreSQL Go module regressions with race detector",
+          "conclusion": "success"
+        },
+        {
+          "name": "Trusted TLS stock Go transitive downloads and policy recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Encrypt bounded Go failure observations for owner diagnosis",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Prepare bounded native evidence summary",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ],
+      "private_original_log": {
+        "path": ".private/ci-diagnostics/github-675177f-campaign/134840148176.txt",
+        "bytes": 444178,
+        "sha256": "17d70690e3cf02cbd4b96b7b6f90c8dde66bf75fbe8956ff02f5ee5570b6b4e5"
+      }
+    }
+  ],
+  "counts": {
+    "success": 10
+  },
+  "safe_summaries": [
+    {
+      "family": "compose",
+      "path": "evidence/2026-11-18/github-675177f/ci-summary-compose-arm64.json",
+      "bytes": 2409,
+      "sha256": "6358b9d733fd0acaae0097ae9e34950bcb56f407925f3d54e2077a017fe56539",
+      "artifact_id": 14437580877,
+      "archive_sha256": "7ce14012067a3707206d2a75d558a07be93376a3e58f9d691f00da6264f3915d",
+      "records": 1
+    },
+    {
+      "family": "compose",
+      "path": "evidence/2026-11-18/github-675177f/ci-summary-compose-amd64.json",
+      "bytes": 2407,
+      "sha256": "1a6b721cca7b9b07a98ea7e84bccfe3f10cc4052bc08effd606a47e572a83938",
+      "artifact_id": 14435806900,
+      "archive_sha256": "3864d8dd750fd311269d928e205c616e0e73c431ba759e4235a314849a90ca11",
+      "records": 1
+    },
+    {
+      "family": "upgrades",
+      "path": "evidence/2026-11-18/github-675177f/ci-summary-upgrades-arm64.json",
+      "bytes": 37603,
+      "sha256": "4c4e31b2fbd3f60dc144d13f6eddccbdb4ad04666ebf1bb9dc3f6f04a75b26ac",
+      "artifact_id": 14435385223,
+      "archive_sha256": "eba58f301ff044e38ee8caa892186b1ba61f4dbc0354ee999d170c07ca6e7d8d",
+      "records": 22
+    },
+    {
+      "family": "upgrades",
+      "path": "evidence/2026-11-18/github-675177f/ci-summary-upgrades-amd64.json",
+      "bytes": 37601,
+      "sha256": "f53eb67ae341140b2a866d62f72cb0a5165461498b027bedcc1c18b2362017fb",
+      "artifact_id": 14434453137,
+      "archive_sha256": "c74b5517bd280e017d9339ba1d1b1d10d51086f96323f9bce96822329464da66",
+      "records": 22
+    },
+    {
+      "family": "oci",
+      "path": "evidence/2026-11-18/github-675177f/ci-summary-oci-clients-amd64.json",
+      "bytes": 8052,
+      "sha256": "41e2e13a794e157b697a1ebe00e302212f4053efed7da9518ea1d4d2b9915977",
+      "artifact_id": 14433584680,
+      "archive_sha256": "5e0b083ef048a147ac28b182a9dec9f8b5bd3efbd406c1b551d4a8451465ebc1",
+      "records": 1
+    },
+    {
+      "family": "oci",
+      "path": "evidence/2026-11-18/github-675177f/ci-summary-oci-clients-arm64.json",
+      "bytes": 8054,
+      "sha256": "bd9e6277f9b0b95c0ad39f4d97798b37d946f395931a9beef85247f7502ed7fd",
+      "artifact_id": 14433542463,
+      "archive_sha256": "651054c258a2199e5bdc81f908546c8620f7d398484882fc07d9e6dce2b4746c",
+      "records": 1
+    },
+    {
+      "family": "portable",
+      "path": "evidence/2026-11-18/github-675177f/ci-summary-export-portability-consumer.json",
+      "bytes": 17302,
+      "sha256": "f2e6670e34aef444205279aec69cb0a73e337d4164f41e23c82288a17a22b467",
+      "artifact_id": 14436321336,
+      "archive_sha256": "2f7c5ce7f58845114c3d139aad38f088c7888d6286546c09b7cb566ae69e4604",
+      "records": 3
+    },
+    {
+      "family": "portable",
+      "path": "evidence/2026-11-18/github-675177f/ci-summary-export-portability-producer.json",
+      "bytes": 14821,
+      "sha256": "8029f3d0334d8c7c18d16a3a283f6ff483318d042ed79e96d0989f58ab72e2ae",
+      "artifact_id": 14435065452,
+      "archive_sha256": "9370968899baefa33c22f66c486e9845b90a9060685d7f666abad9b7a242ceef",
+      "records": 3
+    },
+    {
+      "family": "go",
+      "path": "evidence/2026-11-18/github-675177f/ci-summary-go-module-amd64.json",
+      "bytes": 11285,
+      "sha256": "61ae4d2bce8c142b8772bd7adb2a43811b1446fd0b7a6879b3a95a5112137a7c",
+      "artifact_id": 14435209094,
+      "archive_sha256": "c2f161737dde36f46bc8b3e806126e560da87287b30ed7376e768b5d14bc8a0e",
+      "records": 1
+    },
+    {
+      "family": "go",
+      "path": "evidence/2026-11-18/github-675177f/ci-summary-go-module-arm64.json",
+      "bytes": 11287,
+      "sha256": "bb157d5f81e36206a09065ca149dd98ae3df2d8222242d385e8ffea08359cfbe",
+      "artifact_id": 14434397988,
+      "archive_sha256": "c72b3abe442bcf3f071d1da99d475b5b5b6baa5516e89d9fafe024bd1a65fdf2",
+      "records": 1
+    }
+  ],
+  "safe_summary_count": 10,
+  "safe_report_count": 56,
+  "portable_transfer_artifacts": [
+    {
+      "id": 14435595356,
+      "run_id": 44315431535,
+      "name": "cratectl-owned-go-requirement-export-fixture",
+      "digest": "sha256:b8f4dbe25bf01793965b1eb4afe1d283042f0fc846deaa3fd146424ae1e1e559",
+      "bytes": 189357
+    },
+    {
+      "id": 14433967211,
+      "run_id": 44315431535,
+      "name": "cratectl-owned-go-common-export-fixture",
+      "digest": "sha256:372d4c4978aae56fff8af0b26845eb49534cc04756f837c2b6d5ee1a04bc306d",
+      "bytes": 16146
+    },
+    {
+      "id": 14433158582,
+      "run_id": 44315431535,
+      "name": "cratectl-owned-go-export-fixture",
+      "digest": "sha256:e7ef7e81d01c4330b25f20a7958aef3cd19816298de660c6f1f4506a4d1763d4",
+      "bytes": 5181
+    }
+  ],
+  "whole_accepted": false,
+  "goal_complete": false,
+  "broad_readiness": false
+}

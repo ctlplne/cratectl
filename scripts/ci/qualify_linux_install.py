@@ -39,6 +39,19 @@ def archive(directory, architecture):
     return directory / f'cratectl-linux-{architecture}.tar.gz'
 
 
+def only_loopback():
+    devices = Path('/sys/class/net')
+    flags = {name: int((devices / name / 'flags').read_text(), 16) for _, name in socket.if_nameindex()}
+    # Some kernels expose default, administratively down tunnel devices in
+    # every network namespace. Check IFF_UP and both kernel route tables.
+    active = {name for name, value in flags.items() if value & 0x1}
+    ipv4 = Path('/proc/net/route').read_text().splitlines()[1:]
+    ipv6 = Path('/proc/net/ipv6_route').read_text().splitlines()
+    return (active == {'lo'} and flags['lo'] & 0x8 != 0
+            and all(row.split()[0] == 'lo' for row in ipv4)
+            and all(row.split()[-1] == 'lo' for row in ipv6))
+
+
 def qualify_inside(architecture, candidate, expected, other_digest):
     machine, runner = MACHINES[architecture]
     checks = []
@@ -49,8 +62,7 @@ def qualify_inside(architecture, candidate, expected, other_digest):
 
     check('nonroot-native-linux', os.geteuid() == 65532 and platform.system() == 'Linux'
           and platform.machine() == machine)
-    check('only-loopback', {name for _, name in socket.if_nameindex()} == {'lo'}
-          and all(line.split()[0] == 'lo' for line in Path('/proc/net/route').read_text().splitlines()[1:]))
+    check('only-loopback', only_loopback())
     with tempfile.TemporaryDirectory(prefix='cratectl-linux-install-') as folder:
         target = Path(folder)
         safe = target / 'installations'
@@ -133,13 +145,19 @@ def replay(architecture):
             path.chmod(0o644)
             hashes[arch] = digest(path)
         other = 'arm64' if architecture == 'amd64' else 'amd64'
-        result = command('docker', 'run', '--rm', '--pull=never', '--platform=linux/' + architecture,
-                         '--name=cratectl-linux-install-' + secrets.token_hex(6), '--network=none', '--read-only',
-                         '--cap-drop=ALL', '--security-opt=no-new-privileges', '--pids-limit=64',
-                         f'--user={remote_user}:{remote_user}', '--tmpfs=/tmp:rw,nosuid,nodev,exec,size=384m,mode=1777',
-                         '--mount=type=bind,source=' + str(inputs) + ',destination=/input,readonly',
-                         IMAGE, 'python3', '-B', '/input/scripts/ci/qualify_linux_install.py',
-                         architecture, '--inside', candidate, hashes[architecture], hashes[other], timeout=180)
+        container = 'cratectl-linux-install-' + secrets.token_hex(6)
+        try:
+            result = command('docker', 'run', '--rm', '--pull=never', '--platform=linux/' + architecture,
+                             '--name=' + container, '--network=none', '--read-only',
+                             '--cap-drop=ALL', '--security-opt=no-new-privileges', '--pids-limit=64',
+                             f'--user={remote_user}:{remote_user}', '--tmpfs=/tmp:rw,nosuid,nodev,exec,size=384m,mode=1777',
+                             '--mount=type=bind,source=' + str(inputs) + ',destination=/input,readonly',
+                             IMAGE, 'python3', '-B', '/input/scripts/ci/qualify_linux_install.py',
+                             architecture, '--inside', candidate, hashes[architecture], hashes[other], timeout=180)
+        except (OSError, RuntimeError, ValueError):
+            # A killed docker client may leave its container running.
+            run_owned_client(['docker', 'rm', '-f', container], ROOT, os.environ, timeout=20, output_limit=32 << 10)
+            raise
     report = {**json.loads(result), 'schema': 1, 'profile': 'cratectl-native-linux-install-v1',
               'candidate': candidate, 'run_id': os.environ.get('GITHUB_RUN_ID'), 'runner_os': 'Linux',
               'status': 'passed', 'source_dirty': False, 'python_image': IMAGE,

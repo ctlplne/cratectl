@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "candidate": "36d9db1d59d1243a42e2fb197d7b18d0dc919bbb",
+  "observed_at": "2026-11-18T14:34:35.154844+00:00",
+  "platform": "Linux ARM64 Docker Engine on macOS",
+  "initial_outcome": "failed before installation",
+  "original_failure": "isolated Linux installation check failed: only-loopback",
+  "observed": "This kernel exposes nine default tunnel devices even with Docker network none. Every tunnel was administratively down. There were no IPv4 routes and the only IPv6 device with route entries was lo.",
+  "controls": {
+    "network_none": "Accepted with only the loopback device up.",
+    "separate_internal_bridge": "Refused after eth0 was up."
+  },
+  "logs": {
+    "network-control-cratectl-linux-install-bridge-c0": {
+      "private_log": ".private/cratectl-linux-install-36d9db1/network-control-cratectl-linux-install-bridge-c0.txt",
+      "bytes": 228,
+      "sha256": "b4d06119ba36422e0219f7f75a8db2220d8f33328fb360e323156e97dc2c8908"
+    },
+    "network-control-none": {
+      "private_log": ".private/cratectl-linux-install-36d9db1/network-control-none.txt",
+      "bytes": 209,
+      "sha256": "c0da3157a8bc06256522911210664a3015c02d6a38e5bdad1dd28f463938398d"
+    },
+    "only-loopback-probe": {
+      "private_log": ".private/cratectl-linux-install-36d9db1/only-loopback-probe.txt",
+      "bytes": 1205,
+      "sha256": "b2c2059636aefb4b61371b7e11b946f03d88f82db2d63967496291db6bcfd56a"
+    }
+  },
+  "goal_complete": false,
+  "broad_readiness": false
+}

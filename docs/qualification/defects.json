@@ -1701,12 +1701,20 @@
     {
       "id": "DEFECT.0159",
       "summary": "The hosted Compose renderer resolves service credential inputs despite the no-environment-resolution option",
-      "state": "Both first hosted jobs failed the safe render check. The original logs and Compose 2.38.2 comparison with inert data are retained. The repaired local render and all 20 local checks pass at 675177f. The first hosted replay is queued.",
+      "state": "Both first hosted jobs failed the safe render check. The original logs and Compose 2.38.2 comparison with inert data are retained. All 20 checks passed in the original repaired GitHub jobs on both Linux architectures at 675177f.",
       "first_failure": "evidence/2026-11-18/github-0f77078-compose-render-failure.json",
       "both_original_failures": "evidence/2026-11-18/github-0f77078-compose-original.json",
       "local_replay": "evidence/2026-11-18/compose-675177f-arm64-local.json",
-      "hosted_replay": "evidence/2026-11-18/github-675177f-started.json",
+      "hosted_replay": "evidence/2026-11-18/github-675177f-compose-native.json",
       "repair": "Render, build, clean up and start runtime services with empty environment files. Supply separate private inputs only when starting PostgreSQL or the one-shot initializer."
+    },
+    {
+      "id": "DEFECT.0160",
+      "summary": "The disconnected Linux installation fixture treats administratively down kernel tunnels as active links",
+      "state": "Original ARM64 fixture refusal retained. A scope-matched Docker comparison passed with only loopback active and refused a separate internal bridge with active Ethernet.",
+      "first_failure": "evidence/2026-11-18/linux-install-36d9db1-network-first-failure.json",
+      "repair": "Require only the loopback interface to be administratively up and require all IPv4 and IPv6 route entries to use that interface.",
+      "limits": "The original fixture stops before running the installer. Separate native installation replays are required."
     }
   ]
 }
