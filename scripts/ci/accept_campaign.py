@@ -22,6 +22,7 @@ from oci_repository_catalog_evidence import (CACHED_CHECKS as OCI_CACHED_CHECKS,
                                              GROUP_CHECKS as OCI_GROUP_CHECKS, cached_selected as oci_cached_selected)
 from maven_index_evidence import (CACHED_CHECKS as MAVEN_CACHED_CHECKS, GROUP_CHECKS as MAVEN_GROUP_CHECKS,
                                   MAVEN_INDEX_CHECKS, cached_selected as maven_cached_selected)
+from nuget_proxy_evidence import CHECKS as NUGET_PROXY_CHECKS
 from campaign_transport import (EvidenceError, GitHubEvidenceClient, LOG_BYTES,
                                 REPOSITORY, artifact_json, require, strict_json)
 
@@ -231,6 +232,9 @@ def check_log(raw, spec, source):
             require(text.count(f'PASS: {len(MAVEN_CACHED_CHECKS)} stock Apache cached Maven index checks') == 1
                     and text.count(f'PASS: {len(MAVEN_GROUP_CHECKS)} stock Apache ordered Maven index checks') == 1,
                     'maven_index_cached_inventory')
+    if kind == 'nuget-proxy':
+        require(text.count(f'PASS: {len(NUGET_PROXY_CHECKS)} stock NuGet flat-container proxy checks') == 1,
+                'nuget_proxy_native_inventory')
     if kind in ('native', 'go'):
         pattern = r'\bok\s+ctlplne.dev/cratectl/internal/(?:server|store' + ('|conformance' if kind == 'native' else '') + r')\s'
         require(len(re.findall(pattern, text)) == (6 if kind == 'native' else 4), 'native_package_success_inventory')
@@ -367,10 +371,11 @@ def accept(client, source, expected_ids):
                           'cargo': 'ci-cargo.json', 'cargo-public': 'ci-cargo-public.json',
                           'npm-search': 'ci-npm-search.json',
                           'python-search': 'ci-python-search.json',
-                          'oci-catalog': 'ci-oci-catalog.json', 'maven-index': 'ci-maven-index.json'}.get(spec['kind'], 'ci-evidence-summary.json')
+                          'oci-catalog': 'ci-oci-catalog.json', 'maven-index': 'ci-maven-index.json',
+                          'nuget-proxy': 'ci-nuget-proxy.json'}.get(spec['kind'], 'ci-evidence-summary.json')
                 report, reference = safe_artifact(client, by_artifact[artifact_name], source.candidate, run_id, member)
                 if spec['kind'] in ('library', 'strict', 'windows', 'compose', 'linux-install', 'offline-media', 'terraform-provider',
-                                    'cargo', 'cargo-public', 'npm-search', 'python-search', 'oci-catalog', 'maven-index'):
+                                    'cargo', 'cargo-public', 'npm-search', 'python-search', 'oci-catalog', 'maven-index', 'nuget-proxy'):
                     counts = validate_custom(report, source.candidate, run_id, spec, source)
                 else:
                     counts, contract = validate_summary(report, source.candidate, run_id, spec, source.baselines, source)

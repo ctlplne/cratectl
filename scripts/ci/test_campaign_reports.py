@@ -17,6 +17,8 @@ from maven_index_evidence import (BASE_CHECKS as MAVEN_INDEX_BASE, CACHED_CHECKS
                                   GROUP_CHECKS as MAVEN_GROUP_CHECKS, INDEXER_SHA256, MAVEN_INDEX_CHECKS,
                                   PROFILE as MAVEN_INDEX_PROFILE, SOURCE_PATHS as MAVEN_INDEX_FILES)
 from npm_search_evidence import BASE_CHECKS as NPM_BASE, HOSTED_CHECKS as NPM_HOSTED, CACHED_CHECKS as NPM_CACHED, SOURCE_PATHS as NPM_FILES
+from nuget_proxy_evidence import (CHECKS as NUGET_PROXY_CHECKS, FIXTURES as NUGET_PROXY_FIXTURES,
+                                 PROFILE as NUGET_PROXY_PROFILE, SOURCE_PATHS as NUGET_PROXY_FILES)
 from oci_repository_catalog_evidence import (ARCHIVE_PINS as ORAS_PINS, BASE_CHECKS as OCI_CATALOG_BASE,
                                              CACHED_CHECKS as OCI_CACHED_CHECKS, CACHED_PROFILE as OCI_CACHED_PROFILE,
                                              CACHED_SOURCE_PATHS as OCI_CACHED_FILES, CATALOG_CHECKS, GROUP_CHECKS,
@@ -31,6 +33,25 @@ SPECS = {spec['artifact']: spec for family in WORKFLOWS.values() for spec in job
 
 
 class CampaignReports(unittest.TestCase):
+    def test_nuget_proxy_requires_closed_stock_and_source_inventory(self):
+        source = lambda path: path.encode()
+        candidate = 'a' * 40
+        report = {'schema': 1, 'profile': NUGET_PROXY_PROFILE, 'candidate': candidate, 'status': 'passed',
+                  'runner_os': 'Linux', 'runner_arch': 'ARM64', 'run_id': '12', 'source_dirty': False,
+                  'source_sha256': {path: hashlib.sha256(source(path)).hexdigest() for path in NUGET_PROXY_FILES},
+                  'binary_sha256': {'cratectl': 'c' * 64, 'cratectld': 'd' * 64}, 'postgres': 'postgres (PostgreSQL) 16.15',
+                  'database_safety': True, 'checks': list(NUGET_PROXY_CHECKS), 'goal_complete': False, 'broad_readiness': False,
+                  'nuget_proxy': {'sdk': '10.0.403', 'dotnet_sha256': 'f' * 64, 'fixtures': NUGET_PROXY_FIXTURES,
+                                  'loopback_http': True, 'origin_requests': 6}}
+        spec = SPECS['ci-summary-nuget-proxy-arm64']
+        self.assertEqual(validate_custom(report, candidate, 12, spec, source), {'checks': 30, 'records': 1})
+        for field, value in [('database_safety', False), ('checks', report['checks'][:-1]),
+                             ('nuget_proxy', {**report['nuget_proxy'], 'origin_requests': 7})]:
+            with self.subTest(field=field), self.assertRaisesRegex(EvidenceError, 'nuget_proxy_report_contract'):
+                validate_custom({**report, field: value}, candidate, 12, spec, source)
+        with self.assertRaisesRegex(EvidenceError, 'nuget_proxy_source_identity'):
+            validate_custom(report, candidate, 12, spec, lambda path: source(path) + b'changed')
+
     def test_maven_index_report_binds_stock_reader_and_exact_source(self):
         source = lambda path: path.encode()
         candidate = 'a' * 40
