@@ -1,0 +1,202 @@
+{
+  "candidate": "9f9b5582efbc16ca5678a25bfa98bc181224bf1d",
+  "status": "passed",
+  "observed_at": "2026-11-18T22:42:48.451724+00:00",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "declarative_checks": 19,
+  "assertions_total": 35,
+  "binary_sha256": {
+    "cratectl": "67a42b67f48c02e9a19a41d7972fb08989a3fa7b7850d2c1a8aca232b67aa059",
+    "cratectld": "b36baeff94e86cf6e058b1eb8201fe876c2e9278c67bae6b0b56fcbc9b1e40f2"
+  },
+  "private_report_sha256": "7a8f78c3838da879d73cbabc41c77fc958e14cad475834e51bebe3504cfed634",
+  "oci_repository_catalog": {
+    "oras": "1.3.6",
+    "oras_sha256": "a75c9dfd7f8f4f1f8ff09c88e7dd03431714f5f760366dff50b7f3cea4850930",
+    "checks": [
+      "stock ORAS follows the server\u2019s one-entry linked catalog pages in lexical order",
+      "stock ORAS applies the exclusive full-name catalog cursor",
+      "stock ORAS sees only the independently authenticated tenant\u2019s names",
+      "an approved manifest with unassessed dependencies stays out of the catalog",
+      "stock ORAS lists the review-gated name once its complete graph is allowed",
+      "stock ORAS catalog immediately omits a graph with a denied layer",
+      "stock ORAS honors revocation of the restricted repository read grant",
+      "stock ORAS catalog and exact independent same-coordinate pulls recover after restart",
+      "stock ORAS catalog excludes suspended repositories and retains the other tenant\u2019s listings"
+    ],
+    "manifest_sha256": [
+      "c037ffaa45d30d7eb5d1f3db21495bcfca5bbe0a2b059d9fdd13f928d17fdf4e",
+      "4bf085a4567399d2f7dfd4176537e470a94a0f5f7be572b1c86ba10835ca8e26",
+      "4fd8817077ece28a4dc8cd836bb3114c647de184d0ad11fa580d0c93f000d9eb"
+    ],
+    "payload_sha256": [
+      "d6e4a18517a6b2431e8542aa627ddc9a47575078aa6d918de78a05df7de14780",
+      "d9002ca4788e8b38f26febbf9ffd3c3222b0e2e769b681eb88c54f77f30a308b"
+    ],
+    "cached": {
+      "checks": [
+        "cold stock ORAS catalog does not enumerate or contact its proxy origin",
+        "stock ORAS retrieves an exact admitted graph from the controlled proxy",
+        "stock ORAS catalog lists a fresh cached proxy graph without contacting its origin",
+        "an invalidated cached layer hides the name without contacting its origin",
+        "an explicit stock ORAS pull revalidates the exact graph and restores catalog visibility",
+        "current policy denial hides the cached proxy name without contacting its origin",
+        "fresh cached catalog authority and exact bytes survive restart"
+      ],
+      "manifest_sha256": "c037ffaa45d30d7eb5d1f3db21495bcfca5bbe0a2b059d9fdd13f928d17fdf4e",
+      "payload_sha256": "d6e4a18517a6b2431e8542aa627ddc9a47575078aa6d918de78a05df7de14780"
+    }
+  },
+  "integration": {
+    "functions": [
+      "TestOCIRepositoryCatalogUsesCurrentGraphPolicyAndTenantGrants",
+      "TestOCIRepositoryCatalogUsesOnlyFreshCachedGraphs"
+    ],
+    "status": "passed",
+    "log_sha256": "d7fd42d2d4439beda797b5183761eaf61fb64926186d5a9404fcfc23f89d2630"
+  },
+  "source_gates": [
+    "make build",
+    "make test",
+    "make race",
+    "make lint"
+  ],
+  "source_sha256": [
+    {
+      "path": ".github/workflows/oci-repository-catalog.yml",
+      "sha256": "25ede0f88c67bb81ce54b5bd0bed2cfd6c1ec8f0a4fefb59cb7c25ff1a84d486"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "12f2a8b5cfbc2f322822b82e4446f51ff017374acab1f3a8921db8cc8e833bf6"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "1d4aecc2732cd54db4534e0afc862ffe14d5c24890f106008682fd9bbc8e5ba9"
+    },
+    {
+      "path": "go.sum",
+      "sha256": "5e364e4e1eff09d8d39617427d7775012304b09a7be26778dc2b46fdabae3f15"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "c98c94e514937aa9e1adb979aa8f7930f9505949e6b3a70d30a5a223fa64be07"
+    },
+    {
+      "path": "scripts/oci_repository_catalog_fixture.py",
+      "sha256": "44b4a93a1b490c2b830b21d54f203a9de589225479f657e27a30b160856bacde"
+    },
+    {
+      "path": "scripts/ci/oci_repository_catalog_evidence.py",
+      "sha256": "3ca2631051a0a3ab45b3811bf9ad1af4ded2a7325e4bafe667f56afee24d1b1d"
+    },
+    {
+      "path": "scripts/ci/fetch_archive.py",
+      "sha256": "d0fde9da29964255004e6e71ecdac1a807fb60fe2c211520576dfca9d96f747a"
+    },
+    {
+      "path": "scripts/ci/terraform_provider_evidence.py",
+      "sha256": "130de2ec92ed288a6fa6c744c67003a76cafa2dfb9835e48f653abccda1a50ca"
+    },
+    {
+      "path": "scripts/qualification_contract.py",
+      "sha256": "c40a9d0209a9dc1fb9838f49cdb316ad5a762d45c0359b97fce156746564e5ba"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+    },
+    {
+      "path": "cmd/cratectld/main.go",
+      "sha256": "98d8fbc7ad3e94b2a5d521614e978e376e29f4b81be012849a6881e1bc22fe7a"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "e529f9db77895088a686701eb459bb8c0812d0eebad2fd0661ba73fdcce38ede"
+    },
+    {
+      "path": "internal/server/oci.go",
+      "sha256": "0ebdb870f75521e4b46e51068bbcf8f8d7754b6d71b4f452c8b0cedca002ca39"
+    },
+    {
+      "path": "internal/server/oci_repository_catalog.go",
+      "sha256": "b8e0be55061c0e490a9d80a4e01c34280139d1948080ebed0089c882c73ff5f4"
+    },
+    {
+      "path": "internal/server/oci_discovery_page.go",
+      "sha256": "7e675b8137010baa36e6d88a618e90e5876c4137388cc3d5c420b3b06003e4b0"
+    },
+    {
+      "path": "internal/server/oci_manifest.go",
+      "sha256": "ede500531d9af2eebd88db995756984aa84d532bf5a96e37652f0af66895bdb2"
+    },
+    {
+      "path": "internal/server/oci_read.go",
+      "sha256": "d1374533fc667baee8b38e6a439000698e9b8f8e7993e59fcac50966bf95c0c6"
+    },
+    {
+      "path": "internal/store/oci_repository_catalog.go",
+      "sha256": "f0ca25049379239481ef64f25041a6500504c5f93c8fbf605d0b1bac05d8d9c8"
+    },
+    {
+      "path": "internal/store/artifact_read.go",
+      "sha256": "aba845ceb45aff4503adb12c7a10330a7a7154f9a048b15ee3fa34b9153ac11e"
+    },
+    {
+      "path": "internal/store/lifecycle.go",
+      "sha256": "1ee74e65136c7d5a9fde27378afb1c99e0fd76d376e2e67bafd1fe95ea6892a6"
+    },
+    {
+      "path": "internal/store/oci.go",
+      "sha256": "0a346166eadcad8ba3cbd14653bff7c84f75c97c9b7237ae136e3fdca1ae4267"
+    },
+    {
+      "path": "internal/store/oci_descriptor.go",
+      "sha256": "04adbc9d58a0cd2ab12b3b2c418b820eb8be3f5af13f9ad1149481fd284b1fed"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "54412aeffd3ed0708a7ac7fccb69184f6413aec87522c34abc1d0ab9fa9f9529"
+    },
+    {
+      "path": "internal/store/decision.go",
+      "sha256": "3f9c785f2da56ee4678ef9a49418ab4eb794eb9ba2556dd32d88229b18427db4"
+    },
+    {
+      "path": "internal/store/store.go",
+      "sha256": "371c857dcfe658ca4a73fef52077f85b5636c44e636d534f3e3a576c16aa074e"
+    },
+    {
+      "path": "internal/store/migrations.go",
+      "sha256": "59f3478fbc77b7c969e43719f7eea92844a5bb1b2cd5b0d63ec2f356e368594b"
+    },
+    {
+      "path": "internal/server/oci_proxy.go",
+      "sha256": "44a721733009ae3c18a207cedba6a5f3ab2c75d05d43f31a4eeb69ad9405a003"
+    },
+    {
+      "path": "internal/server/oci_repository_catalog_integration_test.go",
+      "sha256": "f0b6f61af99af13d425e71f9c177c32b2531e42bbb8d3941db6d570593784d2a"
+    },
+    {
+      "path": "internal/store/oci_cache.go",
+      "sha256": "eb5f7d4772375c0e40e000821e6b4c7998c6246911293742b7dc329145120036"
+    },
+    {
+      "path": "internal/store/oci_proxy.go",
+      "sha256": "f7beca505df59f94d170c962fd41d49c60b14124f5ed0db44c0c8caba886043b"
+    },
+    {
+      "path": "internal/store/retrieval.go",
+      "sha256": "360c7804b8a95ff01939bbf03f4d3c1b86f63300a9014ea528db4ac4f05d6a68"
+    }
+  ],
+  "limits": [
+    "Exact native macOS ARM64 with stock ORAS 1.3.6, PostgreSQL 16.16 and certificate-validated IPv4 loopback TLS.",
+    "A distinct IPv6 loopback origin served exact stock-built inert OCI content. Cold, invalidated, denied and recovered cached catalog calls were checked for zero origin requests. The controlled root and all graph receipts had to be current.",
+    "Cached group ordering, native Linux cached discovery, alternate clients and scale remain open."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

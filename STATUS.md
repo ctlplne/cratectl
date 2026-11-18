@@ -673,6 +673,14 @@ Cached proxy and group discovery retain separate qualification.
 [Native hosted OCI catalog evidence](evidence/2026-11-19/oci-8c9915c-hosted-catalog-native.json)
 [Original Linux OCI catalog evidence](evidence/2026-11-19/github-586eb5d-oci-hosted-catalog-native.json)
 
+`9f9b558` passed 35 combined native checks on macOS ARM64, including seven
+cached ORAS catalog checks. Cold, invalidated and denied graphs were omitted
+with zero source requests during catalog listing. An explicit exact-byte
+pull restored a fresh catalog entry. Both PostgreSQL catalog regressions and
+the unit, race and lint gates passed. Ordered group and Linux cached
+catalogs retain separate qualification.
+[Native cached OCI catalog evidence](evidence/2026-11-19/oci-9f9b558-cached-catalog-native.json)
+
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities
 published and pulled two exact chart archives, including a build-metadata

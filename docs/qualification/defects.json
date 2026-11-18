@@ -1940,6 +1940,7 @@
       "summary": "The first cached OCI catalog fixture uses localhost while its IPv6 upstream is listening",
       "state": "The stock fixture failed before the cached repository was created. The management client reported a request failure without an HTTP status. The fixture used localhost for an IPv4-only TLS registry and bound a distinct plaintext origin to IPv6 on the same port.",
       "first_failure": "evidence/2026-11-19/oci-55f3c37-cached-authority-first-failure.json",
+      "replay": "evidence/2026-11-19/oci-9f9b558-cached-catalog-native.json",
       "repair": "Pin the downstream fixture authority to IPv4 and retain trusted TLS. The separately controlled origin remains IPv6-only."
     }
   ]
