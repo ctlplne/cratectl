@@ -1820,6 +1820,14 @@
       "state": "The original job stopped before stock Ivy replay. The Apache CDN delivered the pinned Ivy and Ant byte streams locally.",
       "first_failure": "evidence/2026-11-18/github-3639a74-arm64-ivy-bootstrap-failure.json",
       "repair": "Try the official Apache CDN first. Keep both existing exact archive mirrors as transfer-only fallbacks."
+    },
+    {
+      "id": "DEFECT.0174",
+      "summary": "The first historical Cargo fixture counted repository creation receipts across two independent repositories",
+      "state": "The original six historical adoption checks passed. The harness then stopped when its base declarative assertion counted the separately seeded legacy repository. The corrected exact source passed all 57 combined checks.",
+      "first_failure": "evidence/2026-11-19/cargo-56a8118-historical-fixture-failure.json",
+      "replay": "evidence/2026-11-19/cargo-910359d-historical-adoption-native.json",
+      "repair": "Match the declarative repository name in the journal and require its single creation receipt across concurrent retries."
     }
   ]
 }

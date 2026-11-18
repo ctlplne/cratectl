@@ -455,10 +455,17 @@ checks across two real versions. It hid the pending version, returned the
 newer version after approval, and fell back to the earlier version when the
 newer version was yanked. The current schema 19 Cargo candidate `fa6b4f7`
 passed 32 stock checks, including six ownership checks, on macOS ARM64 with
-PostgreSQL 16.16. Its 59 tenant tables all enforce forced RLS. The expanded
-Linux profile, historical Cargo adoption, legacy Git discovery, proxy, group,
-and cross-repository search remain open.
+PostgreSQL 16.16. Its 59 tenant tables all enforce forced RLS. The later
+`910359d` replay passed six additional checks for a crate actually published
+on schema 18. The upgrade retained all 18 prior receipts, the original index,
+and the journal checkpoint. After explicit ownership adoption, stock Cargo
+fetched the original archive. Both earlier `51b0953` native Linux jobs
+passed all 22 expanded Cargo checks against their installed PostgreSQL 16.15.
+Schema 19 coverage on both Linux architectures, legacy Git discovery, proxy,
+group, and cross-repository search remain open.
 [Native Cargo ownership evidence](evidence/2026-11-19/cargo-fa6b4f7-ownership-native.json)
+[Stock Cargo historical adoption evidence](evidence/2026-11-19/cargo-910359d-historical-adoption-native.json)
+[Original expanded Linux Cargo evidence](evidence/2026-11-19/github-51b0953-cargo-expanded-native.json)
 [Native Cargo search evidence](evidence/2026-11-19/cargo-35c3708-search-native.json)
 [Expanded native Cargo evidence](evidence/2026-11-18/cargo-a39c952-native.json)
 [Native Cargo lifecycle evidence](evidence/2026-11-18/cargo-45f2799-lifecycle-native.json)

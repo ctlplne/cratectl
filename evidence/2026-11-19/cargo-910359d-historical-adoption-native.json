@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "candidate": "910359d7e5f8dc72059724b5e61c4d377a42630c",
+  "baseline": "35c3708616c9847f6cd5636a6e86858eb82e571b",
+  "status": "passed",
+  "observed_at": "2026-11-19T00:25:32.650823+05:30",
+  "platform": "native macOS ARM64",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "cargo": "cargo 1.100.0 (3acc79c0c 2026-11-05)",
+  "base_checks": 19,
+  "cargo_checks": 32,
+  "historical_adoption_checks": 6,
+  "original_archive_sha256": "528be059cb57d74239764183d8b303553ce6b4ff11b7b5b450bfc3572c4a634a",
+  "preserved_migration_receipts": 18,
+  "applied": {
+    "version": 19,
+    "checksum": "0645615e7c59635cbfd0b9f8ffe610ad91dd4fefabf61ebc216852af64247561"
+  },
+  "forced_tenant_tables": 59,
+  "old_daemon_refused_current_schema": true,
+  "original_safe_summary": {
+    "path": "evidence/2026-11-19/cargo-910359d-historical-adoption-native-summary.json",
+    "bytes": 6249,
+    "sha256": "a3d2b1d72d37a15f1a3a9900d958e65323796778aeedd3e5014c892c5a85789d"
+  },
+  "source_sha256": {
+    "scripts/conformance_repository_manifest.py": "92c1e8cfa67ca15845009f08b2474cd330604e7f721c78b3bbd35b5eeacb1733",
+    "scripts/cargo_ownership_upgrade_fixture.py": "2cac4d171b73be8a601b8c36a54da32cd048d9559c629b60ae3945c05afaba91",
+    "scripts/cargo_hosted_fixture.py": "8feaede986a4b8990c7cc5aa2464137d3c24aaac859aa58ce030eed4eda55020",
+    "internal/store/cargo_ownership_schema.go": "fd7513c2816bb43b210e578d54df4a2319b9aae7e4cff8163b01575c89892d27"
+  },
+  "limits": [
+    "Fresh dedicated loopback PostgreSQL cluster and controlled process shutdown.",
+    "One crate stock-published by a reviewed schema 18 binary. Schema 19 preserved its exact archive, index and journal before explicit ownership adoption.",
+    "Current production primary, rolling upgrade, and broader platform qualification remain separate."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}
