@@ -29,7 +29,7 @@ type RepositorySpec struct {
 }
 
 func (s RepositorySpec) Valid() bool {
-	return ValidRepositoryName(s.Name) && slices.Contains([]string{"generic", "maven", "npm", "pypi", "oci", "nuget", "go"}, s.Format) &&
+	return ValidRepositoryName(s.Name) && slices.Contains([]string{"generic", "maven", "npm", "pypi", "oci", "nuget", "go", "cargo"}, s.Format) &&
 		(s.Access == "tenant" || s.Access == "restricted")
 }
 

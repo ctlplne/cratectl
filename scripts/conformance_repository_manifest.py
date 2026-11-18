@@ -19,6 +19,7 @@ import urllib.error
 import urllib.request
 
 from bounded_client import run_owned_client
+from cargo_hosted_fixture import evaluate_cargo
 from ci.terraform_provider_evidence import ARCHIVE_PINS, SOURCE_PATHS, postgres_version, validate
 from qualification_contract import candidate_binary_directory
 from terraform_repository_fixture import evaluate_tools
@@ -117,6 +118,12 @@ def evaluate(args):
             except subprocess.TimeoutExpired:
                 process.kill()
                 process.wait(5)
+
+    def restart_server():
+        nonlocal server
+        stop_server(server)
+        server = None
+        server = start_server()
 
     report = {'schema': 1, 'profile': 'cratectl-repository-manifest-native-v1', 'status': 'failed',
               'checks': checks, 'platform': platform.platform(), 'goal_complete': False, 'broad_readiness': False,
@@ -315,9 +322,7 @@ def evaluate(args):
                   int(metrics['cratectl_http_request_body_bytes_total{protocol="npm"}']) >= tarball.stat().st_size
                   and int(metrics['cratectl_http_requests_total{protocol="management",outcome="auth_denied"}']) >= 1
                   and metrics['cratectl_transfer_capacity'] == '16')
-        stop_server(server)
-        server = None
-        server = start_server()
+        restart_server()
         check('registry restart preserves the declared state',
               json.loads(cli('restart-plan', *plan_flags)[1])['action'] == 'unchanged')
         restored = json.loads(call('stock-verified-download', 'npm', 'pack', target, '--ignore-scripts', '--json',
@@ -325,6 +330,9 @@ def evaluate(args):
         check('fresh stock npm downloads the exact approved archive after restart',
               sha(download / restored[0]['filename']) == sha(tarball))
         report['archive_sha256'] = sha(tarball)
+        if args.cargo_toolchain:
+            report['cargo'] = evaluate_cargo(work, app, BASE, args.cargo_toolchain.resolve(),
+                                            public_env, call, api, restart_server, sha)
         if args.promtool:
             metrics = metrics_values('stock-download-after-restart')
             check('stock npm download contributes bytes and a complete latency histogram',
@@ -383,6 +391,8 @@ def evaluate(args):
         print(f"PASS: Terraform {totals['terraform']} and OpenTofu {totals['tofu']} scoped provider checks")
     if args.mcp_binary:
         print(f"PASS: {sum(len(phase['checks']) for phase in report['mcp']['phases'])} scoped official MCP checks")
+    if args.cargo_toolchain:
+        print(f"PASS: {len(report['cargo']['checks'])} scoped stock Cargo checks")
     if args.ci_architecture:
         record_ci(report, args.ci_architecture)
 
@@ -417,6 +427,7 @@ if __name__ == '__main__':
     parser.add_argument('--mcp-binary', type=Path)
     parser.add_argument('--mcp-client', type=Path)
     parser.add_argument('--promtool', type=Path)
+    parser.add_argument('--cargo-toolchain', type=Path)
     options = parser.parse_args()
     if len([value for value in (options.provider_binary, options.terraform, options.tofu) if value]) not in (0, 3):
         parser.error('provide the local provider and both stock clients together')
@@ -426,4 +437,6 @@ if __name__ == '__main__':
         parser.error('the local MCP profile requires both candidate MCP binaries')
     if options.ci_architecture and options.promtool:
         parser.error('the native Prometheus profile runs separately from hosted provider qualification')
+    if options.ci_architecture and options.cargo_toolchain:
+        parser.error('the native Cargo profile runs separately from hosted provider qualification')
     evaluate(options)

@@ -34,6 +34,9 @@ func nugetListingCoordinate(p string) (string, string, bool) {
 // for native publication/listing; Basic/Bearer identities are never merged into it.
 func requestCredential(r *http.Request) (string, error) {
 	parts := strings.SplitN(strings.TrimPrefix(r.URL.Path, "/"), "/", 3)
+	if len(parts) >= 2 && parts[0] == "cargo" && store.Name.MatchString(parts[1]) {
+		return cargoCredential(r)
+	}
 	useKey := false
 	if len(parts) == 3 && parts[0] == "nuget" && store.Name.MatchString(parts[1]) {
 		_, _, listing := nugetListingCoordinate(parts[2])

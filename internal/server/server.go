@@ -103,7 +103,7 @@ func New(db *store.Store, b *blob.Local, public string) *Server {
 	s.InventoryLimits = store.InventoryLimits{MaxEntries: 1000000, DirectoryEntries: 1000000}
 	s.UploadLimit, s.UploadPartLimit, s.UploadMetadataBytes, s.UploadLease, s.UploadTTL = 32, 4096, 1<<20, 30*time.Second, 30*time.Minute
 	s.OCIDeliveryLimits = upstream.DefaultRegistryDeliveryLimits()
-	for _, a := range []adapter{{"generic", s.raw}, {"maven", s.raw}, {"npm", s.npm}, {"pypi", s.pypi}, {"oci", s.oci}, {"nuget", s.nuget}, {"go", s.goModule}} {
+	for _, a := range []adapter{{"generic", s.raw}, {"maven", s.raw}, {"npm", s.npm}, {"pypi", s.pypi}, {"oci", s.oci}, {"nuget", s.nuget}, {"go", s.goModule}, {"cargo", s.cargo}} {
 		s.adapters[a.Format()] = a
 	}
 	secret, keyError := crypt.Token()
@@ -121,6 +121,10 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 	json.NewEncoder(w).Encode(v)
 }
 func fail(w http.ResponseWriter, status int, code, action string) {
+	if _, ok := w.(cargoProtocolResponse); ok {
+		writeJSON(w, status, map[string]any{"errors": []map[string]string{{"detail": action}}})
+		return
+	}
 	writeJSON(w, status, map[string]any{"error": map[string]string{"code": code, "action": action}})
 }
 func respondErr(w http.ResponseWriter, e error) {
@@ -291,6 +295,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(r.URL.Path, "/go/") {
 		w = &goProtocolResponse{ResponseWriter: w}
 	}
+	if strings.HasPrefix(r.URL.Path, "/cargo/") {
+		w = cargoProtocolResponse{ResponseWriter: w}
+	}
 	w.Header().Set("X-Content-Type-Options", "nosniff")
 	w.Header().Set("Cache-Control", "private, no-store")
 	w.Header().Set("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'")
@@ -363,7 +370,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if len(parts) == 3 {
 		p = parts[2]
 	}
-	prefix := map[string]string{"generic": "r", "maven": "r", "npm": "npm", "pypi": "pypi", "oci": "v2", "nuget": "nuget", "go": "go"}[repo.Format]
+	prefix := map[string]string{"generic": "r", "maven": "r", "npm": "npm", "pypi": "pypi", "oci": "v2", "nuget": "nuget", "go": "go", "cargo": "cargo"}[repo.Format]
 	a := s.adapters[repo.Format]
 	if a == nil || parts[0] != prefix {
 		fail(w, 404, "format_mismatch", "Use the native endpoint for this repository format.")
@@ -457,7 +464,7 @@ func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Iden
 			return
 		}
 		formats := []string{}
-		for _, name := range []string{"generic", "maven", "npm", "pypi", "oci", "nuget", "go"} {
+		for _, name := range []string{"generic", "maven", "npm", "pypi", "oci", "nuget", "go", "cargo"} {
 			if s.adapters[name] != nil {
 				formats = append(formats, name)
 			}
