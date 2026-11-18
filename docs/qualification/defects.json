@@ -1909,6 +1909,13 @@
       "state": "Both original 19e5a87 searches returned empty arrays. An exact-source diagnostic replay observed a request for the npm package on the configured origin. The stock npm update notifier checks that package through the configured registry.",
       "first_failure": "evidence/2026-11-19/npm-19e5a87-update-notifier-first-failure.json",
       "repair": "Disable the stock npm update notifier in the isolated fixture and keep the zero-upstream-request search assertion."
+    },
+    {
+      "id": "DEFECT.0185",
+      "summary": "The original Linux x64 stock-client suite could not resolve Apache Maven Deploy Plugin 3.1.4",
+      "state": "The exact 9b70578 Maven command stopped in tool resolution. A separate later HEAD to the same official release returned HTTP 200. The original failed run and its overall campaign are retained.",
+      "first_failure": "evidence/2026-11-19/github-9b70578-original-main-client-failure.json",
+      "next_action": "Observe the successor stock-client campaigns and retain the exact plugin resolution outcome."
     }
   ]
 }

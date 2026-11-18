@@ -602,6 +602,13 @@ lockfile with PostgreSQL 16.15. The first failure's cause remains open.
 [Original Linux public Cargo failure](evidence/2026-11-19/github-9b70578-public-cargo-first-failure.json)
 [Native Linux public Cargo replacement evidence](evidence/2026-11-19/github-56a9d40-cargo-public-replacement-native.json)
 
+The complete original `9b70578` campaign retained 28 successes, three
+failures and one cancelled macOS job that received no runner. The Linux
+x64 stock-client suite stopped while Maven resolved Deploy Plugin 3.1.4.
+The other two failures came from the first public Cargo profile.
+[Original campaign and 78 retained reports](evidence/2026-11-19/github-9b70578-original-completed.json)
+[Original Maven resolution failure](evidence/2026-11-19/github-9b70578-original-main-client-failure.json)
+
 The exact `1fcfc66` candidate adds hosted name search through stock npm 11.16.0.
 Nine checks passed on macOS ARM64 with PostgreSQL 16.16. They cover current
 review decisions and tags, two tenants at the same coordinate, grant
