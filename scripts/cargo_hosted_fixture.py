@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: BUSL-1.1
 """Replay authenticated stock Cargo on the fixture's real registry."""
 import json
-import os
 import re
 import ssl
 import struct
@@ -100,7 +99,7 @@ def evaluate_cargo(work, installation, authority, toolchain, environment, call, 
         new_project(directory, name, spec)
         call('cargo-publish-' + label, cargo, 'publish', '--registry', 'cratectl', '--allow-dirty', '--no-verify',
              cwd=directory, environment=dict(publisher, CARGO_TARGET_DIR=str(directory/'target')), timeout=85)
-        published[name] = directory / 'target' / 'package' / f'{name}-{VERSION}.crate'
+        published[name] = directory / 'target' / 'package' / 'tmp-crate' / f'{name}-{VERSION}.crate'
     rows = api('cargo-artifacts', repo+'/artifacts')['items']
     artifacts = {row['metadata']['name']: row for row in rows}
     check('two stock publications retain exact unassessed bytes',

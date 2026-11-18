@@ -1,0 +1,39 @@
+{
+  "candidate": "e809cfbb1f457e06857459adad6a0ac55c2e3013",
+  "observed_at": "2026-11-18T18:06:02.510241+00:00",
+  "status": "failed",
+  "scope": "Original macOS ARM64 PostgreSQL 16.16 and stock Cargo 1.100.0 fixture",
+  "cause": "Both consumer-ready registry publications returned success. The harness then looked for the stock archive in target/package instead of target/package/tmp-crate and stopped before policy and recovery checks.",
+  "artifact_hashes_match_retained_postgresql_references": 2,
+  "original_publication_logs": [
+    {
+      "path": ".cache/cratectl-cargo-native-e809cfb.TckLcL/.private/cratectl-manifest-9qajmrtk/cargo-publish-leaf.log",
+      "bytes": 715,
+      "sha256": "c6e0615bcb748186098b8100ec703f58ca183e36c7de83db4804c300726d3d91"
+    },
+    {
+      "path": ".cache/cratectl-cargo-native-e809cfb.TckLcL/.private/cratectl-manifest-9qajmrtk/cargo-publish-root.log",
+      "bytes": 745,
+      "sha256": "ab14aa2a76522b2d9c8f9e09423b1c4222f5c3bbb82f865b4c8895e10a04f765"
+    }
+  ],
+  "original_registry_artifact_response": {
+    "path": ".cache/cratectl-cargo-native-e809cfb.TckLcL/.private/cratectl-manifest-9qajmrtk/cargo-artifacts.log",
+    "bytes": 1373,
+    "sha256": "cfa03a6c6c1eb1b81a174220e994159776b2ff1f52fdef15860bbfdc10fbcc02"
+  },
+  "original_owned_stock_archives": {
+    "leaf": {
+      "path": ".cache/cratectl-cargo-native-e809cfb.TckLcL/.private/cratectl-manifest-9qajmrtk/cargo-leaf/target/package/tmp-crate/cratectl-cargo-leaf-1.0.0.crate",
+      "bytes": 773,
+      "sha256": "9bd109fedaaa1ecf8bd8900aa95685a3e7cc379a3e638a14d767fbacf84a64ec"
+    },
+    "root": {
+      "path": ".cache/cratectl-cargo-native-e809cfb.TckLcL/.private/cratectl-manifest-9qajmrtk/cargo-root/target/package/tmp-crate/cratectl-cargo-root-1.0.0.crate",
+      "bytes": 991,
+      "sha256": "cdbb46a6cf40487a8ce7d827ca7117998a8abfd4777ad262e990d37e46c7578c"
+    }
+  },
+  "goal_complete": false,
+  "broad_readiness": false
+}
