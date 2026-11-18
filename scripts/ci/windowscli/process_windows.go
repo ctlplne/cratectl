@@ -232,11 +232,13 @@ func runPlatformCommand(ctx context.Context, argv []string, directory string, en
 		case <-ctx.Done():
 			return result, ctx.Err()
 		case readResult := <-output:
+			// The reader has already sent its only result. Cleanup must not
+			// join it again, including when it reported an over-budget stream.
+			output = nil
 			result.Output = readResult.body
 			if readResult.err != nil {
 				return result, readResult.err
 			}
-			output = nil
 		case <-ticker.C:
 			state, e := windows.WaitForSingleObject(process.Process, 0)
 			if e != nil {

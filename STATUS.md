@@ -83,6 +83,13 @@ The push of `6d41573` started nine workflows, including the [native Windows
 workflow](https://github.com/ctlplne/cratectl/actions/runs/44295026661). All run
 IDs bind to the first attempt in the [campaign start record](evidence/2026-11-18/github-6d41573-started.json).
 
+Both Windows jobs failed during the process-control suite. Their authenticated
+diagnostics showed that cleanup waited for an output result it had already
+received. The x64 test also observed that an empty job and a signaled process
+handle can arrive separately. The repair preserves the output-limit result and
+bounds the native handle wait. Windows configuration tests await the repaired
+candidate. [First failures and repair](evidence/2026-11-18/github-6d41573-first-failures.json)
+
 ## Go security patch
 
 Govulncheck reported GO-2026-6859 against the Go 1.27.3 source configuration
@@ -94,9 +101,9 @@ the [local security record](evidence/2026-11-18/go-1.27.4-security-development.j
 The changed `go.mod` selects the strict Go and NuGet library jobs alongside
 the Windows and baseline jobs. Expect 33 jobs across nine workflows, with 26
 safe members and 87 reports if every selected job passes. Use the actual API
-inventory. The three original strict failures keep DEFECT0126 open until a
-patched native campaign runs the unchanged assertions. Full security and
-packaging qualification remain open.
+inventory. The strict Go 1.27.4 jobs on both Linux architectures and macOS
+reproduced DEFECT0126. The three source jobs also failed the npm build-tool
+audit. Full security and packaging qualification remain open.
 
 ## Local candidate qualification
 

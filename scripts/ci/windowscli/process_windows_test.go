@@ -130,7 +130,9 @@ func TestWindowsOwnedProcessTimeoutKillsOwnedDescendant(t *testing.T) {
 	select {
 	case child := <-observed:
 		defer windows.CloseHandle(child)
-		state, e := windows.WaitForSingleObject(child, 0)
+		// Job accounting can reach zero before the OS signals the retained
+		// process handle. Require both observations within bounded cleanup.
+		state, e := windows.WaitForSingleObject(child, 5000)
 		if e != nil || state != windows.WAIT_OBJECT_0 {
 			t.Fatal("observed owned descendant survived job termination", e)
 		}

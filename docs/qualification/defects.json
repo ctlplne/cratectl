@@ -1625,6 +1625,14 @@
       "first_failure": "evidence/2026-11-18/local-12b1968-qualification.json",
       "next": "Recheck upstream remediation and replay audit and reproducible console build after a verified update.",
       "limits": "The reported chain is development-only. The application serves embedded assets and no use of picomatch was found in console application sources. The audit remains a failure."
+    },
+    {
+      "id": "DEFECT.0151",
+      "summary": "Windows output overflow cleanup waits twice for one reader result and the descendant test assumes simultaneous OS signals",
+      "candidate": "6d415738669eecf70b6b1b0f0891387331ce002c",
+      "state": "First native x64 and ARM64 failures retained. Repair implemented and local compile/vet passed. Native replay pending.",
+      "first_failure": "evidence/2026-11-18/github-6d41573-first-failures.json",
+      "repair": "Mark the one-shot reader joined on receipt, including an output limit error. Require the retained descendant handle to signal within the cleanup deadline, in addition to zero active job processes."
     }
   ]
 }
