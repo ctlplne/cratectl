@@ -221,6 +221,10 @@ The repaired full local Compose journey passed all 20 checks at `675177f`.
 The same commit is running its first native Compose dispatch alongside the six
 baseline push workflows. [Repaired local replay](evidence/2026-11-18/compose-675177f-arm64-local.json)
 [Original dispatch inventory](evidence/2026-11-18/github-675177f-started.json)
+The first GitHub x64 job passed all 20 checks using Compose 2.38.2. Its
+unchanged report matches the original artifact digest and all 12 source hashes
+match the candidate. The ARM64 job was still queued at this checkpoint.
+[Native x64 result](evidence/2026-11-18/github-675177f-compose-native-amd64.json)
 
 At `b910da7`, two builds produced identical local binary archives for Linux
 x64 and ARM64. Independent inspection matched all four ELF machines and
@@ -236,6 +240,15 @@ and changed archive were refused. Production signing authority and release
 approval remain open.
 [External signature evidence](evidence/2026-11-18/linux-candidate-signed-checksums-5fd3edd.json)
 
+The packaged Helm chart passed 13 deployment checks at `f245757` on an
+isolated ARM64 Kubernetes 1.35 cluster. Restricted Pod Security admitted the
+registry and worker, which used verified TLS to real PostgreSQL. Stock npm
+published from a blank registry and installed the approved bytes after Pod
+replacement. Helm uninstall retained the operator-owned claim and Secrets.
+Managed storage, additional architectures, backup, upgrade and rollback
+still require qualification.
+[Helm deployment evidence](evidence/2026-11-18/helm-f245757-arm64-kind.json)
+
 ## Durable state and remaining scope
 
 All18 migration definitions remain frozen. Schema18 checksum is
@@ -248,7 +261,7 @@ binaries. New binaries stay.cache; ignored.private0700/.cache and originals rema
 Complete remaining workspace/local immutable inputs, package/platform/permission/
 provenance closure, private hosted/proxy/group precedence and authority, current
 scan/import/server-session/operator/console outcomes, lifecycle/physical GC,
-providers/Windows writes and collection locks, Linux x64 Compose, production
+providers/Windows writes and collection locks, hosted Linux ARM64 Compose, production
 Helm and disconnected install,
 backup/HA/scale/soak and all450/41/14case/7environment/later scope. External legal,
 licensed-comparator and capacity inputs block only their rows. Strict0126 and

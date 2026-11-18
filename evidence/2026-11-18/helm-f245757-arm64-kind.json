@@ -1,0 +1,448 @@
+{
+  "candidate": "f245757014e48b835dc93c9593dfd0d08f308b50",
+  "source_dirty": false,
+  "observed_at": "2026-11-18T14:17:41.199652+00:00",
+  "cluster": "cratectl-helm-kind-f245757",
+  "kubernetes": "1.35.0 / ARM64",
+  "status": "passed",
+  "failure": null,
+  "checks": [
+    "Isolated cluster and candidate source identities",
+    "Both clean Linux ARM64 binaries belong to the exact chart source",
+    "Real PostgreSQL migrated and provisioned through verified TLS",
+    "The packaged chart installs under restricted Pod security",
+    "Both registry and worker containers are ready with a successful initializer",
+    "Database observes established TLS sessions from the restricted runtime",
+    "Stock curl verifies the externally supplied registry TLS key",
+    "The Helm registry starts with a blank tenant repository list",
+    "Stock npm publishes the exact bytes and review waits for approval",
+    "Approved stock npm install yields the original package bytes",
+    "Hardened worker authenticates its private staged token and completes publication intents",
+    "Real Pod replacement keeps the exact approved package on the same claim",
+    "Uninstall leaves operator-owned storage and Secret references intact"
+  ],
+  "image": "docker.io/library/cratectl-helm-registry-f245757@sha256:baf3d20d1d5a442518e7de7fb24103a4bdc98c31ad24d0e37a907a2350dc19b8",
+  "init_image": "docker.io/library/cratectl-helm-postgres-f245757@sha256:9f5be6795d4e9dfc0dca4c8a46eb858a9ddef631fc6b57953960f578d3fb1f9b",
+  "packaged_chart_sha256": "8a7b785f5573b79b7587814d273f780460ed917fdcf81cc4632fc50486dc5e80",
+  "private_logs": [
+    {
+      "label": "exact-context",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/000-exact-context.log",
+      "sha256": "2f2caa899ddb33b308852fa10245337715283822e28f2cadf4305dcb73e6fddf"
+    },
+    {
+      "label": "node-native",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/001-node-native.log",
+      "sha256": "f69162950f235e3cdbbad33f1f912d1a504be90d8a37d002c735d6f3e3882265"
+    },
+    {
+      "label": "image-index",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/002-image-index.log",
+      "sha256": "424284bdd7015dc8764e03672fdd06f78c6bf228c4403c8792288d75eb6a0df5"
+    },
+    {
+      "label": "local-digest-tag",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/003-local-digest-tag.log",
+      "sha256": "1f8bf8c1c3738bca68399a0b1eeb66cb9442b7ecbb38dedc85d36eae52ac5bfe"
+    },
+    {
+      "label": "image-index",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/004-image-index.log",
+      "sha256": "424284bdd7015dc8764e03672fdd06f78c6bf228c4403c8792288d75eb6a0df5"
+    },
+    {
+      "label": "local-digest-tag",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/005-local-digest-tag.log",
+      "sha256": "a75f46f0cba292836b995130dfdd8b0155fc303118bf873edc21e8a57ce28501"
+    },
+    {
+      "label": "binary-identity",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/006-binary-identity.log",
+      "sha256": "f7b426036de1d5e54cd87d291d4767db331a37578c69a242805a2f09fc2b13e2"
+    },
+    {
+      "label": "binary-identity",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/007-binary-identity.log",
+      "sha256": "0d60116a2e9acf92b1e05abe6298bc245b59941433577ac7e81880f7f9754be8"
+    },
+    {
+      "label": "certificate-authority",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/008-certificate-authority.log",
+      "sha256": "c50a939cb5df0f354df7e34da4deaaa0031cb068f9d9090c306642cd10287cfa"
+    },
+    {
+      "label": "cratectl-db-key",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/009-cratectl-db-key.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "cratectl-db-request",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/010-cratectl-db-request.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "cratectl-db-certificate",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/011-cratectl-db-certificate.log",
+      "sha256": "c76ea1cd53c7ea63cbdfa9edfafb77e05cea62d8959026c7c8c8a653d0f8610b"
+    },
+    {
+      "label": "cratectl-registry-key",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/012-cratectl-registry-key.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "cratectl-registry-request",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/013-cratectl-registry-request.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "cratectl-registry-certificate",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/014-cratectl-registry-certificate.log",
+      "sha256": "f24817b22be16005716472f0e0f0b2e4d4a88777d64d0f5ae10f051ce64e4467"
+    },
+    {
+      "label": "namespaces",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/015-namespaces.log",
+      "sha256": "30ff859a51b6a5c7179b226f98fb6eb1294497d332613d2564e13d3cc23ec049"
+    },
+    {
+      "label": "database",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/016-database.log",
+      "sha256": "aecaafc83048e3f8408956f4aeef1834fefef731988fb54bdb4914220162290d"
+    },
+    {
+      "label": "database-ready",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/017-database-ready.log",
+      "sha256": "ad4dd22cb5fbb97d3562cd9134eb1420562b5effa9980d74d0d25fe046da1cdb"
+    },
+    {
+      "label": "owned-storage",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/018-owned-storage.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "storage",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/019-storage.log",
+      "sha256": "c294a5ac3e79eb1ab1f1286c1d1792c293553b41bbcf59e19be2df0b33e5840f"
+    },
+    {
+      "label": "volume-bound",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/020-volume-bound.log",
+      "sha256": "dfbebe4026aa062ad4ba2a18de7cfd0085ea78bbd6dfb9f54c311118d73e9100"
+    },
+    {
+      "label": "owned-relay-target",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/021-owned-relay-target.log",
+      "sha256": "16b8bf42192fac15463f09b080e271f0d8336e8d4140f28229545e674dd7ed35"
+    },
+    {
+      "label": "owned-tls-relay",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/022-owned-tls-relay.log",
+      "sha256": "95faa8c9b4faf4b9c8fca3c20660aa46ea9d8ba6a25a9d3edf1cbdeb2f290617"
+    },
+    {
+      "label": "migration",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/023-migration.log",
+      "sha256": "4108427290fa6793421980b803881bc7cec4079e6e8de6ebfc2d6a158b86b55d"
+    },
+    {
+      "label": "provision-admin",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/024-provision-admin.log",
+      "sha256": "d8ce6996f1505f6a8ad425da73d132cae9d4e5892f075b96826572761b0aea10"
+    },
+    {
+      "label": "provision-worker",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/025-provision-worker.log",
+      "sha256": "d8ce6996f1505f6a8ad425da73d132cae9d4e5892f075b96826572761b0aea10"
+    },
+    {
+      "label": "stop-tls-relay",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/026-stop-tls-relay.log",
+      "sha256": "9c128158e3b7d68c4b5d3043653d981699738133c63e335ddaab47a032cf11a1"
+    },
+    {
+      "label": "app-secrets",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/027-app-secrets.log",
+      "sha256": "b8121ab42b63360322e77739b289cc0ec3b61051dc05a3810ea64f723a660e34"
+    },
+    {
+      "label": "owned-registry-relay-service",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/028-owned-registry-relay-service.log",
+      "sha256": "5e5261c65757cd24d622e0bfc94e79dcaf0121d746847ccdd70a4ad1188ce67e"
+    },
+    {
+      "label": "helm-install",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/029-helm-install.log",
+      "sha256": "842c5e1d2a41afc44eaf8864364706eaf95fbb9b902fa7aa1c4444bdb705795e"
+    },
+    {
+      "label": "restricted-namespace",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/030-restricted-namespace.log",
+      "sha256": "7a0d91593df9293a8942f7438cb88f7ab1a8e354da491f567f9939b1303920f5"
+    },
+    {
+      "label": "runtime-pods",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/031-runtime-pods.log",
+      "sha256": "fb15646109a3d603c00232f1f2d3ab319636a6e77927e015c4ffdafa78f6cbef"
+    },
+    {
+      "label": "postgres-tls-sessions",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/032-postgres-tls-sessions.log",
+      "sha256": "aa67a169b0bba217aa0aa88a65346920c84c42447c36ba5f7ea65f422c1fe5d8"
+    },
+    {
+      "label": "owned-relay-target",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/033-owned-relay-target.log",
+      "sha256": "16b8bf42192fac15463f09b080e271f0d8336e8d4140f28229545e674dd7ed35"
+    },
+    {
+      "label": "owned-tls-relay",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/034-owned-tls-relay.log",
+      "sha256": "922428de2da69defaa834db187838fa03b8b65bf35b0055c36b0636bde5b1a54"
+    },
+    {
+      "label": "refuse-other-ca",
+      "exit": 60,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/035-refuse-other-ca.log",
+      "sha256": "a7cf2e0f1e2c02353e588d337e1b9378d18957894a889a9fe7d5828c8d85d18a"
+    },
+    {
+      "label": "trust-owned-ca",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/036-trust-owned-ca.log",
+      "sha256": "682c055ddf7d0afe32b7b2646e1635ab3c83f65884a37aecdc8549e7031a3417"
+    },
+    {
+      "label": "initial",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/037-initial.log",
+      "sha256": "9f3edededb2bb45ada36f2fc7c02523901b198174f945eaeeb4b2884594056f5"
+    },
+    {
+      "label": "create",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/038-create.log",
+      "sha256": "02a6540ad6f554060ab9729dd1c7d48c3200983d54f72b2b6f8a00214f21213a"
+    },
+    {
+      "label": "config-npm",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/039-config-npm.log",
+      "sha256": "8518f37b73b302071c327ede0c0b315a969d1e789d858bd72dc3387d26b79803"
+    },
+    {
+      "label": "stock-npm-publish",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/040-stock-npm-publish.log",
+      "sha256": "82bf67e47fd3e7cdd797b8ff3ef9cd3605bfa56f803f659562fc76837d2b8908"
+    },
+    {
+      "label": "artifact",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/041-artifact.log",
+      "sha256": "c1d9c2c8c2606594bcd3b804e6989d70323586bfe856a0d62d7a5141c0d417d1"
+    },
+    {
+      "label": "denied-npm",
+      "exit": 1,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/042-denied-npm.log",
+      "sha256": "afbb0ac01c0016fc6d6348cea87d61f72ff91a6fcf9d0ecd322a888729251e6e"
+    },
+    {
+      "label": "allow",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/043-allow.log",
+      "sha256": "22ad4e218e259b5a4dc3515b5acba55b66c9b2e83de1af7dbc539570c34aa53b"
+    },
+    {
+      "label": "approved",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/044-approved.log",
+      "sha256": "3519fa1b8d21e3ecdec7fad60962dc7527c5a61bbda725cd753218af4db6ad1f"
+    },
+    {
+      "label": "job-view",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/045-job-view.log",
+      "sha256": "f21a80182604fed5ef548ae6e3b3a4cc476e8f3d6d9302ed7e8723135436e7d5"
+    },
+    {
+      "label": "stop-tls-relay",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/046-stop-tls-relay.log",
+      "sha256": "9c128158e3b7d68c4b5d3043653d981699738133c63e335ddaab47a032cf11a1"
+    },
+    {
+      "label": "rolling-recreate",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/047-rolling-recreate.log",
+      "sha256": "5c643dc6248da463bf2d5ff8d55724bf1e023487291171d6ac48b3d283b4f2d5"
+    },
+    {
+      "label": "rollout-ready",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/048-rollout-ready.log",
+      "sha256": "bd5a08700fc73675b74aa884f510b4e3d0ba15627e3767313dfcc799ef1d662c"
+    },
+    {
+      "label": "owned-relay-target",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/049-owned-relay-target.log",
+      "sha256": "16b8bf42192fac15463f09b080e271f0d8336e8d4140f28229545e674dd7ed35"
+    },
+    {
+      "label": "owned-tls-relay",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/050-owned-tls-relay.log",
+      "sha256": "3ca136582a01eed1606dc977511918d119e0913385c464441bb1c70add9f0d67"
+    },
+    {
+      "label": "after-restart",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/051-after-restart.log",
+      "sha256": "113d168b6b1e1b96c4729ccb9021f0f6f528e275ac5e86ac5f65be1693f763a5"
+    },
+    {
+      "label": "stop-tls-relay",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/052-stop-tls-relay.log",
+      "sha256": "9c128158e3b7d68c4b5d3043653d981699738133c63e335ddaab47a032cf11a1"
+    },
+    {
+      "label": "helm-uninstall",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/053-helm-uninstall.log",
+      "sha256": "c28609434961fbb321c864ca955316339d992fb2b18ecc1f96fb8953b5c4dbe4"
+    },
+    {
+      "label": "claim-retained",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/054-claim-retained.log",
+      "sha256": "d06cc9afdf7a5bed54ca95ffc93b8d83f5334dd4ae4607a3ca83e00883ebbc84"
+    },
+    {
+      "label": "secret-retained",
+      "exit": 0,
+      "private_log": ".private/cratectl-helm-kind-f245757/journey-ipv4-relay/055-secret-retained.log",
+      "sha256": "6a32be1008e471c535e1ffa01e64ddc3bc72c6208433a21150d3f6b35e1ac3ed"
+    }
+  ],
+  "limits": [
+    "One disposable Linux ARM64 Kind node on a macOS host, one registry, one worker and one real PostgreSQL database using independently verified TLS.",
+    "This source does not establish heterogeneous cluster, storage driver portability, upgrade/rollback, backup/restore, HA or release readiness."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false,
+  "tool_versions": {
+    "kind": "0.33.0",
+    "helm": "4.2.2",
+    "kubectl": "1.36.1",
+    "postgresql": "16.15",
+    "npm": "11.16.0",
+    "go": "1.27.4"
+  },
+  "node_image_identity": {
+    "path": ".private/cratectl-helm-kind-f245757/node-image.txt",
+    "bytes": 163,
+    "sha256": "a09bc96552949c9b820d371a8c11bb3c4ee27bc7b504be3e5048f0064750c492"
+  },
+  "chart_render": {
+    "sha256": "dcba0ecd8a2d7a99bf6a62cf477683feeb90ed9aaa46b893a3aa8cf58fbbff1b",
+    "helm_lint": "strict pass",
+    "packaged_and_working_chart_bytes_match": true
+  },
+  "fixture_controls": {
+    "worker_projection_shell": [
+      "Nonroot Linux ARM64 shell copied two inert projected tokens to regular mode-0600 files.",
+      "The same shell refused a 258-byte token."
+    ],
+    "isolated_network": [
+      "Kubernetes API bound to host 127.0.0.1:35432.",
+      "Temporary NodePort relay published only host 127.0.0.1:38443 and passed TLS through to the owned service.",
+      "Each attempt used isolated namespaces. The eventual pass used a verified IPv4 relay and a fresh database and volume."
+    ],
+    "cleanup": {
+      "path": ".private/cratectl-helm-kind-f245757/cleanup.log",
+      "bytes": 192,
+      "sha256": "cb4b67401795b9aaffad9c8d601ae258b19e1ce418bdd85f1d26ed7a98dd3ca5"
+    }
+  },
+  "original_fixture_failures": [
+    {
+      "cause": "The all-platform image import required an uncached x64 manifest. A platform-specific archive imported the already cached ARM64 content.",
+      "log": {
+        "path": ".private/cratectl-helm-kind-f245757/image-load.log",
+        "bytes": 800,
+        "sha256": "49233b660b83e292575e31e52dce918ef68209003ec31f169eae964ec097aabd"
+      }
+    },
+    {
+      "cause": "The Kubernetes service port-forward closed its listener after a verified PostgreSQL migration. Subsequent provisioning could not reach the database.",
+      "first_record": {
+        "path": ".private/cratectl-helm-kind-f245757/journey/safe-report.json",
+        "bytes": 6689,
+        "sha256": "7c7657316132391cd5a62a6cb5faab25c2e28af10ccd596d330d6b0c200ecf61"
+      },
+      "port_forward_log": {
+        "path": ".private/cratectl-helm-kind-f245757/journey/cratectl-db-portforward-4faca439.log",
+        "bytes": 561,
+        "sha256": "3733fedd5a6a626fa76942596833225ccfb5cfe4f14ae5e180b94f18b5beee25"
+      }
+    },
+    {
+      "cause": "The first TLS relay used the Docker-resolved node name. The resolver returned an IPv6 alias and the TCP4 relay could not connect. The same NodePort accepted verified TLS from a direct literal IPv4 probe.",
+      "first_record": {
+        "path": ".private/cratectl-helm-kind-f245757/journey-relay/safe-report.json",
+        "bytes": 7064,
+        "sha256": "1aa4070b1db37554287edb188073b693235ae327575b4c4c3686ff1e578d999d"
+      }
+    }
+  ],
+  "local_driver": {
+    "script": {
+      "path": ".cache/cratectl-helm-kind-journey.py",
+      "bytes": 17427,
+      "sha256": "c743880ee32144229c51cd128aa7ee3ea8a4b7a79530163050209f7d07bc58e4"
+    },
+    "scoped_tls_relay": {
+      "path": ".cache/cratectl-helm-tls-lab-relay.go",
+      "bytes": 1133,
+      "sha256": "cb429f877cbd11e892dd5ca403d058f7992e06db81d5d58f36147acefe923368"
+    }
+  }
+}

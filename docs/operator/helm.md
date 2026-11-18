@@ -49,7 +49,10 @@ private routing. Configure clients to trust the issuer of the registry certifica
 helm upgrade --install cratectl deploy/helm/cratectl --namespace cratectl -f /path/to/values.yaml
 ```
 
-Current qualification covers Helm lint, configuration rendering and the init
-shell's bounded copy behavior. A Kubernetes deployment, native client admission,
-storage-driver behavior, backup and rollback, HA and production readiness require
-their own qualification.
+The packaged chart passed 13 checks on a single-node ARM64 Kubernetes 1.35
+cluster with restricted Pod Security, real PostgreSQL over verified TLS, stock
+npm and a local filesystem claim. Pod replacement preserved the approved
+package. Helm uninstall preserved the operator-owned claim and Secrets.
+Managed storage drivers, other Kubernetes environments, upgrades, backup,
+rollback and high availability still require qualification.
+[ARM64 Kubernetes evidence](../../evidence/2026-11-18/helm-f245757-arm64-kind.json)
