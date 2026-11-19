@@ -773,6 +773,10 @@ An original `541ea5d` Linux x64 JVM job failed before the SBT2 fixture
 bootstrap. Stock SBT 2.0.11 reported its pinned launcher POM as missing at
 Maven Central. The separate hosted Maven index jobs passed.
 [Original SBT2 bootstrap failure](evidence/2026-11-19/jvm-541ea5d-sbt2-amd64-bootstrap-first-failure.json)
+The original `541ea5d` campaign closed with 29 passes and one SBT2 failure
+across eight workflows. The terminal record retains 23 safe job summaries,
+the selection summary and 42 underlying report records.
+[Original Maven candidate outcomes](evidence/2026-11-19/github-541ea5d-original-completed.json)
 
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities
