@@ -11,6 +11,8 @@ from campaign_contract import WORKFLOWS, jobs
 from campaign_reports import validate_custom, validate_summary
 from campaign_transport import EvidenceError
 from compose_evidence import CHECKS as COMPOSE_CHECKS, SOURCE_PATHS as COMPOSE_FILES
+from debian_apt_evidence import (APT_CHECKS as DEBIAN_APT_CHECKS, BASE_CHECKS as DEBIAN_APT_BASE,
+                                 PROFILE as DEBIAN_APT_PROFILE, SOURCE_PATHS as DEBIAN_APT_FILES)
 from linux_install_evidence import CHECKS as INSTALL_CHECKS, IMAGE as INSTALL_IMAGE, SOURCE_PATHS as INSTALL_FILES
 from maven_index_evidence import (BASE_CHECKS as MAVEN_INDEX_BASE, CACHED_CHECKS as MAVEN_CACHED_CHECKS,
                                   CACHED_PROFILE as MAVEN_CACHED_PROFILE, CACHED_SOURCE_PATHS as MAVEN_CACHED_FILES,
@@ -39,6 +41,24 @@ SPECS = {spec['artifact']: spec for family in WORKFLOWS.values() for spec in job
 
 
 class CampaignReports(unittest.TestCase):
+    def test_debian_apt_report_requires_signed_repository_controls_on_native_architecture(self):
+        source = lambda path: path.encode()
+        candidate = 'a' * 40
+        apt = {'checks': list(DEBIAN_APT_CHECKS), 'apt': 'apt 2.8.3 (arm64)', 'architecture': 'arm64',
+               'gpg': 'gpg (GnuPG) 2.4.4', 'archive_sha256': {'cratectl-apt-app': 'a' * 64, 'cratectl-apt-library': 'b' * 64},
+               'release_sha256': 'c' * 64, 'index_sha256': {'Packages': 'd' * 64, 'Packages.gz': 'e' * 64}}
+        report = {'schema': 1, 'profile': DEBIAN_APT_PROFILE, 'candidate': candidate, 'status': 'passed',
+                  'runner_os': 'Linux', 'runner_arch': 'ARM64', 'run_id': '12', 'source_dirty': False,
+                  'source_sha256': {path: hashlib.sha256(source(path)).hexdigest() for path in DEBIAN_APT_FILES},
+                  'binary_sha256': {'cratectl': 'd' * 64, 'cratectld': 'e' * 64}, 'archive_sha256': 'c' * 64,
+                  'postgres': 'postgres (PostgreSQL) 16.15', 'npm': '10.9.9', 'checks': list(DEBIAN_APT_BASE),
+                  'debian_apt': apt, 'goal_complete': False, 'broad_readiness': False}
+        spec = SPECS['ci-summary-debian-apt-arm64']
+        self.assertEqual(validate_custom(report, candidate, 12, spec, source), {'checks': 36, 'records': 1})
+        for patch in ({'architecture': 'amd64'}, {'checks': [item for item in DEBIAN_APT_CHECKS if 'untrusted-signature' not in item]}):
+            with self.assertRaisesRegex(EvidenceError, 'debian_apt_report_contract'):
+                validate_custom({**report, 'debian_apt': {**apt, **patch}}, candidate, 12, spec, source)
+
     def test_public_nuget_checks_exact_archive_and_lock_domains(self):
         source = lambda path: path.encode()
         candidate = 'a' * 40

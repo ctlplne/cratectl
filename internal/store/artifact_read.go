@@ -174,7 +174,11 @@ func (s *Store) artifact(ctx context.Context, i Identity, repo, path string, int
 			e = checkGoModuleBundle(ctx, tx, repo, a, review && !intake, repositoryReadBudget(r))
 		}
 		if e == nil && r.Format == "apt" {
-			_, e = ValidateDebianArtifact(a)
+			if a.Path == DebianReleasePath {
+				_, e = decodeDebianRelease(a)
+			} else {
+				_, e = ValidateDebianArtifact(a)
+			}
 		}
 		if e == nil && r.Format == "nuget" {
 			var metadata NuGetPackage

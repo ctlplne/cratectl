@@ -158,3 +158,62 @@ func TestDebianHostedBindsExactPackagesAndCurrentTenantPolicy(t *testing.T) {
 		t.Fatal("other Debian tenant received conflicting primary tenant bytes")
 	}
 }
+
+func TestDebianHostedReleaseFencesIndexChangesAndOlderPublications(t *testing.T) {
+	s, _, token, admin := schemaServer(t)
+	ctx := context.Background()
+	const repository = "cratectl-debian-release"
+	const route = "/apt/" + repository + "/"
+	const file = "pool/cratectl-release/1.0/all/cratectl-release.deb"
+	const control = "Package: cratectl-release\nVersion: 1.0\nArchitecture: all\nMaintainer: cratectl owned fixture\nDescription: Owned Debian Release fixture\n"
+	mavenRepositories(t, s, admin, store.Repository{Name: repository, Format: "apt"})
+	data := debianPackageFixture(t, control, "Owned inert Debian Release fixture.\n")
+	request := func(method, path string, body []byte, want int) *httptest.ResponseRecorder {
+		t.Helper()
+		out := nugetHTTP(t, s, token, method, route+path, body, "")
+		if out.Code != want {
+			t.Fatalf("%s %s returned %d, expected %d: %.350s", method, path, out.Code, want, out.Body.String())
+		}
+		return out
+	}
+	request("PUT", file, data, 201)
+	index := request("GET", "./Packages", nil, 200).Body.Bytes()
+	compressed := request("GET", "Packages.gz", nil, 200).Body.Bytes()
+	externalEnvelope := func(date, expires time.Time, direct, gzipIndex []byte) []byte {
+		// The synthetic signature tests durable binding and rollback checks.
+		return fmt.Appendf(nil, "-----BEGIN PGP SIGNED MESSAGE-----\nHash: SHA256\n\nDate: %s\nValid-Until: %s\nAcquire-By-Hash: yes\nSHA256:\n %s %d Packages\n %s %d Packages.gz\n-----BEGIN PGP SIGNATURE-----\n\nT3duZWQgZW52ZWxvcGU=\n-----END PGP SIGNATURE-----\n",
+			date.UTC().Format(time.RFC1123), expires.UTC().Format(time.RFC1123), crypt.Digest(direct), len(direct), crypt.Digest(gzipIndex), len(gzipIndex))
+	}
+	now := time.Now().UTC()
+	current := externalEnvelope(now.Add(-time.Minute), now.Add(time.Hour), index, compressed)
+	wrong := externalEnvelope(now.Add(-time.Minute), now.Add(time.Hour), []byte("different authorized view"), compressed)
+	request("PUT", "InRelease", wrong, 409)
+	request("GET", "InRelease", nil, 404)
+	request("PUT", "InRelease", current, 201)
+	request("PUT", "InRelease", current, 201)
+	if actual := request("GET", "./InRelease", nil, 200).Body.Bytes(); !bytes.Equal(actual, current) {
+		t.Fatal("external envelope bytes changed")
+	}
+	for _, body := range [][]byte{index, compressed} {
+		if actual := request("GET", "./by-hash/SHA256/"+crypt.Digest(body), nil, 200).Body.Bytes(); !bytes.Equal(actual, body) {
+			t.Fatal("content-addressed Debian index differs from its Release entry")
+		}
+	}
+	request("PUT", "InRelease", externalEnvelope(now.Add(-2*time.Minute), now.Add(time.Hour), index, compressed), 409)
+	decide := func(decision string) {
+		t.Helper()
+		if err := s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
+			_, err := store.Decide(ctx, tx, admin, repository, file, crypt.Digest(data), decision)
+			return err
+		}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	decide("denied")
+	request("GET", "InRelease", nil, 409)
+	request("GET", "by-hash/SHA256/"+crypt.Digest(index), nil, 404)
+	request("GET", file, nil, 403)
+	decide("allowed")
+	request("GET", "InRelease", nil, 200)
+	request("PUT", "InRelease", externalEnvelope(now.Add(-20*time.Second), now.Add(-5*time.Second), index, compressed), 409)
+}

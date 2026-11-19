@@ -18,6 +18,23 @@ deletions affect the next read. Direct archive reads use repository policy and
 the shared verified object transfer.
 [Debian repository indexes](https://wiki.debian.org/DebianRepository/Format)
 
-Signed Release publication, the `dists/` hierarchy, xz and zstd control
-members, APT proxy and group routing, and stock package-manager qualification
-remain open.
+## Signed flat repository
+
+Fetch the current `Packages` and `Packages.gz` with a repository credential.
+Prepare a Release stanza with `Date`, `Valid-Until` and a `SHA256` continuation
+entry giving the digest and byte count for each index. Clear-sign the file with
+your external OpenPGP signer. An administrator can PUT the resulting original
+`InRelease` bytes at `/apt/REPOSITORY/InRelease`. Cratectl accepts a currently
+valid envelope only when both index entries match its current authorized
+inventory. Repository review also applies to the exact `InRelease` digest.
+
+Configure the stock client as a flat repository with suite `./`, the registry's
+trusted TLS CA, a private source credential and the independent signer public
+key in `Signed-By`. APT verifies the OpenPGP signature before using the index.
+Current index hashes can also be retrieved at `by-hash/SHA256/DIGEST`. When a
+policy or inventory change invalidates the signed view, publish a new envelope
+with a later `Date`.
+[APT archive authentication](https://manpages.debian.org/bookworm/apt/apt-secure.8.en.html)
+
+The `dists/` hierarchy, xz and zstd control members, proxy and group routing,
+and further native package-manager qualification remain open.

@@ -45,7 +45,7 @@ def sha(file):
 def evaluate(args):
     os.umask(0o077)
     authority = ('https://127.0.0.1:38443' if args.cargo_toolchain or args.npm_search or args.python_search_client
-                 or args.oci_catalog_cached or args.maven_index_cached else BASE)
+                 or args.oci_catalog_cached or args.maven_index_cached or args.debian_apt else BASE)
     private = ROOT / '.private'
     if private.is_symlink() or private.stat().st_mode & 0o077:
         raise ValueError('use the existing owner-only .private directory')
@@ -403,6 +403,10 @@ def evaluate(args):
             report['maven_index'] = hosted_maven_index(work, app, authority, args.maven_index_java.absolute(),
                                                       args.maven_index_reader.absolute(), public_env, call, api, restart_server, sha,
                                                       cached=args.maven_index_cached)
+        if args.debian_apt:
+            from debian_apt_fixture import evaluate_debian_apt
+
+            report['debian_apt'] = evaluate_debian_apt(work, app, authority, public_env, call, api, restart_server, sha)
         if args.npm_search:
             from npm_search_fixture import evaluate_cached_search, evaluate_search
 
@@ -495,6 +499,8 @@ def evaluate(args):
     if args.maven_index_cached:
         print(f"PASS: {len(report['maven_index']['cached']['checks'])} stock Apache cached Maven index checks")
         print(f"PASS: {len(report['maven_index']['cached']['groups']['checks'])} stock Apache ordered Maven index checks")
+    if args.debian_apt:
+        print(f"PASS: {len(report['debian_apt']['checks'])} stock signed Debian APT checks")
     if args.npm_search:
         print(f"PASS: {len(report['npm_search']['checks'])} stock hosted npm search checks")
         print(f"PASS: {len(report['npm_cached_search']['checks'])} stock cached npm search checks")
@@ -524,6 +530,8 @@ def evaluate(args):
         record_oci_catalog_ci(report, args.oci_catalog_ci_architecture)
     if args.maven_index_ci_architecture:
         record_maven_index_ci(report, args.maven_index_ci_architecture)
+    if args.debian_apt_ci_architecture:
+        record_debian_apt_ci(report, args.debian_apt_ci_architecture)
 
 
 def hosted_runner(report, architecture):
@@ -637,6 +645,20 @@ def record_maven_index_ci(report, architecture):
         stream.write('\n')
 
 
+def record_debian_apt_ci(report, architecture):
+    from ci.debian_apt_evidence import PROFILE, SOURCE_PATHS, validate as validate_debian
+
+    runner = hosted_runner(report, architecture)
+    projection = {key: report[key] for key in ('candidate', 'status', 'checks', 'binary_sha256', 'archive_sha256',
+                                                'postgres', 'npm', 'debian_apt', 'goal_complete', 'broad_readiness')}
+    projection.update(schema=1, profile=PROFILE, runner_os='Linux', runner_arch=runner,
+                      run_id=os.environ.get('GITHUB_RUN_ID'), source_dirty=False,
+                      source_sha256={name: sha(ROOT / name) for name in SOURCE_PATHS})
+    with (ROOT / '.cache/ci-debian-apt.json').open('x') as stream:
+        json.dump(validate_debian(projection), stream, indent=2)
+        stream.write('\n')
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--binary-directory', type=Path)
@@ -657,6 +679,8 @@ if __name__ == '__main__':
     parser.add_argument('--maven-index-java', type=Path, help='the JDK 21 executable for the stock index reader')
     parser.add_argument('--maven-index-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--maven-index-cached', action='store_true', help='also verify cached Maven proxy and ordered group indexes')
+    parser.add_argument('--debian-apt', action='store_true', help='verify a signed hosted repository using stock APT')
+    parser.add_argument('--debian-apt-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--npm-search', action='store_true',
                         help='also verify npm hosted and cached search using stock clients')
     parser.add_argument('--npm-search-ci-architecture', choices=('amd64', 'arm64'))
@@ -669,6 +693,10 @@ if __name__ == '__main__':
                         help='also fetch a pinned dependency graph from the public crates.io index and CDN')
     parser.add_argument('--legacy-cargo-daemon', type=Path)
     options = parser.parse_args()
+    if options.debian_apt_ci_architecture and (not options.debian_apt or options.provider_binary or options.npm_search
+                                               or options.python_search_client or options.cargo_toolchain or options.mcp_binary
+                                               or options.oci_catalog_client or options.maven_index_reader or options.promtool):
+        parser.error('native Debian evidence requires the isolated stock APT profile')
     if bool(options.maven_index_reader) != bool(options.maven_index_java):
         parser.error('the Maven index profile requires both the JDK and stock index reader')
     if options.maven_index_cached and not options.maven_index_reader:

@@ -1,0 +1,68 @@
+name: Native signed Debian APT repository
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/debian-apt.yml'
+      - 'internal/debian/**'
+      - 'internal/server/debian*.go'
+      - 'internal/store/debian*.go'
+      - 'scripts/debian_apt_fixture.py'
+      - 'scripts/ci/debian_apt_evidence.py'
+
+permissions:
+  contents: read
+
+jobs:
+  debian-apt:
+    if: github.ref == 'refs/heads/main' && github.repository == 'ctlplne/cratectl'
+    name: Stock signed Debian APT and real PostgreSQL (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 18
+    concurrency:
+      group: cratectl-debian-apt-${{ github.ref }}-${{ matrix.arch }}-${{ github.sha }}
+      cancel-in-progress: false
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    env:
+      GOENV: 'off'
+      GOTOOLCHAIN: local
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22.23.4'
+      - name: Build the clean cratectl candidate
+        run: make build BINDIR=.cache/cratectl-debian-apt-bin
+      - name: Replay native signed package downloads with stock APT
+        run: |
+          umask 077
+          mkdir -p .private
+          python3 scripts/conformance_repository_manifest.py \
+            --pg-bin /usr/lib/postgresql/16/bin --binary-directory .cache/cratectl-debian-apt-bin \
+            --debian-apt --debian-apt-ci-architecture '${{ matrix.arch }}'
+      - uses: actions/upload-artifact@v7
+        if: success()
+        with:
+          name: ci-summary-debian-apt-${{ matrix.arch }}
+          path: .cache/ci-debian-apt.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14

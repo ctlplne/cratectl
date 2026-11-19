@@ -3,11 +3,11 @@ package server
 
 import (
 	"bytes"
-	"compress/gzip"
 	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
+	"strings"
 	"time"
 
 	crypt "ctlplne.dev/cratectl/internal/crypto"
@@ -16,7 +16,12 @@ import (
 )
 
 func (s *Server) apt(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, path string) {
-	if path == "Packages" || path == "Packages.gz" {
+	path = strings.TrimPrefix(path, "./")
+	if path == store.DebianReleasePath {
+		s.debianRelease(w, r, i, repo.Name)
+		return
+	}
+	if path == "Packages" || path == "Packages.gz" || strings.HasPrefix(path, "by-hash/SHA256/") {
 		if r.Method != http.MethodGet && r.Method != http.MethodHead {
 			w.Header().Set("Allow", "GET, HEAD")
 			fail(w, 405, "method_not_allowed", "Read the derived Debian Packages index with GET or HEAD.")
@@ -103,24 +108,25 @@ func (s *Server) serveDebianPackages(w http.ResponseWriter, r *http.Request, i s
 		return
 	}
 	media := "text/plain; charset=utf-8"
-	if path == "Packages.gz" {
-		var encoded bytes.Buffer
-		gz := gzip.NewWriter(&encoded)
-		if _, err = gz.Write(index); err != nil {
+	requestedHash, byHash := strings.CutPrefix(path, "by-hash/SHA256/")
+	if path == "Packages.gz" || (byHash && crypt.Digest(index) != requestedHash) {
+		compressed, err := debian.GzipIndex(index)
+		if err != nil {
 			respondErr(w, err)
 			return
 		}
-		if err = gz.Close(); err != nil {
-			respondErr(w, err)
-			return
-		}
-		if int64(encoded.Len()) > s.NativeMetadataBytes {
+		if int64(len(compressed)) > s.NativeMetadataBytes {
 			respondErr(w, store.ErrMetadataLimit)
 			return
 		}
-		index, media = encoded.Bytes(), "application/gzip"
+		index, media = compressed, "application/gzip"
+	}
+	digest := crypt.Digest(index)
+	if byHash && requestedHash != digest {
+		respondErr(w, store.ErrNotFound)
+		return
 	}
 	w.Header().Set("Content-Type", media)
-	w.Header().Set("ETag", `"sha256:`+crypt.Digest(index)+`"`)
+	w.Header().Set("ETag", `"sha256:`+digest+`"`)
 	http.ServeContent(w, r, path, time.Time{}, bytes.NewReader(index))
 }

@@ -23,6 +23,7 @@ from offline_media_evidence import CHECKS as OFFLINE_CHECKS, PHASES as OFFLINE_P
 from terraform_provider_evidence import BASE_CHECKS as IAC_BASE, CLIENT_CHECKS as IAC_CHECKS, CLIENTS as IAC_CLIENTS, validate as validate_provider
 from cargo_evidence import CHECKS as CARGO_CHECKS, validate as validate_cargo
 from cargo_public_evidence import CHECKS as CARGO_PUBLIC_CHECKS, validate as validate_cargo_public
+from debian_apt_evidence import APT_CHECKS as DEBIAN_APT_CHECKS, validate as validate_debian_apt
 from npm_search_evidence import HOSTED_CHECKS as NPM_HOSTED, CACHED_CHECKS as NPM_CACHED, validate as validate_npm_search
 from python_search_evidence import HOSTED_CHECKS as PYTHON_HOSTED, CACHED_CHECKS as PYTHON_CACHED, validate as validate_python_search
 from oci_repository_catalog_evidence import (CACHED_CHECKS as OCI_CACHED_CHECKS, CACHED_PROFILE as OCI_CACHED_PROFILE,
@@ -128,6 +129,7 @@ def validate_custom(report, candidate, run_id, spec, source):
         'maven-index': (validate_maven_index, len(IAC_BASE) - 1 + len(MAVEN_INDEX_CHECKS)),
         'nuget-proxy': (validate_nuget_proxy, len(NUGET_PROXY_CHECKS)),
         'nuget-public': (validate_nuget_public, len(NUGET_PUBLIC_CHECKS)),
+        'debian-apt': (validate_debian_apt, len(IAC_BASE) - 1 + len(DEBIAN_APT_CHECKS)),
     }
     if spec['kind'] in source_contracts:
         kind = spec['kind'].replace('-', '_')

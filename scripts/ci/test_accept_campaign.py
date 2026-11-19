@@ -338,8 +338,8 @@ class CampaignAcceptance(unittest.TestCase):
         expected = {'main': 10, 'go': 2, 'jvm': 8, 'oci': 2, 'upgrades': 2, 'portable': 2, 'library': 2, 'browser': 3,
                     'strict': 3, 'windows': 2, 'compose': 2, 'linux-install': 2, 'offline-media': 2, 'terraform-provider': 2,
                     'cargo': 2, 'cargo-public': 2, 'npm-search': 2, 'python-search': 2, 'oci-catalog': 2, 'maven-index': 2,
-                    'nuget-proxy': 2, 'nuget-public': 2}
-        self.assertEqual(sum(expected.values()), 60)
+                    'nuget-proxy': 2, 'nuget-public': 2, 'debian-apt': 2}
+        self.assertEqual(sum(expected.values()), 62)
         for filename, family in WORKFLOWS.items():
             specs = jobs(family)
             self.assertEqual(len(specs), expected[family])
@@ -356,7 +356,7 @@ class CampaignAcceptance(unittest.TestCase):
             'scripts/ci/terraform_provider_evidence.py', 'scripts/ci/cargo_evidence.py', 'scripts/ci/bootstrap_cargo.py',
             'scripts/ci/cargo_public_evidence.py', 'scripts/ci/npm_search_evidence.py', 'scripts/ci/python_search_evidence.py',
             'scripts/ci/oci_repository_catalog_evidence.py', 'scripts/ci/maven_index_evidence.py',
-            'scripts/ci/nuget_proxy_evidence.py', 'scripts/ci/nuget_public_evidence.py',
+            'scripts/ci/nuget_proxy_evidence.py', 'scripts/ci/nuget_public_evidence.py', 'scripts/ci/debian_apt_evidence.py',
             'scripts/ci/evidence_summary.py', 'scripts/conformance_go.py'}
         self.assertEqual(set(paths), expected)
         self.assertTrue(all((ROOT / path).is_file() for path in paths))
