@@ -741,6 +741,16 @@ named PostgreSQL regressions and the build, unit, race and lint gates passed.
 The native fixture used isolated loopback HTTP.
 [Native NuGet flat-container proxy evidence](evidence/2026-11-19/nuget-fada553-flat-proxy-native.json)
 
+`6c72ee0` passed 26 ordered NuGet group assertions alongside the 30 stock
+proxy assertions on macOS ARM64 with PostgreSQL 16.16. Stock .NET restored
+the preferred proxy's exact application and a lower hosted dependency after
+current preferred absence. The same group enforced exact review. An explicit
+package owner restored the different lower application bytes. Warm restores
+made zero source requests after restart. The real PostgreSQL group regression
+and the build, unit, race and lint gates passed.
+[Native ordered NuGet group evidence](evidence/2026-11-19/nuget-6c72ee0-ordered-group-native.json)
+[Original Linux proxy run inventory](evidence/2026-11-19/github-2029b26-started.json)
+
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities
 published and pulled two exact chart archives, including a build-metadata

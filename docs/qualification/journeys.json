@@ -1135,15 +1135,19 @@
     {
       "id": "J.NUGET.GROUP",
       "capability": "FMT.NUGET.GROUP",
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
+      "state": "implementing",
+      "candidate": "6c72ee0d3f05fd2dc421ad2c9eafa6b750ebbb7d",
+      "evidence": [
+        "evidence/2026-11-19/nuget-6c72ee0-ordered-group-native.json"
+      ],
       "required": [
         "publish/consume exact bytes where applicable",
         "permissions/tenant isolation",
         "policy denial",
         "failure/recovery"
-      ]
+      ],
+      "limits": "Stock .NET SDK 10.0.403 passed 26 ordered group and 30 flat proxy assertions on exact 6c72ee0 with macOS ARM64 and PostgreSQL 16.16. The mixed group restored exact application bytes from a preferred proxy and the transitive dependency from a hosted member after current upstream absence. Scoped current review, grants, same-coordinate lower bytes, explicit package ownership, failure fencing and restart passed.",
+      "next_action": "Qualify native Linux groups, independent private and public remote feeds, metadata discovery, additional clients and production workloads."
     },
     {
       "id": "J.NUGET.REPLICATION",

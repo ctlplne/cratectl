@@ -1,0 +1,178 @@
+{
+  "candidate": "6c72ee0d3f05fd2dc421ad2c9eafa6b750ebbb7d",
+  "observed_at": "2026-11-19T05:33:19.674883+05:30",
+  "status": "passed",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres_server_version": "16.16",
+  "scoped_checks": 56,
+  "checks": [
+    "qualification source is clean",
+    "qualification binaries embed exact clean source commit",
+    "stock dotnet SDK executable is available",
+    "stock dotnet SDK matches the exact repository pin",
+    "admin: create nuget repository cratectl-nuget-proxy",
+    "ungranted stock source and other tenant requests make no origin request",
+    "reader receives the owned repository grant",
+    "NuGet discovery advertises the scoped cratectl flat address",
+    "stock dotnet fails closed with current package review unreviewed",
+    "cold exact request stages the reviewed archive Cratectl.Proxy.Application",
+    "cold exact request stages the reviewed archive Cratectl.Proxy.Dependency",
+    "stock dotnet restore succeeds cold-dependency-catalog",
+    "stock dotnet resolves the exact application and transitive dependency cold-dependency-catalog",
+    "stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Application cold-dependency-catalog",
+    "stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Dependency cold-dependency-catalog",
+    "upstream requests stay on canonical indexes, archives and SHA-512 sidecars",
+    "native manifest bytes come from the verified archive",
+    "stock dotnet restore succeeds warm-restart",
+    "stock dotnet resolves the exact application and transitive dependency warm-restart",
+    "stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Application warm-restart",
+    "stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Dependency warm-restart",
+    "restart and warm restore make no origin transfer",
+    "current exact denial applies to cached version advertisements and bytes",
+    "stock dotnet fails closed with current package review denied",
+    "current policy can restore the exact retained digest",
+    "stock dotnet restore succeeds allowed-again",
+    "stock dotnet resolves the exact application and transitive dependency allowed-again",
+    "stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Application allowed-again",
+    "stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Dependency allowed-again",
+    "repeated policy changes and isolated stock restores keep the warm origin idle",
+    "admin: create nuget repository cratectl-nuget-preferred",
+    "admin: create nuget repository cratectl-nuget-lower",
+    "publish the lower hosted package Cratectl.Proxy.Application",
+    "publish the lower hosted package Cratectl.Proxy.Dependency",
+    "admin: create nuget repository cratectl-nuget-group",
+    "admin: create nuget repository cratectl-nuget-owner-group",
+    "an ungranted preferred NuGet source blocks the group before origin routing",
+    "grant access to the consulted NuGet member",
+    "the group stages the preferred archive for exact review",
+    "stock dotnet restore succeeds group-preferred-proxy",
+    "stock dotnet resolves the exact application and transitive dependency group-preferred-proxy",
+    "stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Application group-preferred-proxy",
+    "stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Dependency group-preferred-proxy",
+    "ordered group uses one current missing dependency catalog and exact preferred proxy bytes",
+    "higher priority denial removes the app while lower hosted bytes remain available directly",
+    "stock dotnet fails closed with current package review group-preferred-denied",
+    "stock dotnet restore succeeds group-namespace-owner",
+    "stock dotnet resolves the exact application and transitive dependency group-namespace-owner",
+    "stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Application group-namespace-owner",
+    "stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Dependency group-namespace-owner",
+    "the preferred exact digest can be approved again",
+    "stock dotnet restore succeeds group-restarted",
+    "stock dotnet resolves the exact application and transitive dependency group-restarted",
+    "stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Application group-restarted",
+    "stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Dependency group-restarted",
+    "warm group restores reuse the exact authorities after restart"
+  ],
+  "native": {
+    "sdk": "10.0.403",
+    "dotnet_sha256": "09448be14f72ee40d5ddaaf6039e9103c1dfdab1b975982aa68b537c4fad4a9b",
+    "fixtures": {
+      "Cratectl.Proxy.Application": {
+        "nupkg": "b335d0d33284ef2eb0ca5769aac956b9d06cea9adae419a8fd5d8fedaeec9f68",
+        "nuspec": "298bd531f5c7cf2d3f6ed5a6f3bf33cbe5a30ef2fd742b69ace763857d58e647",
+        "payload": "ae2c017908e46841bb160c8d72c0ef9bf7ba7915477a524fc75b2e79ca14476a"
+      },
+      "Cratectl.Proxy.Dependency": {
+        "nupkg": "4a35b660ba9bc5af59075570ff8a0f45cf5984f28af2ea4c3e1d736933a9f879",
+        "nuspec": "97e29cc1690c50545e14bbfded0e90e2ea821d5e0097e61df0f0d6f938c68fb0",
+        "payload": "fdab4317d7cf1d0ff7a49d4d019fa4c56bda621661a5c914cb5303ad3e71b67e"
+      }
+    },
+    "loopback_http": true,
+    "origin_requests": 6
+  },
+  "ordered_group": {
+    "checks": 26,
+    "origin_requests": 4,
+    "preferred_application_sha256": "b335d0d33284ef2eb0ca5769aac956b9d06cea9adae419a8fd5d8fedaeec9f68",
+    "hosted_application_sha256": "1c712446faf437c01e24a1603cb9c0b1ab919a7d5cae0a2c999d96080d99800f",
+    "hosted_dependency_sha256": "4a35b660ba9bc5af59075570ff8a0f45cf5984f28af2ea4c3e1d736933a9f879"
+  },
+  "real_postgres_regressions": [
+    "TestNuGetGroupKeepsPackageAuthorityAcrossPolicyAndUpstreamChanges",
+    "TestNuGetListingIsDurableAndPreservesConsumption",
+    "TestNuGetHostedPublicationPolicyBytesAndLifecycle",
+    "TestNuGetConcurrentCoordinatesAndCompleteIndexBudget",
+    "TestNuGetProxyFlatContainerUsesCurrentPolicyAndImmutableArchives",
+    "TestNuGetProxyCatalogRefreshesWithoutFreshness",
+    "TestNuGetListingHTTPBoundary"
+  ],
+  "gates": {
+    "make build": "passed",
+    "make test": "passed",
+    "make race": "passed",
+    "make lint": "passed"
+  },
+  "binary_sha256": {
+    "cratectld": "0dd3fcc06034b26145d7064ec9c7b419dc9228938335a060f6f284887379884a",
+    "cratectl": "b474d6843db7b12ab855896557b4cc46ce6ffbce9f2e7a44ebba693c1cb1a381"
+  },
+  "source_sha256": [
+    {
+      "path": "internal/server/nuget.go",
+      "sha256": "063460db82d58a494e69fe702ec4f59e1810c1ac18b2053d2363c09ad94f1b70"
+    },
+    {
+      "path": "internal/server/nuget_proxy.go",
+      "sha256": "e35c3b0a117e8310c6bb8f1afb34b6a570cc8c51b5294a6579fa8a8cec38f67e"
+    },
+    {
+      "path": "internal/server/nuget_group.go",
+      "sha256": "c832bc32fe8a3f9500ed1bbe85ebfa35b35507fed99a2e0462246eda720d80bc"
+    },
+    {
+      "path": "internal/server/nuget_group_integration_test.go",
+      "sha256": "1727e566728e7aff26dc0e8ec376d42dc0eb4b7c774ac82b3c3d5becd7c9b5f9"
+    },
+    {
+      "path": "internal/server/resolve.go",
+      "sha256": "8953b4fca9aa2d08809fe8f7c6f5e49382b2a12b108ff61deea11544e46b9c0f"
+    },
+    {
+      "path": "internal/store/nuget.go",
+      "sha256": "327194c21c81cd68cfefb0f6cfda449137e50cd534b8cb9699008a3042c0aabd"
+    },
+    {
+      "path": "internal/store/nuget_group.go",
+      "sha256": "0a681332bafc36fc0519b5d6aee2cdc6f71aa35f8a6e32b744ff00d6949786b4"
+    },
+    {
+      "path": "internal/store/nuget_proxy.go",
+      "sha256": "2b67f47e3fe3f2ae6b8755c663e9e7c2d30b2841dcf0dd57b0c8ce316b9278c5"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "c2e12a05e205ec161e69ca7cbc6eae858fd000f563cd74702f9e65a583fa1dad"
+    },
+    {
+      "path": "internal/store/retrieval.go",
+      "sha256": "dd27abe47e7806fb604184ffe07e60531ccfb84725bb607a84574e0101836003"
+    },
+    {
+      "path": "scripts/conformance.py",
+      "sha256": "66ecbb002397aca563556141b67cc8bd48c40935132acc2e43458cbf40ca5a08"
+    },
+    {
+      "path": "scripts/conformance_nuget_proxy.py",
+      "sha256": "0f9c87b8f3a6e5a35fbd96a2a633c909e72c9071e82d69ff207cb6c93dee1dc2"
+    },
+    {
+      "path": "scripts/conformance_nuget_group.py",
+      "sha256": "95201cedc519bfb47115f221e7e7a0e2594d557f785054752f0ae9d4a4baf335"
+    },
+    {
+      "path": "global.json",
+      "sha256": "bd2f7421218da3954279a68a63015aeabda5b7122ec8b47a2f7585b7e284a98d"
+    }
+  ],
+  "original_private_report": {
+    "path": ".private/conformance/889c4e5d16/conformance-889c4e5d16.json",
+    "bytes": 11558,
+    "sha256": "a92e73486565e6be53c284052e161199ac56cd94c5419d80e917180b104a31a6"
+  },
+  "limits": [
+    "The combined profile runs stock .NET SDK 10.0.403 on one native macOS ARM64 server with PostgreSQL 16.16 and isolated loopback HTTP. Ordered groups use whole package ID ownership, current proxy absence, mixed source dependencies, separate same-coordinate application bytes, namespace ownership, review, grants and restart. Independent remote feeds, group registration and search, other clients, production TLS and larger workloads remain open."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}
