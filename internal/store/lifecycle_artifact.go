@@ -98,6 +98,9 @@ func materializedLifecycleReference(r Repository, a Artifact) bool {
 		return a.MediaType != PythonCatalogMedia && !strings.HasPrefix(a.Path, "pypi-catalog/")
 	case "nuget":
 		return strings.HasPrefix(a.Path, "nuget-packages/") && strings.HasSuffix(a.Path, ".nupkg")
+	case "apt":
+		_, err := ValidateDebianArtifact(a)
+		return err == nil
 	case "cargo":
 		if r.Mode == "proxy" {
 			var binding CargoArchiveBinding
