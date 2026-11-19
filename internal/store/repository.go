@@ -9,6 +9,7 @@ import (
 
 	"ctlplne.dev/cratectl/internal/cargo"
 	"ctlplne.dev/cratectl/internal/composer"
+	"ctlplne.dev/cratectl/internal/cran"
 	"ctlplne.dev/cratectl/internal/debian"
 	"ctlplne.dev/cratectl/internal/gomodule"
 	"ctlplne.dev/cratectl/internal/nuget"
@@ -155,7 +156,8 @@ func validateRepository(r *Repository, retainedGoProxy bool) error {
 		return errors.New("retained Go proxy configuration requires explicit checksum authority and checksum enforcement")
 	}
 	if r.Mode != "hosted" && r.Format != "generic" && r.Format != "maven" && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" && r.Format != "cargo" && r.Format != "nuget" &&
-		r.Format != "composer" && !(r.Format == "go" && (r.Mode == "group" || r.Mode == "proxy" && retainedGoProxy)) {
+		r.Format != "composer" && !(r.Format == "cran" && r.Mode == "group") &&
+		!(r.Format == "go" && (r.Mode == "group" || r.Mode == "proxy" && retainedGoProxy)) {
 		return errors.New("proxy/group native adapters not yet implemented for this format")
 	}
 	if r.Settings.OCITokenEndpoint != nil {
@@ -272,6 +274,9 @@ func validateRepository(r *Repository, retainedGoProxy bool) error {
 			if r.Format == "composer" && !composer.ValidName(strings.TrimSuffix(prefix, "/")) {
 				return errors.New("Composer namespace owners require a canonical vendor/package name followed by a slash")
 			}
+			if r.Format == "cran" && !cran.ValidName(strings.TrimSuffix(prefix, "/")) {
+				return errors.New("CRAN namespace owners require an exact case-sensitive package name followed by a slash")
+			}
 		}
 	default:
 		return errors.New("invalid repository mode")
@@ -290,7 +295,7 @@ func CreateRepository(ctx context.Context, tx pgx.Tx, i Identity, r Repository) 
 		if e != nil {
 			return e
 		}
-		if source.Format != r.Format || source.Mode == "group" || (r.Format == "composer" && source.Mode != "hosted") {
+		if source.Format != r.Format || source.Mode == "group" || ((r.Format == "composer" || r.Format == "cran") && source.Mode != "hosted") {
 			return ErrConflict
 		}
 	}

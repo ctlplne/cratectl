@@ -51,9 +51,22 @@ uses R's numeric version components. Use the linked filename to read the
 original archive. The exact URL keeps the same bytes while that reference
 remains eligible, including if review changes which version is newest.
 
-The hosted profile covers source archives and the two DCF indexes.
-Platform binaries, serialized indexes, proxy and group repositories need
-separate implementation and qualification.
+## Read an ordered group
+
+Create a `cran` group with an ordered list of hosted CRAN members. Consumers
+need read access to the group and every member. The first member retaining
+any version of a package owns all its versions in the group. A denied or
+retired version still reserves its package name. You can assign an exact
+case-sensitive package name to a specific member through `namespace_owners`.
+
+Run the same stock R commands using the group root as `repo`. The group index
+adds a digest-bound `Path` field that native R uses for the source URL. At
+download time cratectl checks the current owner, both review policies and
+the exact SHA-256. Publish and restore source archives in the hosted members.
+Historical directories are available on the hosted members.
+
+Platform binaries, serialized indexes and proxy repositories need separate
+implementation and qualification.
 
 [Writing R Extensions](https://cran.r-project.org/doc/manuals/R-exts.html)
 [Native R index and downloader](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/available.packages.html)

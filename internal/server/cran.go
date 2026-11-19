@@ -20,6 +20,10 @@ import (
 
 func (s *Server) cran(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, request string) {
 	if archive, found := strings.CutPrefix(request, cran.ArchiveDirectory); found {
+		if repo.Mode != "hosted" {
+			respondErr(w, store.ErrNotFound)
+			return
+		}
 		s.serveCRANArchive(w, r, i, repo, archive)
 		return
 	}
@@ -29,7 +33,11 @@ func (s *Server) cran(w http.ResponseWriter, r *http.Request, i store.Identity, 
 			fail(w, 405, "method_not_allowed", "Read the CRAN source index with GET or HEAD.")
 			return
 		}
-		s.serveCRANIndex(w, r, i, repo.Name, name)
+		s.serveCRANIndex(w, r, i, repo, name)
+		return
+	}
+	if repo.Mode == "group" {
+		s.serveCRANGroupPackage(w, r, i, repo, request)
 		return
 	}
 	coordinate, ok := cran.ParsePath(request)
@@ -46,6 +54,22 @@ func (s *Server) cran(w http.ResponseWriter, r *http.Request, i store.Identity, 
 		w.Header().Set("Allow", "GET, HEAD, PUT")
 		fail(w, 405, "method_not_allowed", "Publish a CRAN source archive with PUT or consume it with GET or HEAD.")
 	}
+}
+
+func (s *Server) serveCRANGroupPackage(w http.ResponseWriter, r *http.Request, i store.Identity, group store.Repository, request string) {
+	locator, ok := strings.CutPrefix(request, cran.SourceDirectory+cran.DigestDirectory)
+	digest, file, found := strings.Cut(locator, "/")
+	if !ok || !found || len(digest) != 64 {
+		respondErr(w, store.ErrNotFound)
+		return
+	}
+	artifact, source, err := s.DB.CRANGroupArtifact(r.Context(), i, group.Name, cran.SourceDirectory+file, digest, group.SourceRevision)
+	if err != nil {
+		respondErr(w, err)
+		return
+	}
+	s.serveResolvedArtifact(w, r, i, resolvedArtifact{artifact: artifact, source: source,
+		groups: []string{group.Name}, groupRevisions: map[string]int64{group.Name: group.SourceRevision}})
 }
 
 func (s *Server) serveCRANPackage(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, path string) {
@@ -112,8 +136,14 @@ func (s *Server) serveCRANArchive(w http.ResponseWriter, r *http.Request, i stor
 	http.ServeContent(w, r, "index.html", time.Time{}, strings.NewReader(body))
 }
 
-func (s *Server) serveCRANIndex(w http.ResponseWriter, r *http.Request, i store.Identity, repo, name string) {
-	index, err := s.DB.CRANPackageIndex(r.Context(), i, repo, s.NativeVersionLimit, s.NativeMetadataBytes)
+func (s *Server) serveCRANIndex(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, name string) {
+	var index string
+	var err error
+	if repo.Mode == "group" {
+		index, err = s.DB.CRANGroupIndex(r.Context(), i, repo.Name, repo.SourceRevision, s.NativeVersionLimit, s.NativeMetadataBytes)
+	} else {
+		index, err = s.DB.CRANPackageIndex(r.Context(), i, repo.Name, s.NativeVersionLimit, s.NativeMetadataBytes)
+	}
 	if err != nil {
 		respondErr(w, err)
 		return

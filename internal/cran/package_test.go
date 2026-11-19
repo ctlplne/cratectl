@@ -29,7 +29,7 @@ func TestDescriptionFoldsFieldsAndKeepsNativeDependencies(t *testing.T) {
 	}
 	want := "Package: CratectlStat\nVersion: 1.2-3\nDepends: R (>= 4.0)\nImports: Cratectl.Data (>= 2.1-0), metrics\n" +
 		"License: MIT\nNeedsCompilation: no\nTitle: Owned CRAN Fixture\nDescription: First line then a continuation.\nMD5sum: " + strings.Repeat("a", 32) + "\n\n"
-	if got := p.IndexEntry(strings.Repeat("a", 32)); got != want {
+	if got := p.IndexEntry(strings.Repeat("a", 32), ""); got != want {
 		t.Fatalf("unexpected DCF index:\n%s", got)
 	}
 }

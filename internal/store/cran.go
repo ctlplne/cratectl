@@ -62,7 +62,7 @@ func (s *Store) CRANPackageIndex(ctx context.Context, i Identity, repo string, l
 	byteLimit = min(byteLimit, 8<<20)
 	var output strings.Builder
 	err := s.readCRANReferences(ctx, i, repo, cran.SourceDirectory, limit, func(metadata CRANPackage) error {
-		entry := metadata.Description.IndexEntry(metadata.MD5)
+		entry := metadata.Description.IndexEntry(metadata.MD5, "")
 		if int64(output.Len()+len(entry)) > byteLimit {
 			return ErrMetadataLimit
 		}

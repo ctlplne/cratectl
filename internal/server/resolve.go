@@ -674,9 +674,13 @@ func (s *Server) guardResolved(ctx context.Context, i store.Identity, a resolved
 	}
 	if a.source.Format == "nuget" && len(a.groups) == 1 {
 		current, e = s.DB.NuGetGroupArtifact(ctx, i, a.groups[0], snapshot, a.artifact.Path, s.NativeVersionLimit, s.NativeMetadataBytes, a.admissions...)
-	} else if a.source.Format == "composer" && len(a.groups) == 1 {
+	} else if (a.source.Format == "composer" || a.source.Format == "cran") && len(a.groups) == 1 {
 		group := a.groups[0]
-		current, source, err := s.DB.ComposerGroupArtifact(ctx, i, group, a.artifact.Path, a.artifact.Digest, a.groupRevisions[group])
+		read := s.DB.ComposerGroupArtifact
+		if a.source.Format == "cran" {
+			read = s.DB.CRANGroupArtifact
+		}
+		current, source, err := read(ctx, i, group, a.artifact.Path, a.artifact.Digest, a.groupRevisions[group])
 		if err != nil {
 			return current, err
 		}

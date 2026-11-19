@@ -80,7 +80,7 @@ func configurationPreview(ctx context.Context, tx pgx.Tx, i Identity, repo strin
 		if e != nil {
 			return out, nil, e
 		}
-		if member.Format != r.Format || member.Mode == "group" || (r.Format == "composer" && member.Mode != "hosted") {
+		if member.Format != r.Format || member.Mode == "group" || ((r.Format == "composer" || r.Format == "cran") && member.Mode != "hosted") {
 			return out, nil, ErrConfigurationInput
 		}
 		state, e := repositoryStateInTx(ctx, tx, name)

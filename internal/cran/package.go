@@ -20,6 +20,7 @@ const maxExpandedBytes int64 = 256 << 20
 const MaxDescriptionBytes = 128 << 10
 const SourceDirectory = "src/contrib/"
 const ArchiveDirectory = SourceDirectory + "Archive/"
+const DigestDirectory = "sha256/"
 
 var ErrPackage = errors.New("invalid or unsupported CRAN source package")
 
@@ -106,14 +107,18 @@ func (p Package) ValidFor(c Coordinate) bool {
 
 // IndexEntry writes only validated DESCRIPTION fields. Compatibility metadata
 // is derived from the original source artifact rather than supplied by it.
-func (p Package) IndexEntry(md5 string) string {
+func (p Package) IndexEntry(md5, digest string) string {
 	var output strings.Builder
 	for _, field := range indexFields {
 		if value, ok := p[field]; ok {
 			output.WriteString(field + ": " + value + "\n")
 		}
 	}
-	output.WriteString("MD5sum: " + md5 + "\n\n")
+	output.WriteString("MD5sum: " + md5 + "\n")
+	if digest != "" {
+		output.WriteString("Path: " + DigestDirectory + digest + "\n")
+	}
+	output.WriteByte('\n')
 	return output.String()
 }
 
