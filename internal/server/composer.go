@@ -42,6 +42,10 @@ func (s *Server) composer(w http.ResponseWriter, r *http.Request, i store.Identi
 				s.serveComposerGroup(w, r, i, repo, coordinate)
 				return
 			}
+			if repo.Mode == "proxy" {
+				s.serveComposerProxy(w, r, i, repo, coordinate)
+				return
+			}
 			s.serveArtifact(w, r, i, repo.Name, coordinate.Path())
 			return
 		}
@@ -69,6 +73,13 @@ func (s *Server) composer(w http.ResponseWriter, r *http.Request, i store.Identi
 	}{Packages: map[string][]composerVersion{}}
 	if request == "packages.json" {
 		response.MetadataURL = base + "p2/%package%.json"
+	} else if repo.Mode == "proxy" {
+		rows, err := s.composerProxyVersions(r, i, repo, base, name, development)
+		if err != nil {
+			respondErr(w, err)
+			return
+		}
+		response.Packages[name] = rows
 	} else {
 		versions, err := s.DB.ComposerVersions(r.Context(), i, repo.Name, name, development, repo.SourceRevision, s.NativeVersionLimit, s.NativeMetadataBytes)
 		if err != nil {

@@ -235,6 +235,11 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 		if !valid {
 			return ErrLeaseLost
 		}
+		if repo.Format == "composer" {
+			if e = validateComposerRetrieval(lease, result); e != nil {
+				return e
+			}
+		}
 		if result.GoCatalog != nil {
 			if e = validateGoModuleCatalogRetrieval(repo, lease, result); e != nil {
 				return e

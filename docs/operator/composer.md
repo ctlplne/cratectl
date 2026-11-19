@@ -46,5 +46,28 @@ Composer reads tagged releases and prereleases under the ordinary package
 index. It requests a separate development index when the project allows
 development packages. Both indexes apply current grants and review.
 
-Proxy routing, additional version forms, other distribution formats and
-broader package metadata remain open.
+## Checksum-bound proxy
+
+Create a Composer proxy with an explicit `settings.upstream.url` and allowed
+network ranges. Cratectl reads the source's Composer v2 metadata at
+`p2/VENDOR/PACKAGE.json` and `p2/VENDOR/PACKAGE~dev.json`. It accepts ordinary
+JSON and the Composer 2.0 delta format.
+
+This proxy profile requires the upstream metadata to include the original
+ZIP's SHA-256 in the `dist.sha256` extension. Composer's optional
+`dist.shasum` is checked for compatibility when present. Add any separate
+archive base URL to `settings.download_sources` with its own allowed
+networks and credential reference. Package metadata cannot add a new source
+authority.
+
+Cratectl checks the exact archive digest, inspects the ZIP, and compares its
+install metadata with the source before retaining the package reference.
+The download URL pins the SHA-256 and still requires current catalog and
+policy approval. For a review-required repository, an operator can request
+the exact pinned archive using the approved source metadata, review the
+retained digest, then run Composer against the proxy. Cache expiry requires
+revalidation of the configured source.
+
+Public origins that do not supply this strong digest, mixed proxy/hosted
+groups, additional version forms, other distribution formats and broader
+package metadata remain open.

@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"slices"
 	"strings"
 
 	crypt "ctlplne.dev/cratectl/internal/crypto"
@@ -170,12 +169,6 @@ ORDER BY requested.position`, catalog.Versions, i.Tenant, r.Name, catalog.ID, r.
 	return pgx.CollectRows(rows, pgx.RowTo[string])
 }
 
-func nugetAdmitted(state Retrieval, admissions []NativeAdmission, stale bool) bool {
-	return slices.ContainsFunc(admissions, func(a NativeAdmission) bool {
-		return a.Repository == state.Repository && a.Path == state.Path && a.Generation == state.Generation && a.Stale == stale
-	})
-}
-
 func nugetArchiveInTx(ctx context.Context, tx pgx.Tx, r Repository, path string, review bool, admissions []NativeAdmission) (Artifact, error) {
 	if err := notDeletedInTx(ctx, tx, r.Name, path); err != nil {
 		return Artifact{}, err
@@ -192,8 +185,8 @@ func nugetArchiveInTx(ctx context.Context, tx pgx.Tx, r Repository, path string,
 		if err != nil {
 			return Artifact{}, err
 		}
-		ready := state.State == "ready" && (state.Fresh() || nugetAdmitted(state, admissions, false))
-		stale := state.State == "failed" && state.StalePermitted() && nugetAdmitted(state, admissions, true)
+		ready := state.State == "ready" && (state.Fresh() || nativeGenerationAdmitted(state, admissions, false))
+		stale := state.State == "failed" && state.StalePermitted() && nativeGenerationAdmitted(state, admissions, true)
 		if !ready && !stale {
 			return Artifact{}, ErrSourceChanged
 		}

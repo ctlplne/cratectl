@@ -912,7 +912,7 @@ paths:
                         fresh_seconds: {type: integer, minimum: 0, maximum: 86400}
                         negative_seconds: {type: integer, minimum: 0, maximum: 3600}
                         stale_seconds: {type: integer, minimum: 0, maximum: 604800}
-                        require_checksum: {type: boolean, default: false, description: Cargo proxies always enforce checksums. Other formats follow their configured policy.}
+                        require_checksum: {type: boolean, default: false, description: Cargo and Composer proxies always enforce strong checksums. Other formats follow their configured policy.}
                         allow_no_store: {type: boolean, default: false}
                         allow_legacy_npm_shasum: {type: boolean, default: false, description: Explicit compatibility fallback when strong SRI is absent; require_checksum disables this fallback.}
                     oci_token_endpoint:
@@ -928,7 +928,7 @@ paths:
                     download_sources:
                       type: array
                       maxItems: 16
-                      description: Additional download authorities for npm, PyPI, OCI and Cargo proxies. NuGet service-index mode requires exactly one configured flat-container authority. An expanded Cargo download URL must match the approved origin or one of these authorities. Each authority uses its configured credentials. OCI signed queries require allow_signed_query and are never retained as cache bindings.
+                      description: Additional download authorities for npm, PyPI, OCI, Cargo and Composer proxies. NuGet service-index mode requires exactly one configured flat-container authority. Each download URL must match an approved authority and uses its configured credentials. OCI signed queries require allow_signed_query and are never retained as cache bindings.
                       items:
                         type: object
                         required: [url, networks]

@@ -7,7 +7,9 @@ import (
 	"encoding/json/v2"
 	"errors"
 	"io"
+	"maps"
 	"path"
+	"reflect"
 	"regexp"
 	"strings"
 	"unicode"
@@ -90,6 +92,13 @@ type Package struct {
 	Replace     map[string]string `json:"replace,omitempty"`
 	Provide     map[string]string `json:"provide,omitempty"`
 	Autoload    *Autoload         `json:"autoload,omitempty"`
+}
+
+func (p Package) SameInstallation(other Package) bool {
+	return p.Name == other.Name && p.Version == other.Version && p.Type == other.Type &&
+		maps.Equal(p.Require, other.Require) && maps.Equal(p.RequireDev, other.RequireDev) &&
+		maps.Equal(p.Conflict, other.Conflict) && maps.Equal(p.Replace, other.Replace) &&
+		maps.Equal(p.Provide, other.Provide) && reflect.DeepEqual(p.Autoload, other.Autoload)
 }
 
 type Autoload struct {

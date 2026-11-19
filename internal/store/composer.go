@@ -24,7 +24,14 @@ type ComposerPackage struct {
 func decodeComposerPackage(a Artifact) (ComposerPackage, error) {
 	var metadata ComposerPackage
 	coordinate, ok := composer.ParseDistribution(a.Path)
-	if !ok || a.MediaType != ComposerMedia || !uploadDigest.MatchString(a.Digest) ||
+	if !ok {
+		var digest string
+		coordinate, digest, ok = ParseComposerProxyArchive(a.Path)
+		if !ok || digest != a.Digest {
+			return ComposerPackage{}, ErrConflict
+		}
+	}
+	if a.MediaType != ComposerMedia || !uploadDigest.MatchString(a.Digest) ||
 		a.Size < 1 || a.Size > composer.UploadBytes || len(a.Metadata) > composerMetadataBytes ||
 		json.Unmarshal(a.Metadata, &metadata) != nil || !metadata.Validated ||
 		!composerSHA1.MatchString(metadata.SHA1) || metadata.Package.Version != coordinate.Version ||
@@ -35,6 +42,9 @@ func decodeComposerPackage(a Artifact) (ComposerPackage, error) {
 }
 
 func (s *Store) PublishComposer(ctx context.Context, i Identity, repo string, a Artifact) error {
+	if _, valid := composer.ParseDistribution(a.Path); !valid {
+		return ErrConflict
+	}
 	if _, err := decodeComposerPackage(a); err != nil {
 		return err
 	}

@@ -68,7 +68,7 @@ func nugetGroupSource(ctx context.Context, tx pgx.Tx, i Identity, group, id stri
 			if err != nil && !errors.Is(err, pgx.ErrNoRows) {
 				return selected, err
 			}
-			if state.SourceRevision != source.SourceRevision || (!state.Fresh() && !nugetAdmitted(state, admissions, false)) || (state.State != "ready" && state.State != "negative") {
+			if state.SourceRevision != source.SourceRevision || (!state.Fresh() && !nativeGenerationAdmitted(state, admissions, false)) || (state.State != "ready" && state.State != "negative") {
 				return selected, &NuGetGroupRefresh{Source: source}
 			}
 			if state.State == "negative" {

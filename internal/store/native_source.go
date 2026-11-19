@@ -5,9 +5,16 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"slices"
 
 	"github.com/jackc/pgx/v5"
 )
+
+func nativeGenerationAdmitted(state Retrieval, admissions []NativeAdmission, stale bool) bool {
+	return slices.ContainsFunc(admissions, func(a NativeAdmission) bool {
+		return a.Repository == state.Repository && a.Path == state.Path && a.Generation == state.Generation && a.Stale == stale
+	})
+}
 
 var errNativeSearchCatalog = errors.New("native search has no current catalog authority")
 

@@ -155,7 +155,7 @@ func validateRepository(r *Repository, retainedGoProxy bool) error {
 		return errors.New("retained Go proxy configuration requires explicit checksum authority and checksum enforcement")
 	}
 	if r.Mode != "hosted" && r.Format != "generic" && r.Format != "maven" && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" && r.Format != "cargo" && r.Format != "nuget" &&
-		!(r.Format == "go" && (r.Mode == "group" || r.Mode == "proxy" && retainedGoProxy)) && !(r.Format == "composer" && r.Mode == "group") {
+		r.Format != "composer" && !(r.Format == "go" && (r.Mode == "group" || r.Mode == "proxy" && retainedGoProxy)) {
 		return errors.New("proxy/group native adapters not yet implemented for this format")
 	}
 	if r.Settings.OCITokenEndpoint != nil {
@@ -199,8 +199,8 @@ func validateRepository(r *Repository, retainedGoProxy bool) error {
 			return e
 		}
 		endpoint.Close()
-		if len(r.Settings.DownloadSources) > 16 || (len(r.Settings.DownloadSources) > 0 && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" && r.Format != "cargo" && !r.Settings.NuGetServiceIndex) {
-			return errors.New("download sources require npm, PyPI, OCI, Cargo or NuGet service index discovery and at most 16 explicit authorities")
+		if len(r.Settings.DownloadSources) > 16 || (len(r.Settings.DownloadSources) > 0 && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" && r.Format != "cargo" && r.Format != "composer" && !r.Settings.NuGetServiceIndex) {
+			return errors.New("download sources require npm, PyPI, OCI, Cargo, Composer or NuGet service index discovery and at most 16 explicit authorities")
 		}
 		authorities := map[string]bool{strings.TrimRight(r.Settings.Upstream.URL, "/") + "/": true}
 		for _, source := range r.Settings.DownloadSources {
@@ -228,7 +228,7 @@ func validateRepository(r *Repository, retainedGoProxy bool) error {
 		if c.FreshSeconds < 0 || c.FreshSeconds > 86400 || c.NegativeSeconds < 0 || c.NegativeSeconds > 3600 || c.StaleSeconds < 0 || c.StaleSeconds > 604800 {
 			return errors.New("cache windows exceed configured safety bounds")
 		}
-		if r.Format == "cargo" {
+		if r.Format == "cargo" || r.Format == "composer" {
 			r.Settings.Cache.RequireChecksum = true
 		}
 	case "group":
@@ -290,7 +290,7 @@ func CreateRepository(ctx context.Context, tx pgx.Tx, i Identity, r Repository) 
 		if e != nil {
 			return e
 		}
-		if source.Format != r.Format || source.Mode == "group" {
+		if source.Format != r.Format || source.Mode == "group" || (r.Format == "composer" && source.Mode != "hosted") {
 			return ErrConflict
 		}
 	}
