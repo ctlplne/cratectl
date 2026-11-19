@@ -1,0 +1,16 @@
+{
+  "candidate": "b3558185d1fab3a00f91d67ad5c228f3259c0876",
+  "observed_at": "2026-11-19T04:46:07.501538+00:00",
+  "status": "postgres_regression_assertion_failed",
+  "postgreSQL": "postgres (PostgreSQL) 16.16",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres_test": "TestCRANProxyChecksCatalogArchiveAndReviewAgainstPostgreSQL",
+  "expected_http_status": 409,
+  "actual_http_status": 503,
+  "actual_error_code": "source_configuration_changed",
+  "observation": "The catalog was replaced during the paused download. The transfer was refused. The assertion incorrectly expected the later request\u2019s conflict status instead of the source-generation retry status returned while the transfer is active.",
+  "native_proxy_checks_passed": 12,
+  "postgres_log_sha256": "9801bcb219ef66d181fe30a5e8e7b6bfe43f3439f55a6c8f0174266fc6baf294",
+  "goal_complete": false,
+  "broad_readiness": false
+}

@@ -211,11 +211,15 @@ func TestCRANProxyChecksCatalogArchiveAndReviewAgainstPostgreSQL(t *testing.T) {
 	close(resumeArchive)
 	select {
 	case w := <-pending:
-		if w.Code != 409 {
-			t.Fatal("a refresh superseded the in-flight selection", w.Code, w.Body.String())
+		if w.Code != 503 || !strings.Contains(w.Body.String(), `"code":"source_configuration_changed"`) {
+			t.Fatal("a superseded in-flight selection must require a fresh metadata read", w.Code, w.Body.String())
 		}
 	case <-time.After(5 * time.Second):
 		t.Fatal("superseded download did not stop")
+	}
+	state, err = s.DB.Retrieval(ctx, admin, repo, path)
+	if err != nil || state.State != "failed" || state.LastError != "upstream_cran_binding_changed" {
+		t.Fatal("the superseded transfer did not release its lease with a durable receipt", state.State, state.LastError, err)
 	}
 	get(s, path, 409)
 	if retained, err := s.DB.ArtifactForPublication(ctx, admin, repo, path); err != nil || retained.Digest != digest {
