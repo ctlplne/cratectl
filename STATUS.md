@@ -752,6 +752,13 @@ PostgreSQL 16.15. Each matched 23 exact source files and confirmed all 59
 tenant tables use forced RLS under the restricted runtime role.
 [Original Linux NuGet proxy reports](evidence/2026-11-19/github-2029b26-nuget-flat-proxy-native.json)
 
+`3dd94c0` passed 69 combined stock NuGet assertions on macOS ARM64 with
+PostgreSQL 16.16. The 13 service-index checks covered separate credentials,
+exact cache fills, address-change fencing before download, recovery and a
+warm restart without origin traffic. The named PostgreSQL regressions and
+all four source gates passed.
+[Native NuGet service-index evidence](evidence/2026-11-19/nuget-3dd94c0-service-index-native.json)
+
 `6c72ee0` passed 26 ordered NuGet group assertions alongside the 30 stock
 proxy assertions on macOS ARM64 with PostgreSQL 16.16. Stock .NET restored
 the preferred proxy's exact application and a lower hosted dependency after
@@ -761,6 +768,11 @@ made zero source requests after restart. The real PostgreSQL group regression
 and the build, unit, race and lint gates passed.
 [Native ordered NuGet group evidence](evidence/2026-11-19/nuget-6c72ee0-ordered-group-native.json)
 [Original Linux proxy run inventory](evidence/2026-11-19/github-2029b26-started.json)
+
+An original `541ea5d` Linux x64 JVM job failed before the SBT2 fixture
+bootstrap. Stock SBT 2.0.11 reported its pinned launcher POM as missing at
+Maven Central. The separate hosted Maven index jobs passed.
+[Original SBT2 bootstrap failure](evidence/2026-11-19/jvm-541ea5d-sbt2-amd64-bootstrap-first-failure.json)
 
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities
