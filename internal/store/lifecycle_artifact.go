@@ -107,6 +107,9 @@ func materializedLifecycleReference(r Repository, a Artifact) bool {
 	case "conda":
 		_, err := ValidateCondaArtifact(a)
 		return err == nil
+	case "cran":
+		_, err := ValidateCRANArtifact(a)
+		return err == nil
 	case "cargo":
 		if r.Mode == "proxy" {
 			var binding CargoArchiveBinding

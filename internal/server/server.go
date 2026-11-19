@@ -103,7 +103,7 @@ func New(db *store.Store, b *blob.Local, public string) *Server {
 	s.InventoryLimits = store.InventoryLimits{MaxEntries: 1000000, DirectoryEntries: 1000000}
 	s.UploadLimit, s.UploadPartLimit, s.UploadMetadataBytes, s.UploadLease, s.UploadTTL = 32, 4096, 1<<20, 30*time.Second, 30*time.Minute
 	s.OCIDeliveryLimits = upstream.DefaultRegistryDeliveryLimits()
-	for _, a := range []adapter{{"generic", s.raw}, {"maven", s.raw}, {"npm", s.npm}, {"pypi", s.pypi}, {"oci", s.oci}, {"nuget", s.nuget}, {"go", s.goModule}, {"cargo", s.cargo}, {"apt", s.apt}, {"composer", s.composer}, {"conda", s.conda}} {
+	for _, a := range []adapter{{"generic", s.raw}, {"maven", s.raw}, {"npm", s.npm}, {"pypi", s.pypi}, {"oci", s.oci}, {"nuget", s.nuget}, {"go", s.goModule}, {"cargo", s.cargo}, {"apt", s.apt}, {"composer", s.composer}, {"conda", s.conda}, {"cran", s.cran}} {
 		s.adapters[a.Format()] = a
 	}
 	secret, keyError := crypt.Token()
@@ -376,7 +376,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if len(parts) == 3 {
 		p = parts[2]
 	}
-	prefix := map[string]string{"generic": "r", "maven": "r", "npm": "npm", "pypi": "pypi", "oci": "v2", "nuget": "nuget", "go": "go", "cargo": "cargo", "apt": "apt", "composer": "composer", "conda": "conda"}[repo.Format]
+	prefix := map[string]string{"generic": "r", "maven": "r", "npm": "npm", "pypi": "pypi", "oci": "v2", "nuget": "nuget", "go": "go", "cargo": "cargo", "apt": "apt", "composer": "composer", "conda": "conda", "cran": "cran"}[repo.Format]
 	a := s.adapters[repo.Format]
 	if a == nil || parts[0] != prefix {
 		fail(w, 404, "format_mismatch", "Use the native endpoint for this repository format.")
@@ -472,7 +472,7 @@ func (s *Server) management(w http.ResponseWriter, r *http.Request, i store.Iden
 			return
 		}
 		formats := []string{}
-		for _, name := range []string{"generic", "maven", "npm", "pypi", "oci", "nuget", "go", "cargo", "apt", "composer", "conda"} {
+		for _, name := range []string{"generic", "maven", "npm", "pypi", "oci", "nuget", "go", "cargo", "apt", "composer", "conda", "cran"} {
 			if s.adapters[name] != nil {
 				formats = append(formats, name)
 			}
