@@ -511,7 +511,8 @@
         "R"
       ],
       "client_versions": {
-        "R": "4.6.2"
+        "R": "4.6.2",
+        "R Linux x64 and ARM64": "4.3.3"
       },
       "source_ids": [
         "jfrog-formats",
@@ -524,8 +525,13 @@
         "group": true
       },
       "jfrog_modes": "per-format documentation review required",
-      "native_limitations": "Hosted source discovery and download passed with R 4.6.2 on macOS ARM64 and R 4.3.3 on Linux x64 and ARM64. Inert installation passed on macOS ARM64. Native binaries, proxy, group and replication remain open.",
-      "state": "implementing"
+      "native_limitations": "Stock hosted discovery, inert source installation, historical source discovery and ordered hosted-group graph download passed on macOS ARM64, Linux x64 and Linux ARM64. Binary channels, proxy and replication require separate qualification.",
+      "state": "implementing",
+      "candidate": "fc54a58e04c610f5b3f965362073ba1b4535a2e8",
+      "evidence": [
+        "evidence/2026-11-19/cran-fc54a58-ordered-group-stock-r-native.json",
+        "evidence/2026-11-19/github-fc54a58-cran-hosted-stock-r-native.json"
+      ]
     },
     {
       "id": "cocoapods",

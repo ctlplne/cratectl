@@ -1,0 +1,222 @@
+{
+  "candidate": "fc54a58e04c610f5b3f965362073ba1b4535a2e8",
+  "status": "passed",
+  "checks": [
+    "clean exact source",
+    "cratectl matches the clean candidate",
+    "cratectld matches the clean candidate",
+    "real reviewed PostgreSQL 16 patch release",
+    "absent repository has an authority and tenant bound creation plan",
+    "plan, wrong approval and denied callers leave the tenant journal unchanged",
+    "concurrent approved requests produce one creation or a safe retry",
+    "retry after successful creation returns unchanged",
+    "one repository creation event despite concurrent retry",
+    "second tenant can plan an independent same-name repository",
+    "import returns the exact active hosted fields",
+    "plan exposes review drift without writing",
+    "stock npm published its exact bytes and unassessed input was denied",
+    "registry restart preserves the declared state",
+    "fresh stock npm downloads the exact approved archive after restart",
+    "stale approval leaves suspended repository retained",
+    "suspended repository cannot be imported as active",
+    "revoked administrator cannot plan",
+    "schema 19 with all 59 tenant tables forced RLS and a restricted runtime role"
+  ],
+  "binary_sha256": {
+    "cratectl": "cfa9889671ee52d49c4fd6eff4fad71e289e19e3ac281117c8b76d0a29e191a1",
+    "cratectld": "902f8cc21eb21ad8dbfc8402b8e797347697ed1204fd22f2f415b11e453adeb3"
+  },
+  "archive_sha256": "eb88cfbb43de75bcfb7e6ec35e9cf45e90e0288fcdcf1f05d76e4b3b5f3f6b28",
+  "postgres": "postgres (PostgreSQL) 16.15 (Ubuntu 16.15-1.pgdg24.04+2)",
+  "npm": "10.9.9",
+  "cran_hosted": {
+    "version": "4.3.3",
+    "binary_sha256": "9d1d40be728e9156f4a2417d75d8a0a0076e770232de2fc5ed891665301d95ac",
+    "distribution_sha256": "537e62fc3bfc31d537a3a25a56d0e67e2c868e76582ac09c0ed8f30f810ec91b",
+    "checks": [
+      "the stock R interpreter and its distribution match the exact native tool pin",
+      "native CRAN metadata requires the current repository and tenant grants",
+      "four exact CRAN coordinates publish their original SHA-256 identities",
+      "unreviewed CRAN archives stay out of both indexes and their direct bytes are denied",
+      "CRAN rejects mismatched source metadata and changed bytes at an immutable coordinate",
+      "plain and gzip CRAN indexes retain all four reviewed DESCRIPTION and byte bindings",
+      "stock R selects numeric versions and downloads the exact native source graph",
+      "a fresh stock R process retrieves the same exact dependency graph after restart",
+      "new CRAN indexes and direct downloads enforce current digest denial",
+      "stock R falls back to the approved version and refuses the revoked exact archive"
+    ],
+    "archive_sha256": {
+      "CratectlStats_1.9.0.tar.gz": "43b6c2f118e229df38de8eaaea5491f1f2975343a2e43b1724cc80a8bd2cdb8b",
+      "CratectlStats_1.10.0.tar.gz": "97df8d880238d6404bfc49fde3c0f2fa625c53324a6d3acbb63a02057ba415a1",
+      "Cratectl.Data_2.1-0.tar.gz": "3870f1f192b50d07b441ad58c1a07885bab7f711bebd5bc67d18553d0d8f2089",
+      "Cratectl.Data_2.2-0.tar.gz": "5054005977cbd24282de3210a73c3c481e57ebe78fab34da2f6f853d65b89537"
+    },
+    "selected": {
+      "CratectlStats_1.10.0.tar.gz": "97df8d880238d6404bfc49fde3c0f2fa625c53324a6d3acbb63a02057ba415a1",
+      "Cratectl.Data_2.2-0.tar.gz": "5054005977cbd24282de3210a73c3c481e57ebe78fab34da2f6f853d65b89537"
+    },
+    "installation": {
+      "checks": [
+        "stock R installs the verified inert source graph first",
+        "stock R installs the verified inert source graph after-restart"
+      ],
+      "launcher_sha256": "f1ba0e3ded059ea924ab4d2754843ab13c50641b5625ba5a900e08f0bdabb31f"
+    },
+    "history": {
+      "checks": [
+        "the governed directory lists the one reviewed historical source version",
+        "stock R follows the historical link and retrieves the exact retained archive",
+        "current review removes the old link and fences the exact archive URL",
+        "fresh stock R refuses the historical download after the digest is denied",
+        "stock R retrieves the unchanged historical bytes after reapproval"
+      ],
+      "file": "CratectlStats_1.9.0.tar.gz",
+      "sha256": "43b6c2f118e229df38de8eaaea5491f1f2975343a2e43b1724cc80a8bd2cdb8b"
+    },
+    "group": {
+      "checks": [
+        "the CRAN group requires its own grant and access to all current source members",
+        "an absent preferred package permits the exact lower owner before new publication",
+        "new preferred ownership hides lower versions while its own archive awaits review",
+        "the native group index pins both exact sources and refuses changed or unpinned requests",
+        "stock R resolves and downloads exact application and dependency bytes from the ordered group",
+        "fresh stock R retrieves the same digest-bound group graph after restart",
+        "a denied owning source keeps the colliding lower archive out of the group",
+        "fresh stock R omits the denied package and refuses the known digest-bound URL",
+        "withdrawing a current source grant stops group discovery and exact archive reads"
+      ],
+      "selected": {
+        "CratectlStats_1.10.0.tar.gz": "97df8d880238d6404bfc49fde3c0f2fa625c53324a6d3acbb63a02057ba415a1",
+        "Cratectl.Data_2.2-0.tar.gz": "5054005977cbd24282de3210a73c3c481e57ebe78fab34da2f6f853d65b89537"
+      },
+      "lower_collision_sha256": "ed1a9048697e064aa931c9b40be4e190152704a1350e5773bedda47a903fcfd6",
+      "lower_only_sha256": "d4190b1885805120e82e04795a559a8adf6cadab7c5c7a65fc9145581813b37f"
+    }
+  },
+  "goal_complete": false,
+  "broad_readiness": false,
+  "schema": 1,
+  "profile": "cratectl-native-hosted-cran-source-install-and-history-ordered-group-v1",
+  "runner_os": "Linux",
+  "runner_arch": "ARM64",
+  "run_id": "44457315643",
+  "source_dirty": false,
+  "source_sha256": [
+    {
+      "path": ".github/workflows/cran-hosted.yml",
+      "sha256": "759fd7d085d5da48f1af6ef0933d460d0fc2292b8eb6889e9779b308b78c92c5"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "12f2a8b5cfbc2f322822b82e4446f51ff017374acab1f3a8921db8cc8e833bf6"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "1d4aecc2732cd54db4534e0afc862ffe14d5c24890f106008682fd9bbc8e5ba9"
+    },
+    {
+      "path": "go.sum",
+      "sha256": "5e364e4e1eff09d8d39617427d7775012304b09a7be26778dc2b46fdabae3f15"
+    },
+    {
+      "path": "scripts/ci/cran_hosted_evidence.py",
+      "sha256": "2d7e1f056fa7d1790d77fc08476f20a02e56c58733eed111ddf45db99277dbd6"
+    },
+    {
+      "path": "scripts/ci/terraform_provider_evidence.py",
+      "sha256": "130de2ec92ed288a6fa6c744c67003a76cafa2dfb9835e48f653abccda1a50ca"
+    },
+    {
+      "path": "scripts/cran_hosted_fixture.py",
+      "sha256": "4cd5e38c666add69c966df7c87d016db35717a5b6d74110626da22ccf5694d9d"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "9c5cc13971d00ed2945410cbc5aef8bd752469485cea4c9f0061d666653ad47e"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+    },
+    {
+      "path": "scripts/qualification_contract.py",
+      "sha256": "c40a9d0209a9dc1fb9838f49cdb316ad5a762d45c0359b97fce156746564e5ba"
+    },
+    {
+      "path": "internal/cran/package.go",
+      "sha256": "2669e46e7fffa9d6dcd23aeefa20c07338331fab40799cda77eec85daa28db3f"
+    },
+    {
+      "path": "internal/cran/package_test.go",
+      "sha256": "9be0aad9baafe6665d489c406aa966ab23df8986439a384235a839ff70e9f8af"
+    },
+    {
+      "path": "internal/server/cran.go",
+      "sha256": "f75edf5f1c7ccf8c5b1068463a56d130c29f5e0ac28a3991b20036b3c8caa64f"
+    },
+    {
+      "path": "internal/server/cran_integration_test.go",
+      "sha256": "6989bfcc08bdea9ca31f6b3177e019a1066478f3ae127a9fcbfd2abcb09f583f"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "5cac2b69e5661e8f3567c81ff3766c25a8322139b6160aaa2cd9d81c832618ad"
+    },
+    {
+      "path": "internal/store/cran.go",
+      "sha256": "5867e68c3fb87748528641d7544fa5e353fcd8182055a93aba72aefda477e539"
+    },
+    {
+      "path": "internal/store/artifact_read.go",
+      "sha256": "29309051deb86dffa676dde15ae6c8dfaae9045ee7752405b9b09ad84897067d"
+    },
+    {
+      "path": "internal/store/lifecycle_artifact.go",
+      "sha256": "bbf64679e8e70b644c9c8ae52f82e3af2af6ddbd65d1a87c9de78fb08e2883d4"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "72a0e11ce98686c1c9ab65094bc6046d712a73f98bb0c3d11878b9534574cc9b"
+    },
+    {
+      "path": "internal/store/migrations.go",
+      "sha256": "59f3478fbc77b7c969e43719f7eea92844a5bb1b2cd5b0d63ec2f356e368594b"
+    },
+    {
+      "path": "internal/blob/local.go",
+      "sha256": "3cdbb9ecd323808a6f0d6d866fe66260fbcb355c6cda416bf5b4e11f19cb9e37"
+    },
+    {
+      "path": "scripts/ci/cran_private_launcher.sh",
+      "sha256": "f1ba0e3ded059ea924ab4d2754843ab13c50641b5625ba5a900e08f0bdabb31f"
+    },
+    {
+      "path": "internal/cran/version.go",
+      "sha256": "4181d7d48cf0d9dd115cc676b4c8caf5199c75f19d532c5dbc992e17079f0f91"
+    },
+    {
+      "path": "internal/cran/version_test.go",
+      "sha256": "98c258e0ae21b9640419fdcacf712ad2dec747828c1568d58e9a64e32e47924e"
+    },
+    {
+      "path": "scripts/cran_group_fixture.py",
+      "sha256": "601d32df9425ad52529db2066330641bbdfa8fb4dfc944519ce497edf9ed7e42"
+    },
+    {
+      "path": "internal/store/cran_group.go",
+      "sha256": "a9f45363f575ba1548acb190807e27990a423370d04194ea3c9e35fbd16c1b40"
+    },
+    {
+      "path": "internal/server/cran_group_integration_test.go",
+      "sha256": "389c365def01ac5ab59735a381694af15d990fb91ba7c83422bb8177bd7d70f2"
+    },
+    {
+      "path": "internal/server/resolve.go",
+      "sha256": "1d2c86908f1e602c821139982b489bef3c0be088aa1bbd617159849115acf153"
+    },
+    {
+      "path": "internal/store/source_configuration.go",
+      "sha256": "da66aeca75898a9d2474c454b0fe61a9905fb2e2a5fd3440dd5d208f572a3989"
+    }
+  ]
+}

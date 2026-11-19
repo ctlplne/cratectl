@@ -971,6 +971,17 @@ admission when a preferred source acquired the package. The tests also
 covered ownership after retirement and digest-bound downloads.
 [CRAN ordered group PostgreSQL evidence](evidence/2026-11-19/cran-3b2c2a3-ordered-group-postgres.json)
 
+Exact `fc54a58` passed 45 checks on macOS ARM64 with stock R 4.6.2 and
+PostgreSQL 16.16, including nine ordered-group checks. Stock R fetched the
+same exact graph from two source members after restart. Denying the owning
+archive left the lower collision hidden. Revoking a source grant stopped
+the corresponding group reads. Both original Linux jobs passed the same
+45-check scope with stock R 4.3.3, PostgreSQL 16.15 and 29 independently
+matched source hashes per job. They also completed the two inert hosted
+installation checks that had stopped on the preceding candidate.
+[macOS stock R ordered group evidence](evidence/2026-11-19/cran-fc54a58-ordered-group-stock-r-native.json)
+[Original Linux stock R reports](evidence/2026-11-19/github-fc54a58-cran-hosted-stock-r-native.json)
+
 The original `55ccc7c` Linux x64 runtime report stopped in durable jobs at
 68 checks. The original `08457df` Linux x64 runtime report passed durable
 jobs and leases, then stopped in Chromium at two reported checks. The
