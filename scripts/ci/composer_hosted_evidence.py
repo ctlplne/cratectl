@@ -4,11 +4,12 @@ if __package__:
     from .terraform_provider_evidence import BASE_CHECKS as MANIFEST_CHECKS, hashes, matches, postgres_version
 else:
     from terraform_provider_evidence import BASE_CHECKS as MANIFEST_CHECKS, hashes, matches, postgres_version
-from composer_hosted_fixture import COMPOSER_SHA256, COMPOSER_VERSION, COORDINATES, EXTRA_COORDINATES
+from composer_hosted_fixture import APP, LIBRARY, COMPOSER_SHA256, COMPOSER_VERSION, COORDINATES, EXTRA_COORDINATES
 
 PROFILE = 'cratectl-native-composer-hosted-zip-v1'
 GROUP_PROFILE = 'cratectl-native-composer-hosted-and-group-zip-v1'
 VERSIONS_PROFILE = 'cratectl-native-composer-hosted-group-and-versions-v1'
+PROXY_PROFILE = 'cratectl-native-composer-checksum-proxy-v1'
 BASE_CHECKS = tuple(item for item in MANIFEST_CHECKS if item != 'provider matches the clean candidate')
 CHECKS = (
     'the stock Composer PHAR matches the pinned publisher digest',
@@ -43,6 +44,20 @@ VERSION_CHECKS = (
     'current policy removes only the denied development archive from discovery',
     'stock Composer refuses to install a newly denied development archive',
 )
+PROXY_CHECKS = (
+    'restricted Composer proxy requires an explicit reader grant before upstream access',
+    'the repository hides unassessed metadata and gates exact archive intake',
+    'metadata and archives use separate approved credential scopes',
+    'reviewed discovery emits the local immutable distribution locators',
+    'stock Composer locks the exact approved proxy dependency graph first',
+    'stock Composer installs the exact proxy ZIPs and inert files first',
+    'stock Composer locks the exact approved proxy dependency graph after-restart',
+    'stock Composer installs the exact proxy ZIPs and inert files after-restart',
+    'the locked graph installs after restart with the origin offline and zero further requests',
+    'current app denial hides its metadata while the dependency remains indexed',
+    'stock Composer refuses a locked proxy archive after digest denial',
+    'an advertised archive move outside approved authority stops metadata before a download',
+)
 FILES = (
     '.github/workflows/composer-hosted.yml', 'Makefile', 'go.mod', 'go.sum',
     'scripts/ci/composer_hosted_evidence.py', 'scripts/ci/terraform_provider_evidence.py',
@@ -53,6 +68,10 @@ FILES = (
     'internal/store/repository.go', 'internal/store/migrations.go', 'internal/ziparchive/archive.go',
 )
 GROUP_FILES = (*FILES, 'internal/store/composer_group.go', 'internal/server/resolve.go')
+PROXY_FILES = (*GROUP_FILES, 'scripts/composer_proxy_fixture.py', 'scripts/cargo_proxy_fixture.py',
+               'internal/composer/catalog.go', 'internal/composer/catalog_test.go', 'internal/server/composer_proxy.go',
+               'internal/server/composer_proxy_integration_test.go', 'internal/store/composer_proxy.go',
+               'internal/store/retrieval.go', 'internal/store/native_source.go', 'internal/store/source_configuration.go')
 FIELDS = {'schema', 'profile', 'candidate', 'status', 'runner_os', 'runner_arch', 'run_id', 'source_dirty', 'source_sha256',
           'binary_sha256', 'archive_sha256', 'postgres', 'npm', 'checks', 'composer_hosted', 'goal_complete', 'broad_readiness'}
 DIGEST = '[a-f0-9]{64}'
@@ -66,13 +85,21 @@ def versions_selected(source):
     return b'--composer-versions' in source('.github/workflows/composer-hosted.yml').split()
 
 
+def proxy_selected(source):
+    return b'--composer-proxy' in source('.github/workflows/composer-hosted.yml').split()
+
+
 def validate(report):
-    if type(report) is not dict or report.get('profile') not in (PROFILE, GROUP_PROFILE, VERSIONS_PROFILE):
+    if type(report) is not dict or report.get('profile') not in (PROFILE, GROUP_PROFILE, VERSIONS_PROFILE, PROXY_PROFILE):
         raise ValueError('invalid Composer profile')
     grouped = report['profile'] != PROFILE
-    versions = report['profile'] == VERSIONS_PROFILE
+    proxied = report['profile'] == PROXY_PROFILE
+    versions = report['profile'] in (VERSIONS_PROFILE, PROXY_PROFILE)
     fields = FIELDS | {'composer_group'} if grouped else FIELDS
     paths = GROUP_FILES if grouped else FILES
+    if proxied:
+        fields = fields | {'composer_proxy'}
+        paths = PROXY_FILES
     if (set(report) != fields or type(report['schema']) is not int or report['schema'] != 1
             or report['status'] != 'passed' or report['runner_os'] != 'Linux'
             or report['runner_arch'] not in ('X64', 'ARM64') or report['source_dirty'] is not False
@@ -85,6 +112,13 @@ def validate(report):
     validate_run(report['composer_hosted'], versions=versions)
     if grouped:
         validate_run(report['composer_group'], grouped=True)
+    if proxied:
+        result = report['composer_proxy']
+        if (type(result) is not dict or set(result) != {'checks', 'archive_sha256', 'lock_sha256'}
+                or result['checks'] != list(PROXY_CHECKS) or not hashes(result['archive_sha256'], (APP, LIBRARY))
+                or result['archive_sha256'][APP] == result['archive_sha256'][LIBRARY]
+                or not matches(result['lock_sha256'], DIGEST)):
+            raise ValueError('invalid governed Composer proxy report')
     return report
 
 

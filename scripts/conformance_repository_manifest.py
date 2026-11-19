@@ -67,6 +67,7 @@ def evaluate(args):
     server = None
     server_flags = []
     origin_credentials = {}
+    composer_credentials = {}
     if args.oci_catalog_client:
         server_flags.extend(('--oci-page-size', '1'))
 
@@ -196,7 +197,7 @@ def evaluate(args):
         call('initialize-registry', bootstrap, 'init', '--tenant', TENANT, '--directory', app,
              '--public-url', authority, environment=owner_env)
         actors = [('reader', TENANT, 'reader'), ('other', OTHER, 'admin')]
-        if args.cargo_toolchain or args.npm_search or args.python_search_client or args.oci_catalog_cached or args.maven_index_cached:
+        if args.cargo_toolchain or args.npm_search or args.python_search_client or args.oci_catalog_cached or args.maven_index_cached or args.composer_proxy:
             server_flags.extend(('--allow-private-upstreams', '::1/128'))
         if args.cargo_toolchain:
             actors.extend([('writer', TENANT, 'writer'), ('maintainer', TENANT, 'writer')])
@@ -211,6 +212,15 @@ def evaluate(args):
                 TENANT + '/cratectl-cargo-' + label: {'value': origin_credentials[label], 'allowed_url': url,
                                                       'authentication': 'cargo-token'}
                 for label, url in (('index', INDEX_ORIGIN), ('download', DOWNLOAD_ORIGIN))})
+            server_flags.extend(('--upstream-credentials', str(credentials)))
+        if args.composer_proxy:
+            from composer_proxy_fixture import ARCHIVE_ORIGIN, CATALOG_ORIGIN
+
+            composer_credentials = {label: secrets.token_urlsafe(32) for label in ('index', 'download')}
+            credentials = write('composer-origin-credentials.json', {
+                TENANT + '/cratectl-composer-' + label: {'value': composer_credentials[label], 'allowed_url': uri,
+                                                          'authentication': 'bearer'}
+                for label, uri in (('index', CATALOG_ORIGIN), ('download', ARCHIVE_ORIGIN))})
             server_flags.extend(('--upstream-credentials', str(credentials)))
         server = start_server(bootstrap)
         if args.legacy_cargo_daemon:
@@ -418,6 +428,11 @@ def evaluate(args):
             if args.composer_group:
                 report['composer_group'] = evaluate_hosted_composer(work, app, authority, public_env, call, api, restart_server,
                                                                    sha, args.composer_php.resolve(), args.composer_phar.resolve(), grouped=True)
+            if args.composer_proxy:
+                from composer_proxy_fixture import evaluate_composer_proxy
+
+                report['composer_proxy'] = evaluate_composer_proxy(work, app, authority, public_env, call, api, restart_server, sha,
+                                                                  args.composer_php.resolve(), args.composer_phar.resolve(), composer_credentials)
         if args.npm_search:
             from npm_search_fixture import evaluate_cached_search, evaluate_search
 
@@ -520,6 +535,8 @@ def evaluate(args):
         print(f"PASS: {len(report['composer_group']['checks'])} stock Composer ordered group checks")
     if args.composer_versions:
         print(f"PASS: {len(report['composer_hosted']['version_forms']['checks'])} stock Composer development and prerelease checks")
+    if args.composer_proxy:
+        print(f"PASS: {len(report['composer_proxy']['checks'])} stock Composer checksum-bound proxy checks")
     if args.npm_search:
         print(f"PASS: {len(report['npm_search']['checks'])} stock hosted npm search checks")
         print(f"PASS: {len(report['npm_cached_search']['checks'])} stock cached npm search checks")
@@ -685,7 +702,8 @@ def record_debian_apt_ci(report, architecture):
 
 
 def record_composer_ci(report, architecture):
-    from ci.composer_hosted_evidence import FILES, GROUP_FILES, GROUP_PROFILE, PROFILE, VERSIONS_PROFILE, validate as validate_composer
+    from ci.composer_hosted_evidence import (FILES, GROUP_FILES, GROUP_PROFILE, PROFILE, PROXY_FILES, PROXY_PROFILE,
+                                             VERSIONS_PROFILE, validate as validate_composer)
 
     runner = hosted_runner(report, architecture)
     projection = {key: report[key] for key in ('candidate', 'status', 'checks', 'binary_sha256', 'archive_sha256',
@@ -695,6 +713,9 @@ def record_composer_ci(report, architecture):
         projection['composer_group'] = report['composer_group']
         profile = VERSIONS_PROFILE if 'version_forms' in report['composer_hosted'] else GROUP_PROFILE
         paths = GROUP_FILES
+    if 'composer_proxy' in report:
+        projection['composer_proxy'] = report['composer_proxy']
+        profile, paths = PROXY_PROFILE, PROXY_FILES
     projection.update(schema=1, profile=profile, runner_os='Linux', runner_arch=runner,
                       run_id=os.environ.get('GITHUB_RUN_ID'), source_dirty=False,
                       source_sha256={name: sha(ROOT / name) for name in paths})
@@ -730,6 +751,7 @@ if __name__ == '__main__':
     parser.add_argument('--composer-phar', type=Path, help='the digest-pinned Composer client PHAR')
     parser.add_argument('--composer-group', action='store_true', help='also verify a Composer group over ordered hosted members')
     parser.add_argument('--composer-versions', action='store_true', help='also verify Composer development and prerelease ZIPs')
+    parser.add_argument('--composer-proxy', action='store_true', help='also verify a checksum-bound Composer v2 upstream')
     parser.add_argument('--composer-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--npm-search', action='store_true',
                         help='also verify npm hosted and cached search using stock clients')
@@ -749,6 +771,8 @@ if __name__ == '__main__':
         parser.error('Composer group qualification requires the hosted stock client profile')
     if options.composer_versions and not options.composer_group:
         parser.error('Composer version qualification requires the combined stock client profile')
+    if options.composer_proxy and (not options.composer_versions or options.cargo_toolchain):
+        parser.error('Composer proxy qualification requires the combined Composer profile and its own upstream credential scope')
     if options.composer_ci_architecture and (not options.composer_phar or options.provider_binary or options.npm_search
                                               or options.python_search_client or options.cargo_toolchain or options.mcp_binary
                                               or options.oci_catalog_client or options.maven_index_reader or options.promtool

@@ -25,8 +25,10 @@ from cargo_evidence import CHECKS as CARGO_CHECKS, validate as validate_cargo
 from cargo_public_evidence import CHECKS as CARGO_PUBLIC_CHECKS, validate as validate_cargo_public
 from composer_hosted_evidence import (CHECKS as COMPOSER_HOSTED_CHECKS, GROUP_CHECKS as COMPOSER_GROUP_CHECKS,
                                       GROUP_PROFILE as COMPOSER_GROUP_PROFILE, PROFILE as COMPOSER_HOSTED_PROFILE,
+                                      PROXY_CHECKS as COMPOSER_PROXY_CHECKS, PROXY_PROFILE as COMPOSER_PROXY_PROFILE,
                                       VERSION_CHECKS as COMPOSER_VERSION_CHECKS, VERSIONS_PROFILE as COMPOSER_VERSIONS_PROFILE,
-                                      group_selected as composer_group_selected, versions_selected as composer_versions_selected,
+                                      group_selected as composer_group_selected, proxy_selected as composer_proxy_selected,
+                                      versions_selected as composer_versions_selected,
                                       validate as validate_composer_hosted)
 from debian_apt_evidence import (APT_CHECKS as DEBIAN_APT_CHECKS, APT_SUITE_CHECKS as DEBIAN_SUITE_CHECKS,
                                  PROFILE as DEBIAN_FLAT_PROFILE, SUITE_PROFILE as DEBIAN_SUITE_PROFILE,
@@ -174,12 +176,18 @@ def validate_custom(report, candidate, run_id, spec, source):
         if spec['kind'] == 'composer-hosted':
             grouped = composer_group_selected(source)
             versions = composer_versions_selected(source)
-            profile = COMPOSER_VERSIONS_PROFILE if versions else COMPOSER_GROUP_PROFILE if grouped else COMPOSER_HOSTED_PROFILE
-            require(report['profile'] == profile and (not versions or grouped), 'composer_hosted_profile_selection')
+            proxied = composer_proxy_selected(source)
+            profile = COMPOSER_HOSTED_PROFILE
             if grouped:
+                profile = COMPOSER_GROUP_PROFILE
                 checks += len(COMPOSER_GROUP_CHECKS)
             if versions:
+                profile = COMPOSER_VERSIONS_PROFILE
                 checks += len(COMPOSER_VERSION_CHECKS)
+            if proxied:
+                profile = COMPOSER_PROXY_PROFILE
+                checks += len(COMPOSER_PROXY_CHECKS)
+            require(report['profile'] == profile and (not versions or grouped) and (not proxied or versions), 'composer_hosted_profile_selection')
         return {'checks': checks, 'records': 1}
     require(report.get('status') == 'passed' and report.get('source_dirty') is False, 'custom_report_incomplete')
     if spec['kind'] == 'library':

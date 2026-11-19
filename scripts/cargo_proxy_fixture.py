@@ -38,7 +38,7 @@ def download_file(name):
 
 
 @contextmanager
-def origin_server(credentials, contents, *, content_types=None):
+def origin_server(credentials, contents, *, content_types=None, index_path=INDEX_PATH, name='cratectl-cargo-origin'):
     class Origin(ThreadingHTTPServer):
         address_family = socket.AF_INET6
 
@@ -51,7 +51,7 @@ def origin_server(credentials, contents, *, content_types=None):
             pass
 
         def do_GET(self):
-            label = 'index' if self.path.startswith(INDEX_PATH) else 'download'
+            label = 'index' if self.path.startswith(index_path) else 'download'
             token = self.headers.get('Authorization', '')
             current = self.headers.get('If-None-Match', '')
             admitted = hmac.compare_digest(token, credentials[label]) or (
@@ -84,7 +84,7 @@ def origin_server(credentials, contents, *, content_types=None):
     packaging = threading.Event()
     interrupted = set()
     with Origin(('::1', 38443), Handler) as server:
-        thread = threading.Thread(target=server.serve_forever, name='cratectl-cargo-origin')
+        thread = threading.Thread(target=server.serve_forever, name=name)
         thread.start()
         try:
             yield requests, lock, offline, packaging, interrupted
@@ -92,7 +92,7 @@ def origin_server(credentials, contents, *, content_types=None):
             server.shutdown()
             thread.join(5)
             if thread.is_alive():
-                raise ValueError('owned Cargo origin did not shut down')
+                raise ValueError('owned fixture origin did not shut down')
 
 
 def evaluate_proxy(work, installation, authority, toolchain, environment, call, api, restart, sha, credentials):

@@ -38,6 +38,19 @@ def make_archive(package, version, payload):
     return buffer.getvalue()
 
 
+def stock_install(target, project, stock, environment, run, lock=None):
+    target.mkdir(mode=0o700)
+    (target / 'composer.json').write_text(json.dumps(project) + '\n')
+    lock_path = target / 'composer.lock'
+    if lock is not None:
+        lock_path.write_bytes(lock)
+    sandbox = {**environment, 'COMPOSER_CACHE_DIR': str(target / 'cache')}
+    operation = 'update' if lock is None else 'install'
+    code, output = run('composer-' + target.name, *stock, operation, '--prefer-dist', '--no-progress', '--no-autoloader',
+                       cwd=target, environment=sandbox, status=None, timeout=80)
+    return code, output, lock_path
+
+
 def evaluate_hosted_composer(work, installation, authority, environment, call, api, restart, sha, php, phar, *, grouped=False, versions=False):
     repository = REPO + '-group' if grouped else REPO
     scope = work / repository
@@ -168,17 +181,10 @@ def evaluate_hosted_composer(work, installation, authority, environment, call, a
 
     def consume(label, lock=None, *, denied=None, graph=SELECTED, stability=None):
         target = scope / label
-        target.mkdir(mode=0o700)
         config = project if stability is None else {**project, 'require': {APP: graph[0][1]}, 'minimum-stability': stability}
-        (target / 'composer.json').write_text(json.dumps(config) + '\n')
-        lock_path = target / 'composer.lock'
-        if lock is not None:
-            lock_path.write_bytes(lock)
         cache = target / 'cache'
-        sandbox = {**env, 'COMPOSER_CACHE_DIR': str(cache)}
         operation = 'update' if lock is None else 'install'
-        code, output = run('composer-' + label, *stock, operation, '--prefer-dist', '--no-progress', '--no-autoloader',
-                           cwd=target, environment=sandbox, status=None, timeout=80)
+        code, output, lock_path = stock_install(target, config, stock, env, run, lock)
         if denied is not None:
             check(denied, code != 0 and '403' in output and '/dist/' in output)
             return None

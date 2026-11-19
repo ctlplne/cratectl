@@ -20,6 +20,8 @@ from composer_hosted_evidence import (BASE_CHECKS as COMPOSER_BASE, CHECKS as CO
                                       FILES as COMPOSER_FILES, PROFILE as COMPOSER_PROFILE,
                                       GROUP_CHECKS as COMPOSER_GROUP_CHECKS, GROUP_FILES as COMPOSER_GROUP_FILES,
                                       GROUP_PROFILE as COMPOSER_GROUP_PROFILE, VERSIONS_PROFILE as COMPOSER_VERSIONS_PROFILE,
+                                      PROXY_CHECKS as COMPOSER_PROXY_CHECKS, PROXY_FILES as COMPOSER_PROXY_FILES,
+                                      PROXY_PROFILE as COMPOSER_PROXY_PROFILE,
                                       EXTRA_COORDINATES as COMPOSER_EXTRA_COORDINATES, VERSION_CHECKS as COMPOSER_VERSION_CHECKS)
 from linux_install_evidence import CHECKS as INSTALL_CHECKS, IMAGE as INSTALL_IMAGE, SOURCE_PATHS as INSTALL_FILES
 from maven_index_evidence import (BASE_CHECKS as MAVEN_INDEX_BASE, CACHED_CHECKS as MAVEN_CACHED_CHECKS,
@@ -84,6 +86,17 @@ class CampaignReports(unittest.TestCase):
         wrong = {**versions, 'prerelease_lock_sha256': 'e' * 64}
         with self.assertRaisesRegex(EvidenceError, 'composer_hosted_report_contract'):
             validate_custom({**extended, 'composer_hosted': {**native, 'version_forms': wrong}}, candidate, 12, spec, version_source)
+
+        def proxy_source(path):
+            return b'--composer-group --composer-versions --composer-proxy' if path == '.github/workflows/composer-hosted.yml' else source(path)
+
+        proxy = {'checks': list(COMPOSER_PROXY_CHECKS), 'lock_sha256': 'c' * 64,
+                 'archive_sha256': {'cratectl/composer-app': 'a' * 64, 'cratectl/composer-lib': 'd' * 64}}
+        proxied = {**extended, 'profile': COMPOSER_PROXY_PROFILE, 'composer_proxy': proxy,
+                   'source_sha256': {path: hashlib.sha256(proxy_source(path)).hexdigest() for path in COMPOSER_PROXY_FILES}}
+        self.assertEqual(validate_custom(proxied, candidate, 12, spec, proxy_source), {'checks': 73, 'records': 1})
+        with self.assertRaisesRegex(EvidenceError, 'composer_hosted_report_contract'):
+            validate_custom({**proxied, 'composer_proxy': {**proxy, 'checks': proxy['checks'][:-1]}}, candidate, 12, spec, proxy_source)
 
     def test_debian_apt_report_requires_signed_repository_controls_on_native_architecture(self):
         source = lambda path: path.encode()
