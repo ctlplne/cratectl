@@ -1,0 +1,209 @@
+{
+  "candidate": "420fb31916ff2d7c5d374e9933a454138a100cf3",
+  "status": "passed",
+  "checks": [
+    "clean exact source",
+    "cratectl matches the clean candidate",
+    "cratectld matches the clean candidate",
+    "real reviewed PostgreSQL 16 patch release",
+    "absent repository has an authority and tenant bound creation plan",
+    "plan, wrong approval and denied callers leave the tenant journal unchanged",
+    "concurrent approved requests produce one creation or a safe retry",
+    "retry after successful creation returns unchanged",
+    "one repository creation event despite concurrent retry",
+    "second tenant can plan an independent same-name repository",
+    "import returns the exact active hosted fields",
+    "plan exposes review drift without writing",
+    "stock npm published its exact bytes and unassessed input was denied",
+    "registry restart preserves the declared state",
+    "fresh stock npm downloads the exact approved archive after restart",
+    "stale approval leaves suspended repository retained",
+    "suspended repository cannot be imported as active",
+    "revoked administrator cannot plan",
+    "schema 19 with all 59 tenant tables forced RLS and a restricted runtime role"
+  ],
+  "binary_sha256": {
+    "cratectl": "6c3b9e9f2211668ec21e16dd9108eda83c96d8b7faa5a8afdc961442267f2b61",
+    "cratectld": "56f16e20ff8509b03721473014b8e05edb4d7f5926b8ee990c0d668687dac2d9"
+  },
+  "archive_sha256": "eb88cfbb43de75bcfb7e6ec35e9cf45e90e0288fcdcf1f05d76e4b3b5f3f6b28",
+  "postgres": "postgres (PostgreSQL) 16.15 (Ubuntu 16.15-1.pgdg24.04+2)",
+  "npm": "10.9.9",
+  "debian_apt": {
+    "checks": [
+      "stock APT, dpkg and GnuPG are available",
+      "stock APT has an observed native platform and apt-secure tools",
+      "APT metadata requires the scoped repository grant",
+      "stock dpkg emits an exact accepted Debian archive cratectl-apt-app",
+      "stock dpkg emits an exact accepted Debian archive cratectl-apt-library",
+      "unreviewed Debian archives and dependency metadata remain private",
+      "the signed-input package index retains the exact dependency and archive bindings",
+      "external GnuPG signed the exact published Release input",
+      "repository review applies to the retained InRelease digest",
+      "the original InRelease and by-hash indexes serve exact bytes",
+      "stock APT verifies and indexes the signed repository first-consumer",
+      "stock APT resolves and downloads the exact application and dependency first-consumer",
+      "stock APT refuses untrusted-signature",
+      "stock APT verifies and indexes the signed repository after-restart",
+      "stock APT resolves and downloads the exact application and dependency after-restart",
+      "current policy fences stale signed metadata and the denied package",
+      "stock APT refuses retired-index"
+    ],
+    "apt": "apt 2.8.4 (amd64)",
+    "architecture": "amd64",
+    "gpg": "gpg (GnuPG) 2.4.4",
+    "archive_sha256": {
+      "cratectl-apt-app": "7894b1a8ab58983c656d84394c8624d894b52f414a649a0f18edfca24d6c7960",
+      "cratectl-apt-library": "5895d99ee9d90dc5467fdff94e58a0167fec493fc74ffa6877025c26d2655d6c"
+    },
+    "release_sha256": "240aacfb2eb334ea731158caed0a4521c81cf12e34e35f477339bd42ffcaa51e",
+    "index_sha256": {
+      "Packages": "65ae1af14eb5663b34221927d9b6242f032eee32a74d81e1c95aa7fdc8341905",
+      "Packages.gz": "799bf6e348787b5228a24e908950bc02eab3ab3a34ebdb8f23b2a59b8a9b824b"
+    }
+  },
+  "goal_complete": false,
+  "broad_readiness": false,
+  "debian_apt_suite": {
+    "checks": [
+      "stock APT, dpkg and GnuPG are available",
+      "stock APT has an observed native platform and apt-secure tools",
+      "APT metadata requires the scoped repository grant",
+      "stock dpkg emits an exact accepted Debian archive cratectl-apt-app",
+      "stock dpkg emits an exact accepted Debian archive cratectl-apt-library",
+      "stock dpkg emits an exact accepted Debian archive cratectl-apt-app-foreign",
+      "unreviewed Debian archives and dependency metadata remain private",
+      "the signed-input package index retains the exact dependency and archive bindings",
+      "the named suite isolates native archives and exposes the common dependency in both indexes",
+      "external GnuPG signed the exact published Release input",
+      "repository review applies to the retained InRelease digest",
+      "the original InRelease and by-hash indexes serve exact bytes",
+      "stock APT verifies and indexes the signed repository first-consumer",
+      "stock APT resolves and downloads the exact application and dependency first-consumer",
+      "stock APT refuses untrusted-signature",
+      "stock APT verifies and indexes the signed repository after-restart",
+      "stock APT resolves and downloads the exact application and dependency after-restart",
+      "current policy fences stale signed metadata and the denied package",
+      "stock APT refuses retired-index"
+    ],
+    "apt": "apt 2.8.4 (amd64)",
+    "architecture": "amd64",
+    "gpg": "gpg (GnuPG) 2.4.4",
+    "archive_sha256": {
+      "cratectl-apt-app": "6905f056c542ced4718a989bfada1349c33e70333c2b187067ace9590622ba40",
+      "cratectl-apt-library": "8c1f0e8090508a38122e7c1370a671ba1ff73bc6eaf83dc170ca760ef3f7a9c7",
+      "cratectl-apt-app-foreign": "bb54f0a35c2e1ed11cff30b08038e867fa4152c41abfb1be26257aa651a2a016"
+    },
+    "release_sha256": "1eb71d6bd12a58f797d7ef771cbffca60635aa3e3aca090ebe52f8c2248e8052",
+    "index_sha256": {
+      "main/binary-amd64/Packages": "7fdc278c7fad727d945ee0fee840631ba8f0fe837786be7c1be9ecb9e69671e5",
+      "main/binary-amd64/Packages.gz": "4c4c62b373ac56d88b48ad22db057298b24585722e128b4b8274ca5191d94eb3",
+      "main/binary-arm64/Packages": "b2543d209282cca1271d47fd606b92d9ed1340b777086dda06aa6317c9973f60",
+      "main/binary-arm64/Packages.gz": "063cce8370996de3bb07d7a03db2487d2dc1c6991c7b5e84cf379f46c010c34b"
+    }
+  },
+  "schema": 1,
+  "profile": "cratectl-native-debian-apt-signed-suites-v1",
+  "runner_os": "Linux",
+  "runner_arch": "X64",
+  "run_id": "44435709378",
+  "source_dirty": false,
+  "source_sha256": [
+    {
+      "path": ".github/workflows/debian-apt.yml",
+      "sha256": "957d4fa8e0a0afc1390f7d7633f073bbafa197defe0499984814b64b07be81ce"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "12f2a8b5cfbc2f322822b82e4446f51ff017374acab1f3a8921db8cc8e833bf6"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "1d4aecc2732cd54db4534e0afc862ffe14d5c24890f106008682fd9bbc8e5ba9"
+    },
+    {
+      "path": "go.sum",
+      "sha256": "5e364e4e1eff09d8d39617427d7775012304b09a7be26778dc2b46fdabae3f15"
+    },
+    {
+      "path": "scripts/ci/debian_apt_evidence.py",
+      "sha256": "b76bf07c44bfb40e1f5646beb85dfc87189c79907dcf674cca1bf1dfdf7f01d1"
+    },
+    {
+      "path": "scripts/ci/terraform_provider_evidence.py",
+      "sha256": "130de2ec92ed288a6fa6c744c67003a76cafa2dfb9835e48f653abccda1a50ca"
+    },
+    {
+      "path": "scripts/debian_apt_fixture.py",
+      "sha256": "a9d1f006c780faa7fd64f6ccf89d76152ac37dad3afa87b3f7f28866e6850f82"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "353e37b8a77a28e843991970f58e541dbead9bfe406bf7c19e2b7950b5cd75a2"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+    },
+    {
+      "path": "scripts/qualification_contract.py",
+      "sha256": "c40a9d0209a9dc1fb9838f49cdb316ad5a762d45c0359b97fce156746564e5ba"
+    },
+    {
+      "path": "internal/debian/archive.go",
+      "sha256": "53f5664c525245812953d13dc937fb14825ba70a365ab3fc25ac444e70b23173"
+    },
+    {
+      "path": "internal/debian/control.go",
+      "sha256": "533821382f7ab4dbf7bc4d79bf4e2cd5e2a16ddab915c2dbf13631c097f12287"
+    },
+    {
+      "path": "internal/debian/release.go",
+      "sha256": "2c0b6eed2c21d6b09a0fa0483ea58203bc02f9ff291bbe89f27e9af2de318fff"
+    },
+    {
+      "path": "internal/server/debian.go",
+      "sha256": "96db5ea5e7bdb4b282e32bc48a2414c35cc6cb8ab7c8fc32c76f8c1fa88beb6b"
+    },
+    {
+      "path": "internal/server/debian_release.go",
+      "sha256": "3ec7d9c1070e61adda0337576f43ecceb2bb7bdbda5654935092f13f93dba1fe"
+    },
+    {
+      "path": "internal/server/debian_integration_test.go",
+      "sha256": "f65d36ab118b194009a391ffad4b6ca01498ac5940200c73d00fcb52e20f2837"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "80407ebfa4d0169b52a0ac63d4dc96486d55d66e254e75aefd20625495d831cf"
+    },
+    {
+      "path": "internal/store/debian.go",
+      "sha256": "c9642f6cf699146e054aa6fe61795aabba110d1c1e8c69106fad83ffab771e89"
+    },
+    {
+      "path": "internal/store/debian_release.go",
+      "sha256": "1507ee0f22cb744dc75cb5bd834b73b59ed6313e7051e34a1158778f85a8f618"
+    },
+    {
+      "path": "internal/store/artifact_read.go",
+      "sha256": "f6d81cb15470a84f7f60641d00318cab282b0c645c0f616a10f21f638ef14f39"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "65a7a9b3b5789369ce0651f925047e3b97e010c8e77697fb527fbe2d28f52959"
+    },
+    {
+      "path": "internal/store/migrations.go",
+      "sha256": "59f3478fbc77b7c969e43719f7eea92844a5bb1b2cd5b0d63ec2f356e368594b"
+    },
+    {
+      "path": "internal/store/lifecycle_artifact.go",
+      "sha256": "97c5774aa601949476d57c6ee0d293b06fe7bd604d3b6e826532cfdd021aafd4"
+    },
+    {
+      "path": "internal/debian/distribution.go",
+      "sha256": "f6c6305a0d6f8bcfc71b598ab3533af0c478702903df23bf0edda39718fd6a93"
+    }
+  ]
+}

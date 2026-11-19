@@ -1,0 +1,50 @@
+{
+  "candidate": "8cf32b928a53f8d6488f01808442e2391b1bde2e",
+  "observed_at": "2026-11-19T01:27:56.582161+00:00",
+  "definition": "DEFECT.0192",
+  "status": "failed",
+  "jobs": [
+    {
+      "architecture": "amd64",
+      "run_id": 44432778797,
+      "job_id": 135258902391,
+      "run_attempt": 1,
+      "job_url": "https://github.com/ctlplne/cratectl/actions/runs/44432778797/job/135258902391",
+      "status": "failed",
+      "original_private_log": {
+        "path": ".private/ci-diagnostics/github-8cf32b9-campaign/135258902391.txt",
+        "sha256": "bc555609f2f1587cb66ba84aa485e1425b4fc7ed5a6740a0af5eadc7e4bea558",
+        "bytes": 426211
+      }
+    },
+    {
+      "architecture": "arm64",
+      "run_id": 44432778797,
+      "job_id": 135258902305,
+      "run_attempt": 1,
+      "job_url": "https://github.com/ctlplne/cratectl/actions/runs/44432778797/job/135258902305",
+      "status": "failed",
+      "original_private_log": {
+        "path": ".private/ci-diagnostics/github-8cf32b9-campaign/135258902305.txt",
+        "sha256": "89e6cdca270d0be142f1a7be5eda34bd9bb12853123af93be8d9f56a4ee2774c",
+        "bytes": 424277
+      }
+    }
+  ],
+  "observation": "Both original runtime jobs failed TestConsoleSessionUsesCurrentCredentialAndDoesNotExposeSecrets. The candidate advertises APT through the protected session while that test still expected the adapter inventory from before APT.",
+  "exact_source_sha256": [
+    {
+      "path": "internal/server/console_integration_test.go",
+      "sha256": "ee1e78c88dc7900ad1ab02faec9cfae040d945cc5993b9535eebb105db8367d2"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "80407ebfa4d0169b52a0ac63d4dc96486d55d66e254e75aefd20625495d831cf"
+    }
+  ],
+  "limits": [
+    "The two stock APT fixture failures are recorded independently. The entire original candidate remains unaccepted."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

@@ -826,10 +826,17 @@ Exact `37b2105` passed the build, test, race and lint gates and three Debian
 regressions on PostgreSQL 16.16. It serves a named suite and component with
 separate amd64 and arm64 indexes over shared architecture-independent packages.
 The local test checks the signed-envelope shape and current index binding.
-The original `420fb31` Linux jobs qualify the flat and named layouts with
-stock APT.
+Both original Linux `420fb31` jobs passed 19 named-suite, 17 flat APT and 19
+declarative checks with 24 matched source files per job. Stock APT selected
+the native archive while the suite also published the other architecture and
+its shared dependency.
 [Named-suite PostgreSQL evidence](evidence/2026-11-19/debian-37b2105-named-suite-postgres.json)
-[Original named-suite workflow inventory](evidence/2026-11-19/github-420fb31-started.json)
+[Original stock APT suite reports](evidence/2026-11-19/github-420fb31-debian-flat-and-suites-native.json)
+
+Both original `8cf32b9` runtime jobs failed because the protected console
+session assertion expected the adapter list from before APT. The test now
+expects APT and still covers credential revocation and disabled adapters.
+[Original console adapter assertion failure](evidence/2026-11-19/debian-8cf32b9-console-format-first-failure.json)
 
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities

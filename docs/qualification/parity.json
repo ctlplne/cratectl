@@ -5169,7 +5169,7 @@
         "apt-get"
       ],
       "client_versions": {
-        "apt-get": "2.8.4 confirmed for the flat layout on Linux x64 and ARM64"
+        "apt-get": "2.8.4 confirmed for flat and named suites on Linux x64 and ARM64"
       },
       "test_data": "Two nontrivial versions plus a dependency package; same coordinates in two tenants.",
       "permission_cases": [
@@ -5187,15 +5187,16 @@
         "delete/restore"
       ],
       "state": "implementing",
-      "candidate": "37b210559500535f1949a0935191e2479040b58d",
+      "candidate": "420fb31916ff2d7c5d374e9933a454138a100cf3",
       "evidence": [
         "evidence/2026-11-19/debian-b730f7e-hosted-intake-native.json",
         "evidence/2026-11-19/debian-8cf32b9-release-binding-native.json",
         "evidence/2026-11-19/github-c62c1bf-debian-flat-native.json",
-        "evidence/2026-11-19/debian-37b2105-named-suite-postgres.json"
+        "evidence/2026-11-19/debian-37b2105-named-suite-postgres.json",
+        "evidence/2026-11-19/github-420fb31-debian-flat-and-suites-native.json"
       ],
-      "limits": "Owned PostgreSQL 16.16 verified Debian archive intake, current authorization, exact-coordinate publication and package policy on b730f7e. Both original c62c1bf Linux jobs passed 17 stock APT 2.8.4 and 19 declarative checks with PostgreSQL 16.15 and 23 matched source hashes per job. APT authenticated an externally signed flat repository and downloaded the exact application and dependency archives over TLS, including after restart. Exact 37b2105 passed PostgreSQL regressions for a named suite, architecture-separated indexes, shared architecture-independent archives and current signed-envelope binding. Stock named-suite qualification is selected at 420fb31.",
-      "next_action": "Collect the original named-suite stock APT results and qualify additional control compression, concurrent publication and package lifecycle cases."
+      "limits": "Stock APT 2.8.4 authenticated externally signed metadata and downloaded exact dependencies on original Linux x64 and ARM64 with PostgreSQL 16.15. Both c62c1bf jobs passed 36 flat-layout and declarative checks. Both 420fb31 jobs passed 55 combined checks and matched 24 source hashes per job. The named suite exposed separate amd64 and arm64 indexes with a common dependency, and stock APT selected the native archive after restart and enforced current review. Real PostgreSQL 16.16 regressions covered tenant separation, immutable pool paths and older Release refusal.",
+      "next_action": "Qualify xz and zstd control members, additional APT clients, concurrent publication and lifecycle cases."
     },
     {
       "id": "FMT.APT.PROXY",
