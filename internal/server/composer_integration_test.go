@@ -22,10 +22,16 @@ import (
 
 func composerFixture(t *testing.T, data string) []byte {
 	t.Helper()
+	const manifest = `{"name":"cratectl/composer-app","require":{"cratectl/composer-lib":"^2.4"},"scripts":{"test":"owned-unused"},"autoload":{"psr-4":{"Cratectl\\":"src/"}}}`
+	return composerZipFixture(t, manifest, data)
+}
+
+func composerZipFixture(t *testing.T, manifest, data string) []byte {
+	t.Helper()
 	var buffer bytes.Buffer
 	archive := zip.NewWriter(&buffer)
 	for name, body := range map[string]string{
-		"owned-release/composer.json": `{"name":"cratectl/composer-app","require":{"cratectl/composer-lib":"^2.4"},"scripts":{"test":"owned-unused"},"autoload":{"psr-4":{"Cratectl\\":"src/"}}}`,
+		"owned-release/composer.json": manifest,
 		"owned-release/src/owned.php": data,
 	} {
 		entry, err := archive.Create(name)

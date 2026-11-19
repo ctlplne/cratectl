@@ -22,6 +22,9 @@ from composer_hosted_evidence import (BASE_CHECKS as COMPOSER_BASE, CHECKS as CO
                                       GROUP_PROFILE as COMPOSER_GROUP_PROFILE, VERSIONS_PROFILE as COMPOSER_VERSIONS_PROFILE,
                                       PROXY_CHECKS as COMPOSER_PROXY_CHECKS, PROXY_FILES as COMPOSER_PROXY_FILES,
                                       PROXY_PROFILE as COMPOSER_PROXY_PROFILE,
+                                      SEARCH_CHECKS as COMPOSER_SEARCH_CHECKS, SEARCH_FILES as COMPOSER_SEARCH_FILES,
+                                      SEARCH_PROFILE as COMPOSER_SEARCH_PROFILE, MATCH as COMPOSER_SEARCH_MATCH,
+                                      NEIGHBOR as COMPOSER_SEARCH_NEIGHBOR, HIDDEN as COMPOSER_SEARCH_HIDDEN,
                                       EXTRA_COORDINATES as COMPOSER_EXTRA_COORDINATES, VERSION_CHECKS as COMPOSER_VERSION_CHECKS)
 from linux_install_evidence import CHECKS as INSTALL_CHECKS, IMAGE as INSTALL_IMAGE, SOURCE_PATHS as INSTALL_FILES
 from maven_index_evidence import (BASE_CHECKS as MAVEN_INDEX_BASE, CACHED_CHECKS as MAVEN_CACHED_CHECKS,
@@ -97,6 +100,14 @@ class CampaignReports(unittest.TestCase):
         self.assertEqual(validate_custom(proxied, candidate, 12, spec, proxy_source), {'checks': 73, 'records': 1})
         with self.assertRaisesRegex(EvidenceError, 'composer_hosted_report_contract'):
             validate_custom({**proxied, 'composer_proxy': {**proxy, 'checks': proxy['checks'][:-1]}}, candidate, 12, spec, proxy_source)
+        discovery_source = lambda path: b'--composer-group --composer-versions --composer-proxy --composer-search' if path == '.github/workflows/composer-hosted.yml' else source(path)
+        discovery = {'checks': list(COMPOSER_SEARCH_CHECKS), 'archive_sha256': {
+            COMPOSER_SEARCH_MATCH: 'a' * 64, COMPOSER_SEARCH_NEIGHBOR: 'b' * 64, COMPOSER_SEARCH_HIDDEN: 'd' * 64}}
+        discovered = {**proxied, 'profile': COMPOSER_SEARCH_PROFILE, 'composer_search': discovery,
+                      'source_sha256': {path: hashlib.sha256(discovery_source(path)).hexdigest() for path in COMPOSER_SEARCH_FILES}}
+        self.assertEqual(validate_custom(discovered, candidate, 12, spec, discovery_source), {'checks': 79, 'records': 1})
+        with self.assertRaisesRegex(EvidenceError, 'composer_hosted_report_contract'):
+            validate_custom({**discovered, 'composer_search': {**discovery, 'checks': discovery['checks'][:-1]}}, candidate, 12, spec, discovery_source)
 
     def test_debian_apt_report_requires_signed_repository_controls_on_native_architecture(self):
         source = lambda path: path.encode()

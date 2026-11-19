@@ -23,11 +23,13 @@ PRERELEASE = ((APP, '1.5.0-rc1'), (LIBRARY, '2.1.0'))
 EXTRA_COORDINATES = (*DEVELOPMENT, PRERELEASE[0])
 
 
-def make_archive(package, version, payload):
+def make_archive(package, version, payload, *, description=''):
     metadata = {'name': package, 'version': version, 'type': 'library',
                 'autoload': {'psr-4': {'Cratectl\\Fixture\\': 'src/'}}}
     if package == APP:
         metadata['require'] = {LIBRARY: 'dev-fixture' if version.startswith('dev-') else '^2.1'}
+    if description:
+        metadata['description'] = description
     buffer = io.BytesIO()
     with zipfile.ZipFile(buffer, 'w', compression=zipfile.ZIP_DEFLATED) as archive:
         for path, data in (('composer.json', json.dumps(metadata, sort_keys=True).encode()), ('src/owned.txt', payload)):

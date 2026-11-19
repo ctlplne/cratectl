@@ -5,11 +5,13 @@ if __package__:
 else:
     from terraform_provider_evidence import BASE_CHECKS as MANIFEST_CHECKS, hashes, matches, postgres_version
 from composer_hosted_fixture import APP, LIBRARY, COMPOSER_SHA256, COMPOSER_VERSION, COORDINATES, EXTRA_COORDINATES
+from composer_search_fixture import HIDDEN, MATCH, NEIGHBOR
 
 PROFILE = 'cratectl-native-composer-hosted-zip-v1'
 GROUP_PROFILE = 'cratectl-native-composer-hosted-and-group-zip-v1'
 VERSIONS_PROFILE = 'cratectl-native-composer-hosted-group-and-versions-v1'
 PROXY_PROFILE = 'cratectl-native-composer-checksum-proxy-v1'
+SEARCH_PROFILE = 'cratectl-native-composer-hosted-discovery-v1'
 BASE_CHECKS = tuple(item for item in MANIFEST_CHECKS if item != 'provider matches the clean candidate')
 CHECKS = (
     'the stock Composer PHAR matches the pinned publisher digest',
@@ -58,6 +60,14 @@ PROXY_CHECKS = (
     'stock Composer refuses a locked proxy archive after digest denial',
     'an advertised archive move outside approved authority stops metadata before a download',
 )
+SEARCH_CHECKS = (
+    'Composer hosted discovery requires current repository and tenant access',
+    'stock Composer full text search uses the inspected archive description and current policy',
+    'stock Composer name search uses the governed native package list',
+    'Composer list wildcards preserve the literal underscore in an owned package name',
+    'stock Composer package type search excludes unsupported package kinds',
+    'fresh stock Composer discovery suppresses the revoked package after restart',
+)
 FILES = (
     '.github/workflows/composer-hosted.yml', 'Makefile', 'go.mod', 'go.sum',
     'scripts/ci/composer_hosted_evidence.py', 'scripts/ci/terraform_provider_evidence.py',
@@ -72,6 +82,8 @@ PROXY_FILES = (*GROUP_FILES, 'scripts/composer_proxy_fixture.py', 'scripts/cargo
                'internal/composer/catalog.go', 'internal/composer/catalog_test.go', 'internal/server/composer_proxy.go',
                'internal/server/composer_proxy_integration_test.go', 'internal/store/composer_proxy.go',
                'internal/store/retrieval.go', 'internal/store/native_source.go', 'internal/store/source_configuration.go')
+SEARCH_FILES = (*PROXY_FILES, 'scripts/composer_search_fixture.py', 'internal/server/composer_search.go',
+                'internal/server/composer_search_integration_test.go', 'internal/store/composer_search.go')
 FIELDS = {'schema', 'profile', 'candidate', 'status', 'runner_os', 'runner_arch', 'run_id', 'source_dirty', 'source_sha256',
           'binary_sha256', 'archive_sha256', 'postgres', 'npm', 'checks', 'composer_hosted', 'goal_complete', 'broad_readiness'}
 DIGEST = '[a-f0-9]{64}'
@@ -89,17 +101,25 @@ def proxy_selected(source):
     return b'--composer-proxy' in source('.github/workflows/composer-hosted.yml').split()
 
 
+def search_selected(source):
+    return b'--composer-search' in source('.github/workflows/composer-hosted.yml').split()
+
+
 def validate(report):
-    if type(report) is not dict or report.get('profile') not in (PROFILE, GROUP_PROFILE, VERSIONS_PROFILE, PROXY_PROFILE):
+    if type(report) is not dict or report.get('profile') not in (PROFILE, GROUP_PROFILE, VERSIONS_PROFILE, PROXY_PROFILE, SEARCH_PROFILE):
         raise ValueError('invalid Composer profile')
     grouped = report['profile'] != PROFILE
-    proxied = report['profile'] == PROXY_PROFILE
-    versions = report['profile'] in (VERSIONS_PROFILE, PROXY_PROFILE)
+    discovered = report['profile'] == SEARCH_PROFILE
+    proxied = report['profile'] in (PROXY_PROFILE, SEARCH_PROFILE)
+    versions = report['profile'] in (VERSIONS_PROFILE, PROXY_PROFILE, SEARCH_PROFILE)
     fields = FIELDS | {'composer_group'} if grouped else FIELDS
     paths = GROUP_FILES if grouped else FILES
     if proxied:
         fields = fields | {'composer_proxy'}
         paths = PROXY_FILES
+    if discovered:
+        fields = fields | {'composer_search'}
+        paths = SEARCH_FILES
     if (set(report) != fields or type(report['schema']) is not int or report['schema'] != 1
             or report['status'] != 'passed' or report['runner_os'] != 'Linux'
             or report['runner_arch'] not in ('X64', 'ARM64') or report['source_dirty'] is not False
@@ -119,6 +139,11 @@ def validate(report):
                 or result['archive_sha256'][APP] == result['archive_sha256'][LIBRARY]
                 or not matches(result['lock_sha256'], DIGEST)):
             raise ValueError('invalid governed Composer proxy report')
+    if discovered:
+        result = report['composer_search']
+        if (type(result) is not dict or set(result) != {'checks', 'archive_sha256'} or result['checks'] != list(SEARCH_CHECKS)
+                or not hashes(result['archive_sha256'], (MATCH, NEIGHBOR, HIDDEN))):
+            raise ValueError('invalid Composer hosted discovery report')
     return report
 
 

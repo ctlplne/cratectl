@@ -32,6 +32,10 @@ type composerDist struct {
 }
 
 func (s *Server) composer(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, request string) {
+	if request == "search.json" || request == "list.json" {
+		s.serveComposerSearch(w, r, i, repo, request == "list.json")
+		return
+	}
 	if coordinate, ok := composer.ParseDistribution(request); ok {
 		if r.Method == http.MethodPut {
 			s.publishComposer(w, r, i, repo.Name, coordinate)
@@ -70,9 +74,15 @@ func (s *Server) composer(w http.ResponseWriter, r *http.Request, i store.Identi
 	response := struct {
 		Packages    map[string][]composerVersion `json:"packages"`
 		MetadataURL string                       `json:"metadata-url,omitempty"`
+		Search      string                       `json:"search,omitempty"`
+		List        string                       `json:"list,omitempty"`
 	}{Packages: map[string][]composerVersion{}}
 	if request == "packages.json" {
 		response.MetadataURL = base + "p2/%package%.json"
+		if repo.Mode == "hosted" {
+			response.Search = base + "search.json?q=%query%&type=%type%"
+			response.List = base + "list.json"
+		}
 	} else if repo.Mode == "proxy" {
 		rows, err := s.composerProxyVersions(r, i, repo, base, name, development)
 		if err != nil {
@@ -109,10 +119,14 @@ func (s *Server) composer(w http.ResponseWriter, r *http.Request, i store.Identi
 		respondErr(w, store.ErrMetadataLimit)
 		return
 	}
+	serveComposerJSON(w, r, data)
+}
+
+func serveComposerJSON(w http.ResponseWriter, r *http.Request, data []byte) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "private, no-cache")
 	w.Header().Set("ETag", `"sha256:`+crypt.Digest(data)+`"`)
-	http.ServeContent(w, r, request, time.Time{}, bytes.NewReader(data))
+	http.ServeContent(w, r, "composer.json", time.Time{}, bytes.NewReader(data))
 }
 
 func (s *Server) serveComposerGroup(w http.ResponseWriter, r *http.Request, i store.Identity, group store.Repository, coordinate composer.Coordinate) {

@@ -71,3 +71,12 @@ revalidation of the configured source.
 Public origins that do not supply this strong digest, mixed proxy/hosted
 groups, additional version forms, other distribution formats and broader
 package metadata remain open.
+
+## Hosted discovery
+
+Run `composer search TERMS` against a project that lists the hosted
+repository. Search matches package names and the start of descriptions from
+visible ZIP manifests. `composer search --only-name TERM` and the native
+package list use names from current retained, policy-allowed versions.
+Full-text search returns up to 100 matches. Proxy and group discovery through
+the native search command require separate support.
