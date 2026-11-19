@@ -1983,6 +1983,14 @@
       "first_failure": "evidence/2026-11-19/conda-5fd4b0a-micromamba-auth-first-failure.json",
       "replay": null,
       "repair": "Use the existing scoped reader token as the Basic password and store it with the exact native channel path and port."
+    },
+    {
+      "id": "DEFECT.0194",
+      "summary": "Stock micromamba stages its download-only archives in a nested cache",
+      "state": "Exact 51ca0b9 used channel-scoped Basic authentication and downloaded both exact archive digests. The first local assertion still expected a flat cache and no empty history file. Corrected restart and denial replay is pending.",
+      "first_failure": "evidence/2026-11-19/conda-51ca0b9-micromamba-cache-first-failure.json",
+      "replay": null,
+      "repair": "Read the nested owned cache, compare the original archives and stock FETCH graph, and verify that the download-only prefix has no package records or linked payloads."
     }
   ]
 }

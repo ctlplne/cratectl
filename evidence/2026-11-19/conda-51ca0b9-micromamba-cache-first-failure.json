@@ -1,0 +1,20 @@
+{
+  "candidate": "51ca0b9ca0404026857484a8ce0d3407cc7be140",
+  "definition": "DEFECT.0194",
+  "status": "failed",
+  "platform": "macOS ARM64",
+  "postgres": "16.16",
+  "stock_micromamba": "2.9.0",
+  "first_failed_stage": "Verify the initial stock download-only transaction and absence of linked package files.",
+  "stock_exit": 0,
+  "observation": "Stock micromamba selected both intended platform records and downloaded the exact archive digests. It stored both archives under a nested channel cache and created an empty prefix history file. The original fixture expected a flat cache and no history file. The failed assertion stopped the later restart and denial stages.",
+  "downloaded_sha256": {
+    "osx-arm64/cratectl-conda-app-1.4.0-fixture_3.tar.bz2": "cdd4fb48e87ffd2f0d9c5088ac8aa352faa3cfafac0ca4feaef7b228f39d2d3a",
+    "noarch/cratectl-conda-data-1.3.0-fixture_1.tar.bz2": "bba26a2cdef57af977f62012401b05a76d13958e0799534aa645d9fb3b76cc73"
+  },
+  "private_command_log_bytes": 4855,
+  "private_command_log_sha256": "5b063e3e951a384c64155e9b3abcb4a4fbcda5cf629d4258f5faae0dfe7d3980",
+  "repair": "Verify exact archive counts and hashes within the entire fresh owned cache. Independently compare the stock FETCH graph and check for the absence of installed records and payload files in download-only mode.",
+  "goal_complete": false,
+  "broad_readiness": false
+}

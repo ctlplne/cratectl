@@ -188,18 +188,24 @@ def evaluate_conda(work, installation, authority, call, api, restart, sha, execu
                             '--json', '--yes', *option, APP + '=1.4.0', cwd=target, environment=environment,
                             status=None, timeout=80)
         cache = target / 'root/pkgs'
-        archives = {file.name: sha(file) for file in cache.glob('*.tar.bz2')}
+        archives = [(file.name, sha(file)) for file in cache.rglob('*.tar.bz2')]
+        installed = {file.stem for file in (env_prefix / 'conda-meta').glob('*.json')}
+        linked_payload = any((env_prefix / p.payload_path).is_file() for p in (app, dependency))
         if expected_failure:
-            return code != 0 and not archives and not (env_prefix / 'conda-meta/history').exists()
+            solver_refused = 'could not solve' in output.lower() or '"solver_problems":' in output
+            return code != 0 and solver_refused and not archives and not installed and not linked_payload
         if code:
             markers = ('401', '403', '404', 'certificate', 'repodata', 'Could not solve', 'checksum')
             seen = ', '.join(marker for marker in markers if marker.lower() in output.lower()) or 'client failure'
             raise ValueError(f'stock micromamba {label} returned {code} ({seen})')
         exact = {p.filename: digests[p.path] for p in (app, dependency)}
+        fetched = json.loads(output)['actions']['FETCH']
+        expected_graph = {(p.name, p.version, p.build, p.subdir, digests[p.path]) for p in (app, dependency)}
+        actual_graph = {(p['name'], p['version'], p['build_string'], p['subdir'], p['sha256']) for p in fetched}
+        exact_fetch = len(archives) == len(fetched) == len(exact) and dict(archives) == exact and actual_graph == expected_graph
         if download_only:
-            return archives == exact and not (env_prefix / 'conda-meta/history').exists()
-        installed = {file.stem for file in (env_prefix / 'conda-meta').glob('*.json')}
-        return (archives == exact and installed == {p.filename.removesuffix('.tar.bz2') for p in (app, dependency)}
+            return exact_fetch and not installed and not linked_payload
+        return (exact_fetch and installed == {p.filename.removesuffix('.tar.bz2') for p in (app, dependency)}
                 and all((env_prefix / p.payload_path).read_bytes() == p.payload for p in (app, dependency)))
 
     check('stock micromamba downloads the native graph and selects the newest compatible noarch build',
