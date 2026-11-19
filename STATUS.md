@@ -845,7 +845,7 @@ its shared dependency.
 [Named-suite PostgreSQL evidence](evidence/2026-11-19/debian-37b2105-named-suite-postgres.json)
 [Original stock APT suite reports](evidence/2026-11-19/github-420fb31-debian-flat-and-suites-native.json)
 
-Both original runtime jobs at both `8cf32b9` and `c62c1bf` failed because the
+Both original runtime jobs at `8cf32b9`, `c62c1bf` and `420fb31` failed because the
 protected console session assertion expected the adapter list from before
 APT. Exact `3993833` passed the corrected test against migrated PostgreSQL
 16.16, including credential revocation and disabled adapters.
@@ -853,6 +853,7 @@ APT. Exact `3993833` passed the corrected test against migrated PostgreSQL
 [Corrected APT console PostgreSQL result](evidence/2026-11-19/debian-3993833-console-adapter-postgres.json)
 [Original initial APT campaign outcomes](evidence/2026-11-19/github-8cf32b9-original-completed.json)
 [Original flat APT campaign outcomes](evidence/2026-11-19/github-c62c1bf-original-completed.json)
+[Original named-suite campaign outcomes](evidence/2026-11-19/github-420fb31-original-completed.json)
 
 Exact `4e15a9f` passed the build, test, race and lint gates and the hosted
 Composer ZIP regression on PostgreSQL 16.16. Both original Linux jobs
@@ -862,6 +863,27 @@ client selected and installed the correct library dependency, retained the
 lockfile unchanged after restart, and refused the denied locked archive.
 [Hosted Composer PostgreSQL evidence](evidence/2026-11-19/composer-4e15a9f-hosted-zip-postgres.json)
 [Original stock Composer reports](evidence/2026-11-19/github-4e15a9f-composer-hosted-zip-native.json)
+
+Both original Linux `ff0f805` jobs passed 51 combined checks and matched
+23 source files each with Composer 2.11.2, PHP 8.3.6 and PostgreSQL 16.15.
+The group fetched the application and dependency from different hosted
+members. Current review controlled access to the preferred archive despite
+the presence of a reviewed copy with different bytes in a lower member.
+[Original ordered Composer group reports](evidence/2026-11-19/github-ff0f805-composer-ordered-group-native.json)
+
+Both original `ab8e5cf` jobs passed 61 checks with the same stock toolchain
+and 23 matched source files per job. Stock Composer loaded the separate
+development index, installed a numbered prerelease and an independent
+development graph, then reinstalled the development lock after restart.
+[Original Composer development and prerelease reports](evidence/2026-11-19/github-ab8e5cf-composer-development-versions-native.json)
+
+Exact `60cd693` passed nine Composer and NuGet regressions on PostgreSQL
+16.16 and the build, test, race and lint gates. Composer proxy discovery
+and byte retrieval use separate configured credentials and require the
+upstream archive's SHA-256. The hosted lifecycle regression required the
+retained exact ZIP before restoration and preserved package bytes after
+restart. The original `55ccc7c` jobs exercise the stock Composer proxy.
+[Composer proxy and lifecycle PostgreSQL evidence](evidence/2026-11-19/composer-60cd693-checksum-proxy-postgres.json)
 
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities

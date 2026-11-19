@@ -1,0 +1,34 @@
+{
+  "candidate": "60cd693c4a7b06442ee10814db4db0ed32ffd6f7",
+  "status": "passed",
+  "observed_at": "2026-11-19T02:12:16.065546+00:00",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "binary_sha256": {
+    "cratectld": "aed29a5569100262c9ab9114aa2b5d60cb05ecfc4c15d524447574d5f67c27e3",
+    "cratectl": "24832d06e772ba0d2f715bf55489544db30d368c4219210d3a8b46446f27f37e"
+  },
+  "regressions": [
+    "TestComposerGroupSelectsOneOwnerAndFencesOldDownloadURLs",
+    "TestComposerHostedBindsArchiveAndCurrentTenantPolicy",
+    "TestComposerHostedSeparatesDevelopmentMetadataFromTaggedVersions",
+    "TestComposerHostedLifecycleRestoresExactRetainedDistribution",
+    "TestComposerProxyBindsStrongCatalogAndSeparateDownloadAuthority",
+    "TestNuGetGroupKeepsPackageAuthorityAcrossPolicyAndUpstreamChanges",
+    "TestNuGetProxyFlatContainerUsesCurrentPolicyAndImmutableArchives",
+    "TestNuGetProxyCatalogRefreshesWithoutFreshness",
+    "TestNuGetServiceIndexBindsApprovedPackageAuthorityAndSeparateCredentials"
+  ],
+  "integration_log_sha256": "717a82c643a6da3b756afa789223fd62d2a403ff2df0c118cab0d0d0b980a95c",
+  "gates": {
+    "make build": "passed",
+    "make test": "passed",
+    "make race": "passed",
+    "make lint": "passed"
+  },
+  "limits": [
+    "Five Composer and four NuGet regressions ran against PostgreSQL 16.16. Composer tests scope qualified authority and checksum receipts, restart, review, exact digest restoration and cache invalidation. The stock proxy campaign is a separate Linux scope."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

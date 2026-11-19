@@ -1,0 +1,27 @@
+{
+  "candidate": "ff0f80595a5ede247411600d4f55cf7799834011",
+  "status": "passed",
+  "observed_at": "2026-11-19T02:12:15.745863+00:00",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "binary_sha256": {
+    "cratectld": "42f05d8753d6332ac3747e4da028ceea9cbcdeb195d5cb4044ccf746cb7421e8",
+    "cratectl": "a86ce0cdcf4387b688786e170706409edaca78fdb2bd2ed8aa823c39a326eba7"
+  },
+  "regressions": [
+    "TestComposerGroupSelectsOneOwnerAndFencesOldDownloadURLs",
+    "TestComposerHostedBindsArchiveAndCurrentTenantPolicy"
+  ],
+  "integration_log_sha256": "107c187f8c494ce4b1f4b837b6e7f9315647a0ec04e733914610af1a85ae7796",
+  "gates": {
+    "make build": "passed",
+    "make test": "passed",
+    "make race": "passed",
+    "make lint": "passed"
+  },
+  "limits": [
+    "Current package ownership, consulted grants, direct digest pins, review denial, old URL fencing and no fallback across two hosted members. Stock CLI verification uses the original Linux jobs."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

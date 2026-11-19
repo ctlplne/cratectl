@@ -1,0 +1,28 @@
+{
+  "candidate": "ab8e5cfd6a36d5b661f34e8b3c6558d1c4eb68ec",
+  "status": "passed",
+  "observed_at": "2026-11-19T02:12:15.891414+00:00",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "binary_sha256": {
+    "cratectld": "44b73ae943d97a994cd27b09ae43c5306ccffc0489938d5c62d19daed2910a8d",
+    "cratectl": "2d4c8feafc9a0d3933719ec758ee4357f9cc70aebeaf3beff225fd7ab8a7935a"
+  },
+  "regressions": [
+    "TestComposerGroupSelectsOneOwnerAndFencesOldDownloadURLs",
+    "TestComposerHostedBindsArchiveAndCurrentTenantPolicy",
+    "TestComposerHostedSeparatesDevelopmentMetadataFromTaggedVersions"
+  ],
+  "integration_log_sha256": "eadd42c93b31939bb5e7b2555c8a89335df64ee7c98c27791bde6be4f09caf55",
+  "gates": {
+    "make build": "passed",
+    "make test": "passed",
+    "make race": "passed",
+    "make lint": "passed"
+  },
+  "limits": [
+    "Hosted tags, numbered prereleases, isolated named development metadata and current deny policy. Stock Composer version selection is covered by the original Linux jobs."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}
