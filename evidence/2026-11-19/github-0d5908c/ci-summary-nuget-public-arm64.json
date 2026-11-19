@@ -1,0 +1,154 @@
+{
+  "schema": 1,
+  "profile": "cratectl-native-nuget-public-lock-v1",
+  "candidate": "0d5908c3f2e885c4828401e7384f2caeccdca59f",
+  "status": "passed",
+  "runner_os": "Linux",
+  "runner_arch": "ARM64",
+  "run_id": "44429400895",
+  "source_dirty": false,
+  "source_sha256": [
+    {
+      "path": ".github/workflows/nuget-public.yml",
+      "sha256": "2219aa723dba7cd053c36b2854282999b6b56cbef6baea9d23c78dd18339e603"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "12f2a8b5cfbc2f322822b82e4446f51ff017374acab1f3a8921db8cc8e833bf6"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "1d4aecc2732cd54db4534e0afc862ffe14d5c24890f106008682fd9bbc8e5ba9"
+    },
+    {
+      "path": "go.sum",
+      "sha256": "5e364e4e1eff09d8d39617427d7775012304b09a7be26778dc2b46fdabae3f15"
+    },
+    {
+      "path": "global.json",
+      "sha256": "bd2f7421218da3954279a68a63015aeabda5b7122ec8b47a2f7585b7e284a98d"
+    },
+    {
+      "path": "scripts/ci/qualify_nuget_proxy.py",
+      "sha256": "3a0eecc852abe83893171184f82e9f1bb1ecc144b230453433fd335335b6979c"
+    },
+    {
+      "path": "scripts/ci/nuget_proxy_evidence.py",
+      "sha256": "1786555fc045bd7fb97102f11708be6fb5f54399bd352f01be78932f9353cacc"
+    },
+    {
+      "path": "scripts/ci/nuget_public_evidence.py",
+      "sha256": "e406383ff285790c208a9d2faeace5318d189165612ec2362b4eaf36a741d3ea"
+    },
+    {
+      "path": "scripts/ci/terraform_provider_evidence.py",
+      "sha256": "130de2ec92ed288a6fa6c744c67003a76cafa2dfb9835e48f653abccda1a50ca"
+    },
+    {
+      "path": "scripts/conformance.py",
+      "sha256": "6d674b3fe066b3d988bd7d4476e0078a347580000fddea06a2d74947d430d822"
+    },
+    {
+      "path": "scripts/conformance_nuget_proxy.py",
+      "sha256": "18bb799433e455ba0ba45ccf04ca86dfbab5c54c998e6071222dfc70e6a6a6bb"
+    },
+    {
+      "path": "scripts/conformance_nuget_public.py",
+      "sha256": "977e7adbe0fb787ce06c5a3062ec4c35313f091da0e141ba683043bf13bf4568"
+    },
+    {
+      "path": "scripts/qualification_contract.py",
+      "sha256": "c40a9d0209a9dc1fb9838f49cdb316ad5a762d45c0359b97fce156746564e5ba"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+    },
+    {
+      "path": "internal/server/nuget.go",
+      "sha256": "1c412721653ee847877a70dc110eade175cf13b28cfd824309713a65357738db"
+    },
+    {
+      "path": "internal/server/nuget_proxy.go",
+      "sha256": "3c5fd829c0b56d9ed21cc1591934c25f28c78ba556218438a67a4f00cafc5987"
+    },
+    {
+      "path": "internal/server/nuget_service_index.go",
+      "sha256": "94eb10774d403924dae5ecf68ec059a8b9bbd51b16011856b037bf6ea4236072"
+    },
+    {
+      "path": "internal/server/resolve.go",
+      "sha256": "ec7e8ba8efef37f580d343473b4e78dd6e1132c5d4cf58711be0b9e823d7c905"
+    },
+    {
+      "path": "internal/store/decision.go",
+      "sha256": "3f9c785f2da56ee4678ef9a49418ab4eb794eb9ba2556dd32d88229b18427db4"
+    },
+    {
+      "path": "internal/store/nuget_proxy.go",
+      "sha256": "b3348385d9cd82d36b0cd0ee14bd365e578227c02b8d217d77a9ec0c0152e218"
+    },
+    {
+      "path": "internal/store/retrieval.go",
+      "sha256": "dd27abe47e7806fb604184ffe07e60531ccfb84725bb607a84574e0101836003"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "ebd9fff4832d6823e6054456617cafd57f81401eafe5928c5ca359298060d9d1"
+    },
+    {
+      "path": "internal/store/migrations.go",
+      "sha256": "59f3478fbc77b7c969e43719f7eea92844a5bb1b2cd5b0d63ec2f356e368594b"
+    },
+    {
+      "path": "internal/upstream/upstream.go",
+      "sha256": "364832266456df9998a13cc9289eb6073de998cb79a1ca2c2fb0066024644324"
+    }
+  ],
+  "binary_sha256": {
+    "cratectl": "f2cda9406f637740478e7f4726591be5840613d49b57c52aa003bb187cdeac0b",
+    "cratectld": "93f1767e74655a918ff7fff5e9a4739d084531c195e53026ca53c4bd55d81158"
+  },
+  "postgres": "postgres (PostgreSQL) 16.15 (Ubuntu 16.15-1.pgdg24.04+2)",
+  "database_safety": true,
+  "checks": [
+    "qualification source is clean",
+    "qualification binaries embed exact clean source commit",
+    "stock dotnet is available for public origin qualification",
+    "public origin replay uses the exact pinned dotnet SDK",
+    "both direct public package ZIPs match their independent SHA-256 pins and contain no build assets or scripts",
+    "stock dotnet restores the pinned public package graph independent-vendor-bytes",
+    "the stock lock binds Polly and its actual Polly.Core dependency independent-vendor-bytes",
+    "restored archive bytes and stock content hash match Polly independent-vendor-bytes",
+    "restored archive bytes and stock content hash match Polly.Core independent-vendor-bytes",
+    "admin: create nuget repository cratectl-nuget-public",
+    "public origin archive stages behind exact digest review Polly",
+    "public origin archive stages behind exact digest review Polly.Core",
+    "stock dotnet restores the pinned public package graph public-origin-through-cratectl",
+    "the stock lock binds Polly and its actual Polly.Core dependency public-origin-through-cratectl",
+    "restored archive bytes and stock content hash match Polly public-origin-through-cratectl",
+    "restored archive bytes and stock content hash match Polly.Core public-origin-through-cratectl",
+    "stock dotnet restores the pinned public package graph warm-public-origin-restart",
+    "the stock lock binds Polly and its actual Polly.Core dependency warm-public-origin-restart",
+    "restored archive bytes and stock content hash match Polly warm-public-origin-restart",
+    "restored archive bytes and stock content hash match Polly.Core warm-public-origin-restart",
+    "the current exact public package decision can be revoked",
+    "a fresh locked restore respects public proxy review revocation"
+  ],
+  "goal_complete": false,
+  "broad_readiness": false,
+  "nuget_public": {
+    "sdk": "10.0.403",
+    "dotnet_sha256": "e3ce85ffc9063d6cd9a9316c27a2ad0ee3257ad4565f17b80f058469161002c5",
+    "version": "8.5.2",
+    "lock_sha256": "064136843a2080c7ce9be2e99826311772424d71e495d4936fcc5d473b36d8bf",
+    "archive_sha256": {
+      "Polly": "22b374e9d74e209d1562e55e7dedcbbdf5b4917db4013450904060f420689910",
+      "Polly.Core": "3c0c2c5aaac289e09fffb63cedf57b5cc2a8698d9a6c240db48fb8a32c8c89f9"
+    },
+    "lock_content_sha512": {
+      "Polly": "bdb5ec1a0906f3a9c6f933b063e4a6b6b1ab4479871f40d06b1b482f1fff7770f3fe8709f22cd2358cddbd4da012d59afcb0c3f3324bbc3dc7763124765be486",
+      "Polly.Core": "d4c24a771bf8cf00e6896bd8bd5376e03b2b5947e043817cdefa07f1b85bb4b31d3ee1b2f027d3533b20421bf2ae5d5aee1acce9fff27702d5755508d31a2853"
+    }
+  }
+}

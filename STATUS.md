@@ -766,6 +766,10 @@ pinned package ZIPs through restart. Current review revocation blocked a
 fresh locked restore. The original signed-archive hash comparison failure is
 retained alongside the corrected replay.
 [Public NuGet lockfile evidence](evidence/2026-11-19/nuget-6992962-public-lockfile-native.json)
+Both original `0d5908c` Linux jobs passed the same 22 public-origin checks
+with PostgreSQL 16.15 and matched 24 exact source files per architecture.
+[Original Linux public NuGet lockfile reports](evidence/2026-11-19/github-0d5908c-nuget-public-lockfile-native.json)
+[Selected original NuGet workflows](evidence/2026-11-19/github-0d5908c-started.json)
 
 `6c72ee0` passed 26 ordered NuGet group assertions alongside the 30 stock
 proxy assertions on macOS ARM64 with PostgreSQL 16.16. Stock .NET restored
