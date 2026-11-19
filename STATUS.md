@@ -982,6 +982,16 @@ installation checks that had stopped on the preceding candidate.
 [macOS stock R ordered group evidence](evidence/2026-11-19/cran-fc54a58-ordered-group-stock-r-native.json)
 [Original Linux stock R reports](evidence/2026-11-19/github-fc54a58-cran-hosted-stock-r-native.json)
 
+Exact `c4570e8` passed 57 combined checks on macOS ARM64 with stock R
+4.6.2 and PostgreSQL 16.16, including 12 hosted binary checks. R used its
+native platform and series URL, built two inert packages and installed
+the original binaries into a fresh private library before and after
+restart. Current denial removed the dependency from discovery and refused
+its exact URL. Real PostgreSQL tests separately checked Windows ZIP
+publication, platform isolation, byte ranges, immutability and review.
+Stock Windows installation and compiled binaries still need qualification.
+[CRAN binary evidence](evidence/2026-11-19/cran-c4570e8-platform-binary-native.json)
+
 The original `55ccc7c` Linux x64 runtime report stopped in durable jobs at
 68 checks. The original `08457df` Linux x64 runtime report passed durable
 jobs and leases, then stopped in Chromium at two reported checks. The
