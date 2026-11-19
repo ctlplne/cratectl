@@ -46,7 +46,7 @@ def evaluate(args):
     os.umask(0o077)
     authority = ('https://127.0.0.1:38443' if args.cargo_toolchain or args.npm_search or args.python_search_client
                  or args.oci_catalog_cached or args.maven_index_cached or args.debian_apt or args.composer_phar
-                 or args.conda_micromamba else BASE)
+                 or args.conda_micromamba or args.cran_r else BASE)
     private = ROOT / '.private'
     if private.is_symlink() or private.stat().st_mode & 0o077:
         raise ValueError('use the existing owner-only .private directory')
@@ -445,6 +445,11 @@ def evaluate(args):
 
             report['conda_hosted'] = evaluate_conda(work, app, authority, call, api, restart_server, sha,
                                                     args.conda_micromamba.resolve())
+        if args.cran_r:
+            from cran_hosted_fixture import evaluate_cran
+
+            report['cran_hosted'] = evaluate_cran(work, app, authority, call, api, restart_server, sha,
+                                                  args.cran_r.resolve(), args.cran_r_home.resolve(), args.cran_tool_archive.resolve())
         if args.npm_search:
             from npm_search_fixture import evaluate_cached_search, evaluate_search
 
@@ -555,6 +560,8 @@ def evaluate(args):
         print(f"PASS: {len(report['composer_search']['lifecycle']['checks'])} stock Composer retained lifecycle checks")
     if args.conda_micromamba:
         print(f"PASS: {len(report['conda_hosted']['checks'])} stock micromamba hosted Conda checks")
+    if args.cran_r:
+        print(f"PASS: {len(report['cran_hosted']['checks'])} stock R hosted CRAN source checks")
     if args.npm_search:
         print(f"PASS: {len(report['npm_search']['checks'])} stock hosted npm search checks")
         print(f"PASS: {len(report['npm_cached_search']['checks'])} stock cached npm search checks")
@@ -796,6 +803,9 @@ if __name__ == '__main__':
     parser.add_argument('--composer-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--conda-micromamba', type=Path, help='the digest-pinned stock micromamba binary')
     parser.add_argument('--conda-ci-architecture', choices=('amd64', 'arm64'))
+    parser.add_argument('--cran-r', type=Path, help='the original interpreter in the pinned R distribution')
+    parser.add_argument('--cran-r-home', type=Path, help='the private R home unpacked from the pinned distribution')
+    parser.add_argument('--cran-tool-archive', type=Path, help='the pinned native R distribution archive')
     parser.add_argument('--npm-search', action='store_true',
                         help='also verify npm hosted and cached search using stock clients')
     parser.add_argument('--npm-search-ci-architecture', choices=('amd64', 'arm64'))
@@ -808,6 +818,14 @@ if __name__ == '__main__':
                         help='also fetch a pinned dependency graph from the public crates.io index and CDN')
     parser.add_argument('--legacy-cargo-daemon', type=Path)
     options = parser.parse_args()
+    cran_tools = (options.cran_r, options.cran_r_home, options.cran_tool_archive)
+    if any(cran_tools) and not all(cran_tools):
+        parser.error('native CRAN evidence requires the original R interpreter, its home and pinned distribution archive')
+    if options.cran_r and any((options.provider_binary, options.npm_search, options.python_search_client,
+                               options.cargo_toolchain, options.mcp_binary, options.oci_catalog_client,
+                               options.maven_index_reader, options.promtool, options.debian_apt, options.composer_phar,
+                               options.conda_micromamba)):
+        parser.error('native CRAN evidence requires the isolated stock R profile')
     if options.conda_ci_architecture and not options.conda_micromamba:
         parser.error('native Conda evidence requires the pinned micromamba binary')
     if options.conda_micromamba and any((options.provider_binary, options.npm_search, options.python_search_client,
