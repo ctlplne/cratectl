@@ -1,0 +1,108 @@
+{
+  "candidate": "69929627751915760c68b0ffba454d66bdd4299f",
+  "observed_at": "2026-11-19T05:55:32.590207+05:30",
+  "status": "passed",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres_server_version": "16.16",
+  "scoped_checks": 22,
+  "checks": [
+    "qualification source is clean",
+    "qualification binaries embed exact clean source commit",
+    "stock dotnet is available for public origin qualification",
+    "public origin replay uses the exact pinned dotnet SDK",
+    "both direct public package ZIPs match their independent SHA-256 pins and contain no build assets or scripts",
+    "stock dotnet restores the pinned public package graph independent-vendor-bytes",
+    "the stock lock binds Polly and its actual Polly.Core dependency independent-vendor-bytes",
+    "restored archive bytes and stock content hash match Polly independent-vendor-bytes",
+    "restored archive bytes and stock content hash match Polly.Core independent-vendor-bytes",
+    "admin: create nuget repository cratectl-nuget-public",
+    "public origin archive stages behind exact digest review Polly",
+    "public origin archive stages behind exact digest review Polly.Core",
+    "stock dotnet restores the pinned public package graph public-origin-through-cratectl",
+    "the stock lock binds Polly and its actual Polly.Core dependency public-origin-through-cratectl",
+    "restored archive bytes and stock content hash match Polly public-origin-through-cratectl",
+    "restored archive bytes and stock content hash match Polly.Core public-origin-through-cratectl",
+    "stock dotnet restores the pinned public package graph warm-public-origin-restart",
+    "the stock lock binds Polly and its actual Polly.Core dependency warm-public-origin-restart",
+    "restored archive bytes and stock content hash match Polly warm-public-origin-restart",
+    "restored archive bytes and stock content hash match Polly.Core warm-public-origin-restart",
+    "the current exact public package decision can be revoked",
+    "a fresh locked restore respects public proxy review revocation"
+  ],
+  "native": {
+    "sdk": "10.0.403",
+    "dotnet_sha256": "09448be14f72ee40d5ddaaf6039e9103c1dfdab1b975982aa68b537c4fad4a9b",
+    "version": "8.5.2",
+    "lock_sha256": "064136843a2080c7ce9be2e99826311772424d71e495d4936fcc5d473b36d8bf",
+    "archive_sha256": {
+      "Polly": "22b374e9d74e209d1562e55e7dedcbbdf5b4917db4013450904060f420689910",
+      "Polly.Core": "3c0c2c5aaac289e09fffb63cedf57b5cc2a8698d9a6c240db48fb8a32c8c89f9"
+    },
+    "lock_content_sha512": {
+      "Polly": "bdb5ec1a0906f3a9c6f933b063e4a6b6b1ab4479871f40d06b1b482f1fff7770f3fe8709f22cd2358cddbd4da012d59afcb0c3f3324bbc3dc7763124765be486",
+      "Polly.Core": "d4c24a771bf8cf00e6896bd8bd5376e03b2b5947e043817cdefa07f1b85bb4b31d3ee1b2f027d3533b20421bf2ae5d5aee1acce9fff27702d5755508d31a2853"
+    }
+  },
+  "real_postgres_regressions": [
+    "TestNuGetGroupKeepsPackageAuthorityAcrossPolicyAndUpstreamChanges",
+    "TestNuGetListingIsDurableAndPreservesConsumption",
+    "TestNuGetHostedPublicationPolicyBytesAndLifecycle",
+    "TestNuGetConcurrentCoordinatesAndCompleteIndexBudget",
+    "TestNuGetProxyFlatContainerUsesCurrentPolicyAndImmutableArchives",
+    "TestNuGetProxyCatalogRefreshesWithoutFreshness",
+    "TestNuGetServiceIndexBindsApprovedPackageAuthorityAndSeparateCredentials",
+    "TestNuGetListingHTTPBoundary"
+  ],
+  "binary_sha256": {
+    "cratectld": "592dc92999c2f93af2df9a106f6ab1ec57f47e22565d3fd03dc2d03e5e0b8d31",
+    "cratectl": "9876cd96eb0d6abb2b9f09c13184f5d45f32d64eadb8f8f2fef2d337a15eeda4"
+  },
+  "source_sha256": [
+    {
+      "path": "global.json",
+      "sha256": "bd2f7421218da3954279a68a63015aeabda5b7122ec8b47a2f7585b7e284a98d"
+    },
+    {
+      "path": "scripts/conformance.py",
+      "sha256": "6d674b3fe066b3d988bd7d4476e0078a347580000fddea06a2d74947d430d822"
+    },
+    {
+      "path": "scripts/conformance_nuget_public.py",
+      "sha256": "977e7adbe0fb787ce06c5a3062ec4c35313f091da0e141ba683043bf13bf4568"
+    },
+    {
+      "path": "scripts/conformance_nuget_proxy.py",
+      "sha256": "18bb799433e455ba0ba45ccf04ca86dfbab5c54c998e6071222dfc70e6a6a6bb"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+    },
+    {
+      "path": "internal/server/nuget_proxy.go",
+      "sha256": "3c5fd829c0b56d9ed21cc1591934c25f28c78ba556218438a67a4f00cafc5987"
+    },
+    {
+      "path": "internal/server/nuget_service_index.go",
+      "sha256": "94eb10774d403924dae5ecf68ec059a8b9bbd51b16011856b037bf6ea4236072"
+    },
+    {
+      "path": "internal/store/nuget_proxy.go",
+      "sha256": "b3348385d9cd82d36b0cd0ee14bd365e578227c02b8d217d77a9ec0c0152e218"
+    },
+    {
+      "path": "internal/upstream/upstream.go",
+      "sha256": "364832266456df9998a13cc9289eb6073de998cb79a1ca2c2fb0066024644324"
+    }
+  ],
+  "original_private_report": {
+    "path": ".private/conformance/7d13f3f39b/conformance-7d13f3f39b.json",
+    "bytes": 8478,
+    "sha256": "eb7224fe07ad3e0d4bdae06451e632b01b3830a520862b35d77b9a0dbaa713ce"
+  },
+  "limits": [
+    "Stock .NET 10.0.403 generated a baseline lockfile from independently pinned NuGet.org archives in a private file feed. It used an unchanged copy of the lockfile to restore Polly and Polly.Core 8.5.2 exclusively through cratectl with fresh caches, repeated after restart, and honored review revocation. Cratectl fetched the upstream V3 service index and both archives over HTTPS. The downstream owned fixture used loopback HTTP. The public source did not supply the tested optional SHA-512 sidecar URL. The test independently checked every archive SHA-256 before approval, and stock client archive and lock hashes after restore. Package-signature verification, distribution and additional origins require separate evidence."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

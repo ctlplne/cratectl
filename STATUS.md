@@ -759,6 +759,14 @@ warm restart without origin traffic. The named PostgreSQL regressions and
 all four source gates passed.
 [Native NuGet service-index evidence](evidence/2026-11-19/nuget-3dd94c0-service-index-native.json)
 
+`6992962` passed 22 stock NuGet assertions using the real NuGet.org service
+index and Polly plus Polly.Core 8.5.2. On macOS ARM64 with PostgreSQL 16.16,
+fresh isolated restores preserved an unchanged stock lockfile and independently
+pinned package ZIPs through restart. Current review revocation blocked a
+fresh locked restore. The original signed-archive hash comparison failure is
+retained alongside the corrected replay.
+[Public NuGet lockfile evidence](evidence/2026-11-19/nuget-6992962-public-lockfile-native.json)
+
 `6c72ee0` passed 26 ordered NuGet group assertions alongside the 30 stock
 proxy assertions on macOS ARM64 with PostgreSQL 16.16. Stock .NET restored
 the preferred proxy's exact application and a lower hosted dependency after
