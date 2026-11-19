@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"ctlplne.dev/cratectl/internal/cargo"
+	"ctlplne.dev/cratectl/internal/debian"
 	"ctlplne.dev/cratectl/internal/gomodule"
 	"ctlplne.dev/cratectl/internal/nuget"
 	"ctlplne.dev/cratectl/internal/upstream"
@@ -30,6 +31,7 @@ type RepositorySettings struct {
 	DownloadSources     []upstream.Config    `json:"download_sources,omitempty"`
 	PythonIndexFormat   string               `json:"python_index_format,omitempty"`
 	NuGetServiceIndex   bool                 `json:"nuget_service_index,omitempty"`
+	DebianDistribution  *debian.Distribution `json:"debian_distribution,omitempty"`
 	OCITokenEndpoint    *upstream.Config     `json:"oci_token_endpoint,omitempty"`
 	OCITokenService     string               `json:"oci_token_service,omitempty"`
 	MavenSnapshotPolicy string               `json:"maven_snapshot_policy,omitempty"`
@@ -127,6 +129,9 @@ func validateRepository(r *Repository, retainedGoProxy bool) error {
 	}
 	if r.Mode == "" {
 		r.Mode = "hosted"
+	}
+	if distribution := r.Settings.DebianDistribution; distribution != nil && (r.Format != "apt" || r.Mode != "hosted" || !distribution.Valid()) {
+		return errors.New("Debian distribution requires a hosted APT repository and a suite, component and distinct binary architectures")
 	}
 	if r.Access == "" {
 		r.Access = "tenant"

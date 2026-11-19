@@ -33,15 +33,19 @@ func ValidateDebianArtifact(a Artifact) (debian.Control, error) {
 }
 
 func (s *Store) PublishDebian(ctx context.Context, i Identity, repo string, a Artifact) error {
-	if _, err := ValidateDebianArtifact(a); err != nil {
+	control, err := ValidateDebianArtifact(a)
+	if err != nil {
 		return err
 	}
-	_, err := s.MutateRepository(ctx, i, repo, "", "", "apt.package.published", func(tx pgx.Tx) (any, int, error) {
+	_, err = s.MutateRepository(ctx, i, repo, "", "", "apt.package.published", func(tx pgx.Tx) (any, int, error) {
 		r, err := repositoryInTx(ctx, tx, i, repo, "write")
 		if err != nil {
 			return nil, 0, err
 		}
 		if r.Format != "apt" || r.Mode != "hosted" {
+			return nil, 0, ErrConflict
+		}
+		if !r.Settings.DebianDistribution.SupportsArchitecture(control.Architecture) {
 			return nil, 0, ErrConflict
 		}
 		if err := InsertArtifacts(ctx, tx, i, repo, []Artifact{a}); err != nil {
@@ -54,25 +58,29 @@ func (s *Store) PublishDebian(ctx context.Context, i Identity, repo string, a Ar
 
 // DebianPackageIndex binds every advertised stanza to the current reference,
 // digest decision and retained lifecycle in one tenant read snapshot.
-func (s *Store) DebianPackageIndex(ctx context.Context, i Identity, repo string, limit int, byteLimit int64) ([]byte, error) {
+func (s *Store) DebianPackageIndex(ctx context.Context, i Identity, repo, arch string, limit int, byteLimit int64) ([]byte, error) {
 	var index []byte
 	err := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
 		r, err := repositoryInTx(ctx, tx, i, repo, "read")
 		if err != nil {
 			return err
 		}
-		index, err = debianPackageIndexInTx(ctx, tx, i, r, limit, byteLimit)
+		index, err = debianPackageIndexInTx(ctx, tx, i, r, arch, limit, byteLimit)
 		return err
 	})
 	return index, err
 }
 
-func debianPackageIndexInTx(ctx context.Context, tx pgx.Tx, i Identity, r Repository, limit int, byteLimit int64) ([]byte, error) {
+func debianPackageIndexInTx(ctx context.Context, tx pgx.Tx, i Identity, r Repository, arch string, limit int, byteLimit int64) ([]byte, error) {
 	if limit < 1 || byteLimit < 1 {
 		return nil, ErrMetadataLimit
 	}
 	if r.Format != "apt" || r.Mode != "hosted" {
 		return nil, ErrConflict
+	}
+	distribution := r.Settings.DebianDistribution
+	if (distribution == nil) != (arch == "") || (distribution != nil && (arch == "all" || !distribution.SupportsArchitecture(arch))) {
+		return nil, ErrNotFound
 	}
 	limit = min(limit, 10000)
 	byteLimit = min(byteLimit, 8<<20)
@@ -82,7 +90,8 @@ CASE WHEN octet_length(a.metadata::text)<=$6 THEN a.metadata ELSE NULL END
 FROM cratectl.artifacts a `+decisionJoin+nativeLifecycleJoin+`
 WHERE a.tenant=$1 AND a.repository=$2 AND a.media_type=$3 AND NOT COALESCE(nl.deleted,false)
  AND COALESCE(d.decision,a.decision)<>'denied' AND (NOT $4::boolean OR COALESCE(d.decision,a.decision)='allowed')
-ORDER BY a.path COLLATE "C" LIMIT $5`, i.Tenant, r.Name, DebianMedia, r.RequireReview, limit+1, debianMetadataLimit)
+ AND ($7='' OR split_part(a.path,'/',4) IN ($7,'all'))
+ORDER BY a.path COLLATE "C" LIMIT $5`, i.Tenant, r.Name, DebianMedia, r.RequireReview, limit+1, debianMetadataLimit, arch)
 	if err != nil {
 		return nil, err
 	}

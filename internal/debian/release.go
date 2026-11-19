@@ -15,7 +15,7 @@ import (
 
 const MaxReleaseBytes = 128 << 10
 
-var ErrRelease = errors.New("invalid Debian flat repository InRelease envelope")
+var ErrRelease = errors.New("invalid Debian repository InRelease envelope")
 
 var releaseDigest = regexp.MustCompile(`^[0-9a-f]{64}$`)
 
@@ -25,9 +25,13 @@ type IndexDigest struct {
 }
 
 type Release struct {
-	Issued     time.Time              `json:"issued"`
-	ValidUntil time.Time              `json:"valid_until"`
-	Indexes    map[string]IndexDigest `json:"indexes"`
+	Issued        time.Time              `json:"issued"`
+	ValidUntil    time.Time              `json:"valid_until"`
+	Indexes       map[string]IndexDigest `json:"indexes"`
+	Suite         string                 `json:"suite,omitempty"`
+	Codename      string                 `json:"codename,omitempty"`
+	Component     string                 `json:"component,omitempty"`
+	Architectures []string               `json:"architectures,omitempty"`
 }
 
 func GzipIndex(index []byte) ([]byte, error) {
@@ -46,10 +50,42 @@ func (r Release) Active(now time.Time) bool {
 	return !r.Issued.IsZero() && r.Issued.Before(r.ValidUntil) && r.ValidUntil.After(now) && !r.Issued.After(now.Add(10*time.Second))
 }
 
+// Matches checks that the signed metadata describes the configured layout and
+// provides exactly the expected strong digest entries.
+func (r Release) Matches(distribution *Distribution) bool {
+	if !distribution.Valid() || len(r.Indexes) != 2*len(distribution.IndexArchitectures()) {
+		return false
+	}
+	if distribution != nil {
+		if (r.Suite != distribution.Suite && r.Codename != distribution.Suite) ||
+			(r.Suite != "" && !distributionSegment.MatchString(r.Suite)) || (r.Codename != "" && !distributionSegment.MatchString(r.Codename)) ||
+			r.Component != distribution.Component || len(r.Architectures) != len(distribution.Architectures) {
+			return false
+		}
+		seen := make(map[string]bool, len(r.Architectures))
+		for _, arch := range r.Architectures {
+			if arch == "all" || !distribution.SupportsArchitecture(arch) || seen[arch] {
+				return false
+			}
+			seen[arch] = true
+		}
+	}
+	for _, arch := range distribution.IndexArchitectures() {
+		plain, compressed := distribution.IndexPaths(arch)
+		for _, name := range [...]string{plain, compressed} {
+			entry := r.Indexes[name]
+			if !releaseDigest.MatchString(entry.SHA256) || entry.Size < 0 || entry.Size > 8<<20 {
+				return false
+			}
+		}
+	}
+	return true
+}
+
 // ParseInRelease binds the cleartext digest entries to a bounded envelope.
 // APT verifies the OpenPGP signature using its independently configured key.
-func ParseInRelease(data []byte) (Release, error) {
-	if len(data) == 0 || len(data) > MaxReleaseBytes || !utf8.Valid(data) {
+func ParseInRelease(data []byte, distribution *Distribution) (Release, error) {
+	if !distribution.Valid() || len(data) == 0 || len(data) > MaxReleaseBytes || !utf8.Valid(data) {
 		return Release{}, ErrRelease
 	}
 	text := strings.ReplaceAll(string(data), "\r\n", "\n")
@@ -71,7 +107,7 @@ func ParseInRelease(data []byte) (Release, error) {
 	if !ok || !validSignatureArmor(signature, signatureEnd) {
 		return Release{}, ErrRelease
 	}
-	return parseRelease(stanza)
+	return parseRelease(stanza, distribution)
 }
 
 func validSignatureArmor(signature, end string) bool {
@@ -94,8 +130,9 @@ func validSignatureArmor(signature, end string) bool {
 	return err == nil && len(decoded) > 0
 }
 
-func parseRelease(stanza string) (Release, error) {
+func parseRelease(stanza string, distribution *Distribution) (Release, error) {
 	out := Release{Indexes: map[string]IndexDigest{}}
+	count := 2 * len(distribution.IndexArchitectures())
 	fields := map[string]bool{}
 	last := ""
 	for line := range strings.SplitSeq(strings.TrimRight(stanza, "\n"), "\n") {
@@ -103,14 +140,15 @@ func parseRelease(stanza string) (Release, error) {
 			return Release{}, ErrRelease
 		}
 		if line[0] == ' ' || line[0] == '\t' {
-			if last == "" || last == "date" || last == "valid-until" {
+			switch last {
+			case "", "date", "valid-until", "suite", "codename", "components", "architectures":
 				return Release{}, ErrRelease
-			}
-			if last != "sha256" {
+			case "sha256":
+			default:
 				continue
 			}
 			parts := strings.Fields(line)
-			if len(parts) != 3 || !releaseDigest.MatchString(parts[0]) || (parts[2] != "Packages" && parts[2] != "Packages.gz") {
+			if len(parts) != 3 || len(out.Indexes) >= count || !releaseDigest.MatchString(parts[0]) {
 				return Release{}, ErrRelease
 			}
 			size, err := strconv.ParseInt(parts[1], 10, 64)
@@ -136,6 +174,14 @@ func parseRelease(stanza string) (Release, error) {
 			out.Issued, err = releaseTime(value)
 		case "valid-until":
 			out.ValidUntil, err = releaseTime(value)
+		case "suite":
+			out.Suite = value
+		case "codename":
+			out.Codename = value
+		case "components":
+			out.Component = value
+		case "architectures":
+			out.Architectures = strings.Fields(value)
 		case "sha256":
 			if value != "" {
 				return Release{}, ErrRelease
@@ -145,8 +191,11 @@ func parseRelease(stanza string) (Release, error) {
 			return Release{}, ErrRelease
 		}
 	}
-	if out.Issued.IsZero() || !out.Issued.Before(out.ValidUntil) || len(out.Indexes) != 2 {
+	if out.Issued.IsZero() || !out.Issued.Before(out.ValidUntil) || !out.Matches(distribution) {
 		return Release{}, ErrRelease
+	}
+	if distribution == nil {
+		out.Suite, out.Codename, out.Component, out.Architectures = "", "", "", nil
 	}
 	return out, nil
 }

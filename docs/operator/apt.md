@@ -36,5 +36,22 @@ policy or inventory change invalidates the signed view, publish a new envelope
 with a later `Date`.
 [APT archive authentication](https://manpages.debian.org/bookworm/apt/apt-secure.8.en.html)
 
-The `dists/` hierarchy, xz and zstd control members, proxy and group routing,
-and further native package-manager qualification remain open.
+## Signed named suite
+
+Set `settings.debian_distribution` at repository creation to an object with
+`suite`, `component` and `architectures`. For example, a repository named
+`cratectl-apt` can serve suite `stable`, component `main` and architectures
+`amd64` and `arm64`. Use those suite and component names in the APT source.
+The base URI remains `/apt/cratectl-apt/` and package uploads use the same
+`pool/` paths. Packages with `Architecture: all` appear in both indexes.
+
+Publish the signed file at `dists/stable/InRelease`. Its `Suite` or `Codename`
+must match `stable`. Set `Components` to `main` and `Architectures` to the
+configured architectures. Include the plain and gzip SHA-256 entries for
+each architecture relative to the Release file, such as
+`main/binary-amd64/Packages.gz`. Each architecture also serves by-hash reads
+under its own binary index directory. A policy change in any included
+architecture invalidates the signed view.
+
+xz and zstd control members, proxy and group routing, and further native
+package-manager qualification remain open.

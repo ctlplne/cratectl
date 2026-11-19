@@ -17,17 +17,18 @@ import (
 
 func (s *Server) apt(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, path string) {
 	path = strings.TrimPrefix(path, "./")
-	if path == store.DebianReleasePath {
-		s.debianRelease(w, r, i, repo.Name)
+	distribution := repo.Settings.DebianDistribution
+	if path == distribution.ReleasePath() {
+		s.debianRelease(w, r, i, repo)
 		return
 	}
-	if path == "Packages" || path == "Packages.gz" || strings.HasPrefix(path, "by-hash/SHA256/") {
+	if index, ok := distribution.ResolveIndex(path); ok {
 		if r.Method != http.MethodGet && r.Method != http.MethodHead {
 			w.Header().Set("Allow", "GET, HEAD")
 			fail(w, 405, "method_not_allowed", "Read the derived Debian Packages index with GET or HEAD.")
 			return
 		}
-		s.serveDebianPackages(w, r, i, repo.Name, path)
+		s.serveDebianPackages(w, r, i, repo.Name, index)
 		return
 	}
 	if !debian.ValidPoolPath(path) {
@@ -101,15 +102,15 @@ func (s *Server) publishDebian(w http.ResponseWriter, r *http.Request, i store.I
 	w.WriteHeader(http.StatusCreated)
 }
 
-func (s *Server) serveDebianPackages(w http.ResponseWriter, r *http.Request, i store.Identity, repo, path string) {
-	index, err := s.DB.DebianPackageIndex(r.Context(), i, repo, s.NativeVersionLimit, s.NativeMetadataBytes)
+func (s *Server) serveDebianPackages(w http.ResponseWriter, r *http.Request, i store.Identity, repo string, request debian.IndexRequest) {
+	index, err := s.DB.DebianPackageIndex(r.Context(), i, repo, request.Architecture, s.NativeVersionLimit, s.NativeMetadataBytes)
 	if err != nil {
 		respondErr(w, err)
 		return
 	}
 	media := "text/plain; charset=utf-8"
-	requestedHash, byHash := strings.CutPrefix(path, "by-hash/SHA256/")
-	if path == "Packages.gz" || (byHash && crypt.Digest(index) != requestedHash) {
+	name := "Packages"
+	if request.Name == "Packages.gz" || (request.SHA256 != "" && crypt.Digest(index) != request.SHA256) {
 		compressed, err := debian.GzipIndex(index)
 		if err != nil {
 			respondErr(w, err)
@@ -119,14 +120,14 @@ func (s *Server) serveDebianPackages(w http.ResponseWriter, r *http.Request, i s
 			respondErr(w, store.ErrMetadataLimit)
 			return
 		}
-		index, media = compressed, "application/gzip"
+		index, media, name = compressed, "application/gzip", "Packages.gz"
 	}
 	digest := crypt.Digest(index)
-	if byHash && requestedHash != digest {
+	if request.SHA256 != "" && request.SHA256 != digest {
 		respondErr(w, store.ErrNotFound)
 		return
 	}
 	w.Header().Set("Content-Type", media)
 	w.Header().Set("ETag", `"sha256:`+digest+`"`)
-	http.ServeContent(w, r, path, time.Time{}, bytes.NewReader(index))
+	http.ServeContent(w, r, name, time.Time{}, bytes.NewReader(index))
 }

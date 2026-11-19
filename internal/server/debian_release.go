@@ -13,7 +13,7 @@ import (
 	"ctlplne.dev/cratectl/internal/store"
 )
 
-func (s *Server) debianRelease(w http.ResponseWriter, r *http.Request, i store.Identity, repo string) {
+func (s *Server) debianRelease(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository) {
 	ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
 	defer cancel()
 	r = r.WithContext(ctx)
@@ -25,7 +25,7 @@ func (s *Server) debianRelease(w http.ResponseWriter, r *http.Request, i store.I
 		}
 		s.publishDebianRelease(w, r, i, repo)
 	case http.MethodGet, http.MethodHead:
-		a, err := s.DB.DebianRelease(ctx, i, repo, s.NativeVersionLimit, s.NativeMetadataBytes)
+		a, err := s.DB.DebianRelease(ctx, i, repo.Name, s.NativeVersionLimit, s.NativeMetadataBytes)
 		if err != nil {
 			respondErr(w, err)
 			return
@@ -36,7 +36,7 @@ func (s *Server) debianRelease(w http.ResponseWriter, r *http.Request, i store.I
 			return
 		}
 		defer file.Close()
-		current, err := s.DB.DebianRelease(ctx, i, repo, s.NativeVersionLimit, s.NativeMetadataBytes)
+		current, err := s.DB.DebianRelease(ctx, i, repo.Name, s.NativeVersionLimit, s.NativeMetadataBytes)
 		if err != nil {
 			respondErr(w, err)
 			return
@@ -47,22 +47,23 @@ func (s *Server) debianRelease(w http.ResponseWriter, r *http.Request, i store.I
 		}
 		w.Header().Set("Content-Type", a.MediaType)
 		w.Header().Set("ETag", `"sha256:`+a.Digest+`"`)
-		http.ServeContent(w, r, store.DebianReleasePath, a.Created, file)
+		http.ServeContent(w, r, "InRelease", a.Created, file)
 	default:
 		w.Header().Set("Allow", "GET, HEAD, PUT")
 		fail(w, 405, "method_not_allowed", "Publish an externally signed Debian InRelease with PUT or consume it with GET or HEAD.")
 	}
 }
 
-func (s *Server) publishDebianRelease(w http.ResponseWriter, r *http.Request, i store.Identity, repo string) {
+func (s *Server) publishDebianRelease(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository) {
 	raw, err := io.ReadAll(http.MaxBytesReader(w, r.Body, debian.MaxReleaseBytes))
 	if err != nil {
 		fail(w, 413, "debian_release_budget", "Supply an InRelease within the metadata upload limit.")
 		return
 	}
-	release, err := debian.ParseInRelease(raw)
+	distribution := repo.Settings.DebianDistribution
+	release, err := debian.ParseInRelease(raw, distribution)
 	if err != nil {
-		fail(w, 400, "invalid_debian_release", "Supply an externally clear-signed InRelease with Date, Valid-Until and exact SHA-256 for Packages and Packages.gz.")
+		fail(w, 400, "invalid_debian_release", "Supply an externally clear-signed InRelease with Date, Valid-Until and exact SHA-256 entries for the configured indexes.")
 		return
 	}
 	metadata, err := json.Marshal(release)
@@ -76,7 +77,7 @@ func (s *Server) publishDebianRelease(w http.ResponseWriter, r *http.Request, i 
 		respondErr(w, err)
 		return
 	}
-	if err = s.DB.PublishDebianRelease(ctx, i, repo, store.Artifact{Path: store.DebianReleasePath, Digest: object.Digest, Size: object.Size,
+	if err = s.DB.PublishDebianRelease(ctx, i, repo.Name, store.Artifact{Path: distribution.ReleasePath(), Digest: object.Digest, Size: object.Size,
 		MediaType: store.DebianReleaseMedia, Metadata: metadata}, s.NativeVersionLimit, s.NativeMetadataBytes); err != nil {
 		respondErr(w, err)
 		return

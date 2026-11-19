@@ -940,6 +940,19 @@ paths:
                           allow_signed_query: {type: boolean, default: false, description: OCI only. Permit bounded ephemeral signed query strings. Durable npm/PyPI/Cargo download URLs reject queries.}
                     python_index_format: {type: string, enum: [auto, html, json], default: auto, description: PyPI proxy content negotiation preference.}
                     nuget_service_index: {type: boolean, default: false, description: NuGet proxy only. Read the exact configured V3 service-index URL before cache fills and require its PackageBaseAddress to match the single configured download source.}
+                    debian_distribution:
+                      type: object
+                      description: Hosted APT only. Serve a named suite and component with per-architecture indexes. Omit for a flat layout.
+                      required: [suite, component, architectures]
+                      properties:
+                        suite: {type: string, pattern: '^[a-z0-9][a-z0-9+.-]{0,63}$'}
+                        component: {type: string, pattern: '^[a-z0-9][a-z0-9+.-]{0,63}$'}
+                        architectures:
+                          type: array
+                          minItems: 1
+                          maxItems: 8
+                          uniqueItems: true
+                          items: {type: string, description: Binary architecture such as amd64 or arm64. Architecture-independent packages appear in each selected index.}
                     maven_snapshot_policy: {type: string, enum: [immutable, redeploy_nonunique], default: immutable, description: Hosted Maven only. Explicit opt-in permits replacement of literal base-version SNAPSHOT filenames. Releases and timestamped snapshots stay immutable; current holds and review still govern changed bytes.}
                     members: {type: array, minItems: 1, maxItems: 32, uniqueItems: true, items: {type: string}}
                     namespace_owners: {type: object, maxProperties: 128, additionalProperties: {type: string}, description: A Cargo namespace key is the lowercase crate name followed by a slash. Its value is a configured member.}

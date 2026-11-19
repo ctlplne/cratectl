@@ -17,7 +17,7 @@ func TestParseInReleaseChecksActiveScopeAndExactIndexEntries(t *testing.T) {
 		before.Format(time.RFC1123), after.Format(time.RFC1123), zero, one)
 	// The synthetic armor exercises envelope parsing. Stock APT verification
 	// has a separate fixture with a generated key and a real signature.
-	value, err := ParseInRelease([]byte(text))
+	value, err := ParseInRelease([]byte(text), nil)
 	if err != nil || value.Indexes["Packages"] != (IndexDigest{SHA256: zero}) ||
 		value.Indexes["Packages.gz"] != (IndexDigest{SHA256: one, Size: 17}) || !value.Active(before) || value.Active(after) {
 		t.Fatal("bad release binding or expiry", value, err)
@@ -29,7 +29,7 @@ func TestParseInReleaseChecksActiveScopeAndExactIndexEntries(t *testing.T) {
 		strings.Replace(text, "T3BhcXVlIGZpeHR1cmU=", "not armor", 1),
 		strings.Replace(text, "SHA256:\n", "SHA256:\n\n", 1),
 	} {
-		if _, err := ParseInRelease([]byte(invalid)); !errors.Is(err, ErrRelease) {
+		if _, err := ParseInRelease([]byte(invalid), nil); !errors.Is(err, ErrRelease) {
 			t.Fatal("accepted an invalid Debian release envelope", err)
 		}
 	}

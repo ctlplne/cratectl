@@ -6,17 +6,20 @@ package server
 import (
 	"archive/tar"
 	"bytes"
+	"cmp"
 	"compress/gzip"
 	"context"
 	"fmt"
 	"io"
 	"net/http/httptest"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
 	"time"
 
 	crypt "ctlplne.dev/cratectl/internal/crypto"
+	"ctlplne.dev/cratectl/internal/debian"
 	"ctlplne.dev/cratectl/internal/store"
 	"github.com/jackc/pgx/v5"
 )
@@ -216,4 +219,121 @@ func TestDebianHostedReleaseFencesIndexChangesAndOlderPublications(t *testing.T)
 	decide("allowed")
 	request("GET", "InRelease", nil, 200)
 	request("PUT", "InRelease", externalEnvelope(now.Add(-20*time.Second), now.Add(-5*time.Second), index, compressed), 409)
+}
+
+func TestDebianHostedNamedSuiteBindsEachArchitecture(t *testing.T) {
+	s, _, token, admin := schemaServer(t)
+	const repository = "cratectl-apt-suite"
+	const root = "/apt/" + repository + "/"
+	const release = "dists/stable/InRelease"
+	distribution := &debian.Distribution{Suite: "stable", Component: "main", Architectures: []string{"amd64", "arm64"}}
+	mavenRepositories(t, s, admin, store.Repository{Name: repository, Format: "apt",
+		Settings: store.RepositorySettings{DebianDistribution: distribution}})
+	request := func(method, path string, body []byte, want int) *httptest.ResponseRecorder {
+		t.Helper()
+		out := nugetHTTP(t, s, token, method, root+path, body, "")
+		if out.Code != want {
+			t.Fatalf("%s %s returned %d, expected %d: %.350s", method, path, out.Code, want, out.Body.String())
+		}
+		return out
+	}
+	type pkg struct {
+		arch, name, path, control string
+		data                      []byte
+	}
+	packages := []pkg{{arch: "amd64", name: "cratectl-apt-native"}, {arch: "arm64", name: "cratectl-apt-native"},
+		{arch: "all", name: "cratectl-apt-common"}, {arch: "i386", name: "cratectl-apt-native"}}
+	for j := range packages {
+		p := &packages[j]
+		p.path = fmt.Sprintf("pool/%s/1.0/%s/%s.deb", p.name, p.arch, p.name)
+		p.control = fmt.Sprintf("Package: %s\nVersion: 1.0\nArchitecture: %s\nMaintainer: cratectl fixture\nDescription: Owned Debian suite fixture\n", p.name, p.arch)
+		p.data = debianPackageFixture(t, p.control, "Owned inert Debian "+p.arch+" fixture.\n")
+		if p.arch == "i386" {
+			request("PUT", p.path, p.data, 409)
+			request("GET", p.path, nil, 404)
+		} else {
+			request("PUT", p.path, p.data, 201)
+		}
+	}
+	slices.SortFunc(packages, func(first, second pkg) int { return cmp.Compare(first.path, second.path) })
+	request("GET", "Packages", nil, 404)
+	request("GET", "InRelease", nil, 404)
+	request("GET", "dists/testing/main/binary-amd64/Packages", nil, 404)
+	request("GET", "dists/stable/other/binary-amd64/Packages", nil, 404)
+	request("GET", "dists/stable/main/binary-i386/Packages", nil, 404)
+
+	type entry struct {
+		path string
+		body []byte
+	}
+	var indexes []entry
+	for _, arch := range distribution.Architectures {
+		plain, compressed := distribution.IndexPaths(arch)
+		path := "dists/stable/" + plain
+		index := request("GET", path, nil, 200).Body.Bytes()
+		var expected strings.Builder
+		for _, p := range packages {
+			if p.arch == arch || p.arch == "all" {
+				fmt.Fprintf(&expected, "%sFilename: %s\nSize: %d\nSHA256: %s\n\n", p.control, p.path, len(p.data), crypt.Digest(p.data))
+			}
+		}
+		if string(index) != expected.String() {
+			t.Fatalf("%s index does not expose the exact matching and architecture-independent archives", arch)
+		}
+		exactGzip, err := debian.GzipIndex(index)
+		if err != nil {
+			t.Fatal(err)
+		}
+		gotGzip := request("GET", "dists/stable/"+compressed, nil, 200).Body.Bytes()
+		if !bytes.Equal(gotGzip, exactGzip) {
+			t.Fatalf("%s gzip differs from its plain index", arch)
+		}
+		for _, data := range [][]byte{index, gotGzip} {
+			byHash := strings.TrimSuffix(path, "Packages") + "by-hash/SHA256/" + crypt.Digest(data)
+			if got := request("GET", byHash, nil, 200).Body.Bytes(); !bytes.Equal(data, got) {
+				t.Fatal("named suite returned different bytes for a by-hash index")
+			}
+		}
+		indexes = append(indexes, entry{plain, index}, entry{compressed, gotGzip})
+	}
+	now := time.Now().UTC()
+	envelope := func(codename, architectures string, entries []entry) []byte {
+		var text strings.Builder
+		fmt.Fprintf(&text, "-----BEGIN PGP SIGNED MESSAGE-----\nHash: SHA256\n\nSuite: production\nCodename: %s\nComponents: main\nArchitectures: %s\nDate: %s\nValid-Until: %s\nSHA256:\n",
+			codename, architectures, now.Add(-time.Minute).Format(time.RFC1123), now.Add(time.Hour).Format(time.RFC1123))
+		for _, e := range entries {
+			fmt.Fprintf(&text, " %s %d %s\n", crypt.Digest(e.body), len(e.body), e.path)
+		}
+		text.WriteString("-----BEGIN PGP SIGNATURE-----\n\nT3duZWQgZW52ZWxvcGU=\n-----END PGP SIGNATURE-----\n")
+		return []byte(text.String())
+	}
+	request("PUT", release, envelope("testing", "arm64 amd64", indexes), 400)
+	request("PUT", release, envelope("stable", "amd64 amd64", indexes), 400)
+	request("PUT", release, envelope("stable", "arm64 amd64", indexes[:2]), 400)
+	mismatched := slices.Clone(indexes)
+	mismatched[0].body = indexes[2].body
+	request("PUT", release, envelope("stable", "arm64 amd64", mismatched), 409)
+	request("GET", release, nil, 404)
+	external := envelope("stable", "arm64 amd64", indexes)
+	request("PUT", release, external, 201)
+	if got := request("GET", release, nil, 200).Body.Bytes(); !bytes.Equal(got, external) {
+		t.Fatal("named suite did not retain the signed envelope bytes")
+	}
+	for _, p := range packages {
+		if p.arch != "arm64" {
+			continue
+		}
+		err := s.DB.Tx(context.Background(), admin, true, func(tx pgx.Tx) error {
+			_, err := store.Decide(context.Background(), tx, admin, repository, p.path, crypt.Digest(p.data), "denied")
+			return err
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	request("GET", release, nil, 409)
+	if got := request("GET", "dists/stable/"+indexes[0].path, nil, 200).Body.Bytes(); !bytes.Equal(got, indexes[0].body) {
+		t.Fatal("arm64 policy change changed the amd64 index")
+	}
+	request("GET", "dists/stable/main/binary-arm64/by-hash/SHA256/"+crypt.Digest(indexes[2].body), nil, 404)
 }

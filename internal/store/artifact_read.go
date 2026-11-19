@@ -174,8 +174,9 @@ func (s *Store) artifact(ctx context.Context, i Identity, repo, path string, int
 			e = checkGoModuleBundle(ctx, tx, repo, a, review && !intake, repositoryReadBudget(r))
 		}
 		if e == nil && r.Format == "apt" {
-			if a.Path == DebianReleasePath {
-				_, e = decodeDebianRelease(a)
+			distribution := r.Settings.DebianDistribution
+			if a.Path == distribution.ReleasePath() {
+				_, e = decodeDebianRelease(a, distribution)
 			} else {
 				_, e = ValidateDebianArtifact(a)
 			}

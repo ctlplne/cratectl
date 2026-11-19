@@ -12,13 +12,12 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-const DebianReleasePath = "InRelease"
 const DebianReleaseMedia = "application/pgp-signed"
 
-func decodeDebianRelease(a Artifact) (debian.Release, error) {
+func decodeDebianRelease(a Artifact, distribution *debian.Distribution) (debian.Release, error) {
 	var release debian.Release
-	if a.Path != DebianReleasePath || a.MediaType != DebianReleaseMedia || a.Size < 1 || a.Size > debian.MaxReleaseBytes ||
-		!uploadDigest.MatchString(a.Digest) || len(a.Metadata) > 2048 || json.Unmarshal(a.Metadata, &release) != nil || len(release.Indexes) != 2 {
+	if a.Path != distribution.ReleasePath() || a.MediaType != DebianReleaseMedia || a.Size < 1 || a.Size > debian.MaxReleaseBytes ||
+		!uploadDigest.MatchString(a.Digest) || len(a.Metadata) > 8<<10 || json.Unmarshal(a.Metadata, &release) != nil || !release.Matches(distribution) {
 		return debian.Release{}, ErrConflict
 	}
 	return release, nil
@@ -32,20 +31,26 @@ func bindDebianRelease(ctx context.Context, tx pgx.Tx, i Identity, r Repository,
 	if !release.Active(now) {
 		return ErrConflict
 	}
-	index, err := debianPackageIndexInTx(ctx, tx, i, r, limit, byteLimit)
-	if err != nil {
-		return err
-	}
-	compressed, err := debian.GzipIndex(index)
-	if err != nil {
-		return err
-	}
-	if int64(len(compressed)) > byteLimit {
-		return ErrMetadataLimit
-	}
-	if release.Indexes["Packages"] != (debian.IndexDigest{SHA256: crypt.Digest(index), Size: int64(len(index))}) ||
-		release.Indexes["Packages.gz"] != (debian.IndexDigest{SHA256: crypt.Digest(compressed), Size: int64(len(compressed))}) {
-		return ErrConflict
+	distribution := r.Settings.DebianDistribution
+	remaining := byteLimit
+	for _, arch := range distribution.IndexArchitectures() {
+		index, err := debianPackageIndexInTx(ctx, tx, i, r, arch, limit, remaining)
+		if err != nil {
+			return err
+		}
+		compressed, err := debian.GzipIndex(index)
+		if err != nil {
+			return err
+		}
+		if int64(len(compressed)) > byteLimit {
+			return ErrMetadataLimit
+		}
+		plainPath, compressedPath := distribution.IndexPaths(arch)
+		if release.Indexes[plainPath] != (debian.IndexDigest{SHA256: crypt.Digest(index), Size: int64(len(index))}) ||
+			release.Indexes[compressedPath] != (debian.IndexDigest{SHA256: crypt.Digest(compressed), Size: int64(len(compressed))}) {
+			return ErrConflict
+		}
+		remaining -= int64(len(index))
 	}
 	return nil
 }
@@ -57,24 +62,24 @@ func (s *Store) PublishDebianRelease(ctx context.Context, i Identity, repo strin
 	if i.Role != "admin" {
 		return ErrDenied
 	}
-	release, err := decodeDebianRelease(a)
-	if err != nil {
-		return err
-	}
-	_, err = s.MutateRepository(ctx, i, repo, "", "", "apt.release.published", func(tx pgx.Tx) (any, int, error) {
+	_, err := s.MutateRepository(ctx, i, repo, "", "", "apt.release.published", func(tx pgx.Tx) (any, int, error) {
 		r, err := repositoryInTx(ctx, tx, i, repo, "write")
+		if err != nil {
+			return nil, 0, err
+		}
+		distribution := r.Settings.DebianDistribution
+		release, err := decodeDebianRelease(a, distribution)
 		if err != nil {
 			return nil, 0, err
 		}
 		if err = bindDebianRelease(ctx, tx, i, r, release, limit, byteLimit); err != nil {
 			return nil, 0, err
 		}
-		var old Artifact
-		old.Path = DebianReleasePath
+		old := Artifact{Path: a.Path}
 		err = tx.QueryRow(ctx, `SELECT digest,size,media_type,metadata FROM cratectl.artifacts WHERE repository=$1 AND path=$2`, repo, a.Path).
 			Scan(&old.Digest, &old.Size, &old.MediaType, &old.Metadata)
 		if err == nil {
-			previous, err := decodeDebianRelease(old)
+			previous, err := decodeDebianRelease(old, distribution)
 			if err != nil || (old.Digest != a.Digest && !release.Issued.After(previous.Issued)) {
 				return nil, 0, ErrConflict
 			}
@@ -120,11 +125,12 @@ func (s *Store) DebianRelease(ctx context.Context, i Identity, repo string, limi
 		if r.Format != "apt" || r.Mode != "hosted" {
 			return ErrConflict
 		}
-		a, err = readArtifact(ctx, tx, repo, DebianReleasePath, r.RequireReview, repositoryReadBudget(r))
+		distribution := r.Settings.DebianDistribution
+		a, err = readArtifact(ctx, tx, repo, distribution.ReleasePath(), r.RequireReview, repositoryReadBudget(r))
 		if err != nil {
 			return err
 		}
-		release, err := decodeDebianRelease(a)
+		release, err := decodeDebianRelease(a, distribution)
 		if err != nil {
 			return err
 		}
