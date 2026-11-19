@@ -414,6 +414,9 @@ def evaluate(args):
 
             report['composer_hosted'] = evaluate_hosted_composer(work, app, authority, public_env, call, api, restart_server,
                                                                 sha, args.composer_php.resolve(), args.composer_phar.resolve())
+            if args.composer_group:
+                report['composer_group'] = evaluate_hosted_composer(work, app, authority, public_env, call, api, restart_server,
+                                                                   sha, args.composer_php.resolve(), args.composer_phar.resolve(), grouped=True)
         if args.npm_search:
             from npm_search_fixture import evaluate_cached_search, evaluate_search
 
@@ -512,6 +515,8 @@ def evaluate(args):
         print(f"PASS: {len(report['debian_apt_suite']['checks'])} stock signed Debian named-suite checks")
     if args.composer_phar:
         print(f"PASS: {len(report['composer_hosted']['checks'])} stock Composer hosted ZIP checks")
+    if args.composer_group:
+        print(f"PASS: {len(report['composer_group']['checks'])} stock Composer ordered group checks")
     if args.npm_search:
         print(f"PASS: {len(report['npm_search']['checks'])} stock hosted npm search checks")
         print(f"PASS: {len(report['npm_cached_search']['checks'])} stock cached npm search checks")
@@ -677,14 +682,18 @@ def record_debian_apt_ci(report, architecture):
 
 
 def record_composer_ci(report, architecture):
-    from ci.composer_hosted_evidence import FILES, PROFILE, validate as validate_composer
+    from ci.composer_hosted_evidence import FILES, GROUP_FILES, GROUP_PROFILE, PROFILE, validate as validate_composer
 
     runner = hosted_runner(report, architecture)
     projection = {key: report[key] for key in ('candidate', 'status', 'checks', 'binary_sha256', 'archive_sha256',
                                                 'postgres', 'npm', 'composer_hosted', 'goal_complete', 'broad_readiness')}
-    projection.update(schema=1, profile=PROFILE, runner_os='Linux', runner_arch=runner,
+    profile, paths = PROFILE, FILES
+    if 'composer_group' in report:
+        projection['composer_group'] = report['composer_group']
+        profile, paths = GROUP_PROFILE, GROUP_FILES
+    projection.update(schema=1, profile=profile, runner_os='Linux', runner_arch=runner,
                       run_id=os.environ.get('GITHUB_RUN_ID'), source_dirty=False,
-                      source_sha256={name: sha(ROOT / name) for name in FILES})
+                      source_sha256={name: sha(ROOT / name) for name in paths})
     with (ROOT / '.cache/ci-composer-hosted.json').open('x') as stream:
         json.dump(validate_composer(projection), stream, indent=2)
         stream.write('\n')
@@ -715,6 +724,7 @@ if __name__ == '__main__':
     parser.add_argument('--debian-apt-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--composer-php', type=Path, help='the native PHP executable for the stock Composer PHAR')
     parser.add_argument('--composer-phar', type=Path, help='the digest-pinned Composer client PHAR')
+    parser.add_argument('--composer-group', action='store_true', help='also verify a Composer group over ordered hosted members')
     parser.add_argument('--composer-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--npm-search', action='store_true',
                         help='also verify npm hosted and cached search using stock clients')
@@ -730,6 +740,8 @@ if __name__ == '__main__':
     options = parser.parse_args()
     if bool(options.composer_php) != bool(options.composer_phar):
         parser.error('Composer qualification requires the PHP runtime and pinned PHAR')
+    if options.composer_group and not options.composer_phar:
+        parser.error('Composer group qualification requires the hosted stock client profile')
     if options.composer_ci_architecture and (not options.composer_phar or options.provider_binary or options.npm_search
                                               or options.python_search_client or options.cargo_toolchain or options.mcp_binary
                                               or options.oci_catalog_client or options.maven_index_reader or options.promtool

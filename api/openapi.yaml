@@ -955,7 +955,7 @@ paths:
                           items: {type: string, description: Binary architecture such as amd64 or arm64. Architecture-independent packages appear in each selected index.}
                     maven_snapshot_policy: {type: string, enum: [immutable, redeploy_nonunique], default: immutable, description: Hosted Maven only. Explicit opt-in permits replacement of literal base-version SNAPSHOT filenames. Releases and timestamped snapshots stay immutable; current holds and review still govern changed bytes.}
                     members: {type: array, minItems: 1, maxItems: 32, uniqueItems: true, items: {type: string}}
-                    namespace_owners: {type: object, maxProperties: 128, additionalProperties: {type: string}, description: A Cargo namespace key is the lowercase crate name followed by a slash. Its value is a configured member.}
+                    namespace_owners: {type: object, maxProperties: 128, additionalProperties: {type: string}, description: Each value is a configured member. Cargo keys use the lowercase crate name and Composer keys use the lowercase vendor/package name. End both with a slash.}
       responses:
         '201': {description: Repository created. An identical authorized replay returns the original response.}
         '400': {description: "Invalid request or missing idempotency key."}

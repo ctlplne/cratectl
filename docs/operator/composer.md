@@ -26,6 +26,20 @@ of `composer.json` and `composer.lock`. Use `composer install --no-scripts
 - [Composer repository format](https://getcomposer.org/doc/05-repositories.md)
 - [Composer private repository authentication](https://getcomposer.org/doc/articles/authentication-for-private-packages.md)
 
-This profile handles hosted ZIP libraries and stable releases. Proxy and group
-resolution, other distribution formats, development versions and broader
+## Ordered groups
+
+Create a Composer group with hosted members in
+`settings.members`, ordered by preference. The first member that retains
+any archive for a package name supplies its complete version list. Consumers
+need read grants on the group and each consulted member. An explicit
+`settings.namespace_owners` entry such as `"acme/library/": "team-releases"`
+selects that member for the package. Review and deletion still apply in the
+selected repository.
+
+Use the same Composer source configuration with the group repository name.
+Composer records a SHA-256 pin in its download URL. If a new member comes to
+own the package and has different bytes for a locked coordinate, the old URL
+fails. Refresh the lockfile after reviewing the newly selected source.
+
+Proxy routing, other distribution formats, development versions and broader
 package metadata remain open.

@@ -35,8 +35,9 @@ def make_archive(package, version, payload):
     return buffer.getvalue()
 
 
-def evaluate_hosted_composer(work, installation, authority, environment, call, api, restart, sha, php, phar):
-    scope = work / REPO
+def evaluate_hosted_composer(work, installation, authority, environment, call, api, restart, sha, php, phar, *, grouped=False):
+    repository = REPO + '-group' if grouped else REPO
+    scope = work / repository
     scope.mkdir(mode=0o700)
     checks = []
 
@@ -45,32 +46,44 @@ def evaluate_hosted_composer(work, installation, authority, environment, call, a
             raise ValueError(label)
         checks.append(label)
 
+    def run(label, *command, **options):
+        return call(('group-' if grouped else '') + label, *command, **options)
+
+    def manage(label, *parameters):
+        return api(('group-' if grouped else '') + label, *parameters)
+
     check('the stock Composer PHAR matches the pinned publisher digest', sha(phar) == COMPOSER_SHA256)
-    runtime = call('composer-php-version', php, '-r', 'echo PHP_VERSION;', cwd=scope)[1].strip()
+    runtime = run('composer-php-version', php, '-r', 'echo PHP_VERSION;', cwd=scope)[1].strip()
     private_home = scope / 'home'
     private_home.mkdir(mode=0o700)
     env = {key: value for key, value in environment.items() if not key.startswith('COMPOSER')}
     env.update(COMPOSER_HOME=str(private_home), COMPOSER_CAFILE=str(installation / 'ca.crt'),
                COMPOSER_NO_INTERACTION='1', COMPOSER_ALLOW_SUPERUSER='0')
     stock = [php, phar, '--no-interaction', '--no-ansi', '--no-scripts', '--no-plugins']
-    version = call('composer-version', *stock, '--version', cwd=scope, environment=env)[1]
+    version = run('composer-version', *stock, '--version', cwd=scope, environment=env)[1]
     check('the native PHP runtime executes the pinned Composer version',
           re.fullmatch(r'8\.[0-9]{1,2}\.[0-9]{1,3}', runtime) is not None
           and f'Composer version {COMPOSER_VERSION} ' in version)
 
-    management = '/api/v1/repositories/' + REPO
-    route = f'/composer/{REPO}/'
+    management = '/api/v1/repositories/'
+    route = f'/composer/{repository}/'
     base = authority + route
-    api('composer-create', '/api/v1/repositories', 'POST',
-        {'name': REPO, 'format': 'composer', 'access': 'restricted', 'require_review': True})
+    sources = {APP: repository, LIBRARY: repository}
+    config = {'format': 'composer', 'access': 'restricted', 'require_review': True}
+    if grouped:
+        sources = {APP: REPO + '-preferred', LIBRARY: REPO + '-lower'}
+        for label, source in sources.items():
+            manage('create-' + label.split('/')[1], management.rstrip('/'), 'POST', {**config, 'name': source})
+        config.update(mode='group', settings={'members': list(sources.values())})
+    manage('composer-create', management.rstrip('/'), 'POST', {**config, 'name': repository})
     tokens = {'admin': (installation / 'admin.token').read_text().strip(),
               'reader': (work / 'reader.token').read_text().strip(),
               'other': (work / 'other.token').read_text().strip()}
     trust = ssl.create_default_context(cafile=str(installation / 'ca.crt'))
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), urllib.request.HTTPSHandler(context=trust))
 
-    def request(path, who='reader', method='GET', raw=None):
-        url = base + path
+    def request(path, who='reader', method='GET', raw=None, *, source=repository):
+        url = f'{authority}/composer/{source}/{path}'
         headers = {'Authorization': 'Bearer ' + tokens[who]}
         if raw is not None:
             headers['Content-Type'] = 'application/zip'
@@ -87,7 +100,14 @@ def evaluate_hosted_composer(work, installation, authority, environment, call, a
 
     check('repository metadata requires the current scoped grant',
           request('packages.json')[0] == 403 and request('packages.json', 'other')[0] == 404)
-    api('composer-grant', management + '/grants', 'PUT', {'actor': 'cratectl-reader', 'read': True, 'write': False})
+    for source in dict.fromkeys((repository, *sources.values())):
+        manage('grant-' + source, management + source + '/grants', 'PUT', {'actor': 'cratectl-reader', 'read': True, 'write': False})
+
+    def locator(item):
+        return item['path'] + '?sha256=' + item['sha256'] if grouped else item['path']
+
+    def distribution(item):
+        return {'type': 'zip', 'url': base + locator(item), 'reference': item['sha256'], 'shasum': item['sha1']}
 
     packages = {}
     for name, ver in COORDINATES:
@@ -95,33 +115,44 @@ def evaluate_hosted_composer(work, installation, authority, environment, call, a
         data = make_archive(name, ver, content)
         path = f'dist/{name}/{ver}.zip'
         packages[name, ver] = {'path': path, 'bytes': data, 'content': content,
+                               'source': sources[name],
                                'sha256': hashlib.sha256(data).hexdigest(), 'sha1': hashlib.sha1(data).hexdigest()}
-        if request(path, 'admin', 'PUT', data)[0] != 201:
+        if request(path, 'admin', 'PUT', data, source=sources[name])[0] != 201:
             raise ValueError('owned Composer ZIP publication failed')
     check('the four owned stable ZIP coordinates publish unchanged', len(packages) == 4)
     selected = packages[SELECTED[0]]
     check('unknown manifests and changed immutable coordinates are refused',
-          request('dist/cratectl/wrong/1.4.0.zip', 'admin', 'PUT', selected['bytes'])[0] == 400 and
-          request(selected['path'], 'admin', 'PUT', make_archive(APP, '1.4.0', b'Owned different bytes.'))[0] == 409)
+          request('dist/cratectl/wrong/1.4.0.zip', 'admin', 'PUT', selected['bytes'], source=sources[APP])[0] == 400 and
+          request(selected['path'], 'admin', 'PUT', make_archive(APP, '1.4.0', b'Owned different bytes.'), source=sources[APP])[0] == 409)
     check('unreviewed distributions remain hidden from Composer',
-          request('p2/' + APP + '.json')[0] == 404 and request(selected['path'])[0] == 403)
+          request('p2/' + APP + '.json')[0] == 404 and request(locator(selected))[0] == 403)
 
     def decide(label, item, decision):
-        api('composer-review-' + label, management + '/decisions', 'PUT',
-            {'path': item['path'], 'digest': item['sha256'], 'decision': decision})
+        manage('composer-review-' + label, management + item['source'] + '/decisions', 'PUT',
+               {'path': item['path'], 'digest': item['sha256'], 'decision': decision})
 
     for number, item in enumerate(packages.values()):
         decide(str(number), item, 'allowed')
+    if grouped:
+        alternate = make_archive(APP, '1.4.0', b'Owned alternative lower member bytes.\n')
+        collision = {'path': selected['path'], 'sha256': hashlib.sha256(alternate).hexdigest(), 'source': sources[LIBRARY]}
+        if request(collision['path'], 'admin', 'PUT', alternate, source=collision['source'])[0] != 201:
+            raise ValueError('owned lower Composer collision publication failed')
+        decide('collision', collision, 'allowed')
+        check('the read-only group requires digest-pinned downloads from the first owning member',
+              request(collision['path'], source=collision['source']) == (200, alternate) and
+              request(collision['path'], 'admin', 'PUT', alternate)[0] == 405 and
+              request(collision['path'])[0] == 400 and request(locator(collision))[0] == 409)
     root_status, root = request('packages.json')
     app_status, metadata = request('p2/' + APP + '.json')
     check('Composer v2 advertises exact approved archive identities and native dependencies',
           root_status == app_status == 200 and json.loads(root)['metadata-url'] == route + 'p2/%package%.json'
           and {row['version']: row['dist'] for row in json.loads(metadata)['packages'][APP]} == {
-              version: {'type': 'zip', 'url': base + item['path'], 'reference': item['sha256'], 'shasum': item['sha1']}
+              version: distribution(item)
               for (name, version), item in packages.items() if name == APP}
           and all(row['require'] == {LIBRARY: '^2.1'} for row in json.loads(metadata)['packages'][APP]))
     check('the registry delivers each original ZIP under current review',
-          all(request(item['path']) == (200, item['bytes']) for item in packages.values()))
+          all(request(locator(item)) == (200, item['bytes']) for item in packages.values()))
     env['COMPOSER_AUTH'] = json.dumps({'http-basic': {urlsplit(authority).netloc:
                                          {'username': 'token', 'password': tokens['reader']}}})
     project = {'name': 'cratectl/owned-composer-consumer', 'require': {APP: '^1.3'},
@@ -138,8 +169,8 @@ def evaluate_hosted_composer(work, installation, authority, environment, call, a
         cache = target / 'cache'
         sandbox = {**env, 'COMPOSER_CACHE_DIR': str(cache)}
         operation = 'update' if lock is None else 'install'
-        code, output = call('composer-' + label, *stock, operation, '--prefer-dist', '--no-progress', '--no-autoloader',
-                            cwd=target, environment=sandbox, status=None, timeout=80)
+        code, output = run('composer-' + label, *stock, operation, '--prefer-dist', '--no-progress', '--no-autoloader',
+                           cwd=target, environment=sandbox, status=None, timeout=80)
         if denied:
             check('stock Composer refuses to install a newly denied locked archive',
                   code != 0 and '403' in output and '/dist/' in output)
@@ -152,8 +183,7 @@ def evaluate_hosted_composer(work, installation, authority, environment, call, a
         resolved = {row['name']: (row['version'], row['dist']) for row in json.loads(raw)['packages']}
         check('stock Composer selects and locks the exact scoped dependency graph ' + label,
               set(resolved) == {name for name, _ in SELECTED} and
-              all(resolved[name] == (ver, {'type': 'zip', 'url': base + packages[name, ver]['path'],
-                                          'reference': packages[name, ver]['sha256'], 'shasum': packages[name, ver]['sha1']})
+              all(resolved[name] == (ver, distribution(packages[name, ver]))
                   for name, ver in SELECTED))
         check('stock Composer caches exact ZIPs and installs their inert contents ' + label,
               {sha(path) for path in (cache / 'files').rglob('*.zip')} == {packages[key]['sha256'] for key in SELECTED}
@@ -166,9 +196,15 @@ def evaluate_hosted_composer(work, installation, authority, environment, call, a
     check('the native lockfile stays byte-identical after service restart', consume('after-restart', locked) == locked)
     decide('denied', selected, 'denied')
     check('policy removes the denied version and refuses direct retrieval',
-          request(selected['path'])[0] == 403 and
+          request(locator(selected))[0] == 403 and
           {row['version'] for row in json.loads(request('p2/' + APP + '.json')[1])['packages'][APP]} == {'1.3.0'})
     consume('denied-lock', locked, denied=True)
-    return {'checks': checks, 'composer_version': COMPOSER_VERSION, 'composer_sha256': COMPOSER_SHA256, 'php_version': runtime,
-            'archive_sha256': {f'{name}@{version}': data['sha256'] for (name, version), data in packages.items()},
-            'lock_sha256': hashlib.sha256(locked).hexdigest()}
+    report = {'checks': checks, 'composer_version': COMPOSER_VERSION, 'composer_sha256': COMPOSER_SHA256, 'php_version': runtime,
+              'archive_sha256': {f'{name}@{version}': data['sha256'] for (name, version), data in packages.items()},
+              'lock_sha256': hashlib.sha256(locked).hexdigest()}
+    if grouped:
+        check('the currently denied preferred archive prevents fallback to the lower member',
+              request(collision['path'], source=collision['source']) == (200, alternate) and
+              request(locator(collision))[0] == 403)
+        report['collision_sha256'] = collision['sha256']
+    return report

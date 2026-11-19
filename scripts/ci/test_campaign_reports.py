@@ -17,7 +17,9 @@ from debian_apt_evidence import (APT_CHECKS as DEBIAN_APT_CHECKS, BASE_CHECKS as
                                  SUITE_SOURCE_PATHS as DEBIAN_SUITE_FILES)
 from composer_hosted_evidence import (BASE_CHECKS as COMPOSER_BASE, CHECKS as COMPOSER_CHECKS,
                                       COMPOSER_SHA256, COMPOSER_VERSION, COORDINATES as COMPOSER_COORDINATES,
-                                      FILES as COMPOSER_FILES, PROFILE as COMPOSER_PROFILE)
+                                      FILES as COMPOSER_FILES, PROFILE as COMPOSER_PROFILE,
+                                      GROUP_CHECKS as COMPOSER_GROUP_CHECKS, GROUP_FILES as COMPOSER_GROUP_FILES,
+                                      GROUP_PROFILE as COMPOSER_GROUP_PROFILE)
 from linux_install_evidence import CHECKS as INSTALL_CHECKS, IMAGE as INSTALL_IMAGE, SOURCE_PATHS as INSTALL_FILES
 from maven_index_evidence import (BASE_CHECKS as MAVEN_INDEX_BASE, CACHED_CHECKS as MAVEN_CACHED_CHECKS,
                                   CACHED_PROFILE as MAVEN_CACHED_PROFILE, CACHED_SOURCE_PATHS as MAVEN_CACHED_FILES,
@@ -63,6 +65,13 @@ class CampaignReports(unittest.TestCase):
         for patch in ({'composer_sha256': 'd' * 64}, {'checks': native['checks'][:-1]}):
             with self.assertRaisesRegex(EvidenceError, 'composer_hosted_report_contract'):
                 validate_custom({**report, 'composer_hosted': {**native, **patch}}, candidate, 12, spec, source)
+        group_source = lambda path: b'--composer-group' if path == '.github/workflows/composer-hosted.yml' else source(path)
+        group = {**native, 'checks': list(COMPOSER_GROUP_CHECKS), 'collision_sha256': 'f' * 64}
+        combined = {**report, 'profile': COMPOSER_GROUP_PROFILE, 'composer_group': group,
+                    'source_sha256': {path: hashlib.sha256(group_source(path)).hexdigest() for path in COMPOSER_GROUP_FILES}}
+        self.assertEqual(validate_custom(combined, candidate, 12, spec, group_source), {'checks': 51, 'records': 1})
+        with self.assertRaisesRegex(EvidenceError, 'composer_hosted_report_contract'):
+            validate_custom({**combined, 'composer_group': {**group, 'collision_sha256': 'b' * 64}}, candidate, 12, spec, group_source)
 
     def test_debian_apt_report_requires_signed_repository_controls_on_native_architecture(self):
         source = lambda path: path.encode()

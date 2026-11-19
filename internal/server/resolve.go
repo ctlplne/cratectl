@@ -660,6 +660,16 @@ func (s *Server) guardResolved(ctx context.Context, i store.Identity, a resolved
 	}
 	if a.source.Format == "nuget" && len(a.groups) == 1 {
 		current, e = s.DB.NuGetGroupArtifact(ctx, i, a.groups[0], snapshot, a.artifact.Path, s.NativeVersionLimit, s.NativeMetadataBytes, a.admissions...)
+	} else if a.source.Format == "composer" && len(a.groups) == 1 {
+		group := a.groups[0]
+		current, source, err := s.DB.ComposerGroupArtifact(ctx, i, group, a.artifact.Path, a.artifact.Digest, a.groupRevisions[group])
+		if err != nil {
+			return current, err
+		}
+		if source.Name != a.source.Name || source.SourceRevision != a.source.SourceRevision {
+			return current, store.ErrSourceChanged
+		}
+		return current, nil
 	} else if a.source.Format == "nuget" && a.source.Mode == "proxy" {
 		current, e = s.DB.NuGetProxyArtifact(ctx, i, a.source.Name, a.artifact.Path, a.source.SourceRevision, a.admissions...)
 	} else if a.ociRef != "" {

@@ -23,7 +23,9 @@ from offline_media_evidence import CHECKS as OFFLINE_CHECKS, PHASES as OFFLINE_P
 from terraform_provider_evidence import BASE_CHECKS as IAC_BASE, CLIENT_CHECKS as IAC_CHECKS, CLIENTS as IAC_CLIENTS, validate as validate_provider
 from cargo_evidence import CHECKS as CARGO_CHECKS, validate as validate_cargo
 from cargo_public_evidence import CHECKS as CARGO_PUBLIC_CHECKS, validate as validate_cargo_public
-from composer_hosted_evidence import CHECKS as COMPOSER_HOSTED_CHECKS, validate as validate_composer_hosted
+from composer_hosted_evidence import (CHECKS as COMPOSER_HOSTED_CHECKS, GROUP_CHECKS as COMPOSER_GROUP_CHECKS,
+                                      GROUP_PROFILE as COMPOSER_GROUP_PROFILE, PROFILE as COMPOSER_HOSTED_PROFILE,
+                                      group_selected as composer_group_selected, validate as validate_composer_hosted)
 from debian_apt_evidence import (APT_CHECKS as DEBIAN_APT_CHECKS, APT_SUITE_CHECKS as DEBIAN_SUITE_CHECKS,
                                  PROFILE as DEBIAN_FLAT_PROFILE, SUITE_PROFILE as DEBIAN_SUITE_PROFILE,
                                  suite_selected as debian_suite_selected, validate as validate_debian_apt)
@@ -167,6 +169,11 @@ def validate_custom(report, candidate, run_id, spec, source):
             require(report['profile'] == (DEBIAN_SUITE_PROFILE if named else DEBIAN_FLAT_PROFILE), 'debian_apt_profile_selection')
             if named:
                 checks += len(DEBIAN_SUITE_CHECKS)
+        if spec['kind'] == 'composer-hosted':
+            grouped = composer_group_selected(source)
+            require(report['profile'] == (COMPOSER_GROUP_PROFILE if grouped else COMPOSER_HOSTED_PROFILE), 'composer_hosted_profile_selection')
+            if grouped:
+                checks += len(COMPOSER_GROUP_CHECKS)
         return {'checks': checks, 'records': 1}
     require(report.get('status') == 'passed' and report.get('source_dirty') is False, 'custom_report_incomplete')
     if spec['kind'] == 'library':

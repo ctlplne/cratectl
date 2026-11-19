@@ -38,6 +38,10 @@ func (s *Server) composer(w http.ResponseWriter, r *http.Request, i store.Identi
 			return
 		}
 		if r.Method == http.MethodGet || r.Method == http.MethodHead {
+			if repo.Mode == "group" {
+				s.serveComposerGroup(w, r, i, repo, coordinate)
+				return
+			}
 			s.serveArtifact(w, r, i, repo.Name, coordinate.Path())
 			return
 		}
@@ -65,7 +69,7 @@ func (s *Server) composer(w http.ResponseWriter, r *http.Request, i store.Identi
 	if request == "packages.json" {
 		response.MetadataURL = base + "p2/%package%.json"
 	} else {
-		versions, err := s.DB.ComposerVersions(r.Context(), i, repo.Name, name, s.NativeVersionLimit, s.NativeMetadataBytes)
+		versions, err := s.DB.ComposerVersions(r.Context(), i, repo.Name, name, repo.SourceRevision, s.NativeVersionLimit, s.NativeMetadataBytes)
 		if err != nil {
 			respondErr(w, err)
 			return
@@ -73,8 +77,12 @@ func (s *Server) composer(w http.ResponseWriter, r *http.Request, i store.Identi
 		rows := make([]composerVersion, 0, len(versions))
 		for _, version := range versions {
 			p := version.Metadata.Package
+			url := s.PublicURL + base + version.Path
+			if repo.Mode == "group" {
+				url += "?sha256=" + version.Digest
+			}
 			rows = append(rows, composerVersion{Package: p, Normalized: p.Version + ".0", Dist: composerDist{
-				Type: "zip", URL: s.PublicURL + base + version.Path, Reference: version.Digest, SHA1: version.Metadata.SHA1,
+				Type: "zip", URL: url, Reference: version.Digest, SHA1: version.Metadata.SHA1,
 			}})
 		}
 		response.Packages[name] = rows
@@ -92,6 +100,25 @@ func (s *Server) composer(w http.ResponseWriter, r *http.Request, i store.Identi
 	w.Header().Set("Cache-Control", "private, no-cache")
 	w.Header().Set("ETag", `"sha256:`+crypt.Digest(data)+`"`)
 	http.ServeContent(w, r, request, time.Time{}, bytes.NewReader(data))
+}
+
+func (s *Server) serveComposerGroup(w http.ResponseWriter, r *http.Request, i store.Identity, group store.Repository, coordinate composer.Coordinate) {
+	digest, ok := strings.CutPrefix(r.URL.RawQuery, "sha256=")
+	if !ok || len(digest) != 64 {
+		fail(w, 400, "composer_group_digest_required", "Use the group distribution URL advertised in the Composer package metadata.")
+		return
+	}
+	artifact, source, err := s.DB.ComposerGroupArtifact(r.Context(), i, group.Name, coordinate.Path(), digest, group.SourceRevision)
+	if errors.Is(err, store.ErrConflict) {
+		fail(w, 409, "composer_distribution_changed", "Read current Composer metadata and review the selected distribution before changing the lockfile.")
+		return
+	}
+	if err != nil {
+		respondErr(w, err)
+		return
+	}
+	s.serveResolvedArtifact(w, r, i, resolvedArtifact{artifact: artifact, source: source,
+		groups: []string{group.Name}, groupRevisions: map[string]int64{group.Name: group.SourceRevision}})
 }
 
 func (s *Server) publishComposer(w http.ResponseWriter, r *http.Request, i store.Identity, repo string, coordinate composer.Coordinate) {

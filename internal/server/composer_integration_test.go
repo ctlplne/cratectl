@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http/httptest"
 	"strings"
@@ -39,6 +40,136 @@ func composerFixture(t *testing.T, data string) []byte {
 		t.Fatal(err)
 	}
 	return buffer.Bytes()
+}
+
+func TestComposerGroupSelectsOneOwnerAndFencesOldDownloadURLs(t *testing.T) {
+	s, database, adminToken, admin := schemaServer(t)
+	s.PublicURL = "https://127.0.0.1:38443"
+	ctx := context.Background()
+	const preferred = "cratectl-composer-first"
+	const lower = "cratectl-composer-second"
+	const group = "cratectl-composer-group"
+	const explicit = "cratectl-composer-owner"
+	const file = "dist/cratectl/composer-app/1.2.3.zip"
+	const index = "p2/cratectl/composer-app.json"
+	members := []string{preferred, lower}
+	mavenRepositories(t, s, admin,
+		store.Repository{Name: preferred, Format: "composer", Access: "restricted", RequireReview: true},
+		store.Repository{Name: lower, Format: "composer", Access: "restricted"},
+		store.Repository{Name: group, Format: "composer", Mode: "group", Access: "restricted", Settings: store.RepositorySettings{Members: members}},
+		store.Repository{Name: explicit, Format: "composer", Mode: "group", Access: "restricted", Settings: store.RepositorySettings{
+			Members: members, NamespaceOwners: map[string]string{"cratectl/composer-app/": lower},
+		}},
+	)
+	reader, err := crypt.Token()
+	if err != nil {
+		t.Fatal(err)
+	}
+	const actor = "cratectl-composer-group-reader"
+	if err := store.Provision(ctx, database.OwnerDSN, admin.Tenant, actor, "reader", reader, time.Now().Add(time.Hour)); err != nil {
+		t.Fatal(err)
+	}
+	identity, err := s.DB.Authenticate(ctx, reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	api := lifecycleHTTP(t, s, adminToken)
+	grant := func(repo string, enabled bool) {
+		t.Helper()
+		key := "cratectl-composer-grant-" + repo
+		if !enabled {
+			key += "-revoke"
+		}
+		if w := api("PUT", "/api/v1/repositories/"+repo+"/grants", map[string]any{"actor": actor, "read": enabled}, key); w.Code != 200 {
+			t.Fatal("change Composer grants", w.Code, w.Body.String())
+		}
+	}
+	request := func(repo, token, method, path string, raw []byte, want int) *httptest.ResponseRecorder {
+		t.Helper()
+		w := nugetHTTP(t, s, token, method, "/composer/"+repo+"/"+path, raw, "")
+		if w.Code != want {
+			t.Fatalf("Composer %s %s %s returned %d, expected %d: %.300s", repo, method, path, w.Code, want, w.Body.String())
+		}
+		return w
+	}
+	metadata := func(repo string, versions ...string) {
+		t.Helper()
+		w := request(repo, reader, "GET", index, nil, 200)
+		var projected struct{ Packages map[string][]composerVersion }
+		if err := json.Unmarshal(w.Body.Bytes(), &projected); err != nil {
+			t.Fatal(err)
+		}
+		rows := projected.Packages["cratectl/composer-app"]
+		if len(rows) != len(versions) {
+			t.Fatalf("Composer group advertised an unexpected version set: %v", rows)
+		}
+		for n, row := range rows {
+			if row.Version != versions[n] || !strings.HasPrefix(row.Dist.URL, s.PublicURL+"/composer/"+repo+"/dist/") ||
+				!strings.HasSuffix(row.Dist.URL, "?sha256="+row.Dist.Reference) {
+				t.Fatal("Composer group did not bind its owned version to an exact download address", row)
+			}
+		}
+	}
+	original := composerFixture(t, "Owned lower Composer archive.")
+	higher := composerFixture(t, "Owned preferred Composer archive.")
+	old := crypt.Digest(original)
+	newer := crypt.Digest(higher)
+	oldURL, newURL := file+"?sha256="+old, file+"?sha256="+newer
+	grant(group, true)
+	grant(explicit, true)
+	grant(lower, true)
+	request(lower, adminToken, "PUT", file, original, 201)
+	request(lower, adminToken, "PUT", "dist/cratectl/composer-app/2.0.0.zip", original, 201)
+	request(group, reader, "GET", index, nil, 403)
+	metadata(explicit, "1.2.3", "2.0.0")
+	grant(preferred, true)
+	metadata(group, "1.2.3", "2.0.0")
+	request(group, reader, "GET", file, nil, 400)
+	got := request(group, reader, "GET", oldURL, nil, 200)
+	if got.Header().Get("X-Cratectl-Repository") != lower || !bytes.Equal(got.Body.Bytes(), original) {
+		t.Fatal("first package absence did not select the exact lower member")
+	}
+	groupRepo, err := s.DB.Repository(ctx, identity, group)
+	if err != nil {
+		t.Fatal(err)
+	}
+	entry, source, err := s.DB.ComposerGroupArtifact(ctx, identity, group, file, old, groupRepo.SourceRevision)
+	if err != nil {
+		t.Fatal(err)
+	}
+	selected := resolvedArtifact{artifact: entry, source: source, groups: []string{group}, groupRevisions: map[string]int64{group: groupRepo.SourceRevision}}
+	request(preferred, adminToken, "PUT", file, higher, 201)
+	request(group, adminToken, "PUT", file, higher, 405)
+	request(group, reader, "GET", index, nil, 404)
+	request(group, reader, "GET", oldURL, nil, 403)
+	if _, err := s.guardResolved(ctx, identity, selected); !errors.Is(err, store.ErrDenied) {
+		t.Fatalf("previous Composer selection bypassed newly owning member: %v", err)
+	}
+	decide := func(decision string) {
+		t.Helper()
+		err := s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
+			_, err := store.Decide(ctx, tx, admin, preferred, file, newer, decision)
+			return err
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	decide("allowed")
+	metadata(group, "1.2.3")
+	request(group, reader, "GET", oldURL, nil, 409)
+	got = request(group, reader, "GET", newURL, nil, 200)
+	if got.Header().Get("X-Cratectl-Repository") != preferred || !bytes.Equal(got.Body.Bytes(), higher) {
+		t.Fatal("Composer group did not select the preferred member's exact bytes")
+	}
+	request(group, reader, "GET", "dist/cratectl/composer-app/2.0.0.zip?sha256="+old, nil, 404)
+	decide("denied")
+	request(group, reader, "GET", index, nil, 404)
+	request(group, reader, "GET", newURL, nil, 403)
+	request(explicit, reader, "GET", oldURL, nil, 200)
+	grant(preferred, false)
+	request(group, reader, "GET", index, nil, 403)
+	request(explicit, reader, "GET", oldURL, nil, 200)
 }
 
 func TestComposerHostedBindsArchiveAndCurrentTenantPolicy(t *testing.T) {
