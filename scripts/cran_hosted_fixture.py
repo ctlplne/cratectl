@@ -119,7 +119,7 @@ def make_archive(coordinate, *, variant='original'):
 
 
 def evaluate_cran(work, installation, authority, call, api, restart, sha, runtime, r_home, tool_archive, *,
-                  install=False, history=False, grouped=False, binary=False):
+                  install=False, history=False, grouped=False, binary=False, proxy_credential=None):
     pin = TOOLS.get((platform.system(), platform.machine()))
     if pin is None or sha(tool_archive) != pin[1]:
         raise ValueError('use the pinned native GNU R distribution for the host')
@@ -177,10 +177,12 @@ def evaluate_cran(work, installation, authority, call, api, restart, sha, runtim
     tls = ssl.create_default_context(cafile=str(ca))
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), urllib.request.HTTPSHandler(context=tls), NoRedirect())
 
-    def request(path, actor='reader', method='GET', body=None, *, repository=REPO, directory='src/contrib/'):
+    def request(path, actor='reader', method='GET', body=None, *, repository=REPO, directory='src/contrib/', force=False):
         url = f'{authority}/cran/{repository}/{directory}{path}'
-        i = urllib.request.Request(url, data=body, method=method,
-                                   headers={'Authorization': 'Bearer ' + tokens[actor]})
+        headers = {'Authorization': 'Bearer ' + tokens[actor]}
+        if force:
+            headers['Cache-Control'] = 'no-cache'
+        i = urllib.request.Request(url, data=body, method=method, headers=headers)
         try:
             with opener.open(i, timeout=10) as response:
                 data = response.read((128 << 10) + 1)
@@ -334,4 +336,8 @@ def evaluate_cran(work, installation, authority, call, api, restart, sha, runtim
         from cran_binary_fixture import evaluate_cran_binary
 
         result['binary'] = evaluate_cran_binary(work, authority, stock, environment, request, api, call, restart, sha)
+    if proxy_credential is not None:
+        from cran_proxy_fixture import evaluate_cran_proxy
+
+        result['proxy'] = evaluate_cran_proxy(work, authority, stock, environment, request, api, call, restart, sha, proxy_credential)
     return result

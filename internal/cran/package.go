@@ -123,6 +123,21 @@ func (p Package) IndexEntry(md5, digest string) string {
 }
 
 func parseDescription(description []byte, c Coordinate, built *string) (Package, error) {
+	fields, err := descriptionFields(description)
+	if err != nil {
+		return nil, err
+	}
+	metadata, err := descriptionPackage(fields, c)
+	if err != nil {
+		return nil, err
+	}
+	if built != nil {
+		*built = normalizedDescriptionField(fields["Built"])
+	}
+	return metadata, nil
+}
+
+func descriptionFields(description []byte) (map[string][]string, error) {
 	if len(description) < 1 || len(description) > MaxDescriptionBytes || !utf8.Valid(description) {
 		return nil, ErrPackage
 	}
@@ -156,6 +171,10 @@ func parseDescription(description []byte, c Coordinate, built *string) (Package,
 		current = key
 		fields[key] = []string{strings.TrimSpace(value)}
 	}
+	return fields, nil
+}
+
+func descriptionPackage(fields map[string][]string, c Coordinate) (Package, error) {
 	if values := fields["Type"]; len(values) != 0 && !equalDescriptionWord(values, "Package") {
 		return nil, ErrPackage
 	}
@@ -172,9 +191,6 @@ func parseDescription(description []byte, c Coordinate, built *string) (Package,
 	}
 	if !metadata.ValidFor(c) {
 		return nil, ErrPackage
-	}
-	if built != nil {
-		*built = normalizedDescriptionField(fields["Built"])
 	}
 	return metadata, nil
 }

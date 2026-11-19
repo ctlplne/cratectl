@@ -11,6 +11,7 @@ on:
       - 'internal/store/cran*.go'
       - 'scripts/cran_hosted_fixture.py'
       - 'scripts/cran_group_fixture.py'
+      - 'scripts/cran_proxy_fixture.py'
       - 'scripts/ci/cran_hosted_evidence.py'
       - 'scripts/ci/cran_private_launcher.sh'
 
@@ -104,7 +105,7 @@ jobs:
           python3 scripts/conformance_repository_manifest.py \
             --pg-bin /usr/lib/postgresql/16/bin --binary-directory .cache/cratectl-cran-bin \
             --cran-r "$r_home/bin/exec/R" --cran-r-home "$r_home" \
-            --cran-tool-archive .cache/cratectl-cran-tools/r-base-core.deb --cran-install --cran-history --cran-group \
+            --cran-tool-archive .cache/cratectl-cran-tools/r-base-core.deb --cran-install --cran-history --cran-group --cran-proxy \
             --cran-ci-architecture '${{ matrix.arch }}'
       - uses: actions/upload-artifact@v7
         if: success()

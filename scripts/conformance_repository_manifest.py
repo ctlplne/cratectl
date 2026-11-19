@@ -198,7 +198,8 @@ def evaluate(args):
         call('initialize-registry', bootstrap, 'init', '--tenant', TENANT, '--directory', app,
              '--public-url', authority, environment=owner_env)
         actors = [('reader', TENANT, 'reader'), ('other', OTHER, 'admin')]
-        if args.cargo_toolchain or args.npm_search or args.python_search_client or args.oci_catalog_cached or args.maven_index_cached or args.composer_proxy:
+        if any((args.cargo_toolchain, args.npm_search, args.python_search_client, args.oci_catalog_cached,
+                args.maven_index_cached, args.composer_proxy, args.cran_proxy)):
             server_flags.extend(('--allow-private-upstreams', '::1/128'))
         if args.cargo_toolchain:
             actors.extend([('writer', TENANT, 'writer'), ('maintainer', TENANT, 'writer')])
@@ -222,6 +223,14 @@ def evaluate(args):
                 TENANT + '/cratectl-composer-' + label: {'value': composer_credentials[label], 'allowed_url': uri,
                                                           'authentication': 'bearer'}
                 for label, uri in (('index', CATALOG_ORIGIN), ('download', ARCHIVE_ORIGIN))})
+            server_flags.extend(('--upstream-credentials', str(credentials)))
+        cran_proxy_credential = None
+        if args.cran_proxy:
+            from cran_proxy_fixture import ORIGIN, ORIGIN_CREDENTIAL
+
+            cran_proxy_credential = secrets.token_urlsafe(32)
+            credentials = write('cran-origin-credentials.json', {TENANT + '/' + ORIGIN_CREDENTIAL: {
+                'value': cran_proxy_credential, 'allowed_url': ORIGIN, 'authentication': 'bearer'}})
             server_flags.extend(('--upstream-credentials', str(credentials)))
         server = start_server(bootstrap)
         if args.legacy_cargo_daemon:
@@ -451,7 +460,7 @@ def evaluate(args):
             report['cran_hosted'] = evaluate_cran(work, app, authority, call, api, restart_server, sha,
                                                   args.cran_r.resolve(), args.cran_r_home.resolve(), args.cran_tool_archive.resolve(),
                                                   install=args.cran_install, history=args.cran_history, grouped=args.cran_group,
-                                                  binary=args.cran_binary)
+                                                  binary=args.cran_binary, proxy_credential=cran_proxy_credential)
         if args.npm_search:
             from npm_search_fixture import evaluate_cached_search, evaluate_search
 
@@ -572,6 +581,8 @@ def evaluate(args):
         print(f"PASS: {len(report['cran_hosted']['group']['checks'])} stock R ordered CRAN group checks")
     if args.cran_binary:
         print(f"PASS: {len(report['cran_hosted']['binary']['checks'])} stock R hosted CRAN binary checks")
+    if args.cran_proxy:
+        print(f"PASS: {len(report['cran_hosted']['proxy']['checks'])} stock R checksum-bound CRAN proxy checks")
     if args.npm_search:
         print(f"PASS: {len(report['npm_search']['checks'])} stock hosted npm search checks")
         print(f"PASS: {len(report['npm_cached_search']['checks'])} stock cached npm search checks")
@@ -789,7 +800,8 @@ def record_cran_ci(report, architecture):
     installed = 'installation' in report['cran_hosted']
     history = 'history' in report['cran_hosted']
     grouped = 'group' in report['cran_hosted']
-    profile, files = PROFILES[installed, history, grouped], source_files(installed, history, grouped)
+    proxied = 'proxy' in report['cran_hosted']
+    profile, files = PROFILES[installed, history, grouped, proxied], source_files(installed, history, grouped, proxied)
     projection = {key: report[key] for key in ('candidate', 'status', 'checks', 'binary_sha256', 'archive_sha256',
                                                 'postgres', 'npm', 'cran_hosted', 'goal_complete', 'broad_readiness')}
     projection.update(schema=1, profile=profile, runner_os='Linux', runner_arch=runner,
@@ -841,6 +853,7 @@ if __name__ == '__main__':
     parser.add_argument('--cran-history', action='store_true', help='also exercise the reviewed historical archive directory')
     parser.add_argument('--cran-group', action='store_true', help='also exercise the digest-bound ordered CRAN group')
     parser.add_argument('--cran-binary', action='store_true', help='also build and install a stock macOS R binary fixture')
+    parser.add_argument('--cran-proxy', action='store_true', help='also exercise a checksum-extended native CRAN source mirror')
     parser.add_argument('--npm-search', action='store_true',
                         help='also verify npm hosted and cached search using stock clients')
     parser.add_argument('--npm-search-ci-architecture', choices=('amd64', 'arm64'))
@@ -864,6 +877,8 @@ if __name__ == '__main__':
         parser.error('the owned CRAN archive replay requires the complete pinned stock R runtime')
     if options.cran_group and not all(cran_tools):
         parser.error('the owned CRAN group replay requires the complete pinned stock R runtime')
+    if options.cran_proxy and not all(cran_tools):
+        parser.error('the owned CRAN proxy replay requires the complete pinned stock R runtime')
     if options.cran_binary and (not all(cran_tools) or options.cran_ci_architecture or platform.system() != 'Darwin'):
         parser.error('the CRAN binary replay requires the complete pinned macOS R runtime and local native reporting')
     if options.cran_r and any((options.provider_binary, options.npm_search, options.python_search_client,

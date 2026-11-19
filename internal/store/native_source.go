@@ -7,6 +7,7 @@ import (
 	"errors"
 	"slices"
 
+	"ctlplne.dev/cratectl/internal/cran"
 	"github.com/jackc/pgx/v5"
 )
 
@@ -116,6 +117,8 @@ func nativeCatalogArtifact(ctx context.Context, tx pgx.Tx, i Identity, repo, nam
 	budget := repositoryReadBudget(r)
 	if format == "cargo" {
 		budget.sqlMetadataBytes = 32 << 20
+	} else if format == "cran" {
+		budget.sqlMetadataBytes = cran.MaxCatalogBytes
 	}
 	a, e := readArtifact(ctx, tx, repo, format+"-catalog/"+name, false, budget)
 	if e == nil && a.MediaType != media {

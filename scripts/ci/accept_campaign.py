@@ -27,6 +27,7 @@ from composer_hosted_evidence import (CHECKS as COMPOSER_HOSTED_CHECKS, GROUP_CH
 from conda_hosted_evidence import CHECKS as CONDA_HOSTED_CHECKS
 from cran_hosted_evidence import (CHECKS as CRAN_HOSTED_CHECKS, INSTALL_CHECKS as CRAN_INSTALL_CHECKS,
                                  HISTORY_CHECKS as CRAN_HISTORY_CHECKS, GROUP_CHECKS as CRAN_GROUP_CHECKS,
+                                 PROXY_CHECKS as CRAN_PROXY_CHECKS,
                                  selected_scopes as cran_selected_scopes)
 from npm_search_evidence import HOSTED_CHECKS as NPM_HOSTED, CACHED_CHECKS as NPM_CACHED
 from python_search_evidence import HOSTED_CHECKS as PYTHON_HOSTED, CACHED_CHECKS as PYTHON_CACHED
@@ -288,7 +289,7 @@ def check_log(raw, spec, source):
         require(text.count(f'PASS: {len(IAC_BASE) - 1} native declarative repository checks') == 1
                 and text.count(f'PASS: {len(CRAN_HOSTED_CHECKS)} stock R hosted CRAN source checks') == 1,
                 'cran_hosted_native_inventory')
-        installed, history, grouped = cran_selected_scopes(source)
+        installed, history, grouped, proxied = cran_selected_scopes(source)
         if installed:
             require(text.count(f'PASS: {len(CRAN_INSTALL_CHECKS)} stock R inert archive installation checks') == 1,
                     'cran_hosted_install_inventory')
@@ -298,6 +299,9 @@ def check_log(raw, spec, source):
         if grouped:
             require(text.count(f'PASS: {len(CRAN_GROUP_CHECKS)} stock R ordered CRAN group checks') == 1,
                     'cran_ordered_group_inventory')
+        if proxied:
+            require(text.count(f'PASS: {len(CRAN_PROXY_CHECKS)} stock R checksum-bound CRAN proxy checks') == 1,
+                    'cran_checksum_proxy_inventory')
     if kind in ('native', 'go'):
         pattern = r'\bok\s+ctlplne.dev/cratectl/internal/(?:server|store' + ('|conformance' if kind == 'native' else '') + r')\s'
         require(len(re.findall(pattern, text)) == (6 if kind == 'native' else 4), 'native_package_success_inventory')

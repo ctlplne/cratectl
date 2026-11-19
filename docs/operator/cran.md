@@ -86,7 +86,31 @@ Each directory has its own `PACKAGES` and `PACKAGES.gz` views. A source and
 two binaries can share a package name and version, with separate reviews
 for their original SHA-256 digests. On a supported R distribution, use
 `.Platform$pkgType` in place of `"source"` in both commands above. Serialized
-indexes, groups with binary channels, and proxy repositories remain open.
+indexes and groups with binary channels remain open.
+
+## Proxy a source mirror with SHA-256 metadata
+
+Create a `cran` repository with `mode: proxy` and `settings.upstream.url`
+pointing to the approved repository root. The same configured origin serves
+`src/contrib/PACKAGES` and its packages at `src/contrib/NAME_VERSION.tar.gz`.
+Give each record `SHA256sum` and `MD5sum` fields computed from the original
+tarball. Put the source dependency fields in the record so cratectl can
+check them against the exact downloaded archive. The `SHA256sum` field is a
+mirror requirement for this mode. Plain CRAN indexes that only carry MD5
+need a separately qualified trust path.
+
+The proxy's regenerated `PACKAGES` and `PACKAGES.gz` advertise local
+digest-bound paths. If the repository requires review, an authorized
+operator can use the mirror's `SHA256sum` and filename to request
+`src/contrib/sha256/DIGEST/NAME_VERSION.tar.gz` and populate the cache. The
+first read is refused while the cached digest awaits review. Approve the
+exact retained path and digest to make it eligible for discovery and reads.
+Reads recheck the current catalog, source configuration and review, so a
+replaced catalog entry or denied archive stops an old download URL.
+
+Run the same stock R source commands with the proxy root as `repo`. Binaries,
+historical archive listings and groups containing proxy members need
+separate qualification.
 
 [Writing R Extensions](https://cran.r-project.org/doc/manuals/R-exts.html)
 [R Installation and Administration](https://cran.r-project.org/doc/manuals/r-release/R-admin.html)

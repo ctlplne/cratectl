@@ -35,6 +35,7 @@ type resolvedArtifact struct {
 	goMetadataAdmissions []store.NativeAdmission
 	cargo                *cargoRead
 	composerProxy        *composerProxyRead
+	cranProxy            *store.CRANProxyAdmission
 }
 
 func (s *Server) resolve(ctx context.Context, i store.Identity, repo store.Repository, p string, force bool) (resolvedArtifact, error) {
@@ -108,9 +109,10 @@ func (s *Server) resolve(ctx context.Context, i store.Identity, repo store.Repos
 func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.Repository, p string, force bool) (resolvedArtifact, error) {
 	result := resolvedArtifact{source: repo}
 	nugetCatalog := repo.Format == "nuget" && strings.HasPrefix(p, "nuget-catalog/")
-	admitGeneration := repo.Format == "oci" || repo.Format == "go" || repo.Format == "cargo" || repo.Format == "nuget" || repo.Format == "composer"
+	needsFreshCatalog := repo.Format == "composer" || repo.Format == "cran"
+	admitGeneration := repo.Format == "oci" || repo.Format == "go" || repo.Format == "cargo" || repo.Format == "nuget" || needsFreshCatalog
 	allowStale := func(entry store.Retrieval) bool {
-		return !nugetCatalog && repo.Format != "composer" && entry.StalePermitted() && (repo.Format != "cargo" || entry.SourceStale > 0)
+		return !nugetCatalog && !needsFreshCatalog && entry.StalePermitted() && (repo.Format != "cargo" || entry.SourceStale > 0)
 	}
 	waits := 0
 	sourceRetries := 0
@@ -124,7 +126,7 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 		if e == nil && lease.State != "fetching" && lease.Fresh() && !force {
 			switch lease.State {
 			case "ready":
-				if repo.Format == "nuget" || repo.Format == "composer" {
+				if repo.Format == "nuget" || needsFreshCatalog {
 					result.admissions = []store.NativeAdmission{{Repository: repo.Name, Path: p, Generation: lease.Generation}}
 				}
 				result.cache = "hit"
@@ -356,6 +358,12 @@ func (s *Server) proxyArtifact(ctx context.Context, i store.Identity, repo store
 		}
 		return s.DB.ComposerProxyArtifact(ctx, i, repo, p, "", s.NativeVersionLimit, s.NativeMetadataBytes, admissions)
 	}
+	if repo.Format == "cran" {
+		if p == store.CRANProxyCatalogPath {
+			return s.DB.NativeCatalogArtifact(ctx, i, repo.Name, "source", "cran", store.CRANProxyCatalogMedia)
+		}
+		return s.DB.CRANProxyArtifact(ctx, i, repo, p, "", admissions)
+	}
 	return s.DB.Artifact(ctx, i, repo.Name, p)
 }
 func cachePolicy(h http.Header, repo store.Repository, lease store.Retrieval, status int) (int, int, error) {
@@ -425,6 +433,9 @@ func (s *Server) fillProxy(parent context.Context, i store.Identity, repo store.
 func (s *Server) fillProxyOnce(parent context.Context, i store.Identity, repo store.Repository, lease store.Retrieval) error {
 	if repo.Format == "composer" {
 		return s.fillComposerProxy(parent, i, repo, lease)
+	}
+	if repo.Format == "cran" {
+		return s.fillCRANProxy(parent, i, repo, lease)
 	}
 	if repo.Format == "go" {
 		return s.fillGoModuleProxy(parent, i, repo, lease)
@@ -650,6 +661,9 @@ func (s *Server) guardResolved(ctx context.Context, i store.Identity, a resolved
 	if a.composerProxy != nil {
 		return s.DB.ComposerProxyArtifact(ctx, i, a.source, a.artifact.Path, a.composerProxy.catalogDigest,
 			s.NativeVersionLimit, s.NativeMetadataBytes, a.admissions)
+	}
+	if a.cranProxy != nil {
+		return s.DB.CRANProxyArtifact(ctx, i, a.source, a.artifact.Path, a.cranProxy.CatalogDigest, a.admissions)
 	}
 	snapshot := store.SourceSnapshot{Repository: a.source.Name, Revision: a.source.SourceRevision, Groups: a.groupRevisions}
 	if a.source.Format == "go" {

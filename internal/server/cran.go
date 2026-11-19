@@ -47,6 +47,10 @@ func (s *Server) cran(w http.ResponseWriter, r *http.Request, i store.Identity, 
 		s.serveCRANGroupPackage(w, r, i, repo, request)
 		return
 	}
+	if repo.Mode == "proxy" {
+		s.serveCRANProxyPackage(w, r, i, repo, request)
+		return
+	}
 	coordinate, ok := cran.ParsePath(request)
 	if binary {
 		_, coordinate, ok = cran.ParseBinaryPath(request)
@@ -67,13 +71,12 @@ func (s *Server) cran(w http.ResponseWriter, r *http.Request, i store.Identity, 
 }
 
 func (s *Server) serveCRANGroupPackage(w http.ResponseWriter, r *http.Request, i store.Identity, group store.Repository, request string) {
-	locator, ok := strings.CutPrefix(request, cran.SourceDirectory+cran.DigestDirectory)
-	digest, file, found := strings.Cut(locator, "/")
-	if !ok || !found || len(digest) != 64 {
+	coordinate, digest, ok := cran.ParsePinnedSourcePath(request)
+	if !ok {
 		respondErr(w, store.ErrNotFound)
 		return
 	}
-	artifact, source, err := s.DB.CRANGroupArtifact(r.Context(), i, group.Name, cran.SourceDirectory+file, digest, group.SourceRevision)
+	artifact, source, err := s.DB.CRANGroupArtifact(r.Context(), i, group.Name, coordinate.Path(), digest, group.SourceRevision)
 	if err != nil {
 		respondErr(w, err)
 		return
@@ -153,6 +156,8 @@ func (s *Server) serveCRANIndex(w http.ResponseWriter, r *http.Request, i store.
 		index, err = s.DB.CRANBinaryIndex(r.Context(), i, repo.Name, channel, s.NativeVersionLimit, s.NativeMetadataBytes)
 	} else if repo.Mode == "group" {
 		index, err = s.DB.CRANGroupIndex(r.Context(), i, repo.Name, repo.SourceRevision, s.NativeVersionLimit, s.NativeMetadataBytes)
+	} else if repo.Mode == "proxy" {
+		index, err = s.cranProxyIndex(r, i, repo)
 	} else {
 		index, err = s.DB.CRANPackageIndex(r.Context(), i, repo.Name, s.NativeVersionLimit, s.NativeMetadataBytes)
 	}

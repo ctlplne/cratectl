@@ -156,7 +156,7 @@ func validateRepository(r *Repository, retainedGoProxy bool) error {
 		return errors.New("retained Go proxy configuration requires explicit checksum authority and checksum enforcement")
 	}
 	if r.Mode != "hosted" && r.Format != "generic" && r.Format != "maven" && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" && r.Format != "cargo" && r.Format != "nuget" &&
-		r.Format != "composer" && !(r.Format == "cran" && r.Mode == "group") &&
+		r.Format != "composer" && r.Format != "cran" &&
 		!(r.Format == "go" && (r.Mode == "group" || r.Mode == "proxy" && retainedGoProxy)) {
 		return errors.New("proxy/group native adapters not yet implemented for this format")
 	}
@@ -230,7 +230,7 @@ func validateRepository(r *Repository, retainedGoProxy bool) error {
 		if c.FreshSeconds < 0 || c.FreshSeconds > 86400 || c.NegativeSeconds < 0 || c.NegativeSeconds > 3600 || c.StaleSeconds < 0 || c.StaleSeconds > 604800 {
 			return errors.New("cache windows exceed configured safety bounds")
 		}
-		if r.Format == "cargo" || r.Format == "composer" {
+		if r.Format == "cargo" || r.Format == "composer" || r.Format == "cran" {
 			r.Settings.Cache.RequireChecksum = true
 		}
 	case "group":

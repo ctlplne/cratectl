@@ -207,6 +207,7 @@ type RetrievalResult struct {
 	NPMSources                 []NPMSource
 	NativeCatalog              *NativeCatalogPublication
 	CargoBinding               *CargoArchiveBinding
+	CRANProxy                  *CRANProxyAdmission
 	OCI                        *OCIPublication
 	GoModule                   *GoModulePublication
 	GoCatalog                  *GoModuleCatalog
@@ -238,6 +239,15 @@ func (s *Store) CompleteRetrieval(ctx context.Context, i Identity, lease Retriev
 		if repo.Format == "composer" {
 			if e = validateComposerRetrieval(lease, result); e != nil {
 				return e
+			}
+		}
+		if repo.Format == "cran" {
+			if e = validateCRANRetrieval(ctx, tx, repo, lease, result); e != nil {
+				if !errors.Is(e, ErrSourceChanged) && !errors.Is(e, ErrConflict) && !errors.Is(e, ErrDenied) && !errors.Is(e, ErrNotFound) {
+					return e
+				}
+				rejectedPublication = e
+				result = RetrievalResult{Status: result.Status, Failure: "upstream_cran_binding_changed"}
 			}
 		}
 		if result.GoCatalog != nil {

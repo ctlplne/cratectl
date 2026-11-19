@@ -5,6 +5,7 @@ import hashlib
 
 from cran_hosted_fixture import COORDINATES, EARLIER, LATEST, SELECTED_LIBRARY, TOOLS, filename, make_archive
 from cran_group_fixture import LOWER_ONLY, LOWER_VARIANT
+from cran_proxy_fixture import REPLACEMENT
 if __package__:
     from .terraform_provider_evidence import BASE_CHECKS as MANIFEST_CHECKS, hashes, matches, postgres_version
 else:
@@ -18,8 +19,9 @@ SOURCE_PROFILES = {
     (False, True): 'cratectl-native-hosted-cran-source-history-v1',
     (True, True): 'cratectl-native-hosted-cran-source-install-and-history-v1',
 }
-PROFILES = {(*mode, grouped): profile.removesuffix('-v1') + '-ordered-group-v1' if grouped else profile
-            for mode, profile in SOURCE_PROFILES.items() for grouped in (False, True)}
+PROFILES = {(*mode, grouped, proxied): profile.removesuffix('-v1') + ('-ordered-group' if grouped else '')
+            + ('-checksum-proxy' if proxied else '') + '-v1'
+            for mode, profile in SOURCE_PROFILES.items() for grouped in (False, True) for proxied in (False, True)}
 SCOPE = {profile: mode for mode, profile in PROFILES.items()}
 BASE_CHECKS = tuple(item for item in MANIFEST_CHECKS if item != 'provider matches the clean candidate')
 CHECKS = (
@@ -54,6 +56,20 @@ GROUP_CHECKS = (
     'fresh stock R omits the denied package and refuses the known digest-bound URL',
     'withdrawing a current source grant stops group discovery and exact archive reads',
 )
+PROXY_CHECKS = (
+    'CRAN proxy checks tenant and repository authorization before reading the origin',
+    'unreviewed CRAN proxy bytes are retained privately and the native index remains empty',
+    'the configured origin credential is scoped to the exact catalog and two archive requests',
+    'approved CRAN proxy indexes expose only their local exact archive paths',
+    'stock R downloads the original application and dependency through the CRAN proxy',
+    'stock R fetches the same proxy graph after restart while the origin is offline',
+    'warm CRAN discovery and exact downloads make no additional origin requests',
+    'current digest denial removes the app and refuses its cached exact path',
+    'fresh stock R refuses the previously selected CRAN proxy archive',
+    'a changed origin digest invalidates the old locator and enters the new bytes under review',
+    'reapproval serves only the replacement at its new pinned CRAN proxy locator',
+    'an origin catalog cannot redirect the archive path',
+)
 LAUNCHER = 'scripts/ci/cran_private_launcher.sh'
 FILES = (
     '.github/workflows/cran-hosted.yml', 'Makefile', 'go.mod', 'go.sum',
@@ -68,6 +84,10 @@ INSTALL_FILES = (*FILES, LAUNCHER)
 VERSION_FILES = ('internal/cran/version.go', 'internal/cran/version_test.go')
 GROUP_FILES = ('scripts/cran_group_fixture.py', 'internal/store/cran_group.go', 'internal/server/cran_group_integration_test.go',
                'internal/server/resolve.go', 'internal/store/source_configuration.go')
+PROXY_FILES = ('scripts/cran_proxy_fixture.py', 'scripts/cran_group_fixture.py', 'scripts/cargo_proxy_fixture.py',
+               'internal/cran/catalog.go', 'internal/cran/catalog_test.go', 'internal/server/cran_proxy.go',
+               'internal/server/cran_proxy_integration_test.go', 'internal/server/resolve.go', 'internal/store/cran_proxy.go',
+               'internal/store/native_source.go', 'internal/store/retrieval.go', 'internal/upstream/upstream.go')
 FIELDS = {'schema', 'profile', 'candidate', 'status', 'runner_os', 'runner_arch', 'run_id', 'source_dirty', 'source_sha256',
           'binary_sha256', 'archive_sha256', 'postgres', 'npm', 'checks', 'cran_hosted', 'goal_complete', 'broad_readiness'}
 HOST = {'X64': 'x86_64', 'ARM64': 'aarch64'}
@@ -75,19 +95,20 @@ HOST = {'X64': 'x86_64', 'ARM64': 'aarch64'}
 
 def selected_scopes(source):
     flags = source('.github/workflows/cran-hosted.yml').split()
-    return b'--cran-install' in flags, b'--cran-history' in flags, b'--cran-group' in flags
+    return tuple(flag in flags for flag in (b'--cran-install', b'--cran-history', b'--cran-group', b'--cran-proxy'))
 
 
-def source_files(installed, history, grouped=False):
+def source_files(installed, history, grouped=False, proxied=False):
     baseline = INSTALL_FILES if installed else FILES
-    return baseline + (VERSION_FILES if history else ()) + (GROUP_FILES if grouped else ())
+    files = baseline + (VERSION_FILES if history else ()) + (GROUP_FILES if grouped else ()) + (PROXY_FILES if proxied else ())
+    return tuple(dict.fromkeys(files))
 
 
 def validate(report):
     if type(report) is not dict or report.get('profile') not in SCOPE:
         raise ValueError('invalid hosted CRAN profile')
-    installed, history, grouped = SCOPE[report['profile']]
-    files = source_files(installed, history, grouped)
+    installed, history, grouped, proxied = SCOPE[report['profile']]
+    files = source_files(installed, history, grouped, proxied)
     if (set(report) != FIELDS
             or type(report['schema']) is not int or report['schema'] != 1 or report['status'] != 'passed'
             or report['runner_os'] != 'Linux' or report['runner_arch'] not in HOST or report['source_dirty'] is not False
@@ -114,6 +135,9 @@ def validate(report):
         expected['group'] = {'checks': list(GROUP_CHECKS), 'selected': selected,
                              'lower_collision_sha256': hashlib.sha256(make_archive(LATEST, variant=LOWER_VARIANT)).hexdigest(),
                              'lower_only_sha256': hashlib.sha256(make_archive(LOWER_ONLY)).hexdigest()}
+    if proxied:
+        expected['proxy'] = {'checks': list(PROXY_CHECKS), 'selected': selected,
+                             'replacement_sha256': hashlib.sha256(make_archive(LATEST, variant=REPLACEMENT)).hexdigest()}
     if native != expected:
         raise ValueError('invalid stock R tool or exact CRAN source graph')
     return report
