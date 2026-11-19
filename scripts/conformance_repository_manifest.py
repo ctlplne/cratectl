@@ -45,7 +45,7 @@ def sha(file):
 def evaluate(args):
     os.umask(0o077)
     authority = ('https://127.0.0.1:38443' if args.cargo_toolchain or args.npm_search or args.python_search_client
-                 or args.oci_catalog_cached or args.maven_index_cached or args.debian_apt else BASE)
+                 or args.oci_catalog_cached or args.maven_index_cached or args.debian_apt or args.composer_phar else BASE)
     private = ROOT / '.private'
     if private.is_symlink() or private.stat().st_mode & 0o077:
         raise ValueError('use the existing owner-only .private directory')
@@ -409,6 +409,11 @@ def evaluate(args):
             report['debian_apt'] = evaluate_debian_apt(work, app, authority, public_env, call, api, restart_server, sha)
             if args.debian_apt_suite:
                 report['debian_apt_suite'] = evaluate_debian_apt(work, app, authority, public_env, call, api, restart_server, sha, named=True)
+        if args.composer_phar:
+            from composer_hosted_fixture import evaluate_hosted_composer
+
+            report['composer_hosted'] = evaluate_hosted_composer(work, app, authority, public_env, call, api, restart_server,
+                                                                sha, args.composer_php.resolve(), args.composer_phar.resolve())
         if args.npm_search:
             from npm_search_fixture import evaluate_cached_search, evaluate_search
 
@@ -505,6 +510,8 @@ def evaluate(args):
         print(f"PASS: {len(report['debian_apt']['checks'])} stock signed Debian APT checks")
     if args.debian_apt_suite:
         print(f"PASS: {len(report['debian_apt_suite']['checks'])} stock signed Debian named-suite checks")
+    if args.composer_phar:
+        print(f"PASS: {len(report['composer_hosted']['checks'])} stock Composer hosted ZIP checks")
     if args.npm_search:
         print(f"PASS: {len(report['npm_search']['checks'])} stock hosted npm search checks")
         print(f"PASS: {len(report['npm_cached_search']['checks'])} stock cached npm search checks")
@@ -536,6 +543,8 @@ def evaluate(args):
         record_maven_index_ci(report, args.maven_index_ci_architecture)
     if args.debian_apt_ci_architecture:
         record_debian_apt_ci(report, args.debian_apt_ci_architecture)
+    if args.composer_ci_architecture:
+        record_composer_ci(report, args.composer_ci_architecture)
 
 
 def hosted_runner(report, architecture):
@@ -667,6 +676,20 @@ def record_debian_apt_ci(report, architecture):
         stream.write('\n')
 
 
+def record_composer_ci(report, architecture):
+    from ci.composer_hosted_evidence import FILES, PROFILE, validate as validate_composer
+
+    runner = hosted_runner(report, architecture)
+    projection = {key: report[key] for key in ('candidate', 'status', 'checks', 'binary_sha256', 'archive_sha256',
+                                                'postgres', 'npm', 'composer_hosted', 'goal_complete', 'broad_readiness')}
+    projection.update(schema=1, profile=PROFILE, runner_os='Linux', runner_arch=runner,
+                      run_id=os.environ.get('GITHUB_RUN_ID'), source_dirty=False,
+                      source_sha256={name: sha(ROOT / name) for name in FILES})
+    with (ROOT / '.cache/ci-composer-hosted.json').open('x') as stream:
+        json.dump(validate_composer(projection), stream, indent=2)
+        stream.write('\n')
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--binary-directory', type=Path)
@@ -690,6 +713,9 @@ if __name__ == '__main__':
     parser.add_argument('--debian-apt', action='store_true', help='verify a signed hosted repository using stock APT')
     parser.add_argument('--debian-apt-suite', action='store_true', help='also verify a signed Debian suite using stock APT')
     parser.add_argument('--debian-apt-ci-architecture', choices=('amd64', 'arm64'))
+    parser.add_argument('--composer-php', type=Path, help='the native PHP executable for the stock Composer PHAR')
+    parser.add_argument('--composer-phar', type=Path, help='the digest-pinned Composer client PHAR')
+    parser.add_argument('--composer-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--npm-search', action='store_true',
                         help='also verify npm hosted and cached search using stock clients')
     parser.add_argument('--npm-search-ci-architecture', choices=('amd64', 'arm64'))
@@ -702,6 +728,13 @@ if __name__ == '__main__':
                         help='also fetch a pinned dependency graph from the public crates.io index and CDN')
     parser.add_argument('--legacy-cargo-daemon', type=Path)
     options = parser.parse_args()
+    if bool(options.composer_php) != bool(options.composer_phar):
+        parser.error('Composer qualification requires the PHP runtime and pinned PHAR')
+    if options.composer_ci_architecture and (not options.composer_phar or options.provider_binary or options.npm_search
+                                              or options.python_search_client or options.cargo_toolchain or options.mcp_binary
+                                              or options.oci_catalog_client or options.maven_index_reader or options.promtool
+                                              or options.debian_apt):
+        parser.error('native Composer evidence requires the isolated stock Composer profile')
     if options.debian_apt_suite and not options.debian_apt:
         parser.error('the named Debian suite profile requires the flat APT baseline')
     if options.debian_apt_ci_architecture and (not options.debian_apt or options.provider_binary or options.npm_search

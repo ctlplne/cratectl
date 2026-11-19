@@ -101,6 +101,9 @@ func materializedLifecycleReference(r Repository, a Artifact) bool {
 	case "apt":
 		_, err := ValidateDebianArtifact(a)
 		return err == nil
+	case "composer":
+		_, err := decodeComposerPackage(a)
+		return err == nil
 	case "cargo":
 		if r.Mode == "proxy" {
 			var binding CargoArchiveBinding

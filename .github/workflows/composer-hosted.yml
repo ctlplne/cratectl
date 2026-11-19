@@ -1,0 +1,77 @@
+name: Native hosted Composer repository
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/composer-hosted.yml'
+      - 'internal/composer/**'
+      - 'internal/server/composer*.go'
+      - 'internal/store/composer*.go'
+      - 'scripts/composer_hosted_fixture.py'
+      - 'scripts/ci/composer_hosted_evidence.py'
+
+permissions:
+  contents: read
+
+jobs:
+  composer-hosted:
+    if: github.ref == 'refs/heads/main' && github.repository == 'ctlplne/cratectl'
+    name: Stock Composer and real PostgreSQL (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 19
+    concurrency:
+      group: cratectl-composer-hosted-${{ github.ref }}-${{ matrix.arch }}-${{ github.sha }}
+      cancel-in-progress: false
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    env:
+      GOENV: 'off'
+      GOTOOLCHAIN: local
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22.23.4'
+      - name: Prepare the digest-pinned stock Composer PHAR
+        run: |
+          mkdir -p .cache/cratectl-composer-tools
+          command -v php
+          curl --fail --silent --show-error --proto '=https' --max-filesize 10000000 --max-time 45 \
+            --output .cache/cratectl-composer-tools/composer.phar https://getcomposer.org/download/2.11.2/composer.phar
+          printf '%s  %s\n' 'dd158c0afd41d15fac89e1b4e47b5d42911fe316c3687cd5edac98319b25d028' \
+            .cache/cratectl-composer-tools/composer.phar | sha256sum --check -
+      - name: Build the clean cratectl candidate
+        run: make build BINDIR=.cache/cratectl-composer-bin
+      - name: Replay the hosted dependency graph with stock Composer
+        run: |
+          umask 077
+          mkdir -p .private
+          python3 scripts/conformance_repository_manifest.py \
+            --pg-bin /usr/lib/postgresql/16/bin --binary-directory .cache/cratectl-composer-bin \
+            --composer-php "$(command -v php)" --composer-phar .cache/cratectl-composer-tools/composer.phar \
+            --composer-ci-architecture '${{ matrix.arch }}'
+      - uses: actions/upload-artifact@v7
+        if: success()
+        with:
+          name: ci-summary-composer-hosted-${{ matrix.arch }}
+          path: .cache/ci-composer-hosted.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14

@@ -181,6 +181,9 @@ func (s *Store) artifact(ctx context.Context, i Identity, repo, path string, int
 				_, e = ValidateDebianArtifact(a)
 			}
 		}
+		if e == nil && r.Format == "composer" {
+			_, e = decodeComposerPackage(a)
+		}
 		if e == nil && r.Format == "nuget" {
 			var metadata NuGetPackage
 			if metadata, e = ValidateNuGetArtifact(ctx, a); e != nil {

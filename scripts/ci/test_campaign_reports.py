@@ -15,6 +15,9 @@ from debian_apt_evidence import (APT_CHECKS as DEBIAN_APT_CHECKS, BASE_CHECKS as
                                  PROFILE as DEBIAN_APT_PROFILE, SOURCE_PATHS as DEBIAN_APT_FILES,
                                  APT_SUITE_CHECKS as DEBIAN_SUITE_CHECKS, SUITE_PROFILE as DEBIAN_SUITE_PROFILE,
                                  SUITE_SOURCE_PATHS as DEBIAN_SUITE_FILES)
+from composer_hosted_evidence import (BASE_CHECKS as COMPOSER_BASE, CHECKS as COMPOSER_CHECKS,
+                                      COMPOSER_SHA256, COMPOSER_VERSION, COORDINATES as COMPOSER_COORDINATES,
+                                      FILES as COMPOSER_FILES, PROFILE as COMPOSER_PROFILE)
 from linux_install_evidence import CHECKS as INSTALL_CHECKS, IMAGE as INSTALL_IMAGE, SOURCE_PATHS as INSTALL_FILES
 from maven_index_evidence import (BASE_CHECKS as MAVEN_INDEX_BASE, CACHED_CHECKS as MAVEN_CACHED_CHECKS,
                                   CACHED_PROFILE as MAVEN_CACHED_PROFILE, CACHED_SOURCE_PATHS as MAVEN_CACHED_FILES,
@@ -43,6 +46,24 @@ SPECS = {spec['artifact']: spec for family in WORKFLOWS.values() for spec in job
 
 
 class CampaignReports(unittest.TestCase):
+    def test_composer_reports_bind_stock_resolution_and_policy_replay(self):
+        source = lambda path: path.encode()
+        candidate = 'a' * 40
+        native = {'checks': list(COMPOSER_CHECKS), 'composer_version': COMPOSER_VERSION, 'composer_sha256': COMPOSER_SHA256,
+                  'php_version': '8.3.6', 'archive_sha256': {f'{name}@{version}': 'b' * 64 for name, version in COMPOSER_COORDINATES},
+                  'lock_sha256': 'c' * 64}
+        report = {'schema': 1, 'profile': COMPOSER_PROFILE, 'candidate': candidate, 'status': 'passed',
+                  'runner_os': 'Linux', 'runner_arch': 'ARM64', 'run_id': '12', 'source_dirty': False,
+                  'source_sha256': {path: hashlib.sha256(source(path)).hexdigest() for path in COMPOSER_FILES},
+                  'binary_sha256': {'cratectl': 'd' * 64, 'cratectld': 'e' * 64}, 'archive_sha256': 'c' * 64,
+                  'postgres': 'postgres (PostgreSQL) 16.15', 'npm': '10.9.9', 'checks': list(COMPOSER_BASE),
+                  'composer_hosted': native, 'goal_complete': False, 'broad_readiness': False}
+        spec = SPECS['ci-summary-composer-hosted-arm64']
+        self.assertEqual(validate_custom(report, candidate, 12, spec, source), {'checks': 34, 'records': 1})
+        for patch in ({'composer_sha256': 'd' * 64}, {'checks': native['checks'][:-1]}):
+            with self.assertRaisesRegex(EvidenceError, 'composer_hosted_report_contract'):
+                validate_custom({**report, 'composer_hosted': {**native, **patch}}, candidate, 12, spec, source)
+
     def test_debian_apt_report_requires_signed_repository_controls_on_native_architecture(self):
         source = lambda path: path.encode()
         candidate = 'a' * 40
