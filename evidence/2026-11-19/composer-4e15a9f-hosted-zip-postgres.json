@@ -1,0 +1,30 @@
+{
+  "candidate": "4e15a9fe84a92163b29ffddc6a9fc445a7593f11",
+  "status": "passed",
+  "observed_at": "2026-11-19T01:37:35.432723+00:00",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "regressions": [
+    "TestComposerHostedBindsArchiveAndCurrentTenantPolicy",
+    "TestConsoleSessionUsesCurrentCredentialAndDoesNotExposeSecrets",
+    "TestDebianHostedBindsExactPackagesAndCurrentTenantPolicy",
+    "TestDebianHostedReleaseFencesIndexChangesAndOlderPublications",
+    "TestDebianHostedNamedSuiteBindsEachArchitecture"
+  ],
+  "gates": {
+    "make build": "passed",
+    "make test": "passed",
+    "make race": "passed",
+    "make lint": "passed"
+  },
+  "binary_sha256": {
+    "cratectld": "b536619e8bc5a028c6a5666fcd2a886d9d7f22ec9987004a9d81ddafd4f63206",
+    "cratectl": "3729d803792a3814fc8056b09238b3817599f9560d6ec3b2a5020cddb43c8e61"
+  },
+  "integration_log_sha256": "8ce66e0f28f440ebf6152f59aba93189e849a405d383be285b4a8c835840e33d",
+  "limits": [
+    "The local fixture uses PostgreSQL 16.16 with a restricted runtime. It tests hosted Composer immutable ZIP identity, dependency metadata, conditional/range reads, restart, current review and a conflicting tenant coordinate. Stock PHP and Composer installation are evaluated independently."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

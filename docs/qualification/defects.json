@@ -1946,7 +1946,7 @@
     {
       "id": "DEFECT.0189",
       "summary": "Original Linux x64 SBT2 launcher cannot resolve its pinned Maven Central POM",
-      "state": "SBT 2.0.11 reported the pinned launcher dependency as missing and exited before its owned tool bootstrap. Open pending cause verification and later exact native evidence.",
+      "state": "SBT 2.0.11 reported the pinned launcher dependency as missing and exited before its owned tool bootstrap on original 541ea5d and 0d5908c Linux x64 jobs. Other exact runs passed. Root cause remains open.",
       "first_failure": "evidence/2026-11-19/jvm-541ea5d-sbt2-amd64-bootstrap-first-failure.json",
       "replay": null,
       "repair": null
@@ -1970,9 +1970,9 @@
     {
       "id": "DEFECT.0192",
       "summary": "The protected console session fixture omits the APT adapter",
-      "state": "Both original x64 and ARM64 runtime jobs failed the protected session adapter inventory assertion. Product APT exposure was present.",
+      "state": "Both original x64 and ARM64 runtime jobs failed the protected session adapter inventory assertion on 8cf32b9 and c62c1bf. Exact 3993833 passed the corrected assertion against real PostgreSQL 16.16.",
       "first_failure": "evidence/2026-11-19/debian-8cf32b9-console-format-first-failure.json",
-      "replay": null,
+      "replay": "evidence/2026-11-19/debian-3993833-console-adapter-postgres.json",
       "repair": "Add APT to the expected inventory and retain the existing credential, method and adapter-removal assertions."
     }
   ]

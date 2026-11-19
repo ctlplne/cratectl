@@ -1,0 +1,23 @@
+{
+  "candidate": "399383330b460622733e885a04e7bc64016fde13",
+  "status": "passed",
+  "observed_at": "2026-11-19T01:37:35.329536+00:00",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "regressions": [
+    "TestConsoleSessionUsesCurrentCredentialAndDoesNotExposeSecrets"
+  ],
+  "gates": {
+    "make build": "passed"
+  },
+  "binary_sha256": {
+    "cratectld": "bd61a465a51a88d8380da2068f3e71d2ba806bef71858c9e70131f25df6966fa",
+    "cratectl": "770be2f9a8c8e4568239bb4337a98f6fd3904dc863946e045234144b7145224e"
+  },
+  "integration_log_sha256": "3e3704bcbbb557a4ed6b0acbbfd4a4e3af92ec0958f5a01c86f3654207703fec",
+  "limits": [
+    "The original protected session assertion now includes the APT adapter while retaining credential, disabled adapter, method and revocation checks against a migrated PostgreSQL instance. Native baseline CI is evaluated separately."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

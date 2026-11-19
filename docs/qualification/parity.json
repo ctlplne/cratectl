@@ -8100,11 +8100,11 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "Immutable Composer v2 library ZIP intake and policy-filtered stable package discovery.",
       "surfaces": {
-        "api": null,
-        "cli": null,
-        "ui": null
+        "api": "/composer/REPOSITORY/",
+        "cli": "Composer v2",
+        "ui": "Repository client setup"
       },
       "core": true,
       "dependencies": [
@@ -8116,7 +8116,9 @@
       "clients": [
         "composer 2"
       ],
-      "client_versions": {},
+      "client_versions": {
+        "composer": "2.11.2 on Linux x64 and ARM64"
+      },
       "test_data": "Two nontrivial versions plus a dependency package; same coordinates in two tenants.",
       "permission_cases": [
         "reader denial on publish",
@@ -8132,11 +8134,14 @@
         "upstream outage",
         "delete/restore"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "No implementation or native-client proof yet.",
-      "next_action": "Implement composer hosted and execute the complete stock-client journey."
+      "state": "implementing",
+      "candidate": "4e15a9fe84a92163b29ffddc6a9fc445a7593f11",
+      "evidence": [
+        "evidence/2026-11-19/composer-4e15a9f-hosted-zip-postgres.json",
+        "evidence/2026-11-19/github-4e15a9f-composer-hosted-zip-native.json"
+      ],
+      "limits": "Exact 4e15a9f passed the PostgreSQL 16.16 ZIP and current policy regression. Both original Linux x64 and ARM64 jobs passed 15 Composer 2.11.2 and 19 declarative checks with PHP 8.3.6 and PostgreSQL 16.15. Each matched 21 source hashes. The locked Composer v2 fixture selected two of four immutable library distributions, confirmed exact original ZIPs across restart and refused installation after the application digest was denied.",
+      "next_action": "Qualify development versions, additional package metadata and distribution formats, more dependency graphs and retained lifecycle operations."
     },
     {
       "id": "FMT.COMPOSER.PROXY",

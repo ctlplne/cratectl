@@ -1,0 +1,979 @@
+{
+  "schema": 1,
+  "candidate": "2029b2661228d074a90d49a82ce5d89cfb63fc1e",
+  "status": "passed",
+  "observed_at": "2026-11-19T01:28:36.267972+00:00",
+  "verifier_environment": "local macOS ARM64 using the unchanged exact-source read-only verifier",
+  "verifier": "2029b2661228d074a90d49a82ce5d89cfb63fc1e",
+  "source_schema": 19,
+  "original_job_logs_verified": 28,
+  "original_workflows": 7,
+  "matched_safe_job_summaries": 21,
+  "matched_selection_summaries": 1,
+  "matched_underlying_reports": 84,
+  "matched_source_contracts": 45,
+  "matched_transfer_metadata": [
+    {
+      "id": 14485042500,
+      "run_id": 44425136313,
+      "name": "cratectl-owned-go-export-fixture",
+      "digest": "sha256:877204ef844b88e0fa329b2faee3962a776665ee3d4a3b21638ea2fda00ba3dc",
+      "bytes": 5332
+    },
+    {
+      "id": 14485007810,
+      "run_id": 44425136313,
+      "name": "cratectl-owned-go-common-export-fixture",
+      "digest": "sha256:85a51a5e7db21a9ed367eb372ac10f580dbafbd4cb0bb040374c7eb2055be2e1",
+      "bytes": 16066
+    },
+    {
+      "id": 14484927973,
+      "run_id": 44425136313,
+      "name": "cratectl-owned-go-requirement-export-fixture",
+      "digest": "sha256:fef53c2178dc8646f5c795c70104dac9bbafe15bcf2c9077965384b75ed07a78",
+      "bytes": 189406
+    }
+  ],
+  "original_campaign_inventory": {
+    "path": "evidence/2026-11-19/github-2029b26-original-completed.json",
+    "sha256": "a2617fd43b245c97335452da81984fea3d0472dcb60034a07981b88fcf559dd8",
+    "bytes": 79841
+  },
+  "verdict": {
+    "schema": 1,
+    "profile": "cratectl-ci-campaign-v1",
+    "status": "passed",
+    "candidate": "2029b2661228d074a90d49a82ce5d89cfb63fc1e",
+    "verifier": "2029b2661228d074a90d49a82ce5d89cfb63fc1e",
+    "source_schema": 19,
+    "run_ids": [
+      44425136280,
+      44425136299,
+      44425136313,
+      44425136357,
+      44425136364,
+      44425136378,
+      44425136422
+    ],
+    "jobs": [
+      {
+        "family": "main",
+        "run_id": 44425136280,
+        "job_id": 135227904356,
+        "name": "Scoped source, binary and history scans",
+        "platform": [
+          "ubuntu-24.04",
+          "Linux",
+          "X64"
+        ],
+        "log_bytes": 31002,
+        "log_sha256": "4a5fa4335a12d6b406dcea7308d79759994e8964fc7aa19e4648795bd86ff3e3",
+        "artifact": {
+          "artifact_id": 14484814688,
+          "archive_sha256": "e9a4ad15befbe617f8159fd8465cc6c94676c0d8988f625ba1c53dd06e37bc84",
+          "member_sha256": "0500a29c8f4bdeaccecdc09c62c49b5b19bf3ed47c5b8b4bd233fd28812f699d"
+        },
+        "report_counts": {
+          "records": 1,
+          "checks": 324,
+          "raw_report_sha256": [
+            "7e00e7e5ce55109a1bbd07d314db8e57a3146bc136994302a4cebe9aba21ce0d"
+          ]
+        }
+      },
+      {
+        "family": "main",
+        "run_id": 44425136280,
+        "job_id": 135227904864,
+        "name": "Select runtime qualification inputs",
+        "platform": [
+          "ubuntu-24.04",
+          "Linux",
+          "X64"
+        ],
+        "log_bytes": 19978,
+        "log_sha256": "3fb3f4a42c5900568a60a0dbbde4be08cb828a2059b24c517d63237296e25b82"
+      },
+      {
+        "family": "main",
+        "run_id": 44425136280,
+        "job_id": 135241618266,
+        "name": "Bounded native Go fuzz (amd64)",
+        "platform": [
+          "ubuntu-24.04",
+          "Linux",
+          "X64"
+        ],
+        "log_bytes": 64645,
+        "log_sha256": "82cd6baa505c313e0a6780596a6d7b0713311527f534a6f4785d694322e6c68c"
+      },
+      {
+        "family": "main",
+        "run_id": 44425136280,
+        "job_id": 135241618382,
+        "name": "Source and unit (amd64)",
+        "platform": [
+          "ubuntu-24.04",
+          "Linux",
+          "X64"
+        ],
+        "log_bytes": 57102,
+        "log_sha256": "9c8b6130db19bde60d8e4647efde60e8f4ed902d6be94b7a00cd7f804e451cce"
+      },
+      {
+        "family": "main",
+        "run_id": 44425136280,
+        "job_id": 135241618402,
+        "name": "Bounded native Go fuzz (arm64)",
+        "platform": [
+          "ubuntu-24.04-arm",
+          "Linux",
+          "ARM64"
+        ],
+        "log_bytes": 64674,
+        "log_sha256": "05bf0ebbac82226137170924567b01b1d0325fddce9143e11584b0c9b3847977"
+      },
+      {
+        "family": "main",
+        "run_id": 44425136280,
+        "job_id": 135241618407,
+        "name": "Source and unit (darwin-arm64)",
+        "platform": [
+          "macos-15",
+          "macOS",
+          "ARM64"
+        ],
+        "log_bytes": 59296,
+        "log_sha256": "d1140c0cfdd3efd31f5fb0c23fb978136b563448ce65cc12eb342467f2e58dba"
+      },
+      {
+        "family": "main",
+        "run_id": 44425136280,
+        "job_id": 135241618484,
+        "name": "Real PostgreSQL and stock clients (amd64)",
+        "platform": [
+          "ubuntu-24.04",
+          "Linux",
+          "X64"
+        ],
+        "log_bytes": 869706,
+        "log_sha256": "e9b3c3e76b47d5351bfe1474dc2e8f88b208f6eb7f5bb92679cded486a326838",
+        "artifact": {
+          "artifact_id": 14488437066,
+          "archive_sha256": "13ac62882a458814ee9b800c9edd5053e61fa6d227a3cf414b39234770528c6c",
+          "member_sha256": "0da18b538d4c244d66ad14b216cffd137637639037a439e29fda34715cec474d"
+        },
+        "report_counts": {
+          "records": 9,
+          "checks": 1511,
+          "raw_report_sha256": [
+            "ae8ba89cbe327c4bb2740fcf4c987da0d90a68703d1e53ed3662ec114b138d1d",
+            "a61f9f9f103870369a64278352b9c80d0c45c978c4c5830a3024a923185156ac",
+            "b6c35494cb68bdb23b373c83c9be24f9b4a86fe1c2c499b10e46398aaf9b6fda",
+            "67a5c1ad33eb44c7b50047797b034dcc1e94a437097e605048124300d656b3d5",
+            "4d610d3beeacba833c81267fdc42a168aff7a6e0aad6c161a4008e9bed57da68",
+            "28d9f6b38288b00ac0173169db041573849d1bea74f2668a8636d0e8292376c5",
+            "2ee082096d1548514c65288f05cd212cbc2fcb5ff6a5991493734eba7ef7d9d0",
+            "e080c0d6e9fa06a70288421c3a6e772b90687367067283d1e1488e307462cdbb",
+            "1aac31cceed31f7e620d1888292cd1ecbeb05075f988cd7f3d90adaaeeda4d85"
+          ]
+        }
+      },
+      {
+        "family": "main",
+        "run_id": 44425136280,
+        "job_id": 135241618490,
+        "name": "Bounded native Go fuzz (darwin-arm64)",
+        "platform": [
+          "macos-15",
+          "macOS",
+          "ARM64"
+        ],
+        "log_bytes": 65525,
+        "log_sha256": "818f55554cdc741a9d386ed875954cf4e521c271de916e0b467c7c6323ac8d04"
+      },
+      {
+        "family": "main",
+        "run_id": 44425136280,
+        "job_id": 135241618544,
+        "name": "Source and unit (arm64)",
+        "platform": [
+          "ubuntu-24.04-arm",
+          "Linux",
+          "ARM64"
+        ],
+        "log_bytes": 56484,
+        "log_sha256": "85d72f04efea35ab83e904c593e6a7144739a4f18679f0328123e6b86758224e"
+      },
+      {
+        "family": "main",
+        "run_id": 44425136280,
+        "job_id": 135241618550,
+        "name": "Real PostgreSQL and stock clients (arm64)",
+        "platform": [
+          "ubuntu-24.04-arm",
+          "Linux",
+          "ARM64"
+        ],
+        "log_bytes": 828043,
+        "log_sha256": "f2a78d5b9bd73c7ffa3dda91c98bf67a781417fc68dc75c95f7c923e7c6a8730",
+        "unselected": [
+          "chromium"
+        ],
+        "artifact": {
+          "artifact_id": 14488720016,
+          "archive_sha256": "b5f5376ca753fb92021b40c18730bec98e0b6106fff70cc5496de1ece606edf2",
+          "member_sha256": "8afb25bd97c21b6509d0f2dff1b4d6fb42326d941adf3a7eefc8e7104a7ea85c"
+        },
+        "report_counts": {
+          "records": 8,
+          "checks": 1360,
+          "raw_report_sha256": [
+            "d281c8f0dceaaafcd4cf6f8f954d9c8146bd7d213a1ae06e48dcd76609312727",
+            "39731e81d291764e8da6923b70caaac97b993e4dfaca4d6a74e32d26f76582a0",
+            "b5c78f11751901ab1b1f489e3af6b2d85e6cf78bea7d1af03660e617e44aaa79",
+            "bf6baaeb1e9f1444655e68b9116f2cc359fa0b5b6d84e96e21b96907a04877e8",
+            "3ed1d42b28b725b7c8941c76ce516fd7aa44632f6a1aea22ef43f8afed9f5dea",
+            "42c6c700836530b81fc75f6ee93b010c07bd19cfd5b402e05933525ea19872ab",
+            "e037ff3cd67fa3b70d08aba3b7cac3094d47f80581f1a8659b2146163189bf68",
+            "4b4b290743e023dd400c53c4ee433e493bdafa268fc4bac2feaf5007b4fb582c"
+          ]
+        }
+      },
+      {
+        "family": "oci",
+        "run_id": 44425136299,
+        "job_id": 135227904874,
+        "name": "Docker, Podman and Helm (arm64)",
+        "platform": [
+          "ubuntu-24.04-arm",
+          "Linux",
+          "ARM64"
+        ],
+        "log_bytes": 74362,
+        "log_sha256": "f76f4fd92f1c5da76972a4e187acf75a38a02352b653938703976d496e553f52",
+        "artifact": {
+          "artifact_id": 14484109800,
+          "archive_sha256": "33300ebdbb4170d1e84ebdfbed2a6f6431e035bda1337c8629fdbe37fae780b7",
+          "member_sha256": "733c84b9c84acc73dd29078ab63a26cc540d460d9d4d348e7a97faf6b5e23626"
+        },
+        "report_counts": {
+          "records": 1,
+          "checks": 219,
+          "raw_report_sha256": [
+            "323b792d25445c705382a53be572b9d7c0628c1c3f37b0ce3575aea8b724083d"
+          ]
+        }
+      },
+      {
+        "family": "oci",
+        "run_id": 44425136299,
+        "job_id": 135227905300,
+        "name": "Docker, Podman and Helm (amd64)",
+        "platform": [
+          "ubuntu-24.04",
+          "Linux",
+          "X64"
+        ],
+        "log_bytes": 74214,
+        "log_sha256": "16907edb2ef91536ed2f0205781023e4b5c204fc737d01efb56c3192e55fcf4a",
+        "artifact": {
+          "artifact_id": 14485730573,
+          "archive_sha256": "c3d174a599160cea1de084c4a6260f62320c212afe1d922b49d8a99d2c7a5a86",
+          "member_sha256": "b565e861184542e0936cd694999ecc3e960a009d14198972d2641f88861f7530"
+        },
+        "report_counts": {
+          "records": 1,
+          "checks": 219,
+          "raw_report_sha256": [
+            "d884035ee0d2f8349b29335e68c5a5eed366d5cc19b8b1340d17c16b58e7aac9"
+          ]
+        }
+      },
+      {
+        "family": "portable",
+        "run_id": 44425136313,
+        "job_id": 135227904726,
+        "name": "Real PostgreSQL signed export source (amd64)",
+        "platform": [
+          "ubuntu-24.04",
+          "Linux",
+          "X64"
+        ],
+        "log_bytes": 63306,
+        "log_sha256": "3d741401a3c4c4c7e64486b2ebf995659be7fc558ca184d44299ba840a1ebb73",
+        "artifact": {
+          "artifact_id": 14485062489,
+          "archive_sha256": "ea1e04b92dd765c76c7f5667fd0b13d63a73fbd3cb899bbed299d2861f1ce5f2",
+          "member_sha256": "addc0dff675022c8140f7487349f69710b76061e0d79aa0fc4b106863afbb9c0"
+        },
+        "report_counts": {
+          "records": 3,
+          "checks": 11,
+          "raw_report_sha256": [
+            "e2cc7854d7bf426f1ab6c0904795951affa4bbbd371e3a4f494361bc1dd535ac",
+            "cccd5102052ddc5f6f8603a3a273794fa46ec5e320872c6633f31b479bced16e",
+            "e6b17a7f9b15a0a9ea0ffc3c1e18c75b7a1c7e287da1e26cb3e70dac2a7365d8"
+          ]
+        }
+      },
+      {
+        "family": "portable",
+        "run_id": 44425136313,
+        "job_id": 135237233388,
+        "name": "Independent signed export consumer (arm64)",
+        "platform": [
+          "ubuntu-24.04-arm",
+          "Linux",
+          "ARM64"
+        ],
+        "log_bytes": 57877,
+        "log_sha256": "28a456f862b2bddf96e6d8a739ab870dca0040be48e29491737cfc34e00891d8",
+        "artifact": {
+          "artifact_id": 14485194033,
+          "archive_sha256": "3c3acf8b104fb04e7a20d381e7dd803fed5da7a43e6ebc4264bfc6ae40d9a501",
+          "member_sha256": "b8a5b0ea02eb29e25dd46139e8158c204e2b88123a8fb85bc25e28f3e3be96a1"
+        },
+        "report_counts": {
+          "records": 3,
+          "checks": 41,
+          "raw_report_sha256": [
+            "8a6ee83483030979b974a484f9bc5d57bde0fb727b5f942aee0c32bb5b66b09d",
+            "3e51d268f3c977ceeeb25075c3e3ee9775e516f9885b85e5e5e58eada02fc372",
+            "b416b9f4381933ecff05e6cd89db2a9c4e689f594c7ba0ca99e7a32938e61020"
+          ]
+        }
+      },
+      {
+        "family": "jvm",
+        "run_id": 44425136357,
+        "job_id": 135227905207,
+        "name": "Real Gradle publication and resolution (arm64)",
+        "platform": [
+          "ubuntu-24.04-arm",
+          "Linux",
+          "ARM64"
+        ],
+        "log_bytes": 53312,
+        "log_sha256": "2de3044fe60d88b960ca872bedfc877c3f38a218d2add6b7077afdc43f0440df",
+        "artifact": {
+          "artifact_id": 14485493220,
+          "archive_sha256": "6d11912837f6af2fd09c90b5c66a73902fc6c18834b6c9574bbe163c36fa940b",
+          "member_sha256": "06c6d86638d819d5a5412fa4da26164db20804aa7846b13f3172ee8b5e0ca909"
+        },
+        "report_counts": {
+          "records": 1,
+          "checks": 199,
+          "raw_report_sha256": [
+            "ef5786726dfcfcd169ed4f0f5643e12b313c872d2dd6064c50d15fdf1cf55489"
+          ]
+        }
+      },
+      {
+        "family": "jvm",
+        "run_id": 44425136357,
+        "job_id": 135227905396,
+        "name": "Real Ant and Ivy publication and resolution (amd64)",
+        "platform": [
+          "ubuntu-24.04",
+          "Linux",
+          "X64"
+        ],
+        "log_bytes": 56356,
+        "log_sha256": "825fa98d785298dfe3877a5e9d808b191876a792ace3f31b968287a41bde7280",
+        "artifact": {
+          "artifact_id": 14486346537,
+          "archive_sha256": "f20630fa50cbfa2d4ab5909af0634e4d59bf74f4186b181964f180c6c46ab03b",
+          "member_sha256": "dc5d03c9f24f677dac7b2e468cdf7bc91cc7cedbb41fd318b9cbaf56c222ad7f"
+        },
+        "report_counts": {
+          "records": 1,
+          "checks": 666,
+          "raw_report_sha256": [
+            "a07e9e5daa7e67f172d7880c55f3778d1be6cca9ed88ca61846f07ebbd2c4acd"
+          ]
+        }
+      },
+      {
+        "family": "jvm",
+        "run_id": 44425136357,
+        "job_id": 135227905450,
+        "name": "Real SBT publication and resolution (sbt2 arm64)",
+        "platform": [
+          "ubuntu-24.04-arm",
+          "Linux",
+          "ARM64"
+        ],
+        "log_bytes": 54022,
+        "log_sha256": "94cf196a6da01aca30a59e6f2f981a4882a30d3ec7cc37fd957d2d28e92b6cc1",
+        "artifact": {
+          "artifact_id": 14486273329,
+          "archive_sha256": "01cd9333f5a8681327ae24cb1d6ad8829b95149aaf4558fdb1c6b29ce1e16bb7",
+          "member_sha256": "2478e88833111a8917e166f019df84d575a0a104ac125023e007bc07519fb14f"
+        },
+        "report_counts": {
+          "records": 1,
+          "checks": 269,
+          "raw_report_sha256": [
+            "7c3f2842d77d08c9b1e1f439308bf1d6faed180b4d65ced4592f9a5d0d367cda"
+          ]
+        }
+      },
+      {
+        "family": "jvm",
+        "run_id": 44425136357,
+        "job_id": 135227905462,
+        "name": "Real SBT publication and resolution (sbt1 arm64)",
+        "platform": [
+          "ubuntu-24.04-arm",
+          "Linux",
+          "ARM64"
+        ],
+        "log_bytes": 53668,
+        "log_sha256": "c61138c85ce147003371df54a3b865cfe7c2f329ff3dd2346eeba9564e129152",
+        "artifact": {
+          "artifact_id": 14486421726,
+          "archive_sha256": "b0c50cb4d6da73592f562bc310c411a1cd1d0df865561d7701e5650e1a5eef65",
+          "member_sha256": "831be85ca30bb9d471e48ffcbbd07e747594413b1d9dca0b1821b4e0441366f3"
+        },
+        "report_counts": {
+          "records": 1,
+          "checks": 269,
+          "raw_report_sha256": [
+            "230de5745f390b17b53c57f565eb63fca20031e6de06082ca36b72ecdcfbad42"
+          ]
+        }
+      },
+      {
+        "family": "jvm",
+        "run_id": 44425136357,
+        "job_id": 135227905507,
+        "name": "Real SBT publication and resolution (sbt1 amd64)",
+        "platform": [
+          "ubuntu-24.04",
+          "Linux",
+          "X64"
+        ],
+        "log_bytes": 53171,
+        "log_sha256": "62f128d3ccaff152e323e5c14ebfaa5cb7b9a0dbba8c0d4b2233548d59bc2e83",
+        "artifact": {
+          "artifact_id": 14486432391,
+          "archive_sha256": "21e35d35a8c6cff9e51efe514da249b7ac18b16a7310b43e370db4df901f5840",
+          "member_sha256": "e377c9172da00de10bd3f9fe96abf6127db922922cd53feccda6f7605b739573"
+        },
+        "report_counts": {
+          "records": 1,
+          "checks": 269,
+          "raw_report_sha256": [
+            "d29735698be98e5de6910e60d49bcbb84be866b093f06e02627a84226e591f6a"
+          ]
+        }
+      },
+      {
+        "family": "jvm",
+        "run_id": 44425136357,
+        "job_id": 135227905541,
+        "name": "Real SBT publication and resolution (sbt2 amd64)",
+        "platform": [
+          "ubuntu-24.04",
+          "Linux",
+          "X64"
+        ],
+        "log_bytes": 53852,
+        "log_sha256": "1028c3937395a6bbb5cc3aac41d143fabcd603fd8430dacf73740c39227f4257",
+        "artifact": {
+          "artifact_id": 14486952916,
+          "archive_sha256": "c3948f4d6d769157ba53572d61a32d92188713563015291a68b699226ea6d033",
+          "member_sha256": "e4a517cec320c2941103ac46fb6244db9ee56ab142b3148cb20b3ab4061edbd8"
+        },
+        "report_counts": {
+          "records": 1,
+          "checks": 269,
+          "raw_report_sha256": [
+            "5336237ca63c15d4e3c1e8c556b43e54b423338df029b628c0af4398b7204391"
+          ]
+        }
+      },
+      {
+        "family": "jvm",
+        "run_id": 44425136357,
+        "job_id": 135227905569,
+        "name": "Real Gradle publication and resolution (amd64)",
+        "platform": [
+          "ubuntu-24.04",
+          "Linux",
+          "X64"
+        ],
+        "log_bytes": 52957,
+        "log_sha256": "302781e7bb102e2802655b037cd44d0c142bb427beacd80efc0bb50571f43767",
+        "artifact": {
+          "artifact_id": 14486196502,
+          "archive_sha256": "171cec22edf3f52b2663918a97a5f5e3a5450e90b5e042a2341046d14c6d736c",
+          "member_sha256": "c169e0ab1b28365503dcaf7e34da594bc16733bd914d2aa03922d9535ff329cb"
+        },
+        "report_counts": {
+          "records": 1,
+          "checks": 199,
+          "raw_report_sha256": [
+            "6fa6f86e75b2cf0df4fab42cf2d0b7819d0d58f18b3ee297d2d1ff7ad130402c"
+          ]
+        }
+      },
+      {
+        "family": "jvm",
+        "run_id": 44425136357,
+        "job_id": 135227905593,
+        "name": "Real Ant and Ivy publication and resolution (arm64)",
+        "platform": [
+          "ubuntu-24.04-arm",
+          "Linux",
+          "ARM64"
+        ],
+        "log_bytes": 56229,
+        "log_sha256": "baebf50d63d92a437688e0828ab4f400c9438a0f16b132a6d545c09c629bea72",
+        "artifact": {
+          "artifact_id": 14485682789,
+          "archive_sha256": "9e6325ca6ac1027e9626858f909d85284f1f6d67e4b74348f6746802462e967e",
+          "member_sha256": "5df403504313e68eca0e568dd948c6d8e04485bad4e21e834af2dc4ad7c99cee"
+        },
+        "report_counts": {
+          "records": 1,
+          "checks": 666,
+          "raw_report_sha256": [
+            "fb95371dc0b434609cb9ceebf4d867703719a8da70fcbf567e4e5283bf8f2fbf"
+          ]
+        }
+      },
+      {
+        "family": "go",
+        "run_id": 44425136364,
+        "job_id": 135227905088,
+        "name": "Stock Go hosted and group modules (arm64)",
+        "platform": [
+          "ubuntu-24.04-arm",
+          "Linux",
+          "ARM64"
+        ],
+        "log_bytes": 445161,
+        "log_sha256": "b849fc4e8f4d16dee62f4b674183282b922c737d4a06b9f8baa00d571c65068c",
+        "artifact": {
+          "artifact_id": 14484234028,
+          "archive_sha256": "3bcf2d3de9e169d12337615d46df8e9b5d88e67f7bab092591c544cabb028f68",
+          "member_sha256": "1fd7eb4979f32796e621260f6a01602da13ef698027ad15bc37855c89d5406cf"
+        },
+        "report_counts": {
+          "records": 1,
+          "checks": 312,
+          "raw_report_sha256": [
+            "241c3de927fae016015a74bfbb4bd227c5f976bdd4740a45af1d090766d5225e"
+          ]
+        }
+      },
+      {
+        "family": "go",
+        "run_id": 44425136364,
+        "job_id": 135227905335,
+        "name": "Stock Go hosted and group modules (amd64)",
+        "platform": [
+          "ubuntu-24.04",
+          "Linux",
+          "X64"
+        ],
+        "log_bytes": 445461,
+        "log_sha256": "4ab36921ea991bdb49bcf80f41e8a8d80fe332582e648e90c7b269b5e263b354",
+        "artifact": {
+          "artifact_id": 14485692942,
+          "archive_sha256": "af9e519f32bb592419fc7184b9e69c0722ac105696fbea1d36541eb97efac9cc",
+          "member_sha256": "91295ec8be19518630961afa370af74e1a98673385d40aa74d6d4a0df1c94e84"
+        },
+        "report_counts": {
+          "records": 1,
+          "checks": 312,
+          "raw_report_sha256": [
+            "63e25ee486bc054746a80a3c5a22ac0b8e5cd001d81fcab87b99a62923db655d"
+          ]
+        }
+      },
+      {
+        "family": "upgrades",
+        "run_id": 44425136378,
+        "job_id": 135227905250,
+        "name": "Real PostgreSQL controlled upgrades (amd64)",
+        "platform": [
+          "ubuntu-24.04",
+          "Linux",
+          "X64"
+        ],
+        "log_bytes": 83326,
+        "log_sha256": "89753dbb97be6583154f6e5344c7ee296099b2f5ec10548b211895861a821e67",
+        "artifact": {
+          "artifact_id": 14485482229,
+          "archive_sha256": "0f91601bc2246f26514731a2f88a860a28fdb80af9f69dadafcf2e90568a05cd",
+          "member_sha256": "4abceb2328dedbe87bffd35a662a3e826d4b783c4fa0c24b9f3ccbb65299511b"
+        },
+        "report_counts": {
+          "records": 23,
+          "checks": 1395,
+          "raw_report_sha256": [
+            "79e7422291afe8bdfff7486aab36e076379790c1b90f79d2db4d4e68319ddf4f",
+            "c22d5f356026ea1cb89e26ef8a2430a580c4409bc92895b6f774be4218380510",
+            "82273f27b5dbea9514e5b5e8f8c55f54696dc0dcbd01f3ffdfc533474304abf3",
+            "8572ee4dc6e0732449c8ddd144b2b11b6b02c83c3345fd79a8570957b1361de0",
+            "a78d788c3b93b4bc7bdb8fa56b122fea1700181fb72755d023ed1e5ce6434e44",
+            "8920b116ad54daf1ee7813dc6207e0125ac4fa4b7e95c6b812de39547cadb649",
+            "f787f8c647064bf7e3138bf1c99a9099930f4cc1d5b77c80f3ec97a84c6b904e",
+            "3c3e609ebf68d3a7f6276b69c80cc698498fe03d9318175cbe6404a0108b4145",
+            "9502985b038b0c2ac0458ad7e13d1825c5a631d22072db5be22531155b971688",
+            "27ecf011c53d40e93a4ff14bdd4dfa9d636e9f0bc966581926af9f69a2ce7666",
+            "dd8e7fce81ec03ab0456d6fc1201274a3eac9a3ce79fde7f6f0d612df3b69cc6",
+            "722120835120b08da2fc99cb5cae0ffe3cc82a108144e049d43dcb8c7ab5aea9",
+            "adf0ffd3cf6bdbb05ed20ec4c03c07750b2edad1f7fa7db8b9b96ebd93447145",
+            "6b7d2432a2d0943c78f27df7428ff788dbb02cfa0f78d08dbd5a5e929f2916e5",
+            "90b53b1cb66a529fb01ecfed239f72c2285e351f65dac25a8c93e3dfc0990249",
+            "8e2bcfa0ddc8845d9a4d752bed4417791ce778e1f2420fb3d22184bf767b1c6a",
+            "6d91a102db3433ea5c72df0ea62710bff10d9c810315e930c4de1a5cb9861957",
+            "7c000a59ddd17f89bee5401b499d0d7de05694fc296cde7163d167b67145cef9",
+            "c11a883dc15c457a85a70eff3a0c4c3e39c9848021bcd0f0246939c222054d42",
+            "0003369bf8761a3ec5b41961ef8f9fcebd44abb5e1467544822f85cfaef7b6b7",
+            "3f38e51cf7e39e73d7c9efc5590b3189e3502afd074b6a329547a450ec0cd429",
+            "2b6ef49138b8f4ff6072f4fc65c5f2836fe12369025e13018aea3b3b7fc3577e",
+            "ce9b4ce7681bd90079e48622ef65d1ce7aae9a7cbd67c4d49a1f9473f7d889f3"
+          ]
+        }
+      },
+      {
+        "family": "upgrades",
+        "run_id": 44425136378,
+        "job_id": 135227905752,
+        "name": "Real PostgreSQL controlled upgrades (arm64)",
+        "platform": [
+          "ubuntu-24.04-arm",
+          "Linux",
+          "ARM64"
+        ],
+        "log_bytes": 82433,
+        "log_sha256": "baf1adc69f043ed1c54eb655e904204d112af2a608fd3b0e67eb5da3c3ff04c2",
+        "artifact": {
+          "artifact_id": 14486371002,
+          "archive_sha256": "9a456ebaa1f10d69d5ec89a62d75ddb06be8b2351d7a12440a6a99e23706cd1a",
+          "member_sha256": "139186f43d5d7e73ee4e028f793a510694f3f65df25393409f7e8ce96004be26"
+        },
+        "report_counts": {
+          "records": 23,
+          "checks": 1395,
+          "raw_report_sha256": [
+            "09bf7f2e395f9b64d349836a71be21225d7e33cfb5c4dc4590b12c06ff51488b",
+            "f26e481579c0615456d14ad1c0c67a45399204f0bb218a69abcc2bfd573e8c45",
+            "90a4b5b14ea83c29777ffa9f0705c2c7fe0fbc27b646ae5a65c323ba531a1747",
+            "c8b96be52695ec555e2dc73c88c7c53db8a563af38f55c016279addf3384fab8",
+            "5d8518b039574f5b4cc6daa9758cee55a1275bc97e7e2618dc3eab1bf8463d24",
+            "b80e8efa7e4ca2fa57a5a1240ef465f5acc59cc82ba2c454995a6cd3c6d91a0c",
+            "b7866788a840a9ac0b703665ce420c91f27f14dcbb939c6d51b06419736cc9ea",
+            "c2d74cff4ae5bda5e85b93026bfc849d348f2f9710722d2d14c693c48477ed3a",
+            "9537230d2c5bf018dd4e1007e4e5ff81d49e10794494645d1f0c71dfc476cb70",
+            "b23ac4aa05d28048dd10eefde2ee08cdd05c4ce854a62bd88b86f9006d9fea17",
+            "2824a36ee9760ab659d9532c151f8d4bacfa3514f599b61ca8e62cddf584efe4",
+            "f374f1f15fc9750bce1299ffb84efb60e87d24ecd49074218cedbcad31c2d4c3",
+            "f97fe1436fa5539bf610578d93fcc3503018c8c93ab719776af6d8e691f99f2c",
+            "0af7844fe86dd2d12740047033eb4ac86a144f13dd8d99774a706364b8dc728f",
+            "eb5247d75f91f38b3a9a384c54414d2ec96dd571a019f4de2dc871cd029e0802",
+            "9ed30fc57ac10dc557937317903580f08baacb0cba7ad7834fba10df67111420",
+            "c0189cd658809572007e177de9d4a007e9adbb58c82b1587bf7deec2ba3a0c03",
+            "973848375e1c98826e8a82d1c977cce763f4919a2a5ba7b5770a09a05c652dee",
+            "00ee1440cb8c2d6511779e3f7ec4def53296cfc40f6c0db709ce0d785e78e4ea",
+            "e57b3e9ca19e96f233dcd1ead73a7a62946e62da5bf47211bf684451ed5e8ded",
+            "0810bb5e251814fd914ef025f76f25abe3c145e41cd4098ab0b9d7860c9ca999",
+            "695335afd5534b8bcd539eb869849aaa29cc2f2d94f8de5feb03dd239a0ef511",
+            "039f4ca1e8d75cf08aa0c68cef3b2cd68d6bdd23502747878e739680fc879b5e"
+          ]
+        }
+      },
+      {
+        "family": "nuget-proxy",
+        "run_id": 44425136422,
+        "job_id": 135227905233,
+        "name": "Stock NuGet proxy and real PostgreSQL (amd64)",
+        "platform": [
+          "ubuntu-24.04",
+          "Linux",
+          "X64"
+        ],
+        "log_bytes": 29615,
+        "log_sha256": "bd56bc54961e7aa006127e838a5b08135ef081e62b9ec1149c089737847f1d9b",
+        "artifact": {
+          "artifact_id": 14484930212,
+          "archive_sha256": "c39e20b43a861b679c721578be64133cf37ef59143422ef0a54bc5c2af4f1f0f",
+          "member_sha256": "a86f051c895475dce849b652eb1e0268c5388bf57552938b39fdee86fa720dd7"
+        },
+        "report_counts": {
+          "checks": 30,
+          "records": 1
+        }
+      },
+      {
+        "family": "nuget-proxy",
+        "run_id": 44425136422,
+        "job_id": 135227905528,
+        "name": "Stock NuGet proxy and real PostgreSQL (arm64)",
+        "platform": [
+          "ubuntu-24.04-arm",
+          "Linux",
+          "ARM64"
+        ],
+        "log_bytes": 29703,
+        "log_sha256": "319de3c3f0aac12489237e003394e7a29e57abde23e1b4eda432f4dca03c06e7",
+        "artifact": {
+          "artifact_id": 14483927912,
+          "archive_sha256": "eb66080b739d773de359ebf271320d392c6b4f0923b78e0b5bfd38422e47476b",
+          "member_sha256": "24186beead6b59cc9b3d6b31dcf51bdae2b2d309e03138bce1fe1242717ed2eb"
+        },
+        "report_counts": {
+          "checks": 30,
+          "records": 1
+        }
+      }
+    ],
+    "unselected_runtime": [],
+    "portable_transfer_artifacts": [
+      {
+        "run_id": 44425136313,
+        "artifact_id": 14485042500,
+        "reported_archive_sha256": "877204ef844b88e0fa329b2faee3962a776665ee3d4a3b21638ea2fda00ba3dc",
+        "archive_bytes": 5332
+      },
+      {
+        "run_id": 44425136313,
+        "profile": "hosted-common-export-cross-runner-v1",
+        "artifact_id": 14485007810,
+        "reported_archive_sha256": "85a51a5e7db21a9ed367eb372ac10f580dbafbd4cb0bb040374c7eb2055be2e1",
+        "archive_bytes": 16066
+      },
+      {
+        "run_id": 44425136313,
+        "profile": "hosted-requirement-export-cross-runner-v1",
+        "artifact_id": 14484927973,
+        "reported_archive_sha256": "fef53c2178dc8646f5c795c70104dac9bbafe15bcf2c9077965384b75ed07a78",
+        "archive_bytes": 189406
+      }
+    ],
+    "unselected_workflows": [
+      "browser",
+      "cargo",
+      "cargo-public",
+      "compose",
+      "library",
+      "linux-install",
+      "maven-index",
+      "npm-search",
+      "oci-catalog",
+      "offline-media",
+      "python-search",
+      "strict",
+      "terraform-provider",
+      "windows"
+    ],
+    "source_inventory": {
+      "integration_functions": 309,
+      "named_go_functions": 118,
+      "fuzz_targets": 70,
+      "inventory_sha256": "06dda2755f072bb3acf66b61a9d86f0f34ac2cf7e7d54e23efa485a972846684"
+    },
+    "compatible_source_contracts": [
+      {
+        "path": ".github/workflows/ci.yml",
+        "sha256": "e0aefdf49e573e935dbd0e13d36504ec2dc83f2caf48115f64b80c3cd8a50b70"
+      },
+      {
+        "path": ".github/workflows/go-modules.yml",
+        "sha256": "db123d63ced552cbc5c3022aaa6560520e1c7f15337413991af2fb52535ae13a"
+      },
+      {
+        "path": ".github/workflows/jvm-clients.yml",
+        "sha256": "57a22cb64c90a14ed116da6b4ba54e2b4d2f7126f4ed60771653723db4401883"
+      },
+      {
+        "path": ".github/workflows/oci-clients.yml",
+        "sha256": "e0c9d0f91eee09b2f697e02038398c9e86d0eb25b98cb9f04226208fa633cdcc"
+      },
+      {
+        "path": ".github/workflows/upgrade-qualification.yml",
+        "sha256": "9af618a123d33705c4f81113266932774641392f1362fe09f8d403e21272a925"
+      },
+      {
+        "path": ".github/workflows/go-export-portability.yml",
+        "sha256": "2ff34bea087785e1ae2dd7f49bf9873c47812ee21d7f1595819ae2670039fd49"
+      },
+      {
+        "path": ".github/workflows/nuget-contract.yml",
+        "sha256": "6f1b4443d1d58d6094eac27b6ae654ba956ff1cb5fc97bcab0a31f5e55f98e88"
+      },
+      {
+        "path": ".github/workflows/browser-repair.yml",
+        "sha256": "b6bd6c527b6d7f2dbc9452ebae115ecdb0edc42286a8f2229834522ba3536eca"
+      },
+      {
+        "path": ".github/workflows/go-checksum-client.yml",
+        "sha256": "c30c5005c4cb9aa4963bd0b84654c6d4a87819d035cf87816592c2e3fb865ee2"
+      },
+      {
+        "path": ".github/workflows/windows-cli.yml",
+        "sha256": "9a49064b1b7534634675981d2269515638b1f10438a65dd8d6fc6b6d83bbcf49"
+      },
+      {
+        "path": ".github/workflows/compose-evaluation.yml",
+        "sha256": "c16e5f7377199765016be1a233a7c0abe9e11ace105205bdfc537bae946ab619"
+      },
+      {
+        "path": "scripts/ci/maven_evidence.py",
+        "sha256": "4da661aa52ba1113bc91e103ca79e5d1fe22f1454da44f2b9e98b48040c77fc1"
+      },
+      {
+        "path": "scripts/ci/gradle_evidence.py",
+        "sha256": "2d743e9dd4aa7b07391c346c818053092d49c7c1a6bba649cf560682468d5c13"
+      },
+      {
+        "path": "scripts/ci/ivy_evidence.py",
+        "sha256": "63a4a6044e270eed69a75d4766d3f2b3bf1dea2df6c11bd09207de0f30a7be90"
+      },
+      {
+        "path": "scripts/ci/sbt_evidence.py",
+        "sha256": "034059cf098c44ffb30bf4105fe9ef91ab1cc2a1d68175e66df7a8e971a9107d"
+      },
+      {
+        "path": "scripts/ci/go_module_evidence.py",
+        "sha256": "9277aca3a508c065cfbbbd6082e8afe0add240e2618ac5150353092cbead6852"
+      },
+      {
+        "path": "scripts/ci/journal_evidence.py",
+        "sha256": "debdd00638f5568b94e4f3c27ba1555a3714e85db6aed4fda45be0ca51f1659a"
+      },
+      {
+        "path": "scripts/ci/go_export_portability_evidence.py",
+        "sha256": "abf8ba7e281ad7a9b6bc63643caffcc886f1ae9edd0daf4213d12006be38fb22"
+      },
+      {
+        "path": "scripts/ci/go_common_export_portability_evidence.py",
+        "sha256": "03bddf4963e98e7e0437522cd11c9b5021944f5ce73e42ab7def26f47e676a04"
+      },
+      {
+        "path": "scripts/ci/go_requirement_export_portability_evidence.py",
+        "sha256": "0b9e9ada752083efceb6bbc3600701260eaaf98a6f06c23aa39c6b2cc542755b"
+      },
+      {
+        "path": "scripts/ci/windows_cli_evidence.py",
+        "sha256": "8d1a2cb3fc3533001bb2e5398342a4a6b769aabb88bcd3b69f59b2d63b6c6dd3"
+      },
+      {
+        "path": "scripts/ci/compose_evidence.py",
+        "sha256": "5db76a95d646f7fbc81d8e66da0a3587d16614bf3b1a853616beb2029643a6b0"
+      },
+      {
+        "path": "scripts/ci/evidence_summary.py",
+        "sha256": "f3c6db9bbe5d0a24d257e492ffe948935070fb68cce22f67e82fe175409addd1"
+      },
+      {
+        "path": "scripts/conformance_go.py",
+        "sha256": "7724be2ca5dff6806e5e9dca8b4d68a699dc09b36b3bba3379a08b2045ae3184"
+      },
+      {
+        "path": ".github/workflows/linux-install.yml",
+        "sha256": "d1f1aeae96e2796fed52cec8ae5b09349b24fbc6c01af0dfd7b7d9ac1dcdf211"
+      },
+      {
+        "path": "scripts/ci/linux_install_evidence.py",
+        "sha256": "02d8f071e536ac4123b03225aaa779a77a642e1b007d5c495a29afbefa64c226"
+      },
+      {
+        "path": ".github/workflows/offline-media.yml",
+        "sha256": "d0297d17865fa8bbffbc3138648f239a58a3204fc897d4444b509e8f8c15a699"
+      },
+      {
+        "path": "scripts/ci/offline_media_evidence.py",
+        "sha256": "c9a5bb3ec8e48f7737345020e405a909445ec743e268211a8b4d240429ca13f5"
+      },
+      {
+        "path": ".github/workflows/terraform-provider.yml",
+        "sha256": "e74d27b5bf522b1ed3f2f5cc8ab77e25cc17951cdb85ab69652fff8bde0f2c21"
+      },
+      {
+        "path": "scripts/ci/terraform_provider_evidence.py",
+        "sha256": "130de2ec92ed288a6fa6c744c67003a76cafa2dfb9835e48f653abccda1a50ca"
+      },
+      {
+        "path": ".github/workflows/cargo.yml",
+        "sha256": "599a88989eb1ebbcb45222f9bc0b7d4b100b91ce6ecf200f28aa992edebcad62"
+      },
+      {
+        "path": "scripts/ci/bootstrap_cargo.py",
+        "sha256": "2e1460a56a6343a0f0375e60c32fe8c528d739406272f085bf14cd71db44c42d"
+      },
+      {
+        "path": "scripts/ci/cargo_evidence.py",
+        "sha256": "de7322f902ee73df51a8639ae54c143c3c1e6b09d12c2b4dcda6cdc8e8a8afee"
+      },
+      {
+        "path": ".github/workflows/cargo-public.yml",
+        "sha256": "84d43d4de54a1f46d764aa8a63653d0afe753f7293f4531bf9cce484610b8af7"
+      },
+      {
+        "path": "scripts/ci/cargo_public_evidence.py",
+        "sha256": "d9083f9cfb2ed1413cf06305ff700a723ea7ca867394f2cec7355cbd2b9ce2f8"
+      },
+      {
+        "path": ".github/workflows/npm-search.yml",
+        "sha256": "1e0b3ae448103fe38cc85016d0a08b0553cdf032f846f0a874ba86d41f72efad"
+      },
+      {
+        "path": "scripts/ci/npm_search_evidence.py",
+        "sha256": "d2b7c21dfef188bdd550fe605988215088cab63e26e7f373f6f515d709135ef6"
+      },
+      {
+        "path": ".github/workflows/python-search.yml",
+        "sha256": "6d5d146336df094177b5d0218dfb9378b45211a943dca74022416d2481738620"
+      },
+      {
+        "path": "scripts/ci/python_search_evidence.py",
+        "sha256": "7f8e608cc32d11dcd492366954c48be3310837a43d8884a8ecbaa3fa3171d39b"
+      },
+      {
+        "path": ".github/workflows/oci-repository-catalog.yml",
+        "sha256": "0925ab0d973ef160e32fb2c1272a2456fbfcec4e388f6f9a22c6c8979749cd01"
+      },
+      {
+        "path": "scripts/ci/oci_repository_catalog_evidence.py",
+        "sha256": "1e4d20005b5b8d03a50553e46668393306e73f0b43cdf63107809781b08e4644"
+      },
+      {
+        "path": ".github/workflows/maven-index.yml",
+        "sha256": "3d82b44febbe000b31fa6dd8c971913bcf7a1c24823ee772b602e42abf922794"
+      },
+      {
+        "path": "scripts/ci/maven_index_evidence.py",
+        "sha256": "b5c1cb9cb21867a7c8f38afde9ed865b342f3624ca78b6a550c37ecba214efd8"
+      },
+      {
+        "path": ".github/workflows/nuget-proxy.yml",
+        "sha256": "3bd09b5ed3e472d3d1a65ca47378b1c380a3e4ff04f25bfd03af7a6fd2e6180e"
+      },
+      {
+        "path": "scripts/ci/nuget_proxy_evidence.py",
+        "sha256": "9b5b4b6a0adf4effa7b73ecf8bfe4e6dd17be5ca11e90bc7cfd715ea1860ca87"
+      }
+    ],
+    "goal_complete": false,
+    "broad_readiness": false,
+    "limits": [
+      "Only the exact observed run inventory and required job/report contracts are accepted. Newly dispatched runs require another verdict.",
+      "Unselected and skipped lanes are not passes; original failures and independently reviewed native records retain their scope.",
+      "This is not full450capabilities/41families/laterGOAL readiness, security, packaging or release approval."
+    ]
+  },
+  "limits": [
+    "Accepted original selected workflows with the unchanged exact-source verifier on macOS ARM64.",
+    "The stock-client outcomes apply to observed architectures, services and patch releases in the referenced original reports. Broader deployment, client, security and production readiness remain open."
+  ],
+  "whole_accepted": true,
+  "goal_complete": false,
+  "broad_readiness": false
+}

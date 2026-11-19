@@ -8,6 +8,12 @@ Broad readiness,security and packaging remain unqualified.
 
 ## Latest whole accepted source
 
+`2029b26` passed all 28 original jobs across seven workflows. The exact
+verifier accepted 84 reports. Independent comparison matched 21 safe job
+summaries, the selection summary, 45 source contracts and three transfers.
+Both stock NuGet proxy jobs and all eight JVM jobs passed.
+[Exact NuGet proxy campaign evidence](evidence/2026-11-19/github-2029b26-exact-local-accepted.json)
+
 `df7a07a` passed all 32 original jobs across nine workflows. The unchanged
 verifier accepted 88 reports. Independent comparison matched 25 safe job
 summaries, the selection summary, 43 exact source contracts and three transfer
@@ -791,6 +797,12 @@ ordered group and service-index profile with PostgreSQL 16.15. Each report
 matched 33 committed source files and confirmed the forced-RLS tenant tables.
 [Original Linux combined NuGet reports](evidence/2026-11-19/github-0d5908c-nuget-combined-sources-native.json)
 
+The original `0d5908c` campaign retained 29 successes and one Linux x64 SBT2
+failure across eight workflows. The authenticated diagnostic recorded the
+same Maven Central POM refusal observed at `541ea5d`.
+[Original NuGet campaign outcomes](evidence/2026-11-19/github-0d5908c-original-completed.json)
+[Original SBT2 failure for the NuGet candidate](evidence/2026-11-19/jvm-0d5908c-sbt2-amd64-bootstrap-first-failure.json)
+
 An original `541ea5d` Linux x64 JVM job failed before the SBT2 fixture
 bootstrap. Stock SBT 2.0.11 reported its pinned launcher POM as missing at
 Maven Central. The separate hosted Maven index jobs passed.
@@ -833,10 +845,23 @@ its shared dependency.
 [Named-suite PostgreSQL evidence](evidence/2026-11-19/debian-37b2105-named-suite-postgres.json)
 [Original stock APT suite reports](evidence/2026-11-19/github-420fb31-debian-flat-and-suites-native.json)
 
-Both original `8cf32b9` runtime jobs failed because the protected console
-session assertion expected the adapter list from before APT. The test now
-expects APT and still covers credential revocation and disabled adapters.
+Both original runtime jobs at both `8cf32b9` and `c62c1bf` failed because the
+protected console session assertion expected the adapter list from before
+APT. Exact `3993833` passed the corrected test against migrated PostgreSQL
+16.16, including credential revocation and disabled adapters.
 [Original console adapter assertion failure](evidence/2026-11-19/debian-8cf32b9-console-format-first-failure.json)
+[Corrected APT console PostgreSQL result](evidence/2026-11-19/debian-3993833-console-adapter-postgres.json)
+[Original initial APT campaign outcomes](evidence/2026-11-19/github-8cf32b9-original-completed.json)
+[Original flat APT campaign outcomes](evidence/2026-11-19/github-c62c1bf-original-completed.json)
+
+Exact `4e15a9f` passed the build, test, race and lint gates and the hosted
+Composer ZIP regression on PostgreSQL 16.16. Both original Linux jobs
+passed 15 checks with Composer 2.11.2 and PHP 8.3.6, plus 19 declarative
+checks on PostgreSQL 16.15. Each matched 21 exact source files. The pinned
+client selected and installed the correct library dependency, retained the
+lockfile unchanged after restart, and refused the denied locked archive.
+[Hosted Composer PostgreSQL evidence](evidence/2026-11-19/composer-4e15a9f-hosted-zip-postgres.json)
+[Original stock Composer reports](evidence/2026-11-19/github-4e15a9f-composer-hosted-zip-native.json)
 
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities

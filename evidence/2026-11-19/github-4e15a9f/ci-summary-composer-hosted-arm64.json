@@ -1,0 +1,155 @@
+{
+  "candidate": "4e15a9fe84a92163b29ffddc6a9fc445a7593f11",
+  "status": "passed",
+  "checks": [
+    "clean exact source",
+    "cratectl matches the clean candidate",
+    "cratectld matches the clean candidate",
+    "real reviewed PostgreSQL 16 patch release",
+    "absent repository has an authority and tenant bound creation plan",
+    "plan, wrong approval and denied callers leave the tenant journal unchanged",
+    "concurrent approved requests produce one creation or a safe retry",
+    "retry after successful creation returns unchanged",
+    "one repository creation event despite concurrent retry",
+    "second tenant can plan an independent same-name repository",
+    "import returns the exact active hosted fields",
+    "plan exposes review drift without writing",
+    "stock npm published its exact bytes and unassessed input was denied",
+    "registry restart preserves the declared state",
+    "fresh stock npm downloads the exact approved archive after restart",
+    "stale approval leaves suspended repository retained",
+    "suspended repository cannot be imported as active",
+    "revoked administrator cannot plan",
+    "schema 19 with all 59 tenant tables forced RLS and a restricted runtime role"
+  ],
+  "binary_sha256": {
+    "cratectl": "162058b82a0319f301dd4527886cda34931361670b29125786de78465e9e2afb",
+    "cratectld": "8ac7bbbd149e454a72ba55e1156787ba3dbee6b970a5eddfb6325d5529534c33"
+  },
+  "archive_sha256": "eb88cfbb43de75bcfb7e6ec35e9cf45e90e0288fcdcf1f05d76e4b3b5f3f6b28",
+  "postgres": "postgres (PostgreSQL) 16.15 (Ubuntu 16.15-1.pgdg24.04+2)",
+  "npm": "10.9.9",
+  "composer_hosted": {
+    "checks": [
+      "the stock Composer PHAR matches the pinned publisher digest",
+      "the native PHP runtime executes the pinned Composer version",
+      "repository metadata requires the current scoped grant",
+      "the four owned stable ZIP coordinates publish unchanged",
+      "unknown manifests and changed immutable coordinates are refused",
+      "unreviewed distributions remain hidden from Composer",
+      "Composer v2 advertises exact approved archive identities and native dependencies",
+      "the registry delivers each original ZIP under current review",
+      "stock Composer selects and locks the exact scoped dependency graph first",
+      "stock Composer caches exact ZIPs and installs their inert contents first",
+      "stock Composer selects and locks the exact scoped dependency graph after-restart",
+      "stock Composer caches exact ZIPs and installs their inert contents after-restart",
+      "the native lockfile stays byte-identical after service restart",
+      "policy removes the denied version and refuses direct retrieval",
+      "stock Composer refuses to install a newly denied locked archive"
+    ],
+    "composer_version": "2.11.2",
+    "composer_sha256": "dd158c0afd41d15fac89e1b4e47b5d42911fe316c3687cd5edac98319b25d028",
+    "php_version": "8.3.6",
+    "archive_sha256": {
+      "cratectl/composer-app@1.3.0": "e4895db7367bc8b738a9fdc6fdbd1a09b9af5106d21913b505ae58e581e77b93",
+      "cratectl/composer-app@1.4.0": "275016ca2672bd26136e917cd4f7c700c9b40044e662612c7138d322c1be72ba",
+      "cratectl/composer-lib@1.9.0": "c93ca299d804444a88f31f74b2fad38b911b7cfb2e69db3d0363a12e18b09ca4",
+      "cratectl/composer-lib@2.1.0": "e4f55d19ad49a469577e5ee9b49866bb5bb3b5150559338767ea25518e647fd9"
+    },
+    "lock_sha256": "866b32f8da320f772703c6b69ed431bf8c433e760dffa41eecc80276521fe784"
+  },
+  "goal_complete": false,
+  "broad_readiness": false,
+  "schema": 1,
+  "profile": "cratectl-native-composer-hosted-zip-v1",
+  "runner_os": "Linux",
+  "runner_arch": "ARM64",
+  "run_id": "44437959452",
+  "source_dirty": false,
+  "source_sha256": [
+    {
+      "path": ".github/workflows/composer-hosted.yml",
+      "sha256": "d5b65b4641b36859a72b647946a551d15f52234c6c11bd7704c01aa5aedbfdc0"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "12f2a8b5cfbc2f322822b82e4446f51ff017374acab1f3a8921db8cc8e833bf6"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "1d4aecc2732cd54db4534e0afc862ffe14d5c24890f106008682fd9bbc8e5ba9"
+    },
+    {
+      "path": "go.sum",
+      "sha256": "5e364e4e1eff09d8d39617427d7775012304b09a7be26778dc2b46fdabae3f15"
+    },
+    {
+      "path": "scripts/ci/composer_hosted_evidence.py",
+      "sha256": "432d24ef89ad707176070969f4fb8ce457934b0760e9ca329c7603b75211e0ad"
+    },
+    {
+      "path": "scripts/ci/terraform_provider_evidence.py",
+      "sha256": "130de2ec92ed288a6fa6c744c67003a76cafa2dfb9835e48f653abccda1a50ca"
+    },
+    {
+      "path": "scripts/composer_hosted_fixture.py",
+      "sha256": "650836c9e01b917905ba04e640d7ed5670461c3660e9653b9fb08dd62c07b01a"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "81b78eba48fc3c1319b4d656b3bd6a610910b858059270eaf092f6fbc27a95ce"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+    },
+    {
+      "path": "scripts/qualification_contract.py",
+      "sha256": "c40a9d0209a9dc1fb9838f49cdb316ad5a762d45c0359b97fce156746564e5ba"
+    },
+    {
+      "path": "internal/composer/package.go",
+      "sha256": "212d2f8e064af1ca33c136295f260991bfdfde401474e7e27bb01758037b979e"
+    },
+    {
+      "path": "internal/composer/package_test.go",
+      "sha256": "2c2fb8771d74c1a338fa53c1ffcefb9516a172f54f950655ef1e31cd84c00bee"
+    },
+    {
+      "path": "internal/server/composer.go",
+      "sha256": "3616e078b02774013c024c8cbd18ef42a8897e6dd4d4b216ce82ea14cd8fc853"
+    },
+    {
+      "path": "internal/server/composer_integration_test.go",
+      "sha256": "6de94cb001afe938c0a86db4fa6e957369be505822e3f7b243ee16aeb6579bfb"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "0eb83e3f9e7de1b0792f60cc55e179f1573e4b492360b03720a4aeed75f0d0fe"
+    },
+    {
+      "path": "internal/store/composer.go",
+      "sha256": "6aeb3bf01ac38ea8fdd37c0436228200440b442441df1be1ed53e56e499f717b"
+    },
+    {
+      "path": "internal/store/artifact_read.go",
+      "sha256": "29309051deb86dffa676dde15ae6c8dfaae9045ee7752405b9b09ad84897067d"
+    },
+    {
+      "path": "internal/store/lifecycle_artifact.go",
+      "sha256": "e616df599ab0fd977c58500b73174370280116c60418c37d8164a71d49c9d968"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "65a7a9b3b5789369ce0651f925047e3b97e010c8e77697fb527fbe2d28f52959"
+    },
+    {
+      "path": "internal/store/migrations.go",
+      "sha256": "59f3478fbc77b7c969e43719f7eea92844a5bb1b2cd5b0d63ec2f356e368594b"
+    },
+    {
+      "path": "internal/ziparchive/archive.go",
+      "sha256": "d58195a9079343fc869beff07677f9004f8d20ce9c356d2682a67d1a8f1add84"
+    }
+  ]
+}
