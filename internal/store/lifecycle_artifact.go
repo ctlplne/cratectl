@@ -104,6 +104,9 @@ func materializedLifecycleReference(r Repository, a Artifact) bool {
 	case "composer":
 		_, err := decodeComposerPackage(a)
 		return err == nil
+	case "conda":
+		_, err := ValidateCondaArtifact(a)
+		return err == nil
 	case "cargo":
 		if r.Mode == "proxy" {
 			var binding CargoArchiveBinding
