@@ -922,11 +922,21 @@ race and lint gates. Exact `85fcca5` passed 11 stock micromamba 2.9.0 checks
 and 19 declarative checks on macOS ARM64 with PostgreSQL 16.16. It selected
 an exact native archive and noarch dependency, then linked both inert
 packages from a fresh cache after restart. The stock client refused the
-graph once both compatible dependency builds were denied. The original
-Linux x64 and ARM64 jobs are running in GitHub CI.
+graph once both compatible dependency builds were denied. Both original
+Linux jobs passed the same 30 checks with PostgreSQL 16.15. Each matched
+21 source files and selected its native archive plus the portable dependency.
 [Conda product source and PostgreSQL evidence](evidence/2026-11-19/conda-5b86b01-hosted-postgres.json)
 [Stock micromamba native result and first failures](evidence/2026-11-19/conda-85fcca5-hosted-micromamba-native.json)
+[Original Linux Conda reports](evidence/2026-11-19/github-85fcca5-conda-hosted-micromamba-native.json)
 [Original Conda workflow inventory](evidence/2026-11-19/github-85fcca5-started.json)
+
+The original `55ccc7c` Linux x64 runtime report stopped in durable jobs at
+68 checks. The original `08457df` Linux x64 runtime report passed durable
+jobs and leases, then stopped in Chromium at two reported checks. The
+bounded runtime summaries retain those outcomes. The exact assertions and
+causes remain open.
+[Original durable-jobs runtime result](evidence/2026-11-19/github-55ccc7c-main-amd64-safe-failure.json)
+[Original Chromium runtime result](evidence/2026-11-19/github-08457df-main-amd64-safe-failure.json)
 
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities
