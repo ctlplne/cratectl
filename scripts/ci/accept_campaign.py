@@ -19,7 +19,8 @@ from cargo_public_evidence import CHECKS as CARGO_PUBLIC_CHECKS
 from debian_apt_evidence import (APT_CHECKS as DEBIAN_APT_CHECKS, APT_SUITE_CHECKS as DEBIAN_SUITE_CHECKS,
                                  suite_selected as debian_suite_selected)
 from composer_hosted_evidence import (CHECKS as COMPOSER_HOSTED_CHECKS, GROUP_CHECKS as COMPOSER_GROUP_CHECKS,
-                                      group_selected as composer_group_selected)
+                                      VERSION_CHECKS as COMPOSER_VERSION_CHECKS, group_selected as composer_group_selected,
+                                      versions_selected as composer_versions_selected)
 from npm_search_evidence import HOSTED_CHECKS as NPM_HOSTED, CACHED_CHECKS as NPM_CACHED
 from python_search_evidence import HOSTED_CHECKS as PYTHON_HOSTED, CACHED_CHECKS as PYTHON_CACHED
 from oci_repository_catalog_evidence import (CACHED_CHECKS as OCI_CACHED_CHECKS, CATALOG_CHECKS as OCI_CATALOG_CHECKS,
@@ -260,6 +261,9 @@ def check_log(raw, spec, source):
         if composer_group_selected(source):
             require(text.count(f'PASS: {len(COMPOSER_GROUP_CHECKS)} stock Composer ordered group checks') == 1,
                     'composer_group_native_inventory')
+        if composer_versions_selected(source):
+            require(text.count(f'PASS: {len(COMPOSER_VERSION_CHECKS)} stock Composer development and prerelease checks') == 1,
+                    'composer_version_native_inventory')
     if kind in ('native', 'go'):
         pattern = r'\bok\s+ctlplne.dev/cratectl/internal/(?:server|store' + ('|conformance' if kind == 'native' else '') + r')\s'
         require(len(re.findall(pattern, text)) == (6 if kind == 'native' else 4), 'native_package_success_inventory')

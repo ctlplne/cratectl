@@ -22,6 +22,8 @@ var ErrPackage = errors.New("invalid or unsupported Composer library distributio
 
 var name = regexp.MustCompile(`^[a-z0-9]+([_.-][a-z0-9]+)*/[a-z0-9]+([_.-][a-z0-9]+)*$`)
 var stableVersion = regexp.MustCompile(`^(0|[1-9][0-9]{0,8})\.(0|[1-9][0-9]{0,8})\.(0|[1-9][0-9]{0,8})$`)
+var prerelease = regexp.MustCompile(`^(alpha|beta|rc)(0|[1-9][0-9]{0,8})$`)
+var developmentVersion = regexp.MustCompile(`^dev-[a-z][a-z0-9]*([._-][a-z0-9]+)*$`)
 var platform = regexp.MustCompile(`^[a-z0-9][a-z0-9_.-]{0,127}$`)
 
 func ValidName(value string) bool { return len(value) <= 214 && name.MatchString(value) }
@@ -33,14 +35,43 @@ type Coordinate struct {
 
 func (c Coordinate) Path() string { return "dist/" + c.Name + "/" + c.Version + ".zip" }
 
+func (c Coordinate) Development() bool { return developmentVersion.MatchString(c.Version) }
+
+// NormalizedVersion maps a supported immutable coordinate to Composer's
+// comparison form. Named development branches keep their dev- prefix.
+func (c Coordinate) NormalizedVersion() string {
+	if c.Development() {
+		return c.Version
+	}
+	base, suffix, tagged := strings.Cut(c.Version, "-")
+	if !tagged {
+		return base + ".0"
+	}
+	if n, ok := strings.CutPrefix(suffix, "rc"); ok {
+		suffix = "RC" + n
+	}
+	return base + ".0-" + suffix
+}
+
+func validVersion(value string) bool {
+	if len(value) > 36 {
+		return false
+	}
+	if developmentVersion.MatchString(value) {
+		return true
+	}
+	base, suffix, tagged := strings.Cut(value, "-")
+	return stableVersion.MatchString(base) && (!tagged || prerelease.MatchString(suffix))
+}
+
 func ParseDistribution(value string) (Coordinate, bool) {
-	if len(value) > 256 {
+	if len(value) > 260 {
 		return Coordinate{}, false
 	}
 	p, ok := strings.CutPrefix(value, "dist/")
 	p, suffix := strings.CutSuffix(p, ".zip")
 	index := strings.LastIndexByte(p, '/')
-	if !ok || !suffix || index < 0 || !ValidName(p[:index]) || !stableVersion.MatchString(p[index+1:]) {
+	if !ok || !suffix || index < 0 || !ValidName(p[:index]) || !validVersion(p[index+1:]) {
 		return Coordinate{}, false
 	}
 	return Coordinate{Name: p[:index], Version: p[index+1:]}, true
@@ -85,8 +116,7 @@ func (paths *PathList) UnmarshalJSON(raw []byte) error {
 }
 
 func (p Package) ValidFor(c Coordinate) bool {
-	if !ValidName(c.Name) || !stableVersion.MatchString(c.Version) || p.Name != c.Name ||
-		(p.Version != "" && strings.TrimPrefix(p.Version, "v") != c.Version) ||
+	if !ValidName(c.Name) || !validVersion(c.Version) || p.Name != c.Name || !packageVersionMatches(p.Version, c) ||
 		(p.Type != "" && p.Type != "library") || !text(p.Description, 4096) {
 		return false
 	}
@@ -101,6 +131,16 @@ func (p Package) ValidFor(c Coordinate) bool {
 		}
 	}
 	return p.Autoload == nil || p.Autoload.valid()
+}
+
+func packageVersionMatches(version string, c Coordinate) bool {
+	if version == "" || version == c.Version {
+		return true
+	}
+	if c.Development() {
+		return false
+	}
+	return strings.ToLower(strings.TrimPrefix(version, "v")) == c.Version
 }
 
 func (a Autoload) valid() bool {

@@ -4,10 +4,11 @@ if __package__:
     from .terraform_provider_evidence import BASE_CHECKS as MANIFEST_CHECKS, hashes, matches, postgres_version
 else:
     from terraform_provider_evidence import BASE_CHECKS as MANIFEST_CHECKS, hashes, matches, postgres_version
-from composer_hosted_fixture import COMPOSER_SHA256, COMPOSER_VERSION, COORDINATES
+from composer_hosted_fixture import COMPOSER_SHA256, COMPOSER_VERSION, COORDINATES, EXTRA_COORDINATES
 
 PROFILE = 'cratectl-native-composer-hosted-zip-v1'
 GROUP_PROFILE = 'cratectl-native-composer-hosted-and-group-zip-v1'
+VERSIONS_PROFILE = 'cratectl-native-composer-hosted-group-and-versions-v1'
 BASE_CHECKS = tuple(item for item in MANIFEST_CHECKS if item != 'provider matches the clean candidate')
 CHECKS = (
     'the stock Composer PHAR matches the pinned publisher digest',
@@ -30,6 +31,18 @@ GROUP_CHECKS = (
     *CHECKS[:6], 'the read-only group requires digest-pinned downloads from the first owning member',
     *CHECKS[6:], 'the currently denied preferred archive prevents fallback to the lower member',
 )
+VERSION_CHECKS = (
+    'Composer metadata keeps named development versions separate from numbered prereleases',
+    'stock Composer selects and locks the exact scoped dependency graph development',
+    'stock Composer caches exact ZIPs and installs their inert contents development',
+    'stock Composer selects and locks the exact scoped dependency graph prerelease',
+    'stock Composer caches exact ZIPs and installs their inert contents prerelease',
+    'stock Composer selects and locks the exact scoped dependency graph development-after-restart',
+    'stock Composer caches exact ZIPs and installs their inert contents development-after-restart',
+    'the development lockfile stays byte-identical after service restart',
+    'current policy removes only the denied development archive from discovery',
+    'stock Composer refuses to install a newly denied development archive',
+)
 FILES = (
     '.github/workflows/composer-hosted.yml', 'Makefile', 'go.mod', 'go.sum',
     'scripts/ci/composer_hosted_evidence.py', 'scripts/ci/terraform_provider_evidence.py',
@@ -49,10 +62,15 @@ def group_selected(source):
     return b'--composer-group' in source('.github/workflows/composer-hosted.yml').split()
 
 
+def versions_selected(source):
+    return b'--composer-versions' in source('.github/workflows/composer-hosted.yml').split()
+
+
 def validate(report):
-    if type(report) is not dict or report.get('profile') not in (PROFILE, GROUP_PROFILE):
+    if type(report) is not dict or report.get('profile') not in (PROFILE, GROUP_PROFILE, VERSIONS_PROFILE):
         raise ValueError('invalid Composer profile')
-    grouped = report['profile'] == GROUP_PROFILE
+    grouped = report['profile'] != PROFILE
+    versions = report['profile'] == VERSIONS_PROFILE
     fields = FIELDS | {'composer_group'} if grouped else FIELDS
     paths = GROUP_FILES if grouped else FILES
     if (set(report) != fields or type(report['schema']) is not int or report['schema'] != 1
@@ -64,16 +82,18 @@ def validate(report):
             or not matches(report['archive_sha256'], DIGEST) or not hashes(report['source_sha256'], paths)
             or not hashes(report['binary_sha256'], ('cratectl', 'cratectld')) or report['checks'] != list(BASE_CHECKS)):
         raise ValueError('invalid Composer candidate or PostgreSQL scope')
-    validate_run(report['composer_hosted'])
+    validate_run(report['composer_hosted'], versions=versions)
     if grouped:
         validate_run(report['composer_group'], grouped=True)
     return report
 
 
-def validate_run(native, *, grouped=False):
+def validate_run(native, *, grouped=False, versions=False):
     fields = {'checks', 'composer_version', 'composer_sha256', 'php_version', 'archive_sha256', 'lock_sha256'}
     if grouped:
         fields.add('collision_sha256')
+    if versions:
+        fields.add('version_forms')
     if (type(native) is not dict or set(native) != fields
             or native['checks'] != list(GROUP_CHECKS if grouped else CHECKS) or native['composer_version'] != COMPOSER_VERSION
             or native['composer_sha256'] != COMPOSER_SHA256 or not matches(native['php_version'], r'8\.[0-9]{1,2}\.[0-9]{1,3}')
@@ -82,3 +102,11 @@ def validate_run(native, *, grouped=False):
         raise ValueError('invalid stock Composer coverage or client identity')
     if grouped and (not matches(native['collision_sha256'], DIGEST) or native['collision_sha256'] in native['archive_sha256'].values()):
         raise ValueError('invalid Composer group collision evidence')
+    if versions:
+        result = native['version_forms']
+        if (type(result) is not dict or set(result) != {'checks', 'archive_sha256', 'development_lock_sha256', 'prerelease_lock_sha256'}
+                or result['checks'] != list(VERSION_CHECKS) or not matches(result['development_lock_sha256'], DIGEST)
+                or not matches(result['prerelease_lock_sha256'], DIGEST)
+                or result['development_lock_sha256'] == result['prerelease_lock_sha256']
+                or not hashes(result['archive_sha256'], tuple(f'{name}@{version}' for name, version in EXTRA_COORDINATES))):
+            raise ValueError('invalid Composer development or prerelease evidence')

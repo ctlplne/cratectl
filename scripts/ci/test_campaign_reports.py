@@ -19,7 +19,8 @@ from composer_hosted_evidence import (BASE_CHECKS as COMPOSER_BASE, CHECKS as CO
                                       COMPOSER_SHA256, COMPOSER_VERSION, COORDINATES as COMPOSER_COORDINATES,
                                       FILES as COMPOSER_FILES, PROFILE as COMPOSER_PROFILE,
                                       GROUP_CHECKS as COMPOSER_GROUP_CHECKS, GROUP_FILES as COMPOSER_GROUP_FILES,
-                                      GROUP_PROFILE as COMPOSER_GROUP_PROFILE)
+                                      GROUP_PROFILE as COMPOSER_GROUP_PROFILE, VERSIONS_PROFILE as COMPOSER_VERSIONS_PROFILE,
+                                      EXTRA_COORDINATES as COMPOSER_EXTRA_COORDINATES, VERSION_CHECKS as COMPOSER_VERSION_CHECKS)
 from linux_install_evidence import CHECKS as INSTALL_CHECKS, IMAGE as INSTALL_IMAGE, SOURCE_PATHS as INSTALL_FILES
 from maven_index_evidence import (BASE_CHECKS as MAVEN_INDEX_BASE, CACHED_CHECKS as MAVEN_CACHED_CHECKS,
                                   CACHED_PROFILE as MAVEN_CACHED_PROFILE, CACHED_SOURCE_PATHS as MAVEN_CACHED_FILES,
@@ -72,6 +73,17 @@ class CampaignReports(unittest.TestCase):
         self.assertEqual(validate_custom(combined, candidate, 12, spec, group_source), {'checks': 51, 'records': 1})
         with self.assertRaisesRegex(EvidenceError, 'composer_hosted_report_contract'):
             validate_custom({**combined, 'composer_group': {**group, 'collision_sha256': 'b' * 64}}, candidate, 12, spec, group_source)
+
+        version_source = lambda path: b'--composer-group --composer-versions' if path == '.github/workflows/composer-hosted.yml' else source(path)
+        versions = {'checks': list(COMPOSER_VERSION_CHECKS),
+                    'archive_sha256': {f'{name}@{version}': 'c' * 64 for name, version in COMPOSER_EXTRA_COORDINATES},
+                    'development_lock_sha256': 'e' * 64, 'prerelease_lock_sha256': 'd' * 64}
+        extended = {**combined, 'profile': COMPOSER_VERSIONS_PROFILE, 'composer_hosted': {**native, 'version_forms': versions},
+                    'source_sha256': {path: hashlib.sha256(version_source(path)).hexdigest() for path in COMPOSER_GROUP_FILES}}
+        self.assertEqual(validate_custom(extended, candidate, 12, spec, version_source), {'checks': 61, 'records': 1})
+        wrong = {**versions, 'prerelease_lock_sha256': 'e' * 64}
+        with self.assertRaisesRegex(EvidenceError, 'composer_hosted_report_contract'):
+            validate_custom({**extended, 'composer_hosted': {**native, 'version_forms': wrong}}, candidate, 12, spec, version_source)
 
     def test_debian_apt_report_requires_signed_repository_controls_on_native_architecture(self):
         source = lambda path: path.encode()

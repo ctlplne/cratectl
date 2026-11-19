@@ -9,6 +9,31 @@ import (
 	"testing"
 )
 
+func TestDistributionNormalizesTaggedAndDevelopmentVersions(t *testing.T) {
+	for _, entry := range []struct {
+		version, manifest, normalized string
+		development                   bool
+	}{
+		{"1.2.3", "v1.2.3", "1.2.3.0", false},
+		{"1.2.3-alpha1", "v1.2.3-alpha1", "1.2.3.0-alpha1", false},
+		{"1.2.3-beta2", "1.2.3-BETA2", "1.2.3.0-beta2", false},
+		{"1.2.3-rc3", "v1.2.3-RC3", "1.2.3.0-RC3", false},
+		{"dev-fixture", "dev-fixture", "dev-fixture", true},
+	} {
+		published := "dist/cratectl/library/" + entry.version + ".zip"
+		coordinate, ok := ParseDistribution(published)
+		if !ok || coordinate.Path() != published || coordinate.NormalizedVersion() != entry.normalized ||
+			coordinate.Development() != entry.development || !(Package{Name: coordinate.Name, Version: entry.manifest}).ValidFor(coordinate) {
+			t.Fatalf("Composer identity disagrees with the supported version %q: %+v", entry.version, coordinate)
+		}
+	}
+	for _, version := range []string{"v1.2.3", "1.2.3-rc03", "1.2.3-beta.1", "1.2.3-preview1", "1.2.3-dev", "dev-Fixture", "dev-branch/other"} {
+		if _, ok := ParseDistribution("dist/cratectl/library/" + version + ".zip"); ok {
+			t.Fatalf("accepted a noncanonical publication path for %q", version)
+		}
+	}
+}
+
 func TestInspectBindsOnlyOneComposerLibraryManifest(t *testing.T) {
 	coordinate := Coordinate{Name: "cratectl/app", Version: "1.2.3"}
 	const good = `{"name":"cratectl/app","version":"v1.2.3","require":{"php":">=8.2","cratectl/lib":"^1.0"},"autoload":{"psr-4":{"Cratectl\\":"src/"}}}`

@@ -52,6 +52,7 @@ func (s *Server) composer(w http.ResponseWriter, r *http.Request, i store.Identi
 
 	name, metadata := strings.CutPrefix(request, "p2/")
 	name, suffix := strings.CutSuffix(name, ".json")
+	name, development := strings.CutSuffix(name, "~dev")
 	if request != "packages.json" && !(metadata && suffix && composer.ValidName(name)) {
 		respondErr(w, store.ErrNotFound)
 		return
@@ -69,7 +70,7 @@ func (s *Server) composer(w http.ResponseWriter, r *http.Request, i store.Identi
 	if request == "packages.json" {
 		response.MetadataURL = base + "p2/%package%.json"
 	} else {
-		versions, err := s.DB.ComposerVersions(r.Context(), i, repo.Name, name, repo.SourceRevision, s.NativeVersionLimit, s.NativeMetadataBytes)
+		versions, err := s.DB.ComposerVersions(r.Context(), i, repo.Name, name, development, repo.SourceRevision, s.NativeVersionLimit, s.NativeMetadataBytes)
 		if err != nil {
 			respondErr(w, err)
 			return
@@ -81,7 +82,8 @@ func (s *Server) composer(w http.ResponseWriter, r *http.Request, i store.Identi
 			if repo.Mode == "group" {
 				url += "?sha256=" + version.Digest
 			}
-			rows = append(rows, composerVersion{Package: p, Normalized: p.Version + ".0", Dist: composerDist{
+			coordinate := composer.Coordinate{Name: p.Name, Version: p.Version}
+			rows = append(rows, composerVersion{Package: p, Normalized: coordinate.NormalizedVersion(), Dist: composerDist{
 				Type: "zip", URL: url, Reference: version.Digest, SHA1: version.Metadata.SHA1,
 			}})
 		}

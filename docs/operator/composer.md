@@ -3,7 +3,8 @@
 Create a hosted repository with format `composer`. Publish a library ZIP by
 using a repository writer credential to PUT the original bytes to
 `/composer/REPOSITORY/dist/VENDOR/PACKAGE/VERSION.zip`. Use a lowercase package
-name and a three-part stable version such as `1.2.3`. Include one
+name and a three-part tag such as `1.2.3`, a numbered prerelease such as
+`1.2.3-rc1`, or a lowercase development branch such as `dev-main`. Include one
 `composer.json` at the ZIP root or inside its single top-level directory. Its
 `name` must match the coordinate. If it declares a `version`, that version
 must also match.
@@ -41,5 +42,9 @@ Composer records a SHA-256 pin in its download URL. If a new member comes to
 own the package and has different bytes for a locked coordinate, the old URL
 fails. Refresh the lockfile after reviewing the newly selected source.
 
-Proxy routing, other distribution formats, development versions and broader
-package metadata remain open.
+Composer reads tagged releases and prereleases under the ordinary package
+index. It requests a separate development index when the project allows
+development packages. Both indexes apply current grants and review.
+
+Proxy routing, additional version forms, other distribution formats and
+broader package metadata remain open.

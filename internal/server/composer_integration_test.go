@@ -272,3 +272,57 @@ func TestComposerHostedBindsArchiveAndCurrentTenantPolicy(t *testing.T) {
 		t.Fatal("Composer crossed tenant package identities")
 	}
 }
+
+func TestComposerHostedSeparatesDevelopmentMetadataFromTaggedVersions(t *testing.T) {
+	s, _, token, admin := schemaServer(t)
+	const repo = "cratectl-composer-development"
+	const root = "/composer/" + repo + "/"
+	mavenRepositories(t, s, admin, store.Repository{Name: repo, Format: "composer"})
+	type testVersion struct{ version, normalized string }
+	versions := []testVersion{
+		{"1.2.3", "1.2.3.0"}, {"1.2.4-alpha1", "1.2.4.0-alpha1"},
+		{"1.2.4-rc2", "1.2.4.0-RC2"}, {"dev-fixture", "dev-fixture"},
+	}
+	var development []byte
+	for _, v := range versions {
+		data := composerFixture(t, "Owned Composer version "+v.version)
+		if v.version == "dev-fixture" {
+			development = data
+		}
+		w := nugetHTTP(t, s, token, "PUT", root+"dist/cratectl/composer-app/"+v.version+".zip", data, "")
+		if w.Code != 201 {
+			t.Fatalf("publish Composer %s: %d %.250s", v.version, w.Code, w.Body.String())
+		}
+	}
+	check := func(index string, want ...testVersion) {
+		t.Helper()
+		w := nugetHTTP(t, s, token, "GET", root+index, nil, "")
+		var result struct{ Packages map[string][]composerVersion }
+		if w.Code != 200 || json.Unmarshal(w.Body.Bytes(), &result) != nil {
+			t.Fatalf("read Composer index: %d %.250s", w.Code, w.Body.String())
+		}
+		rows := result.Packages["cratectl/composer-app"]
+		if len(rows) != len(want) {
+			t.Fatal("Composer indices contained unrequested version stabilities")
+		}
+		for n, row := range rows {
+			if row.Version != want[n].version || row.Normalized != want[n].normalized {
+				t.Fatal("Composer normalized or grouped the version incorrectly", row)
+			}
+		}
+	}
+	check("p2/cratectl/composer-app.json", versions[:3]...)
+	check("p2/cratectl/composer-app~dev.json", versions[3])
+	ctx := context.Background()
+	err := s.DB.Tx(ctx, admin, true, func(tx pgx.Tx) error {
+		_, err := store.Decide(ctx, tx, admin, repo, "dist/cratectl/composer-app/dev-fixture.zip", crypt.Digest(development), "denied")
+		return err
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if w := nugetHTTP(t, s, token, "GET", root+"p2/cratectl/composer-app~dev.json", nil, ""); w.Code != 404 {
+		t.Fatal("denied development version remained visible", w.Code)
+	}
+	check("p2/cratectl/composer-app.json", versions[:3]...)
+}

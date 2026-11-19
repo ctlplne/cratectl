@@ -61,7 +61,7 @@ type ComposerDistribution struct {
 
 // ComposerVersions uses one current authorized read snapshot for all versions.
 // Each selected row and the complete metadata response have independent limits.
-func (s *Store) ComposerVersions(ctx context.Context, i Identity, repo, name string, revision int64, limit int, byteLimit int64) ([]ComposerDistribution, error) {
+func (s *Store) ComposerVersions(ctx context.Context, i Identity, repo, name string, development bool, revision int64, limit int, byteLimit int64) ([]ComposerDistribution, error) {
 	if !composer.ValidName(name) {
 		return nil, ErrNotFound
 	}
@@ -83,13 +83,14 @@ func (s *Store) ComposerVersions(ctx context.Context, i Identity, repo, name str
 		if err != nil {
 			return err
 		}
-		rows, err := tx.Query(ctx, `SELECT left(a.path,257),left(a.digest,65),a.size,a.media_type,
+		rows, err := tx.Query(ctx, `SELECT left(a.path,261),left(a.digest,65),a.size,a.media_type,
 CASE WHEN octet_length(a.metadata::text)<=$6 THEN a.metadata ELSE NULL END
 FROM cratectl.artifacts a `+decisionJoin+nativeLifecycleJoin+`
 WHERE a.repository=$1 AND starts_with(a.path,$2) AND a.media_type=$3 AND NOT COALESCE(nl.deleted,false)
  AND COALESCE(d.decision,a.decision)<>'denied' AND (NOT $4::boolean OR COALESCE(d.decision,a.decision)='allowed')
+ AND starts_with(a.path,$2 || 'dev-')=$7
 ORDER BY a.path COLLATE "C" LIMIT $5`, source.Name, "dist/"+name+"/", ComposerMedia,
-			r.RequireReview || source.RequireReview, limit+1, composerMetadataBytes)
+			r.RequireReview || source.RequireReview, limit+1, composerMetadataBytes, development)
 		if err != nil {
 			return err
 		}
