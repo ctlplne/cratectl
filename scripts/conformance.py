@@ -7,7 +7,7 @@ from pathlib import Path
 from qualification_contract import candidate_binary_directory, candidate_artifact_names
 from bounded_client import run_owned_client
 parser=argparse.ArgumentParser(description='Baseline format campaign or an explicitly selected extended stock-client profile.')
-parser.add_argument('profile',nargs='?',default='all',choices=['all','generic','npm','npmproxy','pypi','pypiproxy','oci','ociproxy','maven','proxy','sourceconfig','nuget','nugetproxy','nugetgroup','nugetsource','gradle','ivy','sbt1','sbt2'])
+parser.add_argument('profile',nargs='?',default='all',choices=['all','generic','npm','npmproxy','pypi','pypiproxy','oci','ociproxy','maven','proxy','sourceconfig','nuget','nugetproxy','nugetgroup','nugetsource','nugetpublic','gradle','ivy','sbt1','sbt2'])
 parser.add_argument('--require-clean-build',action='store_true')
 args=parser.parse_args()
 BIN = candidate_binary_directory()
@@ -15,7 +15,7 @@ ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT)
 BASE='http://127.0.0.1:38443';RUN=uuid.uuid4().hex[:10]
 PRIVATE=ROOT/'.private/conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)
 NUGET_PROXY_PROFILES=('nugetproxy','nugetgroup','nugetsource')
-EVIDENCE=PRIVATE if args.profile in NUGET_PROXY_PROFILES else ROOT/'evidence'/datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+EVIDENCE=PRIVATE if args.profile in (*NUGET_PROXY_PROFILES,'nugetpublic') else ROOT/'evidence'/datetime.datetime.now(datetime.timezone.utc).date().isoformat()
 EVIDENCE.mkdir(exist_ok=True)
 database_profile=os.environ.get('CRATECTL_DEV_DATABASE','container')
 config=json.loads(Path(os.environ.get('CRATECTL_CONFORMANCE_DATABASE_FILE',str(ROOT/('.private/native-db.json' if database_profile=='native' else '.private/db.json')))).read_text())
@@ -1013,6 +1013,9 @@ try:
  if mode in NUGET_PROXY_PROFILES:
   from conformance_nuget_proxy import proxy_nuget
   proxy_nuget(sys.modules[__name__], group=mode!='nugetproxy', service_index=mode=='nugetsource')
+ if mode=='nugetpublic':
+  from conformance_nuget_public import public_nuget
+  public_nuget(sys.modules[__name__])
  for name,fn in [('generic',generic),('npm',npm),('npmproxy',npmproxy),('pypi',pypi),('pypiproxy',pypiproxy),('oci',oci),('ociproxy',ociproxy),('maven',maven),('proxy',proxy),('sourceconfig',sourceconfig),('nuget',nuget)]:
   if mode in ('all',name):fn()
  result['status']='passed';print(f'PASS: {len(checks)} assertions; native mode {mode}')

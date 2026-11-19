@@ -26,6 +26,31 @@ APPLICATION = 'Cratectl.Proxy.Application'
 DEPENDENCY = 'Cratectl.Proxy.Dependency'
 
 
+def stock_environment(scope):
+    env = {key: value for key, value in os.environ.items()
+           if not key.upper().startswith(('CRATECTL_', 'PG', 'DOTNET_', 'NUGET_', 'MSBUILD'))
+           and key.upper() not in ('HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY')}
+    env.update(DOTNET_CLI_HOME=str(scope / 'dotnet'), DOTNET_CLI_TELEMETRY_OPTOUT='1', DOTNET_SKIP_FIRST_TIME_EXPERIENCE='1',
+               DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE='true', DOTNET_GENERATE_ASPNET_CERTIFICATE='false',
+               NUGET_PLUGIN_PATHS='', NO_PROXY='127.0.0.1,::1')
+    return env
+
+
+def stock_feed_config(config, source, token=None):
+    document = XML.Element('configuration')
+    sources = XML.SubElement(document, 'packageSources')
+    XML.SubElement(sources, 'clear')
+    attrs = {'allowInsecureConnections': 'true'} if source.startswith('http://127.0.0.1:38443/') else {}
+    XML.SubElement(sources, 'add', key='cratectl', value=source, **attrs)
+    if token is not None:
+        credentials = XML.SubElement(XML.SubElement(document, 'packageSourceCredentials'), 'cratectl')
+        XML.SubElement(credentials, 'add', key='Username', value='token')
+        XML.SubElement(credentials, 'add', key='ClearTextPassword', value=token)
+    XML.ElementTree(document).write(config, encoding='utf-8', xml_declaration=True)
+    config.chmod(0o600)
+    return config
+
+
 def inert_package(package_id, dependency=None, identity=''):
     dependencies = '' if dependency is None else (
         f'<dependencies><group targetFramework="net10.0"><dependency id="{dependency}" '
@@ -108,12 +133,7 @@ def proxy_nuget(h, *, group=False, service_index=False):
 
     dotnet = shutil.which('dotnet')
     h.check('stock dotnet SDK executable is available', dotnet is not None)
-    public_env = {key: value for key, value in os.environ.items()
-                  if not key.upper().startswith(('CRATECTL_', 'PG', 'DOTNET_', 'NUGET_', 'MSBUILD'))
-                  and key.upper() not in ('HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY')}
-    public_env.update(DOTNET_CLI_HOME=str(scope / 'dotnet'), DOTNET_CLI_TELEMETRY_OPTOUT='1',
-                      DOTNET_SKIP_FIRST_TIME_EXPERIENCE='1', DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE='true',
-                      DOTNET_GENERATE_ASPNET_CERTIFICATE='false', NUGET_PLUGIN_PATHS='', NO_PROXY='127.0.0.1,::1')
+    public_env = stock_environment(scope)
     with (scope / 'dotnet-version.log').open('xb') as log:
         code, output = run_owned_client([dotnet, '--version'], h.ROOT, public_env, timeout=15, output_sink=log)
     sdk = output.strip()
@@ -123,17 +143,7 @@ def proxy_nuget(h, *, group=False, service_index=False):
     h.result['nuget_proxy'] = {'sdk': sdk, 'dotnet_sha256': dotnet_sha, 'fixtures': fixtures, 'loopback_http': True}
 
     def source_config(repository):
-        config = scope / (repository + '.config')
-        document = XML.Element('configuration')
-        sources = XML.SubElement(document, 'packageSources')
-        XML.SubElement(sources, 'clear')
-        XML.SubElement(sources, 'add', key='cratectl', value=h.BASE + f'/nuget/{repository}/index.json', allowInsecureConnections='true')
-        credentials = XML.SubElement(XML.SubElement(document, 'packageSourceCredentials'), 'cratectl')
-        XML.SubElement(credentials, 'add', key='Username', value='token')
-        XML.SubElement(credentials, 'add', key='ClearTextPassword', value=h.tokens['reader'])
-        XML.ElementTree(document).write(config, encoding='utf-8', xml_declaration=True)
-        config.chmod(0o600)
-        return config
+        return stock_feed_config(scope / (repository + '.config'), h.BASE + f'/nuget/{repository}/index.json', h.tokens['reader'])
 
     config = source_config(REPOSITORY)
 
