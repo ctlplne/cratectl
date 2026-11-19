@@ -1,4 +1,4 @@
-# Hosted CRAN source repositories
+# CRAN repositories
 
 Create a repository with `format: cran` and `mode: hosted`. The repository
 root is `/cran/REPOSITORY/`. Give publishers write access and consumers read
@@ -65,8 +65,29 @@ download time cratectl checks the current owner, both review policies and
 the exact SHA-256. Publish and restore source archives in the hosted members.
 Historical directories are available on the hosted members.
 
-Platform binaries, serialized indexes and proxy repositories need separate
-implementation and qualification.
+## Publish and consume hosted binaries
+
+Use the `contrib.url(repo, type = .Platform$pkgType)` result from the target
+R distribution to choose among these hosted directories.
+
+- macOS Apple silicon on Sonoma `bin/macosx/sonoma-arm64/contrib/X.Y/NAME_VERSION.tgz`
+- macOS Apple silicon on Big Sur `bin/macosx/big-sur-arm64/contrib/X.Y/NAME_VERSION.tgz`
+- macOS Intel on Big Sur `bin/macosx/big-sur-x86_64/contrib/X.Y/NAME_VERSION.tgz`
+- Windows x64 `bin/windows/contrib/X.Y/NAME_VERSION.zip`
+
+Publish the original archive with `PUT`. cratectl checks the plain
+`DESCRIPTION` against the package name, version and R series in the URL. It
+checks the declared OS and target when present. Stock R omits the target for
+packages built without native code. The inspection checks for the installed
+metadata file and preserves it as opaque bytes. The metadata checks leave ABI
+compatibility and execution testing to the target system.
+
+Each directory has its own `PACKAGES` and `PACKAGES.gz` views. A source and
+two binaries can share a package name and version, with separate reviews
+for their original SHA-256 digests. On a supported R distribution, use
+`.Platform$pkgType` in place of `"source"` in both commands above. Serialized
+indexes, groups with binary channels, and proxy repositories remain open.
 
 [Writing R Extensions](https://cran.r-project.org/doc/manuals/R-exts.html)
+[R Installation and Administration](https://cran.r-project.org/doc/manuals/r-release/R-admin.html)
 [Native R index and downloader](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/available.packages.html)

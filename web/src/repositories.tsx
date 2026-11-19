@@ -18,7 +18,12 @@ function hasReferenceLifecycle(format:string|undefined,a:Artifact){
   if(format==='nuget')return a.path.startsWith('nuget-packages/')&&a.path.endsWith('.nupkg');
   if(format==='cargo')return a.path.startsWith('crates/')&&a.path.endsWith('.crate');
   if(format==='conda')return a.path.endsWith('.tar.bz2')&&a.media_type==='application/x-bzip2';
-  if(format==='cran')return a.path.startsWith('src/contrib/')&&a.path.endsWith('.tar.gz')&&a.media_type==='application/gzip';
+  if(format==='cran'){
+    const source=a.path.startsWith('src/contrib/')&&a.path.endsWith('.tar.gz');
+    const mac=a.path.startsWith('bin/macosx/')&&a.path.endsWith('.tgz');
+    const windows=a.path.startsWith('bin/windows/')&&a.path.endsWith('.zip');
+    return (source||mac)&&a.media_type==='application/gzip'||windows&&a.media_type==='application/zip';
+  }
   if(format==='pypi')return !a.path.startsWith('pypi-catalog/')&&a.media_type!=='application/vnd.cratectl.python-catalog+json';
   return false;
 }

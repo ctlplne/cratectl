@@ -122,7 +122,7 @@ func (p Package) IndexEntry(md5, digest string) string {
 	return output.String()
 }
 
-func parseDescription(description []byte, c Coordinate) (Package, error) {
+func parseDescription(description []byte, c Coordinate, built *string) (Package, error) {
 	if len(description) < 1 || len(description) > MaxDescriptionBytes || !utf8.Valid(description) {
 		return nil, ErrPackage
 	}
@@ -165,7 +165,7 @@ func parseDescription(description []byte, c Coordinate) (Package, error) {
 	metadata := make(Package)
 	for _, key := range indexFields {
 		if parts, ok := fields[key]; ok {
-			if value := strings.Join(strings.Fields(strings.Join(parts, " ")), " "); value != "" {
+			if value := normalizedDescriptionField(parts); value != "" {
 				metadata[key] = value
 			}
 		}
@@ -173,7 +173,14 @@ func parseDescription(description []byte, c Coordinate) (Package, error) {
 	if !metadata.ValidFor(c) {
 		return nil, ErrPackage
 	}
+	if built != nil {
+		*built = normalizedDescriptionField(fields["Built"])
+	}
 	return metadata, nil
+}
+
+func normalizedDescriptionField(parts []string) string {
+	return strings.Join(strings.Fields(strings.Join(parts, " ")), " ")
 }
 
 func equalDescriptionWord(parts []string, word string) bool {
@@ -195,7 +202,15 @@ func (r cancellationReader) Read(data []byte) (int, error) {
 // Inspect reads the one DESCRIPTION in a bounded source tarball without
 // extracting, compiling or evaluating any package files.
 func Inspect(ctx context.Context, source io.ReaderAt, size int64, c Coordinate) (Package, error) {
-	if source == nil || size < 18 || size > MaxArchiveBytes || !ValidName(c.Name) {
+	description, err := inspectTar(ctx, source, size, c.Name, false)
+	if err != nil {
+		return nil, err
+	}
+	return parseDescription(description, c, nil)
+}
+
+func inspectTar(ctx context.Context, source io.ReaderAt, size int64, packageName string, binary bool) ([]byte, error) {
+	if source == nil || size < 18 || size > MaxArchiveBytes || !ValidName(packageName) {
 		return nil, ErrPackage
 	}
 	input := bufio.NewReader(cancellationReader{ctx, io.NewSectionReader(source, 0, size)})
@@ -209,6 +224,7 @@ func Inspect(ctx context.Context, source io.ReaderAt, size int64, c Coordinate) 
 	archive := tar.NewReader(payload)
 	seen := make(map[string]bool)
 	var description []byte
+	var installedMetadata bool
 	for count := 0; ; count++ {
 		member, err := archive.Next()
 		if errors.Is(err, io.EOF) {
@@ -218,13 +234,13 @@ func Inspect(ctx context.Context, source io.ReaderAt, size int64, c Coordinate) 
 			return nil, ErrPackage
 		}
 		name := strings.TrimSuffix(strings.TrimPrefix(member.Name, "./"), "/")
-		if (name != c.Name && !strings.HasPrefix(name, c.Name+"/")) || len(name) > 1024 || !utf8.ValidString(name) ||
+		if (name != packageName && !strings.HasPrefix(name, packageName+"/")) || len(name) > 1024 || !utf8.ValidString(name) ||
 			strings.ContainsAny(name, "\\:") || strings.ContainsFunc(name, unicode.IsControl) || path.Clean(name) != name ||
 			strings.Count(name, "/") >= 64 {
 			return nil, ErrPackage
 		}
 		directory := member.Typeflag == tar.TypeDir
-		if _, exists := seen[name]; exists || (directory && member.Size != 0) || (name == c.Name && !directory) ||
+		if _, exists := seen[name]; exists || (directory && member.Size != 0) || (name == packageName && !directory) ||
 			(!directory && member.Typeflag != tar.TypeReg && member.Typeflag != tar.TypeRegA) {
 			return nil, ErrPackage
 		}
@@ -234,7 +250,7 @@ func Inspect(ctx context.Context, source io.ReaderAt, size int64, c Coordinate) 
 			}
 		}
 		seen[name] = directory
-		if name == c.Name+"/DESCRIPTION" {
+		if name == packageName+"/DESCRIPTION" {
 			if directory || member.Size < 1 || member.Size > MaxDescriptionBytes {
 				return nil, ErrPackage
 			}
@@ -243,6 +259,12 @@ func Inspect(ctx context.Context, source io.ReaderAt, size int64, c Coordinate) 
 				return nil, ErrPackage
 			}
 		}
+		if binary && name == packageName+"/Meta/package.rds" {
+			installedMetadata = !directory && member.Size > 0
+		}
+	}
+	if binary && !installedMetadata {
+		return nil, ErrPackage
 	}
 	for name := range seen {
 		for parent := path.Dir(name); parent != "."; parent = path.Dir(parent) {
@@ -269,5 +291,5 @@ func Inspect(ctx context.Context, source io.ReaderAt, size int64, c Coordinate) 
 	if _, err := input.ReadByte(); !errors.Is(err, io.EOF) {
 		return nil, ErrPackage
 	}
-	return parseDescription(description, c)
+	return description, nil
 }

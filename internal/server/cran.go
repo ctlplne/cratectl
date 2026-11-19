@@ -27,13 +27,20 @@ func (s *Server) cran(w http.ResponseWriter, r *http.Request, i store.Identity, 
 		s.serveCRANArchive(w, r, i, repo, archive)
 		return
 	}
-	if name, found := strings.CutPrefix(request, cran.SourceDirectory); found && (name == "PACKAGES" || name == "PACKAGES.gz") {
-		if r.Method != http.MethodGet && r.Method != http.MethodHead {
-			w.Header().Set("Allow", "GET, HEAD")
-			fail(w, 405, "method_not_allowed", "Read the CRAN source index with GET or HEAD.")
+	separator := strings.LastIndexByte(request, '/') + 1
+	directory, name := request[:separator], request[separator:]
+	channel, binary := cran.ParseBinaryChannel(directory)
+	if name == "PACKAGES" || name == "PACKAGES.gz" {
+		if directory != cran.SourceDirectory && (!binary || repo.Mode != "hosted") {
+			respondErr(w, store.ErrNotFound)
 			return
 		}
-		s.serveCRANIndex(w, r, i, repo, name)
+		if r.Method != http.MethodGet && r.Method != http.MethodHead {
+			w.Header().Set("Allow", "GET, HEAD")
+			fail(w, 405, "method_not_allowed", "Read the CRAN package index with GET or HEAD.")
+			return
+		}
+		s.serveCRANIndex(w, r, i, repo, name, channel)
 		return
 	}
 	if repo.Mode == "group" {
@@ -41,18 +48,21 @@ func (s *Server) cran(w http.ResponseWriter, r *http.Request, i store.Identity, 
 		return
 	}
 	coordinate, ok := cran.ParsePath(request)
+	if binary {
+		_, coordinate, ok = cran.ParseBinaryPath(request)
+	}
 	if !ok {
 		respondErr(w, store.ErrNotFound)
 		return
 	}
 	switch r.Method {
 	case http.MethodPut:
-		s.publishCRAN(w, r, i, repo.Name, coordinate)
+		s.publishCRAN(w, r, i, repo.Name, request, coordinate, channel)
 	case http.MethodGet, http.MethodHead:
 		s.serveCRANPackage(w, r, i, repo, request)
 	default:
 		w.Header().Set("Allow", "GET, HEAD, PUT")
-		fail(w, 405, "method_not_allowed", "Publish a CRAN source archive with PUT or consume it with GET or HEAD.")
+		fail(w, 405, "method_not_allowed", "Publish a CRAN archive with PUT or consume it with GET or HEAD.")
 	}
 }
 
@@ -136,10 +146,12 @@ func (s *Server) serveCRANArchive(w http.ResponseWriter, r *http.Request, i stor
 	http.ServeContent(w, r, "index.html", time.Time{}, strings.NewReader(body))
 }
 
-func (s *Server) serveCRANIndex(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, name string) {
+func (s *Server) serveCRANIndex(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, name string, channel cran.BinaryChannel) {
 	var index string
 	var err error
-	if repo.Mode == "group" {
+	if channel.Directory() != "" {
+		index, err = s.DB.CRANBinaryIndex(r.Context(), i, repo.Name, channel, s.NativeVersionLimit, s.NativeMetadataBytes)
+	} else if repo.Mode == "group" {
 		index, err = s.DB.CRANGroupIndex(r.Context(), i, repo.Name, repo.SourceRevision, s.NativeVersionLimit, s.NativeMetadataBytes)
 	} else {
 		index, err = s.DB.CRANPackageIndex(r.Context(), i, repo.Name, s.NativeVersionLimit, s.NativeMetadataBytes)
@@ -170,9 +182,9 @@ func (s *Server) serveCRANIndex(w http.ResponseWriter, r *http.Request, i store.
 	http.ServeContent(w, r, name, time.Time{}, bytes.NewReader(body))
 }
 
-func (s *Server) publishCRAN(w http.ResponseWriter, r *http.Request, i store.Identity, repo string, c cran.Coordinate) {
+func (s *Server) publishCRAN(w http.ResponseWriter, r *http.Request, i store.Identity, repo, request string, c cran.Coordinate, channel cran.BinaryChannel) {
 	if r.ContentLength > cran.MaxArchiveBytes {
-		fail(w, 413, "cran_archive_budget", "Reduce the CRAN tar.gz archive within the upload limit.")
+		fail(w, 413, "cran_archive_budget", "Reduce the CRAN archive within the upload limit.")
 		return
 	}
 	ctx, cancel := context.WithTimeout(r.Context(), 120*time.Second)
@@ -183,7 +195,7 @@ func (s *Server) publishCRAN(w http.ResponseWriter, r *http.Request, i store.Ide
 	if err != nil {
 		var tooLarge *http.MaxBytesError
 		if errors.As(err, &tooLarge) {
-			fail(w, 413, "cran_archive_budget", "Reduce the CRAN tar.gz archive within the upload limit.")
+			fail(w, 413, "cran_archive_budget", "Reduce the CRAN archive within the upload limit.")
 			return
 		}
 		respondErr(w, err)
@@ -194,27 +206,35 @@ func (s *Server) publishCRAN(w http.ResponseWriter, r *http.Request, i store.Ide
 		respondErr(w, err)
 		return
 	}
-	metadata, err := cran.Inspect(ctx, file, object.Size, c)
+	media := store.CRANMedia
+	var metadata cran.Package
+	var built string
+	if channel.Directory() != "" {
+		media = channel.MediaType()
+		metadata, built, err = cran.InspectBinary(ctx, file, object.Size, channel, c)
+	} else {
+		metadata, err = cran.Inspect(ctx, file, object.Size, c)
+	}
 	file.Close()
 	if ctx.Err() != nil {
 		respondErr(w, ctx.Err())
 		return
 	}
 	if errors.Is(err, cran.ErrPackage) {
-		fail(w, 400, "invalid_cran_archive", "Supply a bounded R source archive whose DESCRIPTION matches the requested package name and version.")
+		fail(w, 400, "invalid_cran_archive", "Supply a bounded R archive whose DESCRIPTION matches the package, version and any binary channel.")
 		return
 	}
 	if err != nil {
 		respondErr(w, err)
 		return
 	}
-	encoded, err := json.Marshal(store.CRANPackage{Description: metadata, MD5: hex.EncodeToString(checksum.Sum(nil)), Validated: true})
+	encoded, err := json.Marshal(store.CRANPackage{Description: metadata, MD5: hex.EncodeToString(checksum.Sum(nil)), Validated: true, Built: built})
 	if err != nil {
 		respondErr(w, err)
 		return
 	}
-	if err := s.DB.PublishCRAN(ctx, i, repo, store.Artifact{Path: c.Path(), Digest: object.Digest, Size: object.Size,
-		MediaType: store.CRANMedia, Metadata: encoded}); err != nil {
+	if err := s.DB.PublishCRAN(ctx, i, repo, store.Artifact{Path: request, Digest: object.Digest, Size: object.Size,
+		MediaType: media, Metadata: encoded}); err != nil {
 		respondErr(w, err)
 		return
 	}

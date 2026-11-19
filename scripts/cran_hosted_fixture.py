@@ -29,10 +29,11 @@ TOOLS = {
 
 CLIENT = r'''
 repo <- Sys.getenv("CRATECTL_CRAN_REPOSITORY")
+kind <- Sys.getenv("CRATECTL_CRAN_TYPE", unset = "source")
 read_token <- readLines(Sys.getenv("CRATECTL_CRAN_READER"), n = 1L)
 hdr <- c(Authorization = paste("Bearer", read_token))
 stopifnot(length(read_token) == 1L, capabilities("libcurl"))
-index <- utils::available.packages(repos = repo, type = "source", method = "libcurl",
+index <- utils::available.packages(repos = repo, type = kind, method = "libcurl",
                                   headers = hdr, fields = c("MD5sum", "Imports"))
 app <- "CratectlStats"
 lib <- "Cratectl.Data"
@@ -45,7 +46,7 @@ for (package in packages) {
 }
 dest <- Sys.getenv("CRATECTL_CRAN_DOWNLOADS")
 out <- utils::download.packages(packages, destdir = dest, available = index, repos = repo,
-                                 type = "source", method = "libcurl", headers = hdr, quiet = TRUE)
+                                 type = kind, method = "libcurl", headers = hdr, quiet = TRUE)
 stopifnot(nrow(out) == 2L, setequal(out[, 1L], packages))
 refused <- Sys.getenv("CRATECTL_CRAN_REFUSED")
 if (nzchar(refused)) {
@@ -118,7 +119,7 @@ def make_archive(coordinate, *, variant='original'):
 
 
 def evaluate_cran(work, installation, authority, call, api, restart, sha, runtime, r_home, tool_archive, *,
-                  install=False, history=False, grouped=False):
+                  install=False, history=False, grouped=False, binary=False):
     pin = TOOLS.get((platform.system(), platform.machine()))
     if pin is None or sha(tool_archive) != pin[1]:
         raise ValueError('use the pinned native GNU R distribution for the host')
@@ -135,7 +136,7 @@ def evaluate_cran(work, installation, authority, call, api, restart, sha, runtim
     support = r_home if (r_home / 'share').is_dir() else r_home.parents[1] / 'share/R'
     if not all((support / component).is_dir() for component in ('share', 'include', 'doc')):
         raise ValueError('the original R support tree is incomplete')
-    if install:
+    if install or binary:
         launcher = Path(__file__).resolve().parent / 'ci/cran_private_launcher.sh'
         if sha(r_home / 'bin/R') != sha(launcher):
             raise ValueError('the install fixture needs its private launcher for stock R subprocesses')
@@ -176,8 +177,8 @@ def evaluate_cran(work, installation, authority, call, api, restart, sha, runtim
     tls = ssl.create_default_context(cafile=str(ca))
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), urllib.request.HTTPSHandler(context=tls), NoRedirect())
 
-    def request(path, actor='reader', method='GET', body=None, *, repository=REPO):
-        url = f'{authority}/cran/{repository}/src/contrib/{path}'
+    def request(path, actor='reader', method='GET', body=None, *, repository=REPO, directory='src/contrib/'):
+        url = f'{authority}/cran/{repository}/{directory}{path}'
         i = urllib.request.Request(url, data=body, method=method,
                                    headers={'Authorization': 'Bearer ' + tokens[actor]})
         try:
@@ -329,4 +330,8 @@ def evaluate_cran(work, installation, authority, call, api, restart, sha, runtim
         from cran_group_fixture import evaluate_cran_group
 
         result['group'] = evaluate_cran_group(work, authority, stock, environment, request, api, call, restart, sha)
+    if binary:
+        from cran_binary_fixture import evaluate_cran_binary
+
+        result['binary'] = evaluate_cran_binary(work, authority, stock, environment, request, api, call, restart, sha)
     return result

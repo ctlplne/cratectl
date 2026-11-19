@@ -450,7 +450,8 @@ def evaluate(args):
 
             report['cran_hosted'] = evaluate_cran(work, app, authority, call, api, restart_server, sha,
                                                   args.cran_r.resolve(), args.cran_r_home.resolve(), args.cran_tool_archive.resolve(),
-                                                  install=args.cran_install, history=args.cran_history, grouped=args.cran_group)
+                                                  install=args.cran_install, history=args.cran_history, grouped=args.cran_group,
+                                                  binary=args.cran_binary)
         if args.npm_search:
             from npm_search_fixture import evaluate_cached_search, evaluate_search
 
@@ -569,6 +570,8 @@ def evaluate(args):
         print(f"PASS: {len(report['cran_hosted']['history']['checks'])} stock R historical source archive checks")
     if args.cran_group:
         print(f"PASS: {len(report['cran_hosted']['group']['checks'])} stock R ordered CRAN group checks")
+    if args.cran_binary:
+        print(f"PASS: {len(report['cran_hosted']['binary']['checks'])} stock R hosted CRAN binary checks")
     if args.npm_search:
         print(f"PASS: {len(report['npm_search']['checks'])} stock hosted npm search checks")
         print(f"PASS: {len(report['npm_cached_search']['checks'])} stock cached npm search checks")
@@ -837,6 +840,7 @@ if __name__ == '__main__':
     parser.add_argument('--cran-install', action='store_true', help='also install the exact owned inert source archives')
     parser.add_argument('--cran-history', action='store_true', help='also exercise the reviewed historical archive directory')
     parser.add_argument('--cran-group', action='store_true', help='also exercise the digest-bound ordered CRAN group')
+    parser.add_argument('--cran-binary', action='store_true', help='also build and install a stock macOS R binary fixture')
     parser.add_argument('--npm-search', action='store_true',
                         help='also verify npm hosted and cached search using stock clients')
     parser.add_argument('--npm-search-ci-architecture', choices=('amd64', 'arm64'))
@@ -860,6 +864,8 @@ if __name__ == '__main__':
         parser.error('the owned CRAN archive replay requires the complete pinned stock R runtime')
     if options.cran_group and not all(cran_tools):
         parser.error('the owned CRAN group replay requires the complete pinned stock R runtime')
+    if options.cran_binary and (not all(cran_tools) or options.cran_ci_architecture or platform.system() != 'Darwin'):
+        parser.error('the CRAN binary replay requires the complete pinned macOS R runtime and local native reporting')
     if options.cran_r and any((options.provider_binary, options.npm_search, options.python_search_client,
                                options.cargo_toolchain, options.mcp_binary, options.oci_catalog_client,
                                options.maven_index_reader, options.promtool, options.debian_apt, options.composer_phar,

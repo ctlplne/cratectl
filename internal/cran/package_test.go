@@ -43,7 +43,7 @@ func TestDescriptionRejectsAmbiguousNamesAndExtraRecords(t *testing.T) {
 		strings.Replace(validDescription, "Version: 1.2-3", "Version: 2.0", 1),
 		strings.Replace(validDescription, "Title: Owned CRAN Fixture", "Title: Not\x00DCF", 1),
 	} {
-		if _, err := parseDescription([]byte(input), c); !errors.Is(err, ErrPackage) {
+		if _, err := parseDescription([]byte(input), c, nil); !errors.Is(err, ErrPackage) {
 			t.Errorf("accepted invalid DESCRIPTION: %v", err)
 		}
 	}

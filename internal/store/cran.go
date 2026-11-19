@@ -20,14 +20,23 @@ type CRANPackage struct {
 	Description cran.Package `json:"description"`
 	MD5         string       `json:"md5"`
 	Validated   bool         `json:"archive_validated"`
+	Built       string       `json:"built,omitempty"`
 }
 
 func ValidateCRANArtifact(a Artifact) (CRANPackage, error) {
 	coordinate, ok := cran.ParsePath(a.Path)
+	media := CRANMedia
+	var channel cran.BinaryChannel
+	binary := !ok
+	if binary {
+		channel, coordinate, ok = cran.ParseBinaryPath(a.Path)
+		media = channel.MediaType()
+	}
 	var packageInfo CRANPackage
-	if !ok || a.MediaType != CRANMedia || a.Size < 1 || a.Size > cran.MaxArchiveBytes || !uploadDigest.MatchString(a.Digest) ||
+	if !ok || a.MediaType != media || a.Size < 1 || a.Size > cran.MaxArchiveBytes || !uploadDigest.MatchString(a.Digest) ||
 		len(a.Metadata) > cranMetadataLimit || json.Unmarshal(a.Metadata, &packageInfo) != nil || !packageInfo.Validated ||
-		!packageInfo.Description.ValidFor(coordinate) || !cranMD5.MatchString(packageInfo.MD5) {
+		!packageInfo.Description.ValidFor(coordinate) || !cranMD5.MatchString(packageInfo.MD5) ||
+		(binary && !channel.ValidBuilt(packageInfo.Built, packageInfo.Description)) || (!binary && packageInfo.Built != "") {
 		return CRANPackage{}, ErrConflict
 	}
 	return packageInfo, nil
@@ -56,13 +65,27 @@ func (s *Store) PublishCRAN(ctx context.Context, i Identity, repo string, a Arti
 // CRANPackageIndex reads the current scoped source channel. Each row and the
 // complete DCF body are independently bounded before response admission.
 func (s *Store) CRANPackageIndex(ctx context.Context, i Identity, repo string, limit int, byteLimit int64) (string, error) {
+	return s.cranPackageIndex(ctx, i, repo, cran.SourceDirectory, CRANMedia, limit, byteLimit)
+}
+
+func (s *Store) CRANBinaryIndex(ctx context.Context, i Identity, repo string, channel cran.BinaryChannel, limit int, byteLimit int64) (string, error) {
+	if channel.Directory() == "" {
+		return "", ErrNotFound
+	}
+	return s.cranPackageIndex(ctx, i, repo, channel.Directory(), channel.MediaType(), limit, byteLimit)
+}
+
+func (s *Store) cranPackageIndex(ctx context.Context, i Identity, repo, directory, media string, limit int, byteLimit int64) (string, error) {
 	if byteLimit < 1 {
 		return "", ErrMetadataLimit
 	}
 	byteLimit = min(byteLimit, 8<<20)
 	var output strings.Builder
-	err := s.readCRANReferences(ctx, i, repo, cran.SourceDirectory, limit, func(metadata CRANPackage) error {
+	err := s.readCRANReferences(ctx, i, repo, directory, media, limit, func(metadata CRANPackage) error {
 		entry := metadata.Description.IndexEntry(metadata.MD5, "")
+		if metadata.Built != "" {
+			entry = "Built: " + metadata.Built + "\n" + entry
+		}
 		if int64(output.Len()+len(entry)) > byteLimit {
 			return ErrMetadataLimit
 		}
@@ -83,7 +106,7 @@ func (s *Store) CRANArchivedVersions(ctx context.Context, i Identity, repo, name
 	}
 	var versions []string
 	var newest string
-	err := s.readCRANReferences(ctx, i, repo, cran.SourceDirectory+name+"_", limit, func(metadata CRANPackage) error {
+	err := s.readCRANReferences(ctx, i, repo, cran.SourceDirectory+name+"_", CRANMedia, limit, func(metadata CRANPackage) error {
 		version := metadata.Description["Version"]
 		versions = append(versions, version)
 		if newest == "" || cran.CompareVersions(version, newest) > 0 {
@@ -106,7 +129,7 @@ func (s *Store) CRANArchivedVersions(ctx context.Context, i Identity, repo, name
 	return archived, nil
 }
 
-func (s *Store) readCRANReferences(ctx context.Context, i Identity, repo, prefix string, limit int, consume func(CRANPackage) error) error {
+func (s *Store) readCRANReferences(ctx context.Context, i Identity, repo, prefix, media string, limit int, consume func(CRANPackage) error) error {
 	if limit < 1 {
 		return ErrMetadataLimit
 	}
@@ -124,7 +147,7 @@ CASE WHEN octet_length(a.metadata::text)<=$6 THEN a.metadata ELSE NULL END
 FROM cratectl.artifacts a `+decisionJoin+nativeLifecycleJoin+`
 WHERE a.repository=$1 AND starts_with(a.path,$2) AND a.media_type=$3 AND NOT COALESCE(nl.deleted,false)
  AND COALESCE(d.decision,a.decision)<>'denied' AND (NOT $4::boolean OR COALESCE(d.decision,a.decision)='allowed')
-ORDER BY a.path COLLATE "C" LIMIT $5`, repo, prefix, CRANMedia, r.RequireReview, limit+1, cranMetadataLimit)
+ORDER BY a.path COLLATE "C" LIMIT $5`, repo, prefix, media, r.RequireReview, limit+1, cranMetadataLimit)
 		if err != nil {
 			return err
 		}
@@ -133,7 +156,7 @@ ORDER BY a.path COLLATE "C" LIMIT $5`, repo, prefix, CRANMedia, r.RequireReview,
 			if count == limit {
 				return ErrMetadataLimit
 			}
-			a := Artifact{MediaType: CRANMedia}
+			a := Artifact{MediaType: media}
 			if err := rows.Scan(&a.Path, &a.Digest, &a.Size, &a.Metadata); err != nil {
 				return err
 			}
