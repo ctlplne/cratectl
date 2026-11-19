@@ -105,10 +105,12 @@ def public_nuget(h):
         for name, raw in packages.items():
             cache_file = installed / package_path(name)
             sha_file = cache_file.with_name(cache_file.name + '.sha512')
-            # The stock client's lock and installation hash use NuGet's signed
-            # package content definition. The ZIP digest remains independent.
+            metadata = json.loads((cache_file.parent / '.nupkg.metadata').read_text())
+            # The stock client records the archive hash in the sidecar and
+            # the install content hash in the package metadata and lock file.
             h.check('restored archive bytes and stock content hash match ' + name + ' ' + label,
-                    cache_file.read_bytes() == raw and sha_file.read_text().strip() == dependencies[name]['contentHash'])
+                    cache_file.read_bytes() == raw and sha_file.read_text().strip() == base64.b64encode(hashlib.sha512(raw).digest()).decode()
+                    and metadata['contentHash'] == dependencies[name]['contentHash'])
             if lock is None:
                 checkpoint[name] = base64.b64decode(dependencies[name]['contentHash'], validate=True).hex()
         return lock_bytes

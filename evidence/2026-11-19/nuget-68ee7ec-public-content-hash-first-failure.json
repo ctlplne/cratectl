@@ -1,0 +1,38 @@
+{
+  "candidate": "68ee7ec5bfe807adfbf9b80f1bffbd004bbd8193",
+  "status": "failed",
+  "observed_at": "2026-11-19T05:53:44.275524+05:30",
+  "definition": "DEFECT.0190",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres_server_version": "16.16",
+  "completed_checks": 7,
+  "first_failed_check": "restored archive bytes and stock content hash match Polly independent-vendor-bytes",
+  "original_private_report": {
+    "path": ".private/conformance/f865b28ccd/conformance-f865b28ccd.json",
+    "bytes": 6507,
+    "sha256": "4a71b104bad8d1121db6f23e00ace6cd5db37737d83217fe3d425adc6450fd6a"
+  },
+  "observations": [
+    {
+      "package": "Polly",
+      "version": "8.5.2",
+      "exact_vendor_archive_sha256": "22b374e9d74e209d1562e55e7dedcbbdf5b4917db4013450904060f420689910",
+      "installed_sidecar_matches_complete_archive_sha512": true,
+      "installation_metadata_matches_stock_lock_content_hash": true,
+      "before_proxy_restore": true
+    },
+    {
+      "package": "Polly.Core",
+      "version": "8.5.2",
+      "exact_vendor_archive_sha256": "3c0c2c5aaac289e09fffb63cedf57b5cc2a8698d9a6c240db48fb8a32c8c89f9",
+      "installed_sidecar_matches_complete_archive_sha512": true,
+      "installation_metadata_matches_stock_lock_content_hash": true,
+      "before_proxy_restore": true
+    }
+  ],
+  "goal_complete": false,
+  "broad_readiness": false,
+  "limits": [
+    "The first attempt failed in the independent stock lockfile fixture. No qualifying cratectl public-origin restore occurred. The signed archive bytes matched their vendor pins. The two stock SHA-512 records have different documented input scopes."
+  ]
+}
