@@ -1,0 +1,74 @@
+{
+  "candidate": "b730f7ec025588671e952f2f388423757ccfb284",
+  "observed_at": "2026-11-19T06:14:30.405826+05:30",
+  "status": "passed",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "gates": {
+    "make build": "passed",
+    "make test": "passed",
+    "make race": "passed",
+    "make lint": "passed"
+  },
+  "regression": "TestDebianHostedBindsExactPackagesAndCurrentTenantPolicy",
+  "archive_checks": [
+    "plain and gzip control members",
+    "Debian epoch, revision and architecture bind to the original .deb",
+    "access grants and exact digest policy filter the package listing",
+    "native dependency stanzas, size and SHA-256 are preserved",
+    "duplicate coordinate protection, range and conditional reads",
+    "handler restart and same-coordinate tenant isolation"
+  ],
+  "binary_sha256": {
+    "cratectld": "9dd77380da5580ea279cdbf00090b7da11ff42de13171599b25e11786d574ea8",
+    "cratectl": "ac2c6ecb31bdef7c32dcbc7014b929af199cf05cc4db8b251fddb92e67456888"
+  },
+  "source_sha256": [
+    {
+      "path": "internal/debian/archive.go",
+      "sha256": "53f5664c525245812953d13dc937fb14825ba70a365ab3fc25ac444e70b23173"
+    },
+    {
+      "path": "internal/debian/control.go",
+      "sha256": "533821382f7ab4dbf7bc4d79bf4e2cd5e2a16ddab915c2dbf13631c097f12287"
+    },
+    {
+      "path": "internal/debian/archive_test.go",
+      "sha256": "74154fb56618e7658588f596f6b86a577f542075c779209ae0cab2c01aff3f8c"
+    },
+    {
+      "path": "internal/server/debian.go",
+      "sha256": "9bcb22f5437305e34cce0f1d6e4457af8ebd62102cd1fae4a61229043f67949a"
+    },
+    {
+      "path": "internal/server/debian_integration_test.go",
+      "sha256": "6103b91cbb7cc0c00af9673c3a4b5aca558714cf0316ea8287567ec56dc81c6b"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "80407ebfa4d0169b52a0ac63d4dc96486d55d66e254e75aefd20625495d831cf"
+    },
+    {
+      "path": "internal/store/debian.go",
+      "sha256": "57af47e337d5edae69793d7f0b5d76e74281ffcd436d02eae505d078147dca85"
+    },
+    {
+      "path": "internal/store/artifact_read.go",
+      "sha256": "993e01351a49d98c913cbab3e7967578455d694a928485ef2b4adbcfc7647dc5"
+    },
+    {
+      "path": "internal/store/lifecycle_artifact.go",
+      "sha256": "97c5774aa601949476d57c6ee0d293b06fe7bd604d3b6e826532cfdd021aafd4"
+    },
+    {
+      "path": "api/openapi.yaml",
+      "sha256": "d62fecf7c792e0a220e5a58c73638b65a5f3a27984dba5223fdaa9ea8ad4cab5"
+    }
+  ],
+  "integration_log_sha256": "12e21e37054424678db3a6e7c7c57e8d5042ef3e893eca7532c1faedfec3b627",
+  "limits": [
+    "Hosted Debian intake and derived flat package indexes on a single native macOS ARM64 PostgreSQL 16.16 fixture. Signed repository metadata, stock APT restore, dists hierarchy, additional control compression profiles and proxy or group modes remain open."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

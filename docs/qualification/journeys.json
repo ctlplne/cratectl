@@ -2098,15 +2098,19 @@
     {
       "id": "J.APT.HOSTED",
       "capability": "FMT.APT.HOSTED",
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
+      "state": "implementing",
+      "candidate": "b730f7ec025588671e952f2f388423757ccfb284",
+      "evidence": [
+        "evidence/2026-11-19/debian-b730f7e-hosted-intake-native.json"
+      ],
       "required": [
         "publish/consume exact bytes where applicable",
         "permissions/tenant isolation",
         "policy denial",
         "failure/recovery"
-      ]
+      ],
+      "limits": "Owned PostgreSQL 16.16 and source gates passed for Debian archive intake, exact-coordinate publication, policy-filtered Packages indexes, verified range reads, restart and tenant isolation on b730f7e. Stock APT and signed Release publication remain open.",
+      "next_action": "Bind externally signed Release metadata and run an isolated stock APT dependency restore."
     },
     {
       "id": "J.APT.PROXY",

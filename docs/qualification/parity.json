@@ -5150,9 +5150,9 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "Bounded Debian binary package intake and current-policy flat indexes.",
       "surfaces": {
-        "api": null,
+        "api": "/apt/REPOSITORY/",
         "cli": null,
         "ui": null
       },
@@ -5182,11 +5182,13 @@
         "upstream outage",
         "delete/restore"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "No implementation or native-client proof yet.",
-      "next_action": "Implement apt hosted and execute the complete stock-client journey."
+      "state": "implementing",
+      "candidate": "b730f7ec025588671e952f2f388423757ccfb284",
+      "evidence": [
+        "evidence/2026-11-19/debian-b730f7e-hosted-intake-native.json"
+      ],
+      "limits": "Owned PostgreSQL 16.16 and source gates passed for Debian archive intake, exact-coordinate publication, policy-filtered Packages indexes, verified range reads, restart and tenant isolation on b730f7e. Stock APT and signed Release publication remain open.",
+      "next_action": "Bind externally signed Release metadata and run an isolated stock APT dependency restore."
     },
     {
       "id": "FMT.APT.PROXY",

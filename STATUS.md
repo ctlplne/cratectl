@@ -8,6 +8,12 @@ Broad readiness,security and packaging remain unqualified.
 
 ## Latest whole accepted source
 
+`df7a07a` passed all 32 original jobs across nine workflows. The unchanged
+verifier accepted 88 reports. Independent comparison matched 25 safe job
+summaries, the selection summary, 43 exact source contracts and three transfer
+records. The original combined Maven index and all eight JVM jobs passed.
+[Exact ordered Maven campaign evidence](evidence/2026-11-19/github-df7a07a-exact-local-accepted.json)
+
 `7295441` passed all 32 original jobs across nine workflows. The unchanged
 verifier accepted 88 reports. Independent comparison matched 25 safe job
 summaries, the selection summary, 41 exact source contracts and three transfer
@@ -789,6 +795,13 @@ The original `541ea5d` campaign closed with 29 passes and one SBT2 failure
 across eight workflows. The terminal record retains 23 safe job summaries,
 the selection summary and 42 underlying report records.
 [Original Maven candidate outcomes](evidence/2026-11-19/github-541ea5d-original-completed.json)
+
+`b730f7e` passed the real PostgreSQL 16.16 Debian hosted regression and the
+build, unit, race and lint gates. The fixture covered plain and gzip control
+intake, exact archive identity, current package policy, dependency metadata,
+range reads, restart and isolated tenant bytes. Signed Release publication
+and a stock APT dependency restore remain open.
+[Debian hosted intake evidence](evidence/2026-11-19/debian-b730f7e-hosted-intake-native.json)
 
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities
