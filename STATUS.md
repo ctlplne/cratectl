@@ -882,8 +882,14 @@ Exact `60cd693` passed nine Composer and NuGet regressions on PostgreSQL
 and byte retrieval use separate configured credentials and require the
 upstream archive's SHA-256. The hosted lifecycle regression required the
 retained exact ZIP before restoration and preserved package bytes after
-restart. The original `55ccc7c` jobs exercise the stock Composer proxy.
+restart. Both original `55ccc7c` Linux jobs passed 73 total checks and
+matched 33 source files per job. The stock proxy fixture used two scoped
+upstream credentials and a digest-bound catalog. Composer reinstalled the
+unchanged lock after restart with the origin offline and made zero new
+upstream requests. A denied digest and an unapproved archive address
+stopped the corresponding transfer.
 [Composer proxy and lifecycle PostgreSQL evidence](evidence/2026-11-19/composer-60cd693-checksum-proxy-postgres.json)
+[Original stock Composer proxy reports](evidence/2026-11-19/github-55ccc7c-composer-checksum-proxy-native.json)
 
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities

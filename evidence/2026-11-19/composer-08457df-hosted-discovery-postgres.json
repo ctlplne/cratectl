@@ -1,0 +1,31 @@
+{
+  "candidate": "08457dfc784972eee6933033e1393761fcbe3f38",
+  "status": "passed",
+  "observed_at": "2026-11-19T02:30:55.224019+00:00",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "binary_sha256": {
+    "cratectl": "c23a1edc4366693b473367d5a1ae3857b1905e7432e59b9fae92f11f226d578b",
+    "cratectld": "0851b7e11c2279e058bff5152ad2a6aabda91d5176bab671f4d642377b40aab8"
+  },
+  "regressions": [
+    "TestComposerGroupSelectsOneOwnerAndFencesOldDownloadURLs",
+    "TestComposerHostedBindsArchiveAndCurrentTenantPolicy",
+    "TestComposerHostedSeparatesDevelopmentMetadataFromTaggedVersions",
+    "TestComposerHostedLifecycleRestoresExactRetainedDistribution",
+    "TestComposerProxyBindsStrongCatalogAndSeparateDownloadAuthority",
+    "TestComposerHostedSearchAndListFollowCurrentPolicy"
+  ],
+  "integration_log_sha256": "fedf1bf622c0fdecfac429050ed6895784eecbcb8fa813c323f281ed48f9531e",
+  "gates": {
+    "make build": "passed",
+    "make test": "passed",
+    "make race": "passed",
+    "make lint": "passed"
+  },
+  "limits": [
+    "Local discovery covers hosted name and description search, literal wildcard filtering, current review, distinct versions, scoped package type and repository grants. Stock Composer search is qualified separately."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

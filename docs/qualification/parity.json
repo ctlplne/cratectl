@@ -8194,7 +8194,9 @@
       "clients": [
         "composer 2"
       ],
-      "client_versions": {},
+      "client_versions": {
+        "composer": "2.11.2 on Linux x64 and ARM64"
+      },
       "test_data": "Two nontrivial versions plus a dependency package; same coordinates in two tenants.",
       "permission_cases": [
         "reader denial on publish",
@@ -8211,12 +8213,13 @@
         "delete/restore"
       ],
       "state": "implementing",
-      "candidate": "60cd693c4a7b06442ee10814db4db0ed32ffd6f7",
+      "candidate": "55ccc7c1146309003c9254d7db6de9465dabc525",
       "evidence": [
-        "evidence/2026-11-19/composer-60cd693-checksum-proxy-postgres.json"
+        "evidence/2026-11-19/composer-60cd693-checksum-proxy-postgres.json",
+        "evidence/2026-11-19/github-55ccc7c-composer-checksum-proxy-native.json"
       ],
-      "limits": "Exact 60cd693 passed named Composer and NuGet tests on PostgreSQL 16.16 and the four source gates. The Composer proxy checked original SHA-256, dependency metadata, separate scoped auth, review, archive restart, no-cache and metadata locators outside the approved authority through a controlled fixture. Stock Composer proxy jobs are selected at 55ccc7c.",
-      "next_action": "Retain the original stock proxy evidence and qualify public origin variants, more graphs and additional environments."
+      "limits": "Both original 55ccc7c Linux jobs passed 12 stock Composer 2.11.2 checksum-proxy checks within a 73-check combined profile and matched 33 source hashes each. The fixture used PHP 8.3.6, real PostgreSQL 16.15, separately scoped catalog and archive credentials and an upstream SHA-256 extension. Stock Composer preserved the exact lock after restart with the origin offline and zero new origin requests, then refused the revoked digest. Local PostgreSQL 16.16 also checked no-cache behavior, bad bytes and package metadata mismatch.",
+      "next_action": "Qualify public origins without this SHA-256 extension, larger dependency graphs and additional runtime environments."
     },
     {
       "id": "FMT.COMPOSER.GROUP",
@@ -8399,10 +8402,10 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "Policy-filtered hosted Composer text search and native package-name enumeration.",
       "surfaces": {
-        "api": null,
-        "cli": null,
+        "api": "/composer/REPOSITORY/search.json",
+        "cli": "composer search",
         "ui": null
       },
       "core": true,
@@ -8431,11 +8434,13 @@
         "upstream outage",
         "delete/restore"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "No implementation or native-client proof yet.",
-      "next_action": "Implement composer search and execute the complete stock-client journey."
+      "state": "implementing",
+      "candidate": "08457dfc784972eee6933033e1393761fcbe3f38",
+      "evidence": [
+        "evidence/2026-11-19/composer-08457df-hosted-discovery-postgres.json"
+      ],
+      "limits": "Exact 08457df passed the six Composer regressions against PostgreSQL 16.16 and all four source gates. Hosted search used exact allowed package names and inspected ZIP descriptions, with literal wildcard filters and current review. The original Linux stock Composer discovery runs are selected separately.",
+      "next_action": "Retain the stock CLI evidence, then qualify group and cached proxy discovery under current source and policy."
     },
     {
       "id": "FMT.COMPOSER.AUTHORIZATION",

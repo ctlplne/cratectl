@@ -2675,9 +2675,10 @@
       "id": "J.COMPOSER.PROXY",
       "capability": "FMT.COMPOSER.PROXY",
       "state": "implementing",
-      "candidate": "60cd693c4a7b06442ee10814db4db0ed32ffd6f7",
+      "candidate": "55ccc7c1146309003c9254d7db6de9465dabc525",
       "evidence": [
-        "evidence/2026-11-19/composer-60cd693-checksum-proxy-postgres.json"
+        "evidence/2026-11-19/composer-60cd693-checksum-proxy-postgres.json",
+        "evidence/2026-11-19/github-55ccc7c-composer-checksum-proxy-native.json"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -2685,8 +2686,8 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Exact 60cd693 passed named Composer and NuGet tests on PostgreSQL 16.16 and the four source gates. The Composer proxy checked original SHA-256, dependency metadata, separate scoped auth, review, archive restart, no-cache and metadata locators outside the approved authority through a controlled fixture. Stock Composer proxy jobs are selected at 55ccc7c.",
-      "next_action": "Retain the original stock proxy evidence and qualify public origin variants, more graphs and additional environments."
+      "limits": "Both original 55ccc7c Linux jobs passed 12 stock Composer 2.11.2 checksum-proxy checks within a 73-check combined profile and matched 33 source hashes each. The fixture used PHP 8.3.6, real PostgreSQL 16.15, separately scoped catalog and archive credentials and an upstream SHA-256 extension. Stock Composer preserved the exact lock after restart with the origin offline and zero new origin requests, then refused the revoked digest. Local PostgreSQL 16.16 also checked no-cache behavior, bad bytes and package metadata mismatch.",
+      "next_action": "Qualify public origins without this SHA-256 extension, larger dependency graphs and additional runtime environments."
     },
     {
       "id": "J.COMPOSER.GROUP",
@@ -2723,15 +2724,19 @@
     {
       "id": "J.COMPOSER.SEARCH",
       "capability": "FMT.COMPOSER.SEARCH",
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
+      "state": "implementing",
+      "candidate": "08457dfc784972eee6933033e1393761fcbe3f38",
+      "evidence": [
+        "evidence/2026-11-19/composer-08457df-hosted-discovery-postgres.json"
+      ],
       "required": [
         "publish/consume exact bytes where applicable",
         "permissions/tenant isolation",
         "policy denial",
         "failure/recovery"
-      ]
+      ],
+      "limits": "Exact 08457df passed the six Composer regressions against PostgreSQL 16.16 and all four source gates. Hosted search used exact allowed package names and inspected ZIP descriptions, with literal wildcard filters and current review. The original Linux stock Composer discovery runs are selected separately.",
+      "next_action": "Retain the stock CLI evidence, then qualify group and cached proxy discovery under current source and policy."
     },
     {
       "id": "J.COMPOSER.AUTHORIZATION",
