@@ -998,8 +998,11 @@ downloaded the exact application and dependency after restart with the
 origin offline and zero new origin requests. Current review and a changed
 catalog entry fenced known URLs. The PostgreSQL concurrency check confirmed
 that a superseded archive download was refused and its lease recorded as
-failed. Native Linux proxy and mirrors that supply only MD5 remain open.
+failed. Both original `8a56a19` Linux jobs passed the 57-check source
+profile with R 4.3.3 and PostgreSQL 16.16. Each matched 39 source hashes.
+Mirrors that supply only MD5 remain open.
 [CRAN proxy evidence](evidence/2026-11-19/cran-41e9110-checksum-proxy-native.json)
+[Original Linux proxy reports](evidence/2026-11-19/github-8a56a19-cran-hosted-stock-r-native.json)
 [First concurrent test result](evidence/2026-11-19/cran-b355818-proxy-superseded-fixture-first-failure.json)
 
 The original `55ccc7c` Linux x64 runtime report stopped in durable jobs at

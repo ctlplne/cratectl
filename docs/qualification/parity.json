@@ -9742,7 +9742,8 @@
         "R"
       ],
       "client_versions": {
-        "R macOS ARM64": "4.6.2"
+        "R macOS ARM64": "4.6.2",
+        "R Linux x64 and ARM64": "4.3.3"
       },
       "test_data": "A checksum-bearing owned catalog with an application, a required dependency and one same-coordinate upstream replacement.",
       "permission_cases": [
@@ -9760,13 +9761,14 @@
         "delete/restore"
       ],
       "state": "implementing",
-      "candidate": "41e911021aa14945304561e3d35ced0eebffef8e",
+      "candidate": "8a56a196cc486479d6cbd5d1c6e2275dd195317c",
       "evidence": [
         "evidence/2026-11-19/cran-41e9110-checksum-proxy-native.json",
-        "evidence/2026-11-19/cran-b355818-proxy-superseded-fixture-first-failure.json"
+        "evidence/2026-11-19/cran-b355818-proxy-superseded-fixture-first-failure.json",
+        "evidence/2026-11-19/github-8a56a19-cran-hosted-stock-r-native.json"
       ],
-      "limits": "Exact 41e9110 passed 12 stock R checksum-proxy checks within a 69-check macOS ARM64 profile on PostgreSQL 16.16. The configured mirror supplied SHA-256 and MD5 for each archive. Stock R obtained the exact app and dependency after restart with the origin offline and zero new origin requests. Current denial and catalog replacement fenced prior pinned URLs, and a concurrent PostgreSQL regression confirmed that a superseded download released its lease with a durable refusal.",
-      "next_action": "Qualify the original Linux x64 and ARM64 proxy jobs, ordinary mirrors with an independent strong-checksum authority, binary and historical proxy, and mixed groups."
+      "limits": "Exact 41e9110 passed 12 stock R checksum-proxy checks within a 69-check macOS ARM64 profile on PostgreSQL 16.16. The configured mirror supplied SHA-256 and MD5 for each archive. Stock R obtained the exact app and dependency after restart with the origin offline and zero new origin requests. Current denial and catalog replacement fenced prior pinned URLs, and a concurrent PostgreSQL regression confirmed that a superseded download released its lease with a durable refusal. Both original 8a56a19 Linux x64 and ARM64 jobs passed 57 checks and matched 39 source files with R 4.3.3 and PostgreSQL 16.16.",
+      "next_action": "Qualify ordinary mirrors with an independent strong-checksum authority, binary and historical proxy, mixed groups and broader production workloads."
     },
     {
       "id": "FMT.CRAN.GROUP",
