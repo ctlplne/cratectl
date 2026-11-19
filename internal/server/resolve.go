@@ -107,7 +107,7 @@ func (s *Server) resolve(ctx context.Context, i store.Identity, repo store.Repos
 func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.Repository, p string, force bool) (resolvedArtifact, error) {
 	result := resolvedArtifact{source: repo}
 	nugetCatalog := repo.Format == "nuget" && strings.HasPrefix(p, "nuget-catalog/")
-	admitGeneration := repo.Format == "oci" || repo.Format == "go" || repo.Format == "cargo" || nugetCatalog
+	admitGeneration := repo.Format == "oci" || repo.Format == "go" || repo.Format == "cargo" || repo.Format == "nuget"
 	allowStale := func(entry store.Retrieval) bool {
 		return !nugetCatalog && entry.StalePermitted() && (repo.Format != "cargo" || entry.SourceStale > 0)
 	}
@@ -123,7 +123,7 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 		if e == nil && lease.State != "fetching" && lease.Fresh() && !force {
 			switch lease.State {
 			case "ready":
-				if nugetCatalog {
+				if repo.Format == "nuget" {
 					result.admissions = []store.NativeAdmission{{Repository: repo.Name, Path: p, Generation: lease.Generation}}
 				}
 				result.cache = "hit"
@@ -143,6 +143,9 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 				}
 				return result, e
 			case "negative":
+				if nugetCatalog {
+					result.admissions = []store.NativeAdmission{{Repository: repo.Name, Path: p, Generation: lease.Generation}}
+				}
 				return result, s.proxyAbsence(ctx, i, repo, p)
 			case "failed":
 				if lease.LastError == "upstream_checksum_fork" || lease.LastError == "upstream_checksum_authority_blocked" || lease.LastError == "upstream_checksum_legacy_review" {
@@ -256,7 +259,7 @@ func (s *Server) resolveProxy(ctx context.Context, i store.Identity, repo store.
 			}
 			return result, e
 		case "negative":
-			if repo.Format == "go" || repo.Format == "cargo" {
+			if repo.Format == "go" || repo.Format == "cargo" || nugetCatalog {
 				result.admissions = []store.NativeAdmission{{Repository: repo.Name, Path: p, Generation: refreshed.Generation}}
 			}
 			return result, s.proxyAbsence(ctx, i, repo, p, result.admissions...)
@@ -640,7 +643,11 @@ func (s *Server) guardResolved(ctx context.Context, i store.Identity, a resolved
 		}
 		return current, nil
 	}
-	if a.ociRef != "" {
+	if a.source.Format == "nuget" && len(a.groups) == 1 {
+		current, e = s.DB.NuGetGroupArtifact(ctx, i, a.groups[0], snapshot, a.artifact.Path, s.NativeVersionLimit, s.NativeMetadataBytes, a.admissions...)
+	} else if a.source.Format == "nuget" && a.source.Mode == "proxy" {
+		current, e = s.DB.NuGetProxyArtifact(ctx, i, a.source.Name, a.artifact.Path, a.source.SourceRevision, a.admissions...)
+	} else if a.ociRef != "" {
 		endpoint := a.source.Name
 		if len(a.groups) > 0 {
 			endpoint = a.groups[0]

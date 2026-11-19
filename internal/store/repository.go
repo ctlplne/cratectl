@@ -9,6 +9,7 @@ import (
 
 	"ctlplne.dev/cratectl/internal/cargo"
 	"ctlplne.dev/cratectl/internal/gomodule"
+	"ctlplne.dev/cratectl/internal/nuget"
 	"ctlplne.dev/cratectl/internal/upstream"
 	"github.com/jackc/pgx/v5"
 )
@@ -143,8 +144,7 @@ func validateRepository(r *Repository, retainedGoProxy bool) error {
 	if retainedGoProxy && (r.Format != "go" || r.Mode != "proxy" || r.Settings.GoChecksumAuthority == nil || !r.Settings.Cache.RequireChecksum) {
 		return errors.New("retained Go proxy configuration requires explicit checksum authority and checksum enforcement")
 	}
-	if r.Mode != "hosted" && r.Format != "generic" && r.Format != "maven" && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" && r.Format != "cargo" &&
-		!(r.Format == "nuget" && r.Mode == "proxy") &&
+	if r.Mode != "hosted" && r.Format != "generic" && r.Format != "maven" && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" && r.Format != "cargo" && r.Format != "nuget" &&
 		!(r.Format == "go" && (r.Mode == "group" || r.Mode == "proxy" && retainedGoProxy)) {
 		return errors.New("proxy/group native adapters not yet implemented for this format")
 	}
@@ -250,6 +250,13 @@ func validateRepository(r *Repository, retainedGoProxy bool) error {
 				key, err := cargo.NameKey(name)
 				if err != nil || key != name {
 					return errors.New("Cargo namespace owners require a lowercase crate name followed by a slash")
+				}
+			}
+			if r.Format == "nuget" {
+				name := strings.TrimSuffix(prefix, "/")
+				key, err := nuget.IDKey(name)
+				if err != nil || key != name {
+					return errors.New("NuGet namespace owners require a canonical lowercase package ID followed by a slash")
 				}
 			}
 		}

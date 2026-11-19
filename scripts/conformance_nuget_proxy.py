@@ -26,14 +26,14 @@ APPLICATION = 'Cratectl.Proxy.Application'
 DEPENDENCY = 'Cratectl.Proxy.Dependency'
 
 
-def inert_package(package_id, dependency=None):
+def inert_package(package_id, dependency=None, identity=''):
     dependencies = '' if dependency is None else (
         f'<dependencies><group targetFramework="net10.0"><dependency id="{dependency}" '
         f'version="[{VERSION}]" /></group></dependencies>')
     manifest = (f'<?xml version="1.0" encoding="utf-8"?><package><metadata><id>{package_id}</id>'
                 f'<version>{VERSION}</version><authors>cratectl fixture</authors>'
                 f'<description>Owned inert proxy fixture</description>{dependencies}</metadata></package>').encode()
-    payload = f'Owned inert content for {package_id}\n'.encode()
+    payload = f'Owned inert content for {package_id}{identity}\n'.encode()
     stream = io.BytesIO()
     with zipfile.ZipFile(stream, 'w', allowZip64=False) as archive:
         for name, value in ((package_id + '.nuspec', manifest), ('lib/net10.0/_._', b''), ('content/owned.txt', payload)):
@@ -80,7 +80,7 @@ def flat_origin(files):
                 raise ValueError('owned NuGet origin did not stop')
 
 
-def proxy_nuget(h):
+def proxy_nuget(h, *, group=False):
     scope = h.PRIVATE / 'cratectl-nuget-proxy'
     scope.mkdir(mode=0o700)
     native = f'/nuget/{REPOSITORY}/'
@@ -117,16 +117,20 @@ def proxy_nuget(h):
         dotnet_sha = hashlib.file_digest(binary, 'sha256').hexdigest()
     h.result['nuget_proxy'] = {'sdk': sdk, 'dotnet_sha256': dotnet_sha, 'fixtures': fixtures, 'loopback_http': True}
 
-    config = scope / 'NuGet.Config'
-    document = XML.Element('configuration')
-    sources = XML.SubElement(document, 'packageSources')
-    XML.SubElement(sources, 'clear')
-    XML.SubElement(sources, 'add', key='cratectl', value=h.BASE + native + 'index.json', allowInsecureConnections='true')
-    credentials = XML.SubElement(XML.SubElement(document, 'packageSourceCredentials'), 'cratectl')
-    XML.SubElement(credentials, 'add', key='Username', value='token')
-    XML.SubElement(credentials, 'add', key='ClearTextPassword', value=h.tokens['reader'])
-    XML.ElementTree(document).write(config, encoding='utf-8', xml_declaration=True)
-    config.chmod(0o600)
+    def source_config(repository):
+        config = scope / (repository + '.config')
+        document = XML.Element('configuration')
+        sources = XML.SubElement(document, 'packageSources')
+        XML.SubElement(sources, 'clear')
+        XML.SubElement(sources, 'add', key='cratectl', value=h.BASE + f'/nuget/{repository}/index.json', allowInsecureConnections='true')
+        credentials = XML.SubElement(XML.SubElement(document, 'packageSourceCredentials'), 'cratectl')
+        XML.SubElement(credentials, 'add', key='Username', value='token')
+        XML.SubElement(credentials, 'add', key='ClearTextPassword', value=h.tokens['reader'])
+        XML.ElementTree(document).write(config, encoding='utf-8', xml_declaration=True)
+        config.chmod(0o600)
+        return config
+
+    config = source_config(REPOSITORY)
 
     def mutate(path, data):
         return h.req(management + path, method='PUT', data=data, key=uuid.uuid4().hex)[0]
@@ -135,7 +139,7 @@ def proxy_nuget(h):
         return mutate('/decisions', {'path': f'nuget-packages/{package_id.lower()}/{VERSION}.nupkg',
                                        'digest': fixtures[package_id]['nupkg'], 'decision': decision})
 
-    def restore(label, allowed=True):
+    def restore(label, allowed=True, *, configfile=config, expected=packages):
         consumer = scope / label
         consumer.mkdir(mode=0o700)
         project = consumer / 'Owned.csproj'
@@ -147,7 +151,7 @@ def proxy_nuget(h):
         installed = consumer / 'packages'
         extra = dict(public_env, NUGET_PACKAGES=str(installed), NUGET_HTTP_CACHE_PATH=str(consumer / 'http-cache'),
                      NUGET_PLUGINS_CACHE_PATH=str(consumer / 'plugin-cache'))
-        args = [dotnet, 'restore', project, '--configfile', config, '--packages', installed, '--no-http-cache',
+        args = [dotnet, 'restore', project, '--configfile', configfile, '--packages', installed, '--no-http-cache',
                 '--force', '--verbosity', 'minimal']
         with (consumer / 'restore.log').open('xb') as log:
             code, output = run_owned_client(args, consumer, extra, timeout=70, capture_limit=32 << 10, output_sink=log)
@@ -157,8 +161,8 @@ def proxy_nuget(h):
         h.check(f'stock dotnet restore succeeds {label}', code == 0)
         assets = json.loads((consumer / 'obj/project.assets.json').read_text())
         h.check(f'stock dotnet resolves the exact application and transitive dependency {label}',
-                set(assets['libraries']) == {f'{package_id}/{VERSION}' for package_id in packages})
-        for package_id, (package, manifest, payload) in packages.items():
+                set(assets['libraries']) == {f'{package_id}/{VERSION}' for package_id in expected})
+        for package_id, (package, manifest, payload) in expected.items():
             key = package_id.lower()
             folder = installed / key / VERSION
             h.check(f'stock dotnet retains exact package, manifest and inert content for {package_id} {label}',
@@ -198,3 +202,7 @@ def proxy_nuget(h):
         restore('allowed-again')
         h.check('repeated policy changes and isolated stock restores keep the warm origin idle', len(requests) == count)
         h.result['nuget_proxy']['origin_requests'] = count
+        if group:
+            from conformance_nuget_group import nuget_group
+
+            nuget_group(h, files, requests, packages, package_path, restore, source_config)

@@ -57,10 +57,6 @@ func requestCredential(r *http.Request) (string, error) {
 }
 
 func (s *Server) nuget(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, p string) {
-	if repo.Mode != "hosted" && repo.Mode != "proxy" {
-		fail(w, 405, "nuget_mode_unavailable", "Use a hosted NuGet repository or a flat-container proxy.")
-		return
-	}
 	if strings.TrimSuffix(p, "/") == nugetPublishEndpoint {
 		if r.Method != "PUT" {
 			w.Header().Set("Allow", "PUT")
@@ -104,7 +100,7 @@ func (s *Server) nuget(w http.ResponseWriter, r *http.Request, i store.Identity,
 			fail(w, 503, "public_url_required", "Configure the server's public HTTP(S) URL before using NuGet discovery.")
 			return
 		}
-		if repo.Mode == "proxy" {
+		if repo.Mode != "hosted" {
 			if p != "index.json" {
 				respondErr(w, store.ErrNotFound)
 				return
@@ -144,9 +140,13 @@ func (s *Server) nuget(w http.ResponseWriter, r *http.Request, i store.Identity,
 		respondErr(w, store.ErrNotFound)
 		return
 	}
+	ctx, cancel := context.WithTimeout(r.Context(), 120*time.Second)
+	defer cancel()
+	r = r.WithContext(ctx)
 	if len(parts) == 2 && parts[1] == "index.json" {
 		var versions []string
-		if repo.Mode == "proxy" {
+		switch repo.Mode {
+		case "proxy":
 			resolved, err := s.resolveProxy(r.Context(), i, repo, store.NuGetProxyCatalogPath(id), forceRefresh(r))
 			if err != nil {
 				respondErr(w, err)
@@ -157,7 +157,10 @@ func (s *Server) nuget(w http.ResponseWriter, r *http.Request, i store.Identity,
 				return
 			}
 			versions, e = s.DB.NuGetProxyVersions(r.Context(), i, repo.Name, id, resolved.artifact, resolved.admissions[0].Generation, s.NativeVersionLimit, s.NativeMetadataBytes)
-		} else {
+		case "group":
+			view, _, err := s.nugetGroupView(r, i, repo, id, "")
+			versions, e = view.Versions, err
+		default:
 			versions, e = s.DB.NuGetVersions(r.Context(), i, repo.Name, id, s.NativeVersionLimit, s.NativeMetadataBytes)
 		}
 		if e != nil {
@@ -180,10 +183,12 @@ func (s *Server) nuget(w http.ResponseWriter, r *http.Request, i store.Identity,
 		respondErr(w, store.ErrNotFound)
 		return
 	}
-	ctx, cancel := context.WithTimeout(r.Context(), 120*time.Second)
-	defer cancel()
-	r = r.WithContext(ctx)
-	resolved, e := s.resolve(ctx, i, repo, store.NuGetPath(id, version), forceRefresh(r))
+	var resolved resolvedArtifact
+	if repo.Mode == "group" {
+		resolved, e = s.resolveNuGetGroup(r, i, repo, id, version)
+	} else {
+		resolved, e = s.resolve(ctx, i, repo, store.NuGetPath(id, version), forceRefresh(r))
+	}
 	if e != nil {
 		respondErr(w, e)
 		return
@@ -208,7 +213,7 @@ func (s *Server) nuget(w http.ResponseWriter, r *http.Request, i store.Identity,
 		return
 	}
 	w.Header().Set("Content-Type", "application/octet-stream")
-	w.Header().Set("X-Cratectl-Repository", repo.Name)
+	w.Header().Set("X-Cratectl-Repository", resolved.source.Name)
 	w.Header().Set("ETag", `"sha256:`+metadata.NuspecSHA256+`"`)
 	http.ServeContent(w, r, id+".nuspec", time.Time{}, bytes.NewReader(metadata.Nuspec))
 }

@@ -111,12 +111,11 @@ func (s *Store) PublishNuGet(ctx context.Context, i Identity, repo string, a Art
 // NuGetVersions projects only bounded keys. It never loads all package manifests
 // to construct an index, and filters current policy and retirement in one snapshot.
 func (s *Store) NuGetVersions(ctx context.Context, i Identity, repo, id string, limit int, maxBytes int64) ([]string, error) {
-	versions := []string{}
+	var versions []string
 	key, e := nuget.IDKey(id)
 	if e != nil || key != id || limit <= 0 || limit > 100000 || maxBytes <= 0 {
 		return nil, ErrMetadataLimit
 	}
-	maxBytes = min(maxBytes, int64(nuget.MaxOrderedVersionBytes))
 	e = s.Tx(ctx, i, false, func(tx pgx.Tx) error {
 		r, e := repositoryInTx(ctx, tx, i, repo, "read")
 		if e != nil {
@@ -125,30 +124,37 @@ func (s *Store) NuGetVersions(ctx context.Context, i Identity, repo, id string, 
 		if r.Format != "nuget" || r.Mode != "hosted" {
 			return ErrConflict
 		}
-		rows, e := tx.Query(ctx, `SELECT left(a.metadata->>'version_key',1025),left(a.path,2049) FROM cratectl.artifacts a `+decisionJoin+nativeLifecycleJoin+` WHERE a.repository=$1 AND a.metadata->>'id_key'=$2 AND a.metadata->>'id_profile'=$3 AND a.metadata->>'archive_validated'='true' AND NOT COALESCE(nl.deleted,false) AND COALESCE(d.decision,a.decision)<>'denied' AND (NOT $4::boolean OR COALESCE(d.decision,a.decision)='allowed') ORDER BY a.path LIMIT $5`, repo, id, nuget.IDKeyProfile, r.RequireReview, limit+1)
-		if e != nil {
-			return e
-		}
-		defer rows.Close()
-		for rows.Next() {
-			var version, path string
-			if e = rows.Scan(&version, &path); e != nil {
-				return e
-			}
-			normal, e := nuget.VersionKey(version)
-			if e != nil || normal != version || path != NuGetPath(id, version) {
-				return ErrNuGetUnvalidated
-			}
-			maxBytes -= int64(len(version) + 4)
-			if len(versions) >= limit || maxBytes < 0 {
-				return ErrMetadataLimit
-			}
-			versions = append(versions, version)
-		}
-		return rows.Err()
+		versions, e = nugetHostedVersionsInTx(ctx, tx, r.Name, id, r.RequireReview, limit, maxBytes)
+		return e
 	})
 	if e != nil {
 		return nil, e
 	}
 	return nuget.SortVersionKeys(ctx, versions)
+}
+
+func nugetHostedVersionsInTx(ctx context.Context, tx pgx.Tx, repo, id string, review bool, limit int, maxBytes int64) ([]string, error) {
+	versions := []string{}
+	maxBytes = min(maxBytes, int64(nuget.MaxOrderedVersionBytes))
+	rows, err := tx.Query(ctx, `SELECT left(a.metadata->>'version_key',1025),left(a.path,2049) FROM cratectl.artifacts a `+decisionJoin+nativeLifecycleJoin+` WHERE a.repository=$1 AND a.metadata->>'id_key'=$2 AND a.metadata->>'id_profile'=$3 AND a.metadata->>'archive_validated'='true' AND NOT COALESCE(nl.deleted,false) AND COALESCE(d.decision,a.decision)<>'denied' AND (NOT $4::boolean OR COALESCE(d.decision,a.decision)='allowed') ORDER BY a.path LIMIT $5`, repo, id, nuget.IDKeyProfile, review, limit+1)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var version, path string
+		if err = rows.Scan(&version, &path); err != nil {
+			return nil, err
+		}
+		normal, err := nuget.VersionKey(version)
+		if err != nil || normal != version || path != NuGetPath(id, version) {
+			return nil, ErrNuGetUnvalidated
+		}
+		maxBytes -= int64(len(version) + 4)
+		if len(versions) >= limit || maxBytes < 0 {
+			return nil, ErrMetadataLimit
+		}
+		versions = append(versions, version)
+	}
+	return versions, rows.Err()
 }

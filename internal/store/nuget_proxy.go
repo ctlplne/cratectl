@@ -4,6 +4,8 @@ package store
 import (
 	"context"
 	"encoding/json"
+	"errors"
+	"slices"
 	"strings"
 
 	crypt "ctlplne.dev/cratectl/internal/crypto"
@@ -127,7 +129,17 @@ func (s *Store) NuGetProxyVersions(ctx context.Context, i Identity, repo, id str
 		if state.SourceRevision != r.SourceRevision || state.State != "ready" || state.Generation != generation {
 			return ErrBusy
 		}
-		rows, err := tx.Query(ctx, `SELECT requested.version
+		versions, err = nugetProxyVersionsInTx(ctx, tx, i, r, catalog, r.RequireReview)
+		return err
+	})
+	if err != nil {
+		return nil, err
+	}
+	return versions, nil
+}
+
+func nugetProxyVersionsInTx(ctx context.Context, tx pgx.Tx, i Identity, r Repository, catalog NuGetProxyCatalog, review bool) ([]string, error) {
+	rows, err := tx.Query(ctx, `SELECT requested.version
 FROM unnest($1::text[]) WITH ORDINALITY AS requested(version,position)
 LEFT JOIN cratectl.artifacts a ON (a.tenant,a.repository,a.path,a.source_revision)=($2,$3,'nuget-packages/'||$4||'/'||requested.version||'.nupkg',$5)
 `+decisionJoin+`
@@ -137,15 +149,66 @@ WHERE NOT COALESCE(l.deleted,false) AND COALESCE(d.decision,a.decision,'unassess
  AND NOT COALESCE(cached.state IN ('negative','failed'),false)
  AND (NOT $6::boolean OR (COALESCE(d.decision,a.decision)='allowed' AND a.metadata->'archive_validated'='true'::jsonb
   AND a.metadata->>'source_authority'=$7 AND cached.state='ready' AND cached.fresh_until>clock_timestamp()))
-ORDER BY requested.position`, catalog.Versions, i.Tenant, r.Name, id, r.SourceRevision, r.RequireReview, r.Settings.Upstream.URL)
-		if err != nil {
-			return err
-		}
-		versions, err = pgx.CollectRows(rows, pgx.RowTo[string])
-		return err
-	})
+ORDER BY requested.position`, catalog.Versions, i.Tenant, r.Name, catalog.ID, r.SourceRevision, review, catalog.Authority)
 	if err != nil {
 		return nil, err
 	}
-	return versions, nil
+	return pgx.CollectRows(rows, pgx.RowTo[string])
+}
+
+func nugetAdmitted(state Retrieval, admissions []NativeAdmission, stale bool) bool {
+	return slices.ContainsFunc(admissions, func(a NativeAdmission) bool {
+		return a.Repository == state.Repository && a.Path == state.Path && a.Generation == state.Generation && a.Stale == stale
+	})
+}
+
+func nugetArchiveInTx(ctx context.Context, tx pgx.Tx, r Repository, path string, review bool, admissions []NativeAdmission) (Artifact, error) {
+	if err := notDeletedInTx(ctx, tx, r.Name, path); err != nil {
+		return Artifact{}, err
+	}
+	if r.Mode == "proxy" {
+		if r.Settings.Upstream == nil {
+			return Artifact{}, ErrSourceChanged
+		}
+		state, err := nativeCatalogRetrieval(ctx, tx, r.Name, path)
+		if errors.Is(err, pgx.ErrNoRows) || (err == nil && state.SourceRevision != r.SourceRevision) {
+			return Artifact{}, ErrSourceChanged
+		}
+		if err != nil {
+			return Artifact{}, err
+		}
+		ready := state.State == "ready" && (state.Fresh() || nugetAdmitted(state, admissions, false))
+		stale := state.State == "failed" && state.StalePermitted() && nugetAdmitted(state, admissions, true)
+		if !ready && !stale {
+			return Artifact{}, ErrSourceChanged
+		}
+	}
+	a, err := readArtifact(ctx, tx, r.Name, path, review, repositoryReadBudget(r))
+	if err != nil {
+		return a, err
+	}
+	metadata, err := ValidateNuGetArtifact(ctx, a)
+	if err != nil {
+		return a, err
+	}
+	if r.Mode == "proxy" && metadata.SourceAuthority != r.Settings.Upstream.URL {
+		return a, ErrSourceChanged
+	}
+	return a, nil
+}
+
+func (s *Store) NuGetProxyArtifact(ctx context.Context, i Identity, repo, path string, revision int64, admissions ...NativeAdmission) (Artifact, error) {
+	var artifact Artifact
+	err := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
+		r, err := repositoryInTx(ctx, tx, i, repo, "read")
+		if err != nil {
+			return err
+		}
+		if r.Format != "nuget" || r.Mode != "proxy" || r.SourceRevision != revision {
+			return ErrSourceChanged
+		}
+		artifact, err = nugetArchiveInTx(ctx, tx, r, path, r.RequireReview, admissions)
+		return err
+	})
+	return artifact, err
 }

@@ -68,6 +68,23 @@ references and known failed or missing package coordinates are omitted from the
 projected index. The common cache and digest-decision APIs apply to proxy
 references.
 
+## Ordered groups
+
+Set `mode` to `group` with ordered NuGet `settings.members`. The first member
+with a current catalog or a retained package reference owns that package ID.
+Use a canonical lowercase ID followed by `/` in `settings.namespace_owners`
+to send that ID directly to a particular member. Different members can supply
+different dependencies through the same group endpoint.
+
+The group applies its own review requirement and the selected member's review
+and grants. A consulted higher-priority proxy must have a current native
+catalog before the group can publish a version list or admit exact bytes. An
+outage, denial, or retirement stays attached to the package's selected source.
+An explicit upstream absence allows fallback only when the higher-priority
+member has no retained reference for that package at the current source
+revision. Each group uses the same `/nuget/REPOSITORY/index.json` client URL
+and exposes flat-container restore.
+
 ## Hosted publication and discovery
 
 The API key is authoritative for native push and unlist/relist, even when the client's source
