@@ -24,6 +24,7 @@ from maven_index_evidence import (CACHED_CHECKS as MAVEN_CACHED_CHECKS, GROUP_CH
                                   MAVEN_INDEX_CHECKS, cached_selected as maven_cached_selected)
 from nuget_proxy_evidence import (CHECKS as NUGET_PROXY_CHECKS, COMBINED_CHECKS as NUGET_COMBINED_CHECKS,
                                   combined_selected as nuget_combined_selected)
+from nuget_public_evidence import CHECKS as NUGET_PUBLIC_CHECKS
 from campaign_transport import (EvidenceError, GitHubEvidenceClient, LOG_BYTES,
                                 REPOSITORY, artifact_json, require, strict_json)
 
@@ -238,6 +239,9 @@ def check_log(raw, spec, source):
         checks = NUGET_COMBINED_CHECKS if combined else NUGET_PROXY_CHECKS
         scope = 'flat-container, ordered group and service-index' if combined else 'flat-container proxy'
         require(text.count(f'PASS: {len(checks)} stock NuGet {scope} checks') == 1, 'nuget_proxy_native_inventory')
+    if kind == 'nuget-public':
+        require(text.count(f'PASS: {len(NUGET_PUBLIC_CHECKS)} stock NuGet public-origin lockfile checks') == 1,
+                'nuget_public_native_inventory')
     if kind in ('native', 'go'):
         pattern = r'\bok\s+ctlplne.dev/cratectl/internal/(?:server|store' + ('|conformance' if kind == 'native' else '') + r')\s'
         require(len(re.findall(pattern, text)) == (6 if kind == 'native' else 4), 'native_package_success_inventory')
@@ -375,10 +379,11 @@ def accept(client, source, expected_ids):
                           'npm-search': 'ci-npm-search.json',
                           'python-search': 'ci-python-search.json',
                           'oci-catalog': 'ci-oci-catalog.json', 'maven-index': 'ci-maven-index.json',
-                          'nuget-proxy': 'ci-nuget-proxy.json'}.get(spec['kind'], 'ci-evidence-summary.json')
+                          'nuget-proxy': 'ci-nuget-proxy.json', 'nuget-public': 'ci-nuget-public.json'}.get(spec['kind'], 'ci-evidence-summary.json')
                 report, reference = safe_artifact(client, by_artifact[artifact_name], source.candidate, run_id, member)
                 if spec['kind'] in ('library', 'strict', 'windows', 'compose', 'linux-install', 'offline-media', 'terraform-provider',
-                                    'cargo', 'cargo-public', 'npm-search', 'python-search', 'oci-catalog', 'maven-index', 'nuget-proxy'):
+                                    'cargo', 'cargo-public', 'npm-search', 'python-search', 'oci-catalog', 'maven-index',
+                                    'nuget-proxy', 'nuget-public'):
                     counts = validate_custom(report, source.candidate, run_id, spec, source)
                 else:
                     counts, contract = validate_summary(report, source.candidate, run_id, spec, source.baselines, source)

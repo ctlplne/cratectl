@@ -22,6 +22,9 @@ from nuget_proxy_evidence import (CHECKS as NUGET_PROXY_CHECKS, COMBINED_CHECKS 
                                  FIXTURES as NUGET_PROXY_FIXTURES, GROUP_FIXTURES as NUGET_GROUP_FIXTURES,
                                  PROFILE as NUGET_PROXY_PROFILE, SERVICE_INDEX_FIXTURE as NUGET_SERVICE_INDEX_FIXTURE,
                                  SOURCE_PATHS as NUGET_PROXY_FILES)
+from nuget_public_evidence import (ARCHIVES as NUGET_PUBLIC_ARCHIVES, CHECKS as NUGET_PUBLIC_CHECKS,
+                                  CONTENT as NUGET_PUBLIC_CONTENT, PROFILE as NUGET_PUBLIC_PROFILE,
+                                  SOURCE_PATHS as NUGET_PUBLIC_FILES)
 from oci_repository_catalog_evidence import (ARCHIVE_PINS as ORAS_PINS, BASE_CHECKS as OCI_CATALOG_BASE,
                                              CACHED_CHECKS as OCI_CACHED_CHECKS, CACHED_PROFILE as OCI_CACHED_PROFILE,
                                              CACHED_SOURCE_PATHS as OCI_CACHED_FILES, CATALOG_CHECKS, GROUP_CHECKS,
@@ -36,6 +39,23 @@ SPECS = {spec['artifact']: spec for family in WORKFLOWS.values() for spec in job
 
 
 class CampaignReports(unittest.TestCase):
+    def test_public_nuget_checks_exact_archive_and_lock_domains(self):
+        source = lambda path: path.encode()
+        candidate = 'a' * 40
+        fixture = {'sdk': '10.0.403', 'version': '8.5.2', 'dotnet_sha256': 'b' * 64,
+                   'lock_sha256': 'c' * 64, 'archive_sha256': NUGET_PUBLIC_ARCHIVES, 'lock_content_sha512': NUGET_PUBLIC_CONTENT}
+        report = {'schema': 1, 'profile': NUGET_PUBLIC_PROFILE, 'candidate': candidate, 'status': 'passed',
+                  'runner_os': 'Linux', 'runner_arch': 'X64', 'run_id': '12', 'source_dirty': False,
+                  'source_sha256': {path: hashlib.sha256(source(path)).hexdigest() for path in NUGET_PUBLIC_FILES},
+                  'binary_sha256': {'cratectl': 'd' * 64, 'cratectld': 'e' * 64}, 'postgres': 'postgres (PostgreSQL) 16.15',
+                  'database_safety': True, 'checks': list(NUGET_PUBLIC_CHECKS), 'nuget_public': fixture,
+                  'goal_complete': False, 'broad_readiness': False}
+        spec = SPECS['ci-summary-nuget-public-amd64']
+        self.assertEqual(validate_custom(report, candidate, 12, spec, source), {'checks': 22, 'records': 1})
+        invalid = {**fixture, 'lock_content_sha512': NUGET_PUBLIC_ARCHIVES}
+        with self.assertRaisesRegex(EvidenceError, 'nuget_public_report_contract'):
+            validate_custom({**report, 'nuget_public': invalid}, candidate, 12, spec, source)
+
     def test_nuget_proxy_requires_closed_stock_and_source_inventory(self):
         source = lambda path: path.encode()
         candidate = 'a' * 40

@@ -108,7 +108,7 @@ SOURCE_PATHS = (
     'internal/store/retrieval.go', 'internal/store/repository.go', 'internal/store/migrations.go', 'internal/store/store.go',
 )
 COMBINED_SOURCE_PATHS = SOURCE_PATHS + (
-    'api/openapi.yaml', 'scripts/conformance_nuget_group.py', 'scripts/conformance_nuget_service.py',
+    'api/openapi.yaml', 'scripts/ci/nuget_public_evidence.py', 'scripts/conformance_nuget_group.py', 'scripts/conformance_nuget_service.py',
     'internal/server/nuget_group.go', 'internal/server/nuget_group_integration_test.go',
     'internal/server/nuget_service_index.go', 'internal/server/nuget_service_index_integration_test.go',
     'internal/store/nuget_group.go', 'internal/upstream/upstream.go',

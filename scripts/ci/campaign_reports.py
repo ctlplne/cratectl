@@ -35,6 +35,7 @@ from maven_index_evidence import (CACHED_CHECKS as MAVEN_CACHED_CHECKS, CACHED_P
 from nuget_proxy_evidence import (CHECKS as NUGET_PROXY_CHECKS, COMBINED_CHECKS as NUGET_COMBINED_CHECKS,
                                   COMBINED_PROFILE as NUGET_COMBINED_PROFILE, PROFILE as NUGET_PROXY_PROFILE,
                                   combined_selected as nuget_combined_selected, validate as validate_nuget_proxy)
+from nuget_public_evidence import CHECKS as NUGET_PUBLIC_CHECKS, validate as validate_nuget_public
 
 CONTRACTS = {'maven_cache_contract': safe_maven_cache_contract, 'gradle_contract': safe_gradle_contract,
              'ivy_contract': safe_ivy_contract, 'sbt_contract': safe_sbt_contract,
@@ -126,6 +127,7 @@ def validate_custom(report, candidate, run_id, spec, source):
         'oci-catalog': (validate_oci_catalog, len(IAC_BASE) - 1 + len(OCI_CATALOG_CHECKS)),
         'maven-index': (validate_maven_index, len(IAC_BASE) - 1 + len(MAVEN_INDEX_CHECKS)),
         'nuget-proxy': (validate_nuget_proxy, len(NUGET_PROXY_CHECKS)),
+        'nuget-public': (validate_nuget_public, len(NUGET_PUBLIC_CHECKS)),
     }
     if spec['kind'] in source_contracts:
         kind = spec['kind'].replace('-', '_')

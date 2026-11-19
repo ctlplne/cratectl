@@ -1,0 +1,65 @@
+name: Native NuGet.org locked restore
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/nuget-public.yml'
+      - 'scripts/conformance_nuget_public.py'
+      - 'scripts/ci/nuget_public_evidence.py'
+      - 'scripts/ci/qualify_nuget_proxy.py'
+
+permissions:
+  contents: read
+
+jobs:
+  nuget-public:
+    if: github.ref == 'refs/heads/main' && github.repository == 'ctlplne/cratectl'
+    name: Stock public NuGet lockfile and real PostgreSQL (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 18
+    concurrency:
+      group: cratectl-nuget-public-${{ github.ref }}-${{ matrix.arch }}-${{ github.sha }}
+      cancel-in-progress: false
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    env:
+      GOENV: 'off'
+      GOTOOLCHAIN: local
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - name: Build the clean cratectl candidate
+        run: make build BINDIR=.cache/cratectl-nuget-public-bin
+      - name: Replay stock dotnet against the public NuGet.org origin
+        run: |
+          umask 077
+          mkdir -p .private
+          python3 scripts/ci/qualify_nuget_proxy.py --pg-bin /usr/lib/postgresql/16/bin \
+            --binary-directory .cache/cratectl-nuget-public-bin --architecture '${{ matrix.arch }}' --public-origin
+      - uses: actions/upload-artifact@v7
+        if: success()
+        with:
+          name: ci-summary-nuget-public-${{ matrix.arch }}
+          path: .cache/ci-nuget-public.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14

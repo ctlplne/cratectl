@@ -10,7 +10,7 @@ WORKFLOWS = {
     'compose-evaluation.yml': 'compose', 'linux-install.yml': 'linux-install', 'offline-media.yml': 'offline-media',
     'terraform-provider.yml': 'terraform-provider', 'cargo.yml': 'cargo', 'cargo-public.yml': 'cargo-public',
     'npm-search.yml': 'npm-search', 'python-search.yml': 'python-search', 'oci-repository-catalog.yml': 'oci-catalog',
-    'maven-index.yml': 'maven-index', 'nuget-proxy.yml': 'nuget-proxy',
+    'maven-index.yml': 'maven-index', 'nuget-proxy.yml': 'nuget-proxy', 'nuget-public.yml': 'nuget-public',
 }
 PLATFORMS = {'amd64': ('ubuntu-24.04', 'Linux', 'X64'),
              'arm64': ('ubuntu-24.04-arm', 'Linux', 'ARM64'),
@@ -27,9 +27,10 @@ PYTHON_SEARCH_CONTRACT = {'.github/workflows/python-search.yml', 'scripts/ci/pyt
 OCI_CATALOG_CONTRACT = {'.github/workflows/oci-repository-catalog.yml', 'scripts/ci/oci_repository_catalog_evidence.py'}
 MAVEN_INDEX_CONTRACT = {'.github/workflows/maven-index.yml', 'scripts/ci/maven_index_evidence.py'}
 NUGET_PROXY_CONTRACT = {'.github/workflows/nuget-proxy.yml', 'scripts/ci/nuget_proxy_evidence.py'}
+NUGET_PUBLIC_CONTRACT = {'.github/workflows/nuget-public.yml', 'scripts/ci/nuget_public_evidence.py'}
 OPTIONAL_CONTRACTS = (LINUX_INSTALL_CONTRACT, OFFLINE_MEDIA_CONTRACT, TERRAFORM_PROVIDER_CONTRACT,
                       CARGO_CONTRACT, CARGO_PUBLIC_CONTRACT, NPM_SEARCH_CONTRACT, PYTHON_SEARCH_CONTRACT, OCI_CATALOG_CONTRACT,
-                      MAVEN_INDEX_CONTRACT, NUGET_PROXY_CONTRACT)
+                      MAVEN_INDEX_CONTRACT, NUGET_PROXY_CONTRACT, NUGET_PUBLIC_CONTRACT)
 OPTIONAL_FILES = set.union(*OPTIONAL_CONTRACTS)
 COMPATIBLE_FILES = ['.github/workflows/' + name for name in WORKFLOWS
                     if '.github/workflows/' + name not in OPTIONAL_FILES
@@ -140,6 +141,10 @@ def jobs(family, schema=17, requirement_portability=False):
             add('Stock NuGet proxy and real PostgreSQL (' + arch + ')', arch,
                 ['Build the clean cratectl candidate', 'Replay stock dotnet against the governed NuGet proxy'],
                 'ci-summary-nuget-proxy-' + arch, 'nuget-proxy')
+        elif family == 'nuget-public':
+            add('Stock public NuGet lockfile and real PostgreSQL (' + arch + ')', arch,
+                ['Build the clean cratectl candidate', 'Replay stock dotnet against the public NuGet.org origin'],
+                'ci-summary-nuget-public-' + arch, 'nuget-public')
     if family == 'portable':
         add('Real PostgreSQL signed export source (amd64)', 'amd64',
             ['Prepare actual signed source fixture and independent trust-channel digests', 'Transfer reviewed synthetic fixture only',
