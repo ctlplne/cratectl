@@ -8,6 +8,13 @@ Broad readiness,security and packaging remain unqualified.
 
 ## Latest whole accepted source
 
+`7295441` passed all 32 original jobs across nine workflows. The unchanged
+verifier accepted 88 reports. Independent comparison matched 25 safe job
+summaries, the selection summary, 41 exact source contracts and three transfer
+records. Both native stock-client suites and the ordered OCI catalog jobs
+passed.
+[Exact ordered OCI campaign evidence](evidence/2026-11-19/github-7295441-exact-local-accepted.json)
+
 `586eb5d` passed all 32 original jobs across nine workflows. The unchanged
 local verifier accepted 88 reports. Independent comparison matched 25 safe
 job summaries, the selection summary, 41 exact source contracts and three
