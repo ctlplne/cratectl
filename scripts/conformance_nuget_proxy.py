@@ -44,7 +44,7 @@ def inert_package(package_id, dependency=None, identity=''):
 
 
 @contextmanager
-def flat_origin(files):
+def flat_origin(files, credentials):
     requests = []
 
     class Origin(ThreadingHTTPServer):
@@ -61,7 +61,12 @@ def flat_origin(files):
         def do_GET(self):
             requests.append(self.path)
             data = files.get(self.path)
-            self.send_response(404 if data is None else 200)
+            expected = next((value for path, value in credentials.items() if self.path.startswith(path)), None)
+            if expected is not None and self.headers.get('Authorization') != expected:
+                self.send_response(401)
+                data = b''
+            else:
+                self.send_response(404 if data is None else 200)
             data = data or b''
             self.send_header('Cache-Control', 'max-age=300')
             self.send_header('Content-Length', str(len(data)))
@@ -80,7 +85,7 @@ def flat_origin(files):
                 raise ValueError('owned NuGet origin did not stop')
 
 
-def proxy_nuget(h, *, group=False):
+def proxy_nuget(h, *, group=False, service_index=False):
     scope = h.PRIVATE / 'cratectl-nuget-proxy'
     scope.mkdir(mode=0o700)
     native = f'/nuget/{REPOSITORY}/'
@@ -169,7 +174,8 @@ def proxy_nuget(h, *, group=False):
                     (folder / f'{key}.{VERSION}.nupkg').read_bytes() == package and
                     (folder / f'{key}.nuspec').read_bytes() == manifest and (folder / 'content/owned.txt').read_bytes() == payload)
 
-    with flat_origin(files) as requests:
+    upstream_credentials = {}
+    with flat_origin(files, upstream_credentials) as requests:
         h.repository(REPOSITORY, 'nuget', review=True, mode='proxy', access='restricted', settings={
             'upstream': {'url': 'http://[::1]:38443' + ORIGIN, 'networks': ['::1/128']},
             'cache': {'fresh_seconds': 300, 'negative_seconds': 30, 'require_checksum': True}})
@@ -206,3 +212,7 @@ def proxy_nuget(h, *, group=False):
             from conformance_nuget_group import nuget_group
 
             nuget_group(h, files, requests, packages, package_path, restore, source_config)
+        if service_index:
+            from conformance_nuget_service import nuget_service_index
+
+            nuget_service_index(h, files, requests, upstream_credentials, packages, package_path, restore, source_config)

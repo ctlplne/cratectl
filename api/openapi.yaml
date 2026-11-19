@@ -928,7 +928,7 @@ paths:
                     download_sources:
                       type: array
                       maxItems: 16
-                      description: Additional download authorities for npm, PyPI, OCI and Cargo proxies. An expanded Cargo download URL must match the approved origin or one of these authorities. Each authority uses its configured credentials. OCI signed queries require allow_signed_query and are never retained as cache bindings.
+                      description: Additional download authorities for npm, PyPI, OCI and Cargo proxies. NuGet service-index mode requires exactly one configured flat-container authority. An expanded Cargo download URL must match the approved origin or one of these authorities. Each authority uses its configured credentials. OCI signed queries require allow_signed_query and are never retained as cache bindings.
                       items:
                         type: object
                         required: [url, networks]
@@ -939,6 +939,7 @@ paths:
                           authentication: {type: string, enum: [bearer, basic, cargo-token], default: bearer, description: The opaque cargo-token scheme is available to Cargo proxies.}
                           allow_signed_query: {type: boolean, default: false, description: OCI only. Permit bounded ephemeral signed query strings. Durable npm/PyPI/Cargo download URLs reject queries.}
                     python_index_format: {type: string, enum: [auto, html, json], default: auto, description: PyPI proxy content negotiation preference.}
+                    nuget_service_index: {type: boolean, default: false, description: NuGet proxy only. Read the exact configured V3 service-index URL before cache fills and require its PackageBaseAddress to match the single configured download source.}
                     maven_snapshot_policy: {type: string, enum: [immutable, redeploy_nonunique], default: immutable, description: Hosted Maven only. Explicit opt-in permits replacement of literal base-version SNAPSHOT filenames. Releases and timestamped snapshots stay immutable; current holds and review still govern changed bytes.}
                     members: {type: array, minItems: 1, maxItems: 32, uniqueItems: true, items: {type: string}}
                     namespace_owners: {type: object, maxProperties: 128, additionalProperties: {type: string}, description: A Cargo namespace key is the lowercase crate name followed by a slash. Its value is a configured member.}

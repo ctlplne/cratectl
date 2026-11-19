@@ -29,6 +29,7 @@ type RepositorySettings struct {
 	NamespaceOwners     map[string]string    `json:"namespace_owners,omitempty"`
 	DownloadSources     []upstream.Config    `json:"download_sources,omitempty"`
 	PythonIndexFormat   string               `json:"python_index_format,omitempty"`
+	NuGetServiceIndex   bool                 `json:"nuget_service_index,omitempty"`
 	OCITokenEndpoint    *upstream.Config     `json:"oci_token_endpoint,omitempty"`
 	OCITokenService     string               `json:"oci_token_service,omitempty"`
 	MavenSnapshotPolicy string               `json:"maven_snapshot_policy,omitempty"`
@@ -118,6 +119,9 @@ func validateRepository(r *Repository, retainedGoProxy bool) error {
 	if r.Settings.PythonIndexFormat != "" && (r.Format != "pypi" || r.Mode != "proxy" || (r.Settings.PythonIndexFormat != "auto" && r.Settings.PythonIndexFormat != "html" && r.Settings.PythonIndexFormat != "json")) {
 		return errors.New("Python index format requires a PyPI proxy and auto, html or json")
 	}
+	if r.Settings.NuGetServiceIndex && (r.Format != "nuget" || r.Mode != "proxy" || len(r.Settings.DownloadSources) != 1) {
+		return errors.New("NuGet service index discovery requires a NuGet proxy and one explicit package base address")
+	}
 	if !Name.MatchString(r.Name) {
 		return errors.New("invalid name")
 	}
@@ -189,8 +193,8 @@ func validateRepository(r *Repository, retainedGoProxy bool) error {
 			return e
 		}
 		endpoint.Close()
-		if len(r.Settings.DownloadSources) > 16 || (len(r.Settings.DownloadSources) > 0 && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" && r.Format != "cargo") {
-			return errors.New("download sources require npm, PyPI, OCI or Cargo and at most 16 explicit authorities")
+		if len(r.Settings.DownloadSources) > 16 || (len(r.Settings.DownloadSources) > 0 && r.Format != "npm" && r.Format != "pypi" && r.Format != "oci" && r.Format != "cargo" && !r.Settings.NuGetServiceIndex) {
+			return errors.New("download sources require npm, PyPI, OCI, Cargo or NuGet service index discovery and at most 16 explicit authorities")
 		}
 		authorities := map[string]bool{strings.TrimRight(r.Settings.Upstream.URL, "/") + "/": true}
 		for _, source := range r.Settings.DownloadSources {

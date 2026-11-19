@@ -457,6 +457,21 @@ func (s *Server) fillProxyOnce(parent context.Context, i store.Identity, repo st
 	}
 
 	defer endpoint.Close()
+	var nugetBase *upstream.Config
+	if repo.Format == "nuget" {
+		nugetBase = repo.NuGetPackageBase()
+		if nugetBase == nil {
+			return s.DB.CompleteRetrieval(ctx, i, lease, store.RetrievalResult{Failure: "upstream_destination_rejected"})
+		}
+		if repo.Settings.NuGetServiceIndex {
+			delivery, failure := s.nugetServiceIndexEndpoint(ctx, i.Tenant, endpoint, *nugetBase)
+			if failure != "" {
+				return s.DB.CompleteRetrieval(ctx, i, lease, store.RetrievalResult{Failure: failure})
+			}
+			endpoint = delivery
+			defer endpoint.Close()
+		}
+	}
 	result := store.RetrievalResult{FreshSeconds: repo.Settings.Cache.NegativeSeconds}
 	validators := http.Header{}
 	if repo.Format != "nuget" && lease.ETag != "" {
@@ -500,7 +515,7 @@ func (s *Server) fillProxyOnce(parent context.Context, i store.Identity, repo st
 				break
 			}
 			if repo.Format == "nuget" {
-				s.materializeNuGetProxy(ctx, i, repo, nugetCoordinate, endpoint, remotePath, response, &result)
+				s.materializeNuGetProxy(ctx, i, repo, nugetCoordinate, endpoint, remotePath, nugetBase.URL, response, &result)
 				break
 			}
 			metadataRequest := repo.Format == "maven" && path.Base(lease.Path) == "maven-metadata.xml"

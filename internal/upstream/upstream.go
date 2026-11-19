@@ -183,6 +183,16 @@ func (e *Endpoint) Get(ctx context.Context, p string, validators http.Header) (*
 	return e.get(ctx, &u, validators)
 }
 
+// GetExact reads the configured URL itself. A discovery document may identify
+// other configured authorities, but it cannot redirect this credential.
+func (e *Endpoint) GetExact(ctx context.Context) (*http.Response, error) {
+	u := *e.base
+	u.Path = e.exactPath
+	client := *e.client
+	client.CheckRedirect = func(*http.Request, []*http.Request) error { return ErrRedirect }
+	return e.getUsing(ctx, &u, nil, &client)
+}
+
 func (e *Endpoint) permitted(u *url.URL) bool {
 	return u.Scheme == e.base.Scheme && u.Host == e.base.Host && u.User == nil && u.Opaque == "" && u.RawQuery == "" && !u.ForceQuery && u.Fragment == "" && strings.HasPrefix(u.Path, e.base.Path) && SafePath(strings.TrimSuffix(strings.TrimPrefix(u.Path, e.base.Path), "/"))
 }

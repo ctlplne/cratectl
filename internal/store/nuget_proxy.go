@@ -10,10 +10,22 @@ import (
 
 	crypt "ctlplne.dev/cratectl/internal/crypto"
 	"ctlplne.dev/cratectl/internal/nuget"
+	"ctlplne.dev/cratectl/internal/upstream"
 	"github.com/jackc/pgx/v5"
 )
 
 const NuGetProxyCatalogMedia = "application/vnd.cratectl.nuget-versions+json"
+
+// NuGetPackageBase is the explicitly configured package byte authority.
+func (r Repository) NuGetPackageBase() *upstream.Config {
+	if r.Settings.NuGetServiceIndex {
+		if len(r.Settings.DownloadSources) != 1 {
+			return nil
+		}
+		return &r.Settings.DownloadSources[0]
+	}
+	return r.Settings.Upstream
+}
 
 func NuGetProxyCatalogPath(id string) string { return "nuget-catalog/" + id }
 
@@ -75,19 +87,20 @@ func decodeNuGetProxyCatalog(ctx context.Context, data []byte, id, authority str
 
 func validateNuGetRetrieval(ctx context.Context, repo Repository, lease Retrieval, result RetrievalResult) error {
 	coordinate, err := ParseNuGetProxyCoordinate(lease.Path)
-	if err != nil || repo.Settings.Upstream == nil || result.Status != 200 || result.Object == nil {
+	base := repo.NuGetPackageBase()
+	if err != nil || base == nil || result.Status != 200 || result.Object == nil {
 		return ErrNuGetUnvalidated
 	}
 	if coordinate.Version == "" {
 		if result.MediaType != NuGetProxyCatalogMedia || result.Object.Digest != crypt.Digest(result.Metadata) || result.Object.Size != int64(len(result.Metadata)) {
 			return ErrNuGetUnvalidated
 		}
-		_, err := decodeNuGetProxyCatalog(ctx, result.Metadata, coordinate.ID, repo.Settings.Upstream.URL, 10000, 8<<20)
+		_, err := decodeNuGetProxyCatalog(ctx, result.Metadata, coordinate.ID, base.URL, 10000, 8<<20)
 		return err
 	}
 	a := Artifact{Path: lease.Path, Digest: result.Object.Digest, Size: result.Object.Size, MediaType: result.MediaType, Metadata: result.Metadata}
 	metadata, err := ValidateNuGetArtifact(ctx, a)
-	if err != nil || metadata.SourceAuthority != repo.Settings.Upstream.URL || metadata.Catalog == nil || metadata.Catalog.SourceSHA != metadata.NuspecSHA256 {
+	if err != nil || metadata.SourceAuthority != base.URL || metadata.Catalog == nil || metadata.Catalog.SourceSHA != metadata.NuspecSHA256 {
 		return ErrNuGetUnvalidated
 	}
 	return nil
@@ -106,7 +119,8 @@ func (s *Store) NuGetProxyVersions(ctx context.Context, i Identity, repo, id str
 		if err != nil {
 			return err
 		}
-		if r.Format != "nuget" || r.Mode != "proxy" || r.Settings.Upstream == nil {
+		base := r.NuGetPackageBase()
+		if r.Format != "nuget" || r.Mode != "proxy" || base == nil {
 			return ErrConflict
 		}
 		a, err := nativeCatalogArtifact(ctx, tx, i, r.Name, id, "nuget", NuGetProxyCatalogMedia)
@@ -116,7 +130,7 @@ func (s *Store) NuGetProxyVersions(ctx context.Context, i Identity, repo, id str
 		if a.Digest != resolved.Digest || a.SourceRevision != resolved.SourceRevision || a.SourceRevision != r.SourceRevision {
 			return ErrSourceChanged
 		}
-		catalog, err := decodeNuGetProxyCatalog(ctx, a.Metadata, id, r.Settings.Upstream.URL, min(limit, 10000), min(byteLimit, 8<<20))
+		catalog, err := decodeNuGetProxyCatalog(ctx, a.Metadata, id, base.URL, min(limit, 10000), min(byteLimit, 8<<20))
 		if err != nil {
 			return err
 		}
@@ -166,8 +180,9 @@ func nugetArchiveInTx(ctx context.Context, tx pgx.Tx, r Repository, path string,
 	if err := notDeletedInTx(ctx, tx, r.Name, path); err != nil {
 		return Artifact{}, err
 	}
+	base := r.NuGetPackageBase()
 	if r.Mode == "proxy" {
-		if r.Settings.Upstream == nil {
+		if base == nil {
 			return Artifact{}, ErrSourceChanged
 		}
 		state, err := nativeCatalogRetrieval(ctx, tx, r.Name, path)
@@ -191,7 +206,7 @@ func nugetArchiveInTx(ctx context.Context, tx pgx.Tx, r Repository, path string,
 	if err != nil {
 		return a, err
 	}
-	if r.Mode == "proxy" && metadata.SourceAuthority != r.Settings.Upstream.URL {
+	if r.Mode == "proxy" && metadata.SourceAuthority != base.URL {
 		return a, ErrSourceChanged
 	}
 	return a, nil

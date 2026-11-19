@@ -48,9 +48,18 @@ NUGET_API_KEY="$CRATECTL_WRITER_TOKEN" dotnet nuget push PACKAGE.nupkg \
 Set `format` to `nuget` and `mode` to `proxy`. Set `settings.upstream.url` to
 the upstream's `PackageBaseAddress/3.0.0` base URL from its service index. Then
 point `dotnet restore` at the cratectl feed URL above. The cratectl service index
-advertises its own flat-container URLs. Search, registration, symbols and
-automatic upstream service-index discovery remain open in this proxy scope.
+advertises its own flat-container URLs. Search, registration and symbols remain
+open in this proxy scope.
 [NuGet PackageBaseAddress](https://learn.microsoft.com/nuget/api/package-base-address-resource)
+
+To verify an upstream service index during cache fills, set
+`settings.nuget_service_index` to `true` and set `settings.upstream.url` to
+the exact V3 service-index URL. Add its approved package base as the single
+`settings.download_sources` entry with its own address allowlist and credential
+reference when needed. A changed advertised address fails before the proxy
+contacts the package source. Update the settings through the source
+configuration API after independently verifying the new address.
+[NuGet service index](https://learn.microsoft.com/en-us/nuget/api/service-index)
 
 With `settings.cache.require_checksum` enabled, the upstream must supply a
 base64 SHA-512 sidecar at the package URL plus `.sha512`. The proxy bounds and

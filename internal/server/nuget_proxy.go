@@ -43,7 +43,7 @@ func parseNuGetProxyVersions(ctx context.Context, data []byte, limit int) ([]str
 }
 
 func (s *Server) materializeNuGetProxy(ctx context.Context, i store.Identity, repo store.Repository, coordinate store.NuGetProxyCoordinate,
-	endpoint *upstream.Endpoint, path string, response *http.Response, result *store.RetrievalResult) {
+	endpoint *upstream.Endpoint, path, authority string, response *http.Response, result *store.RetrievalResult) {
 	if coordinate.Version == "" {
 		limit := min(s.NativeMetadataBytes, 8<<20)
 		body, err := io.ReadAll(io.LimitReader(response.Body, limit+1))
@@ -56,7 +56,7 @@ func (s *Server) materializeNuGetProxy(ctx context.Context, i store.Identity, re
 			result.Failure = "upstream_metadata_invalid"
 			return
 		}
-		metadata, err := json.Marshal(store.NuGetProxyCatalog{ID: coordinate.ID, Authority: repo.Settings.Upstream.URL, Versions: versions})
+		metadata, err := json.Marshal(store.NuGetProxyCatalog{ID: coordinate.ID, Authority: authority, Versions: versions})
 		if err != nil || int64(len(metadata)) > limit {
 			result.Failure = "upstream_metadata_budget"
 			return
@@ -112,7 +112,7 @@ func (s *Server) materializeNuGetProxy(ctx context.Context, i store.Identity, re
 	catalog.SourceSHA = digest
 	metadata, err := json.Marshal(store.NuGetPackage{ID: inspected.Identity.ID, IDKey: id, IDProfile: nuget.IDKeyProfile,
 		RawVersion: inspected.Identity.RawVersion, VersionKey: coordinate.Version, NuspecPath: inspected.NuspecPath,
-		Nuspec: inspected.Nuspec, NuspecSHA256: digest, Validated: true, Catalog: &catalog, SourceAuthority: repo.Settings.Upstream.URL})
+		Nuspec: inspected.Nuspec, NuspecSHA256: digest, Validated: true, Catalog: &catalog, SourceAuthority: authority})
 	if err != nil || len(metadata) > store.MaxNuGetMetadataBytes {
 		result.Failure = "upstream_metadata_budget"
 		return

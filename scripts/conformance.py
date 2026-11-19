@@ -7,14 +7,15 @@ from pathlib import Path
 from qualification_contract import candidate_binary_directory, candidate_artifact_names
 from bounded_client import run_owned_client
 parser=argparse.ArgumentParser(description='Baseline format campaign or an explicitly selected extended stock-client profile.')
-parser.add_argument('profile',nargs='?',default='all',choices=['all','generic','npm','npmproxy','pypi','pypiproxy','oci','ociproxy','maven','proxy','sourceconfig','nuget','nugetproxy','nugetgroup','gradle','ivy','sbt1','sbt2'])
+parser.add_argument('profile',nargs='?',default='all',choices=['all','generic','npm','npmproxy','pypi','pypiproxy','oci','ociproxy','maven','proxy','sourceconfig','nuget','nugetproxy','nugetgroup','nugetsource','gradle','ivy','sbt1','sbt2'])
 parser.add_argument('--require-clean-build',action='store_true')
 args=parser.parse_args()
 BIN = candidate_binary_directory()
 ROOT=Path(__file__).resolve().parents[1];os.chdir(ROOT)
 BASE='http://127.0.0.1:38443';RUN=uuid.uuid4().hex[:10]
 PRIVATE=ROOT/'.private/conformance'/RUN;PRIVATE.mkdir(parents=True,mode=0o700);PRIVATE.chmod(0o700)
-EVIDENCE=PRIVATE if args.profile in ('nugetproxy','nugetgroup') else ROOT/'evidence'/datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+NUGET_PROXY_PROFILES=('nugetproxy','nugetgroup','nugetsource')
+EVIDENCE=PRIVATE if args.profile in NUGET_PROXY_PROFILES else ROOT/'evidence'/datetime.datetime.now(datetime.timezone.utc).date().isoformat()
 EVIDENCE.mkdir(exist_ok=True)
 database_profile=os.environ.get('CRATECTL_DEV_DATABASE','container')
 config=json.loads(Path(os.environ.get('CRATECTL_CONFORMANCE_DATABASE_FILE',str(ROOT/('.private/native-db.json' if database_profile=='native' else '.private/db.json')))).read_text())
@@ -64,8 +65,13 @@ def start():
    for fmt,prefix in [('raw','r'),('java','r'),('js','npm'),('py','pypi'),('oci','v2')]:
     bindings[tenants['admin']+'/config-'+fmt+'-'+side]={'value':tokens['config-'+side],'allowed_url':BASE+'/'+prefix+'/config-'+fmt+'-'+side+'/'}
   credentials.write_text(json.dumps(bindings))
+ if args.profile=='nugetsource':
+  from conformance_nuget_service import private_bindings
+  bindings=json.loads(credentials.read_text())
+  bindings.update(private_bindings(tenants['admin'],tokens))
+  credentials.write_text(json.dumps(bindings))
  logfile=(PRIVATE/'server.log').open('a')
- networks='127.0.0.1/32,::1/128' if args.profile in ('nugetproxy','nugetgroup') else '127.0.0.1/32'
+ networks='127.0.0.1/32,::1/128' if args.profile in NUGET_PROXY_PROFILES else '127.0.0.1/32'
  proc=subprocess.Popen([str(BIN/'cratectld'),'serve','--listen','127.0.0.1:38443','--public-url',BASE,'--dev-loopback-http','--objects',str(PRIVATE/'objects'),'--upstream-credentials',str(credentials),'--allow-private-upstreams',networks],env=env,stdout=logfile,stderr=subprocess.STDOUT)
  for _ in range(100):
   if proc.poll() is not None:raise AssertionError('server failed: '+(PRIVATE/'server.log').read_text())
@@ -1004,9 +1010,9 @@ try:
  if mode=='gradle':gradle() # Extended stock-client profile; baseline all retains its existing format contract.
  if mode=='ivy':ivy() # Independent native Ant/Ivy profile; never inferred from Gradle/Maven.
  if mode in ['sbt1','sbt2']:sbt(mode) # Each SBT series is an independent native profile.
- if mode in ('nugetproxy','nugetgroup'):
+ if mode in NUGET_PROXY_PROFILES:
   from conformance_nuget_proxy import proxy_nuget
-  proxy_nuget(sys.modules[__name__], group=mode=='nugetgroup')
+  proxy_nuget(sys.modules[__name__], group=mode!='nugetproxy', service_index=mode=='nugetsource')
  for name,fn in [('generic',generic),('npm',npm),('npmproxy',npmproxy),('pypi',pypi),('pypiproxy',pypiproxy),('oci',oci),('ociproxy',ociproxy),('maven',maven),('proxy',proxy),('sourceconfig',sourceconfig),('nuget',nuget)]:
   if mode in ('all',name):fn()
  result['status']='passed';print(f'PASS: {len(checks)} assertions; native mode {mode}')

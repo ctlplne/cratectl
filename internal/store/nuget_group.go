@@ -56,7 +56,8 @@ func nugetGroupSource(ctx context.Context, tx pgx.Tx, i Identity, group, id stri
 				return selected, err
 			}
 		case "proxy":
-			if source.Settings.Upstream == nil {
+			base := source.NuGetPackageBase()
+			if base == nil {
 				return selected, ErrSourceChanged
 			}
 			if refreshed != nil && !refreshed[member] {
@@ -84,7 +85,7 @@ func nugetGroupSource(ctx context.Context, tx pgx.Tx, i Identity, group, id stri
 			if err != nil {
 				return selected, err
 			}
-			selected.catalog, err = decodeNuGetProxyCatalog(ctx, a.Metadata, id, source.Settings.Upstream.URL, min(limit, 10000), min(byteLimit, 8<<20))
+			selected.catalog, err = decodeNuGetProxyCatalog(ctx, a.Metadata, id, base.URL, min(limit, 10000), min(byteLimit, 8<<20))
 			if err != nil || len(selected.catalog.Versions) != 0 {
 				return selected, err
 			}

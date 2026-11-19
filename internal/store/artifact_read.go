@@ -178,7 +178,7 @@ func (s *Store) artifact(ctx context.Context, i Identity, repo, path string, int
 			if metadata, e = ValidateNuGetArtifact(ctx, a); e != nil {
 				return e
 			}
-			if r.Mode == "proxy" && (r.Settings.Upstream == nil || metadata.SourceAuthority != r.Settings.Upstream.URL) {
+			if base := r.NuGetPackageBase(); r.Mode == "proxy" && (base == nil || metadata.SourceAuthority != base.URL) {
 				return ErrSourceChanged
 			}
 		}
