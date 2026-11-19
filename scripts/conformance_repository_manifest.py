@@ -45,7 +45,8 @@ def sha(file):
 def evaluate(args):
     os.umask(0o077)
     authority = ('https://127.0.0.1:38443' if args.cargo_toolchain or args.npm_search or args.python_search_client
-                 or args.oci_catalog_cached or args.maven_index_cached or args.debian_apt or args.composer_phar else BASE)
+                 or args.oci_catalog_cached or args.maven_index_cached or args.debian_apt or args.composer_phar
+                 or args.conda_micromamba else BASE)
     private = ROOT / '.private'
     if private.is_symlink() or private.stat().st_mode & 0o077:
         raise ValueError('use the existing owner-only .private directory')
@@ -439,6 +440,11 @@ def evaluate(args):
                 report['composer_search'] = evaluate_composer_search(work, app, authority, public_env, call, api, restart_server,
                                                                     args.composer_php.resolve(), args.composer_phar.resolve(),
                                                                     lifecycle=args.composer_lifecycle)
+        if args.conda_micromamba:
+            from conda_hosted_fixture import evaluate_conda
+
+            report['conda_hosted'] = evaluate_conda(work, app, authority, call, api, restart_server, sha,
+                                                    args.conda_micromamba.resolve())
         if args.npm_search:
             from npm_search_fixture import evaluate_cached_search, evaluate_search
 
@@ -547,6 +553,8 @@ def evaluate(args):
         print(f"PASS: {len(report['composer_search']['checks'])} stock Composer hosted discovery checks")
     if args.composer_lifecycle:
         print(f"PASS: {len(report['composer_search']['lifecycle']['checks'])} stock Composer retained lifecycle checks")
+    if args.conda_micromamba:
+        print(f"PASS: {len(report['conda_hosted']['checks'])} stock micromamba hosted Conda checks")
     if args.npm_search:
         print(f"PASS: {len(report['npm_search']['checks'])} stock hosted npm search checks")
         print(f"PASS: {len(report['npm_cached_search']['checks'])} stock cached npm search checks")
@@ -580,6 +588,8 @@ def evaluate(args):
         record_debian_apt_ci(report, args.debian_apt_ci_architecture)
     if args.composer_ci_architecture:
         record_composer_ci(report, args.composer_ci_architecture)
+    if args.conda_ci_architecture:
+        record_conda_ci(report, args.conda_ci_architecture)
 
 
 def hosted_runner(report, architecture):
@@ -739,6 +749,20 @@ def record_composer_ci(report, architecture):
         stream.write('\n')
 
 
+def record_conda_ci(report, architecture):
+    from ci.conda_hosted_evidence import FILES, PROFILE, validate as validate_conda
+
+    runner = hosted_runner(report, architecture)
+    projection = {key: report[key] for key in ('candidate', 'status', 'checks', 'binary_sha256', 'archive_sha256',
+                                                'postgres', 'npm', 'conda_hosted', 'goal_complete', 'broad_readiness')}
+    projection.update(schema=1, profile=PROFILE, runner_os='Linux', runner_arch=runner,
+                      run_id=os.environ.get('GITHUB_RUN_ID'), source_dirty=False,
+                      source_sha256={name: sha(ROOT / name) for name in FILES})
+    with (ROOT / '.cache/ci-conda-hosted.json').open('x') as stream:
+        json.dump(validate_conda(projection), stream, indent=2)
+        stream.write('\n')
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--binary-directory', type=Path)
@@ -770,6 +794,8 @@ if __name__ == '__main__':
     parser.add_argument('--composer-search', action='store_true', help='also verify stock hosted Composer search and package names')
     parser.add_argument('--composer-lifecycle', action='store_true', help='also verify stock locked downloads across retained lifecycle')
     parser.add_argument('--composer-ci-architecture', choices=('amd64', 'arm64'))
+    parser.add_argument('--conda-micromamba', type=Path, help='the digest-pinned stock micromamba binary')
+    parser.add_argument('--conda-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--npm-search', action='store_true',
                         help='also verify npm hosted and cached search using stock clients')
     parser.add_argument('--npm-search-ci-architecture', choices=('amd64', 'arm64'))
@@ -782,6 +808,12 @@ if __name__ == '__main__':
                         help='also fetch a pinned dependency graph from the public crates.io index and CDN')
     parser.add_argument('--legacy-cargo-daemon', type=Path)
     options = parser.parse_args()
+    if options.conda_ci_architecture and not options.conda_micromamba:
+        parser.error('native Conda evidence requires the pinned micromamba binary')
+    if options.conda_micromamba and any((options.provider_binary, options.npm_search, options.python_search_client,
+                                        options.cargo_toolchain, options.mcp_binary, options.oci_catalog_client,
+                                        options.maven_index_reader, options.promtool, options.debian_apt, options.composer_phar)):
+        parser.error('native Conda evidence requires an isolated stock micromamba profile')
     if bool(options.composer_php) != bool(options.composer_phar):
         parser.error('Composer qualification requires the PHP runtime and pinned PHAR')
     if options.composer_group and not options.composer_phar:

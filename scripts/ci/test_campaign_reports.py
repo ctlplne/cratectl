@@ -28,6 +28,8 @@ from composer_hosted_evidence import (BASE_CHECKS as COMPOSER_BASE, CHECKS as CO
                                       LIFECYCLE_PROFILE as COMPOSER_LIFECYCLE_PROFILE,
                                       NEIGHBOR as COMPOSER_SEARCH_NEIGHBOR, HIDDEN as COMPOSER_SEARCH_HIDDEN,
                                       EXTRA_COORDINATES as COMPOSER_EXTRA_COORDINATES, VERSION_CHECKS as COMPOSER_VERSION_CHECKS)
+from conda_hosted_evidence import (BASE_CHECKS as CONDA_BASE, CHECKS as CONDA_CHECKS, FILES as CONDA_FILES,
+                                  PROFILE as CONDA_PROFILE, PINS as CONDA_PINS, VERSION as CONDA_VERSION, fixtures as conda_fixtures)
 from linux_install_evidence import CHECKS as INSTALL_CHECKS, IMAGE as INSTALL_IMAGE, SOURCE_PATHS as INSTALL_FILES
 from maven_index_evidence import (BASE_CHECKS as MAVEN_INDEX_BASE, CACHED_CHECKS as MAVEN_CACHED_CHECKS,
                                   CACHED_PROFILE as MAVEN_CACHED_PROFILE, CACHED_SOURCE_PATHS as MAVEN_CACHED_FILES,
@@ -56,6 +58,29 @@ SPECS = {spec['artifact']: spec for family in WORKFLOWS.values() for spec in job
 
 
 class CampaignReports(unittest.TestCase):
+    def test_conda_reports_bind_native_platform_and_exact_selected_builds(self):
+        def source(path):
+            return path.encode()
+
+        candidate, platform = 'a' * 40, 'linux-aarch64'
+        packages = conda_fixtures(platform)
+        archives = {p.path: hashlib.sha256(p.archive()).hexdigest() for p in packages}
+        chosen = {p.path: archives[p.path] for p in packages[:2]}
+        native = {'checks': list(CONDA_CHECKS), 'subdir': platform, 'client_version': CONDA_VERSION,
+                  'client_sha256': CONDA_PINS[platform], 'archive_sha256': archives, 'selected': chosen}
+        report = {'schema': 1, 'profile': CONDA_PROFILE, 'candidate': candidate, 'status': 'passed',
+                  'runner_os': 'Linux', 'runner_arch': 'ARM64', 'run_id': '12', 'source_dirty': False,
+                  'source_sha256': {path: hashlib.sha256(source(path)).hexdigest() for path in CONDA_FILES},
+                  'binary_sha256': {'cratectl': 'd' * 64, 'cratectld': 'e' * 64}, 'archive_sha256': 'c' * 64,
+                  'postgres': 'postgres (PostgreSQL) 16.16', 'npm': '10.9.9', 'checks': list(CONDA_BASE),
+                  'conda_hosted': native, 'goal_complete': False, 'broad_readiness': False}
+        spec = SPECS['ci-summary-conda-hosted-arm64']
+        self.assertEqual(validate_custom(report, candidate, 12, spec, source), {'checks': 30, 'records': 1})
+        changed = {packages[0].path: chosen[packages[0].path], packages[2].path: archives[packages[2].path]}
+        for patch in ({'client_sha256': CONDA_PINS['linux-64']}, {'selected': changed}, {'checks': native['checks'][:-1]}):
+            with self.assertRaisesRegex(EvidenceError, 'conda_hosted_report_contract'):
+                validate_custom({**report, 'conda_hosted': {**native, **patch}}, candidate, 12, spec, source)
+
     def test_composer_reports_bind_stock_resolution_and_policy_replay(self):
         source = lambda path: path.encode()
         candidate = 'a' * 40

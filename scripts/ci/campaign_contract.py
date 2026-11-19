@@ -11,7 +11,7 @@ WORKFLOWS = {
     'terraform-provider.yml': 'terraform-provider', 'cargo.yml': 'cargo', 'cargo-public.yml': 'cargo-public',
     'npm-search.yml': 'npm-search', 'python-search.yml': 'python-search', 'oci-repository-catalog.yml': 'oci-catalog',
     'maven-index.yml': 'maven-index', 'nuget-proxy.yml': 'nuget-proxy', 'nuget-public.yml': 'nuget-public',
-    'debian-apt.yml': 'debian-apt', 'composer-hosted.yml': 'composer-hosted',
+    'debian-apt.yml': 'debian-apt', 'composer-hosted.yml': 'composer-hosted', 'conda-hosted.yml': 'conda-hosted',
 }
 PLATFORMS = {'amd64': ('ubuntu-24.04', 'Linux', 'X64'),
              'arm64': ('ubuntu-24.04-arm', 'Linux', 'ARM64'),
@@ -31,9 +31,11 @@ NUGET_PROXY_CONTRACT = {'.github/workflows/nuget-proxy.yml', 'scripts/ci/nuget_p
 NUGET_PUBLIC_CONTRACT = {'.github/workflows/nuget-public.yml', 'scripts/ci/nuget_public_evidence.py'}
 DEBIAN_APT_CONTRACT = {'.github/workflows/debian-apt.yml', 'scripts/ci/debian_apt_evidence.py'}
 COMPOSER_HOSTED_CONTRACT = {'.github/workflows/composer-hosted.yml', 'scripts/ci/composer_hosted_evidence.py'}
+CONDA_HOSTED_CONTRACT = {'.github/workflows/conda-hosted.yml', 'scripts/ci/conda_hosted_evidence.py'}
 OPTIONAL_CONTRACTS = (LINUX_INSTALL_CONTRACT, OFFLINE_MEDIA_CONTRACT, TERRAFORM_PROVIDER_CONTRACT,
                       CARGO_CONTRACT, CARGO_PUBLIC_CONTRACT, NPM_SEARCH_CONTRACT, PYTHON_SEARCH_CONTRACT, OCI_CATALOG_CONTRACT,
-                      MAVEN_INDEX_CONTRACT, NUGET_PROXY_CONTRACT, NUGET_PUBLIC_CONTRACT, DEBIAN_APT_CONTRACT, COMPOSER_HOSTED_CONTRACT)
+                      MAVEN_INDEX_CONTRACT, NUGET_PROXY_CONTRACT, NUGET_PUBLIC_CONTRACT, DEBIAN_APT_CONTRACT,
+                      COMPOSER_HOSTED_CONTRACT, CONDA_HOSTED_CONTRACT)
 OPTIONAL_FILES = set.union(*OPTIONAL_CONTRACTS)
 COMPATIBLE_FILES = ['.github/workflows/' + name for name in WORKFLOWS
                     if '.github/workflows/' + name not in OPTIONAL_FILES
@@ -156,6 +158,10 @@ def jobs(family, schema=17, requirement_portability=False):
             add('Stock Composer and real PostgreSQL (' + arch + ')', arch,
                 ['Prepare the digest-pinned stock Composer PHAR', 'Build the clean cratectl candidate',
                  'Replay the hosted dependency graph with stock Composer'], 'ci-summary-composer-hosted-' + arch, 'composer-hosted')
+        elif family == 'conda-hosted':
+            add('Stock micromamba and real PostgreSQL (' + arch + ')', arch,
+                ['Prepare the digest-pinned stock micromamba binary', 'Build the clean cratectl candidate',
+                 'Replay native hosted archives with stock micromamba'], 'ci-summary-conda-hosted-' + arch, 'conda-hosted')
     if family == 'portable':
         add('Real PostgreSQL signed export source (amd64)', 'amd64',
             ['Prepare actual signed source fixture and independent trust-channel digests', 'Transfer reviewed synthetic fixture only',

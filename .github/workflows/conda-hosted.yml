@@ -1,0 +1,80 @@
+name: Native hosted Conda channel
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/conda-hosted.yml'
+      - 'internal/conda/**'
+      - 'internal/server/conda*.go'
+      - 'internal/store/conda*.go'
+      - 'scripts/conda_hosted_fixture.py'
+      - 'scripts/ci/conda_hosted_evidence.py'
+
+permissions:
+  contents: read
+
+jobs:
+  conda-hosted:
+    if: github.ref == 'refs/heads/main' && github.repository == 'ctlplne/cratectl'
+    name: Stock micromamba and real PostgreSQL (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 19
+    concurrency:
+      group: cratectl-conda-hosted-${{ github.ref }}-${{ matrix.arch }}-${{ github.sha }}
+      cancel-in-progress: false
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+            package: linux-64
+            sha256: 366cd9cd8be14df1ab8ed50352a82111082a36686b2d389fdb79a92c3fafb3e3
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+            package: linux-aarch64
+            sha256: 9f93b974adcb4d166996af969b6cd371287d1a3e52733704727884d9b74cb7a7
+    env:
+      GOENV: 'off'
+      GOTOOLCHAIN: local
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22.23.4'
+      - name: Prepare the digest-pinned stock micromamba binary
+        run: |
+          mkdir -p .cache/cratectl-conda-tools
+          curl --disable --fail --silent --show-error --location --max-time 90 --max-filesize 30000000 \
+            --proto '=https' --proto-redir '=https' --output .cache/cratectl-conda-tools/micromamba \
+            'https://github.com/mamba-org/micromamba-releases/releases/download/2.9.0-0/micromamba-${{ matrix.package }}'
+          printf '%s  %s\n' '${{ matrix.sha256 }}' .cache/cratectl-conda-tools/micromamba | sha256sum --check -
+          chmod 700 .cache/cratectl-conda-tools/micromamba
+      - name: Build the clean cratectl candidate
+        run: make build BINDIR=.cache/cratectl-conda-bin
+      - name: Replay native hosted archives with stock micromamba
+        run: |
+          umask 077
+          mkdir -p .private
+          python3 scripts/conformance_repository_manifest.py \
+            --pg-bin /usr/lib/postgresql/16/bin --binary-directory .cache/cratectl-conda-bin \
+            --conda-micromamba .cache/cratectl-conda-tools/micromamba --conda-ci-architecture '${{ matrix.arch }}'
+      - uses: actions/upload-artifact@v7
+        if: success()
+        with:
+          name: ci-summary-conda-hosted-${{ matrix.arch }}
+          path: .cache/ci-conda-hosted.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
