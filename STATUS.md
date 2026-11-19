@@ -803,8 +803,7 @@ the selection summary and 42 underlying report records.
 `b730f7e` passed the real PostgreSQL 16.16 Debian hosted regression and the
 build, unit, race and lint gates. The fixture covered plain and gzip control
 intake, exact archive identity, current package policy, dependency metadata,
-range reads, restart and isolated tenant bytes. Signed Release publication
-and a stock APT dependency restore remain open.
+range reads, restart and isolated tenant bytes.
 [Debian hosted intake evidence](evidence/2026-11-19/debian-b730f7e-hosted-intake-native.json)
 
 `8cf32b9` passed the build, unit, race and lint gates and both real
@@ -812,9 +811,25 @@ PostgreSQL 16.16 Debian regressions. The release-binding test used a synthetic
 OpenPGP envelope to exercise exact index hashes, by-hash reads, publication
 ordering, expiry and current package policy. The native Linux APT workflow
 uses GnuPG and stock APT for actual signature verification and dependency
-download.
+download. Both original jobs stopped during stock `dpkg-deb` archive creation.
 [Native Debian release-binding evidence](evidence/2026-11-19/debian-8cf32b9-release-binding-native.json)
 [Original signed APT workflow inventory](evidence/2026-11-19/github-8cf32b9-started.json)
+
+Both original Linux `c62c1bf` jobs passed 17 stock APT and 19 declarative
+checks against PostgreSQL 16.15. APT 2.8.4 verified an external OpenPGP
+signature, downloaded the exact application and dependency over TLS, and
+repeated the download after restart. APT refused an untrusted key and a signed
+view invalidated by policy. Each job matched 23 candidate source files.
+[Original Linux flat APT reports](evidence/2026-11-19/github-c62c1bf-debian-flat-native.json)
+
+Exact `37b2105` passed the build, test, race and lint gates and three Debian
+regressions on PostgreSQL 16.16. It serves a named suite and component with
+separate amd64 and arm64 indexes over shared architecture-independent packages.
+The local test checks the signed-envelope shape and current index binding.
+The original `420fb31` Linux jobs qualify the flat and named layouts with
+stock APT.
+[Named-suite PostgreSQL evidence](evidence/2026-11-19/debian-37b2105-named-suite-postgres.json)
+[Original named-suite workflow inventory](evidence/2026-11-19/github-420fb31-started.json)
 
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities

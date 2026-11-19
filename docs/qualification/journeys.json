@@ -2101,10 +2101,12 @@
       "id": "J.APT.HOSTED",
       "capability": "FMT.APT.HOSTED",
       "state": "implementing",
-      "candidate": "b730f7ec025588671e952f2f388423757ccfb284",
+      "candidate": "37b210559500535f1949a0935191e2479040b58d",
       "evidence": [
         "evidence/2026-11-19/debian-b730f7e-hosted-intake-native.json",
-        "evidence/2026-11-19/debian-8cf32b9-release-binding-native.json"
+        "evidence/2026-11-19/debian-8cf32b9-release-binding-native.json",
+        "evidence/2026-11-19/github-c62c1bf-debian-flat-native.json",
+        "evidence/2026-11-19/debian-37b2105-named-suite-postgres.json"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -2112,8 +2114,8 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Owned PostgreSQL 16.16 and source gates passed for Debian archive intake, exact-coordinate publication, policy-filtered Packages indexes, verified range reads, restart and tenant isolation on b730f7e. Exact 8cf32b9 passed current signed-envelope index binding, by-hash reads, rollback and expiry fencing on real PostgreSQL 16.16 with a synthetic envelope. The original native APT jobs are selected separately.",
-      "next_action": "Verify original stock APT signature verification and dependency downloads, then qualify suites, control compression and remote modes."
+      "limits": "Owned PostgreSQL 16.16 verified Debian archive intake, current authorization, exact-coordinate publication and package policy on b730f7e. Both original c62c1bf Linux jobs passed 17 stock APT 2.8.4 and 19 declarative checks with PostgreSQL 16.15 and 23 matched source hashes per job. APT authenticated an externally signed flat repository and downloaded the exact application and dependency archives over TLS, including after restart. Exact 37b2105 passed PostgreSQL regressions for a named suite, architecture-separated indexes, shared architecture-independent archives and current signed-envelope binding. Stock named-suite qualification is selected at 420fb31.",
+      "next_action": "Collect the original named-suite stock APT results and qualify additional control compression, concurrent publication and package lifecycle cases."
     },
     {
       "id": "J.APT.PROXY",

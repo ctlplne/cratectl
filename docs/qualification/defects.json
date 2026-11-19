@@ -1961,10 +1961,10 @@
     },
     {
       "id": "DEFECT.0191",
-      "summary": "Original signed APT x64 driver stops in stock dpkg-deb archive creation",
-      "state": "The first native x64 job reached real PostgreSQL and stopped on dpkg-deb exit 2 before any APT upload. The fixture used a private umask while creating the nested control directory.",
+      "summary": "Original signed APT driver stops in stock dpkg-deb archive creation",
+      "state": "Both original jobs reached real PostgreSQL and stopped on dpkg-deb exit 2 before any APT upload. The fixture used a private umask while creating the nested control directory. Both original c62c1bf jobs passed the scoped native replay on Linux.",
       "first_failure": "evidence/2026-11-19/debian-8cf32b9-amd64-build-first-failure.json",
-      "replay": null,
+      "replay": "evidence/2026-11-19/github-c62c1bf-debian-flat-native.json",
       "repair": "Set the exact nested DEBIAN directory mode after creation and keep the outer fixture private. Retain narrow dpkg-deb and APT failure markers."
     }
   ]
