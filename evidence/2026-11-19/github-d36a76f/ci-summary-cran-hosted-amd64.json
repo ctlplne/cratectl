@@ -1,0 +1,153 @@
+{
+  "candidate": "d36a76f30a003c4c9cbd9feee1cf88f9996bd5cb",
+  "status": "passed",
+  "checks": [
+    "clean exact source",
+    "cratectl matches the clean candidate",
+    "cratectld matches the clean candidate",
+    "real reviewed PostgreSQL 16 patch release",
+    "absent repository has an authority and tenant bound creation plan",
+    "plan, wrong approval and denied callers leave the tenant journal unchanged",
+    "concurrent approved requests produce one creation or a safe retry",
+    "retry after successful creation returns unchanged",
+    "one repository creation event despite concurrent retry",
+    "second tenant can plan an independent same-name repository",
+    "import returns the exact active hosted fields",
+    "plan exposes review drift without writing",
+    "stock npm published its exact bytes and unassessed input was denied",
+    "registry restart preserves the declared state",
+    "fresh stock npm downloads the exact approved archive after restart",
+    "stale approval leaves suspended repository retained",
+    "suspended repository cannot be imported as active",
+    "revoked administrator cannot plan",
+    "schema 19 with all 59 tenant tables forced RLS and a restricted runtime role"
+  ],
+  "binary_sha256": {
+    "cratectl": "0bfbe05b4f98d483cdeecdd3ff33aa3f083450444c881243e58f39e62fedeea1",
+    "cratectld": "29fad79ab855a710db71cab105d301d1fefd877885be0dbc9e22e998ed5ed56d"
+  },
+  "archive_sha256": "eb88cfbb43de75bcfb7e6ec35e9cf45e90e0288fcdcf1f05d76e4b3b5f3f6b28",
+  "postgres": "postgres (PostgreSQL) 16.15 (Ubuntu 16.15-1.pgdg24.04+2)",
+  "npm": "10.9.9",
+  "cran_hosted": {
+    "version": "4.3.3",
+    "binary_sha256": "eb3593fece43a6706946118b22a8126cdbdcb7bcaf96a4206873b2c07a1a1717",
+    "distribution_sha256": "086f046230727fc896f70cfb459d693023a30a9f6877492554aa7041dac2e576",
+    "checks": [
+      "the stock R interpreter and its distribution match the exact native tool pin",
+      "native CRAN metadata requires the current repository and tenant grants",
+      "four exact CRAN coordinates publish their original SHA-256 identities",
+      "unreviewed CRAN archives stay out of both indexes and their direct bytes are denied",
+      "CRAN rejects mismatched source metadata and changed bytes at an immutable coordinate",
+      "plain and gzip CRAN indexes retain all four reviewed DESCRIPTION and byte bindings",
+      "stock R selects numeric versions and downloads the exact native source graph",
+      "a fresh stock R process retrieves the same exact dependency graph after restart",
+      "new CRAN indexes and direct downloads enforce current digest denial",
+      "stock R falls back to the approved version and refuses the revoked exact archive"
+    ],
+    "archive_sha256": {
+      "CratectlStats_1.9.0.tar.gz": "43b6c2f118e229df38de8eaaea5491f1f2975343a2e43b1724cc80a8bd2cdb8b",
+      "CratectlStats_1.10.0.tar.gz": "97df8d880238d6404bfc49fde3c0f2fa625c53324a6d3acbb63a02057ba415a1",
+      "Cratectl.Data_2.1-0.tar.gz": "3870f1f192b50d07b441ad58c1a07885bab7f711bebd5bc67d18553d0d8f2089",
+      "Cratectl.Data_2.2-0.tar.gz": "5054005977cbd24282de3210a73c3c481e57ebe78fab34da2f6f853d65b89537"
+    },
+    "selected": {
+      "CratectlStats_1.10.0.tar.gz": "97df8d880238d6404bfc49fde3c0f2fa625c53324a6d3acbb63a02057ba415a1",
+      "Cratectl.Data_2.2-0.tar.gz": "5054005977cbd24282de3210a73c3c481e57ebe78fab34da2f6f853d65b89537"
+    }
+  },
+  "goal_complete": false,
+  "broad_readiness": false,
+  "schema": 1,
+  "profile": "cratectl-native-hosted-cran-source-v1",
+  "runner_os": "Linux",
+  "runner_arch": "X64",
+  "run_id": "44452885466",
+  "source_dirty": false,
+  "source_sha256": [
+    {
+      "path": ".github/workflows/cran-hosted.yml",
+      "sha256": "f980588a01be3b5b7688d45d73fab19dfd3bdb28f148f0b00846aa8b3de859f2"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "12f2a8b5cfbc2f322822b82e4446f51ff017374acab1f3a8921db8cc8e833bf6"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "1d4aecc2732cd54db4534e0afc862ffe14d5c24890f106008682fd9bbc8e5ba9"
+    },
+    {
+      "path": "go.sum",
+      "sha256": "5e364e4e1eff09d8d39617427d7775012304b09a7be26778dc2b46fdabae3f15"
+    },
+    {
+      "path": "scripts/ci/cran_hosted_evidence.py",
+      "sha256": "949d2b2d29db392b1f8d66daca648216518dc34888f84ba333c7c7ab5772496e"
+    },
+    {
+      "path": "scripts/ci/terraform_provider_evidence.py",
+      "sha256": "130de2ec92ed288a6fa6c744c67003a76cafa2dfb9835e48f653abccda1a50ca"
+    },
+    {
+      "path": "scripts/cran_hosted_fixture.py",
+      "sha256": "29505fa88292fe189d72c45d2528ccf2bb7fa9b40ee5bfec976fbef015da70a0"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "e315ed31bd367542f312efae2a5d781cba810c59775d9f88ac9cce18a63203a8"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+    },
+    {
+      "path": "scripts/qualification_contract.py",
+      "sha256": "c40a9d0209a9dc1fb9838f49cdb316ad5a762d45c0359b97fce156746564e5ba"
+    },
+    {
+      "path": "internal/cran/package.go",
+      "sha256": "c8c2166581b694a93388fe1dc9f85e70300a9678f0c2566b5ba45ec25729a971"
+    },
+    {
+      "path": "internal/cran/package_test.go",
+      "sha256": "260bafb8ae4f19ecbdefb65d830d31e5e4275fcfa613a1b5f2c084ae6e98963d"
+    },
+    {
+      "path": "internal/server/cran.go",
+      "sha256": "7d5eff4d5172e806378cece30bba1ea43cf07c8dca94d4b785d8ad695469f0e7"
+    },
+    {
+      "path": "internal/server/cran_integration_test.go",
+      "sha256": "fa0f931c3aee2d5aedd575dd55c3dab2929fc9fd257612a3beb6933a65fa7567"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "5cac2b69e5661e8f3567c81ff3766c25a8322139b6160aaa2cd9d81c832618ad"
+    },
+    {
+      "path": "internal/store/cran.go",
+      "sha256": "22c21676e0da2aa99adc428bfc935c9e963e3496cf0e7adf88dceea7ba7accc6"
+    },
+    {
+      "path": "internal/store/artifact_read.go",
+      "sha256": "29309051deb86dffa676dde15ae6c8dfaae9045ee7752405b9b09ad84897067d"
+    },
+    {
+      "path": "internal/store/lifecycle_artifact.go",
+      "sha256": "bbf64679e8e70b644c9c8ae52f82e3af2af6ddbd65d1a87c9de78fb08e2883d4"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "f79f7c0b227b3bbc0044e6449a921e7f4763dcc6b094e89d1496c228da561876"
+    },
+    {
+      "path": "internal/store/migrations.go",
+      "sha256": "59f3478fbc77b7c969e43719f7eea92844a5bb1b2cd5b0d63ec2f356e368594b"
+    },
+    {
+      "path": "internal/blob/local.go",
+      "sha256": "3cdbb9ecd323808a6f0d6d866fe66260fbcb355c6cda416bf5b4e11f19cb9e37"
+    }
+  ]
+}

@@ -939,6 +939,17 @@ after the latest digest was denied. It refused a direct fetch of that digest.
 [CRAN product PostgreSQL evidence](evidence/2026-11-19/cran-d25394c-hosted-postgres.json)
 [Stock R native source evidence](evidence/2026-11-19/cran-530472a-hosted-stock-r-native.json)
 
+Both original Linux jobs at `d36a76f` passed 29 combined checks with stock
+R 4.3.3 and PostgreSQL 16.15. Each matched 21 source files.
+[Original Linux stock R reports](evidence/2026-11-19/github-d36a76f-cran-hosted-stock-r-native.json)
+
+Exact `b3a0b5c` also installed the two verified inert archives before and
+after restart with the original R 4.6.2 interpreter and PostgreSQL 16.16.
+It matched each installed version and original data file in a fresh private
+library. A private launcher relocated the stock R subprocesses to the
+owned runtime tree. The fixture contained no package hooks or code.
+[Stock R inert installation evidence](evidence/2026-11-19/cran-b3a0b5c-inert-install-native.json)
+
 The original `55ccc7c` Linux x64 runtime report stopped in durable jobs at
 68 checks. The original `08457df` Linux x64 runtime report passed durable
 jobs and leases, then stopped in Chromium at two reported checks. The

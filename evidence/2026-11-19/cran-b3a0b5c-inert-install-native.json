@@ -1,0 +1,156 @@
+{
+  "candidate": "b3a0b5c80d6a79f18a1e2eefd279f3f737f7c5cc",
+  "observed_at": "2026-11-19T03:50:16.465290+00:00",
+  "status": "passed",
+  "platform": "macOS ARM64",
+  "source_dirty": false,
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "native_declarative_checks": 19,
+  "stock_r_checks": 12,
+  "cran_hosted": {
+    "version": "4.6.2",
+    "binary_sha256": "9e9a83d71ca2936fe3421823c43a3b8b3bd4c2f26599362d75d3f0955df13e1e",
+    "distribution_sha256": "a678b4db1fcd71b1b1cc58edcfa4a8d36ee012a02659dde9eab9366e93571157",
+    "checks": [
+      "the stock R interpreter and its distribution match the exact native tool pin",
+      "native CRAN metadata requires the current repository and tenant grants",
+      "four exact CRAN coordinates publish their original SHA-256 identities",
+      "unreviewed CRAN archives stay out of both indexes and their direct bytes are denied",
+      "CRAN rejects mismatched source metadata and changed bytes at an immutable coordinate",
+      "plain and gzip CRAN indexes retain all four reviewed DESCRIPTION and byte bindings",
+      "stock R selects numeric versions and downloads the exact native source graph",
+      "a fresh stock R process retrieves the same exact dependency graph after restart",
+      "new CRAN indexes and direct downloads enforce current digest denial",
+      "stock R falls back to the approved version and refuses the revoked exact archive"
+    ],
+    "archive_sha256": {
+      "CratectlStats_1.9.0.tar.gz": "43b6c2f118e229df38de8eaaea5491f1f2975343a2e43b1724cc80a8bd2cdb8b",
+      "CratectlStats_1.10.0.tar.gz": "97df8d880238d6404bfc49fde3c0f2fa625c53324a6d3acbb63a02057ba415a1",
+      "Cratectl.Data_2.1-0.tar.gz": "3870f1f192b50d07b441ad58c1a07885bab7f711bebd5bc67d18553d0d8f2089",
+      "Cratectl.Data_2.2-0.tar.gz": "5054005977cbd24282de3210a73c3c481e57ebe78fab34da2f6f853d65b89537"
+    },
+    "selected": {
+      "CratectlStats_1.10.0.tar.gz": "97df8d880238d6404bfc49fde3c0f2fa625c53324a6d3acbb63a02057ba415a1",
+      "Cratectl.Data_2.2-0.tar.gz": "5054005977cbd24282de3210a73c3c481e57ebe78fab34da2f6f853d65b89537"
+    },
+    "installation": {
+      "checks": [
+        "stock R installs the verified inert source graph first",
+        "stock R installs the verified inert source graph after-restart"
+      ],
+      "launcher_sha256": "3926d4ae7abf830a67212b7e54afdffd8583749decfd48123827c284fa772c55"
+    }
+  },
+  "binary_sha256": {
+    "cratectl": "0bc45bdbcccbbd6631733c38b95eada723d2ba2c7ae8277212d7f955e83e2712",
+    "cratectld": "d55031715c59ca4e1d1cbb574b8815ed379b772ed470f0658e3f44a07c280b14"
+  },
+  "stock_safe_report_sha256": "81c4f9282149ec32e9d757fc63be499a1ddd844e6a530b047ad7dbf7487ec868",
+  "source_sha256": [
+    {
+      "path": ".github/workflows/cran-hosted.yml",
+      "sha256": "6ac65a0a051db72538440960cecc0600ed43f4185d7a026b373f7e1b52519151"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "12f2a8b5cfbc2f322822b82e4446f51ff017374acab1f3a8921db8cc8e833bf6"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "1d4aecc2732cd54db4534e0afc862ffe14d5c24890f106008682fd9bbc8e5ba9"
+    },
+    {
+      "path": "go.sum",
+      "sha256": "5e364e4e1eff09d8d39617427d7775012304b09a7be26778dc2b46fdabae3f15"
+    },
+    {
+      "path": "scripts/ci/cran_hosted_evidence.py",
+      "sha256": "3bbca27549f51d522c4670802555d45444493d693df962661ce290ac36fba7f5"
+    },
+    {
+      "path": "scripts/ci/terraform_provider_evidence.py",
+      "sha256": "130de2ec92ed288a6fa6c744c67003a76cafa2dfb9835e48f653abccda1a50ca"
+    },
+    {
+      "path": "scripts/cran_hosted_fixture.py",
+      "sha256": "8a611504e4f7afcbc4963f50a56b9495aafa6b0aa3af8b7f05a99bf709a9796e"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "e7e61ff85d8f408d5f90d951283cbab5a408b02c7ddae4a3b85e02d53c650e24"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+    },
+    {
+      "path": "scripts/qualification_contract.py",
+      "sha256": "c40a9d0209a9dc1fb9838f49cdb316ad5a762d45c0359b97fce156746564e5ba"
+    },
+    {
+      "path": "internal/cran/package.go",
+      "sha256": "c8c2166581b694a93388fe1dc9f85e70300a9678f0c2566b5ba45ec25729a971"
+    },
+    {
+      "path": "internal/cran/package_test.go",
+      "sha256": "260bafb8ae4f19ecbdefb65d830d31e5e4275fcfa613a1b5f2c084ae6e98963d"
+    },
+    {
+      "path": "internal/server/cran.go",
+      "sha256": "7d5eff4d5172e806378cece30bba1ea43cf07c8dca94d4b785d8ad695469f0e7"
+    },
+    {
+      "path": "internal/server/cran_integration_test.go",
+      "sha256": "fa0f931c3aee2d5aedd575dd55c3dab2929fc9fd257612a3beb6933a65fa7567"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "5cac2b69e5661e8f3567c81ff3766c25a8322139b6160aaa2cd9d81c832618ad"
+    },
+    {
+      "path": "internal/store/cran.go",
+      "sha256": "22c21676e0da2aa99adc428bfc935c9e963e3496cf0e7adf88dceea7ba7accc6"
+    },
+    {
+      "path": "internal/store/artifact_read.go",
+      "sha256": "29309051deb86dffa676dde15ae6c8dfaae9045ee7752405b9b09ad84897067d"
+    },
+    {
+      "path": "internal/store/lifecycle_artifact.go",
+      "sha256": "bbf64679e8e70b644c9c8ae52f82e3af2af6ddbd65d1a87c9de78fb08e2883d4"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "f79f7c0b227b3bbc0044e6449a921e7f4763dcc6b094e89d1496c228da561876"
+    },
+    {
+      "path": "internal/store/migrations.go",
+      "sha256": "59f3478fbc77b7c969e43719f7eea92844a5bb1b2cd5b0d63ec2f356e368594b"
+    },
+    {
+      "path": "internal/blob/local.go",
+      "sha256": "3cdbb9ecd323808a6f0d6d866fe66260fbcb355c6cda416bf5b4e11f19cb9e37"
+    },
+    {
+      "path": "scripts/ci/cran_private_launcher.sh",
+      "sha256": "3926d4ae7abf830a67212b7e54afdffd8583749decfd48123827c284fa772c55"
+    }
+  ],
+  "stock_install_logs": {
+    "first": {
+      "bytes": 548,
+      "sha256": "192e6b725143d94ae59ffda17b811483a45bfbef8fbf0f046a90da64c3bd726c"
+    },
+    "after-restart": {
+      "bytes": 548,
+      "sha256": "192e6b725143d94ae59ffda17b811483a45bfbef8fbf0f046a90da64c3bd726c"
+    }
+  },
+  "limits": [
+    "The original GNU R 4.6.2 executable came from the checked official archive. A private launcher started that interpreter for R subprocesses without the framework\u2019s machine-wide install path.",
+    "The test independently matched each download to the exact synthetic archive. Each package contained only DESCRIPTION, a comment-only NAMESPACE and inert extdata. The stock installer used private libraries with configure, byte compilation and test loading disabled.",
+    "The two archived packages installed their original payloads and exact versions before and after restart. Production package code, platform binary packages and wider client environments remain unqualified."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

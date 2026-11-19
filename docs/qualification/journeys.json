@@ -2974,10 +2974,12 @@
       "id": "J.CRAN.HOSTED",
       "capability": "FMT.CRAN.HOSTED",
       "state": "implementing",
-      "candidate": "530472ad9b54e409fcee712d55e40d023fc52063",
+      "candidate": "b3a0b5c80d6a79f18a1e2eefd279f3f737f7c5cc",
       "evidence": [
         "evidence/2026-11-19/cran-d25394c-hosted-postgres.json",
-        "evidence/2026-11-19/cran-530472a-hosted-stock-r-native.json"
+        "evidence/2026-11-19/cran-530472a-hosted-stock-r-native.json",
+        "evidence/2026-11-19/cran-b3a0b5c-inert-install-native.json",
+        "evidence/2026-11-19/github-d36a76f-cran-hosted-stock-r-native.json"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
@@ -2985,8 +2987,8 @@
         "policy denial",
         "failure/recovery"
       ],
-      "limits": "Exact 530472a passed ten stock R 4.6.2 checks and 19 declarative checks on macOS ARM64 with PostgreSQL 16.16. R chose the new numeric source version and exact dependency from four archives. Fresh R recovered the same bytes after restart, then used the approved earlier version after current denial.",
-      "next_action": "Qualify stock R on both original Linux architectures, inert package installation, archive history, native binaries and broader graphs."
+      "limits": "Exact 530472a passed ten stock R 4.6.2 checks and 19 declarative checks on macOS ARM64 with PostgreSQL 16.16. R chose the new numeric source version and exact dependency from four archives. Fresh R recovered the same bytes after restart, then used the approved earlier version after current denial. Exact b3a0b5c added two stock installation checks. Its original R 4.6.2 engine installed both exact inert archives in private libraries before and after restart. Both original d36a76f Linux jobs passed 29 checks with stock R 4.3.3 and PostgreSQL 16.15. Each matched 21 exact source files.",
+      "next_action": "Qualify the Linux inert installation, historical archive discovery, native binaries and broader dependency graphs."
     },
     {
       "id": "J.CRAN.PROXY",
@@ -3047,7 +3049,8 @@
       "candidate": "530472ad9b54e409fcee712d55e40d023fc52063",
       "evidence": [
         "evidence/2026-11-19/cran-d25394c-hosted-postgres.json",
-        "evidence/2026-11-19/cran-530472a-hosted-stock-r-native.json"
+        "evidence/2026-11-19/cran-530472a-hosted-stock-r-native.json",
+        "evidence/2026-11-19/github-d36a76f-cran-hosted-stock-r-native.json"
       ],
       "required": [
         "publish/consume exact bytes where applicable",
