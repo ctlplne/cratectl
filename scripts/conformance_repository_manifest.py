@@ -450,7 +450,7 @@ def evaluate(args):
 
             report['cran_hosted'] = evaluate_cran(work, app, authority, call, api, restart_server, sha,
                                                   args.cran_r.resolve(), args.cran_r_home.resolve(), args.cran_tool_archive.resolve(),
-                                                  install=args.cran_install)
+                                                  install=args.cran_install, history=args.cran_history)
         if args.npm_search:
             from npm_search_fixture import evaluate_cached_search, evaluate_search
 
@@ -565,6 +565,8 @@ def evaluate(args):
         print(f"PASS: {len(report['cran_hosted']['checks'])} stock R hosted CRAN source checks")
     if args.cran_install:
         print(f"PASS: {len(report['cran_hosted']['installation']['checks'])} stock R inert archive installation checks")
+    if args.cran_history:
+        print(f"PASS: {len(report['cran_hosted']['history']['checks'])} stock R historical source archive checks")
     if args.npm_search:
         print(f"PASS: {len(report['npm_search']['checks'])} stock hosted npm search checks")
         print(f"PASS: {len(report['npm_cached_search']['checks'])} stock cached npm search checks")
@@ -776,11 +778,12 @@ def record_conda_ci(report, architecture):
 
 
 def record_cran_ci(report, architecture):
-    from ci.cran_hosted_evidence import FILES, INSTALL_FILES, INSTALL_PROFILE, PROFILE, validate as validate_cran
+    from ci.cran_hosted_evidence import PROFILES, source_files, validate as validate_cran
 
     runner = hosted_runner(report, architecture)
     installed = 'installation' in report['cran_hosted']
-    profile, files = (INSTALL_PROFILE, INSTALL_FILES) if installed else (PROFILE, FILES)
+    history = 'history' in report['cran_hosted']
+    profile, files = PROFILES[installed, history], source_files(installed, history)
     projection = {key: report[key] for key in ('candidate', 'status', 'checks', 'binary_sha256', 'archive_sha256',
                                                 'postgres', 'npm', 'cran_hosted', 'goal_complete', 'broad_readiness')}
     projection.update(schema=1, profile=profile, runner_os='Linux', runner_arch=runner,
@@ -829,6 +832,7 @@ if __name__ == '__main__':
     parser.add_argument('--cran-tool-archive', type=Path, help='the pinned native R distribution archive')
     parser.add_argument('--cran-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--cran-install', action='store_true', help='also install the exact owned inert source archives')
+    parser.add_argument('--cran-history', action='store_true', help='also exercise the reviewed historical archive directory')
     parser.add_argument('--npm-search', action='store_true',
                         help='also verify npm hosted and cached search using stock clients')
     parser.add_argument('--npm-search-ci-architecture', choices=('amd64', 'arm64'))
@@ -848,6 +852,8 @@ if __name__ == '__main__':
         parser.error('hosted CRAN evidence requires the complete pinned stock R runtime')
     if options.cran_install and not all(cran_tools):
         parser.error('the owned CRAN installation requires the complete pinned stock R runtime')
+    if options.cran_history and not all(cran_tools):
+        parser.error('the owned CRAN archive replay requires the complete pinned stock R runtime')
     if options.cran_r and any((options.provider_binary, options.npm_search, options.python_search_client,
                                options.cargo_toolchain, options.mcp_binary, options.oci_catalog_client,
                                options.maven_index_reader, options.promtool, options.debian_apt, options.composer_phar,

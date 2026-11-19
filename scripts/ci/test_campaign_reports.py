@@ -32,7 +32,8 @@ from conda_hosted_evidence import (BASE_CHECKS as CONDA_BASE, CHECKS as CONDA_CH
                                   PROFILE as CONDA_PROFILE, PINS as CONDA_PINS, VERSION as CONDA_VERSION, fixtures as conda_fixtures)
 from cran_hosted_evidence import (BASE_CHECKS as CRAN_BASE, CHECKS as CRAN_CHECKS, FILES as CRAN_FILES, PROFILE as CRAN_PROFILE,
                                  INSTALL_CHECKS as CRAN_INSTALL_CHECKS, INSTALL_FILES as CRAN_INSTALL_FILES,
-                                 INSTALL_PROFILE as CRAN_INSTALL_PROFILE, LAUNCHER as CRAN_LAUNCHER)
+                                 INSTALL_PROFILE as CRAN_INSTALL_PROFILE, LAUNCHER as CRAN_LAUNCHER,
+                                 HISTORY_CHECKS as CRAN_HISTORY_CHECKS, PROFILES as CRAN_PROFILES, source_files as cran_source_files)
 from cran_hosted_fixture import (COORDINATES as CRAN_COORDINATES, LATEST as CRAN_LATEST, EARLIER as CRAN_EARLIER,
                                  SELECTED_LIBRARY as CRAN_LIBRARY, TOOLS as CRAN_TOOLS,
                                  filename as cran_filename, make_archive as cran_archive)
@@ -98,6 +99,18 @@ class CampaignReports(unittest.TestCase):
         installation['launcher_sha256'] = '0' * 64
         with self.assertRaisesRegex(EvidenceError, 'cran_hosted_report_contract'):
             validate_custom(combined, candidate, 12, spec, install_source)
+
+        def history_source(path):
+            return b'--cran-history' if path == '.github/workflows/cran-hosted.yml' else source(path)
+
+        old = cran_filename(CRAN_EARLIER)
+        archived = {'checks': list(CRAN_HISTORY_CHECKS), 'file': old, 'sha256': packages[old]}
+        historical = {**report, 'profile': CRAN_PROFILES[False, True], 'cran_hosted': {**native, 'history': archived},
+                      'source_sha256': {path: hashlib.sha256(history_source(path)).hexdigest() for path in cran_source_files(False, True)}}
+        self.assertEqual(validate_custom(historical, candidate, 12, spec, history_source), {'checks': 34, 'records': 1})
+        archived['file'] = cran_filename(CRAN_LATEST)
+        with self.assertRaisesRegex(EvidenceError, 'cran_hosted_report_contract'):
+            validate_custom(historical, candidate, 12, spec, history_source)
 
     def test_conda_reports_bind_native_platform_and_exact_selected_builds(self):
         def source(path):

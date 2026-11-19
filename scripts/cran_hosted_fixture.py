@@ -59,6 +59,36 @@ if (nzchar(refused)) {
 }
 '''
 
+ARCHIVE_CLIENT = r'''
+repo <- Sys.getenv("CRATECTL_CRAN_REPOSITORY")
+read_token <- readLines(Sys.getenv("CRATECTL_CRAN_READER"), n = 1L)
+hdr <- c(Authorization = paste("Bearer", read_token))
+dest <- Sys.getenv("CRATECTL_CRAN_DOWNLOADS")
+directory <- paste0(utils::contrib.url(repo, type = "source"), "/Archive/CratectlStats/")
+index <- file.path(dest, "archive.html")
+stopifnot(utils::download.file(directory, destfile = index, method = "libcurl",
+                               headers = hdr, mode = "wb", quiet = TRUE) == 0L)
+lines <- readLines(index)
+links <- sub('^.*href="([^"]+)".*$', '\\1', grep('href="', lines, value = TRUE))
+original <- "CratectlStats_1.9.0.tar.gz"
+target <- file.path(dest, original)
+if (Sys.getenv("CRATECTL_CRAN_ARCHIVE_DENIED") == "1") {
+    stopifnot(!length(links))
+    refused <- tryCatch(
+        utils::download.file(paste0(directory, original), destfile = target, method = "libcurl",
+                             headers = hdr, mode = "wb", quiet = TRUE) != 0L,
+        error = function(e) TRUE
+    )
+    stopifnot(refused)
+    cat("cratectl-archive-denied\n")
+} else {
+    stopifnot(identical(links, original))
+    stopifnot(utils::download.file(paste0(directory, links), destfile = target, method = "libcurl",
+                                   headers = hdr, mode = "wb", quiet = TRUE) == 0L)
+    cat("cratectl-archive-read\n")
+}
+'''
+
 
 def filename(coordinate):
     return f'{coordinate[0]}_{coordinate[1]}.tar.gz'
@@ -87,7 +117,7 @@ def make_archive(coordinate, *, variant='original'):
     return buffer.getvalue()
 
 
-def evaluate_cran(work, installation, authority, call, api, restart, sha, runtime, r_home, tool_archive, *, install=False):
+def evaluate_cran(work, installation, authority, call, api, restart, sha, runtime, r_home, tool_archive, *, install=False, history=False):
     pin = TOOLS.get((platform.system(), platform.machine()))
     if pin is None or sha(tool_archive) != pin[1]:
         raise ValueError('use the pinned native GNU R distribution for the host')
@@ -235,6 +265,43 @@ def evaluate_cran(work, installation, authority, call, api, restart, sha, runtim
     check('stock R selects numeric versions and downloads the exact native source graph', consume('first', LATEST))
     restart()
     check('a fresh stock R process retrieves the same exact dependency graph after restart', consume('after-restart', LATEST))
+    history_checks = []
+    if history:
+        archive_scope = 'Archive/' + APP + '/'
+        old = filename(EARLIER)
+        archived_path = archive_scope + old
+        archived_driver = scope / 'cratectl-owned-archive-client.R'
+        archived_driver.write_text(ARCHIVE_CLIENT)
+
+        def archive_check(label, passed):
+            if not passed:
+                raise ValueError(label)
+            history_checks.append(label)
+
+        def fetch_archived(label, *, denied=False):
+            target = scope / ('archive-' + label)
+            target.mkdir(mode=0o700)
+            env = environment(target)
+            env.update(CRATECTL_CRAN_REPOSITORY=root, CRATECTL_CRAN_READER=str(work / 'reader.token'),
+                       CRATECTL_CRAN_DOWNLOADS=str(target), CRATECTL_CRAN_ARCHIVE_DENIED='1' if denied else '0')
+            _, output = call('cran-archive-' + label, *stock, '--file=' + os.fspath(archived_driver), cwd=target,
+                             environment=env, timeout=45)
+            archive_file = target / old
+            if denied:
+                return 'cratectl-archive-denied' in output.splitlines() and (not archive_file.exists() or archive_file.stat().st_size == 0)
+            return 'cratectl-archive-read' in output.splitlines() and sha(archive_file) == digests[EARLIER]
+
+        status, index, _ = request(archive_scope)
+        archive_check('the governed directory lists the one reviewed historical source version',
+                      status == 200 and ('href="' + old + '"').encode() in index and filename(LATEST).encode() not in index
+                      and request(archive_scope, 'other')[0] == 404 and request(archived_path)[:2] == (200, archives[EARLIER]))
+        archive_check('stock R follows the historical link and retrieves the exact retained archive', fetch_archived('allowed'))
+        decide('archive-denied', EARLIER, 'denied')
+        archive_check('current review removes the old link and fences the exact archive URL',
+                      old.encode() not in request(archive_scope)[1] and request(archived_path)[0] == 403)
+        archive_check('fresh stock R refuses the historical download after the digest is denied', fetch_archived('denied', denied=True))
+        decide('archive-reapproved', EARLIER, 'allowed')
+        archive_check('stock R retrieves the unchanged historical bytes after reapproval', fetch_archived('reapproved'))
     decide('deny', LATEST, 'denied')
     check('new CRAN indexes and direct downloads enforce current digest denial',
           b'Version: 1.10.0\n' not in request('PACKAGES')[1] and request(filename(LATEST))[0] == 403)
@@ -244,4 +311,6 @@ def evaluate_cran(work, installation, authority, call, api, restart, sha, runtim
               'selected': {filename(c): digests[c] for c in (LATEST, SELECTED_LIBRARY)}}
     if install:
         result['installation'] = {'checks': install_checks, 'launcher_sha256': sha(launcher)}
+    if history:
+        result['history'] = {'checks': history_checks, 'file': old, 'sha256': digests[EARLIER]}
     return result

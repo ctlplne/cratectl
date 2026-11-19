@@ -3,7 +3,7 @@
 
 import hashlib
 
-from cran_hosted_fixture import COORDINATES, LATEST, SELECTED_LIBRARY, TOOLS, filename, make_archive
+from cran_hosted_fixture import COORDINATES, EARLIER, LATEST, SELECTED_LIBRARY, TOOLS, filename, make_archive
 if __package__:
     from .terraform_provider_evidence import BASE_CHECKS as MANIFEST_CHECKS, hashes, matches, postgres_version
 else:
@@ -11,6 +11,13 @@ else:
 
 PROFILE = 'cratectl-native-hosted-cran-source-v1'
 INSTALL_PROFILE = 'cratectl-native-hosted-cran-source-install-v1'
+PROFILES = {
+    (False, False): PROFILE,
+    (True, False): INSTALL_PROFILE,
+    (False, True): 'cratectl-native-hosted-cran-source-history-v1',
+    (True, True): 'cratectl-native-hosted-cran-source-install-and-history-v1',
+}
+SCOPE = {profile: mode for mode, profile in PROFILES.items()}
 BASE_CHECKS = tuple(item for item in MANIFEST_CHECKS if item != 'provider matches the clean candidate')
 CHECKS = (
     'the stock R interpreter and its distribution match the exact native tool pin',
@@ -26,6 +33,13 @@ CHECKS = (
 )
 INSTALL_CHECKS = ('stock R installs the verified inert source graph first',
                   'stock R installs the verified inert source graph after-restart')
+HISTORY_CHECKS = (
+    'the governed directory lists the one reviewed historical source version',
+    'stock R follows the historical link and retrieves the exact retained archive',
+    'current review removes the old link and fences the exact archive URL',
+    'fresh stock R refuses the historical download after the digest is denied',
+    'stock R retrieves the unchanged historical bytes after reapproval',
+)
 LAUNCHER = 'scripts/ci/cran_private_launcher.sh'
 FILES = (
     '.github/workflows/cran-hosted.yml', 'Makefile', 'go.mod', 'go.sum',
@@ -37,20 +51,27 @@ FILES = (
     'internal/store/repository.go', 'internal/store/migrations.go', 'internal/blob/local.go',
 )
 INSTALL_FILES = (*FILES, LAUNCHER)
+VERSION_FILES = ('internal/cran/version.go', 'internal/cran/version_test.go')
 FIELDS = {'schema', 'profile', 'candidate', 'status', 'runner_os', 'runner_arch', 'run_id', 'source_dirty', 'source_sha256',
           'binary_sha256', 'archive_sha256', 'postgres', 'npm', 'checks', 'cran_hosted', 'goal_complete', 'broad_readiness'}
 HOST = {'X64': 'x86_64', 'ARM64': 'aarch64'}
 
 
-def install_selected(source):
-    return b'--cran-install' in source('.github/workflows/cran-hosted.yml').split()
+def selected_scopes(source):
+    flags = source('.github/workflows/cran-hosted.yml').split()
+    return b'--cran-install' in flags, b'--cran-history' in flags
+
+
+def source_files(installed, history):
+    baseline = INSTALL_FILES if installed else FILES
+    return baseline + VERSION_FILES if history else baseline
 
 
 def validate(report):
-    if type(report) is not dict or report.get('profile') not in (PROFILE, INSTALL_PROFILE):
+    if type(report) is not dict or report.get('profile') not in SCOPE:
         raise ValueError('invalid hosted CRAN profile')
-    installed = report['profile'] == INSTALL_PROFILE
-    files = INSTALL_FILES if installed else FILES
+    installed, history = SCOPE[report['profile']]
+    files = source_files(installed, history)
     if (set(report) != FIELDS
             or type(report['schema']) is not int or report['schema'] != 1 or report['status'] != 'passed'
             or report['runner_os'] != 'Linux' or report['runner_arch'] not in HOST or report['source_dirty'] is not False
@@ -70,6 +91,9 @@ def validate(report):
                 'checks': list(CHECKS), 'archive_sha256': archives, 'selected': selected}
     if installed:
         expected['installation'] = {'checks': list(INSTALL_CHECKS), 'launcher_sha256': report['source_sha256'][LAUNCHER]}
+    if history:
+        name = filename(EARLIER)
+        expected['history'] = {'checks': list(HISTORY_CHECKS), 'file': name, 'sha256': archives[name]}
     if native != expected:
         raise ValueError('invalid stock R tool or exact CRAN source graph')
     return report

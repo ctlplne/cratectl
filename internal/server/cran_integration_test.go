@@ -56,6 +56,9 @@ func TestCRANHostedSourceIndexAndRetainedBytes(t *testing.T) {
 	const app = "src/contrib/CratectlStats_1.2-3.tar.gz"
 	const old = "src/contrib/CratectlStats_1.1.0.tar.gz"
 	const dep = "src/contrib/Cratectl.Data_2.2-0.tar.gz"
+	const archive = "src/contrib/Archive/CratectlStats/"
+	const archivedOld = archive + "CratectlStats_1.1.0.tar.gz"
+	const archivedLatest = archive + "CratectlStats_1.2-3.tar.gz"
 	const metadata = "Description: Owned data profile with a\n  continued description.\nImports: Cratectl.Data (>= 2.1-0)\n" +
 		"Remotes: ignored invalid.example/owned\nMD5sum: ignored-supplied-value\nNeedsCompilation: no\n"
 	data := cranSourceFixture(t, "CratectlStats", "1.2-3", metadata, "Owned primary tenant archive.\n")
@@ -82,6 +85,7 @@ func TestCRANHostedSourceIndexAndRetainedBytes(t *testing.T) {
 	call(s, owner, "PUT", dep, dependency, 201)
 	call(s, owner, "PUT", app, duplicate, 409)
 	call(s, owner, "GET", app, nil, 403)
+	call(s, owner, "GET", archive, nil, 404)
 	if w := call(s, owner, "GET", index, nil, 200); w.Body.Len() != 0 {
 		t.Fatal("unassessed CRAN archives were included in the index")
 	}
@@ -107,6 +111,7 @@ func TestCRANHostedSourceIndexAndRetainedBytes(t *testing.T) {
 		t.Fatal(err)
 	}
 	call(s, reader, "GET", index, nil, 403)
+	call(s, reader, "GET", archive, nil, 403)
 	api := lifecycleHTTP(t, s, owner)
 	if w := api("PUT", "/api/v1/repositories/"+repo+"/grants", map[string]any{"actor": actor, "read": true}, "cratectl-cran-grant"); w.Code != 200 {
 		t.Fatalf("grant CRAN read: %d %.240s", w.Code, w.Body.String())
@@ -137,12 +142,33 @@ func TestCRANHostedSourceIndexAndRetainedBytes(t *testing.T) {
 	if w := call(s, reader, "GET", app, nil, 206, "Range", "bytes=2-11"); !bytes.Equal(w.Body.Bytes(), data[2:12]) {
 		t.Fatal("CRAN archive range altered original bytes")
 	}
+	w = call(s, reader, "GET", archive, nil, 200)
+	if !strings.Contains(w.Body.String(), `href="CratectlStats_1.1.0.tar.gz"`) || strings.Contains(w.Body.String(), "CratectlStats_1.2-3") {
+		t.Fatal("CRAN archive directory did not select the older eligible version")
+	}
+	archiveETag := w.Header().Get("ETag")
+	call(s, reader, "GET", archive, nil, 304, "If-None-Match", archiveETag)
+	if w := call(s, reader, "GET", archivedOld, nil, 200); !bytes.Equal(w.Body.Bytes(), older) {
+		t.Fatal("archive URL changed the original archived bytes")
+	}
+	call(s, owner, "PUT", archivedOld, older, 405)
+	call(s, reader, "GET", "src/contrib/Archive/Cratectl.Data/CratectlStats_1.1.0.tar.gz", nil, 404)
+	decide(old, crypt.Digest(older), "denied")
+	if w := call(s, reader, "GET", archive, nil, 200, "If-None-Match", archiveETag); strings.Contains(w.Body.String(), "CratectlStats_1.1.0") {
+		t.Fatal("denied historical CRAN archive remained discoverable")
+	}
+	call(s, reader, "GET", archivedOld, nil, 403)
+	decide(old, crypt.Digest(older), "allowed")
 	decide(app, digest, "denied")
 	w = call(s, reader, "GET", index, nil, 200, "If-None-Match", etag)
 	if strings.Contains(w.Body.String(), "Version: 1.2-3\n") || !strings.Contains(w.Body.String(), "Version: 1.1.0\n") {
 		t.Fatal("current CRAN policy removed the wrong version")
 	}
 	call(s, reader, "GET", app, nil, 403)
+	call(s, reader, "GET", archivedLatest, nil, 403)
+	if w := call(s, reader, "GET", archivedOld, nil, 200); !bytes.Equal(w.Body.Bytes(), older) {
+		t.Fatal("the existing archive URL changed when review changed the newest release")
+	}
 	decide(app, digest, "allowed")
 
 	const lifecycle = "/api/v1/repositories/" + repo + "/artifacts/lifecycle"
@@ -156,6 +182,7 @@ func TestCRANHostedSourceIndexAndRetainedBytes(t *testing.T) {
 		t.Fatalf("delete CRAN archive: %d %.250s", w.Code, w.Body.String())
 	}
 	call(s, reader, "GET", app, nil, 404)
+	call(s, reader, "GET", archivedLatest, nil, 404)
 	if w := call(s, reader, "GET", index, nil, 200); strings.Contains(w.Body.String(), "Version: 1.2-3\n") {
 		t.Fatal("retired CRAN package was still indexed")
 	}
@@ -174,6 +201,9 @@ func TestCRANHostedSourceIndexAndRetainedBytes(t *testing.T) {
 	}
 	if w := call(restarted, reader, "GET", app, nil, 200); !bytes.Equal(w.Body.Bytes(), data) {
 		t.Fatal("restored CRAN source bytes changed after restart")
+	}
+	if w := call(restarted, reader, "GET", archivedLatest, nil, 200); !bytes.Equal(w.Body.Bytes(), data) {
+		t.Fatal("restored CRAN archive alias selected different bytes after restart")
 	}
 
 	foreignToken, err := crypt.Token()

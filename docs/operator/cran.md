@@ -43,9 +43,17 @@ license fields and an MD5 compatibility checksum derived from the original
 archive. SHA-256 remains the identity for review and retained restoration.
 Retirement removes a version from both indexes and prevents archive reads.
 
+## Retrieve a retained version
+
+Under `src/contrib/Archive/PACKAGE/`, the directory lists reviewed source
+versions older than the newest currently visible version. The comparison
+uses R's numeric version components. Use the linked filename to read the
+original archive. The exact URL keeps the same bytes while that reference
+remains eligible, including if review changes which version is newest.
+
 The hosted profile covers source archives and the two DCF indexes.
-Platform binaries, serialized indexes, historical archive directories,
-proxy and group repositories need separate implementation and qualification.
+Platform binaries, serialized indexes, proxy and group repositories need
+separate implementation and qualification.
 
 [Writing R Extensions](https://cran.r-project.org/doc/manuals/R-exts.html)
 [Native R index and downloader](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/available.packages.html)

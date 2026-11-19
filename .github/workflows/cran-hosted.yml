@@ -101,7 +101,8 @@ jobs:
           python3 scripts/conformance_repository_manifest.py \
             --pg-bin /usr/lib/postgresql/16/bin --binary-directory .cache/cratectl-cran-bin \
             --cran-r "$r_home/bin/exec/R" --cran-r-home "$r_home" \
-            --cran-tool-archive .cache/cratectl-cran-tools/r-base-core.deb --cran-install --cran-ci-architecture '${{ matrix.arch }}'
+            --cran-tool-archive .cache/cratectl-cran-tools/r-base-core.deb --cran-install --cran-history \
+            --cran-ci-architecture '${{ matrix.arch }}'
       - uses: actions/upload-artifact@v7
         if: success()
         with:

@@ -19,6 +19,7 @@ const MaxArchiveBytes int64 = 64 << 20
 const maxExpandedBytes int64 = 256 << 20
 const MaxDescriptionBytes = 128 << 10
 const SourceDirectory = "src/contrib/"
+const ArchiveDirectory = SourceDirectory + "Archive/"
 
 var ErrPackage = errors.New("invalid or unsupported CRAN source package")
 
@@ -35,6 +36,8 @@ type Coordinate struct {
 	Name, Version string
 }
 
+func ValidName(value string) bool { return packageName.MatchString(value) }
+
 func (c Coordinate) Path() string {
 	return SourceDirectory + c.Name + "_" + c.Version + ".tar.gz"
 }
@@ -43,7 +46,7 @@ func ParsePath(value string) (Coordinate, bool) {
 	file, prefix := strings.CutPrefix(value, SourceDirectory)
 	file, suffix := strings.CutSuffix(file, ".tar.gz")
 	name, version, ok := strings.Cut(file, "_")
-	if !prefix || !suffix || !ok || len(version) > 80 || !packageName.MatchString(name) || !versionName.MatchString(version) {
+	if !prefix || !suffix || !ok || len(version) > 80 || !ValidName(name) || !versionName.MatchString(version) {
 		return Coordinate{}, false
 	}
 	return Coordinate{Name: name, Version: version}, true
@@ -55,7 +58,7 @@ var indexFields = []string{"Package", "Version", "Priority", "Depends", "Imports
 type Package map[string]string
 
 func (p Package) ValidFor(c Coordinate) bool {
-	if !packageName.MatchString(c.Name) || len(c.Version) > 80 || !versionName.MatchString(c.Version) ||
+	if !ValidName(c.Name) || len(c.Version) > 80 || !versionName.MatchString(c.Version) ||
 		p["Package"] != c.Name || p["Version"] != c.Version {
 		return false
 	}
@@ -187,7 +190,7 @@ func (r cancellationReader) Read(data []byte) (int, error) {
 // Inspect reads the one DESCRIPTION in a bounded source tarball without
 // extracting, compiling or evaluating any package files.
 func Inspect(ctx context.Context, source io.ReaderAt, size int64, c Coordinate) (Package, error) {
-	if source == nil || size < 18 || size > MaxArchiveBytes || !packageName.MatchString(c.Name) {
+	if source == nil || size < 18 || size > MaxArchiveBytes || !ValidName(c.Name) {
 		return nil, ErrPackage
 	}
 	input := bufio.NewReader(cancellationReader{ctx, io.NewSectionReader(source, 0, size)})
