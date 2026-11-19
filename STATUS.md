@@ -8,6 +8,13 @@ Broad readiness,security and packaging remain unqualified.
 
 ## Latest whole accepted source
 
+Both `ff0f805` and `4e15a9f` passed all 35 original jobs across ten
+workflows. Each unchanged exact-source verifier accepted 103 reports. The
+independent comparison matched 51 source contracts, 28 safe job summaries,
+the selection summary and three package transfers per candidate.
+[Exact ordered Composer campaign](evidence/2026-11-19/github-ff0f805-exact-local-accepted.json)
+[Exact hosted Composer campaign](evidence/2026-11-19/github-4e15a9f-exact-local-accepted.json)
+
 `2029b26` passed all 28 original jobs across seven workflows. The exact
 verifier accepted 84 reports. Independent comparison matched 21 safe job
 summaries, the selection summary, 45 source contracts and three transfers.
@@ -890,6 +897,13 @@ upstream requests. A denied digest and an unapproved archive address
 stopped the corresponding transfer.
 [Composer proxy and lifecycle PostgreSQL evidence](evidence/2026-11-19/composer-60cd693-checksum-proxy-postgres.json)
 [Original stock Composer proxy reports](evidence/2026-11-19/github-55ccc7c-composer-checksum-proxy-native.json)
+
+Both original `08457df` Linux jobs passed 79 checks and matched 37 source
+files each. Stock Composer 2.11.2 searched the hosted channel by name and
+description and exercised the name-only and type filters. It received only
+authorized package names before and after restart. The x64 runner used
+PostgreSQL 16.16 and the ARM64 runner used 16.15.
+[Original hosted Composer search reports](evidence/2026-11-19/github-08457df-composer-hosted-discovery-native.json)
 
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities

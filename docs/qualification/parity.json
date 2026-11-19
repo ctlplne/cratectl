@@ -8437,10 +8437,11 @@
       "state": "implementing",
       "candidate": "08457dfc784972eee6933033e1393761fcbe3f38",
       "evidence": [
-        "evidence/2026-11-19/composer-08457df-hosted-discovery-postgres.json"
+        "evidence/2026-11-19/composer-08457df-hosted-discovery-postgres.json",
+        "evidence/2026-11-19/github-08457df-composer-hosted-discovery-native.json"
       ],
-      "limits": "Exact 08457df passed the six Composer regressions against PostgreSQL 16.16 and all four source gates. Hosted search used exact allowed package names and inspected ZIP descriptions, with literal wildcard filters and current review. The original Linux stock Composer discovery runs are selected separately.",
-      "next_action": "Retain the stock CLI evidence, then qualify group and cached proxy discovery under current source and policy."
+      "limits": "Both original 08457df Linux jobs passed 79 checks and matched 37 source files per job. Stock Composer 2.11.2 used hosted name and description search, name-only and type filters, literal underscores and current review, with access checked again after restart. The x64 runner used PostgreSQL 16.16 and ARM64 used 16.15. Exact local PostgreSQL 16.16 also passed six Composer regressions and all four source gates.",
+      "next_action": "Qualify group and cached proxy discovery, additional clients and larger search workloads."
     },
     {
       "id": "FMT.COMPOSER.AUTHORIZATION",

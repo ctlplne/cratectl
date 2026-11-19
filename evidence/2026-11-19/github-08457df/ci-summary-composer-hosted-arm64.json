@@ -1,0 +1,308 @@
+{
+  "candidate": "08457dfc784972eee6933033e1393761fcbe3f38",
+  "status": "passed",
+  "checks": [
+    "clean exact source",
+    "cratectl matches the clean candidate",
+    "cratectld matches the clean candidate",
+    "real reviewed PostgreSQL 16 patch release",
+    "absent repository has an authority and tenant bound creation plan",
+    "plan, wrong approval and denied callers leave the tenant journal unchanged",
+    "concurrent approved requests produce one creation or a safe retry",
+    "retry after successful creation returns unchanged",
+    "one repository creation event despite concurrent retry",
+    "second tenant can plan an independent same-name repository",
+    "import returns the exact active hosted fields",
+    "plan exposes review drift without writing",
+    "stock npm published its exact bytes and unassessed input was denied",
+    "registry restart preserves the declared state",
+    "fresh stock npm downloads the exact approved archive after restart",
+    "stale approval leaves suspended repository retained",
+    "suspended repository cannot be imported as active",
+    "revoked administrator cannot plan",
+    "schema 19 with all 59 tenant tables forced RLS and a restricted runtime role"
+  ],
+  "binary_sha256": {
+    "cratectl": "0ac6353fa21f90f0015d6f24cf9d57a87a70f100fe79c5d657fa2afb50c707c9",
+    "cratectld": "272c35f2ab3828425d0dd1f180e43caf00c9d536e3b47a890567571131bf0acc"
+  },
+  "archive_sha256": "eb88cfbb43de75bcfb7e6ec35e9cf45e90e0288fcdcf1f05d76e4b3b5f3f6b28",
+  "postgres": "postgres (PostgreSQL) 16.15 (Ubuntu 16.15-1.pgdg24.04+2)",
+  "npm": "10.9.9",
+  "composer_hosted": {
+    "checks": [
+      "the stock Composer PHAR matches the pinned publisher digest",
+      "the native PHP runtime executes the pinned Composer version",
+      "repository metadata requires the current scoped grant",
+      "the four owned stable ZIP coordinates publish unchanged",
+      "unknown manifests and changed immutable coordinates are refused",
+      "unreviewed distributions remain hidden from Composer",
+      "Composer v2 advertises exact approved archive identities and native dependencies",
+      "the registry delivers each original ZIP under current review",
+      "stock Composer selects and locks the exact scoped dependency graph first",
+      "stock Composer caches exact ZIPs and installs their inert contents first",
+      "stock Composer selects and locks the exact scoped dependency graph after-restart",
+      "stock Composer caches exact ZIPs and installs their inert contents after-restart",
+      "the native lockfile stays byte-identical after service restart",
+      "policy removes the denied version and refuses direct retrieval",
+      "stock Composer refuses to install a newly denied locked archive"
+    ],
+    "composer_version": "2.11.2",
+    "composer_sha256": "dd158c0afd41d15fac89e1b4e47b5d42911fe316c3687cd5edac98319b25d028",
+    "php_version": "8.3.6",
+    "archive_sha256": {
+      "cratectl/composer-app@1.3.0": "e4895db7367bc8b738a9fdc6fdbd1a09b9af5106d21913b505ae58e581e77b93",
+      "cratectl/composer-app@1.4.0": "275016ca2672bd26136e917cd4f7c700c9b40044e662612c7138d322c1be72ba",
+      "cratectl/composer-lib@1.9.0": "c93ca299d804444a88f31f74b2fad38b911b7cfb2e69db3d0363a12e18b09ca4",
+      "cratectl/composer-lib@2.1.0": "e4f55d19ad49a469577e5ee9b49866bb5bb3b5150559338767ea25518e647fd9"
+    },
+    "lock_sha256": "866b32f8da320f772703c6b69ed431bf8c433e760dffa41eecc80276521fe784",
+    "version_forms": {
+      "checks": [
+        "Composer metadata keeps named development versions separate from numbered prereleases",
+        "stock Composer selects and locks the exact scoped dependency graph development",
+        "stock Composer caches exact ZIPs and installs their inert contents development",
+        "stock Composer selects and locks the exact scoped dependency graph prerelease",
+        "stock Composer caches exact ZIPs and installs their inert contents prerelease",
+        "stock Composer selects and locks the exact scoped dependency graph development-after-restart",
+        "stock Composer caches exact ZIPs and installs their inert contents development-after-restart",
+        "the development lockfile stays byte-identical after service restart",
+        "current policy removes only the denied development archive from discovery",
+        "stock Composer refuses to install a newly denied development archive"
+      ],
+      "archive_sha256": {
+        "cratectl/composer-app@dev-fixture": "669d5ab8a3d4d7fc0d9f34814528361243974c16d9748a00299e18b7830e8c28",
+        "cratectl/composer-lib@dev-fixture": "5922b2d95f4c86b86f7128ee6e982b5220ba01bab926cf8cb25aad8b28c6e073",
+        "cratectl/composer-app@1.5.0-rc1": "7e56757b0db673b2f2e5aa8b70d47b7169b60b5a9e2fc31afac1cb726cdaa68a"
+      },
+      "development_lock_sha256": "d0e83543b029f8a3565ae12243eabb9341eae2efd14dec2619307e484a3a5bee",
+      "prerelease_lock_sha256": "4b332895a570b138697fc133b15e444d7d259ebf36a06d174c4e934ccc64353f"
+    }
+  },
+  "goal_complete": false,
+  "broad_readiness": false,
+  "composer_group": {
+    "checks": [
+      "the stock Composer PHAR matches the pinned publisher digest",
+      "the native PHP runtime executes the pinned Composer version",
+      "repository metadata requires the current scoped grant",
+      "the four owned stable ZIP coordinates publish unchanged",
+      "unknown manifests and changed immutable coordinates are refused",
+      "unreviewed distributions remain hidden from Composer",
+      "the read-only group requires digest-pinned downloads from the first owning member",
+      "Composer v2 advertises exact approved archive identities and native dependencies",
+      "the registry delivers each original ZIP under current review",
+      "stock Composer selects and locks the exact scoped dependency graph first",
+      "stock Composer caches exact ZIPs and installs their inert contents first",
+      "stock Composer selects and locks the exact scoped dependency graph after-restart",
+      "stock Composer caches exact ZIPs and installs their inert contents after-restart",
+      "the native lockfile stays byte-identical after service restart",
+      "policy removes the denied version and refuses direct retrieval",
+      "stock Composer refuses to install a newly denied locked archive",
+      "the currently denied preferred archive prevents fallback to the lower member"
+    ],
+    "composer_version": "2.11.2",
+    "composer_sha256": "dd158c0afd41d15fac89e1b4e47b5d42911fe316c3687cd5edac98319b25d028",
+    "php_version": "8.3.6",
+    "archive_sha256": {
+      "cratectl/composer-app@1.3.0": "e4895db7367bc8b738a9fdc6fdbd1a09b9af5106d21913b505ae58e581e77b93",
+      "cratectl/composer-app@1.4.0": "275016ca2672bd26136e917cd4f7c700c9b40044e662612c7138d322c1be72ba",
+      "cratectl/composer-lib@1.9.0": "c93ca299d804444a88f31f74b2fad38b911b7cfb2e69db3d0363a12e18b09ca4",
+      "cratectl/composer-lib@2.1.0": "e4f55d19ad49a469577e5ee9b49866bb5bb3b5150559338767ea25518e647fd9"
+    },
+    "lock_sha256": "036aeaddbf3ac6d5f86ffb4efd1717e628d2364ba323d9837dcf1f69d3436799",
+    "collision_sha256": "03482443f9905a2456b51a23597f77099d19a80984246ab16c14516f6b3dd8ce"
+  },
+  "composer_proxy": {
+    "checks": [
+      "restricted Composer proxy requires an explicit reader grant before upstream access",
+      "the repository hides unassessed metadata and gates exact archive intake",
+      "metadata and archives use separate approved credential scopes",
+      "reviewed discovery emits the local immutable distribution locators",
+      "stock Composer locks the exact approved proxy dependency graph first",
+      "stock Composer installs the exact proxy ZIPs and inert files first",
+      "stock Composer locks the exact approved proxy dependency graph after-restart",
+      "stock Composer installs the exact proxy ZIPs and inert files after-restart",
+      "the locked graph installs after restart with the origin offline and zero further requests",
+      "current app denial hides its metadata while the dependency remains indexed",
+      "stock Composer refuses a locked proxy archive after digest denial",
+      "an advertised archive move outside approved authority stops metadata before a download"
+    ],
+    "archive_sha256": {
+      "cratectl/composer-app": "3a65852c01a7c3b46a38de02142cccc6438ab79441d9dccc45714303347990ff",
+      "cratectl/composer-lib": "50cd75482e075b0967b912ba2a27d79a75280fc5826d780a2585e5f8e0018389"
+    },
+    "lock_sha256": "c058d566b4747b677844b6f999452c6e2ea0026248f9749c01b8fc4754c1ecff"
+  },
+  "composer_search": {
+    "checks": [
+      "Composer hosted discovery requires current repository and tenant access",
+      "stock Composer full text search uses the inspected archive description and current policy",
+      "stock Composer name search uses the governed native package list",
+      "Composer list wildcards preserve the literal underscore in an owned package name",
+      "stock Composer package type search excludes unsupported package kinds",
+      "fresh stock Composer discovery suppresses the revoked package after restart"
+    ],
+    "archive_sha256": {
+      "cratectl/discovery-tools": "902e55f542b896be124959f7aae6156ac2702fc224569e499ad5922e819f74e0",
+      "cratectl/discovery_tools": "f427e7e6b1b973ad22123f2726dc2fbc75bb547de4b01a9ad97f6681a2620a79",
+      "cratectl/discovery-hidden": "bfb006273d5bebea84fc547aa1cfaa75ca262bdeca3bef839bb90d162eba2298"
+    }
+  },
+  "schema": 1,
+  "profile": "cratectl-native-composer-hosted-discovery-v1",
+  "runner_os": "Linux",
+  "runner_arch": "ARM64",
+  "run_id": "44444352330",
+  "source_dirty": false,
+  "source_sha256": [
+    {
+      "path": ".github/workflows/composer-hosted.yml",
+      "sha256": "5d0479766ae763bf64f81bb0e1f895cfd8a2618320d31b4716b98751f6517f2a"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "12f2a8b5cfbc2f322822b82e4446f51ff017374acab1f3a8921db8cc8e833bf6"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "1d4aecc2732cd54db4534e0afc862ffe14d5c24890f106008682fd9bbc8e5ba9"
+    },
+    {
+      "path": "go.sum",
+      "sha256": "5e364e4e1eff09d8d39617427d7775012304b09a7be26778dc2b46fdabae3f15"
+    },
+    {
+      "path": "scripts/ci/composer_hosted_evidence.py",
+      "sha256": "9c8a0b0206076d352a5b41ac359097ce8cb5b1a0543cb0eae27935f2fba22b9a"
+    },
+    {
+      "path": "scripts/ci/terraform_provider_evidence.py",
+      "sha256": "130de2ec92ed288a6fa6c744c67003a76cafa2dfb9835e48f653abccda1a50ca"
+    },
+    {
+      "path": "scripts/composer_hosted_fixture.py",
+      "sha256": "4bab8e4d5e8878103e959783dd122deefa34a812fffcca4a8532e2c025ea4794"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "55b6aaafddd429fe4d4fe117a8d53a37c4c313a1c9bca96b77e0fc7588546306"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+    },
+    {
+      "path": "scripts/qualification_contract.py",
+      "sha256": "c40a9d0209a9dc1fb9838f49cdb316ad5a762d45c0359b97fce156746564e5ba"
+    },
+    {
+      "path": "internal/composer/package.go",
+      "sha256": "390fbf958dc1d042c91935777e5c38c7a78db99c28603ea78c2b1ebde9cbbee9"
+    },
+    {
+      "path": "internal/composer/package_test.go",
+      "sha256": "206a5a0e5ba2f20cc6870c98cedec5bf35fde3bb60558b96e40ddb929274535d"
+    },
+    {
+      "path": "internal/server/composer.go",
+      "sha256": "76979053b08017bac8b4082cb9e2bb68f8e3b4d001e0d1251a74b77da8979d43"
+    },
+    {
+      "path": "internal/server/composer_integration_test.go",
+      "sha256": "69c264817c8f9e18bf1c88d902bb5e2dfe54da2f921d07f2a6e49deb34d7c3e2"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "0eb83e3f9e7de1b0792f60cc55e179f1573e4b492360b03720a4aeed75f0d0fe"
+    },
+    {
+      "path": "internal/store/composer.go",
+      "sha256": "343bfc17b423dd3555d0a037b4ceee076f5e1b6c3a419dc8a84cb48cbf051002"
+    },
+    {
+      "path": "internal/store/artifact_read.go",
+      "sha256": "29309051deb86dffa676dde15ae6c8dfaae9045ee7752405b9b09ad84897067d"
+    },
+    {
+      "path": "internal/store/lifecycle_artifact.go",
+      "sha256": "e616df599ab0fd977c58500b73174370280116c60418c37d8164a71d49c9d968"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "f79f7c0b227b3bbc0044e6449a921e7f4763dcc6b094e89d1496c228da561876"
+    },
+    {
+      "path": "internal/store/migrations.go",
+      "sha256": "59f3478fbc77b7c969e43719f7eea92844a5bb1b2cd5b0d63ec2f356e368594b"
+    },
+    {
+      "path": "internal/ziparchive/archive.go",
+      "sha256": "d58195a9079343fc869beff07677f9004f8d20ce9c356d2682a67d1a8f1add84"
+    },
+    {
+      "path": "internal/store/composer_group.go",
+      "sha256": "ffa9d669d72f30d80153f09185eb2c63a2655ed9f3309ad1db1014b6ae48a940"
+    },
+    {
+      "path": "internal/server/resolve.go",
+      "sha256": "00aba411b47f244c34bb68652894c0fbc215f3736c438b4ff6835012bb305771"
+    },
+    {
+      "path": "scripts/composer_proxy_fixture.py",
+      "sha256": "0ff5f15ae3102672bf76a2c92a57f9d68d2791ecfb9e7bdfa62321ef0d4b2467"
+    },
+    {
+      "path": "scripts/cargo_proxy_fixture.py",
+      "sha256": "e32153fb68e0844f9118372f924feb04cebe092bc336a9820ccf02ec4958c136"
+    },
+    {
+      "path": "internal/composer/catalog.go",
+      "sha256": "d5dfaebafec396ccb3951d7da9814b5f672267e469108447e9a54a56146461b0"
+    },
+    {
+      "path": "internal/composer/catalog_test.go",
+      "sha256": "6ed55bca51cdfb3968a069a123e8e8306a41188afe3555e286f30cd55dab934f"
+    },
+    {
+      "path": "internal/server/composer_proxy.go",
+      "sha256": "1b69d3f389252a0590de3b19fb0989d29328e3928fca8b7f8b04b1f808241b53"
+    },
+    {
+      "path": "internal/server/composer_proxy_integration_test.go",
+      "sha256": "baddf9eb40e826fda2f2df8e49198feaf187262bf3cdeef6b48d099dd835f30d"
+    },
+    {
+      "path": "internal/store/composer_proxy.go",
+      "sha256": "454088c9a5652c746a57c2a1e73c8d0e0039657a65801134c4c406e957f10aeb"
+    },
+    {
+      "path": "internal/store/retrieval.go",
+      "sha256": "fd0eecb58f2c58c31a763269e445f1749182685187d454334a64ff5fed75956f"
+    },
+    {
+      "path": "internal/store/native_source.go",
+      "sha256": "c2490b48ec6683754216225df953a03926198b148bb495df168a624304ada6e7"
+    },
+    {
+      "path": "internal/store/source_configuration.go",
+      "sha256": "b1fe34caadf952d23f506d3056a5e0c89905864ed9bf2a952b017a6f46dab010"
+    },
+    {
+      "path": "scripts/composer_search_fixture.py",
+      "sha256": "48ef1086be151d853469417e501aa420660714a4cb23dc0724e7e18740b2b11b"
+    },
+    {
+      "path": "internal/server/composer_search.go",
+      "sha256": "7d3a391266965a59fd7c6132e892c824afae2a3facd790d11f839a8acb2f8dcd"
+    },
+    {
+      "path": "internal/server/composer_search_integration_test.go",
+      "sha256": "df6a3c2152c9deec63cbe56aef5d4d9d250d8350d6f05b7957558274b160a6ea"
+    },
+    {
+      "path": "internal/store/composer_search.go",
+      "sha256": "d829f8fc4d9adff98ba9adc40a82c75195711f9c66a9cb2703d0b5963eb23d5b"
+    }
+  ]
+}
