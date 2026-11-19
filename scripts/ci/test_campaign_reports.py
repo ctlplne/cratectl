@@ -12,7 +12,9 @@ from campaign_reports import validate_custom, validate_summary
 from campaign_transport import EvidenceError
 from compose_evidence import CHECKS as COMPOSE_CHECKS, SOURCE_PATHS as COMPOSE_FILES
 from debian_apt_evidence import (APT_CHECKS as DEBIAN_APT_CHECKS, BASE_CHECKS as DEBIAN_APT_BASE,
-                                 PROFILE as DEBIAN_APT_PROFILE, SOURCE_PATHS as DEBIAN_APT_FILES)
+                                 PROFILE as DEBIAN_APT_PROFILE, SOURCE_PATHS as DEBIAN_APT_FILES,
+                                 APT_SUITE_CHECKS as DEBIAN_SUITE_CHECKS, SUITE_PROFILE as DEBIAN_SUITE_PROFILE,
+                                 SUITE_SOURCE_PATHS as DEBIAN_SUITE_FILES)
 from linux_install_evidence import CHECKS as INSTALL_CHECKS, IMAGE as INSTALL_IMAGE, SOURCE_PATHS as INSTALL_FILES
 from maven_index_evidence import (BASE_CHECKS as MAVEN_INDEX_BASE, CACHED_CHECKS as MAVEN_CACHED_CHECKS,
                                   CACHED_PROFILE as MAVEN_CACHED_PROFILE, CACHED_SOURCE_PATHS as MAVEN_CACHED_FILES,
@@ -58,6 +60,22 @@ class CampaignReports(unittest.TestCase):
         for patch in ({'architecture': 'amd64'}, {'checks': [item for item in DEBIAN_APT_CHECKS if 'untrusted-signature' not in item]}):
             with self.assertRaisesRegex(EvidenceError, 'debian_apt_report_contract'):
                 validate_custom({**report, 'debian_apt': {**apt, **patch}}, candidate, 12, spec, source)
+
+        def suite_source(path):
+            return b'--debian-apt --debian-apt-suite' if path == '.github/workflows/debian-apt.yml' else source(path)
+
+        indexes = {f'main/binary-{arch}/{path}': digest for arch in ('amd64', 'arm64') for path, digest in apt['index_sha256'].items()}
+        suite = {**apt, 'checks': list(DEBIAN_SUITE_CHECKS), 'index_sha256': indexes,
+                 'archive_sha256': {**apt['archive_sha256'], 'cratectl-apt-app-foreign': 'f' * 64}}
+        combined = {**report, 'profile': DEBIAN_SUITE_PROFILE, 'debian_apt_suite': suite,
+                    'source_sha256': {path: hashlib.sha256(suite_source(path)).hexdigest() for path in DEBIAN_SUITE_FILES}}
+        self.assertEqual(validate_custom(combined, candidate, 12, spec, suite_source), {'checks': 55, 'records': 1})
+        incomplete = {**suite, 'index_sha256': {k: d for k, d in indexes.items() if 'amd64' in k}}
+        with self.assertRaisesRegex(EvidenceError, 'debian_apt_report_contract'):
+            validate_custom({**combined, 'debian_apt_suite': incomplete}, candidate, 12, spec, suite_source)
+        flat_for_suite = {**report, 'source_sha256': {path: hashlib.sha256(suite_source(path)).hexdigest() for path in DEBIAN_APT_FILES}}
+        with self.assertRaisesRegex(EvidenceError, 'debian_apt_profile_selection'):
+            validate_custom(flat_for_suite, candidate, 12, spec, suite_source)
 
     def test_public_nuget_checks_exact_archive_and_lock_domains(self):
         source = lambda path: path.encode()

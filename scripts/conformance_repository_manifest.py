@@ -407,6 +407,8 @@ def evaluate(args):
             from debian_apt_fixture import evaluate_debian_apt
 
             report['debian_apt'] = evaluate_debian_apt(work, app, authority, public_env, call, api, restart_server, sha)
+            if args.debian_apt_suite:
+                report['debian_apt_suite'] = evaluate_debian_apt(work, app, authority, public_env, call, api, restart_server, sha, named=True)
         if args.npm_search:
             from npm_search_fixture import evaluate_cached_search, evaluate_search
 
@@ -501,6 +503,8 @@ def evaluate(args):
         print(f"PASS: {len(report['maven_index']['cached']['groups']['checks'])} stock Apache ordered Maven index checks")
     if args.debian_apt:
         print(f"PASS: {len(report['debian_apt']['checks'])} stock signed Debian APT checks")
+    if args.debian_apt_suite:
+        print(f"PASS: {len(report['debian_apt_suite']['checks'])} stock signed Debian named-suite checks")
     if args.npm_search:
         print(f"PASS: {len(report['npm_search']['checks'])} stock hosted npm search checks")
         print(f"PASS: {len(report['npm_cached_search']['checks'])} stock cached npm search checks")
@@ -646,14 +650,18 @@ def record_maven_index_ci(report, architecture):
 
 
 def record_debian_apt_ci(report, architecture):
-    from ci.debian_apt_evidence import PROFILE, SOURCE_PATHS, validate as validate_debian
+    from ci.debian_apt_evidence import PROFILE, SOURCE_PATHS, SUITE_PROFILE, SUITE_SOURCE_PATHS, validate as validate_debian
 
     runner = hosted_runner(report, architecture)
     projection = {key: report[key] for key in ('candidate', 'status', 'checks', 'binary_sha256', 'archive_sha256',
                                                 'postgres', 'npm', 'debian_apt', 'goal_complete', 'broad_readiness')}
-    projection.update(schema=1, profile=PROFILE, runner_os='Linux', runner_arch=runner,
+    profile, source_paths = PROFILE, SOURCE_PATHS
+    if 'debian_apt_suite' in report:
+        projection['debian_apt_suite'] = report['debian_apt_suite']
+        profile, source_paths = SUITE_PROFILE, SUITE_SOURCE_PATHS
+    projection.update(schema=1, profile=profile, runner_os='Linux', runner_arch=runner,
                       run_id=os.environ.get('GITHUB_RUN_ID'), source_dirty=False,
-                      source_sha256={name: sha(ROOT / name) for name in SOURCE_PATHS})
+                      source_sha256={name: sha(ROOT / name) for name in source_paths})
     with (ROOT / '.cache/ci-debian-apt.json').open('x') as stream:
         json.dump(validate_debian(projection), stream, indent=2)
         stream.write('\n')
@@ -680,6 +688,7 @@ if __name__ == '__main__':
     parser.add_argument('--maven-index-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--maven-index-cached', action='store_true', help='also verify cached Maven proxy and ordered group indexes')
     parser.add_argument('--debian-apt', action='store_true', help='verify a signed hosted repository using stock APT')
+    parser.add_argument('--debian-apt-suite', action='store_true', help='also verify a signed Debian suite using stock APT')
     parser.add_argument('--debian-apt-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--npm-search', action='store_true',
                         help='also verify npm hosted and cached search using stock clients')
@@ -693,6 +702,8 @@ if __name__ == '__main__':
                         help='also fetch a pinned dependency graph from the public crates.io index and CDN')
     parser.add_argument('--legacy-cargo-daemon', type=Path)
     options = parser.parse_args()
+    if options.debian_apt_suite and not options.debian_apt:
+        parser.error('the named Debian suite profile requires the flat APT baseline')
     if options.debian_apt_ci_architecture and (not options.debian_apt or options.provider_binary or options.npm_search
                                                or options.python_search_client or options.cargo_toolchain or options.mcp_binary
                                                or options.oci_catalog_client or options.maven_index_reader or options.promtool):

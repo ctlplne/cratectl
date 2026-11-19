@@ -23,7 +23,9 @@ from offline_media_evidence import CHECKS as OFFLINE_CHECKS, PHASES as OFFLINE_P
 from terraform_provider_evidence import BASE_CHECKS as IAC_BASE, CLIENT_CHECKS as IAC_CHECKS, CLIENTS as IAC_CLIENTS, validate as validate_provider
 from cargo_evidence import CHECKS as CARGO_CHECKS, validate as validate_cargo
 from cargo_public_evidence import CHECKS as CARGO_PUBLIC_CHECKS, validate as validate_cargo_public
-from debian_apt_evidence import APT_CHECKS as DEBIAN_APT_CHECKS, validate as validate_debian_apt
+from debian_apt_evidence import (APT_CHECKS as DEBIAN_APT_CHECKS, APT_SUITE_CHECKS as DEBIAN_SUITE_CHECKS,
+                                 PROFILE as DEBIAN_FLAT_PROFILE, SUITE_PROFILE as DEBIAN_SUITE_PROFILE,
+                                 suite_selected as debian_suite_selected, validate as validate_debian_apt)
 from npm_search_evidence import HOSTED_CHECKS as NPM_HOSTED, CACHED_CHECKS as NPM_CACHED, validate as validate_npm_search
 from python_search_evidence import HOSTED_CHECKS as PYTHON_HOSTED, CACHED_CHECKS as PYTHON_CACHED, validate as validate_python_search
 from oci_repository_catalog_evidence import (CACHED_CHECKS as OCI_CACHED_CHECKS, CACHED_PROFILE as OCI_CACHED_PROFILE,
@@ -158,6 +160,11 @@ def validate_custom(report, candidate, run_id, spec, source):
             require(report['profile'] == (NUGET_COMBINED_PROFILE if combined else NUGET_PROXY_PROFILE), 'nuget_proxy_profile_selection')
             if combined:
                 checks = len(NUGET_COMBINED_CHECKS)
+        if spec['kind'] == 'debian-apt':
+            named = debian_suite_selected(source)
+            require(report['profile'] == (DEBIAN_SUITE_PROFILE if named else DEBIAN_FLAT_PROFILE), 'debian_apt_profile_selection')
+            if named:
+                checks += len(DEBIAN_SUITE_CHECKS)
         return {'checks': checks, 'records': 1}
     require(report.get('status') == 'passed' and report.get('source_dirty') is False, 'custom_report_incomplete')
     if spec['kind'] == 'library':
