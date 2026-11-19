@@ -6,9 +6,9 @@ import json
 import ssl
 import urllib.error
 import urllib.request
-from urllib.parse import urlsplit
+from urllib.parse import quote, urlsplit
 
-from composer_hosted_fixture import make_archive
+from composer_hosted_fixture import make_archive, stock_install
 
 REPOSITORY = 'cratectl-composer-discovery'
 MATCH = 'cratectl/discovery-tools'
@@ -17,7 +17,7 @@ HIDDEN = 'cratectl/discovery-hidden'
 DESCRIPTION = 'Owned telescope utility for staged releases'
 
 
-def evaluate_composer_search(work, installation, authority, environment, call, api, restart, php, phar):
+def evaluate_composer_search(work, installation, authority, environment, call, api, restart, php, phar, *, lifecycle=False):
     scope = work / REPOSITORY
     scope.mkdir(mode=0o700)
     home = scope / 'home'
@@ -72,14 +72,14 @@ def evaluate_composer_search(work, installation, authority, environment, call, a
     env = {key: value for key, value in environment.items() if not key.startswith('COMPOSER')}
     env.update(COMPOSER_HOME=str(home), COMPOSER_CAFILE=str(installation / 'ca.crt'), COMPOSER_NO_INTERACTION='1',
                COMPOSER_AUTH=json.dumps({'http-basic': {urlsplit(authority).netloc: {'username': 'token', 'password': tokens['reader']}}}))
-    stock = [php, phar, '--no-interaction', '--no-ansi', '--no-scripts', '--no-plugins', '--no-cache']
+    stock = [php, phar, '--no-interaction', '--no-ansi', '--no-scripts', '--no-plugins']
     project = {'name': 'cratectl/owned-composer-discovery-consumer', 'version': '1.0.0',
                'repositories': [{'type': 'composer', 'url': authority + route}, {'packagist.org': False}],
                'config': {'allow-plugins': False}}
     (scope / 'composer.json').write_text(json.dumps(project) + '\n')
 
     def search(label, *terms, options=()):
-        _, output = call('composer-search-' + label, *stock, 'search', '--format=json', *options, *terms, cwd=scope, environment=env)
+        _, output = call('composer-search-' + label, *stock, '--no-cache', 'search', '--format=json', *options, *terms, cwd=scope, environment=env)
         rows = json.loads(output)
         if type(rows) is not list or any(type(row) is not dict or not isinstance(row.get('name'), str) for row in rows):
             raise ValueError('stock Composer returned an unexpected search result shape')
@@ -101,4 +101,53 @@ def evaluate_composer_search(work, installation, authority, environment, call, a
     check('fresh stock Composer discovery suppresses the revoked package after restart',
           search('after-restart', 'telescope') == []
           and [row['name'] for row in search('names-after-restart', 'discovery', options=('--only-name',))] == [NEIGHBOR])
-    return {'checks': checks, 'archive_sha256': {name: item[1] for name, item in packages.items()}}
+    report = {'checks': checks, 'archive_sha256': {name: item[1] for name, item in packages.items()}}
+    if lifecycle:
+        baseline = len(checks)
+        api('composer-search-return-review', management + '/decisions', 'PUT', {'path': path, 'digest': digest, 'decision': 'allowed'})
+        config = {**project, 'require': {MATCH: '1.0.0'}}
+
+        def command(label, *argv, **options):
+            return call('lifecycle-' + label, *argv, **options)
+
+        def install(label, cached_lock=None):
+            target = scope / label
+            code, output, lock_file = stock_install(target, config, stock, env, command, cached_lock)
+            if code != 0:
+                return code, output, None, False
+            data = lock_file.read_bytes()
+            rows = json.loads(data)['packages']
+            hashes = {hashlib.sha256(p.read_bytes()).hexdigest() for p in (target / 'cache/files').rglob('*.zip')}
+            binds = (len(rows) == 1 and rows[0]['name'] == MATCH and rows[0]['version'] == '1.0.0'
+                     and rows[0]['dist']['reference'] == digest and hashes == {digest})
+            return code, output, data, binds
+
+        code, _, locked, correct = install('lifecycle-first')
+        check('stock Composer locks and installs the exact approved archive before retirement', code == 0 and correct)
+        state_path = management + '/artifacts/lifecycle'
+        query = state_path + '?path=' + quote(path, safe='')
+        initial = api('composer-lifecycle-state', query)
+        removal = {'path': path, 'digest': digest, 'action': 'delete', 'expected_revision': initial['revision'],
+                   'reason': 'Retire the owned Composer fixture package'}
+        api('composer-lifecycle-preview', state_path, 'PUT', {**removal, 'dry_run': True})
+        check('preview keeps the reviewed Composer reference downloadable', request(path)[0] == 200)
+        api('composer-lifecycle-retire', state_path, 'PUT', removal)
+        retired = api('composer-lifecycle-retained', query)
+        check('retirement hides the retained version from native discovery and downloads',
+              retired['deleted'] is True and request(path)[0] == 404 and search('retired', 'telescope') == [])
+        code, output, _, _ = install('lifecycle-retired', locked)
+        check('stock Composer refuses the retired archive in a retained lockfile',
+              code != 0 and '404' in output and '/dist/' in output)
+        api('composer-lifecycle-restore', state_path, 'PUT',
+            {**removal, 'action': 'restore', 'expected_revision': retired['revision'],
+             'reason': 'Restore the exact verified Composer ZIP'})
+        restart()
+        check('restored reference reappears in fresh stock Composer discovery',
+              [row['name'] for row in search('restored', 'telescope')] == [MATCH])
+        code, _, restored, correct = install('lifecycle-restored', locked)
+        check('stock Composer installs the exact restored ZIP from the unchanged lockfile',
+              code == 0 and correct and restored == locked)
+        report['checks'] = checks[:baseline]
+        report['lifecycle'] = {'checks': checks[baseline:], 'restored_archive_sha256': digest,
+                               'unchanged_lock_sha256': hashlib.sha256(locked).hexdigest()}
+    return report

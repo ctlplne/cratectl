@@ -12,6 +12,7 @@ GROUP_PROFILE = 'cratectl-native-composer-hosted-and-group-zip-v1'
 VERSIONS_PROFILE = 'cratectl-native-composer-hosted-group-and-versions-v1'
 PROXY_PROFILE = 'cratectl-native-composer-checksum-proxy-v1'
 SEARCH_PROFILE = 'cratectl-native-composer-hosted-discovery-v1'
+LIFECYCLE_PROFILE = 'cratectl-native-composer-retained-lifecycle-v1'
 BASE_CHECKS = tuple(item for item in MANIFEST_CHECKS if item != 'provider matches the clean candidate')
 CHECKS = (
     'the stock Composer PHAR matches the pinned publisher digest',
@@ -68,6 +69,14 @@ SEARCH_CHECKS = (
     'stock Composer package type search excludes unsupported package kinds',
     'fresh stock Composer discovery suppresses the revoked package after restart',
 )
+LIFECYCLE_CHECKS = (
+    'stock Composer locks and installs the exact approved archive before retirement',
+    'preview keeps the reviewed Composer reference downloadable',
+    'retirement hides the retained version from native discovery and downloads',
+    'stock Composer refuses the retired archive in a retained lockfile',
+    'restored reference reappears in fresh stock Composer discovery',
+    'stock Composer installs the exact restored ZIP from the unchanged lockfile',
+)
 FILES = (
     '.github/workflows/composer-hosted.yml', 'Makefile', 'go.mod', 'go.sum',
     'scripts/ci/composer_hosted_evidence.py', 'scripts/ci/terraform_provider_evidence.py',
@@ -84,6 +93,8 @@ PROXY_FILES = (*GROUP_FILES, 'scripts/composer_proxy_fixture.py', 'scripts/cargo
                'internal/store/retrieval.go', 'internal/store/native_source.go', 'internal/store/source_configuration.go')
 SEARCH_FILES = (*PROXY_FILES, 'scripts/composer_search_fixture.py', 'internal/server/composer_search.go',
                 'internal/server/composer_search_integration_test.go', 'internal/store/composer_search.go')
+LIFECYCLE_FILES = (*SEARCH_FILES, 'internal/server/composer_lifecycle_integration_test.go',
+                   'internal/server/lifecycle.go', 'internal/store/lifecycle.go')
 FIELDS = {'schema', 'profile', 'candidate', 'status', 'runner_os', 'runner_arch', 'run_id', 'source_dirty', 'source_sha256',
           'binary_sha256', 'archive_sha256', 'postgres', 'npm', 'checks', 'composer_hosted', 'goal_complete', 'broad_readiness'}
 DIGEST = '[a-f0-9]{64}'
@@ -105,13 +116,18 @@ def search_selected(source):
     return b'--composer-search' in source('.github/workflows/composer-hosted.yml').split()
 
 
+def lifecycle_selected(source):
+    return b'--composer-lifecycle' in source('.github/workflows/composer-hosted.yml').split()
+
+
 def validate(report):
-    if type(report) is not dict or report.get('profile') not in (PROFILE, GROUP_PROFILE, VERSIONS_PROFILE, PROXY_PROFILE, SEARCH_PROFILE):
+    if type(report) is not dict or report.get('profile') not in (PROFILE, GROUP_PROFILE, VERSIONS_PROFILE, PROXY_PROFILE, SEARCH_PROFILE, LIFECYCLE_PROFILE):
         raise ValueError('invalid Composer profile')
     grouped = report['profile'] != PROFILE
-    discovered = report['profile'] == SEARCH_PROFILE
-    proxied = report['profile'] in (PROXY_PROFILE, SEARCH_PROFILE)
-    versions = report['profile'] in (VERSIONS_PROFILE, PROXY_PROFILE, SEARCH_PROFILE)
+    lifecycle = report['profile'] == LIFECYCLE_PROFILE
+    discovered = lifecycle or report['profile'] == SEARCH_PROFILE
+    proxied = discovered or report['profile'] == PROXY_PROFILE
+    versions = proxied or report['profile'] == VERSIONS_PROFILE
     fields = FIELDS | {'composer_group'} if grouped else FIELDS
     paths = GROUP_FILES if grouped else FILES
     if proxied:
@@ -120,6 +136,8 @@ def validate(report):
     if discovered:
         fields = fields | {'composer_search'}
         paths = SEARCH_FILES
+    if lifecycle:
+        paths = LIFECYCLE_FILES
     if (set(report) != fields or type(report['schema']) is not int or report['schema'] != 1
             or report['status'] != 'passed' or report['runner_os'] != 'Linux'
             or report['runner_arch'] not in ('X64', 'ARM64') or report['source_dirty'] is not False
@@ -141,9 +159,16 @@ def validate(report):
             raise ValueError('invalid governed Composer proxy report')
     if discovered:
         result = report['composer_search']
-        if (type(result) is not dict or set(result) != {'checks', 'archive_sha256'} or result['checks'] != list(SEARCH_CHECKS)
+        search_fields = {'checks', 'archive_sha256', 'lifecycle'} if lifecycle else {'checks', 'archive_sha256'}
+        if (type(result) is not dict or set(result) != search_fields or result['checks'] != list(SEARCH_CHECKS)
                 or not hashes(result['archive_sha256'], (MATCH, NEIGHBOR, HIDDEN))):
             raise ValueError('invalid Composer hosted discovery report')
+        if lifecycle:
+            retired = result['lifecycle']
+            if (type(retired) is not dict or set(retired) != {'checks', 'restored_archive_sha256', 'unchanged_lock_sha256'}
+                    or retired['checks'] != list(LIFECYCLE_CHECKS) or retired['restored_archive_sha256'] != result['archive_sha256'][MATCH]
+                    or not matches(retired['unchanged_lock_sha256'], DIGEST)):
+                raise ValueError('invalid Composer retained lifecycle report')
     return report
 
 

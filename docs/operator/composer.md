@@ -80,3 +80,11 @@ visible ZIP manifests. `composer search --only-name TERM` and the native
 package list use names from current retained, policy-allowed versions.
 Full-text search returns up to 100 matches. Proxy and group discovery through
 the native search command require separate support.
+
+## Retire and restore a hosted version
+
+Read the exact retained path, digest and revision through the artifact
+lifecycle API. Preview `delete` with those values and a reason before applying
+the same operation. The version disappears from native discovery and fresh
+downloads. To restore it, submit `restore` against the latest revision.
+Cratectl verifies the retained ZIP before returning the reference to service.

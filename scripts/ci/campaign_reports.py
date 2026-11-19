@@ -27,9 +27,11 @@ from composer_hosted_evidence import (CHECKS as COMPOSER_HOSTED_CHECKS, GROUP_CH
                                       GROUP_PROFILE as COMPOSER_GROUP_PROFILE, PROFILE as COMPOSER_HOSTED_PROFILE,
                                       PROXY_CHECKS as COMPOSER_PROXY_CHECKS, PROXY_PROFILE as COMPOSER_PROXY_PROFILE,
                                       SEARCH_CHECKS as COMPOSER_SEARCH_CHECKS, SEARCH_PROFILE as COMPOSER_SEARCH_PROFILE,
+                                      LIFECYCLE_CHECKS as COMPOSER_LIFECYCLE_CHECKS, LIFECYCLE_PROFILE as COMPOSER_LIFECYCLE_PROFILE,
                                       VERSION_CHECKS as COMPOSER_VERSION_CHECKS, VERSIONS_PROFILE as COMPOSER_VERSIONS_PROFILE,
                                       group_selected as composer_group_selected, proxy_selected as composer_proxy_selected,
                                       search_selected as composer_search_selected,
+                                      lifecycle_selected as composer_lifecycle_selected,
                                       versions_selected as composer_versions_selected,
                                       validate as validate_composer_hosted)
 from debian_apt_evidence import (APT_CHECKS as DEBIAN_APT_CHECKS, APT_SUITE_CHECKS as DEBIAN_SUITE_CHECKS,
@@ -180,6 +182,7 @@ def validate_custom(report, candidate, run_id, spec, source):
             versions = composer_versions_selected(source)
             proxied = composer_proxy_selected(source)
             discovered = composer_search_selected(source)
+            lifecycle = composer_lifecycle_selected(source)
             profile = COMPOSER_HOSTED_PROFILE
             if grouped:
                 profile = COMPOSER_GROUP_PROFILE
@@ -193,8 +196,11 @@ def validate_custom(report, candidate, run_id, spec, source):
             if discovered:
                 profile = COMPOSER_SEARCH_PROFILE
                 checks += len(COMPOSER_SEARCH_CHECKS)
+            if lifecycle:
+                profile = COMPOSER_LIFECYCLE_PROFILE
+                checks += len(COMPOSER_LIFECYCLE_CHECKS)
             require(report['profile'] == profile and (not versions or grouped) and (not proxied or versions)
-                    and (not discovered or proxied), 'composer_hosted_profile_selection')
+                    and (not discovered or proxied) and (not lifecycle or discovered), 'composer_hosted_profile_selection')
         return {'checks': checks, 'records': 1}
     require(report.get('status') == 'passed' and report.get('source_dirty') is False, 'custom_report_incomplete')
     if spec['kind'] == 'library':

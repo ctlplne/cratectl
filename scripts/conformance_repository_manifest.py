@@ -437,7 +437,8 @@ def evaluate(args):
                 from composer_search_fixture import evaluate_composer_search
 
                 report['composer_search'] = evaluate_composer_search(work, app, authority, public_env, call, api, restart_server,
-                                                                    args.composer_php.resolve(), args.composer_phar.resolve())
+                                                                    args.composer_php.resolve(), args.composer_phar.resolve(),
+                                                                    lifecycle=args.composer_lifecycle)
         if args.npm_search:
             from npm_search_fixture import evaluate_cached_search, evaluate_search
 
@@ -544,6 +545,8 @@ def evaluate(args):
         print(f"PASS: {len(report['composer_proxy']['checks'])} stock Composer checksum-bound proxy checks")
     if args.composer_search:
         print(f"PASS: {len(report['composer_search']['checks'])} stock Composer hosted discovery checks")
+    if args.composer_lifecycle:
+        print(f"PASS: {len(report['composer_search']['lifecycle']['checks'])} stock Composer retained lifecycle checks")
     if args.npm_search:
         print(f"PASS: {len(report['npm_search']['checks'])} stock hosted npm search checks")
         print(f"PASS: {len(report['npm_cached_search']['checks'])} stock cached npm search checks")
@@ -709,7 +712,7 @@ def record_debian_apt_ci(report, architecture):
 
 
 def record_composer_ci(report, architecture):
-    from ci.composer_hosted_evidence import (FILES, GROUP_FILES, GROUP_PROFILE, PROFILE, PROXY_FILES, PROXY_PROFILE,
+    from ci.composer_hosted_evidence import (FILES, GROUP_FILES, GROUP_PROFILE, LIFECYCLE_FILES, LIFECYCLE_PROFILE, PROFILE, PROXY_FILES, PROXY_PROFILE,
                                              SEARCH_FILES, SEARCH_PROFILE, VERSIONS_PROFILE, validate as validate_composer)
 
     runner = hosted_runner(report, architecture)
@@ -726,6 +729,8 @@ def record_composer_ci(report, architecture):
     if 'composer_search' in report:
         projection['composer_search'] = report['composer_search']
         profile, paths = SEARCH_PROFILE, SEARCH_FILES
+        if 'lifecycle' in report['composer_search']:
+            profile, paths = LIFECYCLE_PROFILE, LIFECYCLE_FILES
     projection.update(schema=1, profile=profile, runner_os='Linux', runner_arch=runner,
                       run_id=os.environ.get('GITHUB_RUN_ID'), source_dirty=False,
                       source_sha256={name: sha(ROOT / name) for name in paths})
@@ -763,6 +768,7 @@ if __name__ == '__main__':
     parser.add_argument('--composer-versions', action='store_true', help='also verify Composer development and prerelease ZIPs')
     parser.add_argument('--composer-proxy', action='store_true', help='also verify a checksum-bound Composer v2 upstream')
     parser.add_argument('--composer-search', action='store_true', help='also verify stock hosted Composer search and package names')
+    parser.add_argument('--composer-lifecycle', action='store_true', help='also verify stock locked downloads across retained lifecycle')
     parser.add_argument('--composer-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--npm-search', action='store_true',
                         help='also verify npm hosted and cached search using stock clients')
@@ -786,6 +792,8 @@ if __name__ == '__main__':
         parser.error('Composer proxy qualification requires the combined Composer profile and its own upstream credential scope')
     if options.composer_search and not options.composer_proxy:
         parser.error('Composer search qualification requires the combined stock Composer profile')
+    if options.composer_lifecycle and not options.composer_search:
+        parser.error('Composer lifecycle qualification requires the hosted discovery fixture')
     if options.composer_ci_architecture and (not options.composer_phar or options.provider_binary or options.npm_search
                                               or options.python_search_client or options.cargo_toolchain or options.mcp_binary
                                               or options.oci_catalog_client or options.maven_index_reader or options.promtool

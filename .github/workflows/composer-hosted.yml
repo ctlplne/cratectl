@@ -68,7 +68,8 @@ jobs:
           python3 scripts/conformance_repository_manifest.py \
             --pg-bin /usr/lib/postgresql/16/bin --binary-directory .cache/cratectl-composer-bin \
             --composer-php "$(command -v php)" --composer-phar .cache/cratectl-composer-tools/composer.phar \
-            --composer-group --composer-versions --composer-proxy --composer-search --composer-ci-architecture '${{ matrix.arch }}'
+            --composer-group --composer-versions --composer-proxy --composer-search --composer-lifecycle \
+            --composer-ci-architecture '${{ matrix.arch }}'
       - uses: actions/upload-artifact@v7
         if: success()
         with:

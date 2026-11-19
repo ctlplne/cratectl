@@ -24,6 +24,8 @@ from composer_hosted_evidence import (BASE_CHECKS as COMPOSER_BASE, CHECKS as CO
                                       PROXY_PROFILE as COMPOSER_PROXY_PROFILE,
                                       SEARCH_CHECKS as COMPOSER_SEARCH_CHECKS, SEARCH_FILES as COMPOSER_SEARCH_FILES,
                                       SEARCH_PROFILE as COMPOSER_SEARCH_PROFILE, MATCH as COMPOSER_SEARCH_MATCH,
+                                      LIFECYCLE_CHECKS as COMPOSER_LIFECYCLE_CHECKS, LIFECYCLE_FILES as COMPOSER_LIFECYCLE_FILES,
+                                      LIFECYCLE_PROFILE as COMPOSER_LIFECYCLE_PROFILE,
                                       NEIGHBOR as COMPOSER_SEARCH_NEIGHBOR, HIDDEN as COMPOSER_SEARCH_HIDDEN,
                                       EXTRA_COORDINATES as COMPOSER_EXTRA_COORDINATES, VERSION_CHECKS as COMPOSER_VERSION_CHECKS)
 from linux_install_evidence import CHECKS as INSTALL_CHECKS, IMAGE as INSTALL_IMAGE, SOURCE_PATHS as INSTALL_FILES
@@ -108,6 +110,17 @@ class CampaignReports(unittest.TestCase):
         self.assertEqual(validate_custom(discovered, candidate, 12, spec, discovery_source), {'checks': 79, 'records': 1})
         with self.assertRaisesRegex(EvidenceError, 'composer_hosted_report_contract'):
             validate_custom({**discovered, 'composer_search': {**discovery, 'checks': discovery['checks'][:-1]}}, candidate, 12, spec, discovery_source)
+        def lifecycle_source(path):
+            return discovery_source(path) + b' --composer-lifecycle' if path == '.github/workflows/composer-hosted.yml' else source(path)
+
+        lifecycle = {'checks': list(COMPOSER_LIFECYCLE_CHECKS), 'restored_archive_sha256': discovery['archive_sha256'][COMPOSER_SEARCH_MATCH],
+                     'unchanged_lock_sha256': 'e' * 64}
+        recovered = {**discovered, 'profile': COMPOSER_LIFECYCLE_PROFILE, 'composer_search': {**discovery, 'lifecycle': lifecycle},
+                     'source_sha256': {path: hashlib.sha256(lifecycle_source(path)).hexdigest() for path in COMPOSER_LIFECYCLE_FILES}}
+        self.assertEqual(validate_custom(recovered, candidate, 12, spec, lifecycle_source), {'checks': 85, 'records': 1})
+        with self.assertRaisesRegex(EvidenceError, 'composer_hosted_report_contract'):
+            broken = {**lifecycle, 'restored_archive_sha256': 'f' * 64}
+            validate_custom({**recovered, 'composer_search': {**discovery, 'lifecycle': broken}}, candidate, 12, spec, lifecycle_source)
 
     def test_debian_apt_report_requires_signed_repository_controls_on_native_architecture(self):
         source = lambda path: path.encode()

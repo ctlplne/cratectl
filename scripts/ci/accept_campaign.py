@@ -21,6 +21,7 @@ from debian_apt_evidence import (APT_CHECKS as DEBIAN_APT_CHECKS, APT_SUITE_CHEC
 from composer_hosted_evidence import (CHECKS as COMPOSER_HOSTED_CHECKS, GROUP_CHECKS as COMPOSER_GROUP_CHECKS,
                                       PROXY_CHECKS as COMPOSER_PROXY_CHECKS, VERSION_CHECKS as COMPOSER_VERSION_CHECKS,
                                       SEARCH_CHECKS as COMPOSER_SEARCH_CHECKS, search_selected as composer_search_selected,
+                                      LIFECYCLE_CHECKS as COMPOSER_LIFECYCLE_CHECKS, lifecycle_selected as composer_lifecycle_selected,
                                       group_selected as composer_group_selected, proxy_selected as composer_proxy_selected,
                                       versions_selected as composer_versions_selected)
 from npm_search_evidence import HOSTED_CHECKS as NPM_HOSTED, CACHED_CHECKS as NPM_CACHED
@@ -272,6 +273,9 @@ def check_log(raw, spec, source):
         if composer_search_selected(source):
             require(text.count(f'PASS: {len(COMPOSER_SEARCH_CHECKS)} stock Composer hosted discovery checks') == 1,
                     'composer_discovery_native_inventory')
+        if composer_lifecycle_selected(source):
+            require(text.count(f'PASS: {len(COMPOSER_LIFECYCLE_CHECKS)} stock Composer retained lifecycle checks') == 1,
+                    'composer_lifecycle_native_inventory')
     if kind in ('native', 'go'):
         pattern = r'\bok\s+ctlplne.dev/cratectl/internal/(?:server|store' + ('|conformance' if kind == 'native' else '') + r')\s'
         require(len(re.findall(pattern, text)) == (6 if kind == 'native' else 4), 'native_package_success_inventory')
