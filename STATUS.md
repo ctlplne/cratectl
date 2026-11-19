@@ -747,6 +747,10 @@ digest review. The warm restore after restart made zero origin requests. The
 named PostgreSQL regressions and the build, unit, race and lint gates passed.
 The native fixture used isolated loopback HTTP.
 [Native NuGet flat-container proxy evidence](evidence/2026-11-19/nuget-fada553-flat-proxy-native.json)
+Both original `2029b26` Linux jobs passed 30 stock NuGet proxy checks with
+PostgreSQL 16.15. Each matched 23 exact source files and confirmed all 59
+tenant tables use forced RLS under the restricted runtime role.
+[Original Linux NuGet proxy reports](evidence/2026-11-19/github-2029b26-nuget-flat-proxy-native.json)
 
 `6c72ee0` passed 26 ordered NuGet group assertions alongside the 30 stock
 proxy assertions on macOS ARM64 with PostgreSQL 16.16. Stock .NET restored

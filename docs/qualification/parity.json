@@ -3011,10 +3011,11 @@
       "state": "implementing",
       "candidate": "fada553638ff51519855bb233b476787360511ea",
       "evidence": [
-        "evidence/2026-11-19/nuget-fada553-flat-proxy-native.json"
+        "evidence/2026-11-19/nuget-fada553-flat-proxy-native.json",
+        "evidence/2026-11-19/github-2029b26-nuget-flat-proxy-native.json"
       ],
-      "limits": "Stock .NET SDK 10.0.403 passed 30 assertions on exact fada553 with PostgreSQL 16.16 and macOS ARM64. The scope covers a configured flat-container origin, SHA-512 sidecars, exact application and transitive dependency restore, current review, tenant denial, and no origin requests on warm restore after restart. Real PostgreSQL regressions cover invalid source archives, checksum disagreement, immutable coordinates, and origin no-cache responses.",
-      "next_action": "Qualify native Linux, configured service-index discovery, independent sources, proxy groups, registration and search, additional clients and production workloads."
+      "limits": "Stock .NET SDK 10.0.403 passed 30 assertions on exact fada553 with PostgreSQL 16.16 and macOS ARM64. The scope covers a configured flat-container origin, SHA-512 sidecars, exact application and transitive dependency restore, current review, tenant denial, and no origin requests on warm restore after restart. Real PostgreSQL regressions cover invalid source archives, checksum disagreement, immutable coordinates, and origin no-cache responses. Both original 2029b26 Linux jobs passed the same 30 checks with PostgreSQL 16.15. Each matched 23 exact source files and confirmed 59 forced-RLS tenant tables.",
+      "next_action": "Qualify service-index discovery, independent private and public origins, registration and search, additional clients and production workloads."
     },
     {
       "id": "FMT.NUGET.GROUP",

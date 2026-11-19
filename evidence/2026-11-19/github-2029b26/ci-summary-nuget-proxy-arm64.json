@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "profile": "cratectl-native-nuget-flat-proxy-v1",
+  "candidate": "2029b2661228d074a90d49a82ce5d89cfb63fc1e",
+  "status": "passed",
+  "runner_os": "Linux",
+  "runner_arch": "ARM64",
+  "run_id": "44425136422",
+  "source_dirty": false,
+  "source_sha256": [
+    {
+      "path": ".github/workflows/nuget-proxy.yml",
+      "sha256": "3bd09b5ed3e472d3d1a65ca47378b1c380a3e4ff04f25bfd03af7a6fd2e6180e"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "12f2a8b5cfbc2f322822b82e4446f51ff017374acab1f3a8921db8cc8e833bf6"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "1d4aecc2732cd54db4534e0afc862ffe14d5c24890f106008682fd9bbc8e5ba9"
+    },
+    {
+      "path": "go.sum",
+      "sha256": "5e364e4e1eff09d8d39617427d7775012304b09a7be26778dc2b46fdabae3f15"
+    },
+    {
+      "path": "global.json",
+      "sha256": "bd2f7421218da3954279a68a63015aeabda5b7122ec8b47a2f7585b7e284a98d"
+    },
+    {
+      "path": "scripts/ci/qualify_nuget_proxy.py",
+      "sha256": "1821e621dcea4393f6a85f83291156d70c99f62025fd03b8f232f2a6b1078de0"
+    },
+    {
+      "path": "scripts/ci/nuget_proxy_evidence.py",
+      "sha256": "9b5b4b6a0adf4effa7b73ecf8bfe4e6dd17be5ca11e90bc7cfd715ea1860ca87"
+    },
+    {
+      "path": "scripts/ci/terraform_provider_evidence.py",
+      "sha256": "130de2ec92ed288a6fa6c744c67003a76cafa2dfb9835e48f653abccda1a50ca"
+    },
+    {
+      "path": "scripts/conformance.py",
+      "sha256": "b7557b60e353b54d9aaa634b548506c61dec5dbf0c776dc6bda923b3f6628901"
+    },
+    {
+      "path": "scripts/conformance_nuget_proxy.py",
+      "sha256": "5f5093d1e7449f5e1590b3fa4f4eac2f7d735461e577fd2940ddd6332a56fee7"
+    },
+    {
+      "path": "scripts/qualification_contract.py",
+      "sha256": "c40a9d0209a9dc1fb9838f49cdb316ad5a762d45c0359b97fce156746564e5ba"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+    },
+    {
+      "path": "internal/server/nuget.go",
+      "sha256": "67f55ae3a1593e36c42123e232ed8155899ff0dd95788703ba1020007561ec91"
+    },
+    {
+      "path": "internal/server/nuget_proxy.go",
+      "sha256": "e35c3b0a117e8310c6bb8f1afb34b6a570cc8c51b5294a6579fa8a8cec38f67e"
+    },
+    {
+      "path": "internal/server/nuget_proxy_integration_test.go",
+      "sha256": "17f494c994fbf97556eec7f6436ee992182c654cb06cf74f71635021ab68ad94"
+    },
+    {
+      "path": "internal/server/resolve.go",
+      "sha256": "126cb5ba2f89e652e3d27d228c6bde0dba13c68f57856994e41187a435aaff18"
+    },
+    {
+      "path": "internal/store/artifact_read.go",
+      "sha256": "3c6bf72f93f988d3062c771660346902a29633b776f9b0744beafdb42bfb1fa6"
+    },
+    {
+      "path": "internal/store/nuget.go",
+      "sha256": "137d3bff8b627d591b74cb2ed6d90b3cad84f2a5c275fc6c5dbb7a0871cbfa27"
+    },
+    {
+      "path": "internal/store/nuget_proxy.go",
+      "sha256": "26f0f1f561ebf8199f02c25816327934c90f434f103b7308aa460045b690c0da"
+    },
+    {
+      "path": "internal/store/retrieval.go",
+      "sha256": "dd27abe47e7806fb604184ffe07e60531ccfb84725bb607a84574e0101836003"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "57e40695250f24d3b45d8475265563f4f56bb4602894b7e040540d7cdd756a47"
+    },
+    {
+      "path": "internal/store/migrations.go",
+      "sha256": "59f3478fbc77b7c969e43719f7eea92844a5bb1b2cd5b0d63ec2f356e368594b"
+    },
+    {
+      "path": "internal/store/store.go",
+      "sha256": "371c857dcfe658ca4a73fef52077f85b5636c44e636d534f3e3a576c16aa074e"
+    }
+  ],
+  "binary_sha256": {
+    "cratectl": "76a5ed433bea5f03769e7af1053c6ed577d649750596045c5a76c807a5f63d3f",
+    "cratectld": "a17357df7a9eb3f46c2791fbfebb76ffc59e0cb7e963ba7b70cd917a4dd3a28d"
+  },
+  "postgres": "postgres (PostgreSQL) 16.15 (Ubuntu 16.15-1.pgdg24.04+2)",
+  "database_safety": true,
+  "checks": [
+    "qualification source is clean",
+    "qualification binaries embed exact clean source commit",
+    "stock dotnet SDK executable is available",
+    "stock dotnet SDK matches the exact repository pin",
+    "admin: create nuget repository cratectl-nuget-proxy",
+    "ungranted stock source and other tenant requests make no origin request",
+    "reader receives the owned repository grant",
+    "NuGet discovery advertises the scoped cratectl flat address",
+    "stock dotnet fails closed with current package review unreviewed",
+    "cold exact request stages the reviewed archive Cratectl.Proxy.Application",
+    "cold exact request stages the reviewed archive Cratectl.Proxy.Dependency",
+    "stock dotnet restore succeeds cold-dependency-catalog",
+    "stock dotnet resolves the exact application and transitive dependency cold-dependency-catalog",
+    "stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Application cold-dependency-catalog",
+    "stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Dependency cold-dependency-catalog",
+    "upstream requests stay on canonical indexes, archives and SHA-512 sidecars",
+    "native manifest bytes come from the verified archive",
+    "stock dotnet restore succeeds warm-restart",
+    "stock dotnet resolves the exact application and transitive dependency warm-restart",
+    "stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Application warm-restart",
+    "stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Dependency warm-restart",
+    "restart and warm restore make no origin transfer",
+    "current exact denial applies to cached version advertisements and bytes",
+    "stock dotnet fails closed with current package review denied",
+    "current policy can restore the exact retained digest",
+    "stock dotnet restore succeeds allowed-again",
+    "stock dotnet resolves the exact application and transitive dependency allowed-again",
+    "stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Application allowed-again",
+    "stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Dependency allowed-again",
+    "repeated policy changes and isolated stock restores keep the warm origin idle"
+  ],
+  "nuget_proxy": {
+    "sdk": "10.0.403",
+    "dotnet_sha256": "e3ce85ffc9063d6cd9a9316c27a2ad0ee3257ad4565f17b80f058469161002c5",
+    "fixtures": {
+      "Cratectl.Proxy.Application": {
+        "nupkg": "b335d0d33284ef2eb0ca5769aac956b9d06cea9adae419a8fd5d8fedaeec9f68",
+        "nuspec": "298bd531f5c7cf2d3f6ed5a6f3bf33cbe5a30ef2fd742b69ace763857d58e647",
+        "payload": "ae2c017908e46841bb160c8d72c0ef9bf7ba7915477a524fc75b2e79ca14476a"
+      },
+      "Cratectl.Proxy.Dependency": {
+        "nupkg": "4a35b660ba9bc5af59075570ff8a0f45cf5984f28af2ea4c3e1d736933a9f879",
+        "nuspec": "97e29cc1690c50545e14bbfded0e90e2ea821d5e0097e61df0f0d6f938c68fb0",
+        "payload": "fdab4317d7cf1d0ff7a49d4d019fa4c56bda621661a5c914cb5303ad3e71b67e"
+      }
+    },
+    "loopback_http": true,
+    "origin_requests": 6
+  },
+  "goal_complete": false,
+  "broad_readiness": false
+}
