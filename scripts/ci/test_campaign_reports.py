@@ -33,10 +33,12 @@ from conda_hosted_evidence import (BASE_CHECKS as CONDA_BASE, CHECKS as CONDA_CH
 from cran_hosted_evidence import (BASE_CHECKS as CRAN_BASE, CHECKS as CRAN_CHECKS, FILES as CRAN_FILES, PROFILE as CRAN_PROFILE,
                                  INSTALL_CHECKS as CRAN_INSTALL_CHECKS, INSTALL_FILES as CRAN_INSTALL_FILES,
                                  INSTALL_PROFILE as CRAN_INSTALL_PROFILE, LAUNCHER as CRAN_LAUNCHER,
-                                 HISTORY_CHECKS as CRAN_HISTORY_CHECKS, PROFILES as CRAN_PROFILES, source_files as cran_source_files)
+                                 HISTORY_CHECKS as CRAN_HISTORY_CHECKS, GROUP_CHECKS as CRAN_GROUP_CHECKS,
+                                 PROFILES as CRAN_PROFILES, source_files as cran_source_files)
 from cran_hosted_fixture import (COORDINATES as CRAN_COORDINATES, LATEST as CRAN_LATEST, EARLIER as CRAN_EARLIER,
                                  SELECTED_LIBRARY as CRAN_LIBRARY, TOOLS as CRAN_TOOLS,
                                  filename as cran_filename, make_archive as cran_archive)
+from cran_group_fixture import LOWER_ONLY as CRAN_LOWER_ONLY, LOWER_VARIANT as CRAN_LOWER_VARIANT
 from linux_install_evidence import CHECKS as INSTALL_CHECKS, IMAGE as INSTALL_IMAGE, SOURCE_PATHS as INSTALL_FILES
 from maven_index_evidence import (BASE_CHECKS as MAVEN_INDEX_BASE, CACHED_CHECKS as MAVEN_CACHED_CHECKS,
                                   CACHED_PROFILE as MAVEN_CACHED_PROFILE, CACHED_SOURCE_PATHS as MAVEN_CACHED_FILES,
@@ -105,12 +107,25 @@ class CampaignReports(unittest.TestCase):
 
         old = cran_filename(CRAN_EARLIER)
         archived = {'checks': list(CRAN_HISTORY_CHECKS), 'file': old, 'sha256': packages[old]}
-        historical = {**report, 'profile': CRAN_PROFILES[False, True], 'cran_hosted': {**native, 'history': archived},
+        historical = {**report, 'profile': CRAN_PROFILES[False, True, False], 'cran_hosted': {**native, 'history': archived},
                       'source_sha256': {path: hashlib.sha256(history_source(path)).hexdigest() for path in cran_source_files(False, True)}}
         self.assertEqual(validate_custom(historical, candidate, 12, spec, history_source), {'checks': 34, 'records': 1})
         archived['file'] = cran_filename(CRAN_LATEST)
         with self.assertRaisesRegex(EvidenceError, 'cran_hosted_report_contract'):
             validate_custom(historical, candidate, 12, spec, history_source)
+
+        def group_source(path):
+            return b'--cran-group' if path == '.github/workflows/cran-hosted.yml' else source(path)
+
+        group = {'checks': list(CRAN_GROUP_CHECKS), 'selected': chosen,
+                 'lower_collision_sha256': hashlib.sha256(cran_archive(CRAN_LATEST, variant=CRAN_LOWER_VARIANT)).hexdigest(),
+                 'lower_only_sha256': hashlib.sha256(cran_archive(CRAN_LOWER_ONLY)).hexdigest()}
+        grouped = {**report, 'profile': CRAN_PROFILES[False, False, True], 'cran_hosted': {**native, 'group': group},
+                   'source_sha256': {path: hashlib.sha256(group_source(path)).hexdigest() for path in cran_source_files(False, False, True)}}
+        self.assertEqual(validate_custom(grouped, candidate, 12, spec, group_source), {'checks': 38, 'records': 1})
+        group['selected'] = wrong_branch
+        with self.assertRaisesRegex(EvidenceError, 'cran_hosted_report_contract'):
+            validate_custom(grouped, candidate, 12, spec, group_source)
 
     def test_conda_reports_bind_native_platform_and_exact_selected_builds(self):
         def source(path):

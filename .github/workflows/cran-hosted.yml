@@ -10,6 +10,7 @@ on:
       - 'internal/server/cran*.go'
       - 'internal/store/cran*.go'
       - 'scripts/cran_hosted_fixture.py'
+      - 'scripts/cran_group_fixture.py'
       - 'scripts/ci/cran_hosted_evidence.py'
       - 'scripts/ci/cran_private_launcher.sh'
 
@@ -88,9 +89,11 @@ jobs:
             done
           fi
           mkdir -p "$stage/home"
+          r_support="$stage/runtime/usr/share/R"
           env -i PATH=/usr/bin:/bin HOME="$stage/home" TMPDIR="$stage/home" R_HOME="$r_home" \
+            R_SHARE_DIR="$r_support/share" R_INCLUDE_DIR="$r_support/include" R_DOC_DIR="$r_support/doc" \
             LD_LIBRARY_PATH="$r_home/lib" R_DEFAULT_PACKAGES=utils,tools LC_ALL=C \
-            "$r_home/bin/exec/R" --vanilla --slave -e 'stopifnot(getRversion() == "4.3.3", capabilities("libcurl")); cat("Stock R 4.3.3 with libcurl\n")'
+            "$r_home/bin/exec/R" --vanilla --slave -e 'support <- vapply(c("share", "include", "doc"), R.home, character(1L)); stopifnot(getRversion() == "4.3.3", capabilities("libcurl"), all(dir.exists(support))); cat("Stock R 4.3.3 with owned support directories\n")'
       - name: Build the clean cratectl candidate
         run: make build BINDIR=.cache/cratectl-cran-bin
       - name: Replay hosted CRAN source discovery with stock R
@@ -101,7 +104,7 @@ jobs:
           python3 scripts/conformance_repository_manifest.py \
             --pg-bin /usr/lib/postgresql/16/bin --binary-directory .cache/cratectl-cran-bin \
             --cran-r "$r_home/bin/exec/R" --cran-r-home "$r_home" \
-            --cran-tool-archive .cache/cratectl-cran-tools/r-base-core.deb --cran-install --cran-history \
+            --cran-tool-archive .cache/cratectl-cran-tools/r-base-core.deb --cran-install --cran-history --cran-group \
             --cran-ci-architecture '${{ matrix.arch }}'
       - uses: actions/upload-artifact@v7
         if: success()

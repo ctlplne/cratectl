@@ -117,7 +117,8 @@ def make_archive(coordinate, *, variant='original'):
     return buffer.getvalue()
 
 
-def evaluate_cran(work, installation, authority, call, api, restart, sha, runtime, r_home, tool_archive, *, install=False, history=False):
+def evaluate_cran(work, installation, authority, call, api, restart, sha, runtime, r_home, tool_archive, *,
+                  install=False, history=False, grouped=False):
     pin = TOOLS.get((platform.system(), platform.machine()))
     if pin is None or sha(tool_archive) != pin[1]:
         raise ValueError('use the pinned native GNU R distribution for the host')
@@ -131,6 +132,9 @@ def evaluate_cran(work, installation, authority, call, api, restart, sha, runtim
     executable = r_home / 'bin/exec/R'
     if runtime.resolve() != executable.resolve() or not executable.is_file():
         raise ValueError('use the original R interpreter from the supplied private R home')
+    support = r_home if (r_home / 'share').is_dir() else r_home.parents[1] / 'share/R'
+    if not all((support / component).is_dir() for component in ('share', 'include', 'doc')):
+        raise ValueError('the original R support tree is incomplete')
     if install:
         launcher = Path(__file__).resolve().parent / 'ci/cran_private_launcher.sh'
         if sha(r_home / 'bin/R') != sha(launcher):
@@ -145,6 +149,7 @@ def evaluate_cran(work, installation, authority, call, api, restart, sha, runtim
 
     def environment(home):
         return {'PATH': '/usr/bin:/bin', 'HOME': str(home), 'R_HOME': str(r_home),
+                'R_SHARE_DIR': str(support / 'share'), 'R_INCLUDE_DIR': str(support / 'include'), 'R_DOC_DIR': str(support / 'doc'),
                 'LD_LIBRARY_PATH': str(r_home / 'lib'), 'DYLD_LIBRARY_PATH': str(r_home / 'lib'),
                 'CURL_CA_BUNDLE': str(ca), 'SSL_CERT_FILE': str(ca), 'TMPDIR': str(home), 'LC_ALL': 'C',
                 'R_DEFAULT_PACKAGES': 'utils,tools', 'R_LIBS_USER': str(home / 'library')}
@@ -171,13 +176,14 @@ def evaluate_cran(work, installation, authority, call, api, restart, sha, runtim
     tls = ssl.create_default_context(cafile=str(ca))
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), urllib.request.HTTPSHandler(context=tls), NoRedirect())
 
-    def request(path, actor='reader', method='GET', body=None):
-        i = urllib.request.Request(native + path, data=body, method=method,
+    def request(path, actor='reader', method='GET', body=None, *, repository=REPO):
+        url = f'{authority}/cran/{repository}/src/contrib/{path}'
+        i = urllib.request.Request(url, data=body, method=method,
                                    headers={'Authorization': 'Bearer ' + tokens[actor]})
         try:
             with opener.open(i, timeout=10) as response:
                 data = response.read((128 << 10) + 1)
-                if response.url != native + path or len(data) > (128 << 10):
+                if response.url != url or len(data) > (128 << 10):
                     raise ValueError('owned CRAN request exceeded the fixture bounds')
                 return response.status, data, response.headers.get('X-Checksum-Sha256')
         except urllib.error.HTTPError as error:
@@ -252,8 +258,14 @@ def evaluate_cran(work, installation, authority, call, api, restart, sha, runtim
         private_library.mkdir(mode=0o700)
         env = environment(target)
         env['R_DEFAULT_PACKAGES'] = 'NULL'
-        call('cran-install-' + label, *stock, '--file=' + os.fspath(installer), '--args', '--no-test-load',
-             '--no-byte-compile', '--no-configure', '-l', private_library, *names, cwd=target, environment=env, timeout=45)
+        code, output = call('cran-install-' + label, *stock, '--file=' + os.fspath(installer), '--args', '--no-test-load',
+                            '--no-byte-compile', '--no-configure', '-l', private_library, *names, cwd=target, environment=env,
+                            status=None, timeout=45)
+        if code:
+            markers = ('package indices', 'shared library', 'permission denied', 'no packages specified', 'cannot open',
+                       'R_HOME', 'R_SHARE_DIR', 'R_INCLUDE_DIR', 'R_DOC_DIR', 'DESCRIPTION', 'Renviron', 'Makeconf')
+            seen = ', '.join(marker for marker in markers if marker.lower() in output.lower()) or 'client failure'
+            raise ValueError(f'stock R installation {label} returned {code} ({seen})')
         installed = {path.name for path in private_library.iterdir() if path.is_dir()}
         if installed != {c[0] for c in graph} or not all(
                 (private_library / c[0] / 'extdata/owned.txt').read_bytes() == fixture_payload(c)
@@ -313,4 +325,8 @@ def evaluate_cran(work, installation, authority, call, api, restart, sha, runtim
         result['installation'] = {'checks': install_checks, 'launcher_sha256': sha(launcher)}
     if history:
         result['history'] = {'checks': history_checks, 'file': old, 'sha256': digests[EARLIER]}
+    if grouped:
+        from cran_group_fixture import evaluate_cran_group
+
+        result['group'] = evaluate_cran_group(work, authority, stock, environment, request, api, call, restart, sha)
     return result

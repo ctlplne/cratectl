@@ -4,6 +4,7 @@
 import hashlib
 
 from cran_hosted_fixture import COORDINATES, EARLIER, LATEST, SELECTED_LIBRARY, TOOLS, filename, make_archive
+from cran_group_fixture import LOWER_ONLY, LOWER_VARIANT
 if __package__:
     from .terraform_provider_evidence import BASE_CHECKS as MANIFEST_CHECKS, hashes, matches, postgres_version
 else:
@@ -11,12 +12,14 @@ else:
 
 PROFILE = 'cratectl-native-hosted-cran-source-v1'
 INSTALL_PROFILE = 'cratectl-native-hosted-cran-source-install-v1'
-PROFILES = {
+SOURCE_PROFILES = {
     (False, False): PROFILE,
     (True, False): INSTALL_PROFILE,
     (False, True): 'cratectl-native-hosted-cran-source-history-v1',
     (True, True): 'cratectl-native-hosted-cran-source-install-and-history-v1',
 }
+PROFILES = {(*mode, grouped): profile.removesuffix('-v1') + '-ordered-group-v1' if grouped else profile
+            for mode, profile in SOURCE_PROFILES.items() for grouped in (False, True)}
 SCOPE = {profile: mode for mode, profile in PROFILES.items()}
 BASE_CHECKS = tuple(item for item in MANIFEST_CHECKS if item != 'provider matches the clean candidate')
 CHECKS = (
@@ -40,6 +43,17 @@ HISTORY_CHECKS = (
     'fresh stock R refuses the historical download after the digest is denied',
     'stock R retrieves the unchanged historical bytes after reapproval',
 )
+GROUP_CHECKS = (
+    'the CRAN group requires its own grant and access to all current source members',
+    'an absent preferred package permits the exact lower owner before new publication',
+    'new preferred ownership hides lower versions while its own archive awaits review',
+    'the native group index pins both exact sources and refuses changed or unpinned requests',
+    'stock R resolves and downloads exact application and dependency bytes from the ordered group',
+    'fresh stock R retrieves the same digest-bound group graph after restart',
+    'a denied owning source keeps the colliding lower archive out of the group',
+    'fresh stock R omits the denied package and refuses the known digest-bound URL',
+    'withdrawing a current source grant stops group discovery and exact archive reads',
+)
 LAUNCHER = 'scripts/ci/cran_private_launcher.sh'
 FILES = (
     '.github/workflows/cran-hosted.yml', 'Makefile', 'go.mod', 'go.sum',
@@ -52,6 +66,8 @@ FILES = (
 )
 INSTALL_FILES = (*FILES, LAUNCHER)
 VERSION_FILES = ('internal/cran/version.go', 'internal/cran/version_test.go')
+GROUP_FILES = ('scripts/cran_group_fixture.py', 'internal/store/cran_group.go', 'internal/server/cran_group_integration_test.go',
+               'internal/server/resolve.go', 'internal/store/source_configuration.go')
 FIELDS = {'schema', 'profile', 'candidate', 'status', 'runner_os', 'runner_arch', 'run_id', 'source_dirty', 'source_sha256',
           'binary_sha256', 'archive_sha256', 'postgres', 'npm', 'checks', 'cran_hosted', 'goal_complete', 'broad_readiness'}
 HOST = {'X64': 'x86_64', 'ARM64': 'aarch64'}
@@ -59,19 +75,19 @@ HOST = {'X64': 'x86_64', 'ARM64': 'aarch64'}
 
 def selected_scopes(source):
     flags = source('.github/workflows/cran-hosted.yml').split()
-    return b'--cran-install' in flags, b'--cran-history' in flags
+    return b'--cran-install' in flags, b'--cran-history' in flags, b'--cran-group' in flags
 
 
-def source_files(installed, history):
+def source_files(installed, history, grouped=False):
     baseline = INSTALL_FILES if installed else FILES
-    return baseline + VERSION_FILES if history else baseline
+    return baseline + (VERSION_FILES if history else ()) + (GROUP_FILES if grouped else ())
 
 
 def validate(report):
     if type(report) is not dict or report.get('profile') not in SCOPE:
         raise ValueError('invalid hosted CRAN profile')
-    installed, history = SCOPE[report['profile']]
-    files = source_files(installed, history)
+    installed, history, grouped = SCOPE[report['profile']]
+    files = source_files(installed, history, grouped)
     if (set(report) != FIELDS
             or type(report['schema']) is not int or report['schema'] != 1 or report['status'] != 'passed'
             or report['runner_os'] != 'Linux' or report['runner_arch'] not in HOST or report['source_dirty'] is not False
@@ -94,6 +110,10 @@ def validate(report):
     if history:
         name = filename(EARLIER)
         expected['history'] = {'checks': list(HISTORY_CHECKS), 'file': name, 'sha256': archives[name]}
+    if grouped:
+        expected['group'] = {'checks': list(GROUP_CHECKS), 'selected': selected,
+                             'lower_collision_sha256': hashlib.sha256(make_archive(LATEST, variant=LOWER_VARIANT)).hexdigest(),
+                             'lower_only_sha256': hashlib.sha256(make_archive(LOWER_ONLY)).hexdigest()}
     if native != expected:
         raise ValueError('invalid stock R tool or exact CRAN source graph')
     return report

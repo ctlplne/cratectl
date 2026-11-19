@@ -37,6 +37,7 @@ from composer_hosted_evidence import (CHECKS as COMPOSER_HOSTED_CHECKS, GROUP_CH
 from conda_hosted_evidence import CHECKS as CONDA_HOSTED_CHECKS, validate as validate_conda_hosted
 from cran_hosted_evidence import (CHECKS as CRAN_HOSTED_CHECKS, PROFILES as CRAN_PROFILES,
                                  INSTALL_CHECKS as CRAN_INSTALL_CHECKS, HISTORY_CHECKS as CRAN_HISTORY_CHECKS,
+                                 GROUP_CHECKS as CRAN_GROUP_CHECKS,
                                  selected_scopes as cran_selected_scopes, validate as validate_cran_hosted)
 from debian_apt_evidence import (APT_CHECKS as DEBIAN_APT_CHECKS, APT_SUITE_CHECKS as DEBIAN_SUITE_CHECKS,
                                  PROFILE as DEBIAN_FLAT_PROFILE, SUITE_PROFILE as DEBIAN_SUITE_PROFILE,
@@ -184,12 +185,14 @@ def validate_custom(report, candidate, run_id, spec, source):
             if named:
                 checks += len(DEBIAN_SUITE_CHECKS)
         if spec['kind'] == 'cran-hosted':
-            installed, history = cran_selected_scopes(source)
-            require(report['profile'] == CRAN_PROFILES[installed, history], 'cran_hosted_profile_selection')
+            installed, history, grouped = cran_selected_scopes(source)
+            require(report['profile'] == CRAN_PROFILES[installed, history, grouped], 'cran_hosted_profile_selection')
             if installed:
                 checks += len(CRAN_INSTALL_CHECKS)
             if history:
                 checks += len(CRAN_HISTORY_CHECKS)
+            if grouped:
+                checks += len(CRAN_GROUP_CHECKS)
         if spec['kind'] == 'composer-hosted':
             grouped = composer_group_selected(source)
             versions = composer_versions_selected(source)
