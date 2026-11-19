@@ -9725,11 +9725,11 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "Configured CRAN source proxy with a bounded checksum-bearing DCF index, digest-bound native URLs and current repository and archive policy.",
       "surfaces": {
-        "api": null,
-        "cli": null,
-        "ui": null
+        "api": "/cran/REPOSITORY/src/contrib/",
+        "cli": "cratectl and stock R",
+        "ui": "CRAN proxy configuration and retained reference lifecycle"
       },
       "core": true,
       "dependencies": [
@@ -9741,8 +9741,10 @@
       "clients": [
         "R"
       ],
-      "client_versions": {},
-      "test_data": "Two nontrivial versions plus a dependency package; same coordinates in two tenants.",
+      "client_versions": {
+        "R macOS ARM64": "4.6.2"
+      },
+      "test_data": "A checksum-bearing owned catalog with an application, a required dependency and one same-coordinate upstream replacement.",
       "permission_cases": [
         "reader denial on publish",
         "revoked token",
@@ -9757,11 +9759,14 @@
         "upstream outage",
         "delete/restore"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "No implementation or native-client proof yet.",
-      "next_action": "Implement cran proxy and execute the complete stock-client journey."
+      "state": "implementing",
+      "candidate": "41e911021aa14945304561e3d35ced0eebffef8e",
+      "evidence": [
+        "evidence/2026-11-19/cran-41e9110-checksum-proxy-native.json",
+        "evidence/2026-11-19/cran-b355818-proxy-superseded-fixture-first-failure.json"
+      ],
+      "limits": "Exact 41e9110 passed 12 stock R checksum-proxy checks within a 69-check macOS ARM64 profile on PostgreSQL 16.16. The configured mirror supplied SHA-256 and MD5 for each archive. Stock R obtained the exact app and dependency after restart with the origin offline and zero new origin requests. Current denial and catalog replacement fenced prior pinned URLs, and a concurrent PostgreSQL regression confirmed that a superseded download released its lease with a durable refusal.",
+      "next_action": "Qualify the original Linux x64 and ARM64 proxy jobs, ordinary mirrors with an independent strong-checksum authority, binary and historical proxy, and mixed groups."
     },
     {
       "id": "FMT.CRAN.GROUP",

@@ -2002,6 +2002,14 @@
       "latest_observation": "evidence/2026-11-19/cran-588a24e-arm64-first-failure.json",
       "replay": "evidence/2026-11-19/github-fc54a58-cran-hosted-stock-r-native.json",
       "next_action": "Preserve the original failures. Both scoped Linux replays passed with private R support directories. The first underlying error remains unknown."
+    },
+    {
+      "id": "DEFECT.0196",
+      "summary": "First concurrent CRAN proxy fixture expects the later conflict status during an active transfer",
+      "state": "Exact b355818 refused the superseded transfer with HTTP 503 and source_configuration_changed. Its test expected HTTP 409, which applies to a later request using the old locator.",
+      "first_failure": "evidence/2026-11-19/cran-b355818-proxy-superseded-fixture-first-failure.json",
+      "replay": "evidence/2026-11-19/cran-41e9110-checksum-proxy-native.json",
+      "repair": "Check the 503 retry code and the retained failed generation, then verify HTTP 409 on a new request to the old URL."
     }
   ]
 }

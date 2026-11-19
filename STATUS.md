@@ -992,6 +992,16 @@ publication, platform isolation, byte ranges, immutability and review.
 Stock Windows installation and compiled binaries still need qualification.
 [CRAN binary evidence](evidence/2026-11-19/cran-c4570e8-platform-binary-native.json)
 
+Exact `41e9110` passed 69 combined checks with stock R 4.6.2 on macOS
+ARM64 and PostgreSQL 16.16, including 12 checksum-bound proxy checks. R
+downloaded the exact application and dependency after restart with the
+origin offline and zero new origin requests. Current review and a changed
+catalog entry fenced known URLs. The PostgreSQL concurrency check confirmed
+that a superseded archive download was refused and its lease recorded as
+failed. Native Linux proxy and mirrors that supply only MD5 remain open.
+[CRAN proxy evidence](evidence/2026-11-19/cran-41e9110-checksum-proxy-native.json)
+[First concurrent test result](evidence/2026-11-19/cran-b355818-proxy-superseded-fixture-first-failure.json)
+
 The original `55ccc7c` Linux x64 runtime report stopped in durable jobs at
 68 checks. The original `08457df` Linux x64 runtime report passed durable
 jobs and leases, then stopped in Chromium at two reported checks. The

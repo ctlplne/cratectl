@@ -2997,15 +2997,20 @@
     {
       "id": "J.CRAN.PROXY",
       "capability": "FMT.CRAN.PROXY",
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
+      "state": "implementing",
+      "candidate": "41e911021aa14945304561e3d35ced0eebffef8e",
+      "evidence": [
+        "evidence/2026-11-19/cran-41e9110-checksum-proxy-native.json",
+        "evidence/2026-11-19/cran-b355818-proxy-superseded-fixture-first-failure.json"
+      ],
       "required": [
         "publish/consume exact bytes where applicable",
         "permissions/tenant isolation",
         "policy denial",
         "failure/recovery"
-      ]
+      ],
+      "limits": "Exact 41e9110 passed 12 stock R checksum-proxy checks within a 69-check macOS ARM64 profile on PostgreSQL 16.16. The configured mirror supplied SHA-256 and MD5 for each archive. Stock R obtained the exact app and dependency after restart with the origin offline and zero new origin requests. Current denial and catalog replacement fenced prior pinned URLs, and a concurrent PostgreSQL regression confirmed that a superseded download released its lease with a durable refusal.",
+      "next_action": "Qualify the original Linux x64 and ARM64 proxy jobs, ordinary mirrors with an independent strong-checksum authority, binary and historical proxy, and mixed groups."
     },
     {
       "id": "J.CRAN.GROUP",
