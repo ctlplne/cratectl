@@ -1,0 +1,149 @@
+{
+  "candidate": "85fcca521aa09993de0d5d259accdf953ac84d52",
+  "observed_at": "2026-11-19T03:14:55.287267+00:00",
+  "status": "passed",
+  "platform": "macOS ARM64",
+  "source_dirty": false,
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "native_declarative_checks": 19,
+  "stock_micromamba_checks": 11,
+  "conda_hosted": {
+    "client_version": "2.9.0",
+    "client_sha256": "ec2a072f028e1a7cf20f3e2e74d5a8127cf5a5f27636375b5359811565f4e5be",
+    "subdir": "osx-arm64",
+    "checks": [
+      "the native stock micromamba version and release digest match",
+      "platform metadata requires the current repository and tenant grants",
+      "five exact platform and noarch coordinates publish original SHA-256 identities",
+      "unreviewed archives stay out of both indexes and cannot be downloaded",
+      "the archive platform and immutable bytes must match the coordinate",
+      "approved repodata binds each isolated platform, build, constraint and archive digest",
+      "the isolated reader receives exact approved archive bytes under trusted TLS",
+      "stock micromamba downloads the native graph and selects the newest compatible noarch build",
+      "fresh stock micromamba links the two exact inert archives after restart",
+      "current digest denial removes both compatible noarch builds and their bytes",
+      "fresh stock micromamba refuses the graph after compatible build denial"
+    ],
+    "archive_sha256": {
+      "osx-arm64/cratectl-conda-app-1.4.0-fixture_3.tar.bz2": "cdd4fb48e87ffd2f0d9c5088ac8aa352faa3cfafac0ca4feaef7b228f39d2d3a",
+      "noarch/cratectl-conda-data-1.3.0-fixture_1.tar.bz2": "bba26a2cdef57af977f62012401b05a76d13958e0799534aa645d9fb3b76cc73",
+      "noarch/cratectl-conda-data-1.3.0-fixture_0.tar.bz2": "15e4499d293776a25149d149c7c0e5b2ed2f40a8cb7158ec797c32c58625a859",
+      "noarch/cratectl-conda-data-2.0.0-fixture_0.tar.bz2": "a1ce2f45dc14b3e9a5d580a30d7ae711c90d32d68ac96adeb1e7c39697fccd5a",
+      "linux-64/cratectl-conda-app-1.4.0-fixture_3.tar.bz2": "be204688e15820b08ddc9c5d212dd87cfb525c26f9466878ec5afc616cf902ff"
+    },
+    "selected": {
+      "osx-arm64/cratectl-conda-app-1.4.0-fixture_3.tar.bz2": "cdd4fb48e87ffd2f0d9c5088ac8aa352faa3cfafac0ca4feaef7b228f39d2d3a",
+      "noarch/cratectl-conda-data-1.3.0-fixture_1.tar.bz2": "bba26a2cdef57af977f62012401b05a76d13958e0799534aa645d9fb3b76cc73"
+    }
+  },
+  "owns_fixture": true,
+  "binary_sha256": {
+    "cratectl": "c98ea6e54106a4230b5ed02e1c822c4756d9c4e7715af7439885f89c4cb7c5f1",
+    "cratectld": "86ef683732ab2e8c5c00b55c15b43e1f72c389b52099e06d5b831270af2aaae5"
+  },
+  "source_sha256": [
+    {
+      "path": ".github/workflows/conda-hosted.yml",
+      "sha256": "90c929aebf7cb8bd9c7bb2b5ae01e9f85af79299d97c2e0cdb03478899510984"
+    },
+    {
+      "path": "Makefile",
+      "sha256": "12f2a8b5cfbc2f322822b82e4446f51ff017374acab1f3a8921db8cc8e833bf6"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "1d4aecc2732cd54db4534e0afc862ffe14d5c24890f106008682fd9bbc8e5ba9"
+    },
+    {
+      "path": "go.sum",
+      "sha256": "5e364e4e1eff09d8d39617427d7775012304b09a7be26778dc2b46fdabae3f15"
+    },
+    {
+      "path": "scripts/ci/conda_hosted_evidence.py",
+      "sha256": "aa6b03805f8f980989af7f0584ebad22bcb8e331b5b9ef65b028839482d7421a"
+    },
+    {
+      "path": "scripts/ci/terraform_provider_evidence.py",
+      "sha256": "130de2ec92ed288a6fa6c744c67003a76cafa2dfb9835e48f653abccda1a50ca"
+    },
+    {
+      "path": "scripts/conda_hosted_fixture.py",
+      "sha256": "1f27ad0809365a26cc0c5c354d12710bf353e93297657f2babf1d2e50c2f9074"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "eb8b317ca2104ad5cb4227742d0711735fb266f78dc9a9a619ae9100ba2fdc20"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+    },
+    {
+      "path": "scripts/qualification_contract.py",
+      "sha256": "c40a9d0209a9dc1fb9838f49cdb316ad5a762d45c0359b97fce156746564e5ba"
+    },
+    {
+      "path": "internal/conda/package.go",
+      "sha256": "147045fd101a5eb6759e7048ac9cd91568509a57d3af08aa49f6280d1bf2d3a4"
+    },
+    {
+      "path": "internal/conda/package_test.go",
+      "sha256": "d3610744ebce5c21bc811833afc4b01ddc4baaf52bd01e07def62ffb13aed50a"
+    },
+    {
+      "path": "internal/server/conda.go",
+      "sha256": "353f63511f5676bb9309077fb4ad2d899fecbbbf463ab2365c64458a6e80b2c2"
+    },
+    {
+      "path": "internal/server/conda_integration_test.go",
+      "sha256": "b74211c52597a7618c679d6378b905a162065cd174cde9f31530badf30f891be"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "18b35e2496908a1f2a1145c6e9d30654e093a00ad23a88c00a8fba1317c253f7"
+    },
+    {
+      "path": "internal/store/conda.go",
+      "sha256": "879396e62a1499c819292630da9933dd0d76a2e2f53003e6f9d8b6b17a1ca9ab"
+    },
+    {
+      "path": "internal/store/artifact_read.go",
+      "sha256": "29309051deb86dffa676dde15ae6c8dfaae9045ee7752405b9b09ad84897067d"
+    },
+    {
+      "path": "internal/store/lifecycle_artifact.go",
+      "sha256": "3988640ae4b6fc83d12d4598fcf15fa1681fb231eaa0e3bef04e4777d4e6a8a5"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "f79f7c0b227b3bbc0044e6449a921e7f4763dcc6b094e89d1496c228da561876"
+    },
+    {
+      "path": "internal/store/migrations.go",
+      "sha256": "59f3478fbc77b7c969e43719f7eea92844a5bb1b2cd5b0d63ec2f356e368594b"
+    },
+    {
+      "path": "internal/blob/local.go",
+      "sha256": "3cdbb9ecd323808a6f0d6d866fe66260fbcb355c6cda416bf5b4e11f19cb9e37"
+    }
+  ],
+  "stock_safe_report_sha256": "dc54ee1975d67740f31634c081554fd256711498d4ca3815498c1bf8adf8d3d3",
+  "postgres_integration": {
+    "tests": [
+      "TestCondaHostedPlatformReviewAndRetainedBytes",
+      "TestConsoleSessionUsesCurrentCredentialAndDoesNotExposeSecrets"
+    ],
+    "private_log_sha256": "0c9f85dbf4107f1be169284c69eac809c260427ece588d3ca2238eafbc35a9b8"
+  },
+  "first_failures": [
+    "evidence/2026-11-19/conda-5fd4b0a-micromamba-auth-first-failure.json",
+    "evidence/2026-11-19/conda-51ca0b9-micromamba-cache-first-failure.json"
+  ],
+  "limits": [
+    "The stock fixture resolved a native application and one exact portable dependency build from five owned legacy tar.bz2 archives over trusted TLS. It used private channel-scoped Basic authentication, fresh caches, exact byte checks and inert package payloads. It exercised both download-only and linked installation.",
+    "A separate exact PostgreSQL test exercised digest review, restricted grants, same-coordinate tenant isolation, bounded platform metadata, range reads, retired state and restoration. The console test confirmed the adapter inventory under live credentials.",
+    "Modern Conda archives, proxy and group routing, additional clients, larger graphs and production qualification remain open."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

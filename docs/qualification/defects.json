@@ -1979,17 +1979,17 @@
     {
       "id": "DEFECT.0193",
       "summary": "Stock micromamba omits the channel-scoped bearer credential on hosted Conda metadata reads",
-      "state": "Exact 5fd4b0a returned HTTP 401 on its first native noarch index read after the owned package uploads. A local TLS probe observed channel-scoped Basic credentials from the same stock binary. Exact corrected stock-client replay is pending.",
+      "state": "Exact 5fd4b0a returned HTTP 401 on its first noarch read with channel-scoped bearer. The unchanged stock client passed the corrected Basic-authentication replay at 85fcca5.",
       "first_failure": "evidence/2026-11-19/conda-5fd4b0a-micromamba-auth-first-failure.json",
-      "replay": null,
+      "replay": "evidence/2026-11-19/conda-85fcca5-hosted-micromamba-native.json",
       "repair": "Use the existing scoped reader token as the Basic password and store it with the exact native channel path and port."
     },
     {
       "id": "DEFECT.0194",
       "summary": "Stock micromamba stages its download-only archives in a nested cache",
-      "state": "Exact 51ca0b9 used channel-scoped Basic authentication and downloaded both exact archive digests. The first local assertion still expected a flat cache and no empty history file. Corrected restart and denial replay is pending.",
+      "state": "Exact 51ca0b9 downloaded both expected digests into micromamba\u2019s nested cache. Corrected 85fcca5 observed the exact fetched graph, no linked package in download-only mode, exact installation after restart and refusal after compatible build denial.",
       "first_failure": "evidence/2026-11-19/conda-51ca0b9-micromamba-cache-first-failure.json",
-      "replay": null,
+      "replay": "evidence/2026-11-19/conda-85fcca5-hosted-micromamba-native.json",
       "repair": "Read the nested owned cache, compare the original archives and stock FETCH graph, and verify that the download-only prefix has no package records or linked payloads."
     }
   ]
