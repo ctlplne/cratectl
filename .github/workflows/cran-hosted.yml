@@ -1,0 +1,109 @@
+name: Native hosted CRAN source repository
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/cran-hosted.yml'
+      - 'internal/cran/**'
+      - 'internal/server/cran*.go'
+      - 'internal/store/cran*.go'
+      - 'scripts/cran_hosted_fixture.py'
+      - 'scripts/ci/cran_hosted_evidence.py'
+
+permissions:
+  contents: read
+
+jobs:
+  cran-hosted:
+    if: github.ref == 'refs/heads/main' && github.repository == 'ctlplne/cratectl'
+    name: Stock R and real PostgreSQL (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 19
+    concurrency:
+      group: cratectl-cran-hosted-${{ github.ref }}-${{ matrix.arch }}-${{ github.sha }}
+      cancel-in-progress: false
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+            mirror: https://archive.ubuntu.com/ubuntu
+            triplet: x86_64-linux-gnu
+            sha256: 086f046230727fc896f70cfb459d693023a30a9f6877492554aa7041dac2e576
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+            mirror: https://ports.ubuntu.com/ubuntu-ports
+            triplet: aarch64-linux-gnu
+            sha256: 537e62fc3bfc31d537a3a25a56d0e67e2c868e76582ac09c0ed8f30f810ec91b
+    env:
+      GOENV: 'off'
+      GOTOOLCHAIN: local
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22.23.4'
+      - name: Prepare the digest-pinned stock R interpreter
+        run: |
+          umask 077
+          stage="$PWD/.cache/cratectl-cran-tools"
+          mkdir -p "$stage"
+          archive="$stage/r-base-core.deb"
+          curl --disable --fail --silent --show-error --location --max-time 105 --max-filesize 30000000 \
+            --proto '=https' --proto-redir '=https' --output "$archive" \
+            '${{ matrix.mirror }}/pool/universe/r/r-base/r-base-core_4.3.3-2build2_${{ matrix.arch }}.deb'
+          printf '%s  %s\n' '${{ matrix.sha256 }}' "$archive" | sha256sum --check -
+          dpkg-deb --extract "$archive" "$stage/runtime"
+          r_home="$stage/runtime/usr/lib/R"
+          cp "$r_home/etc/Renviron.ucf" "$stage/runtime/etc/R/Renviron"
+          for file in Makeconf Renviron Renviron.site Rprofile.site ldpaths repositories; do
+            test "$(readlink "$r_home/etc/$file")" = "/etc/R/$file"
+            ln -sfn "$stage/runtime/etc/R/$file" "$r_home/etc/$file"
+          done
+          env LD_LIBRARY_PATH="$r_home/lib" ldd "$r_home/bin/exec/R" > "$stage/r-libraries.txt"
+          if grep -Eq '^\s+lib(blas|lapack)\.so\.3 => not found' "$stage/r-libraries.txt"; then
+            (cd "$stage" && apt-get download libblas3 liblapack3)
+            for dependency in "$stage"/libblas3_*.deb "$stage"/liblapack3_*.deb; do
+              dpkg-deb --extract "$dependency" "$stage/runtime"
+            done
+            for library in blas lapack; do
+              library_path="$stage/runtime/usr/lib/${{ matrix.triplet }}/$library/lib$library.so.3"
+              test -f "$library_path"
+              ln -s "$library_path" "$r_home/lib/lib$library.so.3"
+            done
+          fi
+          mkdir -p "$stage/home"
+          env -i PATH=/usr/bin:/bin HOME="$stage/home" TMPDIR="$stage/home" R_HOME="$r_home" \
+            LD_LIBRARY_PATH="$r_home/lib" R_DEFAULT_PACKAGES=utils,tools LC_ALL=C \
+            "$r_home/bin/exec/R" --vanilla --slave -e 'stopifnot(getRversion() == "4.3.3", capabilities("libcurl")); cat("Stock R 4.3.3 with libcurl\n")'
+      - name: Build the clean cratectl candidate
+        run: make build BINDIR=.cache/cratectl-cran-bin
+      - name: Replay hosted CRAN source discovery with stock R
+        run: |
+          umask 077
+          mkdir -p .private
+          r_home="$PWD/.cache/cratectl-cran-tools/runtime/usr/lib/R"
+          python3 scripts/conformance_repository_manifest.py \
+            --pg-bin /usr/lib/postgresql/16/bin --binary-directory .cache/cratectl-cran-bin \
+            --cran-r "$r_home/bin/exec/R" --cran-r-home "$r_home" \
+            --cran-tool-archive .cache/cratectl-cran-tools/r-base-core.deb --cran-ci-architecture '${{ matrix.arch }}'
+      - uses: actions/upload-artifact@v7
+        if: success()
+        with:
+          name: ci-summary-cran-hosted-${{ matrix.arch }}
+          path: .cache/ci-cran-hosted.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14

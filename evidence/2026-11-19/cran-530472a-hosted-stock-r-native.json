@@ -1,0 +1,132 @@
+{
+  "candidate": "530472ad9b54e409fcee712d55e40d023fc52063",
+  "observed_at": "2026-11-19T03:36:51.655344+00:00",
+  "status": "passed",
+  "platform": "macOS ARM64",
+  "source_dirty": false,
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "native_declarative_checks": 19,
+  "stock_r_checks": 10,
+  "cran_hosted": {
+    "version": "4.6.2",
+    "binary_sha256": "9e9a83d71ca2936fe3421823c43a3b8b3bd4c2f26599362d75d3f0955df13e1e",
+    "distribution_sha256": "a678b4db1fcd71b1b1cc58edcfa4a8d36ee012a02659dde9eab9366e93571157",
+    "checks": [
+      "the stock R interpreter and its distribution match the exact native tool pin",
+      "native CRAN metadata requires the current repository and tenant grants",
+      "four exact CRAN coordinates publish their original SHA-256 identities",
+      "unreviewed CRAN archives stay out of both indexes and their direct bytes are denied",
+      "CRAN rejects mismatched source metadata and changed bytes at an immutable coordinate",
+      "plain and gzip CRAN indexes retain all four reviewed DESCRIPTION and byte bindings",
+      "stock R selects numeric versions and downloads the exact native source graph",
+      "a fresh stock R process retrieves the same exact dependency graph after restart",
+      "new CRAN indexes and direct downloads enforce current digest denial",
+      "stock R falls back to the approved version and refuses the revoked exact archive"
+    ],
+    "archive_sha256": {
+      "CratectlStats_1.9.0.tar.gz": "43b6c2f118e229df38de8eaaea5491f1f2975343a2e43b1724cc80a8bd2cdb8b",
+      "CratectlStats_1.10.0.tar.gz": "97df8d880238d6404bfc49fde3c0f2fa625c53324a6d3acbb63a02057ba415a1",
+      "Cratectl.Data_2.1-0.tar.gz": "3870f1f192b50d07b441ad58c1a07885bab7f711bebd5bc67d18553d0d8f2089",
+      "Cratectl.Data_2.2-0.tar.gz": "5054005977cbd24282de3210a73c3c481e57ebe78fab34da2f6f853d65b89537"
+    },
+    "selected": {
+      "CratectlStats_1.10.0.tar.gz": "97df8d880238d6404bfc49fde3c0f2fa625c53324a6d3acbb63a02057ba415a1",
+      "Cratectl.Data_2.2-0.tar.gz": "5054005977cbd24282de3210a73c3c481e57ebe78fab34da2f6f853d65b89537"
+    }
+  },
+  "tool_provenance": {
+    "installer_sha256": "a678b4db1fcd71b1b1cc58edcfa4a8d36ee012a02659dde9eab9366e93571157",
+    "publisher_listed_sha1": "89f81b9fb203e5f713d74804aa03e729ae414a0b",
+    "recognized_installer_signer": "Simon Urbanek (VZLD955F6P)",
+    "runtime_setup": "Unpacked the original framework into the owned cache and used its runtime library path without running the installer."
+  },
+  "binary_sha256": {
+    "cratectl": "a04f7344238b2c171d292f28980244204061e2e59870ff816af5c187bc4d4513",
+    "cratectld": "5d584ccaac317a4ca9d526fcb32f085c755d9be85fa22a400f022eebf13cd970"
+  },
+  "source_sha256": [
+    {
+      "path": "Makefile",
+      "sha256": "12f2a8b5cfbc2f322822b82e4446f51ff017374acab1f3a8921db8cc8e833bf6"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "1d4aecc2732cd54db4534e0afc862ffe14d5c24890f106008682fd9bbc8e5ba9"
+    },
+    {
+      "path": "go.sum",
+      "sha256": "5e364e4e1eff09d8d39617427d7775012304b09a7be26778dc2b46fdabae3f15"
+    },
+    {
+      "path": "scripts/ci/terraform_provider_evidence.py",
+      "sha256": "130de2ec92ed288a6fa6c744c67003a76cafa2dfb9835e48f653abccda1a50ca"
+    },
+    {
+      "path": "scripts/cran_hosted_fixture.py",
+      "sha256": "29505fa88292fe189d72c45d2528ccf2bb7fa9b40ee5bfec976fbef015da70a0"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "bea8a00ac88e61f04fb9db932b1003f42188bb381e401657afb1bff27e347e47"
+    },
+    {
+      "path": "scripts/bounded_client.py",
+      "sha256": "6b10b1379c5192d8b1e5218e42f36050d9dc9a26b2c75d34e1d880d5bf508098"
+    },
+    {
+      "path": "scripts/qualification_contract.py",
+      "sha256": "c40a9d0209a9dc1fb9838f49cdb316ad5a762d45c0359b97fce156746564e5ba"
+    },
+    {
+      "path": "internal/cran/package.go",
+      "sha256": "c8c2166581b694a93388fe1dc9f85e70300a9678f0c2566b5ba45ec25729a971"
+    },
+    {
+      "path": "internal/cran/package_test.go",
+      "sha256": "260bafb8ae4f19ecbdefb65d830d31e5e4275fcfa613a1b5f2c084ae6e98963d"
+    },
+    {
+      "path": "internal/server/cran.go",
+      "sha256": "7d5eff4d5172e806378cece30bba1ea43cf07c8dca94d4b785d8ad695469f0e7"
+    },
+    {
+      "path": "internal/server/cran_integration_test.go",
+      "sha256": "fa0f931c3aee2d5aedd575dd55c3dab2929fc9fd257612a3beb6933a65fa7567"
+    },
+    {
+      "path": "internal/server/server.go",
+      "sha256": "5cac2b69e5661e8f3567c81ff3766c25a8322139b6160aaa2cd9d81c832618ad"
+    },
+    {
+      "path": "internal/store/cran.go",
+      "sha256": "22c21676e0da2aa99adc428bfc935c9e963e3496cf0e7adf88dceea7ba7accc6"
+    },
+    {
+      "path": "internal/store/artifact_read.go",
+      "sha256": "29309051deb86dffa676dde15ae6c8dfaae9045ee7752405b9b09ad84897067d"
+    },
+    {
+      "path": "internal/store/lifecycle_artifact.go",
+      "sha256": "bbf64679e8e70b644c9c8ae52f82e3af2af6ddbd65d1a87c9de78fb08e2883d4"
+    },
+    {
+      "path": "internal/store/repository.go",
+      "sha256": "f79f7c0b227b3bbc0044e6449a921e7f4763dcc6b094e89d1496c228da561876"
+    },
+    {
+      "path": "internal/store/migrations.go",
+      "sha256": "59f3478fbc77b7c969e43719f7eea92844a5bb1b2cd5b0d63ec2f356e368594b"
+    },
+    {
+      "path": "internal/blob/local.go",
+      "sha256": "3cdbb9ecd323808a6f0d6d866fe66260fbcb355c6cda416bf5b4e11f19cb9e37"
+    }
+  ],
+  "stock_safe_report_sha256": "6249acb3ad035fc4ca0124fc48aae0bc2d976d460e1a54aa416a862a321fd5b0",
+  "limits": [
+    "The native R process used only the configured private TLS source repository. It compared numeric source versions, resolved one dependency, retained exact original bytes after restart and fell back to an already approved lower version after current denial. The old exact archive stayed denied.",
+    "The stock profile fetched inert original archives. Native package installation, platform binaries, historical archive discovery, proxies and groups require later qualification."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

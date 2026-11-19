@@ -35,6 +35,7 @@ from composer_hosted_evidence import (CHECKS as COMPOSER_HOSTED_CHECKS, GROUP_CH
                                       versions_selected as composer_versions_selected,
                                       validate as validate_composer_hosted)
 from conda_hosted_evidence import CHECKS as CONDA_HOSTED_CHECKS, validate as validate_conda_hosted
+from cran_hosted_evidence import CHECKS as CRAN_HOSTED_CHECKS, validate as validate_cran_hosted
 from debian_apt_evidence import (APT_CHECKS as DEBIAN_APT_CHECKS, APT_SUITE_CHECKS as DEBIAN_SUITE_CHECKS,
                                  PROFILE as DEBIAN_FLAT_PROFILE, SUITE_PROFILE as DEBIAN_SUITE_PROFILE,
                                  suite_selected as debian_suite_selected, validate as validate_debian_apt)
@@ -146,6 +147,7 @@ def validate_custom(report, candidate, run_id, spec, source):
         'debian-apt': (validate_debian_apt, len(IAC_BASE) - 1 + len(DEBIAN_APT_CHECKS)),
         'composer-hosted': (validate_composer_hosted, len(IAC_BASE) - 1 + len(COMPOSER_HOSTED_CHECKS)),
         'conda-hosted': (validate_conda_hosted, len(IAC_BASE) - 1 + len(CONDA_HOSTED_CHECKS)),
+        'cran-hosted': (validate_cran_hosted, len(IAC_BASE) - 1 + len(CRAN_HOSTED_CHECKS)),
     }
     if spec['kind'] in source_contracts:
         kind = spec['kind'].replace('-', '_')

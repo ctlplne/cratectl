@@ -930,6 +930,15 @@ Linux jobs passed the same 30 checks with PostgreSQL 16.15. Each matched
 [Original Linux Conda reports](evidence/2026-11-19/github-85fcca5-conda-hosted-micromamba-native.json)
 [Original Conda workflow inventory](evidence/2026-11-19/github-85fcca5-started.json)
 
+`d25394c` passed the hosted CRAN, Conda and protected console integration
+tests with PostgreSQL 16.16 and the four source gates. On macOS ARM64,
+exact `530472a` passed ten stock R 4.6.2 checks and 19 declarative checks.
+R selected the newer numeric source version and exact dependency, fetched
+the same archives after restart, and used the approved earlier version
+after the latest digest was denied. It refused a direct fetch of that digest.
+[CRAN product PostgreSQL evidence](evidence/2026-11-19/cran-d25394c-hosted-postgres.json)
+[Stock R native source evidence](evidence/2026-11-19/cran-530472a-hosted-stock-r-native.json)
+
 The original `55ccc7c` Linux x64 runtime report stopped in durable jobs at
 68 checks. The original `08457df` Linux x64 runtime report passed durable
 jobs and leases, then stopped in Chromium at two reported checks. The

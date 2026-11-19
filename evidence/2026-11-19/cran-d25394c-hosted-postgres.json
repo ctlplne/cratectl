@@ -1,0 +1,29 @@
+{
+  "candidate": "d25394c798edf928f1accea39d4eba7823f73062",
+  "status": "passed",
+  "platform": "macOS ARM64",
+  "postgres": "16.16",
+  "source_gates": [
+    "make build",
+    "make test",
+    "make race",
+    "make lint"
+  ],
+  "postgres_integration": [
+    "TestCondaHostedPlatformReviewAndRetainedBytes",
+    "TestConsoleSessionUsesCurrentCredentialAndDoesNotExposeSecrets",
+    "TestCRANHostedSourceIndexAndRetainedBytes"
+  ],
+  "log_sha256": {
+    "build": "1ffd9fb4be59c0d46e4d1e1308e665fde63bc89a5ef8d9892a331774a45eb7f0",
+    "test": "96b2fcfab4567eed918a1c2a00a1c1252529e43cf4f8950e52e6a1d4adc2e4b3",
+    "race": "e893d3aa45c2e62c1cada98fb7ed4c7f80b59a43c0bd9133c73681c1375950c3",
+    "lint": "05afc824889758f4868878688be527a0d4afc69ddd8803e533b97659aa9baa40",
+    "postgres": "15fa2b01ca4b667583f35ece735651cb0124f4bfe841005db093043e2ed987fc"
+  },
+  "limits": [
+    "CRAN source archive identity, DCF and gzip indexes, current policy, retained delete and restore, sorted complete index bounds and isolated tenant bytes with PostgreSQL. The console and earlier Conda regressions also passed."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

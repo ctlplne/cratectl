@@ -30,6 +30,10 @@ from composer_hosted_evidence import (BASE_CHECKS as COMPOSER_BASE, CHECKS as CO
                                       EXTRA_COORDINATES as COMPOSER_EXTRA_COORDINATES, VERSION_CHECKS as COMPOSER_VERSION_CHECKS)
 from conda_hosted_evidence import (BASE_CHECKS as CONDA_BASE, CHECKS as CONDA_CHECKS, FILES as CONDA_FILES,
                                   PROFILE as CONDA_PROFILE, PINS as CONDA_PINS, VERSION as CONDA_VERSION, fixtures as conda_fixtures)
+from cran_hosted_evidence import (BASE_CHECKS as CRAN_BASE, CHECKS as CRAN_CHECKS, FILES as CRAN_FILES, PROFILE as CRAN_PROFILE)
+from cran_hosted_fixture import (COORDINATES as CRAN_COORDINATES, LATEST as CRAN_LATEST, EARLIER as CRAN_EARLIER,
+                                 SELECTED_LIBRARY as CRAN_LIBRARY, TOOLS as CRAN_TOOLS,
+                                 filename as cran_filename, make_archive as cran_archive)
 from linux_install_evidence import CHECKS as INSTALL_CHECKS, IMAGE as INSTALL_IMAGE, SOURCE_PATHS as INSTALL_FILES
 from maven_index_evidence import (BASE_CHECKS as MAVEN_INDEX_BASE, CACHED_CHECKS as MAVEN_CACHED_CHECKS,
                                   CACHED_PROFILE as MAVEN_CACHED_PROFILE, CACHED_SOURCE_PATHS as MAVEN_CACHED_FILES,
@@ -58,6 +62,30 @@ SPECS = {spec['artifact']: spec for family in WORKFLOWS.values() for spec in job
 
 
 class CampaignReports(unittest.TestCase):
+    def test_cran_reports_require_the_native_r_distribution_and_exact_source_graph(self):
+        def source(path):
+            return path.encode()
+
+        candidate = 'a' * 40
+        version, distribution = CRAN_TOOLS['Linux', 'x86_64']
+        packages = {cran_filename(c): hashlib.sha256(cran_archive(c)).hexdigest() for c in CRAN_COORDINATES}
+        chosen = {cran_filename(c): packages[cran_filename(c)] for c in (CRAN_LATEST, CRAN_LIBRARY)}
+        native = {'checks': list(CRAN_CHECKS), 'version': version, 'distribution_sha256': distribution,
+                  'binary_sha256': 'f' * 64, 'archive_sha256': packages, 'selected': chosen}
+        report = {'schema': 1, 'profile': CRAN_PROFILE, 'candidate': candidate, 'status': 'passed',
+                  'runner_os': 'Linux', 'runner_arch': 'X64', 'run_id': '12', 'source_dirty': False,
+                  'source_sha256': {path: hashlib.sha256(source(path)).hexdigest() for path in CRAN_FILES},
+                  'binary_sha256': {'cratectl': 'd' * 64, 'cratectld': 'e' * 64}, 'archive_sha256': 'c' * 64,
+                  'postgres': 'postgres (PostgreSQL) 16.16', 'npm': '10.9.9', 'checks': list(CRAN_BASE),
+                  'cran_hosted': native, 'goal_complete': False, 'broad_readiness': False}
+        spec = SPECS['ci-summary-cran-hosted-amd64']
+        self.assertEqual(validate_custom(report, candidate, 12, spec, source), {'checks': 29, 'records': 1})
+        wrong_branch = {cran_filename(c): packages[cran_filename(c)] for c in (CRAN_EARLIER, CRAN_LIBRARY)}
+        for patch in ({'distribution_sha256': CRAN_TOOLS['Linux', 'aarch64'][1]}, {'selected': wrong_branch},
+                      {'checks': native['checks'][:-1]}):
+            with self.assertRaisesRegex(EvidenceError, 'cran_hosted_report_contract'):
+                validate_custom({**report, 'cran_hosted': {**native, **patch}}, candidate, 12, spec, source)
+
     def test_conda_reports_bind_native_platform_and_exact_selected_builds(self):
         def source(path):
             return path.encode()

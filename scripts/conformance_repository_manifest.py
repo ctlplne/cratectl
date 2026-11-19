@@ -597,6 +597,8 @@ def evaluate(args):
         record_composer_ci(report, args.composer_ci_architecture)
     if args.conda_ci_architecture:
         record_conda_ci(report, args.conda_ci_architecture)
+    if args.cran_ci_architecture:
+        record_cran_ci(report, args.cran_ci_architecture)
 
 
 def hosted_runner(report, architecture):
@@ -770,6 +772,20 @@ def record_conda_ci(report, architecture):
         stream.write('\n')
 
 
+def record_cran_ci(report, architecture):
+    from ci.cran_hosted_evidence import FILES, PROFILE, validate as validate_cran
+
+    runner = hosted_runner(report, architecture)
+    projection = {key: report[key] for key in ('candidate', 'status', 'checks', 'binary_sha256', 'archive_sha256',
+                                                'postgres', 'npm', 'cran_hosted', 'goal_complete', 'broad_readiness')}
+    projection.update(schema=1, profile=PROFILE, runner_os='Linux', runner_arch=runner,
+                      run_id=os.environ.get('GITHUB_RUN_ID'), source_dirty=False,
+                      source_sha256={name: sha(ROOT / name) for name in FILES})
+    with (ROOT / '.cache/ci-cran-hosted.json').open('x') as stream:
+        json.dump(validate_cran(projection), stream, indent=2)
+        stream.write('\n')
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--binary-directory', type=Path)
@@ -806,6 +822,7 @@ if __name__ == '__main__':
     parser.add_argument('--cran-r', type=Path, help='the original interpreter in the pinned R distribution')
     parser.add_argument('--cran-r-home', type=Path, help='the private R home unpacked from the pinned distribution')
     parser.add_argument('--cran-tool-archive', type=Path, help='the pinned native R distribution archive')
+    parser.add_argument('--cran-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--npm-search', action='store_true',
                         help='also verify npm hosted and cached search using stock clients')
     parser.add_argument('--npm-search-ci-architecture', choices=('amd64', 'arm64'))
@@ -821,6 +838,8 @@ if __name__ == '__main__':
     cran_tools = (options.cran_r, options.cran_r_home, options.cran_tool_archive)
     if any(cran_tools) and not all(cran_tools):
         parser.error('native CRAN evidence requires the original R interpreter, its home and pinned distribution archive')
+    if options.cran_ci_architecture and not all(cran_tools):
+        parser.error('hosted CRAN evidence requires the complete pinned stock R runtime')
     if options.cran_r and any((options.provider_binary, options.npm_search, options.python_search_client,
                                options.cargo_toolchain, options.mcp_binary, options.oci_catalog_client,
                                options.maven_index_reader, options.promtool, options.debian_apt, options.composer_phar,
