@@ -33,7 +33,7 @@ into an environment.
 
 ```sh
 CHANNEL=https://registry.example/conda/REPOSITORY/
-micromamba auth login "$CHANNEL" --bearer-stdin < /private/path/reader.token
+micromamba auth login "$CHANNEL" --username token --password-stdin < /private/path/reader.token
 micromamba create --download-only --name cratectl --override-channels \
   --channel "$CHANNEL" --ssl-verify /private/path/ca.crt PACKAGE
 ```

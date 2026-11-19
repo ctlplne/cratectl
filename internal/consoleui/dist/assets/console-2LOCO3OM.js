@@ -74,7 +74,7 @@ password READER_TOKEN`}else e.format==="composer"?l=`# Add this repository entry
 
 # Trust the registry CA and install the locked library dependencies
 composer install --no-scripts --no-plugins`:e.format==="conda"?l=`# Scope the reader credential to this channel using a private token file
-micromamba auth login "${n}" --bearer-stdin < /private/path/reader.token
+micromamba auth login "${n}" --username token --password-stdin < /private/path/reader.token
 
 # Resolve and fetch the native platform and noarch packages
 micromamba create --download-only --name cratectl --override-channels --channel "${n}" --ssl-verify /private/path/ca.crt PACKAGE`:e.format==="nuget"?l=`<!-- Save as a private NuGet.Config. Set CRATECTL_READER_TOKEN

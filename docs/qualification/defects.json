@@ -1975,6 +1975,14 @@
       "first_failure": "evidence/2026-11-19/debian-8cf32b9-console-format-first-failure.json",
       "replay": "evidence/2026-11-19/debian-3993833-console-adapter-postgres.json",
       "repair": "Add APT to the expected inventory and retain the existing credential, method and adapter-removal assertions."
+    },
+    {
+      "id": "DEFECT.0193",
+      "summary": "Stock micromamba omits the channel-scoped bearer credential on hosted Conda metadata reads",
+      "state": "Exact 5fd4b0a returned HTTP 401 on its first native noarch index read after the owned package uploads. A local TLS probe observed channel-scoped Basic credentials from the same stock binary. Exact corrected stock-client replay is pending.",
+      "first_failure": "evidence/2026-11-19/conda-5fd4b0a-micromamba-auth-first-failure.json",
+      "replay": null,
+      "repair": "Use the existing scoped reader token as the Basic password and store it with the exact native channel path and port."
     }
   ]
 }

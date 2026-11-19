@@ -176,7 +176,7 @@ def evaluate_conda(work, installation, authority, call, api, restart, sha, execu
     def consume(label, *, download_only=False, expected_failure=False):
         target = root / label
         environment = isolated_environment(target)
-        call('conda-auth-' + label, executable, '--no-rc', 'auth', 'login', base, '--bearer-stdin',
+        call('conda-auth-' + label, executable, '--no-rc', 'auth', 'login', base, '--username', 'token', '--password-stdin',
              cwd=target, environment=environment, input_text=tokens['reader'] + '\n')
         auth = target / '.mamba/auth/authentication.json'
         if auth.is_symlink() or stat.S_IMODE(auth.stat().st_mode) != 0o600 or set(json.loads(auth.read_bytes())) != {urlsplit(base).netloc + route.rstrip('/')}:
