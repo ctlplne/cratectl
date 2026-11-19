@@ -890,6 +890,11 @@ Central POM as missing and exited 1. The private diagnostic identified the
 command failure. The original HTTP response and root cause remain unknown.
 [Authorized SBT2 diagnostic finding](evidence/2026-11-19/jvm-ab8e5cf-sbt2-amd64-bootstrap-first-failure.json)
 
+The original `08ab66c` Linux x64 SBT1 job failed during its stock JVM client
+replay. The other seven JVM jobs passed. The retained step result leaves
+the failing command and cause open.
+[Original SBT1 job result](evidence/2026-11-19/github-08ab66c-jvm-sbt1-x64-terminal.json)
+
 Exact `60cd693` passed nine Composer and NuGet regressions on PostgreSQL
 16.16 and the build, test, race and lint gates. Composer proxy discovery
 and byte retrieval use separate configured credentials and require the
@@ -949,6 +954,22 @@ It matched each installed version and original data file in a fresh private
 library. A private launcher relocated the stock R subprocesses to the
 owned runtime tree. The fixture contained no package hooks or code.
 [Stock R inert installation evidence](evidence/2026-11-19/cran-b3a0b5c-inert-install-native.json)
+
+Exact `588a24e` passed 36 combined checks on macOS ARM64 with R 4.6.2 and
+PostgreSQL 16.16. Stock R followed the historical archive listing, refused
+the older archive after its digest was denied, and retrieved the original
+bytes after reapproval. Both original Linux jobs stopped at the first
+inert installation with exit 1. The original logs leave the cause open.
+[Historical archive replay](evidence/2026-11-19/cran-588a24e-historical-source-native.json)
+[Original Linux x64 failure](evidence/2026-11-19/cran-588a24e-amd64-first-failure.json)
+[Original Linux ARM64 failure](evidence/2026-11-19/cran-588a24e-arm64-first-failure.json)
+
+Exact `3b2c2a3` passed ten PostgreSQL 16.16 regressions and the four source
+gates. The ordered CRAN group guarded selected source grants and reviews,
+applied explicit package ownership, and invalidated an earlier transfer
+admission when a preferred source acquired the package. The tests also
+covered ownership after retirement and digest-bound downloads.
+[CRAN ordered group PostgreSQL evidence](evidence/2026-11-19/cran-3b2c2a3-ordered-group-postgres.json)
 
 The original `55ccc7c` Linux x64 runtime report stopped in durable jobs at
 68 checks. The original `08457df` Linux x64 runtime report passed durable

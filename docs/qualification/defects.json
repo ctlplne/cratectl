@@ -1993,6 +1993,15 @@
       "first_failure": "evidence/2026-11-19/conda-51ca0b9-micromamba-cache-first-failure.json",
       "replay": "evidence/2026-11-19/conda-85fcca5-hosted-micromamba-native.json",
       "repair": "Read the nested owned cache, compare the original archives and stock FETCH graph, and verify that the download-only prefix has no package records or linked payloads."
+    },
+    {
+      "id": "DEFECT.0195",
+      "summary": "Both original Linux CRAN jobs stopped at the first inert source installation",
+      "state": "Both original 588a24e jobs verified the stock runtime and built the candidate. The first stock R install returned exit 1. The original logs leave the underlying error open. The exact macOS candidate passed the same profile.",
+      "first_failure": "evidence/2026-11-19/cran-588a24e-amd64-first-failure.json",
+      "latest_observation": "evidence/2026-11-19/cran-588a24e-arm64-first-failure.json",
+      "replay": null,
+      "next_action": "Supply the privately extracted Ubuntu R support directories and retain bounded installer failure markers in the next original Linux runs."
     }
   ]
 }

@@ -1,0 +1,38 @@
+{
+  "candidate": "3b2c2a349fd67d9055c137fb5f748ecf924aee37",
+  "observed_at": "2026-11-19T04:11:11.024025+00:00",
+  "status": "passed",
+  "platform": "macOS ARM64",
+  "postgres": "16.16",
+  "source_gates": [
+    "make build",
+    "make test",
+    "make race",
+    "make lint"
+  ],
+  "postgres_integration": [
+    "TestComposerGroupSelectsOneOwnerAndFencesOldDownloadURLs",
+    "TestComposerHostedBindsArchiveAndCurrentTenantPolicy",
+    "TestComposerHostedSeparatesDevelopmentMetadataFromTaggedVersions",
+    "TestComposerHostedLifecycleRestoresExactRetainedDistribution",
+    "TestComposerProxyBindsStrongCatalogAndSeparateDownloadAuthority",
+    "TestComposerHostedSearchAndListFollowCurrentPolicy",
+    "TestCondaHostedPlatformReviewAndRetainedBytes",
+    "TestConsoleSessionUsesCurrentCredentialAndDoesNotExposeSecrets",
+    "TestCRANOrderedGroupBindsOwningSourceAndCurrentPolicy",
+    "TestCRANHostedSourceIndexAndRetainedBytes"
+  ],
+  "raw_stage_sha256": {
+    "build": "1e8e3b65f052a45c3caa452f3778530f5f8d22b99fa9f52dc4a264bdbd5f6fa6",
+    "test": "ce02404ab0fa344cc0364308a4ecb43fb74d1ba4c14126a78cfa6ce953cbb517",
+    "race": "94663ab853c56b84e9a2fc9874df58e7107cc4d9c9a408c2931991df654d6be5",
+    "lint": "17efa96a240a2a549e0532f202febb04684c762206dfd0eba1eb2509d6280273",
+    "postgres": "746ccfdcc9a9e5a07976415a107ba106dd13fdb6e04a915a203c4e07b5e49b7a"
+  },
+  "limits": [
+    "The exact ordered group used two hosted members and current grants on both. It checked independent app and dependency ownership, same-coordinate lower bytes, explicit ownership, current review, retained ownership after retirement and stale transfer admission fences.",
+    "This record covers real PostgreSQL and source gates. Stock R ordered-group replay and additional source modes have separate qualification."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}
