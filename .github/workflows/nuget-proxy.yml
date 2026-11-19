@@ -7,8 +7,13 @@ on:
     paths:
       - '.github/workflows/nuget-proxy.yml'
       - 'internal/server/nuget_proxy*.go'
+      - 'internal/server/nuget_group*.go'
+      - 'internal/server/nuget_service_index*.go'
       - 'internal/store/nuget_proxy*.go'
+      - 'internal/store/nuget_group*.go'
       - 'scripts/conformance_nuget_proxy.py'
+      - 'scripts/conformance_nuget_group.py'
+      - 'scripts/conformance_nuget_service.py'
       - 'scripts/ci/nuget_proxy_evidence.py'
       - 'scripts/ci/qualify_nuget_proxy.py'
 
@@ -56,7 +61,7 @@ jobs:
           umask 077
           mkdir -p .private
           python3 scripts/ci/qualify_nuget_proxy.py --pg-bin /usr/lib/postgresql/16/bin \
-            --binary-directory .cache/cratectl-nuget-proxy-bin --architecture '${{ matrix.arch }}'
+            --binary-directory .cache/cratectl-nuget-proxy-bin --architecture '${{ matrix.arch }}' --with-groups-and-service-index
       - uses: actions/upload-artifact@v7
         if: success()
         with:

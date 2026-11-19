@@ -17,8 +17,11 @@ from maven_index_evidence import (BASE_CHECKS as MAVEN_INDEX_BASE, CACHED_CHECKS
                                   GROUP_CHECKS as MAVEN_GROUP_CHECKS, INDEXER_SHA256, MAVEN_INDEX_CHECKS,
                                   PROFILE as MAVEN_INDEX_PROFILE, SOURCE_PATHS as MAVEN_INDEX_FILES)
 from npm_search_evidence import BASE_CHECKS as NPM_BASE, HOSTED_CHECKS as NPM_HOSTED, CACHED_CHECKS as NPM_CACHED, SOURCE_PATHS as NPM_FILES
-from nuget_proxy_evidence import (CHECKS as NUGET_PROXY_CHECKS, FIXTURES as NUGET_PROXY_FIXTURES,
-                                 PROFILE as NUGET_PROXY_PROFILE, SOURCE_PATHS as NUGET_PROXY_FILES)
+from nuget_proxy_evidence import (CHECKS as NUGET_PROXY_CHECKS, COMBINED_CHECKS as NUGET_COMBINED_CHECKS,
+                                 COMBINED_PROFILE as NUGET_COMBINED_PROFILE, COMBINED_SOURCE_PATHS as NUGET_COMBINED_FILES,
+                                 FIXTURES as NUGET_PROXY_FIXTURES, GROUP_FIXTURES as NUGET_GROUP_FIXTURES,
+                                 PROFILE as NUGET_PROXY_PROFILE, SERVICE_INDEX_FIXTURE as NUGET_SERVICE_INDEX_FIXTURE,
+                                 SOURCE_PATHS as NUGET_PROXY_FILES)
 from oci_repository_catalog_evidence import (ARCHIVE_PINS as ORAS_PINS, BASE_CHECKS as OCI_CATALOG_BASE,
                                              CACHED_CHECKS as OCI_CACHED_CHECKS, CACHED_PROFILE as OCI_CACHED_PROFILE,
                                              CACHED_SOURCE_PATHS as OCI_CACHED_FILES, CATALOG_CHECKS, GROUP_CHECKS,
@@ -51,6 +54,21 @@ class CampaignReports(unittest.TestCase):
                 validate_custom({**report, field: value}, candidate, 12, spec, source)
         with self.assertRaisesRegex(EvidenceError, 'nuget_proxy_source_identity'):
             validate_custom(report, candidate, 12, spec, lambda path: source(path) + b'changed')
+
+        def combined_source(path):
+            return b'--with-groups-and-service-index' if path == '.github/workflows/nuget-proxy.yml' else source(path)
+
+        selected = {path: hashlib.sha256(combined_source(path)).hexdigest() for path in NUGET_COMBINED_FILES}
+        combined = {**report, 'profile': NUGET_COMBINED_PROFILE, 'source_sha256': selected,
+                    'checks': list(NUGET_COMBINED_CHECKS), 'nuget_group': NUGET_GROUP_FIXTURES,
+                    'nuget_service_index': NUGET_SERVICE_INDEX_FIXTURE}
+        self.assertEqual(validate_custom(combined, candidate, 12, spec, combined_source), {'checks': 69, 'records': 1})
+        with self.assertRaisesRegex(EvidenceError, 'nuget_proxy_report_contract'):
+            validate_custom({**combined, 'nuget_service_index': {**NUGET_SERVICE_INDEX_FIXTURE, 'separate_credentials_verified': 1}},
+                            candidate, 12, spec, combined_source)
+        with self.assertRaisesRegex(EvidenceError, 'nuget_proxy_profile_selection'):
+            validate_custom({**report, 'source_sha256': {path: selected[path] for path in NUGET_PROXY_FILES}},
+                            candidate, 12, spec, combined_source)
 
     def test_maven_index_report_binds_stock_reader_and_exact_source(self):
         source = lambda path: path.encode()

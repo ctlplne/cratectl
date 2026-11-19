@@ -22,7 +22,8 @@ from oci_repository_catalog_evidence import (CACHED_CHECKS as OCI_CACHED_CHECKS,
                                              GROUP_CHECKS as OCI_GROUP_CHECKS, cached_selected as oci_cached_selected)
 from maven_index_evidence import (CACHED_CHECKS as MAVEN_CACHED_CHECKS, GROUP_CHECKS as MAVEN_GROUP_CHECKS,
                                   MAVEN_INDEX_CHECKS, cached_selected as maven_cached_selected)
-from nuget_proxy_evidence import CHECKS as NUGET_PROXY_CHECKS
+from nuget_proxy_evidence import (CHECKS as NUGET_PROXY_CHECKS, COMBINED_CHECKS as NUGET_COMBINED_CHECKS,
+                                  combined_selected as nuget_combined_selected)
 from campaign_transport import (EvidenceError, GitHubEvidenceClient, LOG_BYTES,
                                 REPOSITORY, artifact_json, require, strict_json)
 
@@ -233,8 +234,10 @@ def check_log(raw, spec, source):
                     and text.count(f'PASS: {len(MAVEN_GROUP_CHECKS)} stock Apache ordered Maven index checks') == 1,
                     'maven_index_cached_inventory')
     if kind == 'nuget-proxy':
-        require(text.count(f'PASS: {len(NUGET_PROXY_CHECKS)} stock NuGet flat-container proxy checks') == 1,
-                'nuget_proxy_native_inventory')
+        combined = nuget_combined_selected(source)
+        checks = NUGET_COMBINED_CHECKS if combined else NUGET_PROXY_CHECKS
+        scope = 'flat-container, ordered group and service-index' if combined else 'flat-container proxy'
+        require(text.count(f'PASS: {len(checks)} stock NuGet {scope} checks') == 1, 'nuget_proxy_native_inventory')
     if kind in ('native', 'go'):
         pattern = r'\bok\s+ctlplne.dev/cratectl/internal/(?:server|store' + ('|conformance' if kind == 'native' else '') + r')\s'
         require(len(re.findall(pattern, text)) == (6 if kind == 'native' else 4), 'native_package_success_inventory')

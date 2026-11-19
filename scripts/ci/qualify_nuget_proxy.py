@@ -18,7 +18,9 @@ sys.path.insert(0, str(ROOT / 'scripts'))
 
 from bounded_client import run_owned_client
 from qualification_contract import CURRENT_TENANT_TABLES, candidate_binary_directory
-from nuget_proxy_evidence import CHECKS, FIXTURES, PROFILE, SOURCE_PATHS, postgres_version, validate
+from nuget_proxy_evidence import (CHECKS, COMBINED_CHECKS, COMBINED_PROFILE, COMBINED_SOURCE_PATHS,
+                                 FIXTURES, GROUP_FIXTURES, PROFILE, SERVICE_INDEX_FIXTURE, SOURCE_PATHS,
+                                 postgres_version, validate)
 
 
 def digest(file):
@@ -26,7 +28,7 @@ def digest(file):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
-def qualify(pg, binary, architecture):
+def qualify(pg, binary, architecture, combined):
     os.umask(0o077)
     private = ROOT / '.private'
     if private.is_symlink() or private.stat().st_mode & 0o077:
@@ -88,7 +90,8 @@ WHERE n.nspname='cratectl' AND c.relkind IN ('r','p') AND EXISTS
 ''')
         if audit.splitlines() != ['t', 't', f'{CURRENT_TENANT_TABLES}|{CURRENT_TENANT_TABLES}']:
             raise ValueError('actual PostgreSQL runtime does not have the reviewed tenant isolation')
-        output = run('stock-dotnet', sys.executable, ROOT / 'scripts/conformance.py', 'nugetproxy', '--require-clean-build',
+        profile = 'nugetsource' if combined else 'nugetproxy'
+        output = run('stock-dotnet', sys.executable, ROOT / 'scripts/conformance.py', profile, '--require-clean-build',
                      environment=dict(env, CRATECTL_CONFORMANCE_DATABASE_FILE=str(config),
                                       CRATECTL_DEV_DATABASE='native', CRATECTL_QUALIFICATION_BIN_DIR=str(binary)), timeout=350)
     finally:
@@ -102,25 +105,32 @@ WHERE n.nspname='cratectl' AND c.relkind IN ('r','p') AND EXISTS
     if not re.fullmatch(r'([a-f0-9]{10})/conformance-\1\.json', relative.as_posix()) or report_path.stat().st_size > 1 << 20:
         raise ValueError('unreviewed native replay report path or size')
     native = json.loads(report_path.read_bytes())
+    checks = COMBINED_CHECKS if combined else CHECKS
     binary_hashes = {path.name: digest(path) for path in (binary / 'cratectl', binary / 'cratectld')}
     if (native['candidate'] != sha or native['source_dirty'] is not False or native['build_source_matches_candidate'] is not True
-            or native['status'] != 'passed' or native['checks'] != list(CHECKS) or native['nuget_proxy']['fixtures'] != FIXTURES
+            or native['status'] != 'passed' or native['checks'] != list(checks) or native['nuget_proxy']['fixtures'] != FIXTURES
             or native['artifact_digests'] != {str(binary.relative_to(ROOT) / name): value for name, value in binary_hashes.items()}):
         raise ValueError('the owned stock run failed exact source, binary or fixture binding')
+    if combined and (native.get('nuget_group') != GROUP_FIXTURES or native.get('nuget_service_index') != SERVICE_INDEX_FIXTURE):
+        raise ValueError('the owned stock run failed the group or service-index fixture binding')
     if architecture:
         machine, runner_arch = {'amd64': ('x86_64', 'X64'), 'arm64': ('aarch64', 'ARM64')}[architecture]
         if (platform.system(), platform.machine(), env.get('RUNNER_OS'), env.get('RUNNER_ARCH'), env.get('GITHUB_SHA'),
                 env.get('GITHUB_RUN_ATTEMPT')) != ('Linux', machine, 'Linux', runner_arch, sha, '1'):
             raise ValueError('the hosted report requires an original exact native Linux job')
-        report = {'schema': 1, 'profile': PROFILE, 'candidate': sha, 'status': 'passed', 'runner_os': 'Linux',
+        sources = COMBINED_SOURCE_PATHS if combined else SOURCE_PATHS
+        report = {'schema': 1, 'profile': COMBINED_PROFILE if combined else PROFILE, 'candidate': sha, 'status': 'passed', 'runner_os': 'Linux',
                   'runner_arch': runner_arch, 'run_id': env['GITHUB_RUN_ID'], 'source_dirty': False,
-                  'source_sha256': {path: digest(ROOT / path) for path in SOURCE_PATHS}, 'binary_sha256': binary_hashes,
+                  'source_sha256': {path: digest(ROOT / path) for path in sources}, 'binary_sha256': binary_hashes,
                   'postgres': postgres, 'database_safety': True, 'checks': native['checks'], 'nuget_proxy': native['nuget_proxy'],
                   'goal_complete': False, 'broad_readiness': False}
+        if combined:
+            report.update(nuget_group=native['nuget_group'], nuget_service_index=native['nuget_service_index'])
         with (ROOT / '.cache/ci-nuget-proxy.json').open('x') as stream:
             json.dump(validate(report), stream, indent=2)
             stream.write('\n')
-    print(f'PASS: {len(CHECKS)} stock NuGet flat-container proxy checks')
+    scope = 'flat-container, ordered group and service-index' if combined else 'flat-container proxy'
+    print(f'PASS: {len(checks)} stock NuGet {scope} checks')
 
 
 if __name__ == '__main__':
@@ -128,5 +138,7 @@ if __name__ == '__main__':
     parser.add_argument('--pg-bin', required=True, type=Path)
     parser.add_argument('--binary-directory', required=True, type=Path)
     parser.add_argument('--architecture', choices=('amd64', 'arm64'))
+    parser.add_argument('--with-groups-and-service-index', action='store_true')
     args = parser.parse_args()
-    qualify(args.pg_bin.resolve(), candidate_binary_directory(args.binary_directory), args.architecture)
+    qualify(args.pg_bin.resolve(), candidate_binary_directory(args.binary_directory), args.architecture,
+            args.with_groups_and_service_index)

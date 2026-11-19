@@ -38,6 +38,51 @@ CHECKS = (
     'stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Dependency allowed-again',
     'repeated policy changes and isolated stock restores keep the warm origin idle',
 )
+GROUP_CHECKS = (
+    'admin: create nuget repository cratectl-nuget-preferred',
+    'admin: create nuget repository cratectl-nuget-lower',
+    'publish the lower hosted package Cratectl.Proxy.Application',
+    'publish the lower hosted package Cratectl.Proxy.Dependency',
+    'admin: create nuget repository cratectl-nuget-group',
+    'admin: create nuget repository cratectl-nuget-owner-group',
+    'an ungranted preferred NuGet source blocks the group before origin routing',
+    'grant access to the consulted NuGet member',
+    'the group stages the preferred archive for exact review',
+    'stock dotnet restore succeeds group-preferred-proxy',
+    'stock dotnet resolves the exact application and transitive dependency group-preferred-proxy',
+    'stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Application group-preferred-proxy',
+    'stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Dependency group-preferred-proxy',
+    'ordered group uses one current missing dependency catalog and exact preferred proxy bytes',
+    'higher priority denial removes the app while lower hosted bytes remain available directly',
+    'stock dotnet fails closed with current package review group-preferred-denied',
+    'stock dotnet restore succeeds group-namespace-owner',
+    'stock dotnet resolves the exact application and transitive dependency group-namespace-owner',
+    'stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Application group-namespace-owner',
+    'stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Dependency group-namespace-owner',
+    'the preferred exact digest can be approved again',
+    'stock dotnet restore succeeds group-restarted',
+    'stock dotnet resolves the exact application and transitive dependency group-restarted',
+    'stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Application group-restarted',
+    'stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Dependency group-restarted',
+    'warm group restores reuse the exact authorities after restart',
+)
+SERVICE_INDEX_CHECKS = (
+    'admin: create nuget repository cratectl-nuget-service',
+    'stock dotnet restore succeeds authenticated-service-index',
+    'stock dotnet resolves the exact application and transitive dependency authenticated-service-index',
+    'stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Application authenticated-service-index',
+    'stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Dependency authenticated-service-index',
+    'stock restore discovers the exact configured index and uses only the separately authenticated package authority',
+    'a changed service index blocks revalidation before any package or sidecar request',
+    'restored service-index authority revalidates exact bytes and checksum',
+    'stock dotnet restore succeeds service-index-warm-restart',
+    'stock dotnet resolves the exact application and transitive dependency service-index-warm-restart',
+    'stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Application service-index-warm-restart',
+    'stock dotnet retains exact package, manifest and inert content for Cratectl.Proxy.Dependency service-index-warm-restart',
+    'warm service-index restore survives restart without additional origin requests',
+)
+COMBINED_CHECKS = CHECKS + GROUP_CHECKS + SERVICE_INDEX_CHECKS
+
 FIXTURES = {
     "Cratectl.Proxy.Application": {
         "nupkg": "b335d0d33284ef2eb0ca5769aac956b9d06cea9adae419a8fd5d8fedaeec9f68",
@@ -51,6 +96,7 @@ FIXTURES = {
     }
 }
 PROFILE = 'cratectl-native-nuget-flat-proxy-v1'
+COMBINED_PROFILE = 'cratectl-native-nuget-sources-v2'
 DIGEST = '[a-f0-9]{64}'
 SOURCE_PATHS = (
     '.github/workflows/nuget-proxy.yml', 'Makefile', 'go.mod', 'go.sum', 'global.json',
@@ -61,23 +107,50 @@ SOURCE_PATHS = (
     'internal/server/resolve.go', 'internal/store/artifact_read.go', 'internal/store/nuget.go', 'internal/store/nuget_proxy.go',
     'internal/store/retrieval.go', 'internal/store/repository.go', 'internal/store/migrations.go', 'internal/store/store.go',
 )
+COMBINED_SOURCE_PATHS = SOURCE_PATHS + (
+    'api/openapi.yaml', 'scripts/conformance_nuget_group.py', 'scripts/conformance_nuget_service.py',
+    'internal/server/nuget_group.go', 'internal/server/nuget_group_integration_test.go',
+    'internal/server/nuget_service_index.go', 'internal/server/nuget_service_index_integration_test.go',
+    'internal/store/nuget_group.go', 'internal/upstream/upstream.go',
+)
+GROUP_FIXTURES = {
+    'checks': len(GROUP_CHECKS), 'origin_requests': 4,
+    'preferred_application_sha256': FIXTURES['Cratectl.Proxy.Application']['nupkg'],
+    'hosted_application_sha256': '1c712446faf437c01e24a1603cb9c0b1ab919a7d5cae0a2c999d96080d99800f',
+    'hosted_dependency_sha256': FIXTURES['Cratectl.Proxy.Dependency']['nupkg'],
+}
+SERVICE_INDEX_FIXTURE = {'checks': len(SERVICE_INDEX_CHECKS), 'origin_requests': 14, 'separate_credentials_verified': True}
 FIELDS = {'schema', 'profile', 'candidate', 'status', 'runner_os', 'runner_arch', 'run_id', 'source_dirty',
           'source_sha256', 'binary_sha256', 'postgres', 'database_safety', 'checks', 'nuget_proxy',
           'goal_complete', 'broad_readiness'}
 
 
+def combined_selected(source):
+    return b'--with-groups-and-service-index' in source('.github/workflows/nuget-proxy.yml')
+
+
 def validate(report):
-    if (type(report) is not dict or set(report) != FIELDS or type(report['schema']) is not int or report['schema'] != 1
-            or report['profile'] != PROFILE or report['status'] != 'passed' or report['database_safety'] is not True
+    combined = type(report) is dict and report.get('profile') == COMBINED_PROFILE
+    fields = FIELDS | {'nuget_group', 'nuget_service_index'} if combined else FIELDS
+    if (type(report) is not dict or set(report) != fields or type(report['schema']) is not int or report['schema'] != 1
+            or report['profile'] not in (PROFILE, COMBINED_PROFILE) or report['status'] != 'passed' or report['database_safety'] is not True
             or report['runner_os'] != 'Linux' or report['runner_arch'] not in ('X64', 'ARM64')
             or report['source_dirty'] is not False or report['goal_complete'] is not False or report['broad_readiness'] is not False
             or not matches(report['candidate'], '[a-f0-9]{40}') or not matches(report['run_id'], '[1-9][0-9]{0,17}')
-            or not hashes(report['binary_sha256'], ('cratectl', 'cratectld')) or not hashes(report['source_sha256'], SOURCE_PATHS)
-            or not postgres_version(report['postgres']) or report['checks'] != list(CHECKS)):
+            or not hashes(report['binary_sha256'], ('cratectl', 'cratectld'))
+            or not hashes(report['source_sha256'], COMBINED_SOURCE_PATHS if combined else SOURCE_PATHS)
+            or not postgres_version(report['postgres']) or report['checks'] != list(COMBINED_CHECKS if combined else CHECKS)):
         raise ValueError('invalid native NuGet flat-container identity or coverage')
     native = report['nuget_proxy']
     if (type(native) is not dict or set(native) != {'sdk', 'dotnet_sha256', 'fixtures', 'loopback_http', 'origin_requests'}
             or native['sdk'] != '10.0.403' or not matches(native['dotnet_sha256'], DIGEST) or native['fixtures'] != FIXTURES
             or native['loopback_http'] is not True or type(native['origin_requests']) is not int or native['origin_requests'] != 6):
         raise ValueError('invalid stock NuGet or controlled origin identity')
+    if combined:
+        group = report['nuget_group']
+        index = report['nuget_service_index']
+        if (group != GROUP_FIXTURES or type(group['checks']) is not int or type(group['origin_requests']) is not int
+                or index != SERVICE_INDEX_FIXTURE or type(index['checks']) is not int or type(index['origin_requests']) is not int
+                or index['separate_credentials_verified'] is not True):
+            raise ValueError('invalid ordered group or service-index evidence')
     return report
