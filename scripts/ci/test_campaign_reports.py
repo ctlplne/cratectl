@@ -30,7 +30,9 @@ from composer_hosted_evidence import (BASE_CHECKS as COMPOSER_BASE, CHECKS as CO
                                       EXTRA_COORDINATES as COMPOSER_EXTRA_COORDINATES, VERSION_CHECKS as COMPOSER_VERSION_CHECKS)
 from conda_hosted_evidence import (BASE_CHECKS as CONDA_BASE, CHECKS as CONDA_CHECKS, FILES as CONDA_FILES,
                                   PROFILE as CONDA_PROFILE, PINS as CONDA_PINS, VERSION as CONDA_VERSION, fixtures as conda_fixtures)
-from cran_hosted_evidence import (BASE_CHECKS as CRAN_BASE, CHECKS as CRAN_CHECKS, FILES as CRAN_FILES, PROFILE as CRAN_PROFILE)
+from cran_hosted_evidence import (BASE_CHECKS as CRAN_BASE, CHECKS as CRAN_CHECKS, FILES as CRAN_FILES, PROFILE as CRAN_PROFILE,
+                                 INSTALL_CHECKS as CRAN_INSTALL_CHECKS, INSTALL_FILES as CRAN_INSTALL_FILES,
+                                 INSTALL_PROFILE as CRAN_INSTALL_PROFILE, LAUNCHER as CRAN_LAUNCHER)
 from cran_hosted_fixture import (COORDINATES as CRAN_COORDINATES, LATEST as CRAN_LATEST, EARLIER as CRAN_EARLIER,
                                  SELECTED_LIBRARY as CRAN_LIBRARY, TOOLS as CRAN_TOOLS,
                                  filename as cran_filename, make_archive as cran_archive)
@@ -85,6 +87,17 @@ class CampaignReports(unittest.TestCase):
                       {'checks': native['checks'][:-1]}):
             with self.assertRaisesRegex(EvidenceError, 'cran_hosted_report_contract'):
                 validate_custom({**report, 'cran_hosted': {**native, **patch}}, candidate, 12, spec, source)
+
+        def install_source(path):
+            return b'--cran-install' if path == '.github/workflows/cran-hosted.yml' else source(path)
+
+        installation = {'checks': list(CRAN_INSTALL_CHECKS), 'launcher_sha256': hashlib.sha256(install_source(CRAN_LAUNCHER)).hexdigest()}
+        combined = {**report, 'profile': CRAN_INSTALL_PROFILE, 'cran_hosted': {**native, 'installation': installation},
+                    'source_sha256': {path: hashlib.sha256(install_source(path)).hexdigest() for path in CRAN_INSTALL_FILES}}
+        self.assertEqual(validate_custom(combined, candidate, 12, spec, install_source), {'checks': 31, 'records': 1})
+        installation['launcher_sha256'] = '0' * 64
+        with self.assertRaisesRegex(EvidenceError, 'cran_hosted_report_contract'):
+            validate_custom(combined, candidate, 12, spec, install_source)
 
     def test_conda_reports_bind_native_platform_and_exact_selected_builds(self):
         def source(path):

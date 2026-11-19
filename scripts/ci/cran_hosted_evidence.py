@@ -10,6 +10,7 @@ else:
     from terraform_provider_evidence import BASE_CHECKS as MANIFEST_CHECKS, hashes, matches, postgres_version
 
 PROFILE = 'cratectl-native-hosted-cran-source-v1'
+INSTALL_PROFILE = 'cratectl-native-hosted-cran-source-install-v1'
 BASE_CHECKS = tuple(item for item in MANIFEST_CHECKS if item != 'provider matches the clean candidate')
 CHECKS = (
     'the stock R interpreter and its distribution match the exact native tool pin',
@@ -23,6 +24,9 @@ CHECKS = (
     'new CRAN indexes and direct downloads enforce current digest denial',
     'stock R falls back to the approved version and refuses the revoked exact archive',
 )
+INSTALL_CHECKS = ('stock R installs the verified inert source graph first',
+                  'stock R installs the verified inert source graph after-restart')
+LAUNCHER = 'scripts/ci/cran_private_launcher.sh'
 FILES = (
     '.github/workflows/cran-hosted.yml', 'Makefile', 'go.mod', 'go.sum',
     'scripts/ci/cran_hosted_evidence.py', 'scripts/ci/terraform_provider_evidence.py',
@@ -32,27 +36,40 @@ FILES = (
     'internal/store/cran.go', 'internal/store/artifact_read.go', 'internal/store/lifecycle_artifact.go',
     'internal/store/repository.go', 'internal/store/migrations.go', 'internal/blob/local.go',
 )
+INSTALL_FILES = (*FILES, LAUNCHER)
 FIELDS = {'schema', 'profile', 'candidate', 'status', 'runner_os', 'runner_arch', 'run_id', 'source_dirty', 'source_sha256',
           'binary_sha256', 'archive_sha256', 'postgres', 'npm', 'checks', 'cran_hosted', 'goal_complete', 'broad_readiness'}
 HOST = {'X64': 'x86_64', 'ARM64': 'aarch64'}
 
 
+def install_selected(source):
+    return b'--cran-install' in source('.github/workflows/cran-hosted.yml').split()
+
+
 def validate(report):
-    if (type(report) is not dict or set(report) != FIELDS or report['profile'] != PROFILE
+    if type(report) is not dict or report.get('profile') not in (PROFILE, INSTALL_PROFILE):
+        raise ValueError('invalid hosted CRAN profile')
+    installed = report['profile'] == INSTALL_PROFILE
+    files = INSTALL_FILES if installed else FILES
+    if (set(report) != FIELDS
             or type(report['schema']) is not int or report['schema'] != 1 or report['status'] != 'passed'
             or report['runner_os'] != 'Linux' or report['runner_arch'] not in HOST or report['source_dirty'] is not False
             or report['goal_complete'] is not False or report['broad_readiness'] is not False
             or not matches(report['candidate'], '[a-f0-9]{40}') or not matches(report['run_id'], '[1-9][0-9]{0,17}')
             or not matches(report['npm'], r'(?:10|11)\.[0-9]{1,3}\.[0-9]{1,3}') or not postgres_version(report['postgres'])
-            or not matches(report['archive_sha256'], '[a-f0-9]{64}') or not hashes(report['source_sha256'], FILES)
+            or not matches(report['archive_sha256'], '[a-f0-9]{64}') or not hashes(report['source_sha256'], files)
             or not hashes(report['binary_sha256'], ('cratectl', 'cratectld')) or report['checks'] != list(BASE_CHECKS)):
         raise ValueError('invalid hosted CRAN identity or native check scope')
     version, digest = TOOLS['Linux', HOST[report['runner_arch']]]
     archives = {filename(c): hashlib.sha256(make_archive(c)).hexdigest() for c in COORDINATES}
     selected = {filename(c): archives[filename(c)] for c in (LATEST, SELECTED_LIBRARY)}
     native = report['cran_hosted']
-    if (type(native) is not dict or not matches(native.get('binary_sha256'), '[a-f0-9]{64}')
-            or native != {'version': version, 'distribution_sha256': digest, 'binary_sha256': native.get('binary_sha256'),
-                          'checks': list(CHECKS), 'archive_sha256': archives, 'selected': selected}):
+    if type(native) is not dict or not matches(native.get('binary_sha256'), '[a-f0-9]{64}'):
+        raise ValueError('invalid stock R binary digest')
+    expected = {'version': version, 'distribution_sha256': digest, 'binary_sha256': native['binary_sha256'],
+                'checks': list(CHECKS), 'archive_sha256': archives, 'selected': selected}
+    if installed:
+        expected['installation'] = {'checks': list(INSTALL_CHECKS), 'launcher_sha256': report['source_sha256'][LAUNCHER]}
+    if native != expected:
         raise ValueError('invalid stock R tool or exact CRAN source graph')
     return report

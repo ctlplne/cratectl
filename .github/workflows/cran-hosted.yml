@@ -11,6 +11,7 @@ on:
       - 'internal/store/cran*.go'
       - 'scripts/cran_hosted_fixture.py'
       - 'scripts/ci/cran_hosted_evidence.py'
+      - 'scripts/ci/cran_private_launcher.sh'
 
 permissions:
   contents: read
@@ -72,6 +73,8 @@ jobs:
             test "$(readlink "$r_home/etc/$file")" = "/etc/R/$file"
             ln -sfn "$stage/runtime/etc/R/$file" "$r_home/etc/$file"
           done
+          mv "$r_home/bin/R" "$r_home/bin/R.publisher-launcher"
+          install -m 700 scripts/ci/cran_private_launcher.sh "$r_home/bin/R"
           env LD_LIBRARY_PATH="$r_home/lib" ldd "$r_home/bin/exec/R" > "$stage/r-libraries.txt"
           if grep -Eq '^\s+lib(blas|lapack)\.so\.3 => not found' "$stage/r-libraries.txt"; then
             (cd "$stage" && apt-get download libblas3 liblapack3)
@@ -98,7 +101,7 @@ jobs:
           python3 scripts/conformance_repository_manifest.py \
             --pg-bin /usr/lib/postgresql/16/bin --binary-directory .cache/cratectl-cran-bin \
             --cran-r "$r_home/bin/exec/R" --cran-r-home "$r_home" \
-            --cran-tool-archive .cache/cratectl-cran-tools/r-base-core.deb --cran-ci-architecture '${{ matrix.arch }}'
+            --cran-tool-archive .cache/cratectl-cran-tools/r-base-core.deb --cran-install --cran-ci-architecture '${{ matrix.arch }}'
       - uses: actions/upload-artifact@v7
         if: success()
         with:

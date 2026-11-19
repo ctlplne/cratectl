@@ -5,6 +5,7 @@ import gzip
 import hashlib
 import io
 import os
+from pathlib import Path
 import platform
 import ssl
 import tarfile
@@ -19,6 +20,7 @@ EARLIER = (APP, '1.9.0')
 SELECTED_LIBRARY = (DEPENDENCY, '2.2-0')
 COORDINATES = (EARLIER, LATEST, (DEPENDENCY, '2.1-0'), SELECTED_LIBRARY)
 ARCHIVE_CONTENTS = ('DESCRIPTION', 'NAMESPACE', 'inst/extdata/owned.txt')
+INSTALLER = 'tools:::.install_packages(args = commandArgs(trailingOnly = TRUE))\n'
 TOOLS = {
     ('Linux', 'x86_64'): ('4.3.3', '086f046230727fc896f70cfb459d693023a30a9f6877492554aa7041dac2e576'),
     ('Linux', 'aarch64'): ('4.3.3', '537e62fc3bfc31d537a3a25a56d0e67e2c868e76582ac09c0ed8f30f810ec91b'),
@@ -62,6 +64,10 @@ def filename(coordinate):
     return f'{coordinate[0]}_{coordinate[1]}.tar.gz'
 
 
+def fixture_payload(coordinate, variant='original'):
+    return f'Owned {variant} source bytes for {coordinate[0]} {coordinate[1]}.\n'.encode()
+
+
 def make_archive(coordinate, *, variant='original'):
     name, version = coordinate
     imports = f'Imports: {DEPENDENCY} (>= 2.2-0)\n' if name == APP else ''
@@ -69,7 +75,7 @@ def make_archive(coordinate, *, variant='original'):
                    'Description: Inert material for a governed native client replay.\n'
                    'Author: cratectl fixture\nMaintainer: cratectl fixture <fixture@example.invalid>\n'
                    'License: MIT\nNeedsCompilation: no\n' + imports)
-    files = (description.encode(), b'# Inert source fixture.\n', f'Owned {variant} source bytes for {name} {version}.\n'.encode())
+    files = (description.encode(), b'# Inert source fixture.\n', fixture_payload(coordinate, variant))
     buffer = io.BytesIO()
     with gzip.GzipFile(fileobj=buffer, mode='wb', compresslevel=0, mtime=0) as compressed:
         with tarfile.open(fileobj=compressed, mode='w', format=tarfile.USTAR_FORMAT) as archive:
@@ -81,7 +87,7 @@ def make_archive(coordinate, *, variant='original'):
     return buffer.getvalue()
 
 
-def evaluate_cran(work, installation, authority, call, api, restart, sha, runtime, r_home, tool_archive):
+def evaluate_cran(work, installation, authority, call, api, restart, sha, runtime, r_home, tool_archive, *, install=False):
     pin = TOOLS.get((platform.system(), platform.machine()))
     if pin is None or sha(tool_archive) != pin[1]:
         raise ValueError('use the pinned native GNU R distribution for the host')
@@ -90,10 +96,17 @@ def evaluate_cran(work, installation, authority, call, api, restart, sha, runtim
     driver = scope / 'cratectl-owned-client.R'
     driver.write_text(CLIENT)
     checks = []
+    install_checks = []
     ca = installation / 'ca.crt'
     executable = r_home / 'bin/exec/R'
     if runtime.resolve() != executable.resolve() or not executable.is_file():
         raise ValueError('use the original R interpreter from the supplied private R home')
+    if install:
+        launcher = Path(__file__).resolve().parent / 'ci/cran_private_launcher.sh'
+        if sha(r_home / 'bin/R') != sha(launcher):
+            raise ValueError('the install fixture needs its private launcher for stock R subprocesses')
+        installer = scope / 'cratectl-owned-installer.R'
+        installer.write_text(INSTALLER)
 
     def check(label, condition):
         if not condition:
@@ -187,9 +200,37 @@ def evaluate_cran(work, installation, authority, call, api, restart, sha, runtim
         selected_coordinates = (app, SELECTED_LIBRARY)
         expected = {(name, version, md5[name, version]) for name, version in selected_coordinates}
         observed = {p.name: sha(p) for p in downloads.glob('*.tar.gz') if p.name != 'refused.tar.gz'}
-        return (selected == expected and observed == {filename(c): digests[c] for c in selected_coordinates}
-                and (not denied or ('cratectl-stock-denied' in output.splitlines()
-                                    and (not (downloads / 'refused.tar.gz').exists() or (downloads / 'refused.tar.gz').stat().st_size == 0))))
+        verified = (selected == expected and observed == {filename(c): digests[c] for c in selected_coordinates}
+                    and (not denied or ('cratectl-stock-denied' in output.splitlines()
+                                        and (not (downloads / 'refused.tar.gz').exists() or (downloads / 'refused.tar.gz').stat().st_size == 0))))
+        if verified and install and not denied:
+            install_graph(label, target, downloads, (SELECTED_LIBRARY, app))
+        return verified
+
+    def install_graph(label, target, downloads, graph):
+        names = [downloads / filename(c) for c in graph]
+        for coordinate, filename_on_disk in zip(graph, names, strict=True):
+            raw = filename_on_disk.read_bytes()
+            if raw != archives[coordinate]:
+                raise ValueError('the owned installation requires the exact inert archive bytes')
+            with tarfile.open(fileobj=io.BytesIO(raw), mode='r:gz') as archive:
+                members = archive.getmembers()
+                if ([member.name for member in members] != [coordinate[0] + '/' + path for path in ARCHIVE_CONTENTS]
+                        or not all(member.isfile() and member.mode == 0o644 for member in members)):
+                    raise ValueError('the owned installation archive contains unexpected material')
+        private_library = target / 'library'
+        private_library.mkdir(mode=0o700)
+        env = environment(target)
+        env['R_DEFAULT_PACKAGES'] = 'NULL'
+        call('cran-install-' + label, *stock, '--file=' + os.fspath(installer), '--args', '--no-test-load',
+             '--no-byte-compile', '--no-configure', '-l', private_library, *names, cwd=target, environment=env, timeout=45)
+        installed = {path.name for path in private_library.iterdir() if path.is_dir()}
+        if installed != {c[0] for c in graph} or not all(
+                (private_library / c[0] / 'extdata/owned.txt').read_bytes() == fixture_payload(c)
+                and ('Version: ' + c[1]).encode() in (private_library / c[0] / 'DESCRIPTION').read_bytes().splitlines()
+                for c in graph):
+            raise ValueError('stock R did not install both exact inert payloads and their versions')
+        install_checks.append('stock R installs the verified inert source graph ' + label)
 
     check('stock R selects numeric versions and downloads the exact native source graph', consume('first', LATEST))
     restart()
@@ -198,6 +239,9 @@ def evaluate_cran(work, installation, authority, call, api, restart, sha, runtim
     check('new CRAN indexes and direct downloads enforce current digest denial',
           b'Version: 1.10.0\n' not in request('PACKAGES')[1] and request(filename(LATEST))[0] == 403)
     check('stock R falls back to the approved version and refuses the revoked exact archive', consume('denied', EARLIER, denied=True))
-    return {'version': version, 'binary_sha256': sha(runtime), 'distribution_sha256': pin[1], 'checks': checks,
-            'archive_sha256': {filename(c): digests[c] for c in COORDINATES},
-            'selected': {filename(c): digests[c] for c in (LATEST, SELECTED_LIBRARY)}}
+    result = {'version': version, 'binary_sha256': sha(runtime), 'distribution_sha256': pin[1], 'checks': checks,
+              'archive_sha256': {filename(c): digests[c] for c in COORDINATES},
+              'selected': {filename(c): digests[c] for c in (LATEST, SELECTED_LIBRARY)}}
+    if install:
+        result['installation'] = {'checks': install_checks, 'launcher_sha256': sha(launcher)}
+    return result

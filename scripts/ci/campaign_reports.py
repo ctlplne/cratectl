@@ -35,7 +35,9 @@ from composer_hosted_evidence import (CHECKS as COMPOSER_HOSTED_CHECKS, GROUP_CH
                                       versions_selected as composer_versions_selected,
                                       validate as validate_composer_hosted)
 from conda_hosted_evidence import CHECKS as CONDA_HOSTED_CHECKS, validate as validate_conda_hosted
-from cran_hosted_evidence import CHECKS as CRAN_HOSTED_CHECKS, validate as validate_cran_hosted
+from cran_hosted_evidence import (CHECKS as CRAN_HOSTED_CHECKS, PROFILE as CRAN_HOSTED_PROFILE,
+                                 INSTALL_CHECKS as CRAN_INSTALL_CHECKS, INSTALL_PROFILE as CRAN_INSTALL_PROFILE,
+                                 install_selected as cran_install_selected, validate as validate_cran_hosted)
 from debian_apt_evidence import (APT_CHECKS as DEBIAN_APT_CHECKS, APT_SUITE_CHECKS as DEBIAN_SUITE_CHECKS,
                                  PROFILE as DEBIAN_FLAT_PROFILE, SUITE_PROFILE as DEBIAN_SUITE_PROFILE,
                                  suite_selected as debian_suite_selected, validate as validate_debian_apt)
@@ -181,6 +183,11 @@ def validate_custom(report, candidate, run_id, spec, source):
             require(report['profile'] == (DEBIAN_SUITE_PROFILE if named else DEBIAN_FLAT_PROFILE), 'debian_apt_profile_selection')
             if named:
                 checks += len(DEBIAN_SUITE_CHECKS)
+        if spec['kind'] == 'cran-hosted':
+            installed = cran_install_selected(source)
+            require(report['profile'] == (CRAN_INSTALL_PROFILE if installed else CRAN_HOSTED_PROFILE), 'cran_hosted_profile_selection')
+            if installed:
+                checks += len(CRAN_INSTALL_CHECKS)
         if spec['kind'] == 'composer-hosted':
             grouped = composer_group_selected(source)
             versions = composer_versions_selected(source)

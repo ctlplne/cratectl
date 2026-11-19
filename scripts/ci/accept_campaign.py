@@ -25,7 +25,8 @@ from composer_hosted_evidence import (CHECKS as COMPOSER_HOSTED_CHECKS, GROUP_CH
                                       group_selected as composer_group_selected, proxy_selected as composer_proxy_selected,
                                       versions_selected as composer_versions_selected)
 from conda_hosted_evidence import CHECKS as CONDA_HOSTED_CHECKS
-from cran_hosted_evidence import CHECKS as CRAN_HOSTED_CHECKS
+from cran_hosted_evidence import (CHECKS as CRAN_HOSTED_CHECKS, INSTALL_CHECKS as CRAN_INSTALL_CHECKS,
+                                 install_selected as cran_install_selected)
 from npm_search_evidence import HOSTED_CHECKS as NPM_HOSTED, CACHED_CHECKS as NPM_CACHED
 from python_search_evidence import HOSTED_CHECKS as PYTHON_HOSTED, CACHED_CHECKS as PYTHON_CACHED
 from oci_repository_catalog_evidence import (CACHED_CHECKS as OCI_CACHED_CHECKS, CATALOG_CHECKS as OCI_CATALOG_CHECKS,
@@ -286,6 +287,9 @@ def check_log(raw, spec, source):
         require(text.count(f'PASS: {len(IAC_BASE) - 1} native declarative repository checks') == 1
                 and text.count(f'PASS: {len(CRAN_HOSTED_CHECKS)} stock R hosted CRAN source checks') == 1,
                 'cran_hosted_native_inventory')
+        if cran_install_selected(source):
+            require(text.count(f'PASS: {len(CRAN_INSTALL_CHECKS)} stock R inert archive installation checks') == 1,
+                    'cran_hosted_install_inventory')
     if kind in ('native', 'go'):
         pattern = r'\bok\s+ctlplne.dev/cratectl/internal/(?:server|store' + ('|conformance' if kind == 'native' else '') + r')\s'
         require(len(re.findall(pattern, text)) == (6 if kind == 'native' else 4), 'native_package_success_inventory')
