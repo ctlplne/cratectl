@@ -1958,6 +1958,14 @@
       "first_failure": "evidence/2026-11-19/nuget-68ee7ec-public-content-hash-first-failure.json",
       "replay": "evidence/2026-11-19/nuget-6992962-public-lockfile-native.json",
       "repair": "Compare the stock sidecar to the full archive SHA-512, then compare the stock installation metadata to the unchanged lockfile content hash."
+    },
+    {
+      "id": "DEFECT.0191",
+      "summary": "Original signed APT x64 driver stops in stock dpkg-deb archive creation",
+      "state": "The first native x64 job reached real PostgreSQL and stopped on dpkg-deb exit 2 before any APT upload. The fixture used a private umask while creating the nested control directory.",
+      "first_failure": "evidence/2026-11-19/debian-8cf32b9-amd64-build-first-failure.json",
+      "replay": null,
+      "repair": "Set the exact nested DEBIAN directory mode after creation and keep the outer fixture private. Retain narrow dpkg-deb and APT failure markers."
     }
   ]
 }

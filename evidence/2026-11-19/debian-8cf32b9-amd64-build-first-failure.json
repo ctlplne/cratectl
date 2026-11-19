@@ -1,0 +1,25 @@
+{
+  "candidate": "8cf32b928a53f8d6488f01808442e2391b1bde2e",
+  "status": "failed",
+  "definition": "DEFECT.0191",
+  "observed_at": "2026-11-19T06:30:12.335746+05:30",
+  "run_id": 44432778843,
+  "job_id": 135254040623,
+  "run_attempt": 1,
+  "architecture": "amd64",
+  "postgres_server_version": "16.15",
+  "failed_step": "Replay native signed package downloads with stock APT",
+  "observed_failure": "The stock dpkg-deb application archive build exited 2 before Debian upload.",
+  "fixture_observation": "The driver creates DEBIAN under umask 077. Stock dpkg-deb requires that directory to have mode 0755 through 0775.",
+  "stock_source": "https://sources.debian.org/src/dpkg/1.22.22/po/dz.po",
+  "original_private_job_log": {
+    "path": ".private/ci-diagnostics/github-8cf32b9-campaign/135254040623.txt",
+    "bytes": 27165,
+    "sha256": "8437b8c5454adc7902e7e8bd274c9ac2dd36f66e8a38173724fb92e7334b4607"
+  },
+  "limits": [
+    "The original runner did not expose the private dpkg-deb stderr. The job stopped before signed repository creation or stock package download."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

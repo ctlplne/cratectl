@@ -72,6 +72,7 @@ def evaluate_debian_apt(work, installation, authority, environment, call, api, r
         staging = scope / (label + '-tree')
         control = staging / 'DEBIAN'
         control.mkdir(parents=True, mode=0o755)
+        control.chmod(0o755)
         file = staging / 'usr/share' / label / 'owned.txt'
         file.parent.mkdir(parents=True, mode=0o755)
         file.write_text(f'Owned inert Debian archive for {label}.\n')
@@ -80,7 +81,11 @@ def evaluate_debian_apt(work, installation, authority, environment, call, api, r
             fields += f'Depends: {DEPENDENCY} (= {VERSION})\n'
         (control / 'control').write_text(fields + 'Description: Inert Debian payload used for stock download\n')
         artifact = scope / (label + '.deb')
-        call('apt-build-' + label, tools['dpkg-deb'], '--build', '--root-owner-group', '-Zgzip', staging, artifact, cwd=scope)
+        code, output = call('apt-build-' + label, tools['dpkg-deb'], '--build', '--root-owner-group', '-Zgzip', staging, artifact,
+                            cwd=scope, status=None)
+        if code != 0:
+            reason = 'control directory mode' if 'control directory has bad permissions' in output else 'archive build'
+            raise ValueError(f'stock dpkg-deb failed {reason} for the owned {label} fixture with exit {code}')
         relative = f'pool/{label}/{VERSION}/{arch}/{label}.deb'
         packages[label] = (relative, artifact.read_bytes(), sha(artifact))
         check('stock dpkg emits an exact accepted Debian archive ' + label, request(relative, 'admin', 'PUT', packages[label][1])[0] == 201)
@@ -155,6 +160,11 @@ def evaluate_debian_apt(work, installation, authority, environment, call, api, r
         if expected_failure is not None:
             check('stock APT refuses ' + label, code == 100 and expected_failure in output)
             return
+        if code != 0:
+            markers = ('401', '403', '404', '409', 'NO_PUBKEY', 'Certificate verification failed', 'Hash Sum mismatch',
+                       'Permission denied', 'Could not get lock', 'Could not resolve', 'is not signed')
+            observed = ', '.join(marker for marker in markers if marker in output) or 'update failure'
+            raise ValueError(f'stock APT update failed with exit {code} and {observed}')
         check('stock APT verifies and indexes the signed repository ' + label, code == 0 and 'InRelease' in output)
         call('apt-download-' + label, tools['apt-get'], '--download-only', '--assume-yes', 'install', f'{APP}={VERSION}', cwd=target,
              environment=env, timeout=45)
