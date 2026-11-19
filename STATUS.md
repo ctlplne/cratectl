@@ -884,6 +884,12 @@ development index, installed a numbered prerelease and an independent
 development graph, then reinstalled the development lock after restart.
 [Original Composer development and prerelease reports](evidence/2026-11-19/github-ab8e5cf-composer-development-versions-native.json)
 
+The original `ab8e5cf` SBT2 Linux x64 job reproduced the bootstrap symptom
+recorded at `541ea5d` and `0d5908c`. Stock SBT 2.0.11 reported its Maven
+Central POM as missing and exited 1. The private diagnostic identified the
+command failure. The original HTTP response and root cause remain unknown.
+[Authorized SBT2 diagnostic finding](evidence/2026-11-19/jvm-ab8e5cf-sbt2-amd64-bootstrap-first-failure.json)
+
 Exact `60cd693` passed nine Composer and NuGet regressions on PostgreSQL
 16.16 and the build, test, race and lint gates. Composer proxy discovery
 and byte retrieval use separate configured credentials and require the
