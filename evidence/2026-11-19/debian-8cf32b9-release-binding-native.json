@@ -1,0 +1,69 @@
+{
+  "candidate": "8cf32b928a53f8d6488f01808442e2391b1bde2e",
+  "observed_at": "2026-11-19T06:27:19.971678+05:30",
+  "status": "passed",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "gates": {
+    "make build": "passed",
+    "make test": "passed",
+    "make race": "passed",
+    "make lint": "passed"
+  },
+  "regressions": [
+    "TestDebianHostedBindsExactPackagesAndCurrentTenantPolicy",
+    "TestDebianHostedReleaseFencesIndexChangesAndOlderPublications"
+  ],
+  "binary_sha256": {
+    "cratectld": "d3f1388fb0e478840eb1dca26a8840bc0945075383b99526ecd74262dccd3089",
+    "cratectl": "a12260ac88a2346619a4c648ea0ccf232141e2c470eaf56f6962002a696a449f"
+  },
+  "source_sha256": [
+    {
+      "path": ".github/workflows/debian-apt.yml",
+      "sha256": "49ca89b07aeaedb9f87b7dc489908d69c657f6f1e318203fe36ad4356151c660"
+    },
+    {
+      "path": "internal/debian/release.go",
+      "sha256": "6bf6951b358655e58e8e82e01df44b071117e1cd81b3e3748130a2c088128c4e"
+    },
+    {
+      "path": "internal/debian/release_test.go",
+      "sha256": "4f9f29a94e49b981d494bc3bbf399abd75618cb846eabf2dfff3b18ca226d1cd"
+    },
+    {
+      "path": "internal/server/debian.go",
+      "sha256": "2d1f62ffbbc678c3f5e0384976fba50c4e468f1b86a3e39a878ee302e75d762e"
+    },
+    {
+      "path": "internal/server/debian_release.go",
+      "sha256": "f89e4ca129bb302991ed7f76ef3a07ca5a1925f5dd7e5c5ddc3d0b8ef9d8eab1"
+    },
+    {
+      "path": "internal/server/debian_integration_test.go",
+      "sha256": "748f07d5a5e098b06b59ed469b070d7d5da02e6ad4cb0fea2f9330fdc9eca024"
+    },
+    {
+      "path": "internal/store/debian.go",
+      "sha256": "7f47252c2a7d7ca7bd3e942a750468f0c38b258dda8acd15ff5a426dfa552713"
+    },
+    {
+      "path": "internal/store/debian_release.go",
+      "sha256": "c89129f2041e2a709239e77d5ea3a7140e91867dc70a3f7740cb6dd16e3219b2"
+    },
+    {
+      "path": "scripts/debian_apt_fixture.py",
+      "sha256": "da45a96d88fef1d35a7ddaba7e34a14b27e0e7c7f102f0f31d683d63529a58df"
+    },
+    {
+      "path": "scripts/conformance_repository_manifest.py",
+      "sha256": "110f5d94bddd170a21a1789bdd128ce7f964386206a5c2187f17cda334e72f0b"
+    }
+  ],
+  "integration_log_sha256": "5c49ae24b59f25fddb0737a3ad93f5fca616d7ca966ada3bf2613ba6622ec403",
+  "limits": [
+    "The named real PostgreSQL regressions cover archive intake and the exact current index binding of a synthetic signed-envelope fixture, by-hash reads, old publication refusal, expiry and policy changes. Actual OpenPGP verification and stock APT dependency resolution require the original native Linux jobs."
+  ],
+  "goal_complete": false,
+  "broad_readiness": false
+}

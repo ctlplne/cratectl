@@ -786,6 +786,10 @@ made zero source requests after restart. The real PostgreSQL group regression
 and the build, unit, race and lint gates passed.
 [Native ordered NuGet group evidence](evidence/2026-11-19/nuget-6c72ee0-ordered-group-native.json)
 [Original Linux proxy run inventory](evidence/2026-11-19/github-2029b26-started.json)
+Both original `0d5908c` Linux jobs passed the combined 69-check flat proxy,
+ordered group and service-index profile with PostgreSQL 16.15. Each report
+matched 33 committed source files and confirmed the forced-RLS tenant tables.
+[Original Linux combined NuGet reports](evidence/2026-11-19/github-0d5908c-nuget-combined-sources-native.json)
 
 An original `541ea5d` Linux x64 JVM job failed before the SBT2 fixture
 bootstrap. Stock SBT 2.0.11 reported its pinned launcher POM as missing at
@@ -802,6 +806,15 @@ intake, exact archive identity, current package policy, dependency metadata,
 range reads, restart and isolated tenant bytes. Signed Release publication
 and a stock APT dependency restore remain open.
 [Debian hosted intake evidence](evidence/2026-11-19/debian-b730f7e-hosted-intake-native.json)
+
+`8cf32b9` passed the build, unit, race and lint gates and both real
+PostgreSQL 16.16 Debian regressions. The release-binding test used a synthetic
+OpenPGP envelope to exercise exact index hashes, by-hash reads, publication
+ordering, expiry and current package policy. The native Linux APT workflow
+uses GnuPG and stock APT for actual signature verification and dependency
+download.
+[Native Debian release-binding evidence](evidence/2026-11-19/debian-8cf32b9-release-binding-native.json)
+[Original signed APT workflow inventory](evidence/2026-11-19/github-8cf32b9-started.json)
 
 The same `2af9921` native source passed 12 stock Helm 4.2.2 OCI checks over
 trusted HTTPS against PostgreSQL 16.16. Separate writer and reader identities
