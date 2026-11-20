@@ -9274,11 +9274,11 @@
           "observed_on": "2026-10-28"
         }
       ],
-      "implementation": null,
+      "implementation": "Ordered hosted Conda group with package-level ownership, reviewed platform repodata and channel-root and platform-level snapshot pins.",
       "surfaces": {
-        "api": null,
-        "cli": null,
-        "ui": null
+        "api": "/conda/REPOSITORY/snapshot.json and native platform repodata",
+        "cli": "cratectl and micromamba",
+        "ui": "Ordered hosted member configuration"
       },
       "core": true,
       "dependencies": [
@@ -9290,8 +9290,10 @@
       "clients": [
         "conda"
       ],
-      "client_versions": {},
-      "test_data": "Two nontrivial versions plus a dependency package; same coordinates in two tenants.",
+      "client_versions": {
+        "micromamba": "2.9.0"
+      },
+      "test_data": "Two hosted sources with same-coordinate collisions, cross-platform builds, an independent noarch dependency and reviewed original archives.",
       "permission_cases": [
         "reader denial on publish",
         "revoked token",
@@ -9306,11 +9308,16 @@
         "upstream outage",
         "delete/restore"
       ],
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
-      "limits": "No implementation or native-client proof yet.",
-      "next_action": "Implement conda group and execute the complete stock-client journey."
+      "state": "implementing",
+      "candidate": "826cb8c8c95c50b73534801c7cfc3281f84d68b5",
+      "evidence": [
+        "evidence/2026-11-21/conda-826cb8c-ordered-group-native.json",
+        "evidence/2026-11-21/conda-4de0859-group-review-label-first-failure.json",
+        "evidence/2026-11-21/conda-bc40e8e-micromamba-authenticated-base-url-first-failure.json",
+        "evidence/2026-11-21/conda-1ac183c-stock-plan-userinfo-first-failure.json"
+      ],
+      "limits": "Exact 826cb8c passed 10 ordered Conda group checks within a 40-check profile using stock micromamba 2.9.0 on macOS ARM64 and PostgreSQL 16.16. It used the pinned authenticated channel root, fetched original native and noarch archives from separate members and installed the same inert graph after restart. A preferred publication fenced a lower collision on all platforms. Current denial and member grant revocation stopped the corresponding reads.",
+      "next_action": "Qualify the original Linux group jobs, retained snapshot compatibility across unrelated publication, modern archives, proxy members and production workloads."
     },
     {
       "id": "FMT.CONDA.REPLICATION",

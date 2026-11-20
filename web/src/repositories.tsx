@@ -112,11 +112,19 @@ password READER_TOKEN`;
 
 # Trust the registry CA and install the locked library dependencies
 composer install --no-scripts --no-plugins`;
-  else if(r.format==='conda')snippet=`# Scope the reader credential to this channel using a private token file
-micromamba auth login "${endpoint}" --username token --password-stdin < /private/path/reader.token
+  else if(r.format==='conda'){
+    const channel=r.mode==='group'
+      ?`# Resolve the current group snapshot before configuring micromamba
+CHANNEL=$(cratectl --config /private/path/reader.json --path /conda/${r.name}/snapshot.json | jq -er '.channel')`
+      :`CHANNEL="${endpoint}"`;
+    snippet=`${channel}
+
+# Scope the reader credential to the resolved channel
+micromamba auth login "$CHANNEL" --username token --password-stdin < /private/path/reader.token
 
 # Resolve and fetch the native platform and noarch packages
-micromamba create --download-only --name cratectl --override-channels --channel "${endpoint}" --ssl-verify /private/path/ca.crt PACKAGE`;
+micromamba create --download-only --name cratectl --override-channels --channel "$CHANNEL" --ssl-verify /private/path/ca.crt PACKAGE`;
+  }
   else if(r.format==='cran')snippet=`# Run in R with the registry CA and a private reader token file
 Sys.setenv(CURL_CA_BUNDLE = "/private/path/ca.crt")
 repo <- "${endpoint}"

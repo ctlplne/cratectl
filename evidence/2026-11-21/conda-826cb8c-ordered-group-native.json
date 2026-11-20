@@ -1,0 +1,92 @@
+{
+  "candidate": "826cb8c8c95c50b73534801c7cfc3281f84d68b5",
+  "status": "passed",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "binary_sha256": {
+    "cratectl": "605f4794f56fb07dd6f530aa55a56888cdec4137b38350970c3c4bb5b4495e9b",
+    "cratectld": "8a3a92658dcf346c326c6ae0441db13c1678054ae9eba2eca23fda231299983e"
+  },
+  "archive_sha256": "a2694827c507c96f5fa663bf6216761bb74777d84f49d9b0d9ab8cc6c58e58de",
+  "conda_hosted": {
+    "client_version": "2.9.0",
+    "client_sha256": "ec2a072f028e1a7cf20f3e2e74d5a8127cf5a5f27636375b5359811565f4e5be",
+    "subdir": "osx-arm64",
+    "checks": [
+      "the native stock micromamba version and release digest match",
+      "platform metadata requires the current repository and tenant grants",
+      "five exact platform and noarch coordinates publish original SHA-256 identities",
+      "unreviewed archives stay out of both indexes and cannot be downloaded",
+      "the archive platform and immutable bytes must match the coordinate",
+      "approved repodata binds each isolated platform, build, constraint and archive digest",
+      "the isolated reader receives exact approved archive bytes under trusted TLS",
+      "stock micromamba downloads the native graph and selects the newest compatible noarch build",
+      "fresh stock micromamba links the two exact inert archives after restart",
+      "current digest denial removes both compatible noarch builds and their bytes",
+      "fresh stock micromamba refuses the graph after compatible build denial"
+    ],
+    "archive_sha256": {
+      "osx-arm64/cratectl-conda-app-1.4.0-fixture_3.tar.bz2": "cdd4fb48e87ffd2f0d9c5088ac8aa352faa3cfafac0ca4feaef7b228f39d2d3a",
+      "noarch/cratectl-conda-data-1.3.0-fixture_1.tar.bz2": "bba26a2cdef57af977f62012401b05a76d13958e0799534aa645d9fb3b76cc73",
+      "noarch/cratectl-conda-data-1.3.0-fixture_0.tar.bz2": "15e4499d293776a25149d149c7c0e5b2ed2f40a8cb7158ec797c32c58625a859",
+      "noarch/cratectl-conda-data-2.0.0-fixture_0.tar.bz2": "a1ce2f45dc14b3e9a5d580a30d7ae711c90d32d68ac96adeb1e7c39697fccd5a",
+      "linux-64/cratectl-conda-app-1.4.0-fixture_3.tar.bz2": "be204688e15820b08ddc9c5d212dd87cfb525c26f9466878ec5afc616cf902ff"
+    },
+    "selected": {
+      "osx-arm64/cratectl-conda-app-1.4.0-fixture_3.tar.bz2": "cdd4fb48e87ffd2f0d9c5088ac8aa352faa3cfafac0ca4feaef7b228f39d2d3a",
+      "noarch/cratectl-conda-data-1.3.0-fixture_1.tar.bz2": "bba26a2cdef57af977f62012401b05a76d13958e0799534aa645d9fb3b76cc73"
+    },
+    "group": {
+      "checks": [
+        "the Conda group requires grants on the endpoint and all owning channels",
+        "unreviewed retained Conda builds stay out of both current group indexes",
+        "when the preferred source lacks the name the lower source supplies its native and foreign builds",
+        "an unreviewed preferred owner fences the earlier view and all lower platforms for its name",
+        "the approved graph uses two pinned platform snapshots and retains only the current owner builds",
+        "stock micromamba fetches the exact Conda group dependency graph through the pinned native channel root",
+        "fresh stock micromamba links the original inert Conda group archives after restart",
+        "current denial removes the native app and refuses both prior snapshot URLs without fallback",
+        "fresh stock micromamba refuses the Conda group graph after the owning digest is denied",
+        "revoking an underlying grant stops Conda group metadata and the previously advertised noarch download"
+      ],
+      "selected": {
+        "osx-arm64/cratectl-conda-app-1.4.0-fixture_3.tar.bz2": "cdd4fb48e87ffd2f0d9c5088ac8aa352faa3cfafac0ca4feaef7b228f39d2d3a",
+        "noarch/cratectl-conda-data-1.3.0-fixture_1.tar.bz2": "bba26a2cdef57af977f62012401b05a76d13958e0799534aa645d9fb3b76cc73"
+      },
+      "lower_collision_sha256": "f22ad6b1ff01761d3889d4dca936808e50a52df126fc5047caea692186ea0906",
+      "lower_only_sha256": "28a54460ea69e7d676d81f5ed3b65554b244e595c47ad6cc2fbbb6b783cb46b3",
+      "foreign_sha256": "be204688e15820b08ddc9c5d212dd87cfb525c26f9466878ec5afc616cf902ff"
+    }
+  },
+  "goal_complete": false,
+  "broad_readiness": false,
+  "observed_at": "2026-11-20T22:51:33.460790+00:00",
+  "source_dirty": false,
+  "total_checks": 40,
+  "native_declarative_checks": 19,
+  "stock_micromamba_checks": 21,
+  "source_gates": [
+    "make build",
+    "make lint"
+  ],
+  "postgres_integration": [
+    "TestCRANOrderedGroupBindsOwningSourceAndCurrentPolicy",
+    "TestCondaGroupBindsCurrentPlatformSnapshotAndOwnership",
+    "TestCondaHostedPlatformReviewAndRetainedBytes",
+    "TestConsoleSessionUsesCurrentCredentialAndDoesNotExposeSecrets"
+  ],
+  "raw_stage_sha256": {
+    "postgres": "0154b568eec7270241e6e3c7f4f8c7325199707923aa9aa563d25e0211ae1a2b",
+    "lint": "e2338e5597ea6d760c157b5b0e9bb7bfebe3afdc3f93db0ff5df96c0f591a629"
+  },
+  "first_failures": [
+    "evidence/2026-11-21/conda-4de0859-group-review-label-first-failure.json",
+    "evidence/2026-11-21/conda-bc40e8e-micromamba-authenticated-base-url-first-failure.json",
+    "evidence/2026-11-21/conda-1ac183c-stock-plan-userinfo-first-failure.json"
+  ],
+  "limits": [
+    "Stock micromamba 2.9.0 used the authenticated pinned channel root over trusted loopback TLS. It fetched the two exact archives, then linked both inert packages in a fresh isolated environment after restart.",
+    "The first hosted member retaining a name owned its builds on all platforms. Real PostgreSQL tested explicit overrides, source revocation, immutable bytes, ranges, retained ownership after deletion and the transfer fence after hashing.",
+    "Current review and ownership changes revoke the affected exact locators. The snapshot URL covers the current group view. Retained snapshots across unrelated changes, proxy members, modern packages and production workload limits require separate qualification."
+  ]
+}

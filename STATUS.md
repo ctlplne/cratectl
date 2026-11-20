@@ -941,6 +941,16 @@ Linux jobs passed the same 30 checks with PostgreSQL 16.15. Each matched
 [Original Linux Conda reports](evidence/2026-11-19/github-85fcca5-conda-hosted-micromamba-native.json)
 [Original Conda workflow inventory](evidence/2026-11-19/github-85fcca5-started.json)
 
+Exact `826cb8c` passed 40 combined checks on macOS ARM64 with stock
+micromamba 2.9.0 and PostgreSQL 16.16. The 10 ordered-group checks used
+an authenticated pinned channel root to select exact native and `noarch`
+archives from separate hosted members. A fresh client installed both inert
+packages after restart. Preferred ownership fenced the lower build, current
+denial stopped the solve, and revoking a source grant stopped metadata and
+download. Real PostgreSQL also exercised explicit ownership, retained name
+ownership after deletion, and the transfer fence after byte verification.
+[Exact Conda group result](evidence/2026-11-21/conda-826cb8c-ordered-group-native.json)
+
 `d25394c` passed the hosted CRAN, Conda and protected console integration
 tests with PostgreSQL 16.16 and the four source gates. On macOS ARM64,
 exact `530472a` passed ten stock R 4.6.2 checks and 19 declarative checks.

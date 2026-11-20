@@ -2010,6 +2010,30 @@
       "first_failure": "evidence/2026-11-19/cran-b355818-proxy-superseded-fixture-first-failure.json",
       "replay": "evidence/2026-11-19/cran-41e9110-checksum-proxy-native.json",
       "repair": "Check the 503 retry code and the retained failed generation, then verify HTTP 409 on a new request to the old URL."
+    },
+    {
+      "id": "DEFECT.0197",
+      "summary": "Native Conda fixture names review artifacts by filename alone",
+      "state": "Native and foreign Conda builds shared a filename. The fixture rejected its own duplicate review record before running the group client.",
+      "first_failure": "evidence/2026-11-21/conda-4de0859-group-review-label-first-failure.json",
+      "replay": "evidence/2026-11-21/conda-826cb8c-ordered-group-native.json",
+      "repair": "Scope fixture review keys by platform and archive digest."
+    },
+    {
+      "id": "DEFECT.0198",
+      "summary": "Authenticated micromamba reconstructs archive URLs relative to its configured channel",
+      "state": "Stock micromamba 2.9.0 reported the v2 snapshot URL in its plan but requested the unpinned path from the original channel. Both unpinned requests returned HTTP 404.",
+      "first_failure": "evidence/2026-11-21/conda-bc40e8e-micromamba-authenticated-base-url-first-failure.json",
+      "replay": "evidence/2026-11-21/conda-826cb8c-ordered-group-native.json",
+      "repair": "Resolve a pinned channel root and use the stock native channel layout with scoped Basic authentication."
+    },
+    {
+      "id": "DEFECT.0199",
+      "summary": "The grouped Conda fixture compares authenticated and public URL strings directly",
+      "state": "Stock micromamba downloaded both original archives but included user information in its private FETCH records. The assertion refused the otherwise matching URLs.",
+      "first_failure": "evidence/2026-11-21/conda-1ac183c-stock-plan-userinfo-first-failure.json",
+      "replay": "evidence/2026-11-21/conda-826cb8c-ordered-group-native.json",
+      "repair": "Remove user information before comparing the URI against the exact public snapshot locator."
     }
   ]
 }

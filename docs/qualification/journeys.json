@@ -2896,15 +2896,22 @@
     {
       "id": "J.CONDA.GROUP",
       "capability": "FMT.CONDA.GROUP",
-      "state": "planned",
-      "candidate": null,
-      "evidence": [],
+      "state": "implementing",
+      "candidate": "826cb8c8c95c50b73534801c7cfc3281f84d68b5",
+      "evidence": [
+        "evidence/2026-11-21/conda-826cb8c-ordered-group-native.json",
+        "evidence/2026-11-21/conda-4de0859-group-review-label-first-failure.json",
+        "evidence/2026-11-21/conda-bc40e8e-micromamba-authenticated-base-url-first-failure.json",
+        "evidence/2026-11-21/conda-1ac183c-stock-plan-userinfo-first-failure.json"
+      ],
       "required": [
         "publish/consume exact bytes where applicable",
         "permissions/tenant isolation",
         "policy denial",
         "failure/recovery"
-      ]
+      ],
+      "limits": "Exact 826cb8c passed 10 ordered Conda group checks within a 40-check profile using stock micromamba 2.9.0 on macOS ARM64 and PostgreSQL 16.16. It used the pinned authenticated channel root, fetched original native and noarch archives from separate members and installed the same inert graph after restart. A preferred publication fenced a lower collision on all platforms. Current denial and member grant revocation stopped the corresponding reads.",
+      "next_action": "Qualify the original Linux group jobs, retained snapshot compatibility across unrelated publication, modern archives, proxy members and production workloads."
     },
     {
       "id": "J.CONDA.REPLICATION",
