@@ -44,7 +44,8 @@ def evaluate_conda_group(native, authority, request, api, consume, restart):
             raise ValueError('owned Conda group publication did not preserve the exact archive')
 
     def decide(repo, package, decision):
-        api('conda-group-' + repo + '-' + package.filename + '-' + decision, management + repo + '/decisions', 'PUT',
+        label = f'conda-group-review-{repo}-{package.subdir}-{digests[package][:16]}-{decision}'
+        api(label, management + repo + '/decisions', 'PUT',
             {'path': package.path, 'digest': digests[package], 'decision': decision})
 
     def view(subdir, filename='repodata.json'):
