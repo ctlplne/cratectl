@@ -80,7 +80,7 @@ func configurationPreview(ctx context.Context, tx pgx.Tx, i Identity, repo strin
 		if e != nil {
 			return out, nil, e
 		}
-		if member.Format != r.Format || member.Mode == "group" || ((r.Format == "composer" || r.Format == "cran") && member.Mode != "hosted") {
+		if !validGroupMember(proposed, member) {
 			return out, nil, ErrConfigurationInput
 		}
 		state, e := repositoryStateInTx(ctx, tx, name)
@@ -212,6 +212,31 @@ func (s *Store) ChangeConfiguration(ctx context.Context, i Identity, repo, key, 
 		out.Current, e = repositoryRecordInTx(ctx, tx, i, repo, "read")
 		return out, 200, e
 	})
+}
+
+func hostedGroupInTx(ctx context.Context, tx pgx.Tx, i Identity, repo, format string, revision int64) (Repository, map[string]Repository, error) {
+	group, err := repositoryInTx(ctx, tx, i, repo, "read")
+	if err != nil {
+		return Repository{}, nil, err
+	}
+	if group.Format != format || group.Mode != "group" || group.SourceRevision != revision {
+		return Repository{}, nil, ErrSourceChanged
+	}
+	if len(group.Settings.Members) < 1 || len(group.Settings.Members) > 32 {
+		return Repository{}, nil, ErrConflict
+	}
+	sources := make(map[string]Repository, len(group.Settings.Members))
+	for _, name := range group.Settings.Members {
+		source, err := repositoryInTx(ctx, tx, i, name, "read")
+		if err != nil {
+			return Repository{}, nil, err
+		}
+		if source.Mode != "hosted" || source.Format != format {
+			return Repository{}, nil, ErrConflict
+		}
+		sources[name] = source
+	}
+	return group, sources, nil
 }
 
 func repositoryReadBudget(r Repository) *graphBudget {

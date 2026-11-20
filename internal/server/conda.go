@@ -24,7 +24,14 @@ func (s *Server) conda(w http.ResponseWriter, r *http.Request, i store.Identity,
 			fail(w, 405, "method_not_allowed", "Read Conda channel metadata with GET or HEAD.")
 			return
 		}
-		index, err := s.DB.CondaRepodata(r.Context(), i, repo.Name, subdir, s.NativeVersionLimit, s.NativeMetadataBytes)
+		var index string
+		var err error
+		if repo.Mode == "group" {
+			channel := s.PublicURL + "/conda/" + repo.Name + "/"
+			index, err = s.DB.CondaGroupRepodata(r.Context(), i, repo.Name, subdir, channel, repo.SourceRevision, s.NativeVersionLimit, s.NativeMetadataBytes)
+		} else {
+			index, err = s.DB.CondaRepodata(r.Context(), i, repo.Name, subdir, s.NativeVersionLimit, s.NativeMetadataBytes)
+		}
 		if err != nil {
 			respondErr(w, err)
 			return
@@ -33,6 +40,10 @@ func (s *Server) conda(w http.ResponseWriter, r *http.Request, i store.Identity,
 		w.Header().Set("Cache-Control", "private, no-cache")
 		w.Header().Set("ETag", `"sha256:`+crypt.Digest([]byte(index))+`"`)
 		http.ServeContent(w, r, name, time.Time{}, strings.NewReader(index))
+		return
+	}
+	if repo.Mode == "group" {
+		s.serveCondaGroupPackage(w, r, i, repo, request)
 		return
 	}
 	coordinate, ok := conda.ParsePath(request)
@@ -57,6 +68,22 @@ func (s *Server) conda(w http.ResponseWriter, r *http.Request, i store.Identity,
 		w.Header().Set("Allow", "GET, HEAD, PUT")
 		fail(w, 405, "method_not_allowed", "Publish a Conda tar.bz2 package with PUT or consume it with GET or HEAD.")
 	}
+}
+
+func (s *Server) serveCondaGroupPackage(w http.ResponseWriter, r *http.Request, i store.Identity, group store.Repository, request string) {
+	subdir, rest, ok := strings.Cut(request, "/snapshot/")
+	digest, file, found := strings.Cut(rest, "/")
+	if !ok || !found || len(digest) != 64 {
+		respondErr(w, store.ErrNotFound)
+		return
+	}
+	artifact, source, err := s.DB.CondaGroupArtifact(r.Context(), i, group.Name, subdir+"/"+file, digest, group.SourceRevision, s.NativeVersionLimit)
+	if err != nil {
+		respondErr(w, err)
+		return
+	}
+	s.serveResolvedArtifact(w, r, i, resolvedArtifact{artifact: artifact, source: source, groups: []string{group.Name},
+		groupRevisions: map[string]int64{group.Name: group.SourceRevision}, condaGroupView: digest})
 }
 
 func (s *Server) publishConda(w http.ResponseWriter, r *http.Request, i store.Identity, repo string, coordinate conda.Coordinate) {

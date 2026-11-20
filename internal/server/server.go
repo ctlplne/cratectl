@@ -173,6 +173,8 @@ func respondErr(w http.ResponseWriter, e error) {
 		fail(w, 403, "retention_authorization_changed", "The requesting administrator credential changed or expired. Inspect already committed outcomes and create a newly authorized preview for remaining work.")
 	case errors.Is(e, store.ErrSourceChanged):
 		fail(w, 503, "source_configuration_changed", "The repository source or group configuration changed. Retry from current package metadata; prior cache bytes, validators and locators cannot be reused across this change.")
+	case errors.Is(e, store.ErrCondaSnapshotChanged):
+		fail(w, 409, "conda_snapshot_changed", "Refresh the Conda channel repodata and resolve again from the current group snapshot.")
 	case errors.Is(e, store.ErrConfigurationRevision):
 		fail(w, 409, "configuration_changed", "Read current repository configuration, preview its impact, and apply that exact expected_revision with a new idempotency key.")
 	case errors.Is(e, store.ErrConfigurationInput):

@@ -61,6 +61,62 @@ type condaIndexRecord struct {
 	MD5           string `json:"md5"`
 }
 
+type condaIndex struct {
+	body       strings.Builder
+	byteLimit  int64
+	suffix     string
+	hasRecords bool
+}
+
+func newCondaIndex(subdir, baseURL string, byteLimit int64) (*condaIndex, error) {
+	version, location := "1", ""
+	if baseURL != "" {
+		encoded, err := json.Marshal(baseURL)
+		if err != nil {
+			return nil, err
+		}
+		version, location = "2", `,"base_url":`+string(encoded)
+	}
+	prefix := `{"info":{"subdir":"` + subdir + `"` + location + `},"packages":{`
+	suffix := `},"packages.conda":{},"removed":[],"repodata_version":` + version + `}`
+	byteLimit = min(byteLimit, 8<<20)
+	if int64(len(prefix)+len(suffix)) > byteLimit {
+		return nil, ErrMetadataLimit
+	}
+	index := &condaIndex{byteLimit: byteLimit, suffix: suffix}
+	index.body.WriteString(prefix)
+	return index, nil
+}
+
+func (index *condaIndex) add(a Artifact) error {
+	metadata, err := ValidateCondaArtifact(a)
+	if err != nil {
+		return err
+	}
+	record, err := json.Marshal(condaIndexRecord{Package: metadata.Package, Size: a.Size, SHA256: a.Digest, MD5: metadata.MD5})
+	if err != nil {
+		return err
+	}
+	_, file, _ := strings.Cut(a.Path, "/")
+	if int64(index.body.Len()+len(file)+len(record)+len(index.suffix)+4) > index.byteLimit {
+		return ErrMetadataLimit
+	}
+	if index.hasRecords {
+		index.body.WriteByte(',')
+	}
+	index.hasRecords = true
+	index.body.WriteByte('"')
+	index.body.WriteString(file)
+	index.body.WriteString(`":`)
+	index.body.Write(record)
+	return nil
+}
+
+func (index *condaIndex) finish() string {
+	index.body.WriteString(index.suffix)
+	return index.body.String()
+}
+
 // CondaRepodata emits a complete bounded view of one platform under its
 // current authorization, review decisions and retained reference lifecycle.
 func (s *Store) CondaRepodata(ctx context.Context, i Identity, repo, subdir string, limit int, byteLimit int64) (string, error) {
@@ -68,15 +124,14 @@ func (s *Store) CondaRepodata(ctx context.Context, i Identity, repo, subdir stri
 		return "", ErrNotFound
 	}
 	limit = min(limit, 10000)
-	byteLimit = min(byteLimit, 8<<20)
-	prefix := `{"info":{"subdir":"` + subdir + `"},"packages":{`
-	const suffix = `},"packages.conda":{},"removed":[],"repodata_version":1}`
-	if limit < 1 || int64(len(prefix)+len(suffix)) > byteLimit {
+	if limit < 1 {
 		return "", ErrMetadataLimit
 	}
-	var output strings.Builder
-	output.WriteString(prefix)
-	err := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
+	index, err := newCondaIndex(subdir, "", byteLimit)
+	if err != nil {
+		return "", err
+	}
+	err = s.Tx(ctx, i, false, func(tx pgx.Tx) error {
 		r, err := repositoryInTx(ctx, tx, i, repo, "read")
 		if err != nil {
 			return err
@@ -102,31 +157,14 @@ ORDER BY a.path COLLATE "C" LIMIT $5`, repo, subdir+"/", CondaMedia, r.RequireRe
 			if err := rows.Scan(&a.Path, &a.Digest, &a.Size, &a.Metadata); err != nil {
 				return err
 			}
-			metadata, err := ValidateCondaArtifact(a)
-			if err != nil {
+			if err := index.add(a); err != nil {
 				return err
 			}
-			record, err := json.Marshal(condaIndexRecord{Package: metadata.Package, Size: a.Size, SHA256: a.Digest, MD5: metadata.MD5})
-			if err != nil {
-				return err
-			}
-			_, file, _ := strings.Cut(a.Path, "/")
-			if int64(output.Len()+len(file)+len(record)+len(suffix)+4) > byteLimit {
-				return ErrMetadataLimit
-			}
-			if count > 0 {
-				output.WriteByte(',')
-			}
-			output.WriteByte('"')
-			output.WriteString(file)
-			output.WriteString(`":`)
-			output.Write(record)
 		}
 		return rows.Err()
 	})
 	if err != nil {
 		return "", err
 	}
-	output.WriteString(suffix)
-	return output.String(), nil
+	return index.finish(), nil
 }

@@ -29,7 +29,9 @@ from composer_hosted_evidence import (BASE_CHECKS as COMPOSER_BASE, CHECKS as CO
                                       NEIGHBOR as COMPOSER_SEARCH_NEIGHBOR, HIDDEN as COMPOSER_SEARCH_HIDDEN,
                                       EXTRA_COORDINATES as COMPOSER_EXTRA_COORDINATES, VERSION_CHECKS as COMPOSER_VERSION_CHECKS)
 from conda_hosted_evidence import (BASE_CHECKS as CONDA_BASE, CHECKS as CONDA_CHECKS, FILES as CONDA_FILES,
+                                  GROUP_CHECKS as CONDA_GROUP_CHECKS, GROUP_FILES as CONDA_GROUP_FILES, GROUP_PROFILE as CONDA_GROUP_PROFILE,
                                   PROFILE as CONDA_PROFILE, PINS as CONDA_PINS, VERSION as CONDA_VERSION, fixtures as conda_fixtures)
+from conda_group_fixture import group_packages as conda_group_packages
 from cran_hosted_evidence import (BASE_CHECKS as CRAN_BASE, CHECKS as CRAN_CHECKS, FILES as CRAN_FILES, PROFILE as CRAN_PROFILE,
                                  INSTALL_CHECKS as CRAN_INSTALL_CHECKS, INSTALL_FILES as CRAN_INSTALL_FILES,
                                  INSTALL_PROFILE as CRAN_INSTALL_PROFILE, LAUNCHER as CRAN_LAUNCHER,
@@ -163,6 +165,20 @@ class CampaignReports(unittest.TestCase):
         for patch in ({'client_sha256': CONDA_PINS['linux-64']}, {'selected': changed}, {'checks': native['checks'][:-1]}):
             with self.assertRaisesRegex(EvidenceError, 'conda_hosted_report_contract'):
                 validate_custom({**report, 'conda_hosted': {**native, **patch}}, candidate, 12, spec, source)
+
+        def group_source(path):
+            return b'--conda-group' if path == '.github/workflows/conda-hosted.yml' else source(path)
+
+        _, _, collision, lower_only, foreign = conda_group_packages(platform)
+        digest = lambda package: hashlib.sha256(package.archive()).hexdigest()
+        group = {'checks': list(CONDA_GROUP_CHECKS), 'selected': chosen, 'lower_collision_sha256': digest(collision),
+                 'lower_only_sha256': digest(lower_only), 'foreign_sha256': digest(foreign)}
+        grouped = {**report, 'profile': CONDA_GROUP_PROFILE, 'conda_hosted': {**native, 'group': group},
+                   'source_sha256': {path: hashlib.sha256(group_source(path)).hexdigest() for path in CONDA_GROUP_FILES}}
+        self.assertEqual(validate_custom(grouped, candidate, 12, spec, group_source), {'checks': 40, 'records': 1})
+        group['lower_collision_sha256'] = chosen[collision.path]
+        with self.assertRaisesRegex(EvidenceError, 'conda_hosted_report_contract'):
+            validate_custom(grouped, candidate, 12, spec, group_source)
 
     def test_composer_reports_bind_stock_resolution_and_policy_replay(self):
         source = lambda path: path.encode()

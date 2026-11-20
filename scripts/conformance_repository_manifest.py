@@ -453,7 +453,7 @@ def evaluate(args):
             from conda_hosted_fixture import evaluate_conda
 
             report['conda_hosted'] = evaluate_conda(work, app, authority, call, api, restart_server, sha,
-                                                    args.conda_micromamba.resolve())
+                                                    args.conda_micromamba.resolve(), grouped=args.conda_group)
         if args.cran_r:
             from cran_hosted_fixture import evaluate_cran
 
@@ -571,6 +571,8 @@ def evaluate(args):
         print(f"PASS: {len(report['composer_search']['lifecycle']['checks'])} stock Composer retained lifecycle checks")
     if args.conda_micromamba:
         print(f"PASS: {len(report['conda_hosted']['checks'])} stock micromamba hosted Conda checks")
+    if args.conda_group:
+        print(f"PASS: {len(report['conda_hosted']['group']['checks'])} stock micromamba ordered Conda group checks")
     if args.cran_r:
         print(f"PASS: {len(report['cran_hosted']['checks'])} stock R hosted CRAN source checks")
     if args.cran_install:
@@ -780,14 +782,15 @@ def record_composer_ci(report, architecture):
 
 
 def record_conda_ci(report, architecture):
-    from ci.conda_hosted_evidence import FILES, PROFILE, validate as validate_conda
+    from ci.conda_hosted_evidence import FILES, GROUP_FILES, GROUP_PROFILE, PROFILE, validate as validate_conda
 
     runner = hosted_runner(report, architecture)
     projection = {key: report[key] for key in ('candidate', 'status', 'checks', 'binary_sha256', 'archive_sha256',
                                                 'postgres', 'npm', 'conda_hosted', 'goal_complete', 'broad_readiness')}
-    projection.update(schema=1, profile=PROFILE, runner_os='Linux', runner_arch=runner,
+    grouped = 'group' in projection['conda_hosted']
+    projection.update(schema=1, profile=GROUP_PROFILE if grouped else PROFILE, runner_os='Linux', runner_arch=runner,
                       run_id=os.environ.get('GITHUB_RUN_ID'), source_dirty=False,
-                      source_sha256={name: sha(ROOT / name) for name in FILES})
+                      source_sha256={name: sha(ROOT / name) for name in (GROUP_FILES if grouped else FILES)})
     with (ROOT / '.cache/ci-conda-hosted.json').open('x') as stream:
         json.dump(validate_conda(projection), stream, indent=2)
         stream.write('\n')
@@ -844,6 +847,7 @@ if __name__ == '__main__':
     parser.add_argument('--composer-lifecycle', action='store_true', help='also verify stock locked downloads across retained lifecycle')
     parser.add_argument('--composer-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--conda-micromamba', type=Path, help='the digest-pinned stock micromamba binary')
+    parser.add_argument('--conda-group', action='store_true', help='also exercise the ordered Conda group with stock micromamba')
     parser.add_argument('--conda-ci-architecture', choices=('amd64', 'arm64'))
     parser.add_argument('--cran-r', type=Path, help='the original interpreter in the pinned R distribution')
     parser.add_argument('--cran-r-home', type=Path, help='the private R home unpacked from the pinned distribution')
@@ -888,6 +892,8 @@ if __name__ == '__main__':
         parser.error('native CRAN evidence requires the isolated stock R profile')
     if options.conda_ci_architecture and not options.conda_micromamba:
         parser.error('native Conda evidence requires the pinned micromamba binary')
+    if options.conda_group and not options.conda_micromamba:
+        parser.error('the native Conda group requires the pinned micromamba binary')
     if options.conda_micromamba and any((options.provider_binary, options.npm_search, options.python_search_client,
                                         options.cargo_toolchain, options.mcp_binary, options.oci_catalog_client,
                                         options.maven_index_reader, options.promtool, options.debian_apt, options.composer_phar)):

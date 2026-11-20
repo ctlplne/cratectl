@@ -80,7 +80,7 @@ def fixtures(native):
             Fixture(foreign, APP, '1.4.0', 3, b'Owned alternate platform bytes.\n'))
 
 
-def evaluate_conda(work, installation, authority, call, api, restart, sha, executable):
+def evaluate_conda(work, installation, authority, call, api, restart, sha, executable, *, grouped=False):
     native = HOSTS.get((platform.system(), platform.machine()))
     if native is None or sha(executable) != PINS[native]:
         raise ValueError('use the pinned stock micromamba binary for this native host')
@@ -103,8 +103,6 @@ def evaluate_conda(work, installation, authority, call, api, restart, sha, execu
     runtime = call('conda-client-version', executable, '--no-rc', '--version', cwd=root, environment=env)[1].strip()
     check('the native stock micromamba version and release digest match', runtime == VERSION)
     management = '/api/v1/repositories/'
-    route = f'/conda/{REPOSITORY}/'
-    base = authority + route.rstrip('/')
     api('conda-create', management.rstrip('/'), 'POST',
         {'name': REPOSITORY, 'format': 'conda', 'access': 'restricted', 'require_review': True})
     tokens = {'admin': (installation / 'admin.token').read_text().strip(),
@@ -119,8 +117,8 @@ def evaluate_conda(work, installation, authority, call, api, restart, sha, execu
     trust = ssl.create_default_context(cafile=str(ca))
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), urllib.request.HTTPSHandler(context=trust), NoRedirect())
 
-    def request(path, actor='reader', method='GET', body=None):
-        req = urllib.request.Request(authority + route + path, data=body, method=method,
+    def request(path, actor='reader', method='GET', body=None, *, repository=REPOSITORY):
+        req = urllib.request.Request(authority + '/conda/' + repository + '/' + path, data=body, method=method,
                                      headers={'Authorization': 'Bearer ' + tokens[actor]})
         try:
             with opener.open(req, timeout=10) as response:
@@ -173,24 +171,27 @@ def evaluate_conda(work, installation, authority, call, api, restart, sha, execu
     check('the isolated reader receives exact approved archive bytes under trusted TLS',
           all(request(path)[:2] == (200, body) for path, body in bodies.items()))
 
-    def consume(label, *, download_only=False, expected_failure=False):
+    def consume(label, *, download_only=False, expected_failure=False, repository=REPOSITORY,
+                graph=(app, dependency), expected_urls=None):
         target = root / label
         environment = isolated_environment(target)
-        call('conda-auth-' + label, executable, '--no-rc', 'auth', 'login', base, '--username', 'token', '--password-stdin',
+        scope = '/conda/' + repository
+        channel = authority + scope
+        call('conda-auth-' + label, executable, '--no-rc', 'auth', 'login', channel, '--username', 'token', '--password-stdin',
              cwd=target, environment=environment, input_text=tokens['reader'] + '\n')
         auth = target / '.mamba/auth/authentication.json'
-        if auth.is_symlink() or stat.S_IMODE(auth.stat().st_mode) != 0o600 or set(json.loads(auth.read_bytes())) != {urlsplit(base).netloc + route.rstrip('/')}:
+        if auth.is_symlink() or stat.S_IMODE(auth.stat().st_mode) != 0o600 or set(json.loads(auth.read_bytes())) != {urlsplit(channel).netloc + scope}:
             raise ValueError('stock micromamba did not keep credentials in the private channel scope')
         env_prefix = target / 'environment'
         option = ('--download-only',) if download_only else ()
         code, output = call('conda-consume-' + label, executable, '--no-rc', 'create', '--prefix', env_prefix,
-                            '--override-channels', '--channel', base, '--ssl-verify', ca, '--repodata-ttl', '0',
+                            '--override-channels', '--channel', channel, '--ssl-verify', ca, '--repodata-ttl', '0',
                             '--json', '--yes', *option, APP + '=1.4.0', cwd=target, environment=environment,
                             status=None, timeout=80)
         cache = target / 'root/pkgs'
         archives = [(file.name, sha(file)) for file in cache.rglob('*.tar.bz2')]
         installed = {file.stem for file in (env_prefix / 'conda-meta').glob('*.json')}
-        linked_payload = any((env_prefix / p.payload_path).is_file() for p in (app, dependency))
+        linked_payload = any((env_prefix / p.payload_path).is_file() for p in graph)
         if expected_failure:
             solver_refused = 'could not solve' in output.lower() or '"solver_problems":' in output
             return code != 0 and solver_refused and not archives and not installed and not linked_payload
@@ -198,15 +199,17 @@ def evaluate_conda(work, installation, authority, call, api, restart, sha, execu
             markers = ('401', '403', '404', 'certificate', 'repodata', 'Could not solve', 'checksum')
             seen = ', '.join(marker for marker in markers if marker.lower() in output.lower()) or 'client failure'
             raise ValueError(f'stock micromamba {label} returned {code} ({seen})')
-        exact = {p.filename: digests[p.path] for p in (app, dependency)}
+        exact = {p.filename: hashlib.sha256(p.archive()).hexdigest() for p in graph}
         fetched = json.loads(output)['actions']['FETCH']
-        expected_graph = {(p.name, p.version, p.build, p.subdir, digests[p.path]) for p in (app, dependency)}
+        expected_graph = {(p.name, p.version, p.build, p.subdir, exact[p.filename]) for p in graph}
         actual_graph = {(p['name'], p['version'], p['build_string'], p['subdir'], p['sha256']) for p in fetched}
         exact_fetch = len(archives) == len(fetched) == len(exact) and dict(archives) == exact and actual_graph == expected_graph
+        if expected_urls is not None:
+            exact_fetch = exact_fetch and {p['url'] for p in fetched} == set(expected_urls)
         if download_only:
             return exact_fetch and not installed and not linked_payload
-        return (exact_fetch and installed == {p.filename.removesuffix('.tar.bz2') for p in (app, dependency)}
-                and all((env_prefix / p.payload_path).read_bytes() == p.payload for p in (app, dependency)))
+        return (exact_fetch and installed == {p.filename.removesuffix('.tar.bz2') for p in graph}
+                and all((env_prefix / p.payload_path).read_bytes() == p.payload for p in graph))
 
     check('stock micromamba downloads the native graph and selects the newest compatible noarch build',
           consume('first', download_only=True))
@@ -217,5 +220,10 @@ def evaluate_conda(work, installation, authority, call, api, restart, sha, execu
     check('current digest denial removes both compatible noarch builds and their bytes',
           set(view('noarch')) == {alternatives[1].filename} and request(dependency.path)[0] == 403)
     check('fresh stock micromamba refuses the graph after compatible build denial', consume('denied', expected_failure=True))
-    return {'client_version': runtime, 'client_sha256': PINS[native], 'subdir': native, 'checks': checks,
-            'archive_sha256': digests, 'selected': {p.path: digests[p.path] for p in (app, dependency)}}
+    report = {'client_version': runtime, 'client_sha256': PINS[native], 'subdir': native, 'checks': checks,
+              'archive_sha256': digests, 'selected': {p.path: digests[p.path] for p in (app, dependency)}}
+    if grouped:
+        from conda_group_fixture import evaluate_conda_group
+
+        report['group'] = evaluate_conda_group(native, authority, request, api, consume, restart)
+    return report

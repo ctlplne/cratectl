@@ -24,7 +24,8 @@ from composer_hosted_evidence import (CHECKS as COMPOSER_HOSTED_CHECKS, GROUP_CH
                                       LIFECYCLE_CHECKS as COMPOSER_LIFECYCLE_CHECKS, lifecycle_selected as composer_lifecycle_selected,
                                       group_selected as composer_group_selected, proxy_selected as composer_proxy_selected,
                                       versions_selected as composer_versions_selected)
-from conda_hosted_evidence import CHECKS as CONDA_HOSTED_CHECKS
+from conda_hosted_evidence import (CHECKS as CONDA_HOSTED_CHECKS, GROUP_CHECKS as CONDA_GROUP_CHECKS,
+                                  group_selected as conda_group_selected)
 from cran_hosted_evidence import (CHECKS as CRAN_HOSTED_CHECKS, INSTALL_CHECKS as CRAN_INSTALL_CHECKS,
                                  HISTORY_CHECKS as CRAN_HISTORY_CHECKS, GROUP_CHECKS as CRAN_GROUP_CHECKS,
                                  PROXY_CHECKS as CRAN_PROXY_CHECKS,
@@ -285,6 +286,9 @@ def check_log(raw, spec, source):
         require(text.count(f'PASS: {len(IAC_BASE) - 1} native declarative repository checks') == 1
                 and text.count(f'PASS: {len(CONDA_HOSTED_CHECKS)} stock micromamba hosted Conda checks') == 1,
                 'conda_hosted_native_inventory')
+        if conda_group_selected(source):
+            require(text.count(f'PASS: {len(CONDA_GROUP_CHECKS)} stock micromamba ordered Conda group checks') == 1,
+                    'conda_ordered_group_inventory')
     if kind == 'cran-hosted':
         require(text.count(f'PASS: {len(IAC_BASE) - 1} native declarative repository checks') == 1
                 and text.count(f'PASS: {len(CRAN_HOSTED_CHECKS)} stock R hosted CRAN source checks') == 1,

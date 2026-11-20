@@ -9,31 +9,6 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func cranGroupInTx(ctx context.Context, tx pgx.Tx, i Identity, repo string, revision int64) (Repository, map[string]Repository, error) {
-	group, err := repositoryInTx(ctx, tx, i, repo, "read")
-	if err != nil {
-		return Repository{}, nil, err
-	}
-	if group.Format != "cran" || group.Mode != "group" || group.SourceRevision != revision {
-		return Repository{}, nil, ErrSourceChanged
-	}
-	if len(group.Settings.Members) < 1 || len(group.Settings.Members) > 32 {
-		return Repository{}, nil, ErrConflict
-	}
-	sources := make(map[string]Repository, len(group.Settings.Members))
-	for _, name := range group.Settings.Members {
-		source, err := repositoryInTx(ctx, tx, i, name, "read")
-		if err != nil {
-			return Repository{}, nil, err
-		}
-		if source.Mode != "hosted" || source.Format != "cran" {
-			return Repository{}, nil, ErrConflict
-		}
-		sources[name] = source
-	}
-	return group, sources, nil
-}
-
 // CRANGroupIndex assigns a package to its first retaining member before
 // filtering versions. A denied or retired preferred row still claims its name.
 // The stock Repository column uses the index's digest-bound Path field.
@@ -44,7 +19,7 @@ func (s *Store) CRANGroupIndex(ctx context.Context, i Identity, repo string, rev
 	limit, byteLimit = min(limit, 10000), min(byteLimit, 8<<20)
 	var body strings.Builder
 	err := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
-		group, sources, err := cranGroupInTx(ctx, tx, i, repo, revision)
+		group, sources, err := hostedGroupInTx(ctx, tx, i, repo, "cran", revision)
 		if err != nil {
 			return err
 		}
@@ -111,7 +86,7 @@ func (s *Store) CRANGroupArtifact(ctx context.Context, i Identity, repo, path, d
 	var file Artifact
 	var selected Repository
 	err := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
-		group, sources, err := cranGroupInTx(ctx, tx, i, repo, revision)
+		group, sources, err := hostedGroupInTx(ctx, tx, i, repo, "cran", revision)
 		if err != nil {
 			return err
 		}

@@ -27,6 +27,8 @@ var buildName = regexp.MustCompile(`^[a-zA-Z0-9][a-zA-Z0-9_.+]{0,63}$`)
 var versionSpec = regexp.MustCompile(`^[a-zA-Z0-9_.*+!<>=|,~()-]+$`)
 var buildSpec = regexp.MustCompile(`^[a-zA-Z0-9_.*+]+$`)
 
+func ValidName(value string) bool { return packageName.MatchString(value) }
+
 func ValidSubdir(value string) bool {
 	switch value {
 	case "noarch", "linux-64", "linux-aarch64", "linux-armv7l", "linux-ppc64le", "linux-s390x", "linux-riscv64",
@@ -60,7 +62,7 @@ func ParsePath(value string) (Coordinate, bool) {
 		return Coordinate{}, false
 	}
 	name, version := prefix[:separateVersion], prefix[separateVersion+1:]
-	if !packageName.MatchString(name) || !versionName.MatchString(version) || !buildName.MatchString(build) {
+	if !ValidName(name) || !versionName.MatchString(version) || !buildName.MatchString(build) {
 		return Coordinate{}, false
 	}
 	return Coordinate{Subdir: subdir, Name: name, Version: version, Build: build}, true
@@ -80,7 +82,7 @@ type Package struct {
 }
 
 func (p Package) ValidFor(c Coordinate) bool {
-	if !ValidSubdir(c.Subdir) || !packageName.MatchString(c.Name) || !versionName.MatchString(c.Version) || !buildName.MatchString(c.Build) ||
+	if !ValidSubdir(c.Subdir) || !ValidName(c.Name) || !versionName.MatchString(c.Version) || !buildName.MatchString(c.Build) ||
 		p.Name != c.Name || p.Version != c.Version || p.Build != c.Build || p.Subdir != c.Subdir ||
 		p.BuildNumber == nil || *p.BuildNumber < 0 || *p.BuildNumber > 1_000_000_000 || p.Timestamp < 0 || p.Timestamp > 9_999_999_999_999 ||
 		len(p.License) > 512 || strings.ContainsFunc(p.License, unicode.IsControl) {
@@ -107,7 +109,7 @@ func validDependency(spec string) bool {
 		return false
 	}
 	parts := strings.Fields(spec)
-	return len(parts) >= 1 && len(parts) <= 3 && packageName.MatchString(parts[0]) &&
+	return len(parts) >= 1 && len(parts) <= 3 && ValidName(parts[0]) &&
 		(len(parts) < 2 || versionSpec.MatchString(parts[1])) && (len(parts) < 3 || buildSpec.MatchString(parts[2]))
 }
 

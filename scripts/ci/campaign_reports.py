@@ -34,7 +34,9 @@ from composer_hosted_evidence import (CHECKS as COMPOSER_HOSTED_CHECKS, GROUP_CH
                                       lifecycle_selected as composer_lifecycle_selected,
                                       versions_selected as composer_versions_selected,
                                       validate as validate_composer_hosted)
-from conda_hosted_evidence import CHECKS as CONDA_HOSTED_CHECKS, validate as validate_conda_hosted
+from conda_hosted_evidence import (CHECKS as CONDA_HOSTED_CHECKS, GROUP_CHECKS as CONDA_GROUP_CHECKS,
+                                  GROUP_PROFILE as CONDA_GROUP_PROFILE, PROFILE as CONDA_HOSTED_PROFILE,
+                                  group_selected as conda_group_selected, validate as validate_conda_hosted)
 from cran_hosted_evidence import (CHECKS as CRAN_HOSTED_CHECKS, PROFILES as CRAN_PROFILES,
                                  INSTALL_CHECKS as CRAN_INSTALL_CHECKS, HISTORY_CHECKS as CRAN_HISTORY_CHECKS,
                                  GROUP_CHECKS as CRAN_GROUP_CHECKS, PROXY_CHECKS as CRAN_PROXY_CHECKS,
@@ -184,6 +186,11 @@ def validate_custom(report, candidate, run_id, spec, source):
             require(report['profile'] == (DEBIAN_SUITE_PROFILE if named else DEBIAN_FLAT_PROFILE), 'debian_apt_profile_selection')
             if named:
                 checks += len(DEBIAN_SUITE_CHECKS)
+        if spec['kind'] == 'conda-hosted':
+            grouped = conda_group_selected(source)
+            require(report['profile'] == (CONDA_GROUP_PROFILE if grouped else CONDA_HOSTED_PROFILE), 'conda_hosted_profile_selection')
+            if grouped:
+                checks += len(CONDA_GROUP_CHECKS)
         if spec['kind'] == 'cran-hosted':
             installed, history, grouped, proxied = cran_selected_scopes(source)
             require(report['profile'] == CRAN_PROFILES[installed, history, grouped, proxied], 'cran_hosted_profile_selection')
