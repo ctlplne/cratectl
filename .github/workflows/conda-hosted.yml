@@ -11,7 +11,10 @@ on:
       - 'internal/store/conda*.go'
       - 'scripts/conda_hosted_fixture.py'
       - 'scripts/conda_group_fixture.py'
+      - 'scripts/conda_modern_fixture.py'
       - 'scripts/ci/conda_hosted_evidence.py'
+      - 'internal/ziparchive/**'
+      - 'third_party/go-zstd/**'
 
 permissions:
   contents: read
@@ -70,7 +73,8 @@ jobs:
           mkdir -p .private
           python3 scripts/conformance_repository_manifest.py \
             --pg-bin /usr/lib/postgresql/16/bin --binary-directory .cache/cratectl-conda-bin \
-            --conda-micromamba .cache/cratectl-conda-tools/micromamba --conda-group --conda-ci-architecture '${{ matrix.arch }}'
+            --conda-micromamba .cache/cratectl-conda-tools/micromamba --conda-group --conda-modern \
+            --conda-ci-architecture '${{ matrix.arch }}'
       - uses: actions/upload-artifact@v7
         if: success()
         with:

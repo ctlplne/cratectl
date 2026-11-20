@@ -19,7 +19,7 @@ const MaxArchiveBytes int64 = 64 << 20
 const maxExpandedBytes int64 = 256 << 20
 const MaxIndexBytes = 128 << 10
 
-var ErrPackage = errors.New("invalid or unsupported Conda tar.bz2 package")
+var ErrPackage = errors.New("invalid or unsupported Conda package")
 
 var packageName = regexp.MustCompile(`^[a-z0-9_][a-z0-9_.-]{0,127}$`)
 var versionName = regexp.MustCompile(`^[a-zA-Z0-9][a-zA-Z0-9_.+!]{0,95}$`)
@@ -40,9 +40,27 @@ func ValidSubdir(value string) bool {
 
 type Coordinate struct {
 	Subdir, Name, Version, Build string
+	Modern                       bool
 }
 
-func (c Coordinate) FileName() string { return c.Name + "-" + c.Version + "-" + c.Build + ".tar.bz2" }
+const LegacyMedia = "application/x-bzip2"
+const ModernMedia = "application/zip"
+
+func (c Coordinate) stem() string { return c.Name + "-" + c.Version + "-" + c.Build }
+
+func (c Coordinate) FileName() string {
+	if c.Modern {
+		return c.stem() + ".conda"
+	}
+	return c.stem() + ".tar.bz2"
+}
+
+func (c Coordinate) MediaType() string {
+	if c.Modern {
+		return ModernMedia
+	}
+	return LegacyMedia
+}
 
 func (c Coordinate) Path() string { return c.Subdir + "/" + c.FileName() }
 
@@ -52,8 +70,12 @@ func ParsePath(value string) (Coordinate, bool) {
 	}
 	subdir, file, ok := strings.Cut(value, "/")
 	nameAndVersion, suffix := strings.CutSuffix(file, ".tar.bz2")
+	modern := false
+	if !suffix {
+		nameAndVersion, modern = strings.CutSuffix(file, ".conda")
+	}
 	separateBuild := strings.LastIndexByte(nameAndVersion, '-')
-	if !ok || !suffix || !ValidSubdir(subdir) || separateBuild < 1 {
+	if !ok || (!suffix && !modern) || !ValidSubdir(subdir) || separateBuild < 1 {
 		return Coordinate{}, false
 	}
 	prefix, build := nameAndVersion[:separateBuild], nameAndVersion[separateBuild+1:]
@@ -65,7 +87,7 @@ func ParsePath(value string) (Coordinate, bool) {
 	if !ValidName(name) || !versionName.MatchString(version) || !buildName.MatchString(build) {
 		return Coordinate{}, false
 	}
-	return Coordinate{Subdir: subdir, Name: name, Version: version, Build: build}, true
+	return Coordinate{Subdir: subdir, Name: name, Version: version, Build: build, Modern: modern}, true
 }
 
 type Package struct {
@@ -125,70 +147,27 @@ func (r checkedReader) Read(data []byte) (int, error) {
 	return r.r.Read(data)
 }
 
-// Inspect validates an original tar.bz2 and reads only its bounded index
-// stanza into memory. It never extracts package files or executes hooks.
+// Inspect validates an original Conda archive and reads its bounded index.
+// It never extracts package files or executes hooks.
 func Inspect(ctx context.Context, source io.ReaderAt, size int64, coordinate Coordinate) (Package, error) {
 	if source == nil || size < 4 || size > MaxArchiveBytes {
 		return Package{}, ErrPackage
 	}
-	input := checkedReader{ctx, io.NewSectionReader(source, 0, size)}
-	payload := &io.LimitedReader{R: bzip2.NewReader(input), N: maxExpandedBytes + 1}
-	reader := tar.NewReader(payload)
-	seen := make(map[string]bool)
 	var index []byte
-	for members := 0; ; members++ {
-		entry, err := reader.Next()
-		if errors.Is(err, io.EOF) {
-			break
-		}
-		if err != nil || members >= 10000 {
-			if ctx.Err() != nil {
-				return Package{}, ctx.Err()
-			}
-			return Package{}, ErrPackage
-		}
-		name := strings.TrimSuffix(strings.TrimPrefix(entry.Name, "./"), "/")
-		if (name == "." || name == "") && entry.Typeflag == tar.TypeDir && entry.Size == 0 {
-			if seen["."] {
-				return Package{}, ErrPackage
-			}
-			seen["."] = true
-			continue
-		}
-		_, duplicate := seen[name]
-		directory := entry.Typeflag == tar.TypeDir
-		if !safeTarPath(name) || duplicate || (directory && entry.Size != 0) ||
-			(!directory && entry.Typeflag != tar.TypeReg && entry.Typeflag != tar.TypeRegA) {
-			return Package{}, ErrPackage
-		}
-		for key := range entry.PAXRecords {
-			if strings.HasPrefix(key, "GNU.sparse.") {
-				return Package{}, ErrPackage
-			}
-		}
-		seen[name] = directory
-		if name == "info/index.json" {
-			if entry.Typeflag == tar.TypeDir || entry.Size < 1 || entry.Size > MaxIndexBytes {
-				return Package{}, ErrPackage
-			}
-			index, err = io.ReadAll(reader)
-			if err != nil || int64(len(index)) != entry.Size {
-				return Package{}, ErrPackage
-			}
-		}
-	}
-	for name := range seen {
-		for parent := path.Dir(name); parent != "."; parent = path.Dir(parent) {
-			if directory, found := seen[parent]; found && !directory {
-				return Package{}, ErrPackage
-			}
-		}
-	}
-	if err := tarPadding(ctx, payload); err != nil {
-		return Package{}, err
+	var err error
+	if coordinate.Modern {
+		index, err = inspectModern(ctx, source, size, coordinate)
+	} else {
+		input := checkedReader{ctx, io.NewSectionReader(source, 0, size)}
+		var tarball packageTar
+		tarball, err = inspectPackageTar(ctx, bzip2.NewReader(input), legacyTar, maxExpandedBytes, maxTarMembers)
+		index = tarball.index
 	}
 	if ctx.Err() != nil {
 		return Package{}, ctx.Err()
+	}
+	if err != nil {
+		return Package{}, err
 	}
 	var metadata Package
 	if json.Unmarshal(index, &metadata) != nil || !metadata.ValidFor(coordinate) {
@@ -198,6 +177,90 @@ func Inspect(ctx context.Context, source io.ReaderAt, size int64, coordinate Coo
 		metadata.Depends = []string{}
 	}
 	return metadata, nil
+}
+
+const maxTarMembers = 10000
+
+type tarComponent int
+
+const (
+	legacyTar tarComponent = iota
+	infoTar
+	payloadTar
+)
+
+type packageTar struct {
+	index   []byte
+	bytes   int64
+	members int
+}
+
+func inspectPackageTar(ctx context.Context, r io.Reader, component tarComponent, expandedLimit int64, memberLimit int) (packageTar, error) {
+	payload := &io.LimitedReader{R: checkedReader{ctx, r}, N: expandedLimit + 1}
+	reader := tar.NewReader(payload)
+	seen := make(map[string]bool)
+	var result packageTar
+	for {
+		entry, err := reader.Next()
+		if errors.Is(err, io.EOF) {
+			break
+		}
+		if err != nil || result.members >= memberLimit {
+			if ctx.Err() != nil {
+				return packageTar{}, ctx.Err()
+			}
+			return packageTar{}, ErrPackage
+		}
+		result.members++
+		name := strings.TrimSuffix(strings.TrimPrefix(entry.Name, "./"), "/")
+		if (name == "." || name == "") && entry.Typeflag == tar.TypeDir && entry.Size == 0 {
+			if seen["."] {
+				return packageTar{}, ErrPackage
+			}
+			seen["."] = true
+			continue
+		}
+		_, duplicate := seen[name]
+		directory := entry.Typeflag == tar.TypeDir
+		if !safeTarPath(name) || duplicate || (directory && entry.Size != 0) ||
+			(!directory && entry.Typeflag != tar.TypeReg && entry.Typeflag != tar.TypeRegA) {
+			return packageTar{}, ErrPackage
+		}
+		inInfo := name == "info" || strings.HasPrefix(name, "info/")
+		if (component == infoTar && (!inInfo || name == "info" && !directory)) || (component == payloadTar && inInfo) {
+			return packageTar{}, ErrPackage
+		}
+		for key := range entry.PAXRecords {
+			if strings.HasPrefix(key, "GNU.sparse.") {
+				return packageTar{}, ErrPackage
+			}
+		}
+		seen[name] = directory
+		if name == "info/index.json" {
+			if entry.Typeflag == tar.TypeDir || entry.Size < 1 || entry.Size > MaxIndexBytes {
+				return packageTar{}, ErrPackage
+			}
+			result.index, err = io.ReadAll(reader)
+			if err != nil || int64(len(result.index)) != entry.Size {
+				return packageTar{}, ErrPackage
+			}
+		}
+	}
+	for name := range seen {
+		for parent := path.Dir(name); parent != "."; parent = path.Dir(parent) {
+			if directory, found := seen[parent]; found && !directory {
+				return packageTar{}, ErrPackage
+			}
+		}
+	}
+	if err := tarPadding(ctx, payload); err != nil {
+		return packageTar{}, err
+	}
+	if directory, present := seen["info/paths.json"]; component == infoTar && (!present || directory) {
+		return packageTar{}, ErrPackage
+	}
+	result.bytes = expandedLimit + 1 - payload.N
+	return result, nil
 }
 
 func safeTarPath(name string) bool {

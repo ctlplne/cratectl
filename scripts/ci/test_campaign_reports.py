@@ -30,8 +30,11 @@ from composer_hosted_evidence import (BASE_CHECKS as COMPOSER_BASE, CHECKS as CO
                                       EXTRA_COORDINATES as COMPOSER_EXTRA_COORDINATES, VERSION_CHECKS as COMPOSER_VERSION_CHECKS)
 from conda_hosted_evidence import (BASE_CHECKS as CONDA_BASE, CHECKS as CONDA_CHECKS, FILES as CONDA_FILES,
                                   GROUP_CHECKS as CONDA_GROUP_CHECKS, GROUP_FILES as CONDA_GROUP_FILES, GROUP_PROFILE as CONDA_GROUP_PROFILE,
-                                  PROFILE as CONDA_PROFILE, PINS as CONDA_PINS, VERSION as CONDA_VERSION, fixtures as conda_fixtures)
+                                  MODERN_CHECKS as CONDA_MODERN_CHECKS, PROFILES as CONDA_PROFILES,
+                                  PROFILE as CONDA_PROFILE, PINS as CONDA_PINS, VERSION as CONDA_VERSION,
+                                  fixtures as conda_fixtures, source_files as conda_source_files)
 from conda_group_fixture import group_packages as conda_group_packages
+from conda_modern_fixture import modern_packages as conda_modern_packages
 from cran_hosted_evidence import (BASE_CHECKS as CRAN_BASE, CHECKS as CRAN_CHECKS, FILES as CRAN_FILES, PROFILE as CRAN_PROFILE,
                                  INSTALL_CHECKS as CRAN_INSTALL_CHECKS, INSTALL_FILES as CRAN_INSTALL_FILES,
                                  INSTALL_PROFILE as CRAN_INSTALL_PROFILE, LAUNCHER as CRAN_LAUNCHER,
@@ -176,6 +179,30 @@ class CampaignReports(unittest.TestCase):
         grouped = {**report, 'profile': CONDA_GROUP_PROFILE, 'conda_hosted': {**native, 'group': group},
                    'source_sha256': {path: hashlib.sha256(group_source(path)).hexdigest() for path in CONDA_GROUP_FILES}}
         self.assertEqual(validate_custom(grouped, candidate, 12, spec, group_source), {'checks': 40, 'records': 1})
+
+        def modern_source(path):
+            if path == '.github/workflows/conda-hosted.yml':
+                return b'--conda-group --conda-modern'
+            return source(path)
+
+        app, dependency = conda_modern_packages(platform)[:2]
+        selected = {p.path: digest(p) for p in (app, dependency)}
+        fallback = {app.path: selected[app.path], packages[1].path: chosen[packages[1].path]}
+        modern = {'checks': list(CONDA_MODERN_CHECKS), 'archive_sha256': {**chosen, **selected},
+                  'selected': selected, 'fallback': fallback}
+        combined = {**grouped, 'profile': CONDA_PROFILES[True, True],
+                    'conda_hosted': {**grouped['conda_hosted'], 'modern': modern},
+                    'source_sha256': {path: hashlib.sha256(modern_source(path)).hexdigest()
+                                      for path in conda_source_files(True, True)}}
+        self.assertEqual(validate_custom(combined, candidate, 12, spec, modern_source), {'checks': 48, 'records': 1})
+        fallback[packages[1].path] = selected[dependency.path]
+        with self.assertRaisesRegex(EvidenceError, 'conda_hosted_report_contract'):
+            validate_custom(combined, candidate, 12, spec, modern_source)
+        stale_profile = {**grouped, 'source_sha256': {path: hashlib.sha256(modern_source(path)).hexdigest()
+                                                     for path in CONDA_GROUP_FILES}}
+        with self.assertRaisesRegex(EvidenceError, 'conda_hosted_profile_selection'):
+            validate_custom(stale_profile, candidate, 12, spec, modern_source)
+
         group['lower_collision_sha256'] = chosen[collision.path]
         with self.assertRaisesRegex(EvidenceError, 'conda_hosted_report_contract'):
             validate_custom(grouped, candidate, 12, spec, group_source)

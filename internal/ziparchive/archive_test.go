@@ -38,7 +38,7 @@ type failedWriter struct{}
 func (failedWriter) Write(p []byte) (int, error) { return 0, io.ErrClosedPipe }
 func TestAdmissionCallbacksAndWritersFailWithoutPartialInventory(t *testing.T) {
 	data := callbackFixture(t)
-	limits := Limits{1 << 20, 1 << 20, 1 << 16, 16}
+	limits := Limits{CompressedBytes: 1 << 20, ExpandedBytes: 1 << 20, DirectoryBytes: 1 << 16, Files: 16}
 	sentinel := errors.New("owned callback rejection")
 	for _, tc := range []struct {
 		name  string
@@ -71,7 +71,8 @@ func TestCallbackCancellationDominatesAndLeavesNoInventory(t *testing.T) {
 	data := callbackFixture(t)
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	got, e := Inspect(ctx, bytes.NewReader(data), int64(len(data)), Limits{1 << 20, 1 << 20, 1 << 16, 16}, func(string, bool, int64) (io.Writer, error) { cancel(); return nil, errors.New("owned callback error") })
+	limits := Limits{CompressedBytes: 1 << 20, ExpandedBytes: 1 << 20, DirectoryBytes: 1 << 16, Files: 16}
+	got, e := Inspect(ctx, bytes.NewReader(data), int64(len(data)), limits, func(string, bool, int64) (io.Writer, error) { cancel(); return nil, errors.New("owned callback error") })
 	if !errors.Is(e, context.Canceled) || got != (Inventory{}) {
 		t.Fatal(got, e)
 	}

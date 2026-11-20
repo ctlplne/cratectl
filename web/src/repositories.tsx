@@ -17,7 +17,7 @@ function hasReferenceLifecycle(format:string|undefined,a:Artifact){
   if(format==='npm')return !a.path.startsWith('npm-catalog/')&&a.media_type!=='application/vnd.cratectl.npm-catalog+json';
   if(format==='nuget')return a.path.startsWith('nuget-packages/')&&a.path.endsWith('.nupkg');
   if(format==='cargo')return a.path.startsWith('crates/')&&a.path.endsWith('.crate');
-  if(format==='conda')return a.path.endsWith('.tar.bz2')&&a.media_type==='application/x-bzip2';
+  if(format==='conda')return a.path.endsWith('.tar.bz2')&&a.media_type==='application/x-bzip2'||a.path.endsWith('.conda')&&a.media_type==='application/zip';
   if(format==='cran'){
     const source=a.path.startsWith('src/contrib/')&&a.path.endsWith('.tar.gz');
     const mac=a.path.startsWith('bin/macosx/')&&a.path.endsWith('.tgz');

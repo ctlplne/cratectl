@@ -52,7 +52,7 @@ func (s *Server) conda(w http.ResponseWriter, r *http.Request, i store.Identity,
 		s.serveResolvedArtifact(w, r, i, resolved)
 	default:
 		w.Header().Set("Allow", "GET, HEAD, PUT")
-		fail(w, 405, "method_not_allowed", "Publish a Conda tar.bz2 package with PUT or consume it with GET or HEAD.")
+		fail(w, 405, "method_not_allowed", "Publish a Conda package with PUT or consume it with GET or HEAD.")
 	}
 }
 
@@ -119,7 +119,7 @@ func (s *Server) serveCondaGroup(w http.ResponseWriter, r *http.Request, i store
 
 func (s *Server) publishConda(w http.ResponseWriter, r *http.Request, i store.Identity, repo string, coordinate conda.Coordinate) {
 	if r.ContentLength > conda.MaxArchiveBytes {
-		fail(w, 413, "conda_archive_budget", "Reduce the Conda tar.bz2 archive within the upload limit.")
+		fail(w, 413, "conda_archive_budget", "Reduce the Conda archive within the upload limit.")
 		return
 	}
 	ctx, cancel := context.WithTimeout(r.Context(), 120*time.Second)
@@ -130,7 +130,7 @@ func (s *Server) publishConda(w http.ResponseWriter, r *http.Request, i store.Id
 	if err != nil {
 		var tooLarge *http.MaxBytesError
 		if errors.As(err, &tooLarge) {
-			fail(w, 413, "conda_archive_budget", "Reduce the Conda tar.bz2 archive within the upload limit.")
+			fail(w, 413, "conda_archive_budget", "Reduce the Conda archive within the upload limit.")
 			return
 		}
 		respondErr(w, err)
@@ -144,7 +144,7 @@ func (s *Server) publishConda(w http.ResponseWriter, r *http.Request, i store.Id
 	metadata, err := conda.Inspect(ctx, file, object.Size, coordinate)
 	file.Close()
 	if errors.Is(err, conda.ErrPackage) {
-		fail(w, 400, "invalid_conda_archive", "Supply a bounded Conda tar.bz2 package whose info/index.json matches the requested subdirectory and filename.")
+		fail(w, 400, "invalid_conda_archive", "Supply a bounded .conda or .tar.bz2 archive whose info/index.json matches the requested subdirectory and filename.")
 		return
 	}
 	if err != nil {
@@ -157,7 +157,7 @@ func (s *Server) publishConda(w http.ResponseWriter, r *http.Request, i store.Id
 		return
 	}
 	if err := s.DB.PublishConda(ctx, i, repo, store.Artifact{
-		Path: coordinate.Path(), Digest: object.Digest, Size: object.Size, MediaType: store.CondaMedia, Metadata: encoded,
+		Path: coordinate.Path(), Digest: object.Digest, Size: object.Size, MediaType: coordinate.MediaType(), Metadata: encoded,
 	}); err != nil {
 		respondErr(w, err)
 		return

@@ -34,12 +34,12 @@ func currentCondaGroup(ctx context.Context, tx pgx.Tx, i Identity, group Reposit
 		return nil, "", ErrMetadataLimit
 	}
 	limit = min(limit, 10000)
-	rows, err := tx.Query(ctx, `SELECT a.repository,left(a.path,321),left(a.digest,65),
+	rows, err := tx.Query(ctx, `SELECT a.repository,left(a.path,321),left(a.digest,65),a.media_type,
  COALESCE(d.decision,a.decision),COALESCE(nl.deleted,false)
 FROM unnest($1::text[]) WITH ORDINALITY AS m(name,position)
 JOIN cratectl.artifacts a ON (a.tenant,a.repository)=($2,m.name) `+decisionJoin+nativeLifecycleJoin+`
-WHERE a.media_type=$3
-ORDER BY m.position,a.path COLLATE "C" LIMIT $4`, group.Settings.Members, i.Tenant, CondaMedia, limit+1)
+WHERE a.media_type=ANY($3::text[])
+ORDER BY m.position,a.path COLLATE "C" LIMIT $4`, group.Settings.Members, i.Tenant, condaArchiveMedia, limit+1)
 	if err != nil {
 		return nil, "", err
 	}
@@ -51,13 +51,13 @@ ORDER BY m.position,a.path COLLATE "C" LIMIT $4`, group.Settings.Members, i.Tena
 			return nil, "", ErrMetadataLimit
 		}
 		var entry condaGroupEntry
-		var decision string
+		var media, decision string
 		var deleted bool
-		if err := rows.Scan(&entry.repository, &entry.path, &entry.digest, &decision, &deleted); err != nil {
+		if err := rows.Scan(&entry.repository, &entry.path, &entry.digest, &media, &decision, &deleted); err != nil {
 			return nil, "", err
 		}
 		coordinate, valid := conda.ParsePath(entry.path)
-		if !valid || !uploadDigest.MatchString(entry.digest) {
+		if !valid || media != coordinate.MediaType() || !uploadDigest.MatchString(entry.digest) {
 			return nil, "", ErrConflict
 		}
 		owner := group.Settings.NamespaceOwners[coordinate.Name+"/"]
@@ -151,7 +151,7 @@ func addCondaGroupRecords(ctx context.Context, tx pgx.Tx, i Identity, index *con
 		repos = append(repos, entry.repository)
 		paths = append(paths, entry.path)
 	}
-	rows, err := tx.Query(ctx, `SELECT a.path,left(a.digest,65),a.size,
+	rows, err := tx.Query(ctx, `SELECT a.path,left(a.digest,65),a.size,a.media_type,
  CASE WHEN octet_length(a.metadata::text)<=$4 THEN a.metadata ELSE NULL END
 FROM unnest($1::text[],$2::text[]) WITH ORDINALITY AS m(repo,path,position)
 JOIN cratectl.artifacts a ON (a.tenant,a.repository,a.path)=($3,m.repo,m.path)
@@ -161,8 +161,8 @@ ORDER BY m.position`, repos, paths, i.Tenant, condaMetadataLimit)
 	}
 	defer rows.Close()
 	for rows.Next() {
-		a := Artifact{MediaType: CondaMedia}
-		if err := rows.Scan(&a.Path, &a.Digest, &a.Size, &a.Metadata); err != nil {
+		var a Artifact
+		if err := rows.Scan(&a.Path, &a.Digest, &a.Size, &a.MediaType, &a.Metadata); err != nil {
 			return err
 		}
 		if err := index.add(a); err != nil {

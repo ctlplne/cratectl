@@ -70,3 +70,34 @@ func TestDependencySpecsStayWithinConfiguredChannels(t *testing.T) {
 		}
 	}
 }
+
+func TestInspectModernCondaArchiveKeepsBoundedZIPAndTarIdentity(t *testing.T) {
+	raw, err := os.ReadFile("testdata/cratectl-conda-modern-app.conda")
+	if err != nil {
+		t.Fatal(err)
+	}
+	const archivePath = "linux-64/cratectl-conda-app-1.4.0-fixture_3.conda"
+	coordinate, valid := ParsePath(archivePath)
+	if !valid || !coordinate.Modern || coordinate.Path() != archivePath || coordinate.MediaType() != ModernMedia {
+		t.Fatalf("modern package identity did not round trip: %+v", coordinate)
+	}
+	metadata, err := Inspect(context.Background(), bytes.NewReader(raw), int64(len(raw)), coordinate)
+	if err != nil || metadata.BuildNumber == nil || *metadata.BuildNumber != 3 ||
+		!slices.Equal(metadata.Depends, []string{"cratectl-conda-data >=1.0,<2"}) {
+		t.Fatalf("modern package metadata: %+v, %v", metadata, err)
+	}
+	wrongPlatform := coordinate
+	wrongPlatform.Subdir = "osx-arm64"
+	wrongBuild := coordinate
+	wrongBuild.Build = "fixture_4"
+	legacy := coordinate
+	legacy.Modern = false
+	for _, candidate := range []struct {
+		data       []byte
+		coordinate Coordinate
+	}{{raw, wrongPlatform}, {raw, wrongBuild}, {raw, legacy}, {raw[:len(raw)-8], coordinate}} {
+		if _, err := Inspect(context.Background(), bytes.NewReader(candidate.data), int64(len(candidate.data)), candidate.coordinate); !errors.Is(err, ErrPackage) {
+			t.Fatal("unexpected modern archive admission", candidate.coordinate, err)
+		}
+	}
+}

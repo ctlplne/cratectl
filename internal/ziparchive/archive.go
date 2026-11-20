@@ -24,12 +24,15 @@ import (
 var ErrArchive = errors.New("invalid, ambiguous, unsupported or oversized ZIP archive")
 
 // Limits bound ZIP parsing before entry allocation or decompression.
-// ZIP64, split archives, alternate Unicode paths and links are not supported.
+// Split archives, alternate Unicode paths and links are not supported.
 type Limits struct {
 	CompressedBytes int64
 	ExpandedBytes   int64
 	DirectoryBytes  int64
 	Files           int
+	// AllowSizedLocalZIP64 admits a sized local header from streaming package
+	// writers when its two ZIP64 sizes match the bounded ZIP32 directory.
+	AllowSizedLocalZIP64 bool
 }
 
 type Inventory struct {
@@ -83,18 +86,25 @@ func archivePath(name string) bool {
 	return name != "" && name != "." && path.Clean(name) == name && !strings.HasPrefix(name, "/") && name != ".." && !strings.HasPrefix(name, "../") && len(strings.Split(name, "/")) <= 64
 }
 
-func archiveExtra(extra []byte) bool {
+func archiveExtra(extra []byte, sizes64 *archiveEntry) bool {
 	for len(extra) > 0 {
 		if len(extra) < 4 {
 			return false
 		}
 		tag, length := binary.LittleEndian.Uint16(extra), int(binary.LittleEndian.Uint16(extra[2:]))
-		if length > len(extra)-4 || tag == 0x0001 || tag == 0x7075 || tag == 0x000d {
-			return false // ZIP64, an alternate Unicode path, or a Unix link record.
+		if length > len(extra)-4 || tag == 0x7075 || tag == 0x000d {
+			return false
+		}
+		if tag == 0x0001 {
+			if sizes64 == nil || length != 16 || binary.LittleEndian.Uint64(extra[4:12]) != uint64(sizes64.expanded) ||
+				binary.LittleEndian.Uint64(extra[12:20]) != uint64(sizes64.packed) {
+				return false
+			}
+			sizes64 = nil
 		}
 		extra = extra[4+length:]
 	}
-	return true
+	return sizes64 == nil
 }
 
 // archiveDirectory bounds physical central-directory entries before zip.NewReader
@@ -135,7 +145,7 @@ func archiveDirectory(ctx context.Context, r io.ReaderAt, size int64, limits Lim
 		h := directory
 		nameBytes, extraBytes, commentBytes := int(binary.LittleEndian.Uint16(h[28:])), int(binary.LittleEndian.Uint16(h[30:])), int(binary.LittleEndian.Uint16(h[32:]))
 		next := 46 + nameBytes + extraBytes + commentBytes
-		if next > len(h) || nameBytes > 2048 || binary.LittleEndian.Uint16(h[34:]) != 0 || !archiveExtra(h[46+nameBytes:46+nameBytes+extraBytes]) {
+		if next > len(h) || nameBytes > 2048 || binary.LittleEndian.Uint16(h[34:]) != 0 || !archiveExtra(h[46+nameBytes:46+nameBytes+extraBytes], nil) {
 			return nil, 0, ErrArchive
 		}
 		entry := archiveEntry{name: string(h[46 : 46+nameBytes]), flags: binary.LittleEndian.Uint16(h[8:]), method: binary.LittleEndian.Uint16(h[10:]), crc: binary.LittleEndian.Uint32(h[16:]), packed: binary.LittleEndian.Uint32(h[20:]), expanded: binary.LittleEndian.Uint32(h[24:]), offset: binary.LittleEndian.Uint32(h[42:])}
@@ -151,7 +161,7 @@ func archiveDirectory(ctx context.Context, r io.ReaderAt, size int64, limits Lim
 	return entries, offset, nil
 }
 
-func archiveLocalHeaders(ctx context.Context, r io.ReaderAt, entries []archiveEntry, directory int64) error {
+func archiveLocalHeaders(ctx context.Context, r io.ReaderAt, entries []archiveEntry, directory int64, allowSizedZIP64 bool) error {
 	ordered := append([]archiveEntry(nil), entries...)
 	sort.Slice(ordered, func(i, j int) bool { return ordered[i].offset < ordered[j].offset })
 	var position int64
@@ -173,10 +183,17 @@ func archiveLocalHeaders(ctx context.Context, r io.ReaderAt, entries []archiveEn
 			return ErrArchive
 		}
 		variable := make([]byte, nameBytes+extraBytes)
-		if _, err := r.ReadAt(variable, position+30); err != nil || string(variable[:nameBytes]) != entry.name || !archiveExtra(variable[nameBytes:]) {
+		localCRC, localPacked, localExpanded := binary.LittleEndian.Uint32(h[14:]), binary.LittleEndian.Uint32(h[18:]), binary.LittleEndian.Uint32(h[22:])
+		var sizes64 *archiveEntry
+		if allowSizedZIP64 && entry.flags&8 == 0 && localPacked == 0xffffffff && localExpanded == 0xffffffff {
+			sizes64 = &entry
+		}
+		if _, err := r.ReadAt(variable, position+30); err != nil || string(variable[:nameBytes]) != entry.name || !archiveExtra(variable[nameBytes:], sizes64) {
 			return ErrArchive
 		}
-		localCRC, localPacked, localExpanded := binary.LittleEndian.Uint32(h[14:]), binary.LittleEndian.Uint32(h[18:]), binary.LittleEndian.Uint32(h[22:])
+		if sizes64 != nil {
+			localPacked, localExpanded = entry.packed, entry.expanded
+		}
 		if entry.flags&8 == 0 {
 			if localCRC != entry.crc || localPacked != entry.packed || localExpanded != entry.expanded {
 				return ErrArchive
@@ -261,7 +278,7 @@ func Inspect(ctx context.Context, input io.ReaderAt, size int64, limits Limits, 
 	if err != nil {
 		return Inventory{}, err
 	}
-	if err = archiveLocalHeaders(ctx, r, entries, directory); err != nil {
+	if err = archiveLocalHeaders(ctx, r, entries, directory, limits.AllowSizedLocalZIP64); err != nil {
 		return Inventory{}, err
 	}
 	z, err := zip.NewReader(r, size)

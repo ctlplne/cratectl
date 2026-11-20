@@ -34,6 +34,7 @@ class Fixture:
     version: str
     build_number: int
     payload: bytes
+    modern: bool = False
 
     @property
     def build(self):
@@ -41,7 +42,8 @@ class Fixture:
 
     @property
     def filename(self):
-        return f'{self.name}-{self.version}-{self.build}.tar.bz2'
+        extension = '.conda' if self.modern else '.tar.bz2'
+        return f'{self.name}-{self.version}-{self.build}{extension}'
 
     @property
     def path(self):
@@ -51,7 +53,7 @@ class Fixture:
     def payload_path(self):
         return f'share/cratectl/{self.name}.txt'
 
-    def archive(self):
+    def contents(self):
         index = {'name': self.name, 'version': self.version, 'build': self.build, 'build_number': self.build_number,
                  'subdir': self.subdir, 'depends': [SPEC] if self.name == APP else [], 'license': 'MIT'}
         if self.subdir == 'noarch':
@@ -59,17 +61,28 @@ class Fixture:
         paths = {'paths_version': 1, 'paths': [{'_path': self.payload_path, 'path_type': 'hardlink',
                                                'sha256': hashlib.sha256(self.payload).hexdigest(),
                                                'size_in_bytes': len(self.payload)}]}
-        buffer = io.BytesIO()
-        with tarfile.open(fileobj=buffer, mode='w:bz2', format=tarfile.USTAR_FORMAT) as archive:
-            for path, data in (('info/index.json', json.dumps(index, sort_keys=True).encode()),
-                               ('info/files', (self.payload_path + '\n').encode()),
-                               ('info/paths.json', json.dumps(paths, sort_keys=True).encode()),
-                               (self.payload_path, self.payload)):
-                member = tarfile.TarInfo(path)
-                member.size = len(data)
-                member.mode = 0o644
-                archive.addfile(member, io.BytesIO(data))
-        return buffer.getvalue()
+        return (('info/index.json', json.dumps(index, sort_keys=True).encode()),
+                ('info/files', (self.payload_path + '\n').encode()),
+                ('info/paths.json', json.dumps(paths, sort_keys=True).encode()),
+                (self.payload_path, self.payload))
+
+    def archive(self):
+        if self.modern:
+            from conda_modern_fixture import make_modern_archive
+
+            return make_modern_archive(self)
+        return package_tar(self.contents(), 'w:bz2')
+
+
+def package_tar(files, mode='w'):
+    buffer = io.BytesIO()
+    with tarfile.open(fileobj=buffer, mode=mode, format=tarfile.USTAR_FORMAT) as archive:
+        for path, data in files:
+            member = tarfile.TarInfo(path)
+            member.size = len(data)
+            member.mode = 0o644
+            archive.addfile(member, io.BytesIO(data))
+    return buffer.getvalue()
 
 
 def fixtures(native):
@@ -81,7 +94,7 @@ def fixtures(native):
             Fixture(foreign, APP, '1.4.0', 3, b'Owned alternate platform bytes.\n'))
 
 
-def evaluate_conda(work, installation, authority, call, api, restart, sha, executable, *, grouped=False):
+def evaluate_conda(work, installation, authority, call, api, restart, sha, executable, *, grouped=False, modern=False):
     native = HOSTS.get((platform.system(), platform.machine()))
     if native is None or sha(executable) != PINS[native]:
         raise ValueError('use the pinned stock micromamba binary for this native host')
@@ -192,7 +205,7 @@ def evaluate_conda(work, installation, authority, call, api, restart, sha, execu
                             '--json', '--yes', *option, APP + '=1.4.0', cwd=target, environment=environment,
                             status=None, timeout=80)
         cache = target / 'root/pkgs'
-        archives = [(file.name, sha(file)) for file in cache.rglob('*.tar.bz2')]
+        archives = [(file.name, sha(file)) for extension in ('*.tar.bz2', '*.conda') for file in cache.rglob(extension)]
         installed = {file.stem for file in (env_prefix / 'conda-meta').glob('*.json')}
         linked_payload = any((env_prefix / p.payload_path).is_file() for p in graph)
         if expected_failure:
@@ -214,7 +227,7 @@ def evaluate_conda(work, installation, authority, call, api, restart, sha, execu
             exact_fetch = exact_fetch and published == set(expected_urls)
         if download_only:
             return exact_fetch and not installed and not linked_payload
-        return (exact_fetch and installed == {p.filename.removesuffix('.tar.bz2') for p in graph}
+        return (exact_fetch and installed == {p.filename.removesuffix('.tar.bz2').removesuffix('.conda') for p in graph}
                 and all((env_prefix / p.payload_path).read_bytes() == p.payload for p in graph))
 
     check('stock micromamba downloads the native graph and selects the newest compatible noarch build',
@@ -232,4 +245,8 @@ def evaluate_conda(work, installation, authority, call, api, restart, sha, execu
         from conda_group_fixture import evaluate_conda_group
 
         report['group'] = evaluate_conda_group(native, authority, request, api, consume, restart)
+    if modern:
+        from conda_modern_fixture import evaluate_conda_modern
+
+        report['modern'] = evaluate_conda_modern(native, request, api, consume, restart)
     return report

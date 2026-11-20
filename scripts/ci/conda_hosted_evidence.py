@@ -5,6 +5,7 @@ import hashlib
 
 from conda_hosted_fixture import PINS, VERSION, fixtures
 from conda_group_fixture import group_packages
+from conda_modern_fixture import CHECKS as MODERN_CHECKS, modern_packages
 if __package__:
     from .terraform_provider_evidence import BASE_CHECKS as MANIFEST_CHECKS, hashes, matches, postgres_version
 else:
@@ -12,6 +13,12 @@ else:
 
 PROFILE = 'cratectl-native-conda-hosted-tar-bz2-v1'
 GROUP_PROFILE = 'cratectl-native-conda-hosted-and-ordered-group-tar-bz2-v1'
+PROFILES = {
+    (False, False): PROFILE,
+    (True, False): GROUP_PROFILE,
+    (False, True): 'cratectl-native-conda-hosted-modern-v1',
+    (True, True): 'cratectl-native-conda-hosted-modern-and-ordered-group-v1',
+}
 BASE_CHECKS = tuple(item for item in MANIFEST_CHECKS if item != 'provider matches the clean candidate')
 CHECKS = (
     'the native stock micromamba version and release digest match',
@@ -49,26 +56,40 @@ FILES = (
 )
 GROUP_FILES = (*FILES, 'scripts/conda_group_fixture.py', 'internal/server/conda_group_integration_test.go',
                'internal/server/resolve.go', 'internal/store/conda_group.go', 'internal/store/source_configuration.go')
+MODERN_FILES = (
+    'scripts/conda_modern_fixture.py', 'internal/conda/modern.go', 'internal/ziparchive/archive.go',
+    'internal/conda/testdata/cratectl-conda-modern-app.conda', 'internal/conda/testdata/cratectl-conda-modern-data.conda',
+    'internal/server/conda_modern_integration_test.go',
+    'third_party/go-zstd/LICENSE', 'third_party/go-zstd/bits.go', 'third_party/go-zstd/block.go',
+    'third_party/go-zstd/fse.go', 'third_party/go-zstd/huff.go', 'third_party/go-zstd/literals.go',
+    'third_party/go-zstd/window.go', 'third_party/go-zstd/xxhash.go', 'third_party/go-zstd/zstd.go',
+)
 FIELDS = {'schema', 'profile', 'candidate', 'status', 'runner_os', 'runner_arch', 'run_id', 'source_dirty', 'source_sha256',
           'binary_sha256', 'archive_sha256', 'postgres', 'npm', 'checks', 'conda_hosted', 'goal_complete', 'broad_readiness'}
 SUBDIR = {'X64': 'linux-64', 'ARM64': 'linux-aarch64'}
 
 
-def group_selected(source):
-    return b'--conda-group' in source('.github/workflows/conda-hosted.yml').split()
+def selected_scopes(source):
+    flags = source('.github/workflows/conda-hosted.yml').split()
+    return b'--conda-group' in flags, b'--conda-modern' in flags
+
+
+def source_files(grouped, modern):
+    files = GROUP_FILES if grouped else FILES
+    return files + MODERN_FILES if modern else files
 
 
 def validate(report):
-    if type(report) is not dict or set(report) != FIELDS or report['profile'] not in (PROFILE, GROUP_PROFILE):
+    if type(report) is not dict or set(report) != FIELDS or report['profile'] not in PROFILES.values():
         raise ValueError('invalid hosted Conda report or profile')
-    grouped = report['profile'] == GROUP_PROFILE
-    files = GROUP_FILES if grouped else FILES
+    grouped, modern = next(scopes for scopes, profile in PROFILES.items() if profile == report['profile'])
     if (type(report['schema']) is not int or report['schema'] != 1 or report['status'] != 'passed'
             or report['runner_os'] != 'Linux' or report['runner_arch'] not in SUBDIR or report['source_dirty'] is not False
             or report['goal_complete'] is not False or report['broad_readiness'] is not False
             or not matches(report['candidate'], '[a-f0-9]{40}') or not matches(report['run_id'], '[1-9][0-9]{0,17}')
             or not matches(report['npm'], r'(?:10|11)\.[0-9]{1,3}\.[0-9]{1,3}') or not postgres_version(report['postgres'])
-            or not matches(report['archive_sha256'], '[a-f0-9]{64}') or not hashes(report['source_sha256'], files)
+            or not matches(report['archive_sha256'], '[a-f0-9]{64}')
+            or not hashes(report['source_sha256'], source_files(grouped, modern))
             or not hashes(report['binary_sha256'], ('cratectl', 'cratectld')) or report['checks'] != list(BASE_CHECKS)):
         raise ValueError('invalid hosted Conda identity or native check scope')
     native = SUBDIR[report['runner_arch']]
@@ -83,6 +104,12 @@ def validate(report):
         native_report['group'] = {'checks': list(GROUP_CHECKS), 'selected': {p.path: digest(p) for p in (app, dependency)},
                                   'lower_collision_sha256': digest(collision), 'lower_only_sha256': digest(lower_only),
                                   'foreign_sha256': digest(foreign)}
+    if modern:
+        app, dependency = modern_packages(native)[:2]
+        modern_selected = {package.path: hashlib.sha256(package.archive()).hexdigest() for package in (app, dependency)}
+        fallback = {app.path: modern_selected[app.path], packages[1].path: selected[packages[1].path]}
+        native_report['modern'] = {'checks': list(MODERN_CHECKS), 'archive_sha256': {**selected, **modern_selected},
+                                   'selected': modern_selected, 'fallback': fallback}
     if report['conda_hosted'] != native_report:
         raise ValueError('invalid stock micromamba tool or exact dependency graph')
     return report

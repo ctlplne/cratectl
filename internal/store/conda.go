@@ -11,10 +11,10 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-const CondaMedia = "application/x-bzip2"
 const condaMetadataLimit = 2 * conda.MaxIndexBytes
 
 var condaMD5 = regexp.MustCompile(`^[a-f0-9]{32}$`)
+var condaArchiveMedia = []string{conda.LegacyMedia, conda.ModernMedia}
 
 type CondaPackage struct {
 	Package   conda.Package `json:"package"`
@@ -25,7 +25,7 @@ type CondaPackage struct {
 func ValidateCondaArtifact(a Artifact) (CondaPackage, error) {
 	coordinate, ok := conda.ParsePath(a.Path)
 	var metadata CondaPackage
-	if !ok || a.MediaType != CondaMedia || a.Size < 1 || a.Size > conda.MaxArchiveBytes ||
+	if !ok || a.MediaType != coordinate.MediaType() || a.Size < 1 || a.Size > conda.MaxArchiveBytes ||
 		!uploadDigest.MatchString(a.Digest) || len(a.Metadata) > condaMetadataLimit ||
 		json.Unmarshal(a.Metadata, &metadata) != nil || !metadata.Validated ||
 		!condaMD5.MatchString(metadata.MD5) || !metadata.Package.ValidFor(coordinate) {
@@ -62,11 +62,12 @@ type condaIndexRecord struct {
 }
 
 type condaIndex struct {
-	body       strings.Builder
-	byteLimit  int64
-	suffix     string
-	hasRecords bool
+	legacy, modern strings.Builder
+	byteLimit      int64
+	prefix, suffix string
 }
+
+const condaModernBucket = `},"packages.conda":{`
 
 func newCondaIndex(subdir, baseURL string, byteLimit int64) (*condaIndex, error) {
 	version, location := "1", ""
@@ -78,14 +79,12 @@ func newCondaIndex(subdir, baseURL string, byteLimit int64) (*condaIndex, error)
 		version, location = "2", `,"base_url":`+string(encoded)
 	}
 	prefix := `{"info":{"subdir":"` + subdir + `"` + location + `},"packages":{`
-	suffix := `},"packages.conda":{},"removed":[],"repodata_version":` + version + `}`
+	suffix := `},"removed":[],"repodata_version":` + version + `}`
 	byteLimit = min(byteLimit, 8<<20)
-	if int64(len(prefix)+len(suffix)) > byteLimit {
+	if int64(len(prefix)+len(condaModernBucket)+len(suffix)) > byteLimit {
 		return nil, ErrMetadataLimit
 	}
-	index := &condaIndex{byteLimit: byteLimit, suffix: suffix}
-	index.body.WriteString(prefix)
-	return index, nil
+	return &condaIndex{byteLimit: byteLimit, prefix: prefix, suffix: suffix}, nil
 }
 
 func (index *condaIndex) add(a Artifact) error {
@@ -98,23 +97,26 @@ func (index *condaIndex) add(a Artifact) error {
 		return err
 	}
 	_, file, _ := strings.Cut(a.Path, "/")
-	if int64(index.body.Len()+len(file)+len(record)+len(index.suffix)+4) > index.byteLimit {
+	current := len(index.prefix) + index.legacy.Len() + len(condaModernBucket) + index.modern.Len() + len(index.suffix)
+	if int64(current+len(file)+len(record)+4) > index.byteLimit {
 		return ErrMetadataLimit
 	}
-	if index.hasRecords {
-		index.body.WriteByte(',')
+	bucket := &index.legacy
+	if a.MediaType == conda.ModernMedia {
+		bucket = &index.modern
 	}
-	index.hasRecords = true
-	index.body.WriteByte('"')
-	index.body.WriteString(file)
-	index.body.WriteString(`":`)
-	index.body.Write(record)
+	if bucket.Len() != 0 {
+		bucket.WriteByte(',')
+	}
+	bucket.WriteByte('"')
+	bucket.WriteString(file)
+	bucket.WriteString(`":`)
+	bucket.Write(record)
 	return nil
 }
 
 func (index *condaIndex) finish() string {
-	index.body.WriteString(index.suffix)
-	return index.body.String()
+	return index.prefix + index.legacy.String() + condaModernBucket + index.modern.String() + index.suffix
 }
 
 // CondaRepodata emits a complete bounded view of one platform under its
@@ -139,12 +141,12 @@ func (s *Store) CondaRepodata(ctx context.Context, i Identity, repo, subdir stri
 		if r.Format != "conda" || r.Mode != "hosted" {
 			return ErrConflict
 		}
-		rows, err := tx.Query(ctx, `SELECT left(a.path,321),left(a.digest,65),a.size,
+		rows, err := tx.Query(ctx, `SELECT left(a.path,321),left(a.digest,65),a.size,a.media_type,
 CASE WHEN octet_length(a.metadata::text)<=$6 THEN a.metadata ELSE NULL END
 FROM cratectl.artifacts a `+decisionJoin+nativeLifecycleJoin+`
-WHERE a.repository=$1 AND starts_with(a.path,$2) AND a.media_type=$3 AND NOT COALESCE(nl.deleted,false)
+WHERE a.repository=$1 AND starts_with(a.path,$2) AND a.media_type=ANY($3::text[]) AND NOT COALESCE(nl.deleted,false)
  AND COALESCE(d.decision,a.decision)<>'denied' AND (NOT $4::boolean OR COALESCE(d.decision,a.decision)='allowed')
-ORDER BY a.path COLLATE "C" LIMIT $5`, repo, subdir+"/", CondaMedia, r.RequireReview, limit+1, condaMetadataLimit)
+ORDER BY a.path COLLATE "C" LIMIT $5`, repo, subdir+"/", condaArchiveMedia, r.RequireReview, limit+1, condaMetadataLimit)
 		if err != nil {
 			return err
 		}
@@ -153,8 +155,8 @@ ORDER BY a.path COLLATE "C" LIMIT $5`, repo, subdir+"/", CondaMedia, r.RequireRe
 			if count == limit {
 				return ErrMetadataLimit
 			}
-			a := Artifact{MediaType: CondaMedia}
-			if err := rows.Scan(&a.Path, &a.Digest, &a.Size, &a.Metadata); err != nil {
+			var a Artifact
+			if err := rows.Scan(&a.Path, &a.Digest, &a.Size, &a.MediaType, &a.Metadata); err != nil {
 				return err
 			}
 			if err := index.add(a); err != nil {
