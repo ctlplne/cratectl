@@ -6,6 +6,7 @@ import hashlib
 import io
 import json
 import platform
+import re
 import ssl
 import stat
 import tarfile
@@ -172,10 +173,12 @@ def evaluate_conda(work, installation, authority, call, api, restart, sha, execu
           all(request(path)[:2] == (200, body) for path, body in bodies.items()))
 
     def consume(label, *, download_only=False, expected_failure=False, repository=REPOSITORY,
-                graph=(app, dependency), expected_urls=None):
+                graph=(app, dependency), expected_urls=None, snapshot=None):
         target = root / label
         environment = isolated_environment(target)
         scope = '/conda/' + repository
+        if snapshot is not None:
+            scope += '/snapshots/' + snapshot
         channel = authority + scope
         call('conda-auth-' + label, executable, '--no-rc', 'auth', 'login', channel, '--username', 'token', '--password-stdin',
              cwd=target, environment=environment, input_text=tokens['reader'] + '\n')
@@ -196,8 +199,9 @@ def evaluate_conda(work, installation, authority, call, api, restart, sha, execu
             solver_refused = 'could not solve' in output.lower() or '"solver_problems":' in output
             return code != 0 and solver_refused and not archives and not installed and not linked_payload
         if code:
-            markers = ('401', '403', '404', 'certificate', 'repodata', 'Could not solve', 'checksum')
-            seen = ', '.join(marker for marker in markers if marker.lower() in output.lower()) or 'client failure'
+            markers = ('certificate', 'repodata', 'Could not solve', 'checksum')
+            statuses = set(re.findall(r'\bstatus:?\s+(401|403|404)\b', output, re.IGNORECASE))
+            seen = ', '.join(sorted(statuses) + [marker for marker in markers if marker.lower() in output.lower()]) or 'client failure'
             raise ValueError(f'stock micromamba {label} returned {code} ({seen})')
         exact = {p.filename: hashlib.sha256(p.archive()).hexdigest() for p in graph}
         fetched = json.loads(output)['actions']['FETCH']

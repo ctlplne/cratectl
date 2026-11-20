@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"slices"
+	"strings"
 
 	"ctlplne.dev/cratectl/internal/conda"
 	crypt "ctlplne.dev/cratectl/internal/crypto"
@@ -19,6 +20,11 @@ type condaGroupEntry struct {
 }
 
 var ErrCondaSnapshotChanged = errors.New("Conda group snapshot changed")
+
+type CondaSnapshot struct {
+	Digest        string
+	EntireChannel bool
+}
 
 // Read ownership across all platforms, including retained denied or retired
 // references. Source precedence is by package name, not by individual build.
@@ -62,7 +68,7 @@ ORDER BY m.position,a.path COLLATE "C" LIMIT $4`, group.Settings.Members, i.Tena
 				owners[coordinate.Name] = owner
 			}
 		}
-		if owner == entry.repository && coordinate.Subdir == subdir && !deleted && decision != "denied" &&
+		if owner == entry.repository && (subdir == "" || coordinate.Subdir == subdir) && !deleted && decision != "denied" &&
 			(!(group.RequireReview || sources[owner].RequireReview) || decision == "allowed") {
 			entries = append(entries, entry)
 		}
@@ -79,10 +85,26 @@ ORDER BY m.position,a.path COLLATE "C" LIMIT $4`, group.Settings.Members, i.Tena
 	return entries, hex.EncodeToString(hash.Sum(nil)), nil
 }
 
+// CondaGroupChannelSnapshot returns the current identity of the complete
+// authorized channel. Clients can use this identity in a native channel URL.
+func (s *Store) CondaGroupChannelSnapshot(ctx context.Context, i Identity, repo string, revision int64, limit int) (string, error) {
+	var digest string
+	err := s.Tx(ctx, i, false, func(tx pgx.Tx) error {
+		group, sources, err := hostedGroupInTx(ctx, tx, i, repo, "conda", revision)
+		if err != nil {
+			return err
+		}
+		_, digest, err = currentCondaGroup(ctx, tx, i, group, sources, "", limit)
+		return err
+	})
+	return digest, err
+}
+
 // CondaGroupRepodata uses Conda's v2 base_url to pin the current platform view.
-// The filename in each package record remains the stock filename.
-func (s *Store) CondaGroupRepodata(ctx context.Context, i Identity, repo, subdir, channelURL string, revision int64, limit int, byteLimit int64) (string, error) {
-	if !conda.ValidSubdir(subdir) {
+// A pinned channel already carries its binding, so it uses ordinary v1 URLs.
+func (s *Store) CondaGroupRepodata(ctx context.Context, i Identity, repo, subdir, channelURL, channelSnapshot string,
+	revision int64, limit int, byteLimit int64) (string, error) {
+	if !conda.ValidSubdir(subdir) || (channelSnapshot != "" && !uploadDigest.MatchString(channelSnapshot)) {
 		return "", ErrNotFound
 	}
 	var output string
@@ -91,11 +113,24 @@ func (s *Store) CondaGroupRepodata(ctx context.Context, i Identity, repo, subdir
 		if err != nil {
 			return err
 		}
-		entries, digest, err := currentCondaGroup(ctx, tx, i, group, sources, subdir, limit)
+		scope := subdir
+		if channelSnapshot != "" {
+			scope = ""
+		}
+		entries, digest, err := currentCondaGroup(ctx, tx, i, group, sources, scope, limit)
 		if err != nil {
 			return err
 		}
-		index, err := newCondaIndex(subdir, channelURL+subdir+"/snapshot/"+digest+"/", byteLimit)
+		baseURL := ""
+		if channelSnapshot == "" {
+			baseURL = channelURL + subdir + "/snapshot/" + digest + "/"
+		} else {
+			if digest != channelSnapshot {
+				return ErrCondaSnapshotChanged
+			}
+			entries = slices.DeleteFunc(entries, func(entry condaGroupEntry) bool { return !strings.HasPrefix(entry.path, subdir+"/") })
+		}
+		index, err := newCondaIndex(subdir, baseURL, byteLimit)
 		if err != nil {
 			return err
 		}
@@ -140,9 +175,9 @@ ORDER BY m.position`, repos, paths, i.Tenant, condaMetadataLimit)
 // CondaGroupArtifact checks a client's snapshot and exact selected package in
 // one read transaction. Call it again after hashing bytes to fence concurrent
 // changes to source ownership, grants or review decisions.
-func (s *Store) CondaGroupArtifact(ctx context.Context, i Identity, repo, path, expected string, revision int64, limit int) (Artifact, Repository, error) {
+func (s *Store) CondaGroupArtifact(ctx context.Context, i Identity, repo, path string, expected CondaSnapshot, revision int64, limit int) (Artifact, Repository, error) {
 	coordinate, valid := conda.ParsePath(path)
-	if !valid || !uploadDigest.MatchString(expected) {
+	if !valid || !uploadDigest.MatchString(expected.Digest) {
 		return Artifact{}, Repository{}, ErrNotFound
 	}
 	var artifact Artifact
@@ -152,11 +187,15 @@ func (s *Store) CondaGroupArtifact(ctx context.Context, i Identity, repo, path, 
 		if err != nil {
 			return err
 		}
-		entries, digest, err := currentCondaGroup(ctx, tx, i, group, sources, coordinate.Subdir, limit)
+		scope := coordinate.Subdir
+		if expected.EntireChannel {
+			scope = ""
+		}
+		entries, digest, err := currentCondaGroup(ctx, tx, i, group, sources, scope, limit)
 		if err != nil {
 			return err
 		}
-		if digest != expected {
+		if digest != expected.Digest {
 			return ErrCondaSnapshotChanged
 		}
 		position, found := slices.BinarySearchFunc(entries, path, func(entry condaGroupEntry, path string) int { return cmp.Compare(entry.path, path) })

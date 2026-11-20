@@ -55,17 +55,31 @@ An unapproved or retired build still reserves the package name. To choose a
 specific source, use an exact package name followed by `/` in
 `settings.namespace_owners`, with the member name as its value.
 
-Use the group root as `CHANNEL` with a client that supports Conda repodata
-version 2. Each platform index includes a `base_url` for its current
-snapshot. The client appends the native archive filename. cratectl checks
-the snapshot, source grants and current digest review before sending bytes.
-If a change affects a platform snapshot, refresh that platform's repodata
-before retrying its previous download URL or environment lock.
+For micromamba 2.9.0 over Basic authentication, first resolve the group's
+current channel URL. That client reconstructs package paths relative to the
+configured channel when credentials are present. The snapshot is part of the
+configured channel path, so its ordinary metadata and package requests both
+carry the same binding.
+
+```sh
+CHANNEL=$(cratectl --config /private/path/reader.json \
+  --path /conda/GROUP/snapshot.json | jq -er '.channel')
+micromamba auth login "$CHANNEL" --username token --password-stdin < /private/path/reader.token
+micromamba create --download-only --name cratectl --override-channels \
+  --channel "$CHANNEL" --ssl-verify /private/path/ca.crt PACKAGE
+```
+
+Clients that honor authenticated Conda repodata version 2 download URLs can
+use the group root directly. Its platform indexes include a `base_url` for
+each platform snapshot. Both routes check source grants, snapshot identity
+and current digest review before sending bytes. Refresh the channel snapshot
+or repodata and resolve again when the registry returns `conda_snapshot_changed`.
 
 The hosted and grouped channels serve `.tar.bz2` packages and plain JSON
 indexes. Modern `.conda` archives, proxy members and compressed indexes
 remain open.
 
 [Conda package specification](https://docs.conda.io/projects/conda/en/stable/user-guide/concepts/pkg-specs.html)
-[Conda repodata versions](https://docs.conda.io/projects/conda/en/26.7.x/dev-guide/api/conda/core/subdir_data/index.html)
+[Conda repodata version 2](https://conda.org/learn/ceps/cep-0015/)
+[Micromamba 2.9.0 authenticated download behavior](https://github.com/mamba-org/mamba/blob/2.9.0/libmamba/src/core/package_fetcher.cpp)
 [Micromamba user guide](https://mamba.readthedocs.io/en/stable/user_guide/micromamba.html)

@@ -60,6 +60,16 @@ def evaluate_conda_group(native, authority, request, api, consume, restart):
             raise ValueError('Conda group did not advertise a local native snapshot')
         return source.removeprefix(root), {name: row['sha256'] for name, row in index['packages'].items()}
 
+    def snapshot():
+        status, body, _ = get('snapshot.json')
+        if status != 200:
+            raise ValueError(f'Conda group snapshot discovery returned {status}')
+        report = json.loads(body)
+        digest = report['sha256']
+        if not re.fullmatch('[a-f0-9]{64}', digest) or report['channel'] != root + 'snapshots/' + digest + '/':
+            raise ValueError('snapshot discovery returned a URL outside the local group')
+        return digest, report['channel']
+
     bodies = {package: package.archive() for package in (app, dependency, collision, lower_only, foreign)}
     digests = {package: hashlib.sha256(data).hexdigest() for package, data in bodies.items()}
     for member in (FIRST, LOWER):
@@ -97,20 +107,26 @@ def evaluate_conda_group(native, authority, request, api, consume, restart):
           and view(native, 'current_repodata.json') == (native_view, native_rows)
           and view('noarch') == (noarch_view, portable) and get(app.path)[0] == 404
           and get(native_view + lower_only.filename)[0] == 404)
-    urls = {root + native_view + app.filename, root + noarch_view + dependency.filename}
-    check('stock micromamba fetches the exact Conda group dependency graph through the advertised snapshot URLs',
-          consume('group-first', repository=GROUP, graph=(app, dependency), expected_urls=urls, download_only=True))
+    digest, channel = snapshot()
+    relative = channel.removeprefix(root)
+    urls = {channel + p.path for p in (app, dependency)}
+    check('stock micromamba fetches the exact Conda group dependency graph through the pinned native channel root',
+          consume('group-first', repository=GROUP, graph=(app, dependency), expected_urls=urls, snapshot=digest, download_only=True))
     restart()
     check('fresh stock micromamba links the original inert Conda group archives after restart',
-          consume('group-after-restart', repository=GROUP, graph=(app, dependency), expected_urls=urls))
+          snapshot() == (digest, channel)
+          and consume('group-after-restart', repository=GROUP, graph=(app, dependency), expected_urls=urls, snapshot=digest))
     decide(FIRST, app, 'denied')
-    check('current denial removes the native app and refuses the prior exact snapshot URL without fallback',
-          not view(native)[1] and view('noarch') == (noarch_view, portable) and get(native_view + app.filename)[0] == 409)
+    next_digest, _ = snapshot()
+    check('current denial removes the native app and refuses both prior snapshot URLs without fallback',
+          not view(native)[1] and view('noarch') == (noarch_view, portable) and get(native_view + app.filename)[0] == 409
+          and next_digest != digest and get(relative + app.path)[0] == 409 and get(relative + native + '/repodata.json')[0] == 409)
     check('fresh stock micromamba refuses the Conda group graph after the owning digest is denied',
-          consume('group-denied', repository=GROUP, graph=(app, dependency), expected_failure=True))
+          consume('group-denied', repository=GROUP, graph=(app, dependency), snapshot=next_digest, expected_failure=True))
     grant(LOWER, False)
     check('revoking an underlying grant stops Conda group metadata and the previously advertised noarch download',
-          get('noarch/repodata.json')[0] == 403 and get(noarch_view + dependency.filename)[0] == 403)
+          get('noarch/repodata.json')[0] == 403 and get(noarch_view + dependency.filename)[0] == 403
+          and get('snapshot.json')[0] == 403)
     return {'checks': checks, 'selected': {p.path: digests[p] for p in (app, dependency)},
             'lower_collision_sha256': digests[collision], 'lower_only_sha256': digests[lower_only],
             'foreign_sha256': digests[foreign]}

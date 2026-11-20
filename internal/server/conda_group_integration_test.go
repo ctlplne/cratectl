@@ -119,6 +119,19 @@ func TestCondaGroupBindsCurrentPlatformSnapshotAndOwnership(t *testing.T) {
 		}
 		return subdir + "/snapshot/" + base
 	}
+	channel := func() string {
+		t.Helper()
+		w := request(group, reader, "GET", "snapshot.json", nil, 200)
+		var snapshot struct {
+			Channel string `json:"channel"`
+			Digest  string `json:"sha256"`
+		}
+		if err := json.Unmarshal(w.Body.Bytes(), &snapshot); err != nil || len(snapshot.Digest) != 64 ||
+			snapshot.Channel != s.PublicURL+"/conda/"+group+"/snapshots/"+snapshot.Digest+"/" {
+			t.Fatal("snapshot discovery did not return the current local channel", err)
+		}
+		return "snapshots/" + snapshot.Digest + "/"
+	}
 	for _, repo := range []string{group, override, lower} {
 		grant(repo, true)
 	}
@@ -133,6 +146,7 @@ func TestCondaGroupBindsCurrentPlatformSnapshotAndOwnership(t *testing.T) {
 	approve(lower, appPath, baseDigest)
 	lowerView := view(group, index, map[string]string{appFile: baseDigest})
 	portableView := view(group, portableIndex, map[string]string{portableFile: portableDigest})
+	lowerChannel := channel()
 	got := request(group, reader, "GET", lowerView+appFile, nil, 200)
 	if !bytes.Equal(got.Body.Bytes(), baseBytes) || got.Header().Get("X-Cratectl-Repository") != lower {
 		t.Fatal("absence in the preferred member did not preserve the exact lower archive")
@@ -141,7 +155,7 @@ func TestCondaGroupBindsCurrentPlatformSnapshotAndOwnership(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	snapshot := strings.TrimSuffix(strings.TrimPrefix(lowerView, "linux-64/snapshot/"), "/")
+	snapshot := store.CondaSnapshot{Digest: strings.TrimSuffix(strings.TrimPrefix(lowerView, "linux-64/snapshot/"), "/")}
 	entry, source, err := s.DB.CondaGroupArtifact(ctx, identity, group, appPath, snapshot, endpoint.SourceRevision, s.NativeVersionLimit)
 	if err != nil {
 		t.Fatal(err)
@@ -153,11 +167,20 @@ func TestCondaGroupBindsCurrentPlatformSnapshotAndOwnership(t *testing.T) {
 	request(group, reader, "GET", appPath, nil, 404)
 	request(group, token, "PUT", appPath, preferredBytes, 405)
 	request(group, reader, "GET", lowerView+appFile, nil, 409)
+	request(group, reader, "GET", lowerChannel+index, nil, 409)
 	if _, err := s.guardResolved(ctx, identity, prior); !errors.Is(err, store.ErrCondaSnapshotChanged) {
 		t.Fatal("post-hash admission did not fence the prior owner", err)
 	}
 	approve(first, appPath, preferredDigest)
 	preferredView := view(group, index, map[string]string{appFile: preferredDigest})
+	preferredChannel := channel()
+	if w := request(group, reader, "GET", preferredChannel+index, nil, 200); !strings.Contains(w.Body.String(), `"repodata_version":1`) ||
+		strings.Contains(w.Body.String(), `"base_url"`) || !strings.Contains(w.Body.String(), preferredDigest) {
+		t.Fatal("the pinned root did not expose the standard channel index", w.Body.String())
+	}
+	if w := request(group, reader, "GET", preferredChannel+appPath, nil, 200); !bytes.Equal(w.Body.Bytes(), preferredBytes) {
+		t.Fatal("standard pinned channel did not fetch the exact preferred bytes")
+	}
 	if view(group, "linux-64/current_repodata.json", map[string]string{appFile: preferredDigest}) != preferredView {
 		t.Fatal("the two metadata routes did not agree on a snapshot")
 	}
@@ -183,6 +206,7 @@ func TestCondaGroupBindsCurrentPlatformSnapshotAndOwnership(t *testing.T) {
 	}
 	view(group, index, nil)
 	request(group, reader, "GET", preferredView+appFile, nil, 409)
+	request(group, reader, "GET", preferredChannel+portablePath, nil, 409)
 	grant(lower, false)
 	request(group, reader, "GET", index, nil, 403)
 	request(group, reader, "GET", portableView+portableFile, nil, 403)

@@ -17,6 +17,10 @@ import (
 )
 
 func (s *Server) conda(w http.ResponseWriter, r *http.Request, i store.Identity, repo store.Repository, request string) {
+	if repo.Mode == "group" {
+		s.serveCondaGroup(w, r, i, repo, request)
+		return
+	}
 	if subdir, name, found := strings.Cut(request, "/"); found && conda.ValidSubdir(subdir) &&
 		(name == "repodata.json" || name == "current_repodata.json") {
 		if r.Method != http.MethodGet && r.Method != http.MethodHead {
@@ -24,26 +28,8 @@ func (s *Server) conda(w http.ResponseWriter, r *http.Request, i store.Identity,
 			fail(w, 405, "method_not_allowed", "Read Conda channel metadata with GET or HEAD.")
 			return
 		}
-		var index string
-		var err error
-		if repo.Mode == "group" {
-			channel := s.PublicURL + "/conda/" + repo.Name + "/"
-			index, err = s.DB.CondaGroupRepodata(r.Context(), i, repo.Name, subdir, channel, repo.SourceRevision, s.NativeVersionLimit, s.NativeMetadataBytes)
-		} else {
-			index, err = s.DB.CondaRepodata(r.Context(), i, repo.Name, subdir, s.NativeVersionLimit, s.NativeMetadataBytes)
-		}
-		if err != nil {
-			respondErr(w, err)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Cache-Control", "private, no-cache")
-		w.Header().Set("ETag", `"sha256:`+crypt.Digest([]byte(index))+`"`)
-		http.ServeContent(w, r, name, time.Time{}, strings.NewReader(index))
-		return
-	}
-	if repo.Mode == "group" {
-		s.serveCondaGroupPackage(w, r, i, repo, request)
+		index, err := s.DB.CondaRepodata(r.Context(), i, repo.Name, subdir, s.NativeVersionLimit, s.NativeMetadataBytes)
+		serveCondaIndex(w, r, name, index, err)
 		return
 	}
 	coordinate, ok := conda.ParsePath(request)
@@ -70,20 +56,65 @@ func (s *Server) conda(w http.ResponseWriter, r *http.Request, i store.Identity,
 	}
 }
 
-func (s *Server) serveCondaGroupPackage(w http.ResponseWriter, r *http.Request, i store.Identity, group store.Repository, request string) {
-	subdir, rest, ok := strings.Cut(request, "/snapshot/")
-	digest, file, found := strings.Cut(rest, "/")
-	if !ok || !found || len(digest) != 64 {
+func serveCondaIndex(w http.ResponseWriter, r *http.Request, name, index string, err error) {
+	if err != nil {
+		respondErr(w, err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Cache-Control", "private, no-cache")
+	w.Header().Set("ETag", `"sha256:`+crypt.Digest([]byte(index))+`"`)
+	http.ServeContent(w, r, name, time.Time{}, strings.NewReader(index))
+}
+
+func (s *Server) serveCondaGroup(w http.ResponseWriter, r *http.Request, i store.Identity, group store.Repository, request string) {
+	channel := s.PublicURL + "/conda/" + group.Name + "/"
+	ctx := r.Context()
+	if request == "snapshot.json" {
+		digest, err := s.DB.CondaGroupChannelSnapshot(ctx, i, group.Name, group.SourceRevision, s.NativeVersionLimit)
+		if err != nil {
+			respondErr(w, err)
+			return
+		}
+		w.Header().Set("Cache-Control", "private, no-cache")
+		writeJSON(w, 200, map[string]string{"channel": channel + "snapshots/" + digest + "/", "sha256": digest})
+		return
+	}
+	var snapshot store.CondaSnapshot
+	if rest, pinned := strings.CutPrefix(request, "snapshots/"); pinned {
+		var found bool
+		snapshot.Digest, request, found = strings.Cut(rest, "/")
+		if !found || len(snapshot.Digest) != 64 {
+			respondErr(w, store.ErrNotFound)
+			return
+		}
+		snapshot.EntireChannel = true
+	}
+	subdir, name, found := strings.Cut(request, "/")
+	if !found || !conda.ValidSubdir(subdir) {
 		respondErr(w, store.ErrNotFound)
 		return
 	}
-	artifact, source, err := s.DB.CondaGroupArtifact(r.Context(), i, group.Name, subdir+"/"+file, digest, group.SourceRevision, s.NativeVersionLimit)
+	if name == "repodata.json" || name == "current_repodata.json" {
+		index, err := s.DB.CondaGroupRepodata(ctx, i, group.Name, subdir, channel, snapshot.Digest, group.SourceRevision, s.NativeVersionLimit, s.NativeMetadataBytes)
+		serveCondaIndex(w, r, name, index, err)
+		return
+	}
+	if !snapshot.EntireChannel {
+		rest, pinned := strings.CutPrefix(name, "snapshot/")
+		snapshot.Digest, name, found = strings.Cut(rest, "/")
+		if !pinned || !found || len(snapshot.Digest) != 64 {
+			respondErr(w, store.ErrNotFound)
+			return
+		}
+	}
+	artifact, source, err := s.DB.CondaGroupArtifact(ctx, i, group.Name, subdir+"/"+name, snapshot, group.SourceRevision, s.NativeVersionLimit)
 	if err != nil {
 		respondErr(w, err)
 		return
 	}
 	s.serveResolvedArtifact(w, r, i, resolvedArtifact{artifact: artifact, source: source, groups: []string{group.Name},
-		groupRevisions: map[string]int64{group.Name: group.SourceRevision}, condaGroupView: digest})
+		groupRevisions: map[string]int64{group.Name: group.SourceRevision}, condaGroupView: snapshot})
 }
 
 func (s *Server) publishConda(w http.ResponseWriter, r *http.Request, i store.Identity, repo string, coordinate conda.Coordinate) {

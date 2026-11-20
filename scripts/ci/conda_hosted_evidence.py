@@ -32,9 +32,9 @@ GROUP_CHECKS = (
     'when the preferred source lacks the name the lower source supplies its native and foreign builds',
     'an unreviewed preferred owner fences the earlier view and all lower platforms for its name',
     'the approved graph uses two pinned platform snapshots and retains only the current owner builds',
-    'stock micromamba fetches the exact Conda group dependency graph through the advertised snapshot URLs',
+    'stock micromamba fetches the exact Conda group dependency graph through the pinned native channel root',
     'fresh stock micromamba links the original inert Conda group archives after restart',
-    'current denial removes the native app and refuses the prior exact snapshot URL without fallback',
+    'current denial removes the native app and refuses both prior snapshot URLs without fallback',
     'fresh stock micromamba refuses the Conda group graph after the owning digest is denied',
     'revoking an underlying grant stops Conda group metadata and the previously advertised noarch download',
 )

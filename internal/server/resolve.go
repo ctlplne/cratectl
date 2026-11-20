@@ -36,7 +36,7 @@ type resolvedArtifact struct {
 	cargo                *cargoRead
 	composerProxy        *composerProxyRead
 	cranProxy            *store.CRANProxyAdmission
-	condaGroupView       string
+	condaGroupView       store.CondaSnapshot
 }
 
 func (s *Server) resolve(ctx context.Context, i store.Identity, repo store.Repository, p string, force bool) (resolvedArtifact, error) {
@@ -666,7 +666,7 @@ func (s *Server) guardResolved(ctx context.Context, i store.Identity, a resolved
 	if a.cranProxy != nil {
 		return s.DB.CRANProxyArtifact(ctx, i, a.source, a.artifact.Path, a.cranProxy.CatalogDigest, a.admissions)
 	}
-	if a.condaGroupView != "" {
+	if a.condaGroupView.Digest != "" {
 		group := a.groups[0]
 		current, source, err := s.DB.CondaGroupArtifact(ctx, i, group, a.artifact.Path, a.condaGroupView, a.groupRevisions[group], s.NativeVersionLimit)
 		if err != nil {

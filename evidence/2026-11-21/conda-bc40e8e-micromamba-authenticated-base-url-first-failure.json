@@ -1,0 +1,17 @@
+{
+  "candidate": "bc40e8e9070dcae9fed939dc727f54061dc48627",
+  "observed_at": "2026-11-20T22:47:00.571849+00:00",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "stock_micromamba": "2.9.0",
+  "status": "native_download_refused",
+  "observed_http_statuses": [
+    404
+  ],
+  "stock_exit_code": 1,
+  "finding": "Stock micromamba reported the snapshot URLs in its FETCH plan. With Basic credentials, its two archive requests used the original group channel and bare platform filenames. The group rejected the two unpinned transfers. The PostgreSQL group regression passed independently.",
+  "source": "https://github.com/mamba-org/mamba/blob/2.9.0/libmamba/src/core/package_fetcher.cpp",
+  "owned_client_log_sha256": "dd55b9120aeefc2d5d6170a6300a4fe78a8c765db7bca2c6c0b788cc5b442335",
+  "goal_complete": false,
+  "broad_readiness": false
+}
