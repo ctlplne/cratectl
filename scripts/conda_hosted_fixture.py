@@ -209,7 +209,9 @@ def evaluate_conda(work, installation, authority, call, api, restart, sha, execu
         actual_graph = {(p['name'], p['version'], p['build_string'], p['subdir'], p['sha256']) for p in fetched}
         exact_fetch = len(archives) == len(fetched) == len(exact) and dict(archives) == exact and actual_graph == expected_graph
         if expected_urls is not None:
-            exact_fetch = exact_fetch and {p['url'] for p in fetched} == set(expected_urls)
+            urls = [urlsplit(p['url']) for p in fetched]
+            published = {url._replace(netloc=url.netloc.rsplit('@', 1)[-1]).geturl() for url in urls}
+            exact_fetch = exact_fetch and published == set(expected_urls)
         if download_only:
             return exact_fetch and not installed and not linked_payload
         return (exact_fetch and installed == {p.filename.removesuffix('.tar.bz2') for p in graph}
