@@ -951,6 +951,17 @@ download. Real PostgreSQL also exercised explicit ownership, retained name
 ownership after deletion, and the transfer fence after byte verification.
 [Exact Conda group result](evidence/2026-11-21/conda-826cb8c-ordered-group-native.json)
 
+Exact `5d07270` passed 48 checks with stock micromamba 2.9.0 and
+PostgreSQL 16.16 on macOS ARM64. Hosted repodata kept the original
+`.conda` and `.tar.bz2` archives in separate native buckets. Micromamba
+selected the two modern archives, installed their exact bytes after
+restart, fell back to the approved legacy dependency after modern digest
+denial, and refused the graph when both dependency archives were denied.
+Real PostgreSQL separately verified modern hosted and group byte reads,
+ranges, and the group snapshot fence after a review change. The native
+Linux workflow includes the modern profile on x64 and ARM64.
+[Exact modern Conda result](evidence/2026-11-21/conda-5d07270-modern-native.json)
+
 `d25394c` passed the hosted CRAN, Conda and protected console integration
 tests with PostgreSQL 16.16 and the four source gates. On macOS ARM64,
 exact `530472a` passed ten stock R 4.6.2 checks and 19 declarative checks.

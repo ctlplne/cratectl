@@ -1,0 +1,75 @@
+{
+  "candidate": "5d07270efab6ac12b2977be0f6fca2bdd6df6435",
+  "status": "passed",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "postgres": "postgres (PostgreSQL) 16.16",
+  "binary_sha256": {
+    "cratectl": "1aeac2b58ab6a6bea53ab79213bec320774da891f05d5f9dd85803a7ce3e9697",
+    "cratectld": "e6a39109c87ac5302996e198d2bea4ef6d1f0b67ce37ba1ed0ac7d32d5e42182"
+  },
+  "archive_sha256": "a2694827c507c96f5fa663bf6216761bb74777d84f49d9b0d9ab8cc6c58e58de",
+  "goal_complete": false,
+  "broad_readiness": false,
+  "observed_at": "2026-11-20T23:06:54.693533+00:00",
+  "source_dirty": false,
+  "total_checks": 48,
+  "scoped_checks": {
+    "native_declarative": 19,
+    "stock_micromamba_hosted_legacy": 11,
+    "stock_micromamba_ordered_group_legacy": 10,
+    "stock_micromamba_hosted_modern": 8
+  },
+  "stock_micromamba": {
+    "client_version": "2.9.0",
+    "client_sha256": "ec2a072f028e1a7cf20f3e2e74d5a8127cf5a5f27636375b5359811565f4e5be",
+    "subdir": "osx-arm64"
+  },
+  "hosted_modern": {
+    "checks": [
+      "modern Conda publication binds the platform and preserves original ZIP bytes",
+      "unreviewed modern and legacy archives stay out of both repodata buckets",
+      "plain repodata keeps both archive formats under their exact native filenames and digests",
+      "stock micromamba selects .conda archives over equivalent approved legacy archives",
+      "fresh stock micromamba installs the exact inert .conda graph after restart",
+      "current modern digest denial leaves bounded approved legacy fallback metadata",
+      "stock micromamba uses the exact approved legacy dependency after modern digest denial",
+      "fresh stock micromamba refuses the graph after denial of both compatible dependency archives"
+    ],
+    "archive_sha256": {
+      "osx-arm64/cratectl-conda-app-1.4.0-fixture_3.tar.bz2": "cdd4fb48e87ffd2f0d9c5088ac8aa352faa3cfafac0ca4feaef7b228f39d2d3a",
+      "noarch/cratectl-conda-data-1.3.0-fixture_1.tar.bz2": "bba26a2cdef57af977f62012401b05a76d13958e0799534aa645d9fb3b76cc73",
+      "osx-arm64/cratectl-conda-app-1.4.0-fixture_3.conda": "47ba65887ac77745143143d0f9be3f6929cbf649e61764652645251de1b55a2c",
+      "noarch/cratectl-conda-data-1.3.0-fixture_1.conda": "1e64472ef846bce252db25abe81726246adddcfdc90175e778722f33d76f3a40"
+    },
+    "selected": {
+      "osx-arm64/cratectl-conda-app-1.4.0-fixture_3.conda": "47ba65887ac77745143143d0f9be3f6929cbf649e61764652645251de1b55a2c",
+      "noarch/cratectl-conda-data-1.3.0-fixture_1.conda": "1e64472ef846bce252db25abe81726246adddcfdc90175e778722f33d76f3a40"
+    },
+    "fallback": {
+      "osx-arm64/cratectl-conda-app-1.4.0-fixture_3.conda": "47ba65887ac77745143143d0f9be3f6929cbf649e61764652645251de1b55a2c",
+      "noarch/cratectl-conda-data-1.3.0-fixture_1.tar.bz2": "bba26a2cdef57af977f62012401b05a76d13958e0799534aa645d9fb3b76cc73"
+    }
+  },
+  "source_gates": [
+    "make build",
+    "make lint"
+  ],
+  "postgres_integration": [
+    "TestCRANOrderedGroupBindsOwningSourceAndCurrentPolicy",
+    "TestCondaGroupBindsCurrentPlatformSnapshotAndOwnership",
+    "TestCondaHostedPlatformReviewAndRetainedBytes",
+    "TestCondaModernArchivesKeepSeparateRepodataBucketsAndExactBytes",
+    "TestConsoleSessionUsesCurrentCredentialAndDoesNotExposeSecrets"
+  ],
+  "raw_stage_sha256": {
+    "manifest": "7bfcb4b9a34c6807cb978b0518e9f6d35d817507bb2efe7f13b63b7b9e134000",
+    "postgres": "44459018a5666705c8f5afd1314c56f6aee54c5845560c9b2e4206cfffa60f9e",
+    "build": "d6b7e938b3c2114965dbc2623e59b8b8b1dbfc92e99efde4872932e752c3cc89",
+    "lint": "948976721eb4712b7920ac718139df76c3379fde06c9844fcf5e90c9b8b94ccc"
+  },
+  "limits": [
+    "The stock modern archive replay used hosted repodata on macOS ARM64.",
+    "The real PostgreSQL regression also checked modern native and noarch archives across two hosted group members.",
+    "The original Linux modern reports, stock client installation through modern groups, additional layouts and production workloads remain open."
+  ]
+}
