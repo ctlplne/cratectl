@@ -8,6 +8,12 @@ Broad readiness,security and packaging remain unqualified.
 
 ## Latest whole accepted source
 
+`fc54a58` passed all 35 original jobs across ten workflows. The unchanged
+exact-source verifier accepted 103 reports. The independent comparison
+matched 55 source contracts, 28 safe job summaries, the selection summary
+and three package transfers. Both original CRAN source-group jobs passed.
+[Exact CRAN ordered group campaign](evidence/2026-11-19/github-fc54a58-exact-local-accepted.json)
+
 Both `ff0f805` and `4e15a9f` passed all 35 original jobs across ten
 workflows. Each unchanged exact-source verifier accepted 103 reports. The
 independent comparison matched 51 source contracts, 28 safe job summaries,
